@@ -1,3 +1,7 @@
+// pkg/aviation/weather.go
+// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 package aviation
 
 import (
@@ -6,7 +10,44 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/mmp/vice/pkg/math"
 )
+
+///////////////////////////////////////////////////////////////////////////
+// Wind
+
+type Wind struct {
+	Direction int32 `json:"direction"`
+	Speed     int32 `json:"speed"`
+	Gust      int32 `json:"gust"`
+}
+
+type WindModel interface {
+	GetWindVector(p math.Point2LL, alt float32) [2]float32
+	AverageWindVector() [2]float32
+}
+
+///////////////////////////////////////////////////////////////////////////
+// METAR
+
+type METAR struct {
+	AirportICAO string
+	Time        string
+	Auto        bool
+	Wind        string
+	Weather     string
+	Altimeter   string
+	Rmk         string
+}
+
+func (m METAR) String() string {
+	auto := ""
+	if m.Auto {
+		auto = "AUTO"
+	}
+	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind, m.Weather, m.Altimeter, m.Rmk}, " ")
+}
 
 type RawMETAR struct {
 	//MetarId     int         `json:"metar_id"`

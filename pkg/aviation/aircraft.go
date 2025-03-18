@@ -71,12 +71,6 @@ type Aircraft struct {
 	WaypointHandoffController string
 }
 
-type RedirectedHandoff struct {
-	OriginalOwner string   // Controller callsign
-	Redirector    []string // Controller callsign
-	RedirectedTo  string   // Controller callsign
-}
-
 type PilotResponse struct {
 	Message    string
 	Unexpected bool // should it be highlighted in the UI
@@ -659,66 +653,6 @@ func (ac *Aircraft) CWT() string {
 		return "NOWGT"
 	}
 	return perf.Category.CWT
-}
-
-///////////////////////////////////////////////////////////////////////////
-// RedirectedHandoff methods
-
-func (rd *RedirectedHandoff) GetLastRedirector() string {
-	if length := len(rd.Redirector); length > 0 {
-		return rd.Redirector[length-1]
-	} else {
-		return ""
-	}
-}
-
-func (rd *RedirectedHandoff) ShowRDIndicator(callsign string, RDIndicatorEnd time.Time) bool {
-	// Show "RD" to the redirect target, last redirector until the RD is accepted.
-	// Show "RD" to the original owner up to 30 seconds after the RD is accepted.
-	return rd.RedirectedTo == callsign || rd.GetLastRedirector() == callsign ||
-		rd.OriginalOwner == callsign || time.Until(RDIndicatorEnd) > 0
-}
-
-func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl string) bool {
-	// True if the 2nd redirector redirects back to the 1st redirector
-	return (len(rd.Redirector) == 1 || (len(rd.Redirector) > 1) && rd.Redirector[1] == ctrl) && octrl == rd.Redirector[0]
-}
-
-func (rd *RedirectedHandoff) AddRedirector(ctrl *Controller) {
-	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Id() {
-		// Don't append the same controller multiple times
-		// (the case in which the last redirector recalls and then redirects again)
-		rd.Redirector = append(rd.Redirector, ctrl.Id())
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionContact    = iota // Messages initiated by the pilot
-	RadioTransmissionReadback          // Reading back an instruction
-	RadioTransmissionUnexpected        // Something urgent or unusual
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	default:
-		return "(unhandled type)"
-	}
-}
-
-type RadioTransmission struct {
-	Controller string
-	Message    string
-	Type       RadioTransmissionType
 }
 
 func PlausibleFinalAltitude(fp *FlightPlan, perf AircraftPerformance, nmPerLongitude float32,

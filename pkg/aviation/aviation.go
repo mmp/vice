@@ -5,34 +5,27 @@
 package aviation
 
 import (
-	"bytes"
-	"encoding/gob"
-	"errors"
 	"fmt"
-	"io"
-	"io/fs"
 	"maps"
 	"math/bits"
-	"path/filepath"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
-	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/brunoga/deep"
-	"github.com/klauspost/compress/zstd"
-	"github.com/mmp/earcut-go"
 )
 
 type ReportingPoint struct {
 	Fix      string
 	Location math.Point2LL
+}
+
+type InboundFlow struct {
+	Arrivals    []Arrival    `json:"arrivals"`
+	Overflights []Overflight `json:"overflights"`
 }
 
 type Arrival struct {
@@ -135,29 +128,40 @@ type Runway struct {
 	Elevation int
 }
 
-type METAR struct {
-	AirportICAO string
-	Time        string
-	Auto        bool
-	Wind        string
-	Weather     string
-	Altimeter   string
-	Rmk         string
-}
-
-func (m METAR) String() string {
-	auto := ""
-	if m.Auto {
-		auto = "AUTO"
-	}
-	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind, m.Weather, m.Altimeter, m.Rmk}, " ")
-}
-
 type ATIS struct {
 	Airport  string
 	AppDep   string
 	Code     string
 	Contents string
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+type RadioTransmissionType int
+
+const (
+	RadioTransmissionContact    = iota // Messages initiated by the pilot
+	RadioTransmissionReadback          // Reading back an instruction
+	RadioTransmissionUnexpected        // Something urgent or unusual
+)
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
+	default:
+		return "(unhandled type)"
+	}
+}
+
+type RadioTransmission struct {
+	Controller string
+	Message    string
+	Type       RadioTransmissionType
 }
 
 // Frequencies are scaled by 1000 and then stored in integers.
@@ -174,25 +178,6 @@ func (f Frequency) String() string {
 		s += "0"
 	}
 	return s
-}
-
-type Controller struct {
-	Position           string    // This is the key in the controllers map in JSON
-	RadioName          string    `json:"radio_name"`
-	Frequency          Frequency `json:"frequency"`
-	TCP                string    `json:"sector_id"`       // e.g. N56, 2J, ...
-	Scope              string    `json:"scope_char"`      // Optional. If unset, facility id is used for external, last char of sector id for local.
-	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
-	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
-	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
-	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
-}
-
-func (c Controller) Id() string {
-	if c.ERAMFacility {
-		return c.TCP
-	}
-	return c.FacilityIdentifier + c.TCP
 }
 
 type FlightRules int
@@ -359,20 +344,6 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Wind
-
-type Wind struct {
-	Direction int32 `json:"direction"`
-	Speed     int32 `json:"speed"`
-	Gust      int32 `json:"gust"`
-}
-
-type WindModel interface {
-	GetWindVector(p math.Point2LL, alt float32) [2]float32
-	AverageWindVector() [2]float32
-}
-
-///////////////////////////////////////////////////////////////////////////
 
 type RadarSite struct {
 	Char           string        `json:"char"`
@@ -421,105 +392,6 @@ func (rs *RadarSite) CheckVisibility(p math.Point2LL, altitude int) (primary, se
 	primary = distance <= float32(rs.PrimaryRange)
 	secondary = !primary && distance <= float32(rs.SecondaryRange)
 	return
-}
-
-type AirspaceVolume struct {
-	Name    string             `json:"name"`
-	Type    AirspaceVolumeType `json:"type"`
-	Floor   int                `json:"floor"`
-	Ceiling int                `json:"ceiling"`
-	// Polygon
-	PolygonBounds *math.Extent2D    // not always set
-	Vertices      []math.Point2LL   `json:"vertices"`
-	Holes         [][]math.Point2LL `json:"holes"`
-	// Circle
-	Center math.Point2LL `json:"center"`
-	Radius float32       `json:"radius"`
-}
-
-type AirspaceVolumeType int
-
-const (
-	AirspaceVolumePolygon = iota
-	AirspaceVolumeCircle
-)
-
-func (t *AirspaceVolumeType) MarshalJSON() ([]byte, error) {
-	switch *t {
-	case AirspaceVolumePolygon:
-		return []byte("\"polygon\""), nil
-	case AirspaceVolumeCircle:
-		return []byte("\"circle\""), nil
-	default:
-		return nil, fmt.Errorf("%d: unknown airspace volume type", *t)
-	}
-}
-
-func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
-	switch string(b) {
-	case "\"polygon\"":
-		*t = AirspaceVolumePolygon
-		return nil
-	case "\"circle\"":
-		*t = AirspaceVolumeCircle
-		return nil
-	default:
-		return fmt.Errorf("%s: unknown airspace volume type", string(b))
-	}
-}
-
-func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
-	if alt <= a.Floor || alt > a.Ceiling {
-		return false
-	}
-
-	switch a.Type {
-	case AirspaceVolumePolygon:
-		if a.PolygonBounds != nil && !a.PolygonBounds.Inside(p) {
-			return false
-		}
-		if !math.PointInPolygon2LL(p, a.Vertices) {
-			return false
-		}
-		for _, hole := range a.Holes {
-			if math.PointInPolygon2LL(p, hole) {
-				return false
-			}
-		}
-		return true
-	case AirspaceVolumeCircle:
-		return math.NMDistance2LL(p, a.Center) < a.Radius
-	default:
-		panic("unhandled AirspaceVolume type")
-	}
-}
-
-func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerLongitude float32) {
-	ld := renderer.GetLinesDrawBuilder()
-
-	switch a.Type {
-	case AirspaceVolumePolygon:
-		var v [][2]float32
-		for _, vtx := range a.Vertices {
-			v = append(v, [2]float32(vtx))
-		}
-		ld.AddLineLoop(v)
-
-		for _, h := range a.Holes {
-			var v [][2]float32
-			for _, vtx := range h {
-				v = append(v, [2]float32(vtx))
-			}
-			ld.AddLineLoop(v)
-		}
-	case AirspaceVolumeCircle:
-		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
-	default:
-		panic("unhandled AirspaceVolume type")
-	}
-
-	ld.GenerateCommands(cb)
-	renderer.ReturnLinesDrawBuilder(ld)
 }
 
 func FixReadback(fix string) string {
@@ -915,354 +787,6 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-// Note: this should match ViceMapSpec/VideoMap in crc2vice/dat2vice. (crc2vice
-// doesn't support all of these, though.)
-type VideoMap struct {
-	Label       string // for DCB
-	Group       int    // 0 -> A, 1 -> B
-	Name        string // For maps system list
-	Id          int
-	Category    int
-	Restriction struct {
-		Id        int
-		Text      [2]string
-		TextBlink bool
-		HideText  bool
-	}
-	Color int
-	Lines [][]math.Point2LL
-
-	CommandBuffer renderer.CommandBuffer
-}
-
-// This should match VideoMapLibrary in dat2vice
-type VideoMapLibrary struct {
-	Maps []VideoMap
-}
-
-// VideoMapManifest stores which maps are available in a video map file and
-// is also able to provide the video map file's hash.
-type VideoMapManifest struct {
-	names      map[string]interface{}
-	filesystem fs.FS
-	filename   string
-}
-
-func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
-	defer e.CheckDepth(e.CurrentDepth())
-
-	manifest, err := LoadVideoMapManifest(filename)
-	if err != nil {
-		e.Error(err)
-		return
-	}
-
-	vms, err := LoadVideoMapLibrary(filename)
-	if err != nil {
-		e.Error(err)
-		return
-	}
-
-	for n := range manifest.names {
-		if !slices.ContainsFunc(vms.Maps, func(v VideoMap) bool { return v.Name == n }) {
-			e.ErrorString("%s: map is in manifest file but not video map file", n)
-		}
-	}
-	for _, m := range vms.Maps {
-		if _, ok := manifest.names[m.Name]; !ok {
-			e.ErrorString("%s: map is in video map file but not manifest", m.Name)
-		}
-	}
-}
-
-func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
-	filesystem := videoMapFS(filename)
-
-	// Load the manifest and do initial error checking
-	mf, _ := strings.CutSuffix(filename, ".zst")
-	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
-	mf += "-manifest.gob"
-
-	fm, err := filesystem.Open(mf)
-	if err != nil {
-		return nil, err
-	}
-	defer fm.Close()
-
-	var names map[string]interface{}
-	dec := gob.NewDecoder(fm)
-	if err := dec.Decode(&names); err != nil {
-		return nil, err
-	}
-
-	// Make sure the file exists but don't load it until it's needed.
-	f, err := filesystem.Open(filename)
-	if err != nil {
-		return nil, err
-	} else {
-		f.Close()
-	}
-
-	return &VideoMapManifest{
-		names:      names,
-		filesystem: filesystem,
-		filename:   filename,
-	}, nil
-}
-
-func (v VideoMapManifest) HasMap(s string) bool {
-	_, ok := v.names[s]
-	return ok
-}
-
-// Hash returns a hash of the underlying video map file (i.e., not the manifest!)
-func (v VideoMapManifest) Hash() ([]byte, error) {
-	if f, err := v.filesystem.Open(v.filename); err == nil {
-		defer f.Close()
-		return util.Hash(f)
-	} else {
-		return nil, err
-	}
-}
-
-func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
-	filesystem := videoMapFS(path)
-	f, err := filesystem.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	contents, err := io.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-
-	var r io.Reader
-	br := bytes.NewReader(contents)
-	var zr *zstd.Decoder
-	if len(contents) > 4 && contents[0] == 0x28 && contents[1] == 0xb5 && contents[2] == 0x2f && contents[3] == 0xfd {
-		// zstd compressed
-		zr, _ = zstd.NewReader(br, zstd.WithDecoderConcurrency(0))
-		defer zr.Close()
-		r = zr
-	} else {
-		r = br
-	}
-
-	// Decode the gobfile.
-	var vmf VideoMapLibrary
-	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
-		// Try the old format, just an array of maps
-		_, _ = br.Seek(0, io.SeekStart)
-		if zr != nil {
-			_ = zr.Reset(br)
-		}
-		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
-			return nil, err
-		}
-	}
-
-	// Convert the line specifications into command buffers for drawing.
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	for i, m := range vmf.Maps {
-		ld.Reset()
-
-		for _, lines := range m.Lines {
-			// Slightly annoying: the line vertices are stored with
-			// Point2LLs but AddLineStrip() expects [2]float32s.
-			fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
-			ld.AddLineStrip(fl)
-		}
-		ld.GenerateCommands(&m.CommandBuffer)
-
-		// Clear out Lines so that the memory can be reclaimed since they
-		// aren't needed any more.
-		m.Lines = nil
-		vmf.Maps[i] = m
-	}
-
-	return &vmf, nil
-}
-
-// Loads the specified video map file, though only if its hash matches the
-// provided hash. Returns an error otherwise.
-func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, error) {
-	filesystem := videoMapFS(path)
-	f, err := filesystem.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	if gotHash, err := util.Hash(f); err != nil {
-		return nil, err
-	} else if !slices.Equal(gotHash, wantHash) {
-		return nil, errors.New("hash mismatch")
-	}
-
-	return LoadVideoMapLibrary(path)
-}
-
-// Returns an fs.FS that allows us to load the video map with the given path.
-func videoMapFS(path string) fs.FS {
-	if filepath.IsAbs(path) {
-		return util.RootFS{}
-	} else {
-		return util.GetResourcesFS()
-	}
-}
-
-func PrintVideoMaps(path string, e *util.ErrorLogger) {
-	if vmf, err := LoadVideoMapLibrary(path); err != nil {
-		e.Error(err)
-		return
-	} else {
-		sort.Slice(
-			vmf.Maps, func(i, j int) bool {
-				vi, vj := vmf.Maps[i], vmf.Maps[j]
-				if vi.Id != vj.Id {
-					return vi.Id < vj.Id
-				}
-				return vi.Name < vj.Name
-			},
-		)
-
-		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
-		for _, m := range vmf.Maps {
-			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-// split -> config
-type SplitConfigurationSet map[string]SplitConfiguration
-
-// callsign -> controller contig
-type SplitConfiguration map[string]*MultiUserController
-
-type MultiUserController struct {
-	Primary          bool     `json:"primary"`
-	BackupController string   `json:"backup"`
-	Departures       []string `json:"departures"`
-	Arrivals         []string `json:"arrivals"` // TEMPORARY for inbound flows transition
-	InboundFlows     []string `json:"inbound_flows"`
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfigurations
-
-func (sc SplitConfigurationSet) GetConfiguration(split string) (SplitConfiguration, error) {
-	if len(sc) == 1 {
-		// ignore split
-		for _, config := range sc {
-			return config, nil
-		}
-	}
-
-	config, ok := sc[split]
-	if !ok {
-		return nil, fmt.Errorf("%s: split not found", split)
-	}
-	return config, nil
-}
-
-func (sc SplitConfigurationSet) GetPrimaryController(split string) (string, error) {
-	configs, err := sc.GetConfiguration(split)
-	if err != nil {
-		return "", err
-	}
-
-	for callsign, mc := range configs {
-		if mc.Primary {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("No primary controller in split")
-}
-
-func (sc SplitConfigurationSet) Len() int {
-	return len(sc)
-}
-
-func (sc SplitConfigurationSet) Splits() []string {
-	return util.SortedMapKeys(sc)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfiguration
-
-// ResolveController takes a controller callsign and returns the signed-in
-// controller that is responsible for that position (possibly just the
-// provided callsign).
-func (sc SplitConfiguration) ResolveController(id string, active func(id string) bool) (string, error) {
-	origId := id
-	i := 0
-	for {
-		if ctrl, ok := sc[id]; !ok {
-			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", id)
-		} else if ctrl.Primary || active(id) {
-			return id, nil
-		} else {
-			id = ctrl.BackupController
-		}
-
-		i++
-		if i == 20 {
-			return "", fmt.Errorf("%s: unable to find controller backup", origId)
-		}
-	}
-}
-
-func (sc SplitConfiguration) GetInboundController(group string) (string, error) {
-	for callsign, ctrl := range sc {
-		if ctrl.IsInboundController(group) {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("%s: couldn't find inbound controller", group)
-}
-
-func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) (string, error) {
-	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, runway, sid) {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("%s/%s: couldn't find departure controller", airport, sid)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// MultiUserController
-
-func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
-	for _, d := range c.Departures {
-		depAirport, depSIDRwy, ok := strings.Cut(d, "/")
-		if ok { // have a runway or SID
-			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
-				return true
-			}
-		} else { // no runway/SID, so only match airport
-			if ap == depAirport {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (c *MultiUserController) IsInboundController(group string) bool {
-	return slices.Contains(c.InboundFlows, group)
-}
-
-///////////////////////////////////////////////////////////////////////////
 // SquawkCodePool
 
 type SquawkCodePool struct {
@@ -1443,370 +967,4 @@ func (p *SquawkCodePool) NumAvailable() int {
 		n -= bits.OnesCount64(b)
 	}
 	return n
-}
-
-type ControllerAirspaceVolume struct {
-	LowerLimit    int               `json:"lower"`
-	UpperLimit    int               `json:"upper"`
-	Boundaries    [][]math.Point2LL `json:"boundary_polylines"` // not in JSON
-	BoundaryNames []string          `json:"boundaries"`
-	Label         string            `json:"label"`
-	LabelPosition math.Point2LL     `json:"label_position"`
-}
-
-///////////////////////////////////////////////////////////////////////////
-// RestrictionArea
-
-// This many adapted and then this many user-defined
-const MaxRestrictionAreas = 100
-
-type RestrictionArea struct {
-	Title        string        `json:"title"`
-	Text         [2]string     `json:"text"`
-	BlinkingText bool          `json:"blinking_text"`
-	HideId       bool          `json:"hide_id"`
-	TextPosition math.Point2LL `json:"text_position"`
-	CircleCenter math.Point2LL `json:"circle_center"`
-	CircleRadius float32       `json:"circle_radius"`
-	VerticesUser WaypointArray `json:"vertices"`
-	Vertices     [][]math.Point2LL
-	Closed       bool `json:"closed"`
-	Shaded       bool `json:"shade_region"`
-	Color        int  `json:"color"`
-
-	Tris    [][3]math.Point2LL
-	Deleted bool
-}
-
-type Airspace struct {
-	Boundaries map[string][]math.Point2LL            `json:"boundaries"`
-	Volumes    map[string][]ControllerAirspaceVolume `json:"volumes"`
-}
-
-func RestrictionAreaFromTFR(tfr TFR) RestrictionArea {
-	ra := RestrictionArea{
-		Title:    tfr.LocalName,
-		Vertices: deep.MustCopy(tfr.Points),
-	}
-
-	if len(ra.Title) > 32 {
-		ra.Title = ra.Title[:32]
-	}
-
-	ra.HideId = true
-	ra.Closed = true
-	ra.Shaded = true // ??
-	ra.TextPosition = ra.AverageVertexPosition()
-
-	ra.UpdateTriangles()
-
-	return ra
-}
-
-func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
-	var c math.Point2LL
-	var n float32
-	for _, loop := range ra.Vertices {
-		n += float32(len(loop))
-		for _, v := range loop {
-			c = math.Add2f(c, v)
-		}
-	}
-	return math.Scale2f(c, math.Max(1, 1/n)) // avoid 1/0 and return (0,0) if there are no verts.
-}
-
-func (ra *RestrictionArea) UpdateTriangles() {
-	if !ra.Closed || !ra.Shaded {
-		ra.Tris = nil
-		return
-	}
-
-	clear(ra.Tris)
-	for _, loop := range ra.Vertices {
-		if len(loop) < 3 {
-			continue
-		}
-
-		vertices := make([]earcut.Vertex, len(loop))
-		for i, v := range loop {
-			vertices[i].P = [2]float64{float64(v[0]), float64(v[1])}
-		}
-
-		for _, tri := range earcut.Triangulate(earcut.Polygon{Rings: [][]earcut.Vertex{vertices}}) {
-			var v32 [3]math.Point2LL
-			for i, v64 := range tri.Vertices {
-				v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
-			}
-			ra.Tris = append(ra.Tris, v32)
-		}
-	}
-}
-
-func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
-	if ra.CircleRadius > 0 {
-		// Circle
-		delta := math.Sub2f(p, ra.CircleCenter)
-		ra.CircleCenter = p
-		ra.TextPosition = math.Add2f(ra.TextPosition, delta)
-	} else {
-		pc := ra.TextPosition
-		if pc.IsZero() {
-			pc = ra.AverageVertexPosition()
-		}
-		delta := math.Sub2f(p, pc)
-		ra.TextPosition = p
-
-		for _, loop := range ra.Vertices {
-			for i := range loop {
-				loop[i] = math.Add2f(loop[i], delta)
-			}
-		}
-	}
-}
-
-type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness"`
-	ForceQLToSelf       bool                              `json:"force_ql_self"`
-	AllowLongScratchpad bool                              `json:"allow_long_scratchpad"`
-	VideoMapNames       []string                          `json:"stars_maps"`
-	VideoMapLabels      map[string]string                 `json:"map_labels"`
-	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	InhibitCAVolumes    []AirspaceVolume                  `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*RadarSite             `json:"radar_sites"`
-	Center              math.Point2LL                     `json:"-"`
-	CenterString        string                            `json:"center"`
-	Range               float32                           `json:"range"`
-	Scratchpads         map[string]string                 `json:"scratchpads"`
-	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
-	Altimeters          []string                          `json:"altimeters"`
-
-	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
-	MonitoredBeaconCodeBlocks       []Squawk
-
-	VideoMapFile      string                     `json:"video_map_file"`
-	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
-	SingleCharAIDs    map[string]string          `json:"single_char_aids"` // Char to airport
-	BeaconBank        int                        `json:"beacon_bank"`
-	KeepLDB           bool                       `json:"keep_ldb"`
-	FullLDBSeconds    int                        `json:"full_ldb_seconds"`
-
-	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
-	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
-	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
-
-	PDB struct {
-		ShowScratchpad2   bool `json:"show_scratchpad2"`
-		HideGroundspeed   bool `json:"hide_gs"`
-		ShowAircraftType  bool `json:"show_aircraft_type"`
-		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
-		DisplayCustomSPCs bool `json:"display_custom_spcs"`
-	} `json:"pdb"`
-	Scratchpad1 struct {
-		DisplayExitFix     bool `json:"display_exit_fix"`
-		DisplayExitFix1    bool `json:"display_exit_fix_1"`
-		DisplayExitGate    bool `json:"display_exit_gate"`
-		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"scratchpad1"`
-	CustomSPCs []string `json:"custom_spcs"`
-
-	CoordinationLists []CoordinationList `json:"coordination_lists"`
-	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
-	UseLegacyFont     bool               `json:"use_legacy_font"`
-}
-
-type STARSControllerConfig struct {
-	VideoMapNames                   []string      `json:"video_maps"`
-	DefaultMaps                     []string      `json:"default_maps"`
-	Center                          math.Point2LL `json:"-"`
-	CenterString                    string        `json:"center"`
-	Range                           float32       `json:"range"`
-	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
-	MonitoredBeaconCodeBlocks       []Squawk
-}
-
-type CoordinationList struct {
-	Name          string   `json:"name"`
-	Id            string   `json:"id"`
-	Airports      []string `json:"airports"`
-	YellowEntries bool     `json:"yellow_entries"`
-}
-
-type SignificantPoint struct {
-	Name         string        // JSON comes in as a map from name to SignificantPoint; we set this.
-	ShortName    string        `json:"short_name"`
-	Abbreviation string        `json:"abbreviation"`
-	Description  string        `json:"description"`
-	Location     math.Point2LL `json:"location"`
-}
-
-type AirspaceAwareness struct {
-	Fix                 []string `json:"fixes"`
-	AltitudeRange       [2]int   `json:"altitude_range"`
-	ReceivingController string   `json:"receiving_controller"`
-	AircraftType        []string `json:"aircraft_type"`
-}
-
-type InboundFlow struct {
-	Arrivals    []Arrival    `json:"arrivals"`
-	Overflights []Overflight `json:"overflights"`
-}
-
-func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []Waypoint) (string, bool) {
-	for fix, adaptationFixes := range fa.CoordinationFixes {
-		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
-			if adaptationFix.Type == ZoneBasedFix {
-				// Exclude zone based fixes for now. They come in after the route-based fix
-				continue
-			}
-
-			// FIXME (as elsewhere): make this more robust
-			if strings.Contains(fp.Route, fix) {
-				return fix, true
-			}
-
-			// FIXME: why both this and checking fp.Route?
-			for _, waypoint := range waypoints {
-				if waypoint.Fix == fix {
-					return fix, true
-				}
-			}
-		}
-
-	}
-
-	var closestFix string
-	minDist := float32(1e30)
-	for fix, adaptationFixes := range fa.CoordinationFixes {
-		for _, adaptationFix := range adaptationFixes {
-			if adaptationFix.Type == ZoneBasedFix {
-				if loc, ok := DB.LookupWaypoint(fix); !ok {
-					// FIXME: check this (if it isn't already) at scenario load time.
-					panic(fix + ": not found in fixes database")
-				} else if dist := math.NMDistance2LL(acpos, loc); dist < minDist {
-					minDist = dist
-					closestFix = fix
-				}
-			}
-		}
-	}
-
-	return closestFix, closestFix != ""
-}
-
-type STARSFlightPlan struct {
-	*FlightPlan
-	FlightPlanType      int
-	CoordinationTime    CoordinationTime
-	CoordinationFix     string
-	ContainedFacilities []string
-	Altitude            string
-	SP1                 string
-	SP2                 string
-	InitialController   string // For abbreviated FPs
-}
-
-type CoordinationTime struct {
-	Time time.Time
-	Type string // A for arrivals, P for Departures, E for overflights
-}
-
-// Flight plan types (STARS)
-const (
-	// Flight plan received from a NAS ARTCC.  This is a flight plan that
-	// has been sent over by an overlying ERAM facility.
-	RemoteEnroute = iota
-
-	// Flight plan received from an adjacent terminal facility This is a
-	// flight plan that has been sent over by another STARS facility.
-	RemoteNonEnroute
-
-	// VFR interfacility flight plan entered locally for which the NAS
-	// ARTCC has not returned a flight plan This is a flight plan that is
-	// made by a STARS facility that gets a NAS code.
-	LocalEnroute
-
-	// Flight plan entered by TCW or flight plan from an adjacent terminal
-	// that has been handed off to this STARS facility This is a flight
-	// plan that is made at a STARS facility and gets a local code.
-	LocalNonEnroute
-)
-
-func MakeSTARSFlightPlan(fp *FlightPlan) *STARSFlightPlan {
-	return &STARSFlightPlan{
-		FlightPlan: fp,
-		Altitude:   fmt.Sprint(fp.Altitude),
-	}
-}
-
-func (fp *STARSFlightPlan) SetCoordinationFix(fa STARSFacilityAdaptation, ac *Aircraft, simTime time.Time) error {
-	cf, ok := fa.GetCoordinationFix(fp, ac.Position(), ac.Waypoints())
-	if !ok {
-		return ErrNoCoordinationFix
-	}
-	fp.CoordinationFix = cf
-
-	if dist, err := ac.DistanceAlongRoute(cf); err == nil {
-		m := dist / float32(fp.CruiseSpeed) * 60
-		fp.CoordinationTime = CoordinationTime{
-			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
-		}
-	} else { // zone based fixes.
-		loc, ok := DB.LookupWaypoint(fp.CoordinationFix)
-		if !ok {
-			return ErrNoCoordinationFix
-		}
-
-		dist := math.NMDistance2LL(ac.Position(), loc)
-		m := dist / float32(fp.CruiseSpeed) * 60
-		fp.CoordinationTime = CoordinationTime{
-			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
-		}
-	}
-	return nil
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Airspace
-
-func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
-	var altRanges [][2]int
-	for _, v := range volumes {
-		inside := false
-		for _, pts := range v.Boundaries {
-			if math.PointInPolygon2LL(p, pts) {
-				inside = !inside
-			}
-		}
-		if inside {
-			altRanges = append(altRanges, [2]int{v.LowerLimit, v.UpperLimit})
-		}
-	}
-
-	// Sort altitude ranges and then merge ones that have 1000 foot separation
-	sort.Slice(altRanges, func(i, j int) bool { return altRanges[i][0] < altRanges[j][0] })
-	var mergedAlts [][2]int
-	i := 0
-	inside := false
-	for i < len(altRanges) {
-		low := altRanges[i][0]
-		high := altRanges[i][1]
-
-		for i+1 < len(altRanges) {
-			if altRanges[i+1][0]-high <= 1000 {
-				// merge
-				high = altRanges[i+1][1]
-				i++
-			} else {
-				break
-			}
-		}
-
-		// 10 feet of slop for rounding error
-		inside = inside || (int(alt)+10 >= low && int(alt)-10 <= high)
-
-		mergedAlts = append(mergedAlts, [2]int{low, high})
-		i++
-	}
-
-	return inside, mergedAlts
 }
