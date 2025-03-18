@@ -261,7 +261,7 @@ func TestAllPermutations(t *testing.T) {
 func TestFilterSeq(t *testing.T) {
 	s := []int{1, 2, 3, 4, 5}
 	count := 0
-	for v := range FilterSeq(SliceSeq(s), func(v int) bool { return v%2 == 0 }) {
+	for v := range FilterSeq(slices.Values(s), func(v int) bool { return v%2 == 0 }) {
 		count++
 		if v%2 != 0 {
 			t.Errorf("filtered sequence contains odd number: %d", v)
@@ -274,10 +274,10 @@ func TestFilterSeq(t *testing.T) {
 
 func TestSeqContains(t *testing.T) {
 	s := []int{1, 2, 3, 4, 5}
-	if !SeqContains(SliceSeq(s), 3) {
+	if !SeqContains(slices.Values(s), 3) {
 		t.Error("should contain 3")
 	}
-	if SeqContains(SliceSeq(s), 6) {
+	if SeqContains(slices.Values(s), 6) {
 		t.Error("should not contain 6")
 	}
 }
@@ -285,7 +285,7 @@ func TestSeqContains(t *testing.T) {
 func TestMapSeq(t *testing.T) {
 	s := []int{1, 2, 3, 4, 5}
 	count := 0
-	for v := range MapSeq(SliceSeq(s), func(v int) int { return 2 * v }) {
+	for v := range MapSeq(slices.Values(s), func(v int) int { return 2 * v }) {
 		count++
 		if v%2 != 0 {
 			t.Errorf("mapped sequence contains odd number: %d", v)
@@ -312,5 +312,97 @@ func TestSlicesReverse(t *testing.T) {
 		if !slices.Equal(vals, c.out) {
 			t.Errorf("reverse mismatch: %v gave %v expected %v", c.in, vals, c.out)
 		}
+	}
+}
+func TestSortedMapKeys(t *testing.T) {
+	m := map[int]string{
+		3: "three",
+		1: "one",
+		2: "two",
+		4: "four",
+	}
+
+	keys := SortedMapKeys(m)
+	expected := []int{1, 2, 3, 4}
+
+	if !slices.Equal(keys, expected) {
+		t.Errorf("SortedMapKeys returned %v, expected %v", keys, expected)
+	}
+}
+
+func TestDuplicateMap(t *testing.T) {
+	original := map[string]int{
+		"a": 1,
+		"b": 2,
+		"c": 3,
+	}
+
+	duplicate := DuplicateMap(original)
+
+	// Check that the maps are equal
+	if !maps.Equal(original, duplicate) {
+		t.Error("DuplicateMap should create an identical map")
+	}
+
+	// Check that modifying the duplicate doesn't affect the original
+	duplicate["d"] = 4
+	if maps.Equal(original, duplicate) {
+		t.Error("Modifying duplicate should not affect original")
+	}
+}
+
+func TestMapContains(t *testing.T) {
+	m := map[string]int{
+		"a": 1,
+		"b": 2,
+		"c": 3,
+	}
+
+	// Test with predicate that checks for value > 2
+	if !MapContains(m, func(k string, v int) bool { return v > 2 }) {
+		t.Error("MapContains should find value > 2")
+	}
+
+	// Test with predicate that checks for key "d"
+	if MapContains(m, func(k string, v int) bool { return k == "d" }) {
+		t.Error("MapContains should not find key \"d\"")
+	}
+}
+
+func TestMapSeq2(t *testing.T) {
+	m := map[int]string{
+		1: "one",
+		2: "two",
+		3: "three",
+	}
+
+	// Test mapping keys and values
+	count := 0
+	for k, v := range MapSeq2(maps.All(m), func(k int, v string) (string, int) { return v, k }) {
+		count++
+		if k == "one" && v != 1 {
+			t.Errorf("MapSeq2 key-value mapping incorrect: got %d for \"one\", expected 1", v)
+		}
+	}
+	if count != 3 {
+		t.Errorf("MapSeq2 should iterate 3 times, got %d", count)
+	}
+}
+
+func TestSliceReverseValues2(t *testing.T) {
+	s := []int{1, 2, 3, 4, 5}
+	count := 0
+	for i, v := range SliceReverseValues2(s) {
+		count++
+		expected := s[i]
+		if i != len(s)-count {
+			t.Errorf("SliceReverseValues2 index mismatch: got %d, expected %d", i, len(s)-count)
+		}
+		if v != expected {
+			t.Errorf("SliceReverseValues2 value mismatch at index %d: got %d, expected %d", i, v, expected)
+		}
+	}
+	if count != len(s) {
+		t.Errorf("SliceReverseValues2 should iterate %d times, got %d", len(s), count)
 	}
 }

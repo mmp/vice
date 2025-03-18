@@ -382,26 +382,6 @@ func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] {
 	}
 }
 
-func SliceSeq[Slice ~[]E, E any](s Slice) iter.Seq[E] {
-	return func(yield func(E) bool) {
-		for _, v := range s {
-			if !yield(v) {
-				break
-			}
-		}
-	}
-}
-
-func SliceSeq2[Slice ~[]E, E any](s Slice) iter.Seq2[int, E] {
-	return func(yield func(int, E) bool) {
-		for i, v := range s {
-			if !yield(i, v) {
-				break
-			}
-		}
-	}
-}
-
 func SeqContains[T comparable](seq iter.Seq[T], v T) bool {
 	for s := range seq {
 		if s == v {
