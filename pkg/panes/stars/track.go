@@ -23,10 +23,10 @@ import (
 // ctx.ControlClient.STARSComputer().TrackInformation[ac.Callsign].  Until
 // everything is wired up, some of the information needed is still being
 // maintained in Aircraft, so we'll make an ad-hoc TrackInformation here.
-func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) *sim.TrackInformation {
-	trk := ctx.ControlClient.STARSComputer().TrackInformation[ac.Callsign]
-	if trk == nil {
-		trk = &sim.TrackInformation{}
+func (sp *STARSPane) getTrack(ctx *panes.Context, ac *av.Aircraft) sim.TrackInformation {
+	var trk sim.TrackInformation
+	if t := ctx.ControlClient.STARSComputer().TrackInformation[ac.Callsign]; t != nil {
+		trk = *t
 	}
 
 	trk.Identifier = ac.Callsign
@@ -405,11 +405,10 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, ac *av.Aircraft) bool {
 	}
 
 	// Quick Look Positions.
-	if trk := sp.getTrack(ctx, ac); trk != nil {
-		for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
-			if trk.TrackOwner == quickLookPositions.Id {
-				return true
-			}
+	trk := sp.getTrack(ctx, ac)
+	for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
+		if trk.TrackOwner == quickLookPositions.Id {
+			return true
 		}
 	}
 
@@ -426,7 +425,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			continue
 		}
 
-		if trk := sp.getTrack(ctx, ac); trk == nil || trk.TrackOwner == "" {
+		if trk := sp.getTrack(ctx, ac); trk.TrackOwner == "" {
 			// No MSAW for unassociated tracks.
 			state.MSAW = false
 			continue
@@ -564,7 +563,7 @@ func (sp *STARSPane) drawTracks(aircraft []*av.Aircraft, ctx *panes.Context, tra
 					positionSymbol = "+"
 				}
 			}
-		} else if trk := sp.getTrack(ctx, ac); trk != nil && trk.TrackOwner != "" {
+		} else if trk := sp.getTrack(ctx, ac); trk.TrackOwner != "" {
 			positionSymbol = "?"
 			if ctrl, ok := ctx.ControlClient.Controllers[trk.TrackOwner]; ok && ctrl != nil {
 				if ctrl.FacilityIdentifier != "" {
@@ -911,7 +910,7 @@ func (sp *STARSPane) drawHistoryTrails(aircraft []*av.Aircraft, ctx *panes.Conte
 
 func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, ac *av.Aircraft) ([][2]int, bool) {
 	// Only report on ones that are tracked by us
-	if trk := sp.getTrack(ctx, ac); trk == nil || trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+	if trk := sp.getTrack(ctx, ac); trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
 		return nil, false
 	}
 
@@ -1325,14 +1324,6 @@ func (sp *STARSPane) getLeaderLineDirection(ac *av.Aircraft, ctx *panes.Context)
 	ps := sp.currentPrefs()
 	state := sp.Aircraft[ac.Callsign]
 	trk := sp.getTrack(ctx, ac)
-
-	if trk == nil {
-		if state.LeaderLineDirection != nil {
-			return *state.LeaderLineDirection
-		} else {
-			return math.CardinalOrdinalDirection(math.North)
-		}
-	}
 
 	if state.UseGlobalLeaderLine {
 		return *state.GlobalLeaderLineDirection

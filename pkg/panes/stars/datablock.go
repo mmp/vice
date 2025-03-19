@@ -329,7 +329,7 @@ func fieldEmpty(f []dbChar) bool {
 func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) DatablockType {
 	trk := sp.getTrack(ctx, ac)
 
-	if trk == nil || trk.TrackOwner == "" {
+	if trk.TrackOwner == "" {
 		// Must be limited, regardless of anything else.
 		return LimitedDatablock
 	} else {
@@ -890,7 +890,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if trk != nil && trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+		if trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
@@ -957,10 +957,10 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 
 	af := sp.currentPrefs().AltitudeFilters
 	alt := state.TrackAltitude()
-	if trk != nil && trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+	if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 		// For owned datablocks
 		return true
-	} else if trk != nil && trk.HandoffController == ctx.ControlClient.PrimaryTCP {
+	} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP {
 		// For receiving handoffs
 		return true
 	} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
@@ -982,22 +982,22 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		return true
 	} else if sp.isQuicklooked(ctx, ac) {
 		return true
-	} else if trk != nil && trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+	} else if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
 		// Redirected to
 		return true
-	} else if trk != nil && slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+	} else if slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
 		// Had it but redirected it
 		return true
 	} else if ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode {
 		// beacon code display 6-117
 		return true
-	} else if ac.Mode == av.Standby && (trk == nil || trk.TrackOwner == "") {
+	} else if ac.Mode == av.Standby && trk.TrackOwner == "" {
 		// unassociated also primary only, only show a datablock if it's been slewed
 		return ctx.Now.Before(state.FullLDBEndTime)
 	}
 
 	// Check altitude filters
-	if trk == nil || trk.TrackOwner == "" {
+	if trk.TrackOwner == "" {
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 	} else {
 		return alt >= af.Associated[0] && alt <= af.Associated[1]
