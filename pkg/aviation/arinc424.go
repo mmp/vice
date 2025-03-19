@@ -115,7 +115,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 
 	// returns array of ssaRecords for all lines starting at the given one
 	// that are airport records with the same subsection.
-	matchingSSARecs := func(line []byte) []ssaRecord {
+	matchingSSARecs := func(line []byte, recs []ssaRecord) []ssaRecord {
 		// icao := string(line[6:10])
 		id := strings.TrimSpace(string(line[13:19]))
 		subsec := line[12]
@@ -126,7 +126,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 			printColumnHeader()
 		}
 
-		var recs []ssaRecord
+		recs = recs[:0]
 		for {
 			if log {
 				fmt.Printf("%s", string(line))
@@ -144,6 +144,11 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 		}
 		return recs
 	}
+
+	// Keep this allocation live so that we can reuse it rather than
+	// putting a bunch of pressure on the garbage collector by doing lots
+	// of ssaRecord allocations during parsing.
+	var recs []ssaRecord
 
 	for {
 		line := getline()
@@ -280,7 +285,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 			case 'D': // SID 4.1.9
 
 			case 'E': // STAR 4.1.9
-				recs := matchingSSARecs(line)
+				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 				if star := parseSTAR(recs); star != nil {
 					if airports[icao].STARs == nil {
@@ -296,7 +301,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 				}
 
 			case 'F': // Approach 4.1.9
-				recs := matchingSSARecs(line)
+				recs = matchingSSARecs(line, recs)
 
 				if appr := parseApproach(recs); appr != nil {
 					// Note: database.Airports isn't initialized yet but
