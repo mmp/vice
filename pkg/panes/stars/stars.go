@@ -712,9 +712,14 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)
-	sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
+
 	if ctx.Mouse != nil {
-		sp.drawMouseCursor(ctx, scopeExtent, transforms, cb)
+		// Is the mouse over the DCB or over the regular STARS scope? Note that
+		// we need to offset the mouse position to be w.r.t. window coordinates
+		// to match scopeExtent.
+		mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
+		sp.consumeMouseEvents(ctx, ghosts, mouseOverDCB, transforms, cb)
+		sp.drawMouseCursor(ctx, mouseOverDCB, transforms, cb)
 	}
 	sp.handleCapture(ctx, transforms, cb)
 
@@ -1079,15 +1084,11 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransfo
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, scopeExtent math.Extent2D, transforms ScopeTransformations,
+func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	// Is the mouse over the DCB or over the regular STARS scope? Note that
-	// we need to offset the mouse position to be w.r.t. window coordinates
-	// to match scopeExtent.
-	mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
 	if mouseOverDCB {
 		return
 	}

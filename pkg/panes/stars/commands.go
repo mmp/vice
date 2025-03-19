@@ -3725,7 +3725,7 @@ func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection
 	}
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAircraft,
+func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAircraft, mouseOverDCB bool,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	if ctx.Mouse == nil {
 		return
@@ -3815,7 +3815,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
 		}
-		if sp.scopeClickHandler == nil {
+		if sp.scopeClickHandler == nil && !mouseOverDCB {
 			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
 		}
 
