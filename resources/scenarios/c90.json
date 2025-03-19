@@ -1533,7 +1533,8 @@
                 "EBAKE": "East"
             },
             "tower_list": 3,
-            "hold_for_release": true
+            "hold_for_release": true,
+            "vfr": { "random_routes": { "rate": 15 } }
         },
         "KARR": {
             "approaches": {
@@ -1744,7 +1745,8 @@
                 "SIMMN": "West"
             },
             "tower_list": 4,
-            "hold_for_release": true
+            "hold_for_release": true,
+            "vfr": { "random_routes": { "rate": 7 } }
         },
         "KDPA": {
             "approaches": {
@@ -2068,7 +2070,8 @@
                 "SIMMN": "West"
             },
             "tower_list": 5,
-            "hold_for_release": true
+            "hold_for_release": true,
+            "vfr": { "random_routes": { "rate": 7 } }
         },
         "KLOT": {
             "approaches": {
@@ -2400,7 +2403,8 @@
                         "SIMMN": "West"
                     },
                     "tower_list": 6,
-                    "hold_for_release": true
+                    "hold_for_release": true,
+                    "vfr": { "random_routes": { "rate": 7 } }
         },
         "KGYY": {
             "approaches": {
@@ -2618,8 +2622,120 @@
                         "SIMMN": "West"
                     },
                     "tower_list": 7,
-                    "hold_for_release": true
-        }
+                    "hold_for_release": true,
+                    "vfr": { "random_routes": { "rate": 7 } }
+        },
+                    "KUGN": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KBUU": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "06C": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "C89": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KENW": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KETB": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KSBM": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KRWN": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KMGC": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KPPO": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KOXI": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KEKM": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KBEH": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "C97": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KJOT": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KIGQ": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "3HO": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KRPJ": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KRFD": {
+                        "vfr": { "random_routes": { "rate": 25 } }
+                        },
+                        "KFET": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KJVL": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KVYS": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KFEP": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KEFT": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KDTG": {
+                        "vfr": { "random_routes": { "rate": 3 } }
+                        },
+                        "KRAC": {
+                            "vfr": { "random_routes": { "rate": 3 } }
+                            },
+                            "KUES": {
+                                "vfr": { "random_routes": { "rate": 10 } }
+                                },
+                                "KMWC": {
+                                    "vfr": { "random_routes": { "rate": 15 } }
+                                    },
+                                    "05C": {
+                                        "vfr": { "random_routes": { "rate": 15 } }
+                                        },
+                                        "1C5": {
+                                            "vfr": { "random_routes": { "rate": 15 } }
+                                            },
+                                            "KPNT": {
+                                                "vfr": { "random_routes": { "rate": 8 } }
+                                                },
+                                                "KIKK": {
+                                                    "vfr": { "random_routes": { "rate": 8 } }
+                                                    },
+                                                    "KRZL": {
+                                                        "vfr": { "random_routes": { "rate": 8 } }
+                                                        },
+                                                        "02C": {
+                                                            "vfr": { "random_routes": { "rate": 8 } }
+                                                            },
+                                                            "KUNU": {
+                                                                "vfr": { "random_routes": { "rate": 8 } }
+                                                                },
+                                                                "KRYV": {
+                                                                    "vfr": { "random_routes": { "rate": 8 } }
+                                                                    },
+                                                                    "61C": {
+                                                                        "vfr": { "random_routes": { "rate": 8 } }
+                                                                        }
         },
         "airspace": {
             "boundaries": {
@@ -3202,7 +3318,7 @@
                         "upper": 15000
                     }
                 ],
-                "CHI_F_APPW": [
+                "FW": [
                     {
                         "boundaries": [
                             "CHIFAPPW080"
@@ -3225,7 +3341,7 @@
                         "upper": 5000
                     }
                 ],
-                "CHI_F_APPE": [
+                "FE": [
                     {
                         "boundaries": [
                             "CHIFAPPE080"
@@ -3248,7 +3364,7 @@
                         "upper": 5000
                     }
                 ],
-                "CHI_Z_APPW": [
+                "ZW": [
                     {
                         "boundaries": [
                             "CHIZAPPW110120"
@@ -3278,7 +3394,7 @@
                         "upper": 11000
                     }
                 ],
-                "CHI_W_APPW": [
+                "WW": [
                     {
                         "boundaries": [
                             "CHIWAPPW080"
@@ -3387,7 +3503,7 @@
                         "upper": 15000
                     }
                 ],
-                "CHI_S_APP_31C_22L_4R": [
+                "SSAT Sector 1 (S)_31C_22L_4R": [
                     {
                         "boundaries": [
                             "SSAT_31C_22L_4R"
@@ -3405,7 +3521,7 @@
                         "upper": 15000
                     }
                 ],
-                "CHI_S_APP_13C": [
+                "SSAT Sector 1 (S)_13C": [
                     {
                         "boundaries": [
                             "SSAT_13C"
@@ -3479,7 +3595,7 @@
                         ]
                     },
                     "initial_altitude": 20000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 280,
                     "star": "BENKY6",
                     "runway_waypoints": {
@@ -3556,7 +3672,7 @@
                         ]
                     },
                     "initial_altitude": 27000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 280,
                     "star": "TRTLL6",
                     "runway_waypoints": {
@@ -3635,7 +3751,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I8C",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_X_APP",
+                    "initial_controller": "PLANO (X)",
                     "initial_speed" : 250,
                     "speed_restriction": 210,
                     "star": "BENKY6",
@@ -3690,7 +3806,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 250,
                     "star": "ENDEE6.OHHMY",
                     "runway_waypoints": {
@@ -3749,7 +3865,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 250,
                     "star": "ENDEE6.JALAP",
                     "runway_waypoints": {
@@ -3808,7 +3924,7 @@
                         ]
                     },
                     "initial_altitude": 31000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 250,
                     "star": "ENDEE6.IRK",
                     "runway_waypoints": {
@@ -3867,7 +3983,7 @@
                         ]
                     },
                     "initial_altitude": 31000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 250,
                     "star": "ENDEE6.MAGOO",
                     "runway_waypoints": {
@@ -3926,7 +4042,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed" : 250,
                     "star": "ENDEE6.PHEEB",
                     "runway_waypoints": {
@@ -3959,7 +4075,7 @@
                         ]
                     },
                     "initial_altitude": 14000,
-                    "initial_controller": "MKE_E_APP",
+                    "initial_controller": "Milwaukee East Approach",
                     "initial_speed": 280,
                     "star": "ERNNY8",
                     "runway_waypoints": {
@@ -4119,7 +4235,7 @@
                     "cruise_altitude": 32000,
                     "expect_approach": "I7C",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_J_APP",
+                    "initial_controller": "KUBBS (J)",
                     "initial_speed": 250,
                     "speed_restriction": 250,
                     "star": "ERNNY8",
@@ -4175,7 +4291,7 @@
                         ]
                     },
                     "initial_altitude": 18000,
-                    "initial_controller": "SBN_N_APP",
+                    "initial_controller": "Southbend North Approach",
                     "initial_speed": 250,
                     "star": "FISSK6",
                     "runway_waypoints": {
@@ -4227,7 +4343,7 @@
                         ]
                     },
                     "initial_altitude": 13000,
-                    "initial_controller": "SBN_N_APP",
+                    "initial_controller": "Southbend North Approach",
                     "initial_speed": 250,
                     "star": "PANGG5",
                     "runway_waypoints": {
@@ -4300,7 +4416,7 @@
                         ]
                     },
                     "initial_altitude": 21000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 280,
                     "star": "FYTTE7",
                     "runway_waypoints": {
@@ -4383,7 +4499,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7R",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_Y_APP",
+                    "initial_controller": "FARMM (Y)",
                     "initial_speed": 250,
                     "speed_restriction": 220,
                     "star": "FYTTE7",
@@ -4451,7 +4567,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I9L",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_Y_APP",
+                    "initial_controller": "FARMM (Y)",
                     "initial_speed": 250,
                     "speed_restriction": 220,
                     "star": "FYTTE7",
@@ -4478,7 +4594,7 @@
                         ]
                     },
                     "initial_altitude": 14000,
-                    "initial_controller": "MKE_E_APP",
+                    "initial_controller": "Milwaukee East Approach",
                     "initial_speed": 280,
                     "star": "MADII7",
                     "runway_waypoints": {
@@ -4550,7 +4666,7 @@
                         ]
                     },
                     "initial_altitude": 27000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 280,
                     "star": "SHAIN2",
                     "speed_restriction": 250,
@@ -4612,7 +4728,7 @@
                         ]
                     },
                     "initial_altitude": 13000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 280,
                     "star": "VEECK5",
                     "runway_waypoints": {
@@ -4693,7 +4809,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I8C",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_E_APP",
+                    "initial_controller": "OKK (E)",
                     "initial_speed": 250,
                     "speed_restriction": 210,
                     "star": "VEECK5",
@@ -4768,7 +4884,7 @@
                         ]
                     },
                         "initial_altitude": 16000,
-                        "initial_controller": "CHI_81_CTR",
+                        "initial_controller": "Chicago Center (Sector 81)",
                         "initial_speed": 280,
                         "star": "WATSN4",
                         "speed_restriction": 250,
@@ -4897,7 +5013,7 @@
                         ]
                     },
                     "initial_altitude": 26000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 280,
                     "star": "WYNDE2",
                     "runway_waypoints": {
@@ -5115,7 +5231,7 @@
                         ]
                     },
                     "initial_altitude": 4000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "FIYER",
                     "runway_waypoints": {
@@ -5322,7 +5438,7 @@
                         ]
                     },
                     "initial_altitude": 5000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "KRENA",
                     "runway_waypoints": {
@@ -5529,7 +5645,7 @@
                         ]
                     },
                     "initial_altitude": 6000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "KRENA",
                     "runway_waypoints": {
@@ -5749,7 +5865,7 @@
                         ]
                     },
                     "initial_altitude": 5000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "MOTIF",
                     "runway_waypoints": {
@@ -5805,7 +5921,7 @@
                         ]
                     },
                     "initial_altitude": 5000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "MOTIF",
                     "runway_waypoints": {
@@ -5863,7 +5979,7 @@
                         ]
                     },
                     "initial_altitude": 11000,
-                    "initial_controller": "SBN_N_APP",
+                    "initial_controller": "Southbend North Approach",
                     "initial_speed": 250,
                     "star": "GSH9",
                     "speed_restriction": 250,
@@ -5913,7 +6029,7 @@
                         ]
                     },
                     "initial_altitude": 11000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -5961,7 +6077,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6009,7 +6125,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6057,7 +6173,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "CHI_81_CTR",
+                    "initial_controller": "Chicago Center (Sector 81)",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6066,7 +6182,7 @@
             }
         },
         "control_positions": {
-            "CHI_Z_APP": {
+            "Z": {
                 "frequency": 119000,
                 "radio_name": "Chicago Approach",
                 "scope_char": "Z",
@@ -6074,56 +6190,56 @@
                 "facility": "C90",
                 "default_airport": "KORD"
             },
-            "CHI_W_APP": {
+            "W": {
                 "frequency": 133625,
                 "radio_name": "Chicago Approach",
                 "scope_char": "W",
                 "facility": "C90",
                 "sector_id": "1W"
             },
-            "CHI_F_APP": {
+            "F": {
                 "frequency": 124350,
                 "radio_name": "Chicago Approach",
                 "scope_char": "F",
                 "facility": "C90",
                 "sector_id": "1F"
             },
-            "CHI_H_APP": {
+            "H": {
                 "frequency": 132175,
                 "radio_name": "Chicago Approach",
                 "scope_char": "H",
                 "facility": "C90",
                 "sector_id": "1H"
             },
-            "CHI_X_APP": {
+            "PLANO (X)": {
                 "frequency": 135075,
                 "radio_name": "Chicago Approach",
                 "scope_char": "X",
                 "facility": "C90",
                 "sector_id": "1X"
             },
-            "CHI_J_APP": {
+            "KUBBS (J)": {
                 "frequency": 134625,
                 "radio_name": "Chicago Approach",
                 "scope_char": "J",
                 "facility": "C90",
                 "sector_id": "1J"
             },
-            "CHI_E_APP": {
+            "OKK (E)": {
                 "frequency": 135025,
                 "radio_name": "Chicago Approach",
                 "scope_char": "E",
                 "facility": "C90",
                 "sector_id": "1E"
             },
-            "CHI_Y_APP": {
+            "FARMM (Y)": {
                 "frequency": 135025,
                 "radio_name": "Chicago Approach",
                 "scope_char": "Y",
                 "facility": "C90",
                 "sector_id": "1Y"
             },
-            "CHI_S_APP": {
+            "SSAT Sector 1 (S)": {
                 "frequency": 128200,
                 "radio_name": "Chicago Approach",
                 "scope_char": "S",
@@ -6131,63 +6247,63 @@
                 "facility": "C90",
                 "default_airport": "KMDW"
             },
-            "CHI_P_APP": {
+            "SSAT Sector 2 (P)": {
                 "frequency": 119350,
                 "radio_name": "Chicago Approach",
                 "scope_char": "P",
                 "facility": "C90",
                 "sector_id": "1P"
             },
-            "CHI_L_APP": {
+            "SSAT Sector 3 (L)": {
                 "frequency": 133500,
                 "radio_name": "Chicago Approach",
                 "scope_char": "L",
                 "facility": "C90",
                 "sector_id": "1L"
             },
-            "CHI_U_APP": {
+            "SSAT Sector 4 (U)": {
                 "frequency": 127875,
                 "radio_name": "Chicago Approach",
                 "scope_char": "U",
                 "facility": "C90",
                 "sector_id": "1U"
             },
-            "CHI_B_DEP": {
+            "East Departure (B)": {
                 "frequency": 125000,
                 "radio_name": "Chicago Departure",
                 "scope_char": "B",
                 "facility": "C90",
                 "sector_id": "1B"
             },
-            "CHI_M_DEP": {
+            "South Departure (M)": {
                 "frequency": 126625,
                 "radio_name": "Chicago Departure",
                 "scope_char": "M",
                 "facility": "C90",
                 "sector_id": "1M"
             },
-            "CHI_G_DEP": {
+            "West Departure (G)": {
                 "frequency": 135275,
                 "radio_name": "Chicago Departure",
                 "scope_char": "G",
                 "facility": "C90",
                 "sector_id": "1G"
             },
-            "CHI_D_DEP": {
+            "North Departure (D)": {
                 "frequency": 134400,
                 "radio_name": "Chicago Departure",
                 "scope_char": "D",
                 "facility": "C90",
                 "sector_id": "1D"
             },
-            "CHI_A_APP": {
+            "North Satellite (A)": {
                 "frequency": 120555,
                 "radio_name": "Chicago Approach",
                 "scope_char": "A",
                 "facility": "C90",
                 "sector_id": "1A"
             },
-            "CHI_81_CTR": {
+            "Chicago Center (Sector 81)": {
                 "frequency": 120350,
                 "radio_name": "Chicago Center",
                 "facility_id": "C",
@@ -6196,77 +6312,77 @@
                 "facility": "ZAU",
                 "sector_id": "C81"
             },
-            "ORD_S_TWR": {
+            "O'Hare South Tower": {
                 "frequency": 120750,
                 "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "SLC"
             },
-            "ORD_N_TWR": {
+            "O'Hare North Tower": {
                 "frequency": 126900,
                 "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "NLC"
             },
-            "ORD_C_TWR": {
+            "O'Hare Center Tower": {
                 "frequency": 132700,
                 "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "3LC"
             },
-            "ORD_NN_TWR": {
+            "O'Hare North North Tower": {
                 "frequency": 128150,
                 "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "LCN"
             },
-            "ORD_SS_TWR": {
+            "O'Hare South South Tower": {
                 "frequency": 133000,
                 "radio_name": "O'Hare Tower",
                 "scope_char": "T",
                 "facility": "C90",
                 "sector_id": "LCS"
             },
-            "MDW_TWR": {
+            "Midway Tower": {
                 "frequency": 135200,
                 "radio_name": "Midway Tower",
                 "scope_char": "R",
                 "facility": "C90",
                 "sector_id": "MLC"
             },
-            "PWK_TWR": {
+            "Executive Tower": {
                 "frequency": 119900,
                 "radio_name": "Executive Tower",
                 "scope_char": "6",
                 "facility": "C90",
                 "sector_id": "16"
             },
-            "DPA_TWR": {
+            "DuPage Tower": {
                 "frequency": 120900,
                 "radio_name": "Dupage Tower",
                 "scope_char": "7",
                 "facility": "C90",
                 "sector_id": "17"
             },
-            "ARR_TWR": {
+            "Aurora Tower": {
                 "frequency": 120600,
                 "radio_name": "Aurora Tower",
                 "scope_char": "8",
                 "facility": "C90",
                 "sector_id": "18"
             },
-            "LOT_TWR": {
+            "Lewis Tower": {
                 "frequency": 134800,
                 "radio_name": "Lewis Tower",
                 "scope_char": "5",
                 "facility": "C90",
                 "sector_id": "15"
             },
-            "MKE_E_APP": {
+            "Milwaukee East Approach": {
                 "frequency": 118000,
                 "radio_name": "Milwaukee approach",
                 "scope_char": "1",
@@ -6274,7 +6390,7 @@
                 "facility_id": "1",
                 "facility": "MKE"
             },
-            "RFD_E_APP": {
+            "Rockford East Approach": {
                 "frequency": 121000,
                 "radio_name": "Rockford approach",
                 "scope_char": "3",
@@ -6282,7 +6398,7 @@
                 "facility_id": "3",
                 "facility": "RFD"
             },
-            "SBN_N_APP": {
+            "Southbend North Approach": {
                 "frequency": 118550,
                 "radio_name": "Southbend approach",
                 "scope_char": "2",
@@ -6290,7 +6406,7 @@
                 "facility_id": "2",
                 "facility": "SBN"
             },
-            "GYY_TWR": {
+            "Gary Tower": {
                 "frequency": 125600,
                 "radio_name": "Gary Tower",
                 "scope_char": "G",
@@ -6337,23 +6453,23 @@
         "scenarios": {
             "KORD West": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -6392,32 +6508,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -6466,23 +6582,23 @@
             },
             "KORD West KMDW 31C": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -6531,32 +6647,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -6610,23 +6726,23 @@
             },
             "KORD West KMDW 31C KPWK 16": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -6688,33 +6804,33 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -6792,23 +6908,23 @@
             },
             "KORD West KMDW 31C + Satellites": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -6903,36 +7019,36 @@
                         "KGYY": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6", "MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR",
-                    "DPA_TWR",
-                    "LOT_TWR",
-                    "ARR_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower",
+                    "DuPage Tower",
+                    "Lewis Tower",
+                    "Aurora Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -7058,23 +7174,23 @@
             },
             "KORD West KMDW 22L + Satellites": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -7177,36 +7293,36 @@
                         "KGYY": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KGYY"], "arrivals": ["FISSK6/PANGG5","LUCIT2","GSH9"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KGYY"], "arrivals": ["FISSK6/PANGG5","LUCIT2","GSH9"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6", "MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR",
-                    "DPA_TWR",
-                    "LOT_TWR",
-                    "ARR_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower",
+                    "DuPage Tower",
+                    "Lewis Tower",
+                    "Aurora Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -7344,23 +7460,23 @@
             },
             "KORD West KPWK 16": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -7412,33 +7528,33 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -7511,23 +7627,23 @@
             },
             "KORD West KMDW 22L": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -7576,32 +7692,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -7656,23 +7772,23 @@
 
             "KORD 4's A Pair": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -7700,32 +7816,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z"},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -7762,23 +7878,23 @@
             },
             "KORD 4's A Pair KMDW 4R": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -7816,32 +7932,32 @@
                         "KMDW": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z"},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -7883,23 +7999,23 @@
             },
             "KORD 4's A Pair KMDW 4R PWK 16": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -7950,32 +8066,32 @@
                         "KPWK": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"], "departures": ["KPWK"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"], "departures": ["KPWK"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z"},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -8022,23 +8138,23 @@
             },
             "KORD 4's A Pair KMDW 4R + Satellites": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -8122,32 +8238,32 @@
                         "KGYY": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"], "departures": ["KPWK"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["BENKY6", "TRTLL6"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"], "departures": ["KPWK"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z"},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6", "MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -8243,23 +8359,23 @@
 
             "KORD 22's A Pair": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -8291,32 +8407,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WYNDE2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP"},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["WYNDE2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)"},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -8353,23 +8469,23 @@
             },
             "KORD 22's A Pair KMDW 22L": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -8411,32 +8527,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WYNDE2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"],"backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP"},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["WYNDE2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"],"backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)"},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -8478,23 +8594,23 @@
             },
             "KORD 22's A Pair KMDW 22L KPWK 16": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -8549,32 +8665,32 @@
                         "KMDW": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WYNDE2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP"},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WYNDE2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)"},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -8640,23 +8756,23 @@
             },
             "KORD 22's A Pair KMDW 22L + Satellites": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -8752,32 +8868,32 @@
                         "KGYY": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WYNDE2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP"},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "MADII7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KGYY"], "arrivals": ["FISSK6/PANGG5","LUCIT2","GSH9"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WYNDE2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)"},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "MADII7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KGYY"], "arrivals": ["FISSK6/PANGG5","LUCIT2","GSH9"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6", "MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -8904,23 +9020,23 @@
             
             "KORD East": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPE" ],
-                "CHI_B_DEP": [ "CHI_APPE" ],
-                "CHI_F_APP": [ "CHI_APPE" ],
-                "CHI_W_APP": [ "CHI_APPE" ],
-                "CHI_H_APP": [ "CHI_APPE" ],
-                "CHI_D_DEP": [ "CHI_APPE" ],
-                "CHI_A_APP": [ "CHI_APPE" ],
-                "CHI_M_DEP": [ "CHI_APPE" ],
-                "CHI_G_DEP": [ "CHI_APPE" ],
-                "CHI_X_APP": [ "CHI_APPE" ],
-                "CHI_E_APP": [ "CHI_APPE" ],
-                "CHI_J_APP": [ "CHI_APPE" ],
-                "CHI_Y_APP": [ "CHI_APPE" ],
-                "CHI_S_APP": [ "CHI_APPE" ],
-                "CHI_U_APP": [ "CHI_APPE" ],
-                "CHI_P_APP": [ "CHI_APPE" ],
-                "CHI_L_APP": [ "CHI_APPE" ]
+                "Z": [ "CHI_APPE" ],
+                "East Departure (B)": [ "CHI_APPE" ],
+                "F": [ "CHI_APPE" ],
+                "W": [ "CHI_APPE" ],
+                "H": [ "CHI_APPE" ],
+                "North Departure (D)": [ "CHI_APPE" ],
+                "North Satellite (A)": [ "CHI_APPE" ],
+                "South Departure (M)": [ "CHI_APPE" ],
+                "West Departure (G)": [ "CHI_APPE" ],
+                "PLANO (X)": [ "CHI_APPE" ],
+                "OKK (E)": [ "CHI_APPE" ],
+                "KUBBS (J)": [ "CHI_APPE" ],
+                "FARMM (Y)": [ "CHI_APPE" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPE" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPE" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPE" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPE" ]
               },
                 "arrival_runways": [
                     {
@@ -8959,32 +9075,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["SHAIN2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -9032,23 +9148,23 @@
             },
             "KORD East KMDW 4R": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPE" ],
-                "CHI_B_DEP": [ "CHI_APPE" ],
-                "CHI_F_APP": [ "CHI_APPE" ],
-                "CHI_W_APP": [ "CHI_APPE" ],
-                "CHI_H_APP": [ "CHI_APPE" ],
-                "CHI_D_DEP": [ "CHI_APPE" ],
-                "CHI_A_APP": [ "CHI_APPE" ],
-                "CHI_M_DEP": [ "CHI_APPE" ],
-                "CHI_G_DEP": [ "CHI_APPE" ],
-                "CHI_X_APP": [ "CHI_APPE" ],
-                "CHI_E_APP": [ "CHI_APPE" ],
-                "CHI_J_APP": [ "CHI_APPE" ],
-                "CHI_Y_APP": [ "CHI_APPE" ],
-                "CHI_S_APP": [ "CHI_APPE" ],
-                "CHI_U_APP": [ "CHI_APPE" ],
-                "CHI_P_APP": [ "CHI_APPE" ],
-                "CHI_L_APP": [ "CHI_APPE" ]
+                "Z": [ "CHI_APPE" ],
+                "East Departure (B)": [ "CHI_APPE" ],
+                "F": [ "CHI_APPE" ],
+                "W": [ "CHI_APPE" ],
+                "H": [ "CHI_APPE" ],
+                "North Departure (D)": [ "CHI_APPE" ],
+                "North Satellite (A)": [ "CHI_APPE" ],
+                "South Departure (M)": [ "CHI_APPE" ],
+                "West Departure (G)": [ "CHI_APPE" ],
+                "PLANO (X)": [ "CHI_APPE" ],
+                "OKK (E)": [ "CHI_APPE" ],
+                "KUBBS (J)": [ "CHI_APPE" ],
+                "FARMM (Y)": [ "CHI_APPE" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPE" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPE" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPE" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPE" ]
               },
                 "arrival_runways": [
                     {
@@ -9097,32 +9213,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP","arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["SHAIN2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)","arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -9175,23 +9291,23 @@
             },
             "KORD East KMDW 13C": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPE" ],
-                "CHI_B_DEP": [ "CHI_APPE" ],
-                "CHI_F_APP": [ "CHI_APPE" ],
-                "CHI_W_APP": [ "CHI_APPE" ],
-                "CHI_H_APP": [ "CHI_APPE" ],
-                "CHI_D_DEP": [ "CHI_APPE" ],
-                "CHI_A_APP": [ "CHI_APPE" ],
-                "CHI_M_DEP": [ "CHI_APPE" ],
-                "CHI_G_DEP": [ "CHI_APPE" ],
-                "CHI_X_APP": [ "CHI_APPE" ],
-                "CHI_E_APP": [ "CHI_APPE" ],
-                "CHI_J_APP": [ "CHI_APPE" ],
-                "CHI_Y_APP": [ "CHI_APPE" ],
-                "CHI_S_APP": [ "CHI_APPE" ],
-                "CHI_U_APP": [ "CHI_APPE" ],
-                "CHI_P_APP": [ "CHI_APPE" ],
-                "CHI_L_APP": [ "CHI_APPE" ]
+                "Z": [ "CHI_APPE" ],
+                "East Departure (B)": [ "CHI_APPE" ],
+                "F": [ "CHI_APPE" ],
+                "W": [ "CHI_APPE" ],
+                "H": [ "CHI_APPE" ],
+                "North Departure (D)": [ "CHI_APPE" ],
+                "North Satellite (A)": [ "CHI_APPE" ],
+                "South Departure (M)": [ "CHI_APPE" ],
+                "West Departure (G)": [ "CHI_APPE" ],
+                "PLANO (X)": [ "CHI_APPE" ],
+                "OKK (E)": [ "CHI_APPE" ],
+                "KUBBS (J)": [ "CHI_APPE" ],
+                "FARMM (Y)": [ "CHI_APPE" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPE" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPE" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPE" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPE" ]
               },
                 "arrival_runways": [
                     {
@@ -9240,32 +9356,32 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP"},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2", "ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "Z": {"primary": true, "arrivals": ["SHAIN2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)"},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2", "ERNNY8"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -9318,23 +9434,23 @@
             },
             "KORD East KMDW 4R + Satellites": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -9430,36 +9546,36 @@
                         "KGYY": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7", "ERNNY8"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["SHAIN2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7", "ERNNY8"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6", "MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR",
-                    "DPA_TWR",
-                    "LOT_TWR",
-                    "ARR_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower",
+                    "DuPage Tower",
+                    "Lewis Tower",
+                    "Aurora Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -9585,23 +9701,23 @@
             },
             "KORD East KMDW 13C + Satellites": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -9696,36 +9812,36 @@
                         "KGYY": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["WATSN4"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP", "departures": ["KMDW"]},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["ENDEE6", "MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["WATSN4"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)", "departures": ["KMDW"]},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FISSK6/PANGG5","GSH9","LUCIT2"],"departures": ["KGYY"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6", "MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR",
-                    "DPA_TWR",
-                    "LOT_TWR",
-                    "ARR_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower",
+                    "DuPage Tower",
+                    "Lewis Tower",
+                    "Aurora Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -9851,23 +9967,23 @@
             },
             "KORD East KPWK 16": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -9919,33 +10035,33 @@
                         "KORD": 10
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true, "arrivals": ["SHAIN2"]},
-                        "CHI_B_DEP": {"departures": ["KORD/ORD8.E"], "backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"departures": ["KORD/ORD8.S"], "backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"departures": ["KORD/ORD8.W"],"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP", "arrivals": ["BENKY6", "TRTLL6"]},
-                        "CHI_E_APP": {"backup": "CHI_X_APP", "arrivals": ["VEECK5"]},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP", "arrivals": ["WYNDE2","ERNNY8"]},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP", "arrivals": ["FYTTE7"]},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP"},
-                        "CHI_P_APP": {"backup": "CHI_S_APP"},
-                        "CHI_L_APP": {"backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true, "arrivals": ["SHAIN2"]},
+                        "East Departure (B)": {"departures": ["KORD/ORD8.E"], "backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK","KORD/ORD8.N"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"departures": ["KORD/ORD8.S"], "backup": "East Departure (B)"},
+                        "West Departure (G)": {"departures": ["KORD/ORD8.W"],"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z", "arrivals": ["BENKY6", "TRTLL6"]},
+                        "OKK (E)": {"backup": "PLANO (X)", "arrivals": ["VEECK5"]},
+                        "KUBBS (J)": {"backup": "FARMM (Y)", "arrivals": ["WYNDE2","ERNNY8"]},
+                        "FARMM (Y)": {"backup": "PLANO (X)", "arrivals": ["FYTTE7"]},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)"},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "ORD_S_TWR",
-                    "MDW_TWR",
-                    "PWK_TWR"
+                    "Chicago Center (Sector 81)",
+                    "O'Hare South Tower",
+                    "Midway Tower",
+                    "Executive Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -10018,10 +10134,10 @@
             },
             "KMDW 31C": {
               "airspace": {
-                "CHI_S_APP": [ "CHI_S_APP_31C_22L_4R" ],
-                "CHI_U_APP": [ "CHI_S_APP_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
-                "CHI_P_APP": [ "CHI_S_APP_31C_22L_4R" ],
-                "CHI_L_APP": [ "CHI_S_APP_31C_22L_4R" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31C_22L_4R" ]
               },
                     "arrival_runways": [
                         {
@@ -10038,20 +10154,20 @@
                             "KMDW": 10
                         }
                     },
-                    "solo_controller": "CHI_S_APP",
+                    "solo_controller": "SSAT Sector 1 (S)",
                     "multi_controllers": {
                         "default" : {
-                            "CHI_S_APP": {"primary": true},
-                            "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
-                            "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                            "CHI_L_APP": {"backup": "CHI_P_APP"}
+                            "SSAT Sector 1 (S)": {"primary": true},
+                            "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
+                            "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                            "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                         }
                     },
                     "controllers": [
-                        "CHI_81_CTR",
-                        "CHI_Z_APP",
-                        "ORD_S_TWR",
-                        "MDW_TWR"
+                        "Chicago Center (Sector 81)",
+                        "Z",
+                        "O'Hare South Tower",
+                        "Midway Tower"
                     ],
                     "default_maps": [ "C90 SSAT MDW 31C" ],
                     "departure_runways": [
@@ -10068,10 +10184,10 @@
             },
             "KMDW 4R": {
               "airspace": {
-                "CHI_S_APP": [ "CHI_S_APP_31C_22L_4R" ],
-                "CHI_U_APP": [ "CHI_S_APP_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
-                "CHI_P_APP": [ "CHI_S_APP_31C_22L_4R" ],
-                "CHI_L_APP": [ "CHI_S_APP_31C_22L_4R" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31C_22L_4R" ]
               },
               "arrival_runways": [
                     {
@@ -10087,20 +10203,20 @@
                         "KMDW": 10
                     }
                 },
-                "solo_controller": "CHI_S_APP",
+                "solo_controller": "SSAT Sector 1 (S)",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_S_APP": {"primary": true},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "SSAT Sector 1 (S)": {"primary": true},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_Z_APP",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "Z",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 SSAT MDW 4R" ],
                 "departure_runways": [
@@ -10117,10 +10233,10 @@
             },
             "KMDW 13C": {
               "airspace": {
-                "CHI_S_APP": [ "CHI_S_APP_13C" ],
-                "CHI_U_APP": [ "CHI_S_APP_13C", "CHI_S_DEP_13C" ],
-                "CHI_P_APP": [ "CHI_S_APP_13C" ],
-                "CHI_L_APP": [ "CHI_S_APP_13C" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_13C" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_13C", "CHI_S_DEP_13C" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_13C" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_13C" ]
               },
                 "arrival_runways": [
                     {
@@ -10136,20 +10252,20 @@
                         "KMDW": 10
                     }
                 },
-                "solo_controller": "CHI_S_APP",
+                "solo_controller": "SSAT Sector 1 (S)",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_S_APP": {"primary": true},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "SSAT Sector 1 (S)": {"primary": true},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_Z_APP",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "Z",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 SSAT MDW 13C" ],
                 "departure_runways": [
@@ -10166,10 +10282,10 @@
             },
             "KMDW 22L": {
               "airspace": {
-                "CHI_S_APP": [ "CHI_S_APP_31C_22L_4R" ],
-                "CHI_U_APP": [ "CHI_S_APP_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
-                "CHI_P_APP": [ "CHI_S_APP_31C_22L_4R" ],
-                "CHI_L_APP": [ "CHI_S_APP_31C_22L_4R" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31C_22L_4R" ]
               },
                 "arrival_runways": [
                     {
@@ -10185,20 +10301,20 @@
                         "KMDW": 10
                     }
                 },
-                "solo_controller": "CHI_S_APP",
+                "solo_controller": "SSAT Sector 1 (S)",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_S_APP": {"primary": true},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
-                        "CHI_P_APP": {"backup": "CHI_S_APP", "arrivals": ["ENDEE6"]},
-                        "CHI_L_APP": {"backup": "CHI_P_APP"}
+                        "SSAT Sector 1 (S)": {"primary": true},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KMDW"], "arrivals": ["FISSK6/PANGG5"]},
+                        "SSAT Sector 2 (P)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["ENDEE6"]},
+                        "SSAT Sector 3 (L)": {"backup": "SSAT Sector 2 (P)"}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_Z_APP",
-                    "ORD_S_TWR",
-                    "MDW_TWR"
+                    "Chicago Center (Sector 81)",
+                    "Z",
+                    "O'Hare South Tower",
+                    "Midway Tower"
                 ],
                 "default_maps": [ "C90 SSAT MDW 22L" ],
                 "departure_runways": [
@@ -10215,7 +10331,7 @@
         },
             "KORD West North Final (F)": {
               "airspace": {
-                "CHI_F_APP": [ "CHI_F_APPW" ]
+                "F": [ "FW" ]
               },
                 "arrival_runways": [
                     {
@@ -10228,11 +10344,11 @@
                         "KORD": 30
                     }
                 },
-                "solo_controller": "CHI_F_APP",
+                "solo_controller": "F",
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_Y_APP",
-                    "ORD_S_TWR"
+                    "Chicago Center (Sector 81)",
+                    "FARMM (Y)",
+                    "O'Hare South Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "wind": {
@@ -10242,7 +10358,7 @@
             },
             "KORD East North Final (F)": {
               "airspace": {
-                "CHI_F_APP": [ "CHI_F_APPE" ]
+                "F": [ "FE" ]
               },
                 "arrival_runways": [
                     {
@@ -10255,11 +10371,11 @@
                         "KORD": 30
                     }
                 },
-                "solo_controller": "CHI_F_APP",
+                "solo_controller": "F",
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_Y_APP",
-                    "ORD_S_TWR"
+                    "Chicago Center (Sector 81)",
+                    "FARMM (Y)",
+                    "O'Hare South Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "wind": {
@@ -10269,7 +10385,7 @@
             },
             "KORD West Center Final (Z)": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_Z_APPW" ]
+                "Z": [ "ZW" ]
               },
                 "arrival_runways": [
                     {
@@ -10285,11 +10401,11 @@
                         "KORD": 15
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_J_APP",
-                    "ORD_S_TWR"
+                    "Chicago Center (Sector 81)",
+                    "KUBBS (J)",
+                    "O'Hare South Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "wind": {
@@ -10299,7 +10415,7 @@
             },
             "KORD West Final Combined": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_Z_APPW", "CHI_W_APPW", "CHI_F_APPW" ]
+                "Z": [ "ZW", "WW", "FW" ]
               },
                 "arrival_runways": [
                     {
@@ -10332,14 +10448,14 @@
                         "KORD": 15
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_J_APP",
-                    "ORD_S_TWR",
-                    "CHI_E_APP",
-                    "CHI_X_APP",
-                    "CHI_Y_APP"
+                    "Chicago Center (Sector 81)",
+                    "KUBBS (J)",
+                    "O'Hare South Tower",
+                    "OKK (E)",
+                    "PLANO (X)",
+                    "FARMM (Y)"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "wind": {
@@ -10349,7 +10465,7 @@
             },
             "KORD West South Final (W)": {
               "airspace": {
-                "CHI_W_APP": [ "CHI_W_APPW" ]
+                "W": [ "WW" ]
               },
                 "arrival_runways": [
                     {
@@ -10365,12 +10481,12 @@
                         "KORD": 20
                     }
                 },
-                "solo_controller": "CHI_W_APP",
+                "solo_controller": "W",
                 "controllers": [
-                    "CHI_81_CTR",
-                    "CHI_X_APP",
-                    "ORD_S_TWR",
-                    "CHI_E_APP"
+                    "Chicago Center (Sector 81)",
+                    "PLANO (X)",
+                    "O'Hare South Tower",
+                    "OKK (E)"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "wind": {
@@ -10380,23 +10496,23 @@
             },
             "Satellites Only": {
               "airspace": {
-                "CHI_Z_APP": [ "CHI_APPW" ],
-                "CHI_B_DEP": [ "CHI_APPW" ],
-                "CHI_F_APP": [ "CHI_APPW" ],
-                "CHI_W_APP": [ "CHI_APPW" ],
-                "CHI_H_APP": [ "CHI_APPW" ],
-                "CHI_D_DEP": [ "CHI_APPW" ],
-                "CHI_A_APP": [ "CHI_APPW" ],
-                "CHI_M_DEP": [ "CHI_APPW" ],
-                "CHI_G_DEP": [ "CHI_APPW" ],
-                "CHI_X_APP": [ "CHI_APPW" ],
-                "CHI_E_APP": [ "CHI_APPW" ],
-                "CHI_J_APP": [ "CHI_APPW" ],
-                "CHI_Y_APP": [ "CHI_APPW" ],
-                "CHI_S_APP": [ "CHI_APPW" ],
-                "CHI_U_APP": [ "CHI_APPW" ],
-                "CHI_P_APP": [ "CHI_APPW" ],
-                "CHI_L_APP": [ "CHI_APPW" ]
+                "Z": [ "CHI_APPW" ],
+                "East Departure (B)": [ "CHI_APPW" ],
+                "F": [ "CHI_APPW" ],
+                "W": [ "CHI_APPW" ],
+                "H": [ "CHI_APPW" ],
+                "North Departure (D)": [ "CHI_APPW" ],
+                "North Satellite (A)": [ "CHI_APPW" ],
+                "South Departure (M)": [ "CHI_APPW" ],
+                "West Departure (G)": [ "CHI_APPW" ],
+                "PLANO (X)": [ "CHI_APPW" ],
+                "OKK (E)": [ "CHI_APPW" ],
+                "KUBBS (J)": [ "CHI_APPW" ],
+                "FARMM (Y)": [ "CHI_APPW" ],
+                "SSAT Sector 1 (S)": [ "CHI_APPW" ],
+                "SSAT Sector 4 (U)": [ "CHI_APPW" ],
+                "SSAT Sector 2 (P)": [ "CHI_APPW" ],
+                "SSAT Sector 3 (L)": [ "CHI_APPW" ]
               },
                 "arrival_runways": [
                     {
@@ -10442,34 +10558,34 @@
                         "KLOT": 3
                     }
                 },
-                "solo_controller": "CHI_Z_APP",
+                "solo_controller": "Z",
                 "multi_controllers": {
                     "default" : {
-                        "CHI_Z_APP": {"primary": true},
-                        "CHI_B_DEP": {"backup": "CHI_Z_APP"},
-                        "CHI_F_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_W_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_H_APP": {"backup": "CHI_W_APP"},
-                        "CHI_D_DEP": {"departures": ["KPWK"], "backup": "CHI_B_DEP"},
-                        "CHI_A_APP": {"backup": "CHI_S_APP", "arrivals": ["FIYER", "KRENA"]},
-                        "CHI_M_DEP": {"backup": "CHI_B_DEP"},
-                        "CHI_G_DEP": {"backup": "CHI_M_DEP"},
-                        "CHI_X_APP": {"backup": "CHI_Z_APP"},
-                        "CHI_E_APP": {"backup": "CHI_X_APP"},
-                        "CHI_J_APP": {"backup": "CHI_Y_APP"},
-                        "CHI_Y_APP": {"backup": "CHI_X_APP"},
-                        "CHI_S_APP": {"backup": "CHI_B_DEP"},
-                        "CHI_U_APP": {"backup": "CHI_S_APP", "departures": ["KGYY"]},
-                        "CHI_P_APP": {"departures": ["KLOT"], "backup": "CHI_S_APP", "arrivals": ["MOTIF"]},
-                        "CHI_L_APP": {"departures": ["KDPA", "KARR"], "backup": "CHI_P_APP", "arrivals": ["PLANO"]}
+                        "Z": {"primary": true},
+                        "East Departure (B)": {"backup": "Z"},
+                        "F": {"backup": "Z"},
+                        "W": {"backup": "Z"},
+                        "H": {"backup": "W"},
+                        "North Departure (D)": {"departures": ["KPWK"], "backup": "East Departure (B)"},
+                        "North Satellite (A)": {"backup": "SSAT Sector 1 (S)", "arrivals": ["FIYER", "KRENA"]},
+                        "South Departure (M)": {"backup": "East Departure (B)"},
+                        "West Departure (G)": {"backup": "South Departure (M)"},
+                        "PLANO (X)": {"backup": "Z"},
+                        "OKK (E)": {"backup": "PLANO (X)"},
+                        "KUBBS (J)": {"backup": "FARMM (Y)"},
+                        "FARMM (Y)": {"backup": "PLANO (X)"},
+                        "SSAT Sector 1 (S)": {"backup": "East Departure (B)"},
+                        "SSAT Sector 4 (U)": {"backup": "SSAT Sector 1 (S)", "departures": ["KGYY"]},
+                        "SSAT Sector 2 (P)": {"departures": ["KLOT"], "backup": "SSAT Sector 1 (S)", "arrivals": ["MOTIF"]},
+                        "SSAT Sector 3 (L)": {"departures": ["KDPA", "KARR"], "backup": "SSAT Sector 2 (P)", "arrivals": ["PLANO"]}
                     }
                 },
                 "controllers": [
-                    "CHI_81_CTR",
-                    "PWK_TWR",
-                    "DPA_TWR",
-                    "LOT_TWR",
-                    "ARR_TWR"
+                    "Chicago Center (Sector 81)",
+                    "Executive Tower",
+                    "DuPage Tower",
+                    "Lewis Tower",
+                    "Aurora Tower"
                 ],
                 "default_maps": [ "C90 MAIN" ],
                 "departure_runways": [
@@ -10694,7 +10810,7 @@
             "airspace_awareness": [
                 {
                     "fixes": ["ALL"],
-                    "receiving_controller": "CHI_81_CTR"
+                    "receiving_controller": "Chicago Center (Sector 81)"
                 }
             ],
             "inhibit_ca_volumes": [
