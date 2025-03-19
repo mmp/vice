@@ -67,7 +67,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		input = input[1:]
 	}
 	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
-		sp.resetInputState()
+		sp.resetInputState(ctx)
 		sp.commandMode = CommandModeTargetGen
 		input = input[1:]
 	}
@@ -100,20 +100,20 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.drawRoutePoints = sp.drawRoutePoints[:n-1]
 			}
 		case platform.KeyEnd:
-			sp.resetInputState()
+			sp.resetInputState(ctx)
 			sp.commandMode = CommandModeMin
 		case platform.KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
 				sp.displayError(status.err, ctx)
 			} else {
 				if status.clear {
-					sp.resetInputState()
+					sp.resetInputState(ctx)
 				}
 				sp.previewAreaOutput = status.output
 			}
 		case platform.KeyEscape:
-			sp.resetInputState()
 			sp.activeDCBMenu = dcbMenuMain
+			sp.resetInputState(ctx)
 			// Also disable any mouse capture from spinners, just in case
 			// the user is mashing escape to get out of one.
 			sp.disableMenuSpinner(ctx)
@@ -130,7 +130,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			}
 			if ctx.Keyboard.WasPressed(platform.KeyShift) {
 				// Treat this as F13
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeReleaseDeparture
 			}
 		case platform.KeyF2:
@@ -139,7 +139,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 					sp.disableMenuSpinner(ctx)
 					sp.activeDCBMenu = dcbMenuMaps
 				}
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeMaps
 			}
 		case platform.KeyF3:
@@ -147,7 +147,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = dcbMenuBrite
 			} else {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeInitiateControl
 			}
 		case platform.KeyF4:
@@ -162,14 +162,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case platform.KeyF5:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = dcbMenuCharSize
+				sp.resetInputState(ctx)
 			} else {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeHandOff
 			}
 		case platform.KeyF6:
-			sp.resetInputState()
+			sp.resetInputState(ctx)
 			sp.commandMode = CommandModeFlightData
 		case platform.KeyF7:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
@@ -180,7 +180,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 					sp.activeDCBMenu = dcbMenuMain
 				}
 			} else {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeMultiFunc
 			}
 		case platform.KeyF8:
@@ -188,24 +188,24 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.disableMenuSpinner(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			} else {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeWX
 			}
 		case platform.KeyF9:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(makeRangeRingRadiusSpinner(&ps.RangeRingRadius))
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeRangeRings
 			} else {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeVFRPlan
 			}
 		case platform.KeyF10:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activateMenuSpinner(makeRadarRangeSpinner(&ps.Range))
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeRange
 			}
 		case platform.KeyF11:
@@ -213,25 +213,25 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = dcbMenuSite
 			} else {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 				sp.commandMode = CommandModeCollisionAlert
 			}
 		case platform.KeyF12:
-			sp.resetInputState()
+			sp.resetInputState(ctx)
 			sp.commandMode = CommandModeRestrictionArea
 			sp.wipRestrictionArea = nil
 		case platform.KeyF13:
-			sp.resetInputState()
+			sp.resetInputState(ctx)
 			sp.commandMode = CommandModeReleaseDeparture
 		case platform.KeyInsert:
 			if ps.DisplayDCB {
 				sp.disableMenuSpinner(ctx)
 				sp.activeDCBMenu = dcbMenuPref
 			}
-			sp.resetInputState()
+			sp.resetInputState(ctx)
 			sp.commandMode = CommandModePref
 		case platform.KeyTab:
-			sp.resetInputState()
+			sp.resetInputState(ctx)
 			sp.commandMode = CommandModeTargetGen
 		}
 	}
@@ -3823,7 +3823,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 			sp.displayError(status.err, ctx)
 		} else {
 			if status.clear {
-				sp.resetInputState()
+				sp.resetInputState(ctx)
 			}
 			sp.previewAreaOutput = status.output
 		}
@@ -3906,11 +3906,13 @@ func amendFlightPlan(ctx *panes.Context, callsign string, amend func(fp *av.Flig
 	}
 }
 
-func (sp *STARSPane) resetInputState() {
+func (sp *STARSPane) resetInputState(ctx *panes.Context) {
 	sp.previewAreaInput = ""
 	sp.previewAreaOutput = ""
 	sp.commandMode = CommandModeNone
 	sp.multiFuncPrefix = ""
+
+	sp.disableMenuSpinner(ctx)
 
 	sp.wipRBL = nil
 	sp.wipSignificantPoint = nil
