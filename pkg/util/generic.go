@@ -280,9 +280,9 @@ func InsertSliceElement[V any](s []V, i int, v V) []V {
 // MapSlice returns the slice that is the result of
 // applying the provided xform function to all the elements of the given slice.
 func MapSlice[F, T any](from []F, xform func(F) T) []T {
-	var to []T
-	for k := range from {
-		to = append(to, xform(from[k]))
+	to := make([]T, len(from))
+	for i := range from {
+		to[i] = xform(from[i])
 	}
 	return to
 }
