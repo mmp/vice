@@ -839,6 +839,7 @@ how it simulates aircraft or the STARS interface.
                     a new <code>.DRAWROUTE</code> command for drawing complex routes.</li>
                   <li>For "atpa_volumes", an optional string "id" may be given for the name of the volume in the STARS SSA INTRAIL list item.</li>
                   <li>Added "departure_runways_as_one" to airport definitions to allow treating groups of runways as a single unit for departure sequencing purposes.</li>
+                  <li>Added commands to set and clear scratchpads at fixes in routes (for virtual controllers).</li>
                 </ul>
               </li>
             </ul>
@@ -5135,28 +5136,36 @@ how it simulates aircraft or the STARS interface.
                   <li><i>alt</i>: cross at <i>alt</i>.</li>
                 </ul>
               </li>
-              <li> <code>/clearapp</code>: the aircraft will be cleared for the assigned approach passing the fix.
-              (This is intended for ambient traffic that's not under the control for a human.)</li>       
               <li> <code>/delete</code>: the aircraft will be deleted when it reaches the fix</li>
               <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
-              <li> <code>/ho</code>: the aircraft should be handed off from the virtual controller departs the fix.
-                A TCP id may be specified after <code>/ho</code>, in which case the aircraft is handed off to the
-                corresponding virtual controller. If no TCP id is specified, the aircraft is handed off to the
-                appropriate human controller.
-              </li>
               <li> <code>/iaf</code>: indicates that the fix is an IAF (initial approach fix)</li>
               <li> <code>/if</code>: indicates that the fix is the IF (intermediate fix)</li>
               <li> <code>/faf</code>: indicates that the fix is the FAF (final approach fix). This must be specified for one fix in each approach.</li>
               <li> <code>/flyover</code>: indicates that the fix is a <i>flyover</i> fix (as opposed to the
                 default, <i>fly-by</i>). Aircraft must pass directly over flyover
                 fixes before turning to the next fix, while they may turn early with fly-by fixes.</li>
+              <li> <code>/s</code><i>speed</i>: cross the fix at the given speed</li>
+            </ul>
+
+              (This is intended for ambient traffic that's not under the control for a human.)</li>       
+            <ul>
+              <li> <code>/clearapp</code>: the aircraft will be cleared for the assigned approach passing the fix.
+              <li> <code>/spsp</code><i>scratchpad</i>: sets the aircraft's primary scratchpad to the given value.</li>
+              <li> <code>/sssp</code><i>scratchpad</i>: sets the aircraft's secondary scratchpad to the given value.</li>
+              <li> <code>/ho</code>: the aircraft should be handed off from the virtual controller departs the fix.
+                A TCP id may be specified after <code>/ho</code>, in which case the aircraft is handed off to the
+                corresponding virtual controller. If no TCP id is specified, the aircraft is handed off to the
+                appropriate human controller.
+              </li>
               <li> <code>/po</code><i>TCP id</i>: when the aircraft passes the waypoint
                 and if it is under the control of a virtual controller,
                 issue a point out to the controller identified by the given TCP id (i.e., the
                 controller ID that would be used when doing a point out in STARS.)</li>
-              <li> <code>/s</code><i>speed</i>: cross the fix at the given speed</li>
+              <li> <code>/cpsp</code>: clears the aircraft's primary scratchpad</li>
+              <li> <code>/cssp</code>: clears the aircraft's secondary scratchpad</li>
             </ul>
-            <p>There are also some specifiers that can be used with VFR aircraft routes:</p>
+
+              <p>There are also some specifiers that can be used with VFR aircraft routes:</p>
             <ul>
               <li> <code>/airwork</code>: the aircraft should perform airwork
                 centered around the fix. An altitude restriction must be specified using <code>/a</code> to give an altitude
@@ -5167,6 +5176,7 @@ how it simulates aircraft or the STARS interface.
               <li> <code>/radius</code><i>num</i>: rather than flying precisely to the waypoint, the aircraft will fly to
                 a random point within <i>num</i> miles of the waypoint.</li>
             </ul>
+
             <p>If the aircraft should follow an arc leaving a
               fix, <code>/arc</code> can be given after the fix.
               It can be used in two ways:

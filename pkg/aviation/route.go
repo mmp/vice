@@ -24,28 +24,32 @@ import (
 // Waypoint
 
 type Waypoint struct {
-	Fix                 string               `json:"fix"`
-	Location            math.Point2LL        // not provided in scenario JSON; derived from fix
-	AltitudeRestriction *AltitudeRestriction `json:"altitude_restriction,omitempty"`
-	Speed               int                  `json:"speed,omitempty"`
-	Heading             int                  `json:"heading,omitempty"` // outbound heading after waypoint
-	ProcedureTurn       *ProcedureTurn       `json:"pt,omitempty"`
-	NoPT                bool                 `json:"nopt,omitempty"`
-	HumanHandoff        bool                 `json:"human_handoff"` // To named TCP.
-	TCPHandoff          string               `json:"tcp_handoff"`   // To named TCP.
-	PointOut            string               `json:"pointout,omitempty"`
-	ClearApproach       bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
-	FlyOver             bool                 `json:"flyover,omitempty"`
-	Delete              bool                 `json:"delete,omitempty"`
-	Land                bool                 `json:"land,omitempty"`
-	Arc                 *DMEArc              `json:"arc,omitempty"`
-	IAF, IF, FAF        bool                 // not provided in scenario JSON; derived from fix
-	Airway              string               // when parsing waypoints, this is set if we're on an airway after the fix
-	OnSID, OnSTAR       bool                 // set during deserialization
-	OnApproach          bool                 // set during deserialization
-	AirworkRadius       int                  // set during deserialization
-	AirworkMinutes      int                  // set during deserialization
-	Radius              float32
+	Fix                      string               `json:"fix"`
+	Location                 math.Point2LL        // not provided in scenario JSON; derived from fix
+	AltitudeRestriction      *AltitudeRestriction `json:"altitude_restriction,omitempty"`
+	Speed                    int                  `json:"speed,omitempty"`
+	Heading                  int                  `json:"heading,omitempty"` // outbound heading after waypoint
+	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
+	NoPT                     bool                 `json:"nopt,omitempty"`
+	HumanHandoff             bool                 `json:"human_handoff"` // To named TCP.
+	TCPHandoff               string               `json:"tcp_handoff"`   // To named TCP.
+	PointOut                 string               `json:"pointout,omitempty"`
+	ClearApproach            bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
+	FlyOver                  bool                 `json:"flyover,omitempty"`
+	Delete                   bool                 `json:"delete,omitempty"`
+	Land                     bool                 `json:"land,omitempty"`
+	Arc                      *DMEArc              `json:"arc,omitempty"`
+	IAF, IF, FAF             bool                 // not provided in scenario JSON; derived from fix
+	Airway                   string               // when parsing waypoints, this is set if we're on an airway after the fix
+	OnSID, OnSTAR            bool                 // set during deserialization
+	OnApproach               bool                 // set during deserialization
+	AirworkRadius            int                  // set during deserialization
+	AirworkMinutes           int                  // set during deserialization
+	Radius                   float32
+	PrimaryScratchpad        string
+	ClearPrimaryScratchpad   bool
+	SecondaryScratchpad      string
+	ClearSecondaryScratchpad bool
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -109,6 +113,18 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.OnApproach {
 		attrs = append(attrs, slog.Bool("on_approach", wp.OnApproach))
+	}
+	if wp.PrimaryScratchpad != "" {
+		attrs = append(attrs, slog.String("primary_scratchpad", wp.PrimaryScratchpad))
+	}
+	if wp.ClearPrimaryScratchpad {
+		attrs = append(attrs, slog.Bool("clear_primary_scratchpad", wp.ClearPrimaryScratchpad))
+	}
+	if wp.SecondaryScratchpad != "" {
+		attrs = append(attrs, slog.String("secondary_scratchpad", wp.SecondaryScratchpad))
+	}
+	if wp.ClearSecondaryScratchpad {
+		attrs = append(attrs, slog.Bool("clear_secondary_scratchpad", wp.ClearSecondaryScratchpad))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -222,9 +238,20 @@ func (wslice WaypointArray) Encode() string {
 		if w.Radius != 0 {
 			s += fmt.Sprintf("/radius%.1f", w.Radius)
 		}
+		if w.PrimaryScratchpad != "" {
+			s += "/spsp" + w.PrimaryScratchpad
+		}
+		if w.ClearPrimaryScratchpad {
+			s += "/cpsp"
+		}
+		if w.SecondaryScratchpad != "" {
+			s += "/sssp" + w.SecondaryScratchpad
+		}
+		if w.ClearSecondaryScratchpad {
+			s += "/cssp"
+		}
 
 		entries = append(entries, s)
-
 	}
 
 	return strings.Join(entries, " ")
@@ -680,6 +707,14 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					}
 				} else if len(f) > 2 && f[:2] == "po" {
 					wp.PointOut = f[2:]
+				} else if strings.HasPrefix(f, "spsp") {
+					wp.PrimaryScratchpad = f[4:]
+				} else if f == "cpsp" {
+					wp.ClearPrimaryScratchpad = true
+				} else if strings.HasPrefix(f, "sssp") {
+					wp.SecondaryScratchpad = f[4:]
+				} else if f == "cssp" {
+					wp.ClearSecondaryScratchpad = true
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
 					if wp.ProcedureTurn == nil {
 						wp.ProcedureTurn = &ProcedureTurn{}

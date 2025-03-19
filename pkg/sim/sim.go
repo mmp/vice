@@ -650,6 +650,23 @@ func (s *Sim) updateState() {
 					s.handoffTrack(ac.TrackingController, passedWaypoint.TCPHandoff, ac.Callsign)
 				}
 
+				// Update scratchpads if the waypoint has scratchpad commands
+				// Only update if aircraft is not controlled by a human
+				if !s.isActiveHumanController(ac.ControllingController) {
+					if passedWaypoint.PrimaryScratchpad != "" {
+						ac.Scratchpad = passedWaypoint.PrimaryScratchpad
+					}
+					if passedWaypoint.ClearPrimaryScratchpad {
+						ac.Scratchpad = ""
+					}
+					if passedWaypoint.SecondaryScratchpad != "" {
+						ac.SecondaryScratchpad = passedWaypoint.SecondaryScratchpad
+					}
+					if passedWaypoint.ClearSecondaryScratchpad {
+						ac.SecondaryScratchpad = ""
+					}
+				}
+
 				if passedWaypoint.PointOut != "" {
 					if ctrl, ok := s.State.Controllers[passedWaypoint.PointOut]; ok {
 						// Don't do the point out if a human is controlling the aircraft.
