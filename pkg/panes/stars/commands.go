@@ -1946,11 +1946,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 		// Filter out the ones that have been released and then deleted
 		// from the coordination list by the controller.
-		rel = util.FilterSlice(rel, func(ac *av.Aircraft) bool { return !sp.Aircraft[ac.Callsign].ReleaseDeleted })
+		rel = util.FilterSliceInPlace(rel,
+			func(ac *av.Aircraft) bool { return !sp.Aircraft[ac.Callsign].ReleaseDeleted })
 
 		if cmd == "" {
 			// If there is only one unacknowledged, then ack/release it.
-			unack := util.FilterSlice(rel, func(ac *av.Aircraft) bool { return !ac.Released })
+			unack := util.FilterSliceInPlace(rel, func(ac *av.Aircraft) bool { return !ac.Released })
 			switch len(unack) {
 			case 0:
 				status.err = ErrSTARSIllegalFlight
@@ -2408,7 +2409,7 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 			matchId := func(q QuickLookPosition) bool { return q.Id == pos.Id }
 			if slices.ContainsFunc(ps.QuickLookPositions, match) {
 				nomatch := func(q QuickLookPosition) bool { return !match(q) }
-				ps.QuickLookPositions = util.FilterSlice(ps.QuickLookPositions, nomatch)
+				ps.QuickLookPositions = util.FilterSliceInPlace(ps.QuickLookPositions, nomatch)
 			} else if idx := slices.IndexFunc(ps.QuickLookPositions, matchId); idx != -1 {
 				// Toggle plus
 				ps.QuickLookPositions[idx].Plus = !ps.QuickLookPositions[idx].Plus

@@ -354,7 +354,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 }
 
 func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
+	return util.FilterSliceInPlace(ss.STARSComputer().GetReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
@@ -368,7 +368,7 @@ func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
 }
 
 func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.GetAllReleaseDepartures(),
+	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			if ac.Released {
 				return false
@@ -385,7 +385,7 @@ func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
 }
 
 func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.GetAllReleaseDepartures(),
+	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {

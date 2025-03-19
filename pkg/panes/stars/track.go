@@ -280,12 +280,12 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	}
 
 	// Filter out any removed aircraft from the CA and MCI lists
-	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+	sp.CAAircraft = util.FilterSliceInPlace(sp.CAAircraft, func(ca CAAircraft) bool {
 		_, a := ctx.ControlClient.Aircraft[ca.Callsigns[0]]
 		_, b := ctx.ControlClient.Aircraft[ca.Callsigns[1]]
 		return a && b
 	})
-	sp.MCIAircraft = util.FilterSlice(sp.MCIAircraft, func(ca CAAircraft) bool {
+	sp.MCIAircraft = util.FilterSliceInPlace(sp.MCIAircraft, func(ca CAAircraft) bool {
 		_, a := ctx.ControlClient.Aircraft[ca.Callsigns[0]]
 		_, b := ctx.ControlClient.Aircraft[ca.Callsigns[1]]
 		return a && b
@@ -1028,22 +1028,22 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, aircraft []*av.Aircraf
 	}
 
 	// Remove ones that no longer exist
-	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+	sp.CAAircraft = util.FilterSliceInPlace(sp.CAAircraft, func(ca CAAircraft) bool {
 		_, ok0 := tracked[ca.Callsigns[0]]
 		_, ok1 := tracked[ca.Callsigns[1]]
 		return ok0 && ok1
 	})
-	sp.MCIAircraft = util.FilterSlice(sp.MCIAircraft, func(ca CAAircraft) bool {
+	sp.MCIAircraft = util.FilterSliceInPlace(sp.MCIAircraft, func(ca CAAircraft) bool {
 		_, ok0 := tracked[ca.Callsigns[0]]
 		_, ok1 := untracked[ca.Callsigns[1]]
 		return ok0 && ok1
 	})
 
 	// Remove ones that are no longer conflicting
-	sp.CAAircraft = util.FilterSlice(sp.CAAircraft, func(ca CAAircraft) bool {
+	sp.CAAircraft = util.FilterSliceInPlace(sp.CAAircraft, func(ca CAAircraft) bool {
 		return caConflict(ca.Callsigns[0], ca.Callsigns[1])
 	})
-	sp.MCIAircraft = util.FilterSlice(sp.MCIAircraft, func(ca CAAircraft) bool {
+	sp.MCIAircraft = util.FilterSliceInPlace(sp.MCIAircraft, func(ca CAAircraft) bool {
 		return mciConflict(ca.Callsigns[0], ca.Callsigns[1])
 	})
 

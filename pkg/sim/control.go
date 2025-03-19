@@ -1170,7 +1170,7 @@ func (s *Sim) enqueueTransponderChange(callsign string, code av.Squawk, mode av.
 }
 
 func (s *Sim) processEnqueued() {
-	s.FutureControllerContacts = util.FilterSlice(s.FutureControllerContacts,
+	s.FutureControllerContacts = util.FilterSliceInPlace(s.FutureControllerContacts,
 		func(c FutureControllerContact) bool {
 			if s.State.SimTime.After(c.Time) {
 				if ac, ok := s.State.Aircraft[c.Callsign]; ok {
@@ -1195,7 +1195,7 @@ func (s *Sim) processEnqueued() {
 			return true // keep it in the slice
 		})
 
-	s.FutureOnCourse = util.FilterSlice(s.FutureOnCourse,
+	s.FutureOnCourse = util.FilterSliceInPlace(s.FutureOnCourse,
 		func(oc FutureOnCourse) bool {
 			if s.State.SimTime.After(oc.Time) {
 				if ac, ok := s.State.Aircraft[oc.Callsign]; ok {
@@ -1208,7 +1208,7 @@ func (s *Sim) processEnqueued() {
 			return true
 		})
 
-	s.FutureSquawkChanges = util.FilterSlice(s.FutureSquawkChanges,
+	s.FutureSquawkChanges = util.FilterSliceInPlace(s.FutureSquawkChanges,
 		func(fcs FutureChangeSquawk) bool {
 			if s.State.SimTime.After(fcs.Time) {
 				if ac, ok := s.State.Aircraft[fcs.Callsign]; ok {

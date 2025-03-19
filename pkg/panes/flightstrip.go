@@ -193,7 +193,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 
 	remove := func(c string) {
-		fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
+		fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign string) bool { return callsign != c })
 		if fsp.selectedAircraft == c {
 			fsp.selectedAircraft = ""
 		}
@@ -241,7 +241,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 
 	// Remove ones that have been deleted.
-	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
+	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign string) bool {
 		return ctx.ControlClient.Aircraft[callsign] != nil
 	})
 

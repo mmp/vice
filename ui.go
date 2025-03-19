@@ -368,9 +368,8 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 }
 
 func uiCloseModalDialog(d *ModalDialogBox) {
-	ui.activeModalDialogs = util.FilterSlice(ui.activeModalDialogs,
+	ui.activeModalDialogs = util.FilterSliceInPlace(ui.activeModalDialogs,
 		func(m *ModalDialogBox) bool { return m != d })
-
 }
 
 func uiShowConnectDialog(mgr *server.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {

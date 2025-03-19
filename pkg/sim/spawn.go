@@ -500,9 +500,9 @@ func (s *Sim) updateDepartureSequence() {
 				_, ok := s.State.Aircraft[dep.Callsign]
 				return ok
 			}
-			depState.Held = util.FilterSlice(depState.Held, haveAc)
-			depState.Released = util.FilterSlice(depState.Released, haveAc)
-			depState.Sequenced = util.FilterSlice(depState.Sequenced, haveAc)
+			depState.Held = util.FilterSliceInPlace(depState.Held, haveAc)
+			depState.Released = util.FilterSliceInPlace(depState.Released, haveAc)
+			depState.Sequenced = util.FilterSliceInPlace(depState.Sequenced, haveAc)
 
 			// Handle hold for release aircraft
 			for i, held := range depState.Held {

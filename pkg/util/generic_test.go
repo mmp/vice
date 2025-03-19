@@ -110,15 +110,48 @@ func TestInsertSliceElement(t *testing.T) {
 }
 
 func TestFilterSlice(t *testing.T) {
-	a := []int{1, 2, 3, 4, 5}
-	b := FilterSlice(a, func(i int) bool { return i%2 == 0 })
+	b := FilterSlice([]int{1, 2, 3, 4, 5}, func(i int) bool { return i%2 == 0 })
 	if len(b) != 2 || b[0] != 2 || b[1] != 4 {
 		t.Errorf("filter evens failed: %+v", b)
 	}
 
-	c := FilterSlice(a, func(i int) bool { return i >= 3 })
+	odd := FilterSlice([]int{1, 2, 3, 4, 5}, func(i int) bool { return i%2 == 1 })
+	if len(odd) != 3 || odd[0] != 1 || odd[1] != 3 || odd[2] != 5 {
+		t.Errorf("filter odds failed: %+v", b)
+	}
+
+	c := FilterSlice([]int{1, 2, 3, 4, 5}, func(i int) bool { return i >= 3 })
 	if len(c) != 3 || c[0] != 3 || c[1] != 4 || c[2] != 5 {
 		t.Errorf("filter >=3 failed: %+v", c)
+	}
+}
+
+func TestFilterSliceInPlace(t *testing.T) {
+	a := []int{1, 2, 3, 4, 5}
+	b := FilterSliceInPlace(a, func(i int) bool { return i%2 == 0 })
+	if len(b) != 2 || b[0] != 2 || b[1] != 4 {
+		t.Errorf("filter evens failed: %+v", b)
+	}
+	if a[0] != 2 || a[1] != 4 {
+		t.Errorf("in place didn't reuse memory")
+	}
+
+	a = []int{1, 2, 3, 4, 5}
+	odd := FilterSliceInPlace(a, func(i int) bool { return i%2 == 1 })
+	if len(odd) != 3 || odd[0] != 1 || odd[1] != 3 || odd[2] != 5 {
+		t.Errorf("filter odds failed: %+v", b)
+	}
+	if a[0] != 1 || a[1] != 3 || a[2] != 5 {
+		t.Errorf("in place didn't reuse memory")
+	}
+
+	a = []int{1, 2, 3, 4, 5}
+	c := FilterSliceInPlace(a, func(i int) bool { return i >= 3 })
+	if len(c) != 3 || c[0] != 3 || c[1] != 4 || c[2] != 5 {
+		t.Errorf("filter >=3 failed: %+v", c)
+	}
+	if a[0] != 3 || a[1] != 4 || a[2] != 5 {
+		t.Errorf("in place didn't reuse memory")
 	}
 }
 

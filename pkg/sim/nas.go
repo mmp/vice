@@ -854,7 +854,7 @@ func (comp *STARSComputer) ReleaseDeparture(callsign string) error {
 }
 
 func (comp *STARSComputer) GetReleaseDepartures() []*av.Aircraft {
-	return comp.HoldForRelease
+	return slices.Clone(comp.HoldForRelease)
 }
 
 func (comp *STARSComputer) AddHeldDeparture(ac *av.Aircraft) {
@@ -1013,7 +1013,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 }
 
 func (comp *STARSComputer) CompletelyDeleteAircraft(ac *av.Aircraft) {
-	comp.HoldForRelease = util.FilterSlice(comp.HoldForRelease,
+	comp.HoldForRelease = util.FilterSliceInPlace(comp.HoldForRelease,
 		func(a *av.Aircraft) bool { return ac.Callsign != a.Callsign })
 
 	for sq, info := range comp.TrackInformation {

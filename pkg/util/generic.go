@@ -299,6 +299,22 @@ func FilterSlice[V any](s []V, pred func(V) bool) []V {
 	return filtered
 }
 
+// FilterSliceInPlace applies the given filter function pred to the given
+// slice, returning a slice constructed from the provided slice's memory
+// that only contains elements where pred returned true.
+func FilterSliceInPlace[V any](s []V, pred func(V) bool) []V {
+	var out int
+	for i := range s {
+		if pred(s[i]) {
+			if i != out {
+				s[out] = s[i]
+			}
+			out++
+		}
+	}
+	return s[:out]
+}
+
 // AllPermutations returns an iterator over all permutations of the given
 // slice.  Each permutation can then be iterated over.
 func AllPermutations[S ~[]E, E any](s S) iter.Seq[iter.Seq2[int, E]] {

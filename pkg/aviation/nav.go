@@ -289,7 +289,7 @@ func makeNav(callsign string, fp FlightPlan, perf AircraftPerformance, wp []Wayp
 	}
 
 	// Filter out airways...
-	nav.Waypoints = util.FilterSlice(nav.Waypoints,
+	nav.Waypoints = util.FilterSliceInPlace(nav.Waypoints,
 		func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if ap, ok := DB.Airports[fp.DepartureAirport]; !ok {

@@ -401,7 +401,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	wind WindModel, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
-	wp = util.FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
+	wp = util.FilterSliceInPlace(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if exitRoute.SID != "" {
 		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route

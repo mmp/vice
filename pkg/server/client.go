@@ -612,7 +612,7 @@ func (c *ControlClient) UpdateWorld(wu *sim.WorldUpdate, eventStream *sim.EventS
 }
 
 func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr func(error)) {
-	c.pendingCalls = util.FilterSlice(c.pendingCalls,
+	c.pendingCalls = util.FilterSliceInPlace(c.pendingCalls,
 		func(call *util.PendingCall) bool { return !call.CheckFinished() })
 
 	for _, call := range c.pendingCalls {
