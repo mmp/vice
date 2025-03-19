@@ -152,6 +152,8 @@ func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.L
 }
 
 func (s *Sim) Activate(lg *log.Logger) {
+	s.lg = lg
+
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)
 	}
