@@ -182,29 +182,14 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
 
-	fakeMETAR := func(icao string) {
-		spd := ss.Wind.Speed - 3 + rand.Int31n(6)
-		var wind string
-		if spd < 0 {
-			wind = "00000KT"
-		} else if spd < 4 {
-			wind = fmt.Sprintf("VRB%02dKT", spd)
-		} else {
-			dir := 10 * ((ss.Wind.Direction + 5) / 10)
-			dir += [3]int32{-10, 0, 10}[rand.Intn(3)]
-			wind = fmt.Sprintf("%03d%02d", dir, spd)
-			gst := ss.Wind.Gust - 3 + rand.Int31n(6)
-			if gst-ss.Wind.Speed > 5 {
-				wind += fmt.Sprintf("G%02d", gst)
+	fakeMETAR := func(icao []string) {
+		for _, ap := range icao {
+			ss.METAR[ap] = &av.METAR{
+				// Just provide the stuff that the STARS display shows
+				AirportICAO: ap,
+				Wind:        ss.Wind.Randomize(),
+				Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
 			}
-			wind += "KT"
-		}
-
-		// Just provide the stuff that the STARS display shows
-		ss.METAR[icao] = &av.METAR{
-			AirportICAO: icao,
-			Wind:        wind,
-			Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
 		}
 	}
 
@@ -214,13 +199,9 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 			lg.Errorf("%s: error getting weather: %+v", strings.Join(icao, ", "), err)
 		}
 
-		for i := range metar {
+		for _, m := range metar {
 			// Just provide the stuff that the STARS display shows
-			ss.METAR[metar[i].IcaoId] = &av.METAR{
-				AirportICAO: metar[i].IcaoId,
-				Wind:        metar[i].GetWind(),
-				Altimeter:   fmt.Sprintf("A%d", int(metar[i].GetAltimeter()*100)),
-			}
+			ss.METAR[m.AirportICAO] = &m
 		}
 	}
 
@@ -259,9 +240,7 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 	if config.LiveWeather {
 		realMETAR(aps)
 	} else {
-		for _, ap := range aps {
-			fakeMETAR(ap)
-		}
+		fakeMETAR(aps)
 	}
 
 	return ss

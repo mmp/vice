@@ -12,15 +12,56 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 )
 
 ///////////////////////////////////////////////////////////////////////////
 // Wind
 
 type Wind struct {
-	Direction int32 `json:"direction"`
-	Speed     int32 `json:"speed"`
-	Gust      int32 `json:"gust"`
+	Variable  bool
+	Direction int `json:"direction"`
+	Speed     int `json:"speed"`
+	Gust      int `json:"gust"`
+}
+
+func (w Wind) String() string {
+	if w.Speed <= 0 {
+		return "00000KT"
+	} else if w.Variable {
+		return fmt.Sprintf("VRB%02dKT", w.Speed)
+	} else {
+		wind := fmt.Sprintf("%03d%02d", w.Direction, w.Speed)
+
+		// According to Federal Meteorological Handbook No. 1 (FCM-H1-2019)
+		//   Gusts are indicated by rapid fluctuations in wind speed
+		//   with a variation of 10 knots or more between peaks and lulls.
+		// The Aviation Weather Center reports gust values according to the above or revised definitions.
+		if w.Gust > 0 {
+			wind += fmt.Sprintf("G%02d", w.Gust)
+		}
+
+		return wind + "KT"
+	}
+}
+
+func (w Wind) Randomize() Wind {
+	w.Speed += -3 + rand.Intn(6)
+	if w.Speed < 0 {
+		w.Speed = 0
+	} else if w.Speed < 4 {
+		w.Variable = true
+	} else {
+		dir := 10 * ((w.Direction + 5) / 10)
+		dir += [3]int{-10, 0, 10}[rand.Intn(3)]
+		w.Direction = dir
+		gst := w.Gust - 3 + rand.Intn(6)
+		if gst-w.Speed > 5 {
+			w.Gust = gst
+		}
+	}
+	return w
 }
 
 type WindModel interface {
@@ -35,21 +76,18 @@ type METAR struct {
 	AirportICAO string
 	Time        string
 	Auto        bool
-	Wind        string
-	Weather     string
+	Wind        Wind
 	Altimeter   string
+	Weather     string
 	Rmk         string
 }
 
 func (m METAR) String() string {
-	auto := ""
-	if m.Auto {
-		auto = "AUTO"
-	}
-	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind, m.Weather, m.Altimeter, m.Rmk}, " ")
+	auto := util.Select(m.Auto, "AUTO", "")
+	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind.String(), m.Weather, m.Altimeter, m.Rmk}, " ")
 }
 
-type RawMETAR struct {
+type avWeatherMETAR struct {
 	//MetarId     int         `json:"metar_id"`
 	IcaoId string `json:"icaoId"` // ICAO identifier
 	//ReceiptTime string      `json:"receiptTime"`
@@ -57,9 +95,9 @@ type RawMETAR struct {
 	//ReportTime  string      `json:"reportTime"`
 	//Temp        float64     `json:"temp"`
 	//Dewp        float64     `json:"dewp"`
-	Wdir any `json:"wdir"` // Wind direction in degrees or VRB for variable winds
-	Wspd int `json:"wspd"` // Wind speed in knots
-	Wgst int `json:"wgst"` // Wind gusts in knots
+	WindDir   any `json:"wdir"` // Wind direction in degrees or VRB for variable winds
+	WindSpeed int `json:"wspd"` // Wind speed in knots
+	WindGust  int `json:"wgst"` // Wind gusts in knots
 	//Visib string  `json:"visib"`
 	Altim float64 `json:"altim"` // Altimeter setting in hectoPascals
 	//Slp        float64      `json:"slp"`
@@ -77,7 +115,7 @@ type RawMETAR struct {
 	//Snow       *float64  `json:"snow"` // Snow depth in inches
 	//VertVis    *int  `json:"vertVis"` // Vertical visibility in feet
 	//MetarType  string       `json:"metarType"`
-	//RawMETAR string `json:"rawOb"` // Raw text of observation
+	//avWeatherMETAR string `json:"rawOb"` // Raw text of observation
 	//MostRecent int          `json:"mostRecent"`
 	//Lat        float64      `json:"lat"`
 	//Lon        float64      `json:"lon"`
@@ -94,56 +132,26 @@ type cloudLayer struct {
 }
 */
 
-const vrb = -1
-
 // GetWindDirection returns the wind direction in degrees or VRB for variable winds.
-func (m RawMETAR) GetWindDirection() int {
-	if windDir, ok := m.Wdir.(int); ok {
-		return windDir
+func (m avWeatherMETAR) WindDirection() (vrb bool, direction int) {
+	if d, ok := m.WindDir.(float64); ok {
+		direction = int(d)
 	} else {
-		return vrb
+		vrb = true
 	}
-}
-
-// getWindInfo returns the wind direction and speed in METAR text format.
-func (m RawMETAR) GetWind() string {
-	if m.Wspd <= 0 {
-		return "00000KT"
-	}
-
-	if dir, ok := m.Wdir.(int); !ok {
-		return fmt.Sprintf("VRB%02dKT", m.Wspd)
-	} else {
-		wind := fmt.Sprintf("%03d%02d", dir, m.Wspd)
-
-		// According to Federal Meteorological Handbook No. 1 (FCM-H1-2019)
-		//   Gusts are indicated by rapid fluctuations in wind speed
-		//   with a variation of 10 knots or more between peaks and lulls.
-		// The Aviation Weather Center reports gust values according to the above or revised definitions.
-		if m.Wgst > 0 {
-			wind += fmt.Sprintf("G%02d", m.Wgst)
-		}
-
-		return wind + "KT"
-	}
+	return
 }
 
 // getAltimeter returns the altimeter setting in inches Hg
-func (m RawMETAR) GetAltimeter() float64 {
+func (m avWeatherMETAR) Altimeter() float64 {
 	// Conversion formula (hectoPascal to Inch of Mercury): 29.92 * (hpa / 1013.2)
 	return 0.02953 * m.Altim
 }
 
 const aviationWeatherCenterDataApi = `https://aviationweather.gov/api/data/metar?ids=%s&format=json`
 
-func GetWeather(icao ...string) ([]RawMETAR, error) {
-	var query string
-	if len(icao) == 1 {
-		query = icao[0]
-	} else {
-		query = url.QueryEscape(strings.Join(icao, ","))
-	}
-
+func GetWeather(icao ...string) ([]METAR, error) {
+	query := url.QueryEscape(strings.Join(icao, ","))
 	requestUrl := fmt.Sprintf(aviationWeatherCenterDataApi, query)
 
 	res, err := http.Get(requestUrl)
@@ -152,10 +160,23 @@ func GetWeather(icao ...string) ([]RawMETAR, error) {
 	}
 	defer res.Body.Close()
 
-	data := make([]RawMETAR, 0, len(icao))
-	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
+	av := make([]avWeatherMETAR, 0, len(icao))
+	if err = json.NewDecoder(res.Body).Decode(&av); err != nil {
 		return nil, err
 	}
 
-	return data, nil
+	// Convert to our representation
+	metar := util.MapSlice(av, func(m avWeatherMETAR) METAR {
+		metar := METAR{
+			AirportICAO: m.IcaoId,
+			Altimeter:   fmt.Sprintf("A%d", int(m.Altimeter()*100)),
+		}
+		metar.Wind.Variable, metar.Wind.Direction = m.WindDirection()
+		metar.Wind.Speed = m.WindSpeed
+		metar.Wind.Gust = m.WindGust
+
+		return metar
+	})
+
+	return metar, nil
 }

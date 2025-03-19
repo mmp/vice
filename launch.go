@@ -303,7 +303,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				sort.Strings(a)
 				imgui.Text(strings.Join(a, ", "))
 			}
-			validAirport := c.Scenario.PrimaryAirport != "KAAC" && c.mgr.RemoteServer != nil
+			validAirport := c.Scenario.PrimaryAirport != "KAAC"
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -345,7 +345,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			if wind.Direction == -1 {
 				dir = "Variable"
 			} else {
-				dir = fmt.Sprintf("%d", wind.Direction)
+				dir = fmt.Sprintf("%03d", wind.Direction)
 			}
 
 			if wind.Gust > wind.Speed {
@@ -528,11 +528,7 @@ func getWind(airport string, lg *log.Logger) (av.Wind, bool) {
 				return
 			}
 
-			airportWind.Store(airport, av.Wind{
-				Direction: int32(weather[0].GetWindDirection()),
-				Speed:     int32(weather[0].Wspd),
-				Gust:      int32(weather[0].Wgst),
-			})
+			airportWind.Store(airport, weather[0].Wind)
 		}(done, airport)
 
 		return av.Wind{}, false
