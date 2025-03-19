@@ -858,11 +858,11 @@
             "runway_threshold": "KMCO-17L",
             "heading": 185,
             "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
+            "floor": 96,
+            "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
             "excluded_scratchpads": [ "I7R", "I8R", "I8L", "R8L", "R8R", "R7R"],
             "enable_2.5nm": true,
               "2.5nm_distance": 10
@@ -871,11 +871,11 @@
             "runway_threshold": "KMCO-17R",
             "heading": 185,
             "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
+            "floor": 96,
+            "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
             "excluded_scratchpads": [ "I7L", "I8R", "I8L", "R8L", "R8R", "R7L"],
             "enable_2.5nm": true,
               "2.5nm_distance": 10
@@ -884,63 +884,24 @@
             "runway_threshold": "KMCO-18L",
             "heading": 185,
             "max_heading_deviation": 90,
-            "floor": 100,
-           "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
+            "floor": 96,
+           "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
             "excluded_scratchpads": [ "I7L", "I8R", "I7L", "R7L", "R8R", "R7R"],
             "enable_2.5nm": true,
               "2.5nm_distance": 10
         },
-        "18R": {
-            "runway_threshold": "KMCO-18R",
-            "heading": 185,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
-            "excluded_scratchpads": [ "I7L", "I8L", "I7L", "R7L", "R8L", "R7R"],
-            "enable_2.5nm": true,
-              "2.5nm_distance": 10
-        },
-        "36L": {
-            "runway_threshold": "KMCO-36L",
-            "heading": 5,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
-            "excluded_scratchpads": [ "I6R", "I5L", "I5R", "R5L", "R5R"],
-            "enable_2.5nm": true,
-              "2.5nm_distance": 10
-        },
-        "36R": {
-            "runway_threshold": "KMCO-36R",
-            "heading": 5,
-            "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
-            "excluded_scratchpads": [ "R6L", "R5L", "I5L", "R5R", "I5R"],
-            "enable_2.5nm": true,
-              "2.5nm_distance": 10
-        },
-        "35L": {
+		"35L": {
             "runway_threshold": "KMCO-35L",
             "heading": 5,
             "max_heading_deviation": 90,
-            "floor": 100,
-           "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
+            "floor": 96,
+           "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
             "excluded_scratchpads": [ "R6L", "R6R", "I6R", "R5R", "I5R"],
             "enable_2.5nm": true,
               "2.5nm_distance": 10
@@ -949,14 +910,40 @@
             "runway_threshold": "KMCO-35R",
             "heading": 5,
             "max_heading_deviation": 90,
-            "floor": 100,
-            "ceiling": 6000,
-            "length": 40,
-            "left_width": 20000,
-            "right_width": 20000,
+            "floor": 96,
+            "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
             "excluded_scratchpads": [ "R6L", "R6R", "I6R", "R5L", "I5L"],
             "enable_2.5nm": true,
             "2.5nm_distance": 10
+        },
+        "36L": {
+            "runway_threshold": "KMCO-36L",
+            "heading": 5,
+            "max_heading_deviation": 90,
+            "floor": 96,
+            "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
+            "excluded_scratchpads": [ "I6R", "I5L", "I5R", "R5L", "R5R"],
+            "enable_2.5nm": true,
+              "2.5nm_distance": 10
+        },
+        "36R": {
+            "runway_threshold": "KMCO-36R",
+            "heading": 5,
+            "max_heading_deviation": 90,
+            "floor": 96,
+            "ceiling": 7300,
+            "length": 20,
+            "left_width": 30000,
+            "right_width": 30000,
+            "excluded_scratchpads": [ "R6L", "R5L", "I5L", "R5R", "I5R"],
+            "enable_2.5nm": true,
+              "2.5nm_distance": 10
         }
       }
     },
@@ -3639,7 +3626,7 @@
           "upper": 16000
         }
       ],
-      "SR-DisneyS": [
+      "MCO_D_APPS": [
         {
           "boundaries": [
             "MCODAPPS1"
@@ -3669,7 +3656,7 @@
           "upper": 5000
         }
       ],
-      "AR-LeeseNU": [
+      "MCO_L_APPNU": [
         {
           "boundaries": [
             "MCOLAPPN90120"
@@ -3741,7 +3728,7 @@
           "upper": 12000
         }
       ],
-      "Orlando East Tower": [
+      "MCO_E_TWR": [
         {
           "boundaries": [
             "MCOTWR"
@@ -3750,7 +3737,7 @@
           "upper": 3000
         }
       ],
-      "Orlando West Tower": [
+      "MCO_W_TWR": [
         {
           "boundaries": [
             "MCOWTWR"
@@ -3759,7 +3746,7 @@
           "upper": 3000
         }
       ],
-      "AR-BithoS": [
+      "MCO_B_APPS": [
         {
           "boundaries": [
             "MCOBAPPS60160"  
@@ -3803,7 +3790,7 @@
           "upper": 13000
         }
       ],
-      "AR-BithoN": [
+      "MCO_B_APPN": [
         {
           "boundaries": [
             "MCOBAPPN90160"
@@ -3847,7 +3834,7 @@
           "upper": 9000
         }
       ],
-      "AR-LeeseS": [
+      "MCO_L_APPS": [
         {
           "boundaries": [
             "MCOLAPPS90120"
@@ -3912,7 +3899,7 @@
         "upper": 13000
       }
       ],
-      "Kissimmee Tower": [
+      "ISM_TWR": [
         {
           "boundaries": [
             "ISMTWR"
@@ -3921,7 +3908,7 @@
           "upper": 1600
         }
       ],
-      "Executive Tower": [
+      "ORL_TWR": [
         {
           "boundaries": [
             "ORLTWR"
@@ -3930,7 +3917,7 @@
           "upper": 1600
         }
       ],
-      "Melbourne Tower": [
+      "MLB_TWR": [
         {
           "boundaries": [
             "MLBTWR"
@@ -3939,7 +3926,7 @@
           "upper": 1600
         }
       ],
-      "Sanford North Tower": [
+      "SFB_N_TWR": [
         {
           "boundaries": [
             "SFBNTWR030"
@@ -3955,7 +3942,7 @@
           "upper": 700
         }
       ],
-      "FR-GS": [
+      "MCO_G_APPS": [
         {
           "boundaries": [
             "MCOGAPPS040"
@@ -3992,7 +3979,7 @@
           "upper": 5000
         }
           ],
-          "FR-GN": [
+          "MCO_G_APPN": [
             {
               "boundaries": [
                 "MCOGAPPN050"
@@ -4015,7 +4002,7 @@
               "upper": 5000
             }
           ],
-      "Sanford South Tower": [
+      "SFB_S_TWR": [
         {
           "boundaries": [
             "SFBSTWR030"
@@ -4143,7 +4130,7 @@
           },
           "assigned_altitude": 14000,
           "initial_altitude": 18000,
-          "initial_controller": "Miami Center (Sector 23)",
+          "initial_controller": "MIA_23_CTR",
           "initial_speed": 300,
           "star": "ALYNA4",
           "runway_waypoints": {
@@ -4234,7 +4221,7 @@
         },
         "assigned_altitude": 14000,
         "initial_altitude": 15000,
-        "initial_controller": "DR-East",
+        "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "star": "ALYNA4",
         "speed_restriction": 250,
@@ -4310,7 +4297,7 @@
         },
         "assigned_altitude": 15000,
         "initial_altitude": 17000,
-        "initial_controller": "Jacksonville Center (Sector 58)",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed":  280,
         "star": "BITHO7",
         "waypoints": "OMN N029.13.31.930,W081.06.17.352/ho LAMMA/a15000 JESUP COZMO BITHO/h176"
@@ -4330,7 +4317,7 @@
         },
         "assigned_altitude": 12000,
         "initial_altitude": 12000,
-        "initial_controller": "Jacksonville Center (Sector 58)",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "BITHO7",
         "waypoints": "OMN N029.13.31.930,W081.06.17.352/ho LAMMA/a12000 JESUP COZMO BITHO/h176"
@@ -4391,7 +4378,7 @@
         },
         "assigned_altitude": 14000,
         "initial_altitude": 15000,
-        "initial_controller": "DR-East",
+        "initial_controller": "MCO_E_DEP",
         "initial_speed": 300,
         "star": "ALYNA4",
         "speed_restriction": 250,
@@ -4454,11 +4441,11 @@
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 7000,
-        "initial_controller": "AR-Bitho",
+        "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "AYLNA3",
-        "scratchpad": "I7L",
+        "scratchpad": "IE",
         "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       },
       {
@@ -4481,11 +4468,11 @@
         "cruise_altitude": 39000,
         "expect_approach": "I9L",
         "initial_altitude": 7000,
-        "initial_controller": "AR-Bitho",
+        "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "AYLNA3",
-        "scratchpad": "I9L",
+        "scratchpad": "FI",
         "waypoints": "BURNE ALYNA/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       }
     ]
@@ -4545,7 +4532,7 @@
             }
           ],
         "initial_altitude": 17000,
-        "initial_controller": "Miami Center (Sector 23)",
+        "initial_controller": "MIA_23_CTR",
         "initial_speed": 290,
         "description": "KTPA DADES1 arrivals",
         "speed_restriction": 290,
@@ -4570,7 +4557,7 @@
             }
           ],
         "initial_altitude": 17000,
-        "initial_controller": "Miami Center (Sector 23)",
+        "initial_controller": "MIA_23_CTR",
         "initial_speed": 290,
         "description": "KPIE DADES1 arrivals",
         "speed_restriction": 290,
@@ -4639,7 +4626,7 @@
         },
         "assigned_altitude": 5000,
         "initial_altitude": 8000,
-        "initial_controller": "Miami Center (Sector 2)",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 250,
         "star": "GOOFY7",
         "speed_restriction": 250,
@@ -4659,7 +4646,7 @@
           ]
         },
         "initial_altitude": 13000,
-        "initial_controller": "Miami Center (Sector 2)",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 250,
         "star": "GOOFY7",
         "waypoints": "TRV N027.45.37.854,W080.41.03.766/ho N027.49.35.365,W080.49.55.257 BAIRN",
@@ -5006,11 +4993,11 @@
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
         "initial_altitude": 8000,
-        "initial_controller": "AR-Leese",
+        "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "GRNCH5",
-        "scratchpad": "I8R",
+        "scratchpad": "IR",
         "waypoints": "BLAYK BUNIE/a7000/s230/ho YAGGO/a6000/s210 NAVAL/a4000 ONNER/a000"
       }
     ]
@@ -5342,13 +5329,13 @@
         },
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
-        "initial_altitude": 9000,
-        "initial_controller": "AR-Leese",
-        "initial_speed": 220,
-        "speed_restriction": 220,
+        "initial_altitude": 11000,
+        "initial_controller": "MCO_L_APP",
+        "initial_speed": 250,
+        "speed_restriction": 250,
         "star": "GRNCH5",
-        "scratchpad": "R6L",
-        "waypoints": "HARAM DORII/a8000+/s220/ho BRICE/a5000/s210/h186"
+        "scratchpad": "GL",
+        "waypoints": "WHOVL HARAM/ho DORII/a8000+/s220 BRICE/a5000/s210/h186"
       }
     ]
   },
@@ -5678,7 +5665,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "Jacksonville Center (Sector 15)",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "runway_waypoints": {
@@ -6024,7 +6011,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "Jacksonville Center (Sector 15)",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "speed_restriction": 290,
@@ -6358,7 +6345,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "Jacksonville Center (Sector 15)",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 290,
         "star": "GRNCH5",
         "speed_restriction": 290,
@@ -6781,7 +6768,7 @@
           ]
         },
         "initial_altitude": 13000,
-        "initial_controller": "Jacksonville Center (Sector 58)",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
@@ -7204,7 +7191,7 @@
           ]
         },
         "initial_altitude": 13000,
-        "initial_controller": "Jacksonville Center (Sector 58)",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "GTOUT1",
         "speed_restriction": 250,
@@ -7629,11 +7616,11 @@
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 9000,
-        "initial_controller": "AR-Bitho",
+        "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "GTOUT1",
-        "scratchpad": "I7L",
+        "scratchpad": "IE",
         "waypoints": "GTOUT/a9000-11000 TUGLE/ho BANYA/a7000/s210 HERVI/a4000 FONIK/a3000"
       }
     ]
@@ -7658,7 +7645,7 @@
           ]
         },
         "initial_altitude": 14000,
-        "initial_controller": "Jacksonville Center (Sector 15)",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 280,
         "star": "JAFAR3",
         "runway_waypoints": {
@@ -7786,7 +7773,7 @@
         },
         "assigned_altitude": 5000,
         "initial_altitude": 8000,
-        "initial_controller": "Miami Center (Sector 67)",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 250,
         "star": "JOKRS3",
         "speed_restriction": 250,
@@ -7810,7 +7797,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "Miami Center (Sector 67)",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 250,
         "star": "JOKRS3",
         "speed_restriction": 250,
@@ -7880,7 +7867,7 @@
           ]
         },
         "initial_altitude": 9000,
-        "initial_controller": "Dayonta North Radar",
+        "initial_controller": "DAB_N_APP",
         "initial_speed": 250,
         "star": "TTHOR3",
         "speed_restriction": 250,
@@ -7920,7 +7907,7 @@
         },
         "initial_altitude": 9000,
         "assigned_altitude": 7000,
-        "initial_controller": "Jacksonville Approach (Vitts)",
+        "initial_controller": "JAX_V_APP",
         "initial_speed": 250,
         "star": "SHREK2",
         "speed_restriction": 250,
@@ -7979,7 +7966,7 @@
         },
         "initial_altitude": 9000,
         "assigned_altitude": 9000,
-        "initial_controller": "Jacksonville Approach (Vitts)",
+        "initial_controller": "JAX_V_APP",
         "initial_speed": 250,
         "star": "SHREK2",
         "speed_restriction": 250,
@@ -8000,7 +7987,7 @@
         },
         "initial_altitude": 13000,
         "assigned_altitude": 11000,
-        "initial_controller": "Jacksonville Center (Sector 15)",
+        "initial_controller": "JAX_15_CTR",
         "initial_speed": 250,
         "star": "SHREK2",
         "speed_restriction": 250,
@@ -8263,7 +8250,7 @@
           ]
         },
         "initial_altitude": 21000,
-        "initial_controller": "Miami Center (Sector 67)",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
         "runway_waypoints": {
@@ -8497,7 +8484,7 @@
           ]
         },
         "initial_altitude": 19000,
-        "initial_controller": "Miami Center (Sector 67)",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
@@ -8694,7 +8681,7 @@
           ]
         },
         "initial_altitude": 19000,
-        "initial_controller": "Miami Center (Sector 67)",
+        "initial_controller": "MIA_67_CTR",
         "initial_speed": 280,
         "star": "PRICY3",
         "speed_restriction": 250,
@@ -8893,11 +8880,11 @@
         "cruise_altitude": 39000,
         "expect_approach": "I8R",
         "initial_altitude": 8000,
-        "initial_controller": "AR-Leese",
+        "initial_controller": "MCO_L_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "PRICY3",
-        "scratchpad": "I8R",
+        "scratchpad": "IR",
         "waypoints": "GIRAF/a8000/s220 DVOLA/a6500/s220/ho LYENS/a5000/s210/h006"
       }
     ]
@@ -9092,12 +9079,12 @@
         },
         "cruise_altitude": 39000,
         "expect_approach": "R6L",
-        "initial_altitude": 9000,
-        "initial_controller": "AR-Leese",
-        "initial_speed": 220,
+        "initial_altitude": 13000,
+        "initial_controller": "MCO_L_APP",
+        "initial_speed": 250,
         "star": "PRICY3",
-        "scratchpad": "R6L",
-        "waypoints": "JUMBA AMADS/a9000/s220/ho LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000"
+        "scratchpad": "GL",
+        "waypoints": "PRICY/s250 BOCCE JUMBA/ho AMADS/a9000/s220 LORRA/a7000/s210 EXBAN/a4000 AMEBE/a3000"
       }
     ]
   },
@@ -9167,7 +9154,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "Miami Center (Sector 2)",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "speed_restriction": 250,
@@ -9241,7 +9228,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "Miami Center (Sector 2)",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "speed_restriction": 250,
@@ -9379,7 +9366,7 @@
           ]
         },
         "initial_altitude": 15000,
-        "initial_controller": "Miami Center (Sector 2)",
+        "initial_controller": "MIA_22_CTR",
         "initial_speed": 280,
         "star": "RIDES2",
         "runway_waypoints": {
@@ -9484,11 +9471,11 @@
         "cruise_altitude": 39000,
         "expect_approach": "I7L",
         "initial_altitude": 8000,
-        "initial_controller": "AR-Bitho",
+        "initial_controller": "MCO_B_APP",
         "initial_speed": 220,
         "speed_restriction": 220,
         "star": "RIDES2",
-        "scratchpad": "I7l",
+        "scratchpad": "IE",
         "waypoints": "HAANZ/a8000/s220/ho PTMAN/a5000/s210/h006"
       }
     ]
@@ -9561,12 +9548,12 @@
         "cruise_altitude": 39000,
         "expect_approach": "I5R",
         "initial_altitude": 8000,
-        "initial_controller": "AR-Bitho",
-        "initial_speed": 220,
-        "speed_restriction": 220,
+        "initial_controller": "MCO_B_APP",
+        "initial_speed": 250,
+        "speed_restriction": 250,
         "star": "RIDES2",
-        "scratchpad": "I5R",
-        "waypoints": "RIDES/a8000 WISRD/ho HAHNA/a6000/s210  SERAY/a4000 FESHA/a3000"
+        "scratchpad": "IE",
+        "waypoints": "RIDES/a8000/ho WISRD HAHNA/a6000/s210  SERAY/a4000 FESHA/a3000"
       }
     ]
   },
@@ -9986,13 +9973,13 @@
         },
         "cruise_altitude": 39000,
         "expect_approach": "I5R",
-        "initial_altitude": 8000,
-        "initial_controller": "AR-Bitho",
-        "initial_speed": 220,
-        "speed_restriction": 220,
+        "initial_altitude": 11000,
+        "initial_controller": "MCO_B_APP",
+        "initial_speed": 250,
+        "speed_restriction": 250,
         "star": "SNFLD3",
-        "scratchpad": "I5R",
-        "waypoints": "VOSSS/a8000/s230 SUNDE/a6000/ho CUBAL/a5000/s210/h186"
+        "scratchpad": "IE",
+        "waypoints": "TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000/s230/ho SUNDE/a6000 CUBAL/a5000/s210/h186"
       }
     ]
   },
@@ -10411,7 +10398,7 @@
           ]
         },
         "initial_altitude": 12000,
-        "initial_controller": "Jacksonville Center (Sector 58)",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
@@ -10849,7 +10836,7 @@
           ]
         },
         "initial_altitude": 17000,
-        "initial_controller": "Jacksonville Center (Sector 58)",
+        "initial_controller": "JAX_58_CTR",
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
@@ -10949,7 +10936,7 @@
                }
             ],
           "initial_altitude": 5000,
-          "initial_controller": "Miami Center (Sector 23)",
+          "initial_controller": "MIA_23_CTR",
           "initial_speed": 150,
           "description": "East coast overflights",
           "waypoints": "WIXED SULTY/ho VALKA DIMBY INDIA TICCO MALET OAKIE SMYRA N029.07.31.229,W081.01.48.297 KDAB/a5"
@@ -11006,7 +10993,7 @@
             }
           ],
           "initial_altitude": 4000,
-          "initial_controller": "Dayonta North Radar",
+          "initial_controller": "DAB_N_APP",
           "initial_speed": 150,
           "description": "East coast overflights",
           "waypoints": "N029.07.31.229,W081.01.48.297/ho SMYRA T208 MALET"
@@ -11041,7 +11028,7 @@
           },
           "assigned_altitude": 5000,
           "initial_altitude": 5000,
-          "initial_controller": "Miami Center (Sector 23)",
+          "initial_controller": "MIA_23_CTR",
           "route": "CLEFF T208 VALKA",
           "description": "PBI-MLB",
           "initial_speed": 150,
@@ -11075,7 +11062,7 @@
           },
           "assigned_altitude": 4000,
           "initial_altitude": 4000,
-          "initial_controller": "Dayonta North Radar",
+          "initial_controller": "DAB_N_APP",
           "route": "CLEFF T208 VALKA",
           "description": "DAB-MLB",
           "initial_speed": 150,
@@ -11109,7 +11096,7 @@
           },
           "assigned_altitude": 4000,
           "initial_altitude": 4000,
-          "initial_controller": "Dayonta North Radar",
+          "initial_controller": "DAB_N_APP",
           "route": "CLEFF T208 VALKA",
           "description": "DAB-TIX",
           "initial_speed": 150,
@@ -11143,7 +11130,7 @@
           },
           "assigned_altitude": 5000,
           "initial_altitude": 5000,
-          "initial_controller": "Miami Center (Sector 23)",
+          "initial_controller": "MIA_23_CTR",
           "route": "CLEFF T208 VALKA",
           "description": "PBI-TIX",
           "initial_speed": 150,
@@ -11200,7 +11187,7 @@
           ],
           "assigned_altitude": 5000,
           "initial_altitude": 5000,
-          "initial_controller": "Tampa East Approach",
+          "initial_controller": "TPA_E_APP",
           "initial_speed": 150,
           "description": "Northbound overflights on T210",
           "waypoints": "N028.08.40.587,W082.13.16.975 N028.14.43.534,W082.04.25.539/ho VARZE T210 GUANO"
@@ -11256,7 +11243,7 @@
           ],
           "assigned_altitude": 5000,
           "initial_altitude": 5000,
-          "initial_controller": "Dayonta North Radar",
+          "initial_controller": "TPA_E_APP",
           "initial_speed": 150,
           "description": "Southbound overflights on T210",
           "waypoints": "N029.16.54.614,W081.10.14.163 N029.10.03.980,W081.14.12.841/ho KIZER T210 PUNQU LAL"
@@ -11265,7 +11252,7 @@
     }
   },
   "control_positions": {
-    "Miami Center (Sector 23)": {
+    "MIA_23_CTR": {
         "frequency": 126950, 
         "radio_name": "Miami Center",
         "facility_id": "Z",
@@ -11273,7 +11260,7 @@
         "scope_char": "Z",
         "sector_id": "Z23"
     },
-    "Miami Center (Sector 2)": {
+    "MIA_22_CTR": {
         "frequency": 133475,
         "radio_name": "Miami Center",
         "facility_id": "Z",
@@ -11281,7 +11268,7 @@
         "scope_char": "Z",
         "sector_id": "Z22"
     },
-    "Miami Center (Sector 67)": { 
+    "MIA_67_CTR": { 
         "frequency": 127200,
         "radio_name": "Miami Center",
         "facility_id": "Z",
@@ -11289,7 +11276,7 @@
         "scope_char": "Z",
         "sector_id": "Z67"
     },
-    "Jacksonville Center (Sector 14)": {
+    "JAX_14_CTR": {
       "frequency": 135750,
       "radio_name": "Jacksonville center",
       "facility_id": "C",
@@ -11297,7 +11284,7 @@
       "scope_char": "C",
       "sector_id": "C14"
     },
-    "Jacksonville Center (Sector 15)": {
+    "JAX_15_CTR": {
         "frequency": 133325,
         "radio_name": "Jacksonville center",
         "facility_id": "C",
@@ -11305,7 +11292,7 @@
         "scope_char": "C",
         "sector_id": "C15"
       },
-      "Jacksonville Center (Sector 58)": {
+      "JAX_58_CTR": {
         "frequency": 126350,
         "radio_name": "Jacksonville center",
         "facility_id": "C",
@@ -11313,7 +11300,7 @@
         "scope_char": "C",
         "sector_id": "C58"
       },
-    "Jacksonville Center (Sector 57)": {
+    "JAX_57_CTR": {
         "frequency": 134005,
         "radio_name": "Jacksonville Center",
         "facility_id": "C",
@@ -11321,76 +11308,77 @@
         "scope_char": "C",
         "sector_id": "C57"
     },
-    "Jacksonville Approach (Vitts)": {
+    "JAX_V_APP": {
       "frequency": 118600,
       "radio_name": "Jacksonville approach",
-      "facility_id": "2",
-      "scope_char": "2",
+      "facility_id": "4",
+      "scope_char": "4",
       "sector_id": "1V"
     },
-    "Dayonta North Radar": {
+    "DAB_N_APP": {
       "frequency": 125800,
       "radio_name": "Daytona Beach approach",
-      "facility_id": "1",
-      "scope_char": "1",
+      "facility_id": "3",
+      "scope_char": "3",
       "sector_id": "1N"
     },
-    "Tampa East Approach": {
+	"PBI_N_APP": {
+      "frequency": 123625,
+      "radio_name": "Palm Beach Approach",
+      "scope_char": "2",
+      "facility_id": "2",
+      "sector_id": "1N"
+    },
+    "TPA_E_APP": {
       "frequency": 118150,
       "radio_name": "Tampa approach",
-      "scope_char": "3",
-      "facility_id": "3",
+      "scope_char": "1",
+      "facility_id": "1",
       "sector_id": "1E"
     },
-    "DR-East": {
+    "MCO_E_DEP": {
       "frequency": 124800,
       "radio_name": "Orlando approach",
       "scope_char": "E",
       "sector_id": "1E"
     },
-    "AR-Bitho": {
+    "MCO_B_APP": {
       "frequency": 128375,
       "radio_name": "Orlando approach",
       "scope_char": "B",
       "sector_id": "1B"
     },
-    "DR-West": {
+    "MCO_W_DEP": {
       "frequency": 120150,
       "radio_name": "Orlando departure",
       "scope_char": "W",
       "sector_id": "1W"
     },
-    "AR-West Approach": {
-      "frequency": 120150,
-      "radio_name": "Orlando Approach",
-      "scope_char": "W",
-      "sector_id": "1J"
-    },
-    "SR-Palm": {
+    "MCO_A_APP": {
       "frequency": 132650,
       "radio_name": "Orlando Approach",
       "scope_char": "A",
       "sector_id": "1A"
     },
-    "FR-M": {
+    "MCO_M_APP": {
       "frequency": 123850,
       "radio_name": "Orlando Approach",
       "scope_char": "M",
       "sector_id": "1M"
     },
-    "AR-Rocket": {
+    "MCO_R_APP": {
       "frequency": 127320,
       "radio_name": "Orlando Approach",
       "scope_char": "R",
       "sector_id": "1R"
     },
-    "SR-Kape": {
+    "MCO_K_APP": {
       "frequency": 134950,
       "radio_name": "Orlando Approach",
       "scope_char": "K",
       "sector_id": "1K"
     },
-    "SR-Seminole": {
+    "MCO_N_APP": {
       "frequency": 121100,
       "radio_name": "Orlando Approach",
       "scope_char": "N",
@@ -11403,122 +11391,101 @@
       "scope_char": "S",
       "sector_id": "1S"
     },
-    "SR-Valor": {
+    "MCO_V_APP": {
       "frequency": 119775,
       "radio_name": "Orlando Approach",
       "scope_char" :"V",
       "sector_id": "1V",
       "default_airport": "KSFB"
     },
-    "SR-Paola" : {
+    "MCO_P_APP" : {
       "frequency": 135300,
       "radio_name": "Orlando Approach",
       "scope_char": "P",
       "sector_id": "1P",
       "default_airport": "KMLB"
     },
-    "Orlando East Tower": {
+    "MCO_E_TWR": {
       "frequency": 118450,
       "radio_name": "Orlando tower",
-      "scope_char": "T",
-      "sector_id": "1T"
+      "scope_char": "E",
+      "sector_id": "3E"
     },
-    "SR-Disney": {
+    "MCO_D_APP": {
       "frequency": 119400,
       "radio_name": "Orlando approach",
       "scope_char": "D",
       "sector_id": "1D",
       "default_airport": "KISM"
     },
-    "Orlando West Tower": {
+    "MCO_W_TWR": {
       "frequency": 126400,
       "radio_name": "Orlando tower",
-      "scope_char": "Z",
-      "sector_id": "1Z"
+      "scope_char": "W",
+      "sector_id": "3W"
     },
-    "Sanford North Tower": {
+    "SFB_N_TWR": {
       "frequency": 120300,
       "radio_name": "Sanford tower",
-      "scope_char": "N",
-      "sector_id": "3N"
+      "scope_char": "F",
+      "sector_id": "3F"
     },
-    "Sanford South Tower": {
+    "SFB_S_TWR": {
       "frequency": 135250,
       "radio_name": "Sanford tower",
-      "scope_char": "S",
-      "sector_id": "3S"
+      "scope_char": "J",
+      "sector_id": "3J"
     },
-    "Leesburg Tower": {
+    "LEE_TWR": {
      "frequency": 119350,
      "radio_name": "Leesburg tower",
      "scope_char": "L",
      "sector_id": "3L"
     },
-    "Patrick Tower": {
+    "COF_TWR": {
       "frequency": 133750,
       "radio_name": "Patrick Tower",
       "scope_char": "P",
       "sector_id": "3P"
     },
-    "Melbourne Tower": {
+    "MLB_TWR": {
       "frequency": 118200,
       "radio_name": "Melbourne Orlando tower",
-      "scope_char": "M",
-      "sector_id": "3M"
+      "scope_char": "B",
+      "sector_id": "3B"
     },
-    "Spaceforce Tower": {
+    "TIX_TWR": {
       "frequency": 118900,
       "radio_name": "Space Coast Tower",
-      "scope_char": "X",
-      "sector_id": "3X"
+      "scope_char": "S",
+      "sector_id": "3S"
     },
-    "Kissimmee Tower": {
+    "ISM_TWR": {
       "frequency": 124450,
       "radio_name": "Kissimee Gateway tower",
       "scope_char": "K",
       "sector_id": "3K"
     },
-    "Executive Tower": {
+    "ORL_TWR": {
       "frequency": 118700,
       "radio_name": "Orlando Executive tower",
       "scope_char": "T",
       "sector_id": "3T"
     },
-    "TPA_TWR": {
-      "frequency": 119500,
-      "radio_name": "TPA_TWR",
-      "scope_char": "T",
-      "facility_id": "2",
-      "sector_id": "1W"
-    },
-    "Daytona Tower": {
-      "frequency": 120700,
-      "radio_name": "Daytona Beach tower",
-      "scope_char": "T",
-      "facility_id": "5",
-      "sector_id": "1T"
-    },
-    "Palm Beach Tower": {
-      "frequency": 119100,
-      "radio_name": "Palm Beach Tower",
-      "scope_char": "T",
-      "facility_id": "7",
-      "sector_id": "1T"
-    },
-    "FR-G": {
+    "MCO_G_APP": {
       "frequency": 127750,
       "radio_name": "Orlando approach",
       "scope_char": "G",
       "sector_id": "1G"
     },
-    "AR-Leese": {
+    "MCO_L_APP": {
       "frequency": 134050,
       "radio_name": "Orlando approach",
       "scope_char": "L",
       "sector_id": "1L"
     }
   },
-  "default_scenario": "(AR) MCO N + SAT E Combined",
+  "default_scenario": "MCO South + Sat West",
   "fixes": {
     "KISM": "N028.17.23.303,W081.26.13.489",
     "KMCO": "N028.25.45.781,W081.18.32.260",
@@ -11557,20 +11524,20 @@
   "name": "KMCO",
   "primary_airport": "KMCO",
   "scenarios": {
-    "(AR) MCO S - SAT W Combined": {
+    "MCO South + Sat West": {
       "airspace": {
-          "DR-East": [ "MCOAPP" ],
-          "AR-Rocket": [ "MCOAPP" ],
-          "DR-West": [ "MCOAPP" ],
-          "SR-Disney": [ "MCOAPP" ],
-          "FR-M": [ "MCOAPP" ],
-          "FR-G": [ "MCOAPP" ],
-          "AR-Bitho": [ "MCOAPP" ],
-          "AR-Leese": [ "MCOAPP" ],
-          "SR-Palm": [ "MCOAPP" ],
-          "SR-Kape": [ "MCOAPP" ],
-          "SR-Seminole": [ "MCOAPP" ],
-          "SR-Valor": [ "MCOAPP" ]
+          "MCO_E_DEP": [ "MCOAPP" ],
+          "MCO_R_APP": [ "MCOAPP" ],
+          "MCO_W_DEP": [ "MCOAPP" ],
+          "MCO_D_APP": [ "MCOAPP" ],
+          "MCO_M_APP": [ "MCOAPP" ],
+          "MCO_G_APP": [ "MCOAPP" ],
+          "MCO_B_APP": [ "MCOAPP" ],
+          "MCO_L_APP": [ "MCOAPP" ],
+          "MCO_A_APP": [ "MCOAPP" ],
+          "MCO_K_APP": [ "MCOAPP" ],
+          "MCO_N_APP": [ "MCOAPP" ],
+          "MCO_V_APP": [ "MCOAPP" ]
       },
       "arrival_runways": [
         {
@@ -11685,54 +11652,53 @@
         },
         "East_coast/T208 ": {
           "overflights": 25,
-          "KMLB": 10,
-          "KTIX": 10
+          "KMLB": 5,
+          "KTIX": 5
         },
         "West_coast/T210N": {
-          "overflights": 20
+          "overflights": 5
         },
         "West_coast/T210S": {
-          "overflights": 20
+          "overflights": 5
         }
       },
-      "solo_controller": "DR-East",
+      "solo_controller": "MCO_E_DEP",
       "multi_controllers": {
         "default": {
-          "DR-East": {"primary": true, "departures": ["KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"]},
-          "AR-Rocket": {"backup": "DR-East", "inbound_flows": ["ALYNA4", "DADES1"]},
-          "DR-West": {"backup": "DR-East", "departures": ["KMCO/FSHUN3", "KMCO/JEEMY3", "KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
-          "SR-Disney": {"backup": "DR-East", "departures": ["KISM", "KORL", "KMCO/CITR2W"],"inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
-          "FR-M": {"backup": "DR-West"},
-          "FR-G": {"backup": "FR-M"},
-          "AR-Bitho": {"backup": "DR-East","inbound_flows": ["GTOUT1", "RIDES2", "BITHO7", "SNFLD3"]},
-          "AR-Leese": {"backup": "AR-Bitho", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2W", "SHREK2.MCO", "JOKRS3.MCO"]},
-          "SR-Palm": {"backup": "SR-Disney", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
-          "SR-Kape": {"backup": "SR-Palm", "departures": ["KTIX", "KCOF"]},
-          "SR-Seminole": {"backup": "SR-Disney", "departures": ["KSFB", "KLEE"], "inbound_flows": ["West_coast/T210S"]},
-          "SR-Valor": {"backup": "SR-Seminole", "inbound_flows": ["TTHOR3"]}
+          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"]},
+          "MCO_R_APP": {"backup": "MCO_E_DEP", "inbound_flows": ["ALYNA4", "DADES1"]},
+          "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/FSHUN3", "KMCO/JEEMY3", "KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
+          "MCO_D_APP": {"backup": "MCO_E_DEP", "departures": ["KISM", "KORL", "KMCO/CITR2W"],"inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
+          "MCO_M_APP": {"backup": "MCO_W_DEP"},
+          "MCO_G_APP": {"backup": "MCO_M_APP"},
+          "MCO_B_APP": {"backup": "MCO_E_DEP","inbound_flows": ["GTOUT1", "RIDES2", "BITHO7", "SNFLD3"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2W", "SHREK2.MCO", "JOKRS3.MCO"]},
+          "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX", "KCOF"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP", "departures": ["KSFB", "KLEE"], "inbound_flows": ["West_coast/T210S"]},
+          "MCO_V_APP": {"backup": "MCO_N_APP", "inbound_flows": ["TTHOR3"]}
         }
       },
       "controllers": [
-        "Tampa East Approach",
-        "Melbourne Tower",
-        "Spaceforce Tower",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower"
+        "TPA_E_APP",
+        "MLB_TWR",
+        "TIX_TWR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR"
       ],
-      "default_maps": [ "DEPARTURE SOUTH SOLID", "SATELLITE SOUTH DASHED", "SOUTH FINAL BASE"],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -11830,20 +11796,20 @@
         "speed": 5
       }
     },
-    "(AR) MCO N + SAT E Combined": {
+    "MCO North + Sat East": {
       "airspace": {
-          "DR-East": [ "MCOAPP" ],
-          "AR-Rocket": [ "MCOAPP" ],
-          "DR-West": [ "MCOAPP" ],
-          "SR-Disney": [ "MCOAPP" ],
-          "FR-M": [ "MCOAPP" ],
-          "FR-G": [ "MCOAPP" ],
-          "AR-Bitho": [ "MCOAPP" ],
-          "AR-Leese": [ "MCOAPP" ],
-          "SR-Palm": [ "MCOAPP" ],
-          "SR-Kape": [ "MCOAPP" ],
-          "SR-Seminole": [ "MCOAPP" ],
-          "SR-Valor": [ "MCOAPP" ]
+          "MCO_E_DEP": [ "MCOAPP" ],
+          "MCO_R_APP": [ "MCOAPP" ],
+          "MCO_W_DEP": [ "MCOAPP" ],
+          "MCO_D_APP": [ "MCOAPP" ],
+          "MCO_M_APP": [ "MCOAPP" ],
+          "MCO_G_APP": [ "MCOAPP" ],
+          "MCO_B_APP": [ "MCOAPP" ],
+          "MCO_L_APP": [ "MCOAPP" ],
+          "MCO_A_APP": [ "MCOAPP" ],
+          "MCO_K_APP": [ "MCOAPP" ],
+          "MCO_N_APP": [ "MCOAPP" ],
+          "MCO_V_APP": [ "MCOAPP" ]
       },
       "arrival_runways": [
         {
@@ -11971,44 +11937,43 @@
           "overflights": 20
         }
       },
-      "solo_controller": "DR-East",
+      "solo_controller": "MCO_E_DEP",
       "multi_controllers": {
         "default": {
-          "DR-East": {"primary": true, "departures": ["KMCO/JEEMY3", "KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"]},
-          "AR-Rocket": {"backup": "DR-East", "inbound_flows": ["ALYNA4", "DADES1"]},
-          "DR-West": {"backup": "DR-East", "departures": ["KMCO/FSHUN3","KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
-          "SR-Disney": {"backup": "DR-West", "departures": ["KISM", "KMCO/CITR2W"], "inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
-          "FR-M": {"backup": "DR-West"},
-          "FR-G": {"backup": "FR-M"},
-          "AR-Bitho": {"backup": "DR-East","inbound_flows": ["SNFLD3", "RIDES2", "BITHO7"]},
-          "AR-Leese": {"backup": "AR-Bitho", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2E", "SHREK2.MCO", "JOKRS3.MCO"]},
-          "SR-Palm": {"backup": "SR-Disney", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
-          "SR-Kape": {"backup": "SR-Palm", "departures": ["KTIX", "KCOF"]},
-          "SR-Seminole": {"backup": "SR-Disney", "inbound_flows": ["West_coast/T210S"], "departures": ["KLEE"]},
-          "SR-Valor": {"backup": "SR-Seminole", "departures": ["KORL", "KSFB"], "inbound_flows": ["TTHOR3"]}
+          "MCO_E_DEP": {"primary": true, "departures": ["KMCO/JEEMY3", "KMCO/FATHE3", "KMCO/MZULO3", "KMCO/DDANY3"]},
+          "MCO_R_APP": {"backup": "MCO_E_DEP", "inbound_flows": ["ALYNA4", "DADES1"]},
+          "MCO_W_DEP": {"backup": "MCO_E_DEP", "departures": ["KMCO/FSHUN3","KMCO/RDSOX1", "KMCO/OSPRY1", "KMCO/ORLA6"]},
+          "MCO_D_APP": {"backup": "MCO_W_DEP", "departures": ["KISM", "KMCO/CITR2W"], "inbound_flows": ["GOOFY7", "JOKRS3", "West_coast/T210N"]},
+          "MCO_M_APP": {"backup": "MCO_W_DEP"},
+          "MCO_G_APP": {"backup": "MCO_M_APP"},
+          "MCO_B_APP": {"backup": "MCO_E_DEP","inbound_flows": ["SNFLD3", "RIDES2", "BITHO7"]},
+          "MCO_L_APP": {"backup": "MCO_B_APP", "inbound_flows": ["PRICY3", "GRNCH5", "SHREK2E", "SHREK2.MCO", "JOKRS3.MCO"]},
+          "MCO_A_APP": {"backup": "MCO_D_APP", "departures": ["KMLB", "KMCO/CITR2E"], "inbound_flows": ["East_coast/T208 "]},
+          "MCO_K_APP": {"backup": "MCO_A_APP", "departures": ["KTIX", "KCOF"]},
+          "MCO_N_APP": {"backup": "MCO_D_APP", "inbound_flows": ["West_coast/T210S"], "departures": ["KLEE"]},
+          "MCO_V_APP": {"backup": "MCO_N_APP", "departures": ["KORL", "KSFB"], "inbound_flows": ["TTHOR3"]}
         }
       },
       "controllers": [
-        "Tampa East Approach",
-        "Spaceforce Tower",
-        "Melbourne Tower",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower"
+        "TPA_E_APP",
+        "TIX_TWR",
+        "MLB_TWR",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR"
       ],
-      "default_maps": [ "DEPARTURE NORTH SOLID", "SATELLITE NORTH DASHED", "NORTH FINAL BASE"],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -12106,30 +12071,29 @@
         "speed": 5
       }
     },
-    "(DR) MCO N - SAT E": {
+    "MCO North DEP": {
       "airspace": {
-          "DR-West": [ "MCOAPP" ]
+          "MCO_W_DEP": [ "MCOAPP" ]
       },
-      "solo_controller": "DR-West",
+      "solo_controller": "MCO_W_DEP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR"
       ],
-      "default_maps": [ "DEPARTURE NORTH SOLID" ],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -12195,9 +12159,9 @@
         "speed": 5
       }
     },
-    "(FR) MCO S": {
+    "MCO South Final": {
       "airspace": {
-        "FR-M": [ "FR-GS" ]
+        "MCO_M_APP": [ "MCO_G_APPS" ]
       },
       "arrival_runways":[
         {
@@ -12223,40 +12187,39 @@
           "KMCO": 10
         },
         "RIDES2_SFINAL": {
-          "KMCO": 5
+          "KMCO": 7
         }
         },
-      "solo_controller":"FR-M",
+      "solo_controller":"MCO_M_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "AR-Leese"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_L_APP"
       ],
-      "default_maps": [ "SOUTH FINAL BASE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
         "speed": 5
       }
     },
-    "(AR) Leese Feeder South": {
+    "MCO West Feeder South": {
       "airspace": {
-        "AR-Leese": [ "AR-LeeseS" ]
+        "MCO_L_APP": [ "MCO_L_APPS" ]
       },
       "arrival_runways":[
         {
@@ -12272,37 +12235,36 @@
           "KMCO": 10
         }
         },
-      "solo_controller":"AR-Leese",
+      "solo_controller":"MCO_L_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "FR-G"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_G_APP"
       ],
-      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
         "speed": 5
       }
     },
-    "(AR) Combined Feeder South": {
+    "MCO Combined Feeder South": {
       "airspace": {
-        "AR-Bitho": [ "AR-LeeseS", "AR-BithoS" ]
+        "MCO_B_APP": [ "MCO_L_APPS", "MCO_B_APPS" ]
       },
       "arrival_runways":[
         {
@@ -12331,37 +12293,36 @@
           "KMCO": 10
         }
       },
-      "solo_controller":"AR-Bitho",
+      "solo_controller":"MCO_B_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "FR-G"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_G_APP"
       ],
-      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
         "speed": 5
       }
     },
-    "(AR) Bitho Feeder South": {
+    "MCO East Feeder South": {
       "airspace": {
-        "AR-Bitho": [ "AR-BithoS" ]
+        "MCO_B_APP": [ "MCO_B_APPS" ]
       },
       "arrival_runways":[
         {
@@ -12380,37 +12341,36 @@
           "KMCO": 10
         }
         },
-      "solo_controller":"AR-Bitho",
+      "solo_controller":"MCO_B_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "FR-G"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_G_APP"
       ],
-      "default_maps": [ "ARRIVAL SOUTH SOLID LINE" ],
       "wind": {
         "direction": 170,
         "gust": 8,
         "speed": 5
       }
     },
-    "(AR) Leese Feeder North": {
+    "MCO West Feeder North": {
       "airspace": {
-        "AR-Leese": [ "AR-LeeseNU" ]
+        "MCO_L_APP": [ "MCO_L_APPNU" ]
       },
       "arrival_runways":[
         {
@@ -12426,37 +12386,36 @@
           "KMCO": 10
         }
         },
-      "solo_controller":"AR-Leese",
+      "solo_controller":"MCO_L_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "FR-G"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_G_APP"
       ],
-      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "wind": {
         "direction": 360,
         "gust": 8,
         "speed": 5
       }
     },
-    "(AR) Combined Feeder North": {
+    "MCO Combined Feeder North": {
       "airspace": {
-        "AR-Leese": [ "AR-LeeseNU", "AR-BithoN" ]
+        "MCO_L_APP": [ "MCO_L_APPNU", "MCO_B_APPN" ]
       },
       "arrival_runways":[
         {
@@ -12485,37 +12444,36 @@
           "KMCO": 5
         }
       },
-      "solo_controller":"AR-Leese",
+      "solo_controller":"MCO_L_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "FR-G"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_G_APP"
       ],
-      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "wind": {
         "direction": 360,
         "gust": 8,
         "speed": 5
       }
     },
-    "(AR) Bitho Feeder North": {
+    "MCO East Feeder North": {
       "airspace": {
-        "AR-Bitho": [ "AR-BithoN" ]
+        "MCO_B_APP": [ "MCO_B_APPN" ]
       },
       "arrival_runways":[
         {
@@ -12534,37 +12492,36 @@
           "KMCO": 10
         }
         },
-      "solo_controller":"AR-Bitho",
+      "solo_controller":"MCO_B_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "FR-G"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_G_APP"
       ],
-      "default_maps": [ "ARRIVAL NORTH SOLID LINE" ],
       "wind": {
         "direction": 360,
         "gust": 8,
         "speed": 5
       }
     },
-    "(FR) MCO N": {
+    "MCO North Final": {
       "airspace": {
-        "FR-M": [ "FR-GN" ]
+        "MCO_M_APP": [ "MCO_G_APPN" ]
       },
       "arrival_runways":[
         {
@@ -12590,58 +12547,56 @@
           "KMCO": 15
         }
         },
-      "solo_controller":"FR-M",
+      "solo_controller":"MCO_M_APP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower",
-        "AR-Bitho",
-        "AR-Leese"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR",
+        "MCO_B_APP",
+        "MCO_L_APP"
       ],
-      "default_maps": [ "NORTH FINAL BASE" ],
       "wind": {
         "direction": 340,
         "gust": 8,
         "speed": 5
       }
     },
-    "(DR) MCO S - SAT W ": {
+    "MCO South DEP": {
       "airspace": {
-        "DR-West": [ "MCO_E_APP", "MCO_E1_APP", "MCO_E2_APP" ]
+        "MCO_W_DEP": [ "MCO_E_APP", "MCO_E1_APP", "MCO_E2_APP" ]
       },
-      "solo_controller": "DR-West",
+      "solo_controller": "MCO_W_DEP",
       "controllers": [
-        "Tampa East Approach",
-        "Jacksonville Center (Sector 14)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 58)",
-        "Miami Center (Sector 23)",
-        "Miami Center (Sector 2)",
-        "Miami Center (Sector 67)",
-        "Jacksonville Approach (Vitts)",
-        "Dayonta North Radar",
-        "Orlando East Tower",
-        "Kissimmee Tower",
-        "Executive Tower",
-        "Sanford North Tower",
-        "Sanford South Tower",
-        "Orlando West Tower"
+        "TPA_E_APP",
+        "JAX_14_CTR",
+        "JAX_15_CTR",
+        "JAX_57_CTR",
+        "JAX_58_CTR",
+        "MIA_23_CTR",
+        "MIA_22_CTR",
+        "MIA_67_CTR",
+        "JAX_V_APP",
+        "DAB_N_APP",
+        "MCO_E_TWR",
+        "ISM_TWR",
+        "ORL_TWR",
+        "SFB_N_TWR",
+        "SFB_S_TWR",
+        "MCO_W_TWR"
       ],
-      "default_maps": [ "DEPARTURE SOUTH SOLID" ],
       "departure_runways": [
         {
           "airport": "KMCO",
@@ -12704,7 +12659,15 @@
     }
   },
   "stars_config": {
-  "center": "N028.25.45.781,W081.18.32.260",
+	  "center": "N028.25.45.781,W081.18.32.260",
+	  "force_ql_self": true,
+	  "pdb":{ 
+		"hide_gs": true
+		},
+	  "handoff_acceptance_flash_duration":10,
+	  "handoff_sector_display_duration": 10,
+	  "use_legacy_font": true,
+	  "altimeters": ["KCOF","KISM","KLEE","KMCO","KORL","KSFB"],
   "coordination_fixes": {
     "BANYA": [
       {
@@ -12925,13 +12888,12 @@
       ]
   },
   "coordination_lists": [
-    { "name": ".      ORL", "id": "O", "airports": ["KORL"]},
-    { "name": ".      MLB", "id": "B", "airports": ["KMLB"]},
-    { "name": ".      SFB", "id": "F", "airports": ["KSFB"]},
-    { "name": ".      ISM", "id": "K", "airports": ["KISM"]},
-    { "name": ".      TIX", "id": "S", "airports": ["KTIX"]},
-    { "name": ".      COF", "id": "P", "airports": ["KCOF"]},
-    { "name": ".      LEE", "id": "L", "airports": ["KLEE"]}
+    { "name": ".      ORL COORD", "id": "T", "airports": ["KORL"]},
+    { "name": ".      MLB COORD", "id": "B", "airports": ["KMLB"]},
+    { "name": ".      LC1 COORD", "id": "F", "airports": ["KSFB"]},
+    { "name": ".      ISM COORD", "id": "K", "airports": ["KISM"]},
+    { "name": ".      TIX COORD", "id": "S", "airports": ["KTIX"]},
+    { "name": ".      COF COORD", "id": "P", "airports": ["KCOF"]}
   ],
   "airspace_awareness": [
     {
@@ -12950,7 +12912,7 @@
             0,
             999000
         ],
-        "receiving_controller": "Miami Center (Sector 23)"
+        "receiving_controller": "MIA_23_CTR"
     },
     {
         "fixes": [
@@ -12962,7 +12924,7 @@
             12000, 
             999000
         ],
-        "receiving_controller": "Jacksonville Center (Sector 58)"
+        "receiving_controller": "JAX_58_CTR"
     },
     {
         "fixes": [
@@ -12974,7 +12936,7 @@
             0,
             11000
         ],
-        "receiving_controller": "Dayonta North Radar"
+        "receiving_controller": "DAB_N_APP"
     },
     {
         "fixes": [
@@ -12985,7 +12947,7 @@
             0,
             999000
         ],
-        "receiving_controller": "Miami Center (Sector 67)"
+        "receiving_controller": "MIA_67_CTR"
     },
     {
         "fixes": [
@@ -12998,7 +12960,7 @@
             0,
             999000
         ],
-        "receiving_controller": "Jacksonville Center (Sector 14)"
+        "receiving_controller": "JAX_14_CTR"
     }
   ],
   "inhibit_ca_volumes": [
@@ -13138,7 +13100,6 @@
       "slope_angle": 0.175
     }
   },
-  "force_ql_self": true,
   "scratchpads": {
     "BORRD": "DDA",
     "LENDS": "MZU",
@@ -13208,12 +13169,10 @@
       "ZALEN": { }
   },
   "stars_maps": [
-      "ARRIVAL SOUTH SOLID LINE", "ARRIVAL NORTH SOLID LINE", "DEPARTURE SOUTH SOLID", "DEPARTURE NORTH SOLID", "SATELLITE SOUTH DASHED",
-      "SATELLITE NORTH DASHED", "SOUTH FINAL BASE", "NORTH FINAL BASE", "MCO CLASS B", "F11 CLASS D", "F11 ILS FIXES WITH NAMES",
-      "MCO FINALS", "F11 MVA", "LEE RNAV", "ISM FINALS", "MCO SIDS SOUTH", "MCO SIDS NORTH", "MCO STARS SOUTH RESTRICTIONS", "MCO STARS NORTH RESTRICTIONS",
-      "ARRIVAL SOUTH ALTITUDES", "ARRIVAL NORTH ALTITUDES", "DEPARTURE SOUTH ALTITUDES", "DEPARTURE NORTH ALTITUDES", "DADES ARRIVAL",
-      "PACA NORTH OPS", "PACA SOUTH OPS", "MCO FINAL NO TRANSGRETION ZONE (NTZ)"
+    "DEPARTURE NORTH SOLID", "ARB/ARL NORTH SOLID","MCO FINAL (NORTH) SOLID LINE", "DEPARTURE SOUTH SOLID","ARB/ARL SOUTH SOLID","MCO FINAL (SOUTH) SOLID LINE",
+	  "DEPARTURE NORTH SOLID", "ARB/ARL NORTH SOLID","MCO FINAL (NORTH) SOLID LINE","SAT NORTH SFB EAST","SAT NORTH SFB WEST","RVMMCO113S","RVMMCO003S","","MCO FINAL AIRSPACE","HIGH NORTH DASHED","","RVMMLB001S","RVMMCO153S","","","",
+	  "DEPARTURE SOUTH SOLID","ARB/ARL SOUTH SOLID","MCO FINAL (SOUTH) SOLID LINE","SAT SOUTH SFB EAST","SAT SOUTH SFB WEST","RVMMCO114S","RVMMCO110S","RVMMCO163S","","HIGH SOUTH DASHED","","RVMMLB002S","RVMMCO154S"
   ],
-  "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+  "video_map_file": "videomaps/F11-videomaps.gob.zst"
   }
 }
