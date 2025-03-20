@@ -1096,73 +1096,61 @@
     "SLC_W_TWR": {
       "frequency": 132650,
       "radio_name": "Salt Lake City Tower",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "SLC_C_TWR": {
       "frequency": 119050,
       "radio_name": "Salt Lake City Tower",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "SLC_E_TWR": {
       "frequency": 118300,
       "radio_name": "Salt Lake City Tower",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "SLC_A_APP": {
       "frequency": 118850,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "A",
       "sector_id": "1A"
     },
     "SLC_B_APP": {
       "frequency": 124900,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "SLC_F_APP": {
       "frequency": 125700,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "SLC_G_APP": {
       "frequency": 126250,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "G",
       "sector_id": "1G"
     },
     "SLC_H_APP": {
       "frequency": 121100,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "H",
       "sector_id": "1H"
     },
     "SLC_J_APP": {
       "frequency": 128600,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "J",
       "sector_id": "1J"
     },
     "SLC_K_APP": {
       "frequency": 135500,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "K",
       "sector_id": "1K"
     },
     "SLC_S_APP": {
       "frequency": 128100,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "SLC_V_APP": {
       "frequency": 127400,
       "radio_name": "Salt Lake City Approach",
-      "scope_char": "V",
       "sector_id": "1V"
     },
 	"SLC_03_CTR": {
@@ -1170,7 +1158,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C03"
     },
     "SLC_07_CTR": {
@@ -1178,7 +1165,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C07"
     },
 	"SLC_11_CTR": {
@@ -1186,7 +1172,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C11"
     },
 	"SLC_14_CTR": {
@@ -1194,7 +1179,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C14"
     },
 	"SLC_32_CTR": {
@@ -1202,7 +1186,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C32"
     },
 	"SLC_40_CTR": {
@@ -1210,7 +1193,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C40"
     }
   },

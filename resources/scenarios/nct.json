@@ -7978,133 +7978,111 @@
     "SJC_M_APP": {
       "frequency": 124525,
       "radio_name": "NorCal Approach",
-      "scope_char": "M",
       "sector_id": "1M"
     },
     "SJC_S_APP": {
       "frequency": 127150,
       "radio_name": "NorCal Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "SJC_L_APP": {
       "frequency": 120100,
       "radio_name": "NorCal Approach",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "SJC_T_DEP": {
       "frequency": 121300,
       "radio_name": "NorCal Approach",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "SFO_B_APP": {
       "frequency": 133950,
       "radio_name": "NorCal Approach",
-      "scope_char": "B",
       "sector_id": "2B"
     },
     "SFO_Z_APP": {
       "frequency": 128325,
       "radio_name": "NorCal Approach",
-      "scope_char": "Z",
       "sector_id": "2Z"
     },
     "SFO_F_APP": {
       "frequency": 120350,
       "radio_name": "NorCal Approach",
-      "scope_char": "F",
       "sector_id": "2F"
     },
     "SFO_G_APP": {
       "frequency": 128575,
       "radio_name": "NorCal Approach",
-      "scope_char": "G",
       "sector_id": "2G"
     },
     "SFO_N_APP": {
       "frequency": 134500,
       "radio_name": "NorCal Approach",
-      "scope_char": "N",
       "sector_id": "2N"
     },
     "SFO_W_APP": {
       "frequency": 135650,
       "radio_name": "NorCal Approach",
-      "scope_char": "W",
       "sector_id": "2W"
     },
     "OAK_Y_APP": {
       "frequency": 125100,
       "radio_name": "NorCal Approach",
-      "scope_char": "Y",
       "sector_id": "3Y"
     },
     "OAK_S_APP": {
       "frequency": 124800,
       "radio_name": "NorCal Approach",
-      "scope_char": "S",
       "sector_id": "3S"
     },
     "OAK_G_APP": {
       "frequency": 125350,
       "radio_name": "NorCal Approach",
-      "scope_char": "G",
       "sector_id": "3G"
     },
     "SFO_U_DEP": {
       "frequency": 135100,
       "radio_name": "NorCal Departure",
-      "scope_char": "U",
       "sector_id": "4U"
     },
 	"SFO_Q_DEP": {
       "frequency": 127975,
       "radio_name": "NorCal Departure",
-      "scope_char": "Q",
       "sector_id": "4Q"
     },
 	"SFO_D_DEP": {
       "frequency": 127000,
       "radio_name": "NorCal Departure",
-      "scope_char": "D",
       "sector_id": "4D"
     },
 	"SFO_F_DEP": {
       "frequency": 124325,
       "radio_name": "NorCal Departure",
-      "scope_char": "F",
       "sector_id": "4F"
     },
     "SFO_R_DEP": {
       "frequency": 120900,
       "radio_name": "NorCal Departure",
-      "scope_char": "R",
       "sector_id": "4R"
     },
     "SMF_P_APP": {
       "frequency": 123700,
       "radio_name": "NorCal Approach",
-      "scope_char": "P",
       "sector_id": "5P"
     },
     "RNO_S_APP": {
       "frequency": 119200,
       "radio_name": "NorCal Approach",
-      "scope_char": "P",
       "sector_id": "8S"
     },
     "SMF_E_APP": {
       "frequency": 125400,
       "radio_name": "NorCal Approach",
-      "scope_char": "E",
       "sector_id": "5E"
     },
     "RNO_N_APP": {
       "frequency": 126300,
       "radio_name": "NorCal Approach",
-      "scope_char": "N",
       "sector_id": "8N"
     },
 	"NFL_APP": {
@@ -8124,7 +8102,6 @@
 	"FAT_F_APP": {
       "frequency": 119600,
       "radio_name": "Fresno Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "OAK_14_CTR": {
@@ -8132,7 +8109,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C14"
     },
 	"OAK_11_CTR": {
@@ -8140,7 +8116,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C11"
     },
 	"OAK_15_CTR": {
@@ -8148,7 +8123,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C15"
     },
 	"OAK_10_CTR": {
@@ -8156,7 +8130,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C10"
     },
 	"OAK_45_CTR": {
@@ -8164,7 +8137,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C45"
     },
 	"OAK_42_CTR": {
@@ -8172,7 +8144,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C42"
     },
 	"OAK_46_CTR": {
@@ -8180,7 +8151,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C46"
     },
 	"OAK_41_CTR": {
@@ -8188,7 +8158,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C41"
     },
 	"OAK_16_CTR": {
@@ -8196,7 +8165,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C16"
     },
 	"OAK_44_CTR": {
@@ -8204,7 +8172,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C44"
     },
 	"OAK_35_CTR": {
@@ -8212,7 +8179,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C35"
     },
 	"OAK_29_CTR": {
@@ -8220,7 +8186,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C29"
     },
 	"OAK_22_CTR": {
@@ -8228,7 +8193,6 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C22"
     },
 	"OAK_34_CTR": {
@@ -8236,91 +8200,76 @@
       "radio_name": "Oakland Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C34"
     },
 	"SJC_TWR": {
       "frequency": 124000,
       "radio_name": "San Jose Tower",
-      "scope_char": "J",
       "sector_id": "1J"
     },
     "SFO_TWR": {
       "frequency": 120500,
       "radio_name": "San Francisco Tower",
-      "scope_char": "V",
       "sector_id": "2V"
     },
     "OAK_TWR": {
       "frequency": 118300,
       "radio_name": "Oakland Tower",
-      "scope_char": "O",
       "sector_id": "3O"
     },
     "RNO_TWR": {
       "frequency": 118700,
       "radio_name": "Reno Tower",
-      "scope_char": "R",
       "sector_id": "8R"
     },
     "SMF_TWR": {
       "frequency": 125700,
       "radio_name": "Sacramento Tower",
-      "scope_char": "V",
       "sector_id": "5V"
     },
     "MRY_TWR": {
       "frequency": 118400,
       "radio_name": "Monterey Tower",
-      "scope_char": "Z",
       "sector_id": "1Z"
     },
     "MER_TWR": {
       "frequency": 118175,
       "radio_name": "Castle Tower",
-      "scope_char": "T",
       "sector_id": "5T"
     },
     "MOD_TWR": {
       "frequency": 125300,
       "radio_name": "Modesto Tower",
-      "scope_char": "P",
       "sector_id": "3P"
     },
     "SCK_TWR": {
       "frequency": 120300,
       "radio_name": "Stockton Tower",
-      "scope_char": "Z",
       "sector_id": "3Z"
     },
     "SAC_TWR": {
       "frequency": 119500,
       "radio_name": "Executive Tower",
-      "scope_char": "Z",
       "sector_id": "5Z"
     },
     "LVK_TWR": {
       "frequency": 118100,
       "radio_name": "Livermore Tower",
-      "scope_char": "L",
       "sector_id": "3L"
     },
     "SNS_TWR": {
       "frequency": 119525,
       "radio_name": "Salinas Tower",
-      "scope_char": "Y",
       "sector_id": "1Y"
     },
 	"PAO_TWR": {
       "frequency": 118600,
       "radio_name": "Palo Alto Tower",
-      "scope_char": "P",
       "sector_id": "1P"
 	},
 	"SQL_TWR": {
       "frequency": 119000,
       "radio_name": "San Carlos Tower",
-      "scope_char": "S",
       "sector_id": "2S"
 	}
   },

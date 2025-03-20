@@ -6185,7 +6185,6 @@
             "Z": {
                 "frequency": 119000,
                 "radio_name": "Chicago Approach",
-                "scope_char": "Z",
                 "sector_id": "1Z",
                 "facility": "C90",
                 "default_airport": "KORD"
@@ -6193,56 +6192,48 @@
             "W": {
                 "frequency": 133625,
                 "radio_name": "Chicago Approach",
-                "scope_char": "W",
                 "facility": "C90",
                 "sector_id": "1W"
             },
             "F": {
                 "frequency": 124350,
                 "radio_name": "Chicago Approach",
-                "scope_char": "F",
                 "facility": "C90",
                 "sector_id": "1F"
             },
             "H": {
                 "frequency": 132175,
                 "radio_name": "Chicago Approach",
-                "scope_char": "H",
                 "facility": "C90",
                 "sector_id": "1H"
             },
             "PLANO (X)": {
                 "frequency": 135075,
                 "radio_name": "Chicago Approach",
-                "scope_char": "X",
                 "facility": "C90",
                 "sector_id": "1X"
             },
             "KUBBS (J)": {
                 "frequency": 134625,
                 "radio_name": "Chicago Approach",
-                "scope_char": "J",
                 "facility": "C90",
                 "sector_id": "1J"
             },
             "OKK (E)": {
                 "frequency": 135025,
                 "radio_name": "Chicago Approach",
-                "scope_char": "E",
                 "facility": "C90",
                 "sector_id": "1E"
             },
             "FARMM (Y)": {
                 "frequency": 135025,
                 "radio_name": "Chicago Approach",
-                "scope_char": "Y",
                 "facility": "C90",
                 "sector_id": "1Y"
             },
             "SSAT Sector 1 (S)": {
                 "frequency": 128200,
                 "radio_name": "Chicago Approach",
-                "scope_char": "S",
                 "sector_id": "1S",
                 "facility": "C90",
                 "default_airport": "KMDW"
@@ -6250,56 +6241,48 @@
             "SSAT Sector 2 (P)": {
                 "frequency": 119350,
                 "radio_name": "Chicago Approach",
-                "scope_char": "P",
                 "facility": "C90",
                 "sector_id": "1P"
             },
             "SSAT Sector 3 (L)": {
                 "frequency": 133500,
                 "radio_name": "Chicago Approach",
-                "scope_char": "L",
                 "facility": "C90",
                 "sector_id": "1L"
             },
             "SSAT Sector 4 (U)": {
                 "frequency": 127875,
                 "radio_name": "Chicago Approach",
-                "scope_char": "U",
                 "facility": "C90",
                 "sector_id": "1U"
             },
             "East Departure (B)": {
                 "frequency": 125000,
                 "radio_name": "Chicago Departure",
-                "scope_char": "B",
                 "facility": "C90",
                 "sector_id": "1B"
             },
             "South Departure (M)": {
                 "frequency": 126625,
                 "radio_name": "Chicago Departure",
-                "scope_char": "M",
                 "facility": "C90",
                 "sector_id": "1M"
             },
             "West Departure (G)": {
                 "frequency": 135275,
                 "radio_name": "Chicago Departure",
-                "scope_char": "G",
                 "facility": "C90",
                 "sector_id": "1G"
             },
             "North Departure (D)": {
                 "frequency": 134400,
                 "radio_name": "Chicago Departure",
-                "scope_char": "D",
                 "facility": "C90",
                 "sector_id": "1D"
             },
             "North Satellite (A)": {
                 "frequency": 120555,
                 "radio_name": "Chicago Approach",
-                "scope_char": "A",
                 "facility": "C90",
                 "sector_id": "1A"
             },
@@ -6308,7 +6291,6 @@
                 "radio_name": "Chicago Center",
                 "facility_id": "C",
                 "eram_facility": true,
-                "scope_char": "C",
                 "facility": "ZAU",
                 "sector_id": "C81"
             },
@@ -6357,35 +6339,30 @@
             "Executive Tower": {
                 "frequency": 119900,
                 "radio_name": "Executive Tower",
-                "scope_char": "6",
                 "facility": "C90",
                 "sector_id": "16"
             },
             "DuPage Tower": {
                 "frequency": 120900,
                 "radio_name": "Dupage Tower",
-                "scope_char": "7",
                 "facility": "C90",
                 "sector_id": "17"
             },
             "Aurora Tower": {
                 "frequency": 120600,
                 "radio_name": "Aurora Tower",
-                "scope_char": "8",
                 "facility": "C90",
                 "sector_id": "18"
             },
             "Lewis Tower": {
                 "frequency": 134800,
                 "radio_name": "Lewis Tower",
-                "scope_char": "5",
                 "facility": "C90",
                 "sector_id": "15"
             },
             "Milwaukee East Approach": {
                 "frequency": 118000,
                 "radio_name": "Milwaukee approach",
-                "scope_char": "1",
                 "sector_id": "1E",
                 "facility_id": "1",
                 "facility": "MKE"
@@ -6393,7 +6370,6 @@
             "Rockford East Approach": {
                 "frequency": 121000,
                 "radio_name": "Rockford approach",
-                "scope_char": "3",
                 "sector_id": "3E",
                 "facility_id": "3",
                 "facility": "RFD"
@@ -6401,7 +6377,6 @@
             "Southbend North Approach": {
                 "frequency": 118550,
                 "radio_name": "Southbend approach",
-                "scope_char": "2",
                 "sector_id": "2N",
                 "facility_id": "2",
                 "facility": "SBN"

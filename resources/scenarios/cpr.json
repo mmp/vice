@@ -279,7 +279,6 @@
         "CPR_APP": {
             "frequency": 120650,
             "radio_name": "Capser approach",
-            "scope_char": "A",
             "sector_id": "1A"
         },
         "CPR_TWR": {
@@ -293,7 +292,6 @@
             "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "D17"
         }
     },

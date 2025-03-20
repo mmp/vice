@@ -1580,7 +1580,6 @@
       "FTW_51_CTR": {
         "frequency": 135175,
         "radio_name": "Fort Worth Center",
-        "scope_char": "C",
         "eram_facility": true,
         "facility_id": "C",
         "sector_id": "C51"
@@ -1588,38 +1587,32 @@
     "OKC_TWR": {
       "frequency": 119350,
       "radio_name": "International Tower",
-      "sector_id": "1T",
-      "scope_char": "T"
+      "sector_id": "1T"
     },
     "OKC_W_APP": {
       "frequency": 124600,
       "radio_name": "Oklahoma City Approach",
-      "sector_id": "1W",
-      "scope_char": "W"
+      "sector_id": "1W"
     },
     "OKC_F_APP": {
       "frequency": 133600,
       "radio_name": "Oklahoma City Approach",
-      "sector_id": "1F",
-      "scope_char": "F"
+      "sector_id": "1F"
     },
     "OKC_E_APP": {
       "frequency": 124200,
       "radio_name": "Oklahoma City Approach",
-      "sector_id": "1E",
-      "scope_char": "E"
+      "sector_id": "1E"
     },
     "OKC_D_APP": {
       "frequency": 120450,
       "radio_name": "Oklahoma City Approach",
-      "sector_id": "1D",
-      "scope_char": "D"
+      "sector_id": "1D"
     },
     "OKC_S_APP": {
       "frequency": 126650,
       "radio_name": "Oklahoma City Approach",
-      "sector_id": "1S",
-      "scope_char": "S" 
+      "sector_id": "1S"
     }
   },
   "default_scenario": "KOKC South",

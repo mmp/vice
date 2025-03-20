@@ -601,25 +601,21 @@
         "ABQ_TWR": {
             "frequency": 120300,
             "radio_name": "Albuqueque Tower",
-            "scope_char": "T",
             "sector_id": "1T"
         },
 		"ABQ_N_APP": {
             "frequency": 127400,
             "radio_name": "Albuquerque Approach",
-            "scope_char": "N",
             "sector_id": "1N"
         },
         "ABQ_S_APP": {
             "frequency": 123900,
             "radio_name": "Albuqueque Approach",
-            "scope_char": "S",
             "sector_id": "1S"
         },
 		"ABQ_F_APP": {
             "frequency": 126300,
             "radio_name": "Albuqueque Approach",
-            "scope_char": "F",
             "sector_id": "1F"
         },
         "ABQ_16_CTR": {
@@ -627,7 +623,6 @@
             "radio_name": "Albuqueque Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C16"
         }
     },

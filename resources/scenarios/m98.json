@@ -561,81 +561,71 @@
       "control_positions": {
         "MSP_05_CTR": {
           "frequency": 125300,
-          "radio_name": "Minnieapolis Center",
-          "scope_char": "C",
+          "radio_name": "Minneapolis Center",
           "sector_id": "C05",
           "facility_id": "C",
           "eram_facility": true
         },
         "MSP_09_CTR": {
           "frequency": 125500,
-          "radio_name": "Minnieapolis Center",
-          "scope_char": "C",
+          "radio_name": "Minneapolis Center",
           "facility_id": "C",
           "sector_id": "C09",
           "eram_facility": true
         },
         "MSP_10_CTR": {
           "frequency": 121050,
-          "radio_name": "Minnieapolis Center",
-          "scope_char": "C",
+          "radio_name": "Minneapolis Center",
           "facility_id": "C",
           "sector_id": "C10",
           "eram_facility": true
         },
         "MSP_R_DEP": {
           "frequency": 124700,
-          "radio_name": "Minnieapolis Departure",
-          "scope_char": "R",
+          "radio_name": "Minneapolis Departure",
           "sector_id": "1R"
         },
         "MSP_I_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "I",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1I"
         },
         "MSP_H_APP": {
           "frequency": 135475,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "H",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1H"
         },
         "MSP_N_APP": {
           "frequency": 119300,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "N",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1N"
         },
         "MSP_S_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "S",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1S"
         },
         "MSP_E_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "E",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1E"
         },
         "MSP_N_TWR": {
           "frequency": 123950,
-          "radio_name": "Minnieapolis Tower",
-          "scope_char": "T",
-          "sector_id": "01"
+          "radio_name": "Minneapolis Tower",
+          "sector_id": "1T"
         },
         "MSP_S_TWR": {
           "frequency": 126700,
-          "radio_name": "Minnieapolis Tower",
+          "radio_name": "Minneapolis Tower",
           "scope_char": "T",
-          "sector_id": "02"
+          "sector_id": "1V"
         },
         "MSP_W_TWR": {
           "frequency": 123675,
-          "radio_name": "Minnieapolis Tower",
+          "radio_name": "Minneapolis Tower",
           "scope_char": "T",
-          "sector_id": "03"
+          "sector_id": "1Y"
         }
       },
       "default_scenario": "MSP 12R/L",

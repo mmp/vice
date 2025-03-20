@@ -2156,7 +2156,6 @@
                     "ATL_CTR": {
                         "frequency": 132975,
                         "radio_name": "Atlanta Center",
-                        "scope_char": "C",
                         "sector_id": "43",
                         "facility_id": "C",
                         "eram_facility": true
@@ -2164,67 +2163,56 @@
                     "CLT_W_DEP": {
                         "frequency": 119500,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "W",
                         "sector_id": "1W"
                     },
                     "CLT_E_DEP": {
                         "frequency": 124000,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "E",
                         "sector_id": "1E"
                     },
                     "CLT_N_APP": {
                         "frequency": 134750,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "N",
                         "sector_id": "1N"
                     },
                     "CLT_S_APP": {
                         "frequency": 120050,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "S",
                         "sector_id": "1S"
                     },
                     "CLT_Q_APP": {
                         "frequency": 128320,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "Q",
                         "sector_id": "1Q"
                     },
                     "CLT_H_APP": {
                         "frequency": 126150,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "H",
                         "sector_id": "1H"
                     },
                     "CLT_U_APP": {
                         "frequency": 125350,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "U",
                         "sector_id": "1U"
                     },
                     "CLT_D_APP": {
                         "frequency": 135600,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "D",
                         "sector_id": "1D"
                     },
                     "CLT_A_APP": {
                         "frequency": 127700,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "A",
                         "sector_id": "1A"
                     },
                     "CLT_M_APP": {
                         "frequency": 119000,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "M",
                         "sector_id": "1M"
                     },
                     "CLT_F_APP": {
                         "frequency": 132700,
                         "radio_name": "Charlotte Approach",
-                        "scope_char": "F",
                         "sector_id": "1F"
                     },
                     "JAX_30_CTR": {
@@ -2246,14 +2234,12 @@
                       "GSO_APP": {
                         "frequency": 124350,
                         "radio_name": "Greensboro Approach",
-                        "scope_char": "W",
                         "sector_id": "4W",
                         "facility_id": "4"
                       },
                       "CLT_TWR": {
                         "frequency": 118100,
                         "radio_name": "Charlotte Tower",
-                        "scope_char": "T",
                         "sector_id": "CT"
                       }
                     },

@@ -1243,7 +1243,6 @@
 		"HOU_50_CTR": {
 			"frequency": 134200,
 			"radio_name": "Houston Center",
-			"scope_char": "C",
 			"sector_id": "C50",
 			"facility_id": "C",
 			"eram_facility": true
@@ -1251,7 +1250,6 @@
 		"HOU_80_CTR": {
 			"frequency": 132150,
 			"radio_name": "Houston Center",
-			"scope_char": "C",
 			"sector_id": "C80",
 			"facility_id": "C",
 			"eram_facility": true
@@ -1259,7 +1257,6 @@
 		"HOU_96_CTR": {
 			"frequency": 125650,
 			"radio_name": "Houston Center",
-			"scope_char": "C",
 			"sector_id": "C96",
 			"facility_id": "C",
 			"eram_facility": true
@@ -1267,25 +1264,21 @@
 		"AUS_W_APP": {
 			"frequency": 119000,
 			"radio_name": "Austin Approach",
-			"scope_char": "W",
 			"sector_id": "1W"
 		},
 		"AUS_E_APP": {
 			"frequency": 127225,
 			"radio_name": "Austin Approach",
-			"scope_char": "E",
 			"sector_id": "1E"
 		},
 		"AUS_F_APP": {
 			"frequency": 125325,
 			"radio_name": "Austin Approach",
-			"scope_char": "F",
 			"sector_id": "1F"
 		},
 		"SAT_N_APP": {
 			"frequency": 127100,
 			"radio_name": "San Antonio Approach",
-			"scope_char": "S",
 			"sector_id": "1N",
 			"facility_id": "S"
 		},
@@ -1306,26 +1299,24 @@
 		"AUS_E_TWR": {
 			"frequency": 121000,
 			"radio_name": "Austin Tower",
-			"scope_char": "T",
-			"sector_id": "TE"
+			"sector_id": "1T"
 		},
 		"AUS_W_TWR": {
 			"frequency": 118225,
 			"radio_name": "Austin Tower",
-			"scope_char": "T",
-			"sector_id": "TW"
+			"sector_id": "1X"
 		},
 		"HYI_TWR": {
 			"frequency": 126825,
 			"radio_name": "San Marcos Tower",
 			"scope_char": "T",
-			"sector_id": "TH"
+			"sector_id": "1H"
 		},
 		"GTU_TWR": {
 			"frequency": 120225,
 			"radio_name": "Georgetown Tower",
 			"scope_char": "T",
-			"sector_id": "TG"
+			"sector_id": "1G"
 		}
 	},
 	"default_scenario": "AUS TRACON South",

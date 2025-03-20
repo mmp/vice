@@ -349,14 +349,11 @@
         "CYS_APP": {
             "frequency": 124550,
             "radio_name": "Cheyenne approach",
-            "scope_char": "A",
-            "sector_id": "6A",
-            "facility_id": "6"
+            "sector_id": "6A"
         },
         "CYS_TWR": {
             "frequency": 118700,
             "radio_name": "Cheyenne tower",
-            "scope_char": "T",
             "sector_id": "CT"
         },
         "DEN_D_APP": {
@@ -371,7 +368,6 @@
             "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "D21"
         }
     },

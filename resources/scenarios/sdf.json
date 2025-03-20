@@ -564,9 +564,8 @@
   "IND_CTR": {
     "frequency": 119550,
     "radio_name": "Indianapolis Center",
-      "facility_id": "C",
-      "eram_facility": true,
-    "scope_char": "C",
+    "facility_id": "C",
+    "eram_facility": true,
     "sector_id": "34"
   },
   "CVG_APP": {
@@ -579,50 +578,42 @@
   "SDF_E_TWR": {
     "frequency": 124200,
     "radio_name": "Louisville Tower",
-    "scope_char": "T",
     "sector_id": "4T"
   },
   "SDF_W_TWR": {
     "frequency": 135200,
     "radio_name": "Louisville Tower",
-    "scope_char": "L",
     "sector_id": "4L"
   },
   "SDF_A_APP": {
     "frequency": 134150,
     "radio_name": "Louisville Approach",
-    "scope_char": "A",
     "sector_id": "4A"
   },
   "SDF_I_APP": {
     "frequency": 132325,
     "radio_name": "Louisville Approach",
     "default_airport": "KSDF",
-    "scope_char": "I",
     "sector_id": "4I"
   },
   "SDF_E_APP": {
     "frequency": 135775,
     "radio_name": "Louisville Approach",
-    "scope_char": "E",
     "sector_id": "4E"
   },
   "SDF_W_APP": {
     "frequency": 120300,
     "radio_name": "Louisville Approach",
-    "scope_char": "W",
     "sector_id": "4W"
   },
   "SDF_D_DEP": {
     "frequency": 132075,
     "radio_name": "Louisville Departure",
-    "scope_char": "D",
     "sector_id": "4D"
   },
   "SDF_B_DEP": {
     "frequency": 123675,
     "radio_name": "Louisville Departure",
-    "scope_char": "B",
     "sector_id": "4B"
   }
 },

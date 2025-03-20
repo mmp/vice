@@ -1894,7 +1894,7 @@
                     "initial_altitude": 27000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N040.19.14.251,W078.11.33.484 COFAX J152 HAR/a18000/hoN26 LRP/a13000/ho41N TRAGG BUNTS/a8000 RELNY NAGGS/ho5WX CYN/a4000 CISON/a2000+ N039.53.25.123,W074.44.45.388 N039.49.58.526,W074.45.22.055 N039.52.14.371,W074.46.43.848 FENKA/a2000+ KWRI-6/delete/a0"
+                    "waypoints": "N040.19.14.251,W078.11.33.484 COFAX J152 HAR/a18000/hoN26 LRP/a13000/ho41N TRAGG BUNTS/a8000 RELNY NAGGS/ho51Y CYN/a4000 CISON/a2000+ N039.53.25.123,W074.44.45.388 N039.49.58.526,W074.45.22.055 N039.52.14.371,W074.46.43.848 FENKA/a2000+ KWRI-6/delete/a0"
                 },
                 {
                     "airlines": [
@@ -2114,7 +2114,7 @@
                     "initial_altitude": 23000,
                     "initial_controller": "NY_27_CTR",
                     "initial_speed": 280,
-                    "waypoints": "N039.40.23.474,W077.58.24.254 LOYDD GAAPP/a17000-/ho1WE N040.53.50.433,W076.18.23.933/a9000/delete"
+                    "waypoints": "N039.40.23.474,W077.58.24.254 LOYDD GAAPP/a17000-/ho11E N040.53.50.433,W076.18.23.933/a9000/delete"
                 },
                 {
                     "airlines": [
@@ -2169,143 +2169,122 @@
         "MDT_W_APP": {
             "frequency": 124100,
             "radio_name": "Harrisburg Approach",
-            "scope_char": "K",
-            "sector_id": "HK",
+            "sector_id": "1H",
             "default_airport": "KLNS"
         },
         "MDT_TWR": {
             "frequency": 124800,
             "radio_name": "Harrisburg Tower",
-            "scope_char": "L",
             "sector_id": "HL"
         },
         "CXY_TWR": {
             "frequency": 119500,
             "radio_name": "Capital City Tower",
-            "scope_char": "H",
             "sector_id": "HH"
         },
         "LNS_TWR": {
             "frequency": 120900,
             "radio_name": "Lancaster Tower",
-            "scope_char": "M",
             "sector_id": "HM"
         },
         "MDT_E_APP": {
             "frequency": 126450,
             "radio_name": "Harrisburg Approach",
-            "scope_char": "S",
-            "sector_id": "HS",
+            "sector_id": "1L",
             "default_airport": "KLNS"
         },
         "MDT_N_APP": {
             "frequency": 118250,
             "radio_name": "Harrisburg Approach",
-            "scope_char": "G",
-            "sector_id": "HG"
+            "sector_id": "1R"
         },
         "AVP_APP": {
             "frequency": 126300,
             "radio_name": "Wilkes Barre Approach",
-            "scope_char": "E",
             "facility_id": "1",
-            "sector_id": "WE"
+            "sector_id": "1E"
         },
         "ABE_DEP": {
             "frequency": 124450,
             "radio_name": "Allentown Approach",
-            "scope_char": "D",
             "facility_id": "2",
             "sector_id": "1D"
         },
         "ABE_APP": {
             "frequency": 119650,
             "radio_name": "Allentown Approach",
-            "scope_char": "A",
             "facility_id": "2",
             "sector_id": "1A"
         },
         "PHL_DEP": {
             "frequency": 124350,
             "radio_name": "Philly Approach",
-            "scope_char": "E",
             "facility_id": "4",
             "sector_id": "4E"
         },
         "PHL_NA_APP": {
             "frequency": 128400,
             "radio_name": "Philly Approach",
-            "scope_char": "N",
             "facility_id": "4",
             "sector_id": "1N"
         },
         "PHL_PT_APP": {
             "frequency": 126850,
             "radio_name": "Philly Approach",
-            "scope_char": "P",
             "facility_id": "4",
             "sector_id": "1P"
         },
         "WRI_APP": {
             "frequency": 126475,
             "radio_name": "McGuire Approach",
-            "scope_char": "Y",
             "facility_id": "5",
-            "sector_id": "WX"
+            "sector_id": "1Y"
         },
         "RDG_APP": {
             "frequency": 125150,
             "radio_name": "Reading Approach",
-            "scope_char": "X",
             "facility_id": "3",
-            "sector_id": "RX"
+            "sector_id": "1X"
         },
         "JST_APP": {
             "frequency": 121200,
             "radio_name": "Johnstown Approach",
-            "scope_char": "A",
             "facility_id": "7",
             "sector_id": "1A"
         },
         "PCT_B_APP": {
             "frequency": 125525,
             "radio_name": "Potomac Approach",
-            "scope_char": "B",
             "facility_id": "6",
             "sector_id": "1B"
         },
         "PCT_L_APP": {
             "frequency": 126825,
             "radio_name": "Potomac Approach",
-            "scope_char": "Z",
             "facility_id": "6",
             "sector_id": "3Z"
         },
         "PCT_M_APP": {
             "frequency": 126100,
             "radio_name": "Potomac Approach",
-            "scope_char": "M",
             "facility_id": "6",
             "sector_id": "3M"
         },
         "PCT_C_APP": {
             "frequency": 134200,
             "radio_name": "Potomac Approach",
-            "scope_char": "C",
             "facility_id": "6",
             "sector_id": "3C"
         },
         "PCT_S_APP": {
             "frequency": 119700,
             "radio_name": "Potomac Approach",
-            "scope_char": "S",
             "facility_id": "6",
             "sector_id": "3S"
         },
         "NY_08_CTR": {
             "frequency": 124775,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N8",
             "facility_id": "C",
             "eram_facility": true
@@ -2313,7 +2292,6 @@
         "NY_09_CTR": {
             "frequency": 134325,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N9",
             "facility_id": "C",
             "eram_facility": true
@@ -2321,7 +2299,6 @@
         "NY_10_CTR": {
             "frequency": 133475,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N10",
             "facility_id": "C",
             "eram_facility": true
@@ -2329,7 +2306,6 @@
         "NY_25_CTR": {
             "frequency": 135450,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N25",
             "facility_id": "C",
             "eram_facility": true
@@ -2337,7 +2313,6 @@
         "NY_27_CTR": {
             "frequency": 132000,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N27",
             "facility_id": "C",
             "eram_facility": true
@@ -2345,7 +2320,6 @@
         "NY_26_CTR": {
             "frequency": 120025,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N26",
             "facility_id": "C",
             "eram_facility": true
@@ -2353,7 +2327,6 @@
         "NY_91_CTR": {
             "frequency": 134800,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N91",
             "facility_id": "C",
             "eram_facility": true
@@ -2361,7 +2334,6 @@
         "NY_92_CTR": {
             "frequency": 124625,
             "radio_name": "New York Center",
-            "scope_char": "C",
             "sector_id": "N92",
             "facility_id": "C",
             "eram_facility": true

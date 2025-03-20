@@ -1088,44 +1088,37 @@
       "frequency": 126950,
       "radio_name": "Cleveland Center",
       "facility_id": "C",
-      "scope_char": "C",
       "sector_id": "55"
     },
     "PIT_TWR": {
       "frequency": 120500,
       "radio_name": "Pittsburgh Tower",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "PIT_D_APP": {
       "frequency": 123950,
       "radio_name": "Pittsburgh Approach",
       "default_airport": "KPIT",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "PIT_B_APP": {
       "frequency": 124150,
       "radio_name": "Pittsburgh Approach",
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "PIT_S_DEP": {
       "frequency": 119350,
       "radio_name": "Pittsburgh Departure",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "PIT_N_DEP": {
       "frequency": 124750,
       "radio_name": "Pittsburgh Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "AGC_TWR": {
       "frequency": 121100,
       "radio_name": "Allegheny Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     }
   },

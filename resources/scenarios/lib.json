@@ -2725,25 +2725,21 @@
     "Newark Departure": {
       "frequency": 119200,
       "radio_name": "Newark departure",
-      "scope_char": "N",
       "sector_id": "4N"
     },
     "Kennedy Departure": {
       "frequency": 135900,
       "radio_name": "New York departure",
-      "scope_char": "J",
       "sector_id": "2J"
     },
     "LaGuardia Departure": {
       "frequency": 120400,
       "radio_name": "New York departure",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "New York Center (Kennedy 56)": {
       "frequency": 125325,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
       "eram_facility": true
@@ -2751,7 +2747,6 @@
     "New York Center (Dixie 68)": {
       "frequency": 118975,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C68",
       "facility_id": "C",
       "eram_facility": true
@@ -2759,7 +2754,6 @@
     "New York Center (Yardley 55)": {
       "frequency": 132175,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C55",
       "facility_id": "C",
       "eram_facility": true
@@ -2767,7 +2761,6 @@
     "New York Center (Huguenot 35)": {
       "frequency": 132600,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C35",
       "facility_id": "C",
       "eram_facility": true
@@ -2775,7 +2768,6 @@
     "New York Center (Lake Henry 51)": {
       "frequency": 134450,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C51",
       "facility_id": "C",
       "eram_facility": true
@@ -2783,7 +2775,6 @@
     "New York Center (Parke 39)": {
       "frequency": 132100,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C39",
       "facility_id": "C",
       "eram_facility": true
@@ -2791,7 +2782,6 @@
     "New York Center (Sparta 36)": {
       "frequency": 133150,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C36",
       "facility_id": "C",
       "eram_facility": true
@@ -2799,52 +2789,44 @@
     "Liberty Departure (East)": {
       "frequency": 126800,
       "radio_name": "New York departure",
-      "scope_char": "E",
       "sector_id": "5E"
     },
     "Liberty Departure (North)": {
       "frequency": 118170,
       "radio_name": "New York departure",
-      "scope_char": "T",
       "sector_id": "5T"
     },
     "Liberty Departure (South)": {
       "frequency": 124750,
       "radio_name": "New York departure",
-      "scope_char": "S",
       "sector_id": "5S"
     },
     "Liberty Departure (West)": {
       "frequency": 120850,
       "radio_name": "New York departure",
-      "scope_char": "W",
       "sector_id": "5W"
     },
     "McGuire Approach": {
       "frequency": 126470,
       "radio_name": "McGuire approach",
-      "scope_char": "5",
       "sector_id": "1Y",
       "facility_id": "5"
     },
     "Wilkes Barre Approach": {
       "frequency": 126300,
       "radio_name": "Wilkes Barre Approach",
-      "scope_char": "7",
       "sector_id": "1E",
       "facility_id": "7"
     },
     "Wilkes Barre Approach": {
       "frequency": 120950,
       "radio_name": "Wilkes Barre Approach",
-      "scope_char": "7",
       "sector_id": "1B",
       "facility_id": "7"
     },
     "Allentown approach": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
-      "scope_char": "F",
       "sector_id": "1F",
       "facility_id": "4"
     }

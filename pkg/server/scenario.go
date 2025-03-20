@@ -781,6 +781,21 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" {
 			e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
 		}
+
+		// Is an explicitly-given scope_char unnecessary?
+		if ctrl.Scope != "" {
+			if ctrl.FacilityIdentifier == ctrl.Scope {
+				e.ErrorString("\"scope_char\" is redundant since it matches \"facility_id\"")
+			}
+			if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" && len(ctrl.TCP) > 0 &&
+				ctrl.Scope == string(ctrl.TCP[len(ctrl.TCP)-1]) {
+				e.ErrorString("\"scope_char\" is redundant since it matches the last character of a local controller's \"sector_id\"")
+			}
+		}
+		if len(ctrl.Scope) > 1 {
+			e.ErrorString("\"scope_char\" may only be a single character")
+		}
+
 		e.Pop()
 	}
 

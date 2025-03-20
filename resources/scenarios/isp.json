@@ -2202,49 +2202,41 @@
         "HVN_TWR": {
           "frequency": 124800,
           "radio_name": "New Haven tower",
-          "scope_char": "T",
           "sector_id": "3P"
         },
         "ISP_H_APP": {
           "frequency": 134550,
           "radio_name": "New York approach",
-          "scope_char": "H",
           "sector_id": "3H"
         },
         "ISP_N_APP": {
           "frequency": 120050,
           "radio_name": "New York approach",
-          "scope_char": "N",
           "sector_id": "3N"
         },
         "ISP_R_APP": {
           "frequency": 133100,
           "radio_name": "New York approach",
-          "scope_char": "R",
           "sector_id": "3R"
         },
         "ISP_O_APP": {
           "frequency": 128625,
           "radio_name": "New York approach",
-          "scope_char": "O",
           "sector_id": "3O"
         },
         "ISP_Z_APP": {
           "frequency": 124075,
           "radio_name": "New York approach",
-          "scope_char": "Z",
           "sector_id": "3Z"
         },
         "ISP_I_APP": {
           "frequency": 118950,
           "radio_name": "New York approach",
-          "scope_char": "I",
           "sector_id": "3I"
         },
         "ISP_B_APP": {
           "frequency": 125975,
           "radio_name": "New York approach",
-          "scope_char": "B",
           "sector_id": "3B"
         },
         "ISP_TWR": {
@@ -2256,19 +2248,16 @@
         "JFK_G_APP": {
           "frequency": 128125,
           "radio_name": "New York approach",
-          "scope_char": "G",
           "sector_id": "2G"
         },
         "LGA_APP": {
           "frequency": 120800,
           "radio_name": "New York approach",
-          "scope_char": "V",
           "sector_id": "1V"
         },
         "NY_B_CTR": {
           "frequency": 125325,
           "radio_name": "New York center",
-          "scope_char": "C",
           "facility_id": "C",
           "eram_facility": true,
           "sector_id": "N56"
@@ -2276,7 +2265,6 @@
         "NY_F_CTR": {
           "frequency": 133500,
           "radio_name": "New York center",
-          "scope_char": "C",
           "facility_id": "C",
           "eram_facility": true,
           "sector_id": "N86"
@@ -2284,13 +2272,11 @@
         "NY_LE_DEP": {
           "frequency": 126800,
           "radio_name": "New York departure",
-          "scope_char": "E",
           "sector_id": "5E"
         },
         "SWF_APP":{
           "frequency": 	132750,
           "radio_name": "New York approach",
-          "scope_char": "H",
           "sector_id": "5H"
         }
     },

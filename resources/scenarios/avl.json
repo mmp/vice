@@ -603,7 +603,6 @@
     "ATL_CTR": {
       "frequency": 132975,
       "radio_name": "Atlanta Center",
-      "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
       "eram_facility": true
@@ -611,13 +610,11 @@
     "AVL_W_APP": {
       "frequency": 124650,
       "radio_name": "Asheville Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "AVL_E_APP": {
       "frequency": 125800,
       "radio_name": "Asheville Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "GSP_APP": {
@@ -637,7 +634,6 @@
     "AVL_TWR": {
       "frequency": 121100,
       "radio_name": "Asheville Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "TYS_APP": {

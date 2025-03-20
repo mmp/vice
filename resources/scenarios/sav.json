@@ -736,31 +736,26 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "30"
     },
     "SAV_N_APP": {
       "frequency": 125300,
       "radio_name": "Savannah Approach",
-      "scope_char": "N",
       "sector_id": "6N"
     },
     "SAV_W_APP": {
       "frequency": 118400,
       "radio_name": "Savannah Approach",
-      "scope_char": "W",
       "sector_id": "6W"
     },
     "SAV_S_APP": {
       "frequency": 120400,
       "radio_name": "Savannah Approach",
-      "scope_char": "S",
       "sector_id": "6S"
     },
     "SAV_TWR": {
       "frequency": 125975,
       "radio_name": "Savannah Tower",
-      "scope_char": "T",
       "sector_id": "6ST"
     }
   },

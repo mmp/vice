@@ -716,7 +716,6 @@
     "ATL_CTR": {
       "frequency": 132975,
       "radio_name": "Atlanta Center",
-      "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
       "eram_facility": true
@@ -738,31 +737,26 @@
     "BHM_N_APP": {
       "frequency": 127670,
       "radio_name": "Birmingham Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "BHM_S_APP": {
       "frequency": 123800,
       "radio_name": "Birmingham Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "BHM_W_APP": {
       "frequency": 120150,
       "radio_name": "Birmingham Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "BHM_E_APP": {
       "frequency": 120050,
       "radio_name": "Birmingham Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "BHM_F_APP": {
       "frequency": 126150,
       "radio_name": "Birmingham Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     }
   },

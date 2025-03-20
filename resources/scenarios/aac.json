@@ -1586,31 +1586,26 @@
     "AAC_NR_APP": {
       "frequency": 120200,
       "radio_name": "Academy Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "AAC_SR_APP": {
       "frequency": 119500,
       "radio_name": "Academy Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "AAC_F_APP": {
       "frequency": 126600,
       "radio_name": "Academy Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "AAC_TWR": {
       "frequency": 119200,
       "radio_name": "Academy Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "JKE_TWR": {
       "frequency": 126200,
       "radio_name": "Jeske Tower",
-      "scope_char": "T",
       "sector_id": "2T"
     },
     "SGF_APP": {

@@ -591,13 +591,11 @@
             "SGF_E_APP": {
                 "frequency": 124950,
                 "radio_name": "Springfield approach",
-                "scope_char": "E",
                 "sector_id": "1E"
             },
-			"SGF_W_APP": {
+	   "SGF_W_APP": {
                 "frequency": 121100,
                 "radio_name": "Springfield approach",
-                "scope_char": "W",
                 "sector_id": "1W"
             },
             "SGF_TWR": {
@@ -611,13 +609,11 @@
                 "radio_name": "Kansas City center",
                 "facility_id": "C",
                 "eram_facility": true,
-                "scope_char": "C",
                 "sector_id": "C77"
             },
             "MZU_APP": {
                 "frequency": 124375,
                 "radio_name": "Mizzu approach",
-                "scope_char": "M",
                 "sector_id": "2M"
             },
             "LBO_TWR": {

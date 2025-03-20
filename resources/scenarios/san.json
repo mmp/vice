@@ -1957,7 +1957,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C30"
         },
 		"LAX_31_CTR": {
@@ -1965,61 +1964,51 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C31"
         },
 		"SNA_Y_APP": {
             "frequency": 128100,
             "radio_name": "SoCal Approach",
-            "scope_char": "Y",
             "sector_id": "4Y"
         },
 		"ONT_N_APP": {
             "frequency": 127000,
             "radio_name": "SoCal Approach",
-            "scope_char": "N",
             "sector_id": "3N"
         },
         "SAN_W_APP": {
             "frequency": 119600,
             "radio_name": "SoCal Approach",
-            "scope_char": "W",
             "sector_id": "5W"
         },
         "SAN_E_APP": {
             "frequency": 124350,
             "radio_name": "SoCal Approach",
-            "scope_char": "E",
             "sector_id": "5E"
         },
         "SAN_N_APP": {
             "frequency": 125300,
             "radio_name": "SoCal Approach",
-            "scope_char": "N",
             "sector_id": "5N"
         },
         "SAN_D_APP": {
             "frequency": 127300,
             "radio_name": "SoCal Approach",
-            "scope_char": "D",
             "sector_id": "5D"
         },
         "SAN_TWR": {
             "frequency": 118300,
             "radio_name": "Lindbergh Tower",
-            "scope_char": "S",
             "sector_id": "5S"
         },
         "MYF_TWR": {
             "frequency": 125700,
             "radio_name": "Montgomery Tower",
-            "scope_char": "Y",
             "sector_id": "5Y" 
         },
         "CRQ_TWR": {
             "frequency": 118400,
             "radio_name": "Palomar Tower",
-            "scope_char": "U",
             "sector_id": "5U"
         }
     },

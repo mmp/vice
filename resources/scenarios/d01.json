@@ -7720,7 +7720,6 @@
         "DEN_15_CTR": {
             "frequency": 118470,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C15",
             "facility_id": "C",
             "eram_facility": true
@@ -7728,7 +7727,6 @@
         "DEN_07_CTR": {
             "frequency": 133950,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C07",
             "facility_id": "C",
             "eram_facility": true
@@ -7736,7 +7734,6 @@
         "DEN_27_CTR": {
             "frequency": 133400,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C27",
             "facility_id": "C",
             "eram_facility": true
@@ -7744,7 +7741,6 @@
         "DEN_41_CTR": {
             "frequency": 128370,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C41",
             "facility_id": "C",
             "eram_facility": true
@@ -7752,7 +7748,6 @@
         "DEN_26_CTR": {
             "frequency": 119850,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C26",
             "facility_id": "C",
             "eram_facility": true
@@ -7760,7 +7755,6 @@
         "DEN_06_CTR": {
             "frequency": 128650,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C06",
             "facility_id": "C",
             "eram_facility": true
@@ -7768,7 +7762,6 @@
         "DEN_13_CTR": {
             "frequency": 126500,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C13",
             "facility_id": "C",
             "eram_facility": true
@@ -7776,7 +7769,6 @@
         "DEN_21_CTR": {
             "frequency": 125900,
             "radio_name": "Denver Center",
-            "scope_char": "C",
             "sector_id": "C21",
             "facility_id": "C",
             "eram_facility": true
@@ -7784,101 +7776,86 @@
         "DEN_I_APP": {
             "frequency": 120350,
             "radio_name": "Denver Approach",
-            "scope_char": "I",
             "sector_id": "1I"
         },
         "DEN_H_APP": {
             "frequency": 119300,
             "radio_name": "Denver Approach",
-            "scope_char": "H",
             "sector_id": "1H"
         },
         "DEN_G_APP": {
             "frequency": 124950,
             "radio_name": "Denver Approach",
-            "scope_char": "G",
             "sector_id": "1G"
         },
         "DEN_X_APP": {
             "frequency": 126550,
             "radio_name": "Denver Approach",
-            "scope_char": "X",
             "sector_id": "1X"
         },
         "DEN_W_APP": {
             "frequency": 123850,
             "radio_name": "Denver Approach",
-            "scope_char": "W",
             "sector_id": "1W"
         },
         "DEN_E_APP": {
             "frequency": 120800,
             "radio_name": "Denver Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         },
         "DEN_O_APP": {
             "frequency": 125750,
             "radio_name": "Denver Approach",
-            "scope_char": "O",
             "sector_id": "1O"
         },
         "DEN_T_APP": {
             "frequency": 133620,
             "radio_name": "Denver Approach",
-            "scope_char": "T",
             "sector_id": "1T"
         },
         "DEN_L_DEP": {
             "frequency": 126100,
             "radio_name": "Denver Departure",
-            "scope_char": "L",
             "sector_id": "1L"
         },
         "DEN_N_DEP": {
             "frequency": 127050,
             "radio_name": "Denver Departure",
-            "scope_char": "N",
             "sector_id": "1N"
         },
         "DEN_R_DEP": {
             "frequency": 128250,
             "radio_name": "Denver Departure",
-            "scope_char": "R",
             "sector_id": "1R"
         },
         "DEN_S_DEP": {
             "frequency": 128450,
             "radio_name": "Denver Departure",
-            "scope_char": "S",
             "sector_id": "1S"
         },
-		"DEN_J_APP": {
+        "DEN_J_APP": {
             "frequency": 125120,
             "radio_name": "Denver Approach",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "DEN_D_APP": {
             "frequency": 134850,
             "radio_name": "Denver Approach",
-            "scope_char": "D",
             "sector_id": "1D"
         },
         "DEN_A_APP": {
             "frequency": 132750,
             "radio_name": "Denver Approach",
-            "scope_char": "A",
             "sector_id": "1A"
         },
-		"COS_APP": {
+        "COS_APP": {
             "frequency": 124000,
             "radio_name": "Springs Approach",
 			"facility_id": "1",
             "scope_char": "A",
             "sector_id": "1A"
         },
-		"CYS_APP": {
+        "CYS_APP": {
             "frequency": 124550,
             "radio_name": "Cheyenne Approach",
 			"facility_id": "2",
@@ -7891,7 +7868,7 @@
             "scope_char": "1",
             "sector_id": "1ET"
         },
-		"DEN_S_TWR": {
+        "DEN_S_TWR": {
             "frequency": 124300,
             "radio_name": "Denver Tower",
             "scope_char": "2",
@@ -7912,19 +7889,16 @@
         "APA_TWR": {
             "frequency": 118900,
             "radio_name": "Centennial Tower",
-            "scope_char": "Y",
             "sector_id": "2Y"
         },
         "BJC_TWR": {
             "frequency": 118600,
             "radio_name": "Metro Tower",
-            "scope_char": "B",
             "sector_id": "2B"
         },
         "FNL_TWR": {
             "frequency": 118400,
             "radio_name": "NoCo Tower",
-            "scope_char": "F",
             "sector_id": "2F"
         },
         "GXY_TWR": {
@@ -7933,16 +7907,14 @@
             "scope_char": "*",
             "sector_id": "GT"
         },
-		"BKF_TWR": {
+        "BKF_TWR": {
             "frequency": 121000,
             "radio_name": "Buckley Tower",
-            "scope_char": "T",
             "sector_id": "BT"
         },
         "CFO_TWR": {
             "frequency": 120200,
             "radio_name": "Spaceport Tower",
-            "scope_char": "T",
             "sector_id": "ST"
         }
     },

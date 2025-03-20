@@ -3374,7 +3374,6 @@
     "SEA_16_CTR": {
       "frequency": 135450,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S16",
       "facility_id": "C",
       "eram_facility": true
@@ -3382,7 +3381,6 @@
     "SEA_32_CTR": {
       "frequency": 126600,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S32",
       "facility_id": "C",
       "eram_facility": true
@@ -3390,7 +3388,6 @@
       "SEA_02_CTR": {
       "frequency": 120300,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S02",
       "facility_id": "C",
       "eram_facility": true
@@ -3398,7 +3395,6 @@
     "SEA_42_CTR": {
       "frequency": 132070,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S42",
       "facility_id": "C",
       "eram_facility": true
@@ -3406,7 +3402,6 @@
     "SEA_46_CTR": {
       "frequency": 124350,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S46",
       "facility_id": "C",
       "eram_facility": true
@@ -3414,43 +3409,36 @@
     "PDX_N_TWR": {
       "frequency": 118700,
       "radio_name": "Portland North Tower",
-      "scope_char": "J",
       "sector_id": "2J"
     },
     "PDX_S_TWR": {
       "frequency": 123775,
       "radio_name": "Portland South Tower",
-      "scope_char": "A",
       "sector_id": "2A"
     },
     "TTD_TWR": {
       "frequency": 120900,
       "radio_name": "Troutdale Tower",
-      "scope_char": "B",
       "sector_id": "2B"
     },
     "PDX_APP": {
       "frequency": 124350,
       "radio_name": "Portland Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "PDX_S_APP": {
       "frequency": 118100,
       "radio_name": "Portland South Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "PDX_F_APP":{
         "frequency": 126900,
         "radio_name": "Portland Approach",
-        "scope_char": "F",
         "sector_id": "1F"
     },
     "PDX_DEP":{
       "frequency": 124350,
       "radio_name": "Portland Departure",
-      "scope_char": "D",
       "sector_id": "1D"
     }
   },
