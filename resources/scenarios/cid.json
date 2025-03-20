@@ -782,13 +782,11 @@
             "CID_S_APP": {
                 "frequency": 119700,
                 "radio_name": "Cedar Rapids approach",
-                "scope_char": "A",
                 "sector_id": "1A"
             },
 			"CID_N_APP": {
                 "frequency": 134050,
                 "radio_name": "Cedar Rapids approach",
-                "scope_char": "D",
                 "sector_id": "1D"
             },
             "CID_TWR": {
@@ -802,13 +800,11 @@
                 "radio_name": "Chicago center",
                 "facility_id": "C",
                 "eram_facility": true,
-                "scope_char": "C",
                 "sector_id": "C56"
             },
             "IOW_TWR": {
                 "frequency": 122800,
                 "radio_name": "Iowa city traffic",
-                "scope_char": "T",
                 "sector_id": "2T"
             }
 

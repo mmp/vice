@@ -695,7 +695,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C14"
         },
 		"LAX_15_CTR": {
@@ -703,7 +702,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C15"
         },
 		"LAX_25_CTR": {
@@ -711,7 +709,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C25"
         },
 		"OAK_10_CTR": {
@@ -719,55 +716,46 @@
             "radio_name": "Oakland Center",
             "facility_id": "O",
             "eram_facility": true,
-            "scope_char": "O",
             "sector_id": "O10"
         },
 		"NTD_APP": {
             "frequency": 124700,
             "radio_name": "Point Mugu Approach",
-            "scope_char": "M",
             "sector_id": "1M"
         },
         "SBA_R_APP": {
             "frequency": 124150,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "R",
             "sector_id": "1R"
         },
 		"SBA_H_APP": {
             "frequency": 125400,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "H",
             "sector_id": "1H"
         },
 		"SBA_E_APP": {
             "frequency": 120550,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         },
 		"SBA_I_APP": {
             "frequency": 127725,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "I",
             "sector_id": "1I"
         },
 		"SBA_TWR": {
             "frequency": 119700,
             "radio_name": "Santa Barbara Tower",
-            "scope_char": "S",
             "sector_id": "1S"
 		},
 		"SBP_TWR": {
             "frequency": 124000,
             "radio_name": "San Luis Tower",
-            "scope_char": "P",
             "sector_id": "1P"
 		},
 		"SMX_TWR": {
             "frequency": 118300,
             "radio_name": "Santa Maria Tower",
-            "scope_char": "X",
             "sector_id": "1X"
 		}
     },

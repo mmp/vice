@@ -3745,93 +3745,78 @@
                             "CLE_A_APP": {
                                 "frequency": 124000,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "A",
                                 "sector_id": "2A"
                             },
                             "CLE_F_APP": {
                                 "frequency": 119625,        
                                 "radio_name": "Cleveland Approach",              
-                                "scope_char": "F",
                                 "sector_id": "2F"
                             },
                             "CLE_D_DEP": {
                                 "frequency": 128250,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "D",
                                 "sector_id": "2D"
                             },
                             "CLE_R_DEP": {
                                 "frequency": 135875,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "R",
                                 "sector_id": "2R"
                             },
                             "CLE_N_APP": {
                                 "frequency": 125350,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "N",
                                 "sector_id": "2N"
                             },
                             "CAK_E_APP": {
                                 "frequency": 125500,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "E",
                                 "sector_id": "2E"
                             },
                             "CAK_S_APP": {
                                 "frequency": 118600,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "S",
                                 "sector_id": "2S"
                             },
                             "MFD_W_APP": {
                                 "frequency": 128350,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "W",
                                 "sector_id": "2W"
                             },
                             "CLE_66_CTR": {
                                 "frequency": 125425,
                                 "radio_name": "Cleveland Center",
-                                "scope_char": "C",
-                                "sector_id": "66"
                                 "eram_facility": true,
                                 "facility_id": "C",
+                                "sector_id": "C66"
                             },
                             "CLE_TWR": {
                                 "frequency": 124500,
                                 "radio_name": "Cleveland Tower",
-                                "scope_char": "T",
-                                "sector_id": "2CT"
+                                "sector_id": "2T"
                             },
                             "CAK_TWR": {
                                 "frequency": 135750,
                                 "radio_name": "Akron-Canton Tower",
-                                "scope_char": "T",
                                 "sector_id": "4T"
                             },
                             "MFD_TWR": {
                                 "frequency": 119800,
                                 "radio_name": "Mansfield Tower",
-                                "scope_char": "T",
                                 "sector_id": "5T"
                             },
                             "CGF_TWR": {
                                 "frequency": 118500,
                                 "radio_name": "County Tower",
-                                "scope_char": "T",
                                 "sector_id": "3T"
                             },
                             "BKL_TWR": {
                                 "frequency": 124300,
                                 "radio_name": "Lakefront Tower",
-                                "scope_char": "T",
                                 "sector_id": "1T"
                             },
                             "DTW_F_APP": {
                                 "frequency": 126225,
                                 "radio_name": "Detroit Approach",
-                                "scope_char": "F",
                                 "sector_id": "1F"
                             }
                         },

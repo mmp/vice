@@ -3899,79 +3899,66 @@
         "DTW_R_APP": {
             "frequency": 126850,
             "radio_name": "Detroit Approach",
-            "scope_char": "R",
             "sector_id": "1R"
         },
         "DTW_V_APP": {
             "frequency": 124975,
             "radio_name": "Detroit Approach",
-            "scope_char": "V",
             "sector_id": "1V"
         },
         "DTW_F_APP": {
             "frequency": 126225,
             "radio_name": "Detroit Approach",
-            "scope_char": "F",
             "sector_id": "1F"
         },
         "DTW_H_APP": {
             "frequency": 124250,
             "radio_name": "Detroit Approach",
-            "scope_char": "H",
             "sector_id": "1H"
         },
         "DTW_A_APP": {
             "frequency": 124050,
             "radio_name": "Detroit Approach",
-            "scope_char": "A",
             "sector_id": "1A"
         },
         "DTW_B_APP": {
             "frequency": 125150,
             "radio_name": "Detroit Approach",
-            "scope_char": "B",
             "sector_id": "1B"
         },
         "DTW_Z_APP": {
             "frequency": 123900,
             "radio_name": "Detroit Approach",
-            "scope_char": "Z",
             "sector_id": "1Z"
         },
         "DTW_E_DEP": {
             "frequency": 132025,
             "radio_name": "Detroit Departure",
-            "scope_char": "E",
             "sector_id": "1E"
         },
         "DTW_W_DEP": {
             "frequency": 125525,
             "radio_name": "Detroit Departure",
-            "scope_char": "W",
             "sector_id": "1W"
         },
         "DTW_Y_APP": {
             "frequency": 118950,
-            "radio_name": "Detroit Appraoch",
-            "scope_char": "Y",
+            "radio_name": "Detroit Approach",
             "sector_id": "1Y"
         },
         "DTW_D_APP": {
             "frequency": 134300,
             "radio_name": "Detroit Approach",
-            "scope_char": "D",
             "sector_id": "1D"
         },
         "DTW_P_APP": {
             "frequency": 132350,
             "radio_name": "Detroit Approach",
-            "scope_char": "P",
             "sector_id": "1P"
         },
         "CLE_48_CTR": {
             "frequency": 119875,
             "radio_name": "Cleveland Center",
-            "scope_char": "C",
             "sector_id": "C48",
             "facility_id": "C",
             "eram_facility": true
@@ -3979,43 +3966,37 @@
         "CLE_A_APP": {
             "frequency": 124000,
             "radio_name": "Cleveland Approach",
-            "scope_char": "2",
+            "facility_id": "2",
             "sector_id": "2A"
         },
         "DTW_SW_TWR": {
             "frequency": 135000,
             "radio_name": "Detroit Tower",
-            "scope_char": "N",
             "sector_id": "1N"
         },
         "DTW_NE_TWR": {
             "frequency": 128750,
             "radio_name": "Detroit Tower",
-            "scope_char": "M",
             "sector_id": "1M"
         },
         "DTW_NW_TWR": {
             "frequency": 128125,
             "radio_name": "Detroit Tower",
-            "scope_char": "L",
             "sector_id": "1L"
         },
         "PTK_TWR": {
             "frequency": 120500,
             "radio_name": "Pontiac Tower",
-            "scope_char": "P",
             "sector_id": "4P"
         },
         "DET_TWR": {
             "frequency": 121300,
             "radio_name": "Detroit Tower",
-            "scope_char": "Y",
             "sector_id": "6Y"
         },
         "YIP_TWR": {
             "frequency": 125275,
             "radio_name": "Willow Run Tower",
-            "scope_char": "W",
             "sector_id": "8W"
         }
     },

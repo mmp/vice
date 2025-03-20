@@ -555,7 +555,6 @@
         "GJT_APP": {
             "frequency": 119700,
             "radio_name": "Denver Approach",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "DEN_11_CTR": {
@@ -563,7 +562,6 @@
             "radio_name": "Denver Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C11"
         },
         "DEN_12_CTR": {
@@ -571,13 +569,11 @@
             "radio_name": "Denver Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C12"
         },
         "GJT_TWR": {
             "frequency": 118100,
             "radio_name": "Grand Junction Tower",
-            "scope_char": "T",
             "sector_id": "5T"
         }
     },

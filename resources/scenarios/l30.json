@@ -1905,7 +1905,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C37"
         },
 		"LAX_38_CTR": {
@@ -1913,7 +1912,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C38"
         },
 		"LAX_16_CTR": {
@@ -1921,7 +1919,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C16"
         },
 		"LAX_54_CTR": {
@@ -1929,7 +1926,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C54"
         },
 		"LAX_35_CTR": {
@@ -1937,79 +1933,66 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C35"
         },
         "LAS_D_DEP": {
             "frequency": 125900,
             "radio_name": "Las Vegas Departure",
-            "scope_char": "D",
             "sector_id": "1D"
         },
         "LAS_M_DEP": {
             "frequency": 133950,
             "radio_name": "Las Vegas Departure",
-            "scope_char": "M",
             "sector_id": "1M"
         },
         "LAS_Y_APP": {
             "frequency": 125475,
             "radio_name": "Las Vegas Approach",
-            "scope_char": "Y",
             "sector_id": "1Y"
         },
         "LAS_G_APP": {
             "frequency": 125025,
             "radio_name": "Las Vegas Approach",
-            "scope_char": "G",
             "sector_id": "1G"
         },
         "LAS_L_APP": {
             "frequency": 119775,
             "radio_name": "Las Vegas Approach",
-            "scope_char": "L",
             "sector_id": "1L"
         },
         "LAS_F_APP": {
             "frequency": 135000,
             "radio_name": "Las Vegas Approach",
-            "scope_char": "F",
             "sector_id": "1F"
         },
         "LAS_T_APP": {
             "frequency": 119400,
             "radio_name": "Las Vegas Approach",
-            "scope_char": "T",
             "sector_id": "1T"
         },
         "LAS_K_APP": {
             "frequency": 120450,
             "radio_name": "Las Vegas Approach",
-            "scope_char": "K",
             "sector_id": "1K"
         },
 		"LSV_N_APP": {
             "frequency": 124950,
             "radio_name": "Nellis Approach",
-            "scope_char": "S",
             "sector_id": "1S"
         },
         "LAS_TWR": {
             "frequency": 119900,
             "radio_name": "Las Vegas Tower",
-            "scope_char": "Q",
             "sector_id": "1Q"
         },
 		"HND_TWR": {
             "frequency": 125100,
             "radio_name": "Henderson Tower",
-            "scope_char": "H",
             "sector_id": "1H"
         },
 		"VGT_TWR": {
             "frequency": 125700,
             "radio_name": "North Las Vegas Tower",
-            "scope_char": "V",
             "sector_id": "1V"
         }
     },

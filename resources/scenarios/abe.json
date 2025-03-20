@@ -625,40 +625,34 @@
     "ABE_APP": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
-      "scope_char": "F",
       "sector_id": "1A"
     },
     "ABE_DEP": {
       "frequency": 124450,
       "radio_name": "Allentown departure",
-      "scope_char": "F",
       "sector_id": "1D"
     },
     "ABE_TWR": {
       "frequency": 120500,
       "radio_name": "Lehigh Valley tower",
-      "scope_char": "T",
       "sector_id": "1L"
     },
     "AVP_S_APP": {
       "frequency": 126300,
       "radio_name": "Wilkes Barre Approach",
-      "scope_char": "7",
       "sector_id": "1E",
-      "facility_id": "1"
+      "facility_id": "7"
     },
     "EWR_APP": {
       "frequency": 128550,
       "radio_name": "New York approach",
-      "scope_char": "P",
       "sector_id": "4P",
       "facility_id": "2"
     },
     "MDT_SE_APP": {
       "frequency": 126450,
       "radio_name": "Harrisburg approach",
-      "scope_char": "S",
-      "sector_id": "HS",
+      "sector_id": "1L",
       "facility_id": "5"
     },
     "NY_D_CTR": {
@@ -666,13 +660,11 @@
       "radio_name": "New York center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "N72"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
       "radio_name": "Philly approach",
-      "scope_char": "N",
       "sector_id": "6N",
       "facility_id": "3"
     }

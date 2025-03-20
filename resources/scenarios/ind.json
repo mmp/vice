@@ -732,7 +732,6 @@
       "radio_name": "Indianapolis Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C33"
     },
     "IND_34_CTR": {
@@ -740,7 +739,6 @@
       "radio_name": "Indianapolis Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C34"
     },
     "IND_35_CTR": {
@@ -748,7 +746,6 @@
       "radio_name": "Indianapolis Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C35"
     },
     "CHI_35_CTR": {
@@ -770,61 +767,51 @@
     "IND_E_APP": {
       "frequency": 124950,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "IND_W_APP": {
       "frequency": 119050,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "IND_B_APP": {
       "frequency": 121100,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "IND_D_APP": {
       "frequency": 128175,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "IND_F_APP": {
       "frequency": 123950,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "IND_I_APP": {
       "frequency": 120525,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "I",
       "sector_id": "1I"
     },
     "IND_S_APP": {
       "frequency": 127150,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "IND_N_APP": {
       "frequency": 124650,
       "radio_name": "Indianapolis Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "IND_E_TWR": {
       "frequency": 120900,
       "radio_name": "Indianapolis Tower",
-      "scope_char": "Y",
       "sector_id": "1Y"
     },
     "IND_W_TWR": {
       "frequency": 127825,
       "radio_name": "Indianapolis Tower",
-      "scope_char": "X",
       "sector_id": "1X"
     },
     "CMH_U_APP": {
@@ -832,49 +819,49 @@
       "radio_name": "Columbus Approach",
       "facility_id": "1",
       "scope_char": "U",
-      "sector_id": "11U"
+      "sector_id": "1U"
     },
     "CVG_N_APP": {
       "frequency": 123875,
       "radio_name": "Cincinnati Approach",
       "facility_id": "2",
       "scope_char": "N",
-      "sector_id": "21N"
+      "sector_id": "1N"
     },
     "HUF_H_APP": {
       "frequency": 125450,
       "radio_name": "Hulman Approach",
       "facility_id": "3",
       "scope_char": "H",
-      "sector_id": "31H"
+      "sector_id": "1H"
     },
     "HUF_Q_APP": {
       "frequency": 119800,
       "radio_name": "Hulman Approach",
       "facility_id": "3",
       "scope_char": "Q",
-      "sector_id": "31Q"
+      "sector_id": "1Q"
     },
     "HUF_G_APP": {
       "frequency": 128025,
       "radio_name": "Hulman Approach",
       "facility_id": "3",
       "scope_char": "G",
-      "sector_id": "31G"
+      "sector_id": "1G"
     },
     "GUS_E_APP": {
       "frequency": 121050,
       "radio_name": "Grissom Approach",
       "facility_id": "4",
       "scope_char": "E",
-      "sector_id": "41E"
+      "sector_id": "1E"
     },
     "FWA_W_APP": {
       "frequency": 127200,
       "radio_name": "Fort Wayne Approach",
       "facility_id": "5",
       "scope_char": "W",
-      "sector_id": "51W"
+      "sector_id": "1W"
     }
   },
   "default_scenario": "KIND Southwest",

@@ -840,6 +840,8 @@ how it simulates aircraft or the STARS interface.
                   <li>For "atpa_volumes", an optional string "id" may be given for the name of the volume in the STARS SSA INTRAIL list item.</li>
                   <li>Added "departure_runways_as_one" to airport definitions to allow treating groups of runways as a single unit for departure sequencing purposes.</li>
                   <li>Added commands to set and clear scratchpads at fixes in routes (for virtual controllers).</li>
+                  <li>An error is issued if "scope_char" is set for a controller but it specifies the value that <i>vice</i> would
+                    have chosen automatically.</li>
                 </ul>
               </li>
             </ul>
@@ -5311,7 +5313,13 @@ how it simulates aircraft or the STARS interface.
                     <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
                     <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
                     <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
-                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character to for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically based on the sector id (for local positions) and the facility_id (for external facilities).</li>
+                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character to for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
+                      <ul>
+                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
+                        <li>For positions at external facilities, the numeric "facility_id".</li>
+                        <li>For enroute controllers (where "eram_facility" is true), the first character of their "sector_id": "N56" gets "N" by default.</li>
+                      </ul>
+                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
                     <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
                   </ul>
                   <p>One additional member may be required.</p>

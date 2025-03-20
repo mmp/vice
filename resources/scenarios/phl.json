@@ -5171,7 +5171,6 @@
     "Allentown Arrival Radar": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
-      "scope_char": "F",
       "sector_id": "1A",
       "facility_id": "4"
     },
@@ -5186,28 +5185,24 @@
     "HAARP": {
       "frequency": 120800,
       "radio_name": "New York approach",
-      "scope_char": "V",
       "sector_id": "1V",
       "facility_id": "1"
     },
     "Yardley": {
       "frequency": 128550,
       "radio_name": "New York approach",
-      "scope_char": "P",
       "sector_id": "4P",
       "facility_id": "1"
     },
     "LGA Departure": {
       "frequency": 120400,
       "radio_name": "New York departure",
-      "scope_char": "L",
       "sector_id": "1L",
       "facility_id": "1"
     },
     "NY Center (Lancaster 26)": {
       "frequency": 120025,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N26",
       "facility_id": "C",
       "eram_facility": true
@@ -5215,7 +5210,6 @@
     "NY Center (Kennedy 56)": {
       "frequency": 125325,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N56",
       "facility_id": "C",
       "eram_facility": true
@@ -5223,7 +5217,6 @@
     "NY Center (Elmira 34)": {
       "frequency": 132175,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N34",
       "facility_id": "C",
       "eram_facility": true
@@ -5231,7 +5224,6 @@
     "NY Center (MANTA 66)": {
       "frequency": 133500,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N66",
       "facility_id": "C",
       "eram_facility": true

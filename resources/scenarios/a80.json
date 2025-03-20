@@ -40095,28 +40095,24 @@
     "MGM_S_APP": {
         "frequency": 124000,
         "radio_name": "Montgomery Approach",
-        "scope_char": "1",
         "sector_id": "1S",
         "facility_id": "1"
       },
     "OZR_APP": {
         "frequency": 121100,
         "radio_name": "Cairns Approach",
-        "scope_char": "3",
         "sector_id": "1Z",
         "facility_id": "3"
       },
       "AGS_W_APP": {
         "frequency": 126800,
         "radio_name": "Augusta Approach",
-        "scope_char": "2",
         "facility_id": "2",
         "sector_id": "1W"
       },
     "JAX_30_CTR": {
       "frequency": 135925,
       "radio_name": "Jacksonville Center",
-      "scope_char": "J",
       "sector_id": "J30",
       "facility_id": "J",
       "eram_facility": true
@@ -40124,7 +40120,6 @@
     "ATL_CTR": {
       "frequency": 132975,
       "radio_name": "Atlanta Center",
-      "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
       "eram_facility": true
@@ -40132,91 +40127,76 @@
     "ATL_H_APP": {
       "frequency": 127900,
       "radio_name": "Atlanta Approach",
-      "scope_char": "H",
       "sector_id": "1H"
     },
     "ATL_D_APP": {
       "frequency": 128000,
       "radio_name": "Atlanta Approach",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "ATL_L_APP": {
       "frequency": 128525,
       "radio_name":"Atlanta Approach",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "ATL_Y_APP": {
       "frequency": 124725,
       "radio_name": "Atlanta Approach",
-      "scope_char": "Y",
       "sector_id": "1Y"
     },
     "ATL_O_APP": {
       "frequency": 124600,
       "radio_name": "Atlanta Approach",
-      "scope_char": "O",
       "sector_id": "1O"
     },
     "ATL_V_APP": {
       "frequency": 127250,
       "radio_name": "Atlanta Approach",
-      "scope_char": "V",
       "sector_id": "1V"
     },
     "ATL_A_APP": {
       "frequency": 135375,
       "radio_name": "Atlanta Approach",
-      "scope_char": "A",
       "sector_id": "1A"
     },
     "ATL_N_DEP": {
       "frequency": 125200,
       "radio_name": "Atlanta Departure",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "ATL_S_DEP": {
       "frequency": 125200,
       "radio_name": "Atlanta Departure",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "ATL_I_DEP": {
       "frequency": 125200,
       "radio_name": "Atlanta Departure",
-      "scope_char": "I",
       "sector_id": "1I"
     },
     "ATL_P_APP": {
       "frequency": 126975,
       "radio_name": "Atlanta Approach",
-      "scope_char": "P",
       "sector_id": "1P"
     },
     "ATL_F_APP": {
       "frequency": 121000,
       "radio_name": "Atlanta Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "ATL_X_APP": {
       "frequency": 119800,
       "radio_name": "Atlanta Approach",
-      "scope_char": "X",
       "sector_id": "1X"
     },
     "ATL_G_APP": {
       "frequency": 128575,
       "radio_name": "Atlanta Approach",
-      "scope_char": "G",
       "sector_id": "1G"
     },
     "ATL_Q_APP": {
       "frequency": 124300,
       "radio_name": "Atlanta Approach",
-      "scope_char": "Q",
       "sector_id": "1Q"
     },
     "ATL_1_TWR": {
@@ -40252,97 +40232,81 @@
     "ATL_Z_APP": {
       "frequency": 124300,
       "radio_name": "Atlanta Approach",
-      "scope_char": "Z",
       "sector_id": "1Z"
     },
     "ATL_R_APP": {
       "frequency": 126550,
       "radio_name": "Atlanta Approach",
-      "scope_char": "R",
       "sector_id": "1R"
     },
     "ATL_M_APP": {
       "frequency": 124200,
       "radio_name": "Atlanta Approach",
-      "scope_char": "M",
       "sector_id": "1M"
     },
     "ATL_W_APP": {
       "frequency": 119600,
       "radio_name": "Atlanta Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "ATL_E_APP": {
       "frequency": 132475,
       "radio_name": "Atlanta Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "ATL_3E_APP": {
       "frequency": 119875,
       "radio_name": "Atlanta Approach",
-      "scope_char": "E",
       "sector_id": "3E"
     },
     "FTY_TWR": {
       "frequency": 118450,
       "radio_name": "Fulton County Tower",
-      "scope_char": "T",
       "sector_id": "FT"
     },
     "PDK_TWR": {
       "frequency": 120900,
       "radio_name": "Peachtree Tower",
-      "scope_char": "T",
       "sector_id": "PT"
     },
     "MGE_TWR": {
       "frequency": 120750,
       "radio_name": "Dobbins Tower",
-      "scope_char": "T",
       "sector_id": "DT"
     },
     "RYY_TWR": {
       "frequency": 125900,
       "radio_name": "McCollum Tower",
-      "scope_char": "T",
       "sector_id": "MT"
     },
     "LZU_TWR": {
       "frequency": 124100,
       "radio_name": "Gwinnett Tower",
-      "scope_char": "T",
       "sector_id": "GT"
     },
     "WRB_TWR": {
       "frequency": 133225,
       "radio_name": "Robins AFB Tower",
-      "scope_char": "T",
       "sector_id": "RT"
     },
     "MCN_TWR": {
       "frequency": 128200,
       "radio_name": "Macon Tower",
-      "scope_char": "T",
       "sector_id": "8T"
     },
     "CSG_TWR": {
       "frequency": 120100,
       "radio_name": "Columbus Tower",
-      "scope_char": "T",
       "sector_id": "CT"
     },
     "LSF_TWR": {
       "frequency": 119050,
       "radio_name": "Lawson Tower",
-      "scope_char": "T",
       "sector_id": "LT"
     },
     "AUO_TWR": {
       "frequency": 123875,
       "radio_name": "Auburn Tower",
-      "scope_char": "T",
       "sector_id": "AT"
     }
   },

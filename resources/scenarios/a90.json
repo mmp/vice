@@ -6951,33 +6951,28 @@
     "OWD_TWR": {
         "frequency": 126000,
         "radio_name": "Norwood Tower",
-        "scope_char": "Q",
         "sector_id": "4Q"
       },
       "PVD_APP": {
         "frequency": 123675,
         "radio_name": "Providence Approach",
-        "scope_char": "D",
         "sector_id": "1D",
         "facility_id": "1"
       },
       "BDL_APP": {
         "frequency": 119000,
         "radio_name": "Yankee Approach",
-        "scope_char": "2",
         "sector_id": "1W",
         "facility_id": "2"
       },
       "BVY_TWR": {
         "frequency": 125200,
         "radio_name": "Beverly Tower",
-        "scope_char": "Q",
         "sector_id": "2Q"
       },
       "LWM_TWR": {
         "frequency": 119250,
         "radio_name": "Lawrence Tower",
-        "scope_char": "Q",
         "sector_id": "3Q"
       },
     "BED_TWR": {
@@ -6989,62 +6984,52 @@
     "BOS_W_TWR": {
       "frequency": 128800,
       "radio_name": "Boston Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "BOS_DEP": {
       "frequency": 133000,
       "radio_name": "Boston Departure",
-      "scope_char": "D",
       "default_airport": "KBOS",
       "sector_id": "1D"
     },
     "BOS_N_APP": {
       "frequency": 118250,
       "radio_name": "Boston Approach",
-      "scope_char": "R",
       "sector_id": "1R"
     },
     "BOS_S_APP": {
       "frequency": 120600,
       "radio_name": "Boston Approach",
-      "scope_char": "M",
       "sector_id": "1M"
     },
     "BOS_F_APP": {
       "frequency": 126500,
       "radio_name": "Boston Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "BOS_I_APP": {
       "frequency": 119650,
       "radio_name": "Boston Approach",
-      "scope_char": "I",
       "sector_id": "1I"
     },
     "BOS_B_APP": {
       "frequency": 124400,
       "radio_name": "Boston Approach",
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "BOS_U_APP": {
       "frequency": 127200,
       "radio_name": "Boston Approach",
-      "scope_char": "U",
       "sector_id": "1U"
     },
     "BOS_L_APP": {
       "frequency": 124100,
       "radio_name": "Boston Approach",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "BOS_37_CTR": {
       "frequency": 134700,
       "radio_name": "Boston Center",
-      "scope_char": "C",
       "sector_id": "C37",
       "facility_id": "C",
       "eram_facility": true
@@ -7052,7 +7037,6 @@
     "BOS_36_CTR": {
         "frequency": 123750,
         "radio_name": "Boston Center",
-        "scope_char": "C",
         "sector_id": "C36",
         "facility_id": "C",
         "eram_facility": true
@@ -7060,7 +7044,6 @@
       "BOS_42_CTR": {
         "frequency": 133425,
         "radio_name": "Boston Center",
-        "scope_char": "C",
         "sector_id": "C42",
         "facility_id": "C",
         "eram_facility": true
@@ -7068,7 +7051,6 @@
       "BOS_34_CTR": {
         "frequency": 124850,
         "radio_name": "Boston Center",
-        "scope_char": "C",
         "sector_id": "C34",
         "facility_id": "C",
         "eram_facility": true
@@ -7076,7 +7058,6 @@
       "BOS_16_CTR": {
         "frequency": 128200,
         "radio_name": "Boston Center",
-        "scope_char": "C",
         "sector_id": "C16",
         "facility_id": "C",
         "eram_facility": true
@@ -7084,7 +7065,6 @@
       "BOS_18_CTR": {
         "frequency": 128750,
         "radio_name": "Boston Center",
-        "scope_char": "C",
         "sector_id": "C18",
         "facility_id": "C",
         "eram_facility": true
@@ -7092,93 +7072,78 @@
     "PSM_TWR": {
             "frequency": 128400,
             "radio_name": "Portsmouth Tower",
-            "scope_char": "T",
             "sector_id": "3T"
         },
         "MHT_TWR": {
             "frequency": 121300,
             "radio_name": "Manchester Tower",
-            "scope_char": "V",
             "sector_id": "1V"
         },
         "MHT_Z_APP": {
             "default_airport" :"KMHT",
             "frequency": 124900,
             "radio_name": "Boston Approach",
-            "scope_char": "Z",
             "sector_id": "1Z"
         },
         "MHT_E_APP": {
             "default_airport": "KPSM",
             "frequency": 125050,
             "radio_name": "Boston Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         },
         "MHT_W_APP": {
             "frequency": 134750,
             "radio_name": "Boston Approach",
-            "scope_char": "W",
             "sector_id": "1W"
         },
         "MHT_P_APP": {
             "frequency": 125825,
             "radio_name": "Boston Approach",
-            "scope_char": "P",
             "sector_id": "1P"
         },
         "MHT_J_APP": {
             "frequency": 127350,
             "radio_name": "Boston Approach",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "ACK_N_APP": {
             "frequency": 118200,
             "radio_name": "Boston Approach",
-            "scope_char": "N",
             "sector_id": "1N"
           },
           "ACK_O_APP": {
               "frequency": 126300,
               "radio_name": "Boston Approach",
-              "scope_char": "O",
               "sector_id": "1O"
             },
             "ACK_Y_APP": {
               "frequency": 119700,
               "radio_name": "Boston Approach",
-              "scope_char": "Y",
               "sector_id": "1Y"
             },
             "ACK_S_APP": {
               "frequency": 133750,
               "radio_name": "Boston Approach",
-              "scope_char": "S",
               "sector_id": "1S"
             },
             "ACK_DEP": {
               "frequency": 126100,
               "radio_name": "Boston Approach",
-              "scope_char": "K",
               "sector_id": "1K"
             },
             "ACK_A_APP": {
               "frequency": 124050,
               "radio_name": "Boston Approach",
-              "scope_char": "A",
               "sector_id": "1A"
             },
             "ACK_TWR": {
               "frequency": 118300,
               "radio_name": "Nantucket Tower",
-              "scope_char": "T",
               "sector_id": "4T"
             },
             "MVY_TWR": {
               "frequency": 121400,
               "radio_name": "Vineyard Tower",
-              "scope_char": "V",
               "sector_id": "4V"
             }
     },

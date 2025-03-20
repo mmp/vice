@@ -5116,122 +5116,102 @@
       "radio_name": "Miami Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C46"
     },
     "MIA_N_TWR": {
       "frequency": 118300,
       "radio_name": "Miami Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "MIA_S_TWR": {
       "frequency": 123900,
       "radio_name": "Miami Tower",
-      "scope_char": "M",
       "sector_id": "1M"
     },
     "FLL_N_TWR": {
       "frequency": 119300,
       "radio_name": "Fort Lauderdale Tower", 
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "FLL_S_TWR": {
       "frequency": 120200,
       "radio_name": "Fort Lauderdale Tower", 
-      "scope_char": "U",
       "sector_id": "1U"
     },
     "OPF_TWR": {
       "frequency": 134675,
       "radio_name": "Opa Locka Tower",
-      "scope_char": "O",
       "sector_id": "4O"
     },
     "FXE_TWR": {
       "frequency": 120900,
       "radio_name": "Executive Tower",
-      "scope_char": "X",
       "sector_id": "1X"
     },
     "TMB_TWR": {
       "frequency": 118900,
       "radio_name": "Tamiami Tower",
-      "scope_char": "I",
       "sector_id": "1I"
     },
     "MIA_V_APP": {
       "frequency": 124850,
       "radio_name": "Miami Approach",
-      "scope_char": "V",
       "default_airport": "KMIA",
       "sector_id": "1V"
     },
     "MIA_A_APP": {
       "frequency": 133050,
       "radio_name": "Miami Approach",
-      "scope_char": "A",
       "sector_id": "1A"
     },
     "MIA_N_APP": {
       "frequency": 125750,
       "radio_name": "Miami Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "MIA_S_APP": {
       "frequency": 120500,
       "radio_name": "Miami Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "MIA_Q_APP": {
       "frequency": 126850,
       "radio_name": "Miami Approach",
-      "scope_char": "Q",
       "sector_id": "1Q"
     },
     "MIA_H_APP": {
       "frequency": 125250,
       "radio_name": "Miami Approach",
-      "scope_char": "H",
       "sector_id": "1H"
     },
     "MIA_D_DEP": {
       "frequency": 119450,
       "radio_name": "Miami Departure",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "MIA_W_DEP": {
       "frequency": 125500,
       "radio_name": "Miami Departure",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "MIA_L_DEP": {
       "frequency": 126050,
       "radio_name": "Miami Departure",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "MIA_R_APP": {
       "frequency": 133770,
       "radio_name": "Miami Approach",
-      "scope_char": "R",
       "sector_id": "1R"
     },
     "MIA_J_APP": {
       "frequency": 118100,
       "radio_name": "Miami Approach",
-      "scope_char": "J",
       "sector_id": "1J"
     },
     "MIA_F_APP": {
       "frequency": 133720,
       "radio_name": "Miami Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     }
   },

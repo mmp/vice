@@ -12414,7 +12414,6 @@
         "radio_name": "Miami Center",
         "facility_id": "Z",
         "eram_facility": true, 
-        "scope_char": "Z",
         "sector_id": "Z23"
     },
     "Miami Center (Sector 22)": {
@@ -12422,7 +12421,6 @@
         "radio_name": "Miami Center",
         "facility_id": "Z",
         "eram_facility": true,
-        "scope_char": "Z",
         "sector_id": "Z22"
     },
     "Miami Center (Sector 67)": { 
@@ -12430,7 +12428,6 @@
         "radio_name": "Miami Center",
         "facility_id": "Z",
         "eram_facility": true,
-        "scope_char": "Z",
         "sector_id": "Z67"
     },
     "Jacksonville Center (Sector 14)": {
@@ -12438,7 +12435,6 @@
       "radio_name": "Jacksonville center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C14"
     },
     "Jacksonville Center (Sector 15)": {
@@ -12446,7 +12442,6 @@
         "radio_name": "Jacksonville center",
         "facility_id": "C",
         "eram_facility": true,
-        "scope_char": "C",
         "sector_id": "C15"
       },
       "Jacksonville Center (Sector 58)": {
@@ -12454,7 +12449,6 @@
         "radio_name": "Jacksonville center",
         "facility_id": "C",
         "eram_facility": true,
-        "scope_char": "C",
         "sector_id": "C58"
       },
     "Jacksonville Center (Sector 57": {
@@ -12462,170 +12456,143 @@
         "radio_name": "Jacksonville Center",
         "facility_id": "C",
         "eram_facility": true,
-        "scope_char": "C",
         "sector_id": "C57"
     },
     "Jacksonville Approach (Vitts)": {
       "frequency": 118600,
       "radio_name": "Jacksonville approach",
       "facility_id": "2",
-      "scope_char": "2",
       "sector_id": "1V"
     },
     "Dayonta North Radar": {
       "frequency": 125800,
       "radio_name": "Daytona Beach approach",
       "facility_id": "1",
-      "scope_char": "1",
       "sector_id": "1N"
     },
     "Tampa East Approach": {
       "frequency": 118150,
       "radio_name": "Tampa approach",
-      "scope_char": "3",
       "facility_id": "3",
       "sector_id": "1E"
     },
     "DR-East": {
       "frequency": 124800,
       "radio_name": "Orlando approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "AR-Bitho": {
       "frequency": 128375,
       "radio_name": "Orlando approach",
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "West Departure": {
       "frequency": 120150,
       "radio_name": "Orlando departure",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "West Approach": {
       "frequency": 120150,
       "radio_name": "Orlando Approach",
-      "scope_char": "W",
       "sector_id": "1J"
     },
     "SR-Palm": {
       "frequency": 132650,
       "radio_name": "Orlando Approach",
-      "scope_char": "A",
       "sector_id": "1A"
     },
     "FR-M": {
       "frequency": 123850,
       "radio_name": "Orlando Approach",
-      "scope_char": "M",
       "sector_id": "1M"
     },
     "AR-Rocket": {
       "frequency": 127320,
       "radio_name": "Orlando Approach",
-      "scope_char": "R",
       "sector_id": "1R"
     },
     "SR-Kape": {
       "frequency": 134950,
       "radio_name": "Orlando Approach",
-      "scope_char": "K",
       "sector_id": "1K"
     },
     "SR-Seminole": {
       "frequency": 121100,
       "radio_name": "Orlando Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "MCO_S_APP": {
       "frequency": 132650,
       "radio_name": "Orlando Approach",
       "default_airport": "KMCO",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "SR-Valor": {
       "frequency": 119775,
       "radio_name": "Orlando Approach",
-      "scope_char" :"V",
       "sector_id": "1V",
       "default_airport": "KSFB"
     },
     "SR-Paola" : {
       "frequency": 135300,
       "radio_name": "Orlando Approach",
-      "scope_char": "P",
       "sector_id": "1P",
       "default_airport": "KMLB"
     },
     "Orlando East Tower": {
       "frequency": 118450,
       "radio_name": "Orlando tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "SR-Disney": {
       "frequency": 119400,
       "radio_name": "Orlando approach",
-      "scope_char": "D",
       "sector_id": "1D",
       "default_airport": "KISM"
     },
     "Orlando West Tower": {
       "frequency": 126400,
       "radio_name": "Orlando tower",
-      "scope_char": "Z",
       "sector_id": "1Z"
     },
     "Sanford North Tower": {
       "frequency": 120300,
       "radio_name": "Sanford tower",
-      "scope_char": "N",
       "sector_id": "3N"
     },
     "Sanford South Tower": {
       "frequency": 135250,
       "radio_name": "Sanford tower",
-      "scope_char": "S",
       "sector_id": "3S"
     },
     "Leesburg Tower": {
      "frequency": 119350,
      "radio_name": "Leesburg tower",
-     "scope_char": "L",
      "sector_id": "3L"
     },
     "Patrick Tower": {
       "frequency": 133750,
       "radio_name": "Patrick Tower",
-      "scope_char": "P",
       "sector_id": "3P"
     },
     "Melbourne Tower": {
       "frequency": 118200,
       "radio_name": "Melbourne Orlando tower",
-      "scope_char": "M",
       "sector_id": "3M"
     },
     "Spaceforce Tower": {
       "frequency": 118900,
       "radio_name": "Space Coast Tower",
-      "scope_char": "X",
       "sector_id": "3X"
     },
     "Kissimmee Tower": {
       "frequency": 124450,
       "radio_name": "Kissimee Gateway tower",
-      "scope_char": "K",
       "sector_id": "3K"
     },
     "Executive Tower": {
       "frequency": 118700,
       "radio_name": "Orlando Executive tower",
-      "scope_char": "T",
       "sector_id": "3T"
     },
     "TPA_TWR": {
@@ -12652,13 +12619,11 @@
     "FR-G": {
       "frequency": 127750,
       "radio_name": "Orlando approach",
-      "scope_char": "G",
       "sector_id": "1G"
     },
     "AR-Leese": {
       "frequency": 134050,
       "radio_name": "Orlando approach",
-      "scope_char": "L",
       "sector_id": "1L"
     }
   },

@@ -8867,7 +8867,6 @@
     "Allentown Approach": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
-      "scope_char": "4",
       "sector_id": "4A",
       "facility_id": "4",
       "facility": "ABE"
@@ -8877,7 +8876,7 @@
       "radio_name": "Boston center",
       "scope_char": "C",
       "sector_id": "B37",
-      "facility_id": "C",
+      "facility_id": "B",
       "eram_facility": true,
       "facility": "ZBW"
     },
@@ -8892,7 +8891,6 @@
     "Caldwell Tower": {
       "frequency": 119800,
       "radio_name": "Caldwell tower",
-      "scope_char": "T",
       "sector_id": "4T",
       "facility": "N90"
     },
@@ -8901,14 +8899,13 @@
       "radio_name": "Washington center",
       "scope_char": "C",
       "sector_id": "W32",
-      "facility_id": "C",
+      "facility_id": "W",
       "eram_facility": true,
       "facility": "ZDC"
     },
     "Newark North Arrival": {
       "frequency": 120150,
       "radio_name": "Newark approach",
-      "scope_char": "A",
       "default_airport": "KEWR",
       "sector_id": "4A",
       "facility": "N90"
@@ -8916,7 +8913,6 @@
     "Newark Departure": {
       "frequency": 119200,
       "radio_name": "Newark departure",
-      "scope_char": "N",
       "default_airport": "KEWR",
       "sector_id": "4N",
       "facility": "N90"
@@ -8924,14 +8920,12 @@
     "METRO": {
       "frequency": 132800,
       "radio_name": "Newark approach",
-      "scope_char": "H",
       "sector_id": "4H",
       "facility": "N90"
     },
     "Yardley": {
       "frequency": 128550,
       "radio_name": "Newark approach",
-      "scope_char": "P",
       "sector_id": "4P",
       "default_airport": "KEWR",
       "facility": "N90"
@@ -8939,28 +8933,24 @@
     "Final Vector 22": {
       "frequency": 125550,
       "radio_name": "Newark approach",
-      "scope_char": "M",
       "sector_id": "4M",
       "facility": "N90"
     },
     "Final Vector 4": {
       "frequency": 125500,
       "radio_name": "Newark approach",
-      "scope_char": "Q",
       "sector_id": "4Q",
       "facility": "N90"
     },
     "ZEEBO": {
       "frequency": 123770,
       "radio_name": "Newark approach",
-      "scope_char": "S",
       "sector_id": "4S",
       "facility": "N90"
     },
     "Newark Tower": {
       "frequency": 118300,
       "radio_name": "Newark tower",
-      "scope_char": "T",
       "sector_id": "4Z",
       "facility": "N90"
     },
@@ -8968,49 +8958,42 @@
       "frequency": 127600,
       "radio_name": "Newark approach",
       "default_airport": "KEWR",
-      "scope_char": "U",
       "sector_id": "4U",
       "facility": "N90"
     },
     "HAARP": {
       "frequency": 120800,
       "radio_name": "New York approach",
-      "scope_char": "V",
       "sector_id": "1V",
       "facility": "N90"
     },
     "EMPYR": {
       "frequency": 127300,
       "radio_name": "New York approach",
-      "scope_char": "D",
       "sector_id": "1D",
        "facility": "N90"
     },
     "LGA Final": {
       "frequency": 134900,
       "radio_name": "New York approach",
-      "scope_char": "F",
       "sector_id": "1F",
        "facility": "N90"
     },
     "Laguardia Departure": {
       "frequency": 120400,
       "radio_name": "New York approach",
-      "scope_char": "L",
       "sector_id": "1L",
       "facility": "N90"
     },
     "Morristown tower": {
       "frequency": 118100,
       "radio_name": "Morristown tower",
-      "scope_char": "T",
       "sector_id": "4K",
       "facility": "N90"
     },
     "NY_CTR": {
       "frequency": 125325,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
       "eram_facility": true,
@@ -9019,7 +9002,6 @@
     "NY_68_CTR": {
       "frequency": 118975,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C68",
       "facility_id": "C",
       "eram_facility": true
@@ -9027,7 +9009,6 @@
     "NY_35_CTR": {
       "frequency": 132600,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C35",
       "facility_id": "C",
       "eram_facility": true
@@ -9035,7 +9016,6 @@
     "NY_39_CTR": {
       "frequency": 132100,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C39",
       "facility_id": "C",
       "eram_facility": true
@@ -9043,7 +9023,6 @@
     "NY_55_CTR": {
       "frequency": 134600,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C55",
       "facility_id": "C",
       "eram_facility": true
@@ -9051,35 +9030,30 @@
     "Liberty Departure (East)": {
       "frequency": 126800,
       "radio_name": "New York departure",
-      "scope_char": "E",
       "sector_id": "5E",
       "facility": "N90"
     },
     "Liberty Departure (North)": {
       "frequency": 118170,
       "radio_name": "New York departure",
-      "scope_char": "T",
       "sector_id": "5T",
       "facility": "N90"
     },
     "Liberty Departure (South)": {
       "frequency": 124750,
       "radio_name": "New York departure",
-      "scope_char": "S",
       "sector_id": "5S",
       "facility": "N90"
     },
     "Liberty Departure (West)": {
       "frequency": 120850,
       "radio_name": "New York departure",
-      "scope_char": "W",
       "sector_id": "5W",
       "facility": "N90"
     },
     "Philadelphia North Departure": {
       "frequency": 124350,
       "radio_name": "Philly approach",
-      "scope_char": "2",
       "sector_id": "1E",
       "facility_id": "2",
       "facility": "PHL"
@@ -9087,7 +9061,6 @@
     "Philadelphia South Departure": {
       "frequency": 119750,
       "radio_name": "Philly approach",
-      "scope_char": "2",
       "sector_id": "1V",
       "facility_id": "2",
       "facility": "PHL"
@@ -9095,7 +9068,6 @@
     "Philadelphia Yardley": {
       "frequency": 124350,
       "radio_name": "Philly approach",
-      "scope_char": "2",
       "sector_id": "1Y",
       "facility_id": "2",
       "facility": "PHL"
@@ -9103,14 +9075,12 @@
     "Teterboro Tower": {
       "frequency": 119500,
       "radio_name": "Teterboro tower",
-      "scope_char": "T",
       "sector_id": "4J",
       "facility": "N90"
     },
     "McGuire Approach": {
       "frequency": 126470,
       "radio_name": "McGuire approach",
-      "scope_char": "5",
       "sector_id": "1Y",
       "facility_id": "5",
       "facility": "WRI"
