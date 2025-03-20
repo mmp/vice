@@ -76,7 +76,7 @@ type METAR struct {
 	AirportICAO string
 	Time        string
 	Auto        bool
-	Wind        Wind
+	Wind        Wind `json:"wind"` // WAR changing this from a strong to deserialization doesn't fail.
 	Altimeter   string
 	Weather     string
 	Rmk         string
