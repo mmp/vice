@@ -392,6 +392,12 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		if len(airports) == 0 {
 			airports = util.SortedMapKeys(ctx.ControlClient.Airports)
 
+			// Filter out VFR-only
+			airports = util.FilterSlice(airports, func(icao string) bool {
+				ap := ctx.ControlClient.Airports[icao]
+				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
+			})
+
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
 				if airports[i] == ctx.ControlClient.PrimaryAirport {
