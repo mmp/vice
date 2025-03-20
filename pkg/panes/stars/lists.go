@@ -69,51 +69,18 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
+	text.WriteString(sp.commandMode.PreviewString())
 
-	switch sp.commandMode {
-	case CommandModeInitiateControl:
-		text.WriteString("IC\n")
-	case CommandModeTerminateControl:
-		text.WriteString("TC\n")
-	case CommandModeHandOff:
-		text.WriteString("HD\n")
-	case CommandModeVFRPlan:
-		text.WriteString("VP\n")
-	case CommandModeMultiFunc:
-		text.WriteString("F")
+	if sp.commandMode == CommandModeMultiFunc {
 		text.WriteString(sp.multiFuncPrefix)
-		text.WriteString("\n")
-	case CommandModeFlightData:
-		text.WriteString("DA\n")
-	case CommandModeCollisionAlert:
-		text.WriteString("CA\n")
-	case CommandModeMin:
-		text.WriteString("MIN\n")
-	case CommandModeMaps:
-		text.WriteString("MAP\n")
-	case CommandModeSavePrefAs:
-		text.WriteString("PREF SET NAME\n")
-	case CommandModeLDR:
-		text.WriteString("LLL\n")
-	case CommandModeRangeRings:
-		text.WriteString("RR\n")
-	case CommandModeRange:
-		text.WriteString("RANGE\n")
-	case CommandModeSiteMenu:
-		text.WriteString("SITE\n")
-	case CommandModeWX:
-		text.WriteString("WX\n")
-	case CommandModePref:
-		text.WriteString("PREF SET\n")
-	case CommandModeReleaseDeparture:
-		text.WriteString("RD\n")
-	case CommandModeRestrictionArea:
-		text.WriteString("AR\n")
-	case CommandModeTargetGen:
-		text.WriteString("TG ")
-		text.WriteString(sp.targetGenLastCallsign)
-		text.WriteString("\n")
 	}
+	if sp.commandMode == CommandModeTargetGen {
+		text.WriteByte(' ')
+		text.WriteString(sp.targetGenLastCallsign)
+	}
+
+	text.WriteString("\n")
+
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
 	if text.Len() > 0 {
 		style := renderer.TextStyle{

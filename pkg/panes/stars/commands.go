@@ -28,7 +28,8 @@ import (
 type CommandMode int
 
 const (
-	CommandModeNone = iota
+	// Keyboard command entry modes; can be main or DCB menu for these; sp.dcbShowAux decides.
+	CommandModeNone CommandMode = iota
 	CommandModeInitiateControl
 	CommandModeTerminateControl
 	CommandModeHandOff
@@ -37,18 +38,105 @@ const (
 	CommandModeFlightData
 	CommandModeCollisionAlert
 	CommandModeMin
-	CommandModeSavePrefAs
-	CommandModeMaps
-	CommandModeLDR
-	CommandModeRangeRings
-	CommandModeRange
-	CommandModeSiteMenu
-	CommandModeWX
-	CommandModePref
+	CommandModeTargetGen
 	CommandModeReleaseDeparture
 	CommandModeRestrictionArea
-	CommandModeTargetGen
+
+	// These correspond to buttons on the main DCB menu.
+	CommandModeRange
+	CommandModePlaceCenter
+	CommandModeRangeRings
+	CommandModePlaceRangeRings
+	CommandModeMaps
+	CommandModeWX
+	CommandModeBrite
+	CommandModeLDR
+	CommandModeLDRDir
+	CommandModeCharSize
+	CommandModeSite
+	CommandModePref
+	CommandModeSavePrefAs
+	CommandModeSSAFilter
+	CommandModeGITextFilter
+
+	// These correspond to buttons on the secondary DCB menu.
+	CommandModeVolume
+	CommandModeHistory
+	CommandModeHistoryRate
+	CommandModePTLLength
+	CommandModeTPA
 )
+
+func (c CommandMode) PreviewString() string {
+	switch c {
+	case CommandModeNone:
+		return ""
+	case CommandModeInitiateControl:
+		return "IC"
+	case CommandModeTerminateControl:
+		return "TC"
+	case CommandModeHandOff:
+		return "HD"
+	case CommandModeVFRPlan:
+		return "VP"
+	case CommandModeMultiFunc:
+		return "F"
+	case CommandModeFlightData:
+		return "DA"
+	case CommandModeCollisionAlert:
+		return "CA"
+	case CommandModeMin:
+		return "MIN"
+	case CommandModeTargetGen:
+		return "TG"
+	case CommandModeReleaseDeparture:
+		return "RD"
+	case CommandModeRestrictionArea:
+		return "AR"
+	case CommandModeRange:
+		return "RANGE"
+	case CommandModePlaceCenter:
+		return "CNTR"
+	case CommandModeRangeRings:
+		return "RR"
+	case CommandModePlaceRangeRings:
+		return ""
+	case CommandModeMaps:
+		return "MAP"
+	case CommandModeWX:
+		return "WX"
+	case CommandModeBrite:
+		return "BRT"
+	case CommandModeLDR:
+		return "LLL"
+	case CommandModeLDRDir:
+		return "LDR"
+	case CommandModeCharSize:
+		return "CHAR"
+	case CommandModeSite:
+		return "SITE"
+	case CommandModePref:
+		return "PREF"
+	case CommandModeSavePrefAs:
+		return "PREF SET NAME"
+	case CommandModeSSAFilter:
+		return ""
+	case CommandModeGITextFilter:
+		return ""
+	case CommandModeVolume:
+		return "VOL"
+	case CommandModeHistory:
+		return "HIST"
+	case CommandModeHistoryRate:
+		return "HRATE"
+	case CommandModePTLLength:
+		return "PTL"
+	case CommandModeTPA:
+		return ""
+	default:
+		panic("unhandled command mode")
+	}
+}
 
 type CommandStatus struct {
 	clear  bool
@@ -67,8 +155,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		input = input[1:]
 	}
 	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
-		sp.resetInputState(ctx)
-		sp.commandMode = CommandModeTargetGen
+		sp.setCommandMode(ctx, CommandModeTargetGen)
 		input = input[1:]
 	}
 
@@ -99,154 +186,122 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			if n := len(sp.drawRoutePoints); n > 0 {
 				sp.drawRoutePoints = sp.drawRoutePoints[:n-1]
 			}
+
 		case platform.KeyEnd:
-			sp.resetInputState(ctx)
-			sp.commandMode = CommandModeMin
+			sp.setCommandMode(ctx, CommandModeMin)
+
 		case platform.KeyEnter:
 			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
 				sp.displayError(status.err, ctx)
 			} else {
 				if status.clear {
-					sp.resetInputState(ctx)
+					sp.setCommandMode(ctx, CommandModeNone)
 				}
 				sp.previewAreaOutput = status.output
 			}
+
 		case platform.KeyEscape:
-			sp.activeDCBMenu = dcbMenuMain
-			sp.resetInputState(ctx)
-			// Also disable any mouse capture from spinners, just in case
-			// the user is mashing escape to get out of one.
-			sp.disableMenuSpinner(ctx)
-			sp.wipRBL = nil
-			sp.wipSignificantPoint = nil
-			sp.wipRestrictionArea = nil
-			sp.drawRouteMode = false
-			sp.drawRoutePoints = nil
+			sp.setCommandMode(ctx, CommandModeNone)
+
 		case platform.KeyF1:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
 				// Recenter
-				ps.Center = ctx.ControlClient.GetInitialCenter()
-				ps.CurrentCenter = ps.Center
+				ps.UseUserCenter = false
 			}
 			if ctx.Keyboard.WasPressed(platform.KeyShift) {
 				// Treat this as F13
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeReleaseDeparture
+				sp.setCommandMode(ctx, CommandModeReleaseDeparture)
 			}
+
 		case platform.KeyF2:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
-				if ps.DisplayDCB {
-					sp.disableMenuSpinner(ctx)
-					sp.activeDCBMenu = dcbMenuMaps
-				}
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeMaps
+				sp.setCommandMode(ctx, CommandModeMaps)
 			}
+
 		case platform.KeyF3:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = dcbMenuBrite
+				sp.setCommandMode(ctx, CommandModeBrite)
 			} else {
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeInitiateControl
+				sp.setCommandMode(ctx, CommandModeInitiateControl)
 			}
+
 		case platform.KeyF4:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.activeDCBMenu = dcbMenuMain
-				sp.activateMenuSpinner(makeLeaderLineLengthSpinner(&ps.LeaderLineLength))
-				sp.resetInputState()
-				sp.commandMode = CommandModeLDR
+				sp.setCommandMode(ctx, CommandModeLDR)
 			} else {
-				sp.resetInputState()
-				sp.commandMode = CommandModeTerminateControl
+				sp.setCommandMode(ctx, CommandModeTerminateControl)
 			}
+
 		case platform.KeyF5:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.activeDCBMenu = dcbMenuCharSize
-				sp.resetInputState(ctx)
+				sp.setCommandMode(ctx, CommandModeCharSize)
 			} else {
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeHandOff
+				sp.setCommandMode(ctx, CommandModeHandOff)
 			}
+
 		case platform.KeyF6:
-			sp.resetInputState(ctx)
-			sp.commandMode = CommandModeFlightData
+			sp.setCommandMode(ctx, CommandModeFlightData)
+
 		case platform.KeyF7:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				if sp.activeDCBMenu == dcbMenuMain {
-					sp.activeDCBMenu = dcbMenuAux
-				} else {
-					sp.activeDCBMenu = dcbMenuMain
-				}
+				sp.setCommandMode(ctx, CommandModeNone)
+				sp.dcbShowAux = !sp.dcbShowAux
 			} else {
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeMultiFunc
+				sp.setCommandMode(ctx, CommandModeMultiFunc)
 			}
+
 		case platform.KeyF8:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {
-				sp.disableMenuSpinner(ctx)
+				sp.resetInputState(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			} else {
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeWX
+				sp.setCommandMode(ctx, CommandModeWX)
 			}
+
 		case platform.KeyF9:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activateMenuSpinner(makeRangeRingRadiusSpinner(&ps.RangeRingRadius))
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeRangeRings
+				sp.setCommandMode(ctx, CommandModeRangeRings)
 			} else {
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeVFRPlan
+				sp.setCommandMode(ctx, CommandModeVFRPlan)
 			}
+
 		case platform.KeyF10:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activateMenuSpinner(makeRadarRangeSpinner(&ps.Range))
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeRange
+				sp.setCommandMode(ctx, CommandModeRange)
 			}
+
 		case platform.KeyF11:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = dcbMenuSite
+				sp.setCommandMode(ctx, CommandModeSite)
 			} else {
-				sp.resetInputState(ctx)
-				sp.commandMode = CommandModeCollisionAlert
+				sp.setCommandMode(ctx, CommandModeCollisionAlert)
 			}
+
 		case platform.KeyF12:
-			sp.resetInputState(ctx)
-			sp.commandMode = CommandModeRestrictionArea
-			sp.wipRestrictionArea = nil
+			sp.setCommandMode(ctx, CommandModeRestrictionArea)
+
 		case platform.KeyF13:
-			sp.resetInputState(ctx)
-			sp.commandMode = CommandModeReleaseDeparture
+			sp.setCommandMode(ctx, CommandModeReleaseDeparture)
+
 		case platform.KeyInsert:
-			if ps.DisplayDCB {
-				sp.disableMenuSpinner(ctx)
-				sp.activeDCBMenu = dcbMenuPref
-			}
-			sp.resetInputState(ctx)
-			sp.commandMode = CommandModePref
+			sp.setCommandMode(ctx, CommandModePref)
+
 		case platform.KeyTab:
-			sp.resetInputState(ctx)
-			sp.commandMode = CommandModeTargetGen
+			sp.setCommandMode(ctx, CommandModeTargetGen)
 		}
 	}
 }
 
 func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status CommandStatus) {
-	// If there's an active spinner, it gets keyboard input.
-	if activeSpinner != nil {
-		if err := activeSpinner.KeyboardInput(cmd); err != nil {
+	// If there's an active spinner, it gets keyboard input; we thus won't
+	// worry about the corresponding CommandModes in the following.
+	if sp.activeSpinner != nil {
+		if err := sp.activeSpinner.KeyboardInput(cmd); err != nil {
 			status.err = err
 		} else {
 			// Clear the input area and disable the spinner's mouse capture
 			// on success.
-			status.clear = true
-			sp.disableMenuSpinner(ctx)
+			sp.setCommandMode(ctx, CommandModeNone)
 		}
 		return
 	}
@@ -601,7 +656,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 
 				state := sp.Aircraft[ac.Callsign]
-				ctr := util.Select(ps.RangeRingsUserCenter, ps.RangeRingsCenter, ps.Center)
+				ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
 				d := math.NMDistance2LL(ctr, state.TrackPosition())
 				if closest == nil || d < closestDistance {
 					closest = ac
@@ -1596,7 +1651,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		if cmd == "A" {
 			// remove all maps
 			clear(ps.VideoMapVisible)
-			sp.activeDCBMenu = dcbMenuMain
 			status.clear = true
 			return
 		} else if n := len(cmd); n > 0 {
@@ -1621,7 +1675,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				} else if (!vis && op == "T") || op == "E" {
 					ps.VideoMapVisible[idx] = nil
 				}
-				sp.activeDCBMenu = dcbMenuMain
 				status.clear = true
 			} else {
 				status.err = ErrSTARSIllegalMap
@@ -1633,7 +1686,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		// There should always be an active spinner in these modes, which
 		// is handled at the start of the method...
 
-	case CommandModeSiteMenu:
+	case CommandModeSite:
 		if cmd == "~" {
 			ps.RadarSiteSelected = ""
 			status.clear = true
@@ -1728,7 +1781,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			sp.prefSet.Selected = &idx
 			sp.prefSet.SetCurrent(*sp.prefSet.Saved[idx], ctx.Platform, sp)
 
-			sp.activeDCBMenu = dcbMenuMain
 			status.clear = true
 			return
 		}
@@ -3755,13 +3807,14 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 		ctx.KeyboardFocus.Take(sp)
 	}
 
-	if activeSpinner == nil && !sp.LockDisplay {
+	if sp.activeSpinner == nil && !sp.LockDisplay {
 		// Handle dragging the scope center
-		if mouse.Dragging[platform.MouseButtonSecondary] {
+		if mouse.Dragging[platform.MouseButtonSecondary] || sp.commandMode == CommandModePlaceCenter {
 			delta := mouse.DragDelta
 			if delta[0] != 0 || delta[1] != 0 {
 				deltaLL := transforms.LatLongFromWindowV(delta)
-				ps.CurrentCenter = math.Sub2f(ps.CurrentCenter, deltaLL)
+				ps.UserCenter = math.Sub2f(ps.UserCenter, deltaLL)
+				ps.UseUserCenter = true
 			}
 		}
 
@@ -3788,7 +3841,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 				Scale(scale, scale).
 				Translate(-mouseLL[0], -mouseLL[1])
 
-			ps.CurrentCenter = centerTransform.TransformPoint(ps.CurrentCenter)
+			ps.UserCenter = centerTransform.TransformPoint(ps.UserCenter)
+			ps.UseUserCenter = true
 		}
 	}
 
@@ -3906,19 +3960,29 @@ func amendFlightPlan(ctx *panes.Context, callsign string, amend func(fp *av.Flig
 	}
 }
 
+func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
+	sp.resetInputState(ctx)
+	sp.commandMode = mode
+}
+
 func (sp *STARSPane) resetInputState(ctx *panes.Context) {
 	sp.previewAreaInput = ""
 	sp.previewAreaOutput = ""
 	sp.commandMode = CommandModeNone
 	sp.multiFuncPrefix = ""
 
-	sp.disableMenuSpinner(ctx)
-
 	sp.wipRBL = nil
 	sp.wipSignificantPoint = nil
+	sp.wipRestrictionArea = nil
 
 	sp.scopeClickHandler = nil
-	sp.selectedPlaceButton = ""
+	sp.activeSpinner = nil
+
+	sp.drawRouteMode = false
+	sp.drawRoutePoints = nil
+
+	ctx.Platform.EndCaptureMouse()
+	ctx.Platform.StopMouseDeltaMode()
 }
 
 func (sp *STARSPane) displayError(err error, ctx *panes.Context) {

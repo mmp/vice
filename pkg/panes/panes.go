@@ -94,8 +94,13 @@ func (ctx *Context) InitializeMouse(p platform.Platform) {
 
 	ctx.Mouse.Pos = ctx.WindowToPane(ctx.Mouse.Pos)
 	// Negate y to go to pane coordinates
+	ctx.Mouse.DeltaPos[1] *= -1
 	ctx.Mouse.Wheel[1] *= -1
 	ctx.Mouse.DragDelta[1] *= -1
+}
+
+func (ctx *Context) SetMousePosition(p [2]float32) {
+	ctx.Platform.SetMousePosition(ctx.PaneToWindow(p))
 }
 
 // Convert to pane coordinates:

@@ -72,15 +72,16 @@ type Preferences struct {
 
 	Name string // Name given if it's been saved
 
-	Center math.Point2LL // The default center
-	Range  float32
+	// Radar scope
+	DefaultCenter math.Point2LL // The default center
+	UserCenter    math.Point2LL
+	UseUserCenter bool
+	Range         float32
 
-	CurrentCenter math.Point2LL
-
-	RangeRingsCenter math.Point2LL
-	RangeRingRadius  int
+	RangeRingsUserCenter math.Point2LL
+	RangeRingRadius      int
 	// Whether we center them at RangeRingsCenter or Center
-	RangeRingsUserCenter bool
+	UseUserRangeRingsCenter bool
 
 	// User-supplied text for the SSA list
 	ATIS   string
@@ -278,10 +279,11 @@ type RestrictionAreaSettings struct {
 
 func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	// Get the scope centered and set the range according to the Sim's initial values.
-	p.Center = ss.GetInitialCenter()
-	p.CurrentCenter = p.Center
-	p.RangeRingsCenter = p.Center
-	p.RangeRingsUserCenter = false
+	p.DefaultCenter = ss.GetInitialCenter()
+	p.UserCenter = p.DefaultCenter
+	p.UseUserCenter = false
+	p.RangeRingsUserCenter = p.DefaultCenter
+	p.UseUserRangeRingsCenter = false
 	p.Range = ss.GetInitialRange()
 
 	p.ATIS = ""
@@ -562,8 +564,6 @@ func (ps *Preferences) Upgrade(from, to int) {
 			ps.SSAList.Filter.Text.GI[i] = true
 		}
 		ps.CoordinationLists = make(map[string]*CoordinationList)
-
-		ps.RangeRingsUserCenter = ps.RangeRingsCenter != ps.Center
 	}
 	if from < 29 {
 		ps.RestrictionAreaList.Position = [2]float32{.8, .575}

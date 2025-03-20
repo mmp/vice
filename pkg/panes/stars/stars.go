@@ -155,9 +155,11 @@ type STARSPane struct {
 	DisplayBeaconCode        av.Squawk
 	DisplayBeaconCodeEndTime time.Time
 
-	scopeClickHandler   func(pw [2]float32, transforms ScopeTransformations) CommandStatus
-	activeDCBMenu       int
-	selectedPlaceButton string
+	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) CommandStatus
+	activeSpinner     dcbSpinner
+
+	savedMousePosition [2]float32
+	accumMouseDeltaY   float32
 
 	dwellAircraft     string
 	drawRouteAircraft string
@@ -169,6 +171,7 @@ type STARSPane struct {
 	multiFuncPrefix   string
 	previewAreaOutput string
 	previewAreaInput  string
+	dcbShowAux        bool
 
 	lastTrackUpdate        time.Time
 	lastHistoryTrackUpdate time.Time
@@ -415,7 +418,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
-	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
+	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
 
 	sp.makeMaps(client, ss, lg)
 	sp.makeSignificantPoints(ss)
@@ -449,7 +452,7 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 
 	sp.resetPrefsForNewSim(ss, pl)
 
-	sp.weatherRadar.UpdateCenter(sp.currentPrefs().Center)
+	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -653,8 +656,9 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.processKeyboardInput(ctx)
 
+	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
 	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.ControlClient.MagneticVariation, ctx.ControlClient.NmPerLongitude,
-		ps.CurrentCenter, float32(ps.Range), 0)
+		ctr, float32(ps.Range), 0)
 
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayDCB {
@@ -1094,6 +1098,14 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	}
 
 	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
+
+	// Don't draw the cursor with command modes that capture the mouse
+	if sp.activeSpinner != nil {
+		return
+	}
+	if sp.commandMode == CommandModePlaceCenter || sp.commandMode == CommandModePlaceRangeRings {
+		return
+	}
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
 	ps := sp.currentPrefs()

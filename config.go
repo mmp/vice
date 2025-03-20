@@ -55,7 +55,8 @@ import (
 // 33: VFRs v2
 // 34: sim/server refactor, signon flow
 // 35: VFRRunways in sim.State, METAR Wind struct changes
-const CurrentConfigVersion = 35
+// 36: STARS center representation changes
+const CurrentConfigVersion = 36
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first

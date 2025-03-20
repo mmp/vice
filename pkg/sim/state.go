@@ -489,6 +489,6 @@ func (ss *State) ERAMComputer() *ERAMComputer {
 }
 
 func (ss *State) AmInstructor() bool {
-	_, ok := ss.Instructors[ss.PrimaryController]
+	_, ok := ss.Instructors[ss.PrimaryTCP]
 	return ok
 }

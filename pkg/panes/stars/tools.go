@@ -591,7 +591,8 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
-	pw := transforms.WindowFromLatLongP(ps.CurrentCenter)
+	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
+	pw := transforms.WindowFromLatLongP(ctr)
 	bounds := math.Extent2D{P1: [2]float32{scopeExtent.Width(), scopeExtent.Height()}}
 	font := sp.systemFont(ctx, ps.CharSize.Tools)
 	color := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
@@ -677,7 +678,7 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransfor
 	}
 
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
-	ctr := util.Select(ps.RangeRingsUserCenter, ps.RangeRingsCenter, ps.Center)
+	ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
 	centerWindow := transforms.WindowFromLatLongP(ctr)
 
 	ld := renderer.GetLinesDrawBuilder()
