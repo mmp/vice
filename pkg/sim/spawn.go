@@ -480,11 +480,11 @@ func (s *Sim) updateDepartureSequence() {
 	now := s.State.SimTime
 
 	for airport, runways := range s.DepartureState {
-		for runway, depState := range runways {
+		for depRunway, depState := range runways {
 			changed := func() { // Debugging...
 				if false {
 					callsign := func(dep DepartureAircraft) string {
-						return dep.Callsign + "/" + runway + "/" + s.State.Aircraft[dep.Callsign].FlightPlan.Exit
+						return dep.Callsign + "/" + depRunway + "/" + s.State.Aircraft[dep.Callsign].FlightPlan.Exit
 					}
 					fmt.Printf("%s: Held %s Released %s Sequence %s\n", airport,
 						strings.Join(util.MapSlice(depState.Held, callsign), ", "),
@@ -601,19 +601,29 @@ func (s *Sim) updateDepartureSequence() {
 				depState.Sequenced = depState.Sequenced[1:]
 
 				// If this runway is part of a group, update the last departure time for all runways in the group
-				for _, group := range s.State.Airports[airport].DepartureRunwaysAsOne {
-					groupRunways := strings.Split(group, ",")
-					if slices.ContainsFunc(groupRunways, func(r string) bool { return strings.TrimSpace(r) == runway }) {
-						// This runway is in a group, update all other runways in the group
-						for _, rwy := range groupRunways {
-							rwy = strings.TrimSpace(rwy)
-							if rwy != runway {
-								if state, ok := runways[rwy]; ok {
-									state.LastDeparture = dep
-								}
+				depRunway = av.TidyRunway(depRunway)
+				if idx := slices.IndexFunc(s.State.Airports[airport].DepartureRunwaysAsOne,
+					func(todo string) bool {
+						for {
+							var rwy string
+							var ok bool
+							rwy, todo, ok = strings.Cut(todo, ",")
+							if rwy == depRunway {
+								return true
+							}
+							if !ok {
+								return false
 							}
 						}
-						break
+					}); idx != -1 {
+					groupRwys := strings.Split(s.State.Airports[airport].DepartureRunwaysAsOne[idx], ",")
+					s.lg.Infof("%s departing %s -> group runways: %+v\n", ac.Callsign, depRunway, groupRwys)
+
+					for rwy, state := range runways {
+						if slices.Contains(groupRwys, av.TidyRunway(rwy)) {
+							s.lg.Infof("%s: %q departure also holding up %q\n", ac.Callsign, depRunway, rwy)
+							state.LastDeparture = dep
+						}
 					}
 				}
 

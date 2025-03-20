@@ -128,6 +128,11 @@ type Runway struct {
 	Elevation int
 }
 
+func TidyRunway(r string) string {
+	r, _, _ = strings.Cut(r, ".")
+	return strings.TrimSpace(r)
+}
+
 type ATIS struct {
 	Airport  string
 	AppDep   string
