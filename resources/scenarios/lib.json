@@ -7,56 +7,56 @@
           "BIGGY,PARKE": {
             "cleared_altitude": 11000,
             "sid": "EWR5",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
             "sid": "EWR5",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra/h350"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "sid": "EWR5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra ELVAE"
           },
           "ELIOT,NEWEL,ZIMMZ": {
             "cleared_altitude": 10000,
             "sid": "EWR5",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra/h300"
           },
           "LANNA": {
             "cleared_altitude": 11000,
             "sid": "EWR5",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
           }
         },
         "4L": {
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "cleared_altitude": 10000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lb/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "cleared_altitude": 10000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lb/h350"
           },
           "DIXIE,WHITE": {
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "cleared_altitude": 6000,
             "sid": "EWR5",
             "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lc ELVAE"
           }
         }
       },
-      "departure_controller": "EWR_DEP",
+      "departure_controller": "4N",
       "departures": [
         {
           "airlines": [
@@ -839,37 +839,37 @@
           "ARD": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-31L/ho _JFK5_13Rc/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-31L/ho _JFK5_13Rc _JFK5_13Rd/h222"
           },
           "RBV": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-31L/ho _JFK5_13Rc RBV"
           }
         },
@@ -877,25 +877,25 @@
           "ARD,DIXIE,RBV,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "_JFK_4L/ho/h222"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
           }
         },
@@ -903,112 +903,112 @@
           "ARD,RBV": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.RNGRR",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.YNKEE",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "_JFK_13R/ho SKORR CESID/a2500+/h060"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "SKORR5.YNKEE",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "_JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "_JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "SKORR5.RNGRR",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
           }
         },
-        "4L - Coney": {
+        "4L.Coney": {
           "ARD": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "handoff_controller": "NY_LE_APP", 
+            "handoff_controller": "5E", 
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lc/h222"
           },
           "RBV": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La RBV"
           }
         },
-        "4L - No Coney": {
+        "4L.No Coney": {
           "ARD": {
             "cleared_altitude": 9000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h250"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La/h050"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lc/h222"
           },
           "RBV": {
             "cleared_altitude": 9000,
             "sid": "JFK5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KJFK-22R/ho _JFK5_4La RBV"
           }
         }
       },
-      "departure_controller": "JFK_DEP",
+      "departure_controller": "2J",
       "departures": [
         {
           "airlines": [
@@ -1236,6 +1236,7 @@
               "icao": "JBU"
             }
           ],
+          "altitude": 23000,
           "destination": "KBGR",
           "exit": "GREKI",
           "route": "GREKI JUDDS CAM ENE"
@@ -1297,6 +1298,7 @@
             }
           ],
           "destination": "KSYR",
+          "altitude": 17000,
           "exit": "NEION",
           "route": "NEION J223 CORDS CFB V29 SYR"
         },
@@ -1327,6 +1329,7 @@
               "icao": "EJA"
             }
           ],
+          "altitude": 17000,
           "destination": "KPVD",
           "exit": "BAYYS",
           "route": "BAYYS SEALL V188 GON V374 MINNK"
@@ -1436,125 +1439,125 @@
     },
     "KLGA": {
       "departure_routes": {
-        "13 - Coney": {
+        "13.Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP", 
+            "handoff_controller": "5T", 
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "WHITE": {
             "cleared_altitude": 10000,
             "sid": "NTHNS5",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KLGA-31/ho KIWIE NTHNS CNRSE ASALT/h224"
           }
         },
-        "13 - No Coney": {
+        "13.No Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h220"
           }
         },
-        "22 - Coney": {
+        "22.Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "WHITE": {
             "cleared_altitude": 10000,
             "sid": "HOPEA3",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KLGA-4/ho _LGA_22a HOPEA CRI ASALT/h224"
           }
         },
-        "22 - No Coney": {
+        "22.No Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "JUTES3",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c _LGA7_22d/h220"
           }
         },
@@ -1562,31 +1565,31 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-13/ho _LGA7_31c/h070"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KLGA-13/ho _LGA7_31a/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-13/ho _LGA7_31b/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-13/ho _LGA7_31b/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KLGA-13/ho _LGA7_31a/h210"
           }
         },
@@ -1594,36 +1597,36 @@
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LE_APP",
+            "handoff_controller": "5E",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h070"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LW_APP",
+            "handoff_controller": "5W",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h270"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h320"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LN_APP",
+            "handoff_controller": "5T",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h320"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "NY_LS_APP",
+            "handoff_controller": "5S",
             "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h210"
           }
         }
       },
-      "departure_controller": "LGA_DEP",
+      "departure_controller": "1L",
       "departures": [
         {
           "airlines": [
@@ -2263,7 +2266,7 @@
               "icao": "GJS"
             }
           ],
-          "altitude": 15000,
+          "altitude": 17000,
           "destination": "KPVD",
           "exit": "BAYYS",
           "route": "BAYYS SEALL V188 GON V374 MINNK"
@@ -2548,98 +2551,108 @@
       {
         "fixes": ["MERIT", "BAYYS", "GREKI"],
         "altitude_range": [13000, 999000],
-        "receiving_controller": "BOS_SW_CTR"
+        "receiving_controller": "B19"
+      },
+      {
+        "fixes": ["DEEZZ"],
+        "altitude_range": [13000, 999000],
+        "receiving_controller": "C36"
+      },
+      {
+        "fixes": ["SOARS"],
+        "altitude_range": [11000, 999000],
+        "receiving_controller": "B06"
       },
       {
         "fixes": ["DIXIE"],
         "altitude_range": [0, 8000],
         "aircraft_type": ["J"],
-        "receiving_controller": "WRI_APP"
+        "receiving_controller": "51Y"
       },
       {
         "fixes": ["DIXIE"],
         "altitude_range": [0, 6000],
         "aircraft_type": ["P", "T"],
-        "receiving_controller": "WRI_APP"
+        "receiving_controller": "51Y"
       },
       {
         "fixes": ["DIXIE"],
         "altitude_range": [11000, 999999],
-        "receiving_controller": "NY_68_CTR"
+        "receiving_controller": "C68"
       },
       {
         "fixes": ["WHITE"],
         "altitude_range": [9000, 999999],
-        "receiving_controller": "NY_68_CTR"
+        "receiving_controller": "C68"
       },
       {
         "fixes": ["RBV"],
         "altitude_range": [14000, 999999],
         "aircraft_type": ["J"],
-        "receiving_controller": "NY_55_CTR"
+        "receiving_controller": "C55"
       },
       {
         "fixes": ["ARD"],
         "altitude_range": [14000, 999999],
         "aircraft_type": ["P", "T"],
-        "receiving_controller": "NY_55_CTR"
+        "receiving_controller": "C55"
       },
       {
         "fixes": ["COATE", "GAYEL", "NEION"],
         "altitude_range": [16000, 999999],
         "aircraft_type": ["J"],
-        "receiving_controller": "NY_35_CTR"
+        "receiving_controller": "C35"
       },
       {
         "fixes": ["COATE"],
         "altitude_range": [11000, 14000],
-        "receiving_controller": "NY_51_CTR"
+        "receiving_controller": "C51"
       },
       {
         "fixes": ["GAYEL"],
         "altitude_range": [14000, 14000],
         "aircraft_type": ["P", "T"],
-        "receiving_controller": "NY_51_CTR"
+        "receiving_controller": "C51"
       },
       {
         "fixes": ["HAAYS"],
         "altitude_range": [12000, 12000],
-        "receiving_controller": "NY_51_CTR"
+        "receiving_controller": "C51"
       },
       {
         "fixes": ["COATE"],
         "altitude_range": [8000, 10000],
-        "receiving_controller": "AVP_N_APP"
+        "receiving_controller": "71B"
       },
       {
         "fixes": ["SAX"],
         "altitude_range": [8000, 8000],
-        "receiving_controller": "AVP_N_APP"
+        "receiving_controller": "71B"
       },
       {
         "fixes": ["HAAYS"],
         "altitude_range": [9000, 10000],
-        "receiving_controller": "AVP_N_APP"
+        "receiving_controller": "71B"
       },
       {
         "fixes": ["PARKE", "ELIOT"],
         "altitude_range": [14000, 99999],
-        "receiving_controller": "NY_39_CTR"
+        "receiving_controller": "C39"
       },
       {
         "fixes": ["NEWEL", "ZIMMZ"],
         "altitude_range": [17000, 99999],
-        "receiving_controller": "NY_39_CTR"
+        "receiving_controller": "C39"
       },
       {
         "fixes": ["BIGGY"],
         "altitude_range": [14000, 99999],
-        "receiving_controller": "NY_55_CTR"
+        "receiving_controller": "C55"
       },
       {
         "fixes": ["LANNA"],
         "altitude_range": [17000, 99999],
-        "receiving_controller": "NY_55_CTR"
+        "receiving_controller": "C55"
       }
     ],
   "scratchpads": {
@@ -2693,7 +2706,15 @@
   "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   },
   "control_positions": {
-    "BOS_SW_CTR": {
+    "Boston Center (Pawling 06)": {
+      "frequency": 128100,
+      "radio_name": "Boston center",
+      "scope_char": "C",
+      "sector_id": "B06",
+      "facility_id": "B",
+      "eram_facility": true
+    },
+    "Boston Center (Danbury 19)": {
       "frequency": 134000,
       "radio_name": "Boston center",
       "scope_char": "C",
@@ -2701,25 +2722,25 @@
       "facility_id": "B",
       "eram_facility": true
     },
-    "EWR_DEP": {
+    "Newark Departure": {
       "frequency": 119200,
-      "radio_name": "New York departure",
+      "radio_name": "Newark departure",
       "scope_char": "N",
       "sector_id": "4N"
     },
-    "JFK_DEP": {
+    "Kennedy Departure": {
       "frequency": 135900,
       "radio_name": "New York departure",
       "scope_char": "J",
       "sector_id": "2J"
     },
-    "LGA_DEP": {
+    "LaGuardia Departure": {
       "frequency": 120400,
       "radio_name": "New York departure",
       "scope_char": "L",
       "sector_id": "1L"
     },
-    "NY_56_CTR": {
+    "New York Center (Kennedy 56)": {
       "frequency": 125325,
       "radio_name": "New York center",
       "scope_char": "C",
@@ -2727,7 +2748,7 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_68_CTR": {
+    "New York Center (Dixie 68)": {
       "frequency": 118975,
       "radio_name": "New York center",
       "scope_char": "C",
@@ -2735,7 +2756,7 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_55_CTR": {
+    "New York Center (Yardley 55)": {
       "frequency": 132175,
       "radio_name": "New York center",
       "scope_char": "C",
@@ -2743,7 +2764,7 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_35_CTR": {
+    "New York Center (Huguenot 35)": {
       "frequency": 132600,
       "radio_name": "New York center",
       "scope_char": "C",
@@ -2751,7 +2772,7 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_51_CTR": {
+    "New York Center (Lake Henry 51)": {
       "frequency": 134450,
       "radio_name": "New York center",
       "scope_char": "C",
@@ -2759,7 +2780,7 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_39_CTR": {
+    "New York Center (Parke 39)": {
       "frequency": 132100,
       "radio_name": "New York center",
       "scope_char": "C",
@@ -2767,52 +2788,60 @@
       "facility_id": "C",
       "eram_facility": true
     },
-    "NY_LE_APP": {
+    "New York Center (Sparta 36)": {
+      "frequency": 133150,
+      "radio_name": "New York center",
+      "scope_char": "C",
+      "sector_id": "C36",
+      "facility_id": "C",
+      "eram_facility": true
+    },
+    "Liberty Departure (East)": {
       "frequency": 126800,
       "radio_name": "New York departure",
       "scope_char": "E",
       "sector_id": "5E"
     },
-    "NY_LN_APP": {
+    "Liberty Departure (North)": {
       "frequency": 118170,
       "radio_name": "New York departure",
       "scope_char": "T",
       "sector_id": "5T"
     },
-    "NY_LS_APP": {
+    "Liberty Departure (South)": {
       "frequency": 124750,
       "radio_name": "New York departure",
       "scope_char": "S",
       "sector_id": "5S"
     },
-    "NY_LW_APP": {
+    "Liberty Departure (West)": {
       "frequency": 120850,
       "radio_name": "New York departure",
       "scope_char": "W",
       "sector_id": "5W"
     },
-    "WRI_APP": {
+    "McGuire Approach": {
       "frequency": 126470,
       "radio_name": "McGuire approach",
       "scope_char": "5",
       "sector_id": "1Y",
       "facility_id": "5"
     },
-    "AVP_S_APP": {
+    "Wilkes Barre Approach": {
       "frequency": 126300,
       "radio_name": "Wilkes Barre Approach",
       "scope_char": "7",
       "sector_id": "1E",
       "facility_id": "7"
     },
-    "AVP_N_APP": {
+    "Wilkes Barre Approach": {
       "frequency": 120950,
       "radio_name": "Wilkes Barre Approach",
       "scope_char": "7",
       "sector_id": "1B",
       "facility_id": "7"
     },
-    "ABE_APP": {
+    "Allentown approach": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
       "scope_char": "F",
@@ -2873,35 +2902,37 @@
   "primary_airport": "KEWR",
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
-      "solo_controller": "NY_LE_APP",
+      "solo_controller": "5E",
       "multi_controllers": {
         "default": {
-          "NY_LE_APP": {
+          "5E": {
             "primary": true 
           },
-          "NY_LW_APP": {
-            "backup": "NY_LE_APP"
+          "5W": {
+            "backup": "5E"
           },
-          "NY_LS_APP": {
-            "backup": "NY_LW_APP"
+          "5S": {
+            "backup": "5W"
           },
-          "NY_LN_APP": {
-            "backup": "NY_LE_APP"
+          "5T": {
+            "backup": "5E"
           }
         }
       },
       "controllers": [
-        "NY_LE_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "4N",
+        "1L",
+        "2J",
+        "C35",
+        "C36",
+        "C39",
+        "C51",
+        "C55",
+        "C56",
+        "C68",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -2928,7 +2959,7 @@
         {
           "airport": "KJFK",
           "rate": 0,
-          "runway": "4L - Coney"
+          "runway": "4L.Coney"
         },
         {
           "airport": "KJFK",
@@ -2938,12 +2969,12 @@
         {
           "airport": "KLGA",
           "rate": 20,
-          "runway": "13 - No Coney"
+          "runway": "13.No Coney"
         },
         {
           "airport": "KLGA",
           "rate": 0,
-          "runway": "22 - No Coney"
+          "runway": "22.No Coney"
         },
         {
           "airport": "KLGA",
@@ -2958,36 +2989,37 @@
       ]
     },
     "Liberty Combined - LGA Owns Coney": {
-      "solo_controller": "NY_LE_APP",
+      "solo_controller": "5E",
       "multi_controllers": {
         "default": {
-          "NY_LE_APP": {
+          "5E": {
             "primary": true 
           },
-          "NY_LW_APP": {
-            "backup": "NY_LE_APP"
+          "5W": {
+            "backup": "5E"
           },
-          "NY_LS_APP": {
-            "backup": "NY_LW_APP"
+          "5S": {
+            "backup": "5W"
           },
-          "NY_LN_APP": {
-            "backup": "NY_LE_APP"
+          "5T": {
+            "backup": "5E"
           }
         }
       },
       "controllers": [
-        "NY_LE_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "4N",
+        "1L",
+        "2J",
+        "C35",
+        "C36",
+        "C39",
+        "C51",
+        "C55",
+        "C56",
+        "C68",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -3009,7 +3041,7 @@
         {
           "airport": "KJFK",
           "rate": 0,
-          "runway": "4L - No Coney"
+          "runway": "4L.No Coney"
         },
         {
           "airport": "KJFK",
@@ -3019,12 +3051,12 @@
         {
           "airport": "KLGA",
           "rate": 20,
-          "runway": "13 - Coney"
+          "runway": "13.Coney"
         },
         {
           "airport": "KLGA",
           "rate": 0,
-          "runway": "22 - Coney"
+          "runway": "22.Coney"
         },
         {
           "airport": "KLGA",
@@ -3039,23 +3071,24 @@
       ]
     },
     "Liberty East": {
-      "solo_controller": "NY_LE_APP",
+      "solo_controller": "5E",
       "controllers": [
-        "NY_LE_APP",
-        "NY_LW_APP",
-        "NY_LS_APP",
-        "NY_LN_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "5W",
+        "5S",
+        "5T",
+        "4N",
+        "1L",
+        "2J",
+        "C35",
+        "C36",
+        "C39",
+        "C51",
+        "C55",
+        "C56",
+        "C68",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -3075,7 +3108,7 @@
           "airport": "KJFK",
           "category": "East",
           "rate": 0,
-          "runway": "4L - No Coney"
+          "runway": "4L.No Coney"
         },
         {
           "airport": "KJFK",
@@ -3099,7 +3132,7 @@
           "airport": "KJFK",
           "category": "North",
           "rate": 0,
-          "runway": "4L - No Coney"
+          "runway": "4L.No Coney"
         },
         {
           "airport": "KJFK",
@@ -3111,13 +3144,13 @@
           "airport": "KLGA",
           "category": "East",
           "rate": 20,
-          "runway": "13 - Coney"
+          "runway": "13.Coney"
         },
         {
           "airport": "KLGA",
           "category": "East",
           "rate": 0,
-          "runway": "22 - Coney"
+          "runway": "22.Coney"
         },
         {
           "airport": "KLGA",
@@ -3134,23 +3167,24 @@
       ]
     },
     "Liberty North": {
-      "solo_controller": "NY_LN_APP",
+      "solo_controller": "5T",
       "controllers": [
-        "NY_LE_APP",
-        "NY_LW_APP",
-        "NY_LS_APP",
-        "NY_LN_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "5W",
+        "5S",
+        "5T",
+        "4N",
+        "1L",
+        "2J",
+        "C35",
+        "C36",
+        "C39",
+        "C51",
+        "C55",
+        "C56",
+        "C68",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -3170,13 +3204,13 @@
           "airport": "KLGA",
           "category": "North",
           "rate": 20,
-          "runway": "13 - Coney"
+          "runway": "13.Coney"
         },
         {
           "airport": "KLGA",
           "category": "North",
           "rate": 0,
-          "runway": "22 - Coney"
+          "runway": "22.Coney"
         },
         {
           "airport": "KLGA",
@@ -3193,23 +3227,23 @@
       ]
     },
     "Liberty South JFK Owns Coney": {
-      "solo_controller": "NY_LS_APP",
+      "solo_controller": "5S",
       "controllers": [
-        "NY_LE_APP",
-        "NY_LW_APP",
-        "NY_LS_APP",
-        "NY_LN_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "5W",
+        "5S",
+        "5T",
+        "4N",
+        "1L",
+        "2J",
+        "C56",
+        "C68",
+        "C55",
+        "C35",
+        "C51",
+        "C39",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -3241,7 +3275,7 @@
           "airport": "KJFK",
           "category": "Southwest",
           "rate": 0,
-          "runway": "4L - Coney"
+          "runway": "4L.Coney"
         },
         {
           "airport": "KJFK",
@@ -3253,13 +3287,13 @@
           "airport": "KLGA",
           "category": "South",
           "rate": 20,
-          "runway": "13 - No Coney"
+          "runway": "13.No Coney"
         },
         {
           "airport": "KLGA",
           "category": "South",
           "rate": 0,
-          "runway": "22 - No Coney"
+          "runway": "22.No Coney"
         },
         {
           "airport": "KLGA",
@@ -3276,23 +3310,23 @@
       ]
     },
     "Liberty South LGA Owns Coney": {
-      "solo_controller": "NY_LS_APP",
+      "solo_controller": "5S",
       "controllers": [
-        "NY_LE_APP",
-        "NY_LW_APP",
-        "NY_LS_APP",
-        "NY_LN_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "5W",
+        "5S",
+        "5T",
+        "4N",
+        "1L",
+        "2J",
+        "C56",
+        "C68",
+        "C55",
+        "C35",
+        "C51",
+        "C39",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -3318,7 +3352,7 @@
           "airport": "KJFK",
           "category": "Southwest",
           "rate": 0,
-          "runway": "4L - No Coney"
+          "runway": "4L.No Coney"
         },
         {
           "airport": "KJFK",
@@ -3330,13 +3364,13 @@
           "airport": "KLGA",
           "category": "South",
           "rate": 20,
-          "runway": "13 - Coney"
+          "runway": "13.Coney"
         },
         {
           "airport": "KLGA",
           "category": "South",
           "rate": 0,
-          "runway": "22 - Coney"
+          "runway": "22.Coney"
         },
         {
           "airport": "KLGA",
@@ -3353,23 +3387,24 @@
       ]
     },
     "Liberty West": {
-      "solo_controller": "NY_LW_APP",
+      "solo_controller": "5W",
       "controllers": [
-        "NY_LE_APP",
-        "NY_LW_APP",
-        "NY_LS_APP",
-        "NY_LN_APP",
-        "EWR_DEP",
-        "LGA_DEP",
-        "JFK_DEP",
-        "NY_56_CTR",
-        "NY_68_CTR",
-        "NY_55_CTR",
-        "NY_35_CTR",
-        "NY_51_CTR",
-        "NY_39_CTR",
-        "BOS_SW_CTR",
-        "BOS_SW_CTR"
+        "5E",
+        "5W",
+        "5S",
+        "5T",
+        "4N",
+        "1L",
+        "2J",
+        "C35",
+        "C36",
+        "C39",
+        "C51",
+        "C55",
+        "C56",
+        "C68",
+        "B06",
+        "B19"
       ],
       "default_maps": [ "LIBERTY DEP" ],
       "departure_runways": [
@@ -3389,13 +3424,13 @@
           "airport": "KLGA",
           "category": "West",
           "rate": 20,
-          "runway": "13 - Coney"
+          "runway": "13.Coney"
         },
         {
           "airport": "KLGA",
           "category": "West",
           "rate": 0,
-          "runway": "22 - Coney"
+          "runway": "22.Coney"
         },
         {
           "airport": "KLGA",
