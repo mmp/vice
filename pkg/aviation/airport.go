@@ -524,9 +524,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 	// Validate DepartureRunwaysAsOne entries
 	seenRunways := make(map[string]bool)
-	for i, group := range ap.DepartureRunwaysAsOne {
+	for i, rwys := range ap.DepartureRunwaysAsOne {
+		// Remove whitespace and any runway suffixes.
+		ap.DepartureRunwaysAsOne[i] = strings.Join(util.MapSlice(strings.Split(rwys, ","),
+			func(r string) string { return TidyRunway(r) }), ",")
+
 		e.Push(fmt.Sprintf("departure_runways_as_one[%d]", i))
-		runways := strings.Split(group, ",")
+		runways := strings.Split(ap.DepartureRunwaysAsOne[i], ",")
 		if len(runways) < 2 {
 			e.ErrorString("must specify at least two runways")
 		}
