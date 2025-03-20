@@ -774,6 +774,13 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if ctrl.RadioName == "" {
 			e.ErrorString("no \"radio_name\" specified")
 		}
+
+		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
+			e.ErrorString("missing \"eram_facility\" for center controller")
+		}
+		if ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" {
+			e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
+		}
 		e.Pop()
 	}
 

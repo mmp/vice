@@ -3795,6 +3795,8 @@
                                 "radio_name": "Cleveland Center",
                                 "scope_char": "C",
                                 "sector_id": "66"
+                                "eram_facility": true,
+                                "facility_id": "C",
                             },
                             "CLE_TWR": {
                                 "frequency": 124500,
