@@ -45,6 +45,11 @@ type glfwPlatform struct {
 	// These are the keys that are actively held down; for now just the
 	// function keys, since all we currently need is F1 for beaconator.
 	heldFKeys map[Key]interface{}
+
+	mouseDeltaMode         bool
+	mouseDeltaStartPos     [2]float32
+	mouseDeltaWindowCenter [2]float32
+	mouseDelta             [2]float32
 }
 
 type Config struct {
@@ -269,12 +274,11 @@ func (g *glfwPlatform) NewFrame() {
 
 	// Setup inputs
 	if g.window.GetAttrib(glfw.Focused) != 0 {
-		x, y := g.window.GetCursorPos()
-		xy32 := [2]float32{float32(x), float32(y)}
-		if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 && !g.mouseCapture.Inside(xy32) {
-			xy32 = g.mouseCapture.ClosestPointInBox(xy32)
+		pc := g.getCursorPos()
+		if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 && !g.mouseCapture.Inside(pc) {
+			pc = g.mouseCapture.ClosestPointInBox(pc)
 		}
-		g.imguiIO.SetMousePosition(imgui.Vec2{X: xy32[0], Y: xy32[1]})
+		g.imguiIO.SetMousePosition(imgui.Vec2{X: pc[0], Y: pc[1]})
 	} else {
 		g.imguiIO.SetMousePosition(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
 	}
@@ -288,7 +292,7 @@ func (g *glfwPlatform) NewFrame() {
 	// Mouse cursor
 	imgui_cursor := imgui.MouseCursor()
 
-	if imgui_cursor == imgui.MouseCursorNone {
+	if g.mouseDeltaMode || imgui_cursor == imgui.MouseCursorNone {
 		// Hide OS mouse cursor if imgui is drawing it or if it wants no cursor
 		g.window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
 	} else {
@@ -308,13 +312,21 @@ func (g *glfwPlatform) NewFrame() {
 	// If mouse capture is enabled, check the mouse position and clamp it
 	// to the bounds if necessary.
 	if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 {
-		x, y := g.window.GetCursorPos()
-		xy32 := [2]float32{float32(x), float32(y)}
-		if !g.mouseCapture.Inside(xy32) {
-			xy32 = g.mouseCapture.ClosestPointInBox(xy32)
-			g.window.SetCursorPos(float64(xy32[0]), float64(xy32[1]))
+		pc := g.getCursorPos()
+		if !g.mouseCapture.Inside(pc) {
+			pc = g.mouseCapture.ClosestPointInBox(pc)
+			g.window.SetCursorPos(float64(pc[0]), float64(pc[1]))
 		}
 	}
+	if g.mouseDeltaMode {
+		g.mouseDelta = math.Sub2f(g.getCursorPos(), g.mouseDeltaWindowCenter)
+		g.window.SetCursorPos(float64(g.mouseDeltaWindowCenter[0]), float64(g.mouseDeltaWindowCenter[1]))
+	}
+}
+
+func (g *glfwPlatform) getCursorPos() [2]float32 {
+	x, y := g.window.GetCursorPos()
+	return [2]float32{float32(int(x)), float32(int(y))}
 }
 
 func (g *glfwPlatform) PostRender() {
@@ -451,6 +463,7 @@ func (cb glfwClipboard) SetText(text string) {
 }
 
 func (g *glfwPlatform) StartCaptureMouse(e math.Extent2D) {
+	g.StopMouseDeltaMode()
 	g.mouseCapture = math.Extent2D{
 		P0: [2]float32{math.Ceil(e.P0[0]), math.Ceil(e.P0[1])},
 		P1: [2]float32{math.Floor(e.P1[0]), math.Floor(e.P1[1])}}
@@ -458,4 +471,32 @@ func (g *glfwPlatform) StartCaptureMouse(e math.Extent2D) {
 
 func (g *glfwPlatform) EndCaptureMouse() {
 	g.mouseCapture = math.Extent2D{}
+}
+
+func (g *glfwPlatform) StartMouseDeltaMode() {
+	g.EndCaptureMouse()
+
+	g.mouseDeltaMode = true
+	g.mouseDelta = [2]float32{}
+	g.mouseDeltaStartPos = g.getCursorPos()
+
+	// Put the mouse at the center of the window (where we'll reset it
+	// after each frame) so that there's plenty of room for movement to get
+	// deltas in all directions.
+	wsz := g.WindowSize()
+	wsz[0] /= 2
+	wsz[1] /= 2
+	g.window.SetCursorPos(float64(wsz[0]), float64(wsz[1]))
+	g.mouseDeltaWindowCenter = g.getCursorPos()
+}
+
+func (g *glfwPlatform) StopMouseDeltaMode() {
+	if g.mouseDeltaMode {
+		g.mouseDeltaMode = false
+		g.SetMousePosition(g.mouseDeltaStartPos)
+	}
+}
+
+func (g *glfwPlatform) SetMousePosition(p [2]float32) {
+	g.window.SetCursorPos(float64(p[0]), float64(p[1]))
 }

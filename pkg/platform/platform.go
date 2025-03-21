@@ -76,6 +76,15 @@ type Platform interface {
 	// Disable mouse capture.
 	EndCaptureMouse()
 
+	// Enter/leave a mouse capture mode where the change in mouse position
+	// is returned each frame through MouseState DeltaPos. The cursor is
+	// hidden and the returned mouse position is kept fixed.
+	StartMouseDeltaMode()
+	StopMouseDeltaMode()
+
+	// Moves the mouse cursor to the given position specified in window coordinates.
+	SetMousePosition([2]float32)
+
 	// Scaling factor to account for Retina-style displays
 	DPIScale() float32
 
