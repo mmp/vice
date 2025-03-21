@@ -255,6 +255,17 @@ func MapContains[K comparable, V any](m map[K]V, pred func(K, V) bool) bool {
 	return false
 }
 
+func MapLookupFunc[K comparable, V any](m map[K]V, pred func(K, V) bool) (K, V, bool) {
+	for k, v := range m {
+		if pred(k, v) {
+			return k, v, true
+		}
+	}
+	var k K
+	var v V
+	return k, v, false
+}
+
 // DuplicateSlice returns a newly-allocated slice that is a copy of the
 // provided one.
 func DuplicateSlice[V any](s []V) []V {

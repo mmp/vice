@@ -1682,37 +1682,31 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 		}
 
-	case CommandModeLDR, CommandModeRangeRings, CommandModeRange:
-		// There should always be an active spinner in these modes, which
-		// is handled at the start of the method...
-
 	case CommandModeSite:
-		if cmd == "~" {
-			ps.RadarSiteSelected = ""
+		radarSites := ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites
+
+		if cmd == STARSTriangleCharacter {
+			sp.setRadarModeMulti()
 			status.clear = true
-			return
-		} else if len(cmd) > 0 {
-			// Index, character id, or name
-			if i, err := strconv.Atoi(cmd); err == nil {
-				if i < 0 || i >= len(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) {
-					status.err = ErrSTARSIllegalValue
-				} else {
-					ps.RadarSiteSelected = util.SortedMapKeys(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites)[i]
-					status.clear = true
-				}
-				return
-			}
-			for id, rs := range ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites {
-				if cmd == rs.Char || cmd == id {
-					ps.RadarSiteSelected = id
-					status.clear = true
-				}
-				return
-			}
+		} else if cmd == "+" {
+			sp.setRadarModeFused()
 			status.clear = true
+		} else if idx, err := strconv.Atoi(cmd); err == nil {
+			idx-- // 1-based
+			if idx < 0 || idx > len(radarSites) {
+				status.err = ErrSTARSRangeLimit
+			} else {
+				ps.RadarSiteSelected = util.SortedMapKeys(radarSites)[idx]
+				status.clear = true
+			}
+		} else if id, _, ok := util.MapLookupFunc(radarSites,
+			func(id string, site *av.RadarSite) bool { return site.Char == cmd }); ok {
+			ps.RadarSiteSelected = id
+			status.clear = true
+		} else {
 			status.err = ErrSTARSIllegalParam
-			return
 		}
+		return
 
 	case CommandModeWX:
 		// 4-42

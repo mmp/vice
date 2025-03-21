@@ -478,17 +478,11 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		multi := sp.radarMode(radarSites) == RadarModeMulti
 		if toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
-			ps.RadarSiteSelected = ""
-			if ps.FusedRadarMode {
-				sp.discardTracks = true
-			}
-			ps.FusedRadarMode = false
+			sp.setRadarModeMulti()
 		}
 		fused := sp.radarMode(radarSites) == RadarModeFused
 		if toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
-			ps.RadarSiteSelected = ""
-			ps.FusedRadarMode = true
-			sp.discardTracks = true
+			sp.setRadarModeFused()
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
@@ -998,9 +992,6 @@ func toggleButton(ctx *panes.Context, text string, state *bool, flags dcbFlags, 
 		*state = !*state
 	}
 	return clicked
-}
-
-func dcbEndCaptureMouse(ctx *panes.Context) {
 }
 
 var dcbCaptureMouseP0 [2]float32

@@ -1285,6 +1285,26 @@ func (sp *STARSPane) radarSiteId(radarSites map[string]*av.RadarSite) string {
 	}
 }
 
+func (sp *STARSPane) setRadarModeMulti() {
+	ps := sp.currentPrefs()
+
+	ps.RadarSiteSelected = ""
+	if ps.FusedRadarMode {
+		sp.discardTracks = true
+		ps.FusedRadarMode = false
+	}
+}
+
+func (sp *STARSPane) setRadarModeFused() {
+	ps := sp.currentPrefs()
+
+	ps.RadarSiteSelected = ""
+	if !ps.FusedRadarMode {
+		ps.FusedRadarMode = true
+		sp.discardTracks = true
+	}
+}
+
 func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 	if sp.audioEffects == nil {
 		sp.audioEffects = make(map[AudioType]int)
