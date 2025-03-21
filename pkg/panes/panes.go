@@ -84,22 +84,37 @@ type Context struct {
 	KeyboardFocus *KeyboardFocus
 
 	ControlClient *server.ControlClient
+
+	// Full display size, including the menu and status bar.
+	displaySize [2]float32
 }
 
-func (ctx *Context) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
+func (ctx *Context) InitializeMouse(p platform.Platform) {
 	ctx.Mouse = p.GetMouse()
 
-	// Convert to pane coordinates:
-	// platform gives us the mouse position w.r.t. the full window, so we need
-	// to subtract out displayExtent.p0 to get coordinates w.r.t. the
-	// current pane.  Further, it has (0,0) in the upper left corner of the
-	// window, so we need to flip y w.r.t. the full window resolution.
-	ctx.Mouse.Pos[0] = ctx.Mouse.Pos[0] - ctx.PaneExtent.P0[0]
-	ctx.Mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.PaneExtent.P0[1] - ctx.Mouse.Pos[1]
-
+	ctx.Mouse.Pos = ctx.WindowToPane(ctx.Mouse.Pos)
 	// Negate y to go to pane coordinates
 	ctx.Mouse.Wheel[1] *= -1
 	ctx.Mouse.DragDelta[1] *= -1
+}
+
+// Convert to pane coordinates:
+// platform gives us the mouse position w.r.t. the full window, so we need
+// to subtract out displayExtent.p0 to get coordinates w.r.t. the
+// current pane.  Further, it has (0,0) in the upper left corner of the
+// window, so we need to flip y w.r.t. the full window resolution.
+func (ctx *Context) WindowToPane(p [2]float32) [2]float32 {
+	return [2]float32{
+		p[0] - ctx.PaneExtent.P0[0],
+		ctx.displaySize[1] - 1 - ctx.PaneExtent.P0[1] - p[1],
+	}
+}
+
+func (ctx *Context) PaneToWindow(p [2]float32) [2]float32 {
+	return [2]float32{
+		p[0] + ctx.PaneExtent.P0[0],
+		-(p[1] - ctx.displaySize[1] + 1 + ctx.PaneExtent.P0[1]),
+	}
 }
 
 func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {

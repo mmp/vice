@@ -493,6 +493,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				MenuBarHeight:    menuBarHeight,
 				KeyboardFocus:    &wm.focus,
 				ControlClient:    controlClient,
+				displaySize:      p.DisplaySize(),
 			}
 
 			// Similarly make the mouse events available only to the
@@ -502,9 +503,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 					!io.WantCaptureMouse() &&
 					paneExtent.Inside(mousePos))
 			if ownsMouse {
-				// Full display size, including the menu and status bar.
-				displayTrueFull := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}}
-				ctx.InitializeMouse(displayTrueFull, p)
+				ctx.InitializeMouse(p)
 			}
 
 			// Specify the scissor rectangle and viewport that
