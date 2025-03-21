@@ -73,15 +73,15 @@ type Preferences struct {
 	Name string // Name given if it's been saved
 
 	// Radar scope
-	DefaultCenter math.Point2LL // The default center
-	UserCenter    math.Point2LL
+	DefaultCenter math.Point2LL `json:"Center"` /* backwards compat */
+	UserCenter    math.Point2LL `json:"CurrentCenter"`
 	UseUserCenter bool
 	Range         float32
 
-	RangeRingsUserCenter math.Point2LL
+	RangeRingsUserCenter math.Point2LL `json:"RangeRingsCenter"`
 	RangeRingRadius      int
 	// Whether we center them at RangeRingsCenter or Center
-	UseUserRangeRingsCenter bool
+	UseUserRangeRingsCenter bool `json:"RangeRingsUserCenter"`
 
 	// User-supplied text for the SSA list
 	ATIS   string
