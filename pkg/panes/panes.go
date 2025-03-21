@@ -100,6 +100,7 @@ func (ctx *Context) InitializeMouse(p platform.Platform) {
 }
 
 func (ctx *Context) SetMousePosition(p [2]float32) {
+	ctx.Mouse.Pos = p
 	ctx.Platform.SetMousePosition(ctx.PaneToWindow(p))
 }
 

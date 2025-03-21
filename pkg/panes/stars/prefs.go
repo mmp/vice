@@ -168,6 +168,9 @@ type CommonPreferences struct {
 	OverflightFullDatablocks bool
 	AutomaticFDBOffset       bool
 
+	AutoCursorHome     bool
+	CursorHomePosition [2]float32
+
 	DisplayTPASize               bool
 	DisplayATPAInTrailDist       bool `json:"DisplayATPAIntrailDist"`
 	DisplayATPAWarningAlertCones bool

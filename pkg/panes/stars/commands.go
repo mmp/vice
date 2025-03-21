@@ -196,6 +196,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			} else {
 				if status.clear {
 					sp.setCommandMode(ctx, CommandModeNone)
+					if ps.AutoCursorHome {
+						sp.hideMouseCursor = true
+						ctx.SetMousePosition(ps.CursorHomePosition)
+					}
 				}
 				sp.previewAreaOutput = status.output
 			}
@@ -881,6 +885,16 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			if cmd == "*" {
 				// I* clears the status area(?!)
 				status.clear = true
+				return
+			} else if cmd == "HS" { // enable auto cursor home
+				ps.AutoCursorHome = true
+				status.clear = true
+				status.output = "HOME"
+				return
+			} else if cmd == "NH" { // disable auto cursor home
+				ps.AutoCursorHome = false
+				status.clear = true
+				status.output = "NO HOME"
 				return
 			}
 
@@ -3524,6 +3538,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 			status.output = fmt.Sprintf("%s / %s", format(pll.Latitude()), format(pll.Longitude()))
 			status.clear = true
+			return
+		} else if cmd == "INC" { // enable and define auto-home position
+			ps.AutoCursorHome = true
+			ps.CursorHomePosition = mousePosition
+			status.clear = true
+			status.output = "HOME"
 			return
 		} else if cmd == "P" {
 			ps.PreviewAreaPosition = transforms.NormalizedFromWindowP(mousePosition)

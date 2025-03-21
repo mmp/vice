@@ -2089,6 +2089,36 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
 
+              <h3 id="cursor-hiding-home">The Cursor Home and Hiding the Cursor</h3>
+
+            <p>After a keyboard command is entered, the STARS cursor may be optionally returned to a "home"
+              position and hidden. It will then reappear when the mouse is moved. The "CURSOR HOME" button in the
+              <a href="#stars-dcb">auxiliary DCB menu</a> can be used to toggle this behavior.
+              If not specified using one of the following commands, the default home position is at the upper-left
+              of the <a href="#stars-ssa-list">SSA list</a>.</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]IHS</code></td>
+                    <td>Enables auto cursor home.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]INH</code></td>
+                    <td>Disables auto cursor home.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]INC[SLEW]</code></td>
+                    <td>Enables auto cursor home and sets the home position to be the slewed location on the radar scope.</td>
+                  </tr>
+                </tbody>
+              </table>
+
           </section>            
 
 	  <section class="docs-section" id="stars-quickref">
@@ -2170,7 +2200,7 @@ how it simulates aircraft or the STARS interface.
               </ul>
             <p>Here is the auxiliary DCB:</p>
             <div class="text-center">
-              <img src="dcb-aux.png" srcset="dcb-aux-2x.png 2x" width="1193" height="75" style="max-width: 100%; height:auto;">
+              <img src="dcb-aux.png" srcset="dcb-aux-2x.png 2x" width="1343" height="83" style="max-width: 100%; height:auto;">
             </div>
             <br>
             <p>Many of its buttons are disabled; the enabled ones are:</p>
@@ -2178,6 +2208,7 @@ how it simulates aircraft or the STARS interface.
                 <li>VOL: controls the volume of <a href="#audio-alerts">STARS audio alerts</a>. A short test sound is played when it is changed.</li>
                 <li>HISTORY: sets the number of dots drawn showing the aircraft's <a href="#stars-track-ids-history">radar track history</a>.</li>
                 <li>H_RATE: sets the rate in seconds that a new dot is added to aircraft history trails.</li>
+                <li>CURSOR HOME: controls whether the cursor is <a href="#cursor-hiding-home">hidden and returned to home position</a> after a keyboard command is entered.</li> 
                 <li>DCB LEFT/RIGHT/TOP/BOTTOM: sets the side of the radar scope where the DCB is displayed.</li>
                 <li>PTL LNTH/PTL OWN/PTL ALL: controls <a href="#stars-ptl-lines">Predicted Track Lines</a> (PTLs).</li>
                 <li>DWELL: enables or disables <a href="#stars-dwell-mode">dwell mode</a>.</li>

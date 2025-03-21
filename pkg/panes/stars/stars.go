@@ -98,6 +98,7 @@ type STARSPane struct {
 	systemOutlineFontA, systemOutlineFontB [6]*renderer.Font
 	dcbFontA, dcbFontB                     [3]*renderer.Font // 0, 1, 2 only
 	cursorsFont                            *renderer.Font
+	hideMouseCursor                        bool // set after auto-home and the cursor is repositioned
 
 	fusedTrackVertices [][2]float32
 
@@ -1090,6 +1091,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransfo
 
 func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
+	ps := sp.currentPrefs()
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
@@ -1098,6 +1100,15 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	}
 
 	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
+
+	if sp.hideMouseCursor { // auto home
+		if ctx.Mouse != nil && ctx.Mouse.Pos != ps.CursorHomePosition {
+			sp.hideMouseCursor = false // it moved
+		}
+		if sp.hideMouseCursor {
+			return
+		}
+	}
 
 	// Don't draw the cursor with command modes that capture the mouse
 	if sp.activeSpinner != nil {
@@ -1108,7 +1119,6 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	}
 
 	// STARS Operators Manual 4-74: FDB brightness is used for the cursor
-	ps := sp.currentPrefs()
 	cursorStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: ps.Brightness.FullDatablocks.RGB()}
 	background := ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor)
 	bgStyle := renderer.TextStyle{Font: sp.cursorsFont, Color: background}

@@ -633,7 +633,11 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			CommandModeHistory, maybeDisable(buttonHalfVertical), buttonScale)
 		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
 			CommandModeHistoryRate, maybeDisable(buttonHalfVertical), buttonScale)
-		unsupportedButton(ctx, "CURSOR\nHOME", maybeDisable(buttonFull), buttonScale)
+		if toggleButton(ctx, "CURSOR\nHOME", &ps.AutoCursorHome, maybeDisable(buttonFull), buttonScale) {
+			if ps.AutoCursorHome && ps.CursorHomePosition[0] == 0 && ps.CursorHomePosition[1] == 0 {
+				ps.CursorHomePosition = ps.SSAList.Position
+			}
+		}
 		unsupportedButton(ctx, "CSR SPD\n4", maybeDisable(buttonFull), buttonScale)
 		unsupportedButton(ctx, "MAP\nUNCOR", maybeDisable(buttonFull), buttonScale)
 		unsupportedButton(ctx, "UNCOR", maybeDisable(buttonFull), buttonScale)
