@@ -707,6 +707,7 @@
     }
   },
   "stars_config": {
+  "pdb": { "hide_gs": true },
     "center": "41.0669531,-73.7075661",
     "range": 40,
     "scratchpads": {

@@ -6558,6 +6558,7 @@
   },
   "stars_config": {
     "center": "KJFK",
+  "pdb": { "hide_gs": true },
     "coordination_fixes": {
       "MERIT": [
         {

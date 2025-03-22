@@ -2479,6 +2479,7 @@
   },
   "stars_config": {
   "center": "KLGA",
+  "pdb": { "hide_gs": true },
   "coordination_fixes": {
     "MERIT": [
       {

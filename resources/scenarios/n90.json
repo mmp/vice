@@ -9654,6 +9654,7 @@
 },
   "stars_config": {
   "center": "KLGA",
+  "pdb": { "hide_gs": true },
   "altimeters": [ "KJFK", "KLGA", "KEWR", "KTEB", "KISP", "KHPN" ],
   "coordination_fixes": {
     "FLOSI": [
