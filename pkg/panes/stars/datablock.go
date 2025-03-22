@@ -335,7 +335,6 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 	} else {
 		// The track owner is known, so it will be a P/FDB
 		state := sp.Aircraft[ac.Callsign]
-		dt := state.DatablockType
 
 		beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
 		if beaconator {
@@ -349,53 +348,55 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		if ac.Squawk != ac.FlightPlan.AssignedSquawk {
-			dt = PartialDatablock
-		}
-
 		if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 			// it's under our control
-			dt = FullDatablock
+			return FullDatablock
 		}
 
 		if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP && ac.RedirectedHandoff.RedirectedTo == "" {
 			// it's being handed off to us
-			dt = FullDatablock
+			return FullDatablock
+		}
+
+		if ac.HandoffTrackController != ctx.ControlClient.PrimaryTCP && state.DisplayFDB {
+			// Outbound handoff or we slewed a PDB to make it a FDB
+			return FullDatablock
 		}
 
 		if sp.haveActiveWarnings(ctx, ac) {
-			dt = FullDatablock
+			return FullDatablock
 		}
 
 		// Point outs are FDB until acked.
 		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
-			dt = FullDatablock
+			return FullDatablock
 		}
 		if state.PointOutAcknowledged {
-			dt = FullDatablock
+			return FullDatablock
 		}
 		if state.ForceQL {
-			dt = FullDatablock
+			return FullDatablock
 		}
+
 		if len(trk.RedirectedHandoff.Redirector) > 0 {
 			if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
-				dt = FullDatablock
+				return FullDatablock
 			}
 		}
 
 		if trk.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP {
-			dt = FullDatablock
+			return FullDatablock
 		}
 
 		if sp.currentPrefs().OverflightFullDatablocks && sp.isOverflight(ctx, ac) {
-			dt = FullDatablock
+			return FullDatablock
 		}
 
 		if sp.isQuicklooked(ctx, ac) {
-			dt = FullDatablock
+			return FullDatablock
 		}
 
-		return dt
+		return PartialDatablock
 	}
 }
 
@@ -975,6 +976,8 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		// Check altitude filters
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
 	} else { // associated
+		state := sp.Aircraft[ac.Callsign]
+
 		if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
 			// For owned datablocks
 			return true
@@ -984,16 +987,14 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
 			// For non-greened handoffs
 			return true
-		} else if sp.Aircraft[ac.Callsign].PointOutAcknowledged {
+		} else if state.PointOutAcknowledged {
 			// Pointouts: This is if its been accepted,
 			// for an incoming pointout, it falls to the FDB check
 			return true
 		} else if ok, _ := ac.Squawk.IsSPC(); ok {
 			// Special purpose codes
 			return true
-		} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
-			// If FDB, may trump others but idc
-			// This *should* be primarily doing CA and ATPA cones
+		} else if state.DisplayFDB {
 			return true
 		} else if sp.isOverflight(ctx, ac) && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
 			// Overflights

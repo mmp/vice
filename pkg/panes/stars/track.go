@@ -56,13 +56,16 @@ type AircraftState struct {
 	historyTracks      [10]av.RadarTrack
 	historyTracksIndex int
 
-	DatablockType            DatablockType
 	FullLDBEndTime           time.Time // If the LDB displays the groundspeed. When to stop
 	DisplayRequestedAltitude *bool     // nil if unspecified
 
 	IsSelected bool // middle click
 
 	TabListIndex int // 0-99. If -1, we ran out and haven't assigned one.
+
+	// We handed it off, the other controller accepted it, we haven't yet
+	// slewed to make it a PDB.
+	DisplayFDB bool
 
 	// Hold for release aircraft released and deleted from the coordination
 	// list by the controller.
@@ -229,9 +232,6 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		if _, ok := sp.Aircraft[callsign]; !ok {
 			// First we've seen it; create the *AircraftState for it
 			sa := &AircraftState{}
-			if ac.TrackingController == ctx.ControlClient.PrimaryTCP || ac.ControllingController == ctx.ControlClient.PrimaryTCP {
-				sa.DatablockType = FullDatablock
-			}
 			sa.GlobalLeaderLineDirection = ac.GlobalLeaderLineDirection
 			sa.UseGlobalLeaderLine = sa.GlobalLeaderLineDirection != nil
 			sa.FirstSeen = ctx.ControlClient.SimTime
@@ -331,7 +331,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.InitiatedTrackEvent:
 			if event.ToController == ctx.ControlClient.PrimaryTCP {
 				if state, ok := sp.Aircraft[event.Callsign]; ok {
-					state.DatablockType = FullDatablock
+					state.DisplayFDB = true
 				}
 			}
 
@@ -352,7 +352,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 					if event.Type == sim.AcceptedRedirectedHandoffEvent {
 						state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
-						state.DatablockType = FullDatablock
+						state.DisplayFDB = true
 					}
 				}
 				if outbound || inbound {

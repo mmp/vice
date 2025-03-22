@@ -2619,9 +2619,6 @@ func (sp *STARSPane) initiateTrack(ctx *panes.Context, callsign string) error {
 
 	ctx.ControlClient.InitiateTrack(callsign, fp,
 		func(any) {
-			if state, ok := sp.Aircraft[callsign]; ok {
-				state.DatablockType = FullDatablock
-			}
 			if ac, ok := ctx.ControlClient.Aircraft[callsign]; ok {
 				sp.previewAreaOutput, _ = sp.flightPlanSTARS(ctx, ac)
 			}
@@ -2635,12 +2632,7 @@ func (sp *STARSPane) dropTrack(ctx *panes.Context, callsign string) {
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *panes.Context, callsign string) {
-	ctx.ControlClient.AcceptHandoff(callsign,
-		func(any) {
-			if state, ok := sp.Aircraft[callsign]; ok {
-				state.DatablockType = FullDatablock
-			}
-		},
+	ctx.ControlClient.AcceptHandoff(callsign, nil,
 		func(err error) { sp.displayError(err, ctx) })
 }
 
@@ -2905,11 +2897,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 						s = 5
 					}
 					state.FullLDBEndTime = ctx.Now.Add(time.Duration(s) * time.Second)
-				} else if db == FullDatablock && trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
-					// do not collapse datablock if user is tracking the aircraft
-					state.DatablockType = PartialDatablock
-				} else {
-					state.DatablockType = FullDatablock
+				} else if trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+					state.DisplayFDB = !state.DisplayFDB
 				}
 
 				if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
@@ -3182,12 +3171,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// See if cmd works as a sector id; if so, make it a handoff.
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
-					if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP || ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP { // Redirect
-						if ac.RedirectedHandoff.ShouldFallbackToHandoff(ctx.ControlClient.PrimaryTCP, control.Id()) {
-							sp.Aircraft[ac.Callsign].DatablockType = PartialDatablock
-						} else {
-							sp.Aircraft[ac.Callsign].DatablockType = FullDatablock
-						}
+					if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP ||
+						ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP { // Redirect
 						sp.redirectHandoff(ctx, ac.Callsign, control.Id())
 						status.clear = true
 					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
