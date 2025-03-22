@@ -600,7 +600,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		// Field 3: mode C altitude
 		altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
 		if ac.Mode == av.Standby {
-			altitude = "RDR"
+			if extended {
+				altitude = "RDR"
+			} else {
+				altitude = ""
+			}
 		} else if ac.Mode == av.On { // mode-a; altitude is blank
 			altitude = ""
 		}
@@ -957,49 +961,54 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 
 	af := sp.currentPrefs().AltitudeFilters
 	alt := state.TrackAltitude()
-	if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
-		// For owned datablocks
-		return true
-	} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP {
-		// For receiving handoffs
-		return true
-	} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
-		// For non-greened handoffs
-		return true
-	} else if sp.Aircraft[ac.Callsign].PointOutAcknowledged {
-		// Pointouts: This is if its been accepted,
-		// for an incoming pointout, it falls to the FDB check
-		return true
-	} else if ok, _ := ac.Squawk.IsSPC(); ok {
-		// Special purpose codes
-		return true
-	} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
-		// If FDB, may trump others but idc
-		// This *should* be primarily doing CA and ATPA cones
-		return true
-	} else if sp.isOverflight(ctx, ac) && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
-		// Overflights
-		return true
-	} else if sp.isQuicklooked(ctx, ac) {
-		return true
-	} else if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
-		// Redirected to
-		return true
-	} else if slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
-		// Had it but redirected it
-		return true
-	} else if ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode {
+
+	if ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && ac.Squawk == sp.DisplayBeaconCode {
 		// beacon code display 6-117
 		return true
-	} else if ac.Mode == av.Standby && trk.TrackOwner == "" {
-		// unassociated also primary only, only show a datablock if it's been slewed
-		return ctx.Now.Before(state.FullLDBEndTime)
 	}
 
-	// Check altitude filters
-	if trk.TrackOwner == "" {
+	if trk.TrackOwner == "" { // unassociated
+		if ac.Mode == av.Standby {
+			// unassociated also primary only, only show a datablock if it's been slewed
+			return ctx.Now.Before(state.FullLDBEndTime)
+		}
+		// Check altitude filters
 		return alt >= af.Unassociated[0] && alt <= af.Unassociated[1]
-	} else {
+	} else { // associated
+		if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+			// For owned datablocks
+			return true
+		} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP {
+			// For receiving handoffs
+			return true
+		} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
+			// For non-greened handoffs
+			return true
+		} else if sp.Aircraft[ac.Callsign].PointOutAcknowledged {
+			// Pointouts: This is if its been accepted,
+			// for an incoming pointout, it falls to the FDB check
+			return true
+		} else if ok, _ := ac.Squawk.IsSPC(); ok {
+			// Special purpose codes
+			return true
+		} else if sp.Aircraft[ac.Callsign].DatablockType == FullDatablock {
+			// If FDB, may trump others but idc
+			// This *should* be primarily doing CA and ATPA cones
+			return true
+		} else if sp.isOverflight(ctx, ac) && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
+			// Overflights
+			return true
+		} else if sp.isQuicklooked(ctx, ac) {
+			return true
+		} else if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+			// Redirected to
+			return true
+		} else if slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+			// Had it but redirected it
+			return true
+		}
+
+		// Check altitude filters
 		return alt >= af.Associated[0] && alt <= af.Associated[1]
 	}
 }
