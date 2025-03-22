@@ -1,6 +1,17 @@
 {
     "tracon": "SCT",
     "airports": {
+		"KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
+		"L18": { "vfr": { "random_routes": { "rate": 5 } } },
+		"L08": { "vfr": { "random_routes": { "rate": 5 } } },
+		"CA89": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KMYF": { "vfr": { "random_routes": { "rate": 40 } } },
+		"KCRQ": { "vfr": { "random_routes": { "rate": 20 } } },
+		"KSEE": { "vfr": { "random_routes": { "rate": 20 } } },
+		"KSDM": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRNM": { "vfr": { "random_routes": { "rate": 10 } } },
         "KSAN": {
             "approaches": {
               "R9": { "cifp_id": "R9" },
@@ -75,10 +86,12 @@
                 },
                 "OCN":{
                     "cleared_altitude": 6000,
+					"sid": "RV",
                     "waypoints": "KSAN-9/h310 OCN"
                 },
                 "ROBNN":{
                     "cleared_altitude": 10000,
+					"sid": "RV",
                     "waypoints": "KSAN-9/h290 ROBNN"
                 }
             },
@@ -115,15 +128,17 @@
                 },
                 "IKAYE.O": {
                     "cleared_altitude": 15000,
-                    "sid": "PADRZ2",
+                    "sid": "ECHHO2",
                     "waypoints": "KSAN-9 N032.44.46.363,W117.14.26.409 LANDN ECHHO GOFUR/a15000+ MMOTO TEDEY GEEGN IKAYE"
                 },
                 "OCN.O":{
                     "cleared_altitude": 6000,
+					"sid": "RV",
                     "waypoints": "KSAN-9/h310 OCN"
                 },
                 "ROBNN.O":{
                     "cleared_altitude": 10000,
+					"sid": "RV",
                     "waypoints": "KSAN-9/h290 ROBNN"
                 }
             },
@@ -160,6 +175,7 @@
                 },
                 "OCN.E":{
                     "cleared_altitude": 5000,
+					"sid": "RV",
                     "waypoints": "KSAN-27 N032.43.24.803,W117.08.53.578/a900+ MZB/h290 OCN"
                 }
             }
@@ -1398,7 +1414,7 @@
         "waypoints": "LEJEN/a15000-19000/ho COMIX/a12000-15000 FLSHH LNTRN/a9000+/s230 XMANS/a7000 KLOMN/a6000/s210 NADDO/a6000/h095",
         "cruise_altitude": 30000,
         "star": "COMIX2",
-        "initial_controller": "LAX_30_CTR",
+        "initial_controller": "LAX_22_CTR",
         "initial_altitude": 16000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1475,7 +1491,7 @@
         "waypoints": "BOREN KARRO/ho JLI",
         "cruise_altitude": 10000,
         "star": "BOREN KARRO JLI",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 10000,
         "initial_speed": 200,
         "expect_approach": null,
@@ -1496,7 +1512,7 @@
         "waypoints": "BOREN KARRO/ho JLI",
         "cruise_altitude": 10000,
         "star": "BOREN KARRO JLI",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 10000,
         "initial_speed": 200,
         "expect_approach": null,
@@ -1546,7 +1562,7 @@
         "waypoints": "MOMAR/a24000-26000 DSURT/a19000-23000 TRIXI/a12000-14000/s270/ho HSKER/a8700+ BARET/a8000+ HNAHH/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
         "cruise_altitude": 36000,
 		"route":  "LUCKI/a6000 LYNDI/a5000+/s210",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1627,7 +1643,7 @@
         "waypoints": "CMPOE/a19000-23000 HEELX/a12000-15000/s270/ho JACKK/a10000-11000/s250 AZTEK/a8000+ JEEVS/a6100+ LUCKI/a6000 LYNDI/a5000+/s210",
         "cruise_altitude": 36000,
 		"route":  "LUCKI/a6000 LYNDI/a5000+/s210",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 20000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1800,7 +1816,7 @@
         "waypoints": "LAX/a24000 TASCO/a19000 SWAMI/a16500- OHBEA/a15000+/ho PLYYA/a11000+ MNLYT/a4000+ SARGS/a2100",
         "cruise_altitude": 35000,
         "star": "PLYYA2",
-        "initial_controller": "LAX_30_CTR",
+        "initial_controller": "LAX_22_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1841,7 +1857,7 @@
         "waypoints": "KUMBA/ho GILYY STAXS BLLYJ HAILE MZB",
         "cruise_altitude": 12000,
         "star": "KUMBA GILYY STAXS BLLYJ HAILE MZB",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 10000,
         "initial_speed": 200,
         "expect_approach": null,
@@ -1866,7 +1882,7 @@
         "waypoints": "MOMAR/a24000+ DSURT/a19000+ TRIXI/a12000+/s270/ho TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
         "cruise_altitude": 36000,
         "route":  "TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 24000,
         "initial_speed": 270,
         "expect_approach": null,
@@ -1907,7 +1923,7 @@
         "waypoints": "IPL/a24000+ BLUZE/a17000+/ho GUUSE/a12000+/s270 TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
         "cruise_altitude": 36000,
         "route":  "TOPGN/a9000+ ISEMN/a6400+ ZIPPP/a6000+ TMCAT/a6000/s210/h270",
-        "initial_controller": "LAX_31_CTR",
+        "initial_controller": "LAX_09_CTR",
         "initial_altitude": 24000,
         "initial_speed": 270,
         "expect_approach": null,
@@ -1952,24 +1968,29 @@
   }
 },
     "control_positions":{
-        "LAX_30_CTR": {
-            "frequency": 119950,
+        "LAX_22_CTR": {
+            "frequency": 134575,
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "sector_id": "C30"
+            "sector_id": "C22"
         },
-		"LAX_31_CTR": {
-            "frequency": 126775,
+		"LAX_09_CTR": {
+            "frequency": 128600,
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "sector_id": "C31"
+            "sector_id": "C09"
         },
 		"SNA_Y_APP": {
             "frequency": 128100,
             "radio_name": "SoCal Approach",
             "sector_id": "4Y"
+        },
+		"SNA_S_APP": {
+            "frequency": 124100,
+            "radio_name": "SoCal Approach",
+            "sector_id": "4S"
         },
 		"ONT_N_APP": {
             "frequency": 127000,
@@ -1981,6 +2002,11 @@
             "radio_name": "SoCal Approach",
             "sector_id": "5W"
         },
+		"SAN_Z_APP": {
+            "frequency": 125150,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5Z"
+        },
         "SAN_E_APP": {
             "frequency": 124350,
             "radio_name": "SoCal Approach",
@@ -1990,6 +2016,11 @@
             "frequency": 125300,
             "radio_name": "SoCal Approach",
             "sector_id": "5N"
+        },
+		"SAN_M_APP": {
+            "frequency": 132200,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5M"
         },
         "SAN_D_APP": {
             "frequency": 127300,
@@ -2076,8 +2107,11 @@
             "solo_controller": "SAN_W_APP",
             "multi_controllers":{
                 "default": {
-                    "SAN_W_APP":{"departures": ["KSAN","KMYF"],
+                    "SAN_W_APP":{"departures": ["KSAN/PADRZ2", "KSAN/BRDR7", "KSAN/CWARD2", "KSAN/RV", "KMYF"],
                         "primary": true
+                    },
+					"SAN_Z_APP":{"backup": "SAN_W_APP",
+                    "departures": ["KSAN/ZZOOO4"]
                     },
                     "SAN_E_APP":{ "backup": "SAN_W_APP",
                     "arrivals": ["LUCKI1.MOMAR","LUCKI1.HEELX","SOUTHEAST MYF ARR"]
@@ -2099,10 +2133,13 @@
                 "SAN_E_APP",
                 "SAN_N_APP",
                 "SAN_D_APP",
+				"SAN_Z_APP",
+				"SAN_M_APP",
+				"SNA_S_APP",
 				"SNA_Y_APP",
 				"ONT_N_APP",
-				"LAX_30_CTR",
-                "LAX_31_CTR"
+				"LAX_22_CTR",
+                "LAX_09_CTR"
             ],
             "default_maps": ["500S SB WEST SCT"],
             "departure_runways": [
@@ -2169,18 +2206,18 @@
 					"arrivals": ["PLYYA2"],
                         "primary": true
                     },
-
                     "SAN_E_APP":{ "departures": ["KSAN"],
-                        "backup": "SAN_W_APP",
+                    "backup": "SAN_W_APP",
                     "arrivals": ["TOPGN2.IPL", "TOPGN2.MOMAR"]
                     },
-
                     "SAN_N_APP":{"backup": "SAN_W_APP",
 					"arrivals":["LAXX1/NORTH SAN ARR(E)"]
                     },
                     "SAN_D_APP":{"backup": "SAN_W_APP",
                     "arrivals": ["LEGOZ2", "EAST SAT ARR", "NORTH CRQ ARR"]
-                    }
+                    },
+					"SAN_Z_APP":{"backup": "SAN_W_APP"},
+					"SAN_M_APP":{"backup": "SAN_W_APP"}
                 }
             },
             "controllers": [
@@ -2190,10 +2227,13 @@
                 "SAN_E_APP",
                 "SAN_N_APP",
                 "SAN_D_APP",
+				"SAN_Z_APP",
+				"SAN_M_APP",
+				"SNA_S_APP",
 				"SNA_Y_APP",
 				"ONT_N_APP",
-                "LAX_30_CTR",
-				"LAX_31_CTR"
+                "LAX_22_CTR",
+				"LAX_09_CTR"
             ],
             "default_maps": ["501S SB EAST SCT"],
             "departure_runways": [
@@ -2247,20 +2287,22 @@
             "multi_controllers":{
                 "default": {
                     "SAN_W_APP":{
+					"departures": ["KSAN/ECHHO2", "KSAN/BRDR7","KSAN/RV", "KSAN/MMOTO2"],
 					"arrivals": ["PLYYA2"],
                         "primary": true
                     },
-
-                    "SAN_E_APP":{ "departures": ["KSAN"],
-                        "backup": "SAN_W_APP",
+                    "SAN_E_APP":{
+                    "backup": "SAN_W_APP",
                     "arrivals": ["TOPGN2.IPL", "TOPGN2.MOMAR"]
                     },
-
                     "SAN_N_APP":{"backup": "SAN_W_APP",
 					"arrivals":["LAXX1/NORTH SAN ARR(E)"]
                     },
                     "SAN_D_APP":{"backup": "SAN_W_APP",
                     "arrivals": ["LEGOZ2", "EAST SAT ARR", "NORTH CRQ ARR"]
+                    },
+					"SAN_Z_APP":{ "departures": ["KSAN/ZZOOO4"],
+                        "backup": "SAN_W_APP"
                     }
                 }
             },
@@ -2271,10 +2313,13 @@
                 "SAN_E_APP",
                 "SAN_N_APP",
                 "SAN_D_APP",
+				"SAN_Z_APP",
+				"SAN_M_APP",
+				"SNA_S_APP",
 				"SNA_Y_APP",
 				"ONT_N_APP",
-                "LAX_30_CTR",
-				"LAX_31_CTR"
+                "LAX_22_CTR",
+				"LAX_09_CTR"
             ],
             "default_maps": ["501S SB EAST SCT"],
             "departure_runways": [
@@ -2291,98 +2336,8 @@
         }
     },
     "stars_config": {
+		"altimeters":["KSAN","KMYF","KCRQ","KSEE","KSDM"],
         "coordination_fixes": {
-            "ANJLL": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "HLYWD": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "MDOTS": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "COWWS": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "RUKKI": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "GOATZ": [
-                      {
-                          "type": "route",
-                          "to":"SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "GNZZO": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "SOLAY": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "ALMST": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "CYNDE": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "GNKEE": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "DUNNN": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "CHURO": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
                   "PCIFC": [
                       {
                           "type": "route",
@@ -2390,91 +2345,7 @@
                           "from": "ZLA"
                       }
                   ],
-                  "PMD": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "PEPRZ": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "THRNE": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "GRRIT": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "OHIGH": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "CMA": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "KIMMO": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "LRSON": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "MCHNE": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "ARRAN": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "BITTY": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
                   "COMIX": [
-                      {
-                          "type": "route",
-                          "to": "SCT",
-                          "from": "ZLA"
-                      }
-                  ],
-                  "HNAHH": [
                       {
                           "type": "route",
                           "to": "SCT",
@@ -2489,7 +2360,7 @@
                       }
                   ]
         },
-    "center": "N032.58.51.184,W117.01.10.779",
+    "center": "ZOKOS",
     "radar_sites": {
         "KSAN": {
             "char": "S",
@@ -2500,6 +2371,7 @@
             "slope_angle": 0.175
         }
     },
+	"range": 40,
     "scratchpads": {
         "SLI": "CWD",
         "CHKNN": "PAD",
