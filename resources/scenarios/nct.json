@@ -26,9 +26,10 @@
     "O08": { "vfr": { "random_routes": { "rate": 5 } } },
     "KHES": { "vfr": { "random_routes": { "rate": 5 } } },
     "KCIC": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCCR": { "vfr": { "random_routes": { "rate": 10 } } },
+	"KCCR": { "vfr": { "random_routes": { "rate": 10 } } },
     "KSTS": { "vfr": { "random_routes": { "rate": 5 } } },
     "KSJC": {
+	"departure_runways_as_one": [ "30L,30R", "12L,12R" ],
       "approaches": {
         "I2R": { "cifp_id": "I12R" },
         "Z2R": { "cifp_id": "RZ12R" },
@@ -710,6 +711,7 @@
 	  "hold_for_release": true
     },
     "KOAK": {
+	"departure_runways_as_one": [ "30,28L,28R", "12,10L,10R" ],
       "approaches": {
         "R0L": { "cifp_id": "R10L" },
         "R0R": { "cifp_id": "R10R" },
@@ -1156,6 +1158,7 @@
       "tower_list": 2
     },
     "KSFO": {
+	  "departure_runways_as_one": [ "28L,28R", "10L,10R" , "19L,19R"],
       "approaches": {
         "R0L": { "cifp_id": "R10L" },
         "G0R": { "cifp_id": "RY10R", "full_name": "GLS Runway 10R" },
@@ -2712,6 +2715,7 @@
 	  "hold_for_release": true
     },
     "KRNO": {
+	"departure_runways_as_one": [ "17L,17R", "35L,35R"],
       "approaches": {
         "IY7R": { "cifp_id": "IY17R" },
 	"IX7R": { "cifp_id": "IX17R" },
@@ -3152,6 +3156,7 @@
       "tower_list": 4
     },
     "KSMF": {
+	"departure_runways_as_one": [ "17L,17R", "35L,35R"],
       "approaches": {
         "I7R": { "cifp_id": "I17R" },
         "RY7R": { "cifp_id": "RY17R" },
@@ -3444,6 +3449,7 @@
       "tower_list": 5
     },
     "KMRY": {
+	"departure_runways_as_one": [ "28L,28R", "10L,10R"],
       "approaches": {
         "L8L": { "cifp_id": "L28L" },
         "RY8L": { "cifp_id": "RY28L" },
@@ -4008,7 +4014,8 @@
         "SAC": "North",
         "OAK": "West"
       },
-      "tower_list": 11
+      "tower_list": 11,
+	  "hold_for_release": true
     },
     "KSNS": {
       "vfr": { "random_routes": { "rate": 10 } },
@@ -5372,94 +5379,6 @@
       }
     ]
   },
-  "C2.TIPRE": {
-    "arrivals": [
-      {
-        "waypoints": "N039.51.52.481,W121.50.07.452 N039.36.54.637,W121.44.58.187/ho TIPRE OOWEN MOVDD RISTI CEDES/a9000",
-        "cruise_altitude": 23000,
-        "route": "N039.51.52.481,W121.50.07.452 N039.36.54.637,W121.44.58.187/ho TIPRE OOWEN MOVDD RISTI CEDES/a9000",
-        "initial_controller": "SMF_P_APP",
-        "initial_altitude": 12000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KSJC": [
-            {
-              "icao": "AAL",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "DAL",
-              "airport": "KSAN"
-            },
-            {
-              "icao": "AAY",
-              "airport": "KSLC"
-            },
-            {
-              "icao": "NKS",
-              "airport": "KPDX"
-            },
-            {
-              "icao": "EDV",
-              "airport": "KLAS"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KLAX"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA",
-              "airport": "KABQ"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N039.13.13.322,W120.21.27.322 N039.00.43.478,W120.35.14.071/ho TIPRE OOWEN MOVDD RISTI CEDES/a9000",
-        "cruise_altitude": 23000,
-        "route": "N039.13.13.322,W120.21.27.322 N039.00.43.478,W120.35.14.071/ho TIPRE OOWEN MOVDD RISTI CEDES/a9000",
-        "initial_controller": "SMF_P_APP",
-        "initial_altitude": 12000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KSFO": [
-            {
-              "icao": "AAL",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "DAL",
-              "airport": "KSAN"
-            },
-            {
-              "icao": "AAY",
-              "airport": "KSLC"
-            },
-            {
-              "icao": "NKS",
-              "airport": "KPDX"
-            },
-            {
-              "icao": "EDV",
-              "airport": "KLAS"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KLAX"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA",
-              "airport": "KABQ"
-            }
-          ]
-        }
-      }
-    ]
-  },
   "CCR2": {
     "arrivals": [
       {
@@ -6110,7 +6029,7 @@
         "cruise_altitude": 32000,
         "route": "PASIF/a19500/s260 N037.14.14.818,W122.56.53.012/ho PIRAT/a15000 BRINY/a12000/s250 ARGGG/a8000/s230/h060",
         "initial_controller": "OAK_35_CTR",
-        "initial_altitude": 20000,
+        "initial_altitude": 12000,
         "initial_speed": 300,
 		"scratchpad": "SF1",
         "expect_approach": null,
@@ -6202,7 +6121,7 @@
         "cruise_altitude": 32000,
         "route": "PASIF/a19500/s260 PIRAT/a15000 BRINY/a12000/s250",
         "initial_controller": "OAK_35_CTR",
-        "initial_altitude": 14000,
+        "initial_altitude": 12000,
         "initial_speed": 300,
         "expect_approach": null,
         "airlines": {
@@ -7743,13 +7662,13 @@
   "WNDSR2.AD": {
       "arrivals": [
       {
-        "waypoints": "N038.22.41.645,W122.25.55.718 WEBRR/a9000-13000/ho BOYYS/a7000 HOPTA/a5000 ALLXX/a5000/s210 CRSEN/arc7 HEPMO/arc3.6 MITOE/a2000 KOAK-30/a9/delete",
+        "waypoints": "N038.22.41.645,W122.25.55.718 WEBRR/a9000-13000/ho BOYYS/a7000 HOPTA/a5000 ALLXX/a5000/s210/clearapp",
         "cruise_altitude": 32000,
         "route": "WNDSR2",
         "initial_controller": "OAK_41_CTR",
         "initial_altitude": 15000,
         "initial_speed": 280,
-        "expect_approach": null,
+        "expect_approach": "RZ30",
         "airlines": {
           "KOAK": [
                         {
@@ -7789,7 +7708,7 @@
   "WNDSR2": {
     "arrivals": [
       {
-        "waypoints": "WNDSR/a16000-22000/s280 WEBRR/a9000-13000 N038.08.09.715,W122.23.48.030/ho BOYYS/a7000 HOPTA/a5000",
+        "waypoints": "WNDSR/a16000-22000/s280 WEBRR/a9000-13000 BOYYS/a7000/ho HOPTA/a5000",
 		"runway_waypoints": {
           "KOAK": {
             "28L": "HOPTA/a5000 AAAME/a5000/s210/h090",
@@ -7798,8 +7717,8 @@
 		  }
 		  },
         "cruise_altitude": 32000,
-        "route": "WNDSR/a16000/s280 WEBRR/a9000-13000 N038.08.09.715,W122.23.48.030/ho BOYYS/a7000 HOPTA/a5000",
-        "initial_controller": "OAK_41_CTR",
+        "route": "WNDSR2",
+        "initial_controller": "SFO_R_DEP",
         "initial_altitude": 20000,
         "initial_speed": 280,
         "expect_approach": null,
