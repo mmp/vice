@@ -858,9 +858,9 @@ func showAboutDialog() {
   Makoto Sakaguchi, Michael Trokel,
   Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, Adam
-  Bolek, Brody Carty, Lucas Chan, Aaron
-  Flett, Thomas Halpin, Austin Jenkins,
+- Facility engineering: Connor Allen, anguse,
+  Adam Bolek, Brody Carty, Lucas Chan,
+  Aaron Flett, Thomas Halpin, Austin Jenkins,
   Ketan K, Mike K, Allison L, Josh Lambert,
   Kayden Lambert, Mike LeGall, Jonah
   Lefkoff, Jud Lopez, Ethan Malimon, Jace
