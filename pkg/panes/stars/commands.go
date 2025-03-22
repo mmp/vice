@@ -2538,6 +2538,8 @@ func (sp *STARSPane) setScratchpad(ctx *panes.Context, callsign string, contents
 	fac := ctx.ControlClient.STARSFacilityAdaptation
 	if fac.AllowLongScratchpad && lc > 4 {
 		return ErrSTARSCommandFormat
+	} else if !fac.AllowLongScratchpad && lc > 3 {
+		return ErrSTARSCommandFormat
 	}
 	if !isSecondary && isImplied && lc == 1 {
 		// One-character for primary is only allowed via [MF]Y
