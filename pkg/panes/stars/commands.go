@@ -211,7 +211,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			}
 
 		case platform.KeyEscape:
-			sp.setCommandMode(ctx, CommandModeNone)
+			if sp.activeSpinner != nil {
+				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
+			} else {
+				sp.setCommandMode(ctx, CommandModeNone)
+			}
 
 		case platform.KeyF1:
 			if ctx.Keyboard.WasPressed(platform.KeyControl) {

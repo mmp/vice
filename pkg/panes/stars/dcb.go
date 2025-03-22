@@ -80,9 +80,10 @@ type dcbSpinner interface {
 	// mode becomes the current mode.
 	KeyboardInput(text string) (CommandMode, error)
 
-	// Disabled is called after a spinner has been disabled, e.g. due to a
-	// second click on its DCB button or pressing enter.
-	Disabled()
+	// EscapeMode is called if the escape key is pressed when the spinner
+	// is active; it returns the command mode that should become active as
+	// a result.
+	EscapeMode() CommandMode
 }
 
 func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
@@ -696,12 +697,15 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		if selectButton(ctx, "INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), buttonFull, buttonScale) {
 			ps.DisplayATPAInTrailDist = !ps.DisplayATPAInTrailDist
+			sp.previewAreaOutput = ""
 		}
 		if selectButton(ctx, "ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), buttonFull, buttonScale) {
 			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
+			sp.previewAreaOutput = ""
 		}
 		if selectButton(ctx, "MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), buttonFull, buttonScale) {
 			ps.DisplayATPAMonitorCones = !ps.DisplayATPAMonitorCones
+			sp.previewAreaOutput = ""
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
@@ -1118,7 +1122,9 @@ func (s *dcbRadarRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbRadarRangeSpinner) Disabled() {}
+func (s *dcbRadarRangeSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 // dcbIntegerRangeSpinner is a generic implementation of dcbSpinner for
 // managing integers in steps of 1 within a given range.
@@ -1168,7 +1174,9 @@ func (s *dcbIntegerRangeSpinner) KeyboardInput(text string) (CommandMode, error)
 	}
 }
 
-func (s *dcbIntegerRangeSpinner) Disabled() {}
+func (s *dcbIntegerRangeSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbAudioVolumeSpinner struct {
 	*dcbIntegerRangeSpinner
@@ -1263,7 +1271,9 @@ func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) (CommandMode,
 	}
 }
 
-func (s *dcbLeaderLineDirectionSpinner) Disabled() {}
+func (s *dcbLeaderLineDirectionSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbHistoryRateSpinner struct {
 	r *float32
@@ -1325,7 +1335,9 @@ func (s *dcbHistoryRateSpinner) KeyboardInput(text string) (CommandMode, error) 
 	}
 }
 
-func (s *dcbHistoryRateSpinner) Disabled() {}
+func (s *dcbHistoryRateSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbPTLLengthSpinner struct {
 	l *float32
@@ -1374,7 +1386,9 @@ func (s *dcbPTLLengthSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbPTLLengthSpinner) Disabled() {}
+func (s *dcbPTLLengthSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbDwellModeSpinner struct {
 	m *DwellMode
@@ -1428,7 +1442,9 @@ func (s *dcbDwellModeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbDwellModeSpinner) Disabled() {}
+func (s *dcbDwellModeSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbRangeRingRadiusSpinner struct {
 	r *int
@@ -1485,7 +1501,9 @@ func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) (CommandMode, err
 	}
 }
 
-func (s *dcbRangeRingRadiusSpinner) Disabled() {}
+func (s *dcbRangeRingRadiusSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 // dcbBrightnessSpinner handles spinners in the BRITE menu
 type dcbBrightnessSpinner struct {
@@ -1532,7 +1550,9 @@ func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbBrightnessSpinner) Disabled() {}
+func (s *dcbBrightnessSpinner) EscapeMode() CommandMode {
+	return CommandModeBrite
+}
 
 type dcbCharSizeSpinner struct {
 	dcbIntegerRangeSpinner
@@ -1552,6 +1572,10 @@ func (s *dcbCharSizeSpinner) KeyboardInput(text string) (CommandMode, error) {
 func (s *dcbCharSizeSpinner) Equals(other dcbSpinner) bool {
 	cs, ok := other.(*dcbCharSizeSpinner)
 	return ok && cs.value == s.value
+}
+
+func (s *dcbCharSizeSpinner) EscapeMode() CommandMode {
+	return CommandModeCharSize
 }
 
 func selectButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) bool {
