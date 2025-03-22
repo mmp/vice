@@ -69,8 +69,10 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
-	text.WriteString(sp.commandMode.PreviewString())
 
+	// Command mode indicator (possibly)
+	modestr := sp.commandMode.PreviewString()
+	text.WriteString(modestr)
 	if sp.commandMode == CommandModeMultiFunc {
 		text.WriteString(sp.multiFuncPrefix)
 	}
@@ -78,8 +80,9 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 		text.WriteByte(' ')
 		text.WriteString(sp.targetGenLastCallsign)
 	}
-
-	text.WriteString("\n")
+	if modestr != "" {
+		text.WriteString("\n")
+	}
 
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
 	if text.Len() > 0 {

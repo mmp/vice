@@ -50,9 +50,11 @@ const (
 	CommandModeMaps
 	CommandModeWX
 	CommandModeBrite
+	CommandModeBriteSpinner
 	CommandModeLDR
 	CommandModeLDRDir
 	CommandModeCharSize
+	CommandModeCharSizeSpinner
 	CommandModeSite
 	CommandModePref
 	CommandModeSavePrefAs
@@ -64,6 +66,7 @@ const (
 	CommandModeHistory
 	CommandModeHistoryRate
 	CommandModePTLLength
+	CommandModeDwell
 	CommandModeTPA
 )
 
@@ -100,18 +103,22 @@ func (c CommandMode) PreviewString() string {
 	case CommandModeRangeRings:
 		return "RR"
 	case CommandModePlaceRangeRings:
-		return ""
+		return "PLC RR"
 	case CommandModeMaps:
 		return "MAP"
 	case CommandModeWX:
 		return "WX"
 	case CommandModeBrite:
+		return ""
+	case CommandModeBriteSpinner:
 		return "BRT"
 	case CommandModeLDR:
 		return "LLL"
 	case CommandModeLDRDir:
 		return "LDR"
 	case CommandModeCharSize:
+		return ""
+	case CommandModeCharSizeSpinner:
 		return "CHAR"
 	case CommandModeSite:
 		return "SITE"
@@ -131,6 +138,8 @@ func (c CommandMode) PreviewString() string {
 		return "HRATE"
 	case CommandModePTLLength:
 		return "PTL"
+	case CommandModeDwell:
+		return "DWELL"
 	case CommandModeTPA:
 		return ""
 	default:
@@ -300,12 +309,12 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	// If there's an active spinner, it gets keyboard input; we thus won't
 	// worry about the corresponding CommandModes in the following.
 	if sp.activeSpinner != nil {
-		if err := sp.activeSpinner.KeyboardInput(cmd); err != nil {
+		if mode, err := sp.activeSpinner.KeyboardInput(cmd); err != nil {
 			status.err = err
 		} else {
-			// Clear the input area and disable the spinner's mouse capture
-			// on success.
-			sp.setCommandMode(ctx, CommandModeNone)
+			// Clear the input area, and disable the spinner's mouse
+			// capture, and switch to the indicated command mode.
+			sp.setCommandMode(ctx, mode)
 		}
 		return
 	}
@@ -3791,7 +3800,7 @@ func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection
 	}
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAircraft, mouseOverDCB bool,
+func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAircraft,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	if ctx.Mouse == nil {
 		return
@@ -3883,7 +3892,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
 		}
-		if sp.scopeClickHandler == nil && !mouseOverDCB {
+		if sp.scopeClickHandler == nil {
 			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
 		}
 

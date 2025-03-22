@@ -723,7 +723,10 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		// we need to offset the mouse position to be w.r.t. window coordinates
 		// to match scopeExtent.
 		mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
-		sp.consumeMouseEvents(ctx, ghosts, mouseOverDCB, transforms, cb)
+		if !mouseOverDCB {
+			// DCB buttons handle their own click checks, etc.
+			sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
+		}
 		sp.drawMouseCursor(ctx, mouseOverDCB, transforms, cb)
 	}
 	sp.handleCapture(ctx, transforms, cb)
@@ -1114,7 +1117,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	if sp.activeSpinner != nil {
 		return
 	}
-	if sp.commandMode == CommandModePlaceCenter || sp.commandMode == CommandModePlaceRangeRings {
+	if sp.commandMode == CommandModePlaceCenter {
 		return
 	}
 
