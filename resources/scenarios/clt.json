@@ -2156,7 +2156,7 @@
                     "ATL_CTR": {
                         "frequency": 132975,
                         "radio_name": "Atlanta Center",
-                        "sector_id": "43",
+                        "sector_id": "C43",
                         "facility_id": "C",
                         "eram_facility": true
                     },

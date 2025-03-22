@@ -430,7 +430,7 @@
       "radio_name": "Atlanta Center",
       "facility_id": "C",
       "eram_facility": true,
-      "sector_id": "43"
+      "sector_id": "C43"
     },
     "GSP_TWR": {
       "frequency": 119900,

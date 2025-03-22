@@ -778,8 +778,20 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
 			e.ErrorString("missing \"eram_facility\" for center controller")
 		}
-		if ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" {
-			e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
+		if ctrl.ERAMFacility {
+			if ctrl.FacilityIdentifier == "" {
+				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
+			}
+			if len(ctrl.TCP) < 2 {
+				e.ErrorString("must specify both facility and numeric sector for center controller")
+			} else {
+				if !(ctrl.TCP[0] >= 'A' && ctrl.TCP[0] <= 'Z') {
+					e.ErrorString("first character of center controller \"sector_id\" must be a letter")
+				}
+				if _, err := strconv.Atoi(ctrl.TCP[1:]); err != nil {
+					e.ErrorString("center controller \"sector_id\" must end with a number")
+				}
+			}
 		}
 
 		// Is an explicitly-given scope_char unnecessary?

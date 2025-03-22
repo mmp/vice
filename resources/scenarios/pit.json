@@ -1088,7 +1088,7 @@
       "frequency": 126950,
       "radio_name": "Cleveland Center",
       "facility_id": "C",
-      "sector_id": "55"
+      "sector_id": "C55"
     },
     "PIT_TWR": {
       "frequency": 120500,

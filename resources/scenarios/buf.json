@@ -690,7 +690,7 @@
       "frequency": 125425,
       "radio_name": "Cleveland Center",
       "facility_id": "C",
-      "sector_id": "66"
+      "sector_id": "C66"
     },
     "BUF_TWR": {
       "frequency": 120500,
