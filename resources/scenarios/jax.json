@@ -2999,7 +2999,6 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C15"
     },
     "Jacksonville Center (Sector 54)": {
@@ -3007,7 +3006,6 @@
       "radio_name": "Jacksonville center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C54"
     },
     "Jacksonville Center (Sector 57)": {
@@ -3015,7 +3013,6 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C57"
     },
     "Jacksonville Center (Sector 77)": {
@@ -3023,7 +3020,6 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C77"
     },
     "Jacksonville Center (Sector 79)": {
@@ -3031,137 +3027,115 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C79"
     },
     "Daytona North Approach": {
       "frequency": 125800,
       "radio_name": "Daytona Beach approach",
       "facility_id": "1",
-      "scope_char": "1",
       "sector_id": "1N"
     },
     "Orlando East Approach": {
       "frequency": 124800,
       "radio_name": "Orlando approach",
       "facility_id": "2",
-      "scope_char": "2",
       "sector_id": "1E"
     },
     "Tampa East Approach": {
       "frequency": 118150,
       "radio_name": "Tampa approach",
       "facility_id": "3",
-      "scope_char": "3",
       "sector_id": "1E"
     },
     "Radar North": {
       "frequency": 127000,
       "radio_name": "Jacksonville approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "Radar West": {
       "frequency": 127775,
       "radio_name": "Jacksonville approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "Radar East": {
       "frequency": 132775,
       "radio_name": "Jacksonville approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "Radar Arrival": {
       "frequency": 119000,
       "radio_name": "Jacksonville approach",
-      "scope_char": "R",
       "sector_id": "1R"
     },
     "Radar Final": {
       "frequency": 119850,
       "radio_name": "Jacksonville approach",
-      "scope_char": "J",
       "sector_id": "1J"
     },
     "Radar Satellite": {
       "frequency": 124900,
       "radio_name": "Jacksonville approach",
-      "scope_char": "S",
       "sector_id": "1S",
       "default_airport": "KJAX"
     },
     "Radar Palatka": {
       "frequency": 121300,
       "radio_name": "Jacksonville approach",
-      "scope_char": "A",
       "sector_id": "1A"
     },
     "Radar Gainsville": {
       "frequency": 118175,
       "radio_name": "Jacksonville approach",
-      "scope_char": "G",
       "sector_id": "1G"
     },
     "Radar Dunnellon": {
       "frequency": 128675,
       "radio_name": "Jacksonville approach",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "Radar Vitts": {
       "frequency": 118600,
       "radio_name": "Jacksonville approach",
-      "scope_char": "V",
       "sector_id": "1V"
     },
     "Jacksonville Tower": {
       "frequency": 118300,
       "radio_name": "Jacksonville Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "Craig Tower": {
       "frequency": 132100,
       "radio_name": "Jacksonville Tower",
-      "scope_char": "T",
       "sector_id": "3CT"
     },
     "St. Augustine Tower": {
       "frequency": 127625,
       "radio_name": "St. Augustine Tower",
-      "scope_char": "T",
       "sector_id": "3ST"
     },
     "Ocala Tower": {
       "frequency": 119250,
       "radio_name": "Ocala Tower",
-      "scope_char": "T",
       "sector_id": "3OT"
     },
     "Gainsville Tower": {
       "frequency": 119550,
       "radio_name": "Gainsville Tower",
-      "scope_char": "T",
       "sector_id": "3GT"
     },
     "Cecil Tower": {
       "frequency": 126100,
       "radio_name": "Cecil Tower",
-      "scope_char": "T",
       "sector_id": "3FT"
     },
     "Navy Tower": {
       "frequency": 125150,
       "radio_name": "Navy Tower",
-      "scope_char": "T",
       "sector_id": "3NT"
     },
     "Mayport Tower": {
       "frequency": 118750,
       "radio_name": "Navy Maypoint Tower",
-      "scope_char": "T",
       "sector_id": "3MT"
     }
   },
