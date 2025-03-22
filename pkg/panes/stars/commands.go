@@ -205,10 +205,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			} else {
 				if status.clear {
 					sp.setCommandMode(ctx, CommandModeNone)
-					if ps.AutoCursorHome {
-						sp.hideMouseCursor = true
-						ctx.SetMousePosition(ps.CursorHomePosition)
-					}
+					sp.maybeAutoHomeCursor(ctx)
 				}
 				sp.previewAreaOutput = status.output
 			}
@@ -2158,6 +2155,22 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	return
 }
 
+func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
+	ps := sp.currentPrefs()
+	if ps.AutoCursorHome {
+		sp.hideMouseCursor = true
+
+		if ps.CursorHome[0] == 0 && ps.CursorHome[1] == 0 {
+			c := ctx.PaneExtent.Center()
+			// Make sure we have integer coordinates so we don't spuriously
+			// mismatch the mouse position and instantly unhide.
+			ps.CursorHome = [2]float32{math.Floor(c[0]), math.Floor(c[1])}
+		}
+
+		ctx.SetMousePosition(ps.CursorHome)
+	}
+}
+
 func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, ac *av.Aircraft, cmds string) {
 	ctx.ControlClient.RunAircraftCommands(ac.Callsign, cmds,
 		func(errStr string, remaining string) {
@@ -3550,7 +3563,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			return
 		} else if cmd == "INC" { // enable and define auto-home position
 			ps.AutoCursorHome = true
-			ps.CursorHomePosition = mousePosition
+			ps.CursorHome = mousePosition
 			status.clear = true
 			status.output = "HOME"
 			return
@@ -3902,6 +3915,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 			if status.clear {
 				sp.resetInputState(ctx)
 			}
+			sp.maybeAutoHomeCursor(ctx)
 			sp.previewAreaOutput = status.output
 		}
 	} else if ctx.Mouse.Clicked[platform.MouseButtonTertiary] {

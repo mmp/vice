@@ -626,9 +626,6 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
 			CommandModeHistoryRate, maybeDisable(buttonHalfVertical), buttonScale)
 		if toggleButton(ctx, "CURSOR\nHOME", &ps.AutoCursorHome, maybeDisable(buttonFull), buttonScale) {
-			if ps.AutoCursorHome && ps.CursorHomePosition[0] == 0 && ps.CursorHomePosition[1] == 0 {
-				ps.CursorHomePosition = ps.SSAList.Position
-			}
 			sp.previewAreaOutput = util.Select(ps.AutoCursorHome, "HOME", "NO HOME")
 		}
 		unsupportedButton(ctx, "CSR SPD\n4", maybeDisable(buttonFull), buttonScale)

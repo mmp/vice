@@ -1105,7 +1105,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	ctx.Mouse.SetCursor(imgui.MouseCursorNone)
 
 	if sp.hideMouseCursor { // auto home
-		if ctx.Mouse != nil && ctx.Mouse.Pos != ps.CursorHomePosition {
+		if ctx.Mouse != nil && ctx.Mouse.Pos != ps.CursorHome {
 			sp.hideMouseCursor = false // it moved
 		}
 		if sp.hideMouseCursor {
