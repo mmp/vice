@@ -1,6 +1,18 @@
 {
     "tracon": "SCT",
     "airports": {
+		"KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRIR": { "vfr": { "random_routes": { "rate": 10 } } },
+		"L18": { "vfr": { "random_routes": { "rate": 5 } } },
+		"CA89": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
         "KSNA": {
             "approaches": {
               "I0R": { "cifp_id": "I20R" },
@@ -409,6 +421,7 @@
             ]
         },
         "KLGB": {
+			"vfr": { "random_routes": { "rate": 8 }},
             "approaches": {
               "I30": { "cifp_id": "I30" },
               "R30": { "cifp_id": "RZ30" },
@@ -516,7 +529,7 @@
   "DSNEE6": {
     "arrivals": [
       {
-        "waypoints": "LUQAS/a11000- DSNEE/a8000/s220/ho JWARD/a8000/s190 BONVY/a6300+ DEKRT/a5000+ AMELE/a4400+ EHVOX/a3300+ WEMDO/a2200 CALIT ZETOV/a1400 _SNA_20R/a56",
+        "waypoints": "LUQAS/a11000- DSNEE/a8000/s220/ho JWARD/a8000/s190/clearapp",
         "cruise_altitude": 36000,
         "star": "DSNEE6",
         "initial_controller": "ONT_V_APP",
@@ -578,7 +591,7 @@
         }
       },
 	  {
-        "waypoints": "TOETO/a10000- DSNEE/a8000/s220/ho JWARD/a8000/s190 BONVY/a6300+ DEKRT/a5000+ AMELE/a4400+ EHVOX/a3300+ WEMDO/a2200 CALIT ZETOV/a1400 _SNA_20R/a56",
+        "waypoints": "TOETO/a10000- DSNEE/a8000/s220/ho JWARD/a8000/s190/clearapp",
         "cruise_altitude": 36000,
         "star": "DSNEE6",
         "initial_controller": "ONT_V_APP",
@@ -1516,7 +1529,6 @@
         "SNA_TWR": {
             "frequency": 126800,
             "radio_name": "John Wayne Tower",
-            "scope_char": "W",
             "sector_id": "T4J"
         },
 		"HHR_TWR": {
@@ -1589,13 +1601,27 @@
             "multi_controllers":{
                 "default": {
                     "SNA_T_APP":{
-                        "primary": true,
-                        "arrivals": ["DSNEE6"]
+                        "primary": true
                     },
-
+					"SNA_A_APP":{
+                        "backup": "SNA_T_APP",
+                        "inbound_flows": ["DSNEE6"]
+                    },
+					"SNA_R_APP":{
+                        "backup": "SNA_Y_APP",
+						"departures": ["KLGB"],
+                        "inbound_flows": ["BAUBB3/RUKKI1/PCIFC3/OHSEA3"]
+                    },
+					"SNA_B_APP":{
+                        "backup": "SNA_R_APP"
+                    },
+					"SNA_S_APP":{
+                        "backup": "SNA_Y_APP",
+                        "inbound_flows": ["SANP4R"]
+                    },
                     "SNA_Y_APP":{ "backup": "SNA_T_APP",
-                        "departures": ["KSNA", "KLGB"],
-                        "inbound_flows": ["SANP4R", "OLAAA2", "GOATZ2/KARLB3", "BAUBB3/RUKKI1/PCIFC3/OHSEA3", "LAXX1.MZB"]
+                        "departures": ["KSNA"],
+                        "inbound_flows": ["OLAAA2", "GOATZ2/KARLB3", "LAXX1.MZB"]
                     }
                 }
             },
@@ -2027,6 +2053,7 @@
         }
     },
     "stars_config": {
+		"altimeters":["KSNA","KLGB","KTOA","KLAX"],
         "coordination_fixes": {
             "ANJLL": [
                       {
@@ -2302,8 +2329,9 @@
       "YELAH": { }
   },
     "stars_maps": [
-        "400S CB LWSS SCT", "460S DEPT SNA S SCT", "461S DEPT SNA N SCT", "462S ARR SNA S SCT", "463S ARR SNA N SCT", "701S FUS 3NM MVA SCT",
-        "420S CST FIX SCT", "450S ZLA ASW SCT"
+		"701S FUS 3NM MVA SCT", "711S EOVM SCT", "722S D-E A-S SCT", "421S CST GPS SCT", "723S B-C A-S SCT", "720S MEDFLY SCT",
+        "400S CB LWSS SCT", "402S CB LWSN SCT", "420S CST FIX SCT", "460S DEPT SNA S SCT", "462S ARR SNA S SCT", "464S ARR LGB W SCT", "440S CST WS SCT", "442S CST WN SCT", "660S DEL ADJ SCT", "450S ZLA ASW SCT", "024S RWY NW SCT", "721S FREEWAY SCT", "", "", "", "",
+        "401S CB LESS SCT", "403S CB LESN SCT", "466S ARR LAX-ONT SCT", "461S DEPT SNA N SCT", "463S ARR SNA N SCT", "465S ARR LGB E SCT", "441S CST ES SCT", "443S CST EN SCT","451S ZLA ASE SCT", "", "", "740S EMERGENCY SCT", "724S AIRWAY SCT"
     ],
     "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     }

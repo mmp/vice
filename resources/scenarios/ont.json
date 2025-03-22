@@ -1,7 +1,25 @@
 {
     "tracon": "SCT",
     "airports":{
+		"KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRIR": { "vfr": { "random_routes": { "rate": 10 } } },
+		"L18": { "vfr": { "random_routes": { "rate": 5 } } },
+		"CA89": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KTRM": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KUDD": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KBNG": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KREI": { "vfr": { "random_routes": { "rate": 8 } } },
+		"KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KEMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
         "KONT": {
+			"departure_runways_as_one": [ "26L,26R", "8L,8R" ],
             "approaches": {
               "I8L": { "cifp_id": "I8L" },
               "I6L": { "cifp_id": "I26L" },
@@ -1711,7 +1729,8 @@
 		"JCF_APP": {
             "frequency": 133650,
             "radio_name": "Joshua Approach",
-            "sector_id": "I1J"
+			"facility_id": "1",
+            "sector_id": "1J"
         },
 		"LAX_10_CTR": {
 			"frequency": 128150,

@@ -1,7 +1,326 @@
 {
     "tracon": "SCT",
     "airports":{
+		"KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KEMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRIR": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KPOC": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KHHR": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KLAX": {
+			"departure_controller": "LAX_N_DEP",
+            "departure_routes":{
+                "6R": {
+          "MISEN,BEALE": {
+            "cleared_altitude": 13000,
+			"handoff_controller": "BUR_J_APP",
+            "sid": "GARDY4",
+            "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX/ho TRAAP/a8000 JIIVE/a10000+ CLUTZ/a13000+ GARDY/a16000+ ARCUS" 
+          },
+          "CSTRO": {
+            "cleared_altitude": 13000,
+			"handoff_controller": "BUR_J_APP",
+            "sid": "WNNDY4",
+            "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX/ho JRGSN/a6300+ WNNDY HEYJO CSTRO"
+          },
+		  "COREZ": {
+            "cleared_altitude": 13000,
+			"handoff_controller": "BUR_J_APP",
+            "sid": "WNNDY4",
+            "waypoints": "N033.57.10.027,W118.22.30.192 KOFAX/ho JRGSN/a6300+ WNNDY SHORS MDWAY COREZ"
+          }
+        }
+            },
+            "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "short"
+            }
+          ],
+          "destination":"KDEN",
+          "exit": "MISEN",
+		  "scratchpad": "GRD",
+          "route": "MISEN RNDRZ3"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination":"KDEN",
+          "exit": "BEALE",
+		  "scratchpad": "GRD",
+          "route": "BEALE J146 DICEE BUMMP SSKII3"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "UAL",
+			  "fleet": "short"
+            },
+			{
+              "icao": "SWA"
+            },
+			{
+              "icao": "FFT"
+            },
+			{
+              "icao": "AAL"
+            }
+          ],
+          "destination":"KDEN",
+          "exit": "BEALE",
+		  "scratchpad": "GRD",
+          "route": "BEALE J146 DICEE BUMMP SSKII3"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+			{
+              "icao": "DAL"
+            },
+			{
+              "icao": "SWA"
+            }
+          ],
+          "destination":"KSMF",
+          "exit": "CSTRO",
+		  "scratchpad": "WDY",
+          "route": "WNNDY4 CSTRO NURAY SUUTR4"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "ASA"
+            },
+			{
+              "icao": "SWA"
+            },
+			{
+              "icao": "SKW",
+			  "fleet": "long"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "short"
+            },
+			{
+              "icao": "DAL",
+			  "fleet": "short"
+            }
+          ],
+          "destination":"KSEA",
+          "exit": "CSTRO",
+		  "scratchpad": "WDY",
+          "route": "WNNDY4 CSTRO SHIMR LKV HAWKZ8"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b752",
+			  "fleet": "long"
+            }
+          ],
+          "destination":"KOAK",
+          "exit": "COREZ",
+		  "scratchpad": "WDY",
+          "route": "WNNDY4 COREZ RGOOD EMZOH3"
+        }
+            ],
+            "tower_list": 1
+        },
+		"KONT": {
+			"departure_controller": "ONT_P_APP",
+			"departure_runways_as_one": [ "26L,26R", "8L,8R" ],
+            "departure_routes": {
+				"26R": {
+					"GMN": {
+                        "cleared_altitude": 9000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "POM1",
+                        "waypoints": "N034.03.25.224,W117.45.04.943/ho POM/a7000- BUCCK/a14000+ TOOBD GMN"
+                    },
+                    "COREZ": {
+                        "cleared_altitude": 9000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "SNSHN5",
+                        "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK/ho POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+                    },
+					"EHF": {
+                        "cleared_altitude": 9000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "SNSHN5",
+                        "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK/ho POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+                    },
+                    "LAS,MISEN": {
+                        "cleared_altitude": 9000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "SNSHN5",
+                        "waypoints": "N034.03.27.971,W117.39.23.626/a1460+ DINNK/ho POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+                    }
+                },
+				"8R": {
+                    "COREZ": {
+                        "cleared_altitude": 10000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "SNSHN5",
+                        "waypoints": "N034.03.17.479,W117.32.19.141/a1460+/s210 LEESI/a5000+/ho POM/a8000- SNSHN NLAND/a14000+ SHORS MDWAY COREZ"
+                    },
+					"GMN": {
+                        "cleared_altitude": 10000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "POM1",
+                        "waypoints": "N034.03.16.600,W117.33.16.325 N034.02.33.135,W117.33.15.281 N034.02.37.379,W117.43.49.797/ho POM/a7000- BUCCK/a14000+ TOOBD GMN"
+                    },
+					"EHF": {
+                        "cleared_altitude": 10000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "SNSHN5",
+                        "waypoints": "N034.03.17.479,W117.32.19.141/a1460+/s210 LEESI/a5000+/ho POM/a8000- SNSHN NLAND/a14000+ TUNAY EHF"
+                    },
+                    "LAS,MISEN": {
+                        "cleared_altitude": 10000,
+						"handoff_controller": "BUR_J_APP",
+                        "sid": "SNSHN5",
+                        "waypoints": "N034.03.17.479,W117.32.19.141/a1460+/s210 LEESI/a5000+/ho POM/a8000- SNSHN BROOQ/a12000+ LIVVI/a14000+ XBBOX/a17000+ NNAVY"
+                    }
+                }
+			},
+            "departures": [
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "FFT"
+                        }
+                    ],
+                    "destination": "KLAS",
+                    "exit": "MISEN",
+					"scratchpad": "NVY",
+                    "route": "MISEN RNDRZ3"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KMDW",
+                    "exit": "LAS",
+					"scratchpad": "NVY",
+                    "route": "LAS J146 DVC FLOOD KD51W OATHE KK57C STJ IRK ENDEE6"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "FFT"
+                        },
+						{
+                            "icao": "ATN"
+                        },
+                        {
+                            "icao": "SWA"
+                        },
+						{
+                            "icao": "UAL",
+							"fleet": "short"
+                        },
+                        {
+                            "icao": "UPS"
+                        }
+                    ],
+                    "destination": "KDEN",
+                    "exit": "LAS",
+					"scratchpad": "NVY",
+                    "route": "LAS J146 DICEE BUMMP SSKII3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        },
+						{
+                            "icao": "SKW",
+                            "fleet": "long"
+                        },
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "destination": "KSEA",
+                    "exit": "EHF",
+					"scratchpad": "LND",
+                    "route": "EHF SHIMR LKV HAWKZ8"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "FFT"
+                        },
+						{
+                            "icao": "SKW",
+                            "fleet": "long"
+                        },
+                        {
+                            "icao": "UAL",
+                            "fleet": "short"
+                        }
+                    ],
+                    "destination": "KSFO",
+                    "exit": "COREZ",
+					"scratchpad": "LND",
+                    "route": "COREZ MAKRS SERFR SERFR4"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "UPS",
+							"fleet": "b763"
+                        },
+                        {
+                            "icao": "FDX"
+                        },
+                        {
+                            "icao": "UPS"
+                        },
+						{
+                            "icao": "HAL",
+							"fleet": "long"
+                        }
+                    ],
+                    "destination": "PHNL",
+                    "exit": "GMN",
+					"scratchpad": "GMN",
+                    "route": "GMN RZS DINTY R576 DENNS MAGGI3"
+                }
+            ]
+        },
         "KBUR": {
+			"departure_runways_as_one": [ "8,15", "26,33" ],
             "approaches": {
               "IY8": { "cifp_id": "IY8" },
               "IZ8": { "cifp_id": "IZ8" },
@@ -355,7 +674,8 @@
                 {
                     "airlines": [
                         {
-                            "icao": "FDX"
+                            "icao": "FDX",
+							"fleet": "b752"
                         }
                     ],
                     "destination": "KSLE",
@@ -381,6 +701,7 @@
 
         },
       "KCMA": {
+		"vfr": { "random_routes": { "rate": 10 } },
         "approaches":{
 	  "RY6":{ "cifp_id": "RY26" },
           "RZ6": { "cifp_id": "RZ26" }
@@ -388,8 +709,11 @@
         "tower_list": 1
         },
       "KSMO": {
+		"vfr": { "random_routes": { "rate": 10 } },
         "approaches":{
           "R21": { "cifp_id": "R21" },
+		  "RY3": { "cifp_id": "RY3" },
+		  "RZ3": { "cifp_id": "RZ3" },
           "V21":{
             "full_name": "Visual Runway 21",
             "runway": "21",
@@ -399,9 +723,162 @@
             ]
           }
         },
-        "tower_list": 1
+		"departure_routes": {
+                "3": {
+					"CSTRO": {
+                        "cleared_altitude": 6000,
+						"sid": "CHOII3",
+                        "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI HEYJO CSTRO"
+                    },
+					"CSTRO": {
+                        "cleared_altitude": 6000,
+						"sid": "CHOII3",
+                        "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI SHORS MDWAY COREZ"
+                    },
+					"FIM": {
+                        "cleared_altitude": 6000,
+						"sid": "CHOII3",
+                        "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ FIM"
+                    },
+					"BLH": {
+                        "cleared_altitude": 6000,
+						"sid": "CHOII3",
+                        "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ SLAPP YAAPY/a15000+ JETHK/a19000- AERRO DECAS"
+                    },
+					"MISEN,LAS": {
+                        "cleared_altitude": 6000,
+						"sid": "CHOII3",
+                        "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ SLAPP YAAPY/a15000+ JETHK/a19000- BBITE/a20000+ ANTLP NNAVY"
+                    }
+                }
+			},
+			"departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "N",
+							"fleet": "fastGA"
+                        },
+						{
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KSFO",
+                    "exit": "COREZ",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 COREZ MAKRS SERFR SERFR4"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "N",
+							"fleet": "fastGA"
+                        },
+						{
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KSBP",
+                    "exit": "FIM",
+					"scratchpad": "CHF",
+                    "route": "CHOII3 FIM RZS MQO"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "N",
+							"fleet": "fastGA"
+                        },
+						{
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KEGE",
+                    "exit": "LAS",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 LAS J146 DICEE IBSKI BUGGG EKR RLG"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "N",
+							"fleet": "fastGA"
+                        },
+						{
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KVGT",
+                    "exit": "MISEN",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 MISEN NTNDO1"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "N",
+							"fleet": "fastGA"
+                        },
+						{
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KHND",
+                    "exit": "MISEN",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 MISEN NTNDO1"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KBFI",	
+                    "exit": "CSTRO",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 CSTRO HNW LMT BTG OLM2"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "EJA"
+                        }
+                    ],
+                    "destination": "KSJC",	
+                    "exit": "COREZ",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 COREZ MAKRS TROXX SILCN6"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "LXJ"
+                        }
+                    ],
+                    "destination": "KHDN",	
+                    "exit": "LAS",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 LAS BAWER LARVE EKR CHE"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "LXJ"
+                        }
+                    ],
+                    "destination": "KSDL",	
+                    "exit": "BLH",
+					"scratchpad": "CHS",
+                    "route": "CHOII3 BLH ARLIN4"
+                }
+            ],
+        "tower_list": 1,
+		"hold_for_release": true
         },
         "KVNY": {
+			"departure_runways_as_one": [ "16L,16R", "34L,34R" ],
+			"vfr": { "random_routes": { "rate": 10 } },
             "approaches":{
               "IYR": { "cifp_id": "IY16R" },
               "IZR": { "cifp_id": "IZ16R" },
@@ -451,15 +928,10 @@
                         "sid": "WLKKR5",
                         "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
                     },
-                    "OROSZ": {
-                        "cleared_altitude": 4000,
-                        "sid": "WLKKR5",
-                        "waypoints": "KVNY-34L/a1750- N034.10.30.491,W118.29.12.566 BOOGY/a3300+/h213 LUVVY/a6000+ WLKKR/a8000+ OROSZ/a9000+"
-                    },
                     "GMN": {
                         "cleared_altitude": 4000,
                         "sid": "CANOG3",
-                        "waypoints": "KVNY-34L/h163 N034.18.00.553,W118.48.79.891/h213 IPIHO CASTA/a8300 GMN"
+                        "waypoints": "KVNY-34L/a1750- N034.11.12.006,W118.29.17.208/h213 IPIHO CASTA/a8300+ GMN"
                     }
                 },
                 "34L":{
@@ -498,11 +970,6 @@
                         "sid": "HAYEZ9",
                         "waypoints": "CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 DYSPO/a7000+ OROSZ/a9000+ BRRKK SHORS MDWAY COREZ"
                     },
-                    "OROSZ": {
-                        "cleared_altitude": 4000,
-                        "sid": "HAYEZ9",
-                        "waypoints": "CONDS/a2400+ TRAFF/a3500+ LYDEY/a5000+ HAYEZ/a6100+/s250 DYSPO/a7000+ OROSZ/a9000+"
-                    },
                     "FIM": {
                         "cleared_altitude": 4000,
                         "sid": "HAYEZ9",
@@ -511,20 +978,21 @@
                     "GMN": {
                         "cleared_altitude": 4000,
                         "sid": "CANOG3",
-                        "waypoints": "N034.13.32.521,W118.29.30.309/h253 IPIHO CASTA/a8300 GMN"
+                        "waypoints": "N034.13.32.521,W118.29.30.309/h253 IPIHO CASTA/a8300+ GMN"
                     }
                 }
             },
             "departures": [
                 {
                     "airlines": [
-                        {
-                            "icao": "N"
+						{
+                            "icao": "N",
+							"fleet": "fastGA"
                         }
                     ],
                     "destination": "KLAS",
                     "exit": "MISEN",
-                    "route": "HAYEZ9 MISEN RNDRZ2"
+                    "route": "MISEN RNDRZ2"
                 },
                 {
                     "airlines": [
@@ -534,12 +1002,17 @@
                     ],
                     "destination": "KAUS",
                     "exit": "BLH",
-                    "route": "HARYS5 BLH J169 TFD J50 ELP J2 FST DILLO LAIKS3"
+                    "route": "BLH J169 TFD J50 ELP J2 FST DILLO LAIKS3"
                 },
                 {
                     "airlines": [
                         {
-                            "icao": "N"
+                            "icao": "N",
+							"fleet": "fastGA"
+                        },
+						{
+                            "icao": "N",
+							"fleet": "GAturbine"
                         }
                     ],
                     "destination": "KPRB",
@@ -554,17 +1027,18 @@
                     ],
                     "destination": "KPHX",
                     "exit": "HEC",
-                    "route": "HARYS5 HEC PRFUM WOTRO BRUSR1"
+                    "route": "HEC PRFUM WOTRO BRUSR1"
                 },
                 {
                     "airlines": [
                         {
-                            "icao": "N"
+                            "icao": "N",
+							"fleet": "fastGA"
                         }
                     ],
                     "destination": "KRDD",
-                    "exit": "CSTRO",
-                    "route": "WLKKR5 CSTRO"
+                    "exit": "CSTRO RBL",
+                    "route": "CSTRO RBL"
                 }
             ],
             "exit_categories": {
@@ -580,8 +1054,31 @@
             "tower_list": 1
         },
         "KWHP": {
+			"vfr": { "random_routes": { "rate": 10 } },
             "approaches": {
                 "R12": { "cifp_id": "R12" },
+				"RA2": {
+                    "full_name": "VOR A Runway 12",
+                    "runway": "12",
+                    "type": "VOR",
+                    "waypoints": [
+                        "FIM/a4400+/iaf SUANA CANOG/a3900+/if N034.13.23.045,W118.29.30.281/a3200/faf N034.15.13.829,W118.25.31.988 N034.15.46.568,W118.26.05.139 N034.16.09.776,W118.25.26.660 KWHP-12/delete",
+						"GINNA/a4400+/iaf SUANA CANOG/a3900+/if N034.13.23.045,W118.29.30.281/a3200/faf N034.15.13.829,W118.25.31.988 N034.15.46.568,W118.26.05.139 N034.16.09.776,W118.25.26.660 KWHP-12/delete",
+						"VTU/a4600+/iaf SUANA CANOG/a3900+/if N034.13.23.045,W118.29.30.281/a3200/faf N034.15.13.829,W118.25.31.988 N034.15.46.568,W118.26.05.139 N034.16.09.776,W118.25.26.660 KWHP-12/delete",
+						"CANOG/a3900+/hilpt/iaf N034.13.23.045,W118.29.30.281/a3200/faf N034.15.13.829,W118.25.31.988 N034.15.46.568,W118.26.05.139 N034.16.09.776,W118.25.26.660 KWHP-12/delete"
+                    ]
+                },
+				"RA0": {
+                    "full_name": "VOR A Runway 30",
+                    "runway": "30",
+                    "type": "VOR",
+                    "waypoints": [
+                        "FIM/a4400+/iaf SUANA CANOG/a3900+/if VNY/a3200/faf N034.15.13.829,W118.25.31.988 N034.14.31.847,W118.24.50.707 N034.14.58.434,W118.24.09.920 KWHP-30/delete",
+						"GINNA/a4400+/iaf SUANA CANOG/a3900+/if VNY/a3200/faf N034.15.13.829,W118.25.31.988 N034.14.31.847,W118.24.50.707 N034.14.58.434,W118.24.09.920 KWHP-30/delete",
+						"VTU/a4600+/iaf SUANA CANOG/a3900+/if VNY/a3200/faf N034.15.13.829,W118.25.31.988 N034.14.31.847,W118.24.50.707 N034.14.58.434,W118.24.09.920 KWHP-30/delete",
+						"CANOG/a3900+/hilpt/iaf VNY/a3200/faf N034.15.13.829,W118.25.31.988 N034.14.31.847,W118.24.50.707 N034.14.58.434,W118.24.09.920 KWHP-30/delete"
+                    ]
+                },
                 "V30": {
                     "full_name": "Visual Runway 30",
                     "runway": "30",
@@ -611,7 +1108,8 @@
                 {
                     "airlines": [
                         {
-                            "icao": "N"
+                            "icao": "N",
+							"fleet": "fastGA"
                         }
                     ],
                     "destination": "KLAS",
@@ -621,7 +1119,12 @@
                 {
                     "airlines": [
                         {
-                            "icao": "N"
+                            "icao": "N",
+							"fleet": "GAturbine"
+                        },
+						{
+                            "icao": "N",
+							"fleet": "fastGA"
                         }
                     ],
                     "destination": "KPRB",
@@ -631,7 +1134,12 @@
                 {
                     "airlines": [
                         {
-                            "icao": "N"
+                            "icao": "N",
+							"fleet": "GAturbine"
+                        },
+						{
+                            "icao": "N",
+							"fleet": "fastGA"
                         }
                     ],
                     "destination": "KHWD",
@@ -658,7 +1166,7 @@
         "star": "EDWP4",
         "initial_controller": "JCF_APP",
         "initial_altitude": 8000,
-        "initial_speed": 150,
+        "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KWHP": [
@@ -674,11 +1182,12 @@
   "FERN7": {
     "arrivals": [
       {
-        "waypoints": "RZS OHIGH CANYN/a9000/ho FIM UMBER",
+        "waypoints": "OHIGH CANYN/ho FIM UMBER",
         "cruise_altitude": 35000,
         "star": "FERN7",
         "initial_controller": "LAX_13_CTR",
         "initial_altitude": 13000,
+		"assigned_altitude": 9000,
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
@@ -701,7 +1210,7 @@
             {
               "icao": "N",
 			  "fleet": "GAturbine",
-              "airport": "KRNO"
+              "airport": "KSBA"
             },
             {
               "icao": "N",
@@ -716,7 +1225,7 @@
   "JANNY5/GUERA2": {
     "arrivals": [
       {
-        "waypoints": "CHKNZ KOPLE/a14000/ho PMD/a13000-/s250 JANNY/a8000 PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/h201",
+        "waypoints": "CHKNZ KOPLE/a14000 PMD/a13000-/s250 N034.35.38.845,W118.13.52.791/ho JANNY/a8000 PUCCK/a8000 ELMRR/a7000+ WABBT/a6000/h201",
         "cruise_altitude": 30000,
         "star": "JANNY5",
         "initial_controller": "JCF_APP",
@@ -753,7 +1262,7 @@
         }
       },
 	  {
-        "waypoints": "CHKNZ KOPLE/a14000/ho PMD/a13000-/s250 JANNY/a8000 PUCCK/a8000 EIFEL/a7000+ UMBER/a6000",
+        "waypoints": "CHKNZ KOPLE/a14000 PMD/a13000-/s250 N034.35.38.845,W118.13.52.791/ho JANNY/a8000 PUCCK/a8000 EIFEL/a7000+ UMBER/a6000",
         "cruise_altitude": 30000,
         "star": "JANNY5",
         "initial_controller": "JCF_APP",
@@ -771,11 +1280,11 @@
         }
       },
 	  {
-        "waypoints": "PMD/a13000- JANNY/a8000 ALYSN/a7100+ GUERA SESPE/a5300 DOOBY/a5000/h200",
+        "waypoints": "CHKNZ KOPLE/a14000 PMD/a13000- N034.35.38.845,W118.13.52.791/ho JANNY/a8000 ALYSN/a7100+ GUERA SESPE/a5300 DOOBY/a5000/h200",
         "cruise_altitude": 35000,
         "star": "GUERA2",
         "initial_controller": "JCF_APP",
-        "initial_altitude": 13000,
+        "initial_altitude": 14000,
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
@@ -881,6 +1390,7 @@
             },
             {
               "icao": "FDX",
+			  "fleet": "b752",
               "airport": "KOAK"
             },
             {
@@ -950,38 +1460,16 @@
       }
     ]
   },
-  "SANP16": {
-    "arrivals": [
-      {
-        "waypoints": "LAX/ho CANOG",
-        "cruise_altitude": 8000,
-        "star": "SANP16",
-        "initial_controller": "LAX_N_DEP",
-        "initial_altitude": 8000,
-        "initial_speed": 200,
-        "expect_approach": null,
-        "airlines": {
-          "KWHP": [
-            {
-              "icao": "N",
-			  "fleet": "GAturbine",
-              "airport": "KMYF"
-            }
-          ]
-        }
-      }
-    ]
-  },
   "SBAP2": {
     "arrivals": [
       {
-        "waypoints": "KWANG CMA/ho GINNA",
+        "waypoints": "CMA N034.12.55.469,W119.01.23.193/ho GINNA",
         "cruise_altitude": 5000,
         "star": "SBAP2",
         "initial_controller": "NTD_APP",
         "initial_altitude": 5000,
         "initial_speed": 150,
-        "expect_approach": null,
+        "expect_approach": "RA2",
         "airlines": {
           "KWHP": [
             {
@@ -1061,7 +1549,7 @@
   "WEESL1": {
     "arrivals": [
       {
-        "waypoints": "WEESL/ho GRRIT SWIIM/a9000 LYNXX/a9000/h192",
+        "waypoints": "WEESL GRRIT/ho SWIIM/a9000 LYNXX/a9000/h192",
         "cruise_altitude": 36000,
         "star": "WEESL1",
         "initial_controller": "LAX_04_CTR",
@@ -1130,6 +1618,21 @@
             "radio_name": "SoCal Approach",
             "sector_id": "1M"
         },
+		"BUR_F_APP": {
+            "frequency": 120400,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1F"
+        },
+		"BUR_J_APP": {
+            "frequency": 119850,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1J"
+        },
+		"BUR_X_APP": {
+            "frequency": 135050,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1X"
+        },
         "BUR_V_APP": {
             "frequency": 124600,
             "radio_name": "SoCal Approach",
@@ -1178,11 +1681,13 @@
         "JCF_APP": {
             "frequency": 133650,
             "radio_name": "Joshua Approach",
+			"facility_id": "1",
             "sector_id": "1J"
         },
         "NTD_APP": {
             "frequency": 124700,
             "radio_name": "Point Mugu Approach",
+			"facility_id": "6",
             "sector_id": "1U"
         },
         "BUR_TWR": {
@@ -1190,23 +1695,18 @@
             "radio_name": "Burbank Tower",
             "sector_id": "1T"
         },
-		"CMA_TWR": {
-            "frequency": 128200,
-            "radio_name": "Camarillo Tower",
-            "sector_id": "1X"
-        },
         "VNY_TWR": {
             "frequency": 118300,
             "radio_name": "Van Nuys Tower",
-            "sector_id": "2T"
+            "sector_id": "1Y"
         },
         "WHP_TWR": {
             "frequency": 135000,
             "radio_name": "Whiteman Tower",
-            "sector_id": "3T"
+            "sector_id": "1B"
         }
     },
-    "default_scenario": "KBUR 8/15",
+    "default_scenario": "Burbank - 08/15 LAW",
     "fixes": {
         "_BUR_15": "N034.12.44.440,W118.21.37.660",
         "_BUR_8": "N034.11.52.479,W118.22.08.914",
@@ -1228,7 +1728,7 @@
     "name": "KBUR",
     "primary_airport": "KBUR",
     "scenarios": {
-        "KBUR 8/15": {
+        "Burbank - 08/15 LAW": {
             "arrival_runways": [
                 {
                     "airport": "KBUR",
@@ -1257,12 +1757,12 @@
             ],
             "inbound_rates": {
                 "JANNY5/GUERA2": {
-                    "KBUR": 10,
+                    "KBUR": 7,
 					"KCMA": 2,
 					"KVNY": 3
                 },
                 "ROKKR3/IVINS2/BONJO3": {
-                    "KBUR": 10,
+                    "KBUR": 7,
 					"KVNY": 3,
 					"KSMO": 2
                 },
@@ -1278,9 +1778,6 @@
                 "FERN7": {
                     "KVNY": 1
                 },
-                "SANP16": {
-                    "KWHP": 2
-                },
                 "SBAP2": {
                     "KWHP": 1
                 },
@@ -1294,24 +1791,30 @@
             "solo_controller": "BUR_M_APP",
             "multi_controllers": {
                 "default": {
-                    "BUR_M_APP": {
+                    "BUR_F_APP": {"departures": ["KWHP"],
+					"backup": "BUR_M_APP",
+                    "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
+                    },
+					"BUR_M_APP": {
                         "primary": true,
-                        "inbound_flows": ["WEESL1","FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3","LADYJ4"],
-                        "departures": ["KWHP"]
+                        "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3","LADYJ4"]
                     },
-                    "BUR_V_APP": {"departures": ["KBUR", "KVNY"],
-                    "backup": "BUR_M_APP",
-                    "inbound_flows": ["THRNE4", "SANP16"]
+					"BUR_J_APP": {"backup": "BUR_X_APP"
                     },
-                    "BUR_W_APP": {	
-                    "backup": "BUR_M_APP",
+                    "BUR_V_APP": {"departures": ["KBUR", "KVNY/HARYS5", "KVNY/RSCO4"],
+                    "backup": "BUR_M_APP"
+                    },
+					"BUR_W_APP": {"departures": ["KVNY/WLKKR5", "KVNY/CANOG3"],
+                    "backup": "BUR_V_APP",
                     "inbound_flows": ["SBAP2"]
+                    },
+					"BUR_X_APP": {"backup": "BUR_V_APP",
+                    "inbound_flows": ["THRNE4"]
                     }
                 }
             },
             "controllers": [
                 "BUR_TWR",
-				"CMA_TWR",
                 "VNY_TWR",
                 "WHP_TWR",
                 "BUR_M_APP",
@@ -1319,6 +1822,9 @@
 				"JCF_APP",
                 "BUR_V_APP",
                 "BUR_W_APP",
+				"BUR_J_APP",
+				"BUR_X_APP",
+				"BUR_F_APP",
                 "ONT_N_APP",
                 "LAX_04_CTR",
 				"LAX_13_CTR",
@@ -1334,12 +1840,12 @@
             "departure_runways": [
                 {
                     "airport": "KBUR",
-                    "rate": 15,
+                    "rate": 4,
                     "runway":"8"
                 },
                 {
                     "airport": "KBUR",
-                    "rate": 15,
+                    "rate": 6,
                     "runway":"15"
                 },
                 {
@@ -1355,11 +1861,162 @@
             ],
             "wind": {
                 "direction": 150,
-                "gust": 5,
-                "speed": 3
+                "speed": 5
             }
         },
-        "KBUR 26/33": {
+		"Burbank - 08/15 LAE": {
+            "arrival_runways": [
+                {
+                    "airport": "KBUR",
+                    "runway": "15"
+                },
+                {
+                    "airport": "KBUR",
+                    "runway": "8"
+                },
+                {
+                    "airport": "KVNY",
+                    "runway": "16R"
+                },
+                {
+                    "airport": "KWHP",
+                    "runway": "12"
+                },
+				{
+                    "airport": "KSMO",
+                    "runway": "3"
+                },
+				{
+                    "airport": "KCMA",
+                    "runway": "26"
+                }
+            ],
+            "inbound_rates": {
+                "JANNY5/GUERA2": {
+                    "KBUR": 7,
+					"KCMA": 2,
+					"KVNY": 3
+                },
+                "ROKKR3/IVINS2/BONJO3": {
+                    "KBUR": 7,
+					"KVNY": 3,
+					"KSMO": 2
+                },
+                "THRNE4": {
+                    "KBUR": 7
+                },
+				"THRNE4": {
+                    "KVNY": 3
+                },
+                "WEESL1": {
+                    "KVNY": 2
+                },
+                "FERN7": {
+                    "KVNY": 1
+                },
+                "SBAP2": {
+                    "KWHP": 1
+                },
+                "EDWP4": {
+                    "KWHP": 1
+                }
+            },
+            "solo_controller": "BUR_M_APP",
+            "multi_controllers": {
+                "default": {
+                    "BUR_F_APP": {"departures": ["KWHP"],
+					"backup": "BUR_M_APP",
+                    "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
+                    },
+					"BUR_M_APP": {
+                        "primary": true,
+                        "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3"]
+                    },
+					"BUR_J_APP": {"backup": "BUR_X_APP",
+					"inbound_flows": ["THRNE4"]
+                    },
+                    "BUR_V_APP": {"departures": ["KBUR", "KVNY/HARYS5", "KVNY/RSCO4"],
+                    "backup": "BUR_M_APP"
+                    },
+					"BUR_W_APP": {"departures": ["KVNY/WLKKR5", "KVNY/CANOG3"],
+                    "backup": "BUR_V_APP",
+                    "inbound_flows": ["SBAP2"]
+                    },
+					"BUR_X_APP": {"backup": "BUR_V_APP",
+					"departures": ["KSMO"]                    
+                    }
+                    
+                }
+            },
+            "controllers": [
+                "BUR_TWR",
+                "VNY_TWR",
+                "WHP_TWR",
+                "BUR_M_APP",
+                "NTD_APP",
+				"JCF_APP",
+                "BUR_V_APP",
+                "BUR_W_APP",
+				"BUR_J_APP",
+				"BUR_X_APP",
+				"BUR_F_APP",
+				"ONT_P_APP",
+                "ONT_N_APP",
+                "LAX_04_CTR",
+				"LAX_13_CTR",
+				"LAX_17_CTR",
+				"LAX_18_CTR",
+				"LAX_Z_APP",
+				"LAX_N_DEP",
+				"LAX_U_APP",
+				"LAX_D_APP",
+                "LAX_S_DEP"
+            ],
+            "default_maps": ["101S BURB LE SCT"],
+            "departure_runways": [
+                {
+                    "airport": "KBUR",
+                    "rate": 4,
+                    "runway":"8"
+                },
+                {
+                    "airport": "KBUR",
+                    "rate": 6,
+                    "runway":"15"
+                },
+                {
+                    "airport": "KVNY",
+                    "rate": 5,
+                    "runway":"16R"
+                },
+                {
+                    "airport": "KWHP",
+                    "rate": 2,
+                    "runway":"12"
+                },
+				{
+                    "airport": "KONT",
+                    "rate": 6,
+                    "runway":"8R"
+                },
+				{
+                    "airport": "KSMO",
+                    "rate": 5,
+                    "runway":"3"
+                },
+				{
+                    "airport": "KLAX",
+                    "rate": 15,
+                    "runway":"6R"
+                }
+            ],
+            "wind": {
+                "direction": 100,
+                "gust": 18,
+                "speed": 11
+            }
+        },
+        "Burbank - 26/33 LAW": {
             "arrival_runways": [
                 {
                     "airport": "KBUR",
@@ -1385,17 +2042,17 @@
             ],
             "inbound_rates": {
                 "JANNY5/GUERA2": {
-                    "KBUR": 10,
+                    "KBUR": 7,
 					"KCMA": 2,
 					"KVNY": 3
                 },
                 "ROKKR3/IVINS2/BONJO3": {
-                    "KBUR": 10,
+                    "KBUR": 7,
 					"KVNY": 3,
 					"KSMO": 2
                 },
                 "THRNE4": {
-                    "KBUR": 10
+                    "KBUR": 7
                 },
 				"THRNE4": {
                     "KVNY": 3
@@ -1412,9 +2069,6 @@
                 "SBAP2": {
                     "KWHP": 5
                 },
-                "SANP16": {
-                    "KWHP": 5
-                },
 				"LADYJ4": {
 					"overflights": 9
 				}
@@ -1422,24 +2076,29 @@
             "solo_controller": "BUR_M_APP",
             "multi_controllers": {
                 "default": {
-                    "BUR_M_APP": {
+                    "BUR_F_APP": {"departures": ["KVNY", "KWHP", "KBUR"],
+					"backup": "BUR_M_APP",
+                    "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
+                    },
+					"BUR_M_APP": {
                         "primary": true,
-                        "inbound_flows": ["WEESL1","FERN7","JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3","LADYJ4"],
-                        "departures": ["KWHP"]
+                        "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3","LADYJ4"]
                     },
-                    "BUR_V_APP": {"departures": ["KBUR", "KVNY"],
-                    "backup": "BUR_M_APP",
-                    "inbound_flows": ["THRNE4", "SANP16"]
+					"BUR_J_APP": {"backup": "BUR_X_APP"
                     },
-                    "BUR_W_APP": {
-                    "backup": "BUR_M_APP",
+                    "BUR_V_APP": {
+                    "backup": "BUR_M_APP"
+                    },
+					"BUR_W_APP": {"backup": "BUR_V_APP",
                     "inbound_flows": ["SBAP2"]
+                    },
+					"BUR_X_APP": {"backup": "BUR_V_APP",
+                    "inbound_flows": ["THRNE4"]
                     }
                 }
             },
             "controllers": [
                 "BUR_TWR",
-				"CMA_TWR",
                 "VNY_TWR",
                 "WHP_TWR",
                 "BUR_M_APP",
@@ -1447,6 +2106,10 @@
 				"JCF_APP",
                 "BUR_V_APP",
                 "BUR_W_APP",
+				"BUR_J_APP",
+				"BUR_X_APP",
+				"BUR_F_APP",
+				"ONT_P_APP",
                 "ONT_N_APP",
                 "LAX_04_CTR",
 				"LAX_13_CTR",
@@ -1458,16 +2121,16 @@
 				"LAX_D_APP",
                 "LAX_S_DEP"
             ],
-            "default_maps": ["101S BURB LE SCT"],
+            "default_maps": ["100S BURB LW SCT"],
             "departure_runways": [
                 {
                     "airport": "KBUR",
-                    "rate": 15,
+                    "rate": 6,
                     "runway":"33"
                 },
                 {
                     "airport": "KBUR",
-                    "rate": 15,
+                    "rate": 4,
                     "runway":"26"
                 },
                 {
@@ -1482,12 +2145,12 @@
                 }
             ],
             "wind": {
-                "direction": 280,
-                "gust": 10,
-                "speed": 6
+                "direction": 300,
+                "gust": 28,
+                "speed": 15
             }
         },
-        "KBUR 33": {
+		"Burbank - 26/33 LAE": {
             "arrival_runways": [
                 {
                     "airport": "KBUR",
@@ -1503,7 +2166,7 @@
                 },
 				{
                     "airport": "KSMO",
-                    "runway": "21"
+                    "runway": "3"
                 },
 				{
                     "airport": "KCMA",
@@ -1513,61 +2176,60 @@
             ],
             "inbound_rates": {
                 "JANNY5/GUERA2": {
-                    "KBUR": 10,
+                    "KBUR": 7,
 					"KCMA": 2,
 					"KVNY": 3
                 },
                 "ROKKR3/IVINS2/BONJO3": {
-                    "KBUR": 10,
+                    "KBUR": 7,
 					"KVNY": 3,
 					"KSMO": 2
                 },
                 "THRNE4": {
-                    "KBUR": 10
+                    "KBUR": 7
                 },
 				"THRNE4": {
                     "KVNY": 3
                 },
                 "WEESL1": {
-                    "KVNY": 5
+                    "KVNY": 3
+                },
+                "FERN7": {
+                    "KVNY": 3
                 },
                 "EDWP4": {
                     "KWHP": 5
                 },
                 "SBAP2": {
                     "KWHP": 5
-                },
-                "SANP16": {
-                    "KWHP": 5
-                },
-                "FERN7": {
-                    "KVNY": 5
-                },
-				"LADYJ4": {
-					"overflights": 9
-				}
-            },    
+                }
+            },
             "solo_controller": "BUR_M_APP",
             "multi_controllers": {
                 "default": {
-                    "BUR_M_APP": {
+                    "BUR_F_APP": {"departures": ["KVNY", "KWHP", "KBUR"],
+					"backup": "BUR_M_APP",
+                    "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
+                    },
+					"BUR_M_APP": {
                         "primary": true,
-                        "inbound_flows": ["WEESL1","FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3","LADYJ4"],
-                        "departures": ["KWHP"]
+                        "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3"]
                     },
-                    "BUR_V_APP": {"departures": ["KBUR", "KVNY"],
-                    "backup": "BUR_M_APP",
-                    "inbound_flows": ["THRNE4", "SANP16"]
+					"BUR_J_APP": {"backup": "BUR_X_APP",
+					"inbound_flows": ["THRNE4"]
                     },
-                    "BUR_W_APP": {
-                    "backup": "BUR_M_APP",
+                    "BUR_V_APP": {"backup": "BUR_M_APP"
+                    },
+					"BUR_W_APP": {"backup": "BUR_V_APP",
                     "inbound_flows": ["SBAP2"]
+                    },
+					"BUR_X_APP": {"backup": "BUR_V_APP",
+                    "departures": ["KSMO"]
                     }
                 }
             },
             "controllers": [
                 "BUR_TWR",
-				"CMA_TWR",
                 "VNY_TWR",
                 "WHP_TWR",
                 "BUR_M_APP",
@@ -1575,6 +2237,10 @@
 				"JCF_APP",
                 "BUR_V_APP",
                 "BUR_W_APP",
+				"BUR_J_APP",
+				"BUR_X_APP",
+				"BUR_F_APP",
+				"ONT_P_APP",
                 "ONT_N_APP",
                 "LAX_04_CTR",
 				"LAX_13_CTR",
@@ -1590,8 +2256,13 @@
             "departure_runways": [
                 {
                     "airport": "KBUR",
-                    "rate": 15,
+                    "rate": 6,
                     "runway":"33"
+                },
+                {
+                    "airport": "KBUR",
+                    "rate": 4,
+                    "runway":"26"
                 },
                 {
                     "airport": "KVNY",
@@ -1600,112 +2271,37 @@
                 },
                 {
                     "airport": "KWHP",
-                    "rate": 5,
+                    "rate": 2,
                     "runway": "30"
+                },
+				{
+                    "airport": "KONT",
+                    "rate": 6,
+                    "runway":"26R"
+                },
+				{
+                    "airport": "KSMO",
+                    "rate": 4,
+                    "runway": "3"
+                },
+				{
+                    "airport": "KLAX",
+                    "rate": 15,
+                    "runway": "6R"
                 }
             ],
             "wind": {
-                "direction": 330,
-                "gust": 30,
-                "speed": 20
+                "direction": 20,
+                "gust": 22,
+                "speed": 15
             }
         }
     },
     "stars_config": {
-    "center": "N034.12.14.800,W118.21.44.000",
+    "center": "JAZEE",
+	"altimeters":["KBUR","KVNY","KWHP", "KSMO"],
     "coordination_fixes": {
-        "ANJLL": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "HLYWD": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "MDOTS": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "COWWS": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "RUKKI": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "GOATZ": [
-                  {
-                      "type": "route",
-                      "to":"SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "GNZZO": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
               "SOLAY": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "ALMST": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "CYNDE": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "GNKEE": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "DUNNN": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "CHURO": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "PCIFC": [
                   {
                       "type": "route",
                       "to": "SCT",
@@ -1719,21 +2315,7 @@
                       "from": "ZLA"
                   }
               ],
-              "PEPRZ": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
               "THRNE": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "GRRIT": [
                   {
                       "type": "route",
                       "to": "SCT",
@@ -1755,55 +2337,6 @@
                   }
               ],
               "KIMMO": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "LRSON": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "MCHNE": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "ARRAN": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "BITTY": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "COMIX": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "HNAHH": [
-                  {
-                      "type": "route",
-                      "to": "SCT",
-                      "from": "ZLA"
-                  }
-              ],
-              "ISEMN": [
                   {
                       "type": "route",
                       "to": "SCT",
@@ -1837,7 +2370,7 @@
             "slope_angle": 0.175
         }
     },
-	"range": 30,
+	"range": 25,
     "scratchpads": {
         "COREZ": "ORB",
         "CSTRO": "ORH",

@@ -1,6 +1,14 @@
 {
     "tracon": "SBA",
     "airports": {
+		"KIZA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KLPC": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KPRB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCMA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KOXR": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KDLO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KMIT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KSZP": { "vfr": { "random_routes": { "rate": 10 } } },
         "KSBA": {
             "approaches": {
               "R7": { "cifp_id": "R7" },
@@ -183,6 +191,7 @@
             "tower_list": 1
         },
 	    "KSBP": {
+			"vfr": { "random_routes": { "rate": 10 } },
             "approaches": {
               "R11": { "cifp_id": "R11" },
               "I11": { "cifp_id": "I11" },
@@ -303,6 +312,7 @@
             "tower_list": 1
         },
       "KSMX": {
+		  "vfr": { "random_routes": { "rate": 10 } },
             "approaches": {
               "I12": { "cifp_id": "I12" },
               "R12": { "cifp_id": "R12" },

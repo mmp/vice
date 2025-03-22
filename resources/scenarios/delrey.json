@@ -1,7 +1,22 @@
 {
   "tracon": "SCT",
   "airports": {
+		"KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCMA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KOXR": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KVNY": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KWHP": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KEMT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KPOC": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KSMO": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KHHR": { "vfr": { "random_routes": { "rate": 5 } } },
     "KLAX": {
+	  "departure_runways_as_one": [ "25L,25R", "24L,24R" ],
       "departure_routes": {
         "7L": {
           "MISEN.E, BEALE.E": {
@@ -3016,7 +3031,7 @@
   }	
   },
   "control_positions": {
-	"BUR_G_APP": {
+	"BUR_X_APP": {
       "frequency": 135050,
       "radio_name": "SoCal Approach",
       "sector_id": "1X"
@@ -3089,6 +3104,7 @@
 	"NTD_APP": {
       "frequency": 124700,
       "radio_name": "Point Mugu Approach",
+	  "facility_id": "6",
       "sector_id": "1U"
     },
 	"SNA_Y_APP": {
@@ -3403,6 +3419,7 @@
   },
   "stars_config": {
   "center": "N033.41.38.744,W118.21.53.717",
+  "altimeters":["KLAX","KSMO","KHHR", "KLGB"],
   "coordination_fixes": {
     "ANJLL": [
               {
