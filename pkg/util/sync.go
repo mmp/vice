@@ -53,7 +53,24 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 	tryTime := time.Now()
 	lg.Debug("attempting to acquire mutex", slog.Any("mutex", l))
 
-	l.Mutex.Lock()
+	if !l.Mutex.TryLock() {
+		// Lock with timeout.
+		locked := make(chan struct{}, 1)
+
+		go func() {
+			l.Mutex.Lock()
+			locked <- struct{}{}
+		}()
+
+		select {
+		case <-locked:
+
+		case <-time.After(10 * time.Second):
+			lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
+				slog.Any("held_mutexes", heldMutexes))
+			panic("unable to acquire mutex after 10s")
+		}
+	}
 
 	heldMutexesMutex.Lock()
 	heldMutexes[l] = nil
