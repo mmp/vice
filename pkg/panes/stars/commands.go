@@ -41,6 +41,7 @@ const (
 	CommandModeTargetGen
 	CommandModeReleaseDeparture
 	CommandModeRestrictionArea
+	CommandModeDrawRoute
 
 	// These correspond to buttons on the main DCB menu.
 	CommandModeRange
@@ -96,6 +97,8 @@ func (c CommandMode) PreviewString() string {
 		return "RD"
 	case CommandModeRestrictionArea:
 		return "AR"
+	case CommandModeDrawRoute:
+		return "DRAWROUTE"
 	case CommandModeRange:
 		return "RANGE"
 	case CommandModePlaceCenter:
@@ -447,9 +450,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			return
 
 		case ".DRAWROUTE":
-			sp.drawRouteMode = true
-			status.clear = true
-			status.output = "DRAWROUTE"
+			sp.setCommandMode(ctx, CommandModeDrawRoute)
 			return
 
 		case ".VFR":
@@ -3745,6 +3746,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		}
 	}
 
+	if sp.commandMode == CommandModeDrawRoute {
+		mouseLatLong := transforms.LatLongFromWindowP(mousePosition)
+		sp.drawRoutePoints = append(sp.drawRoutePoints, mouseLatLong)
+		var cb []string
+		for _, p := range sp.drawRoutePoints {
+			cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
+		}
+		ctx.Platform.GetClipboard().SetText(strings.Join(cb, " "))
+		status.output = fmt.Sprintf("%d POINTS", len(sp.drawRoutePoints))
+		return
+	}
+
 	if cmd != "" {
 		status.err = ErrSTARSCommandFormat
 	}
@@ -3812,16 +3825,6 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostAi
 
 	mouse := ctx.Mouse
 	ps := sp.currentPrefs()
-
-	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && sp.drawRouteMode {
-		mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-		sp.drawRoutePoints = append(sp.drawRoutePoints, mouseLatLong)
-		var cb []string
-		for _, p := range sp.drawRoutePoints {
-			cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
-		}
-		ctx.Platform.GetClipboard().SetText(strings.Join(cb, " "))
-	}
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
 		if ac, _ := sp.tryGetClosestAircraft(ctx, ctx.Mouse.Pos, transforms); ac != nil {
@@ -4006,7 +4009,6 @@ func (sp *STARSPane) resetInputState(ctx *panes.Context) {
 	sp.scopeClickHandler = nil
 	sp.activeSpinner = nil
 
-	sp.drawRouteMode = false
 	sp.drawRoutePoints = nil
 
 	ctx.Platform.EndCaptureMouse()

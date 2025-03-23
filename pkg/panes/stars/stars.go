@@ -165,7 +165,6 @@ type STARSPane struct {
 	dwellAircraft     string
 	drawRouteAircraft string
 
-	drawRouteMode   bool
 	drawRoutePoints []math.Point2LL
 
 	commandMode       CommandMode
