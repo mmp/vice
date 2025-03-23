@@ -466,9 +466,13 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 			return ss.TRACON, true
 		}
 	}
-	if strings.HasSuffix(callsign, "_APP") || strings.HasSuffix(callsign, "DEP") {
+	if slices.Contains(ss.HumanControllers, callsign) || callsign == ss.PrimaryController {
 		return ss.TRACON, true
 	}
+	if _, ok := ss.MultiControllers[callsign]; ok {
+		return ss.TRACON, true
+	}
+
 	return "", false
 }
 
