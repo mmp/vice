@@ -236,7 +236,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			activeAirports[ap] = nil
 			activeDepartureAirports[rwy.Airport] = nil
 
-			if ap.DepartureController == "" {
+			if ap.DepartureController != "" {
+				// Make sure it's in the control positions
+				if _, ok := sg.ControlPositions[ap.DepartureController]; !ok {
+					e.ErrorString("controller %q for \"default_controller\" is unknown", ap.DepartureController)
+				} else if !slices.Contains(s.VirtualControllers, ap.DepartureController) {
+					s.VirtualControllers = append(s.VirtualControllers, ap.DepartureController)
+				}
+			} else {
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
 				for fix, route := range rwy.ExitRoutes {
