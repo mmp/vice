@@ -358,7 +358,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		if ac.HandoffTrackController != ctx.ControlClient.PrimaryTCP && state.DisplayFDB {
+		if state.DisplayFDB {
 			// Outbound handoff or we slewed a PDB to make it a FDB
 			return FullDatablock
 		}

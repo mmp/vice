@@ -349,10 +349,10 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					state.OutboundHandoffAccepted = true
 					dur := time.Duration(ctx.ControlClient.STARSFacilityAdaptation.HandoffAcceptFlashDuration) * time.Second
 					state.OutboundHandoffFlashEnd = time.Now().Add(dur)
+					state.DisplayFDB = true
 
 					if event.Type == sim.AcceptedRedirectedHandoffEvent {
 						state.RDIndicatorEnd = time.Now().Add(30 * time.Second)
-						state.DisplayFDB = true
 					}
 				}
 				if outbound || inbound {
