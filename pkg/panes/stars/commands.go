@@ -4219,15 +4219,10 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id, callsign stri
 			return nil
 		}
 
-		controlCallsign, err := calculateAirspace(ctx, callsign)
-		if err != nil {
+		if controlCallsign, err := calculateAirspace(ctx, callsign); err != nil {
 			return nil
-		}
-		if control, ok := ctx.ControlClient.Controllers[controlCallsign]; ok && control != nil {
-			toCenter := control.ERAMFacility
-			if toCenter || (id == control.FacilityIdentifier && !toCenter) {
-				return control
-			}
+		} else if control, ok := ctx.ControlClient.Controllers[controlCallsign]; ok {
+			return control
 		}
 	} else {
 		// Non ARTCC airspace-awareness handoffs
