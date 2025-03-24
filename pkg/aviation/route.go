@@ -29,27 +29,29 @@ type Waypoint struct {
 	AltitudeRestriction      *AltitudeRestriction `json:"altitude_restriction,omitempty"`
 	Speed                    int                  `json:"speed,omitempty"`
 	Heading                  int                  `json:"heading,omitempty"` // outbound heading after waypoint
-	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
-	NoPT                     bool                 `json:"nopt,omitempty"`
-	HumanHandoff             bool                 `json:"human_handoff"` // To named TCP.
-	TCPHandoff               string               `json:"tcp_handoff"`   // To named TCP.
-	PointOut                 string               `json:"pointout,omitempty"`
-	ClearApproach            bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
-	FlyOver                  bool                 `json:"flyover,omitempty"`
-	Delete                   bool                 `json:"delete,omitempty"`
-	Land                     bool                 `json:"land,omitempty"`
-	Arc                      *DMEArc              `json:"arc,omitempty"`
-	IAF, IF, FAF             bool                 // not provided in scenario JSON; derived from fix
-	Airway                   string               // when parsing waypoints, this is set if we're on an airway after the fix
-	OnSID, OnSTAR            bool                 // set during deserialization
-	OnApproach               bool                 // set during deserialization
-	AirworkRadius            int                  // set during deserialization
-	AirworkMinutes           int                  // set during deserialization
+	PresentHeading           bool
+	ProcedureTurn            *ProcedureTurn `json:"pt,omitempty"`
+	NoPT                     bool           `json:"nopt,omitempty"`
+	HumanHandoff             bool           `json:"human_handoff"` // To named TCP.
+	TCPHandoff               string         `json:"tcp_handoff"`   // To named TCP.
+	PointOut                 string         `json:"pointout,omitempty"`
+	ClearApproach            bool           `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
+	FlyOver                  bool           `json:"flyover,omitempty"`
+	Delete                   bool           `json:"delete,omitempty"`
+	Land                     bool           `json:"land,omitempty"`
+	Arc                      *DMEArc        `json:"arc,omitempty"`
+	IAF, IF, FAF             bool           // not provided in scenario JSON; derived from fix
+	Airway                   string         // when parsing waypoints, this is set if we're on an airway after the fix
+	OnSID, OnSTAR            bool           // set during deserialization
+	OnApproach               bool           // set during deserialization
+	AirworkRadius            int            // set during deserialization
+	AirworkMinutes           int            // set during deserialization
 	Radius                   float32
 	PrimaryScratchpad        string
 	ClearPrimaryScratchpad   bool
 	SecondaryScratchpad      string
 	ClearSecondaryScratchpad bool
+	TransferComms            bool
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -62,6 +64,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.Heading != 0 {
 		attrs = append(attrs, slog.Int("heading", wp.Heading))
+	}
+	if wp.PresentHeading {
+		attrs = append(attrs, slog.Bool("present_heading", wp.PresentHeading))
 	}
 	if wp.ProcedureTurn != nil {
 		attrs = append(attrs, slog.Any("procedure_turn", wp.ProcedureTurn))
@@ -125,6 +130,9 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.ClearSecondaryScratchpad {
 		attrs = append(attrs, slog.Bool("clear_secondary_scratchpad", wp.ClearSecondaryScratchpad))
+	}
+	if wp.TransferComms {
+		attrs = append(attrs, slog.Bool("transfer_comms", wp.TransferComms))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -213,6 +221,9 @@ func (wslice WaypointArray) Encode() string {
 		if w.Heading != 0 {
 			s += fmt.Sprintf("/h%d", w.Heading)
 		}
+		if w.PresentHeading {
+			s += "/ph"
+		}
 		if w.Arc != nil {
 			if w.Arc.Fix != "" {
 				s += fmt.Sprintf("/arc%.1f%s", w.Arc.Radius, w.Arc.Fix)
@@ -249,6 +260,9 @@ func (wslice WaypointArray) Encode() string {
 		}
 		if w.ClearSecondaryScratchpad {
 			s += "/cssp"
+		}
+		if w.TransferComms {
+			s += "/tc"
 		}
 
 		entries = append(entries, s)
@@ -333,6 +347,7 @@ func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[strin
 func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller) {
 	defer e.CheckDepth(e.CurrentDepth())
 
+	haveHO := false
 	for _, wp := range w {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
@@ -361,6 +376,14 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.TCPHandoff }) {
 				e.ErrorString("No controller found with id %q for handoff", wp.TCPHandoff)
 			}
+		}
+
+		if wp.HumanHandoff {
+			haveHO = true
+		}
+
+		if wp.TransferComms && !haveHO {
+			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
 		}
 
 		e.Pop()
@@ -672,6 +695,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					wp.OnSTAR = true
 				} else if f == "appr" {
 					wp.OnApproach = true
+				} else if f == "ph" {
+					wp.PresentHeading = true
 				} else if strings.HasPrefix(f, "airwork") {
 					a := f[7:]
 					radius, minutes := 7, 15
@@ -715,6 +740,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					wp.SecondaryScratchpad = f[4:]
 				} else if f == "cssp" {
 					wp.ClearSecondaryScratchpad = true
+				} else if f == "tc" {
+					wp.TransferComms = true
 				} else if (len(f) >= 4 && f[:4] == "pt45") || len(f) >= 5 && f[:5] == "lpt45" {
 					if wp.ProcedureTurn == nil {
 						wp.ProcedureTurn = &ProcedureTurn{}

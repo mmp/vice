@@ -1650,6 +1650,8 @@ func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) 
 	} else if wp.Heading != 0 {
 		// Leaving the next fix on a specified heading.
 		hdg = float32(wp.Heading)
+	} else if wp.PresentHeading {
+		hdg = nav.FlightState.Heading
 	} else if wp.Arc != nil {
 		// Joining a DME arc after the heading
 		hdg = wp.Arc.InitialHeading
@@ -1737,6 +1739,11 @@ func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) 
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
+			nav.Heading = NavHeading{Assigned: &hdg}
+		} else if wp.PresentHeading && !clearedAtFix {
+			// Round to nearest 5 degrees
+			hdg := float32(5 * int((nav.FlightState.Heading+2.5)/5))
+			hdg = math.NormalizeHeading(hdg)
 			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if wp.Arc != nil {
 			// Fly the DME arc

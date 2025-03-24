@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"slices"
 	"strings"
 	"time"
 
@@ -396,7 +397,8 @@ func (s *Sim) handoffTrack(fromTCP, toTCP string, callsign string) {
 		Callsign:       callsign,
 	})
 
-	s.State.Aircraft[callsign].HandoffTrackController = toTCP
+	ac := s.State.Aircraft[callsign]
+	ac.HandoffTrackController = toTCP
 
 	if from, fok := s.State.Controllers[fromTCP]; !fok {
 		s.lg.Errorf("Unable to handoff %s: from controller %q not found", callsign, fromTCP)
@@ -406,12 +408,12 @@ func (s *Sim) handoffTrack(fromTCP, toTCP string, callsign string) {
 		//s.lg.Errorf("HandoffTrack: %v", err)
 	}
 
-	// Add them to the auto-accept map even if the target is
-	// covered; this way, if they sign off in the interim, we still
-	// end up accepting it automatically.
+	// Add them to the auto-accept map even if the target controller is
+	// currently signed in covered; this way, if they sign off in the
+	// interim, we still end up accepting it automatically.
 	acceptDelay := 4 + rand.Intn(10)
 	s.Handoffs[callsign] = Handoff{
-		Time: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+		AutoAcceptTime: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
 
@@ -472,7 +474,8 @@ func (s *Sim) HandoffControl(tcp, callsign string) error {
 
 			// In 5-10 seconds, have the aircraft contact the new controller
 			// (and give them control only then).
-			s.enqueueControllerContact(ac.Callsign, ac.TrackingController)
+			wait := time.Duration(5+rand.Intn(10)) * time.Second
+			s.enqueueControllerContact(ac.Callsign, ac.TrackingController, wait)
 
 			return radioTransmissions
 		})
@@ -515,11 +518,14 @@ func (s *Sim) AcceptHandoff(tcp, callsign string) error {
 				}
 			}
 
-			if !s.isActiveHumanController(ac.ControllingController) {
-				// Don't wait for a frequency change instruction for
-				// handoffs from virtual, but wait a bit before the
-				// aircraft calls in at which point we have control.
-				s.enqueueControllerContact(ac.Callsign, tcp)
+			haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
+				func(wp av.Waypoint) bool { return wp.TransferComms })
+			if !haveTransferComms && !s.isActiveHumanController(ac.ControllingController) {
+				// For a handoff from a virtual controller, cue up a delayed
+				// contact message unless there's a point later in the route when
+				// comms are to be transferred.
+				wait := time.Duration(5+rand.Intn(10)) * time.Second
+				s.enqueueControllerContact(ac.Callsign, tcp, wait)
 			}
 
 			return nil
@@ -1139,8 +1145,7 @@ type FutureControllerContact struct {
 	Time     time.Time
 }
 
-func (s *Sim) enqueueControllerContact(callsign, tcp string) {
-	wait := time.Duration(5+rand.Intn(10)) * time.Second
+func (s *Sim) enqueueControllerContact(callsign, tcp string, wait time.Duration) {
 	s.FutureControllerContacts = append(s.FutureControllerContacts,
 		FutureControllerContact{Callsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(wait)})
 }

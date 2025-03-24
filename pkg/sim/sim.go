@@ -77,7 +77,7 @@ type ArrivalRunway struct {
 }
 
 type Handoff struct {
-	Time              time.Time
+	AutoAcceptTime    time.Time
 	ReceivingFacility string // only for auto accept
 }
 
@@ -573,7 +573,7 @@ func (s *Sim) updateState() {
 	now := s.State.SimTime
 
 	for callsign, ho := range s.Handoffs {
-		if !now.After(ho.Time) {
+		if !now.After(ho.AutoAcceptTime) {
 			continue
 		}
 
@@ -648,6 +648,17 @@ func (s *Sim) updateState() {
 						ac.Callsign)
 				} else if passedWaypoint.TCPHandoff != "" {
 					s.handoffTrack(ac.TrackingController, passedWaypoint.TCPHandoff, ac.Callsign)
+				}
+
+				if passedWaypoint.TransferComms {
+					// We didn't enqueue this before since we knew an
+					// explicit comms handoff was coming so go ahead and
+					// send them to the controller's frequency. Note that
+					// we use WaypointHandoffController and not
+					// ac.TrackingController, since the human controller
+					// may have already flashed the track to a virtual
+					// controller.
+					s.enqueueControllerContact(ac.Callsign, ac.WaypointHandoffController, 0 /* no delay */)
 				}
 
 				// Update scratchpads if the waypoint has scratchpad commands
