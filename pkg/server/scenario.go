@@ -7,6 +7,7 @@ package server
 import (
 	"fmt"
 	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -632,6 +633,14 @@ func (sg *ScenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	}
 
 	return math.Point2LL{}, false
+}
+
+func (sg *ScenarioGroup) Similar(fix string) []string {
+	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	return util.Select(len(d1) > 0, d1, d2)
 }
 
 var (

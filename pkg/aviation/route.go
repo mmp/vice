@@ -941,8 +941,19 @@ func ParseAltitudeRestriction(s string) (*AltitudeRestriction, error) {
 	}
 }
 
+// Locator is a simple interface to abstract looking up the location of a
+// named thing (e.g. a fix).  This is mostly present so that the route code
+// can call back into the ScenarioGroup to resolve locations accounting for
+// fixes defined in a scenario, without exposing Scenario-related types to
+// the aviation package.
 type Locator interface {
+	// Locate returns the lat-long coordinates of the named point if they
+	// are available; the bool indicates whether the point was known.
 	Locate(fix string) (math.Point2LL, bool)
+
+	// If Locate fails, Similar can be called to get alternatives that are
+	// similarly-spelled to be offered in error messages.
+	Similar(fix string) []string
 }
 
 func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32, e *util.ErrorLogger) {
