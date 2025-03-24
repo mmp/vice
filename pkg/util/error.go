@@ -68,6 +68,7 @@ func (e *ErrorLogger) CheckDepth(d int) {
 	if r := recover(); r == nil {
 		// Don't give spurious warnings when there's a panic.
 		fmt.Printf("Initial ErrorLogger depth %d, final %d\n", d, e.CurrentDepth())
+		fmt.Printf("Current: %s\n", strings.Join(e.hierarchy, " / "))
 		for _, f := range log.Callstack(nil) {
 			fmt.Printf("%15s:%d %s\n", f.File, f.Line, f.Function)
 		}
