@@ -511,6 +511,9 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 			fmt.Fprintf(os.Stderr, "%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
 				ac.ICAO, ac.Speed.V2, ac.Speed.Min)
 		}
+		if t := ac.Engine.AircraftType; t != "P" && t != "T" && t != "J" {
+			fmt.Fprintf(os.Stderr, "%s: aircraft type %q should be \"P\", \"T\", or \"J\".\n", ac.ICAO, t)
+		}
 	}
 
 	return ap

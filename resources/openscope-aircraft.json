@@ -9667,7 +9667,7 @@
     "icao": "E75L",
     "engines": {
       "number": 2,
-      "type": "G"
+      "type": "J"
     },
     "weightClass": "L",
     "category": {
@@ -10815,7 +10815,7 @@
     "icao": "JS41",
     "engines": {
       "number": 2,
-      "type": "S"
+      "type": "T"
     },
     "weightClass": "L",
     "category": {
