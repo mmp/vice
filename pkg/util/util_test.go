@@ -41,3 +41,27 @@ func TestHash(t *testing.T) {
 		t.Errorf("hash mismatch")
 	}
 }
+
+func TestEditDistance(t *testing.T) {
+	type test struct {
+		input     string
+		options   []string
+		expected1 []string
+		expected2 []string
+	}
+	options := []string{"hello", "house", "mouse", "Hallow", "blunt", "blouse", "mousse", "halo"}
+	tests := []test{
+		test{input: "hallo", options: options, expected1: []string{"hello", "halo"}, expected2: []string{"Hallow"}},
+		test{input: "houses", options: options, expected1: []string{"house"}, expected2: []string{"mouse", "blouse"}},
+		test{input: "monitor", options: options, expected1: nil, expected2: nil},
+	}
+	for tc := range slices.Values(tests) {
+		d1, d2 := SelectInTwoEdits(tc.input, slices.Values(tc.options), nil, nil)
+		if !slices.Equal(d1, tc.expected1) {
+			t.Errorf("for %q 1 edit expected %v, got %v", tc.input, tc.expected1, d1)
+		}
+		if !slices.Equal(d2, tc.expected2) {
+			t.Errorf("for %q 2 edit expected %v, got %v", tc.input, tc.expected2, d2)
+		}
+	}
+}

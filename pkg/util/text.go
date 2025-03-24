@@ -9,6 +9,7 @@ import (
 	"errors"
 	"hash/fnv"
 	"io"
+	"iter"
 	"strconv"
 	"strings"
 	"unicode"
@@ -140,4 +141,73 @@ func HashString64(s string) uint64 {
 	hash := fnv.New64a()
 	io.Copy(hash, strings.NewReader(s))
 	return hash.Sum64()
+}
+
+// Given a string iterator and a base string, return two arrays of strings
+// from the iterator that are respectively within one or two edits of the
+// base string. // https://en.wikipedia.org/wiki/Levenshtein_distance
+func SelectInTwoEdits(str string, seq iter.Seq[string], dist1, dist2 []string) ([]string, []string) {
+	min := func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	max := func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	var cur, prev []int
+	n := len(str)
+	for str2 := range seq {
+		if str == str2 {
+			continue
+		}
+
+		n2 := len(str2)
+		nmax := max(n, n2)
+
+		if nmax >= len(cur) {
+			cur = make([]int, nmax+1)
+			prev = make([]int, nmax+1)
+		}
+
+		for i := range n2 + 1 {
+			prev[i] = i
+		}
+
+		for y := 1; y <= n; y++ {
+			cur[0] = y
+			rowBest := y
+
+			for x := 1; x <= n2; x++ {
+				cost := 0
+				if str[y-1] != str2[x-1] {
+					cost = 1
+				}
+
+				cur[x] = min(prev[x-1]+cost, min(cur[x-1], prev[x])+1)
+
+				if cur[x] < rowBest {
+					rowBest = cur[x]
+				}
+			}
+
+			if rowBest > 2 {
+				continue
+			}
+			// Swap cur and prev
+			cur, prev = prev, cur
+		}
+
+		if prev[n2] == 1 {
+			dist1 = append(dist1, str2)
+		} else if prev[n2] == 2 {
+			dist2 = append(dist2, str2)
+		}
+	}
+	return dist1, dist2
 }
