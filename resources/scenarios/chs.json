@@ -398,7 +398,7 @@
                     "exit": "CRE",
                     "destination": "KHPN",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
                     "airlines": [
                         {
                             "icao": "JBU",
@@ -518,7 +518,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -638,7 +638,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 33000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -950,7 +950,7 @@
                     "exit": "CRE",
                     "destination": "KHPN",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
                     "airlines": [
                         {
                             "icao": "JBU",
@@ -1034,7 +1034,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -1118,7 +1118,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 33000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -1269,7 +1269,7 @@
                     "exit": "CRE",
                     "destination": "KHPN",
                     "altitude": 33000,
-                    "route": "KMBEE2 KMBEE CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "route": "KMBEE2 KMBEE CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
                     "airlines": [
                         {
                             "icao": "TWY"

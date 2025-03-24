@@ -1194,7 +1194,7 @@
           "altitude": 25000,
           "destination": "KBTV",
           "exit": "GREKI",
-          "route": "GREKI JUUDS CAM"
+          "route": "GREKI JUDDS CAM"
         },
         {
           "airlines": [
@@ -3793,7 +3793,7 @@
           "altitude": 6000,
           "destination": "KACY",
           "exit": "DIXIE",
-          "route": "ELVAE COL DIXIE V229 ACY"
+          "route": "ELVAE COL DIXIE V229 CYN ACY"
         },
         {
           "airlines": [
@@ -5964,7 +5964,7 @@
           "altitude": 16000,
           "destination": "KPVD",
           "exit": "PWL",
-          "route": "PWL V34 MOONI T216 HFD YANTC T300 MNINK"
+          "route": "PWL V34 MOONI T216 HFD YANTC T300 MINNK"
         },
         {
           "airlines": [
@@ -6247,7 +6247,7 @@
           "altitude": 16000,
           "destination": "KPVD",
           "exit": "PWL",
-          "route": "PWL V34 MOONI T216 HFD YANTC T300 MNINK"
+          "route": "PWL V34 MOONI T216 HFD YANTC T300 MINNK"
         },
         {
           "airlines": [
@@ -6492,7 +6492,7 @@
           "altitude": 17000,
           "destination": "KALB",
           "exit": "SOARS",
-          "route": "SOARS V387 CANAN ALB"
+          "route": "SOARS V487 CANAN ALB"
         },
         {
           "airlines": [
@@ -6647,7 +6647,7 @@
           "altitude": 17000,
           "destination": "KALB",
           "exit": "SOARS",
-          "route": "SOARS V387 CANAN ALB"
+          "route": "SOARS V487 CANAN ALB"
         },
         {
           "airlines": [
@@ -6793,7 +6793,7 @@
           "altitude": 17000,
           "destination": "KALB",
           "exit": "SOARS",
-          "route": "SOARS V387 CANAN ALB"
+          "route": "SOARS V487 CANAN ALB"
         },
         {
           "airlines": [
@@ -6972,7 +6972,7 @@
           "altitude": 17000,
           "destination": "KALB",
           "exit": "SOARS",
-          "route": "SOARS V387 CANAN ALB"
+          "route": "SOARS V487 CANAN ALB"
         },
         {
           "airlines": [
