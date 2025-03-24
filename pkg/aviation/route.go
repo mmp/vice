@@ -664,6 +664,29 @@ func parseWaypoints(str string) (WaypointArray, error) {
 			}
 		}
 
+		// Is it a lat-long specifier like 4900N/05000W? We need to patch
+		// things up if so since we use '/' to delimit our own specifiers
+		// after fixes.
+		if len(components) >= 2 {
+			c0, c1 := components[0], components[1]
+			allNumbers := func(s string) bool {
+				for _, ch := range s {
+					if ch < '0' || ch > '9' {
+						return false
+					}
+				}
+				return true
+			}
+			if len(c0) == 5 && (c0[4] == 'N' || c0[4] == 'S') &&
+				len(c1) == 6 && (c1[5] == 'E' || c1[5] == 'W') &&
+				allNumbers(c0[:4]) && allNumbers(c1[:5]) {
+				// Reconstitute the fix in the first element of components and
+				// shift the rest (if any) down.
+				components[0] += "/" + c1
+				components = append(components[:1], components[2:]...)
+			}
+		}
+
 		wp := Waypoint{}
 		for i, f := range components {
 			if i == 0 {
