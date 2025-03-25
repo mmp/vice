@@ -327,9 +327,7 @@ func fieldEmpty(f []dbChar) bool {
 ///////////////////////////////////////////////////////////////////////////
 
 func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) DatablockType {
-	trk := sp.getTrack(ctx, ac)
-
-	if trk.TrackOwner == "" {
+	if ac.TrackingController == "" {
 		// Must be limited, regardless of anything else.
 		return LimitedDatablock
 	} else {
@@ -348,12 +346,12 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+		if ac.TrackingController == ctx.ControlClient.PrimaryTCP {
 			// it's under our control
 			return FullDatablock
 		}
 
-		if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP && ac.RedirectedHandoff.RedirectedTo == "" {
+		if ac.HandingOffTo(ctx.ControlClient.PrimaryTCP) {
 			// it's being handed off to us
 			return FullDatablock
 		}
@@ -378,13 +376,13 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		if len(trk.RedirectedHandoff.Redirector) > 0 {
-			if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+		if len(ac.RedirectedHandoff.Redirector) > 0 {
+			if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
 				return FullDatablock
 			}
 		}
 
-		if trk.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP {
+		if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP {
 			return FullDatablock
 		}
 
@@ -881,7 +879,6 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	ps := sp.currentPrefs()
 	dt := sp.datablockType(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
-	trk := sp.getTrack(ctx, ac)
 
 	inboundPointOut := false
 	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
@@ -891,7 +888,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	// Cases where it's always a full datablock
 	forceFDB := inboundPointOut
 	forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
-	forceFDB = forceFDB || trk.HandingOffTo(ctx.ControlClient.PrimaryTCP)
+	forceFDB = forceFDB || ac.HandingOffTo(ctx.ControlClient.PrimaryTCP)
 	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
 		forceFDB = true
 	}
@@ -907,7 +904,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+		if ac.TrackingController != ctx.ControlClient.PrimaryTCP {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
@@ -936,15 +933,15 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	} else if state.IsSelected {
 		// middle button selected
 		color = STARSSelectedAircraftColor
-	} else if trk.TrackOwner == "" {
+	} else if ac.TrackingController == "" {
 		color = STARSUntrackedAircraftColor
-	} else if trk.TrackOwner == ctx.ControlClient.PrimaryTCP { //change
+	} else if ac.TrackingController == ctx.ControlClient.PrimaryTCP { //change
 		// we own the track track
 		color = STARSTrackedAircraftColor
-	} else if trk.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP || trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+	} else if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP || ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
 		color = STARSTrackedAircraftColor
-	} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP &&
-		!slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+	} else if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP &&
+		!slices.Contains(ac.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
 		// flashing white if it's being handed off to us.
 		color = STARSTrackedAircraftColor
 	} else if state.OutboundHandoffAccepted {
@@ -954,7 +951,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		// quick look all plus
 		color = STARSTrackedAircraftColor
 	} else if slices.ContainsFunc(ps.QuickLookPositions,
-		func(q QuickLookPosition) bool { return q.Id == trk.TrackOwner && q.Plus }) {
+		func(q QuickLookPosition) bool { return q.Id == ac.TrackingController && q.Plus }) {
 		// individual quicklook plus controller
 		color = STARSTrackedAircraftColor
 		/* FIXME(mtrokel): temporarily disabled. This flashes in and out e.g. in JFK scenarios for the LGA water gate departures.

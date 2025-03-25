@@ -655,6 +655,12 @@ func (ac *Aircraft) CWT() string {
 	return perf.Category.CWT
 }
 
+func (ac *Aircraft) HandingOffTo(tcp string) bool {
+	return (ac.HandoffTrackController == tcp &&
+		!slices.Contains(ac.RedirectedHandoff.Redirector, tcp)) || // not a redirector
+		ac.RedirectedHandoff.RedirectedTo == tcp // redirected to
+}
+
 func PlausibleFinalAltitude(fp *FlightPlan, perf AircraftPerformance, nmPerLongitude float32,
 	magneticVariation float32) (altitude int) {
 	// try to figure out direction of flight
