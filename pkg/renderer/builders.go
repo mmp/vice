@@ -548,6 +548,15 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 	for i := range text {
 		style := styles[i]
 
+		if td.regular == nil {
+			td.regular = make(map[uint32]*TextBuffers)
+		}
+		buffs, ok := td.regular[style.Font.TexId]
+		if !ok {
+			buffs = &TextBuffers{}
+			td.regular[style.Font.TexId] = buffs
+		}
+
 		// Total between subsequent lines, vertically.
 		dy := float32(style.Font.Size + style.LineSpacing)
 
@@ -602,13 +611,7 @@ func (td *TextDrawBuilder) AddTextMulti(text []string, p [2]float32, styles []Te
 			// beyond the small perf. cost, we'll end up getting "?" and
 			// the like if we do this anyway.
 			if glyph.Visible {
-				if td.regular == nil {
-					td.regular = make(map[uint32]*TextBuffers)
-				}
-				if _, ok := td.regular[style.Font.TexId]; !ok {
-					td.regular[style.Font.TexId] = &TextBuffers{}
-				}
-				td.regular[style.Font.TexId].Add([2]float32{px, py}, glyph, style.Color)
+				buffs.Add([2]float32{px, py}, glyph, style.Color)
 			}
 
 			// Visible or not, advance the x cursor position to move to the next character.
