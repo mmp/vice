@@ -369,17 +369,24 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 		ac.FlightPlan.Route = "/. " + arr.STAR
 	}
 
-	if goAround && ac.FlightPlan.Rules == IFR { // VFRs don't go around since they aren't talking to us.
-		d := 0.1 + .6*rand.Float32()
-		ac.GoAroundDistance = &d
-	}
-
 	nav := MakeArrivalNav(ac.Callsign, arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation,
 		wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
+
+	// VFRs don't go around since they aren't talking to us.
+	goAround = goAround && ac.FlightPlan.Rules == IFR
+	// If it's only controlled by virtual controllers, then don't let it go
+	// around.  Note that this test misses the case where a human has
+	// control from the start, though that shouldn't be happening...
+	goAround = goAround && slices.ContainsFunc(ac.Nav.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff })
+	if goAround {
+		// Don't go around
+		d := 0.1 + .6*rand.Float32()
+		ac.GoAroundDistance = &d
+	}
 
 	if arr.ExpectApproach.A != nil {
 		lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
