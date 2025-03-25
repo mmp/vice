@@ -223,6 +223,12 @@ type STARSPane struct {
 		overflights map[string]map[int]bool               // group->index
 		airspace    map[string]map[string]bool            // ctrl -> volume name
 	}
+
+	// We keep a pool of each type so that we don't need to allocate a new
+	// object each time we generate a datablock.
+	fdbArena util.ObjectArena[fullDatablock]
+	pdbArena util.ObjectArena[partialDatablock]
+	ldbArena util.ObjectArena[limitedDatablock]
 }
 
 type PointOutControllers struct {
@@ -710,9 +716,10 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawHighlighted(ctx, transforms, cb)
 	sp.drawVFRAirports(ctx, transforms, cb)
 
-	sp.drawLeaderLines(aircraft, ctx, transforms, cb)
+	dbs := sp.getAllDatablocks(aircraft, ctx)
+	sp.drawLeaderLines(aircraft, dbs, ctx, transforms, cb)
 	sp.drawTracks(aircraft, ctx, transforms, cb)
-	sp.drawDatablocks(aircraft, ctx, transforms, cb)
+	sp.drawDatablocks(aircraft, dbs, ctx, transforms, cb)
 
 	ghosts := sp.getGhostAircraft(aircraft, ctx)
 	sp.drawGhosts(ghosts, ctx, transforms, cb)

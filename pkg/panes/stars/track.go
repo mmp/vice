@@ -1295,19 +1295,14 @@ func (sp *STARSPane) diverging(a, b *av.Aircraft) bool {
 	return math.HeadingDifference(sa.TrackHeading(a.NmPerLongitude()), sb.TrackHeading(b.NmPerLongitude())) >= 15
 }
 
-func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawLeaderLines(aircraft []*av.Aircraft, dbs map[string]datablock, ctx *panes.Context,
+	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	now := ctx.ControlClient.SimTime
 
 	for _, ac := range aircraft {
-		state := sp.Aircraft[ac.Callsign]
-		if state.LostTrack(now) || !sp.datablockVisible(ac, ctx) {
-			continue
-		}
-
-		if sp.getDatablock(ctx, ac) != nil {
+		if db := dbs[ac.Callsign]; db != nil {
+			state := sp.Aircraft[ac.Callsign]
 			baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, ac)
 			pac := transforms.WindowFromLatLongP(state.TrackPosition())
 			v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ac, ctx))

@@ -415,6 +415,18 @@ func formatDBText(field []dbChar, s string, c renderer.RGB, flashing bool) int {
 	return len(s)
 }
 
+func (sp *STARSPane) getAllDatablocks(aircraft []*av.Aircraft, ctx *panes.Context) map[string]datablock {
+	sp.fdbArena.Reset()
+	sp.pdbArena.Reset()
+	sp.ldbArena.Reset()
+
+	m := make(map[string]datablock)
+	for _, ac := range aircraft {
+		m[ac.Callsign] = sp.getDatablock(ctx, ac)
+	}
+	return m
+}
+
 func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock {
 	now := ctx.ControlClient.CurrentTime()
 	state := sp.Aircraft[ac.Callsign]
@@ -564,7 +576,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 	switch sp.datablockType(ctx, ac) {
 	case LimitedDatablock:
-		db := &limitedDatablock{}
+		db := sp.ldbArena.AllocClear()
 
 		// Field 0: CA, MCI, and squawking special codes
 		alerts := sp.getDatablockAlerts(ctx, ac, LimitedDatablock)
@@ -626,7 +638,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 	case PartialDatablock:
 		fa := ctx.ControlClient.STARSFacilityAdaptation
-		db := &partialDatablock{}
+		db := sp.pdbArena.AllocClear()
 
 		// Field0: TODO cautions in yellow
 		// TODO: 2-69 doesn't list CA/MCI, so should this be blank even in
@@ -698,7 +710,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 		return db
 
 	case FullDatablock:
-		db := &fullDatablock{}
+		db := sp.fdbArena.AllocClear()
 
 		// Line 0
 		// Field 0: special conditions, safety alerts (red), cautions (yellow)
@@ -1014,7 +1026,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	}
 }
 
-func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
+func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, dbs map[string]datablock, ctx *panes.Context,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -1063,7 +1075,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, ctx *panes.Context,
 
 	for _, dbAircraft := range [][]*av.Aircraft{ldbs, pdbs, fdbs} {
 		for _, ac := range dbAircraft {
-			db := sp.getDatablock(ctx, ac)
+			db := dbs[ac.Callsign]
 			if db == nil {
 				continue
 			}
