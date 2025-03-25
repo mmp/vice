@@ -7,6 +7,7 @@ package stars
 import (
 	"slices"
 	"sort"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -693,6 +694,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 	trackStyle := renderer.TextStyle{Font: trackFont, Color: color, LineSpacing: 0}
 	datablockFont := sp.systemFont(ctx, ps.CharSize.Datablocks)
 
+	var strBuilder strings.Builder
 	for _, ghost := range ghosts {
 		state := sp.Aircraft[ghost.Callsign]
 
@@ -710,7 +712,7 @@ func (sp *STARSPane) drawGhosts(ghosts []*av.GhostAircraft, ctx *panes.Context, 
 		vll := sp.getLeaderLineVector(ctx, ghost.LeaderLineDirection)
 		pll := math.Add2f(pac, vll)
 
-		db.draw(td, pll, datablockFont, brightness, ghost.LeaderLineDirection, ctx.Now.Unix())
+		db.draw(td, pll, datablockFont, &strBuilder, brightness, ghost.LeaderLineDirection, ctx.Now.Unix())
 
 		// Leader line
 		ld.AddLine(pac, math.Add2f(pac, vll), color)

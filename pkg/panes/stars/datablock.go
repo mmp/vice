@@ -29,8 +29,8 @@ const (
 // datablock. The only operation that exposes is drawing the datablock.
 type datablock interface {
 	// pt is end of leader line--attachment point
-	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, brightness STARSBrightness,
-		leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64)
+	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
+		brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64)
 }
 
 // dbChar represents a single character in a datablock.
@@ -58,7 +58,7 @@ type fullDatablock struct {
 	field7 [2][4]dbChar
 }
 
-func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	// Figure out the maximum number of values any field is cycling through.
 	numVariants := func(fields [][]dbChar) int {
@@ -103,7 +103,7 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *
 			selectMultiplexed([][]dbChar{db.field7[0][:], db.field7[1][:]})),
 	}
 	pt[1] += float32(font.Size) // align leader with line 1
-	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ type partialDatablock struct {
 	field4  [2]dbChar
 }
 
-func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	// How many cycles?
 	nc := util.Select(fieldEmpty(db.field3[1][:]), 1, 2)
@@ -159,7 +159,7 @@ func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, fon
 		dbMakeLine(dbChopTrailing(f12), f3, db.field4[:]),
 	}
 	pt[1] += float32(font.Size) // align leader with line 1
-	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -179,7 +179,7 @@ type limitedDatablock struct {
 	field6 [8]dbChar
 }
 
-func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	lines := []dbLine{
 		dbMakeLine(db.field0[:]),
@@ -188,7 +188,7 @@ func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, fon
 		dbMakeLine(db.field6[:]),
 	}
 	pt[1] += 2 * float32(font.Size) // align leader with line 2
-	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -202,14 +202,14 @@ type ghostDatablock struct {
 	field1 [3]dbChar
 }
 
-func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	lines := []dbLine{
 		dbMakeLine(db.field0[:]),
 		dbMakeLine(db.field1[:]),
 	}
 	// Leader aligns with line 0, so no offset is needed
-	dbDrawLines(lines, td, pt, font, brightness, leaderLineDirection, halfSeconds)
+	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -259,7 +259,7 @@ func dbChopTrailing(f []dbChar) []dbChar {
 	return nil
 }
 
-func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
 	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	rightJustify := leaderLineDirection >= math.South
 	glyph := font.LookupGlyph(' ')
@@ -270,19 +270,19 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, fo
 		if rightJustify {
 			xOffset = -4 - float32(line.Len())*fontWidth
 		}
-		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, brightness, halfSeconds)
+		strBuilder.Reset()
+		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, strBuilder, brightness, halfSeconds)
 		// Step down to the next line
 		pt[1] -= float32(font.Size)
 	}
 }
 
-func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
+func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, str *strings.Builder,
 	brightness STARSBrightness, halfSeconds int64) {
 	// We will batch characters to be drawn up into str and flush them out
 	// in a call to TextDrawBuider AddText() only when the color
 	// changes. (This is some effort to minimize the number of AddText()
 	// calls.)
-	var str strings.Builder
 	style := renderer.TextStyle{Font: font}
 
 	flush := func() {
@@ -966,7 +966,6 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 }
 
 func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool {
-	trk := sp.getTrack(ctx, ac)
 	state := sp.Aircraft[ac.Callsign]
 
 	af := sp.currentPrefs().AltitudeFilters
@@ -977,7 +976,7 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 		return true
 	}
 
-	if trk.TrackOwner == "" { // unassociated
+	if ac.TrackingController == "" { // unassociated
 		if ac.Mode == av.Standby {
 			// unassociated also primary only, only show a datablock if it's been slewed
 			return ctx.Now.Before(state.FullLDBEndTime)
@@ -987,10 +986,10 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	} else { // associated
 		state := sp.Aircraft[ac.Callsign]
 
-		if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+		if ac.TrackingController == ctx.ControlClient.PrimaryTCP {
 			// For owned datablocks
 			return true
-		} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP {
+		} else if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP {
 			// For receiving handoffs
 			return true
 		} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
@@ -1010,10 +1009,10 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 			return true
 		} else if sp.isQuicklooked(ctx, ac) {
 			return true
-		} else if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+		} else if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
 			// Redirected to
 			return true
-		} else if slices.Contains(trk.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+		} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
 			// Had it but redirected it
 			return true
 		}
@@ -1070,6 +1069,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, dbs map[string]data
 		fdbs = moveDwelledToEnd(fdbs)
 	}
 
+	var strBuilder strings.Builder
 	for _, dbAircraft := range [][]*av.Aircraft{ldbs, pdbs, fdbs} {
 		for _, ac := range dbAircraft {
 			db := dbs[ac.Callsign]
@@ -1103,7 +1103,7 @@ func (sp *STARSPane) drawDatablocks(aircraft []*av.Aircraft, dbs map[string]data
 			}
 
 			halfSeconds := realNow.UnixMilli() / 500
-			db.draw(td, pll, font, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
+			db.draw(td, pll, font, &strBuilder, brightness, sp.getLeaderLineDirection(ac, ctx), halfSeconds)
 		}
 	}
 
