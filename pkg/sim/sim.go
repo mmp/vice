@@ -658,7 +658,8 @@ func (s *Sim) updateState() {
 					// ac.TrackingController, since the human controller
 					// may have already flashed the track to a virtual
 					// controller.
-					s.enqueueControllerContact(ac.Callsign, ac.WaypointHandoffController, 0 /* no delay */)
+					ctrl := s.ResolveController(ac.WaypointHandoffController)
+					s.enqueueControllerContact(ac.Callsign, ctrl, 0 /* no delay */)
 				}
 
 				// Update scratchpads if the waypoint has scratchpad commands
