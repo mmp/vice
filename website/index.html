@@ -5153,7 +5153,7 @@ how it simulates aircraft or the STARS interface.
               In addition to the lateral positions along the route, it is possibly to specify speed and altitude restrictions, handoff points,
               and headings to fly.
             </p>
-            <p>Here is an example route from a JFK departure. The first two waypoints along the departure runway are automatically
+            <p>Here is an example route from a JFK departure. The first two fixes along the departure runway are automatically
               provided by <i>vice</i> so the route starts with the specified fixes in the departure procedure.
               The "/h223" after "RNGRR" specifies that the aircraft should fly a 223 heading as departing RNGRR.
               It will maintain that heading until it
@@ -5162,7 +5162,7 @@ how it simulates aircraft or the STARS interface.
             <pre>
   "SKORR METSS RNGRR/h223"
             </pre>
-            <p>A variety of such things can be specified along with a waypoint:</p>
+            <p>A variety of such things can be specified along with a fix:</p>
             <ul>
               <li> <code>/a</code><i>restriction</i>: for IFR routes, cross the fix with the specified altitude restriction
                 (with altitudes specified in 100s of feet). For VFR, aircraft will be at a random altitude within a given
@@ -5197,17 +5197,23 @@ how it simulates aircraft or the STARS interface.
               <li> <code>/tc</code>: "transfer comms": after passing a <code>/ho</code> fix, normally aircraft call in
                 a few seconds after the human controller accepts the handoff.  However, if <code>/tc</code> is specified
                 at a later fix in the route, they won't contact the controller until reaching that fix.</li>
-              <li> <code>/po</code><i>TCP id</i>: when the aircraft passes the waypoint
+              <li> <code>/po</code><i>TCP id</i>: when the aircraft passes the fix
                 and if it is under the control of a virtual controller,
                 issue a point out to the controller identified by the given TCP id (i.e., the
                 controller ID that would be used when doing a point out in STARS.)</li>
+              <li> <code>/radius</code><i>num</i>: rather than flying precisely to the fix, the aircraft will fly to
+                a random point within <i>num</i> miles of the fix.</li>
+              <li> <code>/shift</code><i>num</i>: rather than flying precisely to the fix, the aircraft will fly along
+                the route to the fix but will turn for the next fix at a random distance before or after the fix,
+                up to num/2 nautical miles in each direction.</li>
               <li> <code>/spsp</code><i>scratchpad</i>: sets the aircraft's primary scratchpad to the given value.</li>
               <li> <code>/sssp</code><i>scratchpad</i>: sets the aircraft's secondary scratchpad to the given value.</li>
               <li> <code>/cpsp</code>: clears the aircraft's primary scratchpad</li>
               <li> <code>/cssp</code>: clears the aircraft's secondary scratchpad</li>
             </ul>
 
-              <p>There are also some specifiers that can be used with VFR aircraft routes:</p>
+            <p>In addition to <code>/radius</code> and <code>/shift</code>, which are also useful for randomizing VFR
+              routes, there's an additional specifier that can be used with VFR aircraft routes:</p>
             <ul>
               <li> <code>/airwork</code>: the aircraft should perform airwork
                 centered around the fix. An altitude restriction must be specified using <code>/a</code> to give an altitude
@@ -5215,8 +5221,6 @@ how it simulates aircraft or the STARS interface.
                 alternatively, the time or distance may be specified via <code>/airwork</code><i>radius</i><code>nm</code>
                 and/or  <code>/airwork</code><i>minutes</i><code>m</code>. For example: <code>/airwork30m10nm</code>
                 specifies 30 minutes of airwork within a 10nm radius of the fix.</li>
-              <li> <code>/radius</code><i>num</i>: rather than flying precisely to the waypoint, the aircraft will fly to
-                a random point within <i>num</i> miles of the waypoint.</li>
             </ul>
 
             <p>If the aircraft should follow an arc leaving a
@@ -5624,7 +5628,7 @@ how it simulates aircraft or the STARS interface.
               <a href="https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/">FAA CIFP</a> or manually.
               To use CIFP data, run <i>vice</i> from the command-line and give it the argument <code>-route KXYZ</code>, where
               <code>KXYZ</code> is the ICAO code for the airport. <i>vice</i> will print identifiers for the available approaches
-              and their associated waypoints. For example:</p>
+              and their associated fixs. For example:</p>
 <pre>
   > ..\vice.exe -routes KMIA
   [...]  

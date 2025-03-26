@@ -47,6 +47,7 @@ type Waypoint struct {
 	AirworkRadius            int            // set during deserialization
 	AirworkMinutes           int            // set during deserialization
 	Radius                   float32
+	Shift                    float32
 	PrimaryScratchpad        string
 	ClearPrimaryScratchpad   bool
 	SecondaryScratchpad      string
@@ -249,6 +250,9 @@ func (wslice WaypointArray) Encode() string {
 		if w.Radius != 0 {
 			s += fmt.Sprintf("/radius%.1f", w.Radius)
 		}
+		if w.Shift != 0 {
+			s += fmt.Sprintf("/shift%.1f", w.Shift)
+		}
 		if w.PrimaryScratchpad != "" {
 			s += "/spsp" + w.PrimaryScratchpad
 		}
@@ -348,7 +352,7 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 	defer e.CheckDepth(e.CurrentDepth())
 
 	haveHO := false
-	for _, wp := range w {
+	for i, wp := range w {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
 			e.ErrorString("invalid speed restriction %d", wp.Speed)
@@ -384,6 +388,13 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 
 		if wp.TransferComms && !haveHO {
 			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
+		}
+
+		if i == 0 && wp.Shift > 0 {
+			e.ErrorString("Can't specify /shift at the first fix in a route")
+		}
+		if wp.Radius > 0 && wp.Shift > 0 {
+			e.ErrorString("Can't specify both /radius and /shift at the same fix")
 		}
 
 		e.Pop()
@@ -510,7 +521,18 @@ func RandomizeRoute(w []Waypoint, randomizeAltitudeRange bool, perf AircraftPerf
 
 			rtheta = jitter(rtheta)
 			rrad = jitter(rrad)
+		} else if wp.Shift > 0 {
+			p0, p1 := math.LL2NM(w[i-1].Location, nmPerLongitude), math.LL2NM(w[i].Location, nmPerLongitude)
+			v := math.Normalize2f(math.Sub2f(p1, p0))
+			t := math.Lerp(rrad, -wp.Shift, wp.Shift)
+			p := math.Add2f(p1, math.Scale2f(v, t))
+			wp.Location = math.NM2LL(p, nmPerLongitude)
+
+			wp.Shift = 0 // clean up
+
+			rrad = jitter(rrad)
 		}
+
 		if randomizeAltitudeRange {
 			if ar := wp.AltitudeRestriction; ar != nil {
 				low, high := ar.Range[0], ar.Range[1]
@@ -752,6 +774,13 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						return nil, err
 					} else {
 						wp.Radius = float32(rad)
+					}
+				} else if strings.HasPrefix(f, "shift") {
+					sstr := f[5:]
+					if shift, err := strconv.ParseFloat(sstr, 32); err != nil {
+						return nil, err
+					} else {
+						wp.Shift = float32(shift)
 					}
 				} else if len(f) > 2 && f[:2] == "po" {
 					wp.PointOut = f[2:]

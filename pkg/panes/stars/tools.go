@@ -1479,6 +1479,25 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				wp.Radius, 32)
 		}
 
+		// For /shift, extend the line beyond the waypoint (just in case)
+		// and draw perpendicular bars at the ends.
+		if wp.Shift > 0 {
+			prev := waypoints[i-1]
+			v := math.Sub2f(wp.Location, prev.Location)
+			v = math.Scale2f(v, 1/math.NMDistance2LL(wp.Location, prev.Location)) // ~1nm length
+			v = math.Scale2f(v, wp.Shift/2)
+
+			// extend the line
+			e0, e1 := math.Sub2f(wp.Location, v), math.Add2f(wp.Location, v)
+			ld.AddLine(wp.Location, e1)
+
+			perp := [2]float32{-v[1], v[0]}
+			perp = math.Scale2f(perp, 0.125) // shorter
+
+			ld.AddLine(math.Sub2f(e0, perp), math.Add2f(e0, perp))
+			ld.AddLine(math.Sub2f(e1, perp), math.Add2f(e1, perp))
+		}
+
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j
 			if idx < 0 || idx >= len(waypoints) {
