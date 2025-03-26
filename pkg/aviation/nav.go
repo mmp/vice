@@ -614,12 +614,10 @@ func (nav *Nav) ContactMessage(reportingPoints []ReportingPoint, star string) st
 			} else {
 				msgs = append(msgs, "on the "+star)
 			}
-		} else {
-			for _, wp := range nav.Waypoints {
-				if len(wp.Fix) > 0 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
-					msgs = append(msgs, "inbound "+wp.Fix)
-					break
-				}
+		} else if len(nav.Waypoints) > 0 {
+			wp := nav.Waypoints[0]
+			if len(wp.Fix) > 0 && len(wp.Fix) <= 5 && !strings.ContainsAny(wp.Fix, "-_0123456789") {
+				msgs = append(msgs, "inbound "+wp.Fix)
 			}
 		}
 	}
