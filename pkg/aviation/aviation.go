@@ -576,7 +576,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 						}
 
 						ar.Waypoints = util.DuplicateSlice(wps[idx:])
-						ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+						ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
 							ar.Waypoints[0].Location = math.Lerp2f(
@@ -609,9 +609,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 						if starRwy == rwy.Id ||
 							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
 							ar.RunwayWaypoints[icao][rwy.Id] = util.DuplicateSlice(wp)
-							ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(
-								loc, nmPerLongitude, magneticVariation, e,
-							)
+							ar.RunwayWaypoints[icao][rwy.Id] =
+								ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 							break
 						}
 					}
@@ -645,7 +644,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			)
 		}
 
-		ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 		for ap, rwywp := range ar.RunwayWaypoints {
 			e.Push("Airport " + ap)
@@ -662,7 +661,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 					e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[ap].ValidRunways())
 				}
 
-				wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+				wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 				for i := range wp {
 					wp[i].OnSTAR = true

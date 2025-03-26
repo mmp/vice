@@ -247,7 +247,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		for i := range appr.Waypoints {
-			appr.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+			appr.Waypoints[i] =
+				appr.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			// Add the final fix at the runway threshold.
 			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
@@ -329,7 +330,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
-			route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+			route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			route.Waypoints = append([]Waypoint{
 				Waypoint{
@@ -426,31 +427,21 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility {
-			// Make sure that the full route is valid.
-			wp, err := parseWaypoints(dep.Route)
-			if err != nil {
-				e.Error(err)
+		/*
+			if _, ok := ap.ExitCategories[depExit]; !ok {
+				e.ErrorString("exit %q isn't in \"exit_categories\"", depExit)
 			}
-			wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
-			ap.Departures[i].RouteWaypoints = wp
-		} else {
-			for _, fix := range strings.Fields(dep.Route) {
-				wp := WaypointArray{Waypoint{Fix: fix}}
-				// Best effort only to find waypoint locations; this will fail
-				// for airways, international ones not in the FAA database,
-				// latlongs in the flight plan, etc.
-				if fix == depExit {
-					wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
-				} else {
-					// nil here so errors aren't logged if it's not the actual exit.
-					wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, nil)
-				}
-				if !wp[0].Location.IsZero() {
-					ap.Departures[i].RouteWaypoints = append(ap.Departures[i].RouteWaypoints, wp[0])
-				}
-			}
+		*/
+
+		wp, err := parseWaypoints(dep.Route)
+		if err != nil {
+			e.Error(err)
 		}
+
+		_, intraFacility := facilityAirports[dep.Destination]
+		allowSlop := !intraFacility // Make sure that the full route is valid for intra-facility.
+		wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, allowSlop, e)
+		ap.Departures[i].RouteWaypoints = wp
 
 		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
 			func(wp Waypoint) bool { return wp.Fix == depExit }) {
@@ -483,7 +474,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 	}
 	for i := range ap.VFR.Routes {
-		ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+		ap.VFR.Routes[i].Waypoints =
+			ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 		spec := &ap.VFR.Routes[i]
 		e.Push("routes " + spec.Name)

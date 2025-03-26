@@ -902,29 +902,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 		waypoints = append(waypoints, wp)
 	}
 
-	// Now go through and expand out any airways into their constituent waypoints
-	var wpExpanded []Waypoint
-	for i, wp := range waypoints {
-		wpExpanded = append(wpExpanded, wp)
-
-		if wp.Airway != "" {
-			found := false
-			wp0, wp1 := wp.Fix, waypoints[i+1].Fix
-			for _, airway := range DB.Airways[wp.Airway] {
-				if awp, ok := airway.WaypointsBetween(wp0, wp1); ok {
-					wpExpanded = append(wpExpanded, awp...)
-					found = true
-					break
-				}
-			}
-
-			if !found {
-				return nil, fmt.Errorf("%s: unable to find fix pair %s - %s in airway", wp.Airway, wp0, wp1)
-			}
-		}
-	}
-
-	return wpExpanded, nil
+	return waypoints, nil
 }
 
 // ParseAltitudeRestriction parses an altitude restriction in the compact
@@ -985,24 +963,53 @@ type Locator interface {
 	Similar(fix string) []string
 }
 
-func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32, e *util.ErrorLogger) {
+func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32, magneticVariation float32,
+	allowSlop bool, e *util.ErrorLogger) WaypointArray {
+	if len(waypoints) == 0 {
+		return waypoints
+	}
+
 	defer e.CheckDepth(e.CurrentDepth())
 
+	// Get the locations of all waypoints and cull the route after 250nm if cullFar is true.
 	var prev math.Point2LL
-
 	for i, wp := range waypoints {
 		if e != nil {
 			e.Push("Fix " + wp.Fix)
 		}
 		if pos, ok := loc.Locate(wp.Fix); !ok {
-			if e != nil {
-				e.ErrorString("unable to locate waypoint")
+			if e != nil && !allowSlop {
+				errstr := "unable to locate waypoint."
+				if sim := loc.Similar(wp.Fix); len(sim) > 0 {
+					dist := make(map[string]float32)
+					for _, s := range sim {
+						if p, ok := loc.Locate(s); ok {
+							dist[s] = math.NMDistance2LL(prev, p)
+						} else {
+							dist[s] = 999999
+						}
+					}
+
+					sim = util.FilterSliceInPlace(sim, func(s string) bool { return dist[s] < 150 })
+
+					slices.SortFunc(sim, func(a, b string) int {
+						return util.Select(dist[a] < dist[b], -1, 1)
+					})
+
+					if len(sim) > 0 {
+						errstr += " Did you mean: "
+					}
+					for _, s := range sim {
+						errstr += fmt.Sprintf("%s (%.1fnm) ", s, dist[s])
+					}
+				}
+				e.ErrorString(errstr)
 			}
 		} else {
 			waypoints[i].Location = pos
 
 			d := math.NMDistance2LL(prev, waypoints[i].Location)
-			if i > 1 && d > 120 && e != nil {
+			if i > 1 && d > 200 && e != nil && !allowSlop && waypoints[i-1].Airway == "" {
 				e.ErrorString("waypoint at %s is suspiciously far from previous one (%s at %s): %f nm",
 					waypoints[i].Location.DDString(), waypoints[i-1].Fix, waypoints[i-1].Location.DDString(), d)
 			}
@@ -1012,6 +1019,41 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 		if e != nil {
 			e.Pop()
 		}
+	}
+
+	// Now go through and expand out any airways into their constituent waypoints
+	if slices.ContainsFunc(waypoints, func(wp Waypoint) bool { return wp.Airway != "" }) { // any airways?
+		var wpExpanded []Waypoint
+		for i, wp := range waypoints {
+			wpExpanded = append(wpExpanded, wp)
+
+			if wp.Airway != "" && i+1 < len(waypoints) {
+				found := false
+				wp0, wp1 := wp.Fix, waypoints[i+1].Fix
+				for _, airway := range DB.Airways[wp.Airway] {
+					if awps, ok := airway.WaypointsBetween(wp0, wp1); ok {
+						for _, awp := range awps {
+							if awp.Location, ok = loc.Locate(awp.Fix); ok {
+								wpExpanded = append(wpExpanded, awp)
+							} else if !allowSlop {
+								e.ErrorString("%s: unable to locate fix in airway %s", awp.Fix, wp.Airway)
+							}
+						}
+						found = true
+						break
+					}
+				}
+
+				if !found && e != nil && !allowSlop {
+					e.ErrorString("%s: unable to find fix pair %s - %s in airway", wp.Airway, wp0, wp1)
+				}
+			}
+		}
+		waypoints = wpExpanded
+	}
+
+	if allowSlop {
+		waypoints = util.FilterSliceInPlace(waypoints, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 	}
 
 	// Do (DME) arcs after wp.Locations have been initialized
@@ -1146,6 +1188,8 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 			e.Pop()
 		}
 	}
+
+	return waypoints
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1483,7 +1527,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		e.ErrorString("must provide at least two \"waypoints\" for overflight")
 	}
 
-	of.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+	of.Waypoints = of.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 	of.Waypoints[len(of.Waypoints)-1].Delete = true
 	of.Waypoints[len(of.Waypoints)-1].FlyOver = true

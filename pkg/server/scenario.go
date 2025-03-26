@@ -1347,7 +1347,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 
 		if len(ra.VerticesUser) > 0 {
 			// Polygons
-			ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, e)
+			ra.VerticesUser = ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, false, e)
 			var verts []math.Point2LL
 			for _, v := range ra.VerticesUser {
 				verts = append(verts, v.Location)
