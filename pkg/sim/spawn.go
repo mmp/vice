@@ -6,6 +6,7 @@ package sim
 
 import (
 	"fmt"
+	"iter"
 	"log/slog"
 	"maps"
 	"slices"
@@ -600,34 +601,51 @@ func (s *Sim) updateDepartureSequence() {
 				// Remove it from the pool of waiting departures.
 				depState.Sequenced = depState.Sequenced[1:]
 
-				// If this runway is part of a group, update the last departure time for all runways in the group
-				depRunway = av.TidyRunway(depRunway)
-				if idx := slices.IndexFunc(s.State.Airports[airport].DepartureRunwaysAsOne,
-					func(todo string) bool {
-						for {
-							var rwy string
-							var ok bool
-							rwy, todo, ok = strings.Cut(todo, ",")
-							if rwy == depRunway {
-								return true
-							}
-							if !ok {
-								return false
-							}
-						}
-					}); idx != -1 {
-					groupRwys := strings.Split(s.State.Airports[airport].DepartureRunwaysAsOne[idx], ",")
-					s.lg.Infof("%s departing %s -> group runways: %+v\n", ac.Callsign, depRunway, groupRwys)
-
-					for rwy, state := range runways {
-						if slices.Contains(groupRwys, av.TidyRunway(rwy)) {
-							s.lg.Infof("%s: %q departure also holding up %q\n", ac.Callsign, depRunway, rwy)
-							state.LastDeparture = dep
-						}
-					}
+				// Sometimes a departure from one runway should be
+				// considered when deciding if it's ok to launch from
+				// another runway (e.g., closely spaced parallel runways).
+				for rwy, state := range s.sameGroupRunways(airport, depRunway) {
+					s.lg.Infof("%s: %q departure also holding up %q", ac.Callsign, depRunway, rwy)
+					state.LastDeparture = dep
 				}
 
 				changed()
+			}
+		}
+	}
+}
+
+// sameGroupRunways returns an iterator over all of the runways in the
+// ~equivalence class with the given depRwy. Such equivalences can come
+// both from user-specified "departure_runways_as_one" but also from
+// runways with dotted suffixes; we want to treat 4 and 4.AutoWest as one,
+// for example.  Note that the iterator will return the provided runway and
+// may return the same runway multiple times.
+func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *RunwayLaunchState] {
+	depRwy = av.TidyRunway(depRwy)
+	runwayState := s.DepartureState[airport]
+	return func(yield func(string, *RunwayLaunchState) bool) {
+		// First look at departure runways as one
+		for _, group := range s.State.Airports[airport].DepartureRunwaysAsOne {
+			groupRwys := strings.Split(group, ",")
+			if slices.Contains(groupRwys, depRwy) {
+				for rwy, state := range runwayState {
+					if slices.Contains(groupRwys, av.TidyRunway(rwy)) {
+						if !yield(rwy, state) {
+							return
+						}
+					}
+				}
+				break
+			}
+		}
+
+		// Now see look for departing both e.g. "4" and "4.AutoWest"
+		for rwy, state := range runwayState {
+			if depRwy == av.TidyRunway(rwy) {
+				if !yield(rwy, state) {
+					return
+				}
 			}
 		}
 	}
