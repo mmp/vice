@@ -409,8 +409,8 @@ func (s *Sim) handoffTrack(fromTCP, toTCP string, callsign string) {
 	}
 
 	// Add them to the auto-accept map even if the target controller is
-	// currently signed in covered; this way, if they sign off in the
-	// interim, we still end up accepting it automatically.
+	// currently signed in; this way, if they sign off in the interim, we
+	// still end up accepting it automatically.
 	acceptDelay := 4 + rand.Intn(10)
 	s.Handoffs[callsign] = Handoff{
 		AutoAcceptTime: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),

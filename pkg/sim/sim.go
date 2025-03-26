@@ -573,13 +573,13 @@ func (s *Sim) updateState() {
 	now := s.State.SimTime
 
 	for callsign, ho := range s.Handoffs {
-		if !now.After(ho.AutoAcceptTime) {
+		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
 		}
 
 		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" {
 			human := s.isActiveHumanController(ac.HandoffTrackController)
-			if !human && !s.prespawn {
+			if !human {
 				// Automated accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedHandoffEvent,
