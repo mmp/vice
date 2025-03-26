@@ -1,38 +1,331 @@
 {
   "tracon": "N90",
   "airports": {
+    "39N": { "vfr": { "random_routes": { "rate": 3 } } },
+    "47N": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KACK": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KBDR": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KBLM": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KCDW": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KFWN": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KJPX": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KMJX": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KPNE": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPOU": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KIJD": {
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KSEG",
+            "rate": 8,
+            "waypoints": "KDXR/radius30/a10000-17000 KHPN/radius40/a10000-17000 KMMU/radius20/a10000-17000/land"
+          },
+          {
+            "destination": "KRDG",
+            "rate": 8,
+            "waypoints": "KDXR/radius30/a10000-17000 KHPN/radius40/a10000-17000 RBV/radius20/a10000-12000/land"
+          }
+        ]
+      }
+    },
+    "KRDG": {
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KIJD",
+            "rate": 10,
+            "waypoints": "RBV/radius30/a10000-17000 KHPN/radius40/a10000-17000 KDXR/radius20/a10000-12000/land"
+          },
+          {
+            "destination": "KPSF",
+            "rate": 8,
+            "waypoints": "RBV/radius30/a10000-17000 KSWF/radius40/a10000-17000 KGBR/radius20/a10000-12000/land"
+          }
+        ]
+      }
+    },
+    "KPSF": {
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KRDG",
+            "rate": 8,
+            "waypoints": "KGBR/radius30/a10000-17000 KSWF/radius40/a10000-17000 RBV/radius20/a10000-12000/land"
+          }
+        ]
+      }
+    },
+    "KSEG": {
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KIJD",
+            "rate": 10,
+            "waypoints": "KMMU/radius30/a10000-17000 KHPN/radius40/a10000-17000 KDXR/radius20/a10000-17000/land"
+          }
+        ]
+      }
+    },
+    "KFRG": {
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KPOU",
+            "rate": 10,
+          "waypoints": "N040.40.08.120,W073.21.27.240/a1400 N040.35.41.249,W073.27.10.371/a1000/radius1 N040.34.31.073,W073.34.55.834/a300-500 N040.34.27.379,W073.49.10.845/a300-500 N040.32.26.406,W073.55.42.919/a300-500 N040.33.53.569,W074.00.19.555/a800-1100/radius1 N040.36.49.487,W074.02.52.622/a800-1100/radius1 N040.41.04.260,W074.01.51.868/a1100 N040.45.37.449,W074.00.22.192/a1000 N040.52.04.731,W073.56.24.585/a900 N040.58.21.837,W073.53.52.836/a1200 N041.07.32.197,W073.52.35.410/a1500-2500/radius3/land",
+          "name": "Shoreline to Northbound Hudson"
+        },
+        {
+          "destination": "KDXR",
+          "rate": 5,
+          "waypoints": "N040.49.24.179,W073.33.36.375/a1500-2500/radius3 N040.53.42.413,W073.38.18.641/a2000-2800/radius2 N040.58.13.432,W073.43.17.525/a2500-2800/radius2 N041.13.23.031,W073.35.34.368/radius3/a1500-2500/land",
+          "name": "North skirting the bravo"
+        }
+        ]
+      }
+    },
+    "KMMU": {
+      "vfr": { "random_routes": { "rate": 7 } },
+      "departure_controller": "4N",
+      "departure_routes": {
+        "23": {
+          "COATE,HAAYS": {
+            "cleared_altitude": 9000,
+            "sid": "MMU7",
+            "handoff_controller": "5T",
+            "waypoints": "KMMU-5 N040.46.02.718,W074.26.13.736/ho N040.43.16.000,W074.22.54.664/radius0.5 N040.47.07.015,W074.22.09.400/radius0.5 N040.50.18.603,W074.24.41.726/radius1/tc/ph"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAmultipiston"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "KAVP",
+          "exit": "COATE",
+          "route": "COATE LAAYK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "70N",
+          "exit": "HAAYS",
+          "route": "HAAYS V273 RAGER"
+        }
+      ],
+      "exit_categories": {
+        "COATE": "North",
+        "GAYEL": "North",
+        "HAAYS": "North",
+        "NEION": "North"
+      }
+    },
+    "KHPN": {
+      "vfr": { "random_routes": { "rate": 10 } },
+      "departure_controller": "1Y",
+      "departure_routes": {
+        "16": {
+          "GREKI,MERIT,BAYYS": {
+            "cleared_altitude": 10000,
+            "handoff_controller": "5E",
+            "waypoints": "KHPN-34/ho N041.01.11.974,W073.40.46.792/radius1 N041.02.31.268,W073.47.46.964/radius2 N041.12.31.931,W073.55.33.251/radius2 N041.16.19.417,W073.40.36.465/radius2.5/tc/ph"
+          },
+          "SAX": {
+            "cleared_altitude": 8000,
+            "handoff_controller": "5T",
+            "waypoints": "KHPN-34/ho N041.01.11.974,W073.40.46.792/radius1 N041.02.31.268,W073.47.46.964/radius2 N041.12.31.931,W073.55.33.251/radius2/tc"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "cleared_altitude": 10000,
+            "handoff_controller": "5T",
+            "waypoints": "KHPN-34/ho N041.01.11.974,W073.40.46.792/radius1 N041.02.31.268,W073.47.46.964/radius2 N041.12.50.787,W074.01.48.050/ph/tc"
+          },
+          "COATE.P,GAYEL.P,HAAYS.P,NEION.P": {
+            "cleared_altitude": 9000,
+            "handoff_controller": "5T",
+            "waypoints": "KHPN-34/ho N041.01.11.974,W073.40.46.792/radius1 N041.02.31.268,W073.47.46.964/radius2 N041.12.50.787,W074.01.48.050/ph/tc"
+          }
+        },
+        "34": {
+          "GREKI,MERIT,BAYYS": {
+            "cleared_altitude": 10000,
+            "handoff_controller": "5E",
+            "waypoints": "KHPN-16/ho N041.06.42.374,W073.44.15.944 N041.11.10.989,W073.53.47.563/radius2 N041.16.19.417,W073.40.36.465/radius2.5/ph/tc"
+          },
+          "SAX": {
+            "cleared_altitude": 8000,
+            "handoff_controller": "5T",
+            "waypoints": "KHPN-16/ho N041.06.42.374,W073.44.15.944 N041.11.10.989,W073.53.47.563/radius2 N041.16.19.417,W073.40.36.465/radius2/tc"
+          },
+          "COATE,GAYEL,HAAYS,NEION": {
+            "cleared_altitude": 10000,
+            "handoff_controller": "5T",
+            "waypoints": "KHPN-16/ho N041.06.42.374,W073.44.15.944 N041.10.46.572,W073.56.05.332/radius2/ph/tc"
+          },
+          "COATE.P,GAYEL.P,HAAYS.P,NEION.P": {
+            "cleared_altitude": 9000,
+            "handoff_controller": "5T",
+            "waypoints": "KHPN-16/ho N041.06.42.374,W073.44.15.944 N041.10.46.572,W073.56.05.332/radius2/ph/tc"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 13000,
+          "destination": "KPVD",
+          "exit": "BAYYS",
+          "route": "BAYYS SEALL V188 GON V374 MINNK PVD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KPWM",
+          "exit": "GREKI",
+          "route": "GREKI JUDDS CAM CDOGG4 PWM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 10000,
+          "destination": "KBTV",
+          "exit": "CMK",
+          "route": "CMK SOARS JUDDS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KACK",
+          "exit": "BAYYS",
+          "route": "BAYYS SEALL V188 GON"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 10000,
+          "destination": "KPWM",
+          "exit": "CMK",
+          "route": "CMK V39 SOARS V487 CAM CDOGG4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KDTW",
+          "exit": "GAYEL",
+          "route": "GAYEL J95 CFB TRAAD JACCI WNGNT2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 32000,
+          "destination": "KORD",
+          "exit": "COATE",
+          "route": "COATE Q436 EMMMA WYNDE2 ORD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": 9000,
+          "destination": "70N",
+          "exit": "HAAYS",
+          "route": "HAAYS V273 RAGER"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAsinglepiston"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KBWI",
+          "exit": "SAX",
+          "route": "SAX V249 SBJ LANNA V30 ETX V39 LRP V499 BAL"
+        }
+      ],
+      "exit_categories": {
+        "BAYYS": "East",
+        "BDR": "East",
+        "CMK": "East",
+        "COATE": "North",
+        "COATE.P": "North",
+        "GAYEL": "North",
+        "GAYEL.P": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HAAYS.P": "North",
+        "MERIT": "East",
+        "NEION": "North",
+        "NEION.P": "North",
+        "SOARS": "East"
+      }
+    },
     "KEWR": {
       "departure_routes": {
         "22R": {
-          "BIGGY,PARKE": {
+          "BIGGY,LANNA,PARKE": {
             "cleared_altitude": 11000,
             "sid": "EWR5",
             "handoff_controller": "5W",
-            "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
+            "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/radius1 N040.35.28.395,W074.19.33.806/radius1/tc/ph"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 10000,
             "sid": "EWR5",
             "handoff_controller": "5T",
-            "waypoints": "KEWR-4L/ho _EWR4_22Ra/h350"
+            "waypoints": "KEWR-4L/ho _EWR4_22Ra/flyover/radius0.5 N040.42.48.617,W074.17.05.518/radius1.25/tc/ph"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 6000,
             "sid": "EWR5",
             "handoff_controller": "5S",
-            "waypoints": "KEWR-4L/ho _EWR4_22Ra ELVAE"
+            "waypoints": "KEWR-4L/ho _EWR4_22Ra/radius1/tc ELVAE"
           },
           "ELIOT,NEWEL,ZIMMZ": {
             "cleared_altitude": 10000,
             "sid": "EWR5",
             "handoff_controller": "5W",
-            "waypoints": "KEWR-4L/ho _EWR4_22Ra/h300"
-          },
-          "LANNA": {
-            "cleared_altitude": 11000,
-            "sid": "EWR5",
-            "handoff_controller": "5W",
-            "waypoints": "KEWR-4L/ho _EWR4_22Ra _EWR4_22Rb/h280"
+            "waypoints": "KEWR-4L/ho _EWR4_22Ra/radius1 N040.40.45.858,W074.19.47.869/radius1/tc/ph"
           }
         },
         "4L": {
@@ -40,19 +333,25 @@
             "handoff_controller": "5W",
             "cleared_altitude": 10000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lb/h270"
+            "waypoints": "KEWR-22R/ho _EWR4_4La/radius2 _EWR4_4Lb/radius1.5 N040.46.13.045,W074.21.32.376/radius1.5/tc/ph"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "handoff_controller": "5T",
             "cleared_altitude": 10000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lb/h350"
+            "waypoints": "KEWR-22R/ho _EWR4_4La/radius1 N040.46.51.607,W074.11.31.479/radius1.5 N040.47.28.411,W074.15.18.594/radius1.5 N040.50.10.528,W074.18.13.908/radius1/ph/tc"
+          },
+          "COATE.P": {
+            "handoff_controller": "5T",
+            "cleared_altitude": 9000,
+            "sid": "EWR5",
+            "waypoints": "KEWR-22R/ho _EWR4_4La/radius1 N040.46.51.607,W074.11.31.479/radius1.5 N040.47.28.411,W074.15.18.594/radius1.5 N040.50.10.528,W074.18.13.908/radius1/ph/tc"
           },
           "DIXIE,WHITE": {
             "handoff_controller": "5S",
             "cleared_altitude": 6000,
             "sid": "EWR5",
-            "waypoints": "KEWR-22R/ho _EWR4_4La _EWR4_4Lc ELVAE"
+            "waypoints": "KEWR-22R/ho _EWR4_4La/radius0.5 _EWR4_4Lc/radius1/tc ELVAE"
           }
         }
       },
@@ -362,23 +661,6 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
-            },
-            {
-              "icao": "LXJ"
-            },
-            {
-              "icao": "EJA"
-            }
-          ],
-          "altitude": 18000,
-          "destination": "KUNV",
-          "exit": "NEWEL",
-          "route": "NEWEL J60 PSB"
-        },
-        {
-          "airlines": [
-            {
               "fleet": "short",
               "icao": "UAL"
             }
@@ -483,7 +765,7 @@
           ],
           "altitude": 22000,
           "destination": "CYTZ",
-          "exit": "COATE",
+          "exit": "COATE.P",
           "route": "COATE LAAYK Q436 MTCAF ULW WOZEE KAXOL KAXOL2"
         },
         {
@@ -814,6 +1096,7 @@
         "BIGGY": "West",
         "BREZY": "North",
         "COATE": "North",
+        "COATE.P": "North",
         "DIXIE": "South",
         "ELIOT": "West",
         "GAYEL": "North",
@@ -840,37 +1123,37 @@
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "handoff_controller": "5S",
-            "waypoints": "KJFK-31L/ho _JFK5_13Rc/h250"
+            "waypoints": "KJFK-31L/ho _JFK5_13Rc/shift2/h250/tc"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "handoff_controller": "5E",
-            "waypoints": "KJFK-31L/ho _JFK5_13Ra/h050"
+            "waypoints": "KJFK-31L/ho _JFK5_13Ra/radius2 N040.46.14.707,W073.29.52.199/radius2/tc/ph"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
             "handoff_controller": "5E",
-            "waypoints": "KJFK-31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
+            "waypoints": "KJFK-31L/ho _JFK5_13Ra/radius1 N040.43.58.476,W073.28.56.032/radius1.5 N040.48.31.816,W073.29.25.283/radius1.5/ph/tc"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
             "handoff_controller": "5E",
-            "waypoints": "KJFK-31L/ho _JFK5_13Ra _JFK5_13Rb/h010"
+            "waypoints": "KJFK-31L/ho _JFK5_13Ra/radius1 N040.43.58.476,W073.28.56.032/radius1.5 N040.48.31.816,W073.29.25.283/radius1.5/ph/tc"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "JFK5",
             "handoff_controller": "5S",
-            "waypoints": "KJFK-31L/ho _JFK5_13Rc _JFK5_13Rd/h222"
+            "waypoints": "KJFK-31L/ho _JFK5_13Rc/radius1.5 _JFK5_13Rd/h222/radius1/tc"
           },
           "RBV": {
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "handoff_controller": "5S",
-            "waypoints": "KJFK-31L/ho _JFK5_13Rc RBV"
+            "waypoints": "KJFK-31L/ho _JFK5_13Rc/shift2 RBV/tc"
           }
         },
         "22R": {
@@ -884,19 +1167,33 @@
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "handoff_controller": "5E",
-            "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb/h050"
+            "waypoints": "_JFK_4L/ho _JFK5_22Ra/radius1 N040.46.14.707,W073.29.52.199/radius2/tc/ph"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "JFK5",
             "handoff_controller": "5E",
-            "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
+            "waypoints": "_JFK_4L/ho _JFK5_22Ra/radius1 _JFK5_22Rb/radius1 _JFK5_22Rc/radius2/tc/h010"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
             "handoff_controller": "5E",
-            "waypoints": "_JFK_4L/ho _JFK5_22Ra _JFK5_22Rb _JFK5_22Rc/h010"
+            "waypoints": "_JFK_4L/ho _JFK5_22Ra/radius1 _JFK5_22Rb/radius1 _JFK5_22Rc/radius2/tc/h010"
+          }
+        },
+        "22R.AutoEast": {
+          "COATE,GAYEL,HAAYS,NEION": {
+            "cleared_altitude": 17000,
+            "sid": "JFK5",
+            "handoff_controller": "5T",
+            "waypoints": "_JFK_4L/ho5E _JFK5_22Ra/radius1 _JFK5_22Rb/radius1/ho _JFK5_22Rc/radius2 N040.59.53.669,W073.32.56.879/radius2 N041.01.26.434,W073.40.26.000/radius2/tc/ph"
+          },
+          "DEEZZ": {
+            "cleared_altitude": 17000,
+            "sid": "DEEZZ5",
+            "handoff_controller": "5T",
+            "waypoints": "_JFK_4L/ho5E _JFK5_22Ra/radius1 _JFK5_22Rb/radius1/ho _JFK5_22Rc/radius2 N040.59.53.669,W073.32.56.879/radius2 N041.01.26.434,W073.40.26.000/radius2/tc/ph"
           }
         },
         "31L": {
@@ -904,31 +1201,31 @@
             "cleared_altitude": 11000,
             "sid": "SKORR5.RNGRR",
             "handoff_controller": "5S",
-            "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
+            "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223/tc"
           },
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 11000,
             "sid": "SKORR5.YNKEE",
             "handoff_controller": "5E",
-            "waypoints": "_JFK_13R/ho SKORR CESID/a2500+/h060"
+            "waypoints": "_JFK_13R/ho SKORR CESID/radius1/a2500+ N040.39.02.230,W073.39.31.343/radius2 N040.44.47.571,W073.32.55.946/radius2/tc/ph"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
             "sid": "SKORR5.YNKEE",
             "handoff_controller": "5E",
-            "waypoints": "_JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
+            "waypoints": "_JFK_13R/ho SKORR CESID/radius1/a2500+ N040.41.41.065,W073.32.39.631/radius2 N040.47.36.101,W073.33.12.837/radius2/tc/ph"
           },
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
             "handoff_controller": "5E",
-            "waypoints": "_JFK_13R/ho SKORR CESID/a2500+ _JFK_31La/h010"
+            "waypoints": "_JFK_13R/ho SKORR CESID/radius1/a2500+ N040.41.41.065,W073.32.39.631/radius2 N040.47.36.101,W073.33.12.837/radius2/tc/ph"
           },
           "DIXIE,WHITE": {
             "cleared_altitude": 7000,
             "sid": "SKORR5.RNGRR",
             "handoff_controller": "5S",
-            "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/h223"
+            "waypoints": "_JFK_13R/ho SKORR METSS/a2500+ RNGRR/tc/h223"
           }
         },
         "4L.Coney": {
@@ -980,7 +1277,7 @@
             "cleared_altitude": 11000,
             "sid": "JFK5",
             "handoff_controller": "5E",
-            "waypoints": "KJFK-22R/ho _JFK5_4La/h050"
+            "waypoints": "KJFK-22R/ho _JFK5_4La/radius1 N040.44.28.867,W073.33.26.982/radius1.5/tc/ph"
           },
           "COATE,GAYEL,HAAYS,NEION": {
             "cleared_altitude": 17000,
@@ -1319,9 +1616,10 @@
               "icao": "WJA"
             }
           ],
+          "altitude": 16000,
           "destination": "KROC",
           "exit": "HAAYS",
-          "route": "HAAYS J223 CORDS ULW GIBBE"
+          "route": "HAAYS HUO V252 GIBBE"
         },
         {
           "airlines": [
@@ -1438,37 +1736,46 @@
       "tower_list": 1
     },
     "KLGA": {
+      "approaches": {
+        "I4": { "cifp_id": "I4" }
+      },
       "departure_routes": {
         "13.Coney": {
           "BAYYS,GREKI,MERIT": {
             "cleared_altitude": 10000,
             "sid": "LGA7",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h060"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.56.34.912,W073.36.31.113/radius3/tc/ph"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5W",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 _LGA7_WTSc/radius1.5/ph/tc"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 14000,
+            "sid": "LGA7",
+            "handoff_controller": "5T",
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5T", 
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
           },
           "WHITE": {
             "cleared_altitude": 10000,
-            "sid": "NTHNS5",
+            "sid": "NTHNS6",
             "handoff_controller": "5S",
-            "waypoints": "KLGA-31/ho KIWIE NTHNS CNRSE ASALT/h224"
+            "waypoints": "KLGA-31/ho KIWIE NTHNS CNRSE ASALT/h224/tc"
           }
         },
         "13.No Coney": {
@@ -1476,31 +1783,44 @@
             "cleared_altitude": 10000,
             "sid": "LGA7",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h060"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.56.34.912,W073.36.31.113/radius3/tc/ph"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5W",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h270"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 _LGA7_WTSc/radius1.5/ph/tc"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 14000,
+            "sid": "LGA7",
+            "handoff_controller": "5T",
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/h320"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5S",
-            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h220"
+            "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb _LGA7_WTSc/h220/tc"
+          }
+        },
+        "13.AutoWest": {
+          "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
+            "cleared_altitude": 17000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-31 _LGA7_WTSa/ho5W _LGA7_WTSb _LGA7_WTSc N040.51.19.179,W074.09.33.294/radius3/a11000-15000"
           }
         },
         "22.Coney": {
@@ -1508,25 +1828,37 @@
             "cleared_altitude": 10000,
             "sid": "JUTES3",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/h060"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/radius1 N040.57.33.936,W073.35.22.146/radius3/tc/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
             "handoff_controller": "5W",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 _LGA7_22c/radius1.5/h270/tc"
           },
-          "COATE,GAYEL,HAAYS,NEION": {
+          "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
+          },
+          "HAAYS": {
+            "cleared_altitude": 12000,
+            "sid": "JUTES3",
+            "handoff_controller": "5T",
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 15000,
+            "sid": "JUTES3",
+            "handoff_controller": "5T",
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "WHITE": {
             "cleared_altitude": 10000,
             "sid": "HOPEA3",
             "handoff_controller": "5S",
-            "waypoints": "KLGA-4/ho _LGA_22a HOPEA CRI ASALT/h224"
+            "waypoints": "KLGA-4/ho _LGA_22a HOPEA CRI ASALT/h224/tc"
           }
         },
         "22.No Coney": {
@@ -1534,31 +1866,37 @@
             "cleared_altitude": 10000,
             "sid": "JUTES3",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/h060"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES TNNIS/radius1 N040.57.33.936,W073.35.22.146/radius3/tc/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
             "handoff_controller": "5W",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c/h270"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 _LGA7_22c/radius1.5/h270/tc"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "JUTES3",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 15000,
+            "sid": "JUTES3",
+            "handoff_controller": "5T",
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "JUTES3",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/h310"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "JUTES3",
             "handoff_controller": "5S",
-            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c _LGA7_22d/h220"
+            "waypoints": "KLGA-4/ho _LGA_22a JUTES _LGA7_22b _LGA7_22c _LGA7_22d/h220/tc"
           }
         },
         "31": {
@@ -1566,31 +1904,44 @@
             "cleared_altitude": 10000,
             "sid": "LGA7",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-13/ho _LGA7_31c/h070"
+            "waypoints": "KLGA-13/ho _LGA7_31c/radius1 N040.57.33.936,W073.35.22.146/radius3/tc/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5W",
-            "waypoints": "KLGA-13/ho _LGA7_31a/h270"
+            "waypoints": "KLGA-13/ho _LGA7_31a/radius1 N040.53.12.887,W074.06.18.259/radius2/ph/tc"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-13/ho _LGA7_31b/h320"
+            "waypoints": "KLGA-13/ho _LGA7_31b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 15000,
+            "sid": "LGA7",
+            "handoff_controller": "5E",
+            "waypoints": "KLGA-13/ho _LGA7_31b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-13/ho _LGA7_31b/h320"
+            "waypoints": "KLGA-13/ho _LGA7_31b/radius1 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5S",
-            "waypoints": "KLGA-13/ho _LGA7_31a/h210"
+            "waypoints": "KLGA-13/ho _LGA7_31a/radius1.5/h210/tc"
+          }
+        },
+        "31.AutoWest": {
+          "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
+            "cleared_altitude": 15000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-13 _LGA7_31a/ho5W N040.51.19.179,W074.09.33.294/radius3/a11000-15000"
           }
         },
         "4": {
@@ -1598,31 +1949,44 @@
             "cleared_altitude": 10000,
             "sid": "LGA7",
             "handoff_controller": "5E",
-            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h070"
+            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/radius1 N040.57.33.936,W073.35.22.146/radius3/tc/h060"
           },
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5W",
-            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h270"
+            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa/radius1 _LGA7_BRXb/radius2/ph/tc"
           },
           "COATE,GAYEL,NEION": {
             "cleared_altitude": 15000,
             "sid": "LGA7",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h320"
+            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/radius1.5 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
+          },
+          "COATE.P,GAYEL.P": {
+            "cleared_altitude": 15000,
+            "sid": "LGA7",
+            "handoff_controller": "5T",
+            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/radius1.5 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5T",
-            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/h320"
+            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_PLMa/radius1.5 N040.58.55.935,W074.00.00.329/radius2.5/ph/tc"
           },
           "WHITE": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
             "handoff_controller": "5S",
-            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa _LGA7_BRXb/h210"
+            "waypoints": "KLGA-22/ho _LGA7_4a _LGA7_BRXa N040.54.27.182,W074.00.55.947/radius1.5/h210/tc"
+          }
+        },
+        "4.AutoWest": {
+          "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
+            "cleared_altitude": 17000,
+            "sid": "LGA7",
+            "waypoints": "KLGA-22 _LGA7_4a/ho5W _LGA7_BRXa/radius1 _LGA7_BRXb/radius2 N040.51.19.179,W074.09.33.294/radius3/a11000-15000"
           }
         }
       },
@@ -1848,22 +2212,6 @@
         {
           "airlines": [
             {
-              "fleet": "long",
-              "icao": "UAL"
-            },
-            {
-              "fleet": "long",
-              "icao": "FDX"
-            }
-          ],
-          "altitude": 36000,
-          "destination": "KLAX",
-          "exit": "ZIMMZ",
-          "route": "ZIMMZ Q42 SPOTZ Q480 AIR J80 ZANDR EMPTY J80 VHP KI57M KK54K STL KK51I KK48G KK45E KK42C KA39Y KA36U KA36S KD36Q TBC JASSE Q90 DNERO ANJLL4"
-        },
-        {
-          "airlines": [
-            {
               "fleet": "short",
               "icao": "UAL"
             }
@@ -1932,23 +2280,6 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
-            },
-            {
-              "icao": "LXJ"
-            },
-            {
-              "icao": "EJA"
-            }
-          ],
-          "altitude": 18000,
-          "destination": "KUNV",
-          "exit": "NEWEL",
-          "route": "NEWEL J60 PSB"
-        },
-        {
-          "airlines": [
-            {
               "fleet": "short",
               "icao": "UAL"
             }
@@ -1995,7 +2326,8 @@
         {
           "airlines": [
             {
-              "icao": "UAL"
+              "icao": "UAL",
+              "fleet": "short"
             }
           ],
           "altitude": 38000,
@@ -2006,26 +2338,7 @@
         {
           "airlines": [
             {
-              "fleet": "long",
-              "icao": "UAL"
-            },
-            {
-              "fleet": "long",
-              "icao": "FDX"
-            },
-            {
-              "icao": "ASA"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KLAX",
-          "exit": "COATE",
-          "route": "COATE Q436 HERBA JHW DJB J60 ASHEN KG63M BAYLI KK54G FRACA KK45A KENTO KA36U BUKKO KA30O HIPPI GABBL HLYWD1"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
+              "types": ["B753"],
               "icao": "UAL"
             }
           ],
@@ -2053,7 +2366,7 @@
           ],
           "altitude": 22000,
           "destination": "CYTZ",
-          "exit": "COATE",
+          "exit": "COATE.P",
           "route": "COATE LAAYK Q436 MTCAF ULW WOZEE KAXOL KAXOL2"
         },
         {
@@ -2086,9 +2399,6 @@
           "airlines": [
             {
               "icao": "RPA"
-            },
-            {
-              "icao": "JZA"
             }
           ],
           "altitude": 28000,
@@ -2099,32 +2409,14 @@
         {
           "airlines": [
             {
-              "fleet": "long",
-              "icao": "UAL"
-            },
-            {
-              "icao": "ASA"
+              "icao": "JZA",
+              "fleet": "turboprops"
             }
           ],
-          "altitude": 36000,
-          "destination": "KSFO",
-          "exit": "GAYEL",
-          "route": "GAYEL Q818 WOZEE NOSIK JUVAG DLH FAR KP09Y BIL KU90O REO HOLLR LEGGS BDEGA3"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "FDX"
-            },
-            {
-              "icao": "ASA"
-            }
-          ],
-          "altitude": 38000,
-          "destination": "KSEA",
-          "exit": "GAYEL",
-          "route": "GAYEL Q818 WOZEE Q917 SSM J140 FAR J36 MLP GLASR1"
+          "altitude": 28000,
+          "destination": "CYYZ",
+          "exit": "GAYEL.P",
+          "route": "GAYEL Q818 WOZEE LINNG3"
         },
         {
           "airlines": [
@@ -2136,18 +2428,6 @@
           "destination": "KMSP",
           "exit": "GAYEL",
           "route": "GAYEL Q818 WOZEE NOSIK Q812 ZOHAN CEWDA MUSCL3"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "UAL"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "RJTT",
-          "exit": "GAYEL",
-          "route": "GAYEL Q812 SYR TULEG YYB 5000N/08300W 5500N/08900W 6000N/10000W 6300N/11000W 6400N/12000W 6500N/13500W CHAPO 6400N/15000W 6200N/16000W NAYLD R220 NANDY NATES R220 NIKLL R220 NOGAL R220 NANAC Y810 ESNIP Y810 AKRIT Y807 LALID Y807 MILIT Y807 POLIX"
         },
         {
           "airlines": [
@@ -2172,18 +2452,7 @@
           "altitude": 25000,
           "destination": "KBTV",
           "exit": "GREKI",
-          "route": "GREKI JUUDS CAM"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "ICE"
-            }
-          ],
-          "altitude": 35000,
-          "destination": "BIKF",
-          "exit": "GREKI",
-          "route": "GREKI JUDDS BAF TAFFY N711A IRLOK 5800N/05000W 6100N/04000W 6300N/03000W EPENI ELDIS ELDIS3K"
+          "route": "GREKI JUDDS CAM"
         },
         {
           "airlines": [
@@ -2203,66 +2472,6 @@
         {
           "airlines": [
             {
-              "fleet": "long",
-              "icao": "AFR"
-            }
-          ],
-          "altitude": 35000,
-          "destination": "LFPG",
-          "exit": "MERIT",
-          "route": "MERIT HFD PUT BOS BRADD N141D PORTI NATU DOGAL NATU BEXET BAKUR N546 STU P2 BEDEK SFD UM605 WAFFU UM605 BIBAX BIBAX9W"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "UAL"
-            }
-          ],
-          "altitude": 35000,
-          "destination": "LFPG",
-          "exit": "MERIT",
-          "route": "MERIT HFD PUT BOS BRADD N141D PORTI NATU 5400N/02000W NATU BEXET LEDGO N83 NAKID N160 LIZAD JSY ARSUK RESMI UL612 OGULO OKASI OKEKO MOU MADIV MOKIP KENTY KOGAS MEDAM NITAM MOGBO ELB L146 ELKAP"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "DLH"
-            }
-          ],
-          "altitude": 37000,
-          "destination": "EDDF",
-          "exit": "MERIT",
-          "route": "MERIT HFD PUT BOS TUSKY N201B NICSO NATT RESNO NATT NETKI NIBOG BELOX L603 LAMSO EVELI SOGPO DIXAT T149 LIPMI T911 ROLIS ROLIS3A"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "AUA"
-            }
-          ],
-          "altitude": 35000,
-          "destination": "LOWW",
-          "exit": "MERIT",
-          "route": "MERIT HFD PUT WITCH ALLEX N263A JOOPY NATS PIKIL NATS SOVED NIBOG BELOX L603 LAMSO EVELI TIVUN ESAMA OSBIT TENLO LAMSI VENEN VENEN3W"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "UAL"
-            }
-          ],
-          "altitude": 33000,
-          "destination": "LLBG",
-          "exit": "MERIT",
-          "route": "MERIT HFD PUT 4600N/06000W ELSIR 5000N/05000W 5300N/04000W 5600N/03000W 5700N/02000W SUNOT KESIX IBROD TLA N97 NATEB N610 LONAM LINTU NOMKA ARMUT LAMSI TISKO GUBOK VABEK UL603 OLOTA DISOR UL608 FSK UN128 IMR UN135 NESIL UT39 TOMBI IDAKU L35 PIKOG L609 ZUKKO"
-        },
-        {
-          "airlines": [
-            {
               "icao": "GJS"
             }
           ],
@@ -2274,13 +2483,13 @@
         {
           "airlines": [
             {
-              "icao": "GJS"
+              "icao": "FFT"
             }
           ],
           "altitude": 19000,
           "destination": "KRIC",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 SBY V1 JAMIE"
+          "route": "WHITE J209 SBY V1 JAMIE"
         },
         {
           "airlines": [
@@ -2296,7 +2505,7 @@
           "altitude": 36000,
           "destination": "KMIA",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 SBY KEMPR SKARP Y313 HOAGG BNFSH2"
+          "route": "WHITE J209 SBY KEMPR SKARP Y313 HOAGG BNFSH2"
         },
         {
           "airlines": [
@@ -2307,7 +2516,7 @@
           "altitude": 34000,
           "destination": "KEYW",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 SBY J79 KATZN ISO J121 CHS JEVED OMN TRV TAZER GUCEL"
+          "route": "WHITE J209 SBY J79 KATZN ISO J121 CHS JEVED OMN TRV TAZER GUCEL"
         },
         {
           "airlines": [
@@ -2319,18 +2528,18 @@
           "altitude": 34000,
           "destination": "MROC",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 CHS CAKET Q97 DEBRL Q97 MALET Q93 EBAYY Q93 FOBIN Q93 MCLAW Y442 FUNDI UM335 ALVEK UM328 SELEK UZ403 PIRAS"
+          "route": "WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 CHS CAKET Q97 DEBRL Q97 MALET Q93 EBAYY Q93 FOBIN Q93 MCLAW Y442 FUNDI UM335 ALVEK UM328 SELEK UZ403 PIRAS"
         },
         {
           "airlines": [
             {
-              "icao": "JBU"
+              "icao": "FFT"
             }
           ],
           "altitude": 36000,
           "destination": "KPBI",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 DEBRL Q97 MALET DDANY STOOP"
+          "route": "WHITE J209 VILLS J209 SBY J79 KATZN ISO J121 CHS CAKET Q97 DEBRL Q97 MALET DDANY STOOP"
         },
         {
           "airlines": [
@@ -2342,19 +2551,18 @@
           "altitude": 28000,
           "destination": "TJBQ",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS J209 ORF ECG AR8 OXANA L452 LNHOM L452 SLUKA FIPEK Y439 MEEGL"
+          "route": "WHITE J209 VILLS J209 ORF ECG AR8 OXANA L452 LNHOM L452 SLUKA FIPEK Y439 MEEGL"
         },
         {
           "airlines": [
             {
-              "fleet": "short",
-              "icao": "UAL"
+              "icao": "FFT"
             }
           ],
           "altitude": 22000,
           "destination": "KRDU",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS TRPOD TAQLE1"
+          "route": "WHITE J209 VILLS TRPOD TAQLE1"
         },
         {
           "airlines": [
@@ -2366,7 +2574,7 @@
           "altitude": 34000,
           "destination": "KMIA",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS J209 SBY KEMPR SKARP Y313 SPOOF Y313 HOAGG BNFSH2"
+          "route": "WHITE J209 VILLS J209 SBY KEMPR SKARP Y313 SPOOF Y313 HOAGG BNFSH2"
         },
         {
           "airlines": [
@@ -2378,7 +2586,7 @@
           "altitude": 34000,
           "destination": "KTPA",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 CHS JROSS Q409 KONEY Q409 PUPYY BAAMF DADES1"
+          "route": "WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 CHS JROSS Q409 KONEY Q409 PUPYY BAAMF DADES1"
         },
         {
           "airlines": [
@@ -2396,7 +2604,7 @@
           "altitude": 34000,
           "destination": "KFLL",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 SBY KEMPR CHIEZ Y291 MAJIK CUUDA2"
+          "route": "WHITE J209 SBY KEMPR CHIEZ Y291 MAJIK CUUDA2"
         },
         {
           "airlines": [
@@ -2408,7 +2616,7 @@
           "altitude": 40000,
           "destination": "KJAX",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 SBY J79 CHS ESENT LUNNI1"
+          "route": "WHITE J209 SBY J79 CHS ESENT LUNNI1"
         },
         {
           "airlines": [
@@ -2420,7 +2628,7 @@
           "altitude": 28000,
           "destination": "KMCO",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 ISO J121 CHS IGARY Q85 LPERD GTOUT1"
+          "route": "WHITE J209 VILLS J209 SBY J79 KATZN CVI WEAVR J121 ISO J121 CHS IGARY Q85 LPERD GTOUT1"
         },
         {
           "airlines": [
@@ -2431,7 +2639,7 @@
           "altitude": 28000,
           "destination": "KMYR",
           "exit": "WHITE",
-          "route": "ELVAE COL WHITE J209 SBY ILM WYLMS"
+          "route": "WHITE J209 SBY ILM WYLMS"
         }
       ],
       "exit_categories": {
@@ -2439,9 +2647,11 @@
         "BIGGY": "West",
         "BREZY": "North",
         "COATE": "North",
+        "COATE.P": "North",
         "DIXIE": "South",
         "ELIOT": "West",
         "GAYEL": "North",
+        "GAYEL.P": "North",
         "GREKI": "East",
         "HAAYS": "North",
         "LANNA": "West",
@@ -2457,7 +2667,202 @@
         "ZIMMZ": "West"
       },
       "tower_list": 3
+    },
+    "KFOK": {
+      "departure_controller": "3N",
+      "departure_routes": {
+        "6": {
+          "MERIT,BDR,GREKI,SOARS": {
+            "cleared_altitude": 10000,
+            "handoff_controller": "5E",
+            "waypoints": "KFOK-24 N040.52.40.258,W072.34.40.645/radius1/ho N040.59.24.006,W072.38.32.649/radius1 N041.04.03.319,W072.47.23.536/radius2.5/ph/tc"
+          }
+        },
+        "24": {
+          "MERIT,BDR,GREKI,SOARS": {
+            "cleared_altitude": 10000,
+            "handoff_controller": "5E",
+            "waypoints": "N040.48.31.473,W072.40.53.164/radius1/ho N040.54.48.290,W072.49.14.251/radius2 N041.01.03.610,W072.54.47.329/radius3/ph/tc"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KBOS",
+          "exit": "MERIT",
+          "route": "MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 19000,
+          "destination": "KPVD",
+          "exit": "MERIT",
+          "route": "MERIT V99 YALER LOMIS PVD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "altitude": 24000,
+          "destination": "KMSS",
+          "exit": "GREKI",
+          "route": "GREKI BOWAN ALB STANK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KALB",
+          "exit": "SOARS",
+          "route": "SOARS V487 CANAN ALB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "WUP"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBTV",
+          "exit": "SOARS",
+          "route": "SOARS V487 WINLA"
+        }
+      ],
+      "exit_categories": {
+        "BDR": "East",
+        "GREKI": "East",
+        "MERIT": "East",
+        "SOARS": "East"
+      }
     }
+  },
+  "inbound_flows": {
+    "WRI DIXIE": {
+      "overflights": [
+            {
+                "airlines": [
+                    { "icao": "N", "departure_airport": "KACY", "arrival_airport": "KISP" }
+                ],
+                "waypoints": "CYN N039.53.29.930,W074.21.07.547/ho WHITE DIXIE V16 JFK CCC/a2000/delete",
+                "initial_altitude": 4000,
+                "initial_speed": 170,
+                "assigned_altitude": 5000,
+                "description": "WRI DIXIE Overflights",
+                "initial_controller": "51Y"
+            }
+      ]
+    },
+  "MIP4 LGA background 4": {
+    "arrivals": [
+      {
+        "waypoints":  "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 BENNG/a3000/clearapp",
+        "cruise_altitude": 35000,
+        "star": "MIP4",
+        "initial_controller": "1D",
+        "initial_altitude": 10000,
+        "initial_speed": 300,
+        "speed_restriction": 250,
+        "expect_approach": "I4",
+        "airlines": {
+          "KLGA": [
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KORD",
+              "fleet": "short",
+              "icao": "UAL"
+            },
+            {
+              "airport": "KORD",
+              "icao": "JBU"
+            },
+            {
+              "airport": "KMDW",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KDTW",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KORD",
+              "icao": "SWA"
+            },
+            {
+              "airport": "KCVG",
+              "icao": "EDV"
+            },
+            {
+              "airport": "KCVG",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KCLE",
+              "icao": "EDV"
+            },
+            {
+              "airport": "KCLE",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KIND",
+              "icao": "EDV"
+            },
+            {
+              "airport": "KIND",
+              "icao": "RPA"
+            },
+            {
+              "airport": "KMSP",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KPIT",
+              "fleet": "short",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KPIT",
+              "fleet": "short",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KPIT",
+              "fleet": "short",
+              "icao": "UAL"
+            }
+          ]
+        }
+      }
+    ]
+  }
   },
   "stars_config": {
   "center": "N040.45.26.477,W074.24.28.789",
@@ -2606,18 +3011,19 @@
       },
       {
         "fixes": ["COATE"],
-        "altitude_range": [11000, 14000],
+        "altitude_range": [11000, 999999],
+        "aircraft_type": ["P", "T"],
         "receiving_controller": "C51"
       },
       {
         "fixes": ["GAYEL"],
-        "altitude_range": [14000, 14000],
+        "altitude_range": [14000, 999999],
         "aircraft_type": ["P", "T"],
         "receiving_controller": "C51"
       },
       {
         "fixes": ["HAAYS"],
-        "altitude_range": [12000, 12000],
+        "altitude_range": [12000, 999999],
         "receiving_controller": "C51"
       },
       {
@@ -2628,7 +3034,7 @@
       {
         "fixes": ["SAX"],
         "altitude_range": [8000, 8000],
-        "receiving_controller": "71B"
+        "receiving_controller": "4H"
       },
       {
         "fixes": ["HAAYS"],
@@ -2642,27 +3048,33 @@
       },
       {
         "fixes": ["NEWEL", "ZIMMZ"],
-        "altitude_range": [17000, 99999],
+        "altitude_range": [17000, 999999],
         "receiving_controller": "C39"
       },
       {
         "fixes": ["BIGGY"],
-        "altitude_range": [14000, 99999],
+        "altitude_range": [14000, 999999],
         "receiving_controller": "C55"
       },
       {
         "fixes": ["LANNA"],
-        "altitude_range": [17000, 99999],
+        "altitude_range": [17000, 999999],
         "receiving_controller": "C55"
+      },
+      {
+        "fixes": ["JUDDS"],
+        "altitude_range": [10000, 999999],
+        "receiving_controller": "81B"
       }
     ],
   "scratchpads": {
     "BAYYS": "BAY",
     "BIGGY": "BIG",
+    "BDR": "BDR",
     "BREZY": "BRE",
+    "CMK": "CMK",
     "COATE": "COA",
     "DEEZZ": "DEZ",
-    "DEEZZ5": "DEZ",
     "DIXIE": "DIX",
     "ELIOT": "ELI",
     "GAYEL": "GAY",
@@ -2674,6 +3086,7 @@
     "NEWEL": "NWL",
     "PARKE": "PAR",
     "RBV": "RBV",
+    "SOARS": "SOA",
     "WHITE": "WHI",
     "ZIMMZ": "ZIM"
   },
@@ -2728,6 +3141,11 @@
       "radio_name": "Newark departure",
       "sector_id": "4N"
     },
+    "Newark Approach (METRO)": {
+      "frequency": 132800,
+      "radio_name": "Newark departure",
+      "sector_id": "4H"
+    },
     "Kennedy Departure": {
       "frequency": 135900,
       "radio_name": "New York departure",
@@ -2737,6 +3155,26 @@
       "frequency": 120400,
       "radio_name": "New York departure",
       "sector_id": "1L"
+    },
+    "New York Approach (EMPYR)": {
+      "frequency": 127300,
+      "radio_name": "New York approach",
+      "sector_id": "1D"
+    },
+    "New York Approach (LGA Final)": {
+      "frequency": 127300,
+      "radio_name": "New York approach",
+      "sector_id": "1F"
+    },
+    "NYACK": {
+      "frequency": 120550,
+      "radio_name": "New York departure",
+      "sector_id": "1Y"
+    },
+    "New York Departure (Calverton)": {
+      "frequency": 120050,
+      "radio_name": "New York departure",
+      "sector_id": "3N"
     },
     "New York Center (Kennedy 56)": {
       "frequency": 125325,
@@ -2830,6 +3268,12 @@
       "radio_name": "Allentown approach",
       "sector_id": "1F",
       "facility_id": "4"
+    },
+    "Bradley approach (Bristol)": {
+      "frequency": 123950,
+      "radio_name": "Bradley approach",
+      "sector_id": "1B",
+      "facility_id": "8"
     }
   },
   "default_scenario": "Liberty Combined - JFK Owns Coney",
@@ -2849,7 +3293,7 @@
     "_JFK5_13Rb": "N040.42.00.881,W073.32.17.301",
     "_JFK5_13Rc": "N040.34.42.485,W073.45.39.825",
     "_JFK5_13Rd": "N040.31.46.127,W073.52.30.769",
-    "_JFK5_22Ra": "N040.35.46.797,W073.48.20.335",
+    "_JFK5_22Ra": "N040.32.40.400,W073.51.07.300",
     "_JFK5_22Rb": "N040.35.34.849,W073.41.51.282",
     "_JFK5_22Rc": "N040.42.51.047,W073.31.57.608",
     "_JFK5_4La": "N040.39.05.622,W073.40.06.774",
@@ -2866,7 +3310,7 @@
     "_LGA7_22c": "N040.54.20.069,W073.52.45.655",
     "_LGA7_22d": "N040.53.12.475,W073.59.16.713",
     "_LGA7_31a": "N040.54.23.310,W073.59.56.347",
-    "_LGA7_31b": "N040.53.07.408,W073.54.15.661",
+    "_LGA7_31b": "N040.56.01.651,W073.53.09.825",
     "_LGA7_31c": "N040.53.07.655,W073.54.14.507",
     "_LGA7_4a": "N040.47.43.847,W073.51.45.450",
     "_LGA7_BRXa": "N040.52.39.709,W073.53.43.718",
@@ -2877,7 +3321,7 @@
     "_LGA7_WTSc": "N040.50.57.000,W073.59.51.018",
     "_LGA_13": "N040.46.55.658,W073.52.42.799",
     "_LGA_22": "N040.47.07.716,W073.52.14.371",
-    "_LGA_22a": "N040.45.42.448,W073.53.23.393",
+    "_LGA_22a": "N040.40.57.614,W073.57.57.035",
     "_LGA_31": "N040.46.19.019,W073.51.25.675",
     "_LGA_4": "N040.46.09.172,W073.53.03.041"
   },
@@ -2895,7 +3339,8 @@
             "backup": "5E"
           },
           "5S": {
-            "backup": "5W"
+            "backup": "5W",
+            "inbound_flows": [ "WRI DIXIE" ]
           },
           "5T": {
             "backup": "5E"
@@ -2968,8 +3413,42 @@
           "airport": "KLGA",
           "rate": 0,
           "runway": "31"
+        },
+        {
+          "airport": "KFOK",
+          "rate": 0,
+          "runway": "6"
+        },
+        {
+          "airport": "KFOK",
+          "rate": 5,
+          "runway": "24"
+        },
+        {
+          "airport": "KHPN",
+          "rate": 10,
+          "runway": "16"
+        },
+        {
+          "airport": "KHPN",
+          "rate": 0,
+          "runway": "34"
         }
-      ]
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KLGA",
+          "runway": "4"
+        }
+      ],
+      "inbound_rates": {
+        "WRI DIXIE": {
+          "overflights": 5
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 20
+        }
+      }
     },
     "Liberty Combined - LGA Owns Coney": {
       "solo_controller": "5E",
@@ -2982,7 +3461,8 @@
             "backup": "5E"
           },
           "5S": {
-            "backup": "5W"
+            "backup": "5W",
+            "inbound_flows": [ "WRI DIXIE" ]
           },
           "5T": {
             "backup": "5E"
@@ -3050,8 +3530,42 @@
           "airport": "KLGA",
           "rate": 0,
           "runway": "31"
+        },
+        {
+          "airport": "KFOK",
+          "rate": 0,
+          "runway": "6"
+        },
+        {
+          "airport": "KFOK",
+          "rate": 5,
+          "runway": "24"
+        },
+        {
+          "airport": "KHPN",
+          "rate": 10,
+          "runway": "16"
+        },
+        {
+          "airport": "KHPN",
+          "rate": 0,
+          "runway": "34"
         }
-      ]
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KLGA",
+          "runway": "4"
+        }
+      ],
+      "inbound_rates": {
+        "WRI DIXIE": {
+          "overflights": 5
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 20
+        }
+      }
     },
     "Liberty East": {
       "solo_controller": "5E",
@@ -3061,6 +3575,7 @@
         "5S",
         "5T",
         "4N",
+        "3N",
         "1L",
         "2J",
         "C35",
@@ -3146,6 +3661,30 @@
           "category": "East",
           "rate": 0,
           "runway": "31"
+        },
+        {
+          "airport": "KFOK",
+          "category": "East",
+          "rate": 0,
+          "runway": "6"
+        },
+        {
+          "airport": "KFOK",
+          "category": "East",
+          "rate": 5,
+          "runway": "24"
+        },
+        {
+          "airport": "KHPN",
+          "category": "East",
+          "rate": 0,
+          "runway": "16"
+        },
+        {
+          "airport": "KHPN",
+          "category": "East",
+          "rate": 5,
+          "runway": "34"
         }
       ]
     },
@@ -3206,6 +3745,47 @@
           "category": "North",
           "rate": 0,
           "runway": "31"
+        },
+        {
+          "airport": "KLGA",
+          "category": "West",
+          "rate": 0,
+          "runway": "4.AutoWest"
+        },
+        {
+          "airport": "KLGA",
+          "category": "West",
+          "rate": 10,
+          "runway": "13.AutoWest"
+        },
+        {
+          "airport": "KLGA",
+          "category": "West",
+          "rate": 0,
+          "runway": "31.AutoWest"
+        },
+        {
+          "airport": "KHPN",
+          "category": "North",
+          "rate": 0,
+          "runway": "16"
+        },
+        {
+          "airport": "KHPN",
+          "category": "North",
+          "rate": 10,
+          "runway": "34"
+        },
+        {
+          "airport": "KJFK",
+          "category": "North",
+          "rate": 10,
+          "runway": "22R.AutoEast"
+        },
+        {
+          "airport": "KMMU",
+          "rate": 5,
+          "runway": "23"
         }
       ]
     },
@@ -3290,7 +3870,21 @@
           "rate": 0,
           "runway": "31"
         }
-      ]
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KLGA",
+          "runway": "4"
+        }
+      ],
+      "inbound_rates": {
+        "WRI DIXIE": {
+          "overflights": 5
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 20
+        }
+      }
     },
     "Liberty South LGA Owns Coney": {
       "solo_controller": "5S",
@@ -3367,7 +3961,21 @@
           "rate": 0,
           "runway": "31"
         }
-      ]
+      ],
+      "arrival_runways": [
+        {
+          "airport": "KLGA",
+          "runway": "4"
+        }
+      ],
+      "inbound_rates": {
+        "WRI DIXIE": {
+          "overflights": 5
+        },
+        "MIP4 LGA background 4": {
+          "KLGA": 20
+        }
+      }
     },
     "Liberty West": {
       "solo_controller": "5W",
