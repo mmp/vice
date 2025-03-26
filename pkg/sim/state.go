@@ -445,10 +445,12 @@ func (ss *State) AverageWindVector() [2]float32 {
 func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
-	base := time.UnixMicro(0)
-	sec := ss.SimTime.Sub(base).Seconds()
-	windSpeed := float32(ss.Wind.Speed) +
-		float32(ss.Wind.Gust-ss.Wind.Speed)*float32(1+gomath.Cos(sec/4))/2
+	windSpeed := float32(ss.Wind.Speed)
+	if ss.Wind.Gust > 0 {
+		base := time.UnixMicro(0)
+		sec := ss.SimTime.Sub(base).Seconds()
+		windSpeed += float32(ss.Wind.Gust-ss.Wind.Speed) * float32(1+gomath.Cos(sec/4)) / 2
+	}
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
