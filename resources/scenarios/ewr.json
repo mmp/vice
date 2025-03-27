@@ -1201,16 +1201,7 @@
         "RY6": { "cifp_id": "RY6" },
         "RY9": { "cifp_id": "RY19" },
         "RZ6": { "cifp_id": "RZ6" },
-        "RZ9": {
-          "full_name": "RNAV Z Runway 19",
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "COATE LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR",
-            "STW LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR",
-            "SBJ SHOTT/a3000+ LELME/iaf/a3000+ COMOK/if/a3000 HOOTH/a2000 ALSIW/faf/a1500 JAPIR"
-          ]
-        }
+        "RZ9": { "cifp_id": "RZ19" }
       },
       "departure_routes": {
         "1": {

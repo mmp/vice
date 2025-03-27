@@ -667,8 +667,15 @@ func parseApproach(recs []ssaRecord) *Approach {
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
 		func(r ssaRecord, transitions map[string]WaypointArray) bool {
-			return (r.fix == "" && len(transitions[""]) > 0) ||
-				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */
+			if (r.fix == "" && len(transitions[""]) > 0) ||
+				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */ {
+				return true
+			}
+			if r.waypointDescription[3] == 'M' {
+				// start of the missed approach
+				return true
+			}
+			return false
 		})
 
 	appr := Approach{Id: tidyFAAApproachId(recs[0].id)}
