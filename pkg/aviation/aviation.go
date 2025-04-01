@@ -441,6 +441,9 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 		return Runway{}, false
 	} else {
 		rwy = cleanRunway(rwy)
+		if rwy == "" {
+			return Runway{}, false
+		}
 
 		// Break runway into number and optional extension and swap
 		// left/right.
