@@ -7,11 +7,15 @@ package util
 import (
 	"encoding/json"
 	"log/slog"
+	gomath "math"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -68,7 +72,14 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 		case <-time.After(10 * time.Second):
 			lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
 				slog.Any("held_mutexes", heldMutexes))
-			panic("unable to acquire mutex after 10s")
+
+			var m runtime.MemStats
+			runtime.ReadMemStats(&m)
+			usage, _ := cpu.Percent(time.Second, false)
+
+			lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
+				int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
+				runtime.NumGoroutine())
 		}
 	}
 
