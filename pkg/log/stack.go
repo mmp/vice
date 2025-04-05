@@ -28,10 +28,13 @@ func Callstack(fr []StackFrame) []StackFrame {
 
 	for i := 0; i < n; i++ {
 		frame, more := frames.Next()
+		fn := strings.TrimPrefix(frame.Function, "github.com/mmp/vice/pkg")
+		fn = strings.TrimPrefix(fn, "main.")
+
 		fr[i] = StackFrame{
 			File:     filepath.Base(frame.File),
 			Line:     frame.Line,
-			Function: strings.TrimPrefix(frame.Function, "main."),
+			Function: fn,
 		}
 
 		// Don't keep going up into go runtime stack frames.
