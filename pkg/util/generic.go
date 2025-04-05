@@ -323,6 +323,13 @@ func FilterSliceInPlace[V any](s []V, pred func(V) bool) []V {
 			out++
 		}
 	}
+
+	// Zero out excess at the end to throw the garbage collector a bone.
+	var zero V
+	for i := out; i < len(s); i++ {
+		s[i] = zero
+	}
+
 	return s[:out]
 }
 
