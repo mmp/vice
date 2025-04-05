@@ -486,6 +486,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	if sp.commandMode == CommandModePref || sp.commandMode == CommandModeSavePrefAs {
+		rewindDCBCursor(19, buttonScale) // len(sp.prefSet.Saved)/2+4, buttonScale)
 		dcbStartCaptureMouseRegion()
 		for i, prefs := range sp.prefSet.Saved {
 			text := strconv.Itoa(i+1) + "\n"
