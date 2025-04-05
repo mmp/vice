@@ -233,8 +233,20 @@ type Squawk int
 func (s Squawk) String() string { return fmt.Sprintf("%04o", s) }
 
 func ParseSquawk(s string) (Squawk, error) {
-	if s == "" {
-		return Squawk(0), nil
+	if len(s) != 4 {
+		return Squawk(0), ErrInvalidSquawkCode
+	}
+
+	sq, err := strconv.ParseInt(s, 8, 32) // base 8!!!
+	if err != nil || sq < 0 || sq > 0o7777 {
+		return Squawk(0), ErrInvalidSquawkCode
+	}
+	return Squawk(sq), nil
+}
+
+func ParseSquawkOrBlock(s string) (Squawk, error) {
+	if len(s) != 4 && len(s) != 2 {
+		return Squawk(0), ErrInvalidSquawkCode
 	}
 
 	sq, err := strconv.ParseInt(s, 8, 32) // base 8!!!

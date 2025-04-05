@@ -747,26 +747,6 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			}
 
 		case "B":
-			validBeacon := func(s string) bool {
-				for _, ch := range s {
-					if ch < '0' || ch > '7' {
-						return false
-					}
-				}
-				return true
-			}
-			toggleBeacon := func(code string) {
-				c, _ := strconv.ParseInt(code, 8, 32)
-				if idx := slices.Index(ps.SelectedBeacons, av.Squawk(c)); idx != -1 {
-					ps.SelectedBeacons = slices.Delete(ps.SelectedBeacons, idx, idx+1)
-				} else if len(ps.SelectedBeacons) == 10 {
-					status.err = ErrSTARSCapacity
-				} else {
-					ps.SelectedBeacons = append(ps.SelectedBeacons, av.Squawk(c))
-					slices.Sort(ps.SelectedBeacons)
-				}
-			}
-
 			if cmd == "" {
 				// B -> for unassociated track, toggle display of beacon code in LDB
 				ps.DisplayLDBBeaconCodes = !ps.DisplayLDBBeaconCodes
@@ -782,15 +762,19 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				ps.DisplayLDBBeaconCodes = false
 				status.clear = true
 				return
-			} else if len(cmd) == 2 && validBeacon(cmd) {
+			} else if sq, err := av.ParseSquawkOrBlock(cmd); err == nil {
 				// B[0-7][0-7] -> toggle select beacon code block
-				toggleBeacon(cmd)
-				status.clear = true
-				return
-			} else if len(cmd) == 4 && validBeacon(cmd) {
 				// B[0-7][0-7][0-7][0-7] -> toggle select discrete beacon code
-				toggleBeacon(cmd)
-				status.clear = true
+				if idx := slices.Index(ps.SelectedBeacons, sq); idx != -1 {
+					ps.SelectedBeacons = slices.Delete(ps.SelectedBeacons, idx, idx+1)
+					status.clear = true
+				} else if len(ps.SelectedBeacons) == 10 {
+					status.err = ErrSTARSCapacity
+				} else {
+					ps.SelectedBeacons = append(ps.SelectedBeacons, sq)
+					slices.Sort(ps.SelectedBeacons)
+					status.clear = true
+				}
 				return
 			} else if cmd == "*" {
 				clear(ps.SelectedBeacons)

@@ -594,7 +594,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			} else {
 				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
 					s = strings.TrimSpace(s)
-					if code, err := av.ParseSquawk(s); err != nil {
+					if code, err := av.ParseSquawkOrBlock(s); err != nil {
 						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
 					} else {
 						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
@@ -1240,7 +1240,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 	} else {
 		for _, bl := range strings.Split(*s.MonitoredBeaconCodeBlocksString, ",") {
 			bl = strings.TrimSpace(bl)
-			if code, err := av.ParseSquawk(bl); err != nil {
+			if code, err := av.ParseSquawkOrBlock(bl); err != nil {
 				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
 			} else {
 				s.MonitoredBeaconCodeBlocks = append(s.MonitoredBeaconCodeBlocks, code)
