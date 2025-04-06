@@ -254,7 +254,7 @@ func main() {
 			if controlClient == nil {
 				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
-				id := controlClient.State.PrimaryTCP
+				id := controlClient.State.UserTCP
 				if ctrl, ok := controlClient.State.Controllers[id]; ok {
 					id += " (" + ctrl.Position + ")"
 				}

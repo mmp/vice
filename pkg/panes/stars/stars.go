@@ -1280,7 +1280,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 
 				trk := sp.getTrack(ctx, ac)
 				if sp.AutoTrackDepartures && trk.TrackOwner == "" && ac.Squawk != 0o1200 &&
-					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.PrimaryTCP {
+					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.UserTCP {
 					starsFP := av.MakeSTARSFlightPlan(ac.FlightPlan)
 					ctx.ControlClient.InitiateTrack(callsign, starsFP, nil, nil) // ignore error...
 				}

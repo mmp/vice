@@ -1604,8 +1604,8 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 			continue
 		}
 		// We have it or it's an inbound handoff to us.
-		ourTrack := ac.TrackingController == ctx.ControlClient.PrimaryTCP ||
-			ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP
+		ourTrack := ac.TrackingController == ctx.ControlClient.UserTCP ||
+			ac.HandoffTrackController == ctx.ControlClient.UserTCP
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}

@@ -45,7 +45,7 @@ type State struct {
 
 	PrimaryController string
 	MultiControllers  av.SplitConfiguration
-	PrimaryTCP        string
+	UserTCP        string
 	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
 	DepartureRunways []DepartureRunway
@@ -96,7 +96,7 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 		Controllers:       make(map[string]*av.Controller),
 		PrimaryController: config.PrimaryController,
 		MultiControllers:  config.MultiControllers,
-		PrimaryTCP:        serverCallsign,
+		UserTCP:        serverCallsign,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
@@ -253,7 +253,7 @@ func (s *State) GetStateForController(tcp string) *State {
 	// World state to improve responsiveness don't actually affect the
 	// server.)
 	state := deep.MustCopy(*s)
-	state.PrimaryTCP = tcp
+	state.UserTCP = tcp
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
 	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
@@ -325,11 +325,11 @@ func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*a
 		if !strings.HasSuffix(ac.Callsign, suffix) {
 			return false
 		}
-		if instructor || ac.ControllingController == ss.PrimaryTCP {
+		if instructor || ac.ControllingController == ss.UserTCP {
 			return true
 		}
 		// Hold for release aircraft still in the list
-		if ac.DepartureContactController == ss.PrimaryTCP && ac.ControllingController == "" {
+		if ac.DepartureContactController == ss.UserTCP && ac.ControllingController == "" {
 			return true
 		}
 		return false
@@ -363,7 +363,7 @@ func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
 			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
 				return false
 			}
-			return ss.DepartureController(ac, nil) == ss.PrimaryTCP
+			return ss.DepartureController(ac, nil) == ss.UserTCP
 		})
 }
 
@@ -397,14 +397,14 @@ func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
 }
 
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.PrimaryTCP]; ok && config.Range != 0 {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.PrimaryTCP]; ok && !config.Center.IsZero() {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center
@@ -495,6 +495,6 @@ func (ss *State) ERAMComputer() *ERAMComputer {
 }
 
 func (ss *State) AmInstructor() bool {
-	_, ok := ss.Instructors[ss.PrimaryTCP]
+	_, ok := ss.Instructors[ss.UserTCP]
 	return ok
 }

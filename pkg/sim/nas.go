@@ -972,7 +972,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 						s.eventStream.Post(Event{
 							Type:           DroppedTrackEvent,
 							Callsign:       ac.Callsign,
-							FromController: s.State.PrimaryTCP,
+							FromController: s.State.UserTCP,
 						})
 					*/
 				}
@@ -983,7 +983,7 @@ func (comp *STARSComputer) AssociateFlightPlans(s *Sim) {
 
 		// FIXME: should only happen if sp.AutoTrackDepartures is set?
 		if fp, ok := comp.ContainedPlans[ac.Squawk]; ok { // auto associate
-			tcp := s.State.PrimaryTCP
+			tcp := s.State.UserTCP
 			// FIXME(mtrokel): the call to DepartureController() leads to
 			// ERROR Unable to resolve departure controller for aircraft
 			// that are initially controlled by a virtual controller

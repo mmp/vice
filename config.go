@@ -87,7 +87,7 @@ type ConfigNoSim struct {
 	InhibitDiscordActivity util.AtomicBool
 	NotifiedTargetGenMode  bool
 
-	PrimaryTCP string
+	UserTCP string
 }
 
 type ConfigSim struct {
@@ -130,13 +130,13 @@ func (c *Config) Save(lg *log.Logger) error {
 func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
 	c *server.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
-	gc.PrimaryTCP = ""
+	gc.UserTCP = ""
 	if saveSim {
 		if sim, err := c.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
 			gc.Sim = sim
-			gc.PrimaryTCP = c.PrimaryTCP
+			gc.UserTCP = c.UserTCP
 		}
 	}
 
@@ -204,7 +204,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 			config.DisplayRoot = nil
 		}
 		if config.Version < 5 {
-			config.PrimaryTCP = ""
+			config.UserTCP = ""
 		}
 		if config.Version < 29 {
 			config.TFRCache = av.MakeTFRCache()

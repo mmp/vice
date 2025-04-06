@@ -205,8 +205,8 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Collect multiple successive transmissions from the same
 			// aircraft into a single transmission.
 
-			toUs := event.ToController == ctx.ControlClient.PrimaryTCP
-			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.PrimaryTCP]
+			toUs := event.ToController == ctx.ControlClient.UserTCP
+			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.UserTCP]
 			if !toUs && !amInstructor {
 				break
 			}
@@ -267,7 +267,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.ControlClient.PrimaryTCP {
+			if event.FromController != ctx.ControlClient.UserTCP {
 				for _, line := range strings.Split(event.Message, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}

@@ -346,12 +346,12 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 			return FullDatablock
 		}
 
-		if ac.TrackingController == ctx.ControlClient.PrimaryTCP {
+		if ac.TrackingController == ctx.ControlClient.UserTCP {
 			// it's under our control
 			return FullDatablock
 		}
 
-		if ac.HandingOffTo(ctx.ControlClient.PrimaryTCP) {
+		if ac.HandingOffTo(ctx.ControlClient.UserTCP) {
 			// it's being handed off to us
 			return FullDatablock
 		}
@@ -366,7 +366,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 		}
 
 		// Point outs are FDB until acked.
-		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
 			return FullDatablock
 		}
 		if state.PointOutAcknowledged {
@@ -377,12 +377,12 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, ac *av.Aircraft) Databloc
 		}
 
 		if len(ac.RedirectedHandoff.Redirector) > 0 {
-			if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+			if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP {
 				return FullDatablock
 			}
 		}
 
-		if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP {
+		if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.UserTCP {
 			return FullDatablock
 		}
 
@@ -445,7 +445,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 	if trk.HandoffController != "" {
 		toTCP := util.Select(trk.RedirectedHandoff.RedirectedTo != "",
 			trk.RedirectedHandoff.RedirectedTo, trk.HandoffController)
-		inbound := toTCP == ctx.ControlClient.PrimaryTCP
+		inbound := toTCP == ctx.ControlClient.UserTCP
 
 		if inbound {
 			// Always show our id
@@ -736,9 +736,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 		// Field 8: point out, rejected pointout, redirected
 		// handoffs... Some flash, some don't.
-		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+		if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
 			formatDBText(db.field8[:], "PO", color, false)
-		} else if ok && tcps.From == ctx.ControlClient.PrimaryTCP {
+		} else if ok && tcps.From == ctx.ControlClient.UserTCP {
 			id := tcps.To
 			if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
 				id = id[1:]
@@ -748,7 +748,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 			formatDBText(db.field8[:], "UN", color, true)
 		} else if state.POFlashingEndTime.After(ctx.Now) {
 			formatDBText(db.field8[:], "PO", color, true)
-		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.ControlClient.PrimaryTCP, state.RDIndicatorEnd) {
+		} else if ac.RedirectedHandoff.ShowRDIndicator(ctx.ControlClient.UserTCP, state.RDIndicatorEnd) {
 			formatDBText(db.field8[:], "RD", color, false)
 		}
 
@@ -881,15 +881,15 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 	state := sp.Aircraft[ac.Callsign]
 
 	inboundPointOut := false
-	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
 		inboundPointOut = true
 	}
 
 	// Cases where it's always a full datablock
 	forceFDB := inboundPointOut
 	forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
-	forceFDB = forceFDB || ac.HandingOffTo(ctx.ControlClient.PrimaryTCP)
-	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+	forceFDB = forceFDB || ac.HandingOffTo(ctx.ControlClient.UserTCP)
+	if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
 		forceFDB = true
 	}
 
@@ -904,7 +904,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if ac.TrackingController != ctx.ControlClient.PrimaryTCP {
+		if ac.TrackingController != ctx.ControlClient.UserTCP {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
@@ -935,13 +935,13 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, ac *av.Ai
 		color = STARSSelectedAircraftColor
 	} else if ac.TrackingController == "" {
 		color = STARSUntrackedAircraftColor
-	} else if ac.TrackingController == ctx.ControlClient.PrimaryTCP { //change
+	} else if ac.TrackingController == ctx.ControlClient.UserTCP { //change
 		// we own the track track
 		color = STARSTrackedAircraftColor
-	} else if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.PrimaryTCP || ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+	} else if ac.RedirectedHandoff.OriginalOwner == ctx.ControlClient.UserTCP || ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP {
 		color = STARSTrackedAircraftColor
-	} else if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP &&
-		!slices.Contains(ac.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+	} else if ac.HandoffTrackController == ctx.ControlClient.UserTCP &&
+		!slices.Contains(ac.RedirectedHandoff.Redirector, ctx.ControlClient.UserTCP) {
 		// flashing white if it's being handed off to us.
 		color = STARSTrackedAircraftColor
 	} else if state.OutboundHandoffAccepted {
@@ -986,13 +986,13 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 	} else { // associated
 		state := sp.Aircraft[ac.Callsign]
 
-		if ac.TrackingController == ctx.ControlClient.PrimaryTCP {
+		if ac.TrackingController == ctx.ControlClient.UserTCP {
 			// For owned datablocks
 			return true
-		} else if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP {
+		} else if ac.HandoffTrackController == ctx.ControlClient.UserTCP {
 			// For receiving handoffs
 			return true
-		} else if ac.ControllingController == ctx.ControlClient.PrimaryTCP {
+		} else if ac.ControllingController == ctx.ControlClient.UserTCP {
 			// For non-greened handoffs
 			return true
 		} else if state.PointOutAcknowledged {
@@ -1009,10 +1009,10 @@ func (sp *STARSPane) datablockVisible(ac *av.Aircraft, ctx *panes.Context) bool 
 			return true
 		} else if sp.isQuicklooked(ctx, ac) {
 			return true
-		} else if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP {
+		} else if ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP {
 			// Redirected to
 			return true
-		} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.ControlClient.PrimaryTCP) {
+		} else if slices.Contains(ac.RedirectedHandoff.Redirector, ctx.ControlClient.UserTCP) {
 			// Had it but redirected it
 			return true
 		}

@@ -513,7 +513,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			} else {
 				for _, tcp := range strings.Split(tcps, " ") {
 					if tcp == "ALL" {
-						fac := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP].FacilityIdentifier
+						fac := ctx.ControlClient.Controllers[ctx.ControlClient.UserTCP].FacilityIdentifier
 						for _, control := range ctx.ControlClient.Controllers {
 							if !control.ERAMFacility && control.FacilityIdentifier == fac {
 								sp.forceQL(ctx, aircraft.Callsign, control.Id())
@@ -599,7 +599,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				}
 				status.clear = true
 				return
-			} else if cmd == ctx.ControlClient.PrimaryTCP { // TODO: any TCP assigned to this scope
+			} else if cmd == ctx.ControlClient.UserTCP { // TODO: any TCP assigned to this scope
 				// 6-91 show QL information in the preview area
 				if ps.QuickLookAll {
 					status.output = "ALL"
@@ -646,7 +646,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 	case CommandModeTerminateControl:
 		if cmd == "ALL" {
 			for callsign, ac := range ctx.ControlClient.Aircraft {
-				if trk := sp.getTrack(ctx, ac); trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+				if trk := sp.getTrack(ctx, ac); trk.TrackOwner == ctx.ControlClient.UserTCP {
 					sp.dropTrack(ctx, callsign)
 				}
 			}
@@ -666,7 +666,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			var closestDistance float32
 			for _, ac := range sp.visibleAircraft(ctx) {
 				trk := sp.getTrack(ctx, ac)
-				if trk.HandoffController != ctx.ControlClient.PrimaryTCP {
+				if trk.HandoffController != ctx.ControlClient.UserTCP {
 					continue
 				}
 
@@ -1128,7 +1128,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 					// to determine if an airport was specified.
 					airport, extra, ok := strings.Cut(cmd[1:], " ")
 					if !ok {
-						if ctrl, ok := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]; ok {
+						if ctrl, ok := ctx.ControlClient.Controllers[ctx.ControlClient.UserTCP]; ok {
 							airport = ctrl.DefaultAirport[1:] // drop leading "K"
 							extra = cmd[1:]
 						}
@@ -1212,7 +1212,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				if aircraft == nil {
 					status.err = ErrSTARSCommandFormat
 					return
-				} else if trk := sp.getTrack(ctx, aircraft); trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+				} else if trk := sp.getTrack(ctx, aircraft); trk.TrackOwner != ctx.ControlClient.UserTCP {
 					status.err = ErrSTARSIllegalTrack
 					return
 				} else {
@@ -2650,7 +2650,7 @@ func (sp *STARSPane) setLeaderLine(ctx *panes.Context, ac *av.Aircraft, cmd stri
 		}
 	} else if len(cmd) == 2 && cmd[0] == cmd[1] { // Global leader lines 6-101
 		trk := sp.getTrack(ctx, ac)
-		if trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+		if trk.TrackOwner != ctx.ControlClient.UserTCP {
 			return ErrSTARSIllegalTrack
 		} else if dir, ok := sp.numpadToDirection(cmd[0]); ok {
 			sp.setGlobalLeaderLine(ctx, ac.Callsign, dir)
@@ -2707,7 +2707,7 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, ac *av.Aircraft, c
 	ps := sp.currentPrefs()
 	if ps.DisableMCIWarnings {
 		status.err = ErrSTARSIllegalFunction
-	} else if ac.TrackingController != ctx.ControlClient.PrimaryTCP {
+	} else if ac.TrackingController != ctx.ControlClient.UserTCP {
 		status.err = ErrSTARSIllegalTrack
 	} else {
 		state := sp.Aircraft[ac.Callsign]
@@ -2792,11 +2792,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					state.RDIndicatorEnd = time.Time{}
 					status.clear = true
 					return
-				} else if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP || trk.RedirectedHandoff.GetLastRedirector() == ctx.ControlClient.PrimaryTCP {
+				} else if trk.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP || trk.RedirectedHandoff.GetLastRedirector() == ctx.ControlClient.UserTCP {
 					sp.acceptRedirectedHandoff(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if trk.HandoffController == ctx.ControlClient.PrimaryTCP {
+				} else if trk.HandoffController == ctx.ControlClient.UserTCP {
 					status.clear = true
 					sp.acceptHandoff(ctx, ac.Callsign)
 					return
@@ -2832,18 +2832,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					state.DBAcknowledged = ac.Squawk
 					status.clear = true
 					return
-				} else if trk.HandoffController != "" && trk.HandoffController != ctx.ControlClient.PrimaryTCP &&
-					trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+				} else if trk.HandoffController != "" && trk.HandoffController != ctx.ControlClient.UserTCP &&
+					trk.TrackOwner == ctx.ControlClient.UserTCP {
 					// cancel offered handoff offered
 					status.clear = true
 					sp.cancelHandoff(ctx, ac.Callsign)
 					return
-				} else if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.PrimaryTCP {
+				} else if tcps, ok := sp.PointOuts[ac.Callsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
 					// ack point out
 					sp.acknowledgePointOut(ctx, ac.Callsign)
 					status.clear = true
 					return
-				} else if ok && tcps.From == ctx.ControlClient.PrimaryTCP {
+				} else if ok && tcps.From == ctx.ControlClient.UserTCP {
 					// recall point out
 					sp.recallPointOut(ctx, ac.Callsign)
 					status.clear = true
@@ -2888,11 +2888,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 						s = 5
 					}
 					state.FullLDBEndTime = ctx.Now.Add(time.Duration(s) * time.Second)
-				} else if trk.TrackOwner != ctx.ControlClient.PrimaryTCP {
+				} else if trk.TrackOwner != ctx.ControlClient.UserTCP {
 					state.DisplayFDB = !state.DisplayFDB
 				}
 
-				if trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+				if trk.TrackOwner == ctx.ControlClient.UserTCP {
 					status.output = slewAircaft(ac)
 				}
 
@@ -2971,7 +2971,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// TODO: Or can be used to accept a pointout as a handoff.
 
 				if cmd == "**" { // Non specified TCP
-					if ctx.ControlClient.STARSFacilityAdaptation.ForceQLToSelf && trk.TrackOwner == ctx.ControlClient.PrimaryTCP {
+					if ctx.ControlClient.STARSFacilityAdaptation.ForceQLToSelf && trk.TrackOwner == ctx.ControlClient.UserTCP {
 						state.ForceQL = true
 						status.clear = true
 						return
@@ -2984,8 +2984,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if len(tcps) > 0 && tcps[0] == "ALL" {
 						// Force QL for all TCP
 						// Find user fac
-						if ctrl, ok := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]; ok && !ctrl.ERAMFacility {
-							sp.forceQL(ctx, ac.Callsign, ctx.ControlClient.PrimaryTCP)
+						if ctrl, ok := ctx.ControlClient.Controllers[ctx.ControlClient.UserTCP]; ok && !ctrl.ERAMFacility {
+							sp.forceQL(ctx, ac.Callsign, ctx.ControlClient.UserTCP)
 						}
 					}
 					for _, tcp := range tcps {
@@ -3134,7 +3134,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = ErrSTARSIllegalTrack
 					return
 				}
-				if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.ControlClient.PrimaryTCP {
+				if ac.HandoffTrackController != "" && ac.HandoffTrackController != ctx.ControlClient.UserTCP {
 					status.err = ErrSTARSIllegalTrack
 					return
 				}
@@ -3162,8 +3162,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// See if cmd works as a sector id; if so, make it a handoff.
 				control := sp.lookupControllerForId(ctx, cmd, ac.Callsign)
 				if control != nil {
-					if ac.HandoffTrackController == ctx.ControlClient.PrimaryTCP ||
-						ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.PrimaryTCP { // Redirect
+					if ac.HandoffTrackController == ctx.ControlClient.UserTCP ||
+						ac.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP { // Redirect
 						sp.redirectHandoff(ctx, ac.Callsign, control.Id())
 						status.clear = true
 					} else if err := sp.handoffTrack(ctx, ac.Callsign, cmd); err == nil {
@@ -3200,7 +3200,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeHandOff:
 			if cmd == "" {
-				if po, ok := sp.PointOuts[ac.Callsign]; ok && po.To == ctx.ControlClient.PrimaryTCP {
+				if po, ok := sp.PointOuts[ac.Callsign]; ok && po.To == ctx.ControlClient.UserTCP {
 					sp.acceptHandoff(ctx, ac.Callsign)
 				} else {
 					// Try to cancel it; if it's not ours, we'll get an error from this
@@ -3334,7 +3334,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "Q":
 				if cmd == "" {
-					if trk.TrackOwner != ctx.ControlClient.PrimaryTCP && ac.ControllingController != ctx.ControlClient.PrimaryTCP {
+					if trk.TrackOwner != ctx.ControlClient.UserTCP && ac.ControllingController != ctx.ControlClient.UserTCP {
 						status.err = ErrSTARSIllegalTrack
 					} else {
 						status.clear = true
@@ -3348,7 +3348,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			case "R":
 				switch cmd {
 				case "":
-					if ps.PTLAll || (ps.PTLOwn && trk.TrackOwner == ctx.ControlClient.PrimaryTCP) {
+					if ps.PTLAll || (ps.PTLOwn && trk.TrackOwner == ctx.ControlClient.UserTCP) {
 						status.err = ErrSTARSIllegalTrack // 6-13
 					} else {
 						state.DisplayPTL = !state.DisplayPTL
@@ -3389,7 +3389,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "V":
 				if cmd == "" {
-					if trk.TrackOwner != ctx.ControlClient.PrimaryTCP && ac.ControllingController != ctx.ControlClient.PrimaryTCP {
+					if trk.TrackOwner != ctx.ControlClient.UserTCP && ac.ControllingController != ctx.ControlClient.UserTCP {
 						status.err = ErrSTARSIllegalTrack
 					} else {
 						state.DisableMSAW = !state.DisableMSAW
@@ -4030,7 +4030,7 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]Qu
 		id = strings.TrimRight(id, "+")
 
 		control := sp.lookupControllerForId(ctx, id, "")
-		if control == nil || control.FacilityIdentifier != "" || control.Id() == ctx.ControlClient.PrimaryTCP {
+		if control == nil || control.FacilityIdentifier != "" || control.Id() == ctx.ControlClient.UserTCP {
 			return positions, strings.Join(ids[i:], " "), ErrSTARSCommandFormat
 		} else {
 			positions = append(positions, QuickLookPosition{
@@ -4211,7 +4211,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id, callsign stri
 	} else {
 		// Non ARTCC airspace-awareness handoffs
 		if lc == 1 { // Must be a same sector.
-			userController := *ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]
+			userController := *ctx.ControlClient.Controllers[ctx.ControlClient.UserTCP]
 
 			for _, control := range ctx.ControlClient.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)
