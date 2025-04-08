@@ -222,10 +222,11 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				if telephony, ok := av.DB.Callsigns[icao]; ok {
 					radioCallsign = telephony + " " + flight
 					if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil {
-						if fp := ac.FlightPlan; fp != nil {
-							if strings.HasPrefix(fp.AircraftType, "H/") {
+						fp := ac.FlightPlan
+						if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+							if perf.WeightClass == "H" {
 								radioCallsign += " heavy"
-							} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+							} else if perf.WeightClass == "J" {
 								radioCallsign += " super"
 							}
 						}
@@ -244,7 +245,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok {
 					name = ctrl.RadioName
 				}
-				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
+				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ac.IsDeparture() {
 					// Always refer to the controller as "departure" for departing aircraft.
 					name = strings.ReplaceAll(name, "approach", "departure")
 				}

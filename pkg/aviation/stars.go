@@ -310,6 +310,11 @@ type STARSFacilityAdaptation struct {
 	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
 	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
+	FlightPlan struct {
+		QuickACID      string            `json:"quick_acid"`
+		ACIDExpansions map[string]string `json:"acid_expansions"`
+	} `json:"flight_plan"`
+
 	PDB struct {
 		ShowScratchpad2   bool `json:"show_scratchpad2"`
 		HideGroundspeed   bool `json:"hide_gs"`
@@ -317,12 +322,14 @@ type STARSFacilityAdaptation struct {
 		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
 		DisplayCustomSPCs bool `json:"display_custom_spcs"`
 	} `json:"pdb"`
+
 	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
 		DisplayExitFix1    bool `json:"display_exit_fix_1"`
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
 	} `json:"scratchpad1"`
+
 	CustomSPCs []string `json:"custom_spcs"`
 
 	CoordinationLists []CoordinationList `json:"coordination_lists"`
@@ -363,15 +370,220 @@ type AirspaceAwareness struct {
 }
 
 type STARSFlightPlan struct {
-	*FlightPlan
-	FlightPlanType      int
+	ACID                  string
+	EntryFix              string
+	ExitFix               string
+	ExitFixIsIntermediate bool
+	Rules                 FlightRules
+	ETAOrPTD              time.Time // predicted time of arrival / proposed time of departure
+
+	AssignedSquawk Squawk
+
+	TrackingController     string // Who has the radar track
+	ControllingController  string // Who has control; not necessarily the same as TrackingController
+	HandoffTrackController string // Handoff offered but not yet accepted
+
+	AircraftCount   int
+	AircraftType    string
+	EquipmentSuffix string
+	CWTCategory     string
+
+	TypeOfFlight      TypeOfFlight
+	InitialController string // For abbreviated FPs
+
+	AssignedAltitude      int
+	RequestedAltitude     int
+	PilotReportedAltitude int
+
+	Scratchpad          string
+	SecondaryScratchpad string
+
+	RNAV bool
+
+	Location math.Point2LL // set for unsupported datablocks
+
+	PointOutHistory             []string
+	InhibitModeCAltitudeDisplay bool
+	SPCOverride                 string
+	DisableMSAW                 bool
+	DisableCA                   bool
+	MCISuppressedCode           Squawk
+	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
+
+	// FIXME: these are used internally by NAS code. It's convenient to
+	// have them here but this stuff should just be managed internally
+	// there.
+	ListIndex           int
 	CoordinationTime    CoordinationTime
 	CoordinationFix     string
 	ContainedFacilities []string
-	Altitude            string
-	SP1                 string
-	SP2                 string
-	InitialController   string // For abbreviated FPs
+	AutoAssociate       bool
+	RedirectedHandoff   RedirectedHandoff
+}
+
+type STARSFlightPlanSpecifier struct {
+	ACID                  util.Optional[string]
+	EntryFix              util.Optional[string]
+	ExitFix               util.Optional[string]
+	ExitFixIsIntermediate util.Optional[bool]
+	Rules                 util.Optional[FlightRules]
+	ETAOrPTD              util.Optional[time.Time]
+
+	AssignedSquawk util.Optional[Squawk]
+
+	AircraftCount   util.Optional[int]
+	AircraftType    util.Optional[string]
+	EquipmentSuffix util.Optional[string]
+	CWTCategory     util.Optional[string]
+
+	TypeOfFlight      util.Optional[TypeOfFlight]
+	InitialController util.Optional[string]
+
+	AssignedAltitude      util.Optional[int]
+	RequestedAltitude     util.Optional[int]
+	PilotReportedAltitude util.Optional[int]
+
+	Scratchpad          util.Optional[string]
+	SecondaryScratchpad util.Optional[string]
+
+	RNAV util.Optional[bool]
+
+	Location util.Optional[math.Point2LL]
+
+	PointOutHistory             util.Optional[[]string]
+	InhibitModeCAltitudeDisplay util.Optional[bool]
+	SPCOverride                 util.Optional[string]
+	DisableMSAW                 util.Optional[bool]
+	DisableCA                   util.Optional[bool]
+	MCISuppressedCode           util.Optional[Squawk]
+	GlobalLeaderLineDirection   util.Optional[*math.CardinalOrdinalDirection]
+
+	// Specifiers used when creating flight plans but not held on beyond
+	// that.
+	AssignIFRSquawk bool
+	AssignVFRSquawk bool
+	AutoAssociate   bool
+	CreateQuick     bool
+}
+
+func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
+	return STARSFlightPlan{
+		ACID:                  s.ACID.GetOr(""),
+		EntryFix:              s.EntryFix.GetOr(""),
+		ExitFix:               s.ExitFix.GetOr(""),
+		ExitFixIsIntermediate: s.ExitFixIsIntermediate.GetOr(false),
+		Rules:                 s.Rules.GetOr(UNKNOWN),
+		ETAOrPTD:              s.ETAOrPTD.GetOr(time.Time{}),
+
+		AssignedSquawk: s.AssignedSquawk.GetOr(Squawk(0)),
+
+		AircraftCount:   s.AircraftCount.GetOr(1),
+		AircraftType:    s.AircraftType.GetOr(""),
+		EquipmentSuffix: s.EquipmentSuffix.GetOr(""),
+		CWTCategory:     s.CWTCategory.GetOr(""),
+
+		TypeOfFlight:      s.TypeOfFlight.GetOr(FlightTypeUnknown),
+		InitialController: s.InitialController.GetOr(""),
+
+		AssignedAltitude:      s.AssignedAltitude.GetOr(0),
+		RequestedAltitude:     s.RequestedAltitude.GetOr(0),
+		PilotReportedAltitude: s.PilotReportedAltitude.GetOr(0),
+
+		Scratchpad:          s.Scratchpad.GetOr(""),
+		SecondaryScratchpad: s.SecondaryScratchpad.GetOr(""),
+
+		RNAV: s.RNAV.GetOr(false),
+
+		Location: s.Location.GetOr(math.Point2LL{}),
+
+		PointOutHistory:             s.PointOutHistory.GetOr(nil),
+		InhibitModeCAltitudeDisplay: s.InhibitModeCAltitudeDisplay.GetOr(false),
+		SPCOverride:                 s.SPCOverride.GetOr(""),
+		DisableMSAW:                 s.DisableMSAW.GetOr(false),
+		DisableCA:                   s.DisableCA.GetOr(false),
+		MCISuppressedCode:           s.MCISuppressedCode.GetOr(Squawk(0)),
+		GlobalLeaderLineDirection:   s.GlobalLeaderLineDirection.GetOr(nil),
+
+		AutoAssociate: s.AutoAssociate,
+	}
+}
+
+func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
+	if spec.ACID.IsSet {
+		fp.ACID = spec.ACID.Get()
+	}
+	if spec.EntryFix.IsSet {
+		fp.EntryFix = spec.EntryFix.Get()
+	}
+	if spec.ExitFix.IsSet {
+		fp.ExitFix = spec.ExitFix.Get()
+		fp.ExitFixIsIntermediate = spec.ExitFixIsIntermediate.GetOr(false)
+	}
+	if spec.Rules.IsSet {
+		fp.Rules = spec.Rules.Get()
+	}
+	if spec.ETAOrPTD.IsSet {
+		fp.ETAOrPTD = spec.ETAOrPTD.Get()
+	}
+
+	if spec.AssignedSquawk.IsSet {
+		fp.AssignedSquawk = spec.AssignedSquawk.Get()
+	}
+
+	if spec.AircraftType.IsSet {
+		fp.AircraftType = spec.AircraftType.Get()
+		fp.AircraftCount = spec.AircraftCount.GetOr(1)
+		fp.EquipmentSuffix = spec.EquipmentSuffix.GetOr("")
+		fp.CWTCategory = spec.CWTCategory.GetOr("")
+	}
+	if spec.TypeOfFlight.IsSet {
+		fp.TypeOfFlight = spec.TypeOfFlight.Get()
+	}
+	if spec.InitialController.IsSet {
+		fp.InitialController = spec.InitialController.Get()
+	}
+	if spec.AssignedAltitude.IsSet {
+		fp.AssignedAltitude = spec.AssignedAltitude.Get()
+	}
+	if spec.RequestedAltitude.IsSet {
+		fp.RequestedAltitude = spec.RequestedAltitude.Get()
+	}
+	if spec.PilotReportedAltitude.IsSet {
+		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
+	}
+	if spec.Scratchpad.IsSet {
+		fp.Scratchpad = spec.Scratchpad.Get()
+	}
+	if spec.SecondaryScratchpad.IsSet {
+		fp.SecondaryScratchpad = spec.SecondaryScratchpad.Get()
+	}
+	if spec.RNAV.IsSet {
+		fp.RNAV = spec.RNAV.Get()
+	}
+	if spec.Location.IsSet {
+		fp.Location = spec.Location.Get()
+	}
+	if spec.PointOutHistory.IsSet {
+		fp.PointOutHistory = spec.PointOutHistory.Get()
+	}
+	if spec.InhibitModeCAltitudeDisplay.IsSet {
+		fp.InhibitModeCAltitudeDisplay = spec.InhibitModeCAltitudeDisplay.Get()
+	}
+	if spec.SPCOverride.IsSet {
+		fp.SPCOverride = spec.SPCOverride.Get()
+	}
+	if spec.DisableMSAW.IsSet {
+		fp.DisableMSAW = spec.DisableMSAW.Get()
+	}
+	if spec.DisableCA.IsSet {
+		fp.DisableCA = spec.DisableCA.Get()
+	}
+	if spec.MCISuppressedCode.IsSet {
+		fp.MCISuppressedCode = spec.MCISuppressedCode.Get()
+	}
+	if spec.GlobalLeaderLineDirection.IsSet {
+		fp.GlobalLeaderLineDirection = spec.GlobalLeaderLineDirection.Get()
+	}
 }
 
 type CoordinationTime struct {
@@ -379,11 +591,22 @@ type CoordinationTime struct {
 	Type string // A for arrivals, P for Departures, E for overflights
 }
 
+type TypeOfFlight int
+
+const (
+	FlightTypeUnknown TypeOfFlight = iota
+	FlightTypeDeparture
+	FlightTypeArrival
+	FlightTypeOverflight
+)
+
+type STARSFlightPlanType int
+
 // Flight plan types (STARS)
 const (
 	// Flight plan received from a NAS ARTCC.  This is a flight plan that
 	// has been sent over by an overlying ERAM facility.
-	RemoteEnroute = iota
+	RemoteEnroute STARSFlightPlanType = iota
 
 	// Flight plan received from an adjacent terminal facility This is a
 	// flight plan that has been sent over by another STARS facility.
@@ -399,79 +622,3 @@ const (
 	// plan that is made at a STARS facility and gets a local code.
 	LocalNonEnroute
 )
-
-func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []Waypoint) (string, bool) {
-	for fix, adaptationFixes := range fa.CoordinationFixes {
-		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
-			if adaptationFix.Type == ZoneBasedFix {
-				// Exclude zone based fixes for now. They come in after the route-based fix
-				continue
-			}
-
-			// FIXME (as elsewhere): make this more robust
-			if strings.Contains(fp.Route, fix) {
-				return fix, true
-			}
-
-			// FIXME: why both this and checking fp.Route?
-			for _, waypoint := range waypoints {
-				if waypoint.Fix == fix {
-					return fix, true
-				}
-			}
-		}
-
-	}
-
-	var closestFix string
-	minDist := float32(1e30)
-	for fix, adaptationFixes := range fa.CoordinationFixes {
-		for _, adaptationFix := range adaptationFixes {
-			if adaptationFix.Type == ZoneBasedFix {
-				if loc, ok := DB.LookupWaypoint(fix); !ok {
-					// FIXME: check this (if it isn't already) at scenario load time.
-					panic(fix + ": not found in fixes database")
-				} else if dist := math.NMDistance2LL(acpos, loc); dist < minDist {
-					minDist = dist
-					closestFix = fix
-				}
-			}
-		}
-	}
-
-	return closestFix, closestFix != ""
-}
-
-func MakeSTARSFlightPlan(fp *FlightPlan) *STARSFlightPlan {
-	return &STARSFlightPlan{
-		FlightPlan: fp,
-		Altitude:   fmt.Sprint(fp.Altitude),
-	}
-}
-
-func (fp *STARSFlightPlan) SetCoordinationFix(fa STARSFacilityAdaptation, ac *Aircraft, simTime time.Time) error {
-	cf, ok := fa.GetCoordinationFix(fp, ac.Position(), ac.Waypoints())
-	if !ok {
-		return ErrNoCoordinationFix
-	}
-	fp.CoordinationFix = cf
-
-	if dist, err := ac.DistanceAlongRoute(cf); err == nil {
-		m := dist / float32(fp.CruiseSpeed) * 60
-		fp.CoordinationTime = CoordinationTime{
-			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
-		}
-	} else { // zone based fixes.
-		loc, ok := DB.LookupWaypoint(fp.CoordinationFix)
-		if !ok {
-			return ErrNoCoordinationFix
-		}
-
-		dist := math.NMDistance2LL(ac.Position(), loc)
-		m := dist / float32(fp.CruiseSpeed) * 60
-		fp.CoordinationTime = CoordinationTime{
-			Time: simTime.Add(time.Duration(m * float32(time.Minute))),
-		}
-	}
-	return nil
-}

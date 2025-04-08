@@ -6,10 +6,10 @@ package sim
 
 import (
 	"fmt"
-	"log/slog"
 	"maps"
 	gomath "math"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -38,6 +38,10 @@ type State struct {
 	ArrivalAirports   map[string]*av.Airport
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
+	ReleaseDepartures []*av.Aircraft
+
+	// Only the unassociated ones
+	FlightPlans []av.STARSFlightPlan
 
 	// Signed in human controllers + virtual controllers
 	Controllers      map[string]*av.Controller
@@ -45,7 +49,7 @@ type State struct {
 
 	PrimaryController string
 	MultiControllers  av.SplitConfiguration
-	UserTCP        string
+	UserTCP           string
 	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
 	DepartureRunways []DepartureRunway
@@ -58,7 +62,6 @@ type State struct {
 	ScenarioDefaultVideoMaps []string
 	UserRestrictionAreas     []av.RestrictionArea
 
-	ERAMComputers           *ERAMComputers
 	STARSFacilityAdaptation av.STARSFacilityAdaptation
 
 	TRACON            string
@@ -75,6 +78,8 @@ type State struct {
 	SimRate        float32
 	SimDescription string
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
+
+	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
 
 	Instructors map[string]bool
 
@@ -96,7 +101,7 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 		Controllers:       make(map[string]*av.Controller),
 		PrimaryController: config.PrimaryController,
 		MultiControllers:  config.MultiControllers,
-		UserTCP:        serverCallsign,
+		UserTCP:           serverCallsign,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
@@ -107,7 +112,6 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 		Range:                    config.Range,
 		ScenarioDefaultVideoMaps: config.DefaultMaps,
 
-		ERAMComputers:           MakeERAMComputers(config.STARSFacilityAdaptation.BeaconBank, lg),
 		STARSFacilityAdaptation: deep.MustCopy(config.STARSFacilityAdaptation),
 
 		TRACON:            config.TRACON,
@@ -269,11 +273,6 @@ func (s *State) GetStateForController(tcp string) *State {
 	return &state
 }
 
-func (s *State) Activate(lg *log.Logger) {
-	// Make the ERAMComputers aware of each other.
-	s.ERAMComputers.Activate()
-}
-
 func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
@@ -322,14 +321,17 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 // controller's control are considered for matching.
 func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*av.Aircraft {
 	match := func(ac *av.Aircraft) bool {
+		if ac.IsUnassociated() {
+			return false
+		}
 		if !strings.HasSuffix(ac.Callsign, suffix) {
 			return false
 		}
-		if instructor || ac.ControllingController == ss.UserTCP {
+		if instructor || ac.STARSFlightPlan.ControllingController == ss.UserTCP {
 			return true
 		}
 		// Hold for release aircraft still in the list
-		if ac.DepartureContactController == ss.UserTCP && ac.ControllingController == "" {
+		if ac.DepartureContactController == ss.UserTCP && ac.STARSFlightPlan.ControllingController == "" {
 			return true
 		}
 		return false
@@ -337,24 +339,20 @@ func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*a
 	return slices.Collect(util.FilterSeq(maps.Values(ss.Aircraft), match))
 }
 
-func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
+func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) (string, bool) {
 	if len(ss.MultiControllers) > 0 {
 		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
 			func(tcp string) bool {
 				return slices.Contains(ss.HumanControllers, tcp)
 			})
-		if err != nil {
-			lg.Warn("Unable to resolve departure controller", slog.Any("error", err),
-				slog.Any("aircraft", ac))
-		}
-		return util.Select(callsign != "", callsign, ss.PrimaryController)
+		return callsign, err == nil
 	} else {
-		return ss.PrimaryController
+		return ss.PrimaryController, true
 	}
 }
 
 func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
-	return util.FilterSliceInPlace(ss.STARSComputer().GetReleaseDepartures(),
+	return util.FilterSlice(ss.ReleaseDepartures,
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
@@ -363,12 +361,13 @@ func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
 			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
 				return false
 			}
-			return ss.DepartureController(ac, nil) == ss.UserTCP
+			tcp, ok := ss.DepartureController(ac, nil)
+			return ok && tcp == ss.UserTCP
 		})
 }
 
 func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
-	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
+	return util.FilterSlice(ss.ReleaseDepartures,
 		func(ac *av.Aircraft) bool {
 			if ac.Released {
 				return false
@@ -385,7 +384,7 @@ func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
 }
 
 func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
-	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
+	return util.FilterSlice(ss.ReleaseDepartures,
 		func(ac *av.Aircraft) bool {
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
@@ -408,28 +407,6 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 		return config.Center
 	}
 	return ss.Center
-}
-
-func (s *State) IsDeparture(ac *av.Aircraft) bool {
-	if _, ok := s.DepartureAirports[ac.FlightPlan.DepartureAirport]; ok {
-		return true
-	}
-	return false
-}
-
-func (s *State) IsArrival(ac *av.Aircraft) bool {
-	if _, ok := s.ArrivalAirports[ac.FlightPlan.ArrivalAirport]; ok {
-		return true
-	}
-	return false
-}
-
-func (s *State) IsOverflight(ac *av.Aircraft) bool {
-	return !s.IsDeparture(ac) && !s.IsArrival(ac)
-}
-
-func (s *State) IsIntraFacility(ac *av.Aircraft) bool {
-	return s.IsDeparture(ac) && s.IsArrival(ac)
 }
 
 func (ss *State) InhibitCAVolumes() []av.AirspaceVolume {
@@ -478,23 +455,48 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 	return "", false
 }
 
-func (ss *State) DeleteAircraft(ac *av.Aircraft) {
-	delete(ss.Aircraft, ac.Callsign)
-	ss.ERAMComputer().ReturnSquawk(ac.Squawk)
-	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
-}
-
-func (ss *State) STARSComputer() *STARSComputer {
-	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
-	return stars
-}
-
-func (ss *State) ERAMComputer() *ERAMComputer {
-	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
-	return eram
-}
-
 func (ss *State) AmInstructor() bool {
 	_, ok := ss.Instructors[ss.UserTCP]
 	return ok
+}
+
+func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
+	if util.SeqContainsFunc(maps.Values(ss.Aircraft),
+		func(ac *av.Aircraft) bool {
+			return ac.IsAssociated() && ac.STARSFlightPlan.AssignedSquawk == sq
+		}) {
+		return true
+	}
+
+	if slices.ContainsFunc(ss.FlightPlans,
+		func(fp av.STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		return true
+	}
+
+	return false
+}
+
+func (ss *State) FindMatchingFlightPlan(s string) *av.STARSFlightPlan {
+	n := -1
+	if pn, err := strconv.Atoi(s); err == nil && len(s) == 2 {
+		n = pn
+	}
+
+	sq := av.Squawk(0)
+	if ps, err := av.ParseSquawk(s); err == nil {
+		sq = ps
+	}
+
+	for _, fp := range ss.FlightPlans {
+		if fp.ACID == s {
+			return &fp
+		}
+		if n == fp.ListIndex {
+			return &fp
+		}
+		if sq == fp.AssignedSquawk {
+			return &fp
+		}
+	}
+	return nil
 }

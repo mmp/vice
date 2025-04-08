@@ -1117,7 +1117,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 						if dep.Aircraft.Callsign != "" {
 							imgui.TableNextColumn()
-							imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
+							imgui.Text(dep.Aircraft.FlightPlan.AircraftType)
 
 							imgui.TableNextColumn()
 							imgui.Text(dep.Aircraft.FlightPlan.Exit)
@@ -1195,7 +1195,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.Text(dep.Aircraft.FlightPlan.ArrivalAirport)
 
 							imgui.TableNextColumn()
-							imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
+							imgui.Text(dep.Aircraft.FlightPlan.AircraftType)
 
 							lastCallsign, lastTime := lc.getLastDeparture(dep.Airport, dep.Runway)
 							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), lastCallsign, lastTime)
@@ -1298,7 +1298,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 						if arof.Aircraft.Callsign != "" {
 							imgui.TableNextColumn()
-							imgui.Text(arof.Aircraft.FlightPlan.TypeWithoutSuffix())
+							imgui.Text(arof.Aircraft.FlightPlan.AircraftType)
 
 							mitAndTime(&arof.Aircraft, arof.Aircraft.Position(), arof.LastLaunchCallsign,
 								arof.LastLaunchTime)
@@ -1375,7 +1375,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				imgui.TableNextColumn()
 				imgui.Text(ac.Callsign)
 				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.TypeWithoutSuffix())
+				imgui.Text(ac.FlightPlan.AircraftType)
 				imgui.TableNextColumn()
 				imgui.Text(ac.FlightPlan.Exit)
 				if ac.FlightPlan.DepartureAirport != lastAp && !ac.Released {

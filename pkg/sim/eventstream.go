@@ -185,7 +185,6 @@ type EventType int
 
 const (
 	InitiatedTrackEvent = iota
-	DroppedTrackEvent
 	PushedFlightStripEvent
 	PointOutEvent
 	OfferedHandoffEvent
@@ -211,7 +210,7 @@ const (
 )
 
 func (t EventType) String() string {
-	return []string{"InitiatedTrack", "DroppedTrack", "PushedFlightStrip", "PointOut",
+	return []string{"InitiatedTrack", "PushedFlightStrip", "PointOut",
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
 		"GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControl",

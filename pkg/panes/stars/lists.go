@@ -18,7 +18,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context, paneExtent math.Extent2D,
+func (sp *STARSPane) drawSystemLists(ctx *panes.Context, aircraft []*av.Aircraft, paneExtent math.Extent2D,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
@@ -91,28 +91,6 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 			Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
 		}
 		td.AddText(rewriteDelta(text.String()), pw, style)
-	}
-}
-
-func (sp *STARSPane) getTabListIndex(ac *av.Aircraft) string {
-	state := sp.Aircraft[ac.Callsign]
-	if state.TabListIndex == TabListUnassignedIndex {
-		// Try to assign a Tab list index
-		for i := range TabListEntries {
-			idx := (sp.TabListSearchStart + i) % TabListEntries
-			if sp.TabListAircraft[idx] == "" {
-				state.TabListIndex = idx
-				sp.TabListAircraft[idx] = ac.Callsign
-				sp.TabListSearchStart = idx + 1
-				break
-			}
-		}
-	}
-
-	if state.TabListIndex != TabListUnassignedIndex {
-		return fmt.Sprintf("%2d", state.TabListIndex)
-	} else {
-		return "  " // no tab list number assigned
 	}
 }
 
@@ -266,8 +244,8 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		// those.
 		codes := make(map[string]interface{})
 		for _, ac := range aircraft {
-			if ac.SPCOverride != "" {
-				codes[ac.SPCOverride] = nil
+			if ac.IsAssociated() && ac.STARSFlightPlan.SPCOverride != "" {
+				codes[ac.STARSFlightPlan.SPCOverride] = nil
 			}
 			if ok, code := ac.Squawk.IsSPC(); ok {
 				codes[code] = nil
@@ -462,28 +440,25 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, aircraft []*
 		return
 	}
 
+	vfr := util.FilterSlice(ctx.ControlClient.State.FlightPlans,
+		func(fp av.STARSFlightPlan) bool {
+			if fp.Rules == av.IFR {
+				return false
+			}
+			if !fp.Location.IsZero() {
+				// Location is set -> it's an unsupported db
+				return false
+			}
+			return true
+		})
+
 	var text strings.Builder
-	var vfr []*av.Aircraft
-	// Find all untracked av.VFR aircraft
-	// FIXME: this should actually be based on VFR flight plans
-	/*
-		for _, ac := range aircraft {
-				if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
-					vfr = append(vfr, ac)
-				}
-		}
-	*/
-
-	// FIXME: this should actually be sorted by when we first saw the aircraft
-	slices.SortFunc(vfr, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
-
 	text.WriteString("VFR LIST\n")
 	if len(vfr) > ps.VFRList.Lines {
 		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 	}
 	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
-		ac := vfr[i]
-		text.WriteString(fmt.Sprintf("%s %-7s VFR\n", sp.getTabListIndex(ac), ac.Callsign))
+		text.WriteString(fmt.Sprintf("%2d %-7s %s\n", vfr[i].ListIndex, vfr[i].ACID, vfr[i].AssignedSquawk))
 	}
 
 	if text.Len() > 0 {
@@ -498,29 +473,76 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, aircraft []*
 		return
 	}
 
-	var text strings.Builder
-	var dep []*av.Aircraft
-	// Untracked departures departing from one of the airports we're
-	// responsible for.
-	for _, ac := range aircraft {
-		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" && ac.Squawk != 0o1200 {
-			if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
-				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.UserTCP {
-					dep = append(dep, ac)
+	plans := util.FilterSlice(ctx.ControlClient.State.FlightPlans,
+		func(fp av.STARSFlightPlan) bool {
+			if fp.Rules != av.IFR {
+				return false
+			}
+
+			if !fp.Location.IsZero() {
+				// Location is set -> it's an unsupported db
+				return false
+			}
+
+			// TODO: should also include flight plans that we entered but
+			// assigned a different initial controller to.
+
+			if fp.TypeOfFlight == av.FlightTypeDeparture {
+				if ac, ok := ctx.ControlClient.State.Aircraft[fp.ACID]; ok {
+					if ac.DepartureContactController == "" {
+						return false // virtually controlled
+					}
+					ctrl, ok := ctx.ControlClient.State.DepartureController(ac, ctx.Lg)
+					return ok && ctrl == ctx.ControlClient.State.UserTCP
 				}
 			}
-		}
-	}
+			// TODO: handle consolidation, etc.
+			return fp.InitialController == ctx.ControlClient.State.UserTCP
+		})
 
-	slices.SortFunc(dep, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
+	// 2-92: default sort is by ACID
+	slices.SortFunc(plans, func(a, b av.STARSFlightPlan) int {
+		return strings.Compare(a.ACID, b.ACID)
+	})
+
+	var text strings.Builder
 
 	text.WriteString("FLIGHT PLAN\n")
-	if len(dep) > ps.TABList.Lines {
-		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(dep)))
+	if len(plans) > ps.TABList.Lines {
+		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans)))
 	}
-	for i := range math.Min(len(dep), ps.TABList.Lines) {
-		ac := dep[i]
-		text.WriteString(fmt.Sprintf("%s %-7s %s\n", sp.getTabListIndex(ac), ac.Callsign, ac.Squawk.String()))
+	for i := range math.Min(len(plans), ps.TABList.Lines) {
+		fp := plans[i]
+		text.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
+		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
+		text.WriteString(fmt.Sprintf("%-7s ", fp.ACID))
+		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
+			text.WriteByte('/')
+		} else {
+			text.WriteByte(' ')
+		}
+		text.WriteString(fp.AssignedSquawk.String())
+		text.WriteByte(' ')
+		if fp.RequestedAltitude != 0 {
+			text.WriteString(fmt.Sprintf("%03d ", fp.RequestedAltitude/100))
+		} else {
+			text.WriteString("    ")
+		}
+		if fp.Rules == av.VFR {
+			text.WriteString("VFR")
+		}
+		// entry/exit fix characters
+		if fp.EntryFix != "" {
+			text.WriteByte(fp.EntryFix[0])
+		} else {
+			text.WriteByte(' ')
+		}
+		if fp.ExitFix != "" {
+			text.WriteByte(fp.ExitFix[0])
+		} else {
+			text.WriteByte(' ')
+		}
+		text.WriteByte('\n')
 	}
 
 	if text.Len() > 0 {
@@ -563,7 +585,9 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 		lists = append(lists, "MCI")
 		mci = util.FilterSlice(sp.MCIAircraft, func(mci CAAircraft) bool {
 			// remove suppressed ones
-			return sp.Aircraft[mci.Callsigns[0]].MCISuppressedCode != ctx.ControlClient.Aircraft[mci.Callsigns[1]].Squawk
+			ac0 := ctx.ControlClient.Aircraft[mci.Callsigns[0]]
+			return ac0.IsAssociated() &&
+				ac0.STARSFlightPlan.MCISuppressedCode != ctx.ControlClient.Aircraft[mci.Callsigns[1]].Squawk
 		})
 	}
 
@@ -598,8 +622,8 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 			msawac, capair, mcipair := next()
 
 			alt := func(ac *av.Aircraft) string {
-				if ac.PilotReportedAltitude != 0 {
-					return strconv.Itoa(int((ac.PilotReportedAltitude+50)/100)) + "*"
+				if ac.IsAssociated() && ac.STARSFlightPlan.PilotReportedAltitude != 0 {
+					return strconv.Itoa(ac.STARSFlightPlan.PilotReportedAltitude/100) + "*"
 				}
 				return strconv.Itoa(int((ac.Altitude() + 50) / 100))
 			}
@@ -788,10 +812,9 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, a
 	var text strings.Builder
 	text.WriteString("MCI SUPPRESSION\n")
 	for _, ac := range aircraft {
-		state := sp.Aircraft[ac.Callsign]
-		if state.MCISuppressedCode != av.Squawk(0) {
+		if ac.IsAssociated() && ac.STARSFlightPlan.MCISuppressedCode != av.Squawk(0) {
 			text.WriteString(fmt.Sprintf("%7s %s  %s\n", ac.Callsign, ac.Squawk.String(),
-				state.MCISuppressedCode.String()))
+				ac.STARSFlightPlan.MCISuppressedCode.String()))
 		}
 	}
 
@@ -813,11 +836,9 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 	text.WriteString(stripK(airport) + " TOWER\n")
 	m := make(map[float32]string)
 	for _, ac := range aircraft {
-		if ac.FlightPlan != nil && ac.FlightPlan.ArrivalAirport == airport {
+		if ac.FlightPlan.ArrivalAirport == airport {
 			dist := math.NMDistance2LL(loc, sp.Aircraft[ac.Callsign].TrackPosition())
-			actype := ac.FlightPlan.TypeWithoutSuffix()
-			actype = strings.TrimPrefix(actype, "H/")
-			actype = strings.TrimPrefix(actype, "S/")
+			actype := ac.FlightPlan.AircraftType
 			// We'll punt on the chance that two aircraft have the
 			// exact same distance to the airport...
 			m[dist] = fmt.Sprintf("%-7s %s", ac.Callsign, actype)
@@ -924,16 +945,19 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		for i := range math.Min(len(aircraft), list.Lines) {
 			ac := aircraft[i]
 			text.Reset()
-			trk := sp.getTrack(ctx, ac)
-			// TODO: NO FP if no flight plan
-			text.WriteString("     " + sp.getTabListIndex(ac))
-			text.WriteString(util.Select(ac.Released, "+", " "))
-			text.WriteString(fmt.Sprintf(" %-10s %5s %s %5s %03d\n", ac.Callsign, ac.FlightPlan.BaseType(),
-				ac.Squawk, trk.SP1, ac.FlightPlan.Altitude/100))
-			if !ac.Released && blinkDim {
-				pw = td.AddText(rewriteDelta(text.String()), pw, dimStyle)
+			text.WriteString("     ")
+			if fp := ac.STARSFlightPlan; fp == nil {
+				text.WriteString("NO FP")
 			} else {
-				pw = td.AddText(rewriteDelta(text.String()), pw, listStyle)
+				text.WriteString(fmt.Sprintf("%2d", fp.ListIndex))
+				text.WriteString(util.Select(ac.Released, "+", " "))
+				text.WriteString(fmt.Sprintf(" %-10s %5s %s %5s %03d\n", ac.Callsign, fp.AircraftType,
+					ac.Squawk, fp.ExitFix, fp.RequestedAltitude/100))
+				if !ac.Released && blinkDim {
+					pw = td.AddText(rewriteDelta(text.String()), pw, dimStyle)
+				} else {
+					pw = td.AddText(rewriteDelta(text.String()), pw, listStyle)
+				}
 			}
 		}
 	}

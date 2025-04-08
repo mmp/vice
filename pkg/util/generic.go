@@ -453,3 +453,29 @@ func MapSeq2[K, V, K2, V2 any](seq iter.Seq2[K, V], f func(K, V) (K2, V2)) iter.
 		}
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+type Optional[T any] struct {
+	Value T
+	IsSet bool
+}
+
+func (o Optional[T]) Get() T {
+	if !o.IsSet {
+		panic("optional not set")
+	}
+	return o.Value
+}
+
+func (o Optional[T]) GetOr(v T) T {
+	if o.IsSet {
+		return o.Value
+	}
+	return v
+}
+
+func (o *Optional[T]) Set(v T) {
+	o.IsSet = true
+	o.Value = v
+}

@@ -78,62 +78,45 @@ func (p *proxy) SetGlobalLeaderLine(callsign string, direction *math.CardinalOrd
 	}, nil, nil)
 }
 
-func (p *proxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
-	return p.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Scratchpad:      scratchpad,
-	}, nil, nil)
+func (p *proxy) CreateFlightPlan(spec av.STARSFlightPlanSpecifier, ty av.STARSFlightPlanType, fpFinal *av.STARSFlightPlan) *rpc.Call {
+	return p.Client.Go("Sim.CreateFlightPlan", &CreateFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		Type:                ty,
+		FlightPlanSpecifier: spec,
+	}, fpFinal, nil)
 }
 
-func (p *proxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
-	return p.Client.Go("Sim.SetSecondaryScratchpad", &SetScratchpadArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Scratchpad:      scratchpad,
-	}, nil, nil)
+func (p *proxy) ModifyFlightPlan(callsign string, spec av.STARSFlightPlanSpecifier, fpFinal *av.STARSFlightPlan) *rpc.Call {
+	return p.Client.Go("Sim.ModifyFlightPlan", &ModifyFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		Callsign:            callsign,
+		FlightPlanSpecifier: spec,
+	}, fpFinal, nil)
 }
 
-func (p *proxy) AutoAssociateFP(callsign string, fp *av.STARSFlightPlan) *rpc.Call {
-	return p.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
+func (p *proxy) AssociateFlightPlan(callsign string, spec av.STARSFlightPlanSpecifier) *rpc.Call {
+	return p.Client.Go("Sim.AssociateFlightPlan", &AssociateFlightPlanArgs{
 		AircraftSpecifier: AircraftSpecifier{
 			ControllerToken: p.ControllerToken,
 			Callsign:        callsign,
 		},
-		Plan: fp,
+		FlightPlanSpecifier: spec,
 	}, nil, nil)
 }
 
-func (p *proxy) CreateUnsupportedTrack(callsign string, ut *sim.UnsupportedTrack) *rpc.Call {
-	return p.Client.Go("Sim.CreateUnsupportedTrack", &CreateUnsupportedTrackArgs{
-		ControllerToken:  p.ControllerToken,
-		Callsign:         callsign,
-		UnsupportedTrack: ut,
+func (p *proxy) ActivateFlightPlan(trackCallsign, fpACID string, spec *av.STARSFlightPlanSpecifier) *rpc.Call {
+	return p.Client.Go("Sim.ActivateFlightPlan", &ActivateFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		TrackCallsign:       trackCallsign,
+		FpACID:              fpACID,
+		FlightPlanSpecifier: spec,
 	}, nil, nil)
 }
 
-func (p *proxy) UploadFlightPlan(Type int, fp *av.STARSFlightPlan) *rpc.Call {
-	return p.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
+func (p *proxy) DeleteFlightPlan(acid string) *rpc.Call {
+	return p.Client.Go("Sim.DeleteFlightPlan", &DeleteFlightPlanArgs{
 		ControllerToken: p.ControllerToken,
-		Type:            Type,
-		Plan:            fp,
-	}, nil, nil)
-}
-
-func (p *proxy) InitiateTrack(callsign string, fp *av.STARSFlightPlan) *rpc.Call {
-	return p.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
-		AircraftSpecifier: AircraftSpecifier{
-			ControllerToken: p.ControllerToken,
-			Callsign:        callsign,
-		},
-		Plan: fp,
-	}, nil, nil)
-}
-
-func (p *proxy) DropTrack(callsign string) *rpc.Call {
-	return p.Client.Go("Sim.DropTrack", &DropTrackArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
+		Callsign:        acid,
 	}, nil, nil)
 }
 
@@ -218,39 +201,8 @@ func (p *proxy) RejectPointOut(callsign string) *rpc.Call {
 	}, nil, nil)
 }
 
-func (p *proxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
-	return p.Client.Go("Sim.ToggleSPCOverride", &ToggleSPCArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		SPC:             spc,
-	}, nil, nil)
-}
-
 func (p *proxy) ReleaseDeparture(callsign string) *rpc.Call {
 	return p.Client.Go("Sim.ReleaseDeparture", &HeldDepartureArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (p *proxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
-	return p.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Altitude:        alt,
-	}, nil, nil)
-}
-
-func (p *proxy) SetPilotReportedAltitude(callsign string, alt int) *rpc.Call {
-	return p.Client.Go("Sim.SetPilotReportedAltitude", &AssignAltitudeArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Altitude:        alt,
-	}, nil, nil)
-}
-
-func (p *proxy) ToggleDisplayModeCAltitude(callsign string) *rpc.Call {
-	return p.Client.Go("Sim.ToggleDisplayModeCAltitude", &AircraftSpecifier{
 		ControllerToken: p.ControllerToken,
 		Callsign:        callsign,
 	}, nil, nil)

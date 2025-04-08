@@ -112,11 +112,6 @@ type STARSPane struct {
 	// carried along in an STARSAircraftState.
 	Aircraft map[string]*AircraftState
 
-	TabListAircraft    [TabListEntries]string
-	TabListSearchStart int
-
-	UnsupportedTracks map[av.Squawk]bool // visible or not
-
 	// explicit JSON name to avoid errors during config deserialization for
 	// backwards compatibility, since this used to be a
 	// map[string]interface{}.
@@ -403,9 +398,6 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	if sp.Aircraft == nil {
 		sp.Aircraft = make(map[string]*AircraftState)
 	}
-	if sp.UnsupportedTracks == nil {
-		sp.UnsupportedTracks = make(map[av.Squawk]bool)
-	}
 
 	sp.events = eventStream.Subscribe()
 
@@ -444,11 +436,6 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 			})
 		}
 	}
-
-	for i := range sp.TabListAircraft {
-		sp.TabListAircraft[i] = ""
-	}
-	sp.TabListSearchStart = 0
 
 	// Update maps before resetting the prefs since we may rewrite some map
 	// ids and we want to use the right ones when we're enabling the
@@ -704,25 +691,25 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		return aircraft[i].Callsign < aircraft[j].Callsign
 	})
 
-	sp.drawSystemLists(aircraft, ctx, ctx.PaneExtent, transforms, cb)
+	sp.drawSystemLists(ctx, aircraft, ctx.PaneExtent, transforms, cb)
 
-	sp.drawHistoryTrails(aircraft, ctx, transforms, cb)
+	sp.drawHistoryTrails(ctx, aircraft, transforms, cb)
 
 	sp.drawPTLs(aircraft, ctx, transforms, cb)
-	sp.drawRingsAndCones(aircraft, ctx, transforms, cb)
-	sp.drawRBLs(aircraft, ctx, transforms, cb)
+	sp.drawRingsAndCones(ctx, aircraft, transforms, cb)
+	sp.drawRBLs(ctx, aircraft, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
 
 	sp.drawHighlighted(ctx, transforms, cb)
 	sp.drawVFRAirports(ctx, transforms, cb)
 
-	dbs := sp.getAllDatablocks(aircraft, ctx)
-	sp.drawLeaderLines(aircraft, dbs, ctx, transforms, cb)
-	sp.drawTracks(aircraft, ctx, transforms, cb)
+	dbs := sp.getAllDatablocks(ctx, aircraft)
+	sp.drawLeaderLines(ctx, aircraft, dbs, transforms, cb)
+	sp.drawTracks(ctx, aircraft, transforms, cb)
 	sp.drawDatablocks(aircraft, dbs, ctx, transforms, cb)
 
-	ghosts := sp.getGhostAircraft(aircraft, ctx)
-	sp.drawGhosts(ghosts, ctx, transforms, cb)
+	ghosts := sp.getGhostAircraft(ctx, aircraft)
+	sp.drawGhosts(ctx, ghosts, transforms, cb)
 
 	if ctx.Mouse != nil {
 		// Is the mouse over the DCB or over the regular STARS scope? Note that
@@ -1234,7 +1221,7 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 	now := ctx.ControlClient.SimTime
 	for callsign, state := range sp.Aircraft {
 		ac, ok := ctx.ControlClient.Aircraft[callsign]
-		if !ok {
+		if !ok || !ac.IsAirborne() {
 			continue
 		}
 		// This includes the case of a spawned aircraft for which we don't
@@ -1248,11 +1235,11 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 		if sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeFused {
 			// visible unless if it's almost on the ground
 			alt := float32(state.TrackAltitude())
-			if ctx.ControlClient.IsDeparture(ac) &&
+			if ac.IsDeparture() &&
 				alt < ac.DepartureAirportElevation()+100 &&
 				math.NMDistance2LL(state.TrackPosition(), ac.DepartureAirportLocation()) < 3 {
 				continue
-			} else if ctx.ControlClient.IsArrival(ac) &&
+			} else if ac.IsArrival() &&
 				alt < ac.ArrivalAirportElevation()+100 &&
 				math.NMDistance2LL(state.TrackPosition(), ac.ArrivalAirportLocation()) < 3 {
 				continue
@@ -1277,13 +1264,6 @@ func (sp *STARSPane) visibleAircraft(ctx *panes.Context) []*av.Aircraft {
 			// Is this the first we've seen it?
 			if state.FirstRadarTrack.IsZero() {
 				state.FirstRadarTrack = now
-
-				trk := sp.getTrack(ctx, ac)
-				if sp.AutoTrackDepartures && trk.TrackOwner == "" && ac.Squawk != 0o1200 &&
-					ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.UserTCP {
-					starsFP := av.MakeSTARSFlightPlan(ac.FlightPlan)
-					ctx.ControlClient.InitiateTrack(callsign, starsFP, nil, nil) // ignore error...
-				}
 			}
 		}
 	}
@@ -1376,12 +1356,22 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 	if !ps.DisableCAWarnings {
 		playCASound = slices.ContainsFunc(sp.CAAircraft,
 			func(ca CAAircraft) bool {
-				return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
-					!sp.Aircraft[ca.Callsigns[1]].DisableCAWarnings && ctx.Now.Before(ca.SoundEnd)
+				if ca.Acknowledged {
+					return false
+				}
+				ac0 := ctx.ControlClient.State.Aircraft[ca.Callsigns[0]]
+				ac1 := ctx.ControlClient.State.Aircraft[ca.Callsigns[1]]
+				return ac0.IsAssociated() && !ac0.STARSFlightPlan.DisableCA &&
+					ac1.IsAssociated() && !ac1.STARSFlightPlan.DisableCA &&
+					ctx.Now.Before(ca.SoundEnd)
 			})
 		playCASound = playCASound || slices.ContainsFunc(sp.MCIAircraft,
 			func(ca CAAircraft) bool {
-				return !ca.Acknowledged && !sp.Aircraft[ca.Callsigns[0]].DisableCAWarnings &&
+				if ca.Acknowledged {
+					return false
+				}
+				ac0 := ctx.ControlClient.State.Aircraft[ca.Callsigns[0]]
+				return ac0.IsAssociated() && !ac0.STARSFlightPlan.DisableCA &&
 					ctx.Now.Before(ca.SoundEnd)
 			})
 	}
@@ -1389,11 +1379,12 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, aircraft []*av.Aircraft) {
 
 	playMSAWSound := !ps.DisableMSAW && func() bool {
 		for _, ac := range aircraft {
-			state := sp.Aircraft[ac.Callsign]
-			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW && !state.DisableMSAW &&
-				ctx.Now.Before(state.MSAWSoundEnd) {
-				return true
+			if ac.IsUnassociated() || ac.STARSFlightPlan.DisableMSAW {
+				return false
 			}
+			state := sp.Aircraft[ac.Callsign]
+			return state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW &&
+				ctx.Now.Before(state.MSAWSoundEnd)
 		}
 		return false
 	}()

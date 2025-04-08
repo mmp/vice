@@ -199,28 +199,21 @@ func (f FlightRules) String() string {
 	return [...]string{"Unknown", "IFR", "VFR", "DVFR", "SVFR"}[f]
 }
 
+// FlightPlan represents the flight plan from the perspective of the
+// Aircraft: who they are, what they're doing, how they're going to get
+// there.
 type FlightPlan struct {
-	Callsign       string
-	Rules          FlightRules
-	AircraftType   string
-	CruiseSpeed    int
-	AssignedSquawk Squawk // from ATC
-	// An ECID (CID) are three alpha-numeric characters (eg. 971, 43A,
-	// etc.) and is what ERAM assigns to a track to act as another way to
-	// identify that track. To execute commands, controllers may use the
-	// ECID instead of the aircrafts callsign.
-	ECID                   string
-	DepartureAirport       string
-	DepartTimeEst          int
-	DepartTimeActual       int
-	Altitude               int
-	ArrivalAirport         string
-	Hours, Minutes         int
-	FuelHours, FuelMinutes int
-	AlternateAirport       string
-	Exit                   string
-	Route                  string
-	Remarks                string
+	Callsign         string
+	Rules            FlightRules
+	AircraftType     string
+	CruiseSpeed      int
+	DepartureAirport string
+	Altitude         int
+	ArrivalAirport   string
+	AlternateAirport string
+	Exit             string
+	Route            string
+	Remarks          string
 }
 
 type FlightStrip struct {
@@ -330,34 +323,6 @@ const (
 
 func (t TransponderMode) String() string {
 	return [...]string{"Standby", "Altitude", "On"}[t]
-}
-
-func (fp FlightPlan) BaseType() string {
-	s := strings.TrimPrefix(fp.TypeWithoutSuffix(), "H/")
-	s = strings.TrimPrefix(s, "S/")
-	s = strings.TrimPrefix(s, "J/")
-	return s
-}
-
-func (fp FlightPlan) TypeWithoutSuffix() string {
-	// try to chop off equipment suffix
-	actypeFields := strings.Split(fp.AircraftType, "/")
-	switch len(actypeFields) {
-	case 3:
-		// Heavy (presumably), with suffix
-		return actypeFields[0] + "/" + actypeFields[1]
-	case 2:
-		if actypeFields[0] == "H" || actypeFields[0] == "S" || actypeFields[0] == "J" {
-			// Heavy or super, no suffix
-			return actypeFields[0] + "/" + actypeFields[1]
-		} else {
-			// No heavy, with suffix
-			return actypeFields[0]
-		}
-	default:
-		// Who knows, so leave it alone
-		return fp.AircraftType
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -24,7 +24,7 @@ import (
 )
 
 const initialSimSeconds = 20 * 60
-const initialSimControlledSeconds = 30
+const initialSimControlledSeconds = 90
 
 type RunwayLaunchState struct {
 	IFRSpawnRate float32
@@ -37,16 +37,18 @@ type RunwayLaunchState struct {
 	NextIFRSpawn time.Time
 	NextVFRSpawn time.Time
 
-	// Aircraft flow through two or three of the following lists.
-	// Hold for release purgatory.
+	// Aircraft follow the following flows:
+	// VFR, IFR no release: Gate -> Released -> Sequenced
+	// IFR release requires: Gate -> Held -> Released -> Sequenced
+
+	// At the gate, flight plan filed (if IFR), not yet ready to go
+	Gate []DepartureAircraft
+	// Ready to go, in hold for release purgatory.
 	Held []DepartureAircraft
-	// Released, either manually from Held, or VFR, or if there is no HFR
-	// at the airport, IFR departures go here initially.
+	// Ready to go.
 	Released []DepartureAircraft
 	// Sequenced departures, pulled from Released. These are launched in-order.
 	Sequenced []DepartureAircraft
-
-	BufferReleased bool
 
 	LastDeparture *DepartureAircraft
 
@@ -62,11 +64,12 @@ type DepartureAircraft struct {
 	SpawnTime     time.Time     // when it was first spawned
 	LaunchTime    time.Time     // when it was actually launched; used for wake turbulence separation, etc.
 
+	// When they're ready to leave the gate
+	DepartGate time.Time
+
 	// HFR-only.
-	AddedToList        bool
 	ReleaseRequested   bool
 	ReleaseDelay       time.Duration // minimum wait after release before the takeoff roll
-	AddToHFRListTime   time.Time
 	RequestReleaseTime time.Time
 }
 
@@ -217,12 +220,9 @@ func (s *Sim) addDepartureToPool(ac *av.Aircraft, runway string) {
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
 
+	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
-	if ac.HoldForRelease {
-		depState.Held = append(depState.Held, depac)
-	} else {
-		depState.Released = append(depState.Released, depac)
-	}
+	depState.Gate = append(depState.Gate, depac)
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
@@ -242,14 +242,14 @@ func (s *Sim) addAircraftNoLock(ac av.Aircraft) {
 		s.State.TotalVFR++
 	}
 
-	if s.State.IsIntraFacility(&ac) {
-		s.lg.Info("launched intrafacility", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-	} else if s.State.IsDeparture(&ac) {
+	if ac.IsDeparture() {
 		s.lg.Info("launched departure", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-	} else if s.State.IsArrival(&ac) {
+	} else if ac.IsArrival() {
 		s.lg.Info("launched arrival", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
-	} else {
+	} else if ac.IsOverflight() {
 		s.lg.Info("launched overflight", slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+	} else {
+		fmt.Printf("%s: launched unknown type?\n", ac.Callsign)
 	}
 }
 
@@ -436,7 +436,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 			} else if ac != nil {
 				if s.prespawnUncontrolledOnly && s.isControlled(ac, false) {
 					s.lg.Infof("%s: discarding arrival/overflight\n", ac.Callsign)
-					s.State.DeleteAircraft(ac)
+					s.deleteAircraft(ac)
 				} else {
 					s.addAircraftNoLock(*ac)
 				}
@@ -455,15 +455,9 @@ func (s *Sim) spawnDepartures() {
 			// passed since the last one.
 			if now.After(depState.NextIFRSpawn) {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
-					dropUncontrolled := s.prespawnUncontrolledOnly && s.isControlled(ac, true)
-					dropHFR := s.prespawn && ac.HoldForRelease
-					if !dropUncontrolled && !dropHFR {
-						s.addDepartureToPool(ac, runway)
-						r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-						depState.NextIFRSpawn = now.Add(randomWait(r, false))
-					} else {
-						s.State.DeleteAircraft(ac)
-					}
+					s.addDepartureToPool(ac, runway)
+					r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
+					depState.NextIFRSpawn = now.Add(randomWait(r, false))
 				}
 			}
 			if now.After(depState.NextVFRSpawn) {
@@ -487,7 +481,8 @@ func (s *Sim) updateDepartureSequence() {
 					callsign := func(dep DepartureAircraft) string {
 						return dep.Callsign + "/" + depRunway + "/" + s.State.Aircraft[dep.Callsign].FlightPlan.Exit
 					}
-					fmt.Printf("%s: Held %s Released %s Sequence %s\n", airport,
+					fmt.Printf("%s: Gate %s Held %s Released %s Sequence %s\n", airport,
+						strings.Join(util.MapSlice(depState.Gate, callsign), ", "),
 						strings.Join(util.MapSlice(depState.Held, callsign), ", "),
 						strings.Join(util.MapSlice(depState.Released, callsign), ", "),
 						strings.Join(util.MapSlice(depState.Sequenced, callsign), ", "))
@@ -501,24 +496,44 @@ func (s *Sim) updateDepartureSequence() {
 				_, ok := s.State.Aircraft[dep.Callsign]
 				return ok
 			}
+			depState.Gate = util.FilterSliceInPlace(depState.Gate, haveAc)
 			depState.Held = util.FilterSliceInPlace(depState.Held, haveAc)
 			depState.Released = util.FilterSliceInPlace(depState.Released, haveAc)
 			depState.Sequenced = util.FilterSliceInPlace(depState.Sequenced, haveAc)
 
+			// See if anyone at the gate is ready to go
+			depState.Gate = util.FilterSliceInPlace(depState.Gate,
+				func(dep DepartureAircraft) bool {
+					if now.Before(dep.DepartGate) {
+						return true // keep it in Gate
+					}
+					ac := s.State.Aircraft[dep.Callsign]
+					if ac.HoldForRelease {
+						dep.RequestReleaseTime = now.Add(time.Duration(60+rand.Intn(60)) * time.Second)
+						s.STARSComputer.AddHeldDeparture(ac)
+						depState.Held = append(depState.Held, dep)
+					} else {
+						depState.Released = append(depState.Released, dep)
+					}
+					changed()
+					return false // remove from Gate slice
+				})
+
 			// Handle hold for release aircraft
 			for i, held := range depState.Held {
-				if !held.AddedToList {
-					depState.Held[i].AddedToList = true
-					ac := s.State.Aircraft[depState.Held[i].Callsign]
-					s.State.STARSComputer().AddHeldDeparture(ac)
-				}
-			}
-			for i, held := range depState.Held {
-				if !now.After(held.RequestReleaseTime) {
-					// As above, ensure FIFO
+				if now.Before(held.RequestReleaseTime) {
+					// Ensure FIFO processing of held
 					break
 				}
+
 				if !held.ReleaseRequested {
+					if s.prespawnUncontrolledOnly {
+						// We got to this point but don't want controlled aircraft yet.
+						s.deleteAircraft(s.State.Aircraft[held.Callsign])
+						depState.Held = append(depState.Held[:i], depState.Held[:i+1]...)
+						changed()
+						break
+					}
 					depState.Held[i].ReleaseRequested = true
 					depState.Held[i].ReleaseDelay = time.Duration(20+rand.Intn(100)) * time.Second
 				}
@@ -535,8 +550,9 @@ func (s *Sim) updateDepartureSequence() {
 				}
 			}
 
-			minReleased := util.Select(depState.BufferReleased, 3, 1)
-			if len(depState.Released) >= minReleased || len(depState.Sequenced) == 0 {
+			// Try to keep about 10 minutes worth of departures in the Released pool.
+			minReleased := math.Max(1, int((depState.VFRSpawnRate+depState.IFRSpawnRate)/6))
+			if len(depState.Released) >= minReleased {
 				// Check for any released that have been hanging along a long time.
 				var maxWait time.Duration
 				maxWaitIdx := -1
@@ -590,23 +606,29 @@ func (s *Sim) updateDepartureSequence() {
 				dep := &depState.Sequenced[0]
 				ac := s.State.Aircraft[dep.Callsign]
 
-				// Launch!
-				ac.WaitingForLaunch = false
+				if s.prespawnUncontrolledOnly && s.isControlled(ac, true) {
+					// womp womp, discard it
+					depState.Sequenced = depState.Sequenced[1:]
+					s.deleteAircraft(ac)
+				} else {
+					// Launch!
+					ac.WaitingForLaunch = false
 
-				// Record the launch so we have it when we consider
-				// launching the next one.
-				dep.LaunchTime = now
-				depState.LastDeparture = dep
+					// Record the launch so we have it when we consider
+					// launching the next one.
+					dep.LaunchTime = now
+					depState.LastDeparture = dep
 
-				// Remove it from the pool of waiting departures.
-				depState.Sequenced = depState.Sequenced[1:]
+					// Remove it from the pool of waiting departures.
+					depState.Sequenced = depState.Sequenced[1:]
 
-				// Sometimes a departure from one runway should be
-				// considered when deciding if it's ok to launch from
-				// another runway (e.g., closely spaced parallel runways).
-				for rwy, state := range s.sameGroupRunways(airport, depRunway) {
-					s.lg.Infof("%s: %q departure also holding up %q", ac.Callsign, depRunway, rwy)
-					state.LastDeparture = dep
+					// Sometimes a departure from one runway should be
+					// considered when deciding if it's ok to launch from
+					// another runway (e.g., closely spaced parallel runways).
+					for rwy, state := range s.sameGroupRunways(airport, depRunway) {
+						s.lg.Infof("%s: %q departure also holding up %q", ac.Callsign, depRunway, rwy)
+						state.LastDeparture = dep
+					}
 				}
 
 				changed()
@@ -696,7 +718,7 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 
 func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *av.Aircraft, err error) {
 	depState := s.DepartureState[airport][runway]
-	if len(depState.Held) >= 5 || len(depState.Released) >= 5 || len(depState.Sequenced) >= 5 {
+	if len(depState.Gate) >= 10 {
 		// There's a backup; hold off on more.
 		return
 	}
@@ -791,17 +813,18 @@ func (s *Sim) cullDepartures(keep int, d []DepartureAircraft) []DepartureAircraf
 
 	for _, dep := range d[keep:] {
 		if ac, ok := s.State.Aircraft[dep.Callsign]; ok {
-			s.State.DeleteAircraft(ac)
+			s.deleteAircraft(ac)
 		}
 	}
 	return d[:keep]
 }
 
-func (d *RunwayLaunchState) reset(s *Sim) {
-	d.Held = s.cullDepartures(0, d.Held)
-	d.Released = s.cullDepartures(0, d.Released)
-	d.Sequenced = s.cullDepartures(0, d.Sequenced)
-	d.LastDeparture = nil
+func (d *RunwayLaunchState) cullDepartures(s *Sim) {
+	keep := int(d.IFRSpawnRate+d.VFRSpawnRate) / 6
+	d.Gate = s.cullDepartures(keep, d.Gate)
+	d.Held = s.cullDepartures(keep, d.Held)
+	d.Released = s.cullDepartures(keep, d.Released)
+	d.Sequenced = s.cullDepartures(keep, d.Sequenced)
 }
 
 func (d *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
@@ -809,12 +832,8 @@ func (d *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
 		return
 	}
 	d.IFRSpawnRate = r
-	d.BufferReleased = d.VFRSpawnRate+d.IFRSpawnRate > 30
 	d.NextIFRSpawn = s.State.SimTime.Add(randomWait(r*2, false))
-	keep := util.Select(r > 30, 2, util.Select(r > 15, 1, 0))
-	d.Held = s.cullDepartures(keep, d.Held)
-	d.Released = s.cullDepartures(keep, d.Released)
-	d.Sequenced = s.cullDepartures(keep, d.Sequenced)
+	d.cullDepartures(s)
 }
 
 func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
@@ -822,12 +841,8 @@ func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 		return
 	}
 	d.VFRSpawnRate = r
-	d.BufferReleased = d.VFRSpawnRate+d.IFRSpawnRate > 30
 	d.NextVFRSpawn = s.State.SimTime.Add(randomWait(r*2, false))
-	keep := util.Select(r > 30, 2, util.Select(r > 15, 1, 0))
-	d.Held = s.cullDepartures(keep, d.Held)
-	d.Released = s.cullDepartures(keep, d.Released)
-	d.Sequenced = s.cullDepartures(keep, d.Sequenced)
+	d.cullDepartures(s)
 }
 
 var badCallsigns map[string]interface{} = map[string]interface{}{
@@ -889,8 +904,7 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 		}
 	}
 
-	perf, ok := av.DB.AircraftPerformance[aircraft]
-	if !ok {
+	if _, ok := av.DB.AircraftPerformance[aircraft]; !ok {
 		// TODO: validation stage...
 		lg.Errorf("Aircraft %s not found in performance database from airline %+v",
 			aircraft, al)
@@ -943,18 +957,10 @@ func (ss *State) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Air
 		}
 	}
 
-	acType := aircraft
-	if perf.WeightClass == "H" {
-		acType = "H/" + acType
-	}
-	if perf.WeightClass == "J" {
-		acType = "J/" + acType
-	}
-
 	return &av.Aircraft{
 		Callsign: callsign,
 		Mode:     av.Altitude,
-	}, acType
+	}, aircraft
 }
 
 func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*av.Aircraft, error) {
@@ -985,12 +991,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	sq, err := s.State.ERAMComputer().CreateSquawk()
-	if err != nil {
-		return nil, err
-	}
-	ac.Squawk = sq
-	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
+	ac.InitializeFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
@@ -1012,18 +1013,22 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 		}
 	}
 
-	if err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr, arrivalController,
-		goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.lg); err != nil {
+	starsFp, err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr, arrivalController,
+		goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
+	if err != nil {
 		return nil, err
 	}
 
-	facility, ok := s.State.FacilityFromController(ac.TrackingController)
-	if !ok {
-		return nil, ErrUnknownControllerFacility
+	// Arrivals start out already-associated and with an enroute code.
+	sq, err := s.ERAMComputer.CreateSquawk()
+	if err != nil {
+		return nil, err
 	}
-	s.State.ERAMComputers.AddArrival(ac, facility, s.State.STARSFacilityAdaptation, s.State.SimTime)
+	ac.Squawk = sq
+	starsFp.AssignedSquawk = sq
+	ac.AssociateFlightPlan(&starsFp)
 
-	return ac, nil
+	return ac, err
 }
 
 func (s *Sim) CreateIFRDeparture(departureAirport, runway, category string) (*av.Aircraft, error) {
@@ -1089,24 +1094,28 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	sq, err := s.State.ERAMComputer().CreateSquawk()
+	ac.InitializeFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
+
+	exitRoute := rwy.ExitRoutes[dep.Exit]
+	starsFP, err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.STARSFacilityAdaptation.Scratchpads,
+		s.State.PrimaryController, s.State.MultiControllers, s.State /* wind */, s.State.SimTime, s.lg)
+	if err != nil {
+		return nil, err
+	}
+
+	sq, err := s.ERAMComputer.CreateSquawk()
 	if err != nil {
 		return nil, err
 	}
 	ac.Squawk = sq
-	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
+	starsFP.AssignedSquawk = sq
 
-	exitRoute := rwy.ExitRoutes[dep.Exit]
-	if err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.STARSFacilityAdaptation.Scratchpads,
-		s.State.PrimaryController, s.State.MultiControllers, s.State /* wind */, s.lg); err != nil {
-		return nil, err
-	}
+	// Departures aren't immediately associated, but the STARSComputer will
+	// hold on to their flight plans for now.
+	_, err = s.STARSComputer.CreateFlightPlan(starsFP)
 
-	eram := s.State.ERAMComputer()
-	eram.AddDeparture(ac.FlightPlan, s.State.TRACON, s.State.SimTime)
-
-	return ac, nil
+	return ac, err
 }
 
 func (s *Sim) CreateOverflight(group string) (*av.Aircraft, error) {
@@ -1126,14 +1135,7 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	sq, err := s.State.ERAMComputer().CreateSquawk()
-	if err != nil {
-		return nil, err
-	}
-	ac.Squawk = sq
-
-	ac.FlightPlan = ac.NewFlightPlan(av.IFR, acType, airline.DepartureAirport,
-		airline.ArrivalAirport)
+	ac.InitializeFlightPlan(av.IFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
 
 	// Figure out which controller will (for starters) get the handoff. For
 	// single-user, it's easy.  Otherwise, figure out which control
@@ -1154,23 +1156,29 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 		}
 	}
 
-	if err := ac.InitializeOverflight(&of, controller, s.State.NmPerLongitude, s.State.MagneticVariation,
-		s.State /* wind */, s.lg); err != nil {
+	starsFp, err := ac.InitializeOverflight(&of, controller, s.State.NmPerLongitude, s.State.MagneticVariation,
+		s.State /* wind */, s.State.SimTime, s.lg)
+	if err != nil {
 		return nil, err
 	}
+
+	// Like departures, these are already associated
+	sq, err := s.ERAMComputer.CreateSquawk()
+	if err != nil {
+		return nil, err
+	}
+	ac.Squawk = sq
+	starsFp.AssignedSquawk = sq
+	ac.AssociateFlightPlan(&starsFp)
 
 	return ac, nil
 }
 
 func makeDepartureAircraft(ac *av.Aircraft, now time.Time, wind av.WindModel) DepartureAircraft {
 	d := DepartureAircraft{
-		Callsign:  ac.Callsign,
-		SpawnTime: now,
-	}
-
-	if ac.HoldForRelease {
-		d.AddToHFRListTime = now.Add(time.Duration(30+rand.Intn(30)) * time.Second)
-		d.RequestReleaseTime = d.AddToHFRListTime.Add(time.Duration(60+rand.Intn(60)) * time.Second)
+		Callsign:   ac.Callsign,
+		SpawnTime:  now,
+		DepartGate: now.Add(time.Duration(5+rand.Intn(5)) * time.Minute),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
@@ -1206,7 +1214,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	} else if r < .03 {
 		ac.Mode = av.Standby // flat out off
 	}
-	ac.FlightPlan = ac.NewFlightPlan(rules, acType, depart, arrive)
+	ac.InitializeFlightPlan(rules, acType, depart, arrive)
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 

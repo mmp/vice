@@ -558,7 +558,8 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	fa := sg.STARSFacilityAdaptation
+	// STARSFacilityAdaptaion checks
+	fa := &sg.STARSFacilityAdaptation
 	if len(s.DefaultMaps) > 0 {
 		if len(fa.ControllerConfigs) > 0 {
 			e.ErrorString("\"default_maps\" is not allowed when \"controller_configs\" is set in \"stars_config\"")
@@ -603,6 +604,33 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 	}
+
+	e.Push("\"flight_plan\"")
+	fa.FlightPlan.QuickACID = strings.ToUpper(fa.FlightPlan.QuickACID)
+	if qa := fa.FlightPlan.QuickACID; qa == "" {
+		fa.FlightPlan.QuickACID = "VCE"
+	} else {
+		if qa[0] < 'A' || qa[0] > 'Z' {
+			e.ErrorString("\"quick_acid\" must start with a letter")
+		}
+		if len(qa) > 3 {
+			e.ErrorString("\"quick_acid\" can't be more than three characters")
+		}
+	}
+	for abbrev, exp := range fa.FlightPlan.ACIDExpansions {
+		if len(abbrev) != 1 {
+			e.ErrorString("Abbreviation %q is not allowed: must be a single character", abbrev)
+		}
+		if !strings.Contains("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+.*^/", abbrev) {
+			e.ErrorString("Abbreviation %q must be A-Z, 0-9, +, ., *, ^, or /", abbrev)
+		}
+		if len(exp) == 0 {
+			e.ErrorString("Must specify an expansion for %q", abbrev)
+		} else if exp[0] < 'A' || exp[0] > 'Z' {
+			e.ErrorString("Expansion %q for %q must start with a letter", exp, abbrev)
+		}
+	}
+	e.Pop()
 
 	if s.VFRRateScale == nil { // unspecified -> default to 1
 		one := float32(1)

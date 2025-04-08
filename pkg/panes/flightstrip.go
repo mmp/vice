@@ -134,39 +134,16 @@ func (fsp *FlightStripPane) getCID(callsign string) int {
 	return start
 }
 
-func (fsp *FlightStripPane) getAircraftTime(ctx *Context, callsign string) time.Time {
-	if t, ok := fsp.AircraftTimes[callsign]; ok {
-		return t
-	}
-
-	// Hallucinate a random time around the present for the aircraft.
-	delta := time.Duration(-20 + rand.Intn(40))
-	t := ctx.ControlClient.CurrentTime().Add(delta * time.Minute)
-	if rand.Intn(10) != 9 {
-		// 9 times out of 10, make it a multiple of 5 minutes
-		dm := t.Minute() % 5
-		t = t.Add(time.Duration(5-dm) * time.Minute)
-	}
-
-	fsp.AircraftTimes[callsign] = t
-	return t
-}
-
 func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) {
 	if _, ok := fsp.addedAircraft[ac.Callsign]; ok {
 		// We've seen it before.
 		return
 	}
-	if ac.FlightPlan == nil || ac.FlightPlan.Rules != av.IFR {
+	if ac.FlightPlan.Rules != av.IFR || ac.IsUnassociated() {
 		return
 	}
 
-	add := fsp.AutoAddTracked && ac.TrackingController == ss.UserTCP && ac.FlightPlan != nil
-	add = add || ac.TrackingController == "" && fsp.AutoAddDepartures && ss.IsDeparture(ac)
-	add = add || ac.TrackingController == "" && fsp.AutoAddArrivals && ss.IsArrival(ac)
-	add = add || ac.TrackingController == "" && fsp.AutoAddOverflights && ss.IsOverflight(ac)
-
-	if add {
+	if ac.STARSFlightPlan.TrackingController == ss.UserTCP {
 		fsp.strips = append(fsp.strips, ac.Callsign)
 		fsp.addedAircraft[ac.Callsign] = nil
 	}
@@ -215,40 +192,40 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && fsp.AddPushed {
 				fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 			}
+
 		case sim.InitiatedTrackEvent:
-			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.UserTCP {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && ac.IsAssociated() {
+				if fsp.AutoAddTracked && ac.STARSFlightPlan.TrackingController == ctx.ControlClient.UserTCP {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
-		case sim.DroppedTrackEvent:
-			if fsp.AutoRemoveDropped {
-				remove(event.Callsign)
-			}
+
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.UserTCP {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && ac.IsAssociated() {
+				if fsp.AutoAddAcceptedHandoffs && ac.STARSFlightPlan.TrackingController == ctx.ControlClient.UserTCP {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
+
 		case sim.HandoffControlEvent:
-			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.UserTCP {
+			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok && ac.IsAssociated() {
+				if fsp.AutoRemoveHandoffs && ac.STARSFlightPlan.TrackingController != ctx.ControlClient.UserTCP {
 					remove(event.Callsign)
 				}
 			}
 		}
 	}
 
-	// Remove ones that have been deleted.
+	// Remove ones that have been deleted or have had their flight plan deleted.
 	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign string) bool {
-		return ctx.ControlClient.Aircraft[callsign] != nil
+		ac := ctx.ControlClient.Aircraft[callsign]
+		return ac != nil && ac.IsAssociated()
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign string) bool {
 			ac := ctx.ControlClient.Aircraft[callsign]
-			return ac != nil && ctx.ControlClient.State.IsDeparture(ac)
+			return ac != nil && ac.IsDeparture()
 		}
 		dep := util.FilterSlice(fsp.strips, isDeparture)
 		arr := util.FilterSlice(fsp.strips, func(callsign string) bool { return !isDeparture(callsign) })
@@ -447,13 +424,14 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 		// First column; 3 entries: callsign, aircraft type, 3-digit id number
 		cid := fmt.Sprintf("%03d", fsp.getCID(callsign))
-		drawColumn(callsign, ac.CWT()+"/"+fp.BaseType(), cid, width0, false)
+		drawColumn(callsign, ac.CWT()+"/"+fp.AircraftType, cid, width0, false)
 
 		x += width0
-		if ctx.ControlClient.State.IsDeparture(ac) {
+		if ac.IsDeparture() && ac.IsAssociated() {
 			// Second column; 3 entries: squawk, proposed time, requested altitude
-			proposedTime := "P" + fsp.getAircraftTime(ctx, callsign).UTC().Format("1504")
-			drawColumn(fp.AssignedSquawk.String(), proposedTime, strconv.Itoa(fp.Altitude/100),
+			sfp := ac.STARSFlightPlan
+			proposedTime := "P" + sfp.ETAOrPTD.UTC().Format("1504")
+			drawColumn(sfp.AssignedSquawk.String(), proposedTime, strconv.Itoa(sfp.RequestedAltitude/100),
 				width1, true)
 
 			// Third column: departure airport, (empty), (empty)
@@ -465,26 +443,28 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			// Fourth column: route and destination airport
 			route := formatRoute(fp.Route+" "+fp.ArrivalAirport, widthCenter, 3)
 			drawColumn(route[0], route[1], route[2], widthCenter, false)
-		} else if ctx.ControlClient.State.IsArrival(ac) {
+		} else if ac.IsArrival() && ac.IsAssociated() {
 			// Second column; 3 entries: squawk, previous fix, coordination fix
-			drawColumn(fp.AssignedSquawk.String(), "", "", width1, true)
+			sfp := ac.STARSFlightPlan
+			drawColumn(sfp.AssignedSquawk.String(), "", "", width1, true)
 
 			x += width1
 			// Third column: eta of arrival at coordination fix / destination airport, empty, empty
-			arrivalTime := "A" + fsp.getAircraftTime(ctx, callsign).UTC().Format("1504")
+			arrivalTime := "A" + sfp.ETAOrPTD.UTC().Format("1504")
 			drawColumn(arrivalTime, "", "", width2, false)
 
 			// Fourth column: IFR, destination airport
 			x += width2
 			drawColumn("IFR", "", fp.ArrivalAirport, widthCenter, false)
-		} else {
+		} else if ac.IsAssociated() {
 			// Overflight
 			// Second column; 3 entries: squawk, entry fix, exit fix
-			drawColumn(fp.AssignedSquawk.String(), "", "", width1, true)
+			sfp := ac.STARSFlightPlan
+			drawColumn(sfp.AssignedSquawk.String(), "", "", width1, true)
 
 			x += width1
 			// Third column: eta of arrival at entry coordination fix, empty, empty
-			arrivalTime := "E" + fsp.getAircraftTime(ctx, callsign).UTC().Format("1504")
+			arrivalTime := "E" + sfp.ETAOrPTD.UTC().Format("1504")
 			drawColumn(arrivalTime, "", "", width2, false)
 
 			// Fourth column: altitude, route

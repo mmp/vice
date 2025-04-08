@@ -861,7 +861,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransfo
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, aircraft []*av.Aircraft, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1599,13 +1599,13 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 			continue
 		}
 
-		if ac.TrackingController == "" && !state.DisplayPTL {
+		if ac.IsUnassociated() && !state.DisplayPTL {
 			// untracked only PTLs if they're individually enabled (I think); 6-13.
 			continue
 		}
 		// We have it or it's an inbound handoff to us.
-		ourTrack := ac.TrackingController == ctx.ControlClient.UserTCP ||
-			ac.HandoffTrackController == ctx.ControlClient.UserTCP
+		ourTrack := ac.IsAssociated() && (ac.STARSFlightPlan.TrackingController == ctx.ControlClient.UserTCP ||
+			ac.STARSFlightPlan.HandoffTrackController == ctx.ControlClient.UserTCP)
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}
@@ -1630,7 +1630,7 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, aircraft []*av.Aircraft, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	now := ctx.ControlClient.SimTime
 	ld := renderer.GetColoredLinesDrawBuilder()

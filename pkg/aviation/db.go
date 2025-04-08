@@ -1246,53 +1246,6 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) *AdaptationFix {
-	waypoints := strings.Fields(route)
-	for fix, adaptationFixes := range ea.CoordinationFixes {
-		if slices.Contains(waypoints, fix) {
-			adaptationFix, err := adaptationFixes.Fix(altitude)
-			if err == nil && adaptationFix.Type != ZoneBasedFix {
-				return &adaptationFix
-			}
-		}
-	}
-	return nil
-}
-
-func (ea ERAMAdaptation) AdaptationFixForAltitude(fix string, altitude string) *AdaptationFix {
-	if adaptationFixes, ok := ea.CoordinationFixes[fix]; !ok {
-		return nil
-	} else if af, err := adaptationFixes.Fix(altitude); err != nil {
-		return nil
-	} else {
-		return &af
-	}
-}
-
-func (fixes AdaptationFixes) Fix(altitude string) (AdaptationFix, error) {
-	switch len(fixes) {
-	case 0:
-		return AdaptationFix{}, ErrNoMatchingFix
-
-	case 1:
-		return fixes[0], nil
-
-	default:
-		// TODO: eventually make a function to parse a string that has a block altitude (for example)
-		// and return an int (figure out how STARS handles that). For now strconv.Atoi can be used
-		if alt, err := strconv.Atoi(altitude); err != nil {
-			return AdaptationFix{}, err
-		} else {
-			for _, fix := range fixes {
-				if alt >= fix.Altitude[0] && alt <= fix.Altitude[1] {
-					return fix, nil
-				}
-			}
-			return AdaptationFix{}, ErrNoMatchingFix
-		}
-	}
-}
-
 // CWTApproachSeparation returns the required separation between aircraft of the two
 // given CWT categories. If 0 is returned, minimum radar separation should be used.
 func CWTApproachSeparation(front, back string) float32 {
