@@ -183,7 +183,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 	consolidateRadioTransmissions := func(events []sim.Event) []sim.Event {
 		canConsolidate := func(a, b sim.Event) bool {
 			return a.Type == sim.RadioTransmissionEvent && b.Type == sim.RadioTransmissionEvent &&
-				a.Callsign == b.Callsign && a.Type == b.Type && a.ToController == b.ToController
+				a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
 		}
 		var c []sim.Event
 		for _, e := range events {
@@ -215,15 +215,14 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Note: this is buggy if we process multiple senders in a
 			// single call here, but that shouldn't happen...
 
-			radioCallsign := event.Callsign
+			radioCallsign := string(event.ADSBCallsign)
 			if idx := strings.IndexAny(radioCallsign, "0123456789"); idx != -1 {
 				// Try to get the telephony.
 				icao, flight := radioCallsign[:idx], radioCallsign[idx:]
 				if telephony, ok := av.DB.Callsigns[icao]; ok {
 					radioCallsign = telephony + " " + flight
-					if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil {
-						fp := ac.FlightPlan
-						if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+					if trk, ok := ctx.ControlClient.State.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsAssociated() {
+						if perf, ok := av.DB.AircraftPerformance[trk.FlightPlan.AircraftType]; ok {
 							if perf.WeightClass == "H" {
 								radioCallsign += " heavy"
 							} else if perf.WeightClass == "J" {
@@ -245,7 +244,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok {
 					name = ctrl.RadioName
 				}
-				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ac.IsDeparture() {
+				if trk, ok := ctx.ControlClient.State.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsDeparture() {
 					// Always refer to the controller as "departure" for departing aircraft.
 					name = strings.ReplaceAll(name, "approach", "departure")
 				}
@@ -264,7 +263,8 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
 				}
 			}
-			ctx.Lg.Debug("radio_transmission", slog.String("callsign", event.Callsign), slog.Any("message", msg))
+			ctx.Lg.Debug("radio_transmission", slog.String("adsb_callsign", string(event.ADSBCallsign)),
+				slog.Any("message", msg))
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:

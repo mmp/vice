@@ -834,7 +834,7 @@ type LaunchDeparture struct {
 	Airport            string
 	Runway             string
 	Category           string
-	LastLaunchCallsign string
+	LastLaunchCallsign av.ADSBCallsign
 	LastLaunchTime     time.Time
 	TotalLaunches      int
 }
@@ -849,7 +849,7 @@ type LaunchArrivalOverflight struct {
 	Aircraft           av.Aircraft
 	Group              string
 	Airport            string
-	LastLaunchCallsign string
+	LastLaunchCallsign av.ADSBCallsign
 	LastLaunchTime     time.Time
 	TotalLaunches      int
 }
@@ -928,7 +928,7 @@ func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflig
 	}
 }
 
-func (lc *LaunchControlWindow) getLastDeparture(airport, runway string) (callsign string, launch time.Time) {
+func (lc *LaunchControlWindow) getLastDeparture(airport, runway string) (callsign av.ADSBCallsign, launch time.Time) {
 	match := func(dep *LaunchDeparture) bool {
 		return dep.Airport == airport && dep.Runway == runway
 	}
@@ -1026,11 +1026,11 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 		if lc.controlClient.LaunchConfig.Mode == sim.LaunchManual {
 			mitAndTime := func(ac *av.Aircraft, launchPosition math.Point2LL,
-				lastLaunchCallsign string, lastLaunchTime time.Time) {
+				lastLaunchCallsign av.ADSBCallsign, lastLaunchTime time.Time) {
 
 				imgui.TableNextColumn()
-				if prev := lc.controlClient.Aircraft[lastLaunchCallsign]; prev != nil {
-					dist := math.NMDistance2LL(prev.Position(), launchPosition)
+				if prev, ok := lc.controlClient.GetTrackByCallsign(lastLaunchCallsign); ok {
+					dist := math.NMDistance2LL(prev.Location, launchPosition)
 					imgui.Text(fmt.Sprintf("%.1f", dist))
 
 					imgui.TableNextColumn()
@@ -1115,7 +1115,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
-						if dep.Aircraft.Callsign != "" {
+						if dep.Aircraft.ADSBCallsign != "" {
 							imgui.TableNextColumn()
 							imgui.Text(dep.Aircraft.FlightPlan.AircraftType)
 
@@ -1128,7 +1128,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 								lc.controlClient.LaunchDeparture(dep.Aircraft, dep.Runway)
-								dep.LastLaunchCallsign = dep.Aircraft.Callsign
+								dep.LastLaunchCallsign = dep.Aircraft.ADSBCallsign
 								dep.LastLaunchTime = lc.controlClient.CurrentTime()
 								dep.TotalLaunches++
 
@@ -1190,7 +1190,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
 
-						if dep.Aircraft.Callsign != "" {
+						if dep.Aircraft.ADSBCallsign != "" {
 							imgui.TableNextColumn()
 							imgui.Text(dep.Aircraft.FlightPlan.ArrivalAirport)
 
@@ -1203,7 +1203,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 								lc.controlClient.LaunchDeparture(dep.Aircraft, dep.Runway)
-								dep.LastLaunchCallsign = dep.Aircraft.Callsign
+								dep.LastLaunchCallsign = dep.Aircraft.ADSBCallsign
 								dep.LastLaunchTime = lc.controlClient.CurrentTime()
 								dep.TotalLaunches++
 
@@ -1296,7 +1296,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(arof.TotalLaunches))
 
-						if arof.Aircraft.Callsign != "" {
+						if arof.Aircraft.ADSBCallsign != "" {
 							imgui.TableNextColumn()
 							imgui.Text(arof.Aircraft.FlightPlan.AircraftType)
 
@@ -1306,7 +1306,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 								lc.controlClient.LaunchArrivalOverflight(arof.Aircraft)
-								arof.LastLaunchCallsign = arof.Aircraft.Callsign
+								arof.LastLaunchCallsign = arof.Aircraft.ADSBCallsign
 								arof.LastLaunchTime = lc.controlClient.CurrentTime()
 								arof.TotalLaunches++
 
@@ -1353,9 +1353,9 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 	releaseAircraft := lc.controlClient.State.GetRegularReleaseDepartures()
 	if len(releaseAircraft) > 0 && imgui.CollapsingHeader("Hold For Release") {
-		slices.SortFunc(releaseAircraft, func(a, b *av.Aircraft) int {
+		slices.SortFunc(releaseAircraft, func(a, b sim.ReleaseDeparture) int {
 			// Just by airport, otherwise leave in FIFO order
-			return strings.Compare(a.FlightPlan.DepartureAirport, b.FlightPlan.DepartureAirport)
+			return strings.Compare(a.DepartureAirport, b.DepartureAirport)
 		})
 
 		if imgui.BeginTableV("Releases", 5, flags, imgui.Vec2{tableScale * 600, 0}, 0) {
@@ -1368,23 +1368,23 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 			lastAp := ""
 			for _, ac := range releaseAircraft {
-				imgui.PushID(ac.Callsign)
+				imgui.PushID(string(ac.ADSBCallsign))
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.DepartureAirport)
+				imgui.Text(ac.DepartureAirport)
 				imgui.TableNextColumn()
-				imgui.Text(ac.Callsign)
+				imgui.Text(string(ac.ADSBCallsign))
 				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.AircraftType)
+				imgui.Text(ac.AircraftType)
 				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.Exit)
-				if ac.FlightPlan.DepartureAirport != lastAp && !ac.Released {
+				imgui.Text(ac.Exit)
+				if ac.DepartureAirport != lastAp && !ac.Released {
 					// Only allow releasing the first-up unreleased one.
-					lastAp = ac.FlightPlan.DepartureAirport
+					lastAp = ac.DepartureAirport
 					imgui.TableNextColumn()
 					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-						lc.controlClient.ReleaseDeparture(ac.Callsign, nil,
-							func(err error) { lc.lg.Errorf("%s: %v", ac.Callsign, err) })
+						lc.controlClient.ReleaseDeparture(ac.ADSBCallsign, nil,
+							func(err error) { lc.lg.Errorf("%s: %v", ac.ADSBCallsign, err) })
 					}
 				}
 				imgui.PopID()

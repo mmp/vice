@@ -64,11 +64,13 @@ func makeSTARSComputer(id string, beaconBank int) *STARSComputer {
 	return sc
 }
 
-func (sc *STARSComputer) ReleaseDeparture(callsign string) error {
-	idx := slices.IndexFunc(sc.HoldForRelease, func(ac *av.Aircraft) bool { return ac.Callsign == callsign })
+func (sc *STARSComputer) ReleaseDeparture(callsign av.ADSBCallsign) error {
+	idx := slices.IndexFunc(sc.HoldForRelease,
+		func(ac *av.Aircraft) bool { return ac.ADSBCallsign == callsign })
 	if idx == -1 {
 		return av.ErrNoAircraftForCallsign
 	}
+
 	if sc.HoldForRelease[idx].Released {
 		return ErrAircraftAlreadyReleased
 	} else {
@@ -97,7 +99,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 			}
 
 			var match *av.Aircraft
-			for _, ac := range s.State.Aircraft {
+			for _, ac := range s.Aircraft {
 				if ac.IsAirborne() && ac.Squawk == fp.AssignedSquawk {
 					if match != nil { // already found another match
 						match = nil
@@ -112,7 +114,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 			return match == nil // keep it in sc.FlightPlans if not match
 		})
 
-	for _, ac := range s.State.Aircraft {
+	for _, ac := range s.Aircraft {
 		if !ac.IsAirborne() || ac.IsAssociated() || ac.Squawk == 0o1200 {
 			continue
 		}
@@ -122,7 +124,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 		// are visible in STARS so they are initially unassociated for a
 		// few ticks.
 		if ac.IsDeparture() && float32(ac.Altitude()) > ac.DepartureAirportElevation()+200 {
-			fp := sc.takeFlightPlanByACID(ac.Callsign)
+			fp := sc.takeFlightPlanByACID(av.ACID(ac.ADSBCallsign)) // we know departures have ADSB==ACID
 			if fp == nil {
 				// It may be nil e.g., if track has been dropped.
 				continue
@@ -133,7 +135,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 			if ac.STARSFlightPlan.TrackingController == "" {
 				// It will go to a human controller; virtual controllers get ownership
 				// immediately on spawn in Aircraft InitializeDeparture().
-				tcp, ok := s.State.DepartureController(ac, s.lg)
+				tcp, ok := s.State.DepartureController(ac.DepartureContactController, s.lg)
 				if !ok {
 					s.lg.Warn("Unable to resolve departure controller", slog.Any("aircraft", ac))
 					tcp = s.State.PrimaryController
@@ -143,12 +145,12 @@ func (sc *STARSComputer) Update(s *Sim) {
 
 			// Remove it from the released departures list
 			sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
-				func(ac2 *av.Aircraft) bool { return ac.Callsign == ac2.Callsign })
+				func(ac2 *av.Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })
 		}
 	}
 }
 
-func (sc *STARSComputer) lookupFlightPlanByACID(acid string) *av.STARSFlightPlan {
+func (sc *STARSComputer) lookupFlightPlanByACID(acid av.ACID) *av.STARSFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
 		func(fp av.STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		return &sc.FlightPlans[idx]
@@ -156,7 +158,7 @@ func (sc *STARSComputer) lookupFlightPlanByACID(acid string) *av.STARSFlightPlan
 	return nil
 }
 
-func (sc *STARSComputer) takeFlightPlanByACID(acid string) *av.STARSFlightPlan {
+func (sc *STARSComputer) takeFlightPlanByACID(acid av.ACID) *av.STARSFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
 		func(fp av.STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		// copy so we don't return a pointer to the slice memory which will be reused...
@@ -221,13 +223,13 @@ func (sc *STARSComputer) DeleteAircraft(ac *av.Aircraft) {
 		sc.returnListIndex(fp.ListIndex)
 		sc.SquawkCodePool.Return(fp.AssignedSquawk)
 	}
-	if fp := sc.takeFlightPlanByACID(ac.Callsign); fp != nil {
+	if fp := sc.takeFlightPlanByACID(av.ACID(ac.ADSBCallsign)); fp != nil {
 		sc.returnListIndex(fp.ListIndex)
 		sc.SquawkCodePool.Return(fp.AssignedSquawk)
 	}
 
 	sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
-		func(a *av.Aircraft) bool { return ac.Callsign == a.Callsign })
+		func(a *av.Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 }
 
 /*

@@ -370,7 +370,7 @@ type AirspaceAwareness struct {
 }
 
 type STARSFlightPlan struct {
-	ACID                  string
+	ACID                  ACID
 	EntryFix              string
 	ExitFix               string
 	ExitFixIsIntermediate bool
@@ -400,8 +400,6 @@ type STARSFlightPlan struct {
 
 	RNAV bool
 
-	Location math.Point2LL // set for unsupported datablocks
-
 	PointOutHistory             []string
 	InhibitModeCAltitudeDisplay bool
 	SPCOverride                 string
@@ -421,8 +419,10 @@ type STARSFlightPlan struct {
 	RedirectedHandoff   RedirectedHandoff
 }
 
+type ACID string
+
 type STARSFlightPlanSpecifier struct {
-	ACID                  util.Optional[string]
+	ACID                  util.Optional[ACID]
 	EntryFix              util.Optional[string]
 	ExitFix               util.Optional[string]
 	ExitFixIsIntermediate util.Optional[bool]
@@ -494,8 +494,6 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 
 		RNAV: s.RNAV.GetOr(false),
 
-		Location: s.Location.GetOr(math.Point2LL{}),
-
 		PointOutHistory:             s.PointOutHistory.GetOr(nil),
 		InhibitModeCAltitudeDisplay: s.InhibitModeCAltitudeDisplay.GetOr(false),
 		SPCOverride:                 s.SPCOverride.GetOr(""),
@@ -559,9 +557,6 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.RNAV.IsSet {
 		fp.RNAV = spec.RNAV.Get()
-	}
-	if spec.Location.IsSet {
-		fp.Location = spec.Location.Get()
 	}
 	if spec.PointOutHistory.IsSet {
 		fp.PointOutHistory = spec.PointOutHistory.Get()

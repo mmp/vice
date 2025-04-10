@@ -17,13 +17,35 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+type RadarTrack struct {
+	ADSBCallsign ADSBCallsign
+	Squawk       Squawk
+	Mode         TransponderMode
+	Altitude     float32
+	Location     math.Point2LL
+	Heading      float32
+	Groundspeed  float32
+}
+
+func (ac *Aircraft) GetRadarTrack() RadarTrack {
+	return RadarTrack{
+		ADSBCallsign: ac.ADSBCallsign,
+		Squawk:       ac.Squawk,
+		Mode:         ac.Mode,
+		Altitude:     ac.Altitude(),
+		Location:     ac.Position(),
+		Heading:      ac.Heading(),
+		Groundspeed:  ac.GS(),
+	}
+}
+
 type Aircraft struct {
 	// This is ADS-B callsign of the aircraft. Just because different the
 	// callsign in the flight plan can be different across multiple STARS
 	// facilities, so two different facilities can show different
 	// callsigns; however, the ADS-B callsign is transmitted from the
 	// aircraft and would be the same to all facilities.
-	Callsign string
+	ADSBCallsign ADSBCallsign
 
 	Squawk Squawk
 	Mode   TransponderMode
@@ -60,6 +82,10 @@ type Aircraft struct {
 	WaypointHandoffController string
 }
 
+type ADSBCallsign string
+
+func (c ADSBCallsign) String() string { return string(c) }
+
 type PilotResponse struct {
 	Message    string
 	Unexpected bool // should it be highlighted in the UI
@@ -70,7 +96,6 @@ type PilotResponse struct {
 
 func (ac *Aircraft) InitializeFlightPlan(r FlightRules, acType, dep, arr string) {
 	ac.FlightPlan = FlightPlan{
-		Callsign:         ac.Callsign,
 		Rules:            r,
 		AircraftType:     acType,
 		DepartureAirport: dep,
@@ -181,7 +206,7 @@ func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
 
 func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
 	if lg != nil {
-		lg = lg.With(slog.String("callsign", ac.Callsign))
+		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 
 	passedWaypoint := ac.Nav.Update(wind, &ac.FlightPlan, lg)
@@ -397,7 +422,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 	}
 	ac.TypeOfFlight = FlightTypeArrival
 
-	nav := MakeArrivalNav(ac.Callsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation,
+	nav := MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation,
 		wind, lg)
 	if nav == nil {
 		return STARSFlightPlan{}, fmt.Errorf("error initializing Nav")
@@ -417,17 +442,17 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 	}
 
 	if arr.ExpectApproach.A != nil {
-		lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
 		ac.ExpectApproach(*arr.ExpectApproach.A, ap, lg)
 	} else if arr.ExpectApproach.B != nil {
 		if app, ok := (*arr.ExpectApproach.B)[ac.FlightPlan.ArrivalAirport]; ok {
-			lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+			lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
 			ac.ExpectApproach(app, ap, lg)
 		}
 	}
 
 	return STARSFlightPlan{
-		ACID:     ac.Callsign,
+		ACID:     ACID(ac.ADSBCallsign),
 		EntryFix: "", // TODO
 		ExitFix:  util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
 		ETAOrPTD: getAircraftTime(now),
@@ -484,7 +509,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	ac.TypeOfFlight = FlightTypeDeparture
 
 	randomizeAltitudeRange := ac.FlightPlan.Rules == VFR
-	nav := MakeDepartureNav(ac.Callsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
+	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
@@ -496,7 +521,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
 	sfp := STARSFlightPlan{
-		ACID:     ac.Callsign,
+		ACID:     ACID(ac.ADSBCallsign),
 		EntryFix: util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:  shortExit,
 		ETAOrPTD: getAircraftTime(now),
@@ -530,7 +555,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 			ctrl, err = multiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
 			if err != nil {
 				lg.Error("unable to get departure controller", slog.Any("error", err),
-					slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
+					slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
 			}
 		}
 		if ctrl == "" {
@@ -560,7 +585,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt i
 	ac.FlightPlan.Altitude = math.Min(alt, int(perf.Ceiling))
 	ac.TypeOfFlight = FlightTypeDeparture
 
-	nav := MakeDepartureNav(ac.Callsign, ac.FlightPlan, perf, 0, /* assigned alt */
+	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
 		ac.FlightPlan.Altitude /* cleared alt */, 0 /* speed restriction */, wp,
 		randomizeAltitudeRange, nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
@@ -589,7 +614,7 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPe
 	ac.TypeOfFlight = FlightTypeOverflight
 	ac.WaypointHandoffController = controller
 
-	nav := MakeOverflightNav(ac.Callsign, of, ac.FlightPlan, perf, nmPerLongitude,
+	nav := MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
 		magneticVariation, wind, lg)
 	if nav == nil {
 		return STARSFlightPlan{}, fmt.Errorf("error initializing Nav")
@@ -597,7 +622,7 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPe
 	ac.Nav = *nav
 
 	return STARSFlightPlan{
-		ACID:     ac.Callsign,
+		ACID:     ACID(ac.ADSBCallsign),
 		EntryFix: "", // TODO
 		ExitFix:  "", // TODO
 		ETAOrPTD: getAircraftTime(now),
@@ -629,7 +654,7 @@ func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) string {
 
 func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {
 	if ac.FlightPlan.Exit == "" {
-		lg.Warn("unset \"exit\" for departure", slog.String("callsign", ac.Callsign))
+		lg.Warn("unset \"exit\" for departure", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 	ac.Nav.DepartOnCourse(float32(ac.FlightPlan.Altitude), ac.FlightPlan.Exit)
 }
@@ -736,17 +761,6 @@ func (ac *Aircraft) CWT() string {
 		return "NOWGT"
 	}
 	return perf.Category.CWT
-}
-
-func (ac *Aircraft) HandingOffTo(tcp string) bool {
-	if ac.IsUnassociated() {
-		return false
-	}
-	sfp := ac.STARSFlightPlan
-
-	return sfp.HandoffTrackController == tcp &&
-		(!slices.Contains(sfp.RedirectedHandoff.Redirector, tcp) || // not a redirector
-			sfp.RedirectedHandoff.RedirectedTo == tcp) // redirected to
 }
 
 func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongitude float32,

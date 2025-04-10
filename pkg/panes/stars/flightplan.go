@@ -13,6 +13,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -192,7 +193,7 @@ func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *av.S
 		// ACID must start with a letter
 		return false, ErrSTARSIllegalACID
 	}
-	spec.ACID.Set(s)
+	spec.ACID.Set(av.ACID(s))
 	return true, nil
 }
 
@@ -535,7 +536,7 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 }
 
 // See STARS Operators Manual 5-184...
-func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *av.STARSFlightPlan) string {
+func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, trk *sim.RadarTrack, fp *av.STARSFlightPlan) string {
 	if fp == nil { // shouldn't happen...
 		return "NO PLAN"
 	}
@@ -546,7 +547,10 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *av.STARSFlightPlan
 
 	// Common stuff
 	owner := util.Select(fp.TrackingController != "", fp.TrackingController, fp.InitialController)
-	state := sp.Aircraft[fp.ACID]
+	var state *TrackState
+	if trk != nil {
+		state = sp.TrackState[trk.ADSBCallsign]
+	}
 
 	var aircraftType string
 	if fp.AircraftCount > 1 {
@@ -573,13 +577,13 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *av.STARSFlightPlan
 		return f + "  "
 	}
 
-	result := fp.ACID + " " // all start with aricraft id
+	result := string(fp.ACID) + " " // all start with aricraft id
 	switch fp.TypeOfFlight {
 	case av.FlightTypeOverflight:
 		result += aircraftType + " "
 		result += fp.AssignedSquawk.String() + " " + owner + " "
-		if state != nil {
-			result += fmt.Sprintf("%03d", int(state.TrackAltitude())/100)
+		if trk != nil {
+			result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
 		}
 		result += "\n"
 
@@ -609,8 +613,9 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *av.STARSFlightPlan
 			result += fp.AssignedSquawk.String() + " "
 			result += fmtfix(fp.EntryFix)
 			result += "D" + fmtTime(state.FirstRadarTrack) + " "
-			result += fmt.Sprintf("%03d", int(state.TrackAltitude())/100) + "\n"
-
+			if trk != nil {
+				result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100) + "\n"
+			}
 			result += fmtfix(fp.ExitFix)
 			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + " "
 			result += aircraftType
@@ -621,8 +626,8 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *av.STARSFlightPlan
 		result += aircraftType + " "
 		result += fp.AssignedSquawk.String() + " "
 		result += owner + " "
-		if state != nil {
-			result += fmt.Sprintf("%03d", int(state.TrackAltitude())/100)
+		if trk != nil {
+			result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
 		}
 		result += "\n"
 

@@ -32,16 +32,20 @@ const serverCallsign = "__SERVER__"
 // assorted information they may need (the state of aircraft in the sim,
 // etc.)
 type State struct {
-	Aircraft          map[string]*av.Aircraft
+	RadarTracks       []RadarTrack
+	UnsupportedTracks []RadarTrack
+
+	// Only the unassociated ones
+	UnassociatedFlightPlans []av.STARSFlightPlan
+
+	FlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
+
 	Airports          map[string]*av.Airport
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
-	ReleaseDepartures []*av.Aircraft
-
-	// Only the unassociated ones
-	FlightPlans []av.STARSFlightPlan
+	ReleaseDepartures []ReleaseDeparture
 
 	// Signed in human controllers + virtual controllers
 	Controllers      map[string]*av.Controller
@@ -91,9 +95,20 @@ type State struct {
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 }
 
+type ReleaseDeparture struct {
+	ADSBCallsign     av.ADSBCallsign
+	DepartureAirport string
+	Released         bool
+	Squawk           av.Squawk
+	ListIndex        int
+	AircraftType     string
+	Exit             string
+
+	departureContactController string // not shared with client
+}
+
 func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *State {
 	ss := &State{
-		Aircraft:   make(map[string]*av.Aircraft),
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
@@ -316,32 +331,9 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 	return cons
 }
 
-// Returns all aircraft that match the given suffix. If instructor is true,
-// returns all matching aircraft; otherwise only ones under the current
-// controller's control are considered for matching.
-func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*av.Aircraft {
-	match := func(ac *av.Aircraft) bool {
-		if ac.IsUnassociated() {
-			return false
-		}
-		if !strings.HasSuffix(ac.Callsign, suffix) {
-			return false
-		}
-		if instructor || ac.STARSFlightPlan.ControllingController == ss.UserTCP {
-			return true
-		}
-		// Hold for release aircraft still in the list
-		if ac.DepartureContactController == ss.UserTCP && ac.STARSFlightPlan.ControllingController == "" {
-			return true
-		}
-		return false
-	}
-	return slices.Collect(util.FilterSeq(maps.Values(ss.Aircraft), match))
-}
-
-func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) (string, bool) {
+func (ss *State) DepartureController(departureContactController string, lg *log.Logger) (string, bool) {
 	if len(ss.MultiControllers) > 0 {
-		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
+		callsign, err := ss.MultiControllers.ResolveController(departureContactController,
 			func(tcp string) bool {
 				return slices.Contains(ss.HumanControllers, tcp)
 			})
@@ -351,30 +343,30 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) (string, b
 	}
 }
 
-func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
+func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
-		func(ac *av.Aircraft) bool {
+		func(dep ReleaseDeparture) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
 			// doesn't clear out the ones in the STARSComputer; that happens server side only.
 			// So, here is a band-aid to not return aircraft that no longer exist.
-			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
-				return false
-			}
-			tcp, ok := ss.DepartureController(ac, nil)
+			//if _, ok := ss.Aircraft[ac.ADSBCallsign]; !ok {
+			//return false
+			//}
+			tcp, ok := ss.DepartureController(dep.departureContactController, nil)
 			return ok && tcp == ss.UserTCP
 		})
 }
 
-func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
+func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
-		func(ac *av.Aircraft) bool {
-			if ac.Released {
+		func(dep ReleaseDeparture) bool {
+			if dep.Released {
 				return false
 			}
 
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
+				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					// It'll be in a STARS coordination list
 					return false
 				}
@@ -383,11 +375,11 @@ func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
 		})
 }
 
-func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
+func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
-		func(ac *av.Aircraft) bool {
+		func(dep ReleaseDeparture) bool {
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
+				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return true
 				}
 			}
@@ -461,14 +453,14 @@ func (ss *State) AmInstructor() bool {
 }
 
 func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
-	if util.SeqContainsFunc(maps.Values(ss.Aircraft),
-		func(ac *av.Aircraft) bool {
-			return ac.IsAssociated() && ac.STARSFlightPlan.AssignedSquawk == sq
+	if slices.ContainsFunc(ss.RadarTracks,
+		func(tr RadarTrack) bool {
+			return tr.IsAssociated() && tr.Squawk == sq
 		}) {
 		return true
 	}
 
-	if slices.ContainsFunc(ss.FlightPlans,
+	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
 		func(fp av.STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
@@ -487,8 +479,8 @@ func (ss *State) FindMatchingFlightPlan(s string) *av.STARSFlightPlan {
 		sq = ps
 	}
 
-	for _, fp := range ss.FlightPlans {
-		if fp.ACID == s {
+	for _, fp := range ss.UnassociatedFlightPlans {
+		if fp.ACID == av.ACID(s) {
 			return &fp
 		}
 		if n == fp.ListIndex {
@@ -499,4 +491,42 @@ func (ss *State) FindMatchingFlightPlan(s string) *av.STARSFlightPlan {
 		}
 	}
 	return nil
+}
+
+func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, bool) {
+	for i, trk := range ss.RadarTracks {
+		if trk.ADSBCallsign == callsign {
+			return &ss.RadarTracks[i], true
+		}
+	}
+	return nil, false
+}
+
+func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, bool) {
+	for i, trk := range ss.RadarTracks {
+		if trk.ADSBCallsign == callsign && trk.IsAssociated() &&
+			trk.FlightPlan.TrackingController == ss.UserTCP {
+			return &ss.RadarTracks[i], true
+		}
+	}
+	return nil, false
+}
+
+func (ss *State) GetTrackByACID(acid av.ACID) (*RadarTrack, bool) {
+	for i, trk := range ss.RadarTracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
+			return &ss.RadarTracks[i], true
+		}
+	}
+	return nil, false
+}
+
+func (ss *State) GetOurTrackByACID(acid av.ACID) (*RadarTrack, bool) {
+	for i, trk := range ss.RadarTracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
+			trk.FlightPlan.TrackingController == ss.UserTCP {
+			return &ss.RadarTracks[i], true
+		}
+	}
+	return nil, false
 }

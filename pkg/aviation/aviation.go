@@ -11,7 +11,6 @@ import (
 	"slices"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
@@ -203,7 +202,6 @@ func (f FlightRules) String() string {
 // Aircraft: who they are, what they're doing, how they're going to get
 // there.
 type FlightPlan struct {
-	Callsign         string
 	Rules            FlightRules
 	AircraftType     string
 	CruiseSpeed      int
@@ -285,13 +283,6 @@ func StringIsSPC(code string) bool {
 		}
 	}
 	return false
-}
-
-type RadarTrack struct {
-	Position    math.Point2LL
-	Altitude    int
-	Groundspeed int
-	Time        time.Time
 }
 
 func FormatAltitude(falt float32) string {

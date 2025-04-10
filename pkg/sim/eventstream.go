@@ -220,7 +220,7 @@ func (t EventType) String() string {
 
 type Event struct {
 	Type                  EventType
-	Callsign              string
+	ADSBCallsign          av.ADSBCallsign
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
 	Message               string
@@ -231,20 +231,20 @@ type Event struct {
 func (e *Event) String() string {
 	switch e.Type {
 	case RadioTransmissionEvent:
-		return fmt.Sprintf("%s: callsign %s controller %s->%s message %s type %v",
-			e.Type, e.Callsign, e.FromController, e.ToController, e.Message, e.RadioTransmissionType)
+		return fmt.Sprintf("%s: ADSB callsign %s controller %s->%s message %s type %v",
+			e.Type, e.ADSBCallsign, e.FromController, e.ToController, e.Message, e.RadioTransmissionType)
 	case TrackClickedEvent:
-		return fmt.Sprintf("%s: %s", e.Type, e.Callsign)
+		return fmt.Sprintf("%s: %s", e.Type, e.ADSBCallsign)
 	default:
-		return fmt.Sprintf("%s: callsign %s controller %s->%s message %s",
-			e.Type, e.Callsign, e.FromController, e.ToController, e.Message)
+		return fmt.Sprintf("%s: ADSB callsign %s controller %s->%s message %s",
+			e.Type, e.ADSBCallsign, e.FromController, e.ToController, e.Message)
 	}
 }
 
 func (e Event) LogValue() slog.Value {
 	attrs := []slog.Attr{slog.String("type", e.Type.String())}
-	if e.Callsign != "" {
-		attrs = append(attrs, slog.String("callsign", e.Callsign))
+	if e.ADSBCallsign != "" {
+		attrs = append(attrs, slog.String("adsb_callsign", string(e.ADSBCallsign)))
 	}
 	if e.FromController != "" {
 		attrs = append(attrs, slog.String("from_controller", e.FromController))
