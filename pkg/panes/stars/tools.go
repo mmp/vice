@@ -1838,7 +1838,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Rada
 	return getLoc(0), getLoc(1)
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.RadarTrack) func([2]float32, ScopeTransformations) (status CommandStatus) {
 	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 		if sp.wipRBL == nil {
 			// this shouldn't happen, but let's not crash if it does...
@@ -1847,7 +1847,7 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 
 		rbl := *sp.wipRBL
 		sp.wipRBL = nil
-		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
 			rbl.P[1].ADSBCallsign = trk.ADSBCallsign
 		} else {
 			rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)

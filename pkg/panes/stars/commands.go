@@ -156,7 +156,7 @@ type CommandStatus struct {
 	err    error
 }
 
-func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
+func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.RadarTrack) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
@@ -203,7 +203,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			sp.setCommandMode(ctx, CommandModeMin)
 
 		case platform.KeyEnter:
-			if status := sp.executeSTARSCommand(sp.previewAreaInput, ctx); status.err != nil {
+			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
 				if status.clear {
@@ -309,7 +309,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status CommandStatus) {
+func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks []sim.RadarTrack) (status CommandStatus) {
 	// If there's an active spinner, it gets keyboard input; we thus won't
 	// worry about the corresponding CommandModes in the following.
 	if sp.activeSpinner != nil {
@@ -330,8 +330,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 		// try to match squawk code
 		if sq, err := av.ParseSquawk(callsign); err == nil {
-			// FIXME: why aren't visible aircraft passed in here?
-			for _, trk := range sp.visibleTracks(ctx) {
+			for _, trk := range tracks {
 				if trk.Squawk == sq {
 					return &trk
 				}
@@ -553,7 +552,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 				} else {
 					sp.wipRBL = &STARSRangeBearingLine{}
 					sp.wipRBL.P[0].Loc = p
-					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
+					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp, tracks)
 					sp.previewAreaInput = "*T" // set up for the second point
 				}
 			} else {
@@ -715,7 +714,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			// Accept hand off of target closest to range rings center
 			var closest *sim.RadarTrack
 			var closestDistance float32
-			for _, trk := range sp.visibleTracks(ctx) { // FIXME: why is this not passed in
+			for _, trk := range tracks {
 				if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != ctx.UserTCP {
 					continue
 				}
@@ -2782,9 +2781,9 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.RadarTrack
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, mousePosition [2]float32,
-	ghosts []*av.GhostTrack, transforms ScopeTransformations) (status CommandStatus) {
+	ghosts []*av.GhostTrack, transforms ScopeTransformations, tracks []sim.RadarTrack) (status CommandStatus) {
 	// See if an aircraft was clicked
-	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms)
+	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms, tracks)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
 	ps := sp.currentPrefs()
@@ -3000,7 +2999,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// range bearing line
 				sp.wipRBL = &STARSRangeBearingLine{}
 				sp.wipRBL.P[0].ADSBCallsign = trk.ADSBCallsign
-				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
+				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp, tracks)
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if trk.IsAssociated() && ctx.Client.StringIsSPC(cmd) {
@@ -3590,7 +3589,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			if cmd == "" {
 				sp.MinSepAircraft[0] = trk.ADSBCallsign
 				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-					if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms); trk != nil {
+					if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
 						sp.MinSepAircraft[1] = trk.ADSBCallsign
 						status.clear = true
 					} else {
@@ -3626,7 +3625,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		} else if cmd == "*T" {
 			sp.wipRBL = &STARSRangeBearingLine{}
 			sp.wipRBL.P[0].Loc = transforms.LatLongFromWindowP(mousePosition)
-			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp)
+			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp, tracks)
 			return
 		} else if sp.capture.enabled {
 			if cmd == "CR" {
@@ -3934,7 +3933,7 @@ func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection
 }
 
 func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTrack,
-	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	transforms ScopeTransformations, tracks []sim.RadarTrack, cb *renderer.CommandBuffer) {
 	if ctx.Mouse == nil {
 		return
 	}
@@ -3943,7 +3942,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 	ps := sp.currentPrefs()
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 			sp.events.PostEvent(sim.Event{
 				Type:         sim.TrackClickedEvent,
 				ADSBCallsign: trk.ADSBCallsign,
@@ -4004,7 +4003,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 
 		if ctx.Keyboard != nil && ctx.Keyboard.WasPressed(platform.KeyControl) && !ctx.Keyboard.WasPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
 			// so making sure that shift isn't being pressed would be a good idea.
-			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 				if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 					state.IsSelected = !state.IsSelected
 					return
@@ -4019,7 +4018,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
 		}
 		if sp.scopeClickHandler == nil {
-			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms)
+			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms, tracks)
 		}
 
 		if status.err != nil {
@@ -4032,7 +4031,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.previewAreaOutput = status.output
 		}
 	} else if ctx.Mouse.Clicked[platform.MouseButtonTertiary] {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 			if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 				state.IsSelected = !state.IsSelected
 			}
@@ -4043,20 +4042,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.dwellAircraft = ""
 
 		case DwellModeOn:
-			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 				sp.dwellAircraft = trk.ADSBCallsign
 			} else {
 				sp.dwellAircraft = ""
 			}
 
 		case DwellModeLock:
-			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 				sp.dwellAircraft = trk.ADSBCallsign
 			}
 			// Otherwise leave sp.dwellAircraft as is
 		}
 	} else {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 			td := renderer.GetTextDrawBuilder()
 			defer renderer.ReturnTextDrawBuilder(td)
 
@@ -4295,11 +4294,12 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, callsi
 	return nil
 }
 
-func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms ScopeTransformations) (*sim.RadarTrack, float32) {
+func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms ScopeTransformations,
+	tracks []sim.RadarTrack) (*sim.RadarTrack, float32) {
 	var trk *sim.RadarTrack
 	distance := float32(20) // in pixels; don't consider anything farther away
 
-	for _, t := range sp.visibleTracks(ctx) {
+	for _, t := range tracks {
 		pw := transforms.WindowFromLatLongP(t.Location)
 		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {

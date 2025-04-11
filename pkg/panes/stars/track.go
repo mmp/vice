@@ -415,7 +415,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
+func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.RadarTrack) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.State.SimTime
 	if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
@@ -439,11 +439,6 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 
 	// Update low altitude alerts now that we have updated tracks
 	sp.updateMSAWs(ctx)
-
-	tracks := sp.visibleTracks(ctx)
-	sort.Slice(tracks, func(i, j int) bool {
-		return tracks[i].ADSBCallsign < tracks[j].ADSBCallsign
-	})
 
 	// History tracks are updated after a radar track update, only if
 	// H_RATE seconds have elapsed (4-94).

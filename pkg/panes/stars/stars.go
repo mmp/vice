@@ -637,7 +637,19 @@ func (sp *STARSPane) Upgrade(from, to int) {
 
 func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
-	sp.updateRadarTracks(ctx)
+
+	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
+	// Sort the aircraft so that they are always drawn in the same order
+	// (go's map iterator randomization otherwise randomizes the order,
+	// which can cause shimmering when datablocks overlap (especially if
+	// one is selected). We'll go with alphabetical by callsign, with the
+	// selected aircraft, if any, always drawn last.
+	tracks := sp.visibleTracks(ctx)
+	sort.Slice(tracks, func(i, j int) bool {
+		return tracks[i].ADSBCallsign < tracks[j].ADSBCallsign
+	})
+
+	sp.updateRadarTracks(ctx, tracks)
 	sp.autoReleaseDepartures(ctx)
 
 	ps := sp.currentPrefs()
@@ -645,7 +657,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Clear to background color
 	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
 
-	sp.processKeyboardInput(ctx)
+	sp.processKeyboardInput(ctx, tracks)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
 	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
@@ -678,17 +690,6 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawRestrictionAreas(ctx, transforms, cb)
 
-	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
-	// Sort the aircraft so that they are always drawn in the same order
-	// (go's map iterator randomization otherwise randomizes the order,
-	// which can cause shimmering when datablocks overlap (especially if
-	// one is selected). We'll go with alphabetical by callsign, with the
-	// selected aircraft, if any, always drawn last.
-	tracks := sp.visibleTracks(ctx)
-	sort.Slice(tracks, func(i, j int) bool {
-		return tracks[i].ADSBCallsign < tracks[j].ADSBCallsign
-	})
-
 	sp.drawSystemLists(ctx, tracks, ctx.PaneExtent, transforms, cb)
 
 	sp.drawHistoryTrails(ctx, tracks, transforms, cb)
@@ -716,7 +717,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
 		if !mouseOverDCB {
 			// DCB buttons handle their own click checks, etc.
-			sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
+			sp.consumeMouseEvents(ctx, ghosts, transforms, tracks, cb)
 		}
 		sp.drawMouseCursor(ctx, mouseOverDCB, transforms, cb)
 	}
