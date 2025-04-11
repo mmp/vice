@@ -186,7 +186,9 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.S
 	// have ControllingController due to a pilot checkin on a departure.
 	if trk, ok := c.State.GetTrackByCallsign(callsign); ok && trk.IsUnassociated() {
 		fp := spec.GetFlightPlan()
-		fp.TrackingController = spec.InitialController.GetOr(c.State.UserTCP)
+		if fp.TrackingController == "" {
+			fp.TrackingController = c.State.UserTCP
+		}
 		if spec.CreateQuick {
 			fp.ACID = sim.ACID(c.State.STARSFacilityAdaptation.FlightPlan.QuickACID +
 				fmt.Sprintf("%02d", c.State.QuickFlightPlanIndex%100))

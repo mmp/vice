@@ -1055,10 +1055,6 @@ func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
 
 func (ac *Aircraft) UpdateFlightPlan(spec STARSFlightPlanSpecifier) STARSFlightPlan {
 	if ac.STARSFlightPlan != nil {
-		if spec.InitialController.IsSet {
-			ac.STARSFlightPlan.TrackingController = spec.InitialController.Get()
-		}
-
 		ac.STARSFlightPlan.Update(spec)
 		return *ac.STARSFlightPlan
 	}

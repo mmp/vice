@@ -551,7 +551,7 @@ func (sp *STARSPane) drawUnsupportedDatablockPositionSymbols(ctx *panes.Context,
 	for _, trk := range ctx.Client.State.UnsupportedTracks {
 		pw := transforms.WindowFromLatLongP(trk.Location)
 		positionSymbol := "?"
-		ctrl := trk.FlightPlan.InitialController
+		ctrl := trk.FlightPlan.TrackingController
 		if ctrl != "" {
 			positionSymbol = ctrl[len(ctrl)-1:]
 		}
@@ -1324,27 +1324,6 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.RadarTrack
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
-}
-
-func (sp *STARSPane) getFPLeaderLineDirection(fp sim.STARSFlightPlan, ctx *panes.Context) math.CardinalOrdinalDirection {
-	ps := sp.currentPrefs()
-
-	// FIXME: once we have better unified notion of a Track then we
-	// should be able to use a single flow for the direction
-	if fp.InitialController == ctx.UserTCP {
-		// Ours
-		return ps.LeaderLineDirection
-	} else if dir, ok := ps.ControllerLeaderLineDirections[fp.InitialController]; ok {
-		// Tracked by another controller for whom a direction was specified
-		return dir
-	} else if ps.OtherControllerLeaderLineDirection != nil {
-		// Tracked by another controller without a per-controller direction specified
-		return *ps.OtherControllerLeaderLineDirection
-	} else if ps.UnassociatedLeaderLineDirection != nil {
-		return *ps.UnassociatedLeaderLineDirection
-	} else {
-		return math.CardinalOrdinalDirection(math.North)
-	}
 }
 
 func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.RadarTrack) math.CardinalOrdinalDirection {

@@ -398,7 +398,7 @@ func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.S
 		return false, ErrSTARSIllegalPosition
 	}
 
-	spec.InitialController.Set(s)
+	spec.TrackingController.Set(s)
 
 	return true, nil
 }
@@ -424,7 +424,7 @@ func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, sp
 			return parseFpTypeOfFlight(s, checkSp, spec)
 		}
 	} else if len(s) == 2 && s[0] >= '1' && s[0] <= '9' && s[1] >= 'A' && s[1] <= 'Z' { // TCP
-		spec.InitialController.Set(s)
+		spec.TrackingController.Set(s)
 		return true, nil
 	}
 	return false, ErrSTARSIllegalPosition
@@ -546,7 +546,6 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, trk *sim.RadarTrack, f
 	}
 
 	// Common stuff
-	owner := util.Select(fp.TrackingController != "", fp.TrackingController, fp.InitialController)
 	var state *TrackState
 	if trk != nil {
 		state = sp.TrackState[trk.ADSBCallsign]
@@ -581,7 +580,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, trk *sim.RadarTrack, f
 	switch fp.TypeOfFlight {
 	case av.FlightTypeOverflight:
 		result += aircraftType + " "
-		result += fp.AssignedSquawk.String() + " " + owner + " "
+		result += fp.AssignedSquawk.String() + " " + fp.TrackingController + " "
 		if trk != nil {
 			result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
 		}
@@ -600,7 +599,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, trk *sim.RadarTrack, f
 		if state == nil || state.FirstRadarTrack.IsZero() {
 			// Proposed departure
 			result += aircraftType + " "
-			result += fp.AssignedSquawk.String() + " " + owner + "\n"
+			result += fp.AssignedSquawk.String() + " " + fp.TrackingController + "\n"
 
 			result += fmtfix(fp.EntryFix)
 			result += fmtfix(fp.ExitFix)
@@ -625,7 +624,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, trk *sim.RadarTrack, f
 	case av.FlightTypeArrival:
 		result += aircraftType + " "
 		result += fp.AssignedSquawk.String() + " "
-		result += owner + " "
+		result += fp.TrackingController + " "
 		if trk != nil {
 			result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
 		}

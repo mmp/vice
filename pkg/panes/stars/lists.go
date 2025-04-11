@@ -484,7 +484,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 				}
 			}
 			// TODO: handle consolidation, etc.
-			return fp.InitialController == ctx.UserTCP
+			return fp.TrackingController == ctx.UserTCP
 		})
 
 	// 2-92: default sort is by ACID

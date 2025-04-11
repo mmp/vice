@@ -390,8 +390,7 @@ type STARSFlightPlan struct {
 	EquipmentSuffix string
 	CWTCategory     string
 
-	TypeOfFlight      av.TypeOfFlight
-	InitialController string // For abbreviated FPs
+	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
 	RequestedAltitude     int
@@ -433,13 +432,14 @@ type STARSFlightPlanSpecifier struct {
 
 	AssignedSquawk util.Optional[av.Squawk]
 
+	TrackingController util.Optional[string]
+
 	AircraftCount   util.Optional[int]
 	AircraftType    util.Optional[string]
 	EquipmentSuffix util.Optional[string]
 	CWTCategory     util.Optional[string]
 
-	TypeOfFlight      util.Optional[av.TypeOfFlight]
-	InitialController util.Optional[string]
+	TypeOfFlight util.Optional[av.TypeOfFlight]
 
 	AssignedAltitude      util.Optional[int]
 	RequestedAltitude     util.Optional[int]
@@ -484,8 +484,8 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		EquipmentSuffix: s.EquipmentSuffix.GetOr(""),
 		CWTCategory:     s.CWTCategory.GetOr(""),
 
-		TypeOfFlight:      s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
-		InitialController: s.InitialController.GetOr(""),
+		TypeOfFlight:       s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
+		TrackingController: s.TrackingController.GetOr(""),
 
 		AssignedAltitude:      s.AssignedAltitude.GetOr(0),
 		RequestedAltitude:     s.RequestedAltitude.GetOr(0),
@@ -539,8 +539,8 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	if spec.TypeOfFlight.IsSet {
 		fp.TypeOfFlight = spec.TypeOfFlight.Get()
 	}
-	if spec.InitialController.IsSet {
-		fp.InitialController = spec.InitialController.Get()
+	if spec.TrackingController.IsSet {
+		fp.TrackingController = spec.TrackingController.Get()
 	}
 	if spec.AssignedAltitude.IsSet {
 		fp.AssignedAltitude = spec.AssignedAltitude.Get()

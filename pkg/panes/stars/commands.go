@@ -648,8 +648,8 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					// Implied entry of VFR FP: 5-94
 					spec.Rules.Set(av.FlightRulesVFR)
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
-					if !spec.InitialController.IsSet {
-						spec.InitialController.Set(ctx.UserTCP)
+					if !spec.TrackingController.IsSet {
+						spec.TrackingController.Set(ctx.UserTCP)
 					}
 					sp.createFlightPlan(ctx, spec)
 					status.clear = true
@@ -664,8 +664,8 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// Implied entry of abbreviated flight plan 5-89
 				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeArrival)
-				if !spec.InitialController.IsSet {
-					spec.InitialController.Set(ctx.UserTCP)
+				if !spec.TrackingController.IsSet {
+					spec.TrackingController.Set(ctx.UserTCP)
 				}
 				sp.createFlightPlan(ctx, spec)
 				status.clear = true
@@ -683,7 +683,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.AutoAssociate = true
-			spec.InitialController.Set(ctx.UserTCP)
+			spec.TrackingController.Set(ctx.UserTCP)
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 		} else {
@@ -803,7 +803,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// Create/modify VFR FP: 5-133
 			spec.Rules.Set(av.FlightRulesVFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			spec.InitialController.Set(ctx.UserTCP)
+			spec.TrackingController.Set(ctx.UserTCP)
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 		} else {
@@ -1674,8 +1674,8 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		if spec, err := parseFlightPlan(createFpFormat, cmd, checkfp); err == nil {
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			if !spec.InitialController.IsSet {
-				spec.InitialController.Set(ctx.UserTCP)
+			if !spec.TrackingController.IsSet {
+				spec.TrackingController.Set(ctx.UserTCP)
 			}
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
@@ -3117,7 +3117,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// 5-145: create quick ACID flight plan
 				spec := sim.STARSFlightPlanSpecifier{CreateQuick: true}
 				spec.TypeOfFlight.Set(av.FlightTypeOverflight)
-				spec.InitialController.Set(ctx.UserTCP)
+				spec.TrackingController.Set(ctx.UserTCP)
 				if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 					status.err = err
 				} else {
@@ -3249,7 +3249,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					} else {
 						spec.Rules.Set(av.FlightRulesIFR)
 						spec.TypeOfFlight.Set(av.FlightTypeArrival)
-						spec.InitialController.Set(ctx.UserTCP)
+						spec.TrackingController.Set(ctx.UserTCP)
 						if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 							status.err = err
 						} else {
@@ -3281,7 +3281,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else {
 					spec.Rules.Set(av.FlightRulesIFR)
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
-					spec.InitialController.Set(ctx.UserTCP)
+					spec.TrackingController.Set(ctx.UserTCP)
 					if !spec.AssignedSquawk.IsSet { // take the current code from the aircraft
 						spec.AssignedSquawk.Set(trk.Squawk)
 					}
@@ -3650,7 +3650,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			// 5-99 create Unsupported datablock
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			spec.InitialController.Set(ctx.UserTCP)
+			spec.TrackingController.Set(ctx.UserTCP)
 			spec.Location.Set(transforms.LatLongFromWindowP(mousePosition))
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
@@ -4134,8 +4134,8 @@ func (sp *STARSPane) displayError(err error, ctx *panes.Context, callsign av.ADS
 					return fp.ACID == sim.ACID(callsign)
 				}); idx != -1 {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
-				if fp.InitialController != "" {
-					sp.previewAreaOutput += "\nFLIGHT INACTIVE AT " + fp.InitialController
+				if fp.TrackingController != "" {
+					sp.previewAreaOutput += "\nFLIGHT INACTIVE AT " + fp.TrackingController
 				}
 			}
 		}

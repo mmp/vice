@@ -298,7 +298,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 		s.State.QuickFlightPlanIndex++
 	}
 
-	return s.dispatchCommand(spec.InitialController.Get(), callsign,
+	return s.dispatchCommand(spec.TrackingController.Get(), callsign,
 		func(tcp string, ac *Aircraft) error {
 			// Make sure no one has the track already
 			if ac.IsAssociated() {
@@ -310,8 +310,11 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 			return nil
 		},
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+			if !spec.TrackingController.IsSet {
+				spec.TrackingController.Set(tcp)
+			}
+
 			fp := spec.GetFlightPlan()
-			fp.TrackingController = tcp // FIXME: vs initial controller...
 			if _, err := s.STARSComputer.CreateFlightPlan(fp); err != nil {
 				s.lg.Warnf("%s: error creating flight plan: %v", fp.ACID, err)
 			}
