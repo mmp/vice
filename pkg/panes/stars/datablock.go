@@ -498,9 +498,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 		altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
 	} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
 		altitude = "***"
-	} else if trk.Mode == av.Standby {
+	} else if trk.Mode == av.TransponderModeStandby {
 		altitude = "RDR"
-	} else if trk.Mode == av.On {
+	} else if trk.Mode == av.TransponderModeOn {
 		altitude = ""
 	}
 
@@ -588,12 +588,12 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
 
-		if len(alerts) == 0 && trk.Mode == av.On && !extended {
+		if len(alerts) == 0 && trk.Mode == av.TransponderModeOn && !extended {
 			return nil
 		}
 
 		ps := sp.currentPrefs()
-		if trk.Mode != av.Standby {
+		if trk.Mode != av.TransponderModeStandby {
 			mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
 				trk0, ok := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk.Squawk &&
@@ -618,13 +618,13 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 
 		// Field 3: mode C altitude
 		altitude := fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-		if trk.Mode == av.Standby {
+		if trk.Mode == av.TransponderModeStandby {
 			if extended {
 				altitude = "RDR"
 			} else {
 				altitude = ""
 			}
-		} else if trk.Mode == av.On { // mode-a; altitude is blank
+		} else if trk.Mode == av.TransponderModeOn { // mode-a; altitude is blank
 			altitude = ""
 		}
 
@@ -635,7 +635,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 			formatDBText(db.field5[:], groundspeed, color, false)
 		}
 
-		if (extended || beaconator) && trk.Mode != av.Standby {
+		if (extended || beaconator) && trk.Mode != av.TransponderModeStandby {
 			// Field 6: ACID
 			formatDBText(db.field6[:], string(trk.ADSBCallsign), color, false)
 		}
@@ -722,7 +722,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 
 		// Line 1
 		// Field 1: ACID (or squawk if beaconator)
-		if beaconator && trk.Mode != av.Standby {
+		if beaconator && trk.Mode != av.TransponderModeStandby {
 			formatDBText(db.field1[:], trk.Squawk.String(), color, false)
 		} else {
 			formatDBText(db.field1[:], string(sfp.ACID), color, false)
@@ -1004,7 +1004,7 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.RadarTrack) bo
 	}
 
 	if trk.IsUnassociated() {
-		if trk.Mode == av.Standby {
+		if trk.Mode == av.TransponderModeStandby {
 			// unassociated also primary only, only show a datablock if it's been slewed
 			return ctx.Now.Before(state.FullLDBEndTime)
 		}
@@ -1270,7 +1270,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.RadarTrack, 
 	// Both FDB and PDB
 	if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused &&
 		sfp.PilotReportedAltitude == 0 &&
-		(trk.Mode != av.Altitude || sfp.InhibitModeCAltitudeDisplay) {
+		(trk.Mode != av.TransponderModeAltitude || sfp.InhibitModeCAltitudeDisplay) {
 		// No altitude being reported, one way or another (off or mode
 		// A). Only when FUSED and for tracked aircraft.
 		addAlert("ISR", false, false)

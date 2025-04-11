@@ -690,17 +690,17 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					return nil
 				}
 			} else if command == "SQS" {
-				if err := s.ChangeTransponderMode(ctrl.tcp, callsign, av.Standby); err != nil {
+				if err := s.ChangeTransponderMode(ctrl.tcp, callsign, av.TransponderModeStandby); err != nil {
 					rewriteError(err)
 					return nil
 				}
 			} else if command == "SQA" {
-				if err := s.ChangeTransponderMode(ctrl.tcp, callsign, av.Altitude); err != nil {
+				if err := s.ChangeTransponderMode(ctrl.tcp, callsign, av.TransponderModeAltitude); err != nil {
 					rewriteError(err)
 					return nil
 				}
 			} else if command == "SQON" {
-				if err := s.ChangeTransponderMode(ctrl.tcp, callsign, av.On); err != nil {
+				if err := s.ChangeTransponderMode(ctrl.tcp, callsign, av.TransponderModeOn); err != nil {
 					rewriteError(err)
 					return nil
 				}

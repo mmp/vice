@@ -964,7 +964,7 @@ func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft,
 	return &Aircraft{
 		Aircraft: av.Aircraft{
 			ADSBCallsign: av.ADSBCallsign(callsign),
-			Mode:         av.Altitude,
+			Mode:         av.TransponderModeAltitude,
 		},
 	}, actype
 }
@@ -1219,9 +1219,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	rules := av.FlightRulesVFR
 	ac.Squawk = 0o1200
 	if r := rand.Float32(); r < .02 {
-		ac.Mode = av.On // mode-A
+		ac.Mode = av.TransponderModeOn // mode-A
 	} else if r < .03 {
-		ac.Mode = av.Standby // flat out off
+		ac.Mode = av.TransponderModeStandby // flat out off
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
 

@@ -390,7 +390,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		}
 
 		pilotAlt := trk.FlightPlan.PilotReportedAltitude
-		if (trk.FlightPlan.InhibitModeCAltitudeDisplay || trk.Mode != av.Altitude) && pilotAlt == 0 {
+		if (trk.FlightPlan.InhibitModeCAltitudeDisplay || trk.Mode != av.TransponderModeAltitude) && pilotAlt == 0 {
 			// We can use pilot reported for low altitude alerts: 5-167.
 			state.MSAW = false
 			continue
@@ -487,17 +487,17 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.RadarTrack, tra
 
 		if trk.IsUnassociated() {
 			switch trk.Mode {
-			case av.Standby:
+			case av.TransponderModeStandby:
 				ps := sp.currentPrefs()
 				positionSymbol = util.Select(ps.InhibitPositionSymOnUnassociatedPrimary,
 					" ", string(rune(140))) // diamond
-			case av.Altitude:
+			case av.TransponderModeAltitude:
 				if sp.beaconCodeSelected(trk.Squawk) {
 					positionSymbol = string(rune(129)) // square
 				} else {
 					positionSymbol = "*"
 				}
-			case av.On:
+			case av.TransponderModeOn:
 				if sp.beaconCodeSelected(trk.Squawk) {
 					positionSymbol = string(rune(128)) // triangle
 				} else {
@@ -946,7 +946,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.RadarTrac
 		if trka.FlightPlan.InhibitModeCAltitudeDisplay || trkb.FlightPlan.InhibitModeCAltitudeDisplay {
 			return false
 		}
-		if trka.Mode != av.Altitude || trkb.Mode != av.Altitude {
+		if trka.Mode != av.TransponderModeAltitude || trkb.Mode != av.TransponderModeAltitude {
 			return false
 		}
 		if trka.FlightPlan.DisableCA || trkb.FlightPlan.DisableCA {
@@ -990,7 +990,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.RadarTrac
 		if trka.IsAssociated() && trka.FlightPlan.InhibitModeCAltitudeDisplay {
 			return false
 		}
-		if trka.Mode != av.Altitude || trkb.Mode != av.Altitude {
+		if trka.Mode != av.TransponderModeAltitude || trkb.Mode != av.TransponderModeAltitude {
 			return false
 		}
 

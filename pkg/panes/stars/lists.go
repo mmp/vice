@@ -626,7 +626,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 				// For MCIs, the unassociated track is always the second callsign.
 				// Beacon code is reported for MCI or blank if we don't have it.
 				trk1, ok := ctx.GetTrackByCallsign(mcipair.ADSBCallsigns[1])
-				if ok && trk1.Mode != av.Standby {
+				if ok && trk1.Mode != av.TransponderModeStandby {
 					text.WriteString(fmt.Sprintf("%-17s MCI\n", string(mcipair.ADSBCallsigns[0])+"*"+trk1.Squawk.String()))
 				} else {
 					text.WriteString(fmt.Sprintf("%-17s MCI\n", mcipair.ADSBCallsigns[0]+"*"))

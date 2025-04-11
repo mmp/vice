@@ -254,7 +254,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec STARSF
 			return STARSFlightPlan{}, av.ErrOtherControllerHasTrack
 		}
 
-		if ac.Mode == av.Altitude && !ac.STARSFlightPlan.InhibitModeCAltitudeDisplay &&
+		if ac.Mode == av.TransponderModeAltitude && !ac.STARSFlightPlan.InhibitModeCAltitudeDisplay &&
 			spec.PilotReportedAltitude.GetOr(0) != 0 {
 			// 5-166: must inhibit mode C display if we are getting altitude from the aircraft
 			// Allow zero to clear it which various STARS commands do implicitly.
@@ -271,7 +271,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec STARSF
 		}
 
 		if spec.InhibitModeCAltitudeDisplay.IsSet && !spec.InhibitModeCAltitudeDisplay.Get() &&
-			ac.Mode == av.Altitude {
+			ac.Mode == av.TransponderModeAltitude {
 			// Clear pilot reported if toggled on and we have mode-C altitude
 			ac.STARSFlightPlan.PilotReportedAltitude = 0
 		}
