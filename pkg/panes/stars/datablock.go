@@ -427,7 +427,7 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.RadarTrac
 	return m
 }
 
-func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *av.STARSFlightPlan,
+func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *sim.STARSFlightPlan,
 	color renderer.RGB, brightness STARSBrightness) datablock {
 	now := ctx.Client.CurrentTime()
 

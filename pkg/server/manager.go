@@ -29,7 +29,7 @@ type SimManager struct {
 	activeSims         map[string]*ActiveSim
 	controllersByToken map[string]*HumanController
 	mu                 util.LoggingMutex
-	mapManifests       map[string]*av.VideoMapManifest
+	mapManifests       map[string]*sim.VideoMapManifest
 	startTime          time.Time
 	lg                 *log.Logger
 }
@@ -85,7 +85,7 @@ func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*Configuration, manifests map[string]*av.VideoMapManifest,
+	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:     scenarioGroups,

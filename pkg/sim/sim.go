@@ -70,7 +70,7 @@ type Sim struct {
 type Aircraft struct {
 	av.Aircraft
 
-	STARSFlightPlan *av.STARSFlightPlan
+	STARSFlightPlan *STARSFlightPlan
 
 	HoldForRelease   bool
 	Released         bool // only used for hold for release
@@ -93,7 +93,7 @@ type Aircraft struct {
 type RadarTrack struct {
 	av.RadarTrack
 
-	FlightPlan *av.STARSFlightPlan
+	FlightPlan *STARSFlightPlan
 
 	// Sort of hacky to carry these along here but it's convenient...
 	DepartureContactController string
@@ -160,7 +160,7 @@ type NewSimConfiguration struct {
 	TFRs                    []av.TFR
 	LiveWeather             bool
 	Wind                    av.Wind
-	STARSFacilityAdaptation av.STARSFacilityAdaptation
+	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
 	ReportingPoints   []av.ReportingPoint
@@ -172,7 +172,7 @@ type NewSimConfiguration struct {
 	Airspace          av.Airspace
 }
 
-func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *Sim {
+func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
 	beaconBank := util.Select(config.STARSFacilityAdaptation.BeaconBank != 0,
 		config.STARSFacilityAdaptation.BeaconBank, 3) // don't hand out 00xx codes
 
@@ -501,7 +501,7 @@ type WorldUpdate struct {
 	Controllers             map[string]*av.Controller
 	HumanControllers        []string
 	FlightPlans             map[av.ADSBCallsign]av.FlightPlan
-	UnassociatedFlightPlans []av.STARSFlightPlan
+	UnassociatedFlightPlans []STARSFlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
 	Time time.Time
@@ -942,7 +942,7 @@ func (s *Sim) postRadioEvents(from av.ADSBCallsign, transmissions []av.RadioTran
 	}
 }
 
-func (s *Sim) CallsignForACID(acid av.ACID) (av.ADSBCallsign, bool) {
+func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1048,11 +1048,11 @@ func (ac *Aircraft) IsAssociated() bool {
 	return ac.STARSFlightPlan != nil
 }
 
-func (ac *Aircraft) AssociateFlightPlan(fp *av.STARSFlightPlan) {
+func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
 	ac.STARSFlightPlan = fp
 }
 
-func (ac *Aircraft) UpdateFlightPlan(spec av.STARSFlightPlanSpecifier) av.STARSFlightPlan {
+func (ac *Aircraft) UpdateFlightPlan(spec STARSFlightPlanSpecifier) STARSFlightPlan {
 	if ac.STARSFlightPlan != nil {
 		if spec.InitialController.IsSet {
 			ac.STARSFlightPlan.TrackingController = spec.InitialController.Get()

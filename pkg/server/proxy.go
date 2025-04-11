@@ -78,7 +78,7 @@ func (p *proxy) SetGlobalLeaderLine(callsign av.ADSBCallsign, direction *math.Ca
 	}, nil, nil)
 }
 
-func (p *proxy) CreateFlightPlan(spec av.STARSFlightPlanSpecifier, ty av.STARSFlightPlanType, fpFinal *av.STARSFlightPlan) *rpc.Call {
+func (p *proxy) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, ty sim.STARSFlightPlanType, fpFinal *sim.STARSFlightPlan) *rpc.Call {
 	return p.Client.Go("Sim.CreateFlightPlan", &CreateFlightPlanArgs{
 		ControllerToken:     p.ControllerToken,
 		Type:                ty,
@@ -86,7 +86,7 @@ func (p *proxy) CreateFlightPlan(spec av.STARSFlightPlanSpecifier, ty av.STARSFl
 	}, fpFinal, nil)
 }
 
-func (p *proxy) ModifyFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightPlanSpecifier, fpFinal *av.STARSFlightPlan) *rpc.Call {
+func (p *proxy) ModifyFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, fpFinal *sim.STARSFlightPlan) *rpc.Call {
 	return p.Client.Go("Sim.ModifyFlightPlan", &ModifyFlightPlanArgs{
 		ControllerToken:     p.ControllerToken,
 		Callsign:            callsign,
@@ -94,7 +94,7 @@ func (p *proxy) ModifyFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightPl
 	}, fpFinal, nil)
 }
 
-func (p *proxy) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightPlanSpecifier) *rpc.Call {
+func (p *proxy) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier) *rpc.Call {
 	return p.Client.Go("Sim.AssociateFlightPlan", &AssociateFlightPlanArgs{
 		ControllerToken:     p.ControllerToken,
 		Callsign:            callsign,
@@ -102,7 +102,7 @@ func (p *proxy) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.STARSFligh
 	}, nil, nil)
 }
 
-func (p *proxy) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID av.ACID, spec *av.STARSFlightPlanSpecifier) *rpc.Call {
+func (p *proxy) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.STARSFlightPlanSpecifier) *rpc.Call {
 	return p.Client.Go("Sim.ActivateFlightPlan", &ActivateFlightPlanArgs{
 		ControllerToken:     p.ControllerToken,
 		TrackCallsign:       callsign,
@@ -111,7 +111,7 @@ func (p *proxy) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID av.ACID, spe
 	}, nil, nil)
 }
 
-func (p *proxy) DeleteFlightPlan(acid av.ACID) *rpc.Call {
+func (p *proxy) DeleteFlightPlan(acid sim.ACID) *rpc.Call {
 	return p.Client.Go("Sim.DeleteFlightPlan", &DeleteFlightPlanArgs{
 		ControllerToken: p.ControllerToken,
 		ACID:            acid,
@@ -275,7 +275,7 @@ func (p *proxy) DeleteRestrictionArea(idx int) *rpc.Call {
 	}, nil, nil)
 }
 
-func (p *proxy) GetVideoMapLibrary(filename string, vmf *av.VideoMapLibrary) error {
+func (p *proxy) GetVideoMapLibrary(filename string, vmf *sim.VideoMapLibrary) error {
 	// Synchronous call
 	return p.Client.Call("Sim.GetVideoMapLibrary", &VideoMapsArgs{
 		ControllerToken: p.ControllerToken,

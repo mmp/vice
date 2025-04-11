@@ -274,29 +274,15 @@ func (ac *Aircraft) InterceptApproach() []RadioTransmission {
 	return ac.transmitResponse(resp)
 }
 
-func getAircraftTime(now time.Time) time.Time {
-	// Hallucinate a random time around the present for the aircraft.
-	delta := time.Duration(-20 + rand.Intn(40))
-	t := now.Add(delta * time.Minute)
-
-	// 9 times out of 10, make it a multiple of 5 minutes
-	if rand.Intn(10) != 9 {
-		dm := t.Minute() % 5
-		t = t.Add(time.Duration(5-dm) * time.Minute)
-	}
-
-	return t
-}
-
 func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, nmPerLongitude float32, magneticVariation float32,
-	wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
+	wind WindModel, now time.Time, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 
 	perf, ok := DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
-		return STARSFlightPlan{}, ErrUnknownAircraftType
+		return ErrUnknownAircraftType
 	}
 
 	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
@@ -314,7 +300,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, nmPerLongitude 
 	nav := MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation,
 		wind, lg)
 	if nav == nil {
-		return STARSFlightPlan{}, fmt.Errorf("error initializing Nav")
+		return fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
 
@@ -328,33 +314,12 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, nmPerLongitude 
 		}
 	}
 
-	return STARSFlightPlan{
-		ACID:     ACID(ac.ADSBCallsign),
-		EntryFix: "", // TODO
-		ExitFix:  util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
-		ETAOrPTD: getAircraftTime(now),
-
-		TrackingController:    arr.InitialController,
-		ControllingController: arr.InitialController,
-
-		Rules:        IFR,
-		TypeOfFlight: FlightTypeArrival,
-
-		Scratchpad:          arr.Scratchpad,
-		SecondaryScratchpad: arr.SecondaryScratchpad,
-		RequestedAltitude:   ac.FlightPlan.Altitude,
-
-		AircraftCount:   1,
-		AircraftType:    ac.FlightPlan.AircraftType,
-		EquipmentSuffix: "G",
-		CWTCategory:     perf.Category.CWT,
-	}, nil
+	return nil
 }
 
 func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, dep *Departure,
-	runway string, exitRoute ExitRoute, nmPerLongitude float32,
-	magneticVariation float32, scratchpads map[string]string,
-	wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
+	runway string, exitRoute ExitRoute, nmPerLongitude float32, magneticVariation float32,
+	wind WindModel, now time.Time, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = util.FilterSliceInPlace(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
@@ -368,7 +333,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	perf, ok := DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
-		return STARSFlightPlan{}, ErrUnknownAircraftType
+		return ErrUnknownAircraftType
 	}
 
 	ac.FlightPlan.Exit = dep.Exit
@@ -388,33 +353,13 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
-		return STARSFlightPlan{}, fmt.Errorf("error initializing Nav")
+		return fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
 
 	ac.Nav.Check(lg)
 
-	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
-	sfp := STARSFlightPlan{
-		ACID:     ACID(ac.ADSBCallsign),
-		EntryFix: util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
-		ExitFix:  shortExit,
-		ETAOrPTD: getAircraftTime(now),
-
-		Rules:        IFR,
-		TypeOfFlight: FlightTypeDeparture,
-
-		Scratchpad:          util.Select(dep.Scratchpad != "", dep.Scratchpad, scratchpads[dep.Exit]),
-		SecondaryScratchpad: dep.SecondaryScratchpad,
-		RequestedAltitude:   ac.FlightPlan.Altitude,
-
-		AircraftCount:   1,
-		AircraftType:    ac.FlightPlan.AircraftType,
-		EquipmentSuffix: "G",
-		CWTCategory:     perf.Category.CWT,
-	}
-
-	return sfp, nil
+	return nil
 }
 
 func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt int,
@@ -444,11 +389,11 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt i
 }
 
 func (ac *Aircraft) InitializeOverflight(of *Overflight, nmPerLongitude float32,
-	magneticVariation float32, wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
+	magneticVariation float32, wind WindModel, now time.Time, lg *log.Logger) error {
 	perf, ok := DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
-		return STARSFlightPlan{}, ErrUnknownAircraftType
+		return ErrUnknownAircraftType
 	}
 
 	ac.FlightPlan.Altitude = int(of.CruiseAltitude)
@@ -462,31 +407,11 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, nmPerLongitude float32,
 	nav := MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
 		magneticVariation, wind, lg)
 	if nav == nil {
-		return STARSFlightPlan{}, fmt.Errorf("error initializing Nav")
+		return fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
 
-	return STARSFlightPlan{
-		ACID:     ACID(ac.ADSBCallsign),
-		EntryFix: "", // TODO
-		ExitFix:  "", // TODO
-		ETAOrPTD: getAircraftTime(now),
-
-		TrackingController:    of.InitialController,
-		ControllingController: of.InitialController,
-
-		Rules:               IFR,
-		TypeOfFlight:        FlightTypeOverflight,
-		Scratchpad:          of.Scratchpad,
-		SecondaryScratchpad: of.SecondaryScratchpad,
-
-		RequestedAltitude: ac.FlightPlan.Altitude,
-
-		AircraftCount:   1,
-		AircraftType:    ac.FlightPlan.AircraftType,
-		EquipmentSuffix: "G",
-		CWTCategory:     perf.Category.CWT,
-	}, nil
+	return nil
 }
 
 func (ac *Aircraft) NavSummary(lg *log.Logger) string {

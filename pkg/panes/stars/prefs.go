@@ -313,7 +313,7 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	p.VideoMapVisible = make(map[int]interface{})
 
 	for _, dm := range ss.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == dm }); idx != -1 {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == dm }); idx != -1 {
 			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {
 			// This should have been validated at load time.

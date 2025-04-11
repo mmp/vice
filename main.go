@@ -103,7 +103,7 @@ func main() {
 			}
 		}
 		for m := range videoMaps {
-			av.CheckVideoMapManifest(m, &e)
+			sim.CheckVideoMapManifest(m, &e)
 		}
 
 		if e.HaveErrors() {
@@ -138,7 +138,7 @@ func main() {
 		}
 	} else if *listMaps != "" {
 		var e util.ErrorLogger
-		av.PrintVideoMaps(*listMaps, &e)
+		sim.PrintVideoMaps(*listMaps, &e)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 		}

@@ -442,7 +442,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp av.STARSFlightPlan) bool { return fp.Rules != av.IFR })
+		func(fp sim.STARSFlightPlan) bool { return fp.Rules != av.IFR })
 
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
@@ -466,7 +466,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp av.STARSFlightPlan) bool {
+		func(fp sim.STARSFlightPlan) bool {
 			if fp.Rules != av.IFR {
 				return false
 			}
@@ -488,7 +488,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		})
 
 	// 2-92: default sort is by ACID
-	slices.SortFunc(plans, func(a, b av.STARSFlightPlan) int {
+	slices.SortFunc(plans, func(a, b sim.STARSFlightPlan) int {
 		return strings.Compare(string(a.ACID), string(b.ACID))
 	})
 
@@ -654,7 +654,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 	}
 
 	var text strings.Builder
-	format := func(m av.VideoMap) {
+	format := func(m sim.VideoMap) {
 		if m.Label == "" {
 			return
 		}
@@ -681,7 +681,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 
 	text.WriteString(mapTitles[ps.VideoMapsList.Selection])
 	text.WriteByte('\n')
-	var m []av.VideoMap
+	var m []sim.VideoMap
 	if ps.VideoMapsList.Selection == VideoMapCurrent {
 		for _, vm := range sp.allVideoMaps {
 			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
@@ -697,7 +697,7 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 	}
 
 	// Sort by number
-	slices.SortFunc(m, func(a, b av.VideoMap) int { return a.Id - b.Id })
+	slices.SortFunc(m, func(a, b sim.VideoMap) int { return a.Id - b.Id })
 
 	// If more than 50, only display the first 50.
 	if len(m) > 50 {
@@ -943,7 +943,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.Reset()
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp av.STARSFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
+				func(fp sim.STARSFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
 				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]

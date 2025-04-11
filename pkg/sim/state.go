@@ -36,7 +36,7 @@ type State struct {
 	UnsupportedTracks []RadarTrack
 
 	// Only the unassociated ones
-	UnassociatedFlightPlans []av.STARSFlightPlan
+	UnassociatedFlightPlans []STARSFlightPlan
 
 	FlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
@@ -66,7 +66,7 @@ type State struct {
 	ScenarioDefaultVideoMaps []string
 	UserRestrictionAreas     []av.RestrictionArea
 
-	STARSFacilityAdaptation av.STARSFacilityAdaptation
+	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	TRACON            string
 	MagneticVariation float32
@@ -107,7 +107,7 @@ type ReleaseDeparture struct {
 	departureContactController string // not shared with client
 }
 
-func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *State {
+func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *State {
 	ss := &State{
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
@@ -461,14 +461,14 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp av.STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		func(fp STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
 
 	return false
 }
 
-func (ss *State) FindMatchingFlightPlan(s string) *av.STARSFlightPlan {
+func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
 	n := -1
 	if pn, err := strconv.Atoi(s); err == nil && len(s) == 2 {
 		n = pn
@@ -480,7 +480,7 @@ func (ss *State) FindMatchingFlightPlan(s string) *av.STARSFlightPlan {
 	}
 
 	for _, fp := range ss.UnassociatedFlightPlans {
-		if fp.ACID == av.ACID(s) {
+		if fp.ACID == ACID(s) {
 			return &fp
 		}
 		if n == fp.ListIndex {
@@ -512,7 +512,7 @@ func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, b
 	return nil, false
 }
 
-func (ss *State) GetTrackByACID(acid av.ACID) (*RadarTrack, bool) {
+func (ss *State) GetTrackByACID(acid ACID) (*RadarTrack, bool) {
 	for i, trk := range ss.RadarTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			return &ss.RadarTracks[i], true
@@ -521,7 +521,7 @@ func (ss *State) GetTrackByACID(acid av.ACID) (*RadarTrack, bool) {
 	return nil, false
 }
 
-func (ss *State) GetOurTrackByACID(acid av.ACID) (*RadarTrack, bool) {
+func (ss *State) GetOurTrackByACID(acid ACID) (*RadarTrack, bool) {
 	for i, trk := range ss.RadarTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
 			trk.FlightPlan.TrackingController == ss.UserTCP {

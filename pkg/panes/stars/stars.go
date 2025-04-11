@@ -81,8 +81,8 @@ type STARSPane struct {
 	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
 	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
-	allVideoMaps []av.VideoMap
-	dcbVideoMaps []*av.VideoMap
+	allVideoMaps []sim.VideoMap
+	dcbVideoMaps []*sim.VideoMap
 
 	weatherRadar WeatherRadar
 
@@ -202,11 +202,11 @@ type STARSPane struct {
 	wipRestrictionAreaMouseMoved bool       // has moved since last click
 
 	// We won't waste the space to serialize these but reconstruct them on load.
-	significantPoints map[string]av.SignificantPoint
+	significantPoints map[string]sim.SignificantPoint
 	// Store them redundantly in a slice so we can sort them and then
 	// search in a consistent order (when we have to do an exhaustive
 	// search).
-	significantPointsSlice []av.SignificantPoint
+	significantPointsSlice []sim.SignificantPoint
 
 	showVFRAirports bool
 	scopeDraw       struct {
@@ -458,7 +458,7 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
-	addMap := func(vm av.VideoMap) {
+	addMap := func(vm sim.VideoMap) {
 		for i := range 999 {
 			// See if id is available
 			id := (vm.Id + i) % 1000
@@ -479,7 +479,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 
 	// First grab the video maps needed for the DCB
-	sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm av.VideoMap) bool {
+	sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
 		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
 	for _, vm := range sp.allVideoMaps {
@@ -497,7 +497,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 
 	// Make automatic built-in system maps
 	// CA suppression filters
-	csf := av.VideoMap{
+	csf := sim.VideoMap{
 		Label:    "ALLCASU",
 		Name:     "ALL CA SUPPRESSION FILTERS",
 		Id:       700,
@@ -509,7 +509,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	addMap(csf)
 
 	// MVAs
-	mvas := av.VideoMap{
+	mvas := sim.VideoMap{
 		Label:    ss.TRACON + " MVA",
 		Name:     "ALL MINIMUM VECTORING ALTITUDES",
 		Id:       701,
@@ -533,7 +533,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 				continue
 			}
 
-			amap := av.VideoMap{
+			amap := sim.VideoMap{
 				Label:    name,
 				Name:     name + "CLASS " + class,
 				Id:       asId,
@@ -553,7 +553,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {
-		sm := av.VideoMap{
+		sm := sim.VideoMap{
 			Label:    name + "RCM",
 			Name:     name + " RADAR COVERAGE MAP",
 			Id:       radarIndex,
@@ -578,7 +578,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 		for _, rwy := range util.SortedMapKeys(ap.ATPAVolumes) {
 			vol := ap.ATPAVolumes[rwy]
 
-			sm := av.VideoMap{
+			sm := sim.VideoMap{
 				Label:    name + rwy + " VOL",
 				Name:     name + rwy + " ATPA APPROACH VOLUME",
 				Id:       atpaIndex,
@@ -601,7 +601,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
 	for _, name := range ss.ControllerVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
@@ -609,9 +609,9 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 }
 
-func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *server.ControlClient) (*av.VideoMapLibrary, error) {
+func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *server.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.STARSFacilityAdaptation.VideoMapFile
-	if ml, err := av.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
+	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
 	} else {
 		return client.GetVideoMapLibrary(filename)
@@ -788,13 +788,13 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms ScopeTransform
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []av.VideoMap
+	var draw []sim.VideoMap
 	for _, vm := range sp.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b av.VideoMap) int { return a.Id - b.Id })
+	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
 		brite := util.Select(vm.Group == 0, ps.Brightness.VideoGroupA, ps.Brightness.VideoGroupB)
@@ -1146,7 +1146,7 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 			return
 		}
 
-		pt := av.SignificantPoint{
+		pt := sim.SignificantPoint{
 			Name:        name,
 			Description: desc,
 			Location:    loc,
@@ -1185,7 +1185,7 @@ func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
 	}
 
 	// Sort the slice
-	slices.SortFunc(sp.significantPointsSlice, func(a, b av.SignificantPoint) int {
+	slices.SortFunc(sp.significantPointsSlice, func(a, b sim.SignificantPoint) int {
 		return strings.Compare(a.Name, b.Name)
 	})
 }

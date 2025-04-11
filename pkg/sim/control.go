@@ -199,7 +199,7 @@ func (s *Sim) SetGlobalLeaderLine(tcp string, callsign av.ADSBCallsign, dir *mat
 		})
 }
 
-func (s *Sim) CreateFlightPlan(tcp string, ty av.STARSFlightPlanType, spec av.STARSFlightPlanSpecifier) (av.STARSFlightPlan, error) {
+func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -207,18 +207,18 @@ func (s *Sim) CreateFlightPlan(tcp string, ty av.STARSFlightPlanType, spec av.ST
 
 	if util.SeqContainsFunc(maps.Values(s.Aircraft),
 		func(ac *Aircraft) bool { return ac.IsAssociated() && ac.STARSFlightPlan.ACID == fp.ACID }) {
-		return av.STARSFlightPlan{}, ErrDuplicateACID
+		return STARSFlightPlan{}, ErrDuplicateACID
 	}
 	if slices.ContainsFunc(s.State.UnassociatedFlightPlans,
-		func(fp2 av.STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
-		return av.STARSFlightPlan{}, ErrDuplicateACID
+		func(fp2 STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
+		return STARSFlightPlan{}, ErrDuplicateACID
 	}
 
 	var err error
 	switch ty {
-	case av.LocalNonEnroute:
+	case LocalNonEnroute:
 		fp, err = s.STARSComputer.CreateFlightPlan(fp)
-	case av.LocalEnroute, av.RemoteEnroute:
+	case LocalEnroute, RemoteEnroute:
 		var sq av.Squawk
 		sq, err = s.ERAMComputer.CreateSquawk()
 		if err != nil {
@@ -242,32 +242,32 @@ func (s *Sim) CreateFlightPlan(tcp string, ty av.STARSFlightPlanType, spec av.ST
 	return fp, err
 }
 
-func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec av.STARSFlightPlanSpecifier) (av.STARSFlightPlan, error) {
+func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	if ac, ok := s.Aircraft[callsign]; ok {
 		if ac.IsUnassociated() {
-			return av.STARSFlightPlan{}, ErrTrackIsNotActive
+			return STARSFlightPlan{}, ErrTrackIsNotActive
 		}
 		if ac.STARSFlightPlan.TrackingController != tcp {
-			return av.STARSFlightPlan{}, av.ErrOtherControllerHasTrack
+			return STARSFlightPlan{}, av.ErrOtherControllerHasTrack
 		}
 
 		if ac.Mode == av.Altitude && !ac.STARSFlightPlan.InhibitModeCAltitudeDisplay &&
 			spec.PilotReportedAltitude.GetOr(0) != 0 {
 			// 5-166: must inhibit mode C display if we are getting altitude from the aircraft
 			// Allow zero to clear it which various STARS commands do implicitly.
-			return av.STARSFlightPlan{}, ErrIllegalFunction
+			return STARSFlightPlan{}, ErrIllegalFunction
 		}
 
 		// Modify assigned
 		if spec.EntryFix.IsSet || spec.ExitFix.IsSet || spec.ETAOrPTD.IsSet {
 			// These can only be set for non-active flight plans: 5-171
-			return av.STARSFlightPlan{}, ErrTrackIsActive
+			return STARSFlightPlan{}, ErrTrackIsActive
 		}
 		if ac.STARSFlightPlan.HandoffTrackController != "" {
-			return av.STARSFlightPlan{}, ErrTrackIsBeingHandedOff
+			return STARSFlightPlan{}, ErrTrackIsBeingHandedOff
 		}
 
 		if spec.InhibitModeCAltitudeDisplay.IsSet && !spec.InhibitModeCAltitudeDisplay.Get() &&
@@ -280,21 +280,21 @@ func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec av.STA
 	} else {
 		// Modify pending
 		if spec.AssignedAltitude.IsSet {
-			return av.STARSFlightPlan{}, ErrTrackIsNotActive
+			return STARSFlightPlan{}, ErrTrackIsNotActive
 		}
 
 		return s.STARSComputer.ModifyFlightPlan(spec)
 	}
 }
 
-func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightPlanSpecifier) error {
+func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	if spec.CreateQuick {
 		base := s.State.STARSFacilityAdaptation.FlightPlan.QuickACID
 		acid := base + fmt.Sprintf("%02d", s.State.QuickFlightPlanIndex%100)
-		spec.ACID.Set(av.ACID(acid))
+		spec.ACID.Set(ACID(acid))
 		s.State.QuickFlightPlanIndex++
 	}
 
@@ -327,8 +327,8 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightP
 		})
 }
 
-func (s *Sim) ActivateFlightPlan(tcp string, trackCallsign av.ADSBCallsign, fpACID av.ACID,
-	spec *av.STARSFlightPlanSpecifier) error {
+func (s *Sim) ActivateFlightPlan(tcp string, trackCallsign av.ADSBCallsign, fpACID ACID,
+	spec *STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -356,7 +356,7 @@ func (s *Sim) ActivateFlightPlan(tcp string, trackCallsign av.ADSBCallsign, fpAC
 		})
 }
 
-func (s *Sim) DeleteFlightPlan(tcp string, acid av.ACID) error {
+func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	found := false
@@ -552,7 +552,7 @@ func (s *Sim) CancelHandoff(tcp string, callsign av.ADSBCallsign) error {
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			delete(s.Handoffs, ac.ADSBCallsign)
 			ac.STARSFlightPlan.HandoffTrackController = ""
-			ac.STARSFlightPlan.RedirectedHandoff = av.RedirectedHandoff{}
+			ac.STARSFlightPlan.RedirectedHandoff = RedirectedHandoff{}
 
 			return nil
 		})
@@ -585,7 +585,7 @@ func (s *Sim) RedirectHandoff(tcp string, callsign av.ADSBCallsign, controller s
 			ctrl := s.State.Controllers[tcp]
 			if rh.ShouldFallbackToHandoff(tcp, octrl.Id()) {
 				ac.STARSFlightPlan.HandoffTrackController = rh.Redirector[0]
-				*rh = av.RedirectedHandoff{}
+				*rh = RedirectedHandoff{}
 				return nil
 			}
 			rh.AddRedirector(ctrl)
@@ -619,13 +619,13 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, callsign av.ADSBCallsign) erro
 				ac.STARSFlightPlan.ControllingController = tcp
 				ac.STARSFlightPlan.HandoffTrackController = ""
 				ac.STARSFlightPlan.TrackingController = rh.RedirectedTo
-				*rh = av.RedirectedHandoff{}
+				*rh = RedirectedHandoff{}
 			} else if rh.GetLastRedirector() == tcp { // Recall (only the last redirector is able to recall)
 				if len(rh.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					rh.RedirectedTo = rh.Redirector[len(rh.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
 					ac.STARSFlightPlan.HandoffTrackController = rh.Redirector[len(rh.Redirector)-1]
-					*rh = av.RedirectedHandoff{}
+					*rh = RedirectedHandoff{}
 				}
 			}
 

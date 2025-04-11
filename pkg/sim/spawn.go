@@ -900,10 +900,32 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 	ac.WaypointHandoffController = arrivalController
 
-	starsFp, err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
+	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
+	}
+
+	starsFp := STARSFlightPlan{
+		ACID:     ACID(ac.ADSBCallsign),
+		EntryFix: "", // TODO
+		ExitFix:  util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
+		ETAOrPTD: getAircraftTime(s.State.SimTime),
+
+		TrackingController:    arr.InitialController,
+		ControllingController: arr.InitialController,
+
+		Rules:        av.IFR,
+		TypeOfFlight: av.FlightTypeArrival,
+
+		Scratchpad:          arr.Scratchpad,
+		SecondaryScratchpad: arr.SecondaryScratchpad,
+		RequestedAltitude:   ac.FlightPlan.Altitude,
+
+		AircraftCount:   1,
+		AircraftType:    ac.FlightPlan.AircraftType,
+		EquipmentSuffix: "G",
+		CWTCategory:     av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 
 	// VFRs don't go around since they aren't talking to us.
@@ -1013,11 +1035,31 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	ac.InitializeFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
-	starsFP, err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.STARSFacilityAdaptation.Scratchpads,
-		s.State /* wind */, s.State.SimTime, s.lg)
+	err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute, s.State.NmPerLongitude,
+		s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
+	}
+
+	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
+	starsFP := STARSFlightPlan{
+		ACID:     ACID(ac.ADSBCallsign),
+		EntryFix: util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
+		ExitFix:  shortExit,
+		ETAOrPTD: getAircraftTime(s.State.SimTime),
+
+		Rules:        av.IFR,
+		TypeOfFlight: av.FlightTypeDeparture,
+
+		Scratchpad: util.Select(dep.Scratchpad != "", dep.Scratchpad,
+			s.State.STARSFacilityAdaptation.Scratchpads[dep.Exit]),
+		SecondaryScratchpad: dep.SecondaryScratchpad,
+		RequestedAltitude:   ac.FlightPlan.Altitude,
+
+		AircraftCount:   1,
+		AircraftType:    ac.FlightPlan.AircraftType,
+		EquipmentSuffix: "G",
+		CWTCategory:     av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1103,10 +1145,31 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	}
 	ac.WaypointHandoffController = controller
 
-	starsFp, err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
-		s.State /* wind */, s.State.SimTime, s.lg)
-	if err != nil {
+	if err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
+		s.State /* wind */, s.State.SimTime, s.lg); err != nil {
 		return nil, err
+	}
+
+	starsFp := STARSFlightPlan{
+		ACID:     ACID(ac.ADSBCallsign),
+		EntryFix: "", // TODO
+		ExitFix:  "", // TODO
+		ETAOrPTD: getAircraftTime(s.State.SimTime),
+
+		TrackingController:    of.InitialController,
+		ControllingController: of.InitialController,
+
+		Rules:               av.IFR,
+		TypeOfFlight:        av.FlightTypeOverflight,
+		Scratchpad:          of.Scratchpad,
+		SecondaryScratchpad: of.SecondaryScratchpad,
+
+		RequestedAltitude: ac.FlightPlan.Altitude,
+
+		AircraftCount:   1,
+		AircraftType:    ac.FlightPlan.AircraftType,
+		EquipmentSuffix: "G",
+		CWTCategory:     av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 
 	// Like departures, these are already associated
@@ -1317,4 +1380,18 @@ func (s *Sim) initializeAirspaceGrids() {
 	}
 	s.bravoAirspace = initAirspace(av.DB.BravoAirspace)
 	s.charlieAirspace = initAirspace(av.DB.CharlieAirspace)
+}
+
+func getAircraftTime(now time.Time) time.Time {
+	// Hallucinate a random time around the present for the aircraft.
+	delta := time.Duration(-20 + rand.Intn(40))
+	t := now.Add(delta * time.Minute)
+
+	// 9 times out of 10, make it a multiple of 5 minutes
+	if rand.Intn(10) != 9 {
+		dm := t.Minute() % 5
+		t = t.Add(time.Duration(5-dm) * time.Minute)
+	}
+
+	return t
 }

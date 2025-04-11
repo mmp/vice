@@ -63,6 +63,15 @@ type ArrivalAirline struct {
 	Airport string `json:"airport"`
 }
 
+type TypeOfFlight int
+
+const (
+	FlightTypeUnknown TypeOfFlight = iota
+	FlightTypeDeparture
+	FlightTypeArrival
+	FlightTypeOverflight
+)
+
 func (a AirlineSpecifier) Aircraft() []FleetAircraft {
 	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
 		return DB.Airlines[strings.ToUpper(a.ICAO)].Fleets["default"]

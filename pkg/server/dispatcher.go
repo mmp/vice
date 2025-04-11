@@ -119,7 +119,7 @@ func (sd *Dispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{
 type AssociateFlightPlanArgs struct {
 	ControllerToken     string
 	Callsign            av.ADSBCallsign
-	FlightPlanSpecifier av.STARSFlightPlanSpecifier
+	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
 }
 
 func (sd *Dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, _ *struct{}) error {
@@ -135,8 +135,8 @@ func (sd *Dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, _ *struct
 type ActivateFlightPlanArgs struct {
 	ControllerToken     string
 	TrackCallsign       av.ADSBCallsign
-	FpACID              av.ACID
-	FlightPlanSpecifier *av.STARSFlightPlanSpecifier
+	FpACID              sim.ACID
+	FlightPlanSpecifier *sim.STARSFlightPlanSpecifier
 }
 
 func (sd *Dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, _ *struct{}) error {
@@ -151,11 +151,11 @@ func (sd *Dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, _ *struct{}
 
 type CreateFlightPlanArgs struct {
 	ControllerToken     string
-	FlightPlanSpecifier av.STARSFlightPlanSpecifier
-	Type                av.STARSFlightPlanType
+	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
+	Type                sim.STARSFlightPlanType
 }
 
-func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, fp *av.STARSFlightPlan) error {
+func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, fp *sim.STARSFlightPlan) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(cfp.ControllerToken); !ok {
@@ -169,11 +169,11 @@ func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, fp *av.STARSFl
 
 type ModifyFlightPlanArgs struct {
 	ControllerToken     string
-	FlightPlanSpecifier av.STARSFlightPlanSpecifier
+	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
 	Callsign            av.ADSBCallsign
 }
 
-func (sd *Dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, fp *av.STARSFlightPlan) error {
+func (sd *Dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, fp *sim.STARSFlightPlan) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(mfp.ControllerToken); !ok {
@@ -192,7 +192,7 @@ type AircraftSpecifier struct {
 
 type DeleteFlightPlanArgs struct {
 	ControllerToken string
-	ACID            av.ACID
+	ACID            sim.ACID
 }
 
 func (sd *Dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, _ *struct{}) error {
@@ -935,13 +935,13 @@ type VideoMapsArgs struct {
 	Filename        string
 }
 
-func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *av.VideoMapLibrary) error {
+func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLibrary) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if _, _, ok := sd.sm.LookupController(vm.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	}
-	if v, err := av.LoadVideoMapLibrary(vm.Filename); err == nil {
+	if v, err := sim.LoadVideoMapLibrary(vm.Filename); err == nil {
 		*vmf = *v
 		return nil
 	} else {

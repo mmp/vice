@@ -1,8 +1,8 @@
-// pkg/aviation/stars.go
+// pkg/sim/stars.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package sim
 
 import (
 	"bytes"
@@ -17,10 +17,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/klauspost/compress/zstd"
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/klauspost/compress/zstd"
 )
 
 type RedirectedHandoff struct {
@@ -49,7 +51,7 @@ func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl string) bool {
 	return (len(rd.Redirector) == 1 || (len(rd.Redirector) > 1) && rd.Redirector[1] == ctrl) && octrl == rd.Redirector[0]
 }
 
-func (rd *RedirectedHandoff) AddRedirector(ctrl *Controller) {
+func (rd *RedirectedHandoff) AddRedirector(ctrl *av.Controller) {
 	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Id() {
 		// Don't append the same controller multiple times
 		// (the case in which the last redirector recalls and then redirects again)
@@ -287,8 +289,8 @@ type STARSFacilityAdaptation struct {
 	VideoMapNames       []string                          `json:"stars_maps"`
 	VideoMapLabels      map[string]string                 `json:"map_labels"`
 	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	InhibitCAVolumes    []AirspaceVolume                  `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*RadarSite             `json:"radar_sites"`
+	InhibitCAVolumes    []av.AirspaceVolume               `json:"inhibit_ca_volumes"`
+	RadarSites          map[string]*av.RadarSite          `json:"radar_sites"`
 	Center              math.Point2LL                     `json:"-"`
 	CenterString        string                            `json:"center"`
 	Range               float32                           `json:"range"`
@@ -297,14 +299,14 @@ type STARSFacilityAdaptation struct {
 	Altimeters          []string                          `json:"altimeters"`
 
 	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
-	MonitoredBeaconCodeBlocks       []Squawk
+	MonitoredBeaconCodeBlocks       []av.Squawk
 
-	VideoMapFile      string                     `json:"video_map_file"`
-	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
-	SingleCharAIDs    map[string]string          `json:"single_char_aids"` // Char to airport
-	BeaconBank        int                        `json:"beacon_bank"`
-	KeepLDB           bool                       `json:"keep_ldb"`
-	FullLDBSeconds    int                        `json:"full_ldb_seconds"`
+	VideoMapFile      string                        `json:"video_map_file"`
+	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
+	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
+	BeaconBank        int                           `json:"beacon_bank"`
+	KeepLDB           bool                          `json:"keep_ldb"`
+	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
 
 	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
 	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
@@ -332,9 +334,9 @@ type STARSFacilityAdaptation struct {
 
 	CustomSPCs []string `json:"custom_spcs"`
 
-	CoordinationLists []CoordinationList `json:"coordination_lists"`
-	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
-	UseLegacyFont     bool               `json:"use_legacy_font"`
+	CoordinationLists []CoordinationList   `json:"coordination_lists"`
+	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas"`
+	UseLegacyFont     bool                 `json:"use_legacy_font"`
 }
 
 type STARSControllerConfig struct {
@@ -344,7 +346,7 @@ type STARSControllerConfig struct {
 	CenterString                    string        `json:"center"`
 	Range                           float32       `json:"range"`
 	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
-	MonitoredBeaconCodeBlocks       []Squawk
+	MonitoredBeaconCodeBlocks       []av.Squawk
 }
 
 type CoordinationList struct {
@@ -374,10 +376,10 @@ type STARSFlightPlan struct {
 	EntryFix              string
 	ExitFix               string
 	ExitFixIsIntermediate bool
-	Rules                 FlightRules
+	Rules                 av.FlightRules
 	ETAOrPTD              time.Time // predicted time of arrival / proposed time of departure
 
-	AssignedSquawk Squawk
+	AssignedSquawk av.Squawk
 
 	TrackingController     string // Who has the radar track
 	ControllingController  string // Who has control; not necessarily the same as TrackingController
@@ -388,7 +390,7 @@ type STARSFlightPlan struct {
 	EquipmentSuffix string
 	CWTCategory     string
 
-	TypeOfFlight      TypeOfFlight
+	TypeOfFlight      av.TypeOfFlight
 	InitialController string // For abbreviated FPs
 
 	AssignedAltitude      int
@@ -405,7 +407,7 @@ type STARSFlightPlan struct {
 	SPCOverride                 string
 	DisableMSAW                 bool
 	DisableCA                   bool
-	MCISuppressedCode           Squawk
+	MCISuppressedCode           av.Squawk
 	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
 
 	// FIXME: these are used internally by NAS code. It's convenient to
@@ -426,17 +428,17 @@ type STARSFlightPlanSpecifier struct {
 	EntryFix              util.Optional[string]
 	ExitFix               util.Optional[string]
 	ExitFixIsIntermediate util.Optional[bool]
-	Rules                 util.Optional[FlightRules]
+	Rules                 util.Optional[av.FlightRules]
 	ETAOrPTD              util.Optional[time.Time]
 
-	AssignedSquawk util.Optional[Squawk]
+	AssignedSquawk util.Optional[av.Squawk]
 
 	AircraftCount   util.Optional[int]
 	AircraftType    util.Optional[string]
 	EquipmentSuffix util.Optional[string]
 	CWTCategory     util.Optional[string]
 
-	TypeOfFlight      util.Optional[TypeOfFlight]
+	TypeOfFlight      util.Optional[av.TypeOfFlight]
 	InitialController util.Optional[string]
 
 	AssignedAltitude      util.Optional[int]
@@ -455,7 +457,7 @@ type STARSFlightPlanSpecifier struct {
 	SPCOverride                 util.Optional[string]
 	DisableMSAW                 util.Optional[bool]
 	DisableCA                   util.Optional[bool]
-	MCISuppressedCode           util.Optional[Squawk]
+	MCISuppressedCode           util.Optional[av.Squawk]
 	GlobalLeaderLineDirection   util.Optional[*math.CardinalOrdinalDirection]
 
 	// Specifiers used when creating flight plans but not held on beyond
@@ -472,17 +474,17 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
 		ExitFixIsIntermediate: s.ExitFixIsIntermediate.GetOr(false),
-		Rules:                 s.Rules.GetOr(UNKNOWN),
+		Rules:                 s.Rules.GetOr(av.UNKNOWN),
 		ETAOrPTD:              s.ETAOrPTD.GetOr(time.Time{}),
 
-		AssignedSquawk: s.AssignedSquawk.GetOr(Squawk(0)),
+		AssignedSquawk: s.AssignedSquawk.GetOr(av.Squawk(0)),
 
 		AircraftCount:   s.AircraftCount.GetOr(1),
 		AircraftType:    s.AircraftType.GetOr(""),
 		EquipmentSuffix: s.EquipmentSuffix.GetOr(""),
 		CWTCategory:     s.CWTCategory.GetOr(""),
 
-		TypeOfFlight:      s.TypeOfFlight.GetOr(FlightTypeUnknown),
+		TypeOfFlight:      s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
 		InitialController: s.InitialController.GetOr(""),
 
 		AssignedAltitude:      s.AssignedAltitude.GetOr(0),
@@ -499,7 +501,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		SPCOverride:                 s.SPCOverride.GetOr(""),
 		DisableMSAW:                 s.DisableMSAW.GetOr(false),
 		DisableCA:                   s.DisableCA.GetOr(false),
-		MCISuppressedCode:           s.MCISuppressedCode.GetOr(Squawk(0)),
+		MCISuppressedCode:           s.MCISuppressedCode.GetOr(av.Squawk(0)),
 		GlobalLeaderLineDirection:   s.GlobalLeaderLineDirection.GetOr(nil),
 
 		AutoAssociate: s.AutoAssociate,
@@ -585,15 +587,6 @@ type CoordinationTime struct {
 	Time time.Time
 	Type string // A for arrivals, P for Departures, E for overflights
 }
-
-type TypeOfFlight int
-
-const (
-	FlightTypeUnknown TypeOfFlight = iota
-	FlightTypeDeparture
-	FlightTypeArrival
-	FlightTypeOverflight
-)
 
 type STARSFlightPlanType int
 

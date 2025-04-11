@@ -121,9 +121,9 @@ func (c *ControlClient) SetGlobalLeaderLine(callsign av.ADSBCallsign, dir *math.
 		})
 }
 
-func (c *ControlClient) CreateFlightPlan(spec av.STARSFlightPlanSpecifier, ty av.STARSFlightPlanType,
-	success func(av.STARSFlightPlan), err func(error)) {
-	var fpFinal av.STARSFlightPlan
+func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, ty sim.STARSFlightPlanType,
+	success func(sim.STARSFlightPlan), err func(error)) {
+	var fpFinal sim.STARSFlightPlan
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.CreateFlightPlan(spec, ty, &fpFinal),
@@ -137,13 +137,13 @@ func (c *ControlClient) CreateFlightPlan(spec av.STARSFlightPlanSpecifier, ty av
 		})
 }
 
-func (c *ControlClient) ModifyFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightPlanSpecifier, success func(av.STARSFlightPlan), err func(error)) {
+func (c *ControlClient) ModifyFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, success func(sim.STARSFlightPlan), err func(error)) {
 	// Instant update locally hack
 	if trk, ok := c.State.GetOurTrackByCallsign(callsign); ok {
 		trk.FlightPlan.Update(spec)
 	}
 
-	var fpFinal av.STARSFlightPlan
+	var fpFinal sim.STARSFlightPlan
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.ModifyFlightPlan(callsign, spec, &fpFinal),
@@ -177,7 +177,7 @@ func (c *ControlClient) updateControllerStats(callsign av.ADSBCallsign, next fun
 	}
 }
 
-func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.STARSFlightPlanSpecifier, success func(any), err func(error)) {
+func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, success func(any), err func(error)) {
 	// Modifying locally is not canonical but improves perceived latency in
 	// the common case; the RPC may fail, though that's fine; the next
 	// world update will roll back these changes anyway.
@@ -188,7 +188,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.ST
 		fp := spec.GetFlightPlan()
 		fp.TrackingController = spec.InitialController.GetOr(c.State.UserTCP)
 		if spec.CreateQuick {
-			fp.ACID = av.ACID(c.State.STARSFacilityAdaptation.FlightPlan.QuickACID +
+			fp.ACID = sim.ACID(c.State.STARSFacilityAdaptation.FlightPlan.QuickACID +
 				fmt.Sprintf("%02d", c.State.QuickFlightPlanIndex%100))
 		}
 		trk.FlightPlan = &fp
@@ -203,7 +203,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec av.ST
 		})
 }
 
-func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID av.ACID, spec *av.STARSFlightPlanSpecifier,
+func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.STARSFlightPlanSpecifier,
 	success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -214,13 +214,13 @@ func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID av.A
 		})
 }
 
-func (c *ControlClient) DeleteFlightPlan(acid av.ACID, success func(any), err func(error)) {
+func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, success func(any), err func(error)) {
 	// Local update for low latency
 	if trk, ok := c.State.GetOurTrackByACID(acid); ok {
 		trk.FlightPlan = nil
 	}
 	c.State.UnassociatedFlightPlans = slices.DeleteFunc(c.State.UnassociatedFlightPlans,
-		func(fp av.STARSFlightPlan) bool { return fp.ACID == acid })
+		func(fp sim.STARSFlightPlan) bool { return fp.ACID == acid })
 
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -446,8 +446,8 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, success func(any), err fu
 		})
 }
 
-func (c *ControlClient) GetVideoMapLibrary(filename string) (*av.VideoMapLibrary, error) {
-	var vmf av.VideoMapLibrary
+func (c *ControlClient) GetVideoMapLibrary(filename string) (*sim.VideoMapLibrary, error) {
+	var vmf sim.VideoMapLibrary
 	err := c.proxy.GetVideoMapLibrary(filename, &vmf)
 	return &vmf, err
 }

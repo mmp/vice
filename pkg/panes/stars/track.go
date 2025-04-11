@@ -1331,7 +1331,7 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.RadarTrack
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) getFPLeaderLineDirection(fp av.STARSFlightPlan, ctx *panes.Context) math.CardinalOrdinalDirection {
+func (sp *STARSPane) getFPLeaderLineDirection(fp sim.STARSFlightPlan, ctx *panes.Context) math.CardinalOrdinalDirection {
 	ps := sp.currentPrefs()
 
 	// FIXME: once we have better unified notion of a Track then we
