@@ -920,7 +920,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 		Scratchpad:          arr.Scratchpad,
 		SecondaryScratchpad: arr.SecondaryScratchpad,
-		RequestedAltitude:   ac.FlightPlan.Altitude,
 
 		AircraftCount:   1,
 		AircraftType:    ac.FlightPlan.AircraftType,
@@ -1162,8 +1161,6 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		TypeOfFlight:        av.FlightTypeOverflight,
 		Scratchpad:          of.Scratchpad,
 		SecondaryScratchpad: of.SecondaryScratchpad,
-
-		RequestedAltitude: ac.FlightPlan.Altitude,
 
 		AircraftCount:   1,
 		AircraftType:    ac.FlightPlan.AircraftType,
