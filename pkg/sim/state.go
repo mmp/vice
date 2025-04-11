@@ -32,7 +32,7 @@ const serverCallsign = "__SERVER__"
 // assorted information they may need (the state of aircraft in the sim,
 // etc.)
 type State struct {
-	RadarTracks       []RadarTrack
+	RadarTracks       map[av.ADSBCallsign]*RadarTrack
 	UnsupportedTracks []RadarTrack
 
 	// Only the unassociated ones
@@ -453,8 +453,8 @@ func (ss *State) AmInstructor() bool {
 }
 
 func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
-	if slices.ContainsFunc(ss.RadarTracks,
-		func(tr RadarTrack) bool {
+	if util.SeqContainsFunc(maps.Values(ss.RadarTracks),
+		func(tr *RadarTrack) bool {
 			return tr.IsAssociated() && tr.Squawk == sq
 		}) {
 		return true
@@ -496,7 +496,7 @@ func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
 func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, bool) {
 	for i, trk := range ss.RadarTracks {
 		if trk.ADSBCallsign == callsign {
-			return &ss.RadarTracks[i], true
+			return ss.RadarTracks[i], true
 		}
 	}
 	return nil, false
@@ -506,7 +506,7 @@ func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, b
 	for i, trk := range ss.RadarTracks {
 		if trk.ADSBCallsign == callsign && trk.IsAssociated() &&
 			trk.FlightPlan.TrackingController == ss.UserTCP {
-			return &ss.RadarTracks[i], true
+			return ss.RadarTracks[i], true
 		}
 	}
 	return nil, false
@@ -515,7 +515,7 @@ func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, b
 func (ss *State) GetTrackByACID(acid ACID) (*RadarTrack, bool) {
 	for i, trk := range ss.RadarTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
-			return &ss.RadarTracks[i], true
+			return ss.RadarTracks[i], true
 		}
 	}
 	return nil, false
@@ -525,7 +525,7 @@ func (ss *State) GetOurTrackByACID(acid ACID) (*RadarTrack, bool) {
 	for i, trk := range ss.RadarTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
 			trk.FlightPlan.TrackingController == ss.UserTCP {
-			return &ss.RadarTracks[i], true
+			return ss.RadarTracks[i], true
 		}
 	}
 	return nil, false

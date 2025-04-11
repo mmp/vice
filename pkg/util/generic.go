@@ -434,6 +434,16 @@ func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
 	return false
 }
 
+func SeqLookupFunc[T comparable](seq iter.Seq[T], check func(T) bool) (T, bool) {
+	for s := range seq {
+		if check(s) {
+			return s, true
+		}
+	}
+	var t T
+	return t, false
+}
+
 func MapSeq[T, U any](seq iter.Seq[T], f func(T) U) iter.Seq[U] {
 	return func(yield func(U) bool) {
 		for v := range seq {

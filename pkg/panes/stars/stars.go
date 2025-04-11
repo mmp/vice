@@ -1258,7 +1258,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.RadarTrack {
 		}
 
 		if visible {
-			tracks = append(tracks, trk)
+			tracks = append(tracks, *trk)
 
 			// Is this the first we've seen it?
 			if state.FirstRadarTrack.IsZero() {

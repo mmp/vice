@@ -496,7 +496,7 @@ type GlobalMessage struct {
 }
 
 type WorldUpdate struct {
-	RadarTracks             []RadarTrack
+	RadarTracks             map[av.ADSBCallsign]*RadarTrack
 	UnsupportedTracks       []RadarTrack
 	Controllers             map[string]*av.Controller
 	HumanControllers        []string
@@ -564,6 +564,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 			})
 	}
 
+	update.RadarTracks = make(map[av.ADSBCallsign]*RadarTrack)
 	for _, callsign := range util.SortedMapKeys(s.Aircraft) {
 		ac := s.Aircraft[callsign]
 		rt := RadarTrack{
@@ -587,7 +588,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 			rt.Route = append(rt.Route, wp.Location)
 		}
 
-		update.RadarTracks = append(update.RadarTracks, rt)
+		update.RadarTracks[callsign] = &rt
 	}
 
 	return err

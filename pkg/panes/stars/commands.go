@@ -7,6 +7,7 @@ package stars
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -338,11 +339,11 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 		}
 
 		if idx, err := strconv.Atoi(callsign); err == nil {
-			if tidx := slices.IndexFunc(ctx.Client.State.RadarTracks,
-				func(trk sim.RadarTrack) bool {
+			if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.RadarTracks),
+				func(trk *sim.RadarTrack) bool {
 					return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx
-				}); tidx != -1 {
-				return &ctx.Client.State.RadarTracks[tidx]
+				}); ok {
+				return trk
 			}
 		}
 
@@ -484,8 +485,8 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 			code, err := av.ParseSquawk(cmd[2:])
 			if err != nil {
 				status.err = ErrSTARSIllegalCode
-			} else if !slices.ContainsFunc(ctx.Client.State.RadarTracks,
-				func(trk sim.RadarTrack) bool { return trk.Squawk == code }) {
+			} else if !util.SeqContainsFunc(maps.Values(ctx.Client.State.RadarTracks),
+				func(trk *sim.RadarTrack) bool { return trk.Squawk == code }) {
 				status.err = ErrSTARSNoTrack
 			} else {
 				sp.DisplayBeaconCode = code
@@ -2247,7 +2248,7 @@ func (sp *STARSPane) executeSTARSCommand(cmd string, ctx *panes.Context) (status
 
 		var trk *sim.RadarTrack
 		if len(matching) == 1 {
-			trk = &matching[0]
+			trk = matching[0]
 		} else if len(matching) == 0 && sp.targetGenLastCallsign != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
 			trk, _ = ctx.GetTrackByCallsign(sp.targetGenLastCallsign)
@@ -4367,8 +4368,8 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, callsign av.ADSBCallsi
 // Returns all aircraft that match the given suffix. If instructor is true,
 // returns all matching aircraft; otherwise only ones under the current
 // controller's control are considered for matching.
-func (sp *STARSPane) tracksFromCallsignSuffix(ctx *panes.Context, suffix string, instructor bool) []sim.RadarTrack {
-	match := func(trk sim.RadarTrack) bool {
+func (sp *STARSPane) tracksFromCallsignSuffix(ctx *panes.Context, suffix string, instructor bool) []*sim.RadarTrack {
+	match := func(trk *sim.RadarTrack) bool {
 		if trk.IsUnassociated() {
 			return false
 		}
@@ -4385,5 +4386,5 @@ func (sp *STARSPane) tracksFromCallsignSuffix(ctx *panes.Context, suffix string,
 		}
 		return false
 	}
-	return util.FilterSlice(ctx.Client.State.RadarTracks, match)
+	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.RadarTracks), match))
 }

@@ -157,7 +157,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// First account for changes in world.Aircraft
 	// Added aircraft
 	for _, trk := range ctx.Client.State.RadarTracks {
-		fsp.possiblyAdd(&trk, ctx.UserTCP)
+		fsp.possiblyAdd(trk, ctx.UserTCP)
 	}
 
 	remove := func(c av.ADSBCallsign) {
