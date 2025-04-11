@@ -857,8 +857,6 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircra
 }
 
 func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraft, error) {
-	goAround := rand.Float32() < s.State.LaunchConfig.GoAroundRate
-
 	arrivals := s.State.InboundFlows[group].Arrivals
 	// Randomly sample from the arrivals that have a route to this airport.
 	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
@@ -901,9 +899,21 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 
 	starsFp, err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr, arrivalController,
-		goAround, s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
+	}
+
+	// VFRs don't go around since they aren't talking to us.
+	goAround := rand.Float32() < s.State.LaunchConfig.GoAroundRate && ac.FlightPlan.Rules == av.IFR
+	// If it's only controlled by virtual controllers, then don't let it go
+	// around.  Note that this test misses the case where a human has
+	// control from the start, though that shouldn't be happening...
+	goAround = goAround && slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
+	if goAround {
+		// Don't go around
+		d := 0.1 + .6*rand.Float32()
+		ac.GoAroundDistance = &d
 	}
 
 	// Arrivals start out already-associated and with an enroute code.
@@ -1008,6 +1018,8 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	if err != nil {
 		return nil, err
 	}
+
+	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.IFR // VFRs aren't held
 
 	sq, err := s.ERAMComputer.CreateSquawk()
 	if err != nil {

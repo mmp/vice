@@ -55,11 +55,6 @@ type Aircraft struct {
 
 	STARSFlightPlan *STARSFlightPlan // if this is nil, it's unassociated.
 
-	HoldForRelease   bool
-	Released         bool // only used for hold for release
-	ReleaseTime      time.Time
-	WaitingForLaunch bool // for departures
-
 	// The controller who gave approach clearance
 	ApproachController string
 
@@ -73,7 +68,6 @@ type Aircraft struct {
 	DepartureContactController string
 
 	// Arrival-related state
-	GoAroundDistance    *float32
 	STAR                string
 	STARRunwayWaypoints map[string]WaypointArray
 	GotContactTower     bool
@@ -398,7 +392,7 @@ func getAircraftTime(now time.Time) time.Time {
 	return t
 }
 
-func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffController string, goAround bool,
+func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffController string,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
@@ -428,18 +422,6 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 		return STARSFlightPlan{}, fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
-
-	// VFRs don't go around since they aren't talking to us.
-	goAround = goAround && ac.FlightPlan.Rules == IFR
-	// If it's only controlled by virtual controllers, then don't let it go
-	// around.  Note that this test misses the case where a human has
-	// control from the start, though that shouldn't be happening...
-	goAround = goAround && slices.ContainsFunc(ac.Nav.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff })
-	if goAround {
-		// Don't go around
-		d := 0.1 + .6*rand.Float32()
-		ac.GoAroundDistance = &d
-	}
 
 	if arr.ExpectApproach.A != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
@@ -505,7 +487,6 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 		ac.FlightPlan.Altitude = dep.Altitudes[idx]
 	}
 
-	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == IFR // VFRs aren't held
 	ac.TypeOfFlight = FlightTypeDeparture
 
 	randomizeAltitudeRange := ac.FlightPlan.Rules == VFR

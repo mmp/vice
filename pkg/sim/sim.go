@@ -70,6 +70,13 @@ type Sim struct {
 type Aircraft struct {
 	av.Aircraft
 	//STARSFlightPlan *av.STARSFlightPlan
+
+	HoldForRelease   bool
+	Released         bool // only used for hold for release
+	ReleaseTime      time.Time
+	WaitingForLaunch bool // for departures
+
+	GoAroundDistance *float32
 }
 
 type RadarTrack struct {
