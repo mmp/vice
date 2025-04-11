@@ -69,7 +69,8 @@ type Sim struct {
 
 type Aircraft struct {
 	av.Aircraft
-	//STARSFlightPlan *av.STARSFlightPlan
+
+	STARSFlightPlan *av.STARSFlightPlan
 
 	HoldForRelease   bool
 	Released         bool // only used for hold for release
@@ -77,6 +78,16 @@ type Aircraft struct {
 	WaitingForLaunch bool // for departures
 
 	GoAroundDistance *float32
+
+	// Departure related state
+	DepartureContactAltitude   float32
+	DepartureContactController string
+
+	// Who to try to hand off to at a waypoint with /ho
+	WaypointHandoffController string
+
+	// The controller who gave approach clearance
+	ApproachController string
 }
 
 type RadarTrack struct {
@@ -289,7 +300,7 @@ func (s *Sim) SignOff(tcp string) error {
 
 	// Drop track on controlled aircraft
 	for _, ac := range s.Aircraft {
-		ac.HandleControllerDisconnect(tcp, s.State.PrimaryController)
+		ac.handleControllerDisconnect(tcp, s.State.PrimaryController)
 	}
 
 	if tcp == s.State.LaunchConfig.Controller {
@@ -340,9 +351,9 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 
 	for _, ac := range s.Aircraft {
 		if keepTracks {
-			ac.TransferTracks(fromTCP, toTCP)
+			ac.transferTracks(fromTCP, toTCP)
 		} else {
-			ac.HandleControllerDisconnect(fromTCP, s.State.PrimaryController)
+			ac.handleControllerDisconnect(fromTCP, s.State.PrimaryController)
 		}
 	}
 
@@ -766,6 +777,10 @@ func (s *Sim) updateState() {
 						s.handoffTrack(sfp.TrackingController, passedWaypoint.TCPHandoff, ac)
 					}
 
+					if passedWaypoint.ClearApproach {
+						ac.ApproachController = ac.STARSFlightPlan.ControllingController
+					}
+
 					if passedWaypoint.TransferComms {
 						// We didn't enqueue this before since we knew an
 						// explicit comms handoff was coming so go ahead and
@@ -968,4 +983,83 @@ func (t *RadarTrack) HandingOffTo(tcp string) bool {
 	return sfp.HandoffTrackController == tcp &&
 		(!slices.Contains(sfp.RedirectedHandoff.Redirector, tcp) || // not a redirector
 			sfp.RedirectedHandoff.RedirectedTo == tcp) // redirected to
+}
+
+func (ac *Aircraft) transferTracks(from, to string) {
+	if ac.ApproachController == from {
+		ac.ApproachController = to
+	}
+
+	if ac.IsUnassociated() {
+		return
+	}
+
+	sfp := ac.STARSFlightPlan
+	if sfp.HandoffTrackController == from {
+		sfp.HandoffTrackController = to
+	}
+	if sfp.TrackingController == from {
+		sfp.TrackingController = to
+	}
+	if sfp.ControllingController == from {
+		sfp.ControllingController = to
+	}
+}
+
+func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryController string) {
+	if callsign == primaryController {
+		// Don't change anything; the sim will pause without the primary
+		// controller, so we might as well have all of the tracks and
+		// inbound handoffs waiting for them when they return.
+		return
+	}
+	if ac.IsUnassociated() {
+		return
+	}
+
+	sfp := ac.STARSFlightPlan
+	if sfp.HandoffTrackController == callsign {
+		// Otherwise redirect handoffs to the primary controller. This is
+		// not a perfect solution; for an arrival, for example, we should
+		// re-resolve it based on the signed-in controllers, as is done in
+		// Sim updateState() for arrivals when they are first handed
+		// off. We don't have all of that information here, though...
+		sfp.HandoffTrackController = primaryController
+	}
+
+	if sfp.ControllingController == callsign {
+		if sfp.TrackingController == callsign {
+			// Drop track of aircraft that we control
+			sfp.TrackingController = ""
+			sfp.ControllingController = ""
+		} else {
+			// Another controller has the track but not yet control;
+			// just give them control
+			sfp.ControllingController = sfp.TrackingController
+		}
+	}
+}
+
+func (ac *Aircraft) IsUnassociated() bool {
+	return ac.STARSFlightPlan == nil
+}
+
+func (ac *Aircraft) IsAssociated() bool {
+	return ac.STARSFlightPlan != nil
+}
+
+func (ac *Aircraft) AssociateFlightPlan(fp *av.STARSFlightPlan) {
+	ac.STARSFlightPlan = fp
+}
+
+func (ac *Aircraft) UpdateFlightPlan(spec av.STARSFlightPlanSpecifier) av.STARSFlightPlan {
+	if ac.STARSFlightPlan != nil {
+		if spec.InitialController.IsSet {
+			ac.STARSFlightPlan.TrackingController = spec.InitialController.Get()
+		}
+
+		ac.STARSFlightPlan.Update(spec)
+		return *ac.STARSFlightPlan
+	}
+	return spec.GetFlightPlan()
 }

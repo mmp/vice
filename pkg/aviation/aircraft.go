@@ -53,27 +53,15 @@ type Aircraft struct {
 	FlightPlan   FlightPlan
 	TypeOfFlight TypeOfFlight
 
-	STARSFlightPlan *STARSFlightPlan // if this is nil, it's unassociated.
-
-	// The controller who gave approach clearance
-	ApproachController string
-
 	Strip FlightStrip
 
 	// State related to navigation.
 	Nav Nav
 
-	// Departure related state
-	DepartureContactAltitude   float32
-	DepartureContactController string
-
 	// Arrival-related state
 	STAR                string
 	STARRunwayWaypoints map[string]WaypointArray
 	GotContactTower     bool
-
-	// Who to try to hand off to at a waypoint with /ho
-	WaypointHandoffController string
 }
 
 type ADSBCallsign string
@@ -102,100 +90,30 @@ func (ac *Aircraft) TAS() float32 {
 	return ac.Nav.TAS()
 }
 
-func (ac *Aircraft) HandleControllerDisconnect(callsign string, primaryController string) {
-	if callsign == primaryController {
-		// Don't change anything; the sim will pause without the primary
-		// controller, so we might as well have all of the tracks and
-		// inbound handoffs waiting for them when they return.
-		return
-	}
-	if ac.IsUnassociated() {
-		return
-	}
-
-	sfp := ac.STARSFlightPlan
-	if sfp.HandoffTrackController == callsign {
-		// Otherwise redirect handoffs to the primary controller. This is
-		// not a perfect solution; for an arrival, for example, we should
-		// re-resolve it based on the signed-in controllers, as is done in
-		// Sim updateState() for arrivals when they are first handed
-		// off. We don't have all of that information here, though...
-		sfp.HandoffTrackController = primaryController
-	}
-
-	if sfp.ControllingController == callsign {
-		if sfp.TrackingController == callsign {
-			// Drop track of aircraft that we control
-			sfp.TrackingController = ""
-			sfp.ControllingController = ""
-		} else {
-			// Another controller has the track but not yet control;
-			// just give them control
-			sfp.ControllingController = sfp.TrackingController
-		}
-	}
-}
-
-func (ac *Aircraft) TransferTracks(from, to string) {
-	if ac.ApproachController == from {
-		ac.ApproachController = to
-	}
-
-	if ac.IsUnassociated() {
-		return
-	}
-
-	sfp := ac.STARSFlightPlan
-	if sfp.HandoffTrackController == from {
-		sfp.HandoffTrackController = to
-	}
-	if sfp.TrackingController == from {
-		sfp.TrackingController = to
-	}
-	if sfp.ControllingController == from {
-		sfp.ControllingController = to
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Navigation and simulation
 
 // Helper function to make the code for the common case of a readback
 // response more compact.
 func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission {
-	if ac.IsAssociated() {
-		return []RadioTransmission{RadioTransmission{
-			Controller: ac.STARSFlightPlan.ControllingController,
-			Message:    fmt.Sprintf(f, args...),
-			Type:       RadioTransmissionReadback,
-		}}
-	} else {
-		return nil
-	}
+	return []RadioTransmission{RadioTransmission{
+		Message: fmt.Sprintf(f, args...),
+		Type:    RadioTransmissionReadback,
+	}}
 }
 
 func (ac *Aircraft) readbackUnexpected(f string, args ...interface{}) []RadioTransmission {
-	if ac.IsAssociated() {
-		return []RadioTransmission{RadioTransmission{
-			Controller: ac.STARSFlightPlan.ControllingController,
-			Message:    fmt.Sprintf(f, args...),
-			Type:       RadioTransmissionUnexpected,
-		}}
-	} else {
-		return nil
-	}
+	return []RadioTransmission{RadioTransmission{
+		Message: fmt.Sprintf(f, args...),
+		Type:    RadioTransmissionUnexpected,
+	}}
 }
 
 func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
-	if ac.IsAssociated() {
-		return []RadioTransmission{RadioTransmission{
-			Controller: ac.STARSFlightPlan.ControllingController,
-			Message:    r.Message,
-			Type:       RadioTransmissionType(util.Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
-		}}
-	} else {
-		return nil
-	}
+	return []RadioTransmission{RadioTransmission{
+		Message: r.Message,
+		Type:    RadioTransmissionType(util.Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
+	}}
 }
 
 func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
@@ -206,10 +124,6 @@ func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
 	passedWaypoint := ac.Nav.Update(wind, &ac.FlightPlan, lg)
 	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
-
-		if passedWaypoint.ClearApproach && ac.IsAssociated() {
-			ac.ApproachController = ac.STARSFlightPlan.ControllingController
-		}
 	}
 
 	return passedWaypoint
@@ -218,15 +132,11 @@ func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
 func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
 	ac.GotContactTower = false
-	if ac.IsAssociated() {
-		return []RadioTransmission{RadioTransmission{
-			Controller: ac.STARSFlightPlan.ControllingController,
-			Message:    resp.Message,
-			Type:       RadioTransmissionType(util.Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
-		}}
-	} else {
-		return nil
-	}
+
+	return []RadioTransmission{RadioTransmission{
+		Message: resp.Message,
+		Type:    RadioTransmissionType(util.Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
+	}}
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) []RadioTransmission {
@@ -320,20 +230,14 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.AtFixCleared(fix, approach))
 }
 
-func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) []RadioTransmission {
+func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) ([]RadioTransmission, error) {
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
-	if err == nil && ac.IsAssociated() {
-		ac.ApproachController = ac.STARSFlightPlan.ControllingController
-	}
-	return ac.transmitResponse(resp)
+	return ac.transmitResponse(resp), err
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string) []RadioTransmission {
+func (ac *Aircraft) ClearedStraightInApproach(id string) ([]RadioTransmission, error) {
 	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
-	if err == nil && ac.IsAssociated() {
-		ac.ApproachController = ac.STARSFlightPlan.ControllingController
-	}
-	return ac.transmitResponse(resp)
+	return ac.transmitResponse(resp), err
 }
 
 func (ac *Aircraft) CancelApproachClearance() []RadioTransmission {
@@ -358,18 +262,10 @@ func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 		return ac.readbackUnexpected("unable. We haven't been cleared for the approach.")
 	} else {
 		ac.GotContactTower = true
-		if ac.IsAssociated() {
-			prevController := ac.STARSFlightPlan.ControllingController
-			ac.STARSFlightPlan.ControllingController = "_TOWER"
-
-			return []RadioTransmission{RadioTransmission{
-				Controller: prevController,
-				Message:    "contact tower",
-				Type:       RadioTransmissionReadback,
-			}}
-		} else {
-			return nil
-		}
+		return []RadioTransmission{RadioTransmission{
+			Message: "contact tower",
+			Type:    RadioTransmissionReadback,
+		}}
 	}
 }
 
@@ -392,11 +288,10 @@ func getAircraftTime(now time.Time) time.Time {
 	return t
 }
 
-func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffController string,
-	nmPerLongitude float32, magneticVariation float32, wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
+func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, nmPerLongitude float32, magneticVariation float32,
+	wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
-	ac.WaypointHandoffController = arrivalHandoffController
 
 	perf, ok := DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
@@ -459,7 +354,6 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, dep *Departure,
 	runway string, exitRoute ExitRoute, nmPerLongitude float32,
 	magneticVariation float32, scratchpads map[string]string,
-	primaryController string, multiControllers SplitConfiguration,
 	wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
@@ -507,9 +401,6 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 		ExitFix:  shortExit,
 		ETAOrPTD: getAircraftTime(now),
 
-		InitialController: util.Select(ac.DepartureContactController != "", ac.DepartureContactController, /* human */
-			ap.DepartureController /* virtual */),
-
 		Rules:        IFR,
 		TypeOfFlight: FlightTypeDeparture,
 
@@ -521,32 +412,6 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 		AircraftType:    ac.FlightPlan.AircraftType,
 		EquipmentSuffix: "G",
 		CWTCategory:     perf.Category.CWT,
-	}
-
-	if ap.DepartureController != "" && ap.DepartureController != primaryController {
-		// starting out with a virtual controller
-		sfp.TrackingController = ap.DepartureController
-		sfp.ControllingController = ap.DepartureController
-		ac.WaypointHandoffController = exitRoute.HandoffController
-	} else {
-		// human controller will be first
-		ctrl := primaryController
-		if len(multiControllers) > 0 {
-			var err error
-			ctrl, err = multiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
-			if err != nil {
-				lg.Error("unable to get departure controller", slog.Any("error", err),
-					slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-			}
-		}
-		if ctrl == "" {
-			ctrl = primaryController
-		}
-
-		ac.DepartureContactAltitude =
-			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
-		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
-		ac.DepartureContactController = ctrl
 	}
 
 	return sfp, nil
@@ -578,7 +443,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt i
 	return nil
 }
 
-func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPerLongitude float32,
+func (ac *Aircraft) InitializeOverflight(of *Overflight, nmPerLongitude float32,
 	magneticVariation float32, wind WindModel, now time.Time, lg *log.Logger) (STARSFlightPlan, error) {
 	perf, ok := DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
@@ -593,7 +458,6 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPe
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 	ac.TypeOfFlight = FlightTypeOverflight
-	ac.WaypointHandoffController = controller
 
 	nav := MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
 		magneticVariation, wind, lg)
@@ -780,14 +644,6 @@ func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongit
 	return
 }
 
-func (ac *Aircraft) IsUnassociated() bool {
-	return ac.STARSFlightPlan == nil
-}
-
-func (ac *Aircraft) IsAssociated() bool {
-	return ac.STARSFlightPlan != nil
-}
-
 func (ac *Aircraft) IsDeparture() bool {
 	return ac.TypeOfFlight == FlightTypeDeparture
 }
@@ -798,20 +654,4 @@ func (ac *Aircraft) IsArrival() bool {
 
 func (ac *Aircraft) IsOverflight() bool {
 	return ac.TypeOfFlight == FlightTypeOverflight
-}
-
-func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
-	ac.STARSFlightPlan = fp
-}
-
-func (ac *Aircraft) UpdateFlightPlan(spec STARSFlightPlanSpecifier) STARSFlightPlan {
-	if ac.STARSFlightPlan != nil {
-		if spec.InitialController.IsSet {
-			ac.STARSFlightPlan.TrackingController = spec.InitialController.Get()
-		}
-
-		ac.STARSFlightPlan.Update(spec)
-		return *ac.STARSFlightPlan
-	}
-	return spec.GetFlightPlan()
 }

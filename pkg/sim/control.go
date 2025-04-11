@@ -32,8 +32,15 @@ func (s *Sim) dispatchCommand(tcp string, callsign av.ADSBCallsign,
 			}
 		}
 
+		// This controller will get the readback; grab it now in case the command changes it.
+		ctrl := ac.STARSFlightPlan.ControllingController
+
 		preAc := *ac
 		radioTransmissions := cmd(tcp, ac)
+
+		for i := range radioTransmissions {
+			radioTransmissions[i].Controller = ctrl
+		}
 
 		s.lg.Info("dispatch_command", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("prepost_aircraft", []Aircraft{preAc, *ac}),
@@ -983,12 +990,18 @@ func (s *Sim) ClearedApproach(tcp string, callsign av.ADSBCallsign, approach str
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControllingCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, ac *Aircraft) (resp []av.RadioTransmission) {
+			var err error
 			if straightIn {
-				return ac.ClearedStraightInApproach(approach)
+				resp, err = ac.ClearedStraightInApproach(approach)
 			} else {
-				return ac.ClearedApproach(approach, s.lg)
+				resp, err = ac.ClearedApproach(approach, s.lg)
 			}
+
+			if err == nil {
+				ac.ApproachController = ac.STARSFlightPlan.ControllingController
+			}
+			return
 		})
 }
 
@@ -1052,8 +1065,10 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 
 	return s.dispatchControllingCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+			ac.STARSFlightPlan.ControllingController = "_TOWER"
 			return ac.ContactTower(s.lg)
 		})
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

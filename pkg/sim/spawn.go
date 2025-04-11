@@ -898,7 +898,9 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		}
 	}
 
-	starsFp, err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr, arrivalController,
+	ac.WaypointHandoffController = arrivalController
+
+	starsFp, err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
@@ -911,7 +913,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	// control from the start, though that shouldn't be happening...
 	goAround = goAround && slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
 	if goAround {
-		// Don't go around
 		d := 0.1 + .6*rand.Float32()
 		ac.GoAroundDistance = &d
 	}
@@ -1014,9 +1015,37 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	starsFP, err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.STARSFacilityAdaptation.Scratchpads,
-		s.State.PrimaryController, s.State.MultiControllers, s.State /* wind */, s.State.SimTime, s.lg)
+		s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
+	}
+
+	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
+		// starting out with a virtual controller
+		starsFP.InitialController = ap.DepartureController
+		starsFP.TrackingController = ap.DepartureController
+		starsFP.ControllingController = ap.DepartureController
+		ac.WaypointHandoffController = exitRoute.HandoffController
+	} else {
+		// human controller will be first
+		ctrl := s.State.PrimaryController
+		if len(s.State.MultiControllers) > 0 {
+			var err error
+			ctrl, err = s.State.MultiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
+			if err != nil {
+				s.lg.Error("unable to get departure controller", slog.Any("error", err),
+					slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
+			}
+		}
+		if ctrl == "" {
+			ctrl = s.State.PrimaryController
+		}
+
+		ac.DepartureContactAltitude =
+			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
+		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactController = ctrl
+		starsFP.InitialController = ac.DepartureContactController
 	}
 
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.IFR // VFRs aren't held
@@ -1072,8 +1101,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 			controller = s.State.PrimaryController
 		}
 	}
+	ac.WaypointHandoffController = controller
 
-	starsFp, err := ac.InitializeOverflight(&of, controller, s.State.NmPerLongitude, s.State.MagneticVariation,
+	starsFp, err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
