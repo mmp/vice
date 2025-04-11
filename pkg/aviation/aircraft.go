@@ -30,9 +30,9 @@ type RadarTrack struct {
 func (ac *Aircraft) GetRadarTrack() RadarTrack {
 	return RadarTrack{
 		ADSBCallsign: ac.ADSBCallsign,
-		Squawk:       ac.Squawk,
+		Squawk:       util.Select(ac.Mode != Standby, ac.Squawk, Squawk(0)),
 		Mode:         ac.Mode,
-		Altitude:     ac.Altitude(),
+		Altitude:     util.Select(ac.Mode == Altitude, ac.Altitude(), 0),
 		Location:     ac.Position(),
 		Heading:      ac.Heading(),
 		Groundspeed:  ac.GS(),
