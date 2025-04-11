@@ -205,8 +205,8 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Collect multiple successive transmissions from the same
 			// aircraft into a single transmission.
 
-			toUs := event.ToController == ctx.ControlClient.UserTCP
-			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.UserTCP]
+			toUs := event.ToController == ctx.UserTCP
+			amInstructor := ctx.Client.State.Instructors[ctx.UserTCP]
 			if !toUs && !amInstructor {
 				break
 			}
@@ -221,7 +221,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				icao, flight := radioCallsign[:idx], radioCallsign[idx:]
 				if telephony, ok := av.DB.Callsigns[icao]; ok {
 					radioCallsign = telephony + " " + flight
-					if trk, ok := ctx.ControlClient.State.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsAssociated() {
+					if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsAssociated() {
 						if perf, ok := av.DB.AircraftPerformance[trk.FlightPlan.AircraftType]; ok {
 							if perf.WeightClass == "H" {
 								radioCallsign += " heavy"
@@ -241,10 +241,10 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			var msg Message
 			if event.RadioTransmissionType == av.RadioTransmissionContact {
 				name := event.ToController
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok {
+				if ctrl, ok := ctx.Client.State.Controllers[event.ToController]; ok {
 					name = ctrl.RadioName
 				}
-				if trk, ok := ctx.ControlClient.State.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsDeparture() {
+				if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsDeparture() {
 					// Always refer to the controller as "departure" for departing aircraft.
 					name = strings.ReplaceAll(name, "approach", "departure")
 				}
@@ -268,7 +268,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.ControlClient.UserTCP {
+			if event.FromController != ctx.UserTCP {
 				for _, line := range strings.Split(event.Message, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}

@@ -486,7 +486,7 @@ func isVFRFlightPlan(text string) bool {
 
 func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied bool) error {
 	lc := len([]rune(contents))
-	fac := ctx.ControlClient.STARSFacilityAdaptation
+	fac := ctx.FacilityAdaptation
 
 	// 5-148
 	if fac.AllowLongScratchpad && lc > 4 {
@@ -518,7 +518,7 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 		// For the implied version (i.e., not [multifunc]Y), it also can't
 		// match one of the TCPs
 		if lc == 2 {
-			for _, ctrl := range ctx.ControlClient.Controllers {
+			for _, ctrl := range ctx.Client.State.Controllers {
 				if ctrl.FacilityIdentifier == "" && ctrl.TCP == contents {
 					return ErrSTARSCommandFormat
 				}

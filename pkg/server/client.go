@@ -40,7 +40,7 @@ type ControlClient struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	sim.State
+	State sim.State
 }
 
 func (c *ControlClient) RPCClient() *util.RPCClient {
@@ -63,13 +63,13 @@ func NewControlClient(ss sim.State, local bool, controllerToken string, client *
 }
 
 func (c *ControlClient) Status() string {
-	if c == nil || c.SimDescription == "" {
+	if c == nil || c.State.SimDescription == "" {
 		return "[disconnected]"
 	} else {
 		stats := c.SessionStats
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d intrafacility %d overflights ]",
 			stats.Departures, stats.Arrivals, stats.IntraFacility, stats.Overflights)
-		return c.State.UserTCP + c.SimDescription + deparr
+		return c.State.UserTCP + c.State.SimDescription + deparr
 	}
 }
 
@@ -417,9 +417,9 @@ func (c *ControlClient) UpdateRestrictionArea(idx int, ra av.RestrictionArea, su
 	// Speculatively make the change locally immediately to reduce perceived latency.
 	if idx <= 100 && idx-1 < len(c.State.UserRestrictionAreas) {
 		c.State.UserRestrictionAreas[idx-1] = ra
-	} else if idx >= 101 && idx-101 < len(c.STARSFacilityAdaptation.RestrictionAreas) {
+	} else if idx >= 101 && idx-101 < len(c.State.STARSFacilityAdaptation.RestrictionAreas) {
 		// Trust the caller to not try to update things they're not supposed to.
-		c.STARSFacilityAdaptation.RestrictionAreas[idx-101] = ra
+		c.State.STARSFacilityAdaptation.RestrictionAreas[idx-101] = ra
 	}
 
 	c.pendingCalls = append(c.pendingCalls,
@@ -545,10 +545,10 @@ func (c *ControlClient) ToggleSimPause() {
 }
 
 func (c *ControlClient) GetSimRate() float32 {
-	if c.SimRate == 0 {
+	if c.State.SimRate == 0 {
 		return 1
 	}
-	return c.SimRate
+	return c.State.SimRate
 }
 
 func (c *ControlClient) SetSimRate(r float32) {
@@ -556,7 +556,7 @@ func (c *ControlClient) SetSimRate(r float32) {
 		Call:      c.proxy.SetSimRate(r),
 		IssueTime: time.Now(),
 	})
-	c.SimRate = r // so the UI is well-behaved...
+	c.State.SimRate = r // so the UI is well-behaved...
 }
 
 func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
@@ -564,7 +564,7 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 		Call:      c.proxy.SetLaunchConfig(lc),
 		IssueTime: time.Now(),
 	})
-	c.LaunchConfig = lc // for the UI's benefit...
+	c.State.LaunchConfig = lc // for the UI's benefit...
 }
 
 // CurrentTime returns an extrapolated value that models the current Sim's time.
@@ -572,7 +572,7 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 // though they shouldn't cause much trouble since we get an update from the Sim
 // at least once a second...)
 func (c *ControlClient) CurrentTime() time.Time {
-	t := c.SimTime
+	t := c.State.SimTime
 
 	if !c.State.Paused && !c.lastUpdateRequest.IsZero() {
 		d := time.Since(c.lastUpdateRequest)
@@ -587,7 +587,7 @@ func (c *ControlClient) CurrentTime() time.Time {
 		d = math.Max(0, d)
 
 		// Account for sim rate
-		d = time.Duration(float64(d) * float64(c.SimRate))
+		d = time.Duration(float64(d) * float64(c.State.SimRate))
 
 		t = t.Add(d)
 	}
@@ -602,7 +602,7 @@ func (c *ControlClient) CurrentTime() time.Time {
 }
 
 func (c *ControlClient) DeleteAllAircraft(onErr func(err error)) {
-	if lctrl := c.LaunchConfig.Controller; lctrl == "" || lctrl == c.State.UserTCP {
+	if lctrl := c.State.LaunchConfig.Controller; lctrl == "" || lctrl == c.State.UserTCP {
 		c.State.RadarTracks = nil
 	}
 
@@ -634,13 +634,13 @@ func (c *ControlClient) TowerListAirports() []string {
 	// according to their TowerListIndex, putting zero (i.e., unassigned)
 	// indices at the end. Break ties alphabetically by airport name. The
 	// first three then are assigned to the corresponding tower list.
-	ap := util.SortedMapKeys(c.ArrivalAirports)
+	ap := util.SortedMapKeys(c.State.ArrivalAirports)
 	sort.Slice(ap, func(a, b int) bool {
-		ai := c.ArrivalAirports[ap[a]].TowerListIndex
+		ai := c.State.ArrivalAirports[ap[a]].TowerListIndex
 		if ai == 0 {
 			ai = 1000
 		}
-		bi := c.ArrivalAirports[ap[b]].TowerListIndex
+		bi := c.State.ArrivalAirports[ap[b]].TowerListIndex
 		if bi == 0 {
 			bi = 1000
 		}

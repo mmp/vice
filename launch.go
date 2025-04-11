@@ -822,7 +822,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
-	controlClient       *server.ControlClient
+	client              *server.ControlClient
 	departures          []*LaunchDeparture
 	vfrDepartures       []*LaunchDeparture
 	arrivalsOverflights []*LaunchArrivalOverflight
@@ -860,10 +860,10 @@ func (la *LaunchArrivalOverflight) Reset() {
 	la.TotalLaunches = 0
 }
 
-func MakeLaunchControlWindow(controlClient *server.ControlClient, lg *log.Logger) *LaunchControlWindow {
-	lc := &LaunchControlWindow{controlClient: controlClient}
+func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *LaunchControlWindow {
+	lc := &LaunchControlWindow{client: client}
 
-	config := &controlClient.LaunchConfig
+	config := &client.State.LaunchConfig
 	for _, airport := range util.SortedMapKeys(config.DepartureRates) {
 		runwayRates := config.DepartureRates[airport]
 		for _, rwy := range util.SortedMapKeys(runwayRates) {
@@ -881,7 +881,7 @@ func MakeLaunchControlWindow(controlClient *server.ControlClient, lg *log.Logger
 	}
 
 	for _, airport := range util.SortedMapKeys(config.VFRAirports) {
-		rwy := controlClient.State.VFRRunways[airport]
+		rwy := client.State.VFRRunways[airport]
 		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{Airport: airport, Runway: rwy.Id})
 	}
 	for i := range lc.vfrDepartures {
@@ -905,12 +905,12 @@ func MakeLaunchControlWindow(controlClient *server.ControlClient, lg *log.Logger
 }
 
 func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
-	lc.controlClient.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.IFR, &dep.Aircraft, nil,
+	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.IFR, &dep.Aircraft, nil,
 		func(err error) { lc.lg.Warnf("CreateDeparture: %v", err) })
 }
 
 func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
-	lc.controlClient.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.VFR, &dep.Aircraft, nil,
+	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.VFR, &dep.Aircraft, nil,
 		func(err error) {
 			if server.TryDecodeError(err) != sim.ErrViolatedAirspace {
 				lc.lg.Warnf("CreateDeparture: %v", err)
@@ -920,10 +920,10 @@ func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
 
 func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
 	if lac.Airport != "overflights" {
-		lc.controlClient.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft, nil,
+		lc.client.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft, nil,
 			func(err error) { lc.lg.Warnf("CreateArrival: %v", err) })
 	} else {
-		lc.controlClient.CreateOverflight(lac.Group, &lac.Aircraft, nil,
+		lc.client.CreateOverflight(lac.Group, &lac.Aircraft, nil,
 			func(err error) { lc.lg.Warnf("CreateOverflight: %v", err) })
 	}
 }
@@ -948,31 +948,31 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
 	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
 
-	ctrl := lc.controlClient.LaunchConfig.Controller
-	if lc.controlClient.State.MultiControllers != nil {
+	ctrl := lc.client.State.LaunchConfig.Controller
+	if lc.client.State.MultiControllers != nil {
 		imgui.Text("Controlling controller: " + util.Select(ctrl == "", "(none)", ctrl))
-		if ctrl == lc.controlClient.UserTCP {
+		if ctrl == lc.client.State.UserTCP {
 			if imgui.Button("Release launch control") {
-				lc.controlClient.TakeOrReturnLaunchControl(eventStream)
+				lc.client.TakeOrReturnLaunchControl(eventStream)
 			}
 		} else {
 			if imgui.Button("Take launch control") {
-				lc.controlClient.TakeOrReturnLaunchControl(eventStream)
+				lc.client.TakeOrReturnLaunchControl(eventStream)
 			}
 		}
 	}
 
-	canLaunch := ctrl == lc.controlClient.UserTCP || (lc.controlClient.State.MultiControllers == nil && ctrl == "") ||
-		lc.controlClient.AmInstructor()
+	canLaunch := ctrl == lc.client.State.UserTCP || (lc.client.State.MultiControllers == nil && ctrl == "") ||
+		lc.client.State.AmInstructor()
 	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()
-		if imgui.RadioButtonInt("Manual", &lc.controlClient.LaunchConfig.Mode, sim.LaunchManual) {
-			lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
+		if imgui.RadioButtonInt("Manual", &lc.client.State.LaunchConfig.Mode, sim.LaunchManual) {
+			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 		}
 		imgui.SameLine()
-		if imgui.RadioButtonInt("Automatic", &lc.controlClient.LaunchConfig.Mode, sim.LaunchAutomatic) {
-			lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
+		if imgui.RadioButtonInt("Automatic", &lc.client.State.LaunchConfig.Mode, sim.LaunchAutomatic) {
+			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 		}
 
 		width, _ := ui.font.BoundText(renderer.FontAwesomeIconPlayCircle, 0)
@@ -982,17 +982,17 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		imgui.SameLine()
 		//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
 		imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
-		if lc.controlClient != nil && lc.controlClient.Connected() {
-			if lc.controlClient.State.Paused {
+		if lc.client != nil && lc.client.Connected() {
+			if lc.client.State.Paused {
 				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
-					lc.controlClient.ToggleSimPause()
+					lc.client.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
 				if imgui.Button(renderer.FontAwesomeIconPauseCircle) {
-					lc.controlClient.ToggleSimPause()
+					lc.client.ToggleSimPause()
 				}
 				if imgui.IsItemHovered() {
 					imgui.SetTooltip("Pause simulation")
@@ -1006,7 +1006,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				title: "Are you sure?",
 				query: "All aircraft will be deleted. Go ahead?",
 				ok: func() {
-					lc.controlClient.DeleteAllAircraft(nil)
+					lc.client.DeleteAllAircraft(nil)
 					for _, dep := range lc.departures {
 						dep.Reset()
 					}
@@ -1024,18 +1024,18 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			imgui.TableFlagsSizingStretchProp
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
-		if lc.controlClient.LaunchConfig.Mode == sim.LaunchManual {
+		if lc.client.State.LaunchConfig.Mode == sim.LaunchManual {
 			mitAndTime := func(ac *av.Aircraft, launchPosition math.Point2LL,
 				lastLaunchCallsign av.ADSBCallsign, lastLaunchTime time.Time) {
 
 				imgui.TableNextColumn()
-				if prev, ok := lc.controlClient.GetTrackByCallsign(lastLaunchCallsign); ok {
+				if prev, ok := lc.client.State.GetTrackByCallsign(lastLaunchCallsign); ok {
 					dist := math.NMDistance2LL(prev.Location, launchPosition)
 					imgui.Text(fmt.Sprintf("%.1f", dist))
 
 					imgui.TableNextColumn()
 
-					delta := lc.controlClient.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
+					delta := lc.client.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
 					m, s := int(delta)/60, int(delta)%60
 					imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
 				} else {
@@ -1127,9 +1127,9 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchDeparture(dep.Aircraft, dep.Runway)
+								lc.client.LaunchDeparture(dep.Aircraft, dep.Runway)
 								dep.LastLaunchCallsign = dep.Aircraft.ADSBCallsign
-								dep.LastLaunchTime = lc.controlClient.CurrentTime()
+								dep.LastLaunchTime = lc.client.CurrentTime()
 								dep.TotalLaunches++
 
 								dep.Aircraft = av.Aircraft{}
@@ -1202,9 +1202,9 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchDeparture(dep.Aircraft, dep.Runway)
+								lc.client.LaunchDeparture(dep.Aircraft, dep.Runway)
 								dep.LastLaunchCallsign = dep.Aircraft.ADSBCallsign
-								dep.LastLaunchTime = lc.controlClient.CurrentTime()
+								dep.LastLaunchTime = lc.client.CurrentTime()
 								dep.TotalLaunches++
 
 								dep.Aircraft = av.Aircraft{}
@@ -1305,9 +1305,9 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchArrivalOverflight(arof.Aircraft)
+								lc.client.LaunchArrivalOverflight(arof.Aircraft)
 								arof.LastLaunchCallsign = arof.Aircraft.ADSBCallsign
-								arof.LastLaunchTime = lc.controlClient.CurrentTime()
+								arof.LastLaunchTime = lc.client.CurrentTime()
 								arof.TotalLaunches++
 
 								arof.Aircraft = av.Aircraft{}
@@ -1334,15 +1334,15 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		} else {
 			changed := false
 			if imgui.CollapsingHeader("Departures") {
-				changed = drawDepartureUI(&lc.controlClient.LaunchConfig, p)
+				changed = drawDepartureUI(&lc.client.State.LaunchConfig, p)
 			}
 			if imgui.CollapsingHeader("Arrivals / Overflights") {
-				changed = drawArrivalUI(&lc.controlClient.LaunchConfig, p) || changed
-				changed = drawOverflightUI(&lc.controlClient.LaunchConfig, p) || changed
+				changed = drawArrivalUI(&lc.client.State.LaunchConfig, p) || changed
+				changed = drawOverflightUI(&lc.client.State.LaunchConfig, p) || changed
 			}
 
 			if changed {
-				lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 			}
 		}
 	}
@@ -1351,7 +1351,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
-	releaseAircraft := lc.controlClient.State.GetRegularReleaseDepartures()
+	releaseAircraft := lc.client.State.GetRegularReleaseDepartures()
 	if len(releaseAircraft) > 0 && imgui.CollapsingHeader("Hold For Release") {
 		slices.SortFunc(releaseAircraft, func(a, b sim.ReleaseDeparture) int {
 			// Just by airport, otherwise leave in FIFO order
@@ -1383,7 +1383,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					lastAp = ac.DepartureAirport
 					imgui.TableNextColumn()
 					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-						lc.controlClient.ReleaseDeparture(ac.ADSBCallsign, nil,
+						lc.client.ReleaseDeparture(ac.ADSBCallsign, nil,
 							func(err error) { lc.lg.Errorf("%s: %v", ac.ADSBCallsign, err) })
 					}
 				}
@@ -1397,7 +1397,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	imgui.End()
 
 	if !showLaunchControls {
-		lc.controlClient.TakeOrReturnLaunchControl(eventStream)
+		lc.client.TakeOrReturnLaunchControl(eventStream)
 		ui.showLaunchControl = false
 	}
 }

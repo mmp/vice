@@ -348,12 +348,12 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.RadarTrack) Datab
 		}
 
 		sfp := trk.FlightPlan
-		if sfp.TrackingController == ctx.ControlClient.UserTCP {
+		if sfp.TrackingController == ctx.UserTCP {
 			// it's under our control
 			return FullDatablock
 		}
 
-		if trk.HandingOffTo(ctx.ControlClient.UserTCP) {
+		if trk.HandingOffTo(ctx.UserTCP) {
 			// it's being handed off to us
 			return FullDatablock
 		}
@@ -368,7 +368,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.RadarTrack) Datab
 		}
 
 		// Point outs are FDB until acked.
-		if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
+		if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.UserTCP {
 			return FullDatablock
 		}
 		if state.PointOutAcknowledged {
@@ -379,11 +379,11 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.RadarTrack) Datab
 		}
 
 		if len(sfp.RedirectedHandoff.Redirector) > 0 {
-			if sfp.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP {
+			if sfp.RedirectedHandoff.RedirectedTo == ctx.UserTCP {
 				return FullDatablock
 			}
 		}
-		if sfp.RedirectedHandoff.OriginalOwner == ctx.ControlClient.UserTCP {
+		if sfp.RedirectedHandoff.OriginalOwner == ctx.UserTCP {
 			return FullDatablock
 		}
 
@@ -429,7 +429,7 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.RadarTrac
 
 func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *av.STARSFlightPlan,
 	color renderer.RGB, brightness STARSBrightness) datablock {
-	now := ctx.ControlClient.CurrentTime()
+	now := ctx.Client.CurrentTime()
 
 	state := sp.TrackState[trk.ADSBCallsign]
 	if state != nil && (state.LostTrack(now) || !sp.datablockVisible(ctx, trk)) {
@@ -445,12 +445,12 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 	if sfp != nil {
 		toTCP := util.Select(sfp.RedirectedHandoff.RedirectedTo != "",
 			sfp.RedirectedHandoff.RedirectedTo, sfp.HandoffTrackController)
-		inbound := toTCP == ctx.ControlClient.UserTCP
+		inbound := toTCP == ctx.UserTCP
 
 		if inbound {
 			// Always show our id
 			handoffId = toTCP[len(toTCP)-1:]
-			if fromCtrl := ctx.ControlClient.Controllers[sfp.TrackingController]; fromCtrl != nil {
+			if fromCtrl := ctx.Client.State.Controllers[sfp.TrackingController]; fromCtrl != nil {
 				if fromCtrl.ERAMFacility { // Enroute controller
 					// From any center
 					handoffTCP = sfp.TrackingController
@@ -460,7 +460,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 				}
 			}
 		} else { // outbound
-			if toCtrl := ctx.ControlClient.Controllers[toTCP]; toCtrl != nil {
+			if toCtrl := ctx.Client.State.Controllers[toTCP]; toCtrl != nil {
 				if toCtrl.ERAMFacility { // Enroute
 					// Always the one-character id and the sector
 					handoffId = toCtrl.FacilityIdentifier
@@ -517,7 +517,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 		// If it hasn't been set to something and the adapted scratchpad hasn't
 		// been cleared, show an adapted one, if appropriate.
 		if sp1 == "" && (state == nil || !state.ClearedScratchpadAlternate) {
-			adapt := ctx.ControlClient.STARSFacilityAdaptation
+			adapt := ctx.FacilityAdaptation
 			falt := func() string {
 				alt := sfp.RequestedAltitude
 				if adapt.AllowLongScratchpad {
@@ -556,7 +556,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 
 			if trk.IsArrival() {
 				// Note arrivalAirport is only set if it should be shown when there is no scratchpad set
-				ap, ok := ctx.ControlClient.Airports[trk.ArrivalAirport]
+				ap, ok := ctx.Client.State.Airports[trk.ArrivalAirport]
 				if ok && !ap.OmitArrivalScratchpad {
 					sp1 = sfp.ExitFix
 				}
@@ -595,7 +595,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 		ps := sp.currentPrefs()
 		if trk.Mode != av.Standby {
 			mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
-				trk0, ok := ctx.ControlClient.State.GetTrackByCallsign(mci.ADSBCallsigns[0])
+				trk0, ok := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk.Squawk &&
 					mci.ADSBCallsigns[1] == trk.ADSBCallsign
 			})
@@ -643,7 +643,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 		return db
 
 	case PartialDatablock:
-		fa := ctx.ControlClient.STARSFacilityAdaptation
+		fa := ctx.FacilityAdaptation
 		db := sp.pdbArena.AllocClear()
 
 		// Field0: TODO cautions in yellow
@@ -712,7 +712,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 		return db
 
 	case FullDatablock:
-		fa := ctx.ControlClient.STARSFacilityAdaptation
+		fa := ctx.FacilityAdaptation
 		db := sp.fdbArena.AllocClear()
 
 		// Line 0
@@ -744,9 +744,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 		// Field 8: point out, rejected pointout, redirected
 		// handoffs... Some flash, some don't.
 		if state != nil {
-			if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
+			if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.UserTCP {
 				formatDBText(db.field8[:], "PO", color, false)
-			} else if ok && tcps.From == ctx.ControlClient.UserTCP {
+			} else if ok && tcps.From == ctx.UserTCP {
 				id := tcps.To
 				if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
 					id = id[1:]
@@ -756,7 +756,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *a
 				formatDBText(db.field8[:], "UN", color, true)
 			} else if state.POFlashingEndTime.After(ctx.Now) {
 				formatDBText(db.field8[:], "PO", color, true)
-			} else if sfp.RedirectedHandoff.ShowRDIndicator(ctx.ControlClient.UserTCP, state.RDIndicatorEnd) {
+			} else if sfp.RedirectedHandoff.ShowRDIndicator(ctx.UserTCP, state.RDIndicatorEnd) {
 				formatDBText(db.field8[:], "RD", color, false)
 			}
 		}
@@ -884,7 +884,7 @@ func (sp *STARSPane) getGhostDatablock(ctx *panes.Context, ghost *av.GhostTrack,
 	var db ghostDatablock
 
 	state := sp.TrackState[ghost.ADSBCallsign]
-	trk, ok := ctx.ControlClient.State.GetTrackByCallsign(ghost.ADSBCallsign)
+	trk, ok := ctx.GetTrackByCallsign(ghost.ADSBCallsign)
 	cwt := ""
 	if ok && trk.IsAssociated() {
 		cwt = trk.FlightPlan.CWTCategory
@@ -908,15 +908,15 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.R
 	state := sp.TrackState[trk.ADSBCallsign]
 
 	inboundPointOut := false
-	if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
+	if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.UserTCP {
 		inboundPointOut = true
 	}
 
 	// Cases where it's always a full datablock
 	forceFDB := inboundPointOut
 	forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
-	forceFDB = forceFDB || trk.HandingOffTo(ctx.ControlClient.UserTCP)
-	if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.ControlClient.UserTCP {
+	forceFDB = forceFDB || trk.HandingOffTo(ctx.UserTCP)
+	if tcps, ok := sp.PointOuts[trk.ADSBCallsign]; ok && tcps.To == ctx.UserTCP {
 		forceFDB = true
 	}
 
@@ -931,7 +931,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.R
 		dbBrightness = ps.Brightness.LimitedDatablocks
 		posBrightness = ps.Brightness.LimitedDatablocks
 	} else /* dt == FullDatablock */ {
-		if trk.FlightPlan.TrackingController != ctx.ControlClient.UserTCP {
+		if trk.FlightPlan.TrackingController != ctx.UserTCP {
 			dbBrightness = ps.Brightness.OtherTracks
 			posBrightness = ps.Brightness.OtherTracks
 		} else {
@@ -964,14 +964,14 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.R
 		} else if inboundPointOut {
 			// Pointed out to us.
 			color = STARSInboundPointOutColor
-		} else if sfp.TrackingController == ctx.ControlClient.UserTCP { //change
+		} else if sfp.TrackingController == ctx.UserTCP { //change
 			// we own the track track
 			color = STARSTrackedAircraftColor
-		} else if sfp.RedirectedHandoff.OriginalOwner == ctx.ControlClient.UserTCP ||
-			sfp.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP {
+		} else if sfp.RedirectedHandoff.OriginalOwner == ctx.UserTCP ||
+			sfp.RedirectedHandoff.RedirectedTo == ctx.UserTCP {
 			color = STARSTrackedAircraftColor
-		} else if sfp.HandoffTrackController == ctx.ControlClient.UserTCP &&
-			!slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.ControlClient.UserTCP) {
+		} else if sfp.HandoffTrackController == ctx.UserTCP &&
+			!slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.UserTCP) {
 			// flashing white if it's being handed off to us.
 			color = STARSTrackedAircraftColor
 		} else if state.OutboundHandoffAccepted {
@@ -1014,13 +1014,13 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.RadarTrack) bo
 		state := sp.TrackState[trk.ADSBCallsign]
 		sfp := trk.FlightPlan
 
-		if sfp.TrackingController == ctx.ControlClient.UserTCP {
+		if sfp.TrackingController == ctx.UserTCP {
 			// For owned datablocks
 			return true
-		} else if sfp.HandoffTrackController == ctx.ControlClient.UserTCP {
+		} else if sfp.HandoffTrackController == ctx.UserTCP {
 			// For receiving handoffs
 			return true
-		} else if sfp.ControllingController == ctx.ControlClient.UserTCP {
+		} else if sfp.ControllingController == ctx.UserTCP {
 			// For non-greened handoffs
 			return true
 		} else if state.PointOutAcknowledged {
@@ -1037,10 +1037,10 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.RadarTrack) bo
 			return true
 		} else if sp.isQuicklooked(ctx, trk) {
 			return true
-		} else if sfp.RedirectedHandoff.RedirectedTo == ctx.ControlClient.UserTCP {
+		} else if sfp.RedirectedHandoff.RedirectedTo == ctx.UserTCP {
 			// Redirected to
 			return true
-		} else if slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.ControlClient.UserTCP) {
+		} else if slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.UserTCP) {
 			// Had it but redirected it
 			return true
 		}
@@ -1055,7 +1055,7 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.RadarTrack, dbs map[av.ADSBCall
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	now := ctx.ControlClient.SimTime
+	now := ctx.Client.State.SimTime
 	realNow := ctx.Now // for flashing rate...
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
@@ -1063,7 +1063,7 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.RadarTrack, dbs map[av.ADSBCall
 	// Partition them by DB type so we can draw FDBs last
 	var ldbs, pdbs, fdbs []sim.RadarTrack
 
-	fdbs = slices.Clone(ctx.ControlClient.State.UnsupportedTracks)
+	fdbs = slices.Clone(ctx.Client.State.UnsupportedTracks)
 
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -1172,7 +1172,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, trk sim.RadarTrack) 
 			}) ||
 		slices.ContainsFunc(sp.MCIAircraft,
 			func(ca CAAircraft) bool {
-				trk0, ok := ctx.ControlClient.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				return ok && ca.ADSBCallsigns[0] == trk.ADSBCallsign &&
 					trk0.Squawk != sfp.MCISuppressedCode
 			}) {
@@ -1212,8 +1212,8 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.RadarTrack, 
 				if mci.ADSBCallsigns[0] != trk.ADSBCallsign && mci.ADSBCallsigns[1] != trk.ADSBCallsign {
 					return false
 				}
-				trk0, ok0 := ctx.ControlClient.State.GetTrackByCallsign(mci.ADSBCallsigns[0])
-				trk1, ok1 := ctx.ControlClient.State.GetTrackByCallsign(mci.ADSBCallsigns[1])
+				trk0, ok0 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
+				trk1, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
 
 				if ok0 && ok1 && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode == trk1.Squawk {
 					return false
@@ -1257,7 +1257,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.RadarTrack, 
 			addAlert("AS"+altStrs, false, true)
 		}
 	} else if dbtype == PartialDatablock {
-		fa := ctx.ControlClient.State.STARSFacilityAdaptation
+		fa := ctx.FacilityAdaptation
 
 		if sfp.SPCOverride != "" && fa.PDB.DisplayCustomSPCs {
 			// We only care about adapted alerts
@@ -1268,7 +1268,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.RadarTrack, 
 	}
 
 	// Both FDB and PDB
-	if sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeFused &&
+	if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused &&
 		sfp.PilotReportedAltitude == 0 &&
 		(trk.Mode != av.Altitude || sfp.InhibitModeCAltitudeDisplay) {
 		// No altitude being reported, one way or another (off or mode

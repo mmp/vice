@@ -67,6 +67,11 @@ type Sim struct {
 	charlieAirspace *av.AirspaceGrid
 }
 
+type Aircraft struct {
+	*av.Aircraft
+	STARSFlightPlan *av.STARSFlightPlan
+}
+
 type RadarTrack struct {
 	av.RadarTrack
 

@@ -1294,8 +1294,8 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 }
 
 type MissingPrimaryModalClient struct {
-	mgr           *server.ConnectionManager
-	controlClient *server.ControlClient
+	mgr    *server.ConnectionManager
+	client *server.ControlClient
 }
 
 func (mp *MissingPrimaryModalClient) Title() string {
@@ -1306,8 +1306,8 @@ func (mp *MissingPrimaryModalClient) Opening() {}
 
 func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Sign in to " + mp.controlClient.PrimaryController, action: func() bool {
-		err := mp.controlClient.ChangeControlPosition(mp.controlClient.PrimaryController, true)
+	b = append(b, ModalDialogButton{text: "Sign in to " + mp.client.State.PrimaryController, action: func() bool {
+		err := mp.client.ChangeControlPosition(mp.client.State.PrimaryController, true)
 		return err == nil
 	}})
 	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
@@ -1319,12 +1319,12 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 }
 
 func (mp *MissingPrimaryModalClient) Draw() int {
-	imgui.Text("The primary controller, " + mp.controlClient.PrimaryController + ", has disconnected from the server or is otherwise unreachable.\nThe simulation will be paused until a primary controller signs in.")
+	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", has disconnected from the server or is otherwise unreachable.\nThe simulation will be paused until a primary controller signs in.")
 	return -1
 }
 
 func uiDrawMissingPrimaryDialog(mgr *server.ConnectionManager, c *server.ControlClient, p platform.Platform) {
-	if _, ok := c.Controllers[c.PrimaryController]; ok {
+	if _, ok := c.State.Controllers[c.State.PrimaryController]; ok {
 		if ui.missingPrimaryDialog != nil {
 			uiCloseModalDialog(ui.missingPrimaryDialog)
 			ui.missingPrimaryDialog = nil
@@ -1332,8 +1332,8 @@ func uiDrawMissingPrimaryDialog(mgr *server.ConnectionManager, c *server.Control
 	} else {
 		if ui.missingPrimaryDialog == nil {
 			ui.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{
-				mgr:           mgr,
-				controlClient: c,
+				mgr:    mgr,
+				client: c,
 			}, p)
 			uiShowModalDialog(ui.missingPrimaryDialog, true)
 		}
@@ -1347,8 +1347,8 @@ func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Pl
 
 	imgui.BeginV("Settings", &ui.showSettings, imgui.WindowFlagsAlwaysAutoResize)
 
-	if imgui.SliderFloatV("Simulation speed", &c.SimRate, 1, 20, "%.1f", 0) {
-		c.SetSimRate(c.SimRate)
+	if imgui.SliderFloatV("Simulation speed", &c.State.SimRate, 1, 20, "%.1f", 0) {
+		c.SetSimRate(c.State.SimRate)
 	}
 
 	update := !config.InhibitDiscordActivity.Load()

@@ -156,8 +156,8 @@ func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ 
 func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// First account for changes in world.Aircraft
 	// Added aircraft
-	for _, trk := range ctx.ControlClient.RadarTracks {
-		fsp.possiblyAdd(&trk, ctx.ControlClient.State.UserTCP)
+	for _, trk := range ctx.Client.State.RadarTracks {
+		fsp.possiblyAdd(&trk, ctx.UserTCP)
 	}
 
 	remove := func(c av.ADSBCallsign) {
@@ -179,23 +179,23 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			// aircraft that was deleted shortly afterward. So it's
 			// necessary to check that it's still in
 			// ControlClient.Aircraft.
-			if trk, ok := ctx.ControlClient.State.GetTrackByCallsign(event.ADSBCallsign); ok && fsp.AddPushed {
-				fsp.possiblyAdd(trk, ctx.ControlClient.State.UserTCP)
+			if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && fsp.AddPushed {
+				fsp.possiblyAdd(trk, ctx.UserTCP)
 			}
 
 		case sim.InitiatedTrackEvent:
-			if trk, ok := ctx.ControlClient.State.GetOurTrackByCallsign(event.ADSBCallsign); ok && fsp.AutoAddTracked {
-				fsp.possiblyAdd(trk, ctx.ControlClient.State.UserTCP)
+			if trk, ok := ctx.GetOurTrackByCallsign(event.ADSBCallsign); ok && fsp.AutoAddTracked {
+				fsp.possiblyAdd(trk, ctx.UserTCP)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if trk, ok := ctx.ControlClient.State.GetOurTrackByCallsign(event.ADSBCallsign); ok && fsp.AutoAddAcceptedHandoffs {
-				fsp.possiblyAdd(trk, ctx.ControlClient.State.UserTCP)
+			if trk, ok := ctx.GetOurTrackByCallsign(event.ADSBCallsign); ok && fsp.AutoAddAcceptedHandoffs {
+				fsp.possiblyAdd(trk, ctx.UserTCP)
 			}
 
 		case sim.HandoffControlEvent:
-			if ac, ok := ctx.ControlClient.State.GetTrackByCallsign(event.ADSBCallsign); ok {
-				if fsp.AutoRemoveHandoffs && ac.FlightPlan.TrackingController != ctx.ControlClient.UserTCP {
+			if ac, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok {
+				if fsp.AutoRemoveHandoffs && ac.FlightPlan.TrackingController != ctx.UserTCP {
 					remove(event.ADSBCallsign)
 				}
 			}
@@ -205,13 +205,13 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// Danger: this is now O(n^2)
 	// Remove ones that have been deleted or have had their flight plan deleted.
 	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign av.ADSBCallsign) bool {
-		trk, ok := ctx.ControlClient.State.GetTrackByCallsign(callsign)
+		trk, ok := ctx.GetTrackByCallsign(callsign)
 		return ok && trk.IsAssociated()
 	})
 
 	if fsp.CollectDeparturesArrivals {
 		isDeparture := func(callsign av.ADSBCallsign) bool {
-			trk, ok := ctx.ControlClient.State.GetTrackByCallsign(callsign)
+			trk, ok := ctx.GetTrackByCallsign(callsign)
 			return ok && trk.IsDeparture()
 		}
 		dep := util.FilterSlice(fsp.strips, isDeparture)
@@ -330,11 +330,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
-		trk, ok := ctx.ControlClient.State.GetTrackByCallsign(fsp.strips[i])
+		trk, ok := ctx.GetTrackByCallsign(fsp.strips[i])
 		if !ok || trk.IsUnassociated() {
 			continue
 		}
-		fp := ctx.ControlClient.State.FlightPlans[fsp.strips[i]]
+		fp := ctx.Client.State.FlightPlans[fsp.strips[i]]
 		sfp := trk.FlightPlan
 		var strip av.FlightStrip
 

@@ -648,7 +648,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processKeyboardInput(ctx)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.ControlClient.MagneticVariation, ctx.ControlClient.NmPerLongitude,
+	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ctr, float32(ps.Range), 0)
 
 	scopeExtent := ctx.PaneExtent
@@ -903,9 +903,9 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 		if ra.Shaded {
 			trid = renderer.GetTrianglesDrawBuilder()
 			defer renderer.ReturnTrianglesDrawBuilder(trid)
-			trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
+			trid.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
 		}
-		ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
+		ld.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
 	} else if len(ra.Vertices) > 0 && len(ra.Vertices[0]) > 0 {
 		verts := sp.wipRestrictionArea.Vertices[0]
 		for i := range len(verts) - 1 {
@@ -982,9 +982,9 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 
 		if ra.CircleRadius > 0 {
 			if ra.Shaded {
-				trid.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
+				trid.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
 			}
-			ld.AddLatLongCircle(ra.CircleCenter, ctx.ControlClient.NmPerLongitude, ra.CircleRadius, 90)
+			ld.AddLatLongCircle(ra.CircleCenter, ctx.NmPerLongitude, ra.CircleRadius, 90)
 		} else {
 			for _, loop := range ra.Vertices {
 				if nv := len(loop); nv > 0 {
@@ -1058,7 +1058,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransfo
 		for j, rwyState := range state.RunwayState {
 			if rwyState.DrawCourseLines {
 				region := sp.ConvergingRunways[i].ApproachRegions[j]
-				line, _ := region.GetLateralGeometry(ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
+				line, _ := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
 
 				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
@@ -1070,7 +1070,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransfo
 
 			if rwyState.DrawQualificationRegion {
 				region := sp.ConvergingRunways[i].ApproachRegions[j]
-				_, quad := region.GetLateralGeometry(ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
+				_, quad := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
 
 				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
@@ -1215,10 +1215,10 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.RadarTrack {
 	var tracks []sim.RadarTrack
 	ps := sp.currentPrefs()
-	single := sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeSingle
-	now := ctx.ControlClient.SimTime
+	single := sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeSingle
+	now := ctx.Client.State.SimTime
 
-	for _, trk := range ctx.ControlClient.State.RadarTracks {
+	for _, trk := range ctx.Client.State.RadarTracks {
 		if !trk.IsAirborne {
 			continue
 		}
@@ -1232,7 +1232,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.RadarTrack {
 
 		visible := false
 
-		if sp.radarMode(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == RadarModeFused {
+		if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
 			// visible unless if it's almost on the ground
 			if trk.IsDeparture() &&
 				trk.Altitude < trk.DepartureAirportElevation+100 &&
@@ -1246,7 +1246,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.RadarTrack {
 			visible = true
 		} else {
 			// Otherwise see if any of the radars can see it
-			for id, site := range ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites {
+			for id, site := range ctx.FacilityAdaptation.RadarSites {
 				if single && ps.RadarSiteSelected != id {
 					continue
 				}
@@ -1358,8 +1358,8 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.RadarTrack) {
 				if ca.Acknowledged {
 					return false
 				}
-				trk0, ok0 := ctx.ControlClient.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
-				trk1, ok1 := ctx.ControlClient.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok0 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				if !ok0 || !ok1 {
 					return false
 				}
@@ -1372,7 +1372,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.RadarTrack) {
 				if ca.Acknowledged {
 					return false
 				}
-				trk0, ok := ctx.ControlClient.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && !trk0.FlightPlan.DisableCA &&
 					ctx.Now.Before(ca.SoundEnd)
 			})
