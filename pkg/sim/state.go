@@ -96,15 +96,14 @@ type State struct {
 }
 
 type ReleaseDeparture struct {
-	ADSBCallsign     av.ADSBCallsign
-	DepartureAirport string
-	Released         bool
-	Squawk           av.Squawk
-	ListIndex        int
-	AircraftType     string
-	Exit             string
-
-	departureContactController string // not shared with client
+	ADSBCallsign        av.ADSBCallsign
+	DepartureAirport    string
+	DepartureController string
+	Released            bool
+	Squawk              av.Squawk
+	ListIndex           int
+	AircraftType        string
+	Exit                string
 }
 
 func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *State {
@@ -331,16 +330,23 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 	return cons
 }
 
-func (ss *State) DepartureController(departureContactController string, lg *log.Logger) (string, bool) {
-	if len(ss.MultiControllers) > 0 {
-		callsign, err := ss.MultiControllers.ResolveController(departureContactController,
-			func(tcp string) bool {
-				return slices.Contains(ss.HumanControllers, tcp)
-			})
-		return callsign, err == nil
-	} else {
-		return ss.PrimaryController, true
+func (ss *State) ResolveController(tcp string) string {
+	if _, ok := ss.Controllers[tcp]; ok {
+		// The easy case: the controller is already signed in
+		return tcp
 	}
+
+	if len(ss.MultiControllers) > 0 {
+		mtcp, err := ss.MultiControllers.ResolveController(tcp,
+			func(multiTCP string) bool {
+				return slices.Contains(ss.HumanControllers, multiTCP)
+			})
+		if err == nil {
+			return mtcp
+		}
+	}
+
+	return ss.PrimaryController
 }
 
 func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
@@ -353,8 +359,7 @@ func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
 			//if _, ok := ss.Aircraft[ac.ADSBCallsign]; !ok {
 			//return false
 			//}
-			tcp, ok := ss.DepartureController(dep.departureContactController, nil)
-			return ok && tcp == ss.UserTCP
+			return ss.ResolveController(dep.DepartureController) == ss.UserTCP
 		})
 }
 

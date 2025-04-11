@@ -476,11 +476,8 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 			if fp.TypeOfFlight == av.FlightTypeDeparture {
 				if trk, ok := ctx.Client.State.GetTrackByACID(fp.ACID); ok {
-					if trk.DepartureContactController == "" {
-						return false // virtually controlled
-					}
-					ctrl, ok := ctx.Client.State.DepartureController(trk.DepartureContactController, ctx.Lg)
-					return ok && ctrl == ctx.UserTCP
+					ctrl := ctx.Client.State.ResolveController(trk.DepartureController)
+					return ctrl == ctx.UserTCP
 				}
 			}
 			// TODO: handle consolidation, etc.

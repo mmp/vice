@@ -5,7 +5,6 @@
 package sim
 
 import (
-	"log/slog"
 	"slices"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -130,18 +129,11 @@ func (sc *STARSComputer) Update(s *Sim) {
 				continue
 			}
 
-			ac.AssociateFlightPlan(fp)
+			// For multi-controller, resolve to the one covering the
+			// departure position based on who is signed in now.
+			fp.TrackingController = s.State.ResolveController(fp.TrackingController)
 
-			if ac.STARSFlightPlan.TrackingController == "" {
-				// It will go to a human controller; virtual controllers get ownership
-				// immediately on spawn in Aircraft InitializeDeparture().
-				tcp, ok := s.State.DepartureController(ac.DepartureContactController, s.lg)
-				if !ok {
-					s.lg.Warn("Unable to resolve departure controller", slog.Any("aircraft", ac))
-					tcp = s.State.PrimaryController
-				}
-				ac.STARSFlightPlan.TrackingController = tcp
-			}
+			ac.AssociateFlightPlan(fp)
 
 			// Remove it from the released departures list
 			sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,

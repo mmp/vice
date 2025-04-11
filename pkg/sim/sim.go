@@ -81,8 +81,8 @@ type Aircraft struct {
 	GoAroundDistance *float32
 
 	// Departure related state
-	DepartureContactAltitude   float32
-	DepartureContactController string
+	DepartureContactAltitude float32
+	DepartureController      string // We need to track this separately for before it's associated
 
 	// Who to try to hand off to at a waypoint with /ho
 	WaypointHandoffController string
@@ -102,20 +102,20 @@ type RadarTrack struct {
 	FlightPlan *STARSFlightPlan
 
 	// Sort of hacky to carry these along here but it's convenient...
-	DepartureContactController string
-	DepartureAirport           string
-	DepartureAirportElevation  float32
-	DepartureAirportLocation   math.Point2LL
-	ArrivalAirport             string
-	ArrivalAirportElevation    float32
-	ArrivalAirportLocation     math.Point2LL
-	IsAirborne                 bool
-	OnExtendedCenterline       bool
-	OnApproach                 bool
-	ATPAVolume                 *av.ATPAVolume
-	MVAsApply                  bool
-	HoldForRelease             bool
-	Route                      []math.Point2LL
+	DepartureController       string
+	DepartureAirport          string
+	DepartureAirportElevation float32
+	DepartureAirportLocation  math.Point2LL
+	ArrivalAirport            string
+	ArrivalAirportElevation   float32
+	ArrivalAirportLocation    math.Point2LL
+	IsAirborne                bool
+	OnExtendedCenterline      bool
+	OnApproach                bool
+	ATPAVolume                *av.ATPAVolume
+	MVAsApply                 bool
+	HoldForRelease            bool
+	Route                     []math.Point2LL
 }
 
 type DepartureRunway struct {
@@ -559,14 +559,14 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 	for _, ac := range s.STARSComputer.HoldForRelease {
 		update.ReleaseDepartures = append(update.ReleaseDepartures,
 			ReleaseDeparture{
-				ADSBCallsign:               ac.ADSBCallsign,
-				DepartureAirport:           ac.FlightPlan.DepartureAirport, // TODO: STARS fp entry fix?
-				Released:                   ac.Released,
-				Squawk:                     ac.Squawk,
-				ListIndex:                  ac.STARSFlightPlan.ListIndex,
-				AircraftType:               ac.STARSFlightPlan.AircraftType,
-				Exit:                       ac.STARSFlightPlan.ExitFix,
-				departureContactController: ac.DepartureContactController,
+				ADSBCallsign:        ac.ADSBCallsign,
+				DepartureAirport:    ac.FlightPlan.DepartureAirport, // TODO: STARS fp entry fix?
+				DepartureController: ac.DepartureController,
+				Released:            ac.Released,
+				Squawk:              ac.Squawk,
+				ListIndex:           ac.STARSFlightPlan.ListIndex,
+				AircraftType:        ac.STARSFlightPlan.AircraftType,
+				Exit:                ac.STARSFlightPlan.ExitFix,
 			})
 	}
 
@@ -574,21 +574,21 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 	for _, callsign := range util.SortedMapKeys(s.Aircraft) {
 		ac := s.Aircraft[callsign]
 		rt := RadarTrack{
-			RadarTrack:                 ac.GetRadarTrack(s.State.SimTime),
-			FlightPlan:                 ac.STARSFlightPlan,
-			DepartureContactController: ac.DepartureContactController,
-			DepartureAirport:           ac.FlightPlan.DepartureAirport,
-			DepartureAirportElevation:  ac.DepartureAirportElevation(),
-			DepartureAirportLocation:   ac.DepartureAirportLocation(),
-			ArrivalAirport:             ac.FlightPlan.ArrivalAirport,
-			ArrivalAirportElevation:    ac.ArrivalAirportElevation(),
-			ArrivalAirportLocation:     ac.ArrivalAirportLocation(),
-			IsAirborne:                 ac.IsAirborne(),
-			OnExtendedCenterline:       ac.OnExtendedCenterline(0.2),
-			OnApproach:                 ac.OnApproach(false), /* don't check altitude */
-			MVAsApply:                  ac.MVAsApply(),
-			HoldForRelease:             ac.HoldForRelease,
-			ATPAVolume:                 ac.ATPAVolume(),
+			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
+			FlightPlan:                ac.STARSFlightPlan,
+			DepartureController:       ac.DepartureController,
+			DepartureAirport:          ac.FlightPlan.DepartureAirport,
+			DepartureAirportElevation: ac.DepartureAirportElevation(),
+			DepartureAirportLocation:  ac.DepartureAirportLocation(),
+			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
+			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
+			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
+			IsAirborne:                ac.IsAirborne(),
+			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
+			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			MVAsApply:                 ac.MVAsApply(),
+			HoldForRelease:            ac.HoldForRelease,
+			ATPAVolume:                ac.ATPAVolume(),
 		}
 		for _, wp := range ac.Nav.Waypoints {
 			rt.Route = append(rt.Route, wp.Location)
@@ -625,26 +625,6 @@ func (wu *WorldUpdate) UpdateState(state *State, eventStream *EventStream) {
 	// so that they reflect any changes the events are flagging.
 	for _, e := range wu.Events {
 		eventStream.Post(e)
-	}
-}
-
-func (s *Sim) ResolveController(tcp string) string {
-	if s.State.MultiControllers == nil {
-		// Single controller
-		return s.State.PrimaryController
-	} else {
-		c, err := s.State.MultiControllers.ResolveController(tcp,
-			func(callsign string) bool {
-				return s.isActiveHumanController(callsign)
-			})
-		if err != nil {
-			s.lg.Errorf("%s: unable to resolve controller: %v", tcp, err)
-		}
-
-		if c == "" { // This shouldn't happen...
-			return s.State.PrimaryController
-		}
-		return c
 	}
 }
 
@@ -779,7 +759,7 @@ func (s *Sim) updateState() {
 					sfp := ac.STARSFlightPlan
 					if passedWaypoint.HumanHandoff {
 						// Handoff from virtual controller to a human controller.
-						s.handoffTrack(sfp.TrackingController, s.ResolveController(ac.WaypointHandoffController), ac)
+						s.handoffTrack(sfp.TrackingController, s.State.ResolveController(ac.WaypointHandoffController), ac)
 					} else if passedWaypoint.TCPHandoff != "" {
 						s.handoffTrack(sfp.TrackingController, passedWaypoint.TCPHandoff, ac)
 					}
@@ -796,7 +776,7 @@ func (s *Sim) updateState() {
 						// ac.TrackingController, since the human controller
 						// may have already flashed the track to a virtual
 						// controller.
-						ctrl := s.ResolveController(ac.WaypointHandoffController)
+						ctrl := s.State.ResolveController(ac.WaypointHandoffController)
 						s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
 					}
 
@@ -863,8 +843,8 @@ func (s *Sim) updateState() {
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
 				!s.prespawn {
 				// Time to check in
-				ctrl := s.ResolveController(ac.DepartureContactController)
-				s.lg.Info("contacting departure controller", slog.String("callsign", ctrl))
+				tcp := s.State.ResolveController(ac.DepartureController)
+				s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
 
 				airportName := ac.FlightPlan.DepartureAirport
 				if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
@@ -873,7 +853,7 @@ func (s *Sim) updateState() {
 
 				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
 				s.postRadioEvents(ac.ADSBCallsign, []av.RadioTransmission{av.RadioTransmission{
-					Controller: ctrl,
+					Controller: tcp,
 					Message:    msg,
 					Type:       av.RadioTransmissionContact,
 				}})
@@ -885,7 +865,7 @@ func (s *Sim) updateState() {
 				// issuing control commands.. (Note that track may have
 				// already been handed off to the next controller at this
 				// point.)
-				ac.STARSFlightPlan.ControllingController = ctrl
+				ac.STARSFlightPlan.ControllingController = tcp
 			}
 
 			// Cull far-away aircraft
@@ -913,21 +893,21 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	// Update controller before calling GoAround so the
 	// transmission goes to the right controller.
-	var ok bool
-	sfp.ControllingController, ok = s.State.DepartureController(ac.DepartureContactController, s.lg)
-	if !ok {
-		sfp.ControllingController = s.State.PrimaryController
-	}
+	// FIXME: we going to the approach controller is often the wrong thing;
+	// we need some more functionality for specifying go around procedures
+	// in general.
+
+	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachController
+
+	sfp.ControllingController = s.State.ResolveController(ac.ApproachController)
 
 	rt := ac.GoAround()
 	s.postRadioEvents(ac.ADSBCallsign, rt)
 
 	// If it was handed off to tower, hand it back to us
-	if sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachController {
-		sfp.HandoffTrackController, ok = s.State.DepartureController(ac.DepartureContactController, s.lg)
-		if !ok {
-			sfp.HandoffTrackController = ac.ApproachController
-		}
+	if towerHadTrack {
+		sfp.HandoffTrackController = sfp.ControllingController
+
 		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,
 			ADSBCallsign:   ac.ADSBCallsign,

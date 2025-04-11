@@ -780,7 +780,7 @@ func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	if !ok {
 		return av.ErrNoAircraftForCallsign
 	}
-	if dc, ok := s.State.DepartureController(ac.DepartureContactController, s.lg); ok && dc != tcp {
+	if dc := s.State.ResolveController(ac.DepartureController); dc != tcp {
 		return ErrInvalidDepartureController
 	}
 

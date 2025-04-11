@@ -4393,7 +4393,7 @@ func (sp *STARSPane) tracksFromCallsignSuffix(ctx *panes.Context, suffix string,
 			return true
 		}
 		// Hold for release aircraft still in the list
-		if trk.DepartureContactController == ctx.UserTCP &&
+		if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
 			trk.FlightPlan.ControllingController == "" {
 			return true
 		}

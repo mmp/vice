@@ -391,14 +391,18 @@ func (s *Sim) spawnAircraft() {
 	s.updateDepartureSequence()
 }
 
-func (s *Sim) isControlled(ac *Aircraft, departure bool) bool {
+func (s *Sim) isHumanControlled(ac *Aircraft, departure bool) bool {
 	if ac.FlightPlan.Rules == av.FlightRulesVFR {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
 	} else {
 		// Otherwise we have to dig around a bit and see if a human is initially or will be involved.
-		if departure && ac.DepartureContactController != "" {
-			return true
+		if departure {
+			tcp := s.State.ResolveController(ac.DepartureController)
+			if slices.Contains(s.State.HumanControllers, tcp) {
+				return true
+			}
+			// If not, it may be later due to a handoff, so don't return false yet
 		}
 		return slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
 	}
@@ -438,7 +442,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)
 			} else if ac != nil {
-				if s.prespawnUncontrolledOnly && s.isControlled(ac, false) {
+				if s.prespawnUncontrolledOnly && s.isHumanControlled(ac, false) {
 					s.lg.Infof("%s: discarding arrival/overflight\n", ac.ADSBCallsign)
 					s.deleteAircraft(ac)
 				} else {
@@ -610,7 +614,7 @@ func (s *Sim) updateDepartureSequence() {
 				dep := &depState.Sequenced[0]
 				ac := s.Aircraft[dep.ADSBCallsign]
 
-				if s.prespawnUncontrolledOnly && s.isControlled(ac, true) {
+				if s.prespawnUncontrolledOnly && s.isHumanControlled(ac, true) {
 					// womp womp, discard it
 					depState.Sequenced = depState.Sequenced[1:]
 					s.deleteAircraft(ac)
@@ -1084,7 +1088,6 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
 		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
-		ac.DepartureContactController = ctrl
 		starsFP.TrackingController = ctrl
 	}
 
