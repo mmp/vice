@@ -839,7 +839,7 @@ func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircra
 	}
 	var ac *sim.Aircraft
 	var err error
-	if da.Rules == av.IFR {
+	if da.Rules == av.FlightRulesIFR {
 		ac, err = s.CreateIFRDeparture(da.Airport, da.Runway, da.Category)
 	} else {
 		ac, err = s.CreateVFRDeparture(da.Airport)

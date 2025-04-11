@@ -442,7 +442,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp sim.STARSFlightPlan) bool { return fp.Rules != av.IFR })
+		func(fp sim.STARSFlightPlan) bool { return fp.Rules != av.FlightRulesIFR })
 
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
@@ -467,7 +467,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
 		func(fp sim.STARSFlightPlan) bool {
-			if fp.Rules != av.IFR {
+			if fp.Rules != av.FlightRulesIFR {
 				return false
 			}
 
@@ -515,7 +515,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else {
 			text.WriteString("    ")
 		}
-		if fp.Rules == av.VFR {
+		if fp.Rules == av.FlightRulesVFR {
 			text.WriteString("VFR")
 		}
 		// entry/exit fix characters

@@ -593,9 +593,9 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				case "":
 					// no flight rules, no problem
 				case "V", "P": // VFR or VFR on top
-					spec.Rules.Set(av.VFR)
+					spec.Rules.Set(av.FlightRulesVFR)
 				case "E": // enroute
-					spec.Rules.Set(av.IFR)
+					spec.Rules.Set(av.FlightRulesIFR)
 				default:
 					status.err = ErrSTARSIllegalValue
 					return
@@ -646,7 +646,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			} else if isVFRFlightPlan(cmd) {
 				if spec, err := parseFlightPlan("+ACID+VFR_ARR_FIXES+AC_TYPE/EQ?ALT_R?TCP", cmd, nil); err == nil {
 					// Implied entry of VFR FP: 5-94
-					spec.Rules.Set(av.VFR)
+					spec.Rules.Set(av.FlightRulesVFR)
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
 					if !spec.InitialController.IsSet {
 						spec.InitialController.Set(ctx.UserTCP)
@@ -662,7 +662,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					return checkScratchpad(ctx, s, !primary, true /* implied */) == nil
 				}); err == nil {
 				// Implied entry of abbreviated flight plan 5-89
-				spec.Rules.Set(av.IFR)
+				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeArrival)
 				if !spec.InitialController.IsSet {
 					spec.InitialController.Set(ctx.UserTCP)
@@ -680,7 +680,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		checkfp := func(s string, primary bool) bool { return checkScratchpad(ctx, s, !primary, false) == nil }
 		if spec, err := parseFlightPlan("+ACID+BEACON?TRI_SP1,PLUS_SP2,#/AC_TYPE/EQ", cmd, checkfp); err == nil {
 			// Pending FP with discrete beacon code 5-120
-			spec.Rules.Set(av.IFR)
+			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.AutoAssociate = true
 			spec.InitialController.Set(ctx.UserTCP)
@@ -783,7 +783,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			fps := ctx.Client.State.UnassociatedFlightPlans
 			if n, err := strconv.Atoi(cmd); err == nil { // line number
 				if idx := slices.IndexFunc(fps, func(fp sim.STARSFlightPlan) bool {
-					return fp.ListIndex == n && fp.Rules == av.VFR
+					return fp.ListIndex == n && fp.Rules == av.FlightRulesVFR
 				}); idx != -1 {
 					sp.deleteFlightPlan(ctx, fps[idx].ACID)
 					status.clear = true
@@ -791,7 +791,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					status.err = ErrSTARSIllegalTrack
 				}
 			} else if idx := slices.IndexFunc(fps, func(fp sim.STARSFlightPlan) bool {
-				return fp.ACID == sim.ACID(cmd) && fp.Rules == av.VFR
+				return fp.ACID == sim.ACID(cmd) && fp.Rules == av.FlightRulesVFR
 			}); idx != -1 {
 				sp.deleteFlightPlan(ctx, fps[idx].ACID)
 				status.clear = true
@@ -801,7 +801,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		} else if spec, err := parseFlightPlan("+ACID+VFR_ARR_FIXES+AC_TYPE/EQ?ALT_R?TCP", cmd, nil); err == nil {
 			// Create/modify VFR FP: 5-133
-			spec.Rules.Set(av.VFR)
+			spec.Rules.Set(av.FlightRulesVFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.InitialController.Set(ctx.UserTCP)
 			sp.createFlightPlan(ctx, spec)
@@ -1672,7 +1672,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		const createFpFormat = "+ACID?BEACON,TCP/FIX_PAIR,ETA_PTD,TRI_SP1,PLUS_SP2,#/AC_TYPE/EQ,ALT_R,RULES"
 		checkfp := func(s string, primary bool) bool { return checkScratchpad(ctx, s, !primary, false) == nil }
 		if spec, err := parseFlightPlan(createFpFormat, cmd, checkfp); err == nil {
-			spec.Rules.Set(av.IFR)
+			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			if !spec.InitialController.IsSet {
 				spec.InitialController.Set(ctx.UserTCP)
@@ -3247,7 +3247,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if spec, err := parseFlightPlan("+ACID?BEACON,TRI_SP1,PLUS_SP2,ALT_A,#/AC_TYPE/EQ", cmd, checkfp); err != nil {
 						status.err = err
 					} else {
-						spec.Rules.Set(av.IFR)
+						spec.Rules.Set(av.FlightRulesIFR)
 						spec.TypeOfFlight.Set(av.FlightTypeArrival)
 						spec.InitialController.Set(ctx.UserTCP)
 						if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
@@ -3279,7 +3279,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				if spec, err := parseFlightPlan("+ACID?BEACON,TRI_SP1,PLUS_SP2,ALT_A,#/AC_TYPE/EQ", cmd, checkfp); err != nil {
 					status.err = err
 				} else {
-					spec.Rules.Set(av.IFR)
+					spec.Rules.Set(av.FlightRulesIFR)
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
 					spec.InitialController.Set(ctx.UserTCP)
 					if !spec.AssignedSquawk.IsSet { // take the current code from the aircraft
@@ -3648,7 +3648,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			return
 		} else {
 			// 5-99 create Unsupported datablock
-			spec.Rules.Set(av.IFR)
+			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.InitialController.Set(ctx.UserTCP)
 			spec.Location.Set(transforms.LatLongFromWindowP(mousePosition))

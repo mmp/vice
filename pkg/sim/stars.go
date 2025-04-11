@@ -474,7 +474,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
 		ExitFixIsIntermediate: s.ExitFixIsIntermediate.GetOr(false),
-		Rules:                 s.Rules.GetOr(av.UNKNOWN),
+		Rules:                 s.Rules.GetOr(av.FlightRulesUnknown),
 		ETAOrPTD:              s.ETAOrPTD.GetOr(time.Time{}),
 
 		AssignedSquawk: s.AssignedSquawk.GetOr(av.Squawk(0)),

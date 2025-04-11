@@ -342,11 +342,11 @@ func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spe
 	if strings.HasPrefix(s, ".") {
 		switch strings.TrimPrefix(s, ".") {
 		case "V", "P" /* VFR on top */ :
-			spec.Rules.Set(av.VFR)
+			spec.Rules.Set(av.FlightRulesVFR)
 			return true, nil
 
 		case "E" /* enroute */ :
-			spec.Rules.Set(av.IFR)
+			spec.Rules.Set(av.FlightRulesIFR)
 			return true, nil
 
 		default:

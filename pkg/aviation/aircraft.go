@@ -348,7 +348,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 
 	ac.TypeOfFlight = FlightTypeDeparture
 
-	randomizeAltitudeRange := ac.FlightPlan.Rules == VFR
+	randomizeAltitudeRange := ac.FlightPlan.Rules == FlightRulesVFR
 	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, wind, lg)

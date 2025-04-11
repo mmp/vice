@@ -681,7 +681,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 		// Field 3: by default, groundspeed and/or "V" for VFR, "E" for overflight, followed by CWT,
 		// but may be adapted.
 		rulesCategory := " "
-		if sfp.Rules == av.VFR {
+		if sfp.Rules == av.FlightRulesVFR {
 			rulesCategory = "V"
 		} else if sfp.TypeOfFlight == av.FlightTypeOverflight {
 			rulesCategory = "E"
@@ -792,7 +792,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 
 		// Field 5: groundspeed
 		rulesCategory := " "
-		if sfp.Rules == av.VFR {
+		if sfp.Rules == av.FlightRulesVFR {
 			rulesCategory = "V"
 		} else if sfp.TypeOfFlight == av.FlightTypeOverflight {
 			rulesCategory = "E"

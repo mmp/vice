@@ -905,12 +905,12 @@ func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *Laun
 }
 
 func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
-	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.IFR, &dep.Aircraft, nil,
+	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesIFR, &dep.Aircraft, nil,
 		func(err error) { lc.lg.Warnf("CreateDeparture: %v", err) })
 }
 
 func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
-	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.VFR, &dep.Aircraft, nil,
+	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesVFR, &dep.Aircraft, nil,
 		func(err error) {
 			if server.TryDecodeError(err) != sim.ErrViolatedAirspace {
 				lc.lg.Warnf("CreateDeparture: %v", err)

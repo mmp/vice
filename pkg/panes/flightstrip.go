@@ -131,7 +131,7 @@ func (fsp *FlightStripPane) possiblyAdd(trk *sim.RadarTrack, tcp string) {
 		// We've seen it before.
 		return
 	}
-	if trk.IsUnassociated() || trk.FlightPlan.Rules != av.IFR {
+	if trk.IsUnassociated() || trk.FlightPlan.Rules != av.FlightRulesIFR {
 		return
 	}
 

@@ -175,7 +175,7 @@ const (
 
 func MakeArrivalNav(callsign ADSBCallsign, arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == VFR
+	randomizeAltitudeRange := fp.Rules == FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
 		magneticVariation, wind, lg); nav != nil {
 		spd := arr.SpeedRestriction
@@ -225,7 +225,7 @@ func MakeDepartureNav(callsign ADSBCallsign, fp FlightPlan, perf AircraftPerform
 
 func MakeOverflightNav(callsign ADSBCallsign, of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == VFR
+	randomizeAltitudeRange := fp.Rules == FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
 		magneticVariation, wind, lg); nav != nil {
 		spd := of.SpeedRestriction
@@ -265,7 +265,7 @@ func makeNav(callsign ADSBCallsign, fp FlightPlan, perf AircraftPerformance, wp 
 	nav.Waypoints = RandomizeRoute(nav.Waypoints, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, wind, lg)
 
-	if fp.Rules == IFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
+	if fp.Rules == FlightRulesIFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
 		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
 			slog.Any("flightplan", fp))
 	}

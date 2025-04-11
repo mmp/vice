@@ -237,7 +237,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 
 	ac.Nav.Check(s.lg)
 
-	if ac.FlightPlan.Rules == av.IFR {
+	if ac.FlightPlan.Rules == av.FlightRulesIFR {
 		s.State.TotalIFR++
 	} else {
 		s.State.TotalVFR++
@@ -392,7 +392,7 @@ func (s *Sim) spawnAircraft() {
 }
 
 func (s *Sim) isControlled(ac *Aircraft, departure bool) bool {
-	if ac.FlightPlan.Rules == av.VFR {
+	if ac.FlightPlan.Rules == av.FlightRulesVFR {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
 	} else {
@@ -876,7 +876,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.InitializeFlightPlan(av.IFR, acType, airline.Airport, arrivalAirport)
+	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.Airport, arrivalAirport)
 
 	// Figure out which controller will (for starters) get the arrival
 	// handoff. For single-user, it's easy.  Otherwise, figure out which
@@ -915,7 +915,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		TrackingController:    arr.InitialController,
 		ControllingController: arr.InitialController,
 
-		Rules:        av.IFR,
+		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeArrival,
 
 		Scratchpad:          arr.Scratchpad,
@@ -929,7 +929,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 
 	// VFRs don't go around since they aren't talking to us.
-	goAround := rand.Float32() < s.State.LaunchConfig.GoAroundRate && ac.FlightPlan.Rules == av.IFR
+	goAround := rand.Float32() < s.State.LaunchConfig.GoAroundRate && ac.FlightPlan.Rules == av.FlightRulesIFR
 	// If it's only controlled by virtual controllers, then don't let it go
 	// around.  Note that this test misses the case where a human has
 	// control from the start, though that shouldn't be happening...
@@ -1032,7 +1032,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.InitializeFlightPlan(av.IFR, acType, departureAirport, dep.Destination)
+	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
 
 	exitRoute := rwy.ExitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute, s.State.NmPerLongitude,
@@ -1048,7 +1048,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		ExitFix:  shortExit,
 		ETAOrPTD: getAircraftTime(s.State.SimTime),
 
-		Rules:        av.IFR,
+		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeDeparture,
 
 		Scratchpad: util.Select(dep.Scratchpad != "", dep.Scratchpad,
@@ -1090,7 +1090,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		starsFP.InitialController = ac.DepartureContactController
 	}
 
-	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.IFR // VFRs aren't held
+	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 
 	sq, err := s.ERAMComputer.CreateSquawk()
 	if err != nil {
@@ -1123,7 +1123,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	ac.InitializeFlightPlan(av.IFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
+	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
 
 	// Figure out which controller will (for starters) get the handoff. For
 	// single-user, it's easy.  Otherwise, figure out which control
@@ -1159,7 +1159,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		TrackingController:    of.InitialController,
 		ControllingController: of.InitialController,
 
-		Rules:               av.IFR,
+		Rules:               av.FlightRulesIFR,
 		TypeOfFlight:        av.FlightTypeOverflight,
 		Scratchpad:          of.Scratchpad,
 		SecondaryScratchpad: of.SecondaryScratchpad,
@@ -1217,7 +1217,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		return nil, "", fmt.Errorf("unable to sample a valid aircraft")
 	}
 
-	rules := av.VFR
+	rules := av.FlightRulesVFR
 	ac.Squawk = 0o1200
 	if r := rand.Float32(); r < .02 {
 		ac.Mode = av.On // mode-A

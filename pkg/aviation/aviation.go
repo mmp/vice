@@ -311,11 +311,11 @@ func (f Frequency) String() string {
 type FlightRules int
 
 const (
-	UNKNOWN FlightRules = iota
-	IFR
-	VFR
-	DVFR
-	SVFR
+	FlightRulesUnknown FlightRules = iota
+	FlightRulesIFR
+	FlightRulesVFR
+	FlightRulesDVFR
+	FlightRulesSVFR
 )
 
 func (f FlightRules) String() string {
