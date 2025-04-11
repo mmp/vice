@@ -21,9 +21,10 @@ import (
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/davecgh/go-spew/spew"
 )
+
+// Cache the routes we show when paused but periodically fetch them
+var pausedAircraftInfo *util.TransientMap[av.ADSBCallsign, string] = util.NewTransientMap[av.ADSBCallsign, string]()
 
 type CommandMode int
 
@@ -2973,9 +2974,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			} else if cmd == "?" {
-				ctx.Lg.Info("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
-					slog.Any("track", trk))
-				fmt.Println(spew.Sdump(trk))
+				ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign)
+				if err != nil {
+					ctx.Lg.Error("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
+						slog.Any("err", err))
+				} else {
+					fmt.Println(ads.Spew)
+				}
 				status.clear = true
 				return
 			} else if cmd == "*F" {
@@ -4072,8 +4077,16 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			// Upper-left corner of where we start drawing the text
 			pad := float32(5)
 			ptext := math.Add2f([2]float32{2 * pad, 0}, pac)
-			//info := ac.NavSummary(ctx.Lg)
-			info := "FIXME"
+			info := ""
+			var ok bool
+			if info, ok = pausedAircraftInfo.Get(trk.ADSBCallsign); !ok {
+				if ads, err := ctx.Client.GetAircraftDisplayState(trk.ADSBCallsign); err != nil {
+					ctx.Lg.Errorf("%s: error fetching display state: %s", trk.ADSBCallsign, err)
+				} else {
+					info = ads.FlightState
+					pausedAircraftInfo.Add(trk.ADSBCallsign, info, 2*time.Second)
+				}
+			}
 			td.AddText(info, ptext, style)
 
 			// Draw an alpha-blended quad behind the text to make it more legible.

@@ -282,3 +282,13 @@ func (p *proxy) GetVideoMapLibrary(filename string, vmf *sim.VideoMapLibrary) er
 		Filename:        filename,
 	}, vmf)
 }
+
+func (p *proxy) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.AircraftDisplayState, error) {
+	// Synchronous call
+	var state sim.AircraftDisplayState
+	err := p.Client.Call("Sim.GetAircraftDisplayState", &AircraftSpecifier{
+		ControllerToken: p.ControllerToken,
+		Callsign:        callsign,
+	}, &state)
+	return state, err
+}

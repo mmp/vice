@@ -948,3 +948,15 @@ func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLib
 		return err
 	}
 }
+
+func (sd *Dispatcher) GetAircraftDisplayState(as *AircraftSpecifier, state *sim.AircraftDisplayState) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if _, s, ok := sd.sm.LookupController(as.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		var err error
+		*state, err = s.GetAircraftDisplayState(as.Callsign)
+		return err
+	}
+}

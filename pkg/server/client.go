@@ -464,6 +464,10 @@ func (c *ControlClient) ControllerAirspace(id string) []av.ControllerAirspaceVol
 	return vols
 }
 
+func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.AircraftDisplayState, error) { // synchronous
+	return c.proxy.GetAircraftDisplayState(callsign)
+}
+
 func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, onErr func(error)) {
 	if c.proxy == nil {
 		return

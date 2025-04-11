@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Sim struct {
@@ -88,6 +89,11 @@ type Aircraft struct {
 
 	// The controller who gave approach clearance
 	ApproachController string
+}
+
+type AircraftDisplayState struct {
+	Spew        string // for debugging
+	FlightState string // for display when paused
 }
 
 type RadarTrack struct {
@@ -953,6 +959,17 @@ func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 		}
 	}
 	return av.ADSBCallsign(""), false
+}
+
+func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplayState, error) {
+	if ac, ok := s.Aircraft[callsign]; !ok {
+		return AircraftDisplayState{}, ErrNoMatchingFlight
+	} else {
+		return AircraftDisplayState{
+			Spew:        spew.Sdump(ac),
+			FlightState: ac.NavSummary(s.lg),
+		}, nil
+	}
 }
 
 func (t *RadarTrack) IsAssociated() bool {
