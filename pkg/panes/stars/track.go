@@ -13,7 +13,6 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -100,7 +99,6 @@ type TrackState struct {
 	FirstRadarTrack    time.Time
 	EnteredOurAirspace bool
 
-	IdentStart, IdentEnd    time.Time
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
 
@@ -179,10 +177,6 @@ func (ts *TrackState) LostTrack(now time.Time) bool {
 	// Only return true if we have at least one valid track from the past
 	// but haven't heard from the aircraft recently.
 	return !ts.track.Location.IsZero() && now.Sub(ts.trackTime) > 30*time.Second
-}
-
-func (ts *TrackState) Ident(now time.Time) bool {
-	return !ts.IdentStart.IsZero() && ts.IdentStart.Before(now) && ts.IdentEnd.After(now)
 }
 
 func (sp *STARSPane) processEvents(ctx *panes.Context) {
@@ -317,12 +311,6 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 			// Clean up if a point out was instead taken as a handoff.
 			delete(sp.PointOuts, event.ADSBCallsign)
-
-		case sim.IdentEvent:
-			if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
-				state.IdentStart = time.Now().Add(time.Duration(2+rand.Intn(3)) * time.Second)
-				state.IdentEnd = state.IdentStart.Add(10 * time.Second)
-			}
 
 		case sim.SetGlobalLeaderLineEvent:
 			if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
@@ -519,15 +507,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.RadarTrack, tra
 			}
 		}
 
-		// "cheat" by using ac.Heading() if we don't yet have two radar tracks to compute the
-		// heading with; this makes things look better when we first see a track or when
-		// restarting a simulation...
-
-		heading := util.Select(state.HaveHeading(),
-			state.TrackHeading(ctx.NmPerLongitude)+ctx.MagneticVariation, trk.Heading)
-
-		sp.drawRadarTrack(trk, state, heading, ctx, transforms, positionSymbol, trackBuilder,
-			ld, trid, td)
+		sp.drawRadarTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -697,7 +677,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(trk sim.RadarTrack, state *TrackState, heading float32, ctx *panes.Context,
+func (sp *STARSPane) drawRadarTrack(trk sim.RadarTrack, state *TrackState, ctx *panes.Context,
 	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
@@ -750,6 +730,12 @@ func (sp *STARSPane) drawRadarTrack(trk sim.RadarTrack, state *TrackState, headi
 		case RadarModeMulti:
 			primary, secondary, _ := sp.radarVisibility(ctx.FacilityAdaptation.RadarSites,
 				pos, int(trk.Altitude))
+			// "cheat" by using trk.Heading if we don't yet have two radar tracks to compute the
+			// heading with; this makes things look better when we first see a track or when
+			// restarting a simulation...
+			heading := util.Select(state.HaveHeading(),
+				state.TrackHeading(ctx.NmPerLongitude)+ctx.MagneticVariation, trk.Heading)
+
 			rot := math.Rotator2f(heading)
 
 			// blue box: x +/-9 pixels, y +/-3 pixels

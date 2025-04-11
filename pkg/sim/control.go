@@ -169,16 +169,7 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 
 	return s.dispatchControllingCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			s.eventStream.Post(Event{
-				Type:         IdentEvent,
-				ADSBCallsign: ac.ADSBCallsign,
-			})
-
-			return []av.RadioTransmission{av.RadioTransmission{
-				Controller: tcp,
-				Message:    "ident",
-				Type:       av.RadioTransmissionReadback,
-			}}
+			return ac.Ident(s.State.SimTime)
 		})
 }
 

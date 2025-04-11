@@ -21,17 +21,19 @@ type RadarTrack struct {
 	ADSBCallsign ADSBCallsign
 	Squawk       Squawk
 	Mode         TransponderMode
+	Ident        bool
 	Altitude     float32
 	Location     math.Point2LL
 	Heading      float32
 	Groundspeed  float32
 }
 
-func (ac *Aircraft) GetRadarTrack() RadarTrack {
+func (ac *Aircraft) GetRadarTrack(now time.Time) RadarTrack {
 	return RadarTrack{
 		ADSBCallsign: ac.ADSBCallsign,
 		Squawk:       util.Select(ac.Mode != TransponderModeStandby, ac.Squawk, Squawk(0)),
 		Mode:         ac.Mode,
+		Ident:        ac.Mode != TransponderModeStandby && now.After(ac.IdentStartTime) && now.Before(ac.IdentEndTime),
 		Altitude:     util.Select(ac.Mode == TransponderModeAltitude, ac.Altitude(), 0),
 		Location:     ac.Position(),
 		Heading:      ac.Heading(),
@@ -49,6 +51,8 @@ type Aircraft struct {
 
 	Squawk Squawk
 	Mode   TransponderMode
+
+	IdentStartTime, IdentEndTime time.Time
 
 	FlightPlan   FlightPlan
 	TypeOfFlight TypeOfFlight
@@ -136,6 +140,16 @@ func (ac *Aircraft) GoAround() []RadioTransmission {
 	return []RadioTransmission{RadioTransmission{
 		Message: resp.Message,
 		Type:    RadioTransmissionType(util.Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
+	}}
+}
+
+func (ac *Aircraft) Ident(now time.Time) []RadioTransmission {
+	ac.IdentStartTime = now.Add(time.Duration(2+rand.Intn(3)) * time.Second) // delay the start a bit
+	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
+
+	return []RadioTransmission{RadioTransmission{
+		Message: "ident",
+		Type:    RadioTransmissionReadback,
 	}}
 }
 

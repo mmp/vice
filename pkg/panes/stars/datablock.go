@@ -485,10 +485,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 	if sfp != nil {
 		actype = sfp.AircraftType
 	}
-	var ident bool
-	if state != nil {
-		ident = state.Ident(ctx.Now)
-	}
 	squawkingSPC, _ := trk.Squawk.IsSPC()
 
 	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
@@ -600,7 +596,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 					mci.ADSBCallsigns[1] == trk.ADSBCallsign
 			})
 
-			if mci || beaconator || extended || ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode || displayBeaconCode {
+			if mci || beaconator || extended || trk.Ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode || displayBeaconCode {
 				// Field 1: reported beacon code
 				// TODO: Field 1: WHO if unassociated and no flight plan
 				var f1 int
@@ -610,7 +606,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 					f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
 				}
 				// Field 1: flashing ID after beacon code if ident.
-				if ident {
+				if trk.Ident {
 					formatDBText(db.field1[f1:], "ID", color, true)
 				}
 			}
@@ -705,7 +701,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 		}
 
 		// Field 4: ident
-		if ident {
+		if trk.Ident {
 			formatDBText(db.field4[:], "ID", color, true)
 		}
 
@@ -802,14 +798,14 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 		field5Idx := 0
 		if state != nil {
 			if state.IFFlashing {
-				if ident {
+				if trk.Ident {
 					formatDBText(db.field5[0][:], "IF"+"ID", color, true)
 				} else {
 					formatDBText(db.field5[0][:], "IF"+rulesCategory, color, true)
 				}
 			} else {
 				idx := formatDBText(db.field5[0][:], groundspeed, color, false)
-				if ident {
+				if trk.Ident {
 					formatDBText(db.field5[0][idx:], "ID", color, true)
 				} else {
 					formatDBText(db.field5[0][idx:], rulesCategory, color, false)
@@ -819,7 +815,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.RadarTrack, sfp *s
 		}
 		// Field 5: +aircraft type and possibly requested altitude, if not
 		// identing.
-		if !ident {
+		if !trk.Ident {
 			if actype != "" {
 				formatDBText(db.field5[field5Idx][:], actype+" ", color, false)
 				field5Idx++

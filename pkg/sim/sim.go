@@ -568,7 +568,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 	for _, callsign := range util.SortedMapKeys(s.Aircraft) {
 		ac := s.Aircraft[callsign]
 		rt := RadarTrack{
-			RadarTrack:                 ac.GetRadarTrack(),
+			RadarTrack:                 ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                 ac.STARSFlightPlan,
 			DepartureContactController: ac.DepartureContactController,
 			DepartureAirport:           ac.FlightPlan.DepartureAirport,
