@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
@@ -117,6 +118,120 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 			}
 		}
 		e.Pop()
+	}
+}
+
+var badCallsigns map[string]interface{} = map[string]interface{}{
+	// 9/11
+	"AAL11":  nil,
+	"UAL175": nil,
+	"AAL77":  nil,
+	"UAL93":  nil,
+
+	// Pilot suicide
+	"MAS17":   nil,
+	"MAS370":  nil,
+	"GWI18G":  nil,
+	"GWI9525": nil,
+	"MSR990":  nil,
+
+	// Hijackings
+	"FDX705":  nil,
+	"AFR8969": nil,
+
+	// Selected major crashes (leaning toward callsigns vice uses or is
+	// likely to use in the future, via
+	// https://en.wikipedia.org/wiki/List_of_deadliest_aircraft_accidents_and_incidents
+	"PAA1736": nil,
+	"KLM4805": nil,
+	"JAL123":  nil,
+	"AIC182":  nil,
+	"AAL191":  nil,
+	"PAA103":  nil,
+	"KAL007":  nil,
+	"AAL587":  nil,
+	"CAL140":  nil,
+	"TWA800":  nil,
+	"SWR111":  nil,
+	"KAL801":  nil,
+	"AFR447":  nil,
+	"CAL611":  nil,
+	"LOT5055": nil,
+	"ICE001":  nil,
+	"PSA5342": nil,
+}
+
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
+	dbAirline, ok := DB.Airlines[a.ICAO]
+	if !ok {
+		// TODO: this should be caught at load validation time...
+		lg.Errorf("Airline %q not found in database", a.ICAO)
+		return "", ""
+	}
+
+	// Sample according to fleet count
+	acCount := 0
+	for _, ac := range a.Aircraft() {
+		// Reservoir sampling...
+		acCount += ac.Count
+		if rand.Float32() < float32(ac.Count)/float32(acCount) {
+			actype = ac.ICAO
+		}
+	}
+
+	if _, ok := DB.AircraftPerformance[actype]; !ok {
+		// TODO: validation stage...
+		lg.Errorf("Aircraft %q not found in performance database for airline %+v",
+			actype, a)
+		return "", ""
+	}
+
+	// random callsign
+	callsign = strings.ToUpper(dbAirline.ICAO)
+	for {
+		format := "####"
+		if len(dbAirline.Callsign.CallsignFormats) > 0 {
+			f, ok := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
+				func(f string) int {
+					if _, wt, ok := strings.Cut(f, "x"); ok { // we have a weight
+						if v, err := strconv.Atoi(wt); err == nil {
+							return v
+						}
+					}
+					return 1
+				})
+			if ok {
+				format = f
+			}
+		}
+
+		id := ""
+	loop:
+		for i, ch := range format {
+			switch ch {
+			case '#':
+				if i == 0 {
+					// Don't start with a 0.
+					id += strconv.Itoa(1 + rand.Intn(9))
+				} else {
+					id += strconv.Itoa(rand.Intn(10))
+				}
+			case '@':
+				id += string(rune('A' + rand.Intn(26)))
+			case 'x':
+				break loop
+			}
+		}
+		if !checkCallsign(callsign + id) { // duplicate
+			id = ""
+			continue
+		} else if _, ok := badCallsigns[callsign+id]; ok {
+			id = ""
+			continue // nope
+		} else {
+			callsign += id
+			return
+		}
 	}
 }
 

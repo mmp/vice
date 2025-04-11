@@ -23,7 +23,7 @@ type Sim struct {
 
 	mu util.LoggingMutex
 
-	Aircraft map[av.ADSBCallsign]*av.Aircraft
+	Aircraft map[av.ADSBCallsign]*Aircraft
 
 	SignOnPositions  map[string]*av.Controller
 	humanControllers map[string]*EventsSubscription
@@ -68,8 +68,8 @@ type Sim struct {
 }
 
 type Aircraft struct {
-	*av.Aircraft
-	STARSFlightPlan *av.STARSFlightPlan
+	av.Aircraft
+	//STARSFlightPlan *av.STARSFlightPlan
 }
 
 type RadarTrack struct {
@@ -159,7 +159,7 @@ func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.L
 		config.STARSFacilityAdaptation.BeaconBank, 3) // don't hand out 00xx codes
 
 	s := &Sim{
-		Aircraft: make(map[av.ADSBCallsign]*av.Aircraft),
+		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
 		DepartureState:   make(map[string]map[string]*RunwayLaunchState),
 		NextInboundSpawn: make(map[string]time.Time),
@@ -876,7 +876,7 @@ func (s *Sim) updateState() {
 	}
 }
 
-func (s *Sim) goAround(ac *av.Aircraft) {
+func (s *Sim) goAround(ac *Aircraft) {
 	if ac.IsUnassociated() { // this shouldn't happen...
 		return
 	}

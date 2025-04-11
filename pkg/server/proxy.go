@@ -220,7 +220,7 @@ func (p *proxy) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, resul
 	}, result, nil)
 }
 
-func (p *proxy) LaunchAircraft(ac av.Aircraft, departureRunway string) *rpc.Call {
+func (p *proxy) LaunchAircraft(ac sim.Aircraft, departureRunway string) *rpc.Call {
 	return p.Client.Go("Sim.LaunchAircraft", &LaunchAircraftArgs{
 		ControllerToken: p.ControllerToken,
 		Aircraft:        ac,
@@ -228,7 +228,7 @@ func (p *proxy) LaunchAircraft(ac av.Aircraft, departureRunway string) *rpc.Call
 	}, nil, nil)
 }
 
-func (p *proxy) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *av.Aircraft) *rpc.Call {
+func (p *proxy) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *sim.Aircraft) *rpc.Call {
 	return p.Client.Go("Sim.CreateDeparture", &CreateDepartureArgs{
 		ControllerToken: p.ControllerToken,
 		Airport:         airport,
@@ -238,7 +238,7 @@ func (p *proxy) CreateDeparture(airport, runway, category string, rules av.Fligh
 	}, ac, nil)
 }
 
-func (p *proxy) CreateArrival(group, airport string, ac *av.Aircraft) *rpc.Call {
+func (p *proxy) CreateArrival(group, airport string, ac *sim.Aircraft) *rpc.Call {
 	return p.Client.Go("Sim.CreateArrival", &CreateArrivalArgs{
 		ControllerToken: p.ControllerToken,
 		Group:           group,
@@ -246,7 +246,7 @@ func (p *proxy) CreateArrival(group, airport string, ac *av.Aircraft) *rpc.Call 
 	}, ac, nil)
 }
 
-func (p *proxy) CreateOverflight(group string, ac *av.Aircraft) *rpc.Call {
+func (p *proxy) CreateOverflight(group string, ac *sim.Aircraft) *rpc.Call {
 	return p.Client.Go("Sim.CreateOverflight", &CreateOverflightArgs{
 		ControllerToken: p.ControllerToken,
 		Group:           group,

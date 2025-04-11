@@ -203,7 +203,7 @@ func (s *Sim) TakeOrReturnLaunchControl(tcp string) error {
 	}
 }
 
-func (s *Sim) LaunchAircraft(ac av.Aircraft, departureRunway string) {
+func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway string) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -214,7 +214,7 @@ func (s *Sim) LaunchAircraft(ac av.Aircraft, departureRunway string) {
 	}
 }
 
-func (s *Sim) addDepartureToPool(ac *av.Aircraft, runway string) {
+func (s *Sim) addDepartureToPool(ac *Aircraft, runway string) {
 	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State /* wind */)
 
 	ac.WaitingForLaunch = true
@@ -226,7 +226,7 @@ func (s *Sim) addDepartureToPool(ac *av.Aircraft, runway string) {
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
-func (s *Sim) addAircraftNoLock(ac av.Aircraft) {
+func (s *Sim) addAircraftNoLock(ac Aircraft) {
 	if _, ok := s.Aircraft[ac.ADSBCallsign]; ok {
 		s.lg.Warn("already have an aircraft with that callsign!",
 			slog.String("adsb_callsign", string(ac.ADSBCallsign)))
@@ -391,7 +391,7 @@ func (s *Sim) spawnAircraft() {
 	s.updateDepartureSequence()
 }
 
-func (s *Sim) isControlled(ac *av.Aircraft, departure bool) bool {
+func (s *Sim) isControlled(ac *Aircraft, departure bool) bool {
 	if ac.FlightPlan.Rules == av.VFR {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
@@ -427,7 +427,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 		if now.After(s.NextInboundSpawn[group]) {
 			flow, rateSum := sampleRateMap(rates, s.State.LaunchConfig.InboundFlowRateScale)
 
-			var ac *av.Aircraft
+			var ac *Aircraft
 			var err error
 			if flow == "overflights" {
 				ac, err = s.createOverflightNoLock(group)
@@ -721,7 +721,7 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	return prev.MinSeparation
 }
 
-func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *av.Aircraft, err error) {
+func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *Aircraft, err error) {
 	depState := s.DepartureState[airport][runway]
 	if len(depState.Gate) >= 10 {
 		// There's a backup; hold off on more.
@@ -747,7 +747,7 @@ func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *av.Aircraft, err 
 	return
 }
 
-func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *av.Aircraft, err error) {
+func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err error) {
 	depState := s.DepartureState[depart][runway]
 	if len(depState.Held) >= 5 || len(depState.Released) >= 5 || len(depState.Sequenced) >= 5 {
 		// There's a backup; hold off on more.
@@ -850,131 +850,13 @@ func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 	d.cullDepartures(s)
 }
 
-var badCallsigns map[string]interface{} = map[string]interface{}{
-	// 9/11
-	"AAL11":  nil,
-	"UAL175": nil,
-	"AAL77":  nil,
-	"UAL93":  nil,
-
-	// Pilot suicide
-	"MAS17":   nil,
-	"MAS370":  nil,
-	"GWI18G":  nil,
-	"GWI9525": nil,
-	"MSR990":  nil,
-
-	// Hijackings
-	"FDX705":  nil,
-	"AFR8969": nil,
-
-	// Selected major crashes (leaning toward callsigns vice uses or is
-	// likely to use in the future, via
-	// https://en.wikipedia.org/wiki/List_of_deadliest_aircraft_accidents_and_incidents
-	"PAA1736": nil,
-	"KLM4805": nil,
-	"JAL123":  nil,
-	"AIC182":  nil,
-	"AAL191":  nil,
-	"PAA103":  nil,
-	"KAL007":  nil,
-	"AAL587":  nil,
-	"CAL140":  nil,
-	"TWA800":  nil,
-	"SWR111":  nil,
-	"KAL801":  nil,
-	"AFR447":  nil,
-	"CAL611":  nil,
-	"LOT5055": nil,
-	"ICE001":  nil,
-	"PSA5342": nil,
-}
-
-func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*av.Aircraft, string) {
-	dbAirline, ok := av.DB.Airlines[al.ICAO]
-	if !ok {
-		// TODO: this should be caught at load validation time...
-		lg.Errorf("Airline %s, not found in database", al.ICAO)
-		return nil, ""
-	}
-
-	// Sample according to fleet count
-	var aircraft string
-	acCount := 0
-	for _, ac := range al.Aircraft() {
-		// Reservoir sampling...
-		acCount += ac.Count
-		if rand.Float32() < float32(ac.Count)/float32(acCount) {
-			aircraft = ac.ICAO
-		}
-	}
-
-	if _, ok := av.DB.AircraftPerformance[aircraft]; !ok {
-		// TODO: validation stage...
-		lg.Errorf("Aircraft %s not found in performance database from airline %+v",
-			aircraft, al)
-		return nil, ""
-	}
-
-	// random callsign
-	callsign := strings.ToUpper(dbAirline.ICAO)
-	for {
-		format := "####"
-		if len(dbAirline.Callsign.CallsignFormats) > 0 {
-			f, ok := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
-				func(f string) int {
-					if _, wt, ok := strings.Cut(f, "x"); ok { // we have a weight
-						if v, err := strconv.Atoi(wt); err == nil {
-							return v
-						}
-					}
-					return 1
-				})
-			if ok {
-				format = f
-			}
-		}
-
-		id := ""
-	loop:
-		for i, ch := range format {
-			switch ch {
-			case '#':
-				if i == 0 {
-					// Don't start with a 0.
-					id += strconv.Itoa(1 + rand.Intn(9))
-				} else {
-					id += strconv.Itoa(rand.Intn(10))
-				}
-			case '@':
-				id += string(rune('A' + rand.Intn(26)))
-			case 'x':
-				break loop
-			}
-		}
-		if _, ok := s.Aircraft[av.ADSBCallsign(callsign+id)]; ok {
-			continue // it already exits
-		} else if _, ok := badCallsigns[callsign+id]; ok {
-			continue // nope
-		} else {
-			callsign += id
-			break
-		}
-	}
-
-	return &av.Aircraft{
-		ADSBCallsign: av.ADSBCallsign(callsign),
-		Mode:         av.Altitude,
-	}, aircraft
-}
-
-func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*av.Aircraft, error) {
+func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	return s.createArrivalNoLock(arrivalGroup, arrivalAirport)
 }
 
-func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Aircraft, error) {
+func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraft, error) {
 	goAround := rand.Float32() < s.State.LaunchConfig.GoAroundRate
 
 	arrivals := s.State.InboundFlows[group].Arrivals
@@ -1036,14 +918,32 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*av.Airc
 	return ac, err
 }
 
-func (s *Sim) CreateIFRDeparture(departureAirport, runway, category string) (*av.Aircraft, error) {
+func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
+	actype, callsign := al.SampleAcTypeAndCallsign(func(callsign string) bool {
+		_, ok := s.Aircraft[av.ADSBCallsign(callsign)]
+		return !ok
+	}, lg)
+
+	if actype == "" {
+		return nil, ""
+	}
+
+	return &Aircraft{
+		Aircraft: av.Aircraft{
+			ADSBCallsign: av.ADSBCallsign(callsign),
+			Mode:         av.Altitude,
+		},
+	}, actype
+}
+
+func (s *Sim) CreateIFRDeparture(departureAirport, runway, category string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	return s.createIFRDepartureNoLock(departureAirport, runway, category)
 }
 
 // Note that this may fail without an error if it's having trouble finding a route.
-func (s *Sim) CreateVFRDeparture(departureAirport string) (*av.Aircraft, error) {
+func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1065,7 +965,7 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*av.Aircraft, error) 
 	return nil, nil
 }
 
-func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string) (*av.Aircraft, error) {
+func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string) (*Aircraft, error) {
 	ap := s.State.Airports[departureAirport]
 	if ap == nil {
 		return nil, av.ErrUnknownAirport
@@ -1123,13 +1023,13 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	return ac, err
 }
 
-func (s *Sim) CreateOverflight(group string) (*av.Aircraft, error) {
+func (s *Sim) CreateOverflight(group string) (*Aircraft, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	return s.createOverflightNoLock(group)
 }
 
-func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
+func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	overflights := s.State.InboundFlows[group].Overflights
 	// Randomly sample an overflight
 	of := rand.SampleSlice(overflights)
@@ -1179,7 +1079,7 @@ func (s *Sim) createOverflightNoLock(group string) (*av.Aircraft, error) {
 	return ac, nil
 }
 
-func makeDepartureAircraft(ac *av.Aircraft, now time.Time, wind av.WindModel) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign: ac.ADSBCallsign,
 		SpawnTime:    now,
@@ -1203,7 +1103,7 @@ func makeDepartureAircraft(ac *av.Aircraft, now time.Time, wind av.WindModel) De
 	return d
 }
 
-func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint) (*av.Aircraft, string, error) {
+func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint) (*Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
 	rwy := s.State.VFRRunways[depart]
 

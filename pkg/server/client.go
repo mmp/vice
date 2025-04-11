@@ -87,7 +87,7 @@ func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) 
 		})
 }
 
-func (c *ControlClient) LaunchDeparture(ac av.Aircraft, rwy string) {
+func (c *ControlClient) LaunchDeparture(ac sim.Aircraft, rwy string) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.LaunchAircraft(ac, rwy),
@@ -95,7 +95,7 @@ func (c *ControlClient) LaunchDeparture(ac av.Aircraft, rwy string) {
 		})
 }
 
-func (c *ControlClient) LaunchArrivalOverflight(ac av.Aircraft) {
+func (c *ControlClient) LaunchArrivalOverflight(ac sim.Aircraft) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.LaunchAircraft(ac, ""),
@@ -356,7 +356,7 @@ func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error
 	return err
 }
 
-func (c *ControlClient) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *av.Aircraft,
+func (c *ControlClient) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *sim.Aircraft,
 	success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
@@ -367,7 +367,7 @@ func (c *ControlClient) CreateDeparture(airport, runway, category string, rules 
 		})
 }
 
-func (c *ControlClient) CreateArrival(group, airport string, ac *av.Aircraft, success func(any), err func(error)) {
+func (c *ControlClient) CreateArrival(group, airport string, ac *sim.Aircraft, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.CreateArrival(group, airport, ac),
@@ -377,7 +377,7 @@ func (c *ControlClient) CreateArrival(group, airport string, ac *av.Aircraft, su
 		})
 }
 
-func (c *ControlClient) CreateOverflight(group string, ac *av.Aircraft, success func(any), err func(error)) {
+func (c *ControlClient) CreateOverflight(group string, ac *sim.Aircraft, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
 			Call:      c.proxy.CreateOverflight(group, ac),

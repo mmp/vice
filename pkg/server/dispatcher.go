@@ -807,7 +807,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 type LaunchAircraftArgs struct {
 	ControllerToken string
-	Aircraft        av.Aircraft
+	Aircraft        sim.Aircraft
 	DepartureRunway string
 }
 
@@ -830,14 +830,14 @@ type CreateDepartureArgs struct {
 	Rules           av.FlightRules
 }
 
-func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *av.Aircraft) error {
+func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(da.ControllerToken)
 	if !ok {
 		return ErrNoSimForControllerToken
 	}
-	var ac *av.Aircraft
+	var ac *sim.Aircraft
 	var err error
 	if da.Rules == av.IFR {
 		ac, err = s.CreateIFRDeparture(da.Airport, da.Runway, da.Category)
@@ -857,7 +857,7 @@ type CreateArrivalArgs struct {
 	Airport         string
 }
 
-func (sd *Dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *av.Aircraft) error {
+func (sd *Dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(aa.ControllerToken)
@@ -876,7 +876,7 @@ type CreateOverflightArgs struct {
 	Group           string
 }
 
-func (sd *Dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *av.Aircraft) error {
+func (sd *Dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(oa.ControllerToken)

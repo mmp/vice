@@ -22,7 +22,7 @@ type STARSComputer struct {
 	Identifier       string
 	FlightPlans      []av.STARSFlightPlan
 	SquawkCodePool   *av.SquawkCodePool
-	HoldForRelease   []*av.Aircraft
+	HoldForRelease   []*Aircraft
 	AvailableIndices []int
 }
 
@@ -44,7 +44,7 @@ func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
 	return ec.SquawkCodePool.Return(code)
 }
 
-func (ec *ERAMComputer) DeleteAircraft(ac *av.Aircraft) {
+func (ec *ERAMComputer) DeleteAircraft(ac *Aircraft) {
 	// RETURN SQUAWK CODE
 }
 
@@ -66,7 +66,7 @@ func makeSTARSComputer(id string, beaconBank int) *STARSComputer {
 
 func (sc *STARSComputer) ReleaseDeparture(callsign av.ADSBCallsign) error {
 	idx := slices.IndexFunc(sc.HoldForRelease,
-		func(ac *av.Aircraft) bool { return ac.ADSBCallsign == callsign })
+		func(ac *Aircraft) bool { return ac.ADSBCallsign == callsign })
 	if idx == -1 {
 		return av.ErrNoAircraftForCallsign
 	}
@@ -79,11 +79,11 @@ func (sc *STARSComputer) ReleaseDeparture(callsign av.ADSBCallsign) error {
 	}
 }
 
-func (sc *STARSComputer) GetReleaseDepartures() []*av.Aircraft {
+func (sc *STARSComputer) GetReleaseDepartures() []*Aircraft {
 	return slices.Clone(sc.HoldForRelease)
 }
 
-func (sc *STARSComputer) AddHeldDeparture(ac *av.Aircraft) {
+func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 	sc.HoldForRelease = append(sc.HoldForRelease, ac)
 }
 
@@ -98,7 +98,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 				return true
 			}
 
-			var match *av.Aircraft
+			var match *Aircraft
 			for _, ac := range s.Aircraft {
 				if ac.IsAirborne() && ac.Squawk == fp.AssignedSquawk {
 					if match != nil { // already found another match
@@ -145,7 +145,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 
 			// Remove it from the released departures list
 			sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
-				func(ac2 *av.Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })
+				func(ac2 *Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })
 		}
 	}
 }
@@ -218,7 +218,7 @@ func (sc *STARSComputer) returnListIndex(idx int) {
 	}
 }
 
-func (sc *STARSComputer) DeleteAircraft(ac *av.Aircraft) {
+func (sc *STARSComputer) DeleteAircraft(ac *Aircraft) {
 	if fp := ac.STARSFlightPlan; fp != nil {
 		sc.returnListIndex(fp.ListIndex)
 		sc.SquawkCodePool.Return(fp.AssignedSquawk)
@@ -229,7 +229,7 @@ func (sc *STARSComputer) DeleteAircraft(ac *av.Aircraft) {
 	}
 
 	sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
-		func(a *av.Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
+		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 }
 
 /*
