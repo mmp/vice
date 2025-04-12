@@ -3648,10 +3648,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		} else if spec, err := parseFlightPlan("+ACID?BEACON,TRI_SP1,PLUS_SP2,ALT_A,#/AC_TYPE/EQ", cmd,
 			func(s string, primary bool) bool {
 				return checkScratchpad(ctx, s, !primary, false /* !implied */) == nil
-			}); err != nil {
-			status.err = err
-			return
-		} else {
+			}); err == nil {
 			// 5-99 create Unsupported datablock
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
@@ -3660,6 +3657,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 			return
+		} else if cmd != "" {
+			status.err = ErrSTARSCommandFormat
 		}
 
 	case CommandModeMultiFunc:
