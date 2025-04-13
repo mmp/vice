@@ -255,4 +255,10 @@ var whatsNew []string = []string{
 	`STARS: [Tab] can now be used to toggle TGT GEN for entering aircraft commands`,
 	`STARS: added support for Mode C intruders, including suppression and the system list`,
 	`STARS: multiple improvements to the specifics of handling unassociated tracks`,
+	`New scenarios: GTF (Merry), PCT SHD (Ketan K)`,
+	`Scenario updates: JAX (Jud Lopez), LIB (Matt P), CLT (agnuse), DCA (Ketan K), A90 (radarcontacto)`,
+	`Fixed a bug where wind gusts would cycle between the gust windspeed all the way down to zero wind`,
+	`STARS: fixed a bug with handoffs between virtual controllers during aircraft prespawn`,
+	`STARS: Fixed a bug where the partial datablock would sometimes be switched to prematurely after a handoff`,
+	`STARS: Fixed drawing of PREF submenu and some bugs with keyboard entry of values after selecting DCB buttons`,
 }
