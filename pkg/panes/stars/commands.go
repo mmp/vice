@@ -21,6 +21,8 @@ import (
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 // Cache the routes we show when paused but periodically fetch them
@@ -3002,7 +3004,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					ctx.Lg.Error("print aircraft", slog.String("callsign", string(trk.ADSBCallsign)),
 						slog.Any("err", err))
 				} else {
-					fmt.Println(ads.Spew)
+					fmt.Println(ads.Spew + "\n\n\n" + spew.Sdump(state))
 				}
 				status.clear = true
 				return
