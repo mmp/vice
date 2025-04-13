@@ -111,10 +111,10 @@ func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
 		})
 }
 
-func (c *ControlClient) SetGlobalLeaderLine(callsign av.ADSBCallsign, dir *math.CardinalOrdinalDirection, success func(any), err func(error)) {
+func (c *ControlClient) SetGlobalLeaderLine(acid sim.ACID, dir *math.CardinalOrdinalDirection, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.SetGlobalLeaderLine(callsign, dir),
+			Call:      c.proxy.SetGlobalLeaderLine(acid, dir),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -137,16 +137,16 @@ func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, ty s
 		})
 }
 
-func (c *ControlClient) ModifyFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, success func(sim.STARSFlightPlan), err func(error)) {
+func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlanSpecifier, success func(sim.STARSFlightPlan), err func(error)) {
 	// Instant update locally hack
-	if trk, ok := c.State.GetOurTrackByCallsign(callsign); ok {
+	if trk, ok := c.State.GetOurTrackByACID(acid); ok {
 		trk.FlightPlan.Update(spec)
 	}
 
 	var fpFinal sim.STARSFlightPlan
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.ModifyFlightPlan(callsign, spec, &fpFinal),
+			Call:      c.proxy.ModifyFlightPlan(acid, spec, &fpFinal),
 			IssueTime: time.Now(),
 			OnSuccess: func(any) {
 				if success != nil {
@@ -233,18 +233,18 @@ func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, success func(any), err f
 		})
 }
 
-func (c *ControlClient) HandoffTrack(callsign av.ADSBCallsign, controller string, success func(any), err func(error)) {
+func (c *ControlClient) HandoffTrack(acid sim.ACID, controller string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.HandoffTrack(callsign, controller),
+			Call:      c.proxy.HandoffTrack(acid, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) AcceptHandoff(callsign av.ADSBCallsign, success func(any), err func(error)) {
-	trk, ok := c.State.GetTrackByCallsign(callsign)
+func (c *ControlClient) AcceptHandoff(acid sim.ACID, success func(any), err func(error)) {
+	trk, ok := c.State.GetTrackByACID(acid)
 	if ok && trk.IsAssociated() && trk.FlightPlan.HandoffTrackController == c.State.UserTCP {
 		trk.FlightPlan.HandoffTrackController = ""
 		trk.FlightPlan.TrackingController = c.State.UserTCP
@@ -253,87 +253,87 @@ func (c *ControlClient) AcceptHandoff(callsign av.ADSBCallsign, success func(any
 
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.AcceptHandoff(callsign),
+			Call:      c.proxy.AcceptHandoff(acid),
 			IssueTime: time.Now(),
-			OnSuccess: c.updateControllerStats(callsign, success),
+			OnSuccess: c.updateControllerStats(av.ADSBCallsign(acid), success),
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) RedirectHandoff(callsign av.ADSBCallsign, controller string, success func(any), err func(error)) {
+func (c *ControlClient) RedirectHandoff(acid sim.ACID, controller string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.RedirectHandoff(callsign, controller),
-			IssueTime: time.Now(),
-			OnSuccess: success,
-			OnErr:     err,
-		})
-}
-
-func (c *ControlClient) AcceptRedirectedHandoff(callsign av.ADSBCallsign, success func(any), err func(error)) {
-	c.pendingCalls = append(c.pendingCalls,
-		&util.PendingCall{
-			Call:      c.proxy.AcceptRedirectedHandoff(callsign),
-			IssueTime: time.Now(),
-			OnSuccess: c.updateControllerStats(callsign, success),
-			OnErr:     err,
-		})
-}
-
-func (c *ControlClient) CancelHandoff(callsign av.ADSBCallsign, success func(any), err func(error)) {
-	c.pendingCalls = append(c.pendingCalls,
-		&util.PendingCall{
-			Call:      c.proxy.CancelHandoff(callsign),
+			Call:      c.proxy.RedirectHandoff(acid, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) ForceQL(callsign av.ADSBCallsign, controller string, success func(any), err func(error)) {
+func (c *ControlClient) AcceptRedirectedHandoff(acid sim.ACID, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.ForceQL(callsign, controller),
+			Call:      c.proxy.AcceptRedirectedHandoff(acid),
+			IssueTime: time.Now(),
+			OnSuccess: c.updateControllerStats(av.ADSBCallsign(acid), success),
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) CancelHandoff(acid sim.ACID, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.CancelHandoff(acid),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) PointOut(callsign av.ADSBCallsign, controller string, success func(any), err func(error)) {
+func (c *ControlClient) ForceQL(acid sim.ACID, controller string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.PointOut(callsign, controller),
+			Call:      c.proxy.ForceQL(acid, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) AcknowledgePointOut(callsign av.ADSBCallsign, success func(any), err func(error)) {
+func (c *ControlClient) PointOut(acid sim.ACID, controller string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.AcknowledgePointOut(callsign),
+			Call:      c.proxy.PointOut(acid, controller),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) RecallPointOut(callsign av.ADSBCallsign, success func(any), err func(error)) {
+func (c *ControlClient) AcknowledgePointOut(acid sim.ACID, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.RecallPointOut(callsign),
+			Call:      c.proxy.AcknowledgePointOut(acid),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
 		})
 }
 
-func (c *ControlClient) RejectPointOut(callsign av.ADSBCallsign, success func(any), err func(error)) {
+func (c *ControlClient) RecallPointOut(acid sim.ACID, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
-			Call:      c.proxy.RejectPointOut(callsign),
+			Call:      c.proxy.RecallPointOut(acid),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
+func (c *ControlClient) RejectPointOut(acid sim.ACID, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.RejectPointOut(acid),
 			IssueTime: time.Now(),
 			OnSuccess: success,
 			OnErr:     err,
@@ -393,7 +393,8 @@ func (c *ControlClient) Disconnect() {
 	if err := c.proxy.SignOff(nil, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
 	}
-	c.State.RadarTracks = nil
+	c.State.Tracks = nil
+	c.State.UnassociatedFlightPlans = nil
 	c.State.Controllers = nil
 }
 
@@ -609,7 +610,7 @@ func (c *ControlClient) CurrentTime() time.Time {
 
 func (c *ControlClient) DeleteAllAircraft(onErr func(err error)) {
 	if lctrl := c.State.LaunchConfig.Controller; lctrl == "" || lctrl == c.State.UserTCP {
-		c.State.RadarTracks = nil
+		c.State.Tracks = nil
 	}
 
 	c.pendingCalls = append(c.pendingCalls,

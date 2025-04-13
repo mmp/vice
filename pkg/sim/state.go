@@ -32,13 +32,12 @@ const serverCallsign = "__SERVER__"
 // assorted information they may need (the state of aircraft in the sim,
 // etc.)
 type State struct {
-	RadarTracks       map[av.ADSBCallsign]*RadarTrack
-	UnsupportedTracks []RadarTrack
+	Tracks map[av.ADSBCallsign]*Track
 
-	// Only the unassociated ones
+	// Unassociated ones, including unsupported DBs
 	UnassociatedFlightPlans []STARSFlightPlan
 
-	FlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
+	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
 	Airports          map[string]*av.Airport
 	DepartureAirports map[string]*av.Airport
@@ -458,8 +457,8 @@ func (ss *State) AmInstructor() bool {
 }
 
 func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
-	if util.SeqContainsFunc(maps.Values(ss.RadarTracks),
-		func(tr *RadarTrack) bool {
+	if util.SeqContainsFunc(maps.Values(ss.Tracks),
+		func(tr *Track) bool {
 			return tr.IsAssociated() && tr.Squawk == sq
 		}) {
 		return true
@@ -498,40 +497,56 @@ func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
 	return nil
 }
 
-func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, bool) {
-	for i, trk := range ss.RadarTracks {
+func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
+	for i, trk := range ss.Tracks {
 		if trk.ADSBCallsign == callsign {
-			return ss.RadarTracks[i], true
+			return ss.Tracks[i], true
 		}
 	}
 	return nil, false
 }
 
-func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*RadarTrack, bool) {
-	for i, trk := range ss.RadarTracks {
+func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
+	for i, trk := range ss.Tracks {
 		if trk.ADSBCallsign == callsign && trk.IsAssociated() &&
 			trk.FlightPlan.TrackingController == ss.UserTCP {
-			return ss.RadarTracks[i], true
+			return ss.Tracks[i], true
 		}
 	}
 	return nil, false
 }
 
-func (ss *State) GetTrackByACID(acid ACID) (*RadarTrack, bool) {
-	for i, trk := range ss.RadarTracks {
+func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
+	for i, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
-			return ss.RadarTracks[i], true
+			return ss.Tracks[i], true
 		}
 	}
 	return nil, false
 }
 
-func (ss *State) GetOurTrackByACID(acid ACID) (*RadarTrack, bool) {
-	for i, trk := range ss.RadarTracks {
+func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
+	for i, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
 			trk.FlightPlan.TrackingController == ss.UserTCP {
-			return ss.RadarTracks[i], true
+			return ss.Tracks[i], true
 		}
 	}
 	return nil, false
+}
+
+// FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
+// FIXME FIXME FIXME
+func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
+	for _, trk := range ss.Tracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
+			return trk.FlightPlan
+		}
+	}
+	for i, fp := range ss.UnassociatedFlightPlans {
+		if fp.ACID == acid {
+			return &ss.UnassociatedFlightPlans[i]
+		}
+	}
+	return nil
 }

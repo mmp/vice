@@ -108,6 +108,8 @@ type STARSPane struct {
 	RestorePreferences       *Preferences
 	RestorePreferencesNumber *int
 
+	// It seems like this should be based on ACID but then we also need
+	// state for unassociated tracks, so... ?
 	TrackState map[av.ADSBCallsign]*TrackState
 
 	// explicit JSON name to avoid errors during config deserialization for
@@ -117,9 +119,9 @@ type STARSPane struct {
 	LockDisplay         bool
 
 	// a/c callsign -> controllers
-	PointOuts         map[av.ADSBCallsign]PointOutControllers
-	RejectedPointOuts map[av.ADSBCallsign]interface{}
-	ForceQLCallsigns  map[av.ADSBCallsign]interface{}
+	PointOuts         map[sim.ACID]PointOutControllers
+	RejectedPointOuts map[sim.ACID]interface{}
+	ForceQLACIDs      map[sim.ACID]interface{}
 
 	// Hold for release callsigns we have seen but not released. (We need
 	// to track this since auto release only applies to new ones seen after
@@ -378,10 +380,10 @@ func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if sp.PointOuts == nil {
-		sp.PointOuts = make(map[av.ADSBCallsign]PointOutControllers)
+		sp.PointOuts = make(map[sim.ACID]PointOutControllers)
 	}
 	if sp.RejectedPointOuts == nil {
-		sp.RejectedPointOuts = make(map[av.ADSBCallsign]interface{})
+		sp.RejectedPointOuts = make(map[sim.ACID]interface{})
 	}
 	if sp.queryUnassociated == nil {
 		sp.queryUnassociated = util.NewTransientMap[av.ADSBCallsign, interface{}]()
@@ -1213,13 +1215,13 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 	}
 }
 
-func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.RadarTrack {
-	var tracks []sim.RadarTrack
+func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
+	var tracks []sim.Track
 	ps := sp.currentPrefs()
 	single := sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeSingle
 	now := ctx.Client.State.SimTime
 
-	for _, trk := range ctx.Client.State.RadarTracks {
+	for _, trk := range ctx.Client.State.Tracks {
 		if !trk.IsAirborne {
 			continue
 		}
@@ -1266,6 +1268,20 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.RadarTrack {
 				state.FirstRadarTrack = now
 			}
 		}
+	}
+
+	// Make up fake tracks for unsupported datablocks
+	for i, fp := range ctx.Client.State.UnassociatedFlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		tracks = append(tracks, sim.Track{
+			RadarTrack: av.RadarTrack{
+				ADSBCallsign: av.ADSBCallsign("__" + string(fp.ACID)),
+				Location:     fp.Location,
+			},
+			FlightPlan: &ctx.Client.State.UnassociatedFlightPlans[i],
+		})
 	}
 
 	return tracks
@@ -1335,7 +1351,7 @@ func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
 
 const AlertAudioDuration = 5 * time.Second
 
-func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.RadarTrack) {
+func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 	ps := sp.currentPrefs()
 
 	if !sp.testAudioEndTime.IsZero() && ctx.Now.After(sp.testAudioEndTime) {

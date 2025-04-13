@@ -862,7 +862,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransfo
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.RadarTrack, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -901,7 +901,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.RadarTrack, trans
 			p1 := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			if wp.ADSBCallsign != "" {
 				if trk, ok := ctx.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
-					slices.ContainsFunc(tracks, func(t sim.RadarTrack) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
+					slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
 					drawRBL(trk.Location, p1, len(sp.RangeBearingLines)+1, trk.Groundspeed)
 				}
 			} else {
@@ -1586,7 +1586,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 	}
 }
 
-func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.RadarTrack, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1632,7 +1632,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.RadarTrack, trans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.RadarTrack, transforms ScopeTransformations,
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	now := ctx.Client.State.SimTime
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1820,7 +1820,7 @@ type STARSRangeBearingLine struct {
 	}
 }
 
-func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.RadarTrack, sp *STARSPane) (math.Point2LL, math.Point2LL) {
+func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Track, sp *STARSPane) (math.Point2LL, math.Point2LL) {
 	// Each line endpoint may be specified either by a track's
 	// position or by a fixed position. We'll start with the fixed
 	// position and then override it if there's a valid *RadarTrack.
@@ -1829,7 +1829,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Rada
 		if trk, ok := ctx.GetTrackByCallsign(rbl.P[i].ADSBCallsign); ok {
 			state, ok := sp.TrackState[trk.ADSBCallsign]
 			if ok && !state.LostTrack(ctx.Client.State.SimTime) &&
-				slices.ContainsFunc(tracks, func(t sim.RadarTrack) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
+				slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
 				return trk.Location
 			}
 		}
@@ -1838,7 +1838,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Rada
 	return getLoc(0), getLoc(1)
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.RadarTrack) func([2]float32, ScopeTransformations) (status CommandStatus) {
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track) func([2]float32, ScopeTransformations) (status CommandStatus) {
 	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 		if sp.wipRBL == nil {
 			// this shouldn't happen, but let's not crash if it does...

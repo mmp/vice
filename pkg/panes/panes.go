@@ -138,11 +138,11 @@ func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
 }
 
 // Convenience methods since these are frequently used.
-func (ctx *Context) GetTrackByCallsign(callsign av.ADSBCallsign) (*sim.RadarTrack, bool) {
+func (ctx *Context) GetTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track, bool) {
 	return ctx.Client.State.GetTrackByCallsign(callsign)
 }
 
-func (ctx *Context) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*sim.RadarTrack, bool) {
+func (ctx *Context) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByCallsign(callsign)
 }
 

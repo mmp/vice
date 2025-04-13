@@ -401,6 +401,8 @@ type STARSFlightPlan struct {
 
 	RNAV bool
 
+	Location math.Point2LL
+
 	PointOutHistory             []string
 	InhibitModeCAltitudeDisplay bool
 	SPCOverride                 string
@@ -496,6 +498,8 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 
 		RNAV: s.RNAV.GetOr(false),
 
+		Location: s.Location.GetOr(math.Point2LL{}),
+
 		PointOutHistory:             s.PointOutHistory.GetOr(nil),
 		InhibitModeCAltitudeDisplay: s.InhibitModeCAltitudeDisplay.GetOr(false),
 		SPCOverride:                 s.SPCOverride.GetOr(""),
@@ -559,6 +563,9 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.RNAV.IsSet {
 		fp.RNAV = spec.RNAV.Get()
+	}
+	if spec.Location.IsSet {
+		fp.Location = spec.Location.Get()
 	}
 	if spec.PointOutHistory.IsSet {
 		fp.PointOutHistory = spec.PointOutHistory.Get()

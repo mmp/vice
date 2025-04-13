@@ -63,7 +63,6 @@ type TrackState struct {
 	POFlashingEndTime time.Time
 	UNFlashingEndTime time.Time
 	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
-	NextController    string
 
 	AcceptedHandoffSector     string
 	AcceptedHandoffDisplayEnd time.Time
@@ -179,9 +178,20 @@ func (ts *TrackState) LostTrack(now time.Time) bool {
 	return !ts.track.Location.IsZero() && now.Sub(ts.trackTime) > 30*time.Second
 }
 
+func (sp *STARSPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
+	// Figure out the ADSB callsign for this ACID.
+	for _, trk := range ctx.Client.State.Tracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
+			s, ok := sp.TrackState[trk.ADSBCallsign]
+			return s, ok
+		}
+	}
+	return nil, false
+}
+
 func (sp *STARSPane) processEvents(ctx *panes.Context) {
-	// First handle changes in sim.State.RadarTracks
-	for _, trk := range ctx.Client.State.RadarTracks {
+	// First handle changes in sim.State.Tracks
+	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := sp.TrackState[trk.ADSBCallsign]; !ok {
 			// First we've seen it; create the *AircraftState for it
 			sa := &TrackState{}
@@ -202,9 +212,26 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		}
 	}
 
+	// Unsupported DBs also get state, but there's less to it
+	for _, fp := range ctx.Client.State.UnassociatedFlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		callsign := av.ADSBCallsign("__" + string(fp.ACID)) // fake callsign to identify for state
+		if _, ok := sp.TrackState[callsign]; !ok {
+			sp.TrackState[callsign] = &TrackState{FirstSeen: ctx.Client.State.SimTime}
+		}
+	}
+
 	// See if any aircraft we have state for have been removed
 	for callsign := range sp.TrackState {
-		if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
+		if strings.HasPrefix(string(callsign), "__") {
+			acid := sim.ACID(strings.TrimPrefix(string(callsign), "__"))
+			if !slices.ContainsFunc(ctx.Client.State.UnassociatedFlightPlans,
+				func(fp sim.STARSFlightPlan) bool { return fp.ACID == acid }) {
+				delete(sp.TrackState, callsign)
+			}
+		} else if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
 			delete(sp.TrackState, callsign)
 		}
 	}
@@ -212,7 +239,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	// Look for duplicate beacon codes
 	sp.DuplicateBeacons = make(map[av.Squawk]interface{})
 	beaconCount := make(map[av.Squawk]int)
-	for _, trk := range ctx.Client.State.RadarTracks {
+	for _, trk := range ctx.Client.State.Tracks {
 		// Don't count SPC or VFR as duplicates.
 		if trk.Squawk == 0o1200 {
 			continue
@@ -247,38 +274,38 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	for _, event := range sp.events.Get() {
 		switch event.Type {
 		case sim.PointOutEvent:
-			sp.PointOuts[event.ADSBCallsign] = PointOutControllers{
+			sp.PointOuts[event.ACID] = PointOutControllers{
 				From: event.FromController,
 				To:   event.ToController,
 			}
 
 		case sim.AcknowledgedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ADSBCallsign]; ok {
-				if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
+			if tcps, ok := sp.PointOuts[event.ACID]; ok {
+				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					if tcps.From == ctx.UserTCP {
 						state.POFlashingEndTime = time.Now().Add(5 * time.Second)
 					} else if tcps.To == ctx.UserTCP {
 						state.PointOutAcknowledged = true
 					}
 				}
-				delete(sp.PointOuts, event.ADSBCallsign)
+				delete(sp.PointOuts, event.ACID)
 			}
 
 		case sim.RecalledPointOutEvent:
-			delete(sp.PointOuts, event.ADSBCallsign)
+			delete(sp.PointOuts, event.ACID)
 
 		case sim.RejectedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ADSBCallsign]; ok && tcps.From == ctx.UserTCP {
-				sp.RejectedPointOuts[event.ADSBCallsign] = nil
-				if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
+			if tcps, ok := sp.PointOuts[event.ACID]; ok && tcps.From == ctx.UserTCP {
+				sp.RejectedPointOuts[event.ACID] = nil
+				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.UNFlashingEndTime = time.Now().Add(5 * time.Second)
 				}
 			}
-			delete(sp.PointOuts, event.ADSBCallsign)
+			delete(sp.PointOuts, event.ACID)
 
 		case sim.InitiatedTrackEvent:
 			if event.ToController == ctx.UserTCP {
-				if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
+				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.DisplayFDB = true
 				}
 			}
@@ -289,7 +316,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
+			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 				outbound := event.FromController == ctx.UserTCP && event.ToController != ctx.UserTCP
 				inbound := event.FromController != ctx.UserTCP && event.ToController == ctx.UserTCP
 				if outbound {
@@ -310,36 +337,36 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				}
 			}
 			// Clean up if a point out was instead taken as a handoff.
-			delete(sp.PointOuts, event.ADSBCallsign)
+			delete(sp.PointOuts, event.ACID)
 
 		case sim.SetGlobalLeaderLineEvent:
-			if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
-				if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsAssociated() {
-					state.UseGlobalLeaderLine = trk.FlightPlan.GlobalLeaderLineDirection != nil
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
+				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
+					state.UseGlobalLeaderLine = fp.GlobalLeaderLineDirection != nil
 				}
 			}
 
 		case sim.ForceQLEvent:
-			if sp.ForceQLCallsigns == nil {
-				sp.ForceQLCallsigns = make(map[av.ADSBCallsign]interface{})
+			if sp.ForceQLACIDs == nil {
+				sp.ForceQLACIDs = make(map[sim.ACID]interface{})
 			}
-			sp.ForceQLCallsigns[event.ADSBCallsign] = nil
+			sp.ForceQLACIDs[event.ACID] = nil
 
 		case sim.TransferRejectedEvent:
-			if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
+			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 				state.IFFlashing = true
-				sp.cancelHandoff(ctx, event.ADSBCallsign)
+				sp.cancelHandoff(ctx, event.ACID)
 			}
 
 		case sim.TransferAcceptedEvent:
-			if state, ok := sp.TrackState[event.ADSBCallsign]; ok {
+			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 				state.IFFlashing = false
 			}
 		}
 	}
 }
 
-func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.RadarTrack) bool {
+func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	if trk.IsUnassociated() {
 		return false
 	}
@@ -347,7 +374,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.RadarTrack) bool 
 	if sp.currentPrefs().QuickLookAll {
 		return true
 	}
-	if _, ok := sp.ForceQLCallsigns[trk.ADSBCallsign]; ok {
+	if _, ok := sp.ForceQLACIDs[trk.FlightPlan.ACID]; ok {
 		return true
 	}
 
@@ -364,7 +391,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.RadarTrack) bool 
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	// See if there are any MVA issues
 	mvas := av.DB.MVAs[ctx.Client.State.TRACON]
-	for _, trk := range ctx.Client.State.RadarTracks {
+	for _, trk := range ctx.Client.State.Tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !trk.MVAsApply {
 			state.MSAW = false
@@ -403,7 +430,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.RadarTrack) {
+func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.State.SimTime
 	if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
@@ -417,7 +444,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.RadarTra
 	}
 	sp.lastTrackUpdate = now
 
-	for _, trk := range ctx.Client.State.RadarTracks {
+	for _, trk := range ctx.Client.State.Tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		state.previousTrack = state.track
@@ -445,7 +472,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.RadarTra
 	sp.updateInTrailDistance(ctx, tracks)
 }
 
-func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.RadarTrack, transforms ScopeTransformations,
+func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -459,9 +486,6 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.RadarTrack, tra
 
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
-
-	// Just position symbols for unsupported datablocks
-	sp.drawUnsupportedDatablockPositionSymbols(ctx, transforms, td)
 
 	now := ctx.Client.State.SimTime
 	for _, trk := range tracks {
@@ -507,7 +531,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.RadarTrack, tra
 			}
 		}
 
-		sp.drawRadarTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)
+		sp.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -520,33 +544,6 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.RadarTrack, tra
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
-}
-
-func (sp *STARSPane) drawUnsupportedDatablockPositionSymbols(ctx *panes.Context, transforms ScopeTransformations,
-	td *renderer.TextDrawBuilder) {
-	ps := sp.currentPrefs()
-	font := sp.systemFont(ctx, ps.CharSize.PositionSymbols)
-	outlineFont := sp.systemOutlineFont(ctx, ps.CharSize.PositionSymbols)
-
-	for _, trk := range ctx.Client.State.UnsupportedTracks {
-		pw := transforms.WindowFromLatLongP(trk.Location)
-		positionSymbol := "?"
-		ctrl := trk.FlightPlan.TrackingController
-		if ctrl != "" {
-			positionSymbol = ctrl[len(ctrl)-1:]
-		}
-
-		var posColor renderer.RGB
-		if ctrl == ctx.UserTCP {
-			posColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTrackedAircraftColor)
-		} else {
-			posColor = ps.Brightness.OtherTracks.ScaleRGB(STARSUntrackedAircraftColor)
-		}
-
-		pt := math.Add2f(pw, [2]float32{0.5, -0.5})
-		td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: outlineFont, Color: renderer.RGB{}})
-		td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
-	}
 }
 
 func (sp *STARSPane) beaconCodeSelected(code av.Squawk) bool {
@@ -572,7 +569,7 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransforma
 	return size
 }
 
-func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.RadarTrack) []*av.GhostTrack {
+func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
 	now := ctx.Client.State.SimTime
@@ -677,18 +674,19 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRadarTrack(trk sim.RadarTrack, state *TrackState, ctx *panes.Context,
+func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
 	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	// TODO: orient based on radar center if just one radar
 
 	pos := trk.Location
+	isUnsupported := trk.Altitude == 0 && trk.FlightPlan != nil // FIXME: there's surely a better way to do this
 	pw := transforms.WindowFromLatLongP(pos)
 	// On high DPI windows displays we need to scale up the tracks
 
 	primaryTargetBrightness := ps.Brightness.PrimarySymbols
-	if primaryTargetBrightness > 0 {
+	if primaryTargetBrightness > 0 && !isUnsupported {
 		switch mode := sp.radarMode(ctx.FacilityAdaptation.RadarSites); mode {
 		case RadarModeSingle:
 			site := ctx.FacilityAdaptation.RadarSites[ps.RadarSiteSelected]
@@ -831,7 +829,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 	return pts
 }
 
-func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.RadarTrack, transforms ScopeTransformations,
+func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
@@ -871,7 +869,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.RadarTra
 	historyBuilder.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.RadarTrack) ([][2]int, bool) {
+func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][2]int, bool) {
 	// Only report on ones that are tracked by us
 	if trk.IsAssociated() && trk.FlightPlan.TrackingController != ctx.UserTCP {
 		return nil, false
@@ -894,8 +892,8 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.RadarTrack)
 	return nil, false
 }
 
-func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.RadarTrack) {
-	inCAInhibitVolumes := func(trk *sim.RadarTrack) bool {
+func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
+	inCAInhibitVolumes := func(trk *sim.Track) bool {
 		for _, vol := range ctx.Client.State.InhibitCAVolumes() {
 			if vol.Inside(trk.Location, int(trk.Altitude)) {
 				return true
@@ -904,7 +902,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.RadarTrac
 		return false
 	}
 
-	tracked, untracked := make(map[av.ADSBCallsign]sim.RadarTrack), make(map[av.ADSBCallsign]sim.RadarTrack)
+	tracked, untracked := make(map[av.ADSBCallsign]sim.Track), make(map[av.ADSBCallsign]sim.Track)
 	for _, trk := range tracks {
 		if trk.IsAirborne {
 			continue
@@ -1060,7 +1058,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.RadarTrac
 	}
 }
 
-func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.RadarTrack) {
+func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Track) {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
@@ -1097,7 +1095,7 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Rada
 		}
 
 		// Get all aircraft on approach to this runway
-		runwayAircraft := util.FilterSlice(tracks, func(trk sim.RadarTrack) bool {
+		runwayAircraft := util.FilterSlice(tracks, func(trk sim.Track) bool {
 			if v := trk.ATPAVolume; v == nil || v.Id != vol.Id {
 				return false
 			}
@@ -1150,7 +1148,7 @@ type ModeledAircraft struct {
 	landingSpeed float32
 }
 
-func MakeModeledAircraft(ctx *panes.Context, trk sim.RadarTrack, state *TrackState, threshold math.Point2LL) ModeledAircraft {
+func MakeModeledAircraft(ctx *panes.Context, trk sim.Track, state *TrackState, threshold math.Point2LL) ModeledAircraft {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
@@ -1196,7 +1194,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	return math.Add2f(p, math.Scale2f(ma.v, gs))
 }
 
-func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front sim.RadarTrack) {
+func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front sim.Track) {
 	if front.IsUnassociated() && back.IsUnassociated() {
 		return
 	}
@@ -1259,7 +1257,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	}
 }
 
-func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.RadarTrack) bool {
+func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.Track) bool {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
@@ -1286,13 +1284,13 @@ func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.RadarTrack) bool {
 	return math.HeadingDifference(sa.TrackHeading(nmPerLongitude), sb.TrackHeading(nmPerLongitude)) >= 15
 }
 
-func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.RadarTrack, dbs map[av.ADSBCallsign]datablock,
+func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
-	draw := func(tracks []sim.RadarTrack) {
+	draw := func(tracks []sim.Track) {
 		for _, trk := range tracks {
 			if db := dbs[trk.ADSBCallsign]; db != nil {
 				baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
@@ -1305,14 +1303,13 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.RadarTrack
 	}
 
 	draw(tracks)
-	draw(ctx.Client.State.UnsupportedTracks)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.RadarTrack) math.CardinalOrdinalDirection {
+func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	ps := sp.currentPrefs()
 	state := sp.TrackState[trk.ADSBCallsign]
 

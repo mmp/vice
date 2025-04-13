@@ -18,7 +18,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-func (s *Sim) dispatchCommand(tcp string, callsign av.ADSBCallsign,
+func (s *Sim) dispatchAircraftCommand(tcp string, callsign av.ADSBCallsign,
 	check func(tcp string, ac *Aircraft) error,
 	cmd func(tcp string, ac *Aircraft) []av.RadioTransmission) error {
 	if ac, ok := s.Aircraft[callsign]; !ok {
@@ -32,29 +32,28 @@ func (s *Sim) dispatchCommand(tcp string, callsign av.ADSBCallsign,
 			}
 		}
 
-		// This controller will get the readback; grab it now in case the command changes it.
-		ctrl := ac.STARSFlightPlan.ControllingController
-
 		preAc := *ac
 		radioTransmissions := cmd(tcp, ac)
 
 		for i := range radioTransmissions {
-			radioTransmissions[i].Controller = ctrl
+			if radioTransmissions[i].Controller == "" {
+				radioTransmissions[i].Controller = tcp
+			}
 		}
-
 		s.lg.Info("dispatch_command", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("prepost_aircraft", []Aircraft{preAc, *ac}),
 			slog.Any("radio_transmissions", radioTransmissions))
 		s.postRadioEvents(ac.ADSBCallsign, radioTransmissions)
+
 		return nil
 	}
 }
 
 // Commands that are allowed by the controlling controller, who may not still have the track;
 // e.g., turns after handoffs.
-func (s *Sim) dispatchControllingCommand(tcp string, callsign av.ADSBCallsign,
+func (s *Sim) dispatchControlledAircraftCommand(tcp string, callsign av.ADSBCallsign,
 	cmd func(tcp string, ac *Aircraft) []av.RadioTransmission) error {
-	return s.dispatchCommand(tcp, callsign,
+	return s.dispatchAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) error {
 			if ac.IsUnassociated() {
 				return ErrTrackIsNotActive
@@ -68,9 +67,9 @@ func (s *Sim) dispatchControllingCommand(tcp string, callsign av.ADSBCallsign,
 }
 
 // Commands that are allowed by tracking controller only.
-func (s *Sim) dispatchTrackingCommand(tcp string, callsign av.ADSBCallsign,
+func (s *Sim) dispatchTrackedAircraftCommand(tcp string, callsign av.ADSBCallsign,
 	cmd func(tcp string, ac *Aircraft) []av.RadioTransmission) error {
-	return s.dispatchCommand(tcp, callsign,
+	return s.dispatchAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) error {
 			if ac.IsUnassociated() {
 				return ErrTrackIsNotActive
@@ -83,11 +82,59 @@ func (s *Sim) dispatchTrackingCommand(tcp string, callsign av.ADSBCallsign,
 		cmd)
 }
 
+// Note that ac may be nil, but flight plan will not be!
+func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
+	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
+	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission) error {
+	fp := s.GetFlightPlanForACID(acid)
+	if fp == nil {
+		return ErrNoMatchingFlightPlan
+	}
+	ac := s.Aircraft[av.ADSBCallsign(acid)] // FIXME: buggy if ACID and ADSB callsign don't match
+	if ac != nil && ac.STARSFlightPlan.ACID != acid {
+		ac = nil
+	}
+
+	if _, ok := s.State.Controllers[tcp]; !ok {
+		return ErrUnknownController
+	}
+
+	if check != nil {
+		if err := check(tcp, fp, ac); err != nil {
+			return err
+		}
+	}
+
+	radioTransmissions := cmd(tcp, fp, ac)
+
+	for i := range radioTransmissions {
+		radioTransmissions[i].Controller = tcp
+	}
+
+	return nil
+}
+
+func (s *Sim) dispatchTrackedFlightPlanCommand(tcp string, acid ACID,
+	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
+	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission) error {
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if fp.TrackingController != tcp && !s.Instructors[tcp] {
+				return av.ErrOtherControllerHasTrack
+			}
+			if check != nil {
+				return check(tcp, fp, ac)
+			}
+			return nil
+		},
+		cmd)
+}
+
 func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchCommand(tcp, callsign,
+	return s.dispatchAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) error {
 			if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcp {
 				return av.ErrOtherControllerHasTrack
@@ -135,7 +182,7 @@ func (s *Sim) ChangeSquawk(tcp string, callsign av.ADSBCallsign, sq av.Squawk) e
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
@@ -151,7 +198,7 @@ func (s *Sim) ChangeTransponderMode(tcp string, callsign av.ADSBCallsign, mode a
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
@@ -167,22 +214,22 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.Ident(s.State.SimTime)
 		})
 }
 
-func (s *Sim) SetGlobalLeaderLine(tcp string, callsign av.ADSBCallsign, dir *math.CardinalOrdinalDirection) error {
+func (s *Sim) SetGlobalLeaderLine(tcp string, acid ACID, dir *math.CardinalOrdinalDirection) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackingCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			ac.STARSFlightPlan.GlobalLeaderLineDirection = dir
+	return s.dispatchTrackedFlightPlanCommand(tcp, acid, nil,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
+			fp.GlobalLeaderLineDirection = dir
 			s.eventStream.Post(Event{
 				Type:                SetGlobalLeaderLineEvent,
-				ADSBCallsign:        ac.ADSBCallsign,
+				ACID:                acid,
 				FromController:      tcp,
 				LeaderLineDirection: dir,
 			})
@@ -205,6 +252,15 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		return STARSFlightPlan{}, ErrDuplicateACID
 	}
 
+	if fp.TrackingController != "" {
+		// TODO: this will need to be more sophisticated with consolidation.
+		if _, ok := s.State.Controllers[fp.TrackingController]; !ok {
+			return STARSFlightPlan{}, ErrUnknownController
+		}
+	}
+
+	// TODO: validate entry/exit fixes
+
 	var err error
 	switch ty {
 	case LocalNonEnroute:
@@ -221,26 +277,22 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		panic("unhandled STARSFlightPlanType")
 	}
 
-	if err == nil && spec.Location.IsSet {
-		// Make an unsupported track
-		s.State.UnsupportedTracks = append(s.State.UnsupportedTracks,
-			RadarTrack{
-				RadarTrack: av.RadarTrack{Location: spec.Location.Get()},
-				FlightPlan: &fp,
-			})
-	}
-
 	return fp, err
 }
 
-func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
+func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if ac, ok := s.Aircraft[callsign]; ok {
-		if ac.IsUnassociated() {
-			return STARSFlightPlan{}, ErrTrackIsNotActive
+	var ac *Aircraft
+	for _, a := range s.Aircraft {
+		if a.IsAssociated() && a.STARSFlightPlan.ACID == acid {
+			ac = a
+			break
 		}
+	}
+
+	if ac != nil {
 		if ac.STARSFlightPlan.TrackingController != tcp {
 			return STARSFlightPlan{}, av.ErrOtherControllerHasTrack
 		}
@@ -278,6 +330,8 @@ func (s *Sim) ModifyFlightPlan(tcp string, callsign av.ADSBCallsign, spec STARSF
 	}
 }
 
+// Associate the specified flight plan with the track. Flight plan for ACID
+// must not already exist.
 func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -288,28 +342,33 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 		spec.ACID.Set(ACID(acid))
 		s.State.QuickFlightPlanIndex++
 	}
+	if !spec.ACID.IsSet {
+		spec.ACID.Set(ACID(callsign))
+	}
 
-	return s.dispatchCommand(spec.TrackingController.Get(), callsign,
+	return s.dispatchAircraftCommand(spec.TrackingController.Get(), callsign,
 		func(tcp string, ac *Aircraft) error {
 			// Make sure no one has the track already
 			if ac.IsAssociated() {
 				return av.ErrOtherControllerHasTrack
 			}
-			if s.STARSComputer.lookupFlightPlanByACID(spec.ACID.Get()) == nil {
-				return ErrNoMatchingFlight
-			}
-			return nil
-		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			if !spec.TrackingController.IsSet {
-				spec.TrackingController.Set(tcp)
+			if s.STARSComputer.lookupFlightPlanByACID(spec.ACID.Get()) != nil {
+				return ErrDuplicateACID
 			}
 
 			fp := spec.GetFlightPlan()
 			if _, err := s.STARSComputer.CreateFlightPlan(fp); err != nil {
-				s.lg.Warnf("%s: error creating flight plan: %v", fp.ACID, err)
+				return err
 			}
-			ac.AssociateFlightPlan(s.STARSComputer.takeFlightPlanByACID(fp.ACID))
+
+			return nil
+		},
+		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+			// The flight plan was created in the validation function so we
+			// could return any errors from there.
+			ac.AssociateFlightPlan(s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get()))
+
+			ac.STARSFlightPlan.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
 
 			s.eventStream.Post(Event{
 				Type:         InitiatedTrackEvent,
@@ -321,12 +380,13 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 		})
 }
 
-func (s *Sim) ActivateFlightPlan(tcp string, trackCallsign av.ADSBCallsign, fpACID ACID,
+// Flight plan for acid must already exist; spec gives optional amendments.
+func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID,
 	spec *STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	fp := s.STARSComputer.takeFlightPlanByACID(fpACID)
+	fp := s.STARSComputer.takeFlightPlanByACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -334,7 +394,7 @@ func (s *Sim) ActivateFlightPlan(tcp string, trackCallsign av.ADSBCallsign, fpAC
 		fp.Update(*spec)
 	}
 
-	return s.dispatchCommand(tcp, trackCallsign,
+	return s.dispatchAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) error {
 			if ac.IsAssociated() {
 				return ErrTrackIsActive
@@ -345,7 +405,7 @@ func (s *Sim) ActivateFlightPlan(tcp string, trackCallsign av.ADSBCallsign, fpAC
 			ac.STARSFlightPlan = fp
 			// TODO: needed?
 			ac.STARSFlightPlan.TrackingController = tcp
-			ac.STARSFlightPlan.ControllingController = tcp // HAX
+			ac.STARSFlightPlan.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
 			return nil
 		})
 }
@@ -371,23 +431,18 @@ func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 	return util.Select(found, nil, ErrNoMatchingFlightPlan)
 }
 
-func (s *Sim) HandoffTrack(tcp string, callsign av.ADSBCallsign, toTCP string) error {
+func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			}
-			if ac.STARSFlightPlan.TrackingController != tcp {
-				return av.ErrOtherControllerHasTrack
-			} else if _, ok := s.State.Controllers[toTCP]; !ok {
+	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if _, ok := s.State.Controllers[toTCP]; !ok {
 				return av.ErrNoController
 			} else if toTCP == tcp {
 				// Can't handoff to ourself
 				return av.ErrInvalidController
-			} else {
+			} else if ac != nil {
 				// Disallow handoff if there's a beacon code mismatch.
 				squawkingSPC, _ := ac.Squawk.IsSPC()
 				if ac.Squawk != ac.STARSFlightPlan.AssignedSquawk && !squawkingSPC {
@@ -396,56 +451,45 @@ func (s *Sim) HandoffTrack(tcp string, callsign av.ADSBCallsign, toTCP string) e
 			}
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			s.handoffTrack(tcp, toTCP, ac)
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
+			s.handoffTrack(tcp, toTCP, fp)
 			return nil
 		})
 }
 
-func (s *Sim) handoffTrack(fromTCP, toTCP string, ac *Aircraft) {
+func (s *Sim) handoffTrack(fromTCP, toTCP string, fp *STARSFlightPlan) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
 		FromController: fromTCP,
 		ToController:   toTCP,
-		ADSBCallsign:   ac.ADSBCallsign,
 	})
 
-	ac.STARSFlightPlan.HandoffTrackController = toTCP
+	fp.HandoffTrackController = toTCP
 
 	if _, fok := s.State.Controllers[fromTCP]; !fok {
-		s.lg.Errorf("Unable to handoff %s: from controller %q not found", ac.ADSBCallsign, fromTCP)
+		s.lg.Errorf("Unable to handoff %s: from controller %q not found", fp.ACID, fromTCP)
 	} else if _, tok := s.State.Controllers[toTCP]; !tok {
-		s.lg.Errorf("Unable to handoff %s: to controller %q not found", ac.ADSBCallsign, toTCP)
+		s.lg.Errorf("Unable to handoff %s: to controller %q not found", fp.ACID, toTCP)
 	}
 
 	// Add them to the auto-accept map even if the target controller is
 	// currently signed in; this way, if they sign off in the interim, we
 	// still end up accepting it automatically.
 	acceptDelay := 4 + rand.Intn(10)
-	s.Handoffs[ac.ADSBCallsign] = Handoff{
+	s.Handoffs[fp.ACID] = Handoff{
 		AutoAcceptTime: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
 
-func (s *Sim) HandoffControl(tcp string, callsign av.ADSBCallsign) error {
+func (s *Sim) HandoffControl(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			}
-			if ac.STARSFlightPlan.ControllingController != tcp {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+	return s.dispatchTrackedFlightPlanCommand(tcp, acid, nil,
+		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
 			// Immediately respond to the current controller that we're
 			// changing frequency.
-			sfp := ac.STARSFlightPlan
 			if octrl, ok := s.State.Controllers[sfp.TrackingController]; ok {
 				if sfp.TrackingController == tcp {
 					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
@@ -475,7 +519,7 @@ func (s *Sim) HandoffControl(tcp string, callsign av.ADSBCallsign) error {
 				Type:           HandoffControlEvent,
 				FromController: sfp.ControllingController,
 				ToController:   sfp.TrackingController,
-				ADSBCallsign:   ac.ADSBCallsign,
+				ACID:           acid,
 			})
 
 			// Take away the current controller's ability to issue control
@@ -491,73 +535,68 @@ func (s *Sim) HandoffControl(tcp string, callsign av.ADSBCallsign) error {
 		})
 }
 
-func (s *Sim) AcceptHandoff(tcp string, callsign av.ADSBCallsign) error {
+func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			}
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
 			if ac.STARSFlightPlan.HandoffTrackController == tcp {
 				return nil
 			}
-			if po, ok := s.PointOuts[ac.ADSBCallsign]; ok && po.ToController == tcp {
+			if po, ok := s.PointOuts[fp.ACID]; ok && po.ToController == tcp {
 				// Point out where the recipient decided to take it as a handoff instead.
 				return nil
 			}
 			return av.ErrNotBeingHandedOffToMe
 
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
-				FromController: ac.STARSFlightPlan.ControllingController,
+				FromController: fp.ControllingController,
 				ToController:   tcp,
-				ADSBCallsign:   ac.ADSBCallsign,
 			})
 
-			ac.STARSFlightPlan.HandoffTrackController = ""
-			ac.STARSFlightPlan.TrackingController = tcp
+			fp.HandoffTrackController = ""
+			fp.TrackingController = tcp
 
 			// Clean up if a point out was accepted as a handoff
-			delete(s.PointOuts, ac.ADSBCallsign)
+			delete(s.PointOuts, acid)
 
-			haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
-				func(wp av.Waypoint) bool { return wp.TransferComms })
-			if !haveTransferComms && !s.isActiveHumanController(ac.STARSFlightPlan.ControllingController) {
-				// For a handoff from a virtual controller, cue up a delayed
-				// contact message unless there's a point later in the route when
-				// comms are to be transferred.
-				wait := time.Duration(5+rand.Intn(10)) * time.Second
-				s.enqueueControllerContact(ac.ADSBCallsign, tcp, wait)
+			if ac != nil {
+				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
+					func(wp av.Waypoint) bool { return wp.TransferComms })
+				if !haveTransferComms && !s.isActiveHumanController(ac.STARSFlightPlan.ControllingController) {
+					// For a handoff from a virtual controller, cue up a delayed
+					// contact message unless there's a point later in the route when
+					// comms are to be transferred.
+					wait := time.Duration(5+rand.Intn(10)) * time.Second
+					s.enqueueControllerContact(ac.ADSBCallsign, tcp, wait)
+				}
 			}
-
 			return nil
 		})
 }
 
-func (s *Sim) CancelHandoff(tcp string, callsign av.ADSBCallsign) error {
+func (s *Sim) CancelHandoff(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackingCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			delete(s.Handoffs, ac.ADSBCallsign)
-			ac.STARSFlightPlan.HandoffTrackController = ""
-			ac.STARSFlightPlan.RedirectedHandoff = RedirectedHandoff{}
+	return s.dispatchTrackedFlightPlanCommand(tcp, acid, nil,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
+			delete(s.Handoffs, acid)
+			fp.HandoffTrackController = ""
+			fp.RedirectedHandoff = RedirectedHandoff{}
 
 			return nil
 		})
 }
 
-func (s *Sim) RedirectHandoff(tcp string, callsign av.ADSBCallsign, controller string) error {
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			} else if octrl, ok := s.State.Controllers[controller]; !ok {
+func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			} else if octrl.Id() == tcp || octrl.Id() == ac.STARSFlightPlan.TrackingController {
 				// Can't redirect to ourself and the controller who initiated the handoff
@@ -572,13 +611,13 @@ func (s *Sim) RedirectHandoff(tcp string, callsign av.ADSBCallsign, controller s
 			}
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			octrl := s.State.Controllers[controller]
-			rh := &ac.STARSFlightPlan.RedirectedHandoff
-			rh.OriginalOwner = ac.STARSFlightPlan.TrackingController
+			rh := &fp.RedirectedHandoff
+			rh.OriginalOwner = fp.TrackingController
 			ctrl := s.State.Controllers[tcp]
 			if rh.ShouldFallbackToHandoff(tcp, octrl.Id()) {
-				ac.STARSFlightPlan.HandoffTrackController = rh.Redirector[0]
+				fp.HandoffTrackController = rh.Redirector[0]
 				*rh = RedirectedHandoff{}
 				return nil
 			}
@@ -589,36 +628,32 @@ func (s *Sim) RedirectHandoff(tcp string, callsign av.ADSBCallsign, controller s
 		})
 }
 
-func (s *Sim) AcceptRedirectedHandoff(tcp string, callsign av.ADSBCallsign) error {
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			}
-
+func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
 			// TODO(mtrokel): need checks here that we do have an inbound
 			// redirected handoff or that we have an outbound one to
 			// recall.
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			rh := &ac.STARSFlightPlan.RedirectedHandoff
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
+			rh := &fp.RedirectedHandoff
 			if rh.RedirectedTo == tcp { // Accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedRedirectedHandoffEvent,
 					FromController: rh.OriginalOwner,
 					ToController:   tcp,
-					ADSBCallsign:   ac.ADSBCallsign,
+					ACID:           acid,
 				})
-				ac.STARSFlightPlan.ControllingController = tcp
-				ac.STARSFlightPlan.HandoffTrackController = ""
-				ac.STARSFlightPlan.TrackingController = rh.RedirectedTo
+				fp.ControllingController = tcp
+				fp.HandoffTrackController = ""
+				fp.TrackingController = rh.RedirectedTo
 				*rh = RedirectedHandoff{}
 			} else if rh.GetLastRedirector() == tcp { // Recall (only the last redirector is able to recall)
 				if len(rh.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					rh.RedirectedTo = rh.Redirector[len(rh.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
-					ac.STARSFlightPlan.HandoffTrackController = rh.Redirector[len(rh.Redirector)-1]
+					fp.HandoffTrackController = rh.Redirector[len(rh.Redirector)-1]
 					*rh = RedirectedHandoff{}
 				}
 			}
@@ -627,39 +662,33 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, callsign av.ADSBCallsign) erro
 		})
 }
 
-func (s *Sim) ForceQL(tcp string, callsign av.ADSBCallsign, controller string) error {
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
+func (s *Sim) ForceQL(tcp string, acid ACID, controller string) error {
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			}
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
 				FromController: tcp,
 				ToController:   octrl.Id(),
-				ADSBCallsign:   ac.ADSBCallsign,
+				ACID:           acid,
 			})
 
 			return nil
 		})
 }
 
-func (s *Sim) PointOut(fromTCP string, callsign av.ADSBCallsign, toTCP string) error {
-	return s.dispatchCommand(fromTCP, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			} else if ac.STARSFlightPlan.TrackingController != fromTCP {
-				return av.ErrOtherControllerHasTrack
-			} else if octrl, ok := s.State.Controllers[toTCP]; !ok {
+func (s *Sim) PointOut(fromTCP string, acid ACID, toTCP string) error {
+	return s.dispatchTrackedFlightPlanCommand(fromTCP, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if octrl, ok := s.State.Controllers[toTCP]; !ok {
 				return av.ErrNoController
-			} else if ctrl, ok := s.State.Controllers[fromTCP]; !ok {
-				return av.ErrNoController
-			} else if octrl.Facility != ctrl.Facility {
+			} else if octrl.Facility != s.State.Controllers[fromTCP].Facility {
 				// Can't point out to another STARS facility.
 				return av.ErrInvalidController
 			} else if toTCP == fromTCP {
@@ -668,105 +697,102 @@ func (s *Sim) PointOut(fromTCP string, callsign av.ADSBCallsign, toTCP string) e
 			}
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			ctrl := s.State.Controllers[fromTCP]
 			octrl := s.State.Controllers[toTCP]
-			s.pointOut(ac.ADSBCallsign, ctrl, octrl)
+			s.pointOut(acid, ctrl, octrl)
 			return nil
 		})
 }
 
-func (s *Sim) pointOut(callsign av.ADSBCallsign, from *av.Controller, to *av.Controller) {
+func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 	s.eventStream.Post(Event{
 		Type:           PointOutEvent,
 		FromController: from.Id(),
 		ToController:   to.Id(),
-		ADSBCallsign:   callsign,
+		ACID:           acid,
 	})
 
 	acceptDelay := 4 + rand.Intn(10)
-	s.PointOuts[callsign] = PointOut{
+	s.PointOuts[acid] = PointOut{
 		FromController: from.Id(),
 		ToController:   to.Id(),
 		AcceptTime:     s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
 
-func (s *Sim) AcknowledgePointOut(tcp string, callsign av.ADSBCallsign) error {
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if po, ok := s.PointOuts[callsign]; !ok || po.ToController != tcp {
+func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
+	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
 				return av.ErrNotPointedOutToMe
-			}
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
 			}
 
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
 				Type:           AcknowledgedPointOutEvent,
 				FromController: tcp,
-				ToController:   s.PointOuts[callsign].FromController,
-				ADSBCallsign:   ac.ADSBCallsign,
+				ToController:   s.PointOuts[acid].FromController,
+				ACID:           acid,
 			})
 			if len(ac.STARSFlightPlan.PointOutHistory) < 20 {
-				ac.STARSFlightPlan.PointOutHistory = append([]string{tcp}, ac.STARSFlightPlan.PointOutHistory...)
+				fp.PointOutHistory = append([]string{tcp}, fp.PointOutHistory...)
 			} else {
-				ac.STARSFlightPlan.PointOutHistory = ac.STARSFlightPlan.PointOutHistory[:19]
-				ac.STARSFlightPlan.PointOutHistory = append([]string{tcp}, ac.STARSFlightPlan.PointOutHistory...)
+				fp.PointOutHistory = fp.PointOutHistory[:19]
+				fp.PointOutHistory = append([]string{tcp}, fp.PointOutHistory...)
 			}
 
-			delete(s.PointOuts, callsign)
+			delete(s.PointOuts, acid)
 
 			return nil
 		})
 }
 
-func (s *Sim) RecallPointOut(tcp string, callsign av.ADSBCallsign) error {
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if po, ok := s.PointOuts[callsign]; !ok || po.FromController != tcp {
+func (s *Sim) RecallPointOut(tcp string, acid ACID) error {
+	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if po, ok := s.PointOuts[acid]; !ok || po.FromController != tcp {
 				return av.ErrNotPointedOutByMe
 			}
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:           RecalledPointOutEvent,
 				FromController: tcp,
-				ToController:   s.PointOuts[callsign].ToController,
-				ADSBCallsign:   ac.ADSBCallsign,
+				ToController:   s.PointOuts[acid].ToController,
+				ACID:           acid,
 			})
 
-			delete(s.PointOuts, callsign)
+			delete(s.PointOuts, acid)
 
 			return nil
 		})
 }
 
-func (s *Sim) RejectPointOut(tcp string, callsign av.ADSBCallsign) error {
-	return s.dispatchCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if po, ok := s.PointOuts[callsign]; !ok || po.ToController != tcp {
+func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
-		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
 				Type:           RejectedPointOutEvent,
 				FromController: tcp,
-				ToController:   s.PointOuts[callsign].FromController,
-				ADSBCallsign:   ac.ADSBCallsign,
+				ToController:   s.PointOuts[acid].FromController,
+				ACID:           acid,
 			})
 
-			delete(s.PointOuts, callsign)
+			delete(s.PointOuts, acid)
 
 			return nil
 		})
@@ -797,7 +823,7 @@ func (s *Sim) AssignAltitude(tcp string, callsign av.ADSBCallsign, altitude int,
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.AssignAltitude(altitude, afterSpeed)
 		})
@@ -817,7 +843,7 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(hdg.TCP, hdg.ADSBCallsign,
+	return s.dispatchControlledAircraftCommand(hdg.TCP, hdg.ADSBCallsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			if hdg.Present {
 				return ac.FlyPresentHeading()
@@ -835,7 +861,7 @@ func (s *Sim) AssignSpeed(tcp string, callsign av.ADSBCallsign, speed int, after
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.AssignSpeed(speed, afterAltitude)
 		})
@@ -845,7 +871,7 @@ func (s *Sim) MaintainSlowestPractical(tcp string, callsign av.ADSBCallsign) err
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.MaintainSlowestPractical()
 		})
@@ -855,7 +881,7 @@ func (s *Sim) MaintainMaximumForward(tcp string, callsign av.ADSBCallsign) error
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.MaintainMaximumForward()
 		})
@@ -865,7 +891,7 @@ func (s *Sim) SaySpeed(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.SaySpeed()
 		})
@@ -875,7 +901,7 @@ func (s *Sim) SayAltitude(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.SayAltitude()
 		})
@@ -885,7 +911,7 @@ func (s *Sim) SayHeading(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.SayHeading()
 		})
@@ -895,7 +921,7 @@ func (s *Sim) ExpediteDescent(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.ExpediteDescent()
 		})
@@ -905,7 +931,7 @@ func (s *Sim) ExpediteClimb(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.ExpediteClimb()
 		})
@@ -915,7 +941,7 @@ func (s *Sim) DirectFix(tcp string, callsign av.ADSBCallsign, fix string) error 
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.DirectFix(fix)
 		})
@@ -925,7 +951,7 @@ func (s *Sim) DepartFixDirect(tcp string, callsign av.ADSBCallsign, fixa string,
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.DepartFixDirect(fixa, fixb)
 		})
@@ -935,7 +961,7 @@ func (s *Sim) DepartFixHeading(tcp string, callsign av.ADSBCallsign, fix string,
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.DepartFixHeading(fix, heading)
 		})
@@ -945,7 +971,7 @@ func (s *Sim) CrossFixAt(tcp string, callsign av.ADSBCallsign, fix string, ar *a
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.CrossFixAt(fix, ar, speed)
 		})
@@ -955,7 +981,7 @@ func (s *Sim) AtFixCleared(tcp string, callsign av.ADSBCallsign, fix, approach s
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.AtFixCleared(fix, approach)
 		})
@@ -973,7 +999,7 @@ func (s *Sim) ExpectApproach(tcp string, callsign av.ADSBCallsign, approach stri
 		}
 	}
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.ExpectApproach(approach, ap, s.lg)
 		})
@@ -983,7 +1009,7 @@ func (s *Sim) ClearedApproach(tcp string, callsign av.ADSBCallsign, approach str
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) (resp []av.RadioTransmission) {
 			var err error
 			if straightIn {
@@ -1003,7 +1029,7 @@ func (s *Sim) InterceptLocalizer(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.InterceptApproach()
 		})
@@ -1013,7 +1039,7 @@ func (s *Sim) CancelApproachClearance(tcp string, callsign av.ADSBCallsign) erro
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.CancelApproachClearance()
 		})
@@ -1023,7 +1049,7 @@ func (s *Sim) ClimbViaSID(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.ClimbViaSID()
 		})
@@ -1033,7 +1059,7 @@ func (s *Sim) DescendViaSTAR(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.DescendViaSTAR()
 		})
@@ -1043,7 +1069,7 @@ func (s *Sim) GoAround(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			resp := ac.GoAround()
 			for i := range resp {
@@ -1057,7 +1083,7 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControllingCommand(tcp, callsign,
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			ac.STARSFlightPlan.ControllingController = "_TOWER"
 			return ac.ContactTower(s.lg)

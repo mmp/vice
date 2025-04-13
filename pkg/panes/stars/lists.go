@@ -19,7 +19,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.RadarTrack, paneExtent math.Extent2D,
+func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, paneExtent math.Extent2D,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
@@ -95,7 +95,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	}
 }
 
-func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.RadarTrack, td *renderer.TextDrawBuilder,
+func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, td *renderer.TextDrawBuilder,
 	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
@@ -434,7 +434,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 }
 
-func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim.RadarTrack, style renderer.TextStyle,
+func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.VFRList.Visible {
@@ -458,7 +458,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 }
 
-func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim.RadarTrack, style renderer.TextStyle,
+func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.TABList.Visible {
@@ -534,7 +534,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 }
 
-func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []sim.RadarTrack, style renderer.TextStyle,
+func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	// The alert list can't be hidden.
 	var text strings.Builder
@@ -545,7 +545,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 		return
 	}
 
-	var msaw []sim.RadarTrack
+	var msaw []sim.Track
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
 		for _, trk := range tracks {
@@ -555,7 +555,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 		}
 
 		// Sort by start time
-		slices.SortFunc(msaw, func(a, b sim.RadarTrack) int {
+		slices.SortFunc(msaw, func(a, b sim.Track) int {
 			sa, sb := sp.TrackState[a.ADSBCallsign], sp.TrackState[b.ADSBCallsign]
 			return sa.MSAWStart.Compare(sb.MSAWStart)
 		})
@@ -584,7 +584,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", alertListMaxLines, n))
 		}
 
-		next := func() (*sim.RadarTrack, *CAAircraft, *CAAircraft) {
+		next := func() (*sim.Track, *CAAircraft, *CAAircraft) {
 			state0 := sp.TrackState[msaw[0].ADSBCallsign]
 			if len(msaw) > 0 && (len(ca) == 0 || state0.MSAWStart.Before(ca[0].Start)) &&
 				(len(mci) == 0 || state0.MSAWStart.Before(mci[0].Start)) {
@@ -607,7 +607,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 		for range math.Min(n, alertListMaxLines) {
 			msawtrk, capair, mcipair := next()
 
-			alt := func(trk *sim.RadarTrack) string {
+			alt := func(trk *sim.Track) string {
 				if trk.IsAssociated() && trk.FlightPlan.PilotReportedAltitude != 0 {
 					return strconv.Itoa(trk.FlightPlan.PilotReportedAltitude/100) + "*"
 				}
@@ -745,7 +745,7 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 	td.AddText(rewriteDelta(text.String()), pw, style)
 }
 
-func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, tracks []sim.RadarTrack, style renderer.TextStyle,
+func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.CRDAStatusList.Visible {
@@ -789,7 +789,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, track
 	}
 }
 
-func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, tracks []sim.RadarTrack, style renderer.TextStyle,
+func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.MCISuppressionList.Visible {
@@ -808,7 +808,7 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, t
 	td.AddText(text.String(), pw, style)
 }
 
-func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, tracks []sim.RadarTrack,
+func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, tracks []sim.Track,
 	style renderer.TextStyle, td *renderer.TextDrawBuilder) {
 	stripK := func(airport string) string {
 		if len(airport) == 4 && airport[0] == 'K' {

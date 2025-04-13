@@ -39,8 +39,8 @@ type FlightStripPane struct {
 	CollectDeparturesArrivals bool
 	DarkMode                  bool
 
-	strips        []av.ADSBCallsign
-	addedAircraft map[av.ADSBCallsign]interface{}
+	strips     []sim.ACID
+	addedPlans map[sim.ACID]interface{}
 
 	mouseDragging       bool
 	lastMousePos        [2]float32
@@ -51,10 +51,10 @@ type FlightStripPane struct {
 	events    *sim.EventsSubscription
 	scrollbar *ScrollBar
 
-	selectedAircraft av.ADSBCallsign
+	selectedACID sim.ACID
 
 	// computer id number: 000-999
-	CIDs          map[av.ADSBCallsign]int
+	CIDs          map[sim.ACID]int
 	AllocatedCIDs map[int]interface{}
 }
 
@@ -78,7 +78,7 @@ func NewFlightStripPane() *FlightStripPane {
 		FontSize:           12,
 		selectedStrip:      -1,
 		selectedAnnotation: -1,
-		CIDs:               make(map[av.ADSBCallsign]int),
+		CIDs:               make(map[sim.ACID]int),
 		AllocatedCIDs:      make(map[int]interface{}),
 	}
 }
@@ -90,14 +90,14 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
 		fsp.font = renderer.GetDefaultFont()
 	}
-	if fsp.addedAircraft == nil {
-		fsp.addedAircraft = make(map[av.ADSBCallsign]interface{})
+	if fsp.addedPlans == nil {
+		fsp.addedPlans = make(map[sim.ACID]interface{})
 	}
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	if fsp.CIDs == nil {
-		fsp.CIDs = make(map[av.ADSBCallsign]int)
+		fsp.CIDs = make(map[sim.ACID]int)
 	}
 	if fsp.AllocatedCIDs == nil {
 		fsp.AllocatedCIDs = make(map[int]interface{})
@@ -106,8 +106,8 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	fsp.events = eventStream.Subscribe()
 }
 
-func (fsp *FlightStripPane) getCID(callsign av.ADSBCallsign) int {
-	if id, ok := fsp.CIDs[callsign]; ok {
+func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
+	if id, ok := fsp.CIDs[acid]; ok {
 		return id
 	}
 
@@ -116,28 +116,25 @@ func (fsp *FlightStripPane) getCID(callsign av.ADSBCallsign) int {
 	for i := range 1000 {
 		idx := (start + i) % 1000
 		if _, ok := fsp.AllocatedCIDs[idx]; !ok {
-			fsp.CIDs[callsign] = idx
+			fsp.CIDs[acid] = idx
 			fsp.AllocatedCIDs[idx] = nil
 			return idx
 		}
 	}
 	// Couldn't find one(?!)
-	fsp.CIDs[callsign] = start
+	fsp.CIDs[acid] = start
 	return start
 }
 
-func (fsp *FlightStripPane) possiblyAdd(trk *sim.RadarTrack, tcp string) {
-	if _, ok := fsp.addedAircraft[trk.ADSBCallsign]; ok {
+func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
+	if _, ok := fsp.addedPlans[fp.ACID]; ok {
 		// We've seen it before.
 		return
 	}
-	if trk.IsUnassociated() || trk.FlightPlan.Rules != av.FlightRulesIFR {
-		return
-	}
 
-	if trk.FlightPlan.TrackingController == tcp {
-		fsp.strips = append(fsp.strips, trk.ADSBCallsign)
-		fsp.addedAircraft[trk.ADSBCallsign] = nil
+	if fp.TrackingController == tcp {
+		fsp.strips = append(fsp.strips, fp.ACID)
+		fsp.addedPlans[fp.ACID] = nil
 	}
 }
 
@@ -146,8 +143,8 @@ func (fsp *FlightStripPane) LoadedSim(client *server.ControlClient, ss sim.State
 
 func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
-	fsp.addedAircraft = make(map[av.ADSBCallsign]interface{})
-	fsp.CIDs = make(map[av.ADSBCallsign]int)
+	fsp.addedPlans = make(map[sim.ACID]interface{})
+	fsp.CIDs = make(map[sim.ACID]int)
 	fsp.AllocatedCIDs = make(map[int]interface{})
 }
 
@@ -156,18 +153,20 @@ func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ 
 func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// First account for changes in world.Aircraft
 	// Added aircraft
-	for _, trk := range ctx.Client.State.RadarTracks {
-		fsp.possiblyAdd(trk, ctx.UserTCP)
+	for _, trk := range ctx.Client.State.Tracks {
+		if trk.FlightPlan != nil {
+			fsp.possiblyAdd(trk.FlightPlan, ctx.UserTCP)
+		}
 	}
 
-	remove := func(c av.ADSBCallsign) {
-		fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign av.ADSBCallsign) bool { return callsign != c })
-		if fsp.selectedAircraft == c {
-			fsp.selectedAircraft = ""
+	remove := func(acid sim.ACID) {
+		fsp.strips = util.FilterSliceInPlace(fsp.strips, func(a sim.ACID) bool { return acid != a })
+		if fsp.selectedACID == acid {
+			fsp.selectedACID = ""
 		}
 		// Free up the CID
-		if cid, ok := fsp.CIDs[c]; ok {
-			delete(fsp.CIDs, c)
+		if cid, ok := fsp.CIDs[acid]; ok {
+			delete(fsp.CIDs, acid)
 			delete(fsp.AllocatedCIDs, cid)
 		}
 	}
@@ -179,43 +178,40 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			// aircraft that was deleted shortly afterward. So it's
 			// necessary to check that it's still in
 			// ControlClient.Aircraft.
-			if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && fsp.AddPushed {
-				fsp.possiblyAdd(trk, ctx.UserTCP)
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AddPushed {
+				fsp.possiblyAdd(fp, ctx.UserTCP)
 			}
 
 		case sim.InitiatedTrackEvent:
-			if trk, ok := ctx.GetOurTrackByCallsign(event.ADSBCallsign); ok && fsp.AutoAddTracked {
-				fsp.possiblyAdd(trk, ctx.UserTCP)
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddTracked {
+				fsp.possiblyAdd(fp, ctx.UserTCP)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if trk, ok := ctx.GetOurTrackByCallsign(event.ADSBCallsign); ok && fsp.AutoAddAcceptedHandoffs {
-				fsp.possiblyAdd(trk, ctx.UserTCP)
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddAcceptedHandoffs {
+				fsp.possiblyAdd(fp, ctx.UserTCP)
 			}
 
 		case sim.HandoffControlEvent:
-			if ac, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok {
-				if fsp.AutoRemoveHandoffs && ac.FlightPlan.TrackingController != ctx.UserTCP {
-					remove(event.ADSBCallsign)
-				}
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fp.TrackingController != ctx.UserTCP {
+				remove(event.ACID)
 			}
 		}
 	}
 
 	// Danger: this is now O(n^2)
 	// Remove ones that have been deleted or have had their flight plan deleted.
-	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign av.ADSBCallsign) bool {
-		trk, ok := ctx.GetTrackByCallsign(callsign)
-		return ok && trk.IsAssociated()
+	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(acid sim.ACID) bool {
+		return ctx.Client.State.GetFlightPlanForACID(acid) != nil
 	})
 
 	if fsp.CollectDeparturesArrivals {
-		isDeparture := func(callsign av.ADSBCallsign) bool {
-			trk, ok := ctx.GetTrackByCallsign(callsign)
-			return ok && trk.IsDeparture()
+		isDeparture := func(acid sim.ACID) bool {
+			fp := ctx.Client.State.GetFlightPlanForACID(acid)
+			return fp != nil && fp.TypeOfFlight == av.FlightTypeDeparture
 		}
 		dep := util.FilterSlice(fsp.strips, isDeparture)
-		arr := util.FilterSlice(fsp.strips, func(callsign av.ADSBCallsign) bool { return !isDeparture(callsign) })
+		arr := util.FilterSlice(fsp.strips, func(acid sim.ACID) bool { return !isDeparture(acid) })
 
 		fsp.strips = fsp.strips[:0]
 		fsp.strips = append(fsp.strips, dep...)
@@ -330,12 +326,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
-		trk, ok := ctx.GetTrackByCallsign(fsp.strips[i])
-		if !ok || trk.IsUnassociated() {
+		sfp := ctx.Client.State.GetFlightPlanForACID(fsp.strips[i])
+		if sfp == nil {
 			continue
 		}
-		fp := ctx.Client.State.FlightPlans[fsp.strips[i]]
-		sfp := trk.FlightPlan
+		fp := ctx.Client.State.ACFlightPlans[av.ADSBCallsign(fsp.strips[i])] // HAX: conflates callsign/ACID
 		var strip av.FlightStrip
 
 		x := float32(0)
@@ -409,11 +404,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		}
 
 		// First column; 3 entries: callsign, aircraft type, 3-digit id number
-		cid := fmt.Sprintf("%03d", fsp.getCID(trk.ADSBCallsign))
-		drawColumn(string(trk.ADSBCallsign), sfp.CWTCategory+"/"+sfp.AircraftType, cid, width0, false)
+		cid := fmt.Sprintf("%03d", fsp.getCID(sfp.ACID))
+		drawColumn(string(sfp.ACID), sfp.CWTCategory+"/"+sfp.AircraftType, cid, width0, false)
 
 		x += width0
-		if trk.IsDeparture() {
+		if sfp.TypeOfFlight == av.FlightTypeDeparture {
 			// Second column; 3 entries: squawk, proposed time, requested altitude
 			proposedTime := "P" + sfp.ETAOrPTD.UTC().Format("1504")
 			drawColumn(sfp.AssignedSquawk.String(), proposedTime, strconv.Itoa(sfp.RequestedAltitude/100),
@@ -428,7 +423,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			// Fourth column: route and destination airport
 			route := formatRoute(fp.Route+" "+fp.ArrivalAirport, widthCenter, 3)
 			drawColumn(route[0], route[1], route[2], widthCenter, false)
-		} else if trk.IsArrival() {
+		} else if sfp.TypeOfFlight == av.FlightTypeArrival {
 			// Second column; 3 entries: squawk, previous fix, coordination fix
 			drawColumn(sfp.AssignedSquawk.String(), "", "", width1, true)
 
@@ -530,8 +525,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 					fsp.strips = fsp.strips[:len(fsp.strips)-1]
 				} else {
 					// select the aircraft
-					callsign := fsp.strips[stripIndex]
-					fsp.selectedAircraft = callsign
+					fsp.selectedACID = fsp.strips[stripIndex]
 				}
 			}
 		}
@@ -550,17 +544,17 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	if fsp.mouseDragging && (ctx.Mouse == nil || !ctx.Mouse.Dragging[platform.MouseButtonPrimary]) {
 		fsp.mouseDragging = false
 
-		if fsp.selectedAircraft == "" {
+		if fsp.selectedACID == "" {
 			ctx.Lg.Debug("No selected aircraft for flight strip drag?!")
 		} else {
 			// Figure out the index for the selected aircraft.
 			selectedIndex := func() int {
 				for i, fs := range fsp.strips {
-					if fs == fsp.selectedAircraft {
+					if fs == fsp.selectedACID {
 						return i
 					}
 				}
-				ctx.Lg.Warnf("Couldn't find %s in flight strips?!", fsp.selectedAircraft)
+				ctx.Lg.Warnf("Couldn't find %s in flight strips?!", fsp.selectedACID)
 				return -1
 			}()
 
@@ -582,7 +576,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 				// And stuff it in there
 				fin := fsp.strips[destinationIndex:]
-				fsp.strips = append([]av.ADSBCallsign{}, fsp.strips[:destinationIndex]...)
+				fsp.strips = append([]sim.ACID{}, fsp.strips[:destinationIndex]...)
 				fsp.strips = append(fsp.strips, fs)
 				fsp.strips = append(fsp.strips, fin...)
 			}

@@ -102,7 +102,7 @@ func (sd *Dispatcher) TogglePause(token string, _ *struct{}) error {
 
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
-	Callsign        av.ADSBCallsign
+	ACID            sim.ACID
 	Direction       *math.CardinalOrdinalDirection
 }
 
@@ -112,7 +112,7 @@ func (sd *Dispatcher) SetGlobalLeaderLine(a *SetGlobalLeaderLineArgs, _ *struct{
 	if ctrl, s, ok := sd.sm.LookupController(a.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.SetGlobalLeaderLine(ctrl.tcp, a.Callsign, a.Direction)
+		return s.SetGlobalLeaderLine(ctrl.tcp, a.ACID, a.Direction)
 	}
 }
 
@@ -170,7 +170,7 @@ func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, fp *sim.STARSF
 type ModifyFlightPlanArgs struct {
 	ControllerToken     string
 	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
-	Callsign            av.ADSBCallsign
+	ACID                sim.ACID
 }
 
 func (sd *Dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, fp *sim.STARSFlightPlan) error {
@@ -180,7 +180,7 @@ func (sd *Dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, fp *sim.STARSF
 		return ErrNoSimForControllerToken
 	} else {
 		var err error
-		*fp, err = s.ModifyFlightPlan(ctrl.tcp, mfp.Callsign, mfp.FlightPlanSpecifier)
+		*fp, err = s.ModifyFlightPlan(ctrl.tcp, mfp.ACID, mfp.FlightPlanSpecifier)
 		return err
 	}
 }
@@ -190,10 +190,12 @@ type AircraftSpecifier struct {
 	Callsign        av.ADSBCallsign
 }
 
-type DeleteFlightPlanArgs struct {
+type ACIDSpecifier struct {
 	ControllerToken string
 	ACID            sim.ACID
 }
+
+type DeleteFlightPlanArgs ACIDSpecifier
 
 func (sd *Dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -207,7 +209,7 @@ func (sd *Dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, _ *struct{}) er
 
 type HandoffArgs struct {
 	ControllerToken string
-	Callsign        av.ADSBCallsign
+	ACID            sim.ACID
 	ToTCP           string
 }
 
@@ -217,7 +219,7 @@ func (sd *Dispatcher) HandoffTrack(h *HandoffArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(h.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.HandoffTrack(ctrl.tcp, h.Callsign, h.ToTCP)
+		return s.HandoffTrack(ctrl.tcp, h.ACID, h.ToTCP)
 	}
 }
 
@@ -227,7 +229,7 @@ func (sd *Dispatcher) RedirectHandoff(h *HandoffArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(h.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.RedirectHandoff(ctrl.tcp, h.Callsign, h.ToTCP)
+		return s.RedirectHandoff(ctrl.tcp, h.ACID, h.ToTCP)
 	}
 }
 
@@ -237,11 +239,11 @@ func (sd *Dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, _ *struct{}
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.AcceptRedirectedHandoff(ctrl.tcp, po.Callsign)
+		return s.AcceptRedirectedHandoff(ctrl.tcp, po.ACID)
 	}
 }
 
-type AcceptHandoffArgs AircraftSpecifier
+type AcceptHandoffArgs ACIDSpecifier
 
 func (sd *Dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -249,11 +251,11 @@ func (sd *Dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(ah.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.AcceptHandoff(ctrl.tcp, ah.Callsign)
+		return s.AcceptHandoff(ctrl.tcp, ah.ACID)
 	}
 }
 
-type CancelHandoffArgs AircraftSpecifier
+type CancelHandoffArgs ACIDSpecifier
 
 func (sd *Dispatcher) CancelHandoff(ch *CancelHandoffArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -261,19 +263,19 @@ func (sd *Dispatcher) CancelHandoff(ch *CancelHandoffArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(ch.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.CancelHandoff(ctrl.tcp, ch.Callsign)
+		return s.CancelHandoff(ctrl.tcp, ch.ACID)
 	}
 }
 
 type PointOutArgs struct {
 	ControllerToken string
-	Callsign        av.ADSBCallsign
+	ACID            sim.ACID
 	Controller      string
 }
 
 type ForceQLArgs struct {
 	ControllerToken string
-	Callsign        av.ADSBCallsign
+	ACID            sim.ACID
 	Controller      string
 }
 
@@ -283,7 +285,7 @@ func (sd *Dispatcher) ForceQL(ql *ForceQLArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(ql.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.ForceQL(ctrl.tcp, ql.Callsign, ql.Controller)
+		return s.ForceQL(ctrl.tcp, ql.ACID, ql.Controller)
 	}
 }
 
@@ -308,7 +310,7 @@ func (sd *Dispatcher) PointOut(po *PointOutArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.PointOut(ctrl.tcp, po.Callsign, po.Controller)
+		return s.PointOut(ctrl.tcp, po.ACID, po.Controller)
 	}
 }
 
@@ -318,7 +320,7 @@ func (sd *Dispatcher) AcknowledgePointOut(po *PointOutArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.AcknowledgePointOut(ctrl.tcp, po.Callsign)
+		return s.AcknowledgePointOut(ctrl.tcp, po.ACID)
 	}
 }
 
@@ -328,7 +330,7 @@ func (sd *Dispatcher) RecallPointOut(po *PointOutArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.RecallPointOut(ctrl.tcp, po.Callsign)
+		return s.RecallPointOut(ctrl.tcp, po.ACID)
 	}
 }
 
@@ -338,7 +340,7 @@ func (sd *Dispatcher) RejectPointOut(po *PointOutArgs, _ *struct{}) error {
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.RejectPointOut(ctrl.tcp, po.Callsign)
+		return s.RejectPointOut(ctrl.tcp, po.ACID)
 	}
 }
 
@@ -559,7 +561,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 		case 'F':
 			if command == "FC" {
-				if err := s.HandoffControl(ctrl.tcp, callsign); err != nil {
+				if err := s.HandoffControl(ctrl.tcp, sim.ACID(callsign) /* HAX */); err != nil {
 					rewriteError(err)
 					return nil
 				}
