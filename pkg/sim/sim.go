@@ -254,7 +254,15 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 	if err := s.signOn(tcp, instructor); err != nil {
 		return nil, err
 	}
-	return s.State.GetStateForController(tcp), nil
+
+	state := s.State.GetStateForController(tcp)
+	var update WorldUpdate
+	err := s.GetWorldUpdate(tcp, &update)
+	if err != nil {
+		return state, err
+	}
+	update.UpdateState(state, s.eventStream)
+	return state, nil
 }
 
 func (s *Sim) signOn(tcp string, instructor bool) error {
