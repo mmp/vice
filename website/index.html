@@ -807,6 +807,35 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3>0.11.10 (XXX April 2025)</h3>
+            <ul>
+              <li>New scenarios: GTF (Merry), PCT SHD (Ketan K).</li>
+              <li>Scenario updates: JAX (Jud Lopez), LIB (Matt P), CLT (agnuse), DCA (Ketan K), A90 (radarcontacto).</li>
+              <li>Fixed a bug where wind gusts would cycle between the gust windspeed all the way down to zero wind.</li>
+              <li>Fixed a bug where handoffs between virtual controllers during aircraft prespawn would never be accepted.</li>
+              <li>STARS:
+                <ul>
+                  <li>Fixed a bug where the partial datablock for a track would sometimes be drawn after a handoff was accepted
+                    before the controller clicked the track to switch from the FDB.</li>
+                  <li>Fixed drawing of PREF submenu.</li>
+                  <li>Fixed a few bugs with entering values with the keyboard after selecting DCB buttons.</li>
+                  <li>Various improvements to improve performance with many tracks on the screen.</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Routes can now contain lat-long coordinates in the form <code>4900N/05000W</code>.</li>
+                  <li>Routes can now have <code>/shift</code> after a fix to signify that the location of the fix
+                    should be randomly shifted by a given distance before or after the fix.</li>
+                  <li>Routes can now have <code>/ph</code> after a fix to signify fly present heading after the fix.</li>
+                  <li>Routes can now have <code>/tc</code> after a fix to signify that communications should be
+                    handed off at the fix; this is useful for aircraft where control has been flashed from a virtual
+                    controller to a human controller earlier but where the virtual controller will continue to
+                    control the aircraft for a while before having them contact the human.</li>
+                </ul>
+              </li>
+            </ul>
+
             <h3>0.11.9 (22 March 2025)</h3>
             <ul>
               <li>New scenarios: SCT Del Rey, ABQ (Ketan K), ISP (Thomas Halpin).</li>
