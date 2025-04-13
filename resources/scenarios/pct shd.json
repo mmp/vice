@@ -1,17 +1,17 @@
 {
   "tracon": "PCT",
   "airports": {	
-	"KHWY": { "vfr": { "random_routes": { "rate": 10 } } },
-	"KJYO": { "vfr": { "random_routes": { "rate": 10 } } },
+	"KHWY": { "vfr": { "random_routes": { "rate": 5 } } },
+	"KJYO": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KOKV": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KFRR": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KCJR": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KRMN": { "vfr": { "random_routes": { "rate": 5 } } },
-	"KFDK": { "vfr": { "random_routes": { "rate": 10 } } },
+	"KFDK": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KEZF": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KDMW": { "vfr": { "random_routes": { "rate": 5 } } },
-	"KHGR": { "vfr": { "random_routes": { "rate": 10 } } },
-	"KMRB": { "vfr": { "random_routes": { "rate": 10 } } },
+	"KHGR": { "vfr": { "random_routes": { "rate": 5 } } },
+	"KMRB": { "vfr": { "random_routes": { "rate": 5 } } },
 	"KHEF": {
       "vfr": { "random_routes": { "rate": 10 } },
       "approaches": {
@@ -250,7 +250,7 @@
             }
           ],
           "altitude": 43000,
-          "destination": "KPWA",
+          "destination": "KPWK",
           "route": "RAMAY Q72 HACKS J149 EMPTY J80 SPI IRK LMN",
           "exit": "RAMAY"
         }
@@ -3595,6 +3595,21 @@
 	  "SWANN": "SOK",
 	  "AGARD": "DCR"
     },
+	"significant_points": {
+    "AGARD": { },
+    "BUFFR": { "short_name": "BFR" },
+    "DQO": {  },
+    "FLASK": { },
+    "GLANC": { },
+    "JERES": { },
+    "MAULS": { },
+    "MELTN": { },
+    "OTTTO": { "short_name": "OTO" },
+    "RAMAY": { },
+    "RRSIN": { },
+    "SCOOB": { },
+    "SWANN": { }
+  },
       "stars_maps": ["SHD Base", "SHD South", "PCT MVA", "SHD North", "SHD South 12", "SHD IAD NSTAR"],
 	  
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
