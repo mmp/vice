@@ -263,7 +263,7 @@
                 "RRSIN": "South/West",
                 "MELTN": "South/West",
                 "JERES": "North/East",
-                "MCRAY": "Northwest",
+                "MCRAY": "South/West",
 				"OTTTO": "South/West",
 				"GLANC": "South/West"
             },
@@ -298,7 +298,7 @@
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-12/h280 BUTRZ/a3000+ CLTCH KERRK"
+            "waypoints": "KIAD-12/h270 BUTRZ/a3000+ CLTCH KERRK"
           },
 		  "SWANN": {
             "assigned_altitude": 3000,
@@ -318,12 +318,12 @@
 		  "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h280 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
           },
 		  "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h280 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
 		  "JERES": {
             "assigned_altitude": 3000,
@@ -343,7 +343,7 @@
 		  "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-12/a820+/h280 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "waypoints": "KIAD-12/a820+/h250 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
 		  "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
@@ -380,12 +380,12 @@
 		  "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h250 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
           },
 		  "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h250 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "waypoints": "KIAD-12/a820+/h245 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
 		  "JERES": {
             "assigned_altitude": 3000,
@@ -413,190 +413,128 @@
             "waypoints": "KIAD-12/h300 RAZZA WOOLY"
           }
         },
-        "1C.30": {
+		"1C": {
           "RAMAY": {
             "assigned_altitude": 3000,
             "sid": "BUNZZ3",
-            "waypoints": "N038.59.02.143,W077.27.32.481/a820+ LOULU BUNZZ RAMAY"
+            "waypoints": "KIAD-19C/h320 LOULU BUNZZ RAMAY"
           },
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-19C/h280 BUTRZ/a3000+ CLTCH KERRK"
+            "waypoints": "KIAD-19C/h345 BUTRZ/a3000+ CLTCH KERRK"
           },
 		  "SWANN": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19C/h335 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "waypoints": "KIAD-19C/a820+/h345 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
           },
           "AGARD": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19C/h335 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "waypoints": "KIAD-19C/a820+/h345 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
           },
 		  "COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19C/h335 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "waypoints": "KIAD-19C/a820+/h345 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
           },
 		  "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-19C/h280 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "waypoints": "KIAD-19C/a820+/h320 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
           },
 		  "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-19C/h280 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "waypoints": "KIAD-19C/a820+/h320 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
 		  "JERES": {
             "assigned_altitude": 3000,
             "sid": "JERES2",
-            "waypoints": "KIAD-19C/h335 IDORE JERES"
+            "waypoints": "KIAD-19C/a820+/h345 IDORE JERES"
           },
 		  "MCRAY": {
             "assigned_altitude": 3000,
             "sid": "MCRAY2",
-            "waypoints": "KIAD-19C/h335 HAYGR MCRAY"
+            "waypoints": "KIAD-19C/a820+/h345 HAYGR MCRAY"
           },
 		  "OTTTO": {
             "assigned_altitude": 3000,
             "sid": "RNLDI4",
-            "waypoints": "N038.58.43.466,W077.27.32.838/a820+ LOULU RNLDI OTTTO"
+            "waypoints": "KIAD-19C/a820+/h320 LOULU RNLDI OTTTO"
           },
 		  "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-19C/h280 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "waypoints": "KIAD-19C/a820+/h320 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
 		  "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19C/h335 RAZZA WOOLY"
-          }
-        },
-		"1C.N": {
-          "RAMAY": {
-            "assigned_altitude": 3000,
-            "sid": "BUNZZ3",
-            "waypoints": "N038.59.02.143,W077.27.32.481/a820+ LOULU BUNZZ RAMAY"
-          },
-          "MAULS,FLASK": {
-            "assigned_altitude": 3000,
-            "sid": "CLTCH3",
-            "waypoints": "KIAD-19L/h245 BUTRZ/a3000+ CLTCH KERRK"
-          },
-		  "SWANN": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h320 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
-          },
-          "AGARD": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h320 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
-          },
-		  "COLIN,SCOOB": {
-            "assigned_altitude": 3000,
-            "sid": "JCOBY4",
-            "waypoints": "KIAD-12/a820+/h320 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
-          },
-		  "RRSIN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h280 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
-          },
-		  "MELTN": {
-            "assigned_altitude": 3000,
-            "sid": "JDUBB4",
-            "waypoints": "KIAD-12/a820+/h280 HAFNR/a3000+ JDUBB CASLY MELTN"
-          },
-		  "JERES": {
-            "assigned_altitude": 3000,
-            "sid": "JERES2",
-            "waypoints": "KIAD-12/a820+/h320 IDORE JERES"
-          },
-		  "MCRAY": {
-            "assigned_altitude": 3000,
-            "sid": "MCRAY2",
-            "waypoints": "KIAD-12/a820+/h320 HAYGR MCRAY"
-          },
-		  "OTTTO": {
-            "assigned_altitude": 3000,
-            "sid": "RNLDI4",
-            "waypoints": "N038.56.50.691,W077.30.10.162/a820+ LOULU RNLDI OTTTO"
-          },
-		  "GLANC": {
-            "assigned_altitude": 3000,
-            "sid": "SCRAM6",
-            "waypoints": "KIAD-12/a820+/h280 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
-          },
-		  "SWANN.W,AGARD.W,BAL": {
-            "assigned_altitude": 3000,
-            "sid": "WOOLY2",
-            "waypoints": "KIAD-12/h320 RAZZA WOOLY"
+            "waypoints": "KIAD-19C/h345 RAZZA WOOLY"
           }
         },
         "1R": {
           "RAMAY": {
             "assigned_altitude": 3000,
             "sid": "BUNZZ3",
-            "waypoints": "KIAD-19L/h350 LOULU BUNZZ RAMAY"
+            "waypoints": "KIAD-19L/h360 LOULU BUNZZ RAMAY"
           },
           "MAULS,FLASK": {
             "assigned_altitude": 3000,
             "sid": "CLTCH3",
-            "waypoints": "KIAD-19L/h350 BUTRZ/a3000+ CLTCH KERRK"
+            "waypoints": "KIAD-19L/h360 BUTRZ/a3000+ CLTCH KERRK"
           },
 		  "SWANN": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19L/h10 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
+            "waypoints": "KIAD-19L/h360 RIGNZ/a3000+ JCOBY GRIIM SOOKI SWANN"
           },
           "AGARD": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19L/h10 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
+            "waypoints": "KIAD-19L/h360 RIGNZ/a3000+ JCOBY GRIIM RIISE DOCTR AGARD"
           },
 		  "COLIN,SCOOB": {
             "assigned_altitude": 3000,
             "sid": "JCOBY4",
-            "waypoints": "KIAD-19L/h10 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
+            "waypoints": "KIAD-19L/h360 RIGNZ/a3000+ JCOBY BAUGH AMEEE COLIN"
           },
 		  "RRSIN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-19L/h350 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
+            "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN"
           },
 		  "MELTN": {
             "assigned_altitude": 3000,
             "sid": "JDUBB4",
-            "waypoints": "KIAD-19L/h350 HAFNR/a3000+ JDUBB CASLY MELTN"
+            "waypoints": "KIAD-19L/h360 HAFNR/a3000+ JDUBB CASLY MELTN"
           },
 		  "JERES": {	
             "assigned_altitude": 3000,
             "sid": "JERES2",
-            "waypoints": "KIAD-19L/h10 IDORE JERES"
+            "waypoints": "KIAD-19L/h360 IDORE JERES"
           },
 		  "MCRAY": {
             "assigned_altitude": 3000,
             "sid": "MCRAY2",
-            "waypoints": "KIAD-19L/h10 HAYGR MCRAY"
+            "waypoints": "KIAD-19L/h360 HAYGR MCRAY"
           },
 		  "OTTTO": {
             "assigned_altitude": 3000,
             "sid": "RNLDI4",
-            "waypoints": "KIAD-19L/h10 LOULU RNLDI OTTTO"
+            "waypoints": "KIAD-19L/h360 LOULU RNLDI OTTTO"
           },
 		  "GLANC": {
             "assigned_altitude": 3000,
             "sid": "SCRAM6",
-            "waypoints": "KIAD-19L/h350 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
+            "waypoints": "KIAD-19L/h360 POOCH/a3000+ SCRAM DANOO WALCE GLANC"
           },
 		  "SWANN.W,AGARD.W,BAL": {
             "assigned_altitude": 3000,
             "sid": "WOOLY2",
-            "waypoints": "KIAD-19L/h350 RAZZA WOOLY"
+            "waypoints": "KIAD-19L/h360 RAZZA WOOLY"
           }
         },
         "19C.S": {
@@ -1743,7 +1681,7 @@
                 "RRSIN": "South/West",
                 "MELTN": "South/West",
                 "JERES": "North/East",
-                "MCRAY": "Northwest",
+                "MCRAY": "South/West",
 				"OTTTO": "South/West",
 				"GLANC": "South/West",
 				"SWANN.W": "North/East",
@@ -1976,10 +1914,102 @@
       }
     ]
   },
+  "PRTZL1": {
+    "arrivals": [
+      {
+        "waypoints": "PRTZL N039.58.31.601,W077.08.08.314/ho HYPER/s250",
+		"runway_waypoints": {
+          "KIAD": {
+            "19L": "HYPER PHATT/a9000/h230",
+            "19C": "HYPER PHATT/a9000/h230",
+            "19R": "HYPER PHATT/a9000/h230",
+			"1L": "HYPER CRAIN/a6000 KUKSE/a5000 ELISN MIKEJ/h191",
+            "1C": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191",
+            "1R": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191",
+			"30": "HYPER CRAIN/a6000 KUKSE/a5000 ELISN MIKEJ/h191"
+          }
+        },
+        "star": "PRTZL1",
+        "initial_controller": "NY_A1_CTR",
+        "initial_altitude": 14000,
+		"assigned_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KIAD": [
+			{
+              "icao": "POE",
+              "airport": "CYTZ"
+            },
+			{
+              "icao": "WUP",
+              "airport": "KBFA"
+            },
+			{
+              "icao": "N",
+			  "fleet": "GAturbine",
+              "airport": "KSYR"
+            },
+			{
+              "icao": "N",
+			  "fleet": "GAturbine",
+              "airport": "KTEB"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "PRTZL1": {
+    "arrivals": [
+      {
+        "waypoints": "PRTZL N039.58.31.601,W077.08.08.314/ho HYPER/s250",
+		"runway_waypoints": {
+          "KIAD": {
+            "19L": "HYPER PHATT/a9000/h230",
+            "19C": "HYPER PHATT/a9000/h230",
+            "19R": "HYPER PHATT/a9000/h230",
+			"1L": "HYPER CRAIN/a6000 KUKSE/a5000 ELISN MIKEJ/h191",
+            "1C": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191",
+            "1R": "HYPER SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/h191",
+			"30": "HYPER CRAIN/a6000 KUKSE/a5000 ELISN MIKEJ/h191"
+          }
+        },
+        "star": "PRTZL1",
+        "initial_controller": "NY_A1_CTR",
+        "initial_altitude": 14000,
+		"assigned_altitude": 9000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KIAD": [
+			{
+              "icao": "POE",
+              "airport": "CYTZ"
+            },
+			{
+              "icao": "WUP",
+              "airport": "KBFA"
+            },
+			{
+              "icao": "N",
+			  "fleet": "GAturbine",
+              "airport": "KSYR"
+            },
+			{
+              "icao": "N",
+			  "fleet": "GAturbine",
+              "airport": "KTEB"
+            }
+          ]
+        }
+      }
+    ]
+  },
   "CAVLR6": {
     "arrivals": [
       {
-        "waypoints": "N037.54.05.993,W077.32.56.522 N037.54.47.315,W077.33.19.649/ho JROBB BNTLY/a13000+ MEEGO/a11000 CAVLR/a10000/s250",
+        "waypoints": "JROBB BNTLY/a13000+/ho MEEGO/a11000 CAVLR/a10000/s250",
 		"runway_waypoints": {
           "KIAD": {
             "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/h12",
@@ -2029,7 +2059,7 @@
         }
       },
 	  {
-        "waypoints": "KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000 CAVLR/a10000/s250",
+        "waypoints": "KHOOD/a14000-22000 BNTLY/a13000+/ho MEEGO/a11000 CAVLR/a10000/s250",
 		"runway_waypoints": {
           "KIAD": {
             "19L": "CAVLR/a10000/s250 KASDY/a7000 BARIN/a6000 STAYO/a4000 TRING MIXNN/h12",
@@ -2791,6 +2821,11 @@
       "radio_name": "Potomac Approach",
       "sector_id": "1W"
     },
+	"DCA_F_DEP": {
+      "frequency": 121050,
+      "radio_name": "Potomac Departure",
+      "sector_id": "1F"
+    },
 	"DCA_L_DEP": {
       "frequency": 118675,
       "radio_name": "Potomac Departure",
@@ -2806,12 +2841,12 @@
       "radio_name": "Potomac Departure",
       "sector_id": "1Y"
     },
-	"IAD_A_APP": {
+	"IAD_A_DEP": {
       "frequency": 120505,
       "radio_name": "Potomac Departure",
       "sector_id": "3A"
     },
-	"IAD_T_APP": {
+	"IAD_T_DEP": {
       "frequency": 126650,
       "radio_name": "Potomac Departure",
       "sector_id": "3T"
@@ -2846,10 +2881,10 @@
       "radio_name": "Potomac Approach",
       "sector_id": "3U"
     },
-	"IAD_Z_APP": {
+	"IAD_E_APP": {
       "frequency": 126825,
       "radio_name": "Potomac Approach",
-      "sector_id": "3Z"
+      "sector_id": "3E"
     },
 	"IAD_N_APP": {
       "frequency": 120450,
@@ -2903,11 +2938,11 @@
       "sector_id": "N26"
     }
   },
-  "default_scenario": "SHD - North With 30 SIMULs",
+  "default_scenario": "SHD - IAD N/30",
   "name": "SHD",
   "primary_airport": "KIAD",
   "scenarios": {
-    "SHD - North With 30 SIMULs": {
+    "SHD - IAD N/30": {
       "arrival_runways": [
         {
           "airport": "KIAD",
@@ -2939,6 +2974,9 @@
           "KIAD": 8,
 		  "KHEF": 1
         },
+		"PRTZL1": {
+          "KIAD": 2
+        },
 		"CAVLR6": {
           "KIAD": 15
         },
@@ -2954,13 +2992,40 @@
         }
       },
       "solo_controller": "IAD_M_APP",
+	  "multi_controllers": {
+        "default": {
+            "IAD_M_APP": {"primary": true},
+            "IAD_A_DEP": {"backup": "IAD_M_APP", "departures": [ "KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2" ]},
+			"IAD_T_DEP": {"backup": "IAD_A_DEP", "departures": [ "KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6" ]},
+            "IAD_B_APP": {"backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"]},
+			"IAD_O_APP": {"backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"]},
+			"IAD_N_APP": {"backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT"]},
+            "IAD_E_APP": {"backup": "IAD_M_APP"},
+            "IAD_V_APP": {"backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.N"]},
+            "IAD_U_APP": {"backup": "IAD_X_APP"},
+            "IAD_S_APP": {"backup": "IAD_U_APP"},
+            "IAD_X_APP": {"backup": "IAD_B_APP"}
+        }
+      },
       "controllers": [
         "IAD_W_TWR",
 		"IAD_N_TWR",
         "IAD_E_TWR",
+		"DCA_F_DEP",
 		"DCA_K_DEP",
 		"DCA_L_DEP",
 		"DCA_Y_DEP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_T_DEP",
+		"IAD_B_APP",
+		"IAD_O_APP",
+		"IAD_N_APP",
+		"IAD_E_APP",
+		"IAD_V_APP",
+		"IAD_U_APP",
+		"IAD_S_APP",
+		"IAD_X_APP",
 		"BWI_B_APP",
 		"BWI_H_APP",
 		"BWI_W_APP"
@@ -2968,17 +3033,20 @@
       "departure_runways": [
         {
           "airport": "KIAD",
-          "rate": 25,
+		  "category": "South/West",
+          "rate": 20,
           "runway": "30.N"
         },
         {
           "airport": "KIAD",
-          "rate": 5,
-          "runway": "1C.30"
+		  "category": "North/East",
+          "rate": 3,
+          "runway": "1C"
         },
 		{
           "airport": "KIAD",
-          "rate": 5,
+		  "category": "North/East",
+          "rate": 10,
           "runway": "1R"
         },
 		{
@@ -2996,7 +3064,7 @@
         "SHD North"
       ]
     },
-	"SHD - North SIMULs": {
+	"SHD - IAD N": {
       "arrival_runways": [
         {
           "airport": "KIAD",
@@ -3028,6 +3096,9 @@
           "KIAD": 8,
 		  "KHEF": 1
         },
+		"PRTZL1": {
+          "KIAD": 2
+        },
 		"CAVLR6": {
           "KIAD": 15
         },
@@ -3043,13 +3114,40 @@
         }
       },
       "solo_controller": "IAD_M_APP",
+	  "multi_controllers": {
+        "default": {
+            "IAD_M_APP": {"primary": true},
+            "IAD_A_DEP": {"backup": "IAD_M_APP", "departures": [ "KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2" ]},
+			"IAD_T_DEP": {"backup": "IAD_A_DEP", "departures": [ "KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6" ]},
+            "IAD_B_APP": {"backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"]},
+			"IAD_O_APP": {"backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"]},
+			"IAD_N_APP": {"backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT"]},
+            "IAD_E_APP": {"backup": "IAD_M_APP"},
+            "IAD_V_APP": {"backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.N"]},
+            "IAD_U_APP": {"backup": "IAD_X_APP"},
+            "IAD_S_APP": {"backup": "IAD_U_APP"},
+            "IAD_X_APP": {"backup": "IAD_B_APP"}
+        }
+      },
       "controllers": [
         "IAD_W_TWR",
 		"IAD_N_TWR",
         "IAD_E_TWR",
+		"DCA_F_DEP",
 		"DCA_K_DEP",
 		"DCA_L_DEP",
 		"DCA_Y_DEP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_T_DEP",
+		"IAD_B_APP",
+		"IAD_O_APP",
+		"IAD_N_APP",
+		"IAD_E_APP",
+		"IAD_V_APP",
+		"IAD_U_APP",
+		"IAD_S_APP",
+		"IAD_X_APP",
 		"BWI_B_APP",
 		"BWI_H_APP",
 		"BWI_W_APP"
@@ -3059,7 +3157,7 @@
           "airport": "KIAD",
 		  "category": "South/West",
           "rate": 15,
-          "runway": "1C.N"
+          "runway": "1C"
         },
 		{
           "airport": "KIAD",
@@ -3082,7 +3180,7 @@
         "SHD North"
       ]
     },
-    "SHD - South With 30 SIMULs": {
+    "SHD - 19/30 Op": {
       "arrival_runways": [
         {
           "airport": "KIAD",
@@ -3114,6 +3212,9 @@
           "KIAD": 8,
 		  "KHEF": 1
         },
+		"PRTZL1": {
+          "KIAD": 2
+        },
 		"CAVLR6": {
           "KIAD": 15
         },
@@ -3129,13 +3230,40 @@
         }
       },
       "solo_controller": "IAD_M_APP",
+	  "multi_controllers": {
+        "default": {
+            "IAD_M_APP": {"primary": true},
+            "IAD_A_DEP": {"backup": "IAD_M_APP", "departures": [ "KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2" ]},
+			"IAD_T_DEP": {"backup": "IAD_A_DEP", "departures": [ "KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6" ]},
+            "IAD_B_APP": {"backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"]},
+			"IAD_O_APP": {"backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"]},
+			"IAD_N_APP": {"backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT"]},
+            "IAD_E_APP": {"backup": "IAD_M_APP"},
+            "IAD_V_APP": {"backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.S"]},
+            "IAD_U_APP": {"backup": "IAD_X_APP"},
+            "IAD_S_APP": {"backup": "IAD_U_APP"},
+            "IAD_X_APP": {"backup": "IAD_B_APP"}
+        }
+      },
       "controllers": [
         "IAD_W_TWR",
 		"IAD_N_TWR",
         "IAD_E_TWR",
+		"DCA_F_DEP",
 		"DCA_K_DEP",
 		"DCA_L_DEP",
 		"DCA_Y_DEP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_T_DEP",
+		"IAD_B_APP",
+		"IAD_O_APP",
+		"IAD_N_APP",
+		"IAD_E_APP",
+		"IAD_V_APP",
+		"IAD_U_APP",
+		"IAD_S_APP",
+		"IAD_X_APP",
 		"BWI_B_APP",
 		"BWI_H_APP",
 		"BWI_W_APP"
@@ -3171,7 +3299,7 @@
 		"SHD South"
       ]
     },
-	"SHD - South SIMULs": {
+	"SHD - IAD South": {
       "arrival_runways": [
         {
           "airport": "KIAD",
@@ -3203,6 +3331,9 @@
           "KIAD": 8,
 		  "KHEF": 1
         },
+		"PRTZL1": {
+          "KIAD": 2
+        },
 		"CAVLR6": {
           "KIAD": 15
         },
@@ -3218,13 +3349,40 @@
         }
       },
       "solo_controller": "IAD_M_APP",
+	  "multi_controllers": {
+        "default": {
+            "IAD_M_APP": {"primary": true},
+            "IAD_A_DEP": {"backup": "IAD_M_APP", "departures": [ "KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2" ]},
+			"IAD_T_DEP": {"backup": "IAD_A_DEP", "departures": [ "KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6" ]},
+            "IAD_B_APP": {"backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"]},
+			"IAD_O_APP": {"backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"]},
+			"IAD_N_APP": {"backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT"]},
+            "IAD_E_APP": {"backup": "IAD_M_APP"},
+            "IAD_V_APP": {"backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.S"]},
+            "IAD_U_APP": {"backup": "IAD_X_APP"},
+            "IAD_S_APP": {"backup": "IAD_U_APP"},
+            "IAD_X_APP": {"backup": "IAD_B_APP"}
+        }
+      },
       "controllers": [
         "IAD_W_TWR",
 		"IAD_N_TWR",
         "IAD_E_TWR",
+		"DCA_F_DEP",
 		"DCA_K_DEP",
 		"DCA_L_DEP",
 		"DCA_Y_DEP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_T_DEP",
+		"IAD_B_APP",
+		"IAD_O_APP",
+		"IAD_N_APP",
+		"IAD_E_APP",
+		"IAD_V_APP",
+		"IAD_U_APP",
+		"IAD_S_APP",
+		"IAD_X_APP",
 		"BWI_B_APP",
 		"BWI_H_APP",
 		"BWI_W_APP"
@@ -3256,47 +3414,148 @@
         "SHD Base",
 		"SHD South"
       ]
+    },
+	"SHD - RWY 30 Op": {
+      "arrival_runways": [
+        {
+          "airport": "KIAD",
+          "runway": "30"
+        },
+		{
+          "airport": "KHEF",
+          "runway": "34L"
+        },
+		{
+          "airport": "KHEF",
+          "runway": "34R"
+        }
+      ],
+      "arrivals": {
+        "GIBBZ5.MGW": {
+          "KIAD": 6,
+		  "KHEF": 2
+        },
+        "GIBBZ5.BURTT": {
+          "KIAD": 6,
+		  "KHEF": 1
+        },
+		"PRTZL1": {
+          "KIAD": 2
+        },
+		"CAVLR6": {
+          "KIAD": 8
+        },
+		"TRSTN4": {
+          "KHEF": 2
+        },
+		"HYPER9": {
+          "KIAD": 10,
+		  "KHEF": 3
+        },
+		"WAYNZ1.N": {
+          "KIAD": 8
+        }
+      },
+      "solo_controller": "IAD_M_APP",
+	  "multi_controllers": {
+        "default": {
+            "IAD_M_APP": {"primary": true},
+            "IAD_A_DEP": {"backup": "IAD_M_APP", "departures": [ "KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2" ]},
+			"IAD_T_DEP": {"backup": "IAD_A_DEP", "departures": [ "KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6" ]},
+            "IAD_B_APP": {"backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"]},
+			"IAD_O_APP": {"backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"]},
+			"IAD_N_APP": {"backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT"]},
+            "IAD_E_APP": {"backup": "IAD_M_APP"},
+            "IAD_V_APP": {"backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.N"]},
+            "IAD_U_APP": {"backup": "IAD_X_APP"},
+            "IAD_S_APP": {"backup": "IAD_U_APP"},
+            "IAD_X_APP": {"backup": "IAD_B_APP"}
+        }
+      },
+      "controllers": [
+        "IAD_W_TWR",
+		"IAD_N_TWR",
+        "IAD_E_TWR",
+		"DCA_F_DEP",
+		"DCA_K_DEP",
+		"DCA_L_DEP",
+		"DCA_Y_DEP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_T_DEP",
+		"IAD_B_APP",
+		"IAD_O_APP",
+		"IAD_N_APP",
+		"IAD_E_APP",
+		"IAD_V_APP",
+		"IAD_U_APP",
+		"IAD_S_APP",
+		"IAD_X_APP",
+		"BWI_B_APP",
+		"BWI_H_APP",
+		"BWI_W_APP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KIAD",
+          "rate": 20,
+          "runway": "30.N"
+        },
+		{
+          "airport": "KHEF",
+          "rate": 3,
+          "runway": "34R"
+        }
+      ],
+      "wind": {
+        "direction": 340,
+        "speed": 10
+      },
+      "default_maps": [
+        "SHD Base",
+        "SHD North"
+      ]
     }
   },
   "stars_config": {
     "center": "KIAD",
     "coordination_fixes": {
-      "CARTR": [
+      "GIBBZ": [
         {
             "type": "route",
             "to": "PCT",
             "from": "ZDC"
         }
         ],
-        "SKEES": [
+        "HYPER": [
+            {
+                "type": "route",
+                "to": "PCT",
+                "from": "ZNY"
+            }
+        ],
+        "CAVLR": [
             {
                 "type": "route",
                 "to": "PCT",
                 "from": "ZDC"
             }
         ],
-        "NORDK": [
+        "WAYNZ": [
             {
                 "type": "route",
                 "to": "PCT",
-                "from": "ZDC"
+                "from": "ZNY"
             }
         ],
-        "LEEHY": [
+        "PRIVO": [
             {
                 "type": "route",
                 "to": "PCT",
-                "from": "ZDC"
+                "from": "ZNY"
             }
         ],
-        "QWENN": [
-            {
-                "type": "route",
-                "to": "PCT",
-                "from": "ZDC"
-            }
-        ],
-        "WAATS": [
+        "PRTZL": [
             {
                 "type": "route",
                 "to": "PCT",
@@ -3321,14 +3580,21 @@
             ]
         }
     ],
+	"range": 63,
     "scratchpads": {
       "COLIN": "AME",
+	  "SCOOB": "AME",
+	  "RAMAY": "RAM",
+	  "RRSIN": "JDB",
+	  "MELTN": "JDB",
+	  "FLASK": "CLH",
+	  "MAULS": "CLH",
+	  "OTTTO": "OTO",
+	  "MCRAY": "MCR",
+	  "GLANC": "SCR",
 	  "SWANN": "SOK",
 	  "AGARD": "DCR"
     },
-  "significant_points": {
-      "STEWW": { }
-  },
       "stars_maps": ["SHD Base", "SHD South", "PCT MVA", "SHD North", "SHD South 12", "SHD IAD NSTAR"],
 	  
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst"

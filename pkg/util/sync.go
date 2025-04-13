@@ -66,20 +66,23 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 			locked <- struct{}{}
 		}()
 
-		select {
-		case <-locked:
+	loop:
+		for {
+			select {
+			case <-locked:
+				break loop
+			case <-time.After(10 * time.Second):
+				lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
+					slog.Any("held_mutexes", heldMutexes))
 
-		case <-time.After(10 * time.Second):
-			lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
-				slog.Any("held_mutexes", heldMutexes))
+				var m runtime.MemStats
+				runtime.ReadMemStats(&m)
+				usage, _ := cpu.Percent(time.Second, false)
 
-			var m runtime.MemStats
-			runtime.ReadMemStats(&m)
-			usage, _ := cpu.Percent(time.Second, false)
-
-			lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
-				int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
-				runtime.NumGoroutine())
+				lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
+					int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
+					runtime.NumGoroutine())
+			}
 		}
 	}
 
