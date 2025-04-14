@@ -459,7 +459,7 @@ type WorldUpdate struct {
 	Instructors        map[string]bool
 }
 
-func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
+func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -468,8 +468,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		events = sub.Get()
 	}
 
-	var err error
-	*update, err = deep.Copy(WorldUpdate{
+	*update = WorldUpdate{
 		Aircraft:             s.State.Aircraft,
 		Controllers:          s.State.Controllers,
 		HumanControllers:     slices.Collect(maps.Keys(s.humanControllers)),
@@ -483,9 +482,11 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		Events:               events,
 		UserRestrictionAreas: s.State.UserRestrictionAreas,
 		Instructors:          s.Instructors,
-	})
+	}
 
-	return err
+	if localServer {
+		*update = deep.MustCopy(*update)
+	}
 }
 
 func (s *Sim) ResolveController(tcp string) string {

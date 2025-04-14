@@ -241,6 +241,7 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	as := &ActiveSim{ // no password, etc.
 		sim:              sim,
 		controllersByTCP: make(map[string]*HumanController),
+		local:            true,
 	}
 	return sm.Add(as, result, false)
 }
@@ -474,10 +475,13 @@ type simStatus struct {
 }
 
 func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) error {
-	if ctrl, s, ok := sm.LookupController(token); !ok {
+	sm.mu.Lock(sm.lg)
+
+	if ctrl, ok := sm.controllersByToken[token]; !ok {
+		sm.mu.Unlock(sm.lg)
 		return ErrNoSimForControllerToken
 	} else {
-		sm.mu.Lock(sm.lg)
+		s := ctrl.asim.sim
 		ctrl.lastUpdateCall = time.Now()
 		if ctrl.warnedNoUpdateCalls {
 			ctrl.warnedNoUpdateCalls = false
@@ -487,9 +491,15 @@ func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) erro
 				Message: ctrl.tcp + " is back online.",
 			})
 		}
+
+		// Grab this before unlock.
+		local := ctrl.asim.local
+
 		sm.mu.Unlock(sm.lg)
 
-		return s.GetWorldUpdate(ctrl.tcp, update)
+		s.GetWorldUpdate(ctrl.tcp, update, local)
+
+		return nil
 	}
 }
 
