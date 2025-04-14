@@ -24,9 +24,42 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
+// Version history 0-7 not explicitly recorded
+// 8: STARSPane DCB improvements, added DCB font size control
+// 9: correct STARSColors, so update brightness settings to compensate
+// 10: stop being clever about JSON encoding Waypoint arrays to strings
+// 11: expedite, intercept localizer, fix airspace serialization
+// 12: set 0 DCB brightness to 50 (WAR not setting a default for it)
+// 13: update departure handling for multi-controllers (and rename some members)
+// 14: Aircraft ArrivalHandoffController -> WaypointHandoffController
+// 15: audio engine rewrite
+// 16: cleared/assigned alt for departures, minor nav changes
+// 17: weather intensity default bool
+// 18: STARS ATPA
+// 19: runway waypoints now per-airport
+// 20: "stars_config" and various scenario fields moved there, plus STARSFacilityAdaptation
+// 21: STARS DCB drawing changes, so system list positions changed
+// 22: draw points using triangles, remove some CommandBuffer commands
+// 23: video map format update
+// 24: packages, audio to platform, flight plan processing
+// 25: remove ArrivalGroup/Index from Aircraft
+// 26: make allow_long_scratchpad a single bool
+// 27: rework prefs, videomaps
+// 28: new departure flow
+// 29: TFR cache
+// 30: video map improvements
+// 31: audio squelch for pilot readback
+// 32: VFRs, custom spcs, pilot reported altitude, ...
+// 33: VFRs v2
+// 34: sim/server refactor, signon flow
+// 35: VFRRunways in sim.State, METAR Wind struct changes
+// 36: STARS center representation changes
+// 37: rework STARS flight plan (et al)
+const ViceSerializeVersion = 37
+
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
-const ViceRPCVersion = 25
+const ViceRPCVersion = ViceSerializeVersion
 
 type Server struct {
 	*util.RPCClient
