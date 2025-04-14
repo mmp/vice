@@ -536,7 +536,8 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 }
 
 // See STARS Operators Manual 5-184...
-func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, trk *sim.Track, fp *sim.STARSFlightPlan) string {
+// trk may be nil
+func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPlan, trk *sim.Track) string {
 	if fp == nil { // shouldn't happen...
 		return "NO PLAN"
 	}

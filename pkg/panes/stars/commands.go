@@ -326,13 +326,13 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		return
 	}
 
-	lookupTrack := func(callsign string) *sim.Track {
-		if trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign)); ok {
+	lookupTrack := func(s string) *sim.Track {
+		if trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(s)); ok {
 			return trk
 		}
 
 		// try to match squawk code
-		if sq, err := av.ParseSquawk(callsign); err == nil {
+		if sq, err := av.ParseSquawk(s); err == nil {
 			for _, trk := range tracks {
 				if trk.Squawk == sq {
 					return &trk
@@ -340,7 +340,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			}
 		}
 
-		if idx, err := strconv.Atoi(callsign); err == nil {
+		if idx, err := strconv.Atoi(s); err == nil {
 			if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
 				func(trk *sim.Track) bool {
 					return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx
@@ -350,6 +350,32 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		}
 
 		return nil
+	}
+
+	lookupFlightPlan := func(s string) (*sim.STARSFlightPlan, *sim.Track) {
+		sq, err := av.ParseSquawk(s)
+		if err != nil {
+			sq = av.Squawk(0)
+		}
+		idx, err := strconv.Atoi(s)
+		if err != nil {
+			idx = -1
+		}
+
+		state := &ctx.Client.State
+		for _, trk := range state.Tracks {
+			if trk.IsAssociated() && (trk.FlightPlan.ACID == sim.ACID(s) ||
+				trk.FlightPlan.AssignedSquawk == sq || trk.FlightPlan.ListIndex == idx) {
+				return trk.FlightPlan, trk
+			}
+		}
+		for i, fp := range state.UnassociatedFlightPlans {
+			if fp.ACID == sim.ACID(s) || fp.AssignedSquawk == sq || fp.ListIndex == idx {
+				return &state.UnassociatedFlightPlans[i], nil
+			}
+		}
+
+		return nil, nil
 	}
 
 	ps := sp.currentPrefs()
@@ -885,11 +911,16 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			} else if len(cmd) == 1 {
 				// illegal value for dwell
 				status.err = ErrSTARSIllegalValue
-			} else if trk := lookupTrack(cmd); trk != nil && trk.IsAssociated() {
-				// D(callsign)
-				// Display flight plan
-				status.output = sp.formatFlightPlan(ctx, trk, trk.FlightPlan)
-				status.clear = true
+			} else if fp, trk := lookupFlightPlan(cmd); fp != nil {
+				// D(callsign) / D(beacon) / D(line #)
+				// Display flight plan: 5-186
+				status.output = sp.formatFlightPlan(ctx, fp, trk)
+				// This goes into [multifunc]M mode while the flight plan
+				// is displayed, so status.clear is *not* set; we add a
+				// space so that the modification entry can be entered
+				// directly.
+				sp.multiFuncPrefix = "M"
+				sp.previewAreaInput += " "
 			} else {
 				status.err = ErrSTARSNoFlight
 			}
@@ -1053,9 +1084,13 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 		case "M":
 			// 5-171 change one field of a flight plan
-			if acid, entry, ok := strings.Cut(cmd, " "); !ok {
+			if id, entry, ok := strings.Cut(cmd, " "); !ok {
 				status.err = ErrSTARSCommandFormat
 			} else {
+				fp, _ := lookupFlightPlan(id)
+				if fp == nil {
+					status.err = ErrSTARSNoFlight
+				}
 				const modFpFormat = "ACID,BEACON,TCP,ETA_PTD,FIX_PAIR,TRI_SP1,PLUS_SP2,TRI_ALT_A,ALT_R"
 				checkfp := func(s string, primary bool) bool {
 					return checkScratchpad(ctx, s, !primary, false /* not implied */) == nil
@@ -1063,7 +1098,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				if spec, err := parseOneFlightPlan(modFpFormat, entry, checkfp); err != nil {
 					status.err = err
 				} else {
-					sp.modifyFlightPlan(ctx, sim.ACID(acid), spec, false /* don't display fp */)
+					sp.modifyFlightPlan(ctx, fp.ACID, spec, false /* don't display fp */)
 					status.clear = true
 				}
 			}
@@ -2655,7 +2690,7 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 	ctx.Client.AssociateFlightPlan(callsign, spec,
 		func(any) {
 			if trk, ok := ctx.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
-				sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk, trk.FlightPlan)
+				sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 			}
 		},
 		func(err error) { sp.displayError(err, ctx, "") })
@@ -2820,7 +2855,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else if cmd == "*" {
 				// Display parent aircraft flight plan
 				if trk, ok := ctx.GetTrackByCallsign(ghost.ADSBCallsign); ok && trk.IsAssociated() {
-					status.output = sp.formatFlightPlan(ctx, trk, trk.FlightPlan)
+					status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
 				status.clear = true
 				return
@@ -2959,7 +2994,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 				if trk.IsAssociated() && trk.FlightPlan.TrackingController == ctx.UserTCP {
 					// 5-202
-					status.output = sp.formatFlightPlan(ctx, trk, trk.FlightPlan)
+					status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
 			} else if cmd == "." {
 				if trk.IsUnassociated() {
@@ -3384,7 +3419,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if trk.IsUnassociated() {
 						status.err = ErrSTARSNoFlight
 					} else {
-						status.output = sp.formatFlightPlan(ctx, trk, trk.FlightPlan)
+						status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 						status.clear = true
 					}
 				} else {
@@ -3439,7 +3474,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if clickedGhost {
 						// 6-27: display track information in preview area (as an arrival)
 						if trk.IsAssociated() {
-							status.output = sp.formatFlightPlan(ctx, trk, trk.FlightPlan)
+							status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 						}
 						status.clear = true
 					} else {
@@ -4382,7 +4417,7 @@ func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [
 func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.STARSFlightPlanSpecifier) {
 	ctx.Client.CreateFlightPlan(spec, sim.LocalNonEnroute,
 		func(fp sim.STARSFlightPlan) {
-			sp.previewAreaOutput = sp.formatFlightPlan(ctx, nil, &fp)
+			sp.previewAreaOutput = sp.formatFlightPlan(ctx, &fp, nil)
 		},
 		func(err error) { sp.displayError(err, ctx, "") })
 
@@ -4408,7 +4443,7 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 			}
 			if display {
 				trk, _ := ctx.Client.State.GetTrackByACID(acid)
-				sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk, &fp)
+				sp.previewAreaOutput = sp.formatFlightPlan(ctx, &fp, trk)
 			}
 		},
 		func(err error) {

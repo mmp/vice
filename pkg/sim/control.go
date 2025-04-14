@@ -326,7 +326,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 			return STARSFlightPlan{}, ErrTrackIsNotActive
 		}
 
-		return s.STARSComputer.ModifyFlightPlan(spec)
+		return s.STARSComputer.ModifyFlightPlan(acid, spec)
 	}
 }
 
