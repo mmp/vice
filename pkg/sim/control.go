@@ -241,6 +241,13 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	if spec.Rules.IsSet && spec.Rules.Get() == av.FlightRulesVFR {
+		// Disable MSAW for VFR flight plans unless specifically enabled.
+		if !spec.DisableMSAW.IsSet {
+			spec.DisableMSAW.Set(true)
+		}
+	}
+
 	fp := spec.GetFlightPlan()
 
 	if util.SeqContainsFunc(maps.Values(s.Aircraft),
