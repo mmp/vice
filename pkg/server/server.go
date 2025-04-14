@@ -5,7 +5,6 @@
 package server
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"io"
@@ -14,7 +13,6 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
-	"os/exec"
 	"runtime"
 	"time"
 
@@ -286,7 +284,6 @@ type serverStats struct {
 	CPUUsage         int
 
 	SimStatus []simStatus
-	Errors    string
 }
 
 func formatBytes(v int64) string {
@@ -371,20 +368,6 @@ tr:nth-child(even) {
 {{end}}
 </table>
 
-<h1>Errors</h1>
-<div id="log" class="bot">
-{{.Errors}}
-</div>
-
-<script>
-window.onload = function() {
-    var divs = document.getElementsByClassName("bot");
-    for (var i = 0; i < divs.length; i++) {
-        divs[i].scrollTop = divs[i].scrollHeight - divs[i].clientHeight;
-    }
-}
-</script>
-
 </body>
 </html>
 `))
@@ -404,18 +387,6 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		CPUUsage:         int(gomath.Round(usage[0])),
 
 		SimStatus: sm.getSimStatus(),
-	}
-
-	// process logs
-	cmd := exec.Command("jq", `select(.level == "WARN" or .level == "ERROR")|.callstack = .callstack[0]`,
-		sm.lg.LogFile)
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	if err := cmd.Run(); err != nil {
-		stats.Errors = "jq: " + err.Error() + "\n" + stderr.String()
-	} else {
-		stats.Errors = stdout.String()
 	}
 
 	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()

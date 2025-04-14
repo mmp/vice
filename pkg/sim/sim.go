@@ -257,10 +257,7 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 
 	state := s.State.GetStateForController(tcp)
 	var update WorldUpdate
-	err := s.GetWorldUpdate(tcp, &update)
-	if err != nil {
-		return state, err
-	}
+	s.GetWorldUpdate(tcp, &update, true /* local: may not be, but this is the safe choice */)
 	update.UpdateState(state, s.eventStream)
 	return state, nil
 }
@@ -531,7 +528,7 @@ type WorldUpdate struct {
 	QuickFlightPlanIndex int
 }
 
-func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
+func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -540,8 +537,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		events = sub.Get()
 	}
 
-	var err error
-	*update, err = deep.Copy(WorldUpdate{
+	*update = WorldUpdate{
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 
 		Controllers:      s.State.Controllers,
@@ -552,7 +548,6 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		LaunchConfig: s.State.LaunchConfig,
 
 		UserRestrictionAreas: s.State.UserRestrictionAreas,
-
 		SimIsPaused:          s.State.Paused,
 		SimRate:              s.State.SimRate,
 		TotalIFR:             s.State.TotalIFR,
@@ -560,7 +555,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		Events:               events,
 		Instructors:          s.Instructors,
 		QuickFlightPlanIndex: s.State.QuickFlightPlanIndex,
-	})
+	}
 
 	update.ACFlightPlans = make(map[av.ADSBCallsign]av.FlightPlan)
 	for cs, ac := range s.Aircraft {
@@ -609,7 +604,9 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate) error {
 		update.Tracks[callsign] = &rt
 	}
 
-	return err
+	if localServer {
+		*update = deep.MustCopy(*update)
+	}
 }
 
 func (wu *WorldUpdate) UpdateState(state *State, eventStream *EventStream) {

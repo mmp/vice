@@ -241,6 +241,7 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	as := &ActiveSim{ // no password, etc.
 		sim:              sim,
 		controllersByTCP: make(map[string]*HumanController),
+		local:            true,
 	}
 	return sm.Add(as, result, false)
 }
@@ -309,7 +310,7 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 
 						if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
 							sm.lg.Warnf("%s: signing off idle controller", tcp)
-							sm.SignOff(ctrl.token)
+							sm.signOff(ctrl.token)
 						}
 					}
 				}
@@ -378,14 +379,18 @@ func (sm *SimManager) signOn(as *ActiveSim, tcp string, instructor bool) (*sim.S
 }
 
 func (sm *SimManager) SignOff(token string) error {
-	if ctrl, s, ok := sm.LookupController(token); !ok {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	return sm.signOff(token)
+}
+
+func (sm *SimManager) signOff(token string) error {
+	if ctrl, s, ok := sm.lookupController(token); !ok {
 		return ErrNoSimForControllerToken
 	} else if err := s.SignOff(ctrl.tcp); err != nil {
 		return err
 	} else {
-		sm.mu.Lock(sm.lg)
-		defer sm.mu.Unlock(sm.lg)
-
 		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
 		delete(sm.controllersByToken, token)
 
@@ -420,6 +425,10 @@ func (sm *SimManager) LookupController(token string) (*HumanController, *sim.Sim
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
+	return sm.lookupController(token)
+}
+
+func (sm *SimManager) lookupController(token string) (*HumanController, *sim.Sim, bool) {
 	if ctrl, ok := sm.controllersByToken[token]; ok {
 		return ctrl, ctrl.asim.sim, true
 	}
@@ -466,10 +475,13 @@ type simStatus struct {
 }
 
 func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) error {
-	if ctrl, s, ok := sm.LookupController(token); !ok {
+	sm.mu.Lock(sm.lg)
+
+	if ctrl, ok := sm.controllersByToken[token]; !ok {
+		sm.mu.Unlock(sm.lg)
 		return ErrNoSimForControllerToken
 	} else {
-		sm.mu.Lock(sm.lg)
+		s := ctrl.asim.sim
 		ctrl.lastUpdateCall = time.Now()
 		if ctrl.warnedNoUpdateCalls {
 			ctrl.warnedNoUpdateCalls = false
@@ -479,9 +491,15 @@ func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) erro
 				Message: ctrl.tcp + " is back online.",
 			})
 		}
+
+		// Grab this before unlock.
+		local := ctrl.asim.local
+
 		sm.mu.Unlock(sm.lg)
 
-		return s.GetWorldUpdate(ctrl.tcp, update)
+		s.GetWorldUpdate(ctrl.tcp, update, local)
+
+		return nil
 	}
 }
 
