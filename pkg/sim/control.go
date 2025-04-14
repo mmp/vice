@@ -452,23 +452,21 @@ func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
 			return nil
 		},
 		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
-			s.handoffTrack(tcp, toTCP, fp)
+			s.handoffTrack(fp, toTCP)
 			return nil
 		})
 }
 
-func (s *Sim) handoffTrack(fromTCP, toTCP string, fp *STARSFlightPlan) {
+func (s *Sim) handoffTrack(fp *STARSFlightPlan, toTCP string) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
-		FromController: fromTCP,
+		FromController: fp.TrackingController,
 		ToController:   toTCP,
 	})
 
 	fp.HandoffTrackController = toTCP
 
-	if _, fok := s.State.Controllers[fromTCP]; !fok {
-		s.lg.Errorf("Unable to handoff %s: from controller %q not found", fp.ACID, fromTCP)
-	} else if _, tok := s.State.Controllers[toTCP]; !tok {
+	if _, ok := s.State.Controllers[toTCP]; !ok {
 		s.lg.Errorf("Unable to handoff %s: to controller %q not found", fp.ACID, toTCP)
 	}
 

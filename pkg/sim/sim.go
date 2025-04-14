@@ -765,15 +765,24 @@ func (s *Sim) updateState() {
 
 			passedWaypoint := ac.Update(s.State, nil /* s.lg*/)
 			if passedWaypoint != nil {
+				// Handoffs still happen for "unassociated" (to us) tracks
+				// when they're currently tracked by an external facility.
+				if passedWaypoint.HumanHandoff {
+					// Handoff from virtual controller to a human controller.
+					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					if sfp != nil {
+						s.handoffTrack(sfp, s.State.ResolveController(ac.WaypointHandoffController))
+					}
+				} else if passedWaypoint.TCPHandoff != "" {
+					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					if sfp != nil {
+						s.handoffTrack(sfp, passedWaypoint.TCPHandoff)
+					}
+				}
+
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
 					sfp := ac.STARSFlightPlan
-					if passedWaypoint.HumanHandoff {
-						// Handoff from virtual controller to a human controller.
-						s.handoffTrack(sfp.TrackingController, s.State.ResolveController(ac.WaypointHandoffController), sfp)
-					} else if passedWaypoint.TCPHandoff != "" {
-						s.handoffTrack(sfp.TrackingController, passedWaypoint.TCPHandoff, sfp)
-					}
 
 					if passedWaypoint.ClearApproach {
 						ac.ApproachController = sfp.ControllingController

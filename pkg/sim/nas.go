@@ -118,17 +118,33 @@ func (sc *STARSComputer) Update(s *Sim) {
 			continue
 		}
 
-		// Auto-associate departures.
-		// Use a higher altitude threshold than is used for whether tracks
-		// are visible in STARS so they are initially unassociated for a
-		// few ticks.
-		if ac.IsDeparture() && float32(ac.Altitude()) > ac.DepartureAirportElevation()+200 {
-			fp := sc.takeFlightPlanByACID(ACID(ac.ADSBCallsign)) // we know departures have ADSB==ACID
-			if fp == nil {
-				// It may be nil e.g., if track has been dropped.
-				continue
-			}
+		fp := sc.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)) // we know departures have ADSB==ACID
+		if fp == nil {
+			// This shouldn't happen in general but may happen if the FP
+			// was modified to change the ACID.
+			continue
+		}
 
+		isExternal := func(tcp string) bool {
+			ctrl, ok := s.State.Controllers[tcp]
+			return ok && ctrl.FacilityIdentifier != ""
+		}
+
+		var autoAssociate bool
+		switch fp.TypeOfFlight {
+		case av.FlightTypeDeparture:
+			// Use a higher altitude threshold than is used for whether tracks
+			// are visible in STARS so they are initially unassociated for a
+			// few ticks.
+			autoAssociate = float32(ac.Altitude()) > ac.DepartureAirportElevation()+200
+
+		case av.FlightTypeArrival, av.FlightTypeOverflight:
+			// Otherwise we associate when we have an inbound handoff from
+			// an external facility.
+			autoAssociate = fp.HandoffTrackController != "" && !isExternal(fp.HandoffTrackController)
+		}
+
+		if autoAssociate {
 			// For multi-controller, resolve to the one covering the
 			// departure position based on who is signed in now.
 			fp.TrackingController = s.State.ResolveController(fp.TrackingController)

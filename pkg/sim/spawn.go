@@ -942,14 +942,15 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		ac.GoAroundDistance = &d
 	}
 
-	// Arrivals start out already-associated and with an enroute code.
+	// Arrivals get an enroute code.
 	sq, err := s.ERAMComputer.CreateSquawk()
 	if err != nil {
 		return nil, err
 	}
 	ac.Squawk = sq
 	starsFp.AssignedSquawk = sq
-	ac.AssociateFlightPlan(&starsFp)
+
+	_, err = s.STARSComputer.CreateFlightPlan(starsFp)
 
 	return ac, err
 }
@@ -1045,7 +1046,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
-	starsFP := STARSFlightPlan{
+	starsFp := STARSFlightPlan{
 		ACID:     ACID(ac.ADSBCallsign),
 		EntryFix: util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:  shortExit,
@@ -1067,8 +1068,8 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
 		// starting out with a virtual controller
-		starsFP.TrackingController = ap.DepartureController
-		starsFP.ControllingController = ap.DepartureController
+		starsFp.TrackingController = ap.DepartureController
+		starsFp.ControllingController = ap.DepartureController
 		ac.WaypointHandoffController = exitRoute.HandoffController
 	} else {
 		// human controller will be first
@@ -1088,7 +1089,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
 		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
-		starsFP.TrackingController = ctrl
+		starsFp.TrackingController = ctrl
 	}
 
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
@@ -1098,11 +1099,11 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		return nil, err
 	}
 	ac.Squawk = sq
-	starsFP.AssignedSquawk = sq
+	starsFp.AssignedSquawk = sq
 
 	// Departures aren't immediately associated, but the STARSComputer will
 	// hold on to their flight plans for now.
-	_, err = s.STARSComputer.CreateFlightPlan(starsFP)
+	_, err = s.STARSComputer.CreateFlightPlan(starsFp)
 
 	return ac, err
 }
@@ -1178,7 +1179,8 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	}
 	ac.Squawk = sq
 	starsFp.AssignedSquawk = sq
-	ac.AssociateFlightPlan(&starsFp)
+
+	_, err = s.STARSComputer.CreateFlightPlan(starsFp)
 
 	return ac, nil
 }
