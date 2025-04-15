@@ -471,17 +471,27 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 				return false
 			}
 
+			// TODO: handle consolidation, etc.
+			if fp.TrackingController == ctx.UserTCP {
+				return true
+			}
+
 			// TODO: should also include flight plans that we entered but
 			// assigned a different initial controller to.
 
 			if fp.TypeOfFlight == av.FlightTypeDeparture {
-				if trk, ok := ctx.Client.State.GetTrackByACID(fp.ACID); ok {
-					ctrl := ctx.Client.State.ResolveController(trk.DepartureController)
-					return ctrl == ctx.UserTCP
+				trk, ok := ctx.Client.State.GetTrackByACID(fp.ACID)
+				if !ok {
+					return false
 				}
+				ctrl := ctx.Client.State.ResolveController(trk.DepartureController)
+				return ctrl == ctx.UserTCP
+			} else {
+				ctrl := ctx.Client.State.ResolveController(fp.WaypointHandoffController)
+				return ctrl == ctx.UserTCP
 			}
-			// TODO: handle consolidation, etc.
-			return fp.TrackingController == ctx.UserTCP
+
+			return false
 		})
 
 	// 2-92: default sort is by ACID
@@ -516,12 +526,12 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 			text.WriteString("VFR")
 		}
 		// entry/exit fix characters
-		if fp.EntryFix != "" {
+		if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
 			text.WriteByte(fp.EntryFix[0])
 		} else {
 			text.WriteByte(' ')
 		}
-		if fp.ExitFix != "" {
+		if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
 			text.WriteByte(fp.ExitFix[0])
 		} else {
 			text.WriteByte(' ')
