@@ -228,7 +228,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		if strings.HasPrefix(string(callsign), "__") {
 			acid := sim.ACID(strings.TrimPrefix(string(callsign), "__"))
 			if !slices.ContainsFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp sim.STARSFlightPlan) bool { return fp.ACID == acid }) {
+				func(fp *sim.STARSFlightPlan) bool { return fp.ACID == acid }) {
 				delete(sp.TrackState, callsign)
 			}
 		} else if _, ok := ctx.GetTrackByCallsign(callsign); !ok {

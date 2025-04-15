@@ -504,7 +504,7 @@ type GlobalMessage struct {
 
 type WorldUpdate struct {
 	Tracks                  map[av.ADSBCallsign]*Track
-	UnassociatedFlightPlans []STARSFlightPlan
+	UnassociatedFlightPlans []*STARSFlightPlan
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
@@ -980,7 +980,7 @@ func (s *Sim) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
 	}
 	for i, fp := range s.State.UnassociatedFlightPlans {
 		if fp.ACID == acid {
-			return &s.State.UnassociatedFlightPlans[i]
+			return s.State.UnassociatedFlightPlans[i]
 		}
 	}
 	return nil

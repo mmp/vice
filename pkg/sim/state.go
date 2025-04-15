@@ -35,7 +35,7 @@ type State struct {
 	Tracks map[av.ADSBCallsign]*Track
 
 	// Unassociated ones, including unsupported DBs
-	UnassociatedFlightPlans []STARSFlightPlan
+	UnassociatedFlightPlans []*STARSFlightPlan
 
 	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
@@ -465,7 +465,7 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		func(fp *STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
 
@@ -485,13 +485,13 @@ func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
 
 	for _, fp := range ss.UnassociatedFlightPlans {
 		if fp.ACID == ACID(s) {
-			return &fp
+			return fp
 		}
 		if n == fp.ListIndex {
-			return &fp
+			return fp
 		}
 		if sq == fp.AssignedSquawk {
-			return &fp
+			return fp
 		}
 	}
 	return nil
@@ -545,7 +545,7 @@ func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
 	}
 	for i, fp := range ss.UnassociatedFlightPlans {
 		if fp.ACID == acid {
-			return &ss.UnassociatedFlightPlans[i]
+			return ss.UnassociatedFlightPlans[i]
 		}
 	}
 	return nil

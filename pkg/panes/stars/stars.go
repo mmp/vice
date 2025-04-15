@@ -1280,7 +1280,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 				ADSBCallsign: av.ADSBCallsign("__" + string(fp.ACID)),
 				Location:     fp.Location,
 			},
-			FlightPlan: &ctx.Client.State.UnassociatedFlightPlans[i],
+			FlightPlan: ctx.Client.State.UnassociatedFlightPlans[i],
 		})
 	}
 

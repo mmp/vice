@@ -371,7 +371,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		}
 		for i, fp := range state.UnassociatedFlightPlans {
 			if fp.ACID == sim.ACID(s) || fp.AssignedSquawk == sq || fp.ListIndex == idx {
-				return &state.UnassociatedFlightPlans[i], nil
+				return state.UnassociatedFlightPlans[i], nil
 			}
 		}
 
@@ -819,7 +819,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// 5-85: delete VFR FP from VFR list
 			fps := ctx.Client.State.UnassociatedFlightPlans
 			if n, err := strconv.Atoi(cmd); err == nil { // line number
-				if idx := slices.IndexFunc(fps, func(fp sim.STARSFlightPlan) bool {
+				if idx := slices.IndexFunc(fps, func(fp *sim.STARSFlightPlan) bool {
 					return fp.ListIndex == n && fp.Rules == av.FlightRulesVFR
 				}); idx != -1 {
 					sp.deleteFlightPlan(ctx, fps[idx].ACID)
@@ -827,7 +827,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				} else {
 					status.err = ErrSTARSIllegalTrack
 				}
-			} else if idx := slices.IndexFunc(fps, func(fp sim.STARSFlightPlan) bool {
+			} else if idx := slices.IndexFunc(fps, func(fp *sim.STARSFlightPlan) bool {
 				return fp.ACID == sim.ACID(cmd) && fp.Rules == av.FlightRulesVFR
 			}); idx != -1 {
 				sp.deleteFlightPlan(ctx, fps[idx].ACID)
@@ -4220,7 +4220,7 @@ func (sp *STARSPane) displayError(err error, ctx *panes.Context, acid sim.ACID) 
 			if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok && trk.IsAssociated() {
 				sp.previewAreaOutput += "\nFLIGHT ACTIVE AT " + trk.FlightPlan.TrackingController
 			} else if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp sim.STARSFlightPlan) bool {
+				func(fp *sim.STARSFlightPlan) bool {
 					return fp.ACID == acid
 				}); idx != -1 {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]

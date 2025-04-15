@@ -442,7 +442,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp sim.STARSFlightPlan) bool { return fp.Rules != av.FlightRulesIFR })
+		func(fp *sim.STARSFlightPlan) bool { return fp.Rules != av.FlightRulesIFR })
 
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
@@ -466,7 +466,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp sim.STARSFlightPlan) bool {
+		func(fp *sim.STARSFlightPlan) bool {
 			if fp.Rules != av.FlightRulesIFR {
 				return false
 			}
@@ -495,7 +495,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		})
 
 	// 2-92: default sort is by ACID
-	slices.SortFunc(plans, func(a, b sim.STARSFlightPlan) int {
+	slices.SortFunc(plans, func(a, b *sim.STARSFlightPlan) int {
 		return strings.Compare(string(a.ACID), string(b.ACID))
 	})
 
@@ -950,7 +950,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.Reset()
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp sim.STARSFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
+				func(fp *sim.STARSFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
 				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]

@@ -222,7 +222,7 @@ func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, success func(any), err f
 		trk.FlightPlan = nil
 	}
 	c.State.UnassociatedFlightPlans = slices.DeleteFunc(c.State.UnassociatedFlightPlans,
-		func(fp sim.STARSFlightPlan) bool { return fp.ACID == acid })
+		func(fp *sim.STARSFlightPlan) bool { return fp.ACID == acid })
 
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{

@@ -19,7 +19,7 @@ type ERAMComputer struct {
 
 type STARSComputer struct {
 	Identifier       string
-	FlightPlans      []STARSFlightPlan
+	FlightPlans      []*STARSFlightPlan
 	SquawkCodePool   *av.SquawkCodePool
 	HoldForRelease   []*Aircraft
 	AvailableIndices []int
@@ -92,7 +92,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 	// (It's slightly unclear if this check is only done when the FP is
 	// first entered or if it should be done every update, as we do now.)
 	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans,
-		func(fp STARSFlightPlan) bool {
+		func(fp *STARSFlightPlan) bool {
 			if !fp.AutoAssociate {
 				return true
 			}
@@ -108,7 +108,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 				}
 			}
 			if match != nil {
-				match.AssociateFlightPlan(&fp)
+				match.AssociateFlightPlan(fp)
 			}
 			return match == nil // keep it in sc.FlightPlans if not match
 		})
@@ -162,19 +162,18 @@ func (sc *STARSComputer) Update(s *Sim) {
 
 func (sc *STARSComputer) lookupFlightPlanByACID(acid ACID) *STARSFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
-		return &sc.FlightPlans[idx]
+		func(fp *STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
+		return sc.FlightPlans[idx]
 	}
 	return nil
 }
 
 func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *STARSFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
-		// copy so we don't return a pointer to the slice memory which will be reused...
+		func(fp *STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		fp := sc.FlightPlans[idx]
 		sc.FlightPlans = append(sc.FlightPlans[:idx], sc.FlightPlans[idx+1:]...)
-		return &fp
+		return fp
 	}
 	return nil
 }
@@ -199,7 +198,7 @@ func (sc *STARSComputer) CreateFlightPlan(fp STARSFlightPlan) (STARSFlightPlan, 
 		return fp, err
 	}
 
-	sc.FlightPlans = append(sc.FlightPlans, fp)
+	sc.FlightPlans = append(sc.FlightPlans, &fp)
 
 	return fp, nil
 }

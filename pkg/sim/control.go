@@ -255,7 +255,7 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		return STARSFlightPlan{}, ErrDuplicateACID
 	}
 	if slices.ContainsFunc(s.State.UnassociatedFlightPlans,
-		func(fp2 STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
+		func(fp2 *STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
 		return STARSFlightPlan{}, ErrDuplicateACID
 	}
 
