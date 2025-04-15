@@ -35,15 +35,11 @@ func (s *Sim) dispatchAircraftCommand(tcp string, callsign av.ADSBCallsign,
 		preAc := *ac
 		radioTransmissions := cmd(tcp, ac)
 
-		for i := range radioTransmissions {
-			if radioTransmissions[i].Controller == "" {
-				radioTransmissions[i].Controller = tcp
-			}
-		}
 		s.lg.Info("dispatch_command", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("prepost_aircraft", []Aircraft{preAc, *ac}),
 			slog.Any("radio_transmissions", radioTransmissions))
-		s.postRadioEvents(ac.ADSBCallsign, radioTransmissions)
+
+		s.postRadioEvents(ac.ADSBCallsign, tcp, radioTransmissions)
 
 		return nil
 	}
@@ -105,11 +101,14 @@ func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 		}
 	}
 
+	preFp := *fp
 	radioTransmissions := cmd(tcp, fp, ac)
 
-	for i := range radioTransmissions {
-		radioTransmissions[i].Controller = tcp
-	}
+	s.lg.Info("dispatch_fp_command", slog.String("acid", string(fp.ACID)),
+		slog.Any("prepost_fp", []STARSFlightPlan{preFp, *fp}),
+		slog.Any("radio_transmissions", radioTransmissions))
+
+	s.postRadioEvents(av.ADSBCallsign(fp.ACID), tcp, radioTransmissions)
 
 	return nil
 }
@@ -490,7 +489,13 @@ func (s *Sim) HandoffControl(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchTrackedFlightPlanCommand(tcp, acid, nil,
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) error {
+			if sfp.ControllingController != tcp {
+				return av.ErrOtherControllerHasTrack
+			}
+			return nil
+		},
 		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			var radioTransmissions []av.RadioTransmission
 			// Immediately respond to the current controller that we're
@@ -1149,7 +1154,7 @@ func (s *Sim) processEnqueued() {
 						Message:    ac.ContactMessage(s.ReportingPoints),
 						Type:       av.RadioTransmissionContact,
 					}}
-					s.postRadioEvents(c.ADSBCallsign, r)
+					s.postRadioEvents(c.ADSBCallsign, c.TCP, r)
 
 					// For departures handed off to virtual controllers,
 					// enqueue climbing them to cruise sending them direct

@@ -857,7 +857,7 @@ func (s *Sim) updateState() {
 				}
 
 				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
-				s.postRadioEvents(ac.ADSBCallsign, []av.RadioTransmission{av.RadioTransmission{
+				s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
 					Controller: tcp,
 					Message:    msg,
 					Type:       av.RadioTransmissionContact,
@@ -907,7 +907,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 	sfp.ControllingController = s.State.ResolveController(ac.ApproachController)
 
 	rt := ac.GoAround()
-	s.postRadioEvents(ac.ADSBCallsign, rt)
+	s.postRadioEvents(ac.ADSBCallsign, ac.ApproachController, rt)
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {
@@ -922,8 +922,11 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) postRadioEvents(from av.ADSBCallsign, transmissions []av.RadioTransmission) {
+func (s *Sim) postRadioEvents(from av.ADSBCallsign, defaultTCP string, transmissions []av.RadioTransmission) {
 	for _, rt := range transmissions {
+		if rt.Controller == "" {
+			rt.Controller = defaultTCP
+		}
 		s.eventStream.Post(Event{
 			Type:                  RadioTransmissionEvent,
 			ADSBCallsign:          from,
