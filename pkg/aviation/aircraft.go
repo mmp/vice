@@ -557,21 +557,30 @@ func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongit
 	}
 
 	pDep, pArr := dep.Location, arr.Location
+	var alt, delta int
 	if math.NMDistance2LL(pDep, pArr) < 100 {
-		altitude = 7000
+		alt = 7
 		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			altitude += 1000
+			alt += 1
 		}
 	} else if math.NMDistance2LL(pDep, pArr) < 200 {
-		altitude = 11000
+		alt = 15
+		delta = 2
 		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			altitude += 1000
+			alt += 1
 		}
 	} else if math.NMDistance2LL(pDep, pArr) < 300 {
-		altitude = 21000
+		alt = 21
+		delta = 2
 	} else {
-		altitude = 37000
+		alt = 35
+		delta = 3
+
 	}
+	// Randomize the altitude a bit
+	alt = (alt - delta + rand.Intn(2*delta+1))
+
+	altitude = alt * 1000
 	altitude = math.Min(altitude, int(perf.Ceiling))
 
 	if math.Heading2LL(pDep, pArr, nmPerLongitude, magneticVariation) > 180 {
