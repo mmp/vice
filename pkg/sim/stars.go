@@ -414,12 +414,13 @@ type STARSFlightPlan struct {
 	// FIXME: these are used internally by NAS code. It's convenient to
 	// have them here but this stuff should just be managed internally
 	// there.
-	ListIndex           int
-	CoordinationTime    CoordinationTime
-	CoordinationFix     string
-	ContainedFacilities []string
-	AutoAssociate       bool
-	RedirectedHandoff   RedirectedHandoff
+	ListIndex                 int
+	WaypointHandoffController string // for /ho
+	CoordinationTime          CoordinationTime
+	CoordinationFix           string
+	ContainedFacilities       []string
+	AutoAssociate             bool
+	RedirectedHandoff         RedirectedHandoff
 }
 
 type ACID string

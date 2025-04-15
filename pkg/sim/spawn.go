@@ -902,8 +902,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		}
 	}
 
-	ac.WaypointHandoffController = arrivalController
-
 	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
@@ -916,8 +914,9 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		ExitFix:  util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
 		ETAOrPTD: getAircraftTime(s.State.SimTime),
 
-		TrackingController:    arr.InitialController,
-		ControllingController: arr.InitialController,
+		TrackingController:        arr.InitialController,
+		ControllingController:     arr.InitialController,
+		WaypointHandoffController: arrivalController,
 
 		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeArrival,
@@ -1070,7 +1069,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		// starting out with a virtual controller
 		starsFp.TrackingController = ap.DepartureController
 		starsFp.ControllingController = ap.DepartureController
-		ac.WaypointHandoffController = exitRoute.HandoffController
+		starsFp.WaypointHandoffController = exitRoute.HandoffController
 	} else {
 		// human controller will be first
 		ctrl := s.State.PrimaryController
@@ -1133,19 +1132,18 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	// actual handoff controller will be resolved later when the handoff
 	// happens, so that it can reflect which controllers are actually
 	// signed in at that point.
-	controller := s.State.PrimaryController
+	handoffController := s.State.PrimaryController
 	if len(s.State.MultiControllers) > 0 {
 		var err error
-		controller, err = s.State.MultiControllers.GetInboundController(group)
+		handoffController, err = s.State.MultiControllers.GetInboundController(group)
 		if err != nil {
 			s.lg.Error("Unable to resolve overflight controller", slog.Any("error", err),
 				slog.Any("aircraft", ac))
 		}
-		if controller == "" {
-			controller = s.State.PrimaryController
+		if handoffController == "" {
+			handoffController = s.State.PrimaryController
 		}
 	}
-	ac.WaypointHandoffController = controller
 
 	if err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.State /* wind */, s.State.SimTime, s.lg); err != nil {
@@ -1158,8 +1156,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		ExitFix:  "", // TODO
 		ETAOrPTD: getAircraftTime(s.State.SimTime),
 
-		TrackingController:    of.InitialController,
-		ControllingController: of.InitialController,
+		TrackingController:        of.InitialController,
+		ControllingController:     of.InitialController,
+		WaypointHandoffController: handoffController,
 
 		Rules:               av.FlightRulesIFR,
 		TypeOfFlight:        av.FlightTypeOverflight,

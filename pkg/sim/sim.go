@@ -83,9 +83,6 @@ type Aircraft struct {
 	DepartureContactAltitude float32
 	DepartureController      string // We need to track this separately for before it's associated
 
-	// Who to try to hand off to at a waypoint with /ho
-	WaypointHandoffController string
-
 	// The controller who gave approach clearance
 	ApproachController string
 }
@@ -768,7 +765,7 @@ func (s *Sim) updateState() {
 					// Handoff from virtual controller to a human controller.
 					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					if sfp != nil {
-						s.handoffTrack(sfp, s.State.ResolveController(ac.WaypointHandoffController))
+						s.handoffTrack(sfp, s.State.ResolveController(sfp.WaypointHandoffController))
 					}
 				} else if passedWaypoint.TCPHandoff != "" {
 					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
@@ -793,7 +790,7 @@ func (s *Sim) updateState() {
 						// ac.TrackingController, since the human controller
 						// may have already flashed the track to a virtual
 						// controller.
-						ctrl := s.State.ResolveController(ac.WaypointHandoffController)
+						ctrl := s.State.ResolveController(sfp.WaypointHandoffController)
 						s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
 					}
 
