@@ -479,19 +479,8 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 			// TODO: should also include flight plans that we entered but
 			// assigned a different initial controller to.
 
-			if fp.TypeOfFlight == av.FlightTypeDeparture {
-				trk, ok := ctx.Client.State.GetTrackByACID(fp.ACID)
-				if !ok {
-					return false
-				}
-				ctrl := ctx.Client.State.ResolveController(trk.DepartureController)
-				return ctrl == ctx.UserTCP
-			} else {
-				ctrl := ctx.Client.State.ResolveController(fp.WaypointHandoffController)
-				return ctrl == ctx.UserTCP
-			}
-
-			return false
+			ctrl := ctx.Client.State.ResolveController(fp.InboundHandoffController)
+			return ctrl == ctx.UserTCP
 		})
 
 	// 2-92: default sort is by ACID

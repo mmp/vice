@@ -811,7 +811,11 @@ func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	if !ok {
 		return av.ErrNoAircraftForCallsign
 	}
-	if dc := s.State.ResolveController(ac.DepartureController); dc != tcp {
+	fp := s.STARSComputer.lookupFlightPlanByACID(ACID(callsign))
+	if fp == nil {
+		return ErrNoMatchingFlightPlan
+	}
+	if dc := s.State.ResolveController(fp.InboundHandoffController); dc != tcp {
 		return ErrInvalidDepartureController
 	}
 

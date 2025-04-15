@@ -411,16 +411,20 @@ type STARSFlightPlan struct {
 	MCISuppressedCode           av.Squawk
 	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
 
-	// FIXME: these are used internally by NAS code. It's convenient to
-	// have them here but this stuff should just be managed internally
-	// there.
-	ListIndex                 int
-	WaypointHandoffController string // for /ho
-	CoordinationTime          CoordinationTime
-	CoordinationFix           string
-	ContainedFacilities       []string
-	AutoAssociate             bool
-	RedirectedHandoff         RedirectedHandoff
+	// FIXME: the following are all used internally by NAS code. It's
+	// convenient to have them here but this stuff should just be managed
+	// internally there.
+	ListIndex int
+
+	// First controller in the local facility to get the track: used both
+	// for /ho and for departures
+	InboundHandoffController string
+
+	CoordinationTime    CoordinationTime
+	CoordinationFix     string
+	ContainedFacilities []string
+	AutoAssociate       bool
+	RedirectedHandoff   RedirectedHandoff
 }
 
 type ACID string

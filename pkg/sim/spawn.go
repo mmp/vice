@@ -23,8 +23,8 @@ import (
 	"github.com/brunoga/deep"
 )
 
-const initialSimSeconds = 20 * 60
-const initialSimControlledSeconds = 90
+const initialSimSeconds = 30 * 60
+const initialSimControlledSeconds = 60
 
 type RunwayLaunchState struct {
 	IFRSpawnRate float32
@@ -396,15 +396,8 @@ func (s *Sim) isHumanControlled(ac *Aircraft, departure bool) bool {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
 	} else {
-		// Otherwise we have to dig around a bit and see if a human is initially or will be involved.
-		if departure {
-			tcp := s.State.ResolveController(ac.DepartureController)
-			if slices.Contains(s.State.HumanControllers, tcp) {
-				return true
-			}
-			// If not, it may be later due to a handoff, so don't return false yet
-		}
-		return slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
+		fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+		return fp != nil && fp.InboundHandoffController != ""
 	}
 }
 
@@ -914,9 +907,9 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		ExitFix:  util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
 		ETAOrPTD: getAircraftTime(s.State.SimTime),
 
-		TrackingController:        arr.InitialController,
-		ControllingController:     arr.InitialController,
-		WaypointHandoffController: arrivalController,
+		TrackingController:       arr.InitialController,
+		ControllingController:    arr.InitialController,
+		InboundHandoffController: arrivalController,
 
 		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeArrival,
@@ -1069,7 +1062,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		// starting out with a virtual controller
 		starsFp.TrackingController = ap.DepartureController
 		starsFp.ControllingController = ap.DepartureController
-		starsFp.WaypointHandoffController = exitRoute.HandoffController
+		starsFp.InboundHandoffController = exitRoute.HandoffController
 	} else {
 		// human controller will be first
 		ctrl := s.State.PrimaryController
@@ -1089,6 +1082,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
 		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		starsFp.TrackingController = ctrl
+		starsFp.InboundHandoffController = ctrl
 	}
 
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
@@ -1156,9 +1150,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		ExitFix:  "", // TODO
 		ETAOrPTD: getAircraftTime(s.State.SimTime),
 
-		TrackingController:        of.InitialController,
-		ControllingController:     of.InitialController,
-		WaypointHandoffController: handoffController,
+		TrackingController:       of.InitialController,
+		ControllingController:    of.InitialController,
+		InboundHandoffController: handoffController,
 
 		Rules:               av.FlightRulesIFR,
 		TypeOfFlight:        av.FlightTypeOverflight,

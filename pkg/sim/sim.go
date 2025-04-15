@@ -81,7 +81,6 @@ type Aircraft struct {
 
 	// Departure related state
 	DepartureContactAltitude float32
-	DepartureController      string // We need to track this separately for before it's associated
 
 	// The controller who gave approach clearance
 	ApproachController string
@@ -98,7 +97,6 @@ type Track struct {
 	FlightPlan *STARSFlightPlan
 
 	// Sort of hacky to carry these along here but it's convenient...
-	DepartureController       string
 	DepartureAirport          string
 	DepartureAirportElevation float32
 	DepartureAirportLocation  math.Point2LL
@@ -564,7 +562,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 			ReleaseDeparture{
 				ADSBCallsign:        ac.ADSBCallsign,
 				DepartureAirport:    ac.FlightPlan.DepartureAirport, // TODO: STARS fp entry fix?
-				DepartureController: ac.DepartureController,
+				DepartureController: ac.STARSFlightPlan.InboundHandoffController,
 				Released:            ac.Released,
 				Squawk:              ac.Squawk,
 				ListIndex:           ac.STARSFlightPlan.ListIndex,
@@ -579,7 +577,6 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                ac.STARSFlightPlan,
-			DepartureController:       ac.DepartureController,
 			DepartureAirport:          ac.FlightPlan.DepartureAirport,
 			DepartureAirportElevation: ac.DepartureAirportElevation(),
 			DepartureAirportLocation:  ac.DepartureAirportLocation(),
@@ -759,7 +756,7 @@ func (s *Sim) updateState() {
 					// Handoff from virtual controller to a human controller.
 					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					if sfp != nil {
-						s.handoffTrack(sfp, s.State.ResolveController(sfp.WaypointHandoffController))
+						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
 					}
 				} else if passedWaypoint.TCPHandoff != "" {
 					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
@@ -780,11 +777,11 @@ func (s *Sim) updateState() {
 						// We didn't enqueue this before since we knew an
 						// explicit comms handoff was coming so go ahead and
 						// send them to the controller's frequency. Note that
-						// we use WaypointHandoffController and not
+						// we use InboundHandoffController and not
 						// ac.TrackingController, since the human controller
 						// may have already flashed the track to a virtual
 						// controller.
-						ctrl := s.State.ResolveController(sfp.WaypointHandoffController)
+						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 						s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
 					}
 
@@ -851,7 +848,7 @@ func (s *Sim) updateState() {
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
 				!s.prespawn {
 				// Time to check in
-				tcp := s.State.ResolveController(ac.DepartureController)
+				tcp := s.State.ResolveController(ac.STARSFlightPlan.InboundHandoffController)
 				s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
 
 				airportName := ac.FlightPlan.DepartureAirport
