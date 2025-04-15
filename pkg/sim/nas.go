@@ -145,6 +145,8 @@ func (sc *STARSComputer) Update(s *Sim) {
 		}
 
 		if autoAssociate {
+			fp = sc.takeFlightPlanByACID(ACID(ac.ADSBCallsign)) // remove it from the unassociated list
+
 			// For multi-controller, resolve to the one covering the
 			// departure position based on who is signed in now.
 			fp.TrackingController = s.State.ResolveController(fp.TrackingController)
