@@ -561,12 +561,6 @@ func (s *Sim) Update() {
 	s.State.SimTime = s.State.SimTime
 
 	s.lastUpdateTime = time.Now()
-
-	// Log the current state of everything once a minute
-	if time.Since(s.lastLogTime) > time.Minute {
-		s.lastLogTime = time.Now()
-		s.lg.Info("sim", slog.Any("state", s))
-	}
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
