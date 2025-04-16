@@ -815,7 +815,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 		// Ugly way to get the key from a one-element map
 		var airport string
-		for airport, _ = range ar.Airlines {
+		for airport = range ar.Airlines {
 		}
 		// We checked the arrival airports were valid above, no need to issue an error if not found.
 		if ap, ok := airports[airport]; ok {

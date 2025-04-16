@@ -184,7 +184,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 		}
 	}
 
-	sp.previewAreaInput += strings.Replace(input, "`", STARSTriangleCharacter, -1)
+	sp.previewAreaInput += strings.ReplaceAll(input, "`", STARSTriangleCharacter)
 
 	ps := sp.currentPrefs()
 

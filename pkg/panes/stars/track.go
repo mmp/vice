@@ -991,7 +991,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 			return false
 		}
 
-		if inCAInhibitVolumes(trkb) || inCAInhibitVolumes(trkb) {
+		if inCAInhibitVolumes(trka) || inCAInhibitVolumes(trkb) {
 			return false
 		}
 

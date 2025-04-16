@@ -52,7 +52,6 @@ type Sim struct {
 	lastSimUpdate  time.Time
 	updateTimeSlop time.Duration
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
-	lastLogTime    time.Time
 
 	prespawn                 bool
 	prespawnUncontrolledOnly bool
@@ -347,7 +346,7 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 	delete(s.humanControllers, fromTCP)
 	delete(s.State.Controllers, fromTCP)
 	delete(s.Instructors, fromTCP)
-	slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
+	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
@@ -680,7 +679,6 @@ func (s *Sim) Update() {
 		s.updateState()
 	}
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
-	s.State.SimTime = s.State.SimTime
 
 	s.lastUpdateTime = time.Now()
 }

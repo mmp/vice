@@ -862,6 +862,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 				idx6++
 			} else if _, ok := sp.DuplicateBeacons[trk.Squawk]; ok && state.DBAcknowledged != trk.Squawk {
 				formatDBText(db.field6[idx6][:], "DB", color, false)
+				idx6++
 			}
 		}
 

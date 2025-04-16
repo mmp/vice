@@ -791,9 +791,9 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
 					continue
 				}
-				ac, runway, err = s.createUncontrolledVFRDeparture(depart, arrive, sampledRandoms.Fleet, nil)
+				ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, sampledRandoms.Fleet, nil)
 			} else if sampledRoute != nil {
-				ac, runway, err = s.createUncontrolledVFRDeparture(depart, sampledRoute.Destination, sampledRoute.Fleet,
+				ac, _, err = s.createUncontrolledVFRDeparture(depart, sampledRoute.Destination, sampledRoute.Fleet,
 					sampledRoute.Waypoints)
 			}
 
@@ -1175,7 +1175,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 
 	_, err = s.STARSComputer.CreateFlightPlan(starsFp)
 
-	return ac, nil
+	return ac, err
 }
 
 func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel) DepartureAircraft {

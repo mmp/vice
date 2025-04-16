@@ -1402,8 +1402,10 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 				return false
 			}
 			state := sp.TrackState[trk.ADSBCallsign]
-			return state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW &&
-				ctx.Now.Before(state.MSAWSoundEnd)
+			if state.MSAW && !state.MSAWAcknowledged && !state.InhibitMSAW &&
+				ctx.Now.Before(state.MSAWSoundEnd) {
+				return true
+			}
 		}
 		return false
 	}()
