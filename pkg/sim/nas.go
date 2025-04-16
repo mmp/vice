@@ -43,10 +43,6 @@ func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
 	return ec.SquawkCodePool.Return(code)
 }
 
-func (ec *ERAMComputer) DeleteAircraft(ac *Aircraft) {
-	// RETURN SQUAWK CODE
-}
-
 func (ec *ERAMComputer) Update(s *Sim) {
 }
 
@@ -118,7 +114,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 			continue
 		}
 
-		fp := sc.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)) // we know departures have ADSB==ACID
+		fp := sc.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		if fp == nil {
 			// This shouldn't happen in general but may happen if the FP
 			// was modified to change the ACID.
@@ -225,20 +221,6 @@ func (sc *STARSComputer) returnListIndex(idx int) {
 	if idx != 0 {
 		sc.AvailableIndices = append(sc.AvailableIndices, idx)
 	}
-}
-
-func (sc *STARSComputer) DeleteAircraft(ac *Aircraft) {
-	if fp := ac.STARSFlightPlan; fp != nil {
-		sc.returnListIndex(fp.ListIndex)
-		sc.SquawkCodePool.Return(fp.AssignedSquawk)
-	}
-	if fp := sc.takeFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil {
-		sc.returnListIndex(fp.ListIndex)
-		sc.SquawkCodePool.Return(fp.AssignedSquawk)
-	}
-
-	sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
-		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 }
 
 /*

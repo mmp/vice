@@ -158,8 +158,20 @@ func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 func (s *Sim) deleteAircraft(ac *Aircraft) {
 	delete(s.Aircraft, ac.ADSBCallsign)
 
-	s.ERAMComputer.DeleteAircraft(ac)
-	s.STARSComputer.DeleteAircraft(ac)
+	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
+		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
+
+	fp := ac.STARSFlightPlan // associated?
+	if fp == nil {
+		// Do we have a flight plan sitting around for an unassociated track?
+		fp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign))
+	}
+
+	if fp != nil {
+		delete(s.Handoffs, fp.ACID)
+		delete(s.PointOuts, fp.ACID)
+		s.deleteFlightPlan(fp)
+	}
 }
 
 func (s *Sim) DeleteAllAircraft(tcp string) error {
@@ -419,22 +431,27 @@ func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID
 func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	found := false
 
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.TrackingController == tcp && ac.STARSFlightPlan.ACID == acid {
+			s.deleteFlightPlan(ac.STARSFlightPlan)
 			ac.STARSFlightPlan = nil
-
-			s.ERAMComputer.DeleteAircraft(ac)
-			s.STARSComputer.DeleteAircraft(ac)
-			found = true
+			return nil
 		}
 	}
 
-	fp := s.STARSComputer.takeFlightPlanByACID(acid)
-	found = found || fp != nil
+	if fp := s.STARSComputer.takeFlightPlanByACID(acid); fp != nil {
+		s.deleteFlightPlan(fp)
+		return nil
+	}
 
-	return util.Select(found, nil, ErrNoMatchingFlightPlan)
+	return ErrNoMatchingFlightPlan
+}
+
+func (s *Sim) deleteFlightPlan(fp *STARSFlightPlan) {
+	s.STARSComputer.returnListIndex(fp.ListIndex)
+	s.STARSComputer.SquawkCodePool.Return(fp.AssignedSquawk)
+	s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
 }
 
 func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
