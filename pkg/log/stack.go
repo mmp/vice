@@ -7,6 +7,7 @@ package log
 import (
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"strings"
 )
 
@@ -44,4 +45,8 @@ func Callstack(fr []StackFrame) []StackFrame {
 		}
 	}
 	return fr
+}
+
+func (f StackFrame) String() string {
+	return f.File + ":" + strconv.Itoa(f.Line) + ":" + f.Function
 }
