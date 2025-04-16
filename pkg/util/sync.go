@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	gomath "math"
 	"runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -82,6 +83,7 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 				lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
 					int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
 					runtime.NumGoroutine())
+				lg.Errorf("Callstack for who holds: %s", strings.Join(MapSlice(l.acqStack, func(f log.StackFrame) string { return f.String() }), " | "))
 			}
 		}
 	}
