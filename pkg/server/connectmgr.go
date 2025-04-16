@@ -183,7 +183,7 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
 
 	case remoteServerConn := <-cm.remoteSimServerChan:
 		if err := remoteServerConn.Err; err != nil {
-			lg.Warn("Unable to connect to remote server", slog.Any("error", err))
+			lg.Info("Unable to connect to remote server", slog.Any("error", err))
 
 			if err.Error() == ErrRPCVersionMismatch.Error() {
 				cm.serverRPCVersionMismatch = true
