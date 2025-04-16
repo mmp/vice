@@ -471,6 +471,11 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 				return false
 			}
 
+			if !fp.Location.IsZero() {
+				// Unsupported DBs aren't included in the list.
+				return false
+			}
+
 			// TODO: handle consolidation, etc.
 			if fp.TrackingController == ctx.UserTCP {
 				return true
