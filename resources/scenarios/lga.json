@@ -1,30 +1,24 @@
 {
   "tracon": "N90",
   "airports": {
+    "KFRG": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KDXR": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KOXC": { "vfr": { "random_routes": { "rate": 7 } } },
+    "11N": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KMMU": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KCDW": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KBDR": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KFWN": { "vfr": { "random_routes": { "rate": 3 } } },
+    "47N": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KMJX": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPOU": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KPNE": { "vfr": { "random_routes": { "rate": 7 } } },
     "KLGA": {
       "name": "LaGuardia",
       "approaches": {
-        "I4": {
-          "runway": "4",
-          "type": "ILS",
-          "waypoints": [
-            "GGREG/iaf ZARID/a4000+ VADDR/a4000+ JACIE/a4000+ NECOL/a4000+ VARAZ/iaf/a4000+ BENNG/if/a3000 RAHEL/a1800 DNNIS/faf/a1700 WARIN/a640"
-          ]
-        },
-        "I22": {
-          "runway": "22",
-          "type": "ILS",
-          "waypoints": [
-            "YOMAN/if/a3000 GREKO/faf/a1900"
-          ]
-        },
-        "I13": {
-          "runway": "13",
-          "type": "ILS",
-          "waypoints": [
-            "PAYMI/if/a2800 STEED/faf/a1900 COROR/a800"
-          ]
-        },
+        "I4": { "cifp_id": "I4" },
+        "I22": { "cifp_id": "I22" },
+        "I13": { "cifp_id": "I13" },
         "R31": {
           "full_name": "RNAV X Runway 31",
           "runway": "31",
@@ -41,14 +35,7 @@
             "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+"
           ]
         },
-        "L31": {
-          "full_name": "Localizer Runway 31",
-          "runway": "31",
-          "type": "ILS",
-          "waypoints": [
-            "QUENE/if/a1700 FABRY/faf/a1700"
-          ]
-        }
+        "L31": { "cifp_id": "L31" }
       },
       "departure_routes": {
         "4": {
@@ -1469,91 +1456,76 @@
     "EWR_APP": {
       "frequency": 128550,
       "radio_name": "New York approach",
-      "scope_char": "P",
       "sector_id": "4P"
     },
     "EWR_DEP": {
       "frequency": 119200,
       "radio_name": "New York departure",
-      "scope_char": "N",
       "sector_id": "4N"
     },
     "FRG_TWR": {
       "frequency": 118800,
       "radio_name": "Republic tower",
-      "scope_char": "M",
       "sector_id": "2M"
     },
     "HVN_TWR": {
       "frequency": 124800,
       "radio_name": "New Haven tower",
-      "scope_char": "T",
       "sector_id": "3P"
     },
     "ISP_TWR": {
       "frequency": 119300,
       "radio_name": "Long Island MacArthur tower",
-      "scope_char": "T",
       "sector_id": "3C"
     },
     "JFK_APP": {
       "frequency": 128125,
       "radio_name": "New York approach",
-      "scope_char": "G",
       "sector_id": "2G"
     },
     "JFK_DEP": {
       "frequency": 135900,
       "radio_name": "New York departure",
-      "scope_char": "J",
       "sector_id": "2J"
     },
     "JFK_TWR": {
       "frequency": 119100,
       "radio_name": "Kennedy tower",
-      "scope_char": "T",
       "sector_id": "2W"
     },
     "LGA_V_APP": {
       "frequency": 120800,
       "radio_name": "New York approach",
-      "scope_char": "V",
       "sector_id": "1V"
     },
     "LGA_D_APP": {
       "frequency": 127300,
       "radio_name": "New York approach",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "LGA_F_APP": {
       "frequency": 127300,
       "radio_name": "New York approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "radio_name": "New York departure",
-      "scope_char": "L",
       "sector_id": "1L"
     },
     "LGA_Y_DEP": {
       "frequency": 120550,
       "radio_name": "New York departure",
-      "scope_char": "Y",
       "sector_id": "1Y"
     },
     "LGA_TWR": {
       "frequency": 118700,
       "radio_name": "LaGuardia tower",
-      "scope_char": "T",
       "sector_id": "1I"
     },
     "NY_B_CTR": {
       "frequency": 125325,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C56",
       "facility_id": "C",
       "eram_facility": true
@@ -1561,7 +1533,6 @@
     "NY_C_CTR": {
       "frequency": 132175,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C34",
       "facility_id": "C",
       "eram_facility": true
@@ -1569,7 +1540,6 @@
     "NY_F_CTR": {
       "frequency": 128300,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "C66",
       "facility_id": "C",
       "eram_facility": true
@@ -1577,25 +1547,21 @@
     "NY_LE_APP": {
       "frequency": 126800,
       "radio_name": "New York departure",
-      "scope_char": "E",
       "sector_id": "5E"
     },
     "NY_LS_APP": {
       "frequency": 124750,
       "radio_name": "New York departure",
-      "scope_char": "S",
       "sector_id": "5S"
     },
     "NY_LN_APP": {
       "frequency": 118170,
       "radio_name": "New York departure",
-      "scope_char": "T",
       "sector_id": "5T"
     },
     "NY_LW_APP": {
       "frequency": 120850,
       "radio_name": "New York departure",
-      "scope_char": "W",
       "sector_id": "5W"
     }
   },
@@ -2513,6 +2479,7 @@
   },
   "stars_config": {
   "center": "KLGA",
+  "pdb": { "hide_gs": true },
   "coordination_fixes": {
     "MERIT": [
       {

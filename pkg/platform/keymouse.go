@@ -8,10 +8,12 @@ import (
 	"strings"
 
 	"github.com/mmp/imgui-go/v4"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type MouseState struct {
 	Pos           [2]float32
+	DeltaPos      [2]float32
 	Down          [MouseButtonCount]bool
 	Clicked       [MouseButtonCount]bool
 	Released      [MouseButtonCount]bool
@@ -38,8 +40,9 @@ func (g *glfwPlatform) GetMouse() *MouseState {
 	wx, wy := io.MouseWheel()
 
 	m := &MouseState{
-		Pos:   [2]float32{pos.X, pos.Y},
-		Wheel: [2]float32{wx, wy},
+		Pos:      [2]float32{pos.X, pos.Y},
+		DeltaPos: util.Select(g.mouseDeltaMode, g.mouseDelta, [2]float32{}),
+		Wheel:    [2]float32{wx, wy},
 	}
 
 	for b := 0; b < MouseButtonCount; b++ {
@@ -120,7 +123,8 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 		keyboard.Pressed[KeyEnd] = nil
 	}
 
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) {
+	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) ||
+		imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyKeyPadEnter)) {
 		keyboard.Pressed[KeyEnter] = nil
 	}
 	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {

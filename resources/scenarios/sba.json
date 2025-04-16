@@ -1,54 +1,37 @@
 {
     "tracon": "SBA",
     "airports": {
+		"KIZA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KLPC": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KPRB": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KCMA": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KOXR": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KDLO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KMIT": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KSZP": { "vfr": { "random_routes": { "rate": 10 } } },
         "KSBA": {
             "approaches": {
-                "R7": {
-                    "runway": "7",
-                    "type": "RNAV",
-					 "full_name": "RNAV Runway 7",
+              "R7": { "cifp_id": "R7" },
+              "I7": { "cifp_id": "I7" },
+              "V25": { "cifp_id": "S25" },
+	      "V25T": {
+                "runway": "25",
+                "type": "RNAV",
+		"full_name": "RNAV Visual Runway 25 (TF)",
                     "waypoints": [
-                        "AFOXY/iaf/a4400+ RIMVE/a4400+ ECEVA/if/a2800+ NAPPS/faf/a1800",
-						"GOLET LOBER/iaf/a2800+ ECEVA/if/a2800+ NAPPS/faf/a1800"
+                      "GVO LOVIE/a8000+ ARIIN/a6000+ FREBD VANCA/s210/a4000+ LARRS STUCC TOUDD/a1900+/faf RECTR/a1100+ PANTZ/a600 FISHI/a240",
+		      "BLOSS/a3000+ STUCC TOUDD/a1900+/faf RECTR/a1100+ PANTZ/a600 FISHI/a240",
+		      "JAAPE/a3000+ STUCC TOUDD/a1900+/faf RECTR/a1100+ PANTZ/a600 FISHI/a240"
                     ]
                 },
-                "I7": {
-                    "runway": "7",
-                    "type": "ILS",
-					"full_name": "ILS Runway 7",
-                    "waypoints": [
-                        "GVO/iaf/a5000+ HABUT/if/a3500+ GOYED/a2700+ NAPPS/faf/a1800",
-						"GOLET/iaf/a4000+ LOBER/a4000+ HABUT/if/a3500+ GOYED/a2700+ NAPPS/faf/a1800"
-                    ]
-                },
-                "V25": {
-                    "runway": "25",
-                    "type": "ILS",
-					"full_name": "VOR Runway 25",
-                    "waypoints": [
-                        "KWANG/iaf/a2100+ ZACKS/a2100+ MARNS",
-						"ZACKS/iaf/nopt180/pt45/a3000 MARNS",
-						"GVO/a6000+ ZACKS/iaf/nopt180/pt45/a3000 MARNS"
-                    ]
-                },
-				"V25T": {
+	      "V25R": {
                     "runway": "25",
                     "type": "RNAV",
-					 "full_name": "RNAV Visual Runway 25 (TF)",
-                    "waypoints": [
-                        "GVO LOVIE/a8000+ ARIIN/a6000+ FREBD VANCA/s210/a4000+ LARRS STUCC TOUDD/a1900+ RECTR/a1100+ PANTZ/a600 FISHI/a240",
-						"BLOSS/a3000+ STUCC TOUDD/a1900+ RECTR/a1100+ PANTZ/a600 FISHI/a240",
-						"JAAPE/a3000+ STUCC TOUDD/a1900+ RECTR/a1100+ PANTZ/a600 FISHI/a240"
-                    ]
-                },
-				"V25R": {
-                    "runway": "25",
-                    "type": "RNAV",
-					 "full_name": "RNAV Visual Runway 25 (RF)",
-                    "waypoints": [
-                        "GVO LOVIE/a8000+ ARIIN/a6000+ WODDI/a4000+/s210/arc2.1CFXMP WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+ RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",
-						"BLOSS/a3000+/s210 WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+ RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",
-						"JAAPE/a3000+/s210 TOUDD/a1900+ RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240"
+		"full_name": "RNAV Visual Runway 25 (RF)",
+                "waypoints": [
+                  "GVO LOVIE/a8000+ ARIIN/a6000+ WODDI/a4000+/s210/arc2.1CFXMP WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+/faf RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",
+		  "BLOSS/a3000+/s210 WGNRR/a2600+/arc2.1CFXMP TOUDD/a1900+/faf RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240",
+		  "JAAPE/a3000+/s210 TOUDD/a1900+/faf RECTR/a1100+ BRRAD/a730/arc1.3CFXMN FLUDS/a560 ENNEF/a370/arc1.3CFVXW JAIOH/a240"
                     ]
                 }
             },
@@ -208,36 +191,11 @@
             "tower_list": 1
         },
 	    "KSBP": {
+			"vfr": { "random_routes": { "rate": 10 } },
             "approaches": {
-                "R11": {
-                    "runway": "11",
-                    "type": "RNAV",
-					 "full_name": "RNAV Runway 11",
-                    "waypoints": [
-                        "PRB/a4300+ NACIN/iaf/a4300+ CREPE/if/a3400+ JAMPO/faf/a2400 ZIRVA",
-						"CALIS/iaf/a3400+ CREPE/if/a3400+ JAMPO/faf/a2400 ZIRVA",
-						"LOGVE/iaf/a3400+ CREPE/if/a3400+ JAMPO/faf/a2400 ZIRVA"
-                    ]
-                },
-                "I11": {
-                    "runway": "11",
-                    "type": "ILS",
-					"full_name": "ILS Runway 11",
-                    "waypoints": [
-                        "PRB OXUNE/iaf/a4800+ CREPE/hilpt/a4000-4700/nopt180 JAMPO/a2400",
-						"FRAMS/iaf CREPE/iaf/hilpt/a4000-4700/nopt180 JAMPO/a2400"
-                    ]
-                },
-                "R29": {
-                    "runway": "29",
-                    "type": "RNAV",
-					"full_name": "RNAV Runway 29",
-                    "waypoints": [
-                        "KIKII CADAB/iaf/lhilpt/a3900-6000/nopt180 HALDA/a2900+ CAVLI/a2400 WUTUB",
-						"WYNNR/iaf CADAB/iaf/lhilpt/a3900-6000/nopt180 HALDA/a2900+ CAVLI/a2400 WUTUB",
-						"FABEG/iaf CADAB/iaf/lhilpt/a3900-6000/nopt180 HALDA/a2900+ CAVLI/a2400 WUTUB"
-                    ]
-                }
+              "R11": { "cifp_id": "R11" },
+              "I11": { "cifp_id": "I11" },
+              "R29": { "cifp_id": "R29" }
             },
             "departure_routes": {
                 "11": {
@@ -353,32 +311,12 @@
             },
             "tower_list": 1
         },
-		"KSMX": {
+      "KSMX": {
+		  "vfr": { "random_routes": { "rate": 10 } },
             "approaches": {
-                "I12": {
-                    "runway": "12",
-                    "type": "ILS",
-					 "full_name": "ILS Runway 12",
-                    "waypoints": [
-                        "MQO/iaf/nopt WINCH/if/iaf/lhilpt/a3300+ HILDY/faf/a2000"
-                    ]
-                },
-                "R12": {
-                    "runway": "12",
-                    "type": "RNAV",
-					"full_name": "RNAV Runway 12",
-                    "waypoints": [
-                        "MQO/iaf/nopt WINCH/if/iaf/lhilpt/a3300+ DEMFA/faf/a2000"
-                    ]
-                },
-                "R30": {
-                    "runway": "30",
-                    "type": "RNAV",
-					"full_name": "RNAV Runway 30",
-                    "waypoints": [
-                        "GVO/iaf NIRLE ELZUS/if/a3500+ PAMJI/a2500+ CIMSO/a2200 ANIBY/a1780"
-                    ]
-                }
+              "I12": { "cifp_id": "I12" },
+              "R12": { "cifp_id": "R12" },
+              "R30": { "cifp_id": "R30" }
             },
             "departure_routes": {
                 "12": {
@@ -767,7 +705,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C14"
         },
 		"LAX_15_CTR": {
@@ -775,7 +712,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C15"
         },
 		"LAX_25_CTR": {
@@ -783,7 +719,6 @@
             "radio_name": "Los Angeles Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C25"
         },
 		"OAK_10_CTR": {
@@ -791,55 +726,46 @@
             "radio_name": "Oakland Center",
             "facility_id": "O",
             "eram_facility": true,
-            "scope_char": "O",
             "sector_id": "O10"
         },
 		"NTD_APP": {
             "frequency": 124700,
             "radio_name": "Point Mugu Approach",
-            "scope_char": "M",
             "sector_id": "1M"
         },
         "SBA_R_APP": {
             "frequency": 124150,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "R",
             "sector_id": "1R"
         },
 		"SBA_H_APP": {
             "frequency": 125400,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "H",
             "sector_id": "1H"
         },
 		"SBA_E_APP": {
             "frequency": 120550,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         },
 		"SBA_I_APP": {
             "frequency": 127725,
             "radio_name": "Santa Barbara Approach",
-            "scope_char": "I",
             "sector_id": "1I"
         },
 		"SBA_TWR": {
             "frequency": 119700,
             "radio_name": "Santa Barbara Tower",
-            "scope_char": "S",
             "sector_id": "1S"
 		},
 		"SBP_TWR": {
             "frequency": 124000,
             "radio_name": "San Luis Tower",
-            "scope_char": "P",
             "sector_id": "1P"
 		},
 		"SMX_TWR": {
             "frequency": 118300,
             "radio_name": "Santa Maria Tower",
-            "scope_char": "X",
             "sector_id": "1X"
 		}
     },

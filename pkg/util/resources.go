@@ -5,11 +5,14 @@
 package util
 
 import (
+	"bytes"
 	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
+
+	"github.com/klauspost/compress/zstd"
 )
 
 func initResourcesFS() *fs.StatFS {
@@ -71,29 +74,50 @@ func GetResourcesFS() fs.StatFS {
 	return *resourcesFS
 }
 
-// LoadResource loads the specified file from the resources directory, decompressing it if
-// it is zstd compressed. It panics if the file is not found; missing resources are pretty
-// much impossible to recover from.
-func LoadResource(path string) []byte {
-	b := LoadRawResource(path)
-
-	if filepath.Ext(path) == ".zst" {
-		s, err := DecompressZstd(string(b))
-		if err != nil {
-			panic(err)
-		}
-		return []byte(s)
-	}
-
-	return b
+// Unfortunately, unlike io.ReadCloser, the zstd Decoder's Close() method
+// doesn't return an error, so we need to make our own custom ReadCloser
+// interface.
+type ResourceReadCloser interface {
+	io.Reader
+	Close()
 }
 
-func LoadRawResource(path string) []byte {
-	b, err := fs.ReadFile(*resourcesFS, path)
+type bytesReadCloser struct {
+	*bytes.Reader
+}
+
+func (bytesReadCloser) Close() {}
+
+// LoadResource provides a ResourceReadCloser to access the specified file from
+// the resources directory; if it's zstd compressed, the Reader will
+// handle decompression transparently. It panics if the file is not found
+// since missing resources are pretty much impossible to recover from.
+func LoadResource(path string) ResourceReadCloser {
+	f, err := fs.ReadFile(*resourcesFS, path)
 	if err != nil {
 		panic(err)
 	}
+	br := bytesReadCloser{bytes.NewReader(f)}
 
+	if filepath.Ext(path) == ".zst" {
+		zr, err := zstd.NewReader(br)
+		if err != nil {
+			panic(err)
+		}
+		return zr
+	}
+
+	return br
+}
+
+func LoadResourceBytes(path string) []byte {
+	r := LoadResource(path)
+	defer r.Close()
+
+	b, err := io.ReadAll(r)
+	if err != nil {
+		panic(err)
+	}
 	return b
 }
 

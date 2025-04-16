@@ -2654,7 +2654,7 @@
     },
     "speed": {
       "min": 65,
-      "landing": 100,
+      "landing": 90,
       "cruise": 195,
       "cruiseM": null,
       "max": 210,
@@ -2678,10 +2678,10 @@
       "lahso": 5,
       "cwt": "I"
     },
-    "ceiling": 15500,
+    "ceiling": 31000,
     "rate": {
-      "climb": 900,
-      "descent": 900,
+      "climb": 2500,
+      "descent": 2500,
       "accelerate": 4.5,
       "decelerate": 3
     },
@@ -2692,9 +2692,9 @@
     "speed": {
       "min": 90,
       "landing": 120,
-      "cruise": 235,
+      "cruise": 290,
       "cruiseM": null,
-      "max": 250,
+      "max": 300,
       "maxM": null
     },
     "capability": {
@@ -7467,7 +7467,7 @@
     },
     "speed": {
       "min": 130,
-      "landing": 135,
+      "landing": 120,
       "cruise": 449,
       "cruiseM": 0.78,
       "max": 472,
@@ -8071,6 +8071,302 @@
     }
   },
   {
+    "name": "Strike Eagle",
+    "icao": "F15",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "G"
+    },
+    "ceiling": 50000,
+    "rate": {
+      "climb": 5000,
+      "descent": 5000,
+      "accelerate": 6,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 150,
+      "landing": 160,
+      "cruise": 450,
+      "cruiseM": 0.78,
+      "max": 460,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Super Hornet",
+    "icao": "F18S",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "G"
+    },
+    "ceiling": 50000,
+    "rate": {
+      "climb": 5000,
+      "descent": 5000,
+      "accelerate": 6,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 150,
+      "landing": 160,
+      "cruise": 450,
+      "cruiseM": 0.78,
+      "max": 460,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Fighting Falcon",
+    "icao": "F16",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "G"
+    },
+    "ceiling": 50000,
+    "rate": {
+      "climb": 5000,
+      "descent": 5000,
+      "accelerate": 6,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 150,
+      "landing": 160,
+      "cruise": 450,
+      "cruiseM": 0.78,
+      "max": 460,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Northrup F5 Tiger",
+    "icao": "F5",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "I"
+    },
+    "ceiling": 50000,
+    "rate": {
+      "climb": 5000,
+      "descent": 5000,
+      "accelerate": 6,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 155,
+      "landing": 165,
+      "cruise": 480,
+      "cruiseM": 0.78,
+      "max": 460,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Northrup Talon",
+    "icao": "T38",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "I"
+    },
+    "ceiling": 50000,
+    "rate": {
+      "climb": 5000,
+      "descent": 5000,
+      "accelerate": 6,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 150,
+      "landing": 160,
+      "cruise": 450,
+      "cruiseM": 0.78,
+      "max": 460,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Warthog/Thuderbolt",
+    "icao": "A10",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "S",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "G"
+    },
+    "ceiling": 34000,
+    "rate": {
+      "climb": 3000,
+      "descent": 3000,
+      "accelerate": 6,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 130,
+      "landing": 140,
+      "cruise": 420,
+      "cruiseM": 0.78,
+      "max": 460,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Boeing Globemaster",
+    "icao": "C17",
+    "engines": {
+      "number": 4,
+      "type": "J"
+    },
+    "weightClass": "H",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "C"
+    },
+    "ceiling": 45000,
+    "rate": {
+      "climb": 2000,
+      "descent": 2500,
+      "accelerate": 3,
+      "decelerate": 2
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 120,
+      "landing": 115,
+      "cruise": 310,
+      "cruiseM": 0.75,
+      "max": 460,
+      "maxM": 0.76
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Lockheed C-130 Hercules",
+    "icao": "C30J",
+    "engines": {
+      "number": 4,
+      "type": "T"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": null,
+      "cwt": "F"
+    },
+    "ceiling": 33000,
+    "rate": {
+      "climb": 1500,
+      "descent": 1800,
+      "accelerate": 4.5,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.905,
+      "landing": 1.478
+    },
+    "speed": {
+      "min": 120,
+      "landing": 130,
+      "cruise": 330,
+      "cruiseM": null,
+      "max": 330,
+      "maxM": null
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
     "name": "Lockheed C-130 Hercules",
     "icao": "C130",
     "engines": {
@@ -8418,8 +8714,8 @@
     },
     "ceiling": 45000,
     "rate": {
-      "climb": 2000,
-      "descent": 2200,
+      "climb": 2500,
+      "descent": 2500,
       "accelerate": 4.5,
       "decelerate": 3
     },
@@ -8541,7 +8837,7 @@
     },
     "speed": {
       "min": 120,
-      "landing": 135,
+      "landing": 130,
       "cruise": 470,
       "cruiseM": 0.85,
       "max": 495,
@@ -8578,7 +8874,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 130,
+      "landing": 120,
       "cruise": 460,
       "cruiseM": 0.77,
       "max": 478,
@@ -8615,7 +8911,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 130,
+      "landing": 120,
       "cruise": 460,
       "cruiseM": 0.77,
       "max": 478,
@@ -8652,7 +8948,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 130,
+      "landing": 125,
       "cruise": 460,
       "cruiseM": 0.79,
       "max": 478,
@@ -8800,7 +9096,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 140,
+      "landing": 135,
       "cruise": 424,
       "cruiseM": 0.76,
       "max": 470,
@@ -9371,7 +9667,7 @@
     "icao": "E75L",
     "engines": {
       "number": 2,
-      "type": "G"
+      "type": "J"
     },
     "weightClass": "L",
     "category": {
@@ -9392,7 +9688,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 130,
+      "landing": 125,
       "cruise": 445,
       "cruiseM": 0.78,
       "max": 461,
@@ -9429,7 +9725,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 135,
+      "landing": 125,
       "cruise": 445,
       "cruiseM": 0.78,
       "max": 461,
@@ -9603,8 +9899,8 @@
     },
     "ceiling": 41000,
     "rate": {
-      "climb": 2400,
-      "descent": 2200,
+      "climb": 2500,
+      "descent": 2500,
       "accelerate": 5.9,
       "decelerate": 3
     },
@@ -9614,7 +9910,7 @@
     },
     "speed": {
       "min": 110,
-      "landing": 135,
+      "landing": 125,
       "cruise": 475,
       "cruiseM": 0.78,
       "max": 461,
@@ -9762,7 +10058,7 @@
     },
     "speed": {
       "min": 104,
-      "landing": 135,
+      "landing": 110,
       "cruise": 450,
       "cruiseM": 0.79,
       "max": 466,
@@ -10022,6 +10318,43 @@
     },
     "speed": {
       "min": 98,
+      "landing": 125,
+      "cruise": 485,
+      "cruiseM": 0.83,
+      "max": 498,
+      "maxM": 0.86
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Bombardier Global 7000",
+    "icao": "GL7T",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "F"
+    },
+    "ceiling": 51000,
+    "rate": {
+      "climb": 3000,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.689,
+      "landing": 0.814
+    },
+    "speed": {
+      "min": 98,
       "landing": 135,
       "cruise": 485,
       "cruiseM": 0.83,
@@ -10110,6 +10443,43 @@
   {
     "name": "Gulfstream G550",
     "icao": "GLF5",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "M",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "F"
+    },
+    "ceiling": 51000,
+    "rate": {
+      "climb": 3100,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.57,
+      "landing": 0.88
+    },
+    "speed": {
+      "min": 98,
+      "landing": 130,
+      "cruise": 485,
+      "cruiseM": 0.83,
+      "max": 498,
+      "maxM": 0.86
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Gulfstream G650",
+    "icao": "GLF6",
     "engines": {
       "number": 2,
       "type": "J"
@@ -10445,7 +10815,7 @@
     "icao": "JS41",
     "engines": {
       "number": 2,
-      "type": "S"
+      "type": "T"
     },
     "weightClass": "L",
     "category": {

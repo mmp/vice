@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 
+	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -26,7 +27,6 @@ type audioEngine struct {
 	pinner  runtime.Pinner
 	effects []audioEffect
 	mu      sync.Mutex
-	config  *Config
 	volume  int
 }
 
@@ -37,15 +37,13 @@ type audioEffect struct {
 	playOffset     int
 }
 
-func (a *audioEngine) Initialize(config *Config, lg *log.Logger) {
+func (a *audioEngine) Initialize(lg *log.Logger) {
 	lg.Info("Starting to initialize audio")
 
-	a.config = config
 	a.volume = 10
 
 	user := (unsafe.Pointer)(a)
 	a.pinner.Pin(user)
-	a.pinner.Pin(config)
 
 	spec := sdl.AudioSpec{
 		Freq:     AudioSampleRate,
@@ -55,7 +53,9 @@ func (a *audioEngine) Initialize(config *Config, lg *log.Logger) {
 		Callback: sdl.AudioCallback(C.audioCallback),
 		UserData: user,
 	}
-	sdl.OpenAudio(&spec, nil)
+	if err := sdl.OpenAudio(&spec, nil); err != nil {
+		lg.Errorf("SDL OpenAudio: %v", err)
+	}
 	sdl.PauseAudio(false)
 
 	lg.Info("Finished initializing audio")
@@ -73,6 +73,16 @@ func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 	return len(a.effects), nil
 }
 
+func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
+	if dec, pcm, err := minimp3.DecodeFull(mp3); err != nil {
+		return -1, err
+	} else if dec.Channels != 1 {
+		return -1, fmt.Errorf("expected 1 channel, got %d", dec.Channels)
+	} else {
+		return a.AddPCM(pcm, dec.SampleRate)
+	}
+}
+
 func (a *audioEngine) SetAudioVolume(vol int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -84,7 +94,7 @@ func (a *audioEngine) PlayAudioOnce(index int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	if !a.config.AudioEnabled || index == 0 {
+	if index == 0 {
 		return
 	}
 
@@ -95,7 +105,7 @@ func (a *audioEngine) StartPlayAudioContinuous(index int) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
-	if !a.config.AudioEnabled || index == 0 {
+	if index == 0 {
 		return
 	}
 

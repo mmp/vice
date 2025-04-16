@@ -288,12 +288,12 @@
             "approaches": {
                 "I5": {
                     "type": "ILS",
-                    "waypoints": ["FOBBS/arc18.24 WHALY HERKK/hilpt BIGEE"],
+                    "waypoints": ["FOBBS/arc18.24 WHALY/nopt HERKK/if BIGEE/hilpt/iaf/faf/a2600+/pta2200 "],
                     "runway": "5"
                 },
                 "I23": {
                     "type": "ILS",
-                    "waypoints": ["FOBBS/arc13 BEENS BELCH/hilpt"],
+                    "waypoints": ["FOBBS/arc13 BEENS/if/a2600+ BELCH/hilpt/iaf/faf/a2600+/pta2300"],
                     "runway": "23"
                 }
             },
@@ -574,7 +574,6 @@
         "BOS_37_CTR": {
             "frequency": 134700,
             "radio_name": "Boston Center",
-            "scope_char": "C",
             "sector_id": "C37",
             "facility_id": "C",
             "eram_facility": true
@@ -582,37 +581,31 @@
         "BDL_B_APP": {
             "frequency": 123950,
             "radio_name": "Bradley Approach",
-            "scope_char": "B",
             "sector_id": "1B"
         },
         "BDL_F_APP": {
             "frequency": 127225,
             "radio_name": "Bradley Approach",
-            "scope_char": "F",
             "sector_id": "1F"
         },
         "BDL_H_APP": {
             "frequency": 127800,
             "radio_name": "Bradley Approach",
-            "scope_char": "H",
             "sector_id": "1H"
         },
         "BDL_W_APP": {
             "frequency": 125350,
             "radio_name": "Bradley Approach",
-            "scope_char": "W",
             "sector_id": "1W"
         },
         "BDL_E_APP": {
             "frequency": 119000,
             "radio_name": "Bradley Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         },
         "BDL_TWR": {
             "frequency": 120300,
             "radio_name": "Bradley Tower",
-            "scope_char": "T",
             "sector_id": "1T"
         },
         "HFD_TWR": {
@@ -630,7 +623,6 @@
         "CEF_TWR": {
             "frequency": 118900,
             "radio_name": "Westover Tower",
-            "scope_char": "C",
             "sector_id": "1C"
         },
         "BAF_TWR": {
@@ -642,28 +634,24 @@
         "PVD_APP": {
             "frequency": 123675,
             "radio_name": "Providence Approach",
-            "scope_char": "P",
             "sector_id": "2P",
             "facility_id": "1"
         },
         "BOS_APP": {
             "frequency": 133000,
             "radio_name": "Boston Approach",
-            "scope_char": "A",
             "sector_id": "D",
             "facility_id": "1"
         },
         "ISP_APP": {
             "frequency": 120050,
             "radio_name": "New York Approach",
-            "scope_char": "N",
             "sector_id": "3N",
             "facility_id": "4"
         },
         "ALB_APP": {
             "frequency": 118050,
             "radio_name": "Albany Approach",
-            "scope_char": "A",
             "sector_id": "1A",
             "facility_id": "4"
         }

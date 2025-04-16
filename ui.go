@@ -15,17 +15,15 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
-	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -65,233 +63,6 @@ var (
 	iconPNG string
 	//go:embed icons/sad-tower-alpha-128x128.png
 	sadTowerPNG string
-
-	whatsNew []string = []string{
-		"Added EWR scenarios, including both departure and approach.",
-		"Added Liberty departure scenarios.",
-		"Improved routing of departures beyond their exit fix.",
-		"Fixed a bug where aircraft on RNAV arrivals wouldn't descend.",
-		"Each scenario has a default video map, selected automatically.",
-		"If an aircraft given approach clearance is later vectored, approach clearance is now canceled.",
-		"Improved spawn positions and hand-off locations for JFK arrivals.",
-		"Added F11 TRACON scenarios (KMCO, KSFB, KISM, KORL...)",
-		"Font sizes for UI elements can now be set in the settings window",
-		"Fixed a crash related to handing off aircraft",
-		"Added go arounds",
-		"Added ABE TRACON scenarios",
-		"Added scenarios for KJAX",
-		"Updated PHL scenarios for recent arrival changes",
-		"Fixed bug with localizer intercept that made aircraft hang in the air",
-		"Fixed a few bugs in the KJAX scenario",
-		"Added ISP and HVN departures and arrivals to the JFK_APP scenario",
-		"Added LGA departure and arrival scenarios",
-		"Vice now remembers the active aircraft when you quit and restores the simulation when you launch it again",
-		"When vice is paused, hovering the mouse on a radar track shows the directions it has been given",
-		"Fixed a bug where the STARS window wouldn't display anything",
-		"All new flight modeling engine supports procedure turns and more accurate turns to intercept",
-		"Updated approaches to include procedure turns, where appropriate",
-		"Fixed very small fonts on Windows systems with high-DPI displays",
-		"Added \"depart fix at heading\" and \"cross fix at altitude/speed\" commands",
-		"Added \"cancel speed restrictions\" and \"fly present heading\" commands",
-		"Handed-off departures don't start to climb until they are clicked post-handoff",
-		"Improved wind modeling",
-		"Fixed a bug that would cause arrivals to fly faster than the aircraft is capable of",
-		"Fixed bugs with arrivals not obeying crossing restrictions",
-		"Improved navigation model to better make crossing restrictions at fixes",
-		"Fixed *T in the STARS scope: the line is drawn starting with the first click",
-		"For facility engineers: an error is issued for any unused items in the scenario JSON files",
-		"Added support for multi-controller simulations(!!)",
-		"Added manual launch control option",
-		"Many new scenarios added, including C90, CLE, and CLT",
-		"Replaced the font used in the STARS radar scope",
-		"Fixed a few graphics bugs in the STARS radar scope",
-		"Fixed a rare crash with incorrect command input to the STARS scope",
-		"New scenarios covering the A80 (ATL) and A90 (BOS) TRACONS",
-		"Fixed a bug with drawing *P cones",
-		"Many improvements to the STARS DCB implementation",
-		"STARS now supports quick-look",
-		"Fixed a rare crash when manually adjusting launch rates",
-		"Numerous minor improvements to the STARS UI and functionality (including adding dwell mode)",
-		"Small fixes to the JAX and CLT scenario files",
-		"Added support for STARS FUSED mode (choose \"FUSED\" in the \"SITE\" menu in the DCB)",
-		"New commands: EC/ED: expedite climb/descent",
-		"New command: I: intercept the localizer",
-		"New commands: SMIN/SMAX: maintain slowest practical / maximum forward speed",
-		"New command: AFIX/CAPP: at FIX cleared APP approach",
-		"Altitude crossing restrictions are more flexible: CFIX/A100-, CFIX/A80+, CFIX/A140-160, etc.",
-		"Fixed a bug where arrivals would disappear with some scenarios",
-		"Various updates to the JAX, C90, and F11 scenarios",
-		"Added D01, KSAV, and KSDF scenarios",
-		"Allow altitude and speed instructions to be either simultaneous or consecutive",
-		"Added a new KAAC/KJKE scenario",
-		"Various minor bugfixes and STARS simulation improvements",
-		"Many improvements to the accuracy of the KAAC scenario",
-		"Fixed a bug where arrivals would sometimes climb after being cleared for the approach",
-		"Fixed a bug in the Windows installer that caused new scenarios (AAC, SAV, SDF) to not be installed locally",
-		"Added the ability to draw active departure, arrival, and approach routes on the radar scope",
-		"Added the D01 (Denver TRACON) scenario to single-user vice (the installer was missing it)",
-		"Added support for updating your Discord activity based on your vice activities (thanks, Samuel Valencia!)",
-		"Clicking the " + renderer.FontAwesomeIconKeyboard + " icon on the menubar gives a summary of vice's keyboard commands",
-		"Fixed bug with aircraft descending too early when flying procedure turns",
-		"Fixed bug with some departures trying to re-fly their initial departure route",
-		"Fixed multiple bugs with the handling of \"at or above\" altitude constraints",
-		"Fixed bug with the default DCB brightness being set to 0",
-		"Added DCA scenario",
-		"There is now a short delay before aircraft start to follow heading assignments",
-		"Added \"ID\" command for ident",
-		"Aircraft can now also be issued control commands by entering their callsign before the commands",
-		"Fixed bugs with endless go-arounds and with departures not obeying altitude restrictions",
-		"Fixed a bug that caused vice to sometimes crash after aircraft were given approach clearance",
-		"Fixed a bug where descending aircraft would stop descending when given approach clearance",
-		"Small fixes to the DCA scenario",
-		"Polished up handling of early hand-offs of departures in the STARS scope",
-		"Added L30 (Las Vegas) scenarios and a combined N90 (JFK+LGA+EWR) scenario",
-		"Important readbacks from pilots are now highlighted in red",
-		"Improved STARS *T to allow entering fix names and to show ETA",
-		"Added support for charted visual approaches",
-		"STARS allows control-shift click to initiate track (CRC style)",
-		"Secondary scratchpads are now supported",
-		"Fixed various navigation bugs",
-		"STARS: fixed a bug where RBL lines for *T that included aircraft weren't drawn",
-		"Added an option to hide the flight strips (Settings window, Flight Strips section)",
-		"Fixed a bug where inbound handoffs wouldn't send a radio contact message",
-		"Sped up loading of video maps so that vice launches more quickly",
-		"Added multiple new scenarios: S46, BHM, GSP (Aaron Flett), AUS (Jace Martin), P50 (Mike K)",
-		"Multi-controller servers can now be password-protected",
-		"Added \"TO\" command for \"contact tower\"",
-		"Various bugfixes with handoffs and approach navigation",
-		"Match real-world STARS alert sounds",
-		"Added new scenarios: D10 (Mike K), CYS, ASE, COS (Jud Lopez)",
-		"Fixed multiple bugs with handling of altitude and speed restrictions in departure routes",
-		"Increased acceleration and climb rate of departures to be more realistic",
-		"Fixed multiple bugs with point outs",
-		"Fixed bug in the STARS scope that required secondary scratchpads to be three characters",
-		"(Re-)added optional sound effect for accepted handoffs",
-		"Airspace warnings are inhibited for aircraft flying approaches",
-		"STARS: allow control-left-click in place of the third mouse button to highlight aircraft",
-		"STARS: actually use the LDB brightness setting for limited/partial datablocks",
-		"STARS: fix incorrect error message after issuing \"at fix, cleared approach\"",
-		"Added new scenarios: TPA (Connor Allen), SAN, SCT-BUR (Justin Nguyen), SCT (Eli Thompson), NCT, GJT (Jud Lopez)",
-		"Smaller scenario updates: D10 and JAX (Mike K), AUS (Jace Martin), LGA, JFK, COS, CLE, ASE, DCA, F11",
-		"Arc routes between fixes can now be accurately specified",
-		"STARS: more accurate simulation of STARS weather radar display",
-		"Added new syntax for issuing left/right turn in degrees: T10L, T20R, etc.",
-		"STARS: allow middle-click highlight of aircraft regardless of having their track",
-		"STARS: fixed bug with airport weather list flickering",
-		"Added new scenarios: SCT LAX (Jud Lopez), IND (Samuel Valencia), MKE (Yahya Nazimuddin), MIA (Mike K)",
-		"Scenario updates/bugfixes: TPA (Connor Allen), SCT ONT/SNA (Eli Thompson), A80, L30 (Michael Trokel)",
-		"STARS: added automated terminal proximity alert (ATPA) support",
-		"STARS: consolidated wake turbulence (CWT) categories are now shown in datablocks and used for ATPA in-trail requirements",
-		"Live weather can now be used in sims",
-		"STARS: fixed various small bugs related to when the FDB should be displayed",
-		"New scenarios: BDL (MerryArbitrary), D21 (Jackson Verdoorn), M98 (Jace Martin), P80 (Ethan Malimon)",
-		"Scenario updates: EWR (aq86_), LGA (Yi Zheng), MIA (Connor Allen), Y90 (MerryArbitrary, Nelson T)",
-		`Aircraft control commands (like "C80" for "climb and maintain 8,000") must now start with a comma`,
-		`Related: the scratchpad can now be set by entering text and slewing an aircraft`,
-		"Redirected handoffs are now supported and inter- and intra-facility handoffs are now handled more accurately",
-		`Added support for "force quicklook" to push a quicklook to another controller`,
-		`Added support for minimum safe altitude warnings (MSAW) for aircraft that are below the MVA`,
-		`CWT category updates and bugfixes`,
-		`Added support for global leader lines`,
-		`Limited datablocks are now supported (and used when appropriate)`,
-		`Handle various cases where the FDB should be displayed by default`,
-		`Fixed a bug where go-arounds would sometimes not contact departure`,
-		`Fixed a bug where live weather would occasionally cause vice to crash`,
-		`Fixed a bug where aircraft TAS would be too high at high altitudes`,
-		`Added support for ATC chat (prefix chat messages a '/' in the command prompt)`,
-		`Allow entering values for STARS DCB spinner using the keyboard`,
-		`Scenario Updates: D01 and COS (Andrew S), Y90 (Merry Arbitrary), C90 (Jud Lopez, Yahya Nazimuddin)`,
-		`Added "FC" command to tell aircraft to change to the next controller's frequency`,
-		`STARS: Add support for displaying requested altitude in FDB`,
-		`Fixed a bug where aircraft callsign numbers could start with 0`,
-		`STARS: use realistic fonts for the STARS display`,
-		`Improved sequencing of departures`,
-		`Added I90 scenario (Jace Martin)`,
-		`Added full-screen mode`,
-		`Updated command entry so keyboard focus returns to STARS after issuing a control command`,
-		`New scenarios: PIT (Gavin V), AVL, AGS, and GSO (Giovanni), ACK, BNA, BOS, CHS, MHT, OKC, RDU (Michael K)`,
-		`Updates to BUF, CLE, D21 (Gavin), BHM (Giovanni), JAX and F11 (Michael K), D01 (Jud Lopez, Andrew S)`,
-		`Even more scenario updates: C90 (Jud Lopez, Yahya Nazimuddin), A90 (Michael K)`,
-		`STARS: more realistic video map handling (per controller maps, map id #s)`,
-		`Fixed a bug where vice would crash on launch if it was exited while minimized`,
-		`STARS: multiple improvements to drawing aircraft tracks`,
-		`Added a short pause before aircraft ident`,
-		`Aircraft can now be sent 'direct' to their destination airport`,
-		`Fixed a bug where vice would sometimes crash at startup or when MAPS was clicked`,
-		`New scenario: SCT (Jud Lopez)`,
-		`Scenario updates: AVL (Giovanni), A90 and BOS (Michael K)`,
-		`Fixed "ID" flashing when aircraft ident`,
-		`New scenarios: MCI (Brody Carty), P31 (Josh Lambert)`,
-		`Scenario updates: F11, JAX (Michael Knight), Y90 (Merry Aribrary)`,
-		`Added "say altitude" (SA) and "say heading" commands (SH) (Michael Knight)`,
-		`Aircraft delete ("X") is now a CLI command, not a STARS command (Michael Knight)`,
-		`"Paste" is now supported in the messages pane (Michael Trokel)`,
-		`The "\" key can be used in place of END to activate the STARS minimum separation tool`,
-		`Fixed a bug where runway-specific routes in STARs would be followed too early`,
-		`Fixed a bug where handoffs from virtual controllers would sometimes not be made`,
-		`Anti-aliasing is disabled by default (but can be re-enabled via the "settings" menu)`,
-		`Multiple fixes to improve accuracy of drawing in STARS`,
-		`New scenarios: R90 (Logan S, Jackson Verdoorn), BOI (Jonah Lefkoff)`,
-		`Scenario updates (1): M98 (Logan S, Jackson Verdoorn), MCI, N90 (Jud Lopez), D21, CLE (Gavin V)`,
-		`Scenario updates (2): SAN (Justin Nguyen), D01 (Andrew S), MHT, ACK, A90 (Michael Knight), AAC`,
-		`Added an underlying simulation of the NAS and STARS/ERAM computers`,
-		`Multiple improvements to the realism of the STARS display and sounds`,
-		`"Beaconator" added to STARS (F1)`,
-		`Added "SQ" command to issue a beacon code to an aircraft`,
-		`Fixed a crash when setting scratchpads`,
-		`Fixed bugs in the "launch control window" that would prevent it from refreshing`,
-		`New scenarios: CPR (Andrew S), CID (Tyler Temerowski)`,
-		`Scenario updates (1): ASE, COS, CYS, D01 (Andrew S), N90 (Kayden Lambert), P50, A80 (radarcontacto)`,
-		`Scenario updates (2): CDW (Mike LeGall), TPA, MIA (Connor Allen), F11 (Michael Knight), Y90 (Merry Arbitrary)`,
-		`Fixed a crash on Windows systems with high-DPI displays`,
-		`Fixed some cases where a procedure turn would be flown even after aircraft passed a "no pt" fix`,
-		`STARS weather radar rendering is much closer to real-world`,
-		`STARS: many small fixes to how datablocks and tracks / track ids are drawn`,
-		`STARS: fixed some bugs where valid scratchpad entries were rejected`,
-		`Fixed a crash when handing off to a different facility`,
-		`Fixed a crash with corrupt Sim saves`,
-		`Added airspace awareness information to the scenario information window`,
-		`STARS: fixed colors for WX buttons in the DCB when WX is available`,
-		`STARS: minor improvements to the rendering of tracks and position symbols`,
-		`Fixed a crash loading saved scenarios from the last release`,
-		`vice's documentation is substantially expanded and now discusses all currently-available functionality`,
-		`STARS sign-on list is more realistic. The list of signed-on controllers can now be found in the "scenario info" window`,
-		`STARS: multiple improvements to data block and radar track drawing accuracy`,
-		`STARS: added support for inverted numpads on keyboards`,
-		`STARS: fixed a number of bugs in "quicklook" and in MAPS and PREF management`,
-		`Scenario updates: D10 (Austin Jenkins), EWR (Mike LeGall), CID (Tyler T), D01, COS (Andrew S), AAC`,
-		`Massive update to the aircraft performance database (EkimWasHere)`,
-		`The virtual local controllers sequence departures much better, including handling wake turbulence separation`,
-		`Multiple improvements to the aircraft flight model`,
-		`STARS: added support for coordination lists (used for "hold for release")`,
-		`STARS: improved handling of preference sets: a separate one is stored for each TRACON`,
-		`Multiple improvements to the accuracy of flight strips`,
-		`New scenario: SGF (Tyler T)`,
-		`Updated how aircraft control instructions are entered: press ; to enable "target generation" mode in STARS`,
-		`New scenario: LGA HAARP (Tyler T)`,
-		`Scenario updates: CHS, F11 (Michael Knight), SCT, C90, MKE (Jud Lopez)`,
-		`Fixed a bug where aircraft that went around after being handed off to tower wouldn't contact tower the next time`,
-		`Fixed a few bugs related to the 250kts speed limit at 10,000'`,
-		`Added more compact "hold for release" interface for airports that don't use STARS coordination lists`,
-		`STARS: added OJTI mode, where an instructor can sign in and issue commands to all aircraft`,
-		`STARS: added support for restriction areas`,
-		`STARS: multiple improvements to video map handling, including supporting multiple colors and map categories`,
-		`STARS: CA and MSAW alerts are no longer generated for unassociated tracks`,
-		`New scenarios: MDT (Darius L), PVD (radarcontacto)`,
-		`Scenario updates: DCA (radarcontacto), SCT (Aiden), JFK airspace (Mike LeGall), Y90 (Merry), L30, NCT, P80, SCT, SDF (Ketan K)`,
-		`Airspace boundaries are now displayed using the scenario information window`,
-		`Improve fetching of airport weather (Makoto Sakaguchi)`,
-		`Fixed a bug that was causing vice to crash when loading saved sims`,
-		`Fixed a bug where departures would climb beyond upcoming altitude constraints in SIDs`,
-		`Fixed a bug where aircraft would incorrectly descend along an approach they weren't yet cleared for`,
-		`Fixed multiple bugs with the launch control window`,
-		`Removed text input from the messages pane: it's back to just printing radio calls and messages`,
-		`Updated handoffs so that there is a delay of 5-10 seconds before aircraft call in after the track is accepted`,
-		`STARS: continue to display the id for external facility handoffs in datablocks for a few seconds`,
-		`STARS: improved the accuracy of the mapping of precipitation to WX levels`,
-		`STARS: a partial callsign is given to specify an aircraft to be given an instruction, it must be a unique suffix of a callsign`,
-		`STARS: OJTI mode now available where an instructor can issue aircraft control commands (Michael Trokel)`,
-	}
 )
 
 func imguiInit() *imgui.Context {
@@ -357,12 +128,11 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 }
 
 func uiCloseModalDialog(d *ModalDialogBox) {
-	ui.activeModalDialogs = util.FilterSlice(ui.activeModalDialogs,
+	ui.activeModalDialogs = util.FilterSliceInPlace(ui.activeModalDialogs,
 		func(m *ModalDialogBox) bool { return m != d })
-
 }
 
-func uiShowConnectDialog(mgr *sim.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
+func uiShowConnectDialog(mgr *server.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
 	client := &ConnectModalClient{
 		mgr:         mgr,
 		lg:          lg,
@@ -400,8 +170,8 @@ func uiEndDisable(b bool) {
 	}
 }
 
-func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *sim.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
+	controlClient *server.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -421,7 +191,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
 
 		if controlClient != nil && controlClient.Connected() {
-			if controlClient.SimIsPaused {
+			if controlClient.State.Paused {
 				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
 					controlClient.ToggleSimPause()
 				}
@@ -519,7 +289,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 		uiDrawSettingsWindow(controlClient, config, p)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = controlClient.DrawScenarioInfoWindow(lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
 		}
 
 		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
@@ -552,7 +322,7 @@ func uiDraw(mgr *sim.ConnectionManager, config *Config, p platform.Platform, r r
 	return r.RenderCommandBuffer(cb)
 }
 
-func uiResetControlClient(c *sim.ControlClient) {
+func uiResetControlClient(c *server.ControlClient) {
 	ui.launchControlWindow = nil
 }
 
@@ -662,9 +432,9 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	mgr         *sim.ConnectionManager
+	mgr         *server.ConnectionManager
 	lg          *log.Logger
-	simConfig   *sim.NewSimConfiguration
+	simConfig   *NewSimConfiguration
 	allowCancel bool
 	platform    platform.Platform
 	config      *Config
@@ -674,7 +444,7 @@ func (c *ConnectModalClient) Title() string { return "New Simulation" }
 
 func (c *ConnectModalClient) Opening() {
 	if c.simConfig == nil {
-		c.simConfig = sim.MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, &c.config.TFRCache, c.lg)
+		c.simConfig = MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, &c.config.TFRCache, c.lg)
 	}
 }
 
@@ -697,8 +467,8 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
 			} else {
-				c.simConfig.DisplayError = c.simConfig.Start()
-				return c.simConfig.DisplayError == nil
+				c.simConfig.displayError = c.simConfig.Start()
+				return c.simConfig.displayError == nil
 			}
 		},
 	}
@@ -746,8 +516,8 @@ func (r *RatesModalClient) Buttons() []ModalDialogButton {
 		text:     "Create",
 		disabled: r.connectClient.simConfig.OkDisabled(),
 		action: func() bool {
-			r.connectClient.simConfig.DisplayError = r.connectClient.simConfig.Start()
-			return r.connectClient.simConfig.DisplayError == nil
+			r.connectClient.simConfig.displayError = r.connectClient.simConfig.Start()
+			return r.connectClient.simConfig.displayError == nil
 		},
 	}
 
@@ -1087,18 +857,18 @@ func showAboutDialog() {
   Makoto Sakaguchi, Michael Trokel,
   Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, Adam
-  Bolek, Brody Carty, Lucas Chan, Aaron
-  Flett, Austin Jenkins, Ketan K, Mike K,
-  Darius L, Josh Lambert, Kayden Lambert,
-  Mike LeGall, Jonah Lefkoff, Jud Lopez,
-  Ethan Malimon, Jace Martin, Michael
-  McConnell, Merry, Yahya Nazimuddin,
-  Justin Nguyen, Giovanni, Andrew S,
-  Logan S, Arya T, Nelson T, Tyler
-  Temerowski, Eli Thompson, Michael Trokel,
-  Samuel Valencia, Gavin Velicevic, and
-  Jackson Verdoorn.
+- Facility engineering: Connor Allen, anguse,
+  Adam Bolek, Brody Carty, Lucas Chan,
+  Aaron Flett, Thomas Halpin, Austin Jenkins,
+  Ketan K, Mike K, Allison L, Josh Lambert,
+  Kayden Lambert, Mike LeGall, Jonah
+  Lefkoff, Jud Lopez, Ethan Malimon, Jace
+  Martin, Michael McConnell, Merry, Yahya
+  Nazimuddin, Justin Nguyen, Giovanni,
+  Andrew S, Logan S, Arya T, Nelson T,
+  Tyler Temerowski, Eli Thompson, Michael
+  Trokel, Samuel Valencia, Gavin Velicevic,
+  and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC,
   ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
   ZSE, and ZTL VATSIM ARTCCs and to the
@@ -1205,470 +975,6 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 
 ///////////////////////////////////////////////////////////////////////////
 
-type LaunchControlWindow struct {
-	controlClient       *sim.ControlClient
-	departures          []*LaunchDeparture
-	arrivalsOverflights []*LaunchArrivalOverflight
-	lg                  *log.Logger
-}
-
-type LaunchDeparture struct {
-	Aircraft           av.Aircraft
-	Airport            string
-	Runway             string
-	Category           string
-	LastLaunchCallsign string
-	LastLaunchTime     time.Time
-	TotalLaunches      int
-}
-
-func (ld *LaunchDeparture) Reset() {
-	ld.LastLaunchCallsign = ""
-	ld.LastLaunchTime = time.Time{}
-	ld.TotalLaunches = 0
-}
-
-type LaunchArrivalOverflight struct {
-	Aircraft           av.Aircraft
-	Group              string
-	Airport            string
-	LastLaunchCallsign string
-	LastLaunchTime     time.Time
-	TotalLaunches      int
-}
-
-func (la *LaunchArrivalOverflight) Reset() {
-	la.LastLaunchCallsign = ""
-	la.LastLaunchTime = time.Time{}
-	la.TotalLaunches = 0
-}
-
-func MakeLaunchControlWindow(controlClient *sim.ControlClient, lg *log.Logger) *LaunchControlWindow {
-	lc := &LaunchControlWindow{controlClient: controlClient}
-
-	config := &controlClient.LaunchConfig
-	for _, airport := range util.SortedMapKeys(config.DepartureRates) {
-		runwayRates := config.DepartureRates[airport]
-		for _, rwy := range util.SortedMapKeys(runwayRates) {
-			for _, category := range util.SortedMapKeys(runwayRates[rwy]) {
-				lc.departures = append(lc.departures, &LaunchDeparture{
-					Airport:  airport,
-					Runway:   rwy,
-					Category: category,
-				})
-			}
-		}
-	}
-	for i := range lc.departures {
-		lc.spawnDeparture(lc.departures[i])
-	}
-
-	for _, group := range util.SortedMapKeys(config.InboundFlowRates) {
-		for ap := range config.InboundFlowRates[group] {
-			lc.arrivalsOverflights = append(lc.arrivalsOverflights,
-				&LaunchArrivalOverflight{
-					Group:   group,
-					Airport: ap,
-				})
-		}
-	}
-	for i := range lc.arrivalsOverflights {
-		lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
-	}
-
-	return lc
-}
-
-func (lc *LaunchControlWindow) spawnDeparture(dep *LaunchDeparture) {
-	lc.controlClient.CreateDeparture(dep.Airport, dep.Runway, dep.Category, &dep.Aircraft, nil,
-		func(err error) { lc.lg.Warnf("CreateDeparture: %v", err) })
-}
-
-func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
-	if lac.Airport != "overflights" {
-		lc.controlClient.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft, nil,
-			func(err error) { lc.lg.Warnf("CreateArrival: %v", err) })
-	} else {
-		lc.controlClient.CreateOverflight(lac.Group, &lac.Aircraft, nil,
-			func(err error) { lc.lg.Warnf("CreateOverflight: %v", err) })
-	}
-}
-
-func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform) {
-	showLaunchControls := true
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
-	imgui.BeginV("Launch Control", &showLaunchControls, imgui.WindowFlagsAlwaysAutoResize)
-
-	ctrl := lc.controlClient.LaunchConfig.Controller
-	if lc.controlClient.State.MultiControllers != nil {
-		imgui.Text("Controlling controller: " + util.Select(ctrl == "", "(none)", ctrl))
-		if ctrl == lc.controlClient.PrimaryTCP {
-			if imgui.Button("Release launch control") {
-				lc.controlClient.TakeOrReturnLaunchControl(eventStream)
-			}
-		} else {
-			if imgui.Button("Take launch control") {
-				lc.controlClient.TakeOrReturnLaunchControl(eventStream)
-			}
-		}
-	}
-
-	canLaunch := ctrl == lc.controlClient.PrimaryTCP || (lc.controlClient.State.MultiControllers == nil && ctrl == "") ||
-		lc.controlClient.AmInstructor()
-	if canLaunch {
-		imgui.Text("Mode:")
-		imgui.SameLine()
-		if imgui.RadioButtonInt("Manual", &lc.controlClient.LaunchConfig.Mode, sim.LaunchManual) {
-			lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
-		}
-		imgui.SameLine()
-		if imgui.RadioButtonInt("Automatic", &lc.controlClient.LaunchConfig.Mode, sim.LaunchAutomatic) {
-			lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
-		}
-
-		width, _ := ui.font.BoundText(renderer.FontAwesomeIconPlayCircle, 0)
-		// Right-justify
-		imgui.SameLine()
-		imgui.Text("                            ")
-		imgui.SameLine()
-		//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
-		imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
-		if lc.controlClient != nil && lc.controlClient.Connected() {
-			if lc.controlClient.SimIsPaused {
-				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
-					lc.controlClient.ToggleSimPause()
-				}
-				if imgui.IsItemHovered() {
-					imgui.SetTooltip("Resume simulation")
-				}
-			} else {
-				if imgui.Button(renderer.FontAwesomeIconPauseCircle) {
-					lc.controlClient.ToggleSimPause()
-				}
-				if imgui.IsItemHovered() {
-					imgui.SetTooltip("Pause simulation")
-				}
-			}
-		}
-
-		imgui.SameLine()
-		if imgui.Button(renderer.FontAwesomeIconTrash) {
-			uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
-				title: "Are you sure?",
-				query: "All aircraft will be deleted. Go ahead?",
-				ok: func() {
-					lc.controlClient.DeleteAllAircraft(nil)
-					for _, dep := range lc.departures {
-						dep.Reset()
-					}
-					for _, ac := range lc.arrivalsOverflights {
-						ac.Reset()
-					}
-				},
-			}, p), true)
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Delete all aircraft and restart")
-		}
-
-		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
-			imgui.TableFlagsSizingStretchProp
-		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-
-		if lc.controlClient.LaunchConfig.Mode == sim.LaunchManual {
-			mitAndTime := func(ac *av.Aircraft, launchPosition math.Point2LL,
-				lastLaunchCallsign string, lastLaunchTime time.Time) {
-				imgui.TableNextColumn()
-				if lastLaunchCallsign != "" {
-					if ac := lc.controlClient.Aircraft[lastLaunchCallsign]; ac != nil {
-						d := math.NMDistance2LL(ac.Position(), launchPosition)
-						imgui.Text(fmt.Sprintf("%.1f", d))
-					}
-				}
-
-				imgui.TableNextColumn()
-				if lastLaunchCallsign != "" {
-					d := lc.controlClient.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
-					m, s := int(d)/60, int(d)%60
-					imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
-				}
-			}
-
-			if imgui.CollapsingHeader("Departures") {
-				ndep := util.ReduceSlice(lc.departures, func(dep *LaunchDeparture, n int) int {
-					return n + dep.TotalLaunches
-				}, 0)
-
-				imgui.Text(fmt.Sprintf("Departures: %d total", ndep))
-
-				// Sort departures by airport, then runway, then category
-				sortedDeps := util.DuplicateSlice(lc.departures)
-				slices.SortFunc(sortedDeps, func(a, b *LaunchDeparture) int {
-					return strings.Compare(a.Airport+"/"+a.Runway+"/"+a.Category,
-						b.Airport+"/"+b.Runway+"/"+b.Category)
-				})
-
-				// Find the maximum number of categories for any airport/runway pair
-				maxCategories, curCategories := 0, 1
-				lastApRwy := ""
-				for _, d := range sortedDeps {
-					ar := d.Airport + "/" + d.Runway
-					if ar != lastApRwy {
-						maxCategories = math.Max(maxCategories, curCategories)
-						curCategories = 1
-						lastApRwy = ar
-					} else {
-						curCategories++
-					}
-				}
-
-				nColumns := math.Min(3, maxCategories)
-				if imgui.BeginTableV("dep", 1+8*nColumns, flags, imgui.Vec2{tableScale * float32(100+300*nColumns), 0}, 0.0) {
-					imgui.TableSetupColumn("Airport")
-					for range nColumns {
-						imgui.TableSetupColumn("Category")
-						imgui.TableSetupColumn("#")
-						imgui.TableSetupColumn("Type")
-						imgui.TableSetupColumn("Exit")
-						imgui.TableSetupColumn("MIT")
-						imgui.TableSetupColumn("Time")
-						imgui.TableSetupColumn("")
-						imgui.TableSetupColumn("")
-					}
-					imgui.TableHeadersRow()
-
-					lastApRwy = ""
-					curColumn := 0
-					for _, dep := range sortedDeps {
-						apRwy := dep.Airport + " " + dep.Runway
-						if apRwy != lastApRwy {
-							imgui.TableNextRow()
-							lastApRwy = apRwy
-							curColumn = 0
-
-							imgui.TableNextColumn()
-							imgui.Text(dep.Airport + " " + dep.Runway)
-						} else if curColumn+1 == nColumns {
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-						}
-
-						imgui.TableNextColumn()
-						imgui.Text(dep.Category)
-
-						imgui.PushID(dep.Airport + " " + dep.Runway + " " + dep.Category)
-
-						imgui.TableNextColumn()
-						imgui.Text(strconv.Itoa(dep.TotalLaunches))
-
-						if dep.Aircraft.Callsign != "" {
-							imgui.TableNextColumn()
-							imgui.Text(dep.Aircraft.FlightPlan.TypeWithoutSuffix())
-
-							imgui.TableNextColumn()
-							imgui.Text(dep.Aircraft.FlightPlan.Exit)
-
-							mitAndTime(&dep.Aircraft, dep.Aircraft.Position(), dep.LastLaunchCallsign,
-								dep.LastLaunchTime)
-
-							imgui.TableNextColumn()
-							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchAircraft(dep.Aircraft)
-								dep.LastLaunchCallsign = dep.Aircraft.Callsign
-								dep.LastLaunchTime = lc.controlClient.CurrentTime()
-								dep.TotalLaunches++
-
-								dep.Aircraft = av.Aircraft{}
-								lc.spawnDeparture(dep)
-							}
-
-							imgui.TableNextColumn()
-							if imgui.Button(renderer.FontAwesomeIconRedo) {
-								dep.Aircraft = av.Aircraft{}
-								lc.spawnDeparture(dep)
-							}
-						} else {
-							for range 6 {
-								imgui.NextColumn()
-							}
-						}
-
-						imgui.PopID()
-					}
-
-					imgui.EndTable()
-				}
-			}
-
-			if imgui.CollapsingHeader("Arrivals / Overflights") {
-				narof := util.ReduceSlice(lc.arrivalsOverflights, func(arr *LaunchArrivalOverflight, n int) int {
-					return n + arr.TotalLaunches
-				}, 0)
-
-				imgui.Text(fmt.Sprintf("Arrivals/Overflights: %d total", narof))
-
-				sortedInbound := util.DuplicateSlice(lc.arrivalsOverflights)
-				slices.SortFunc(sortedInbound, func(a, b *LaunchArrivalOverflight) int {
-					return strings.Compare(a.Airport+"/"+a.Group, b.Airport+"/"+b.Group)
-				})
-
-				maxGroups, numGroups := 0, 1
-				lastAirport := ""
-				for _, ao := range sortedInbound {
-					if ao.Airport != lastAirport {
-						maxGroups = math.Max(maxGroups, numGroups)
-						lastAirport = ao.Airport
-						numGroups = 1
-					} else {
-						numGroups++
-					}
-				}
-				numColumns := math.Min(maxGroups, 3)
-
-				if imgui.BeginTableV("arrof", 1+7*numColumns, flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
-					imgui.TableSetupColumn("Airport")
-					for range numColumns {
-						imgui.TableSetupColumn("Group")
-						imgui.TableSetupColumn("#")
-						imgui.TableSetupColumn("A/C Type")
-						imgui.TableSetupColumn("MIT")
-						imgui.TableSetupColumn("Time")
-						imgui.TableSetupColumn("")
-						imgui.TableSetupColumn("")
-					}
-					imgui.TableHeadersRow()
-
-					curColumn := 0
-					lastAirport := ""
-					for _, arof := range sortedInbound {
-						if arof.Airport != lastAirport {
-							imgui.TableNextRow()
-							lastAirport = arof.Airport
-							curColumn = 0
-							imgui.TableNextColumn()
-							imgui.Text(arof.Airport)
-						} else if curColumn+1 == numColumns {
-							curColumn = 0
-							imgui.TableNextRow()
-							imgui.TableNextColumn()
-							imgui.Text("")
-						} else {
-							curColumn++
-						}
-
-						imgui.PushID(arof.Group + arof.Airport)
-
-						imgui.TableNextColumn()
-						imgui.Text(arof.Group)
-
-						imgui.TableNextColumn()
-						imgui.Text(strconv.Itoa(arof.TotalLaunches))
-
-						if arof.Aircraft.Callsign != "" {
-							imgui.TableNextColumn()
-							imgui.Text(arof.Aircraft.FlightPlan.TypeWithoutSuffix())
-
-							mitAndTime(&arof.Aircraft, arof.Aircraft.Position(), arof.LastLaunchCallsign,
-								arof.LastLaunchTime)
-
-							imgui.TableNextColumn()
-							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.controlClient.LaunchAircraft(arof.Aircraft)
-								arof.LastLaunchCallsign = arof.Aircraft.Callsign
-								arof.LastLaunchTime = lc.controlClient.CurrentTime()
-								arof.TotalLaunches++
-
-								arof.Aircraft = av.Aircraft{}
-								lc.spawnArrivalOverflight(arof)
-							}
-
-							imgui.TableNextColumn()
-							if imgui.Button(renderer.FontAwesomeIconRedo) {
-								arof.Aircraft = av.Aircraft{}
-								lc.spawnArrivalOverflight(arof)
-							}
-						} else {
-							for range 5 {
-								imgui.TableNextColumn()
-							}
-						}
-
-						imgui.PopID()
-					}
-
-					imgui.EndTable()
-				}
-			}
-		} else {
-			changed := false
-			if imgui.CollapsingHeader("Departures") {
-				changed = lc.controlClient.LaunchConfig.DrawDepartureUI(p)
-			}
-			if imgui.CollapsingHeader("Arrivals / Overflights") {
-				changed = lc.controlClient.LaunchConfig.DrawArrivalUI(p) || changed
-				changed = lc.controlClient.LaunchConfig.DrawOverflightUI(p) || changed
-			}
-
-			if changed {
-				lc.controlClient.SetLaunchConfig(lc.controlClient.LaunchConfig)
-			}
-		}
-	}
-
-	flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
-		imgui.TableFlagsSizingStretchProp
-	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-
-	releaseAircraft := lc.controlClient.State.GetRegularReleaseDepartures()
-	if len(releaseAircraft) > 0 && imgui.CollapsingHeader("Hold For Release") {
-		slices.SortFunc(releaseAircraft, func(a, b *av.Aircraft) int {
-			// First by airport, then by callsign
-			cmp := strings.Compare(a.FlightPlan.DepartureAirport, b.FlightPlan.DepartureAirport)
-			if cmp != 0 {
-				return cmp
-			}
-			return strings.Compare(a.Callsign, b.Callsign)
-		})
-
-		if imgui.BeginTableV("Releases", 5, flags, imgui.Vec2{tableScale * 600, 0}, 0) {
-			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Callsign")
-			imgui.TableSetupColumn("A/C Type")
-			imgui.TableSetupColumn("Exit")
-			// imgui.TableSetupColumn("#Release")
-			imgui.TableHeadersRow()
-
-			for _, ac := range releaseAircraft {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.DepartureAirport)
-				imgui.TableNextColumn()
-				imgui.Text(ac.Callsign)
-				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.TypeWithoutSuffix())
-				imgui.TableNextColumn()
-				imgui.Text(ac.FlightPlan.Exit)
-				imgui.TableNextColumn()
-				if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-					lc.controlClient.ReleaseDeparture(ac.Callsign, nil,
-						func(err error) { lc.lg.Errorf("%s: %v", ac.Callsign, err) })
-				}
-			}
-
-			imgui.EndTable()
-		}
-	}
-
-	imgui.End()
-
-	if !showLaunchControls {
-		lc.controlClient.TakeOrReturnLaunchControl(eventStream)
-		ui.showLaunchControl = false
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
 var keyboardWindowVisible bool
 var selectedCommandTypes string
 
@@ -1713,6 +1019,9 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*SA*", `"Say altitude".`, "*SA*"},
 	[3]string{"*SH*", `"Say heading".`, "*SH*"},
 	[3]string{"*SQ_code", `"Squawk _code_."`, "*SQ1200*"},
+	[3]string{"*SQS", `"Squawk standby."`, "*SQS*"},
+	[3]string{"*SQA", `"Squawk altitude."`, "*SQA*"},
+	[3]string{"*SQON", `"Squawk on."`, "*SSON*"},
 	[3]string{"*A_fix*/C_appr", `"At _fix_, cleared _appr_ approach."`, "*AROSLY/CI2L*"},
 	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
@@ -1737,7 +1046,7 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(c *sim.ControlClient, config *Config) {
+func uiDrawKeyboardWindow(c *server.ControlClient, config *Config) {
 	if !keyboardWindowVisible {
 		return
 	}
@@ -1985,8 +1294,8 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 }
 
 type MissingPrimaryModalClient struct {
-	mgr           *sim.ConnectionManager
-	controlClient *sim.ControlClient
+	mgr           *server.ConnectionManager
+	controlClient *server.ControlClient
 }
 
 func (mp *MissingPrimaryModalClient) Title() string {
@@ -2014,7 +1323,7 @@ func (mp *MissingPrimaryModalClient) Draw() int {
 	return -1
 }
 
-func uiDrawMissingPrimaryDialog(mgr *sim.ConnectionManager, c *sim.ControlClient, p platform.Platform) {
+func uiDrawMissingPrimaryDialog(mgr *server.ConnectionManager, c *server.ControlClient, p platform.Platform) {
 	if _, ok := c.Controllers[c.PrimaryController]; ok {
 		if ui.missingPrimaryDialog != nil {
 			uiCloseModalDialog(ui.missingPrimaryDialog)
@@ -2031,7 +1340,7 @@ func uiDrawMissingPrimaryDialog(mgr *sim.ConnectionManager, c *sim.ControlClient
 	}
 }
 
-func uiDrawSettingsWindow(c *sim.ControlClient, config *Config, p platform.Platform) {
+func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Platform) {
 	if !ui.showSettings {
 		return
 	}

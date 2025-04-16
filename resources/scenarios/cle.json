@@ -3,59 +3,12 @@
     "airports": {
         "KCLE": {
             "approaches": {
-                "I6L" : {
-                    "runway": "6L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "KWENE/a6000/s210/iaf DAYZD BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf",
-                        "HICKR/a5000/s210/iaf CRTEZ BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf",
-                        "GROHL/a6000/s210/iaf FUZED BETLL/a2900/if DEVYL/a2300 BOEEE/a2000/faf"
-                    ]
-                },
-                "I6R": {
-                    "runway": "6R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "RUHSH/a6000/s210/iaf RMONZ DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf",
-                        "HICKR/a5000/s210/iaf DAUGS DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf",
-                        "GROHL/a6000/s210/iaf SHEEP DOORZ/a2900/if POAST/a2500 DILYN/a2000/faf"
-                    ]
-                },
-                "R10": {
-                    "runway": "10",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "GILLS TAMDE/iaf/nopt FIMOL/hilpt4nm/a3000 JUUBA/a2400/faf",
-                        "FIMOL/hilpt4nm/a3000/iaf/if JUUBA/a2400/faf",
-                        "DJB/iaf/nopt FIMOL/hilpt4nm/a3000 JUUBA/a2400"
-                    ]
-                },
-                "I4L": {
-                    "runway": "24L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "THRTN/a5000/iaf HHERB/a4000 ALOMR/a3000/if FELLR/a2000/faf",
-                        "BUDRW/a6000/s240/iaf WIINR/s210 ANJEY ALOMR/a3000/if FELLR/a2000/faf",
-                        "LLROY/a5000/s210/iaf KARAY ALOMR/if FELLR/a2000/faf"
-                    ]
-                },
-                "I4R": {
-                    "runway": "24R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BUDRW/a6000/s240/iaf WIINR/s210 ANJEY SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600",
-                        "LLROY/a5000/s210/iaf BORNY/a4000 SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600",
-                        "PAULB/a5000/iaf GRHMM SHERK/a3000/if GROZA/a2000/faf FIDIN/a1600"
-                    ]
-                },
-                "I28": {
-                    "runway": "28",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HARDR/a6000/s210/iaf WHONT GETTT/a3600/if FOOLD/a2600/faf",
-                        "YYESS/a6000/iaf JHENY WHONT GETTT/a3600/if FOOLD/a2600/faf"
-                    ]
-                }
+              "I6L" : { "cifp_id": "I6L" },
+              "I6R": { "cifp_id": "I6R" },
+              "R10": { "cifp_id": "R10" },
+              "I4L": { "cifp_id": "I24L" },
+              "I4R": { "cifp_id": "I24R" },
+              "I28": { "cifp_id": "I28" }
             },
             "departure_routes": {
                 "6R": {
@@ -649,27 +602,9 @@
                 },
                 "KCGF": {
                     "approaches": {
-                        "R6": {
-                            "runway": "6",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "ZONIA/a2200 EUKER/a2200"
-                            ]
-                        },
-                        "I24": {
-                            "runway": "24",
-                            "type": "ILS",
-                            "waypoints": [
-                                "WEIDS EBLIS/a3000 IMUSY/a3000 KROOK/a2300"
-                            ]
-                        },
-                        "R24": {
-                            "runway": "24",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "WEIDS EBLIS/a3000 IMUSY/a3000 KROOK/a2300"
-                            ]
-                        }
+                      "R6": {"cifp_id": "R6" },
+                      "I24": { "cifp_id": "I24" },
+                      "R24": { "cifp_id": "R24" }
                     },
                     "departure_routes": {
                         "6": {
@@ -836,20 +771,8 @@
                     },
                 "KBKL": {
                     "approaches": {
-                        "R4R": {
-                            "runway": "24R",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "SOOTO/a3000-6000/iaf NAATE/faf/a2400+ JAYTO/a1420+ LOLCY"
-                            ]
-                        },
-                        "I4R": {
-                            "runway": "24R",
-                            "type": "ILS",
-                            "waypoints": [
-                                "BOGGE/iaf/a2400+ TABEY/faf/a2400+"
-                            ]
-                        },
+                      "R4R": { "cifp_id": "R24R" },
+                      "I4R": { "cifp_id": "I24R" },
                         "V6L": {
                             "full_name": "Visual Approach Runway 6L",
                             "runway": "6L",
@@ -1037,21 +960,9 @@
                     },
                     "KMFD": {
                         "approaches": {
-                        "R14": {
-                            "runway": "14",
-                            "type": "RNAV",
-                            "waypoints": [
-                                "UPIYO/a3000+/iaf HUGIX/a2700+ WIMOS/a1820+/faf"
-                            ]
+                          "R14": { "cifp_id": "R14" },
+                          "I32": { "cifp_id": "I32" }
                         },
-                        "I32": {
-                            "runway": "32",
-                            "type": "ILS",
-                            "waypoints": [
-                                "MANNS/a2700+ ZIXAX/faf"
-                            ]
-                        }
-                    },
                 "departure_routes": {
                         "32": {
                             "CRAKN": {
@@ -1110,37 +1021,10 @@
                     },
                     "KCAK": {
                     "approaches": {
-                        "I23": {
-                            "runway": "23",
-                            "type": "ILS",
-                            "waypoints": [
-                                "OCUGA/if/a3000+ EGGII/a3000+ IZERU/a1700+/faf",
-                                "ACO/iaf OCUGA/if/a3000+ EGGII/a3000+ IZERU/a1700+/faf"
-                            ]
-                        },
-                        "I1": {
-                            "runway": "1",
-                            "type": "ILS",
-                            "waypoints": [
-                                "BULIT/a3000+/if CABLE/a2400+/faf",
-                                "BSV/iaf BULIT/a3000+/if CABLE/a2400+/faf"
-                            ]
-                        },
-                        "I5": {
-                            "runway": "5",
-                            "type": "ILS",
-                            "waypoints": [
-                                "JUNEX/iaf/a3000+ CICEE/a3000+/faf"
-                            ]
-                        },
-                        "I19": {
-                            "runway": "19",
-                            "type": "ILS",
-                            "waypoints": [
-                                "ACO/iaf/a2800+ BUKIN/if/a2800+ DERBY/a2600+ ZEVLO/a1620+/faf",
-                                "BUKIN/if/a2800+ DERBY/a2600+ ZEVLO/a1620+/faf"
-                            ]
-                        }
+                      "I23": { "cifp_id": "I23" },
+                      "I1": { "cifp_id": "I1" },
+                      "I5": { "cifp_id": "I5" },
+                      "I19": { "cifp_id": "I19" }
                     },
                     "departure_routes": {
                         "1": {
@@ -3861,91 +3745,78 @@
                             "CLE_A_APP": {
                                 "frequency": 124000,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "A",
                                 "sector_id": "2A"
                             },
                             "CLE_F_APP": {
                                 "frequency": 119625,        
                                 "radio_name": "Cleveland Approach",              
-                                "scope_char": "F",
                                 "sector_id": "2F"
                             },
                             "CLE_D_DEP": {
                                 "frequency": 128250,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "D",
                                 "sector_id": "2D"
                             },
                             "CLE_R_DEP": {
                                 "frequency": 135875,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "R",
                                 "sector_id": "2R"
                             },
                             "CLE_N_APP": {
                                 "frequency": 125350,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "N",
                                 "sector_id": "2N"
                             },
                             "CAK_E_APP": {
                                 "frequency": 125500,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "E",
                                 "sector_id": "2E"
                             },
                             "CAK_S_APP": {
                                 "frequency": 118600,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "S",
                                 "sector_id": "2S"
                             },
                             "MFD_W_APP": {
                                 "frequency": 128350,
                                 "radio_name": "Cleveland Approach",
-                                "scope_char": "W",
                                 "sector_id": "2W"
                             },
                             "CLE_66_CTR": {
                                 "frequency": 125425,
                                 "radio_name": "Cleveland Center",
-                                "scope_char": "C",
-                                "sector_id": "66"
+                                "eram_facility": true,
+                                "facility_id": "C",
+                                "sector_id": "C66"
                             },
                             "CLE_TWR": {
                                 "frequency": 124500,
                                 "radio_name": "Cleveland Tower",
-                                "scope_char": "T",
-                                "sector_id": "2CT"
+                                "sector_id": "2T"
                             },
                             "CAK_TWR": {
                                 "frequency": 135750,
                                 "radio_name": "Akron-Canton Tower",
-                                "scope_char": "T",
                                 "sector_id": "4T"
                             },
                             "MFD_TWR": {
                                 "frequency": 119800,
                                 "radio_name": "Mansfield Tower",
-                                "scope_char": "T",
                                 "sector_id": "5T"
                             },
                             "CGF_TWR": {
                                 "frequency": 118500,
                                 "radio_name": "County Tower",
-                                "scope_char": "T",
                                 "sector_id": "3T"
                             },
                             "BKL_TWR": {
                                 "frequency": 124300,
                                 "radio_name": "Lakefront Tower",
-                                "scope_char": "T",
                                 "sector_id": "1T"
                             },
                             "DTW_F_APP": {
                                 "frequency": 126225,
                                 "radio_name": "Detroit Approach",
-                                "scope_char": "F",
                                 "sector_id": "1F"
                             }
                         },

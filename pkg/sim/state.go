@@ -24,145 +24,155 @@ import (
 
 const serverCallsign = "__SERVER__"
 
+// State serves two purposes: first, the Sim object holds one to organize
+// assorted information about the world state that it updates as part of
+// the simulation. Second, an instance of it is given to clients when they
+// join a sim.  As the sim runs, the client's State is updated roughly once
+// a second.  Clients can then use the State as a read-only reference for
+// assorted information they may need (the state of aircraft in the sim,
+// etc.)
 type State struct {
-	Aircraft    map[string]*av.Aircraft
-	METAR       map[string]*av.METAR
-	Controllers map[string]*av.Controller
-
+	Aircraft          map[string]*av.Aircraft
+	Airports          map[string]*av.Airport
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
+	Fixes             map[string]math.Point2LL
+	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
-	ERAMComputers *ERAMComputers
+	// Signed in human controllers + virtual controllers
+	Controllers      map[string]*av.Controller
+	HumanControllers []string
 
-	TRACON                   string
-	LaunchConfig             LaunchConfig
-	PrimaryController        string
-	MultiControllers         av.SplitConfiguration
-	SimIsPaused              bool
-	SimRate                  float32
-	SimName                  string
-	SimDescription           string
-	SimTime                  time.Time
-	MagneticVariation        float32
-	NmPerLongitude           float32
-	Airports                 map[string]*av.Airport
-	Fixes                    map[string]math.Point2LL
-	PrimaryAirport           string
-	RadarSites               map[string]*av.RadarSite
+	PrimaryController string
+	MultiControllers  av.SplitConfiguration
+	UserTCP        string
+	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
+
+	DepartureRunways []DepartureRunway
+	ArrivalRunways   []ArrivalRunway
+	InboundFlows     map[string]*av.InboundFlow
+	LaunchConfig     LaunchConfig
+
 	Center                   math.Point2LL
 	Range                    float32
-	Wind                     av.Wind
-	PrimaryTCP               string
 	ScenarioDefaultVideoMaps []string
-	Airspace                 map[string]map[string][]ControllerAirspaceVolume // ctrl id -> vol name -> definition
-	DepartureRunways         []ScenarioGroupDepartureRunway
-	ArrivalRunways           []ScenarioGroupArrivalRunway
-	Scratchpads              map[string]string
-	InboundFlows             map[string]*InboundFlow
-	TotalDepartures          int
-	TotalArrivals            int
-	TotalOverflights         int
-	STARSFacilityAdaptation  STARSFacilityAdaptation
-	UserRestrictionAreas     []RestrictionArea
-	Instructors              map[string]bool
+	UserRestrictionAreas     []av.RestrictionArea
 
-	ControllerVideoMaps        []string
-	ControllerDefaultVideoMaps []string
-	VideoMapLibraryHash        []byte
+	ERAMComputers           *ERAMComputers
+	STARSFacilityAdaptation av.STARSFacilityAdaptation
 
-	mapLibrary *av.VideoMapLibrary // just cached per session; not saved to disk.
+	TRACON            string
+	MagneticVariation float32
+	NmPerLongitude    float32
+	PrimaryAirport    string
+
+	METAR map[string]*av.METAR
+	Wind  av.Wind
+
+	TotalIFR, TotalVFR int
+
+	Paused         bool
+	SimRate        float32
+	SimDescription string
+	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
+
+	Instructors map[string]bool
+
+	VideoMapLibraryHash []byte
+
+	// Set in State returned by GetStateForController
+	ControllerVideoMaps                 []string
+	ControllerDefaultVideoMaps          []string
+	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 }
 
-func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *ScenarioGroup, sc *Scenario,
-	manifest *av.VideoMapManifest, tfrs []av.TFR, lg *log.Logger) *State {
+func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *State {
 	ss := &State{
-		PrimaryTCP:    serverCallsign,
-		Aircraft:      make(map[string]*av.Aircraft),
-		METAR:         make(map[string]*av.METAR),
-		Controllers:   make(map[string]*av.Controller),
-		ERAMComputers: MakeERAMComputers(sg.STARSFacilityAdaptation.BeaconBank, lg),
-		Instructors:   make(map[string]bool),
+		Aircraft:   make(map[string]*av.Aircraft),
+		Airports:   config.Airports,
+		Fixes:      config.Fixes,
+		VFRRunways: make(map[string]av.Runway),
+
+		Controllers:       make(map[string]*av.Controller),
+		PrimaryController: config.PrimaryController,
+		MultiControllers:  config.MultiControllers,
+		UserTCP:        serverCallsign,
+
+		DepartureRunways: config.DepartureRunways,
+		ArrivalRunways:   config.ArrivalRunways,
+		InboundFlows:     config.InboundFlows,
+		LaunchConfig:     config.LaunchConfig,
+
+		Center:                   config.Center,
+		Range:                    config.Range,
+		ScenarioDefaultVideoMaps: config.DefaultMaps,
+
+		ERAMComputers:           MakeERAMComputers(config.STARSFacilityAdaptation.BeaconBank, lg),
+		STARSFacilityAdaptation: deep.MustCopy(config.STARSFacilityAdaptation),
+
+		TRACON:            config.TRACON,
+		MagneticVariation: config.MagneticVariation,
+		NmPerLongitude:    config.NmPerLongitude,
+		PrimaryAirport:    config.PrimaryAirport,
+
+		METAR: make(map[string]*av.METAR),
+		Wind:  config.Wind,
+
+		SimRate:        1,
+		SimDescription: config.Description,
+		SimTime:        time.Now(),
+
+		Instructors: make(map[string]bool),
 	}
 
-	if !isLocal {
-		var err error
-		ss.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
-		if err != nil {
-			lg.Errorf("Unable to get primary controller: %v", err)
-		}
-		ss.MultiControllers, err = sc.SplitConfigurations.GetConfiguration(selectedSplit)
-		if err != nil {
-			lg.Errorf("Unable to get multi controllers: %v", err)
-		}
-	} else {
-		ss.PrimaryController = sc.SoloController
-	}
-	ss.TRACON = sg.TRACON
-	ss.MagneticVariation = sg.MagneticVariation
-	ss.NmPerLongitude = sg.NmPerLongitude
-	ss.Wind = sc.Wind
-	ss.Airports = sg.Airports
-	ss.Fixes = sg.Fixes
-	ss.PrimaryAirport = sg.PrimaryAirport
-	fa := sg.STARSFacilityAdaptation
-	ss.RadarSites = fa.RadarSites
-	ss.Center = util.Select(sc.Center.IsZero(), fa.Center, sc.Center)
-	ss.Range = util.Select(sc.Range == 0, fa.Range, sc.Range)
-	ss.ScenarioDefaultVideoMaps = sc.DefaultMaps
-	ss.Scratchpads = fa.Scratchpads
-	ss.InboundFlows = sg.InboundFlows
-	if len(sc.Airspace) > 0 {
-		ss.Airspace = make(map[string]map[string][]ControllerAirspaceVolume)
-		if isLocal {
-			ss.Airspace[ss.PrimaryController] = make(map[string][]ControllerAirspaceVolume)
-			// Take all the airspace
-			for _, vnames := range sc.Airspace {
-				for _, vname := range vnames {
-					// Remap from strings provided in the scenario to the
-					// actual volumes defined in the scenario group.
-					ss.Airspace[ss.PrimaryController][vname] = sg.Airspace.Volumes[vname]
-				}
-			}
-		} else {
-			for ctrl, vnames := range sc.Airspace {
-				if _, ok := ss.Airspace[ctrl]; !ok {
-					ss.Airspace[ctrl] = make(map[string][]ControllerAirspaceVolume)
-				}
-				for _, vname := range vnames {
-					// Remap from strings provided in the scenario to the
-					// actual volumes defined in the scenario group.
-					ss.Airspace[ctrl][vname] = sg.Airspace.Volumes[vname]
-				}
-			}
-		}
-	}
-	ss.DepartureRunways = sc.DepartureRunways
-	ss.ArrivalRunways = sc.ArrivalRunways
-	ss.LaunchConfig = s.LaunchConfig
-	ss.SimIsPaused = s.Paused
-	ss.SimRate = s.SimRate
-	ss.SimName = s.Name
-	ss.SimDescription = s.Scenario
-	ss.SimTime = s.SimTime
-	ss.STARSFacilityAdaptation = deep.MustCopy(sg.STARSFacilityAdaptation)
 	if manifest != nil {
 		ss.VideoMapLibraryHash, _ = manifest.Hash()
 	}
 
+	if len(config.ControllerAirspace) > 0 {
+		ss.Airspace = make(map[string]map[string][]av.ControllerAirspaceVolume)
+		if config.IsLocal {
+			ss.Airspace[ss.PrimaryController] = make(map[string][]av.ControllerAirspaceVolume)
+			// Take all the airspace
+			for _, vnames := range config.ControllerAirspace {
+				for _, vname := range vnames {
+					// Remap from strings provided in the scenario to the
+					// actual volumes defined in the scenario group.
+					ss.Airspace[ss.PrimaryController][vname] = config.Airspace.Volumes[vname]
+				}
+			}
+		} else {
+			for ctrl, vnames := range config.ControllerAirspace {
+				if _, ok := ss.Airspace[ctrl]; !ok {
+					ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
+				}
+				for _, vname := range vnames {
+					// Remap from strings provided in the scenario to the
+					// actual volumes defined in the scenario group.
+					ss.Airspace[ctrl][vname] = config.Airspace.Volumes[vname]
+				}
+			}
+		}
+	}
+
 	// Add the TFR restriction areas
-	for _, tfr := range tfrs {
-		ra := RestrictionAreaFromTFR(tfr)
+	for _, tfr := range config.TFRs {
+		ra := av.RestrictionAreaFromTFR(tfr)
 		ss.STARSFacilityAdaptation.RestrictionAreas = append(ss.STARSFacilityAdaptation.RestrictionAreas, ra)
 	}
-	for _, callsign := range sc.VirtualControllers {
-		// Skip controllers that are in MultiControllers
+
+	for _, callsign := range config.VirtualControllers {
+		// Filter out any that are actually human-controlled positions.
+		if callsign == ss.PrimaryController {
+			continue
+		}
 		if ss.MultiControllers != nil {
 			if _, ok := ss.MultiControllers[callsign]; ok {
 				continue
 			}
 		}
 
-		if ctrl, ok := sg.ControlPositions[callsign]; ok {
+		if ctrl, ok := config.ControlPositions[callsign]; ok {
 			ss.Controllers[callsign] = ctrl
 		} else {
 			lg.Errorf("%s: controller not found in ControlPositions??", callsign)
@@ -172,55 +182,47 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 	// Make some fake METARs; slightly different for all airports.
 	alt := 2980 + rand.Intn(40)
 
-	fakeMETAR := func(icao string) {
-		spd := ss.Wind.Speed - 3 + rand.Int31n(6)
-		var wind string
-		if spd < 0 {
-			wind = "00000KT"
-		} else if spd < 4 {
-			wind = fmt.Sprintf("VRB%02dKT", spd)
-		} else {
-			dir := 10 * ((ss.Wind.Direction + 5) / 10)
-			dir += [3]int32{-10, 0, 10}[rand.Intn(3)]
-			wind = fmt.Sprintf("%03d%02d", dir, spd)
-			gst := ss.Wind.Gust - 3 + rand.Int31n(6)
-			if gst-ss.Wind.Speed > 5 {
-				wind += fmt.Sprintf("G%02d", gst)
+	fakeMETAR := func(icao []string) {
+		for _, ap := range icao {
+			ss.METAR[ap] = &av.METAR{
+				// Just provide the stuff that the STARS display shows
+				AirportICAO: ap,
+				Wind:        ss.Wind.Randomize(),
+				Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
 			}
-			wind += "KT"
-		}
-
-		// Just provide the stuff that the STARS display shows
-		ss.METAR[icao] = &av.METAR{
-			AirportICAO: icao,
-			Wind:        wind,
-			Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
 		}
 	}
 
 	realMETAR := func(icao []string) {
-		metar, err := getWeather(icao...)
+		metar, err := av.GetWeather(icao...)
 		if err != nil {
 			lg.Errorf("%s: error getting weather: %+v", strings.Join(icao, ", "), err)
 		}
 
-		for i := range metar {
+		for _, m := range metar {
 			// Just provide the stuff that the STARS display shows
-			ss.METAR[metar[i].IcaoId] = &av.METAR{
-				AirportICAO: metar[i].IcaoId,
-				Wind:        metar[i].getWindInfo(),
-				Altimeter:   fmt.Sprintf("A%d", int(metar[i].getAltimeter()*100)),
-			}
+			ss.METAR[m.AirportICAO] = &m
 		}
 	}
 
 	ss.DepartureAirports = make(map[string]*av.Airport)
-	for name := range s.LaunchConfig.DepartureRates {
+	for name := range ss.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = ss.Airports[name]
+	}
+	for name, ap := range ss.Airports {
+		if ap.VFRRateSum() > 0 {
+			ss.DepartureAirports[name] = ap
+
+			if rwy, _ := av.DB.Airports[name].SelectBestRunway(ss /* wind */, ss.MagneticVariation); rwy != nil {
+				ss.VFRRunways[name] = *rwy
+			} else {
+				lg.Errorf("%s: unable to find runway for VFRs", name)
+			}
+		}
 	}
 
 	ss.ArrivalAirports = make(map[string]*av.Airport)
-	for _, airportRates := range s.LaunchConfig.InboundFlowRates {
+	for _, airportRates := range ss.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
 			if name != "overflights" {
 				ss.ArrivalAirports[name] = ss.Airports[name]
@@ -228,16 +230,17 @@ func newState(selectedSplit string, liveWeather bool, isLocal bool, s *Sim, sg *
 		}
 	}
 
-	if liveWeather {
-		realMETAR(slices.Collect(maps.Keys(ss.DepartureAirports)))
-		realMETAR(slices.Collect(maps.Keys(ss.ArrivalAirports)))
+	// Get the unique airports we potentially want METAR for.
+	aps := slices.Collect(maps.Keys(ss.DepartureAirports))
+	aps = slices.AppendSeq(aps, maps.Keys(ss.ArrivalAirports))
+	aps = append(aps, ss.STARSFacilityAdaptation.Altimeters...)
+	slices.Sort(aps)
+	aps = slices.Compact(aps)
+
+	if config.LiveWeather {
+		realMETAR(aps)
 	} else {
-		for ap := range ss.DepartureAirports {
-			fakeMETAR(ap)
-		}
-		for ap := range ss.ArrivalAirports {
-			fakeMETAR(ap)
-		}
+		fakeMETAR(aps)
 	}
 
 	return ss
@@ -250,15 +253,17 @@ func (s *State) GetStateForController(tcp string) *State {
 	// World state to improve responsiveness don't actually affect the
 	// server.)
 	state := deep.MustCopy(*s)
-	state.PrimaryTCP = tcp
+	state.UserTCP = tcp
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
 	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
+		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
 	} else {
 		state.ControllerVideoMaps = s.STARSFacilityAdaptation.VideoMapNames
 		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
+		state.ControllerMonitoredBeaconCodeBlocks = s.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
 	}
 
 	return &state
@@ -317,17 +322,26 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 // controller's control are considered for matching.
 func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*av.Aircraft {
 	match := func(ac *av.Aircraft) bool {
-		return strings.HasSuffix(ac.Callsign, suffix) && (instructor || ac.ControllingController == ss.PrimaryTCP)
+		if !strings.HasSuffix(ac.Callsign, suffix) {
+			return false
+		}
+		if instructor || ac.ControllingController == ss.UserTCP {
+			return true
+		}
+		// Hold for release aircraft still in the list
+		if ac.DepartureContactController == ss.UserTCP && ac.ControllingController == "" {
+			return true
+		}
+		return false
 	}
-	return slices.Collect(util.FilterIter(maps.Values(ss.Aircraft), match))
+	return slices.Collect(util.FilterSeq(maps.Values(ss.Aircraft), match))
 }
 
 func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	if len(ss.MultiControllers) > 0 {
 		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
-			func(callsign string) bool {
-				ctrl, ok := ss.Controllers[callsign]
-				return ok && ctrl.IsHuman
+			func(tcp string) bool {
+				return slices.Contains(ss.HumanControllers, tcp)
 			})
 		if err != nil {
 			lg.Warn("Unable to resolve departure controller", slog.Any("error", err),
@@ -340,7 +354,7 @@ func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 }
 
 func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.STARSComputer().GetReleaseDepartures(),
+	return util.FilterSliceInPlace(ss.STARSComputer().GetReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
@@ -349,12 +363,12 @@ func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
 			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
 				return false
 			}
-			return ss.DepartureController(ac, nil) == ss.PrimaryTCP
+			return ss.DepartureController(ac, nil) == ss.UserTCP
 		})
 }
 
 func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.GetAllReleaseDepartures(),
+	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			if ac.Released {
 				return false
@@ -371,7 +385,7 @@ func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
 }
 
 func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
-	return util.FilterSlice(ss.GetAllReleaseDepartures(),
+	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
 		func(ac *av.Aircraft) bool {
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
@@ -382,38 +396,15 @@ func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
 		})
 }
 
-func (s *State) GetVideoMapLibrary(client *ControlClient) (*av.VideoMapLibrary, error) {
-	if s.mapLibrary != nil {
-		return s.mapLibrary, nil
-	}
-
-	filename := s.STARSFacilityAdaptation.VideoMapFile
-	ml, err := av.HashCheckLoadVideoMap(filename, s.VideoMapLibraryHash)
-	if err == nil {
-		s.mapLibrary = ml
-		return ml, nil
-	} else {
-		ml, err = client.GetVideoMapLibrary(filename)
-		if err == nil {
-			s.mapLibrary = ml
-		}
-		return ml, err
-	}
-}
-
-func (s *State) GetControllerVideoMaps() ([]string, []string) {
-	return s.ControllerVideoMaps, s.ControllerDefaultVideoMaps
-}
-
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.PrimaryTCP]; ok && config.Range != 0 {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.PrimaryTCP]; ok && !config.Center.IsZero() {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center
@@ -451,13 +442,15 @@ func (ss *State) AverageWindVector() [2]float32 {
 	return math.Scale2f(v, float32(ss.Wind.Speed))
 }
 
-func (ss *State) GetWindVector(p math.Point2LL, alt float32) math.Point2LL {
+func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
-	base := time.UnixMicro(0)
-	sec := ss.SimTime.Sub(base).Seconds()
-	windSpeed := float32(ss.Wind.Speed) +
-		float32(ss.Wind.Gust-ss.Wind.Speed)*float32(1+gomath.Cos(sec/4))/2
+	windSpeed := float32(ss.Wind.Speed)
+	if ss.Wind.Gust > 0 {
+		base := time.UnixMicro(0)
+		sec := ss.SimTime.Sub(base).Seconds()
+		windSpeed += float32(ss.Wind.Gust-ss.Wind.Speed) * float32(1+gomath.Cos(sec/4)) / 2
+	}
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
@@ -475,14 +468,19 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 			return ss.TRACON, true
 		}
 	}
-	if strings.HasSuffix(callsign, "_APP") || strings.HasSuffix(callsign, "DEP") {
+	if slices.Contains(ss.HumanControllers, callsign) || callsign == ss.PrimaryController {
 		return ss.TRACON, true
 	}
+	if _, ok := ss.MultiControllers[callsign]; ok {
+		return ss.TRACON, true
+	}
+
 	return "", false
 }
 
 func (ss *State) DeleteAircraft(ac *av.Aircraft) {
 	delete(ss.Aircraft, ac.Callsign)
+	ss.ERAMComputer().ReturnSquawk(ac.Squawk)
 	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
 }
 
@@ -497,6 +495,6 @@ func (ss *State) ERAMComputer() *ERAMComputer {
 }
 
 func (ss *State) AmInstructor() bool {
-	_, ok := ss.Instructors[ss.PrimaryController]
+	_, ok := ss.Instructors[ss.UserTCP]
 	return ok
 }

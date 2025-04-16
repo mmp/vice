@@ -3,53 +3,12 @@
   "airports": {
     "KDAB": {
       "approaches": {
-        "I7L": {
-          "runway": "7L",
-          "type": "ILS",
-          "waypoints": [
-            "HANAV/arc16OMN TIGAE/a1600 FOLIG/a1600 ZOPRI/a680",
-            "SMYRA/arc18.9OMN WAMAL/a1900 TIGAE/a1600 FOLIG/a1600 ZOPRI/a680"
-          ]
-        },
-        "R7R": {
-          "runway": "7R",
-          "type": "RNAV",
-          "waypoints": [
-            "GUANO/nopt TACUR/lhilpt4nm/a1700 JUSAD/a1600",
-            "TACUR/lhilpt4nm/a1700 JUSAD/a1600"
-          ]
-        },
-        "R16": {
-          "runway": "16",
-          "type": "RNAV",
-          "waypoints": [
-            "BARBS/nopt CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800",
-            "CEPDA/lhilpt4nm/a2000 FEMBA/a1600 DOGRE/a800"
-          ]
-        },
-        "I5R": {
-          "runway": "25R",
-          "type": "ILS",
-          "waypoints": [
-            "WISPO/a3000 RINEE/a2700 DIYAK/a1600"
-          ]
-        },
-        "R5L": {
-          "runway": "25L",
-          "type": "RNAV",
-          "waypoints": [
-            "FOMRO/a1600/lhilpt4nm ROLKE/a1600 CELAB/a1020"
-          ]
-        },
-        "R34": {
-          "runway": "34",
-          "type": "RNAV",
-          "waypoints": [
-            "BARBS/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",
-            "OAKIE/nopt KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700",
-            "KESLR/a1700/hilpt4nm EYORE/a1600 HERLO/a700"
-          ]
-        }
+        "I7L": { "cifp_id": "I7L" },
+        "R7R": { "cifp_id": "R7R" },
+        "R16": { "cifp_id": "R16" },
+        "I5R": { "cifp_id": "I25R" },
+        "R5L": { "cifp_id": "R25L" },
+        "R34": { "cifp_id": "R34" }
       },
       "departure_routes": {
         "7L": {
@@ -493,7 +452,6 @@
     "JAX_30_CTR": {
       "frequency": 135925,
       "radio_name": "Jacksonville center",
-      "scope_char": "C",
       "sector_id": "J30",
       "facility_id": "C",
       "eram_facility": true
@@ -501,43 +459,36 @@
     "DAB_H_APP": {
       "frequency": 125725,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "H",
       "sector_id": "5H"
     },
     "DAB_M_APP": {
       "frequency": 118850,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "M",
       "sector_id": "5M"
     },
     "DAB_L_APP": {
       "frequency": 127075,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "L",
       "sector_id": "5L"
     },
     "DAB_N_APP": {
       "frequency": 125800,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "N",
       "sector_id": "5N"
     },
     "DAB_S_APP": {
       "frequency": 125350,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "S",
       "sector_id": "5S"
     },
     "DAB_E_APP": {
       "frequency": 123900,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "E",
       "sector_id": "5E"
     },
     "DAB_W_APP": {
       "frequency": 126550,
       "radio_name": "Daytona Beach approach",
-      "scope_char": "W",
       "sector_id": "5W"
     },
     "MCO_B_APP": {
@@ -557,13 +508,11 @@
     "DAB_N_TWR": {
       "frequency": 120700,
       "radio_name": "Daytona Beach tower",
-      "scope_char": "T",
       "sector_id": "5NT"
     },
     "DAB_S_TWR": {
       "frequency": 118100,
       "radio_name": "Daytona Beach tower",
-      "scope_char": "T",
       "sector_id": "5ST"
     }
   },

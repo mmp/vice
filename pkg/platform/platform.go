@@ -76,6 +76,15 @@ type Platform interface {
 	// Disable mouse capture.
 	EndCaptureMouse()
 
+	// Enter/leave a mouse capture mode where the change in mouse position
+	// is returned each frame through MouseState DeltaPos. The cursor is
+	// hidden and the returned mouse position is kept fixed.
+	StartMouseDeltaMode()
+	StopMouseDeltaMode()
+
+	// Moves the mouse cursor to the given position specified in window coordinates.
+	SetMousePosition([2]float32)
+
 	// Scaling factor to account for Retina-style displays
 	DPIScale() float32
 
@@ -92,6 +101,12 @@ type Platform interface {
 	// The integer return value identifies the effect and can be passed to
 	// the audio playing entrypoints.
 	AddPCM(pcm []byte, rate int) (int, error)
+
+	// Registers an MP3-based audio effect. As with AddPCM, assumes one
+	// channel sampled at AudioSampleRate. The integer return value
+	// identifies the effect and can be passed to the audio playing
+	// entrypoints.
+	AddMP3(mp3 []byte) (int, error)
 
 	// SetAudioVolume sets the volume for audio playback; the value passed
 	// should be between 0 and 10.

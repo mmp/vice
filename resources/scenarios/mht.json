@@ -777,7 +777,6 @@
         "BOS_37_CTR": {
             "frequency": 134700,
             "radio_name": "Boston Center",
-            "scope_char": "C",
             "eram_facility": true,
             "facility_id": "C",
             "sector_id": "C37"
@@ -798,32 +797,27 @@
             "default_airport" :"KMHT",
             "frequency": 124900,
             "radio_name": "Boston Approach",
-            "scope_char": "Z",
             "sector_id": "1Z"
         },
         "MHT_E_APP": {
             "default_airport": "KPSM",
             "frequency": 125050,
             "radio_name": "Boston Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         },
         "MHT_W_APP": {
             "frequency": 134750,
             "radio_name": "Boston Approach",
-            "scope_char": "W",
             "sector_id": "1W"
         },
         "MHT_P_APP": {
             "frequency": 125825,
             "radio_name": "Boston Approach",
-            "scope_char": "P",
             "sector_id": "1P"
         },
         "MHT_J_APP": {
             "frequency": 127350,
             "radio_name": "Boston Approach",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "BOS_DEP": {

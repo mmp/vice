@@ -76,6 +76,15 @@ func TestNormalizeHeading(t *testing.T) {
 	}
 }
 
+func TestHeadingSignedTurn(t *testing.T) {
+	turns := [][3]float32{{10, 90, 80}, {10, 350, -20}, {120, 10, -110}, {120, 270, 150}}
+	for _, turn := range turns {
+		if result := HeadingSignedTurn(turn[0], turn[1]); result != turn[2] {
+			t.Errorf("HeadingSignedTurn(%f, %f) = %f; expected %f", turn[0], turn[1], result, turn[2])
+		}
+	}
+}
+
 func TestParseLatLong(t *testing.T) {
 	type LL struct {
 		str string
@@ -85,7 +94,8 @@ func TestParseLatLong(t *testing.T) {
 		LL{str: "N40.37.58.400, W073.46.17.000", pos: Point2LL{-73.771385, 40.6328888}}, // JFK VOR
 		LL{str: "N40.37.58.4,W073.46.17.000", pos: Point2LL{-73.771385, 40.6328888}},    // JFK VOR
 		LL{str: "40.6328888, -73.771385", pos: Point2LL{-73.771385, 40.6328888}},        // JFK VOR
-		LL{str: "+403758.400-0734617.000", pos: Point2LL{-73.7713928, 40.632885}}}       // JFK VOR
+		LL{str: "+403758.400-0734617.000", pos: Point2LL{-73.7713928, 40.632885}},       // JFK VOR
+	}
 
 	for _, ll := range latlongs {
 		p, err := ParseLatLong([]byte(ll.str))
@@ -100,11 +110,31 @@ func TestParseLatLong(t *testing.T) {
 		}
 	}
 
+	for _, ll := range []LL{
+		LL{str: "4037N/07346W", pos: Point2LL{-73.76666667, 40.616667}},
+		LL{str: "1234S/12016E", pos: Point2LL{120.2666667, -12.5666667}},
+	} {
+		p, err := ParseLatLong([]byte(ll.str))
+		if err != nil {
+			t.Errorf("%s: unexpected error: %v", ll.str, err)
+		}
+		if Abs(p[0]-ll.pos[0]) > 1e-5 {
+			t.Errorf("%s: got %.9g for latitude, expected %.9g", ll.str, p[0], ll.pos[0])
+		}
+		if Abs(p[1]-ll.pos[1]) > 1e-5 {
+			t.Errorf("%s: got %.9g for longitude, expected %.9g", ll.str, p[1], ll.pos[1])
+		}
+	}
+
 	for _, invalid := range []string{
 		"E40.37.58.400, W073.46.17.000",
 		"40.37.58.400, W073.46.17.000",
 		"N40.37.58.400, -73.22",
 		"N40.37.58.400, W073.46.17",
+		"40632N/12345W",
+		"632N/12345W",
+		"4062N/12435W",
+		"4062N/01245X",
 	} {
 		if _, err := ParseLatLong([]byte(invalid)); err == nil {
 			t.Errorf("%s: no error was returned for invalid latlong string!", invalid)

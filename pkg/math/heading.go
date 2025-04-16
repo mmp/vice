@@ -104,6 +104,14 @@ func HeadingDifference(a float32, b float32) float32 {
 	return d
 }
 
+// Figure out which way is closest: first find the angle to rotate the
+// target heading by so that it's aligned with 180 degrees. This lets us
+// not worry about the complexities of the wrap around at 0/360..
+func HeadingSignedTurn(cur, target float32) float32 {
+	rot := NormalizeHeading(180 - target)
+	return 180 - NormalizeHeading(cur+rot) // w.r.t. 180 target
+}
+
 // compass converts a heading expressed into degrees into a string
 // corresponding to the closest compass direction.
 func Compass(heading float32) string {

@@ -5,32 +5,27 @@
 package aviation
 
 import (
-	"bytes"
-	"encoding/gob"
-	"errors"
 	"fmt"
-	"io"
-	"io/fs"
 	"maps"
 	"math/bits"
-	"path/filepath"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
-	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/klauspost/compress/zstd"
 )
 
 type ReportingPoint struct {
 	Fix      string
 	Location math.Point2LL
+}
+
+type InboundFlow struct {
+	Arrivals    []Arrival    `json:"arrivals"`
+	Overflights []Overflight `json:"overflights"`
 }
 
 type Arrival struct {
@@ -133,22 +128,9 @@ type Runway struct {
 	Elevation int
 }
 
-type METAR struct {
-	AirportICAO string
-	Time        string
-	Auto        bool
-	Wind        string
-	Weather     string
-	Altimeter   string
-	Rmk         string
-}
-
-func (m METAR) String() string {
-	auto := ""
-	if m.Auto {
-		auto = "AUTO"
-	}
-	return strings.Join([]string{m.AirportICAO, m.Time, auto, m.Wind, m.Weather, m.Altimeter, m.Rmk}, " ")
+func TidyRunway(r string) string {
+	r, _, _ = strings.Cut(r, ".")
+	return strings.TrimSpace(r)
 }
 
 type ATIS struct {
@@ -156,6 +138,35 @@ type ATIS struct {
 	AppDep   string
 	Code     string
 	Contents string
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+type RadioTransmissionType int
+
+const (
+	RadioTransmissionContact    = iota // Messages initiated by the pilot
+	RadioTransmissionReadback          // Reading back an instruction
+	RadioTransmissionUnexpected        // Something urgent or unusual
+)
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
+	default:
+		return "(unhandled type)"
+	}
+}
+
+type RadioTransmission struct {
+	Controller string
+	Message    string
+	Type       RadioTransmissionType
 }
 
 // Frequencies are scaled by 1000 and then stored in integers.
@@ -174,31 +185,10 @@ func (f Frequency) String() string {
 	return s
 }
 
-type Controller struct {
-	Position           string    // This is the key in the controllers map in JSON
-	RadioName          string    `json:"radio_name"`
-	Frequency          Frequency `json:"frequency"`
-	TCP                string    `json:"sector_id"`  // e.g. N56, 2J, ...
-	Scope              string    `json:"scope_char"` // Optional. If unset, facility id is used for external, last char of sector id for local.
-	IsHuman            bool      // Not provided in scenario JSON
-	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
-	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
-	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
-	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
-	SignOnTime         time.Time
-}
-
-func (c Controller) Id() string {
-	if c.ERAMFacility {
-		return c.TCP
-	}
-	return c.FacilityIdentifier + c.TCP
-}
-
 type FlightRules int
 
 const (
-	UNKNOWN = iota
+	UNKNOWN FlightRules = iota
 	IFR
 	VFR
 	DVFR
@@ -243,8 +233,20 @@ type Squawk int
 func (s Squawk) String() string { return fmt.Sprintf("%04o", s) }
 
 func ParseSquawk(s string) (Squawk, error) {
-	if s == "" {
-		return Squawk(0), nil
+	if len(s) != 4 {
+		return Squawk(0), ErrInvalidSquawkCode
+	}
+
+	sq, err := strconv.ParseInt(s, 8, 32) // base 8!!!
+	if err != nil || sq < 0 || sq > 0o7777 {
+		return Squawk(0), ErrInvalidSquawkCode
+	}
+	return Squawk(sq), nil
+}
+
+func ParseSquawkOrBlock(s string) (Squawk, error) {
+	if len(s) != 4 && len(s) != 2 {
+		return Squawk(0), ErrInvalidSquawkCode
 	}
 
 	sq, err := strconv.ParseInt(s, 8, 32) // base 8!!!
@@ -321,12 +323,13 @@ func FormatAltitude(falt float32) string {
 type TransponderMode int
 
 const (
-	Standby = iota
-	Charlie
+	Standby  TransponderMode = iota /* off */
+	Altitude                        /* mode C */
+	On                              /* mode A */
 )
 
 func (t TransponderMode) String() string {
-	return [...]string{"Standby", "C"}[t]
+	return [...]string{"Standby", "Altitude", "On"}[t]
 }
 
 func (fp FlightPlan) BaseType() string {
@@ -355,20 +358,6 @@ func (fp FlightPlan) TypeWithoutSuffix() string {
 		// Who knows, so leave it alone
 		return fp.AircraftType
 	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Wind
-
-type Wind struct {
-	Direction int32 `json:"direction"`
-	Speed     int32 `json:"speed"`
-	Gust      int32 `json:"gust"`
-}
-
-type WindModel interface {
-	GetWindVector(p math.Point2LL, alt float32) math.Point2LL
-	AverageWindVector() [2]float32
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -422,84 +411,6 @@ func (rs *RadarSite) CheckVisibility(p math.Point2LL, altitude int) (primary, se
 	return
 }
 
-type AirspaceVolume struct {
-	Name    string             `json:"name"`
-	Type    AirspaceVolumeType `json:"type"`
-	Floor   int                `json:"floor"`
-	Ceiling int                `json:"ceiling"`
-	// Polygon
-	Vertices []math.Point2LL `json:"vertices"`
-	// Circle
-	Center math.Point2LL `json:"center"`
-	Radius float32       `json:"radius"`
-}
-
-type AirspaceVolumeType int
-
-const (
-	AirspaceVolumePolygon = iota
-	AirspaceVolumeCircle
-)
-
-func (t *AirspaceVolumeType) MarshalJSON() ([]byte, error) {
-	switch *t {
-	case AirspaceVolumePolygon:
-		return []byte("\"polygon\""), nil
-	case AirspaceVolumeCircle:
-		return []byte("\"circle\""), nil
-	default:
-		return nil, fmt.Errorf("%d: unknown airspace volume type", *t)
-	}
-}
-
-func (t *AirspaceVolumeType) UnmarshalJSON(b []byte) error {
-	switch string(b) {
-	case "\"polygon\"":
-		*t = AirspaceVolumePolygon
-		return nil
-	case "\"circle\"":
-		*t = AirspaceVolumeCircle
-		return nil
-	default:
-		return fmt.Errorf("%s: unknown airspace volume type", string(b))
-	}
-}
-
-func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
-	if alt <= a.Floor || alt > a.Ceiling {
-		return false
-	}
-
-	switch a.Type {
-	case AirspaceVolumePolygon:
-		return math.PointInPolygon2LL(p, a.Vertices)
-	case AirspaceVolumeCircle:
-		return math.NMDistance2LL(p, a.Center) < a.Radius
-	default:
-		panic("unhandled AirspaceVolume type")
-	}
-}
-
-func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerLongitude float32) {
-	ld := renderer.GetLinesDrawBuilder()
-
-	switch a.Type {
-	case AirspaceVolumePolygon:
-		var v [][2]float32
-		for _, vtx := range a.Vertices {
-			v = append(v, [2]float32(vtx))
-		}
-		ld.AddLineLoop(v)
-	case AirspaceVolumeCircle:
-		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
-	default:
-		panic("unhandled AirspaceVolume type")
-	}
-
-	ld.GenerateCommands(cb)
-	renderer.ReturnLinesDrawBuilder(ld)
-}
-
 func FixReadback(fix string) string {
 	if aid, ok := DB.Navaids[fix]; ok {
 		return util.StopShouting(aid.Name)
@@ -542,6 +453,9 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 		return Runway{}, false
 	} else {
 		rwy = cleanRunway(rwy)
+		if rwy == "" {
+			return Runway{}, false
+		}
 
 		// Break runway into number and optional extension and swap
 		// left/right.
@@ -677,7 +591,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 						}
 
 						ar.Waypoints = util.DuplicateSlice(wps[idx:])
-						ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+						ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 						if len(ar.Waypoints) >= 2 && spawnT != 0 {
 							ar.Waypoints[0].Location = math.Lerp2f(
@@ -710,9 +624,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 						if starRwy == rwy.Id ||
 							(n == len(rwy.Id) && starRwy[n-1] == 'B' /* both */ && starRwy[:n-1] == rwy.Id[:n-1]) {
 							ar.RunwayWaypoints[icao][rwy.Id] = util.DuplicateSlice(wp)
-							ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(
-								loc, nmPerLongitude, magneticVariation, e,
-							)
+							ar.RunwayWaypoints[icao][rwy.Id] =
+								ar.RunwayWaypoints[icao][rwy.Id].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 							break
 						}
 					}
@@ -725,7 +638,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			return
 
 		case 1:
-			ar.Waypoints[0].Handoff = true
+			ar.Waypoints[0].HumanHandoff = true // empty string -> to human
 
 		default:
 			// add a handoff point randomly halfway between the first two waypoints.
@@ -733,8 +646,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				Fix: "_handoff",
 				// FIXME: it's a little sketchy to lerp Point2ll coordinates
 				// but probably ok over short distances here...
-				Location: math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
-				Handoff:  true,
+				Location:     math.Lerp2f(0.5, ar.Waypoints[0].Location, ar.Waypoints[1].Location),
+				HumanHandoff: true,
 			}
 			ar.Waypoints = append([]Waypoint{ar.Waypoints[0], mid}, ar.Waypoints[1:]...)
 		}
@@ -746,7 +659,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			)
 		}
 
-		ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 		for ap, rwywp := range ar.RunwayWaypoints {
 			e.Push("Airport " + ap)
@@ -763,7 +676,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 					e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[ap].ValidRunways())
 				}
 
-				wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+				wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 				for i := range wp {
 					wp[i].OnSTAR = true
@@ -877,7 +790,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	for id, controller := range controlPositions {
 		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString(fmt.Sprintf("%q is an ERAM facility, but has no facility id specified", id))
+			e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
 		}
 	}
 }
@@ -890,353 +803,6 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 	} else {
 		return wp
 	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-// Note: this should match ViceMapSpec/VideoMap in crc2vice/dat2vice. (crc2vice
-// doesn't support all of these, though.)
-type VideoMap struct {
-	Label       string // for DCB
-	Group       int    // 0 -> A, 1 -> B
-	Name        string // For maps system list
-	Id          int
-	Category    int
-	Restriction struct {
-		Id        int
-		Text      [2]string
-		TextBlink bool
-		HideText  bool
-	}
-	Color int
-	Lines [][]math.Point2LL
-
-	CommandBuffer renderer.CommandBuffer
-}
-
-// This should match VideoMapLibrary in dat2vice
-type VideoMapLibrary struct {
-	Maps []VideoMap
-}
-
-// VideoMapManifest stores which maps are available in a video map file and
-// is also able to provide the video map file's hash.
-type VideoMapManifest struct {
-	names      map[string]interface{}
-	filesystem fs.FS
-	filename   string
-}
-
-func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
-	defer e.CheckDepth(e.CurrentDepth())
-
-	manifest, err := LoadVideoMapManifest(filename)
-	if err != nil {
-		e.Error(err)
-		return
-	}
-
-	vms, err := LoadVideoMapLibrary(filename)
-	if err != nil {
-		e.Error(err)
-		return
-	}
-
-	for n := range manifest.names {
-		if !slices.ContainsFunc(vms.Maps, func(v VideoMap) bool { return v.Name == n }) {
-			e.ErrorString("%s: map is in manifest file but not video map file", n)
-		}
-	}
-	for _, m := range vms.Maps {
-		if _, ok := manifest.names[m.Name]; !ok {
-			e.ErrorString("%s: map is in video map file but not manifest", m.Name)
-		}
-	}
-}
-
-func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
-	filesystem := videoMapFS(filename)
-
-	// Load the manifest and do initial error checking
-	mf, _ := strings.CutSuffix(filename, ".zst")
-	mf, _ = strings.CutSuffix(mf, "-videomaps.gob")
-	mf += "-manifest.gob"
-
-	fm, err := filesystem.Open(mf)
-	if err != nil {
-		return nil, err
-	}
-	defer fm.Close()
-
-	var names map[string]interface{}
-	dec := gob.NewDecoder(fm)
-	if err := dec.Decode(&names); err != nil {
-		return nil, err
-	}
-
-	// Make sure the file exists but don't load it until it's needed.
-	f, err := filesystem.Open(filename)
-	if err != nil {
-		return nil, err
-	} else {
-		f.Close()
-	}
-
-	return &VideoMapManifest{
-		names:      names,
-		filesystem: filesystem,
-		filename:   filename,
-	}, nil
-}
-
-func (v VideoMapManifest) HasMap(s string) bool {
-	_, ok := v.names[s]
-	return ok
-}
-
-// Hash returns a hash of the underlying video map file (i.e., not the manifest!)
-func (v VideoMapManifest) Hash() ([]byte, error) {
-	if f, err := v.filesystem.Open(v.filename); err == nil {
-		defer f.Close()
-		return util.Hash(f)
-	} else {
-		return nil, err
-	}
-}
-
-func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
-	filesystem := videoMapFS(path)
-	f, err := filesystem.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	contents, err := io.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-
-	var r io.Reader
-	br := bytes.NewReader(contents)
-	var zr *zstd.Decoder
-	if len(contents) > 4 && contents[0] == 0x28 && contents[1] == 0xb5 && contents[2] == 0x2f && contents[3] == 0xfd {
-		// zstd compressed
-		zr, _ = zstd.NewReader(br, zstd.WithDecoderConcurrency(0))
-		defer zr.Close()
-		r = zr
-	} else {
-		r = br
-	}
-
-	// Decode the gobfile.
-	var vmf VideoMapLibrary
-	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
-		// Try the old format, just an array of maps
-		_, _ = br.Seek(io.SeekStart, 0)
-		if zr != nil {
-			zr.Reset(br)
-		}
-		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
-			return nil, err
-		}
-	}
-
-	// Convert the line specifications into command buffers for drawing.
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	for i, m := range vmf.Maps {
-		ld.Reset()
-
-		for _, lines := range m.Lines {
-			// Slightly annoying: the line vertices are stored with
-			// Point2LLs but AddLineStrip() expects [2]float32s.
-			fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
-			ld.AddLineStrip(fl)
-		}
-		ld.GenerateCommands(&m.CommandBuffer)
-
-		// Clear out Lines so that the memory can be reclaimed since they
-		// aren't needed any more.
-		m.Lines = nil
-		vmf.Maps[i] = m
-	}
-
-	return &vmf, nil
-}
-
-// Loads the specified video map file, though only if its hash matches the
-// provided hash. Returns an error otherwise.
-func HashCheckLoadVideoMap(path string, wantHash []byte) (*VideoMapLibrary, error) {
-	filesystem := videoMapFS(path)
-	f, err := filesystem.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	gotHash, err := util.Hash(f)
-	f.Close()
-	if true || !slices.Equal(gotHash, wantHash) {
-		return nil, errors.New("hash mismatch")
-	}
-
-	return LoadVideoMapLibrary(path)
-}
-
-// Returns an fs.FS that allows us to load the video map with the given path.
-func videoMapFS(path string) fs.FS {
-	if filepath.IsAbs(path) {
-		return util.RootFS{}
-	} else {
-		return util.GetResourcesFS()
-	}
-}
-
-func PrintVideoMaps(path string, e *util.ErrorLogger) {
-	if vmf, err := LoadVideoMapLibrary(path); err != nil {
-		e.Error(err)
-		return
-	} else {
-		sort.Slice(
-			vmf.Maps, func(i, j int) bool {
-				vi, vj := vmf.Maps[i], vmf.Maps[j]
-				if vi.Id != vj.Id {
-					return vi.Id < vj.Id
-				}
-				return vi.Name < vj.Name
-			},
-		)
-
-		fmt.Printf("%5s\t%20s\t%s\n", "Id", "Label", "Name")
-		for _, m := range vmf.Maps {
-			fmt.Printf("%5d\t%20s\t%s\n", m.Id, m.Label, m.Name)
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-// split -> config
-type SplitConfigurationSet map[string]SplitConfiguration
-
-// callsign -> controller contig
-type SplitConfiguration map[string]*MultiUserController
-
-type MultiUserController struct {
-	Primary          bool     `json:"primary"`
-	BackupController string   `json:"backup"`
-	Departures       []string `json:"departures"`
-	Arrivals         []string `json:"arrivals"` // TEMPORARY for inbound flows transition
-	InboundFlows     []string `json:"inbound_flows"`
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfigurations
-
-func (sc SplitConfigurationSet) GetConfiguration(split string) (SplitConfiguration, error) {
-	if len(sc) == 1 {
-		// ignore split
-		for _, config := range sc {
-			return config, nil
-		}
-	}
-
-	config, ok := sc[split]
-	if !ok {
-		return nil, fmt.Errorf("%s: split not found", split)
-	}
-	return config, nil
-}
-
-func (sc SplitConfigurationSet) GetPrimaryController(split string) (string, error) {
-	configs, err := sc.GetConfiguration(split)
-	if err != nil {
-		return "", err
-	}
-
-	for callsign, mc := range configs {
-		if mc.Primary {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("No primary controller in split")
-}
-
-func (sc SplitConfigurationSet) Len() int {
-	return len(sc)
-}
-
-func (sc SplitConfigurationSet) Splits() []string {
-	return util.SortedMapKeys(sc)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfiguration
-
-// ResolveController takes a controller callsign and returns the signed-in
-// controller that is responsible for that position (possibly just the
-// provided callsign).
-func (sc SplitConfiguration) ResolveController(id string, active func(id string) bool) (string, error) {
-	origId := id
-	i := 0
-	for {
-		if ctrl, ok := sc[id]; !ok {
-			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", id)
-		} else if ctrl.Primary || active(id) {
-			return id, nil
-		} else {
-			id = ctrl.BackupController
-		}
-
-		i++
-		if i == 20 {
-			return "", fmt.Errorf("%s: unable to find controller backup", origId)
-		}
-	}
-}
-
-func (sc SplitConfiguration) GetInboundController(group string) (string, error) {
-	for callsign, ctrl := range sc {
-		if ctrl.IsInboundController(group) {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("%s: couldn't find inbound controller", group)
-}
-
-func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) (string, error) {
-	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, runway, sid) {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("%s/%s: couldn't find departure controller", airport, sid)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// MultiUserController
-
-func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
-	for _, d := range c.Departures {
-		depAirport, depSIDRwy, ok := strings.Cut(d, "/")
-		if ok { // have a runway or SID
-			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
-				return true
-			}
-		} else { // no runway/SID, so only match airport
-			if ap == depAirport {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (c *MultiUserController) IsInboundController(group string) bool {
-	return slices.Contains(c.InboundFlows, group)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1258,24 +824,80 @@ func makePool(first, last int) *SquawkCodePool {
 		AssignedBits: make([]uint64, nalloc),
 	}
 
+	p.removeInvalidCodes()
+
 	// Mark the excess invalid codes in the last entry of AssignedBits as
 	// taken so that we don't try to assign them later.
 	slop := ncodes % 64
-	p.AssignedBits[nalloc-1] = ^((1 << slop) - 1)
+	p.AssignedBits[nalloc-1] |= ^uint64(0) << slop
 
 	return p
 }
 
-func MakeCompleteSquawkCodePool() *SquawkCodePool {
-	p := makePool(0o1001, 0o7777)
-
-	// Don't issue VFR or any SPCs
-	p.Claim(0o1200)
-	for squawk := range spcs {
-		p.Claim(squawk)
+func (p *SquawkCodePool) removeInvalidCodes() {
+	// Remove the non-discrete codes (i.e., ones ending in 00).
+	for i := 0; i <= 0o7700; i += 0o100 {
+		_ = p.Claim(Squawk(i))
 	}
 
-	return p
+	claimRange := func(start, end int) {
+		for i := start; i < end; i++ {
+			_ = p.Claim(Squawk(i))
+		}
+	}
+	claimBlock := func(start int) {
+		claimRange(start, start+64)
+	}
+
+	// Remove various reserved squawk codes, per 7110.66G
+	// https://www.faa.gov/documentLibrary/media/Order/FAA_Order_JO_7110.66G_NBCAP.pdf.
+	_ = p.Claim(0o1200)
+	_ = p.Claim(0o1201)
+	_ = p.Claim(0o1202)
+	_ = p.Claim(0o1205)
+	_ = p.Claim(0o1206)
+	claimRange(0o1207, 0o1233)
+	claimRange(0o1235, 0o1254)
+	claimRange(0o1256, 0o1272)
+	_ = p.Claim(0o1234)
+	_ = p.Claim(0o1255)
+	claimRange(0o1273, 0o1275)
+	_ = p.Claim(0o1276)
+	_ = p.Claim(0o1277)
+	_ = p.Claim(0o2000)
+	claimRange(0o4400, 0o4433)
+	claimRange(0o4434, 0o4437)
+	claimRange(0o4440, 0o4452)
+	_ = p.Claim(0o4453)
+	claimRange(0o4454, 0o4477)
+	_ = p.Claim(0o7400)
+	claimRange(0o7501, 0o7577)
+	_ = p.Claim(0o7500)
+	_ = p.Claim(0o7600)
+	claimRange(0o7601, 0o7607)
+	_ = p.Claim(0o7700)
+	claimRange(0o7701, 0o7707)
+	_ = p.Claim(0o7777)
+
+	// TODO? 0100, 0200, 0300, 0400 blocks?
+
+	// FIXME: these probably shouldn't be hardcoded like this but should be available to PCT.
+	claimBlock(0o5100) // PCT TRACON for DC SFRA/FRZ
+	claimBlock(0o5200) // PCT TRACON for DC SFRA/FRZ
+
+	claimBlock(0o5000)
+	claimBlock(0o5400)
+	claimBlock(0o6100)
+	claimBlock(0o6400)
+
+	_ = p.Claim(0o7777)
+	for squawk := range spcs {
+		_ = p.Claim(squawk)
+	}
+}
+
+func MakeCompleteSquawkCodePool() *SquawkCodePool {
+	return makePool(0o1001, 0o7777)
 }
 
 func MakeSquawkBankCodePool(bank int) *SquawkCodePool {

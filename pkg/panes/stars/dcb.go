@@ -20,36 +20,29 @@ import (
 )
 
 var (
-	dcbButtonColor         = renderer.RGB{0, .173, 0}
-	dcbActiveButtonColor   = renderer.RGB{0, .305, 0}
-	dcbTextColor           = renderer.RGB{1, 1, 1}
-	dcbTextSelectedColor   = renderer.RGB{1, 1, 0}
-	dcbDisabledButtonColor = renderer.RGB{.4, .4, .4}
-	dcbDisabledTextColor   = renderer.RGB{.8, .8, .8}
+	dcbButtonColor            = renderer.RGB{0, .173, 0}
+	dcbActiveButtonColor      = renderer.RGB{0, .305, 0}
+	dcbTextColor              = renderer.RGB{1, 1, 1}
+	dcbTextSelectedColor      = renderer.RGB{1, 1, 0}
+	dcbUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
+	dcbUnsupportedTextColor   = renderer.RGB{.8, .8, .8}
+	dcbDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
+	dcbDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}
 )
 
 const dcbButtonSize = 84
-const numDCBSlots = 20
+const numDCBSlots = 22
+
+type dcbFlags int
 
 const (
-	buttonFull = 1 << iota
+	buttonFull dcbFlags = 1 << iota
 	buttonHalfVertical
 	buttonHalfHorizontal
 	buttonSelected
 	buttonWXAVL
-)
-
-const (
-	dcbMenuMain = iota
-	dcbMenuAux
-	dcbMenuMaps
-	dcbMenuBrite
-	dcbMenuCharSize
-	dcbMenuPref
-	dcbMenuSite
-	dcbMenuSSAFilter
-	dcbMenuGITextFilter
-	dcbMenuTPA
+	buttonDisabled
+	buttonUnsupported
 )
 
 const (
@@ -75,29 +68,22 @@ type dcbSpinner interface {
 	// MouseWheel is called when the spinner is active and there is mouse
 	// wheel input; implementations should update the underlying value
 	// accordingly.
-	MouseWheel(delta int)
+	Delta(delta int)
+
+	// MouseDelta returns how far the mouse has to move in y for the
+	// spinner's Delta() method to be called.
+	MouseDelta() float32
 
 	// KeyboardInput is called if the spinner is active and the user enters
 	// text and presses enter; implementations should update the underlying
-	// value accordingly.
-	KeyboardInput(text string) error
+	// value accordingly. If no error is returned, then he returned command
+	// mode becomes the current mode.
+	KeyboardInput(text string) (CommandMode, error)
 
-	// Disabled is called after a spinner has been disabled, e.g. due to a
-	// second click on its DCB button or pressing enter.
-	Disabled()
-}
-
-func (sp *STARSPane) disableMenuSpinner(ctx *panes.Context) {
-	if activeSpinner != nil {
-		activeSpinner.Disabled()
-	}
-	activeSpinner = nil
-	ctx.Platform.EndCaptureMouse()
-	sp.commandMode = CommandModeNone
-}
-
-func (sp *STARSPane) activateMenuSpinner(spinner dcbSpinner) {
-	activeSpinner = spinner
+	// EscapeMode is called if the escape key is pressed when the spinner
+	// is active; it returns the command mode that should become active as
+	// a result.
+	EscapeMode() CommandMode
 }
 
 func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
@@ -112,7 +98,7 @@ func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
 	}
 }
 
-func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
+func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
@@ -120,7 +106,40 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 	sp.startDrawDCB(ctx, buttonScale, transforms, cb)
 
-	drawVideoMapButton := func(idx int) {
+	// Bundle up the final cleanup so that code below can return directly.
+	defer func() {
+		sp.endDrawDCB()
+
+		sz := buttonSize(buttonFull, buttonScale)
+		paneExtent = ctx.PaneExtent
+		switch ps.DCBPosition {
+		case dcbPositionTop:
+			paneExtent.P1[1] -= sz[1]
+
+		case dcbPositionLeft:
+			paneExtent.P0[0] += sz[0]
+
+		case dcbPositionRight:
+			paneExtent.P1[0] -= sz[0]
+
+		case dcbPositionBottom:
+			paneExtent.P0[1] += sz[1]
+		}
+	}()
+
+	var disableMain bool
+	maybeDisable := func(flags dcbFlags) dcbFlags {
+		if disableMain {
+			return dcbFlags(flags | buttonDisabled)
+		}
+		return flags
+	}
+
+	drawVideoMapButton := func(idx int, disabled bool) {
+		var flags dcbFlags
+		if disabled {
+			flags = buttonDisabled
+		}
 		if idx < len(sp.dcbVideoMaps) && sp.dcbVideoMaps[idx] != nil && sp.dcbVideoMaps[idx].Id != 0 {
 			m := sp.dcbVideoMaps[idx]
 
@@ -132,7 +151,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 			text := fmt.Sprintf("%d\n%s", m.Id, label)
 			_, vis := ps.VideoMapVisible[m.Id]
-			if toggleButton(ctx, text, &vis, buttonHalfVertical, buttonScale) {
+			if toggleButton(ctx, text, &vis, flags|buttonHalfVertical, buttonScale) {
 				if vis {
 					ps.VideoMapVisible[m.Id] = nil
 				} else {
@@ -142,47 +161,85 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		} else {
 			// Inert button
 			off := false
-			toggleButton(ctx, "", &off, buttonHalfVertical, buttonScale)
+			toggleButton(ctx, "", &off, flags|buttonHalfVertical, buttonScale)
 		}
 	}
 
-	switch sp.activeDCBMenu {
-	case dcbMenuMain:
+	isKeyboardCommandMode := func(m CommandMode) bool {
+		return m == CommandModeNone || m == CommandModeInitiateControl || m == CommandModeTerminateControl ||
+			m == CommandModeHandOff || m == CommandModeVFRPlan || m == CommandModeMultiFunc ||
+			m == CommandModeFlightData || m == CommandModeCollisionAlert || m == CommandModeMin ||
+			m == CommandModeTargetGen || m == CommandModeReleaseDeparture || m == CommandModeRestrictionArea ||
+			m == CommandModeDrawRoute
+	}
+	isMainMenuMode := func(m CommandMode) bool {
+		return m == CommandModeRange || m == CommandModePlaceCenter || m == CommandModeRangeRings ||
+			m == CommandModePlaceRangeRings || m == CommandModeWX || m == CommandModeLDR || m == CommandModeLDRDir
+	}
+	isMainSubmenuMode := func(m CommandMode) bool {
+		return m == CommandModeMaps || m == CommandModeBrite || m == CommandModeBriteSpinner ||
+			m == CommandModeCharSize || m == CommandModeCharSizeSpinner ||
+			m == CommandModeSite || m == CommandModePref || m == CommandModeSavePrefAs ||
+			m == CommandModeSSAFilter || m == CommandModeGITextFilter
+	}
+	isAuxMenuMode := func(m CommandMode) bool {
+		return m == CommandModeVolume || m == CommandModeHistory || m == CommandModeHistoryRate ||
+			m == CommandModePTLLength || m == CommandModeDwell
+	}
+	isAuxSubmenuMode := func(m CommandMode) bool {
+		return m == CommandModeTPA
+	}
+
+	drawMainDCB := (isKeyboardCommandMode(sp.commandMode) && !sp.dcbShowAux) ||
+		isMainMenuMode(sp.commandMode) ||
+		isMainSubmenuMode(sp.commandMode)
+	drawAuxDCB := (isKeyboardCommandMode(sp.commandMode) && sp.dcbShowAux) ||
+		isAuxMenuMode(sp.commandMode) ||
+		isAuxSubmenuMode(sp.commandMode)
+
+	if drawMainDCB {
+		sp.dcbShowAux = false // for the future..
+		// If a submenu is active, draw the full regular menu, but disabled.
+		disableMain = isMainSubmenuMode(sp.commandMode)
+
 		sp.drawDCBSpinner(ctx, makeRadarRangeSpinner(&ps.Range), CommandModeRange,
-			buttonFull, buttonScale)
-		sp.placeButton(ctx, "PLACE\nCNTR", buttonHalfVertical, buttonScale,
-			func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-				ps.Center = transforms.LatLongFromWindowP(pw)
-				ps.CurrentCenter = ps.Center
-				status.clear = true
-				return
+			maybeDisable(buttonFull), buttonScale)
+		sp.drawDCBMouseDeltaButton(ctx, "PLACE\nCNTR", CommandModePlaceCenter, maybeDisable(buttonHalfVertical),
+			buttonScale,
+			func() { /* start */
+				ps.UseUserCenter = true
+			},
+			func(delta [2]float32) { /* update */
+				deltaLL := transforms.LatLongFromWindowV(delta)
+				ps.UserCenter = math.Sub2f(ps.UserCenter, deltaLL)
 			})
-		offcenter := ps.CurrentCenter != ps.Center
-		if toggleButton(ctx, "OFF\nCNTR", &offcenter, buttonHalfVertical, buttonScale) {
-			ps.CurrentCenter = ps.Center
-		}
+
+		toggleButton(ctx, "OFF\nCNTR", &ps.UseUserCenter, maybeDisable(buttonHalfVertical), buttonScale)
 		sp.drawDCBSpinner(ctx, makeRangeRingRadiusSpinner(&ps.RangeRingRadius), CommandModeRangeRings,
-			buttonFull, buttonScale)
-		sp.placeButton(ctx, "PLACE\nRR", buttonHalfVertical, buttonScale,
-			func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-				ps.RangeRingsCenter = transforms.LatLongFromWindowP(pw)
-				ps.RangeRingsUserCenter = true
-				status.clear = true
-				return
-			})
-		defaultCenter := !ps.RangeRingsUserCenter
-		if toggleButton(ctx, "RR\nCNTR", &defaultCenter, buttonHalfVertical, buttonScale) {
-			ps.RangeRingsUserCenter = !defaultCenter
+			maybeDisable(buttonFull), buttonScale)
+		if drawDCBButton(ctx, "PLACE\nRR", maybeDisable(buttonHalfVertical), buttonScale,
+			sp.commandMode == CommandModePlaceRangeRings) {
+			if sp.commandMode == CommandModePlaceRangeRings { // disable
+				sp.setCommandMode(ctx, CommandModeNone)
+			} else {
+				sp.commandMode = CommandModePlaceRangeRings
+				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+					ps.RangeRingsUserCenter = transforms.LatLongFromWindowP(pw)
+					ps.UseUserRangeRingsCenter = true
+					return CommandStatus{clear: true}
+				}
+			}
 		}
-		if selectButton(ctx, "MAPS", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMaps
+		toggleButton(ctx, "RR\nCNTR", &ps.UseUserRangeRingsCenter, maybeDisable(buttonHalfVertical), buttonScale)
+		if selectButton(ctx, "MAPS", maybeDisable(buttonFull), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeMaps)
 		}
 		for i := 0; i < 6; i++ {
 			// Maps are given left->right, top->down, but we draw the
 			// buttons top->down, left->right, so the indexing is a little
 			// funny.
 			idx := util.Select(i&1 == 0, i/2, 3+i/2)
-			drawVideoMapButton(idx)
+			drawVideoMapButton(idx, disableMain)
 		}
 		haveWeather := sp.weatherRadar.HaveWeather()
 		for i := range ps.DisplayWeatherLevel {
@@ -192,36 +249,36 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				label += "\nAVL"
 				flags = flags | buttonWXAVL
 			}
-			toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], flags, buttonScale)
+			toggleButton(ctx, label, &ps.DisplayWeatherLevel[i], maybeDisable(flags), buttonScale)
 		}
-		if selectButton(ctx, "BRITE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuBrite
+
+		if selectButton(ctx, "BRITE", maybeDisable(buttonFull), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeBrite)
 		}
-		sp.drawDCBSpinner(ctx, makeLeaderLineDirectionSpinner(sp, &ps.LeaderLineDirection), CommandModeNone,
-			buttonHalfVertical, buttonScale)
+		sp.drawDCBSpinner(ctx, makeLeaderLineDirectionSpinner(sp, &ps.LeaderLineDirection), CommandModeLDRDir,
+			maybeDisable(buttonHalfVertical), buttonScale)
 		sp.drawDCBSpinner(ctx, makeLeaderLineLengthSpinner(&ps.LeaderLineLength), CommandModeLDR,
-			buttonHalfVertical, buttonScale)
+			maybeDisable(buttonHalfVertical), buttonScale)
 
-		if selectButton(ctx, "CHAR\nSIZE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuCharSize
+		if selectButton(ctx, "CHAR\nSIZE", maybeDisable(buttonFull), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeCharSize)
 		}
-		disabledButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
+		unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
-		site := sp.radarSiteId(ctx.ControlClient.RadarSites)
-		if len(ctx.ControlClient.RadarSites) == 0 {
-			disabledButton(ctx, "SITE\n"+site, buttonFull, buttonScale)
-		} else {
-			if selectButton(ctx, "SITE\n"+site, buttonFull, buttonScale) {
-				sp.activeDCBMenu = dcbMenuSite
-			}
+		site := sp.radarSiteId(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites)
+		if len(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == 0 {
+			disabledButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale)
+		} else if selectButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeSite)
 		}
 
 		pref := "PREF"
 		if sp.prefSet.Selected != nil && sp.prefSet.Saved[*sp.prefSet.Selected] != nil {
 			pref += "\n" + sp.prefSet.Saved[*sp.prefSet.Selected].Name
 		}
-		if selectButton(ctx, pref, buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuPref
+		if selectButton(ctx, pref, maybeDisable(buttonFull), buttonScale) {
+			sp.setCommandMode(ctx, CommandModePref)
+
 			// Don't alias anything in the restore values
 			sp.RestorePreferences = sp.prefSet.Current.Duplicate()
 			if sp.prefSet.Selected == nil {
@@ -232,70 +289,31 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			}
 		}
 
-		if selectButton(ctx, "SSA\nFILTER", buttonHalfVertical, buttonScale) {
-			sp.activeDCBMenu = dcbMenuSSAFilter
+		if selectButton(ctx, "SSA\nFILTER", maybeDisable(buttonHalfVertical), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeSSAFilter)
 		}
-		if selectButton(ctx, "GI TEXT\nFILTER", buttonHalfVertical, buttonScale) {
-			sp.activeDCBMenu = dcbMenuGITextFilter
+		if selectButton(ctx, "GI TEXT\nFILTER", maybeDisable(buttonHalfVertical), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeGITextFilter)
 		}
-		if selectButton(ctx, "SHIFT", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuAux
-		}
-
-	case dcbMenuAux:
-		sp.drawDCBSpinner(ctx, makeAudioVolumeSpinner(ctx.Platform, sp, &ps.AudioVolume),
-			CommandModeNone, buttonFull, buttonScale)
-		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 10),
-			CommandModeNone, buttonHalfVertical, buttonScale)
-		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
-			CommandModeNone, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "CURSOR\nHOME", buttonFull, buttonScale)
-		disabledButton(ctx, "CSR SPD\n4", buttonFull, buttonScale)
-		disabledButton(ctx, "MAP\nUNCOR", buttonFull, buttonScale)
-		disabledButton(ctx, "UNCOR", buttonFull, buttonScale)
-		disabledButton(ctx, "BEACON\nMODE-2", buttonFull, buttonScale)
-		disabledButton(ctx, "RTQC", buttonFull, buttonScale)
-		disabledButton(ctx, "MCP", buttonFull, buttonScale)
-		top := ps.DCBPosition == dcbPositionTop
-		if toggleButton(ctx, "DCB\nTOP", &top, buttonHalfVertical, buttonScale) {
-			ps.DCBPosition = dcbPositionTop
-		}
-		left := ps.DCBPosition == dcbPositionLeft
-		if toggleButton(ctx, "DCB\nLEFT", &left, buttonHalfVertical, buttonScale) {
-			ps.DCBPosition = dcbPositionLeft
-		}
-		right := ps.DCBPosition == dcbPositionRight
-		if toggleButton(ctx, "DCB\nRIGHT", &right, buttonHalfVertical, buttonScale) {
-			ps.DCBPosition = dcbPositionRight
-		}
-		bottom := ps.DCBPosition == dcbPositionBottom
-		if toggleButton(ctx, "DCB\nBOTTOM", &bottom, buttonHalfVertical, buttonScale) {
-			ps.DCBPosition = dcbPositionBottom
-		}
-		sp.drawDCBSpinner(ctx, makePTLLengthSpinner(&ps.PTLLength), CommandModeNone, buttonFull, buttonScale)
-		if ps.PTLLength > 0 {
-			if toggleButton(ctx, "PTL OWN", &ps.PTLOwn, buttonHalfVertical, buttonScale) && ps.PTLOwn {
-				ps.PTLAll = false
-			}
-			if toggleButton(ctx, "PTL ALL", &ps.PTLAll, buttonHalfVertical, buttonScale) && ps.PTLAll {
-				ps.PTLOwn = false
-			}
-		} else {
-			disabledButton(ctx, "PTL OWN", buttonHalfVertical, buttonScale)
-			disabledButton(ctx, "PTL ALL", buttonHalfVertical, buttonScale)
-
-		}
-		sp.drawDCBSpinner(ctx, makeDwellModeSpinner(&ps.DwellMode), CommandModeNone, buttonFull, buttonScale)
-		if selectButton(ctx, "TPA/\nATPA", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuTPA
-		}
-		if selectButton(ctx, "SHIFT", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+		if selectButton(ctx, "SHIFT", maybeDisable(buttonFull), buttonScale) {
+			sp.dcbShowAux = true
 		}
 
-	case dcbMenuMaps:
+		// It's important that we return out when the main DCB is being drawn since if the user
+		// clicked the button for a submenu, we have updated sp.activeDCBMenu. However, we don't
+		// want to draw it until the next time through since otherwise one of its buttons would
+		// pick up the mouse click event.
+		if !disableMain {
+			return
+		}
+	}
+
+	if sp.commandMode == CommandModeMaps {
+		rewindDCBCursor(14, buttonScale)
+		dcbStartCaptureMouseRegion()
+
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+			sp.setCommandMode(ctx, CommandModeNone)
 		}
 		if selectButton(ctx, "CLR ALL", buttonHalfVertical, buttonScale) {
 			clear(ps.VideoMapVisible)
@@ -327,7 +345,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			// draw top->down, left->right while the maps are specified
 			// left->right, top->down...
 			idx := util.Select(i&1 == 0, 6+i/2, 22+i/2)
-			drawVideoMapButton(idx)
+			drawVideoMapButton(idx, false)
 		}
 
 		mapLabels := [VideoMapNumCategories]string{
@@ -363,61 +381,113 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			ps.VideoMapsList.Visible = currentMapsSelected
 		}
 
-	case dcbMenuBrite:
+		if sp.commandMode != CommandModeNone {
+			// Don't capture if DONE was clicked
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
+		}
+	}
+
+	if sp.commandMode == CommandModeBrite || sp.commandMode == CommandModeBriteSpinner {
+		rewindDCBCursor(7, buttonScale)
+		dcbStartCaptureMouseRegion()
+
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("DCB", &ps.Brightness.DCB, 25, false),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("BKC", &ps.Brightness.BackgroundContrast, 0, false),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("MPA", &ps.Brightness.VideoGroupA, 5, false),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("MPB", &ps.Brightness.VideoGroupB, 5, false),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("FDB", &ps.Brightness.FullDatablocks, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("LST", &ps.Brightness.Lists, 25, false),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("POS", &ps.Brightness.Positions, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("LDB", &ps.Brightness.LimitedDatablocks, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("OTH", &ps.Brightness.OtherTracks, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("TLS", &ps.Brightness.Lines, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("RR", &ps.Brightness.RangeRings, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("CMP", &ps.Brightness.Compass, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("BCN", &ps.Brightness.BeaconSymbols, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("PRI", &ps.Brightness.PrimarySymbols, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("HST", &ps.Brightness.History, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WX", &ps.Brightness.Weather, 5, true),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		sp.drawDCBSpinner(ctx, makeBrightnessSpinner("WXC", &ps.Brightness.WxContrast, 5, false),
-			CommandModeNone, buttonHalfVertical, buttonScale)
+			CommandModeBriteSpinner, buttonHalfVertical, buttonScale)
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+			sp.setCommandMode(ctx, CommandModeNone)
+		} else if sp.activeSpinner == nil { // let spinner capture take precedence
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
+	}
 
-	case dcbMenuCharSize:
-		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5),
-			CommandModeNone, buttonFull, buttonScale)
-		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("LISTS\n", &ps.CharSize.Lists, 0, 5),
-			CommandModeNone, buttonFull, buttonScale)
-		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("DCB\n", &ps.CharSize.DCB, 0, 2),
-			CommandModeNone, buttonFull, buttonScale)
-		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("TOOLS\n", &ps.CharSize.Tools, 0, 5),
-			CommandModeNone, buttonFull, buttonScale)
-		sp.drawDCBSpinner(ctx, makeIntegerRangeSpinner("POS\n", &ps.CharSize.PositionSymbols, 0, 5),
-			CommandModeNone, buttonFull, buttonScale)
+	if sp.commandMode == CommandModeCharSize || sp.commandMode == CommandModeCharSizeSpinner {
+		rewindDCBCursor(5, buttonScale)
+		dcbStartCaptureMouseRegion()
+
+		sp.drawDCBSpinner(ctx, makeCharSizeSpinner("DATA\nBLOCKS\n", &ps.CharSize.Datablocks, 0, 5),
+			CommandModeCharSizeSpinner, buttonFull, buttonScale)
+		sp.drawDCBSpinner(ctx, makeCharSizeSpinner("LISTS\n", &ps.CharSize.Lists, 0, 5),
+			CommandModeCharSizeSpinner, buttonFull, buttonScale)
+		sp.drawDCBSpinner(ctx, makeCharSizeSpinner("DCB\n", &ps.CharSize.DCB, 0, 2),
+			CommandModeCharSizeSpinner, buttonFull, buttonScale)
+		sp.drawDCBSpinner(ctx, makeCharSizeSpinner("TOOLS\n", &ps.CharSize.Tools, 0, 5),
+			CommandModeCharSizeSpinner, buttonFull, buttonScale)
+		sp.drawDCBSpinner(ctx, makeCharSizeSpinner("POS\n", &ps.CharSize.PositionSymbols, 0, 5),
+			CommandModeCharSizeSpinner, buttonFull, buttonScale)
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+			sp.setCommandMode(ctx, CommandModeNone)
+		} else if sp.activeSpinner == nil { // let spinner capture take precedence
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
+	}
 
-	case dcbMenuPref:
+	if sp.commandMode == CommandModeSite {
+		radarSites := ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites
+		rewindDCBCursor(3+len(radarSites)+3, buttonScale)
+		dcbStartCaptureMouseRegion()
+
+		for _, id := range util.SortedMapKeys(radarSites) {
+			site := radarSites[id]
+			label := " " + site.Char + " " + "\n" + id
+			selected := ps.RadarSiteSelected == id
+			if toggleButton(ctx, label, &selected, buttonFull, buttonScale) {
+				if selected {
+					ps.RadarSiteSelected = id
+				} else {
+					ps.RadarSiteSelected = ""
+				}
+			}
+		}
+		multi := sp.radarMode(radarSites) == RadarModeMulti
+		if toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
+			sp.setRadarModeMulti()
+		}
+		fused := sp.radarMode(radarSites) == RadarModeFused
+		if toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
+			sp.setRadarModeFused()
+		}
+		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
+			sp.setCommandMode(ctx, CommandModeNone)
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
+		}
+	}
+
+	if sp.commandMode == CommandModePref || sp.commandMode == CommandModeSavePrefAs {
+		rewindDCBCursor(19, buttonScale) // len(sp.prefSet.Saved)/2+4, buttonScale)
+		dcbStartCaptureMouseRegion()
 		for i, prefs := range sp.prefSet.Saved {
 			text := strconv.Itoa(i+1) + "\n"
 			flags := buttonHalfVertical
@@ -441,7 +511,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
 			sp.prefSet.ResetDefault(ctx.ControlClient.State, ctx.Platform, sp)
 		}
-		disabledButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
+		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {
 			// It shouldn't be nil, but...
 			disabledButton(ctx, "RESTORE", buttonHalfVertical, buttonScale)
@@ -465,7 +535,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		} else {
 			disabledButton(ctx, "SAVE", buttonHalfVertical, buttonScale)
 		}
-		disabledButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
+		unsupportedButton(ctx, "CHG PIN", buttonHalfVertical, buttonScale)
 
 		canSaveAs := slices.Contains(sp.prefSet.Saved[:], nil)
 		if !canSaveAs {
@@ -473,7 +543,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		} else if selectButton(ctx, "SAVE AS", buttonHalfVertical, buttonScale) {
 			// This command mode handles prompting for the name and then
 			// saves when enter is pressed.
-			sp.commandMode = CommandModeSavePrefAs
+			sp.setCommandMode(ctx, CommandModeSavePrefAs)
 		}
 		if sp.prefSet.Selected != nil {
 			if selectButton(ctx, "DELETE", buttonHalfVertical, buttonScale) {
@@ -485,131 +555,171 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 		if selectButton(ctx, "DONE", buttonHalfVertical, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+			sp.setCommandMode(ctx, CommandModeNone)
 			sp.RestorePreferences = nil
 			sp.RestorePreferencesNumber = nil
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
+	}
 
-	case dcbMenuSite:
-		for _, id := range util.SortedMapKeys(ctx.ControlClient.RadarSites) {
-			site := ctx.ControlClient.RadarSites[id]
-			label := " " + site.Char + " " + "\n" + id
-			selected := ps.RadarSiteSelected == id
-			if toggleButton(ctx, label, &selected, buttonFull, buttonScale) {
-				if selected {
-					ps.RadarSiteSelected = id
-				} else {
-					ps.RadarSiteSelected = ""
-				}
-			}
-		}
-		// Fill extras with empty disabled buttons
-		for i := len(ctx.ControlClient.RadarSites); i < 15; i++ {
-			disabledButton(ctx, "", buttonFull, buttonScale)
-		}
-		multi := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeMulti
-		if toggleButton(ctx, "MULTI", &multi, buttonFull, buttonScale) && multi {
-			ps.RadarSiteSelected = ""
-			if ps.FusedRadarMode {
-				sp.discardTracks = true
-			}
-			ps.FusedRadarMode = false
-		}
-		fused := sp.radarMode(ctx.ControlClient.RadarSites) == RadarModeFused
-		if toggleButton(ctx, "FUSED", &fused, buttonFull, buttonScale) && fused {
-			ps.RadarSiteSelected = ""
-			ps.FusedRadarMode = true
-			sp.discardTracks = true
-		}
-		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
-		}
+	if sp.commandMode == CommandModeSSAFilter {
+		rewindDCBCursor(17, buttonScale)
+		dcbStartCaptureMouseRegion()
 
-	case dcbMenuSSAFilter:
 		// 4-44 / 2-71
 		toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "WX", &ps.SSAList.Filter.Wx, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "TIME", &ps.SSAList.Filter.Time, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALTSTG", &ps.SSAList.Filter.Altimeter, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "STATUS", &ps.SSAList.Filter.Status, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "RADAR", &ps.SSAList.Filter.Radar, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "CODES", &ps.SSAList.Filter.Codes, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "SPC", &ps.SSAList.Filter.SpecialPurposeCodes, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "SYS OFF", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "SYS OFF", &ps.SSAList.Filter.SysOff, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "RANGE", &ps.SSAList.Filter.Range, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "PTL", &ps.SSAList.Filter.PredictedTrackLines, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALT FIL", &ps.SSAList.Filter.AltitudeFilters, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
-		// INTRAIL
-		// 2.5
+		unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "INTRAIL", &ps.SSAList.Filter.Intrail, buttonHalfVertical, buttonScale)
+		toggleButton(ctx, "2.5", &ps.SSAList.Filter.Intrail25, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "AIRPORT", &ps.SSAList.Filter.AirportWeather, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
-		disabledButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
+		unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
 		toggleButton(ctx, "WX HIST", &ps.SSAList.Filter.WxHistory, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "QL", &ps.SSAList.Filter.QuickLookPositions, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "TW OFF", &ps.SSAList.Filter.DisabledTerminal, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
-		disabledButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
+		unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, buttonHalfVertical, buttonScale)
-		disabledButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
-		disabledButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
-		disabledButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
+		unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
+		unsupportedButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
+		unsupportedButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+			sp.setCommandMode(ctx, CommandModeNone)
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
+	}
 
-	case dcbMenuGITextFilter:
+	if sp.commandMode == CommandModeGITextFilter {
+		rewindDCBCursor(2+1+len(ps.SSAList.Filter.Text.GI)/2+1, buttonScale)
+		dcbStartCaptureMouseRegion()
+
 		toggleButton(ctx, "MAIN", &ps.SSAList.Filter.Text.Main, buttonHalfVertical, buttonScale)
 		for i := range ps.SSAList.Filter.Text.GI {
 			toggleButton(ctx, fmt.Sprintf("GI %d", i+1), &ps.SSAList.Filter.Text.GI[i],
 				buttonHalfVertical, buttonScale)
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuMain
+			sp.setCommandMode(ctx, CommandModeNone)
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
+		}
+	}
+
+	if drawAuxDCB {
+		disableMain = isAuxSubmenuMode(sp.commandMode)
+
+		sp.drawDCBSpinner(ctx, makeAudioVolumeSpinner(ctx.Platform, sp, &ps.AudioVolume),
+			CommandModeVolume, maybeDisable(buttonFull), buttonScale)
+		sp.drawDCBSpinner(ctx, makeNegatedIntegerRangeSpinner("HISTORY\n", &ps.RadarTrackHistory, 0, 10),
+			CommandModeHistory, maybeDisable(buttonHalfVertical), buttonScale)
+		sp.drawDCBSpinner(ctx, makeHistoryRateSpinner(&ps.RadarTrackHistoryRate),
+			CommandModeHistoryRate, maybeDisable(buttonHalfVertical), buttonScale)
+		if toggleButton(ctx, "CURSOR\nHOME", &ps.AutoCursorHome, maybeDisable(buttonFull), buttonScale) {
+			sp.previewAreaOutput = util.Select(ps.AutoCursorHome, "HOME", "NO HOME")
+		}
+		unsupportedButton(ctx, "CSR SPD\n4", maybeDisable(buttonFull), buttonScale)
+		unsupportedButton(ctx, "MAP\nUNCOR", maybeDisable(buttonFull), buttonScale)
+		unsupportedButton(ctx, "UNCOR", maybeDisable(buttonFull), buttonScale)
+		unsupportedButton(ctx, "BEACON\nMODE-2", maybeDisable(buttonFull), buttonScale)
+		unsupportedButton(ctx, "RTQC", maybeDisable(buttonFull), buttonScale)
+		unsupportedButton(ctx, "MCP", maybeDisable(buttonFull), buttonScale)
+		top := ps.DCBPosition == dcbPositionTop
+		if toggleButton(ctx, "DCB\nTOP", &top, maybeDisable(buttonHalfVertical), buttonScale) {
+			ps.DCBPosition = dcbPositionTop
+		}
+		left := ps.DCBPosition == dcbPositionLeft
+		if toggleButton(ctx, "DCB\nLEFT", &left, maybeDisable(buttonHalfVertical), buttonScale) {
+			ps.DCBPosition = dcbPositionLeft
+		}
+		right := ps.DCBPosition == dcbPositionRight
+		if toggleButton(ctx, "DCB\nRIGHT", &right, maybeDisable(buttonHalfVertical), buttonScale) {
+			ps.DCBPosition = dcbPositionRight
+		}
+		bottom := ps.DCBPosition == dcbPositionBottom
+		if toggleButton(ctx, "DCB\nBOTTOM", &bottom, maybeDisable(buttonHalfVertical), buttonScale) {
+			ps.DCBPosition = dcbPositionBottom
+		}
+		sp.drawDCBSpinner(ctx, makePTLLengthSpinner(&ps.PTLLength), CommandModePTLLength, maybeDisable(buttonFull),
+			buttonScale)
+		if ps.PTLLength > 0 {
+			if toggleButton(ctx, "PTL OWN", &ps.PTLOwn, maybeDisable(buttonHalfVertical), buttonScale) && ps.PTLOwn {
+				ps.PTLAll = false
+			}
+			if toggleButton(ctx, "PTL ALL", &ps.PTLAll, maybeDisable(buttonHalfVertical), buttonScale) && ps.PTLAll {
+				ps.PTLOwn = false
+			}
+		} else {
+			disabledButton(ctx, "PTL OWN", maybeDisable(buttonHalfVertical), buttonScale)
+			disabledButton(ctx, "PTL ALL", maybeDisable(buttonHalfVertical), buttonScale)
+
+		}
+		sp.drawDCBSpinner(ctx, makeDwellModeSpinner(&ps.DwellMode), CommandModeDwell, maybeDisable(buttonFull), buttonScale)
+
+		if selectButton(ctx, "TPA/\nATPA", maybeDisable(buttonFull), buttonScale) {
+			sp.setCommandMode(ctx, CommandModeTPA)
+		}
+		if selectButton(ctx, "SHIFT", maybeDisable(buttonFull), buttonScale) {
+			sp.dcbShowAux = false
 		}
 
-	case dcbMenuTPA:
+		// As with the main menu, it's important to bail out here so that if the TPA/ATPA button
+		// was clicked and we updated sp.activeDCBMenu, we don't give it a chance to pick up the
+		// mouse click event as well.
+		if !disableMain {
+			return
+		}
+	}
+
+	if sp.commandMode == CommandModeTPA {
+		rewindDCBCursor(1, buttonScale)
+		dcbStartCaptureMouseRegion()
+
 		onoff := func(b bool) string { return util.Select(b, "ENABLED", "INHIBTD") }
 		if selectButton(ctx, "A/TPA\nMILEAGE\n"+onoff(ps.DisplayTPASize), buttonFull, buttonScale) {
 			ps.DisplayTPASize = !ps.DisplayTPASize
+			if ps.DisplayTPASize {
+				sp.previewAreaOutput = "TPA SIZE ON"
+			} else {
+				sp.previewAreaOutput = "TPA SIZE OFF"
+			}
 		}
 		if selectButton(ctx, "INTRAIL\nDIST\n"+onoff(ps.DisplayATPAInTrailDist), buttonFull, buttonScale) {
 			ps.DisplayATPAInTrailDist = !ps.DisplayATPAInTrailDist
+			sp.previewAreaOutput = ""
 		}
 		if selectButton(ctx, "ALERT\nCONES\n"+onoff(ps.DisplayATPAWarningAlertCones), buttonFull, buttonScale) {
 			ps.DisplayATPAWarningAlertCones = !ps.DisplayATPAWarningAlertCones
+			sp.previewAreaOutput = ""
 		}
 		if selectButton(ctx, "MONITOR\nCONES\n"+onoff(ps.DisplayATPAMonitorCones), buttonFull, buttonScale) {
 			ps.DisplayATPAMonitorCones = !ps.DisplayATPAMonitorCones
+			sp.previewAreaOutput = ""
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
-			sp.activeDCBMenu = dcbMenuAux
+			sp.setCommandMode(ctx, CommandModeNone)
+		} else {
+			dcbCaptureMouseFromRegion(ctx, buttonScale)
 		}
 	}
 
-	sp.endDrawDCB()
-
-	sz := buttonSize(buttonFull, buttonScale)
-		paneExtent := ctx.PaneExtent
-	switch ps.DCBPosition {
-	case dcbPositionTop:
-		paneExtent.P1[1] -= sz[1]
-
-	case dcbPositionLeft:
-		paneExtent.P0[0] += sz[0]
-
-	case dcbPositionRight:
-		paneExtent.P1[0] -= sz[0]
-
-	case dcbPositionBottom:
-		paneExtent.P0[1] += sz[1]
-	}
-
-	return paneExtent
+	return
 }
 
-func buttonSize(flags int, scale float32) [2]float32 {
+func buttonSize(flags dcbFlags, scale float32) [2]float32 {
 	bs := func(s float32) float32 { return float32(int(s*dcbButtonSize + 0.5)) }
 
 	if (flags & buttonFull) != 0 {
@@ -722,7 +832,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 	}
 }
 
-func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float32, pushedIn bool, disabled bool) (math.Extent2D, bool) {
+func drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -742,14 +852,21 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 	mouse := dcbDrawState.mouse
 	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
 	mouseDownInside := dcbDrawState.mouseDownPos != nil &&
-		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]})
+		ext.Inside([2]float32{dcbDrawState.mouseDownPos[0], dcbDrawState.mouseDownPos[1]}) &&
+		flags&buttonDisabled == 0
 
 	var buttonColor, textColor renderer.RGB
+	disabled := flags&buttonDisabled != 0
 	if disabled {
 		buttonColor = dcbDisabledButtonColor
 		textColor = dcbDisabledTextColor
 	}
-	if !disabled {
+	unsupported := flags&buttonUnsupported != 0
+	if unsupported {
+		buttonColor = dcbUnsupportedButtonColor
+		textColor = dcbUnsupportedTextColor
+	}
+	if !disabled && !unsupported {
 		if mouseInside && mouseDownInside {
 			pushedIn = !pushedIn
 		}
@@ -775,7 +892,7 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 	shiftp := func(p [2]float32, dx, dy float32) [2]float32 {
 		return math.Add2f(p, [2]float32{dx, dy})
 	}
-	if !disabled && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
+	if !disabled && !unsupported && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
 		// Depressed bevel scheme: darker top/left, highlight bottom/right
 		topLeftBevelColor, bottomRightBevelColor = bottomRightBevelColor, topLeftBevelColor
 	}
@@ -805,7 +922,7 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	updateDCBCursor(flags, sz, ctx)
+	moveDCBCursor(flags, sz, ctx)
 
 	// Text last!
 	trid.GenerateCommands(dcbDrawState.cb)
@@ -813,12 +930,24 @@ func drawDCBButton(ctx *panes.Context, text string, flags int, buttonScale float
 	td.GenerateCommands(dcbDrawState.cb)
 
 	if mouse != nil && mouseInside && mouse.Released[platform.MouseButtonPrimary] && mouseDownInside {
-		return ext, true /* clicked and released */
+		return true /* clicked and released */
 	}
-	return ext, false
+	return false
 }
 
-func updateDCBCursor(flags int, sz [2]float32, ctx *panes.Context) {
+func rewindDCBCursor(delta int, buttonScale float32) {
+	sz := buttonSize(buttonFull, buttonScale)
+	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
+		// Drawing left to right
+		dcbDrawState.cursor[0] -= float32(delta) * sz[0]
+		dcbDrawState.cursor[1] = dcbDrawState.drawStartPos[1]
+	} else {
+		dcbDrawState.cursor[0] = dcbDrawState.drawStartPos[0]
+		dcbDrawState.cursor[1] += float32(delta) * sz[1]
+	}
+}
+
+func moveDCBCursor(flags dcbFlags, sz [2]float32, ctx *panes.Context) {
 	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
 		// Drawing left to right
 		if (flags&buttonFull) != 0 || (flags&buttonHalfHorizontal) != 0 {
@@ -862,54 +991,96 @@ func updateDCBCursor(flags int, sz [2]float32, ctx *panes.Context) {
 	}
 }
 
-func toggleButton(ctx *panes.Context, text string, state *bool, flags int, buttonScale float32) bool {
-	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, *state, false)
-
-	if clicked {
+func toggleButton(ctx *panes.Context, text string, state *bool, flags dcbFlags, buttonScale float32) bool {
+	if drawDCBButton(ctx, text, flags, buttonScale, *state) {
 		*state = !*state
+		return true
 	}
-
-	return clicked
+	return false
 }
 
-// TODO: think about implications of multiple STARSPanes being active
-// at once w.r.t. this.  This probably should be a member variable,
-// though we also need to think about focus capture; probably should
-// force take it when a spinner is active..
-var activeSpinner dcbSpinner
+var dcbCaptureMouseP0 [2]float32
+
+func dcbStartCaptureMouseRegion() {
+	dcbCaptureMouseP0 = dcbDrawState.cursor
+}
+
+func dcbCaptureMouseFromRegion(ctx *panes.Context, buttonScale float32) {
+	p1 := dcbDrawState.cursor
+	sz := buttonSize(buttonFull, buttonScale)
+	if dcbDrawState.position == dcbPositionTop || dcbDrawState.position == dcbPositionBottom {
+		p1[1] -= sz[1]
+	} else {
+		p1[0] += sz[0]
+	}
+	dcbCaptureMouse(ctx, math.Extent2DFromPoints([][2]float32{dcbCaptureMouseP0, p1}))
+}
+
+func dcbCaptureMouse(ctx *panes.Context, bounds math.Extent2D) {
+	// This is horrific and one of many ugly things about capturing the
+	// mouse, but most of Panes' work is in the simplified space of a
+	// pane coordinate system; here we need something in terms of
+	// window coordinates, so need to both account for the viewport
+	// call that lets us draw things oblivious to the menubar as well
+	// as flip things in y.
+	h := ctx.PaneExtent.Height() + ctx.MenuBarHeight
+	bounds.P0[1], bounds.P1[1] = h-bounds.P1[1], h-bounds.P0[1]
+	ctx.Platform.StartCaptureMouse(bounds)
+}
+
+func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, commandMode CommandMode, flags dcbFlags,
+	buttonScale float32, start func(), update func([2]float32)) {
+	active := sp.commandMode == commandMode
+	if drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
+		sp.setCommandMode(ctx, commandMode)
+		sp.savedMousePosition = ctx.Mouse.Pos
+		ctx.Platform.StartMouseDeltaMode()
+
+		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+			sp.resetInputState(ctx)
+			ctx.Platform.StopMouseDeltaMode()
+			ctx.SetMousePosition(sp.savedMousePosition)
+			return CommandStatus{clear: true}
+		}
+
+		if start != nil {
+			start()
+		}
+	}
+	if active && update != nil && ctx.Mouse != nil {
+		update(ctx.Mouse.DeltaPos)
+	}
+}
 
 // drawDCBSpinner draws the provided spinner at the current location in the
 // DCB. It handles mouse capture (and release) and passing mouse wheel
 // events to the spinner.
-func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags int, buttonScale float32) {
-	if activeSpinner != nil && spinner.Equals(activeSpinner) {
-		// This spinner is active.
-		buttonBounds, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, true, false)
-		// This is horrific and one of many ugly things about capturing the
-		// mouse, but most of Panes' work is in the simplified space of a
-		// pane coordinate system; here we need something in terms of
-		// window coordinates, so need to both account for the viewport
-		// call that lets us draw things oblivious to the menubar as well
-		// as flip things in y.
-		h := ctx.PaneExtent.Height() + ctx.MenuBarHeight
-		buttonBounds.P0[1], buttonBounds.P1[1] = h-buttonBounds.P1[1], h-buttonBounds.P0[1]
-		ctx.Platform.StartCaptureMouse(buttonBounds)
+func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
+	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
+	if drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active {
+		sp.setCommandMode(ctx, commandMode)
 
-		if clicked {
-			sp.disableMenuSpinner(ctx)
-		}
+		sp.savedMousePosition = ctx.Mouse.Pos
+		sp.accumMouseDeltaY = 0
+		ctx.Platform.StartMouseDeltaMode()
+		sp.activeSpinner = spinner
 
-		if ctx.Mouse != nil && ctx.Mouse.Wheel[1] != 0 {
-			delta := util.Select(ctx.Mouse.Wheel[1] > 0, -1, 1)
-			spinner.MouseWheel(delta)
+		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+			sp.resetInputState(ctx)
+			return CommandStatus{clear: true}
 		}
-	} else {
-		// The spinner is not active; draw it (and check if it was clicked...)
-		_, clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, false, false)
-		if clicked {
-			activeSpinner = spinner
-			sp.resetInputState()
-			sp.commandMode = commandMode
+	}
+	if active && ctx.Mouse != nil {
+		if ctx.Mouse.Wheel[1] != 0 {
+			delta := util.Select(ctx.Mouse.Wheel[1] > 0, 1, -1)
+			spinner.Delta(delta)
+		} else {
+			sp.accumMouseDeltaY += ctx.Mouse.DeltaPos[1]
+			if math.Abs(sp.accumMouseDeltaY) > spinner.MouseDelta() {
+				delta := util.Select(sp.accumMouseDeltaY > 0, -1, 1)
+				spinner.Delta(delta)
+				sp.accumMouseDeltaY = 0
+			}
 		}
 	}
 }
@@ -931,25 +1102,31 @@ func (s dcbRadarRangeSpinner) Equals(other dcbSpinner) bool {
 	return ok && r.r == s.r
 }
 
-func (s *dcbRadarRangeSpinner) MouseWheel(delta int) {
+func (s *dcbRadarRangeSpinner) Delta(delta int) {
 	*s.r = math.Clamp(*s.r+float32(delta), 6, 256)
 }
 
-func (s *dcbRadarRangeSpinner) KeyboardInput(text string) error {
+func (s *dcbRadarRangeSpinner) MouseDelta() float32 {
+	return 1
+}
+
+func (s *dcbRadarRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	// 4-33
 	if r, err := strconv.Atoi(text); err != nil {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if r < 6 || r > 256 {
-		return ErrSTARSRangeLimit
+		return CommandModeNone, ErrSTARSRangeLimit
 	} else {
 		// Input numbers are ints but we store a float (for smoother
 		// stepping when the mouse wheel is used to zoom the scope).
 		*s.r = float32(r)
-		return nil
+		return CommandModeNone, nil
 	}
 }
 
-func (s *dcbRadarRangeSpinner) Disabled() {}
+func (s *dcbRadarRangeSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 // dcbIntegerRangeSpinner is a generic implementation of dcbSpinner for
 // managing integers in steps of 1 within a given range.
@@ -957,10 +1134,15 @@ type dcbIntegerRangeSpinner struct {
 	text     string
 	value    *int
 	min, max int
+	negate   bool
 }
 
 func makeIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
 	return &dcbIntegerRangeSpinner{text: t, value: v, min: min, max: max}
+}
+
+func makeNegatedIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
+	return &dcbIntegerRangeSpinner{text: t, value: v, min: min, max: max, negate: true}
 }
 
 func (s *dcbIntegerRangeSpinner) Label() string {
@@ -972,22 +1154,31 @@ func (s *dcbIntegerRangeSpinner) Equals(other dcbSpinner) bool {
 	return ok && ir.value == s.value
 }
 
-func (s *dcbIntegerRangeSpinner) MouseWheel(delta int) {
+func (s *dcbIntegerRangeSpinner) Delta(delta int) {
+	if s.negate {
+		delta = -delta
+	}
 	*s.value = math.Clamp(*s.value+delta, s.min, s.max)
 }
 
-func (s *dcbIntegerRangeSpinner) KeyboardInput(text string) error {
+func (s *dcbIntegerRangeSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbIntegerRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if v, err := strconv.Atoi(text); err != nil {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if v < s.min || v > s.max {
-		return ErrSTARSRangeLimit
+		return CommandModeNone, ErrSTARSRangeLimit
 	} else {
 		*s.value = v
-		return nil
+		return CommandModeNone, nil
 	}
 }
 
-func (s *dcbIntegerRangeSpinner) Disabled() {}
+func (s *dcbIntegerRangeSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbAudioVolumeSpinner struct {
 	*dcbIntegerRangeSpinner
@@ -1000,9 +1191,9 @@ func (v *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
 	return ok && vs.value == v.value
 }
 
-func (s *dcbAudioVolumeSpinner) MouseWheel(delta int) {
+func (s *dcbAudioVolumeSpinner) Delta(delta int) {
 	old := *s.value
-	s.dcbIntegerRangeSpinner.MouseWheel(delta)
+	s.dcbIntegerRangeSpinner.Delta(delta)
 	if *s.value != old {
 		s.p.SetAudioVolume(*s.value)
 		s.p.StopPlayAudio(s.sp.audioEffects[AudioTest])
@@ -1010,20 +1201,24 @@ func (s *dcbAudioVolumeSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *dcbAudioVolumeSpinner) KeyboardInput(text string) error {
+func (s *dcbAudioVolumeSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbAudioVolumeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	old := *s.value
-	err := s.dcbIntegerRangeSpinner.KeyboardInput(text)
+	mode, err := s.dcbIntegerRangeSpinner.KeyboardInput(text)
 	if err == nil && *s.value != old {
 		s.p.SetAudioVolume(*s.value)
 		s.p.StopPlayAudio(s.sp.audioEffects[AudioTest])
 		s.p.PlayAudioOnce(s.sp.audioEffects[AudioTest])
 	}
-	return err
+	return mode, err
 }
 
 func makeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *dcbAudioVolumeSpinner {
 	return &dcbAudioVolumeSpinner{
-		dcbIntegerRangeSpinner: makeIntegerRangeSpinner("VOL\n", vol, 1, 10),
+		dcbIntegerRangeSpinner: makeNegatedIntegerRangeSpinner("VOL\n", vol, 1, 10),
 		p:                      p,
 		sp:                     sp,
 	}
@@ -1032,7 +1227,7 @@ func makeAudioVolumeSpinner(p platform.Platform, sp *STARSPane, vol *int) *dcbAu
 // Leader lines are integers between 0 and 7 so the IntegerRangeSpinner
 // fits.
 func makeLeaderLineLengthSpinner(l *int) dcbSpinner {
-	return makeIntegerRangeSpinner("LDR\n", l, 0, 7)
+	return makeNegatedIntegerRangeSpinner("LDR\n", l, 0, 7)
 }
 
 type dcbLeaderLineDirectionSpinner struct {
@@ -1053,28 +1248,34 @@ func (s *dcbLeaderLineDirectionSpinner) Equals(other dcbSpinner) bool {
 	return ok && l.d == s.d
 }
 
-func (s *dcbLeaderLineDirectionSpinner) MouseWheel(delta int) {
+func (s *dcbLeaderLineDirectionSpinner) Delta(delta int) {
 	// The CardinalOrdinalDirection enum goes clockwise, so adding one (mod
 	// 8) goes forward, and subtracting 1 (mod 8) goes backwards.
-	if delta < 0 {
+	if delta > 0 {
 		*s.d = math.CardinalOrdinalDirection((*s.d + 7) % 8)
-	} else {
+	} else if delta < 0 {
 		*s.d = math.CardinalOrdinalDirection((*s.d + 1) % 8)
 	}
 }
 
-func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) error {
+func (s *dcbLeaderLineDirectionSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if len(text) > 1 {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if dir, ok := s.sp.numpadToDirection(text[0]); !ok || dir == nil /* entered 5 */ {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else {
 		*s.d = *dir
-		return nil
+		return CommandModeNone, nil
 	}
 }
 
-func (s *dcbLeaderLineDirectionSpinner) Disabled() {}
+func (s *dcbLeaderLineDirectionSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbHistoryRateSpinner struct {
 	r *float32
@@ -1093,16 +1294,20 @@ func (s *dcbHistoryRateSpinner) Equals(other dcbSpinner) bool {
 	return ok && r.r == s.r
 }
 
-func (s *dcbHistoryRateSpinner) MouseWheel(delta int) {
+func (s *dcbHistoryRateSpinner) Delta(delta int) {
 	// 4-94 the spinner goes in steps of 0.5.
-	if delta > 0 {
+	if delta < 0 {
 		*s.r = math.Clamp(*s.r+0.5, 0, 4.5)
-	} else if delta < 0 {
+	} else if delta > 0 {
 		*s.r = math.Clamp(*s.r-0.5, 0, 4.5)
 	}
 }
 
-func (s *dcbHistoryRateSpinner) KeyboardInput(text string) error {
+func (s *dcbHistoryRateSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbHistoryRateSpinner) KeyboardInput(text string) (CommandMode, error) {
 	// 4-94: however, for keyboard input, values in the range 0-4.5 in
 	// increments of 0.1 are allowed.
 
@@ -1117,22 +1322,24 @@ func (s *dcbHistoryRateSpinner) KeyboardInput(text string) error {
 	// Make sure we have a single digit for the whole part and the
 	// fractional part.
 	if len(whole) != 1 || whole[0] < '0' || whole[0] > '9' {
-		return ErrSTARSIllegalValue
+		return CommandModeNone, ErrSTARSIllegalValue
 	}
 	if len(frac) != 1 || frac[0] < '0' || frac[0] > '9' {
-		return ErrSTARSIllegalValue
+		return CommandModeNone, ErrSTARSIllegalValue
 	}
 
 	// Convert it to a float
 	if value := float32(whole[0]-'0') + float32(frac[0]-'0')/10; value > 4.5 {
-		return ErrSTARSIllegalValue
+		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
 		*s.r = value
-		return nil
+		return CommandModeNone, nil
 	}
 }
 
-func (s *dcbHistoryRateSpinner) Disabled() {}
+func (s *dcbHistoryRateSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbPTLLengthSpinner struct {
 	l *float32
@@ -1151,33 +1358,39 @@ func (s *dcbPTLLengthSpinner) Equals(other dcbSpinner) bool {
 	return ok && p.l == s.l
 }
 
-func (s *dcbPTLLengthSpinner) MouseWheel(delta int) {
+func (s *dcbPTLLengthSpinner) Delta(delta int) {
 	// 6-16: PTLs are between 0 and 5 minutes, specified in 0.5 minute
 	// increments.
-	if delta > 0 {
+	if delta < 0 {
 		*s.l = math.Min(*s.l+0.5, 5)
-	} else if delta < 0 {
+	} else if delta > 0 {
 		*s.l = math.Max(*s.l-0.5, 0)
 	}
 }
 
-func (s *dcbPTLLengthSpinner) KeyboardInput(text string) error {
+func (s *dcbPTLLengthSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbPTLLengthSpinner) KeyboardInput(text string) (CommandMode, error) {
 	// Here we'll just parse it as a float and then validate it.
 	if v, err := strconv.ParseFloat(text, 32); err != nil {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if v < 0 || v > 5 {
 		// out of range
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if float64(int(v)) != v && float64(int(v))+0.5 != v {
 		// Not a whole number or a decimal x.5
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else {
 		*s.l = float32(v)
-		return nil
+		return CommandModeNone, nil
 	}
 }
 
-func (s *dcbPTLLengthSpinner) Disabled() {}
+func (s *dcbPTLLengthSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbDwellModeSpinner struct {
 	m *DwellMode
@@ -1196,38 +1409,44 @@ func (s *dcbDwellModeSpinner) Equals(other dcbSpinner) bool {
 	return ok && s.m == d.m
 }
 
-func (s *dcbDwellModeSpinner) MouseWheel(delta int) {
-	if delta > 0 {
+func (s *dcbDwellModeSpinner) Delta(delta int) {
+	if delta < 0 {
 		// Cycle through the modes Off -> On -> Lock
 		*s.m = [3]DwellMode{DwellModeOff: DwellModeOn,
 			DwellModeOn:   DwellModeLock,
 			DwellModeLock: DwellModeLock}[*s.m]
-	} else if delta < 0 {
-		// Cycle: Lock-> On -> Off
+	} else if delta > 0 {
+		// Cycle: Lock -> On -> Off
 		*s.m = [3]DwellMode{DwellModeOff: DwellModeOff,
 			DwellModeOn:   DwellModeOff,
 			DwellModeLock: DwellModeOn}[*s.m]
 	}
 }
 
-func (s *dcbDwellModeSpinner) KeyboardInput(text string) error {
+func (s *dcbDwellModeSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbDwellModeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	// 4-109
 	switch text {
 	case "0":
 		*s.m = DwellModeOff
-		return nil
+		return CommandModeNone, nil
 	case "1":
 		*s.m = DwellModeOn
-		return nil
+		return CommandModeNone, nil
 	case "2":
 		*s.m = DwellModeLock
-		return nil
+		return CommandModeNone, nil
 	default:
-		return ErrSTARSIllegalValue
+		return CommandModeNone, ErrSTARSIllegalValue
 	}
 }
 
-func (s *dcbDwellModeSpinner) Disabled() {}
+func (s *dcbDwellModeSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 type dcbRangeRingRadiusSpinner struct {
 	r *int
@@ -1246,9 +1465,9 @@ func (s *dcbRangeRingRadiusSpinner) Equals(other dcbSpinner) bool {
 	return ok && r.r == s.r
 }
 
-func (s *dcbRangeRingRadiusSpinner) MouseWheel(delta int) {
+func (s *dcbRangeRingRadiusSpinner) Delta(delta int) {
 	// Range rings have 2, 5, 10, or 20 miles radii..
-	if delta > 0 {
+	if delta < 0 {
 		switch *s.r {
 		case 2:
 			*s.r = 5
@@ -1257,7 +1476,7 @@ func (s *dcbRangeRingRadiusSpinner) MouseWheel(delta int) {
 		case 10:
 			*s.r = 20
 		}
-	} else {
+	} else if delta > 0 {
 		switch *s.r {
 		case 5:
 			*s.r = 2
@@ -1269,18 +1488,24 @@ func (s *dcbRangeRingRadiusSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) error {
+func (s *dcbRangeRingRadiusSpinner) MouseDelta() float32 {
+	return 10
+}
+
+func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if v, err := strconv.Atoi(text); err != nil {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if v != 2 && v != 5 && v != 10 && v != 20 {
-		return ErrSTARSIllegalValue
+		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
 		*s.r = v
-		return nil
+		return CommandModeNone, nil
 	}
 }
 
-func (s *dcbRangeRingRadiusSpinner) Disabled() {}
+func (s *dcbRangeRingRadiusSpinner) EscapeMode() CommandMode {
+	return CommandModeNone
+}
 
 // dcbBrightnessSpinner handles spinners in the BRITE menu
 type dcbBrightnessSpinner struct {
@@ -1303,8 +1528,8 @@ func (s *dcbBrightnessSpinner) Equals(other dcbSpinner) bool {
 	return ok && b.b == s.b
 }
 
-func (s *dcbBrightnessSpinner) MouseWheel(delta int) {
-	*s.b += STARSBrightness(5 * delta)
+func (s *dcbBrightnessSpinner) Delta(delta int) {
+	*s.b -= STARSBrightness(5 * delta)
 	if *s.b < s.min && s.allowOff {
 		*s.b = STARSBrightness(0)
 	} else {
@@ -1312,36 +1537,57 @@ func (s *dcbBrightnessSpinner) MouseWheel(delta int) {
 	}
 }
 
-func (s *dcbBrightnessSpinner) KeyboardInput(text string) error {
+func (s *dcbBrightnessSpinner) MouseDelta() float32 {
+	return 5
+}
+
+func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if v, err := strconv.Atoi(text); err != nil {
-		return ErrSTARSCommandFormat
+		return CommandModeNone, ErrSTARSCommandFormat
 	} else if v < int(s.min) || v > 100 || (v == 0 && !s.allowOff) {
-		return ErrSTARSIllegalValue
+		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
 		*s.b = STARSBrightness(v)
-		return nil
+		return CommandModeBrite, nil
 	}
 }
 
-func (s *dcbBrightnessSpinner) Disabled() {}
-
-func selectButton(ctx *panes.Context, text string, flags int, buttonScale float32) bool {
-	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0, false)
-	return clicked
+func (s *dcbBrightnessSpinner) EscapeMode() CommandMode {
+	return CommandModeBrite
 }
 
-func (sp *STARSPane) placeButton(ctx *panes.Context, text string, flags int, buttonScale float32,
-	callback func(pw [2]float32, transforms ScopeTransformations) CommandStatus) {
-	_, clicked := drawDCBButton(ctx, text, flags, buttonScale, text == sp.selectedPlaceButton, false)
-	if clicked {
-		sp.selectedPlaceButton = text
-		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
-			sp.selectedPlaceButton = ""
-			return callback(pw, transforms)
-		}
+type dcbCharSizeSpinner struct {
+	dcbIntegerRangeSpinner
+}
+
+func makeCharSizeSpinner(t string, size *int, min, max int) *dcbCharSizeSpinner {
+	return &dcbCharSizeSpinner{
+		dcbIntegerRangeSpinner: *makeNegatedIntegerRangeSpinner(t, size, min, max),
 	}
 }
 
-func disabledButton(ctx *panes.Context, text string, flags int, buttonScale float32) {
-	drawDCBButton(ctx, text, flags, buttonScale, false, true)
+func (s *dcbCharSizeSpinner) KeyboardInput(text string) (CommandMode, error) {
+	_, err := s.dcbIntegerRangeSpinner.KeyboardInput(text)
+	return CommandModeCharSize, err
+}
+
+func (s *dcbCharSizeSpinner) Equals(other dcbSpinner) bool {
+	cs, ok := other.(*dcbCharSizeSpinner)
+	return ok && cs.value == s.value
+}
+
+func (s *dcbCharSizeSpinner) EscapeMode() CommandMode {
+	return CommandModeCharSize
+}
+
+func selectButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) bool {
+	return drawDCBButton(ctx, text, flags, buttonScale, flags&buttonSelected != 0)
+}
+
+func disabledButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
+	drawDCBButton(ctx, text, flags|buttonDisabled, buttonScale, false)
+}
+
+func unsupportedButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale float32) {
+	drawDCBButton(ctx, text, flags|buttonUnsupported, buttonScale, false)
 }

@@ -4,7 +4,10 @@
 
 package rand
 
-import "testing"
+import (
+	"math/rand/v2"
+	"testing"
+)
 
 func TestPermutationElement(t *testing.T) {
 	for _, n := range []int{8, 31, 10523} {
@@ -17,6 +20,32 @@ func TestPermutationElement(t *testing.T) {
 					t.Errorf("%d: appeared multiple times", perm)
 				}
 				m[perm] = i
+			}
+		}
+	}
+}
+
+func TestRandomPermute(t *testing.T) {
+	for _, n := range []int{0, 1, 5, 11, 42} {
+		s := make([]int, n)
+		for i := range n {
+			s[i] = i
+		}
+		got := make([]bool, n)
+
+		seed := rand.Uint32()
+		for i, v := range PermuteSlice(s, seed) {
+			if i != v {
+				t.Errorf("mismatch index/value: %d/%d slice %+v", i, v, s)
+			}
+			if got[i] {
+				t.Errorf("got %d repeatedly, slice %+v", i, s)
+			}
+			got[i] = true
+		}
+		for i, g := range got {
+			if !g {
+				t.Errorf("never got index %d", i)
 			}
 		}
 	}
@@ -52,12 +81,16 @@ func TestSampleFiltered(t *testing.T) {
 
 func TestSampleWeighted(t *testing.T) {
 	a := []int{1, 2, 3, 4, 5, 0, 10, 13}
-	counts := make([]int, len(a))
+	counts := make(map[int]int)
 
 	n := 100000
 	for i := 0; i < n; i++ {
-		idx := SampleWeighted(a, func(v int) int { return v })
-		counts[idx]++
+		v, ok := SampleWeighted(a, func(v int) int { return v })
+		if !ok {
+			t.Errorf("Unexpected failure of SampleWeighted")
+		} else {
+			counts[v]++
+		}
 	}
 
 	sum := 0
@@ -65,12 +98,13 @@ func TestSampleWeighted(t *testing.T) {
 		sum += v
 	}
 
-	for i, c := range counts {
-		expected := a[i] * n / sum
-		if a[0] == 0 && c != 0 {
-			t.Errorf("Expected 0 samples for a[%d]. Got %d", i, c)
+	for _, v := range a {
+		expected := v * n / sum
+		c := counts[v]
+		if v == 0 && c != 0 {
+			t.Errorf("Expected 0 samples for 0. Got %d", c)
 		} else if c < expected-300 || c > expected+300 {
-			t.Errorf("Expected roughly %d samples for a[%d]=%d. Got %d", expected, i, a[i], c)
+			t.Errorf("Expected roughly %d samples for %d. Got %d [%v]", expected, v, c, counts)
 		}
 	}
 }

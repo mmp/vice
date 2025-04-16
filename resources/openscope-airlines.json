@@ -7828,28 +7828,12 @@
           219
         ],
         [
-          "A332",
-          15
-        ],
-        [
-          "A333",
-          9
-        ],
-        [
           "B38M",
           24
         ],
         [
           "B738",
           304
-        ],
-        [
-          "B752",
-          34
-        ],
-        [
-          "B763",
-          17
         ],
         [
           "B772",
@@ -7866,29 +7850,9 @@
         [
           "B789",
           22
-        ],
-        [
-          "E190",
-          19
         ]
       ],
       "long": [
-        [
-          "A332",
-          15
-        ],
-        [
-          "A333",
-          9
-        ],
-        [
-          "B752",
-          34
-        ],
-        [
-          "B763",
-          17
-        ],
         [
           "B772",
           47
@@ -9239,10 +9203,6 @@
       ],
       "long": [
         [
-          "B744",
-          4
-        ],
-        [
           "B77L",
           3
         ],
@@ -10223,14 +10183,6 @@
     "fleets": {
       "default": [
         [
-          "A21N",
-          7
-        ],
-        [
-          "A320",
-          53
-        ],
-        [
           "B737",
           14
         ],
@@ -10244,19 +10196,11 @@
         ],
         [
           "B39M",
-          15
+          74
         ]
       ],
       "short": [
         [
-          "A21N",
-          7
-        ],
-        [
-          "A320",
-          53
-        ],
-        [
           "B737",
           14
         ],
@@ -10270,7 +10214,7 @@
         ],
         [
           "B39M",
-          15
+          74
         ]
       ]
     }
@@ -10299,7 +10243,13 @@
           64
         ],
         [
-          "E170",
+          "E75L",
+          60
+        ]
+      ],
+	  "long": [
+        [
+          "E75L",
           60
         ]
       ]
@@ -11347,14 +11297,6 @@
           12
         ],
         [
-          "B744",
-          32
-        ],
-        [
-          "B763",
-          5
-        ],
-        [
           "B772",
           46
         ],
@@ -11369,6 +11311,32 @@
         [
           "B789",
           18
+        ],
+		[
+          "B78X",
+          11
+        ]
+      ],
+      "longNYC": [
+        [
+          "A388",
+          14
+        ],
+        [
+          "A35K",
+          4
+        ],
+		[
+          "B772",
+          46
+        ],
+		[
+          "B77W",
+          12
+        ],
+		[
+          "B78X",
+          11
         ]
       ],
       "long": [
@@ -11381,14 +11349,6 @@
           12
         ],
         [
-          "B744",
-          32
-        ],
-        [
-          "B763",
-          7
-        ],
-        [
           "B772",
           46
         ],
@@ -11403,6 +11363,10 @@
         [
           "B789",
           18
+        ],
+		[
+          "B78X",
+          11
         ]
       ],
       "short": [
@@ -12214,6 +12178,286 @@
   },
   {
     "icao": "c",
+    "name": "General Aviation Canada",
+    "callsign": {
+      "name": "Charlie",
+      "callsignFormats": [
+        "@@@@"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "BE36",
+          5
+        ],
+        [
+          "C172",
+          5
+        ],
+        [
+          "C182",
+          5
+        ],
+        [
+          "C208",
+          3
+        ],
+        [
+          "C337",
+          5
+        ],
+        [
+          "C510",
+          3
+        ],
+        [
+          "C550",
+          7
+        ],
+        [
+          "C750",
+          3
+        ],
+        [
+          "E135",
+          1
+        ],
+        [
+          "E50P",
+          1
+        ],
+        [
+          "E545",
+          1
+        ],
+        [
+          "E55P",
+          1
+        ],
+        [
+          "P28A",
+          5
+        ]
+      ],
+      "cessna": [
+        [
+          "C208",
+          2
+        ],
+        [
+          "C337",
+          5
+        ],
+        [
+          "C510",
+          2
+        ],
+        [
+          "C550",
+          5
+        ],
+        [
+          "C750",
+          2
+        ]
+      ],
+      "lightGA": [
+        [
+          "BE36",
+          5
+        ],
+        [
+          "C172",
+          5
+        ],
+        [
+          "C182",
+          5
+        ],
+        [
+          "C208",
+          1
+        ],
+        [
+          "P28A",
+          5
+        ]
+      ],
+      "fastGA": [
+        [
+          "C510",
+          1
+        ],
+        [
+          "C550",
+          2
+        ],
+        [
+          "C750",
+          1
+        ],
+        [
+          "E135",
+          1
+        ],
+        [
+          "E50P",
+          1
+        ],
+        [
+          "E545",
+          1
+        ],
+        [
+          "E55P",
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "cf",
+    "name": "General Aviation Canada",
+    "callsign": {
+      "name": "Charlie",
+      "callsignFormats": [
+        "@@@@"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "BE36",
+          5
+        ],
+        [
+          "C172",
+          5
+        ],
+        [
+          "C182",
+          5
+        ],
+        [
+          "C208",
+          3
+        ],
+        [
+          "C337",
+          5
+        ],
+        [
+          "C510",
+          3
+        ],
+        [
+          "C550",
+          7
+        ],
+        [
+          "C750",
+          3
+        ],
+        [
+          "E135",
+          1
+        ],
+        [
+          "E50P",
+          1
+        ],
+        [
+          "E545",
+          1
+        ],
+        [
+          "E55P",
+          1
+        ],
+        [
+          "P28A",
+          5
+        ]
+      ],
+      "cessna": [
+        [
+          "C208",
+          2
+        ],
+        [
+          "C337",
+          5
+        ],
+        [
+          "C510",
+          2
+        ],
+        [
+          "C550",
+          5
+        ],
+        [
+          "C750",
+          2
+        ]
+      ],
+      "lightGA": [
+        [
+          "BE36",
+          5
+        ],
+        [
+          "C172",
+          5
+        ],
+        [
+          "C182",
+          5
+        ],
+        [
+          "C208",
+          1
+        ],
+        [
+          "P28A",
+          5
+        ]
+      ],
+      "fastGA": [
+        [
+          "C510",
+          1
+        ],
+        [
+          "C550",
+          2
+        ],
+        [
+          "C750",
+          1
+        ],
+        [
+          "E135",
+          1
+        ],
+        [
+          "E50P",
+          1
+        ],
+        [
+          "E545",
+          1
+        ],
+        [
+          "E55P",
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "cg",
     "name": "General Aviation Canada",
     "callsign": {
       "name": "Charlie",
@@ -14418,6 +14662,16 @@
           "A333",
           28
         ]
+      ],
+	  "a350": [
+        [
+          "A359",
+          24
+        ],
+		[
+          "A35K",
+          12
+        ]
       ]
     }
   },
@@ -16439,6 +16693,12 @@
           27
         ]
       ],
+	  "a21N": [
+        [
+          "A21N",
+          59
+        ]
+      ],
       "b73x": [
         [
           "B737",
@@ -16797,6 +17057,36 @@
         ]
       ],
       "long": [
+        [
+          "A333",
+          15
+        ],
+        [
+          "A343",
+          17
+        ],
+        [
+          "A346",
+          17
+        ],
+        [
+          "A359",
+          15
+        ],
+        [
+          "A388",
+          14
+        ],
+        [
+          "B744",
+          13
+        ],
+        [
+          "B748",
+          19
+        ]
+      ],
+      "longNYC": [
         [
           "A333",
           15
@@ -18521,6 +18811,30 @@
     "name": "Wheels up Private Jets",
     "callsign": {
       "name": "Up Jet",
+      "callsignFormats": [
+        "##",
+        "###",
+        "####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B350",
+          59
+        ],
+        [
+          "BE40",
+          39
+        ]
+      ]
+    }
+  },
+  {
+    "icao": "gaj",
+    "name": "Wheels up Private Jets",
+    "callsign": {
+      "name": "Gamma Jet",
       "callsignFormats": [
         "##",
         "###",
@@ -21710,8 +22024,12 @@
     "fleets": {
       "default": [
         [
-          "B734",
-          7
+          "B38M",
+          18
+        ],
+		[
+          "B738",
+          2
         ]
       ]
     }
@@ -22772,18 +23090,20 @@
           3
         ]
       ],
+	  "A21N": [
+        [
+          "A21N",
+          18
+        ]
+      ],
       "long": [
         [
           "A21N",
-          3
+          8
         ],
         [
           "A332",
           24
-        ],
-        [
-          "B763",
-          8
         ]
       ],
       "a332": [
@@ -26459,6 +26779,10 @@
       ],
       "long": [
         [
+          "A321",
+          56
+        ],
+		[
           "A21N",
           35
         ]
@@ -26993,6 +27317,16 @@
           23
         ]
       ],
+      "turboprops": [
+        [
+          "DH8C",
+          10
+        ],
+        [
+          "DH8D",
+          37
+        ]
+      ],
       "aus": [
         [
           "CRJ9",
@@ -27242,6 +27576,12 @@
         [
           "B772",
           14
+        ]
+      ],
+	  "b77W": [
+        [
+          "B77W",
+          24
         ]
       ],
       "jumbo": [
@@ -29888,6 +30228,12 @@
           "AT72",
           9
         ],
+        [
+          "C208",
+          30
+        ]
+      ],
+      "C208": [
         [
           "C208",
           30
@@ -34486,24 +34832,20 @@
     "fleets": {
       "default": [
         [
-          "DH8D",
-          32
-        ],
-        [
           "E75L",
-          30
+          44
         ]
       ],
       "long": [
         [
           "E75L",
-          30
+          44
         ]
       ],
       "short": [
         [
-          "DH8D",
-          32
+          "E75L",
+          44
         ]
       ]
     }
@@ -35221,24 +35563,16 @@
     "fleets": {
       "default": [
         [
-          "E135",
-          1
-        ],
-        [
-          "E145",
-          1
-        ],
-        [
           "E170",
-          188
+          31
         ],
         [
           "E75L",
-          15
+          77
         ],
         [
           "E75S",
-          12
+          100
         ]
       ]
     }
@@ -36969,19 +37303,25 @@
       "default": [
         [
           "CRJ2",
-          202
+          81
         ],
         [
           "CRJ7",
-          100
+          109
         ],
         [
           "CRJ9",
-          43
+          36
         ],
         [
-          "E170",
-          158
+          "E75L",
+          258
+        ]
+      ],
+	  "long": [
+        [
+          "E75L",
+          258
         ]
       ]
     }
@@ -37948,6 +38288,16 @@
         [
           "B737",
           461
+        ],
+        [
+          "B738",
+          207
+        ]
+      ],
+	  "etops": [
+        [
+          "B38M",
+          69
         ],
         [
           "B738",
@@ -42156,15 +42506,23 @@
       "default": [
         [
           "A319",
-          104
+          81
         ],
         [
           "A320",
-          103
+          78
+        ],
+		[
+          "A21N",
+          34
+        ],
+		[
+          "B38M",
+          116
         ],
         [
           "B39M",
-          14
+          93
         ],
         [
           "B737",
@@ -42248,15 +42606,23 @@
       "short": [
         [
           "A319",
-          104
+          81
         ],
         [
           "A320",
-          103
+          78
+        ],
+		[
+          "A21N",
+          34
+        ],
+		[
+          "B38M",
+          116
         ],
         [
           "B39M",
-          14
+          93
         ],
         [
           "B737",
@@ -42273,6 +42639,38 @@
         [
           "B752",
           51
+        ]
+      ],
+	   "b73x": [
+	    [
+          "B737",
+          61
+        ],
+        [
+          "B738",
+          141
+        ],
+        [
+          "B739",
+          148
+        ],
+        [
+          "B38M",
+          116
+        ],
+		[
+          "B39M",
+          93
+        ]
+      ],
+	  "b3xm": [
+        [
+          "B38M",
+          116
+        ],
+		[
+          "B39M",
+          93
         ]
       ],
       "b763": [
@@ -49401,6 +49799,152 @@
       ] 
     }
   },
+  {
+    "icao": "usc",
+    "name": "Airnet II",
+    "callsign": {
+      "name": "Starcheck",
+      "callsignFormats": [
+        "1##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "LJ35",
+          24
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "gxa",
+    "name": "Global Crossing Airlines",
+    "callsign": {
+      "name": "Gemini",
+      "callsignFormats": [
+        "16##",
+        "61##",
+        "9##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "A320",
+          20
+        ],
+        [
+          "A321",
+          8
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "vnt",
+    "name": "Ventura Air Services",
+    "callsign": {
+      "name": "Ventura",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "CL60",
+          6
+        ],
+        [
+          "C56X",
+          8
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "opn",
+    "name": "K & R AVIATION, LLC",
+    "callsign": {
+      "name": "Open Air",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "SF50",
+          2
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "sty",
+    "name": "ALTIUS AVIATION, LLC",
+    "callsign": {
+      "name": "Altair",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "LJ60",
+          1
+        ],
+        [
+          "BE20",
+          1
+        ],
+        [
+          "PC12",
+          1
+        ],
+        [
+          "C208",
+          1
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "VJA",
+    "name": "JETSELECT DBA VISTA AMERICA",
+    "callsign": {
+      "name": "Iconic",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "GLF4",
+          1
+        ],
+        [
+          "C56X",
+          1
+        ],
+        [
+          "CL30",
+          3
+        ],
+        [
+          "GL5T",
+          3
+        ],
+        [
+          "GL7T",
+          2
+        ]
+      ] 
+    }
+  },
 {
     "icao": "zippy",
     "name": "US AirForce",
@@ -49541,6 +50085,388 @@
         [
           "R135",
           1
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "igloo",
+    "name": "US AirForce",
+    "callsign": {
+      "name":"IGLOO",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C130",
+          20
+        ],
+        [
+          "C5",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "king",
+    "name": "US AirForce",
+    "callsign": {
+      "name":"KING",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C17",
+          20
+        ],
+        [
+          "C5",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "polo",
+    "name": "US AirForce",
+    "callsign": {
+      "name":"POLO",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C17",
+          20
+        ],
+        [
+          "C5",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "nasa",
+    "name": "NASA",
+    "callsign": {
+      "name":"NASA",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "GLF4",
+          10
+        ],
+        [
+          "GLF5",
+          10
+        ],
+        [
+          "T38",
+          30
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "okie",
+    "name": "OKIE",
+    "callsign": {
+      "name":"OKIE",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "F16",
+          10
+        ],
+        [
+          "T38",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "vvbl",
+    "name": "USN Blue Angels",
+    "callsign": {
+      "name":"VVBL",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "F18S",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "vv",
+    "name": "USN",
+    "callsign": {
+      "name":"VV",
+      "callsignFormats": [
+        "#####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "F18S",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "vm",
+    "name": "USMC",
+    "callsign": {
+      "name":"VM",
+      "callsignFormats": [
+        "#####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "F18S",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "joker",
+    "name": "USAF",
+    "callsign": {
+      "name":"JOKER",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "F15",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "liftr",
+    "name": "USAF",
+    "callsign": {
+      "name":"LIFTR",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C17",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "horse",
+    "name": "USAF",
+    "callsign": {
+      "name":"HORSE",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C30J",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "ball",
+    "name": "USAF",
+    "callsign": {
+      "name":"BALL",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "T38",
+          10
+        ],
+        [
+          "F5",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "vandy",
+    "name": "USAF",
+    "callsign": {
+      "name":"VANDY",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "T38",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "canon",
+    "name": "USAF",
+    "callsign": {
+      "name":"CANON",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "A10",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "osage",
+    "name": "USAF",
+    "callsign": {
+      "name":"OSAGE",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "A10",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "rch",
+    "name": "USAF",
+    "callsign": {
+      "name":"RCH",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C5",
+          10
+        ],
+        [
+          "C17",
+          10
+        ],
+        [
+          "C130",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "soonr",
+    "name": "USAF",
+    "callsign": {
+      "name":"SOONR",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C130",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "a",
+    "name": "USAF",
+    "callsign": {
+      "name":"A",
+      "callsignFormats": [
+        "#####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "BE40",
+          10
+        ]
+      ] 
+    }
+  },
+  {
+    "icao": "e",
+    "name": "USAF Air EVAC",
+    "callsign": {
+      "name":"E",
+      "callsignFormats": [
+        "#####"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C130",
+          10
+        ],
+        [
+          "C17",
+          10
         ]
       ] 
     }

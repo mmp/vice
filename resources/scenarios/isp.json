@@ -1,0 +1,3105 @@
+{
+    "tracon": "N90",
+    "airports": {
+    "KISP": {
+        "name": "MacArthur",
+        "approaches": {
+            "R5R": { "cifp_id": "R15R" },
+            "I24": { "cifp_id": "I24" },
+            "R3L": { "cifp_id": "R33L" },
+            "I6": { "cifp_id": "I6" }
+        },
+        "departure_routes": {
+        "15R": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
+            "sid": "LONGI7",
+            "waypoints": "KISP-33L/h150"
+          }
+        },
+        "24": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
+            "sid": "LONGI7",
+            "waypoints": "KISP-6/h240"
+          }
+        },
+        "33L": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
+            "sid": "LONGI7",
+            "waypoints": "KISP-15R/h330"
+          }
+        },
+        "6": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 3000,
+            "sid": "LONGI7",
+            "waypoints": "KISP-24/h60"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 16000,
+          "destination": "KBUF",
+          "exit": "GAYEL",
+          "route": "GAYEL J95 CFB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KMCO",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 SLOJO Q83 ROYCO Q85 LPERD SNFLD3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KFLL",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY KALDA Q133 CHIEZ Y291 MAJIK CUUDA2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KMMK",
+          "exit": "MAD",
+          "route": "MAD V1 HFD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KPOU",
+          "exit": "BDR",
+          "route": "BDR V91 STUBY TRESA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KBOS",
+          "exit": "MERIT",
+          "route": "MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KPVD",
+          "exit": "HTO",
+          "route": "HTO WACKY PVD"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KALB",
+          "exit": "SOARS",
+          "route": "SOARS V387 CANAN ALB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 6000,
+          "destination": "KPNE",
+          "exit": "CCC",
+          "route": "CCC V16 DIXIE V276 ARD PNE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 4000,
+          "destination": "KHVN",
+          "exit": "BDR",
+          "route": "BDR HVN"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "WJA"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KSYR",
+          "exit": "NEION",
+          "route": "NEION J223 CORDS CFB V29 SYR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "altitude": 28000,
+          "destination": "KBWI",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY J174 ZIZZI ATR LAFLN MIIDY2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "altitude": 30000,
+          "destination": "KORF",
+          "exit": "CCC",
+          "route": "CCC V16 DIXIE V1 ORF"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "jfk",
+              "icao": "WJA"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "KROC",
+          "exit": "HAAYS",
+          "route": "HAAYS HUO V252 GIBBE"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "jfk",
+              "icao": "WJA"
+            },
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 21000,
+          "destination": "CYYZ",
+          "exit": "COATE",
+          "route": "COATE LAAYK ULW WOZEE LINNG3"
+        }
+      ],
+      "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
+        "COATE": "North",
+        "DEEZZ": "North",
+        "DPK": "South",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South",
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
+      },
+      "tower_list": 1
+    },
+    "KHVN": {
+      "name": "New Haven",
+      "vfr": { "random_routes": { "rate": 5 } },
+      "hold_for_release": true,
+      "approaches": {
+        "I2": { "cifp_id": "I2" },
+        "R2": { "cifp_id": "R2" },
+        "R20": { "cifp_id": "R20" }
+      },
+      "departure_routes": {
+        "2": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "sid": "BHAVN1",
+            "waypoints": "KHVN-20/h20"
+          }
+        },
+        "20": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "sid": "BHAVN1",
+            "waypoints": "KHVN-2/h200"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KERI",
+          "exit": "COATE",
+          "route": "COATE Q436 RAAKK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBOS",
+          "exit": "BDR",
+          "route": "BDR MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KPVD",
+          "exit": "MAD",
+          "route": "MAD CARLD V188 GON V374 MINNK PVD"	
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTEB",
+          "exit": "CMK",
+          "route": "CMK V623 SAX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBGR",
+          "exit": "HTO",
+          "route": "HTO V308 GON T320 GDM T314 ENE T295 BGR BGR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KTPA",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KRSW",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY Q97 SAWED Q64 GUILD Q409 PUPYY CYNTA SHFTY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KBNA",
+          "exit": "SOARS",
+          "route": "SOARS RONGE PWL BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTTN",
+          "exit": "BEADS",
+          "route": "BEADS V139 BRIGS JIIMS3"
+        }
+      ],
+      "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
+        "COATE": "North",
+        "DEEZZ": "North",
+        "DPK": "South",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South",
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
+      },
+      "tower_list": 2
+    },
+    "KBDR": {
+      "name": "Bridgeport",
+      "vfr": { "random_routes": { "rate": 5 } },
+      "hold_for_release": true,
+      "approaches": {
+        "R6": { "cifp_id": "R6" },
+        "R24": { "cifp_id": "R24" },
+        "R29": { "cifp_id": "R29" },
+        "V11": {
+        "full_name": "Visual Runway 11",
+        "runway": "11",
+        "type": "Visual",
+        "waypoints": [
+          "N041.11.10.481,W073.20.21.542/a2000 N041.10.32.249,W073.13.36.174/a1800"
+        ]
+      }
+      },
+      "departure_routes": {
+        "6": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "sid": "BHAVN1",
+            "waypoints": "KBDR-24/h060"
+          }
+        },
+        "24": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "sid": "BHAVN1",
+            "waypoints": "KBDR-6/h240"
+          }
+        },
+        "29": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "sid": "BHAVN1",
+            "waypoints": "KBDR-11/h290"
+          }
+        },
+        "11": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "sid": "BHAVN1",
+            "waypoints": "KBDR-29/h110"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KERI",
+          "exit": "COATE",
+          "route": "COATE Q436 RAAKK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBOS",
+          "exit": "BDR",
+          "route": "BDR MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KPVD",
+          "exit": "MAD",
+          "route": "MAD CARLD V188 GON V374 MINNK PVD"	
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTEB",
+          "exit": "CMK",
+          "route": "CMK V623 SAX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBGR",
+          "exit": "HTO",
+          "route": "HTO V308 GON T320 GDM T314 ENE T295 BGR BGR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KTPA",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KRSW",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY Q97 SAWED Q64 GUILD Q409 PUPYY CYNTA SHFTY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KBNA",
+          "exit": "SOARS",
+          "route": "SOARS RONGE PWL BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTTN",
+          "exit": "BEADS",
+          "route": "BEADS V139 BRIGS JIIMS3"
+        }
+      ],
+      "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
+        "COATE": "North",
+        "DEEZZ": "North",
+        "DPK": "South",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South",
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
+      },
+      "tower_list": 3
+    },
+    "KFOK": {
+      "name": "Suffolk County",
+      "hold_for_release": true,
+      "vfr": { "random_routes": { "rate": 8 } },
+      "approaches": {
+        "RG6": { "cifp_id": "R6" },
+        "RG24": { "cifp_id": "R24" },
+        "V33": {
+        "full_name": "Visual Runway 33",
+        "runway": "33",
+        "type": "Visual",
+        "waypoints": [
+          "N040.45.13.719,W072.30.32.986/a2000 N040.47.43.462,W072.34.04.857/a1500"
+        ]
+      },
+      "V15": {
+        "full_name": "Visual Runway 15",
+        "runway": "15",
+        "type": "Visual",
+        "waypoints": [
+          "N040.55.37.756,W072.45.26.229/a2000 N040.53.07.998,W072.41.45.734/a1500"
+        ]
+      }
+      },
+      "departure_routes": {
+        "6": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "waypoints": "KFOK-24/h060"
+          }
+        },
+        "24": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "waypoints": "KFOK-6/h240"
+          }
+        },
+        "33": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "waypoints": "KFOK-15/h330"
+          }
+        },
+        "15": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "waypoints": "KFOK-33/h150"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KERI",
+          "exit": "COATE",
+          "route": "COATE Q436 RAAKK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBOS",
+          "exit": "BDR",
+          "route": "BDR MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KPVD",
+          "exit": "MAD",
+          "route": "MAD CARLD V188 GON V374 MINNK PVD"	
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTEB",
+          "exit": "CMK",
+          "route": "CMK V623 SAX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBGR",
+          "exit": "HTO",
+          "route": "HTO V308 GON T320 GDM T314 ENE T295 BGR BGR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KTPA",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KRSW",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY Q97 SAWED Q64 GUILD Q409 PUPYY CYNTA SHFTY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KBNA",
+          "exit": "SOARS",
+          "route": "SOARS RONGE PWL BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTTN",
+          "exit": "BEADS",
+          "route": "BEADS V139 BRIGS JIIMS3"
+        }
+      ],
+      "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
+        "COATE": "North",
+        "DEEZZ": "North",
+        "DPK": "South",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South",
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
+      },
+      "tower_list": 4
+    },
+    "KOXC": {
+      "name": "Waterbury",
+      "hold_for_release": true,
+      "vfr": { "random_routes": { "rate": 5 } },
+      "approaches": {
+        "I36": { "cifp_id": "I36" },
+        "R36": { "cifp_id": "R36" },
+        "R18": { "cifp_id": "R18" }
+      },
+      "departure_routes": {
+        "36": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "waypoints": "KOXC-18/h360"
+          }
+        },
+        "18": {
+          "BDR,BEADS,BIGGY,CCC,CMK,COATE,DPK,ELIOT,GAYEL,GREKI,HAAYS,HTO,LANNA,MAD,MERIT,NEION,NEWEL,PARKE,SBJ,SOARS,WHITE,ZIMMZ": {
+            "cleared_altitude": 2000,
+            "waypoints": "KOXC-36/h180"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KERI",
+          "exit": "COATE",
+          "route": "COATE Q436 RAAKK"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBOS",
+          "exit": "BDR",
+          "route": "BDR MERIT ROBUC3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KPVD",
+          "exit": "MAD",
+          "route": "MAD CARLD V188 GON V374 MINNK PVD"	
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTEB",
+          "exit": "CMK",
+          "route": "CMK V623 SAX"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DPJ"
+            }
+          ],
+          "altitude": 17000,
+          "destination": "KBGR",
+          "exit": "HTO",
+          "route": "HTO V308 GON T320 GDM T314 ENE T295 BGR BGR"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KTPA",
+          "exit": "BEADS",
+          "route": "BEADS V139 SARDI RBV Q430 COPES Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KRSW",
+          "exit": "BEADS",
+          "route": "BEADS EMJAY Q167 ZJAAY Q97 SAWED Q64 GUILD Q409 PUPYY CYNTA SHFTY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "VXP"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KBNA",
+          "exit": "SOARS",
+          "route": "SOARS RONGE PWL BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KTTN",
+          "exit": "BEADS",
+          "route": "BEADS V139 BRIGS JIIMS3"
+        }
+      ],
+      "exit_categories": {
+        "BDR": "East",
+        "BEADS": "ISP East",
+        "CCC": "ISP East",
+        "CMK": "North",
+        "COATE": "North",
+        "DEEZZ": "North",
+        "DPK": "South",
+        "GAYEL": "North",
+        "GREKI": "East",
+        "HAAYS": "North",
+        "HTO": "ISP East",
+        "HUO": "North",
+        "JFK": "South", 
+        "MAD": "ISP East",
+        "MERIT": "East",
+        "NEION": "North",
+        "SAX": "North",
+        "SBJ": "West",
+        "WHITE": "South"
+      },
+      "tower_list": 5
+    },
+    "KACK": { "vfr": { "random_routes": { "rate": 5 } } },
+      "KDXR": { "vfr": { "random_routes": { "rate": 5 } } },
+      "N69": { "vfr": { "random_routes": { "rate": 5 } } },
+      "KMMK": { "vfr": { "random_routes": { "rate": 5 } } },
+      "21N": { "vfr": { "random_routes": { "rate": 5 } } },
+      "KSNC": { "vfr": { "random_routes": { "rate": 5 } } }
+    },
+    "airspace": {
+      "boundaries": {
+        "BEADS_LOW_40_BLO": [
+          "N041.14.58.269,W072.19.08.922",
+          "N041.01.31.255,W072.36.06.806",
+          "N040.40.02.545,W072.30.00.137",
+          "N040.41.30.820,W072.10.33.883",
+          "N040.42.02.817,W072.07.01.298",
+          "N040.45.54.588,W071.51.10.678",
+          "N040.56.35.283,W071.51.23.944",
+          "N041.03.51.166,W072.10.24.023",
+          "N041.07.33.488,W072.15.03.817",
+          "N041.14.58.269,W072.19.08.922"
+          ],
+          "BEADS_LOW_30_BLO": [
+            "N041.19.53.211,W072.21.56.793",
+            "N040.58.44.496,W072.48.43.791",
+            "N040.55.45.034,W072.43.20.244",
+            "N040.53.44.226,W072.45.36.337",
+            "N040.36.47.839,W072.45.41.171",
+            "N040.39.59.784,W072.29.58.571",
+            "N041.01.33.136,W072.36.05.570",
+            "N041.14.54.808,W072.19.08.291",
+            "N041.19.53.211,W072.21.56.793"
+          ],
+          "BEADS_HIGH_050": [
+            "N040.45.56.483,W071.51.07.822",
+            "N040.56.37.618,W071.51.28.174",
+            "N041.03.51.852,W072.10.27.813",
+            "N040.45.56.483,W071.51.07.822"
+          ],
+          "BEADS_HIGH_100_050": [
+            "N041.14.55.193,W072.19.09.856",
+            "N041.01.30.568,W072.36.03.894",
+            "N040.39.59.400,W072.30.01.043",
+            "N040.41.33.196,W072.10.20.535",
+            "N040.42.03.999,W072.06.54.431",
+            "N040.45.54.959,W071.51.08.151",
+            "N041.04.04.747,W072.10.42.507",
+            "N041.07.33.460,W072.15.01.895",
+            "N041.14.55.193,W072.19.09.856"
+          ],
+          "BEADS_HIGH_060_040": [
+            "N040.27.42.437,W072.45.43.286",
+            "N040.39.59.592,W072.30.02.032",
+            "N040.41.59.137,W072.45.47.268",
+            "N040.27.42.437,W072.45.43.286"
+          ],
+          "BEADS_HIGH_100_070": [
+            "N040.53.50.996,W072.45.41.830",
+            "N040.55.40.269,W072.43.22.056",
+            "N040.58.45.869,W072.48.40.687",
+            "N040.55.43.098,W072.55.47.177",
+            "N040.53.50.996,W072.45.41.830"
+          ],
+          "BEADS_HIGH_100_040": [
+            "N041.18.51.838,W072.23.19.630",
+            "N040.58.45.210,W072.48.44.148",
+            "N040.55.43.304,W072.43.24.418",
+            "N040.53.53.578,W072.45.37.133",
+            "N040.42.03.587,W072.45.43.807",
+            "N040.40.03.808,W072.29.59.945",
+            "N041.01.35.993,W072.36.04.910",
+            "N041.14.51.389,W072.19.07.247",
+            "N041.18.43.942,W072.21.14.468",
+            "N041.18.51.838,W072.23.19.630"
+          ],
+          "BEADS_HIGH_060_080_100": [
+            "N041.18.40.468,W072.21.14.551",
+            "N041.18.49.476,W072.23.26.057",
+            "N041.19.55.930,W072.21.59.265",
+            "N041.18.40.468,W072.21.14.551"
+          ],
+          "CCC_S_060_BLO": [
+            "N040.40.52.738,W073.01.07.016",
+            "N040.42.41.572,W072.56.27.002",
+            "N040.46.38.849,W073.01.29.923",
+            "N040.45.47.996,W073.06.16.913",
+            "N040.40.52.738,W073.01.07.016"
+          ],
+          "CCC_080_BLO": [
+            "N040.45.49.479,W073.06.17.078",
+            "N040.46.40.730,W073.01.27.918",
+            "N040.42.43.014,W072.56.17.938",
+            "N040.43.41.585,W072.53.30.534",
+            "N040.45.11.192,W072.45.40.676",
+            "N040.53.51.779,W072.45.43.341",
+            "N040.57.15.356,W073.04.17.876",
+            "N040.45.49.479,W073.06.17.078"
+          ],
+          "CCC_N_060_BLO": [
+            "N040.57.19.517,W073.04.16.832",
+            "N040.53.51.024,W072.45.40.841",
+            "N040.55.39.898,W072.43.23.237",
+            "N041.00.20.201,W072.51.29.794",
+            "N040.59.38.741,W072.59.32.726",
+            "N040.57.19.517,W073.04.16.832"
+          ],
+          "ISP_060_040": [
+            "N040.24.34.667,W073.15.08.377",
+            "N040.17.23.083,W072.58.54.960",
+            "N040.27.41.187,W072.45.41.418",
+            "N040.36.47.647,W072.45.43.890",
+            "N040.33.01.755,W073.03.52.168",
+            "N040.24.34.667,W073.15.08.377"
+          ],
+          "ISP_060_BLO": [
+            "N040.33.02.427,W073.03.55.025",
+            "N040.36.45.010,W072.45.46.142",
+            "N040.42.02.611,W072.45.43.890",
+            "N040.39.43.264,W072.52.22.803",
+            "N040.42.45.925,W072.56.22.360",
+            "N040.40.55.499,W073.01.11.054",
+            "N040.37.46.534,W072.57.55.387",
+            "N040.33.02.427,W073.03.55.025"
+          ],
+          "ISP_080_BLO": [
+            "N040.42.45.582,W072.56.24.530",
+            "N040.39.44.980,W072.52.23.298",
+            "N040.42.00.634,W072.45.45.483",
+            "N040.45.03.886,W072.45.44.110",
+            "N040.43.38.014,W072.53.42.070",
+            "N040.42.45.582,W072.56.24.530"
+          ],
+          "ISP_040_BLO": [
+            "N040.33.06.904,W073.03.58.265",
+            "N040.37.47.413,W072.57.57.392",
+            "N040.45.48.683,W073.06.10.568",
+            "N040.44.09.339,W073.15.31.530",
+            "N040.33.06.904,W073.03.58.265"
+          ],
+          "ISP_030_BLO": [
+            "N040.33.02.057,W073.03.54.860",
+            "N040.32.12.302,W073.04.57.097",
+            "N040.34.53.939,W073.20.02.947",
+            "N040.40.53.205,W073.19.14.141",
+            "N040.44.11.591,W073.15.37.078",
+            "N040.33.02.057,W073.03.54.860"
+          ],
+          "ISP_020_BLO": [
+            "N040.45.23.908,W073.18.48.872",
+            "N040.44.31.998,W073.18.27.778",
+            "N040.43.33.853,W073.17.53.171",
+            "N040.42.43.893,W073.17.12.000",
+            "N040.40.54.908,W073.19.11.202",
+            "N040.45.23.908,W073.18.48.872"
+          ],
+          "ISP_025_BLO": [
+            "N040.53.06.076,W073.17.12.385",
+            "N040.51.38.899,W073.18.09.624",
+            "N040.50.14.057,W073.18.44.615",
+            "N040.48.58.980,W073.19.04.363",
+            "N040.48.05.600,W073.19.10.323",
+            "N040.45.50.276,W073.18.47.938",
+            "N040.44.26.683,W073.18.19.017",
+            "N040.43.12.471,W073.17.37.022",
+            "N040.42.41.929,W073.17.13.511",
+            "N040.44.12.566,W073.15.38.342",
+            "N040.46.49.245,W073.15.58.364",
+            "N040.47.26.667,W073.16.03.391",
+            "N040.48.09.761,W073.15.56.442",
+            "N040.48.47.128,W073.15.52.239",
+            "N040.51.59.993,W073.15.07.992",
+            "N040.53.06.076,W073.17.12.385"
+          ],
+          "ISP_N_080_BLO": [
+            "N040.44.17.798,W073.15.31.915",
+            "N040.45.49.356,W073.06.15.375",
+            "N040.56.59.123,W073.05.15.225",
+            "N040.52.02.341,W073.15.07.498",
+            "N040.48.52.717,W073.15.43.588",
+            "N040.48.11.313,W073.16.00.260",
+            "N040.47.24.525,W073.16.08.334",
+            "N040.46.44.603,W073.15.57.925",
+            "N040.44.17.798,W073.15.31.915"
+          ],
+          "ISP_N_060_BLO": [
+            "N040.52.56.325,W073.16.42.722",
+            "N040.52.01.929,W073.15.09.613",
+            "N040.59.37.697,W072.59.32.918",
+            "N040.58.47.435,W073.10.36.767",
+            "N040.55.42.178,W073.11.55.594",
+            "N040.52.56.325,W073.16.42.722"
+          ],
+          "ISP_060_025_BLO": [
+            "N040.52.56.792,W073.16.42.832",
+            "N040.55.38.607,W073.11.59.000",
+            "N040.58.47.984,W073.10.36.904",
+            "N040.57.59.411,W073.20.34.671",
+            "N040.57.33.511,W073.21.39.929",
+            "N040.54.48.565,W073.20.01.492",
+            "N040.52.56.792,W073.16.42.832"
+          ],
+          "LOVES_040_BLO": [
+            "N041.21.36.070,W073.23.08.204",
+            "N041.28.26.217,W073.11.59.494",
+            "N041.35.18.644,W073.12.50.416",
+            "N041.35.14.346,W073.17.59.104",
+            "N041.28.00.812,W073.17.47.376",
+            "N041.21.36.070,W073.23.08.204"
+          ],
+          "LOVES_050_BLO": [
+            "N041.35.20.567,W073.12.52.778",
+            "N041.35.25.717,W072.59.53.572",
+            "N041.26.05.153,W072.59.40.554",
+            "N041.25.05.841,W072.55.52.670",
+            "N041.25.06.280,W072.43.28.703",
+            "N041.27.44.964,W072.31.00.260",
+            "N041.29.03.420,W072.27.56.211",
+            "N041.21.54.404,W072.23.04.579",
+            "N041.19.57.605,W072.21.59.869",
+            "N041.02.53.364,W072.43.38.096",
+            "N041.06.19.673,W072.43.44.057",
+            "N041.10.45.130,W072.58.11.098",
+            "N041.14.13.033,W073.26.08.380",
+            "N041.21.31.717,W073.23.07.628",
+            "N041.28.26.781,W073.12.00.428",
+            "N041.35.20.567,W073.12.52.778"
+          ],
+          "LOVES_050": [
+            "N041.18.50.822,W072.23.24.739",
+            "N041.18.40.166,W072.21.12.738",
+            "N041.19.56.479,W072.22.02.286",
+            "N041.18.50.822,W072.23.24.739"
+          ],
+          "LOVES_S_040_BLO": [
+            "N041.12.50.251,W073.14.40.444",
+            "N041.10.52.203,W072.58.28.071",
+            "N041.06.23.106,W072.43.47.709",
+            "N041.02.56.742,W072.43.32.521",
+            "N040.58.45.471,W072.48.38.408",
+            "N041.00.20.228,W072.51.35.562",
+            "N040.58.42.779,W073.10.35.916",
+            "N041.00.53.503,W073.09.38.787",
+            "N041.04.38.723,W073.05.10.528",
+            "N041.12.50.251,W073.14.40.444"
+          ],
+          "LOVES_030_BLO": [
+            "N041.14.12.882,W073.26.11.017",
+            "N041.12.50.251,W073.14.40.966",
+            "N041.04.35.372,W073.05.13.000",
+            "N041.00.56.620,W073.09.35.985",
+            "N040.58.50.374,W073.10.27.676",
+            "N040.57.58.669,W073.20.37.857",
+            "N040.57.31.052,W073.21.33.392",
+            "N041.03.45.096,W073.25.25.012",
+            "N041.14.12.882,W073.26.11.017"
+          ],
+          "LOVES_030": [
+            "N040.58.46.789,W073.10.32.922",
+            "N040.58.01.842,W073.20.20.388",
+            "N040.57.29.473,W073.21.41.962",
+            "N040.54.46.560,W073.20.01.849",
+            "N040.53.01.819,W073.16.43.161",
+            "N040.55.35.339,W073.11.47.492",
+            "N040.58.46.789,W073.10.32.922"
+          ],
+          "SEALL_050_040": [
+            "N041.26.29.405,W073.27.45.335",
+            "N041.32.30.238,W073.19.59.102",
+            "N041.33.44.299,W073.18.00.285",
+            "N041.35.11.407,W073.18.00.450",
+            "N041.36.19.028,W073.31.02.182",
+            "N041.33.48.762,W073.35.49.639",
+            "N041.34.45.342,W073.41.08.518",
+            "N041.30.43.725,W073.32.03.046",
+            "N041.26.29.405,W073.27.45.335"
+          ],
+          "SEALL_090_040": [
+            "N041.26.24.530,W073.27.48.383",
+            "N041.32.29.455,W073.19.58.800",
+            "N041.33.42.720,W073.18.04.323",
+            "N041.28.02.473,W073.17.57.072",
+            "N041.21.34.807,W073.23.05.568",
+            "N041.26.24.530,W073.27.48.383"
+          ],
+          "SEALL_E_090_050": [
+            "N041.21.35.672,W073.23.06.776",
+            "N041.28.23.800,W073.11.59.686",
+            "N041.35.19.097,W073.12.53.794",
+            "N041.35.18.891,W073.17.59.187",
+            "N041.28.08.241,W073.17.50.700",
+            "N041.21.35.672,W073.23.06.776"
+          ],
+          "SEALL_E_060": [
+            "N041.35.18.342,W073.12.47.037",
+            "N041.35.24.742,W072.59.50.469",
+            "N041.25.57.614,W072.59.35.335",
+            "N041.25.02.833,W072.55.51.214",
+            "N041.25.03.355,W072.43.36.366",
+            "N041.19.53.664,W072.48.02.565",
+            "N041.22.10.279,W072.59.52.117",
+            "N041.28.24.473,W073.11.57.544",
+            "N041.35.18.342,W073.12.47.037"
+          ],
+          "SEALL_M_090_060": [
+            "N041.28.24.418,W073.11.59.412",
+            "N041.22.10.622,W072.59.51.815",
+            "N041.19.53.238,W072.48.06.547",
+            "N041.12.03.957,W073.07.19.508",
+            "N041.14.10.753,W073.26.03.958",
+            "N041.21.31.017,W073.23.07.188",
+            "N041.28.24.418,W073.11.59.412"
+          ],
+          "SEALL_090_070": [
+            "N041.14.12.786,W073.26.07.034",
+            "N041.00.53.956,W073.09.35.024",
+            "N041.19.50.478,W072.48.00.862",
+            "N041.11.55.237,W073.07.19.233",
+            "N041.14.12.786,W073.26.07.034"
+          ],
+          "SEALL_080_070": [
+            "N040.59.14.859,W073.05.01.986",
+            "N041.03.28.108,W073.06.34.107",
+            "N041.00.54.711,W073.09.34.942",
+            "N041.14.12.140,W073.26.08.270",
+            "N041.03.59.282,W073.25.27.044",
+            "N040.57.32.014,W073.21.40.424",
+            "N040.57.55.016,W073.20.31.951",
+            "N040.59.14.859,W073.05.01.986"
+          ],
+          "VICKY_E_090_060": [
+            "N041.25.12.528,W072.43.16.838",
+            "N041.19.54.145,W072.47.59.049",
+            "N041.17.10.957,W072.44.26.326",
+            "N041.16.37.352,W072.33.23.356",
+            "N041.29.02.843,W072.28.02.528",
+            "N041.27.47.463,W072.30.56.057",
+            "N041.25.38.085,W072.40.09.741",
+            "N041.25.12.528,W072.43.16.838"
+          ],
+          "VICKY_E_100_060": [
+            "N041.19.55.079,W072.48.03.279",
+            "N041.17.05.711,W072.44.26.299",
+            "N041.16.35.814,W072.33.22.285",
+            "N041.29.01.291,W072.28.01.512",
+            "N041.21.50.078,W072.23.01.201",
+            "N041.19.59.967,W072.21.56.271",
+            "N041.02.53.597,W072.43.38.151",
+            "N041.06.22.791,W072.43.47.325",
+            "N041.10.49.827,W072.58.10.933",
+            "N041.18.05.614,W072.49.46.578",
+            "N041.19.55.079,W072.48.03.279"
+          ],
+          "VICKY_E_070_090": [
+            "N041.19.57.976,W072.21.59.348",
+            "N041.18.50.273,W072.23.23.448",
+            "N041.18.40.468,W072.21.16.309",
+            "N041.19.57.976,W072.21.59.348"
+          ],
+          "VICKY_N_060": [
+            "N041.19.50.904,W072.48.02.785",
+            "N041.12.00.854,W073.07.20.029",
+            "N041.10.46.476,W072.58.14.970",
+            "N041.19.50.904,W072.48.02.785"
+          ],
+          "VICKY_NW_060_050": [
+            "N041.12.49.660,W073.14.35.830",
+            "N041.04.42.197,W073.05.11.846",
+            "N041.10.43.702,W072.58.09.477",
+            "N041.12.49.660,W073.14.35.830"
+          ],
+          "VICKY_NW_060_040": [
+            "N041.14.07.718,W073.26.08.243",
+            "N041.03.56.892,W073.25.25.396",
+            "N040.57.38.345,W073.21.39.188",
+            "N040.57.58.065,W073.20.29.672",
+            "N040.58.46.254,W073.10.34.130",
+            "N041.00.57.376,W073.09.34.667",
+            "N041.04.41.057,W073.05.15.170",
+            "N041.12.48.122,W073.14.41.323",
+            "N041.14.07.718,W073.26.08.243"
+          ],
+          "VICKY_M_060_050": [
+            "N040.58.47.888,W073.10.30.010",
+            "N041.00.52.487,W073.09.37.798",
+            "N041.03.27.943,W073.06.35.315",
+            "N040.59.19.625,W073.05.04.760",
+            "N040.58.47.888,W073.10.30.010"
+          ],
+          "VICKY_ME_110_050": [
+            "N041.03.28.232,W073.06.38.364",
+            "N041.10.46.092,W072.58.12.388",
+            "N041.06.45.436,W072.45.03.790",
+            "N040.57.24.982,W073.04.19.744",
+            "N041.03.28.232,W073.06.38.364"
+          ],
+          "VICKY_SE_110_050": [
+            "N040.59.37.711,W072.59.21.657",
+            "N041.06.41.454,W072.44.55.111",
+            "N041.06.23.807,W072.43.49.797",
+            "N041.02.51.304,W072.43.39.635",
+            "N040.58.42.079,W072.48.43.818",
+            "N041.00.20.915,W072.51.28.504",
+            "N040.59.37.711,W072.59.21.657"
+          ],
+          "VICKY_SE_110": [
+            "N040.55.44.952,W072.55.43.194",
+            "N040.58.44.853,W072.48.42.720",
+            "N041.02.49.134,W072.43.36.915",
+            "N040.55.47.891,W072.43.24.556",
+            "N040.53.49.129,W072.45.39.001",
+            "N040.55.44.952,W072.55.43.194"
+          ],
+          "VICKY_SW_110_070": [
+            "N040.57.22.826,W073.04.16.668",
+            "N040.59.37.560,W072.59.37.999",
+            "N041.00.19.020,W072.51.35.095",
+            "N040.58.44.716,W072.48.44.972",
+            "N040.55.45.281,W072.55.52.450",
+            "N040.57.22.826,W073.04.16.668"
+          ],
+          "VICKY_140_090": [
+            "N040.57.19.448,W073.04.15.761",
+            "N040.55.29.475,W073.08.04.881",
+            "N040.54.08.327,W073.01.49.945",
+            "N040.54.13.683,W072.58.29.527",
+            "N040.55.46.833,W072.55.53.137",
+            "N040.57.19.448,W073.04.15.761"
+          ],
+          "VICKY_SW_140_110": [
+            "N040.55.22.952,W073.08.02.849",
+            "N040.54.09.632,W073.01.52.692",
+            "N040.54.17.048,W072.58.30.653",
+            "N040.44.17.977,W073.15.34.936",
+            "N040.46.38.643,W073.15.56.744",
+            "N040.47.50.590,W073.16.03.583",
+            "N040.49.00.325,W073.15.44.439",
+            "N040.51.56.368,W073.15.06.317",
+            "N040.55.22.952,W073.08.02.849"
+          ],
+          "VICKY_W_140": [
+            "N040.44.15.944,W073.15.35.678",
+            "N040.42.48.589,W073.17.11.918",
+            "N040.44.03.722,W073.18.07.976",
+            "N040.45.17.935,W073.18.49.971",
+            "N040.46.57.498,W073.19.07.851",
+            "N040.48.59.076,W073.19.00.600",
+            "N040.50.49.447,W073.18.38.325",
+            "N040.52.10.540,W073.17.55.231",
+            "N040.53.08.644,W073.17.14.005",
+            "N040.52.00.515,W073.15.11.260",
+            "N040.48.47.609,W073.15.46.334",
+            "N040.47.33.327,W073.16.01.715",
+            "N040.44.15.944,W073.15.35.678"
+          ],
+          "VICKY_W_050_040": [
+            "N040.57.33.263,W073.21.41.495",
+            "N040.55.02.339,W073.20.12.121",
+            "N040.52.58.633,W073.16.42.777",
+            "N040.55.47.836,W073.11.56.720",
+            "N040.58.42.807,W073.10.36.904",
+            "N040.57.56.733,W073.20.40.081",
+            "N040.57.33.263,W073.21.41.495"
+          ],
+          "VICKY_M_100_070": [
+            "N040.59.16.164,W073.05.00.723",
+            "N040.57.23.334,W073.04.20.211",
+            "N040.59.27.906,W072.59.58.983",
+            "N040.59.16.164,W073.05.00.723"
+          ],
+          "VICKY_NONE_": [
+            "N040.52.56.957,W073.16.39.810",
+            "N040.52.00.474,W073.14.59.148",
+            "N040.57.14.642,W073.04.19.606",
+            "N041.03.30.594,W073.06.35.425",
+            "N041.00.55.549,W073.09.35.738",
+            "N040.55.38.319,W073.11.49.030",
+            "N040.52.56.957,W073.16.39.810"
+          ]
+      },
+      "volumes": {
+        "BEADS_LOW": [
+          {
+            "boundaries": [
+              "BEADS_LOW_40_BLO"
+            ],
+            "lower": 0,
+            "upper": 4000
+          },
+          {
+            "label_position": "N040.58.45.402,W072.43.04.698",
+            "boundaries": [
+              "BEADS_LOW_30_BLO"
+            ],
+            "lower": 0,
+            "upper": 3000
+          }
+        ],
+        "BEADS_HIGH": [
+          {
+            "label_position": "N040.55.33.320,W071.57.13.447",
+            "boundaries": [
+              "BEADS_HIGH_050"
+            ],
+            "lower": 5000,
+            "upper": 5000
+          },
+          {
+            "boundaries": [
+              "BEADS_HIGH_100_050"
+            ],
+            "lower": 10000,
+            "upper": 5000
+          },
+          {
+            "boundaries": [
+              "BEADS_HIGH_060_040"
+            ],
+            "lower": 6000,
+            "upper": 4000
+          },
+          {
+            "boundaries": [
+              "BEADS_HIGH_100_070"
+            ],
+            "lower": 10000,
+            "upper": 7000
+          },
+          {
+            "label_position": "N040.58.54.013,W072.41.30.023",
+            "boundaries": [
+              "BEADS_HIGH_100_040"
+            ],
+            "lower": 10000,
+            "upper": 4000
+          },
+          {
+            "boundaries": [
+              "BEADS_HIGH_060_080_100"
+            ],
+            "lower": 10000,
+            "upper": 6000
+          }
+        ],
+        "CCC": [
+          {
+            "boundaries": [
+              "CCC_S_060_BLO"
+            ],
+            "lower": 6000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "CCC_080_BLO"
+            ],
+            "lower": 8000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "CCC_N_060_BLO"
+            ],
+            "lower": 6000,
+            "upper": 0
+          }
+        ],
+        "ISP": [
+          {
+            "boundaries": [
+              "ISP_060_040"
+            ],
+            "lower": 6000,
+            "upper": 4000
+          },
+          {
+            "boundaries": [
+              "ISP_060_BLO"
+            ],
+            "lower": 6000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_080_BLO"
+            ],
+            "lower": 8000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_040_BLO"
+            ],
+            "lower": 4000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_030_BLO"
+            ],
+            "lower": 3000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_020_BLO"
+            ],
+            "lower": 2000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_025_BLO"
+            ],
+            "lower": 2500,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_N_080_BLO"
+            ],
+            "lower": 8000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_N_060_BLO"
+            ],
+            "lower": 6000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "ISP_060_025_BLO"
+            ],
+            "lower": 6000,
+            "upper": 2500
+          }
+        ],
+        "LOVES": [
+          {
+            "boundaries": [
+              "LOVES_040_BLO"
+            ],
+            "lower": 4000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "LOVES_050_BLO"
+            ],
+            "lower": 5000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "LOVES_050"
+            ],
+            "lower": 5000,
+            "upper": 5000
+          },
+          {
+            "boundaries": [
+              "LOVES_S_040_BLO"
+            ],
+            "lower": 4000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "LOVES_030_BLO"
+            ],
+            "lower": 3000,
+            "upper": 0
+          },
+          {
+            "boundaries": [
+              "LOVES_030"
+            ],
+            "lower": 3000,
+            "upper": 3000
+          }
+        ],
+        "SEALL": [
+          {
+            "boundaries": [
+              "SEALL_050_040"
+            ],
+            "lower": 5000,
+            "upper": 4000
+          },         
+          {
+            "boundaries": [
+              "SEALL_090_040"
+            ],
+            "lower": 9000,
+            "upper": 4000
+          },          
+          {
+            "boundaries": [
+              "SEALL_E_090_050"
+            ],
+            "lower": 9000,
+            "upper": 5000
+          },          
+          {
+            "boundaries": [
+              "SEALL_E_060"
+            ],
+            "lower": 6000,
+            "upper": 6000
+          },          
+          {
+            "boundaries": [
+              "SEALL_M_090_060"
+            ],
+            "lower": 9000,
+            "upper": 6000
+          },          
+          {
+            "boundaries": [
+              "SEALL_090_070"
+            ],
+            "lower": 9000,
+            "upper": 7000
+          },          
+          {
+            "boundaries": [
+              "SEALL_080_070"
+            ],
+            "lower": 8000,
+            "upper": 7000
+          }
+        ],
+        "VICKY": [
+          {
+            "boundaries": [
+              "VICKY_E_090_060"
+            ],
+            "lower": 9000,
+            "upper": 6000
+          },
+          {
+            "boundaries": [
+              "VICKY_E_100_060"
+            ],
+            "lower": 10000,
+            "upper": 6000
+          },
+          {
+            "boundaries": [
+              "VICKY_E_070_090"
+            ],
+            "lower": 7000,
+            "upper": 9000
+          },
+          {
+            "boundaries": [
+              "VICKY_N_060"
+            ],
+            "lower": 6000,
+            "upper": 6000
+          },
+          {
+            "boundaries": [
+              "VICKY_NW_060_050"
+            ],
+            "lower": 6000,
+            "upper": 5000
+          },
+          {
+            "boundaries": [
+              "VICKY_NW_060_040"
+            ],
+            "lower": 6000,
+            "upper": 4000
+          },
+          {
+            "boundaries": [
+              "VICKY_M_060_050"
+            ],
+            "lower": 6000,
+            "upper": 5000
+          },
+          {
+            "boundaries": [
+              "VICKY_ME_110_050"
+            ],
+            "lower": 11000,
+            "upper": 5000
+          },
+          {
+            "boundaries": [
+              "VICKY_SE_110"
+            ],
+            "lower": 11000,
+            "upper": 11000
+          },
+          {
+            "boundaries": [
+              "VICKY_SW_110_070"
+            ],
+            "lower": 11000,
+            "upper": 7000
+          },
+          {
+            "boundaries": [
+              "VICKY_140_090"
+            ],
+            "lower": 14000,
+            "upper": 9000
+          },
+          {
+            "boundaries": [
+              "VICKY_SW_140_110"
+            ],
+            "lower": 14000,
+            "upper": 11000
+          },
+          {
+            "boundaries": [
+              "VICKY_W_140"
+            ],
+            "lower": 14000,
+            "upper": 14000
+          },
+          {
+            "boundaries": [
+              "VICKY_W_050_040"
+            ],
+            "lower": 5000,
+            "upper": 4000
+          },
+          {
+            "boundaries": [
+              "VICKY_M_100_070"
+            ],
+            "lower": 10000,
+            "upper": 7000
+          },
+          {
+            "boundaries": [
+              "VICKY_NONE_"
+            ],
+            "lower": 0,
+            "upper": 0
+          }
+        ]
+      }
+    },
+    "inbound_flows": {
+        "DENNA3/LOVES2": {
+        "arrivals": [
+        {
+            "spawn": "PWL",
+            "cruise_altitude": 15000,
+            "star": "DENNA3",
+            "initial_controller": "NY_B_CTR",
+            "initial_altitude": 8000,
+            "assigned_altitude": 5000,
+            "initial_speed": 250,
+            "speed_restriction": 250,
+            "description": "DENNA3",
+            "expect_approach": null,
+            "airlines": {
+            "KHVN": [
+                {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KALB"
+                },
+                {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KAVP"
+                },
+                {
+                "icao": "DPJ",
+                "airport": "KBUF"
+                },
+                {
+                "icao": "VXP",
+                "airport": "KBNA"
+                },
+                {
+                "icao": "EJA",
+                "airport": "KBGR"
+                }
+            ]
+            }
+        },
+        {
+            "spawn": "PWL",
+            "cruise_altitude": 29000,
+            "star": "LOVES2",
+            "initial_controller": "NY_B_CTR",
+            "initial_altitude": 8000,
+            "assigned_altitude": 5000,
+            "initial_speed": 250,
+            "speed_restriction": 250,
+            "description": "LOVES2",
+            "expect_approach": null,
+            "airlines": {
+            "KISP": [
+                {
+                "icao": "JBU",
+                "airport": "KACY"
+                },
+                {
+                "icao": "EJA",
+                "airport": "KPHL"
+                },
+                {
+                "icao": "DPJ",
+                "airport": "KPNE"
+                }
+            ]
+            }
+        }
+        ]
+    },
+    "Intra-TRACON Via HTO": {
+    "arrivals": [
+        {
+            "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC",
+            "cruise_altitude": 14000,
+            "route": "/. HTO V46 CCC",
+            "initial_controller": "BOS_E_CTR",
+            "initial_altitude": 10000,
+            "assigned_altitude": 10000,
+            "initial_speed": 250,
+            "speed_restriction": 250,
+            "description": "via HTO",
+            "expect_approach": null,
+            "airlines": {
+            "KISP": [
+                {
+                "icao": "DPJ",
+                "airport": "KACK"
+                },
+                {
+                "icao": "LXJ",
+                "airport": "KHYA"
+                },
+                {
+                "icao": "NKS",
+                "airport": "KBOS"
+                }
+            ]
+            }
+        }
+        ]
+    },
+  "Intra-TRACON Via HFD": {
+      "arrivals": [
+          {
+              "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho",
+              "cruise_altitude": 14000,
+              "route": "/. HFD",
+              "initial_controller": "BOS_E_CTR",
+              "initial_altitude": 8000,
+              "assigned_altitude": 8000,
+              "initial_speed": 250,
+              "speed_restriction": 250,
+              "description": "via HFD",
+              "expect_approach": null,
+              "airlines": {
+              "KHVN": [
+                  {
+                  "icao": "DPJ",
+                  "airport": "KBOS"
+                  },
+                  {
+                  "icao": "EJA",
+                  "airport": "KAUG"
+                  },
+                  {
+                  "icao": "LXJ",
+                  "airport": "KMHT"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via CCC": {
+      "arrivals": [
+          {
+              "waypoints": "N041.28.15.080,W072.08.52.040 SALEM/ho CCC",
+              "cruise_altitude": 8000,
+              "route": "/. CCC",
+              "initial_controller": "BOS_E_CTR",
+              "initial_altitude": 8000,
+              "assigned_altitude": 8000,
+              "initial_speed": 250,
+              "description": "via CCC",
+              "expect_approach": null,
+              "airlines": {
+              "KISP": [
+                  {
+                  "icao": "EJA",
+                  "airport": "KBDL"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via MAD": {
+      "arrivals": [
+          {
+              "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT",
+              "cruise_altitude": 10000,
+              "route": "/. MAD V1 BELTT",
+              "initial_controller": "BOS_E_CTR",
+              "initial_altitude": 10000,
+              "assigned_altitude": 10000,
+              "initial_speed": 250,
+              "speed_restriction": 250,
+              "description": "via MAD",
+              "expect_approach": null,
+              "airlines": {
+              "KISP": [
+                  {
+                  "icao": "DPJ",
+                  "airport": "KHFD"
+                  },
+                  {
+                  "icao": "EJA",
+                  "airport": "KPSM"
+                  },
+                  {
+                  "icao": "LXJ",
+                  "airport": "KMHT"
+                  },
+                  {
+                  "icao": "LXJ",
+                  "airport": "KBGR"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via JFK": {
+      "arrivals": [
+          {
+              "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC",
+              "cruise_altitude": 5000,
+              "route": "/. JFK CCC",
+              "initial_controller": "NY_B_CTR",
+              "initial_altitude": 5000,
+              "assigned_altitude": 5000,
+              "initial_speed": 250,
+              "description": "via JFK",
+              "expect_approach": null,
+              "airlines": {
+              "KISP": [
+                  {
+                  "icao": "DPJ",
+                  "airport": "KACY"
+                  },
+                  {
+                  "icao": "DPJ",
+                  "airport": "KWRI"
+                  },
+                  {
+                  "icao": "LXJ",
+                  "airport": "KBWI"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via SARDI": {
+      "arrivals": [
+          {
+              "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131/ho SARDI RICED KEYED",
+              "cruise_altitude": 27000,
+              "route": "/. SARDI V139 RICED KEYED",
+              "initial_controller": "NY_B_CTR",
+              "initial_altitude": 7000,
+              "assigned_altitude": 7000,
+              "initial_speed": 250,
+              "description": "via SARDI",
+              "expect_approach": null,
+              "airlines": {
+              "KHVN": [
+                  {
+                  "icao": "DPJ",
+                  "airport": "KBWI"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via CREAM": {
+      "arrivals": [
+          {
+              "waypoints": "GON N041.17.25.349,W072.10.01.803/ho CREAM",
+              "cruise_altitude": 10000,
+              "route": "/. CREAM",
+              "initial_controller": "BOS_E_CTR",
+              "initial_altitude": 10000,
+              "assigned_altitude": 10000,
+              "initial_speed": 250,
+              "speed_restriction": 250,
+              "description": "via CREAM",
+              "expect_approach": null,
+              "airlines": {
+              "KHVN": [
+                  {
+                  "icao": "LXJ",
+                  "airport": "KGON"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via DENNA": {
+      "arrivals": [
+          {
+              "waypoints": "N041.17.24.607,W073.43.06.291 CMK/ho DENNA",
+              "cruise_altitude": 5000,
+              "route": "/. DENNA",
+              "initial_controller": "LGA_APP",
+              "initial_altitude": 5000,
+              "assigned_altitude": 5000,
+              "initial_speed": 250,
+              "speed_restriction": 250,
+              "description": "via DEENA",
+              "expect_approach": null,
+              "airlines": {
+              "KHVN": [
+                  {
+                  "icao": "LXJ",
+                  "airport": "KHPN"
+                  }
+              ],
+              "KFOK": [
+                  {
+                  "icao": "N",
+                  "airport": "KABE"
+                  }
+              ],
+              "KBDR": [
+                  {
+                  "icao": "EJA",
+                  "airport": "KALB"
+                  }
+              ],
+              "KOXC": [
+                  {
+                  "icao": "N",
+                  "airport": "KAVP"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via BDR": {
+      "arrivals": [
+          {
+              "waypoints": "N040.57.00.469,W073.31.33.740 N041.01.04.242,W073.23.53.468/ho BDR",
+              "cruise_altitude": 5000,
+              "route": "/. BDR",
+              "initial_controller": "LGA_APP",
+              "initial_altitude": 5000,
+              "assigned_altitude": 5000,
+              "initial_speed": 250,
+              "speed_restriction": 250,
+              "description": "via BDR",
+              "expect_approach": null,
+              "airlines": {
+              "KHVN": [
+                  {
+                  "icao": "LXJ",
+                  "airport": "KLGA"
+                  }
+              ],
+              "KFOK": [
+                  {
+                  "icao": "N",
+                  "airport": "KMMU"
+                  }
+              ],
+              "KBDR": [
+                  {
+                  "icao": "EJA",
+                  "airport": "KPOU"
+                  }
+              ],
+              "KOXC": [
+                  {
+                  "icao": "N",
+                  "airport": "KHPN"
+                  }
+              ],
+              "KISP": [
+                  {
+                  "icao": "DPJ",
+                  "airport": "KEWR"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+  "Intra-TRACON Via LOVES": {
+      "arrivals": [
+          {
+              "waypoints": "IGN N041.36.54.747,W073.41.28.430/ho LOVES/h120",
+              "cruise_altitude": 5000,
+              "route": "/. IGN LOVES",
+              "initial_controller": "SWF_APP",
+              "initial_altitude": 5000,
+              "assigned_altitude": 5000,
+              "initial_speed": 250,
+              "speed_restriction": 250,
+              "description": "via LOVES",
+              "expect_approach": null,
+              "airlines": {
+              "KHVN": [
+                  {
+                  "icao": "LXJ",
+                  "airport": "KHPN"
+                  }
+              ],
+              "KFOK": [
+                  {
+                  "icao": "N",
+                  "airport": "KABE"
+                  }
+              ],
+              "KBDR": [
+                  {
+                  "icao": "EJA",
+                  "airport": "KALB"
+                  }
+              ],
+              "KOXC": [
+                  {
+                  "icao": "N",
+                  "airport": "KAVP"
+                  }
+              ]
+              }
+          }
+      ]
+  },
+    "NELIE3": {
+    "arrivals": [
+      {
+            "spawn": "ORW",
+            "cruise_altitude": 22000,
+            "star": "NELIE3",
+            "initial_controller": "BOS_E_CTR",
+            "initial_altitude": 6000,
+            "assigned_altitude": 5000,
+            "initial_speed": 250,
+            "speed_restriction": 250,
+            "expect_approach": null,
+            "airlines": {
+            "KISP": [
+                {
+                "icao": "FFT",
+                "airport": "KTPA"
+                },
+                {
+                "icao": "SWA",
+                "airport": "KBWI"
+                },
+                {
+                "icao": "EJA",
+                "airport": "KBOS"
+                },
+                {
+                "icao": "DPJ",
+                "airport": "KTEB"
+                }
+            ],
+            "KFOK": [
+                {
+                "icao": "FFT",
+                "airport": "KRSW"
+                },
+                {
+                "icao": "SWA",
+                "airport": "KBWI"
+                },
+                {
+                "icao": "EJA",
+                "airport": "KRSW"
+                },
+                {
+                "icao": "DPJ",
+                "airport": "KBOS"
+                }
+            ]
+            }
+        }
+        ]
+    }
+    },
+    "control_positions": {
+        "BOS_E_CTR": {
+          "frequency": 133450,
+          "radio_name": "Boston center",
+          "facility_id": "B",
+          "eram_facility": true,
+          "scope_char": "C",
+          "sector_id": "B17"
+        },
+        "HVN_TWR": {
+          "frequency": 124800,
+          "radio_name": "New Haven tower",
+          "sector_id": "3P"
+        },
+        "ISP_H_APP": {
+          "frequency": 134550,
+          "radio_name": "New York approach",
+          "sector_id": "3H"
+        },
+        "ISP_N_APP": {
+          "frequency": 120050,
+          "radio_name": "New York approach",
+          "sector_id": "3N"
+        },
+        "ISP_R_APP": {
+          "frequency": 133100,
+          "radio_name": "New York approach",
+          "sector_id": "3R"
+        },
+        "ISP_O_APP": {
+          "frequency": 128625,
+          "radio_name": "New York approach",
+          "sector_id": "3O"
+        },
+        "ISP_Z_APP": {
+          "frequency": 124075,
+          "radio_name": "New York approach",
+          "sector_id": "3Z"
+        },
+        "ISP_I_APP": {
+          "frequency": 118950,
+          "radio_name": "New York approach",
+          "sector_id": "3I"
+        },
+        "ISP_B_APP": {
+          "frequency": 125975,
+          "radio_name": "New York approach",
+          "sector_id": "3B"
+        },
+        "ISP_TWR": {
+          "frequency": 119300,
+          "radio_name": "Long Island Macarthur tower",
+          "scope_char": "T",
+          "sector_id": "3C"
+        },
+        "JFK_G_APP": {
+          "frequency": 128125,
+          "radio_name": "New York approach",
+          "sector_id": "2G"
+        },
+        "LGA_APP": {
+          "frequency": 120800,
+          "radio_name": "New York approach",
+          "sector_id": "1V"
+        },
+        "NY_B_CTR": {
+          "frequency": 125325,
+          "radio_name": "New York center",
+          "facility_id": "C",
+          "eram_facility": true,
+          "sector_id": "N56"
+        },
+        "NY_F_CTR": {
+          "frequency": 133500,
+          "radio_name": "New York center",
+          "facility_id": "C",
+          "eram_facility": true,
+          "sector_id": "N86"
+        },
+        "NY_LE_DEP": {
+          "frequency": 126800,
+          "radio_name": "New York departure",
+          "sector_id": "5E"
+        },
+        "SWF_APP":{
+          "frequency": 	132750,
+          "radio_name": "New York approach",
+          "sector_id": "5H"
+        }
+    },
+    "default_scenario": "KISP Depart 24 Land 24",
+    "fixes": {
+        "_HVN_20": "N041.15.22.055,W072.53.17.406",
+        "_HVN_2": "N041.16.16.341,W072.53.13.615",
+        "_ISP_15R": "N040.48.05.462,W073.06.24.356",
+        "_ISP_15Ra": "N040.45.33.934,W073.02.36.555",
+        "_ISP_15Rb": "N040.49.18.755,W073.03.43.379",
+        "_ISP_15Rc": "N040.48.34.288,W073.09.11.211",
+        "_ISP_24": "N040.48.06.643,W073.05.39.202",
+        "_ISP_24a": "N040.45.56.414,W073.08.58.879",
+        "_ISP_24b": "N040.47.41.032,W073.06.08.371",
+        "_ISP_24c": "N040.48.48.350,W073.07.30.466",
+        "_ISP_33L": "N040.47.32.819,W073.05.41.702",
+        "_ISP_33La": "N040.49.52.085,W073.08.43.141",
+        "_ISP_33Lb": "N040.49.21.515,W073.06.31.250",
+        "_ISP_33Lc": "N040.48.20.019,W073.10.31.686",
+        "_ISP_6": "N040.47.18.743,W073.06.44.022",
+        "_ISP_6a": "N040.50.43.281,W073.02.11.698",
+        "_ISP_6b": "N040.50.28.573,W073.09.10.827"
+    },
+    "name": "KISP",
+    "primary_airport": "KISP",
+    "reporting_points": [
+      "BDR",
+      "BEADS",
+      "CCC",
+      "DENNA",
+      "HTO",
+      "HVN",
+      "KURTY",
+      "LOVES",
+      "MAD",
+      "PEPER",
+      "RICED",
+      "SARDI"
+  ],
+  "scenarios": {
+    "KISP Depart 24 Land 24": {
+        "arrival_runways": [
+            {
+                "airport": "KISP",
+                "runway": "24"
+            },
+            {
+                "airport": "KHVN",
+                "runway": "20"
+            },
+            {
+                "airport": "KFOK",
+                "runway": "24"
+            },
+            {
+                "airport": "KOXC",
+                "runway": "18"
+            },
+            {
+                "airport": "KBDR",
+                "runway": "24"
+            }
+        ],
+        "airspace": {
+          "ISP_H_APP": [ "ISP" ],
+          "ISP_N_APP": [ "CCC" ],
+          "ISP_R_APP": [ "SEALL" ],
+          "ISP_O_APP": [ "VICKY" ],
+          "ISP_Z_APP": [ "LOVES" ],
+          "ISP_I_APP": [ "BEADS_LOW" ],
+          "ISP_B_APP": [ "BEADS_HIGH" ]
+        },
+        "arrivals": {
+        "DENNA3/LOVES2": {
+          "KHVN": 2,
+          "KISP": 12
+        },
+        "NELIE3": {
+          "KISP": 5,
+          "KFOK": 2
+        },
+        "Intra-TRACON Via HTO": {
+          "KISP": 2
+        },
+        "Intra-TRACON Via HFD": {
+          "KHVN": 2
+        },
+        "Intra-TRACON Via CCC": {
+          "KISP": 2
+        },
+        "Intra-TRACON Via MAD": {
+          "KISP": 2
+        },
+        "Intra-TRACON Via JFK": {
+          "KISP": 2
+        },
+        "Intra-TRACON Via SARDI": {
+          "KHVN": 2
+        },
+        "Intra-TRACON Via CREAM": {
+          "KHVN": 2
+        },
+        "Intra-TRACON Via DENNA": {
+          "KHVN": 2,
+          "KFOK": 2,
+          "KBDR": 2,
+          "KOXC": 2
+        },
+        "Intra-TRACON Via BDR": {
+          "KHVN": 2,
+          "KFOK": 2,
+          "KBDR": 2,
+          "KOXC": 2,
+          "KISP": 2
+        },
+        "Intra-TRACON Via LOVES": {
+          "KHVN": 2,
+          "KFOK": 2,
+          "KBDR": 2,
+          "KOXC": 2
+        }
+      },
+      "solo_controller": "ISP_H_APP",
+        "multi_controllers": {
+          "default": {
+            "ISP_H_APP": {
+              "primary": true,
+              "departures": [ "KISP" ],
+              "arrivals": [ "Intra-TRACON Via JFK", "Intra-TRACON Via SARDI" ]
+            },
+            "ISP_N_APP": {
+              "backup": "ISP_H_APP"
+            },
+            "ISP_B_APP": {
+              "backup": "ISP_H_APP",
+              "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+            },
+            "ISP_I_APP": {
+              "backup": "ISP_B_APP",
+              "departures": [ "KFOK" ]
+            },
+            "ISP_Z_APP": {
+              "backup": "ISP_H_APP",
+              "departures": [ "KHVN", "KOXC", "KBDR" ],
+              "arrivals": [ "Intra-TRACON Via DENNA" ]
+            },
+            "ISP_O_APP": {
+              "backup": "ISP_Z_APP",
+              "arrivals": [ "Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR" ]
+            },
+            "ISP_R_APP": {
+              "backup": "ISP_Z_APP",
+              "arrivals": [ "Intra-TRACON Via LOVES", "DENNA3/LOVES2" ]
+          }
+        }
+      },
+      "controllers": [
+        "ISP_H_APP",
+        "ISP_TWR",
+        "HVN_TWR",
+        "BOS_E_CTR",
+        "JFK_G_APP",
+        "LGA_APP",
+        "NY_B_CTR",
+        "NY_F_CTR",
+        "NY_LE_DEP"
+      ],
+      "default_maps": [ "ISP ARR/DEP" ],
+      "departure_runways": [
+        {
+            "airport": "KISP",
+            "rate": 30,
+            "runway": "24"
+        },
+        {
+            "airport": "KHVN",
+            "rate": 5,
+            "runway": "20"
+        },
+        {
+            "airport": "KFOK",
+            "rate": 2,
+            "runway": "24"
+        },
+        {
+            "airport": "KOXC",
+            "rate": 2,
+            "runway": "18"
+        },
+        {
+            "airport": "KBDR",
+            "rate": 5,
+            "runway": "24"
+        }
+      ],
+      "wind": {
+        "direction": 190,
+        "gust": 17,
+        "speed": 12
+      }
+    },
+    "KISP Depart 6 Land 6": {
+      "arrival_runways": [
+          {
+              "airport": "KISP",
+              "runway": "6"
+          },
+          {
+              "airport": "KHVN",
+              "runway": "2"
+          },
+          {
+              "airport": "KFOK",
+              "runway": "6"
+          },
+          {
+              "airport": "KOXC",
+              "runway": "36"
+          },
+          {
+              "airport": "KBDR",
+              "runway": "6"
+          }
+      ],
+      "airspace": {
+        "ISP_H_APP": [ "ISP" ],
+        "ISP_N_APP": [ "CCC" ],
+        "ISP_R_APP": [ "SEALL" ],
+        "ISP_O_APP": [ "VICKY" ],
+        "ISP_Z_APP": [ "LOVES" ],
+        "ISP_I_APP": [ "BEADS_LOW" ],
+        "ISP_B_APP": [ "BEADS_HIGH" ]
+        },
+        "arrivals": {
+          "DENNA3/LOVES2": {
+            "KHVN": 2,
+            "KISP": 12
+          },
+          "NELIE3": {
+            "KISP": 5,
+            "KFOK": 2
+          },
+          "Intra-TRACON Via HTO": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via HFD": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via CCC": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via MAD": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via JFK": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via SARDI": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via CREAM": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via DENNA": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2
+          },
+          "Intra-TRACON Via BDR": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2,
+            "KISP": 2
+          },
+          "Intra-TRACON Via LOVES": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2
+          }
+        },
+    "solo_controller": "ISP_H_APP",
+    "multi_controllers": {
+      "default": {
+        "ISP_H_APP": {
+          "primary": true,
+          "departures": [ "KISP" ],
+          "arrivals": [ "Intra-TRACON Via JFK", "Intra-TRACON Via SARDI" ]
+        },
+        "ISP_N_APP": {
+          "backup": "ISP_H_APP"
+        },
+        "ISP_B_APP": {
+          "backup": "ISP_H_APP",
+          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+        },
+        "ISP_I_APP": {
+          "backup": "ISP_B_APP",
+          "departures": [ "KFOK" ]
+        },
+        "ISP_Z_APP": {
+          "backup": "ISP_H_APP",
+          "departures": [ "KHVN", "KOXC", "KBDR" ],
+          "arrivals": [ "Intra-TRACON Via DENNA" ]
+        },
+        "ISP_O_APP": {
+          "backup": "ISP_Z_APP",
+          "arrivals": [ "Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR" ]
+        },
+        "ISP_R_APP": {
+          "backup": "ISP_Z_APP",
+          "arrivals": [ "Intra-TRACON Via LOVES", "DENNA3/LOVES2" ]
+      }
+    }
+  },
+    "controllers": [
+      "ISP_H_APP",
+      "ISP_TWR",
+      "HVN_TWR",
+      "BOS_E_CTR",
+      "JFK_G_APP",
+      "LGA_APP",
+      "NY_B_CTR",
+      "NY_F_CTR",
+      "NY_LE_DEP"
+    ],
+    "default_maps": [ "ISP ARR/DEP" ],
+    "departure_runways": [
+      {
+          "airport": "KISP",
+          "rate": 30,
+          "runway": "6"
+      },
+      {
+          "airport": "KHVN",
+          "rate": 5,
+          "runway": "2"
+      },
+      {
+          "airport": "KFOK",
+          "rate": 2,
+          "runway": "6"
+      },
+      {
+          "airport": "KOXC",
+          "rate": 2,
+          "runway": "36"
+      },
+      {
+          "airport": "KBDR",
+          "rate": 5,
+          "runway": "6"
+      }
+    ],
+    "wind": {
+      "direction": 100,
+      "gust": 17,
+      "speed": 12
+    }
+  },
+  "KISP Depart 15R Land 15R": {
+      "arrival_runways": [
+          {
+              "airport": "KISP",
+              "runway": "15R"
+          },
+          {
+              "airport": "KHVN",
+              "runway": "20"
+          },
+          {
+              "airport": "KFOK",
+              "runway": "15"
+              
+          },
+          {
+              "airport": "KOXC",
+              "runway": "18"
+          },
+          {
+              "airport": "KBDR",
+              "runway": "11"
+          }
+      ],
+      "airspace": {
+        "ISP_H_APP": [ "ISP" ],
+        "ISP_N_APP": [ "CCC" ],
+        "ISP_R_APP": [ "SEALL" ],
+        "ISP_O_APP": [ "VICKY" ],
+        "ISP_Z_APP": [ "LOVES" ],
+        "ISP_I_APP": [ "BEADS_LOW" ],
+        "ISP_B_APP": [ "BEADS_HIGH" ]
+        },
+        "arrivals": {
+          "DENNA3/LOVES2": {
+            "KHVN": 2,
+            "KISP": 12
+          },
+          "NELIE3": {
+            "KISP": 5,
+            "KFOK": 2
+          },
+          "Intra-TRACON Via HTO": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via HFD": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via CCC": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via MAD": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via JFK": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via SARDI": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via CREAM": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via DENNA": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2
+          },
+          "Intra-TRACON Via BDR": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2,
+            "KISP": 2
+          },
+          "Intra-TRACON Via LOVES": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2
+          }
+        },
+    "solo_controller": "ISP_H_APP",
+    "multi_controllers": {
+      "default": {
+        "ISP_H_APP": {
+          "primary": true,
+          "departures": [ "KISP" ],
+          "arrivals": [ "Intra-TRACON Via JFK", "Intra-TRACON Via SARDI" ]
+        },
+        "ISP_N_APP": {
+          "backup": "ISP_H_APP"
+        },
+        "ISP_B_APP": {
+          "backup": "ISP_H_APP",
+          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+        },
+        "ISP_I_APP": {
+          "backup": "ISP_B_APP",
+          "departures": [ "KFOK" ]
+        },
+        "ISP_Z_APP": {
+          "backup": "ISP_H_APP",
+          "departures": [ "KHVN", "KOXC", "KBDR" ],
+          "arrivals": [ "Intra-TRACON Via DENNA" ]
+        },
+        "ISP_O_APP": {
+          "backup": "ISP_Z_APP",
+          "arrivals": [ "Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR" ]
+        },
+        "ISP_R_APP": {
+          "backup": "ISP_Z_APP",
+          "arrivals": [ "Intra-TRACON Via LOVES", "DENNA3/LOVES2" ]
+      }
+    }
+  },
+    "controllers": [
+      "ISP_H_APP",
+      "ISP_TWR",
+      "HVN_TWR",
+      "BOS_E_CTR",
+      "JFK_G_APP",
+      "LGA_APP",
+      "NY_B_CTR",
+      "NY_F_CTR",
+      "NY_LE_DEP"
+    ],
+    "default_maps": [ "ISP ARR/DEP" ],
+    "departure_runways": [
+      {
+          "airport": "KISP",
+          "rate": 30,
+          "runway": "15R"
+      },
+      {
+          "airport": "KHVN",
+          "rate": 5,
+          "runway": "20"
+      },
+      {
+          "airport": "KFOK",
+          "rate": 2,
+          "runway": "15"
+      },
+      {
+          "airport": "KOXC",
+          "rate": 2,
+          "runway": "18"
+      },
+      {
+          "airport": "KBDR",
+          "rate": 5,
+          "runway": "11"
+      }
+    ],
+    "wind": {
+      "direction": 150,
+      "gust": 17,
+      "speed": 12
+    }
+  },
+  "KISP Depart 33L/R Land 33L/R": {
+      "arrival_runways": [
+          {
+              "airport": "KISP",
+              "runway": "33L"
+          },
+          {
+              "airport": "KHVN",
+              "runway": "2"
+          },
+          {
+              "airport": "KFOK",
+              "runway": "33"
+          },
+          {
+              "airport": "KOXC",
+              "runway": "36"
+          },
+          {
+              "airport": "KBDR",
+              "runway": "29"
+          }
+      ],
+      "airspace": {
+        "ISP_H_APP": [ "ISP" ],
+        "ISP_N_APP": [ "CCC" ],
+        "ISP_R_APP": [ "SEALL" ],
+        "ISP_O_APP": [ "VICKY" ],
+        "ISP_Z_APP": [ "LOVES" ],
+        "ISP_I_APP": [ "BEADS_LOW" ],
+        "ISP_B_APP": [ "BEADS_HIGH" ]
+        },
+        "arrivals": {
+          "DENNA3/LOVES2": {
+            "KHVN": 2,
+            "KISP": 12
+          },
+          "NELIE3": {
+            "KISP": 5,
+            "KFOK": 2
+          },
+          "Intra-TRACON Via HTO": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via HFD": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via CCC": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via MAD": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via JFK": {
+            "KISP": 2
+          },
+          "Intra-TRACON Via SARDI": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via CREAM": {
+            "KHVN": 2
+          },
+          "Intra-TRACON Via DENNA": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2
+          },
+          "Intra-TRACON Via BDR": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2,
+            "KISP": 2
+          },
+          "Intra-TRACON Via LOVES": {
+            "KHVN": 2,
+            "KFOK": 2,
+            "KBDR": 2,
+            "KOXC": 2
+          }
+        },
+    "solo_controller": "ISP_H_APP",
+    "multi_controllers": {
+      "default": {
+        "ISP_H_APP": {
+          "primary": true,
+          "departures": [ "KISP" ],
+          "arrivals": [ "Intra-TRACON Via JFK", "Intra-TRACON Via SARDI" ]
+        },
+        "ISP_N_APP": {
+          "backup": "ISP_H_APP"
+        },
+        "ISP_B_APP": {
+          "backup": "ISP_H_APP",
+          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+        },
+        "ISP_I_APP": {
+          "backup": "ISP_B_APP",
+          "departures": [ "KFOK" ]
+        },
+        "ISP_Z_APP": {
+          "backup": "ISP_H_APP",
+          "departures": [ "KHVN", "KOXC", "KBDR" ],
+          "arrivals": [ "Intra-TRACON Via DENNA" ]
+        },
+        "ISP_O_APP": {
+          "backup": "ISP_Z_APP",
+          "arrivals": [ "Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR" ]
+        },
+        "ISP_R_APP": {
+          "backup": "ISP_Z_APP",
+          "arrivals": [ "Intra-TRACON Via LOVES", "DENNA3/LOVES2" ]
+      }
+    }
+  },
+    "controllers": [
+      "ISP_H_APP",
+      "ISP_TWR",
+      "HVN_TWR",
+      "BOS_E_CTR",
+      "JFK_G_APP",
+      "LGA_APP",
+      "NY_B_CTR",
+      "NY_F_CTR",
+      "NY_LE_DEP"
+    ],
+    "default_maps": [ "ISP ARR/DEP" ],
+    "departure_runways": [
+      {
+          "airport": "KISP",
+          "rate": 30,
+          "runway": "33L"
+      },
+      {
+          "airport": "KHVN",
+          "rate": 5,
+          "runway": "2"
+      },
+      {
+          "airport": "KFOK",
+          "rate": 2,
+          "runway": "33"
+      },
+      {
+          "airport": "KOXC",
+          "rate": 2,
+          "runway": "36"
+      },
+      {
+          "airport": "KBDR",
+          "rate": 5,
+          "runway": "29"
+      }
+    ],
+    "wind": {
+      "direction": 330,
+      "gust": 17,
+      "speed": 12
+    }
+  }
+  },
+  "stars_config": {
+    "center": "KISP",
+    "coordination_fixes": {
+        "SARDI": [
+            {
+                "type": "route",
+                "to": "N90",
+                "from": "ZNY"
+            }
+        ],
+        "NELIE": [
+            {
+                "type": "route",
+                "to": "N90",
+                "from": "ZNY"
+            }
+        ],
+        "LOVES": [
+            {
+                "type": "route",
+                "to": "N90",
+                "from": "ZNY"
+            }
+        ]
+    },
+    "radar_sites": {
+        "EWR": {
+            "char": "E",
+            "position": "KEWR",
+            "elevation": 136,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 30,
+            "slope_angle": 0.175
+        },
+        "HPN": {
+            "char": "H",
+            "position": "KHPN",
+            "elevation": 708,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 30,
+            "slope_angle": 0.175
+        },
+        "ISP": {
+            "char": "I",
+            "position": "KISP",
+            "elevation": 185,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 30,
+            "slope_angle": 0.175
+        },
+        "JFK": {
+            "char": "J",
+            "position": "KJFK",
+            "elevation": 143,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 30,
+            "slope_angle": 0.175
+        },
+        "SWF": {
+            "char": "S",
+            "position": "KSWF",
+            "elevation": 972,
+            "primary_range": 60,
+            "secondary_range": 120,
+            "silence_angle": 30,
+            "slope_angle": 0.175
+        }
+    },
+    "coordination_lists": [
+      { "name": "HVN.", "id": "A", "airports": [ "KHVN" ] },
+      { "name": "BDR.", "id": "B", "airports": [ "KBDR" ] },
+      { "name": "FOK.", "id": "C", "airports": [ "KFOK" ] },
+      { "name": "OXC.", "id": "D", "airports": [ "KOXC" ] }
+    ],
+    "inhibit_ca_volumes": [
+        {
+            "name": "ISP NO CA",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 1200,
+            "radius": 2,
+            "center": "KISP"
+        },
+        {
+            "name": "HVN NO CA",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 1200,
+            "radius": 2,
+            "center": "KHVN"
+        }
+    ],
+    "force_ql_self": true,
+    "scratchpad1": { "display_exit_fix": true },
+    "significant_points": {
+        "BAYYS": { },
+        "BDR": {  },
+        "BEADS": { },
+        "BETTE": { },
+        "BIGGY": { },
+        "BWZ": {  },
+        "CCC": {  },
+        "CMK": {  },
+        "COATE": { },
+        "DEEZZ": { },
+        "DPK": {  },
+        "ELIOT": { },
+        "GAYEL": { },
+        "GREKI": { },
+        "HAAYS": { "short_name": "HAY" },
+        "HAPIE": { },
+        "HTO": {  },
+        "HUO": {  },
+        "JFK": {  },
+        "LANNA": { },
+        "MAD": {  },
+        "MERIT": { },
+        "NEION": { },
+        "NEWEL": { "short_name": "NWL" },
+        "PARKE": { },
+        "RBV": {  },
+        "RUUTH": { },
+        "SHIPP": { },
+        "SOARS": { },
+        "STOEN": { }
+    },
+    "stars_maps": [
+        "GPS NORTH", "GPS HELO", "Coast",
+        "GPS SOUTH", "GPS HELO", "MVA",
+        "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "GPS HELO", "GPS FAF", "N90 TFR", "", "", "", "", "", "", "", "",
+        "VIKKY", "SEALL", "GPS NORTH", "GPS SOUTH", "Coast", "EOVM", "MVA"
+    ],
+    "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+  }
+}
+

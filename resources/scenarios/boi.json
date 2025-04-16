@@ -235,13 +235,11 @@
     "BOI_TWR": {
       "frequency": 118100,
       "radio_name": "Boise Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "BOI_APP": {
       "frequency": 126900,
       "radio_name": "Big Sky Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "SLC_17_CTR": {
@@ -249,7 +247,6 @@
       "radio_name": "Salt Lake City Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "C17"
     }
   },

@@ -20,6 +20,7 @@ import (
 	// "github.com/mmp/vice/pkg/panes/stars"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -50,7 +51,13 @@ import (
 // 28: new departure flow
 // 29: TFR cache
 // 30: video map improvements
-const CurrentConfigVersion = 30
+// 31: audio squelch for pilot readback
+// 32: VFRs, custom spcs, pilot reported altitude, ...
+// 33: VFRs v2
+// 34: sim/server refactor, signon flow
+// 35: VFRRunways in sim.State, METAR Wind struct changes
+// 36: STARS center representation changes
+const CurrentConfigVersion = 36
 
 // Slightly convoluted, but the full Config definition is split into
 // the part with the Sim and the rest of it.  In this way, we can first
@@ -81,7 +88,7 @@ type ConfigNoSim struct {
 	InhibitDiscordActivity util.AtomicBool
 	NotifiedTargetGenMode  bool
 
-	PrimaryTCP string
+	UserTCP string
 }
 
 type ConfigSim struct {
@@ -122,15 +129,15 @@ func (c *Config) Save(lg *log.Logger) error {
 }
 
 func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
-	c *sim.ControlClient, saveSim bool, lg *log.Logger) bool {
+	c *server.ControlClient, saveSim bool, lg *log.Logger) bool {
 	gc.Sim = nil
-	gc.PrimaryTCP = ""
+	gc.UserTCP = ""
 	if saveSim {
 		if sim, err := c.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
 			gc.Sim = sim
-			gc.PrimaryTCP = c.PrimaryTCP
+			gc.UserTCP = c.UserTCP
 		}
 	}
 
@@ -167,7 +174,6 @@ func getDefaultConfig() *Config {
 	return &Config{
 		ConfigNoSim: ConfigNoSim{
 			Config: platform.Config{
-				AudioEnabled:          true,
 				InitialWindowPosition: [2]int{100, 100},
 			},
 			TFRCache:              av.MakeTFRCache(),
@@ -199,10 +205,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 			config.DisplayRoot = nil
 		}
 		if config.Version < 5 {
-			config.PrimaryTCP = ""
-		}
-		if config.Version < 24 {
-			config.AudioEnabled = true
+			config.UserTCP = ""
 		}
 		if config.Version < 29 {
 			config.TFRCache = av.MakeTFRCache()

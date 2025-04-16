@@ -10,12 +10,15 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/mmp/imgui-go/v4"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type Message struct {
@@ -25,12 +28,22 @@ type Message struct {
 	global   bool
 }
 
+var audioAlerts map[string]string = map[string]string{
+	"Aircraft Check In": "Aircraft_Check_In.mp3",
+	"Radio Static":      "fm-radio-static-82334_2.mp3",
+}
+
 type MessagesPane struct {
-	FontIdentifier renderer.FontIdentifier
-	font           *renderer.Font
-	scrollbar      *ScrollBar
-	events         *sim.EventsSubscription
-	messages       []Message
+	FontIdentifier             renderer.FontIdentifier
+	AudioAlertSelection        string
+	ContactTransmissionsAlert  bool
+	ReadbackTransmissionsAlert bool
+
+	font            *renderer.Font
+	scrollbar       *ScrollBar
+	events          *sim.EventsSubscription
+	messages        []Message
+	alertAudioIndex map[string]int
 }
 
 func init() {
@@ -47,7 +60,7 @@ func NewMessagesPane() *MessagesPane {
 	}
 }
 
-func (mp *MessagesPane) DisplayName() string { return "Messages/Commands" }
+func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
 func (mp *MessagesPane) Hide() bool { return false }
 
@@ -60,21 +73,54 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
+
+	mp.alertAudioIndex = make(map[string]int)
+	for _, alert := range util.SortedMapKeys(audioAlerts) {
+		idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + audioAlerts[alert]))
+		if err != nil {
+			lg.Error("Error adding static audio effect: %v", err)
+		}
+		mp.alertAudioIndex[alert] = idx
+	}
+
+	if _, ok := mp.alertAudioIndex[mp.AudioAlertSelection]; !ok { // Not available (or unset)
+		// Take the first one alphabetically.
+		for _, alert := range util.SortedMapKeys(audioAlerts) {
+			mp.AudioAlertSelection = alert
+			break
+		}
+	}
 }
 
-func (mp *MessagesPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (mp *MessagesPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
 }
 
 func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
 
+func (mp *MessagesPane) Upgrade(prev, current int) {
+}
+
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
+
+	imgui.Separator()
+	if imgui.BeginComboV("Audio alert", mp.AudioAlertSelection, 0 /* flags */) {
+		for _, alert := range util.SortedMapKeys(audioAlerts) {
+			if imgui.SelectableV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
+				mp.AudioAlertSelection = alert
+				p.PlayAudioOnce(mp.alertAudioIndex[alert])
+			}
+		}
+		imgui.EndCombo()
+	}
+	imgui.Checkbox("Play audio alert after pilot initial contact transmissions", &mp.ContactTransmissionsAlert)
+	imgui.Checkbox("Play audio alert after pilot readback transmissions", &mp.ReadbackTransmissionsAlert)
 }
 
 func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
@@ -159,8 +205,8 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Collect multiple successive transmissions from the same
 			// aircraft into a single transmission.
 
-			toUs := event.ToController == ctx.ControlClient.PrimaryTCP
-			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.PrimaryTCP]
+			toUs := event.ToController == ctx.ControlClient.UserTCP
+			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.UserTCP]
 			if !toUs && !amInstructor {
 				break
 			}
@@ -194,13 +240,18 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 
 			var msg Message
 			if event.RadioTransmissionType == av.RadioTransmissionContact {
-				ctrl := ctx.ControlClient.Controllers[event.ToController]
-				fullName := ctrl.RadioName
+				name := event.ToController
+				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok {
+					name = ctrl.RadioName
+				}
 				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
 					// Always refer to the controller as "departure" for departing aircraft.
-					fullName = strings.ReplaceAll(fullName, "approach", "departure")
+					name = strings.ReplaceAll(name, "approach", "departure")
 				}
-				msg = Message{contents: prefix + fullName + ", " + radioCallsign + ", " + event.Message}
+				msg = Message{contents: prefix + name + ", " + radioCallsign + ", " + event.Message}
+				if mp.ContactTransmissionsAlert {
+					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
+				}
 			} else {
 				if len(event.Message) > 0 {
 					event.Message = strings.ToUpper(event.Message[:1]) + event.Message[1:]
@@ -208,12 +259,15 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				msg = Message{contents: prefix + event.Message + ". " + radioCallsign,
 					error: event.Type == av.RadioTransmissionUnexpected,
 				}
+				if mp.ReadbackTransmissionsAlert {
+					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
+				}
 			}
 			ctx.Lg.Debug("radio_transmission", slog.String("callsign", event.Callsign), slog.Any("message", msg))
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.ControlClient.PrimaryTCP {
+			if event.FromController != ctx.ControlClient.UserTCP {
 				for _, line := range strings.Split(event.Message, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}

@@ -3,44 +3,11 @@
     "airports": {
         "KCYS": {
             "approaches": {
-                "R9": {
-                    "runway": "9",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "TODVE/iaf/a10600 SIGSE/if/a9600 HAXUG/faf/a7800 WIKAR/a7060"
-                    ]
-                },
-                "R13": {
-                    "runway": "13",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "MILKY/iaf EMOTY/if/iaf/a9000 EXUMY/faf/a7900 JIMIG/a7180"
-                    ]
-                },
-                "I27": {
-                    "runway": "27",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HAMER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
-                    ]
-                },
-                "R27": {
-                    "runway": "27",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "CRIMS/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
-                        "EGBER/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800",
-                        "POGTE/a8200 VIDEE/a8100 FERBU/iaf/a7800 COLLA/iaf/if/a7800 HORSE/faf/a7800"
-                    ]
-                },
-                "R31": {
-                    "runway": "31",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "CIKNU/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800",
-                        "HAMER/a7800 ZORIS/if/iaf/a7800 LORYI/iaf/a7800"
-                    ]
-                }
+              "R9": { "cifp_id": "R9" },
+              "R13": { "cifp_id": "R13" },
+              "I27": { "cifp_id": "I27" },
+              "R27": { "cifp_id": "R27" },
+              "R31": { "cifp_id": "R31" }
             },
             "departure_routes": {
                 "9": {
@@ -382,14 +349,11 @@
         "CYS_APP": {
             "frequency": 124550,
             "radio_name": "Cheyenne approach",
-            "scope_char": "A",
-            "sector_id": "6A",
-            "facility_id": "6"
+            "sector_id": "6A"
         },
         "CYS_TWR": {
             "frequency": 118700,
             "radio_name": "Cheyenne tower",
-            "scope_char": "T",
             "sector_id": "CT"
         },
         "DEN_D_APP": {
@@ -404,7 +368,6 @@
             "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "D21"
         }
     },

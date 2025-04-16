@@ -227,6 +227,10 @@
         "Name": "Evansville TRACON",
         "ARTCC": "ZID"
     },
+    "EWR": {
+        "Name": "New York TRACON",
+        "ARTCC": "ZNY"
+    },
     "F11": {
         "Name": "Central Florida TRACON",
         "ARTCC": "ZJX"

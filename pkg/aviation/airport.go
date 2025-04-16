@@ -6,7 +6,10 @@ package aviation
 
 import (
 	"fmt"
+	"iter"
+	"maps"
 	"slices"
+	"strconv"
 	"strings"
 	"unicode"
 
@@ -23,6 +26,11 @@ type Airport struct {
 	Approaches map[string]*Approach `json:"approaches,omitempty"`
 	Departures []Departure          `json:"departures,omitempty"`
 
+	VFR struct {
+		Randoms VFRRandomsSpec `json:"random_routes"`
+		Routes  []VFRRouteSpec `json:"routes"`
+	} `json:"vfr"`
+
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
 	DepartureController string `json:"departure_controller"`
@@ -38,6 +46,21 @@ type Airport struct {
 
 	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
 	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
+	DepartureRunwaysAsOne []string               `json:"departure_runways_as_one"`
+}
+
+type VFRRandomsSpec struct {
+	Rate  int    `json:"rate"`
+	Fleet string `json:"fleet"`
+}
+
+type VFRRouteSpec struct {
+	Name        string        `json:"name"`
+	Rate        int           `json:"rate"`
+	Fleet       string        `json:"fleet"`
+	Waypoints   WaypointArray `json:"waypoints"`
+	Destination string        `json:"destination"`
+	Description string        `json:"description"`
 }
 
 type ConvergingRunways struct {
@@ -48,86 +71,6 @@ type ConvergingRunways struct {
 	LeaderDirectionStrings [2]string                        `json:"leader_directions"`
 	LeaderDirections       [2]math.CardinalOrdinalDirection // not in JSON, set during deserialize
 	RunwayIntersection     math.Point2LL                    // not in JSON, set during deserialize
-}
-
-type ApproachRegion struct {
-	Runway           string  // set during deserialization
-	HeadingTolerance float32 `json:"heading_tolerance"`
-
-	ReferenceLineHeading   float32       `json:"reference_heading"`
-	ReferenceLineLength    float32       `json:"reference_length"`
-	ReferencePointAltitude float32       `json:"reference_altitude"`
-	ReferencePoint         math.Point2LL `json:"reference_point"`
-
-	// lateral qualification region
-	NearDistance  float32 `json:"near_distance"`
-	NearHalfWidth float32 `json:"near_half_width"`
-	FarHalfWidth  float32 `json:"far_half_width"`
-	RegionLength  float32 `json:"region_length"`
-
-	// vertical qualification region
-	DescentPointDistance   float32 `json:"descent_distance"`
-	DescentPointAltitude   float32 `json:"descent_altitude"`
-	AboveAltitudeTolerance float32 `json:"above_altitude_tolerance"`
-	BelowAltitudeTolerance float32 `json:"below_altitude_tolerance"`
-
-	ScratchpadPatterns []string `json:"scratchpad_patterns"`
-}
-
-type ATPAVolume struct {
-	Id                  string // Unique identifier, set after deserialization
-	ThresholdString     string `json:"runway_threshold"`
-	Threshold           math.Point2LL
-	Heading             float32  `json:"heading"`
-	MaxHeadingDeviation float32  `json:"max_heading_deviation"`
-	Floor               float32  `json:"floor"`
-	Ceiling             float32  `json:"ceiling"`
-	Length              float32  `json:"length"`
-	LeftWidth           float32  `json:"left_width"`
-	RightWidth          float32  `json:"right_width"`
-	FilteredScratchpads []string `json:"filtered_scratchpads"`
-	ExcludedScratchpads []string `json:"excluded_scratchpads"`
-	Enable25nmApproach  bool     `json:"enable_2.5nm"`
-	Dist25nmApproach    float32  `json:"2.5nm_distance"`
-}
-
-// returns a point along the reference line with given distance from the
-// reference point, in nm coordinates.
-func (ar *ApproachRegion) referenceLinePoint(dist, nmPerLongitude, magneticVariation float32) [2]float32 {
-	hdg := math.Radians(ar.ReferenceLineHeading + 180 - magneticVariation)
-	v := [2]float32{math.Sin(hdg), math.Cos(hdg)}
-	pref := math.LL2NM(ar.ReferencePoint, nmPerLongitude)
-	return math.Add2f(pref, math.Scale2f(v, dist))
-}
-
-func (ar *ApproachRegion) NearPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
-	return ar.referenceLinePoint(ar.NearDistance, nmPerLongitude, magneticVariation)
-}
-
-func (ar *ApproachRegion) FarPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
-	return ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
-}
-
-func (ar *ApproachRegion) GetLateralGeometry(nmPerLongitude, magneticVariation float32) (line [2]math.Point2LL, quad [4]math.Point2LL) {
-	// Start with the reference line
-	p0 := ar.referenceLinePoint(0, nmPerLongitude, magneticVariation)
-	p1 := ar.referenceLinePoint(ar.ReferenceLineLength, nmPerLongitude, magneticVariation)
-	line = [2]math.Point2LL{math.NM2LL(p0, nmPerLongitude), math.NM2LL(p1, nmPerLongitude)}
-
-	// Get the unit vector perpendicular to the reference line
-	v := math.Normalize2f(math.Sub2f(p1, p0))
-	vperp := [2]float32{-v[1], v[0]}
-
-	pNear := ar.referenceLinePoint(ar.NearDistance, nmPerLongitude, magneticVariation)
-	pFar := ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
-	q0 := math.Add2f(pNear, math.Scale2f(vperp, ar.NearHalfWidth))
-	q1 := math.Add2f(pFar, math.Scale2f(vperp, ar.FarHalfWidth))
-	q2 := math.Add2f(pFar, math.Scale2f(vperp, -ar.FarHalfWidth))
-	q3 := math.Add2f(pNear, math.Scale2f(vperp, -ar.NearHalfWidth))
-	quad = [4]math.Point2LL{math.NM2LL(q0, nmPerLongitude), math.NM2LL(q1, nmPerLongitude),
-		math.NM2LL(q2, nmPerLongitude), math.NM2LL(q3, nmPerLongitude)}
-
-	return
 }
 
 type GhostAircraft struct {
@@ -251,6 +194,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.ErrorString("airport %q not found in airport database", icao)
 	} else {
 		ap.Location = info.Location
+
+		if len(info.Runways) == 0 {
+			e.ErrorString("no runways found at %q", icao)
+		}
 	}
 
 	if ap.Location.IsZero() {
@@ -265,34 +212,27 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		if appr.Id != "" {
-			if wps, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
+			if dbAppr, ok := DB.Airports[icao].Approaches[appr.Id]; !ok {
 				e.ErrorString("Approach %q not in database. Options: %s", appr.Id,
 					strings.Join(util.SortedMapKeys(DB.Airports[icao].Approaches), ", "))
 				e.Pop()
 				continue
 			} else {
-				if appr.Id[0] == 'H' || appr.Id[0] == 'R' {
-					appr.Type = RNAVApproach
-				} else {
-					appr.Type = ILSApproach // close enough
+				// Copy the approach from the database
+				appr.Type = dbAppr.Type
+				if appr.Runway == "" {
+					appr.Runway = dbAppr.Runway
 				}
-				// RZ22L -> 22L
-				for i, ch := range appr.Id {
-					if ch >= '1' && ch <= '9' {
-						appr.Runway = appr.Id[i:]
-						break
-					}
-				}
-				if len(appr.Runway) == 0 {
-					e.ErrorString("unable to convert approach id %q to runway", appr.Id)
+				if appr.ApproachHeading == 0 {
+					appr.ApproachHeading = dbAppr.ApproachHeading
 				}
 
 				// This is a little hacky, but we'll duplicate the waypoint
 				// arrays since later we e.g., append a waypoint for the
 				// runway threshold.  This leads to errors if a CIFP
 				// approach is referenced in two scenario files.
-				for _, w := range wps {
-					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(w))
+				for _, wps := range dbAppr.Waypoints {
+					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(wps))
 				}
 			}
 		}
@@ -307,7 +247,8 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		for i := range appr.Waypoints {
-			appr.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+			appr.Waypoints[i] =
+				appr.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			// Add the final fix at the runway threshold.
 			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
@@ -316,7 +257,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				AltitudeRestriction: &AltitudeRestriction{
 					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
 				},
-				Delete:  true,
+				Land:    true,
 				FlyOver: true,
 			})
 			n := len(appr.Waypoints[i])
@@ -325,7 +266,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.ErrorString("ProcedureTurn cannot be specified at the final waypoint")
 			}
 			for j, wp := range appr.Waypoints[i] {
-				appr.Waypoints[i][j].OnSTAR = true // close enough
+				appr.Waypoints[i][j].OnApproach = true
 				e.Push("Fix " + wp.Fix)
 				if wp.NoPT {
 					if !slices.ContainsFunc(appr.Waypoints[i][j+1:],
@@ -335,18 +276,22 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				}
 				e.Pop()
 			}
-
-			appr.Waypoints[i].CheckApproach(e, controlPositions)
 		}
+		requireFAF := appr.Type != ChartedVisualApproach
+		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions)
 
 		if appr.FullName == "" {
-			switch appr.Type {
-			case ILSApproach:
-				appr.FullName = "ILS Runway " + appr.Runway
-			case RNAVApproach:
-				appr.FullName = "RNAV Runway " + appr.Runway
-			case ChartedVisualApproach:
+			if appr.Type == ChartedVisualApproach {
 				e.ErrorString("Must provide \"full_name\" for charted visual approach")
+			} else {
+				appr.FullName = appr.Type.String() + " "
+				if len(appr.Id) > 3 && appr.Id[1] >= 'W' && appr.Id[1] <= 'Z' {
+					appr.FullName += string(appr.Id[1]) + " "
+				}
+				if len(appr.Id) > 3 && appr.Id[0] == 'G' {
+					appr.FullName += "GPS "
+				}
+				appr.FullName += "Runway " + appr.Runway
 			}
 		} else if !strings.Contains(appr.FullName, "runway") && !strings.Contains(appr.FullName, "Runway") {
 			e.ErrorString("Must have \"runway\" in approach's \"full_name\"")
@@ -385,7 +330,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 		for exitList, route := range rwyRoutes {
 			e.Push("Exit " + exitList)
-			route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
+			route.Waypoints = route.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			route.Waypoints = append([]Waypoint{
 				Waypoint{
@@ -418,22 +363,19 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 	ap.DepartureRoutes = splitDepartureRoutes
 
-	// Make sure if departures are initially controlled by a virtual
-	// controller, all routes have a valid handoff controller (and the
-	// converse).
 	for rwy, routes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + rwy)
 		for exit, route := range routes {
 			e.Push("Exit " + exit)
 
-			if ap.DepartureController != "" {
+			if slices.ContainsFunc(route.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff }) {
 				if route.HandoffController == "" {
-					e.ErrorString("no \"handoff_controller\" specified even though airport has a \"departure_controller\"")
+					e.ErrorString("no \"handoff_controller\" specified even though route has \"/ho\"")
 				} else if _, ok := controlPositions[route.HandoffController]; !ok {
 					e.ErrorString("control position %q unknown in scenario", route.HandoffController)
 				}
 			} else if route.HandoffController != "" {
-				e.ErrorString("\"handoff_controller\" specified but won't be used since airport has no \"departure_controller\"")
+				e.ErrorString("\"handoff_controller\" specified but won't be used since route has no \"/ho\"")
 			}
 
 			if route.AssignedAltitude == 0 && route.ClearedAltitude == 0 {
@@ -485,35 +427,25 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		if _, intraFacility := facilityAirports[dep.Destination]; intraFacility {
-			// Make sure that the full route is valid.
-			wp, err := parseWaypoints(dep.Route)
-			if err != nil {
-				e.Error(err)
+		/*
+			if _, ok := ap.ExitCategories[depExit]; !ok {
+				e.ErrorString("exit %q isn't in \"exit_categories\"", depExit)
 			}
-			wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
-			ap.Departures[i].RouteWaypoints = wp
-		} else {
-			for _, fix := range strings.Fields(dep.Route) {
-				wp := WaypointArray{Waypoint{Fix: fix}}
-				// Best effort only to find waypoint locations; this will fail
-				// for airways, international ones not in the FAA database,
-				// latlongs in the flight plan, etc.
-				if fix == depExit {
-					wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, e)
-				} else {
-					// nil here so errors aren't logged if it's not the actual exit.
-					wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, nil)
-				}
-				if !wp[0].Location.IsZero() {
-					ap.Departures[i].RouteWaypoints = append(ap.Departures[i].RouteWaypoints, wp[0])
-				}
-			}
+		*/
+
+		wp, err := parseWaypoints(dep.Route)
+		if err != nil {
+			e.Error(err)
 		}
+
+		_, intraFacility := facilityAirports[dep.Destination]
+		allowSlop := !intraFacility // Make sure that the full route is valid for intra-facility.
+		wp = wp.InitializeLocations(loc, nmPerLongitude, magneticVariation, allowSlop, e)
+		ap.Departures[i].RouteWaypoints = wp
 
 		if !slices.ContainsFunc(ap.Departures[i].RouteWaypoints,
 			func(wp Waypoint) bool { return wp.Fix == depExit }) {
-			e.ErrorString("exit %s not found in departure route", depExit)
+			e.ErrorString("exit %q not found in departure route", depExit)
 		}
 
 		for _, al := range dep.Airlines {
@@ -521,6 +453,89 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		}
 
 		e.Pop()
+		e.Pop()
+	}
+
+	ga := DB.Airlines["N"]
+	checkFleet := func(fleet, loc string) {
+		if fleet == "" {
+			return
+		}
+		if _, ok := ga.Fleets[fleet]; !ok {
+			e.ErrorString("Fleet %q in %q is not a valid GA aircraft fleet. Options: %s",
+				fleet, loc, strings.Join(slices.Collect(maps.Keys(ga.Fleets)), ", "))
+		}
+	}
+	e.Push("\"vfr\"")
+	if ap.VFR.Randoms.Fleet != "" {
+		checkFleet(ap.VFR.Randoms.Fleet, "random_routes")
+		if ap.VFR.Randoms.Rate == 0 {
+			e.ErrorString("\"fleet\" specified for \"vfr\" \"random_routes\" but \"rate\" is not specified or is zero.")
+		}
+	}
+	for i := range ap.VFR.Routes {
+		ap.VFR.Routes[i].Waypoints =
+			ap.VFR.Routes[i].Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
+
+		spec := &ap.VFR.Routes[i]
+		e.Push("routes " + spec.Name)
+		if spec.Rate == 0 {
+			e.ErrorString("No \"rate\" specified")
+		}
+		if spec.Fleet == "" {
+			spec.Fleet = "default"
+		} else {
+			checkFleet(spec.Fleet, "routes")
+		}
+		if len(spec.Waypoints) == 0 {
+			e.ErrorString("must specify \"waypoints\"")
+		} else {
+			spec.Waypoints[len(spec.Waypoints)-1].Land = true
+		}
+		if _, ok := DB.Airports[spec.Destination]; !ok {
+			e.ErrorString("Destination airport %q unknown", spec.Destination)
+		}
+		e.Pop()
+	}
+	e.Pop()
+
+	// Check if airport has VFR departures but is in class B or C airspace
+	if ap.VFR.Randoms.Rate > 0 || len(ap.VFR.Routes) > 0 {
+		elevation := DB.Airports[icao].Elevation
+		checkAllVolumes := func(volsIter iter.Seq[[]AirspaceVolume]) bool {
+			return util.SeqContainsFunc(volsIter, func(vols []AirspaceVolume) bool {
+				return slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
+					return vol.Inside(ap.Location, elevation)
+				})
+			})
+		}
+		if checkAllVolumes(maps.Values(DB.BravoAirspace)) || checkAllVolumes(maps.Values(DB.CharlieAirspace)) {
+			e.ErrorString("Airport has VFR departures specified but is located in class B or C airspace")
+		}
+	}
+
+	// Validate DepartureRunwaysAsOne entries
+	seenRunways := make(map[string]bool)
+	for i, rwys := range ap.DepartureRunwaysAsOne {
+		// Remove whitespace and any runway suffixes.
+		ap.DepartureRunwaysAsOne[i] = strings.Join(util.MapSlice(strings.Split(rwys, ","),
+			func(r string) string { return TidyRunway(r) }), ",")
+
+		e.Push(fmt.Sprintf("departure_runways_as_one[%d]", i))
+		runways := strings.Split(ap.DepartureRunwaysAsOne[i], ",")
+		if len(runways) < 2 {
+			e.ErrorString("must specify at least two runways")
+		}
+		for _, rwy := range runways {
+			rwy = strings.TrimSpace(rwy)
+			if _, ok := LookupRunway(icao, rwy); !ok {
+				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+			}
+			if seenRunways[rwy] {
+				e.ErrorString("runway %q appears in multiple groups", rwy)
+			}
+			seenRunways[rwy] = true
+		}
 		e.Pop()
 	}
 
@@ -607,7 +622,9 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	for rwy, vol := range ap.ATPAVolumes {
 		e.Push("ATPA " + rwy)
 
-		vol.Id = icao + rwy
+		if vol.Id == "" {
+			vol.Id = rwy
+		}
 
 		if _, ok := LookupRunway(icao, rwy); !ok {
 			e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
@@ -648,6 +665,14 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	}
 }
 
+func (ap Airport) VFRRateSum() int {
+	sum := ap.VFR.Randoms.Rate
+	for _, spec := range ap.VFR.Routes {
+		sum += spec.Rate
+	}
+	return sum
+}
+
 type ExitRoute struct {
 	SID              string        `json:"sid"`
 	AssignedAltitude int           `json:"assigned_altitude"`
@@ -669,6 +694,7 @@ type Departure struct {
 	Airlines            []DepartureAirline      `json:"airlines"`
 	Scratchpad          string                  `json:"scratchpad"`           // optional
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"` // optional
+	Description         string                  `json:"description"`
 }
 
 type DepartureAirline struct {
@@ -678,13 +704,15 @@ type DepartureAirline struct {
 type ApproachType int
 
 const (
-	ILSApproach = iota
+	ILSApproach ApproachType = iota
 	RNAVApproach
 	ChartedVisualApproach
+	LocalizerApproach
+	VORApproach
 )
 
 func (at ApproachType) String() string {
-	return []string{"ILS", "RNAV", "Charted Visual"}[at]
+	return []string{"ILS", "RNAV", "Charted Visual", "Localizer", "VOR"}[at]
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
@@ -695,6 +723,10 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 		return []byte("\"RNAV\""), nil
 	case ChartedVisualApproach:
 		return []byte("\"Visual\""), nil
+	case LocalizerApproach:
+		return []byte("\"Localizer\""), nil
+	case VORApproach:
+		return []byte("\"VOR\""), nil
 	default:
 		return nil, fmt.Errorf("unhandled approach type in MarshalJSON()")
 	}
@@ -714,6 +746,14 @@ func (at *ApproachType) UnmarshalJSON(b []byte) error {
 		*at = ChartedVisualApproach
 		return nil
 
+	case "\"Localizer\"":
+		*at = LocalizerApproach
+		return nil
+
+	case "\"VOR\"":
+		*at = VORApproach
+		return nil
+
 	default:
 		return fmt.Errorf("%s: unknown approach_type", string(b))
 	}
@@ -725,18 +765,80 @@ type Approach struct {
 	Type      ApproachType    `json:"type"`
 	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
+	// Note: this isn't currently documented; currently it's only set when
+	// we have a canonical value from the CIFP.
+	ApproachHeading float32 `json:"approach_heading"`
 }
 
-func (ap *Approach) Line() [2]math.Point2LL {
-	// assume we have at least one set of waypoints and that it has >= 2 waypoints!
-	wp := ap.Waypoints[0]
+// Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
+func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Waypoint, int) {
+	// For approaches with multiple segments, want the segment that is most
+	// closely aligned with the runway. For CIFP routes, we could grab
+	// 5.26, outbound magnetic course, but we don't have that for
+	// user-specified routes. So we'll work out the approximate runway
+	// heading from the runway string and match that one.
+	rwy, _ := strconv.Atoi(strings.TrimRight(ap.Runway, "LRC")) // Not sure what can be done for error handling here...
+	rwy *= 10
 
-	// use the last two waypoints of the approach
-	n := len(wp)
-	return [2]math.Point2LL{wp[n-2].Location, wp[n-1].Location}
+	bestWpsIdx, bestWpsFAFIdx := -1, -1
+	minDiff := float32(360)
+
+	for i, wps := range ap.Waypoints {
+		fafIdx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF })
+		if fafIdx == -1 {
+			// no FAF on this segment(?)
+			continue
+		}
+
+		if wps[fafIdx].IF || wps[fafIdx].IAF {
+			// Likely a HILPT; don't go outbound for the approach course as
+			// it may be some random feeder fix.
+			fafIdx++
+		}
+
+		// Go from the previous fix to the FAF if possible.
+		if fafIdx == 0 {
+			fafIdx++
+		}
+
+		hdg := math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude, magneticVariation)
+
+		diff := math.HeadingDifference(hdg, float32(rwy))
+		if diff < minDiff {
+			minDiff = diff
+			bestWpsIdx = i
+			bestWpsFAFIdx = fafIdx
+		}
+	}
+
+	if bestWpsIdx != -1 {
+		return ap.Waypoints[bestWpsIdx], bestWpsFAFIdx
+	} else {
+		// Shouldn't ever happen since we ensure there is a FAF for each approach.
+		return nil, 0
+	}
+}
+
+func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+	if ap.ApproachHeading != 0 {
+		for _, wps := range ap.Waypoints {
+			if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF }); idx != -1 {
+				// Found the FAF
+				return [2]math.Point2LL{wps[idx].Location,
+					math.Offset2LL(wps[idx].Location, ap.ApproachHeading, 1, nmPerLongitude, magneticVariation)}
+			}
+		}
+	}
+
+	wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation)
+	return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
 }
 
 func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
-	p := ap.Line()
+	if ap.ApproachHeading != 0 {
+		return ap.ApproachHeading
+	}
+
+	p := ap.Line(nmPerLongitude, magneticVariation)
 	return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation)
 }

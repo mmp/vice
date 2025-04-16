@@ -3,53 +3,12 @@
   "airports": {
     "KSAV": {
       "approaches": {
-        "I1": {
-          "runway": "1",
-          "type": "ILS",
-          "waypoints": [
-            "TERBE/a2000 MIZLU/a2000"
-          ]
-        },
-        "R1": {
-          "runway": "1",
-          "type": "RNAV",
-          "waypoints": [
-            "ZUTAN/nopt TERBE/a2000/hilpt MIZLU/a2000",
-            "WOSUG/nopt TERBE/a2000/hilpt MIZLU/a2000"
-          ]
-        },
-        "I10": {
-          "runway": "10",
-          "type": "ILS",
-          "waypoints": [
-            "TILEE/a2600 SOVIE/a2000"
-          ]
-        },
-        "R10": {
-          "runway": "10",
-          "type": "RNAV",
-          "waypoints": [
-            "WOXIT/nopt TILEE/a2600/hilpt SOVIE/a2000",
-            "ZUTOX/nopt TILEE/a2600/hilpt SOVIE/a2000"
-          ]
-        },
-        "R19": {
-          "runway": "19",
-          "type": "RNAV",
-          "waypoints": [
-            "WUTNA/nopt SUTME/a2500/hilpt TOSEA/a2000",
-            "ZUTVO/nopt SUTME/a2500/hilpt TOSEA/a2000"
-          ]
-        },
-        "R28": {
-          "full_name": "RNAV Z Runway 28",
-          "runway": "28",
-          "type": "RNAV",
-          "waypoints": [
-            "WORIB/nopt TELOE/a2500/hilpt SINBY/a1800",
-            "KUCES/nopt TELOE/a2500/hilpt SINBY/a1800"
-          ]
-        }
+        "I1": { "cifp_id": "I1" },
+        "R1": { "cifp_id": "R1" },
+        "I10": { "cifp_id": "I10" },
+        "R10": { "cifp_id": "R10" },
+        "R19": { "cifp_id": "R19" },
+        "R28": { "cifp_id": "RZ28" }
       },
       "departure_routes": {
         "10": {
@@ -118,7 +77,7 @@
           ],
           "destination": "KJFK",
           "exit": "JROSS",
-          "route": "JROSS LAANA Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
+          "route": "JROSS LANNA Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
           "airlines": [
@@ -777,31 +736,26 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
-      "sector_id": "30"
+      "sector_id": "C30"
     },
     "SAV_N_APP": {
       "frequency": 125300,
       "radio_name": "Savannah Approach",
-      "scope_char": "N",
       "sector_id": "6N"
     },
     "SAV_W_APP": {
       "frequency": 118400,
       "radio_name": "Savannah Approach",
-      "scope_char": "W",
       "sector_id": "6W"
     },
     "SAV_S_APP": {
       "frequency": 120400,
       "radio_name": "Savannah Approach",
-      "scope_char": "S",
       "sector_id": "6S"
     },
     "SAV_TWR": {
       "frequency": 125975,
       "radio_name": "Savannah Tower",
-      "scope_char": "T",
       "sector_id": "6ST"
     }
   },

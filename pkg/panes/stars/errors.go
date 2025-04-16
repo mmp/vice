@@ -10,6 +10,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 )
 
@@ -39,7 +40,7 @@ var (
 	ErrSTARSIllegalColor      = NewSTARSError("ILL COLOR")
 	ErrSTARSIllegalFix        = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight     = NewSTARSError("ILL FLIGHT")
-	ErrSTARSIllegalFunction   = NewSTARSError("ILL FNCT")
+	ErrSTARSIllegalFunction   = NewSTARSError("ILL FUNC")
 	ErrSTARSIllegalGeoId      = NewSTARSError("ILL GEO ID")
 	ErrSTARSIllegalGeoLoc     = NewSTARSError("ILL GEO LOC")
 	ErrSTARSIllegalLine       = NewSTARSError("ILL LINE")
@@ -57,19 +58,20 @@ var (
 	ErrSTARSIllegalValue      = NewSTARSError("ILL VALUE")
 	ErrSTARSMultipleFlights   = NewSTARSError("MULTIPLE FLIGHT")
 	ErrSTARSNoFlight          = NewSTARSError("NO FLIGHT")
+	ErrSTARSNoTrack           = NewSTARSError("NO TRK")
 	ErrSTARSRangeLimit        = NewSTARSError("RANGE LIMIT")
 )
 
 var starsErrorRemap = map[error]*STARSError{
 	sim.ErrAircraftAlreadyReleased:     ErrSTARSDuplicateCommand,
-	sim.ErrAircraftNotReleased:         ErrSTARSIllegalFlight,
 	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
 	sim.ErrIllegalACID:                 ErrSTARSIllegalACID,
+	sim.ErrIllegalFunction:             ErrSTARSIllegalFunction,
 	av.ErrInvalidAltitude:              ErrSTARSIllegalValue,
 	av.ErrInvalidApproach:              ErrSTARSIllegalValue,
-	sim.ErrInvalidCommandSyntax:        ErrSTARSCommandFormat,
+	server.ErrInvalidCommandSyntax:     ErrSTARSCommandFormat,
 	av.ErrInvalidController:            ErrSTARSIllegalPosition,
 	sim.ErrInvalidDepartureController:  ErrSTARSIllegalFunction,
 	av.ErrInvalidFacility:              ErrSTARSIllegalTrack,
@@ -79,6 +81,7 @@ var starsErrorRemap = map[error]*STARSError{
 	av.ErrNoController:                 ErrSTARSIllegalSector,
 	av.ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
 	av.ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
+	av.ErrNotPointedOutByMe:            ErrSTARSIllegalTrack,
 	av.ErrNotPointedOutToMe:            ErrSTARSIllegalTrack,
 	av.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	av.ErrNotFlyingRoute:               ErrSTARSIllegalValue,
@@ -98,7 +101,7 @@ func GetSTARSError(e error, lg *log.Logger) *STARSError {
 	}
 
 	if _, ok := e.(rpc.ServerError); ok {
-		e = sim.TryDecodeError(e)
+		e = server.TryDecodeError(e)
 	}
 
 	if se, ok := starsErrorRemap[e]; ok {

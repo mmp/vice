@@ -50,7 +50,7 @@ func printColumnHeader() {
 	fmt.Printf("\n")
 }
 
-func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
+func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
 	start := time.Now()
 
 	airports := make(map[string]FAAAirport)
@@ -89,12 +89,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		return p
 	}
 
-	contents, err := util.DecompressZstd(string(file))
-	if err != nil {
-		panic(err)
-	}
-
-	br := bufio.NewReader(strings.NewReader(contents))
+	br := bufio.NewReader(r)
 	var lines [][]byte
 
 	getline := func() []byte {
@@ -120,7 +115,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 
 	// returns array of ssaRecords for all lines starting at the given one
 	// that are airport records with the same subsection.
-	matchingSSARecs := func(line []byte) []ssaRecord {
+	matchingSSARecs := func(line []byte, recs []ssaRecord) []ssaRecord {
 		// icao := string(line[6:10])
 		id := strings.TrimSpace(string(line[13:19]))
 		subsec := line[12]
@@ -131,7 +126,7 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 			printColumnHeader()
 		}
 
-		var recs []ssaRecord
+		recs = recs[:0]
 		for {
 			if log {
 				fmt.Printf("%s", string(line))
@@ -149,6 +144,11 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 		}
 		return recs
 	}
+
+	// Keep this allocation live so that we can reuse it rather than
+	// putting a bunch of pressure on the garbage collector by doing lots
+	// of ssaRecord allocations during parsing.
+	var recs []ssaRecord
 
 	for {
 		line := getline()
@@ -275,15 +275,17 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 			case 'C': // waypoint record 4.1.4
 				id := string(line[13:18])
 				location := parseLatLong(line[32:41], line[41:51])
-				if _, ok := fixes[id]; ok {
-					// fmt.Printf("%s: repeats\n", id)
-				}
+				/*
+					  if _, ok := fixes[id]; ok {
+						 fmt.Printf("%s: repeats\n", id)
+					  }
+				*/
 				fixes[id] = Fix{Id: id, Location: location}
 
 			case 'D': // SID 4.1.9
 
 			case 'E': // STAR 4.1.9
-				recs := matchingSSARecs(line)
+				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
 				if star := parseSTAR(recs); star != nil {
 					if airports[icao].STARs == nil {
@@ -299,25 +301,23 @@ func ParseARINC424(file []byte) (map[string]FAAAirport, map[string]Navaid, map[s
 				}
 
 			case 'F': // Approach 4.1.9
-				recs := matchingSSARecs(line)
-				id := recs[0].id
+				recs = matchingSSARecs(line, recs)
 
-				if wps := parseApproach(recs); wps != nil {
+				if appr := parseApproach(recs); appr != nil {
 					// Note: database.Airports isn't initialized yet but
 					// the CIFP file is sorted so we get the airports
 					// before the approaches..
 					if airports[icao].Approaches == nil {
 						ap := airports[icao]
-						ap.Approaches = make(map[string][]WaypointArray)
+						ap.Approaches = make(map[string]Approach)
 						airports[icao] = ap
 					}
 
-					id = tidyFAAApproachId(id)
-					if _, ok := airports[icao].Approaches[id]; ok {
-						panic("already seen approach id " + id)
+					if _, ok := airports[icao].Approaches[appr.Id]; ok {
+						panic("already seen approach id " + appr.Id)
 					}
 
-					airports[icao].Approaches[id] = wps
+					airports[icao].Approaches[appr.Id] = *appr
 				}
 
 			case 'G': // runway records 4.1.10
@@ -645,26 +645,81 @@ func spliceTransition(tr WaypointArray, base WaypointArray) WaypointArray {
 		return nil
 	}
 
-	// Important: we cull the dupe from the common segment, since the transitions may
-	// include procedure turns, etc., in their Waypoint variants for the fix.
+	// We need to merge some properties from the base path but don't want
+	// to take its fix completely, since the given transition may have
+	// things like procedure turn at the last fix that we want to preserve...
+	bwp := base[idx]
+	if bwp.IAF {
+		tr[len(tr)-1].IAF = true
+	}
+	if bwp.IF {
+		tr[len(tr)-1].IF = true
+	}
+	if bwp.FAF {
+		tr[len(tr)-1].FAF = true
+	}
+
 	return append(WaypointArray(tr), base[idx+1:]...)
 }
 
-func parseApproach(recs []ssaRecord) []WaypointArray {
+func parseApproach(recs []ssaRecord) *Approach {
 	transitions := parseTransitions(recs,
 		func(r ssaRecord) bool { return false },                                          // log
 		func(r ssaRecord) bool { return r.continuation != '0' && r.continuation != '1' }, // skip continuation records
 		func(r ssaRecord, transitions map[string]WaypointArray) bool {
-			return (r.fix == "" && len(transitions[""]) > 0) ||
-				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */
+			if (r.fix == "" && len(transitions[""]) > 0) ||
+				r.waypointDescription[0] == 'G' /* field 40: runway as waypoint */ {
+				return true
+			}
+			if r.waypointDescription[3] == 'M' {
+				// start of the missed approach
+				return true
+			}
+			return false
 		})
 
+	appr := Approach{Id: tidyFAAApproachId(recs[0].id)}
+
+	switch recs[0].id[0] {
+	case 'H', 'R':
+		appr.Type = RNAVApproach
+	case 'L':
+		appr.Type = LocalizerApproach
+	case 'V', 'S':
+		appr.Type = VORApproach
+	default:
+		// TODO? 'B': Localizer Back Course, 'X': LDA
+		appr.Type = ILSApproach
+	}
+
+	// RZ22L -> 22L, IC32 -> 32C
+	center := false
+	for i, ch := range appr.Id[1:] {
+		if ch == 'C' {
+			center = true
+		}
+		if ch >= '1' && ch <= '9' {
+			appr.Runway = appr.Id[i+1:] // +1 since range is over [1:]
+			if center {
+				appr.Runway += "C"
+			}
+			break
+		}
+	}
+
+	for _, r := range recs {
+		if r.waypointDescription[3] == 'F' &&
+			strings.TrimSpace(string(r.outboundMagneticCourse)) != "" {
+			hdg := parseInt(r.outboundMagneticCourse)
+			appr.ApproachHeading = float32(hdg) / 10
+		}
+	}
+
 	if len(transitions) == 1 {
-		return []WaypointArray{transitions[""]}
+		appr.Waypoints = []WaypointArray{transitions[""]}
 	} else {
 		base := transitions[""]
 
-		var wps []WaypointArray
 		for t, w := range transitions {
 			if t != "" {
 				sp := spliceTransition(w, base)
@@ -672,10 +727,11 @@ func parseApproach(recs []ssaRecord) []WaypointArray {
 					//fmt.Printf("%s [%s] [%s]: mismatching fixes for %s transition\n",
 					//recs[0].icao, WaypointArray(w).Encode(), WaypointArray(base).Encode(), t)
 				} else {
-					wps = append(wps, sp)
+					appr.Waypoints = append(appr.Waypoints, sp)
 				}
 			}
 		}
-		return wps
 	}
+
+	return &appr
 }

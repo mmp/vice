@@ -1,56 +1,29 @@
 {
   "tracon": "ABE",
   "airports": {
+    "KXLL": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KTTN": { "vfr": { "random_routes": { "rate": 6 } } },
+    "N40": { "vfr": { "random_routes": { "rate": 6 } } },
+    "N43": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KZER": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KHZL": { "vfr": { "random_routes": { "rate": 6 } } },
+    "22N": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KMPO": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KCKZ": { "vfr": { "random_routes": { "rate": 6 } } },
+    "1N7": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KCDW": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KRDG": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KCXY": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KLNS": { "vfr": { "random_routes": { "rate": 6 } } },
+    "39N": { "vfr": { "random_routes": { "rate": 6 } } },
     "KABE": {
       "approaches": {
-        "I13": {
-          "runway": "13",
-          "type": "ILS",
-          "waypoints": [
-            "HASIS/iaf/if/a3000/hilpt CAVRU/a2700 MOOVY/faf/a2400 IZKIP/a1260"
-          ]
-        },
-        "I24": {
-          "runway": "24",
-          "type": "ILS",
-          "waypoints": [
-            "STW/iaf/nopt MUDRE/if/iaf/a3000/hilpt MUSYK/faf/a2400 NENTE/a1380"
-          ]
-        },
-        "I6": {
-          "runway": "6",
-          "type": "ILS",
-          "waypoints": [
-            "JISTO/iaf/if/a3000/hilpt SHAGY/faf/a2400"
-          ]
-        },
-        "R13": {
-          "runway": "13",
-          "type": "RNAV",
-          "waypoints": [
-            "BEERS TIKLE/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260",
-            "ROCOY TIKLE/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260",
-            "DUMMR JAREV/a4000+/iaf LOCID/if/a3000 MOOVY/faf/a2400 IZKIP/a1260"
-          ]
-        },
-        "R31": {
-          "runway": "31",
-          "type": "RNAV",
-          "waypoints": [
-            "ARD/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540",
-            "BEERS FINRA/a4000+/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540",
-            "FONUP FINRA/a4000+/iaf BURAY/if/a3000 BEHEM/faf/a2400 ASOMY/a1540"
-          ]
-        },
-        "R6": {
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "BEERS SAYOV/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400",
-            "DUMMR SAYOV/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400",
-            "ARD HADAD/iaf/a4000+ JISTO/if/a3000 SHAGY/faf/a2400 GEBLE/a1400"
-          ]
-        }
+        "I13": { "cifp_id": "I13" },
+        "I24": { "cifp_id": "I24" },
+        "I6": { "cifp_id": "L6" },
+        "R13": { "cifp_id": "R13" },
+        "R31": { "cifp_id": "R31" },
+        "R6": { "cifp_id": "R6" }
       },
       "departure_routes": {
         "24": {
@@ -652,40 +625,34 @@
     "ABE_APP": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
-      "scope_char": "F",
       "sector_id": "1A"
     },
     "ABE_DEP": {
       "frequency": 124450,
       "radio_name": "Allentown departure",
-      "scope_char": "F",
       "sector_id": "1D"
     },
     "ABE_TWR": {
       "frequency": 120500,
       "radio_name": "Lehigh Valley tower",
-      "scope_char": "T",
       "sector_id": "1L"
     },
     "AVP_S_APP": {
       "frequency": 126300,
       "radio_name": "Wilkes Barre Approach",
-      "scope_char": "7",
       "sector_id": "1E",
-      "facility_id": "1"
+      "facility_id": "7"
     },
     "EWR_APP": {
       "frequency": 128550,
       "radio_name": "New York approach",
-      "scope_char": "P",
       "sector_id": "4P",
       "facility_id": "2"
     },
     "MDT_SE_APP": {
       "frequency": 126450,
       "radio_name": "Harrisburg approach",
-      "scope_char": "S",
-      "sector_id": "HS",
+      "sector_id": "1L",
       "facility_id": "5"
     },
     "NY_D_CTR": {
@@ -693,13 +660,11 @@
       "radio_name": "New York center",
       "facility_id": "C",
       "eram_facility": true,
-      "scope_char": "C",
       "sector_id": "N72"
     },
     "PHL_NA_APP": {
       "frequency": 128400,
       "radio_name": "Philly approach",
-      "scope_char": "N",
       "sector_id": "6N",
       "facility_id": "3"
     }

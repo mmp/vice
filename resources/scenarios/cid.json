@@ -1,25 +1,25 @@
 {
     "tracon": "CID",
-        "airports": {
-            "KCID": {
-                "approaches": {
-                    "R9": {
-                        "cifp_id": "R9"
-                    },
-                    "I27": {
-                        "cifp_id": "I27"
-                    },
-                    "R13": {
-                        "cifp_id": "R13"
-                    },
-                    "R31": {
-                        "cifp_id": "R31"
-                    },
-           	        "R27": {
-               		    "cifp_id": "R27"
-                    }
-                },
-                "departure_routes": {
+    "airports": {
+		"KMXO": { "vfr": { "random_routes": { "rate": 10 } } },
+		"KVTI": { "vfr": { "random_routes": { "rate": 10 } } },
+        "KTZT": { "vfr": { "random_routes": { "rate": 10 } } },
+        "C17": { "vfr": { "random_routes": { "rate": 10 } } },
+        "KCID": {
+            "approaches": {
+              "R9": { "cifp_id": "R9" },
+              "I27": { "cifp_id": "I27" },
+              "R27": { "cifp_id": "R27" },
+              "V9T": {
+                "runway": "9",
+                "type": "ILS",
+		"full_name": "ILS Visual Runway 9 (TF)",
+                    "waypoints": [
+                      "FONER/a2500/faf OPHAW/a1360"
+                    ]
+                }
+            },
+            "departure_routes": {
                     "9": {
                         "SGF": {
                             "cleared_altitude": 5000,
@@ -95,85 +95,9 @@
                             "cleared_altitude": 5000,
                             "waypoints": "_CID9/h250 OVR"
                         }
-                    },
-                    "13": {
-                        "SGF": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 SGF"
-                        },
-                        "BENNR": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 BENNR"
-                        },
-                        "MNOSO": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 MNOSO"
-                        },
-                        "OBH": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 OBH"
-                        },
-                        "KOOOP": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 KOOOP"
-                        },
-                        "BDF": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 BDF"
-                        },
-                        "GBG": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 GBG"
-                        },
-                        "IOW": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 IOW"
-                        },
-                        "OVR": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID31/h310 OVR"
-                        }
-                    },
-                    "31": {
-                        "SGF": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 SGF"
-                        },
-                        "BENNR": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 BENNR"
-                        },
-                        "MNOSO": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 MNOSO"
-                        },
-                        "OBH": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 OBH"
-                        },
-                        "KOOOP": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 KOOOP"
-                        },
-                        "BDF": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 BDF"
-                        },
-                        "GBG": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 GBG"
-                        },
-                        "IOW": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 IOW"
-                        },
-                        "OVR": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "_CID13/h310 OVR"
-                        }
                     }
-                },             
-                "departures": [
+		    },
+            "departures": [
                     {
                         "airlines": [
                             {
@@ -334,235 +258,176 @@
                 },
                 "tower_list": 1
         },
-            "KIOW": {
-              "approaches": {
-                  "R25": {
-                     "cifp_id": "R25"
+	    "KIOW": {
+			"vfr": { "random_routes": { "rate": 10 } },
+            "approaches": {
+              "R25": { "cifp_id": "R25" },
+              "R30": { "cifp_id": "R30" }
+            },
+            "departure_routes": {
+                "25": {
+                    "DSM": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "KIOW-7/h252"
+                    },
+                    "MAPPS": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "KIOW-7/h252"
+                    }
                   },
-                  "R30": {
-                     "cifp_id": "R30"
+                  "30": {
+                    "DSM": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "KIOW-12/h302"
+                    },
+                    "MAPPS": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "KIOW-12/h302"
+                    }
                   }
-            },
-                "departure_routes": {
-                    "25": {
-                        "DSM": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "KIOW-7/h252"
-                        },
-                        "MAPPS": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "KIOW-7/h252"
-                        }
-                      },
-                      "30": {
-                        "DSM": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "KIOW-12/h302"
-                        },
-                        "MAPPS": {
-                            "cleared_altitude": 5000,
-                            "waypoints": "KIOW-12/h302"
-                        }
-                      }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 43000,
-                    "destination": "KBJC",
-                    "route": "DSM OVR OBH SHRPE BRNKO3",
-                    "exit": "DSM"
-                },
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 43000,
-                    "destination": "KAPA",
-                    "route": "DSM OVR HLC FRAAY DUNNN5",
-                    "exit": "DSM"
-                },
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 41000,
-                    "destination": "KARB",
-                    "route": "MAPPS",
-                    "exit": "MAPPS"
-                }
-            ],
-            "exit_categories": {
-                 "DSM": "WEST",
-                 "MAPPS": "EAST"
-             },
-             "tower_list": 1
-          }     
         },
-        "inbound_flows": {
-  "DFW": {
-    "arrivals": [
-      {
-        "waypoints": "N041.15.17.028,W092.14.30.474 N041.19.39.244,W092.09.22.692/ho CID",
-        "cruise_altitude": 35000,
-        "route": "GRABE8 EAKER EOS AUGIE IRK IOW",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
+        "departures": [
             {
-              "icao": "ENY",
-              "airport": "KDFW"
+                "airlines": [
+                    {
+                        "fleet": "fastGA",
+                        "icao": "N"
+                    }
+                ],
+                "altitude": 43000,
+                "destination": "KAPA",
+                "route": "DSM OVR HLC FRAAY DUNNN5",
+                "exit": "DSM"
             },
             {
-              "icao": "AAL",
-              "airport": "KDFW"
+                "airlines": [
+                    {
+                        "fleet": "GAturbine",
+                        "icao": "N"
+                    }
+                ],
+                "altitude": 10000,
+                "destination": "KDSM",
+                "route": "DSM",
+                "exit": "DSM"
+            },
+            {
+                "airlines": [
+                    {
+                        "fleet": "GAturbine",
+                        "icao": "N"
+                    }
+                ],
+                "altitude": 9000,
+                "destination": "KDBQ",
+                "route": "DBQ",
+                "exit": "DBQ"
+            },
+            {
+                "airlines": [
+                    {
+                        "fleet": "GAsinglepiston",
+                        "icao": "N"
+                    }
+                ],
+                "altitude": 22000,
+                "destination": "KGRI",
+                "route": "DSM",
+                "exit": "DSM"
             }
-          ]
-        }
+        ],
+        "exit_categories": {
+             "DSM": "WEST",
+             "DBQ": "EAST"
+         },
+         "hold_for_release": true,
+         "tower_list": 2
       }
-    ]
-  },
-  "E": {
-    "arrivals": [
+    },
+    "inbound_flows": {
+      "EAST CID ARR": {
+        "arrivals": [
       {
-        "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID",
-        "cruise_altitude": 36000,
-        "route": "WYNGS5 RAMAY Q72 HACKS J149 ROD",
+        "waypoints": "N041.54.15.276,W090.41.48.700 N041.54.08.149,W090.53.39.653/ho CID",	
+        "cruise_altitude": 22000,
+		"star": "EAST CID ARR",
         "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
+		"initial_altitude": 13000,
+        "assigned_altitude": 9000,
+        "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KCID": [
+            {
+              "icao": "UAL",
+			  "fleet": "short",
+              "airport": "KORD"
+            },
+			{
+              "icao": "ENY",
+              "airport": "KORD"
+            },
+			{
+              "icao": "SKW",
+              "airport": "KORD"
+            },
             {
               "icao": "JIA",
               "airport": "KDCA"
             }
-          ]
+          ]	
         }
-      },
+      }
+    ]
+  },
+  "WEST CID ARR": {
+        "arrivals": [
       {
-        "waypoints": "N041.40.04.783,W090.37.58.317 N041.41.37.439,W090.48.28.245/ho CID",
-        "cruise_altitude": 36000,
-        "route": "JOJJO5 DOOGE HYK FFT OOM TTH CMI MZV",
+        "waypoints": "N041.46.59.270,W092.42.17.319 N041.47.38.189,W092.35.31.182/ho N041.48.50.699,W092.23.44.185 CID",	
+        "cruise_altitude": 35000,
+		"star": "WEST CID ARR",
         "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
+		"initial_altitude": 11000,
+        "assigned_altitude": 9000,
+        "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KCID": [
             {
+              "icao": "UAL",
+              "airport": "KDEN"
+            },
+			{
+              "icao": "FFT",
+              "airport": "KDEN"
+            },
+			{
               "icao": "AAL",
-              "airport": "KCLT"
+              "airport": "KPHX"
+            },
+			{
+              "icao": "AAY",
+              "airport": "KLAS"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KIWA"
             }
-          ]
+          ]	
         }
       }
     ]
   },
-  "IOW MSP": {
-    "arrivals": [
+      "NORTH CID ARR": {
+        "arrivals": [
       {
-        "waypoints": "N042.29.08.542,W092.18.43.873 N042.24.13.779,W092.15.44.604/ho IOW",
-        "cruise_altitude": 41000,
-        "route": "FAR J36 GEP IOW",
+        "waypoints": "N042.29.03.516,W091.56.56.500 N042.21.41.000,W091.54.37.606/ho CID",
+        "cruise_altitude": 23000,
+        "star": "NORTH CID ARR",
         "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 10000,
+		"initial_altitude": 16000,
+        "assigned_altitude": 9000,
         "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KIOW": [
-            {
-              "icao": "N",
-              "airport": "KGFK"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "IOW NE": {
-    "arrivals": [
-      {
-        "waypoints": "N042.22.23.463,W090.57.05.619 N042.18.12.123,W091.00.52.075/ho IOW",
-        "cruise_altitude": 36000,
-        "route": "OSH DBQ IOW",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 13000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KIOW": [
-            {
-              "icao": "N",
-              "airport": "KGRB"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "IOW SW": {
-    "arrivals": [
-      {
-        "waypoints": "N041.31.13.773,W092.43.00.441 N041.31.01.962,W092.32.23.371/ho IOW",
-        "cruise_altitude": 45000,
-        "route": "ECHOO1 WYNDM HCT OVR DSM",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 13000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KIOW": [
-            {
-              "icao": "N",
-              "airport": "KBJC"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.31.13.773,W092.43.00.441 N041.31.01.962,W092.32.23.371/ho IOW",
-        "cruise_altitude": 41000,
-        "route": "ECHOO1 WYNDM HCT J60 CNOTA",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 13000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KIOW": [
-            {
-              "icao": "N",
-              "airport": "KAPA"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "MSP": {
-    "arrivals": [
-      {
-        "waypoints": "N042.36.20.717,W092.02.01.343 N042.30.54.917,W092.00.02.059/ho CID",
-        "cruise_altitude": 33000,
-        "route": "RST1 ALO CID",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 10000,
-        "initial_speed": 230,
         "expect_approach": null,
         "airlines": {
           "KCID": [
@@ -570,710 +435,265 @@
               "icao": "SKW",
               "airport": "KMSP"
             }
-          ]
+          ]	
         }
       }
     ]
   },
-  "ORD": {
-    "arrivals": [
+  "SOUTHEAST CID ARR": {
+        "arrivals": [
       {
-        "waypoints": "N042.00.12.181,W090.36.11.969 N041.59.30.487,W090.44.34.346/ho CID",
-        "cruise_altitude": 28000,
-        "route": "NOONY NIGHT",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 9000,
-        "initial_speed": 210,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
-            {
-              "icao": "SKW",
-              "airport": "KORD"
-            },
-            {
-              "icao": "JIA",
-              "airport": "KORD"
-            },
-            {
-              "icao": "ENY",
-              "airport": "KORD"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "SE": {
-    "arrivals": [
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
+        "waypoints": "N041.19.37.995,W091.02.17.631 N041.23.07.298,W091.06.56.024/ho CID",
         "cruise_altitude": 36000,
-        "route": "JTEEE5 ODATE KK51I IRK",
+        "star": "SOUTHEAST CID ARR",
         "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
-            {
-              "icao": "FDX",
-              "airport": "KMEM"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
-        "cruise_altitude": 36000,
-        "route": "PENCL2 EMAHH CEASE",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
+		"initial_altitude": 15000,
+        "assigned_altitude": 9000,
+        "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KCID": [
             {
               "icao": "DAL",
               "airport": "KATL"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
-        "cruise_altitude": 32000,
-        "route": "RDSOX JFRYS PATOY Q116 JAWJA GOONS BWG AXC IOW",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
+            },
+			{
+              "icao": "AAL",
+              "airport": "KCLT"
+            },
+            {
+              "icao": "AAY",
+              "airport": "KPIE"
+            },
             {
               "icao": "AAY",
               "airport": "KSFB"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
-        "cruise_altitude": 34000,
-        "route": "ROGAN LAL PATOY Q116 DEANR Q116 VLKNN GETME J151 STL IOW",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
-            {
-              "icao": "AAY",
-              "airport": "KPGD"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
-        "cruise_altitude": 34000,
-        "route": "HGGRD3 TINGS ENL CID",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
-            {
-              "icao": "AAY",
-              "airport": "KBNA"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
-        "cruise_altitude": 36000,
-        "route": "HROCK2 KPASA Q118 JOHNN LGC J73 PXV SPI CID",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
-            {
-              "icao": "AAY",
-              "airport": "KFLL"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.16.08.266,W091.21.28.311 N041.23.51.326,W091.26.24.970/ho CID",
-        "cruise_altitude": 34000,
-        "route": "TIDES1 MOMIE AMORY Q110 BLANS MAGOO CID",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 11000,
-        "initial_speed": 230,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
+            },
             {
               "icao": "AAY",
               "airport": "KSRQ"
+            },
+            {
+              "icao": "FFT",
+              "airport": "KMCO"
             }
-          ]
+          ]	
         }
       }
     ]
   },
-  "SW": {
-    "arrivals": [
+  "WEST IOW ARR": {
+        "arrivals": [
       {
-        "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID",
-        "cruise_altitude": 37000,
-        "route": "GLD J146 CID",
+        "waypoints": "N041.32.55.163,W092.20.44.284 N041.33.00.436,W092.12.16.770/ho IOW",
+        "cruise_altitude": 13000,
+        "star": "WEST IOW ARR",
         "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 15000,
+		"initial_altitude": 13000,
+        "assigned_altitude": 9000,
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
-          "KCID": [
+          "KIOW": [
             {
-              "icao": "AAY",
-              "airport": "KLAS"
-            },
-            {
-              "icao": "UAL",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "FFT",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KPHX"
+              "icao": "N",
+              "fleet": "GAsinglepiston",
+              "airport": "KDSM"
             }
-          ]
-        }
-      },
-      {
-        "waypoints": "N041.42.09.258,W092.52.35.575 N041.44.13.417,W092.43.49.522/ho CID",
-        "cruise_altitude": 37000,
-        "route": "YOTES6 JARPA RSK ALS PUB GLD J146 LNK DSM CID",
-        "initial_controller": "CHI_56_CTR",
-        "initial_altitude": 15000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KCID": [
-            {
-              "icao": "AAY",
-              "airport": "KIWA"
-            }
-          ]
+          ]	
         }
       }
     ]
   }
 },
-         "control_positions": {
-            "CID_S_APP": {
-                "frequency": 119700,
-                "radio_name": "Cedar Rapids approach",
-                "scope_char": "A",
-                "sector_id": "1A"
-            },
-			"CID_N_APP": {
-                "frequency": 134050,
-                "radio_name": "Cedar Rapids approach",
-                "scope_char": "D",
-                "sector_id": "1D"
-            },
-            "CID_TWR": {
-                "frequency": 118700,
-                "radio_name": "Eastern Iowa tower",
-                "scope_char": "1",
-                "sector_id": "1T"
-            },
-            "CHI_56_CTR": {
-                "frequency": 132800,
-                "radio_name": "Chicago center",
-                "facility_id": "C",
-                "eram_facility": true,
-                "scope_char": "C",
-                "sector_id": "C56"
-            },
-            "IOW_TWR": {
-                "frequency": 122800,
-                "radio_name": "Iowa city traffic",
-                "scope_char": "T",
-                "sector_id": "2T"
-            }
-
-         },
-         "default_scenario": "Land West",
-         "fixes": {
-            "_CID": "41.8846944,-91.7108056",
-            "_CID9": "N041.53.04.346,W091.43.41.447",
-            "_CID27": "N041.53.02.931,W091.41.50.238",
-            "_CID31": "N041.45.54.396,W091.33.10.805",
-            "_CID13": "N042.00.20.118,W091.51.55.063"
-        },
-        "name": "KCID",
-        "primary_airport": "KCID",
-        "scenarios": {
-            "Land West": {
-                "arrival_runways": [
-                    {
-                        "airport": "KCID",
-                        "runway": "27"
-                    },
-                    {
-                        "airport": "KIOW", 
-                        "runway": "25"
-                    }
-                ],
-                "arrivals": {
-                    "MSP": {
-                        "KCID": 2
-                    },
-                    "SE": {
-                        "KCID": 4
-                    },
-                    "E": {
-                        "KCID": 3
-                    },
-                    "ORD": {
-                        "KCID": 3
-                    },
-                    "DFW": {
-                        "KCID": 1
-                    },
-                    "SW": {
-                        "KCID": 3
-                    },
-                    "IOW SW": {
-                        "KIOW": 1
-                    },
-                    "IOW NE": {
-                        "KIOW": 1
-                    },
-                    "IOW MSP": {
-                        "KIOW": 1
-                    }
+"control_positions": {
+   "CID_S_APP": {
+       "frequency": 119700,
+       "radio_name": "Cedar Rapids approach",
+       "sector_id": "1A"
+   },
+   "CID_N_APP": {
+       "frequency": 134050,
+       "radio_name": "Cedar Rapids approach",
+       "sector_id": "1D"
+   },
+   "CID_TWR": {
+       "frequency": 118700,
+       "radio_name": "Eastern Iowa tower",
+       "scope_char": "1",
+       "sector_id": "1T"
+   },
+   "CHI_56_CTR": {
+       "frequency": 132800,
+       "radio_name": "Chicago center",
+       "facility_id": "C",
+       "eram_facility": true,
+       "sector_id": "C56"
+   },
+   "IOW_TWR": {
+       "frequency": 122800,
+       "radio_name": "Iowa city traffic",
+       "sector_id": "2T"
+   }
+},
+    "default_scenario": "CID - 27",
+    "fixes": {
+        "_CID": "41.8846944,-91.7108056",
+        "_CID9": "N041.53.04.346,W091.43.41.447",
+        "_CID27": "N041.53.02.931,W091.41.50.238",
+        "_CID31": "N041.45.54.396,W091.33.10.805",
+        "_CID13": "N042.00.20.118,W091.51.55.063"
+    },
+    "name": "KCID",
+    "primary_airport": "KCID",
+    "scenarios": {
+        "CID - 27": {
+            "arrival_runways": [
+                {
+                    "airport": "KCID",
+                    "runway": "27"
                 },
-                "solo_controller": "CID_S_APP",
-                "multi_controllers": {
-                    "default": {
-                        "CID_S_APP": {
-                            "primary": true,
-                            "arrivals": [
-                                "SE",
-                                "E",
-                                "DFW",
-                                "SW",
-                                "IOW SW",
-                                "IOW NE",
-                                "IOW MSP"
-                            ],
-                            "departures": [
-                                "KIOW/25"
-                            ]
-                        },
-                        "CID_N_APP": {
-                            "backup": "CID_S_APP",
-                            "departures": [
-                                "KCID/27"
-                            ],
-                            "arrivals": [
-                                "MSP",
-                                "ORD"
-                            ]
-                        }
-                    }
+				{
+                    "airport": "KIOW",
+                    "runway": "25"
+                }
+            ],
+            "inbound_rates": {
+                "EAST CID ARR": {
+                    "KCID": 2
                 },
-                "controllers": [
-                    "CID_TWR",
-                    "CHI_56_CTR",
-		            "CID_S_APP",
-                    "CID_N_APP",
-                    "IOW_TWR"
-                ],
-                "default_maps": [
-                    "CID RVM"
-                ],
-                "departure_runways": [
-                    {
-                        "airport": "KCID",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "27"
+				 "NORTH CID ARR": {
+                    "KCID": 2
+                },
+				 "WEST CID ARR": {
+                    "KCID": 2
+                },
+				"SOUTHEAST CID ARR": {
+                    "KCID": 2
+                },
+				"WEST IOW ARR": {
+                    "KIOW": 2
+                }	
+            },
+            "solo_controller": "CID_S_APP",
+			 "multi_controllers":{
+                "default": {
+                    "CID_S_APP":{"departures": ["KIOW"],
+					"arrivals": ["WEST IOW ARR","SOUTHEAST CID ARR", "WEST CID ARR"],
+                        "primary": true
                     },
-                    {
-                        "airport": "KCID",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "27"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "25"
-                    },
-                    { 
-                        "airport": "KIOW",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "25"
-                    }
-                ],
-                "wind": {
-                    "direction": 270,
-                    "speed": 7
+                    "CID_N_APP":{"backup": "CID_S_APP",
+					"departures": ["KCID"],
+					"arrivals": ["EAST CID ARR", "NORTH CID ARR"]
+                    } 
                 }
             },
-            "Land South": {
-                "arrival_runways": [
-                    {
-                        "airport": "KCID",
-                        "runway": "13"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "runway": "25"
-                    }
-                ],
-                "arrivals": {
-                    "MSP": {
-                        "KCID": 2
-                    },
-                    "SE": {
-                        "KCID": 4
-                    },
-                    "E": {
-                        "KCID": 3
-                    },
-                    "ORD": {
-                        "KCID": 3
-                    },
-                    "DFW": {
-                        "KCID": 1
-                    },
-                    "SW": {
-                        "KCID": 3
-                    },
-                    "IOW SW": {
-                        "KIOW": 1
-                    },
-                    "IOW NE": {
-                        "KIOW": 1
-                    },
-                    "IOW MSP": {
-                        "KIOW": 1
-                    }
+            "controllers": [
+                "CID_TWR",
+				"IOW_TWR",
+				"CID_S_APP",
+                "CID_N_APP",
+                "CHI_56_CTR"
+            ],
+            "default_maps": ["CID RVM"],
+            "departure_runways": [
+                {
+                    "airport": "KCID",
+                    "rate": 2,
+                    "runway": "27"
                 },
-                "solo_controller": "CID_S_APP",
-                "multi_controllers": {
-                    "default": {
-                        "CID_S_APP": {
-                            "primary": true,
-                            "arrivals": [
-                                "SE",
-                                "E",
-                                "DFW",
-                                "SW",
-                                "IOW SW",
-                                "IOW NE",
-                                "IOW MSP"
-                            ],
-                            "departures": [
-                                "KIOW/25"
-                            ]
-                        },
-                        "CID_N_APP": {
-                            "backup": "CID_S_APP",
-                            "departures": [
-                                "KCID/13"
-                            ],
-                            "arrivals": [
-                                "MSP",
-                                "ORD"
-                            ]
-                        }
-                    }
-                },
-                "controllers": [
-                    "CID_TWR",
-                    "CHI_56_CTR",
-                    "CID_S_APP",
-                    "CID_N_APP",
-                    "IOW_TWR"
-                ],
-                "default_maps": [
-                    "CID RVM"
-                ],
-                "departure_runways": [
-                    {
-                        "airport": "KCID",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "13"
-                    },
-                    {
-                        "airport": "KCID",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "13"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "25"
-                    },
-                    { 
-                        "airport": "KIOW",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "25"
-                    }
-                ],
-                "wind": {
-                    "direction": 90,
-                    "speed": 7
+				{
+                    "airport": "KIOW",
+                    "rate": 1,
+                    "runway": "25"
                 }
-            },
-            "Land East": {
-                "arrival_runways": [
-                    {
-                        "airport": "KCID",
-                        "runway": "9"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "runway": "30"
-                    }
-                ],
-                "arrivals": {
-                    "MSP": {
-                        "KCID": 2
-                    },
-                    "SE": {
-                        "KCID": 4
-                    },
-                    "E": {
-                        "KCID": 3
-                    },
-                    "ORD": {
-                        "KCID": 3
-                    },
-                    "DFW": {
-                        "KCID": 1
-                    },
-                    "SW": {
-                        "KCID": 3
-                    },
-                    "IOW SW": {
-                        "KIOW": 1
-                    },
-                    "IOW MSP": {
-                        "KIOW": 1
-                    },
-                    "IOW NE": {
-                        "KIOW": 1
-                    }
-                },
-                "solo_controller": "CID_S_APP",
-                "multi_controllers": {
-                    "default": {
-                        "CID_S_APP": {
-                            "primary": true,
-                            "arrivals": [
-                                "SE",
-                                "E",
-                                "DFW",
-                                "SW",
-                                "IOW SW",
-                                "IOW NE",
-                                "IOW MSP"
-                            ],
-                            "departures": [
-                                "KIOW/30"
-                            ]
-                        },
-                        "CID_N_APP": {
-                            "backup": "CID_S_APP",
-                            "departures": [
-                                "KCID/9"
-                            ],
-                            "arrivals": [
-                                "MSP",
-                                "ORD"
-                            ]
-                        }
-                    }
-                },
-                "controllers": [
-                    "CID_TWR",
-                    "CHI_56_CTR",
-                    "CID_S_APP",
-                    "CID_N_APP",
-                    "IOW_TWR"
-                ],
-                "default_maps": [
-                    "CID RVM"
-                ],
-                "departure_runways": [
-                    {
-                        "airport": "KCID",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "9"
-                    },
-                    {
-                        "airport": "KCID",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "9"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "30"
-                    },
-                    { 
-                        "airport": "KIOW",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "30"
-                    }
-                ],
-                "wind": {
-                    "direction": 90,
-                    "speed": 7
-                }  
-        },
-        "Land North": {
-                "arrival_runways": [
-                    {
-                        "airport": "KCID",
-                        "runway": "31"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "runway": "30"
-                    }
-                ],
-                "arrivals": {
-                    "MSP": {
-                        "KCID": 2
-                    },
-                    "SE": {
-                        "KCID": 4
-                    },
-                    "E": {
-                        "KCID": 3
-                    },
-                    "ORD": {
-                        "KCID": 3
-                    },
-                    "DFW": {
-                        "KCID": 1
-                    },
-                    "SW": {
-                        "KCID": 3
-                    },
-                    "IOW SW": {
-                        "KIOW": 1
-                    },
-                    "IOW NE": {
-                        "KIOW": 1
-                    },
-                    "IOW MSP": {
-                        "KIOW": 1
-                    }
-                },
-                "solo_controller": "CID_S_APP",
-                "multi_controllers": {
-                    "default": {
-                        "CID_S_APP": {
-                            "primary": true,
-                            "arrivals": [
-                                "SE",
-                                "E",
-                                "DFW",
-                                "SW",
-                                "IOW SW",
-                                "IOW NE",
-                                "IOW MSP"
-                            ],
-                            "departures": [
-                                "KIOW/30"
-                            ]
-                        },
-                        "CID_N_APP": {
-                            "backup": "CID_S_APP",
-                            "departures": [
-                                "KCID/31"
-                            ],
-                            "arrivals": [
-                                "MSP",
-                                "ORD"
-                                
-                            ]
-                        }
-                    }
-                },
-                "controllers": [
-                    "CID_TWR",
-                    "CHI_56_CTR",
-                    "CID_S_APP",
-                    "CID_N_APP",
-                    "IOW_TWR"
-                ],
-                "default_maps": [
-                    "CID RVM"
-                ],
-                "departure_runways": [
-                    {
-                        "airport": "KCID",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "31"
-                    },
-                    {
-                        "airport": "KCID",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "31"
-                    },
-                    {
-                        "airport": "KIOW",
-                        "category": "WEST",
-                        "rate": 5,
-                        "runway": "30"
-                    },
-                    { 
-                        "airport": "KIOW",
-                        "category": "EAST",
-                        "rate": 5,
-                        "runway": "30"
-                    }
-                ],
-                "wind": {
-                    "direction": 90,
-                    "speed": 7
-                }
+            ],
+            "wind": {
+                "direction": 270,
+                "speed": 10
             }
         },
-        "stars_config": {
-            "center": "41.8846944,-91.7108056",
-            "range": 40,
-            "scratchpads": {
+        "CID - 9": {
+            "arrival_runways": [
+                {
+                    "airport": "KCID",
+                    "runway": "9"
+                },
+				{
+                    "airport": "KIOW",
+                    "runway": "25"
+                }
+            ],
+            "inbound_rates": {
+                 "EAST CID ARR": {
+                    "KCID": 2
+                },
+				 "WEST CID ARR": {
+                    "KCID": 2
+                },
+				 "NORTH CID ARR": {
+                    "KCID": 2
+                },
+				"SOUTHEAST CID ARR": {
+                    "KCID": 2
+                },
+				"WEST IOW ARR": {
+                    "KIOW": 2
+                }
+            },
+            "solo_controller": "CID_S_APP",
+			"multi_controllers":{
+                "default": {
+                    "CID_S_APP":{"departures": ["KCID", "KIOW"],
+					"arrivals": ["WEST CID ARR","SOUTHEAST CID ARR", "WEST IOW ARR"],
+                        "primary": true
+                    },
+                    "CID_N_APP":{"backup": "CID_S_APP",
+					"arrivals": ["NORTH CID ARR", "EAST CID ARR"]
+                    }
+                }
+            },
+            "controllers": [
+                "CID_TWR",
+				"IOW_TWR",
+				"CID_S_APP",
+                "CID_N_APP",
+                "CHI_56_CTR"
+            ],
+            "default_maps": ["CID RVM"],
+            "departure_runways": [
+                {
+                    "airport": "KCID",
+                    "rate": 2,
+                    "runway": "9"
+                },
+				{
+                    "airport": "KIOW",
+                    "rate": 2,
+                    "runway": "25"
+                }
+            ],
+            "wind": {
+                "direction": 90,
+                "speed": 10
+            }
+        }
+    },
+    "stars_config": {
+       "center": "N041.53.04.016,W091.42.23.115",
+        "radar_sites": {
+            "CID": {
+                "char": "S",
+                "position": "N041.53.04.936,W091.42.20.972",
+                "elevation": 3622,
+                "primary_range": 55,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 60,
+        "scratchpads": {
                 "IOW": "IOW",
                 "CID": "CID",
                 "WAVUM": "WAV",
@@ -1291,7 +711,7 @@
                 "ALO": "ALO" ,
                 "MAPPS": "MAP"
          },
-            "significant_points": {
+         "significant_points": {
                 "ALO": {  },
                 "BDF": {  },
                 "BENNR": { },
@@ -1309,13 +729,9 @@
                 "TNU": { },
                 "WAVUM": { }
             },
-            "stars_maps": [
-                "CID MVA",
-                "CID VFR",
-                "CID RVM"
-            ],
-            "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
-        }
-    
-    
+        "stars_maps": [
+          "CID RVM", "CID MVA", "CID VFR"
+        ],
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
+    }
 }

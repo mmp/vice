@@ -4,52 +4,11 @@
           "KMSP": {
               "name": "Minneapolis St. Paul Intl",
               "approaches": {
-                  "12L": {
-                      "full_name": "ILS Runway 12L",
-                      "runway": "12L",
-                      "type": "ILS",
-                      "waypoints": [
-                          "CCJAY/a6000/iaf UBTYA ALGIN/a5000 HAMML/a4000 WASHY/a3000 AASUN/a1420",
-                          "KAYQU/a7000/s210/iaf SHUUT HAMML/a4000 WASHY/a3000 AASUN/a1420"
-                      ]
-                  },
-                  "12R": {
-                      "full_name": "ILS Runway 12R",
-                      "runway": "12R",
-                      "type": "ILS",
-                      "waypoints": [
-                          "PAETN/a6000/iaf UTHNK WAYZA/a5000 ZESTY/a4000 KINNS/a3000 WABBS/a1420",
-                          "KRUGG/a7000/s210/iaf EFEXX ZESTY/a4000 KINNS/a3000 WABBS/a1420"
-                      ]
-                  },
-                  "30L": {
-                    "full_name": "ILS Runway 30L",
-                    "runway": "30L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HASTI/a7000/iaf PINKE/a6000 PIGZI/a5000 AABEZ/a4000 NARCO/a3000 EAGAN/a1520",
-                        "HAPTN/a7000/s210/iaf DBLEM AABEZ/a4000 NARCO/a3000 EAGAN/a1520"
-                    ]
-                  },
-                  "30R": {
-                    "full_name": "ILS Runway 30R",
-                    "runway": "30R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "GROVZ/a7000/iaf WULAM/a6000 BONNA/a5000 SAMMZ/a4000 JACKO/a3000 CIJOT/a1520",
-                        "GEEQU/a7000/s210/iaf SAMMZ/a4000 JACKO/a3000 CIJOT/a1520",
-                        "TRTEL/a7000/s210/iaf SOGGY SAMMZ/a4000 JACKO/a3000 CIJOT/a1520"
-                    ]
-                  },
-                  "I35": {
-                    "full_name": "ILS Runway 35",
-                    "runway": "35",
-                    "type": "ILS",
-                    "waypoints": [
-                        "JAMEZ/a7000/iaf OBERR/a6000 SSTAR/a5000 ROZEE/a4000 LORAH/a3000 HUCUM/a1600",
-                        "NNEWW/a7000/iaf ROZEE/a4000 LORAH/a3000 HUCUM/a1600"
-                    ]
-                  }
+                "12L": { "cifp_id": "I12L" },
+                "12R": { "cifp_id": "I12R" },
+                "30L": { "cifp_id": "I30L" },
+                "30R": { "cifp_id": "I30R" },
+                "I35": { "cifp_id": "IV35" }
               },
               "departure_routes": {
                 "12R": {
@@ -602,81 +561,71 @@
       "control_positions": {
         "MSP_05_CTR": {
           "frequency": 125300,
-          "radio_name": "Minnieapolis Center",
-          "scope_char": "C",
+          "radio_name": "Minneapolis Center",
           "sector_id": "C05",
           "facility_id": "C",
           "eram_facility": true
         },
         "MSP_09_CTR": {
           "frequency": 125500,
-          "radio_name": "Minnieapolis Center",
-          "scope_char": "C",
+          "radio_name": "Minneapolis Center",
           "facility_id": "C",
           "sector_id": "C09",
           "eram_facility": true
         },
         "MSP_10_CTR": {
           "frequency": 121050,
-          "radio_name": "Minnieapolis Center",
-          "scope_char": "C",
+          "radio_name": "Minneapolis Center",
           "facility_id": "C",
           "sector_id": "C10",
           "eram_facility": true
         },
         "MSP_R_DEP": {
           "frequency": 124700,
-          "radio_name": "Minnieapolis Departure",
-          "scope_char": "R",
+          "radio_name": "Minneapolis Departure",
           "sector_id": "1R"
         },
         "MSP_I_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "I",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1I"
         },
         "MSP_H_APP": {
           "frequency": 135475,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "H",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1H"
         },
         "MSP_N_APP": {
           "frequency": 119300,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "N",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1N"
         },
         "MSP_S_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "S",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1S"
         },
         "MSP_E_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
-          "scope_char": "E",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1E"
         },
         "MSP_N_TWR": {
           "frequency": 123950,
-          "radio_name": "Minnieapolis Tower",
-          "scope_char": "T",
-          "sector_id": "01"
+          "radio_name": "Minneapolis Tower",
+          "sector_id": "1T"
         },
         "MSP_S_TWR": {
           "frequency": 126700,
-          "radio_name": "Minnieapolis Tower",
+          "radio_name": "Minneapolis Tower",
           "scope_char": "T",
-          "sector_id": "02"
+          "sector_id": "1V"
         },
         "MSP_W_TWR": {
           "frequency": 123675,
-          "radio_name": "Minnieapolis Tower",
+          "radio_name": "Minneapolis Tower",
           "scope_char": "T",
-          "sector_id": "03"
+          "sector_id": "1Y"
         }
       },
       "default_scenario": "MSP 12R/L",

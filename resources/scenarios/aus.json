@@ -3,86 +3,14 @@
 	"airports": {
 		"KAUS": {
 			"approaches": {
-				"I8L": {
-					"runway": "18L",
-					"type": "ILS",
-					"waypoints": [
-						"DOFFS/a5000/iaf SCALI/a4000 RRTOO/a2500 DDTOO/a1600/faf",
-						"JEDYE/a4000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf",
-						"HOUKM/a5000/s210/iaf RRTOO/a2500 DDTOO/a1600/faf"
-					]
-				},
-				"I8R": {
-					"runway": "18R",
-					"type": "ILS",
-					"waypoints": [
-						"CHADE/a4000/iaf UTEEE/a2800 ELLBJ/a1600/faf",
-						"HOUKM/a5000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf",
-						"JEDYE/a4000/s210/iaf UTEEE/a2800 ELLBJ/a1600/faf"
-					]
-				},
-				"I6L": {
-					"runway": "36L",
-					"type": "ILS",
-					"waypoints": [
-						"LAMAS/a5000/iaf CAMDY/a4000/iaf BIIRD/a2500/if JOVSA/a2100 FUNNN/a1600/faf"
-					]
-				},
-				"I6R": {
-					"runway": "36R",
-					"type": "ILS",
-					"waypoints": [
-						"BALLD/a4000/iaf SSHOE/a2500 ZEDKU/a2100 FNNLY/a1600/faf"
-					]
-				},
-				"R6L": {
-					"full_name": "RNAV RNP Runway 36L",
-					"runway": "36L",
-					"type": "RNAV",
-					"waypoints": [
-						"LAIDY/a5000/s210/if ANGGS POIMM SUKEY FUNNN/faf/a1600",
-						"LIPSS/a4000/s210/if POIMM SUKEY FUNNN/faf/a1600",
-						"LAMAS/a5000+/iaf CAMDY/iaf/a4000 BIIRD/if FUNNN/faf/a1600",
-						"SMRFF/a5000/s210/if SQWCH ZILKR HEGVO ODINE FUNNN/faf/a1600",
-						"BOWTZ/a4000/s210/if ZILKR HEGVO ODINE FUNNN/faf/a1600"
-					]
-				},
-				"R6R": {
-					"full_name": "RNAV RNP Runway 36R",
-					"runway": "36R",
-					"type": "RNAV",
-					"waypoints": [
-						"SMRFF/a5000/s210/if WRRDD MYOPE APALE FNNLY/a1600/faf",
-						"BOWTZ/a4000/s210/if MYOPE APALE FNNLY/a1600/faf",
-						"BALLD/a4000+/iaf SSHOE/if FNNLY/a1600/faf",
-						"LAIDY/a5000/s210/if ANGGS POIMM RFRCE BLURG TREKS FNNLY/a1600/faf",
-						"LIPSS/a4000/s210/if POIMM RFRCE BLURG TREKS FNNLY/a1600/faf"
-					]
-				},
-				"R8R": {
-					"full_name": "RNAV RNP Runway 18R",
-					"runway": "18R",
-					"type": "RNAV",
-					"waypoints": [
-						"TRPPN/a6000/s210/iaf RUBZZ/if PEAYR N030.17.43.469,W097.44.09.572 MAYHL ELLBJ/a1600/faf",
-						"HOUKM/a5000/s210/iaf UTEEE/if ELLBJ/a1600/faf",
-						"JEDYE/a4000/s210/iaf UTEEE/if ELLBJ/a1600/faf",
-						"SMRFF/a5000/s210/iaf RGGLS ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf",
-						"XWING/a4000/if ALLOU OVUKE BOUGR RODNT ELLBJ/a1600/faf"
-					]
-				},
-				"R8L": {
-					"full_name": "RNAV RNP Runway 18L",
-					"runway": "18L",
-					"type": "RNAV",
-					"waypoints": [
-						"SMRFF/a5000/s210/if LAYYA HANNN NEEMS DDTOO/a1600/faf",
-						"XWING/a4000/s210/if HANNN NEEMS DDTOO/a1600/faf",
-						"JEDYE/a4000/s210/iaf RRTOO/if DDTOO/a1600/faf",
-						"HOUKM/a5000/s210/iaf RRTOO/if DDTOO/a1600/faf",
-						"TRPPN/a6000/s210/iaf RUBZZ/if DREPL SWMMP TGONE HUDDD DDTOO/a1600/faf"
-					]
-				}
+			  "I8L": { "cifp_id": "I18L" },
+			  "I8R": { "cifp_id": "I18R" },
+			  "I6L": { "cifp_id": "I36L" },
+			  "I6R": { "cifp_id": "I36R" },
+			  "R6L": { "cifp_id": "RZ36L", "full_name": "RNAV RNP Runway 36L" },
+			  "R6R": { "cifp_id": "RZ36R", "full_name": "RNAV RNP Runway 36R" },
+			  "R8R": { "cifp_id": "RZ18R", "full_name": "RNAV RNP Runway 18R" },
+			  "R8L": { "cifp_id": "RZ18L", "full_name": "RNAV RNP Runway 18L" }
 			},
 			"departure_routes": {
 				"18L": {
@@ -382,16 +310,8 @@
 		"KHYI": {
 			"hold_for_release": true,
 			"approaches": {
-				"R13": {
-					"runway": "13",
-					"type": "RNAV",
-					"waypoints": ["ORALE/a3500 JISGO/a2700 YOYTU/a1700"]
-				},
-				"R31": {
-					"runway": "31",
-					"type": "RNAV",
-					"waypoints": ["HODAL/a3000 RUYOK/a2000 TONXU/a1420"]
-				}
+			  "R13": { "cifp_id": "R13" },
+			  "R31": { "cifp_id": "R31" }
 			},
 			"departure_routes": {
 				"13": {
@@ -546,20 +466,8 @@
 		"KGTU": {
 			"hold_for_release": true,
 			"approaches": {
-				"R11": {
-					"runway": "11",
-					"type": "RNAV",
-					"waypoints": [
-						"URHIN/iaf VEGEJ/iaf LOFJA/a3400/if LUDFE/a2400 CUBLO/a1620"
-					]
-				},
-				"R29": {
-					"runway": "29",
-					"type": "RNAV",
-					"waypoints": [
-						"APCEX/iaf FEBYI/iaf KOJCY/a3000/if IWKOK/a2400 HEGUR/a1760"
-					]
-				}
+			  "R11": { "cifp_id": "R11" },
+			  "R29": { "cifp_id": "R29" }
 			},
 			"departure_routes": {
 				"29": {
@@ -1335,7 +1243,6 @@
 		"HOU_50_CTR": {
 			"frequency": 134200,
 			"radio_name": "Houston Center",
-			"scope_char": "C",
 			"sector_id": "C50",
 			"facility_id": "C",
 			"eram_facility": true
@@ -1343,7 +1250,6 @@
 		"HOU_80_CTR": {
 			"frequency": 132150,
 			"radio_name": "Houston Center",
-			"scope_char": "C",
 			"sector_id": "C80",
 			"facility_id": "C",
 			"eram_facility": true
@@ -1351,7 +1257,6 @@
 		"HOU_96_CTR": {
 			"frequency": 125650,
 			"radio_name": "Houston Center",
-			"scope_char": "C",
 			"sector_id": "C96",
 			"facility_id": "C",
 			"eram_facility": true
@@ -1359,25 +1264,21 @@
 		"AUS_W_APP": {
 			"frequency": 119000,
 			"radio_name": "Austin Approach",
-			"scope_char": "W",
 			"sector_id": "1W"
 		},
 		"AUS_E_APP": {
 			"frequency": 127225,
 			"radio_name": "Austin Approach",
-			"scope_char": "E",
 			"sector_id": "1E"
 		},
 		"AUS_F_APP": {
 			"frequency": 125325,
 			"radio_name": "Austin Approach",
-			"scope_char": "F",
 			"sector_id": "1F"
 		},
 		"SAT_N_APP": {
 			"frequency": 127100,
 			"radio_name": "San Antonio Approach",
-			"scope_char": "S",
 			"sector_id": "1N",
 			"facility_id": "S"
 		},
@@ -1398,26 +1299,24 @@
 		"AUS_E_TWR": {
 			"frequency": 121000,
 			"radio_name": "Austin Tower",
-			"scope_char": "T",
-			"sector_id": "TE"
+			"sector_id": "1T"
 		},
 		"AUS_W_TWR": {
 			"frequency": 118225,
 			"radio_name": "Austin Tower",
-			"scope_char": "T",
-			"sector_id": "TW"
+			"sector_id": "1X"
 		},
 		"HYI_TWR": {
 			"frequency": 126825,
 			"radio_name": "San Marcos Tower",
 			"scope_char": "T",
-			"sector_id": "TH"
+			"sector_id": "1H"
 		},
 		"GTU_TWR": {
 			"frequency": 120225,
 			"radio_name": "Georgetown Tower",
 			"scope_char": "T",
-			"sector_id": "TG"
+			"sector_id": "1G"
 		}
 	},
 	"default_scenario": "AUS TRACON South",

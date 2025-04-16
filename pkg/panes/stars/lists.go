@@ -15,7 +15,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -48,6 +47,7 @@ func (sp *STARSPane) drawSystemLists(aircraft []*av.Aircraft, ctx *panes.Context
 	sp.drawMapsList(ctx, normalizedToWindow(ps.VideoMapsList.Position), listStyle, td)
 	sp.drawRestrictionAreasList(ctx, normalizedToWindow(ps.RestrictionAreaList.Position), listStyle, td)
 	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), aircraft, listStyle, td)
+	sp.drawMCISuppressionList(ctx, normalizedToWindow(ps.MCISuppressionList.Position), aircraft, listStyle, td)
 
 	towerListAirports := ctx.ControlClient.TowerListAirports()
 	for i, tl := range ps.TowerLists {
@@ -70,50 +70,20 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
 
-	switch sp.commandMode {
-	case CommandModeInitiateControl:
-		text.WriteString("IC\n")
-	case CommandModeTerminateControl:
-		text.WriteString("TC\n")
-	case CommandModeHandOff:
-		text.WriteString("HD\n")
-	case CommandModeVFRPlan:
-		text.WriteString("VP\n")
-	case CommandModeMultiFunc:
-		text.WriteString("F")
+	// Command mode indicator (possibly)
+	modestr := sp.commandMode.PreviewString()
+	text.WriteString(modestr)
+	if sp.commandMode == CommandModeMultiFunc {
 		text.WriteString(sp.multiFuncPrefix)
-		text.WriteString("\n")
-	case CommandModeFlightData:
-		text.WriteString("DA\n")
-	case CommandModeCollisionAlert:
-		text.WriteString("CA\n")
-	case CommandModeMin:
-		text.WriteString("MIN\n")
-	case CommandModeMaps:
-		text.WriteString("MAP\n")
-	case CommandModeSavePrefAs:
-		text.WriteString("PREF SET NAME\n")
-	case CommandModeLDR:
-		text.WriteString("LLL\n")
-	case CommandModeRangeRings:
-		text.WriteString("RR\n")
-	case CommandModeRange:
-		text.WriteString("RANGE\n")
-	case CommandModeSiteMenu:
-		text.WriteString("SITE\n")
-	case CommandModeWX:
-		text.WriteString("WX\n")
-	case CommandModePref:
-		text.WriteString("PREF SET\n")
-	case CommandModeReleaseDeparture:
-		text.WriteString("RD\n")
-	case CommandModeRestrictionArea:
-		text.WriteString("AR\n")
-	case CommandModeTargetGen:
-		text.WriteString("TG ")
+	}
+	if sp.commandMode == CommandModeTargetGen {
+		text.WriteByte(' ')
 		text.WriteString(sp.targetGenLastCallsign)
+	}
+	if modestr != "" {
 		text.WriteString("\n")
 	}
+
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
 	if text.Len() > 0 {
 		style := renderer.TextStyle{
@@ -158,6 +128,10 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	alertStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
+	}
+	warnStyle := renderer.TextStyle{
+		Font:  font,
+		Color: ps.Brightness.Lists.ScaleRGB(STARSTextWarningColor),
 	}
 
 	stripK := func(airport string) string {
@@ -261,20 +235,34 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 			}
 		}
 		if filter.All || filter.Radar {
-			pw = td.AddText(sp.radarSiteId(ctx.ControlClient.RadarSites), pw, listStyle)
+			pw = td.AddText(sp.radarSiteId(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites), pw, listStyle)
 		}
 		newline()
 	}
 
 	if filter.All || filter.Codes {
-		if len(ps.SelectedBeaconCodes) > 0 {
-			pw = td.AddText(strings.Join(ps.SelectedBeaconCodes, " "), pw, listStyle)
+		if len(ps.SelectedBeacons) > 0 {
+			codes := util.MapSlice(ps.SelectedBeacons,
+				func(v av.Squawk) string {
+					if v < 0o100 { // bank
+						return strconv.FormatInt(int64(v), 8)
+					} else {
+						return v.String() // leading 0s as needed
+					}
+				})
+
+			if len(codes) > 5 {
+				pw = td.AddText(strings.Join(codes[:5], " "), pw, listStyle)
+				codes = codes[5:]
+				newline()
+			}
+			pw = td.AddText(strings.Join(codes, " "), pw, listStyle)
 			newline()
 		}
 	}
 
 	if filter.All || filter.SpecialPurposeCodes {
-		// Special purpose codes listed in red, if anyone is squawking
+		// Active special purpose codes.
 		// those.
 		codes := make(map[string]interface{})
 		for _, ac := range aircraft {
@@ -287,7 +275,63 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		}
 
 		if len(codes) > 0 {
-			td.AddText(strings.Join(util.SortedMapKeys(codes), " "), pw, alertStyle)
+			// Two passes: first the red ones then the yellow ones
+			for _, spc := range util.SortedMapKeys(codes) {
+				if av.StringIsSPC(spc) {
+					pw = td.AddText(spc+" ", pw, alertStyle)
+				}
+			}
+			for _, spc := range util.SortedMapKeys(codes) {
+				if !av.StringIsSPC(spc) {
+					pw = td.AddText(spc+" ", pw, warnStyle)
+				}
+			}
+			newline()
+		}
+	}
+
+	if filter.All || filter.SysOff {
+		var disabled []string
+		if ps.DisableCAWarnings {
+			disabled = append(disabled, "CA")
+		}
+		if ps.DisableMCIWarnings {
+			disabled = append(disabled, "MCI")
+		}
+		if ps.DisableMSAW {
+			disabled = append(disabled, "MSAW")
+		}
+		if ps.CRDA.Disabled {
+			disabled = append(disabled, "CRDA")
+		}
+		// TODO: others? 2-84
+		if len(disabled) > 0 {
+			pw = td.AddText(strings.Join(disabled, " "), pw, listStyle)
+			newline()
+		}
+	}
+
+	if filter.All || filter.Intrail {
+		// We don't have any way to disable them, so this is easy..
+		pw = td.AddText("INTRAIL ON", pw, listStyle)
+		newline()
+	}
+	if filter.All || filter.Intrail25 {
+		var vols []string
+		for _, r := range ctx.ControlClient.State.ArrivalRunways {
+			if ap, ok := ctx.ControlClient.State.ArrivalAirports[r.Airport]; ok {
+				if vol, ok := ap.ATPAVolumes[r.Runway]; ok && vol.Enable25nmApproach {
+					vols = append(vols, vol.Id) // TODO:include airport?
+				}
+			}
+		}
+		if len(vols) > 0 {
+			v := strings.Join(vols, " ")
+			if len(v) > 16 { // 32 - "INTRAIL 2.5 ON: "
+				[]byte(v)[15] = '+'
+				v = v[:16]
+			}
+			pw = td.AddText("INTRAIL 2.5 ON: "+v, pw, listStyle)
 			newline()
 		}
 	}
@@ -317,6 +361,12 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 		airports := ctx.ControlClient.State.STARSFacilityAdaptation.Altimeters
 		if len(airports) == 0 {
 			airports = util.SortedMapKeys(ctx.ControlClient.Airports)
+
+			// Filter out VFR-only
+			airports = util.FilterSlice(airports, func(icao string) bool {
+				ap := ctx.ControlClient.Airports[icao]
+				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
+			})
 
 			// Sort via 1. primary? 2. tower list index, 3. alphabetic
 			sort.Slice(airports, func(i, j int) bool {
@@ -381,20 +431,9 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, aircraft []*
 	}
 
 	if filter.All || filter.DisabledTerminal {
-		var disabled []string
-		if ps.DisableCAWarnings {
-			disabled = append(disabled, "CA")
-		}
-		if ps.CRDA.Disabled {
-			disabled = append(disabled, "CRDA")
-		}
-		if ps.DisableMSAW {
-			disabled = append(disabled, "MSAW")
-		}
 		// TODO: others?
-		if len(disabled) > 0 {
-			text := "TW OFF: " + strings.Join(disabled, " ")
-			pw = td.AddText(text, pw, listStyle)
+		if ps.CRDA.Disabled {
+			pw = td.AddText("TW OFF: CRDA", pw, listStyle)
 			newline()
 		}
 	}
@@ -427,11 +466,13 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, aircraft []*
 	var vfr []*av.Aircraft
 	// Find all untracked av.VFR aircraft
 	// FIXME: this should actually be based on VFR flight plans
-	for _, ac := range aircraft {
-		if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
-			vfr = append(vfr, ac)
+	/*
+		for _, ac := range aircraft {
+				if ac.Squawk == av.Squawk(0o1200) && ac.TrackingController == "" {
+					vfr = append(vfr, ac)
+				}
 		}
-	}
+	*/
 
 	// FIXME: this should actually be sorted by when we first saw the aircraft
 	slices.SortFunc(vfr, func(a, b *av.Aircraft) int { return strings.Compare(a.Callsign, b.Callsign) })
@@ -462,9 +503,9 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, aircraft []*
 	// Untracked departures departing from one of the airports we're
 	// responsible for.
 	for _, ac := range aircraft {
-		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" {
+		if fp := ac.FlightPlan; fp != nil && ac.TrackingController == "" && ac.Squawk != 0o1200 {
 			if ap := ctx.ControlClient.DepartureAirports[fp.DepartureAirport]; ap != nil {
-				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.PrimaryTCP {
+				if ctx.ControlClient.DepartureController(ac, ctx.Lg) == ctx.ControlClient.UserTCP {
 					dep = append(dep, ac)
 				}
 			}
@@ -492,22 +533,41 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 	// The alert list can't be hidden.
 	var text strings.Builder
 	var lists []string
-	n := 0 // total number of aircraft in the mix
 	ps := sp.currentPrefs()
 
+	if ps.DisableMSAW && ps.DisableCAWarnings && ps.DisableMCIWarnings {
+		return
+	}
+
+	var msaw []*av.Aircraft
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
 		for _, ac := range aircraft {
 			if sp.Aircraft[ac.Callsign].MSAW {
-				n++
+				msaw = append(msaw, ac)
 			}
 		}
+
+		// Sort by start time
+		slices.SortFunc(msaw, func(a, b *av.Aircraft) int {
+			return sp.Aircraft[a.Callsign].MSAWStart.Compare(sp.Aircraft[b.Callsign].MSAWStart)
+		})
 	}
+	var ca, mci []CAAircraft
 	if !ps.DisableCAWarnings {
 		lists = append(lists, "CA")
-		n += len(sp.CAAircraft)
+		ca = sp.CAAircraft
+		// TODO: filter out suppressed CA pairs
+	}
+	if !ps.DisableMCIWarnings {
+		lists = append(lists, "MCI")
+		mci = util.FilterSlice(sp.MCIAircraft, func(mci CAAircraft) bool {
+			// remove suppressed ones
+			return sp.Aircraft[mci.Callsigns[0]].MCISuppressedCode != ctx.ControlClient.Aircraft[mci.Callsigns[1]].Squawk
+		})
 	}
 
+	n := len(msaw) + len(ca) + len(mci)
 	if len(lists) > 0 {
 		text.WriteString(strings.Join(lists, "/") + "\n")
 		const alertListMaxLines = 50 // this is hard-coded
@@ -515,28 +575,50 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, aircraft [
 			text.WriteString(fmt.Sprintf("MORE: %d/%d\n", alertListMaxLines, n))
 		}
 
-		// LA
-		if !ps.DisableMSAW {
-			for _, ac := range aircraft {
-				if n == 0 {
-					break
-				}
-				if sp.Aircraft[ac.Callsign].MSAW {
-					text.WriteString(fmt.Sprintf("%-14s%03d LA\n", ac.Callsign, int((ac.Altitude()+50)/100)))
-					n--
-				}
+		next := func() (*av.Aircraft, *CAAircraft, *CAAircraft) {
+			if len(msaw) > 0 && (len(ca) == 0 || sp.Aircraft[msaw[0].Callsign].MSAWStart.Before(ca[0].Start)) &&
+				(len(mci) == 0 || sp.Aircraft[msaw[0].Callsign].MSAWStart.Before(mci[0].Start)) {
+				ac := msaw[0]
+				msaw = msaw[1:]
+				return ac, nil, nil
+			} else if len(ca) > 0 && (len(mci) == 0 || ca[0].Start.Before(mci[0].Start)) {
+				r := &ca[0]
+				ca = ca[1:]
+				return nil, r, nil
+			} else if len(mci) > 0 {
+				r := &mci[0]
+				mci = mci[1:]
+				return nil, nil, r
+			} else {
+				return nil, nil, nil
 			}
 		}
 
-		// CA
-		if !ps.DisableCAWarnings {
-			for _, pair := range sp.CAAircraft {
-				if n == 0 {
-					break
-				}
+		for range math.Min(n, alertListMaxLines) {
+			msawac, capair, mcipair := next()
 
-				text.WriteString(fmt.Sprintf("%-17s CA\n", pair.Callsigns[0]+"*"+pair.Callsigns[1]))
-				n--
+			alt := func(ac *av.Aircraft) string {
+				if ac.PilotReportedAltitude != 0 {
+					return strconv.Itoa(int((ac.PilotReportedAltitude+50)/100)) + "*"
+				}
+				return strconv.Itoa(int((ac.Altitude() + 50) / 100))
+			}
+
+			if msawac != nil {
+				text.WriteString(fmt.Sprintf("%-13s%4s LA\n", msawac.Callsign, alt(msawac)))
+			} else if capair != nil {
+				text.WriteString(fmt.Sprintf("%-17s CA\n", capair.Callsigns[0]+"*"+capair.Callsigns[1]))
+			} else if mcipair != nil {
+				// For MCIs, the unassociated track is always the second callsign.
+				// Beacon code is reported for MCI or blank if we don't have it.
+				ac1 := ctx.ControlClient.Aircraft[mcipair.Callsigns[1]]
+				if ac1.Mode != av.Standby {
+					text.WriteString(fmt.Sprintf("%-17s MCI\n", mcipair.Callsigns[0]+"*"+ac1.Squawk.String()))
+				} else {
+					text.WriteString(fmt.Sprintf("%-17s MCI\n", mcipair.Callsigns[0]+"*"))
+				}
+			} else {
+				break
 			}
 		}
 
@@ -624,7 +706,7 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 	var text strings.Builder
 	text.WriteString("GEO RESTRICTIONS\n")
 
-	add := func(ra sim.RestrictionArea, idx int) {
+	add := func(ra av.RestrictionArea, idx int) {
 		if ra.Deleted {
 			return
 		}
@@ -686,7 +768,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircr
 			for text.Len() < 16 {
 				text.WriteByte(' ')
 			}
-			text.WriteString(ctx.ControlClient.PrimaryTCP)
+			text.WriteString(ctx.ControlClient.UserTCP)
 		}
 		text.WriteByte('\n')
 	}
@@ -694,6 +776,26 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, aircr
 	if text.Len() > 0 {
 		td.AddText(text.String(), pw, style)
 	}
+}
+
+func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, aircraft []*av.Aircraft, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
+	ps := sp.currentPrefs()
+	if !ps.MCISuppressionList.Visible {
+		return
+	}
+
+	var text strings.Builder
+	text.WriteString("MCI SUPPRESSION\n")
+	for _, ac := range aircraft {
+		state := sp.Aircraft[ac.Callsign]
+		if state.MCISuppressedCode != av.Squawk(0) {
+			text.WriteString(fmt.Sprintf("%7s %s  %s\n", ac.Callsign, ac.Squawk.String(),
+				state.MCISuppressedCode.String()))
+		}
+	}
+
+	td.AddText(text.String(), pw, style)
 }
 
 func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, aircraft []*av.Aircraft,
@@ -743,8 +845,9 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style ren
 	}
 
 	var text strings.Builder
-	if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.PrimaryTCP]; ctrl != nil {
-		text.WriteString(ctx.ControlClient.PrimaryTCP + " " + ctrl.SignOnTime.UTC().Format("1504")) // TODO: initials
+	if ctrl := ctx.ControlClient.Controllers[ctx.ControlClient.UserTCP]; ctrl != nil {
+		signOnTime := ctx.ControlClient.SessionStats.SignOnTime
+		text.WriteString(ctx.ControlClient.UserTCP + " " + signOnTime.UTC().Format("1504")) // TODO: initials
 		td.AddText(text.String(), pw, style)
 	}
 }

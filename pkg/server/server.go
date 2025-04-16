@@ -1,11 +1,10 @@
-// pkg/sim/server.go
+// pkg/server/server.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"io"
@@ -14,24 +13,71 @@ import (
 	"net/http"
 	"net/rpc"
 	"os"
-	"os/exec"
 	"runtime"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
+
 	"github.com/shirou/gopsutil/cpu"
 )
 
 const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8080 - 21 + ViceRPCVersion
-const ViceRPCVersion = 21
+const ViceServerPort = 8000 + ViceRPCVersion
+const ViceRPCVersion = 24
 
 type Server struct {
 	*util.RPCClient
 	name        string
 	configs     map[string]map[string]*Configuration
 	runningSims map[string]*RemoteSim
+}
+
+type NewSimConfiguration struct {
+	// FIXME: unify Password/RemoteSimPassword, SelectedRemoteSim / NewSimName, etc.
+	NewSimType   int
+	NewSimName   string
+	GroupName    string
+	ScenarioName string
+
+	SelectedRemoteSim         string
+	SelectedRemoteSimPosition string
+
+	Scenario *SimScenarioConfiguration
+
+	TFRs []av.TFR
+
+	TRACONName        string
+	RequirePassword   bool
+	Password          string // for create remote only
+	RemoteSimPassword string // for join remote only
+
+	LiveWeather bool
+
+	InstructorAllowed bool
+	Instructor        bool
+}
+
+const (
+	NewSimCreateLocal = iota
+	NewSimCreateRemote
+	NewSimJoinRemote
+)
+
+func MakeNewSimConfiguration() NewSimConfiguration {
+	return NewSimConfiguration{NewSimName: rand.AdjectiveNoun()}
+}
+
+type RemoteSim struct {
+	GroupName          string
+	ScenarioName       string
+	PrimaryController  string
+	RequirePassword    bool
+	InstructorAllowed  bool
+	AvailablePositions map[string]av.Controller
+	CoveredPositions   map[string]av.Controller
 }
 
 type serverConnection struct {
@@ -41,6 +87,18 @@ type serverConnection struct {
 
 func (s *Server) Close() error {
 	return s.RPCClient.Close()
+}
+
+func (s *Server) GetConfigs() map[string]map[string]*Configuration {
+	return s.configs
+}
+
+func (s *Server) setRunningSims(rs map[string]*RemoteSim) {
+	s.runningSims = rs
+}
+
+func (s *Server) GetRunningSims() map[string]*RemoteSim {
+	return s.runningSims
 }
 
 func RunServer(extraScenario string, extraVideoMap string, serverPort int, lg *log.Logger) {
@@ -82,9 +140,9 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 			ch <- &serverConnection{Err: err}
 			return
 		} else {
-			var so SignOnResult
+			var cr ConnectResult
 			start := time.Now()
-			if err := client.CallWithTimeout("SimManager.SignOn", ViceRPCVersion, &so); err != nil {
+			if err := client.CallWithTimeout("SimManager.Connect", ViceRPCVersion, &cr); err != nil {
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
@@ -92,8 +150,8 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 					Server: &Server{
 						RPCClient:   client,
 						name:        "Network (Multi-controller)",
-						configs:     so.Configurations,
-						runningSims: so.RunningSims,
+						configs:     cr.Configurations,
+						runningSims: cr.RunningSims,
 					},
 				}
 			}
@@ -226,7 +284,6 @@ type serverStats struct {
 	CPUUsage         int
 
 	SimStatus []simStatus
-	Errors    string
 }
 
 func formatBytes(v int64) string {
@@ -294,8 +351,8 @@ tr:nth-child(even) {
   <tr>
   <th>Name</th>
   <th>Scenario</th>
-  <th>Dep</th>
-  <th>Arr</th>
+  <th>IFR</th>
+  <th>VFR</th>
   <th>Idle Time</th>
   <th>Active Controllers</th>
 
@@ -303,27 +360,13 @@ tr:nth-child(even) {
   </tr>
   <td>{{.Name}}</td>
   <td>{{.Config}}</td>
-  <td>{{.TotalDepartures}}</td>
-  <td>{{.TotalArrivals}}</td>
+  <td>{{.TotalIFR}}</td>
+  <td>{{.TotalVFR}}</td>
   <td>{{.IdleTime}}</td>
   <td><tt>{{.Controllers}}</tt></td>
 </tr>
 {{end}}
 </table>
-
-<h1>Errors</h1>
-<div id="log" class="bot">
-{{.Errors}}
-</div>
-
-<script>
-window.onload = function() {
-    var divs = document.getElementsByClassName("bot");
-    for (var i = 0; i < divs.length; i++) {
-        divs[i].scrollTop = divs[i].scrollHeight - divs[i].clientHeight;
-    }
-}
-</script>
 
 </body>
 </html>
@@ -344,18 +387,6 @@ func statsHandler(w http.ResponseWriter, r *http.Request, sm *SimManager) {
 		CPUUsage:         int(gomath.Round(usage[0])),
 
 		SimStatus: sm.getSimStatus(),
-	}
-
-	// process logs
-	cmd := exec.Command("jq", `select(.level == "WARN" or .level == "ERROR")|.callstack = .callstack[0]`,
-		sm.lg.LogFile)
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	if err := cmd.Run(); err != nil {
-		stats.Errors = "jq: " + err.Error() + "\n" + stderr.String()
-	} else {
-		stats.Errors = stdout.String()
 	}
 
 	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()

@@ -529,55 +529,46 @@
         "ACK_N_APP": {
       "frequency": 118200,
       "radio_name": "Boston Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "ACK_O_APP": {
         "frequency": 126300,
         "radio_name": "Boston Approach",
-        "scope_char": "O",
         "sector_id": "1O"
       },
       "ACK_Y_APP": {
         "frequency": 119700,
         "radio_name": "Boston Approach",
-        "scope_char": "Y",
         "sector_id": "1Y"
       },
       "ACK_S_APP": {
         "frequency": 133750,
         "radio_name": "Boston Approach",
-        "scope_char": "S",
         "sector_id": "1S"
       },
       "ACK_DEP": {
         "frequency": 126100,
         "radio_name": "Boston Approach",
-        "scope_char": "D",
         "sector_id": "1D"
       },
       "ACK_A_APP": {
         "frequency": 124050,
         "radio_name": "Boston Approach",
-        "scope_char": "A",
         "sector_id": "1A"
       },
       "ACK_TWR": {
         "frequency": 118300,
         "radio_name": "Nantucket Tower",
-        "scope_char": "T",
         "sector_id": "9T"
       },
       "MVY_TWR": {
         "frequency": 121400,
         "radio_name": "Vineyard Tower",
-        "scope_char": "T",
         "sector_id": "6T"
       },
       "BOS_37_CTR": {
         "frequency": 134700,
         "radio_name": "Boston Center",
-        "scope_char": "C",
         "sector_id": "C37",
         "facility_id": "C",
         "eram_facility": true

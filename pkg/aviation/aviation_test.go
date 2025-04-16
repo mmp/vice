@@ -27,9 +27,21 @@ func TestFrequencyFormat(t *testing.T) {
 }
 
 func TestParseSquawk(t *testing.T) {
-	for _, squawk := range []string{"11111", "7778", "0801", "9000"} {
+	for _, squawk := range []string{"", "1", "11111", "7778", "0801", "9000"} {
 		if _, err := ParseSquawk(squawk); err == nil {
 			t.Errorf("Expected error return value for invalid squawk %q", squawk)
+		}
+		if _, err := ParseSquawkOrBlock(squawk); err == nil {
+			t.Errorf("Expected error return value for invalid squawk %q", squawk)
+		}
+	}
+
+	for _, squawk := range []string{"12", "76"} {
+		if _, err := ParseSquawk(squawk); err == nil {
+			t.Errorf("Expected error return value for invalid squawk %q", squawk)
+		}
+		if _, err := ParseSquawkOrBlock(squawk); err != nil {
+			t.Errorf("Unexpected error return value for squawk block %q", squawk)
 		}
 	}
 

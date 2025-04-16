@@ -15,7 +15,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"runtime"
-	"slices"
 	"time"
 
 	"github.com/mmp/imgui-go/v4"
@@ -23,6 +22,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -37,45 +37,25 @@ var (
 		// is released.  mouseConsumerOverride records such a pane.
 		mouseConsumerOverride Pane
 
-		focus WMKeyboardFocus
+		focus KeyboardFocus
 
 		lastAircraftResponse string
 	}
 )
 
-type WMKeyboardFocus struct {
-	initial Pane
-
-	// Pane that currently holds the keyboard focus
+type KeyboardFocus struct {
 	current Pane
-	// Stack of Panes that previously held focus; if a Pane takes focus
-	// temporarily (e.g., the FlightStripPane), then this lets us pop
-	// back to the previous one (e.g., the CLIPane.)
-	stack []Pane
 }
 
-func (f *WMKeyboardFocus) Take(p Pane) {
+func (f *KeyboardFocus) Take(p Pane) {
 	f.current = p
-	f.stack = nil
 }
 
-func (f *WMKeyboardFocus) TakeTemporary(p Pane) {
-	if f.current != p {
-		f.stack = append(f.stack, f.current)
-		f.current = p
-	}
+func (f *KeyboardFocus) Release() {
+	f.current = nil
 }
 
-func (f *WMKeyboardFocus) Release() {
-	if n := len(f.stack); n > 0 {
-		f.current = f.stack[n-1]
-		f.stack = f.stack[:n-1]
-	} else {
-		f.current = f.initial
-	}
-}
-
-func (f *WMKeyboardFocus) Current() Pane {
+func (f *KeyboardFocus) Current() Pane {
 	return f.current
 }
 
@@ -101,8 +81,8 @@ type SplitLine struct {
 
 func (s *SplitLine) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
 func (s *SplitLine) Deactivate()                                                                  {}
-func (s *SplitLine) LoadedSim(*sim.ControlClient, sim.State, platform.Platform, *log.Logger)      {}
-func (s *SplitLine) ResetSim(*sim.ControlClient, sim.State, platform.Platform, *log.Logger)       {}
+func (s *SplitLine) LoadedSim(*server.ControlClient, sim.State, platform.Platform, *log.Logger)   {}
+func (s *SplitLine) ResetSim(*server.ControlClient, sim.State, platform.Platform, *log.Logger)    {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool                                                   { return false }
 func (s *SplitLine) Hide() bool                                                                   { return false }
 
@@ -413,8 +393,8 @@ func wmPaneIsPresent(pane Pane, root *DisplayNode) bool {
 // hierarchy, making sure they don't inadvertently draw over other panes,
 // and providing mouse and keyboard events only to the Pane that should
 // respectively be receiving them.
-func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, controlClient *sim.ControlClient,
-	menuBarHeight float32, audioEnabled *bool, lg *log.Logger) renderer.RendererStats {
+func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, controlClient *server.ControlClient,
+	menuBarHeight float32, lg *log.Logger) renderer.RendererStats {
 	if controlClient == nil {
 		commandBuffer := renderer.GetCommandBuffer()
 		defer renderer.ReturnCommandBuffer(commandBuffer)
@@ -424,9 +404,9 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	var filter func(d *DisplayNode) *DisplayNode
 	filter = func(d *DisplayNode) *DisplayNode {
-		if d.Children[0].Pane != nil && d.Children[0].Pane.Hide() {
+		if d.Children[0] != nil && d.Children[0].Pane != nil && d.Children[0].Pane.Hide() {
 			return filter(d.Children[1])
-		} else if d.Children[1].Pane != nil && d.Children[1].Pane.Hide() {
+		} else if d.Children[1] != nil && d.Children[1].Pane != nil && d.Children[1].Pane.Hide() {
 			return filter(d.Children[0])
 		} else {
 			return d
@@ -434,31 +414,13 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	}
 	root = filter(root)
 
-	getKeyboardPanes := func() []Pane {
-		var kp []Pane
+	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
+		wm.focus.Release()
 		root.VisitPanes(func(p Pane) {
-			if p.CanTakeKeyboardFocus() {
-				kp = append(kp, p)
+			if p.CanTakeKeyboardFocus() && wm.focus.Current() == nil {
+				wm.focus.Take(p)
 			}
 		})
-		return kp
-	}
-
-	if wm.focus.Current() == nil || !wmPaneIsPresent(wm.focus.Current(), root) {
-		kp := getKeyboardPanes()
-		// We want to give it to the STARSPane but have to indirect that by
-		// trying not to give it to the messages pane, since we don't have
-		// visibility into STARSPane here.
-		for _, p := range kp {
-			if _, ok := p.(*MessagesPane); !ok {
-				wm.focus = WMKeyboardFocus{initial: p, current: p}
-				break
-			}
-		}
-		if wm.focus.Current() == nil {
-			focus := kp[0]
-			wm.focus = WMKeyboardFocus{initial: focus, current: focus}
-		}
 	}
 
 	// Useful values related to the display size.
@@ -512,17 +474,6 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 		keyboard = p.GetKeyboard()
 	}
 
-	if keyboard != nil && keyboard.WasPressed(platform.KeyTab) {
-		cur := wm.focus.Current()
-		kp := getKeyboardPanes()
-		if idx := slices.Index(kp, cur); idx == -1 {
-			panic("Current focus pane not found in keyboard panes?")
-		} else {
-			next := kp[(idx+1)%len(kp)]
-			wm.focus.Take(next)
-		}
-	}
-
 	// Actually visit the panes.
 	root.VisitPanesWithBounds(paneDisplayExtent, paneDisplayExtent, p,
 		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
@@ -540,9 +491,9 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				Now:              time.Now(),
 				Lg:               lg,
 				MenuBarHeight:    menuBarHeight,
-				AudioEnabled:     audioEnabled,
 				KeyboardFocus:    &wm.focus,
 				ControlClient:    controlClient,
+				displaySize:      p.DisplaySize(),
 			}
 
 			// Similarly make the mouse events available only to the
@@ -552,9 +503,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 					!io.WantCaptureMouse() &&
 					paneExtent.Inside(mousePos))
 			if ownsMouse {
-				// Full display size, including the menu and status bar.
-				displayTrueFull := math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}}
-				ctx.InitializeMouse(displayTrueFull, p)
+				ctx.InitializeMouse(p)
 			}
 
 			// Specify the scissor rectangle and viewport that
@@ -644,13 +593,13 @@ func Activate(root *DisplayNode, r renderer.Renderer, p platform.Platform, event
 	})
 }
 
-func LoadedSim(root *DisplayNode, client *sim.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func LoadedSim(root *DisplayNode, client *server.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
 		p.LoadedSim(client, state, pl, lg)
 	})
 }
 
-func ResetSim(root *DisplayNode, client *sim.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func ResetSim(root *DisplayNode, client *server.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
 		p.ResetSim(client, state, pl, lg)
 	})

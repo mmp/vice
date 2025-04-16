@@ -1521,7 +1521,7 @@
             },
             "V1": {
                 "runway": "1",
-                "type": "RNAV",
+                "type": "Visual",
                 "full_name": "Visual Approach Runway 1",
                 "waypoints": [
                   "GRILD WETZL N038.59.52.941,W094.36.51.520"
@@ -2432,7 +2432,6 @@
         "KC_46_CTR": {
             "frequency": 127900,
             "radio_name": "Kansas City Center",
-            "scope_char": "C",
             "sector_id": "C46",
             "facility_id": "C",
             "eram_facility": true
@@ -2440,7 +2439,6 @@
         "KC_40_CTR": {
           "frequency": 125250,
           "radio_name": "Kansas City Center",
-          "scope_char": "C",
           "sector_id": "C40",
           "facility_id": "C",
           "eram_facility": true
@@ -2448,7 +2446,6 @@
         "KC_42_CTR": {
           "frequency": 125550,
           "radio_name": "Kansas City Center",
-          "scope_char": "C",
           "sector_id": "C42",
           "facility_id": "C",
           "eram_facility": true
@@ -2456,7 +2453,6 @@
         "KC_48_CTR": {
           "frequency": 127725,
           "radio_name": "Kansas City Center",
-          "scope_char": "C",
           "sector_id": "C48",
           "facility_id": "C",
           "eram_facility": true
@@ -2464,7 +2460,6 @@
         "KC_44_CTR": {
           "frequency": 123800,
           "radio_name": "Kansas City Center",
-          "scope_char": "C",
           "sector_id": "C44",
           "facility_id": "C",
           "eram_facility": true
@@ -2472,79 +2467,66 @@
       "MCI_E_APP": {
         "frequency": 123950,
         "radio_name": "Kansas City Approach",
-        "scope_char": "E",
         "sector_id": "1E"
       },
       "MCI_A_APP": {
         "frequency": 120950,
         "radio_name": "Kansas City Approach",
-        "scope_char": "A",
         "sector_id": "1A"
       },
       "MCI_B_APP": {
         "frequency": 135375,
         "radio_name":"Kansas City Approach",
-        "scope_char": "B",
         "sector_id": "1B"
       },
       "MCI_W_APP": {
         "frequency": 124700,
         "radio_name": "Kansas City Approach",
-        "scope_char": "W",
         "sector_id": "1W"
       },
       "MCI_F_APP": {
         "frequency": 119825,
         "radio_name": "Kansas City Approach",
-        "scope_char": "F",
         "sector_id": "1F"
       },
       "MCI_N_APP": {
         "frequency": 118400,
         "radio_name": "Kansas City Approach",
-        "scope_char": "N",
         "sector_id": "1N"
       },
       "MCI_S_APP": {
         "frequency": 118900,
         "radio_name": "Kansas City Approach",
-        "scope_char": "S",
         "sector_id": "1S"
       },
       "MCI_P_APP": {
         "frequency": 119825,
         "radio_name": "Kansas City Approach",
-        "scope_char": "P",
         "sector_id": "1P"
       },
       "MCI_TWR": {
         "frequency": 128200,
         "radio_name": "International Tower",
-        "scope_char": "T",
         "sector_id": "1T"
       },
       "STJ_TWR": {
         "frequency": 126900,
         "radio_name": "St. Joseph Tower",
-        "scope_char": "J",
         "sector_id": "5J"
       },
       "IXD_TWR": {
         "frequency": 133000,
         "radio_name": "New Century Tower",
-        "scope_char": "C",
         "sector_id": "2C"
       },
       "OJC_TWR": {
         "frequency": 126000,
         "radio_name": "Johnson County Tower",
-        "scope_char": "R",
         "sector_id": "2R"
       },
       "MKC_TWR": {
         "frequency": 133300,
         "radio_name": "Wheeler Tower",
-        "scope_char": "W",
         "sector_id": "4W"
       }
     },

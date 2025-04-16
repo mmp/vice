@@ -202,7 +202,37 @@ func ParseLatLong(llstr []byte) (Point2LL, error) {
 	// files are full of these.
 	if p, ok := tryParseWaypointDotted(llstr); ok {
 		return p, nil
-	} else if strs := reWaypointFloat.FindStringSubmatch(string(llstr)); len(strs) == 3 {
+	}
+
+	// Degrees minutes: 1234N/04321W, etc.
+	if len(llstr) == 12 && (llstr[4] == 'N' || llstr[4] == 'S') &&
+		llstr[5] == '/' && (llstr[11] == 'E' || llstr[11] == 'W') {
+		degmin := func(d, m []byte) (float32, bool) {
+			if deg, err := strconv.Atoi(string(d)); err != nil {
+				return 0, false
+			} else if min, err := strconv.Atoi(string(m)); err != nil {
+				return 0, false
+			} else if min >= 60 {
+				return 0, false
+			} else {
+				return float32(deg) + float32(min)/60, true
+			}
+		}
+		if lat, ok := degmin(llstr[:2], llstr[2:4]); ok {
+			if llstr[4] == 'S' {
+				lat = -lat
+			}
+			if long, ok := degmin(llstr[6:9], llstr[9:11]); ok {
+				if llstr[11] == 'W' {
+					long = -long
+				}
+				return Point2LL{long, lat}, nil
+			}
+		}
+	}
+
+	if strs := reWaypointFloat.FindStringSubmatch(string(llstr)); len(strs) == 3 {
+		var p Point2LL
 		if l, err := strconv.ParseFloat(strs[1], 32); err != nil {
 			return Point2LL{}, err
 		} else {
@@ -237,6 +267,7 @@ func ParseLatLong(llstr []byte) (Point2LL, error) {
 			return sgn * (float32(d) + float32(m)/60 + float32(s)/3600 + float32(f)/3600000), nil
 		}
 
+		var p Point2LL
 		var err error
 		p[1], err = parse(strs[1], strs[2], strs[3], strs[4])
 		if err != nil {
@@ -268,7 +299,7 @@ func Sub2LL(a Point2LL, b Point2LL) Point2LL {
 	return Point2LL(Sub2f(a, b))
 }
 
-// NMDistance2ll returns the distance in nautical miles between two
+// NMDistance2LL returns the distance in nautical miles between two
 // provided lat-long coordinates.
 func NMDistance2LL(a Point2LL, b Point2LL) float32 {
 	// https://www.movable-type.co.uk/scripts/latlong.html
@@ -283,6 +314,12 @@ func NMDistance2LL(a Point2LL, b Point2LL) float32 {
 	dm := R * c // in metres
 
 	return float32(dm * 0.000539957)
+}
+
+// Fast but approximate distance between latlongs.
+func NMDistance2LLFast(a Point2LL, b Point2LL, nmPerLongitude float32) float32 {
+	anm, bnm := LL2NM(a, nmPerLongitude), LL2NM(b, nmPerLongitude)
+	return Distance2f(anm, bnm)
 }
 
 // NMLength2ll returns the length of a vector expressed in lat-long
@@ -308,9 +345,9 @@ func LL2NM(p Point2LL, nmPerLongitude float32) [2]float32 {
 
 // Offset2LL returns the point at distance dist along the vector with heading hdg from
 // the given point. It assumes a (locally) flat earth.
-func Offset2LL(pll Point2LL, hdg float32, dist float32, nmPerLongitude float32) Point2LL {
+func Offset2LL(pll Point2LL, hdg float32, dist float32, nmPerLongitude, magneticVariation float32) Point2LL {
 	p := LL2NM(pll, nmPerLongitude)
-	h := Radians(float32(hdg))
+	h := Radians(float32(hdg - magneticVariation))
 	v := [2]float32{Sin(h), Cos(h)}
 	v = Scale2f(v, float32(dist))
 	p = Add2f(p, v)

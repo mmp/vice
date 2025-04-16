@@ -11,6 +11,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
 )
@@ -71,15 +72,16 @@ type Preferences struct {
 
 	Name string // Name given if it's been saved
 
-	Center math.Point2LL // The default center
-	Range  float32
+	// Radar scope
+	DefaultCenter math.Point2LL `json:"Center"` /* backwards compat */
+	UserCenter    math.Point2LL `json:"CurrentCenter"`
+	UseUserCenter bool
+	Range         float32
 
-	CurrentCenter math.Point2LL
-
-	RangeRingsCenter math.Point2LL
-	RangeRingRadius  int
+	RangeRingsUserCenter math.Point2LL `json:"RangeRingsCenter"`
+	RangeRingRadius      int
 	// Whether we center them at RangeRingsCenter or Center
-	RangeRingsUserCenter bool
+	UseUserRangeRingsCenter bool `json:"RangeRingsUserCenter"`
 
 	// User-supplied text for the SSA list
 	ATIS   string
@@ -123,16 +125,19 @@ type Preferences struct {
 	}
 
 	DisplayLDBBeaconCodes bool // TODO: default?
-	SelectedBeaconCodes   []string
+	SelectedBeacons       []av.Squawk
 
 	// DisplayUncorrelatedTargets bool // NOT USED
 
-	DisableCAWarnings bool
-	DisableMSAW       bool
+	DisableCAWarnings  bool
+	DisableMCIWarnings bool
+	DisableMSAW        bool
 
 	VideoMapVisible map[int]interface{}
 
 	DisplayRequestedAltitude bool
+
+	InhibitPositionSymOnUnassociatedPrimary bool // 4-29
 }
 
 // CommonPreferences stores the STARS preference settings that are
@@ -162,6 +167,9 @@ type CommonPreferences struct {
 
 	OverflightFullDatablocks bool
 	AutomaticFDBOffset       bool
+
+	AutoCursorHome bool
+	CursorHome     [2]float32
 
 	DisplayTPASize               bool
 	DisplayATPAInTrailDist       bool `json:"DisplayATPAIntrailDist"`
@@ -214,9 +222,12 @@ type CommonPreferences struct {
 			Radar               bool
 			Codes               bool
 			SpecialPurposeCodes bool
+			SysOff              bool
 			Range               bool
 			PredictedTrackLines bool
 			AltitudeFilters     bool
+			Intrail             bool
+			Intrail25           bool
 			AirportWeather      bool
 			QuickLookPositions  bool
 			DisabledTerminal    bool
@@ -240,6 +251,7 @@ type CommonPreferences struct {
 		Selection VideoMapsGroup
 	}
 	CRDAStatusList      BasicSTARSList
+	MCISuppressionList  BasicSTARSList
 	TowerLists          [3]BasicSTARSList
 	CoordinationLists   map[string]*CoordinationList
 	RestrictionAreaList BasicSTARSList
@@ -270,10 +282,11 @@ type RestrictionAreaSettings struct {
 
 func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	// Get the scope centered and set the range according to the Sim's initial values.
-	p.Center = ss.GetInitialCenter()
-	p.CurrentCenter = p.Center
-	p.RangeRingsCenter = p.Center
-	p.RangeRingsUserCenter = false
+	p.DefaultCenter = ss.GetInitialCenter()
+	p.UserCenter = p.DefaultCenter
+	p.UseUserCenter = false
+	p.RangeRingsUserCenter = p.DefaultCenter
+	p.UseUserRangeRingsCenter = false
 	p.Range = ss.GetInitialRange()
 
 	p.ATIS = ""
@@ -282,6 +295,8 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	}
 
 	p.RadarSiteSelected = ""
+
+	p.SelectedBeacons = util.DuplicateSlice(ss.ControllerMonitoredBeaconCodeBlocks)
 
 	// Reset CRDA state
 	p.CRDA.RunwayPairState = nil
@@ -296,8 +311,8 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 
 	// Make the scenario's default video maps visible
 	p.VideoMapVisible = make(map[int]interface{})
-	_, defaultVideoMaps := ss.GetControllerVideoMaps()
-	for _, dm := range defaultVideoMaps {
+
+	for _, dm := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(sp.allVideoMaps, func(v av.VideoMap) bool { return v.Name == dm }); idx != -1 {
 			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {
@@ -321,7 +336,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.AudioVolume = 10
 	prefs.AudioEffectEnabled = make([]bool, AudioNumTypes)
 	for i := range AudioNumTypes {
-		prefs.AudioEffectEnabled[i] = true
+		prefs.AudioEffectEnabled[i] = false // These are all non-standard.
 	}
 
 	prefs.VideoMapVisible = make(map[int]interface{})
@@ -402,6 +417,8 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.CRDAStatusList.Position = [2]float32{.05, .7}
 
+	prefs.MCISuppressionList.Position = [2]float32{.8, .1}
+
 	prefs.TowerLists[0].Position = [2]float32{.05, .5}
 	prefs.TowerLists[0].Lines = 5
 
@@ -411,7 +428,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.TowerLists[2].Position = [2]float32{.05, .9}
 	prefs.TowerLists[2].Lines = 5
 
-	prefs.RestrictionAreaList.Position = [2]float32{.85, .575}
+	prefs.RestrictionAreaList.Position = [2]float32{.8, .575}
 
 	prefs.CoordinationLists = make(map[string]*CoordinationList)
 	prefs.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
@@ -541,7 +558,7 @@ func (ps *Preferences) Upgrade(from, to int) {
 		remapBrightness(&ps.Brightness.WxContrast)
 
 		for len(ps.AudioEffectEnabled) < AudioNumTypes {
-			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, true)
+			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, false)
 		}
 	}
 	if from < 27 {
@@ -550,12 +567,13 @@ func (ps *Preferences) Upgrade(from, to int) {
 			ps.SSAList.Filter.Text.GI[i] = true
 		}
 		ps.CoordinationLists = make(map[string]*CoordinationList)
-
-		ps.RangeRingsUserCenter = ps.RangeRingsCenter != ps.Center
 	}
 	if from < 29 {
 		ps.RestrictionAreaList.Position = [2]float32{.8, .575}
 		ps.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
+	}
+	if from < 32 {
+		ps.MCISuppressionList.Position = [2]float32{.8, .1}
 	}
 }
 

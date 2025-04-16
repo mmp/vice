@@ -3,98 +3,15 @@
   "airports": {
     "KBUF": {
       "approaches": {
-        "I23": {
-          "full_name": "ILS Runway 23",
-          "runway": "23",
-          "type": "ILS",
-          "waypoints": [
-            "TRAVA/iaf/a4000 KLUMP/faf/a2300"
-          ]
-        },
-        "Y23": {
-          "full_name": "RNAV Y Runway 23",
-          "runway": "23",
-          "type": "RNAV",
-          "waypoints": [
-            "TRAVA/iaf/a3000+ BERKI/faf/a2300",
-            "TOPKE/iaf/a3000/h325",
-            "WASKI/iaf/a3000/h145"
-      
-          ]
-        },
-        "Z23": {
-          "full_name": "RNAV Z Runway 23",
-          "runway": "23",
-          "type" : "RNAV",
-          "waypoints": [
-            "COZZS/if/a5000/s210 EFFCT/a4000 JEDAR/a3200 ZUDAT/a2600 BIILS/faf/a1800",
-            "WNNGS/if/a4000/s210 JEDAR/a3200 ZUDAT/a2600 BIILS/faf/a1800",
-            "TRAVA/iaf/a2700/h235 BUULS/a2700/s210 BIILS/faf/a1800",
-            "SUSKE/iaf/a5500/h063 BUFST/h063/a5000 FOTBL/a5000/s210 ZADUM/a3900 JABET/a2700 BIILS/faf/a1800",
-            "FOTBL/if/a5000/s210 ZADUM/a3900 JABET/a2700 BIILS/faf/a1800",
-            "BUULS/if/a2700/s210 BIILS/faf/a1800"
-            
-          ]
-        },
-        "I5": {
-          "full_name": "ILS Runway 5",
-          "runway": "5",
-          "type": "ILS",
-          "waypoints": [
-            "ZOBSO/if/a4000 PLAZZ/faf/a2300"
-          ]
-        },
-        "Z5": {
-          "full_name": "RNAV Z Runway 5",
-          "runway": "5",
-          "type": "RNAV",
-          "waypoints": [
-            "GOALS/if/a4000/s210 FORMN/a2400 JAXYN/faf/a1700",
-            "WABUS/iaf/a3500 ONCET/a2600/s210 JAXYN/faf/a1700",
-            "LKERI/if/a4000/s210 EBBED/a2300 JAXYN/faf/a1700",
-            "ROZWL/if/a4000/s210 ZURUS/a2300 JAXYN/faf/a1700",
-            "SNOPO/if/a5000/s210 GLUTE/a3900 FORMN/a2400 JAXYN/faf/a1700"
-
-          ]
-        },
-        "Y5": {
-          "full_name": "RNAV Y Runway 5",
-          "runway": "5",
-          "type": "RNAV",
-          "waypoints": [
-            "WABUS/iaf/a3000 HIRIN/faf/a2400",
-            "RITEE/iaf/a3700 WABUS/if/a3000 HIRIN/faf/a2400 ",
-            "VICCU/iaf WABUS/if/a3000 HIRIN/faf/a2400"
-          ]
-        },
-        "R14": {
-          "full_name": "RNAV Runway 14",
-          "runway": "14",
-          "type": "RNAV",
-          "waypoints": [
-            "DAVVK/iaf WUSOL/if/a3000 JNKAL/faf/a2300",
-            "WUSOL/if/a3000 JNKAL/faf/a2300"
-          ]
-        },
-        "R32": {
-          "full_name": "RNAV Runway 32",
-          "runway": "32",
-          "type": "RNAV",
-          "waypoints": [
-            "ROLSE/iaf WALES/if/a3500 MIRTE/a2900 DEPEW/faf/a2300",
-            "RUPKE/iaf WALES/if/a3500 MIRTE/a2900 DEPEW/faf/a2300",
-            "WALES/iaf/a3500 MIRTE/a2900 DEPEW/faf/a2300"
-          ]
-        },
-        "I32": {
-          "full_name": "ILS Runway 32",
-          "runway": "32",
-          "type": "ILS",
-          "waypoints": [
-            "GEE/iaf KATEC/a3500 ELMMA/if DEPEW/a2300 WUDUB/faf/a1540",
-            "ELMMA/iaf DEPEW/a2300 WUDUB/faf/a1540"
-          ]
-        }
+        "I23": { "cifp_id": "I23" },
+        "Y23": { "cifp_id": "RY23" },
+        "Z23": { "cifp_id": "RZ23" },
+        "I5": { "cifp_id": "I5" },
+        "Z5": { "cifp_id": "RZ5" },
+        "Y5": { "cifp_id": "RY5" },
+        "R14": { "cifp_id": "R14" },
+        "R32": { "cifp_id": "R32" },
+        "I32": { "cifp_id": "I32" }
       },
       "departure_routes": {
         "23": {
@@ -380,62 +297,13 @@
     },
     "KIAG": {
       "approaches": {
-            "R6": {
-              "full_name": "RNAV Runway 6",
-              "runway": "6",
-              "type": "RNAV",
-              "waypoints": [
-                "WOTGU/iaf/a3300 YULUC/faf/a2300 ZEXOD"
-              ]
-            },
-            "R0L": {
-              "full_name": "RNAV Runway 10L",
-              "runway": "10L",
-              "type": "RNAV",
-              "waypoints": [
-                "WINUD/iaf/a3100 UGOCO/faf/a2300 WURSI ZUKDU"
-              ]
-            },
-            "Z24": {
-              "runway": "24",
-              "full_name": "RNAV Z Runway 24",
-              "type": "RNAV",
-              "waypoints": [
-                "ZUPUV/iaf/a3600 WUVBI/faf/a2300 YEPNU"
-              ]
-            },
-            "Y24": {
-              "runway": "24",
-              "full_name": "RNAV Y Runway 24",
-              "type": "RNAV",
-              "waypoints": [
-                "ZUPUV/iaf/a3600 WUVBI/faf/a2300"
-              ]
-            },
-            "Y8R": {
-              "runway": "28R",
-              "full_name": "ILS Y Runway 28R",
-              "type": "ILS",
-              "waypoints": [
-                "KATHI/faf/a2000"
-              ]
-            },
-            "Z8R": {
-              "runway": "28R",
-              "full_name": "ILS Z Runway 28R",
-              "type": "ILS",
-              "waypoints": [
-                "DIONE/iaf/a2200 KATHI/faf/a2000"
-              ]
-            },
-            "R8R": {
-              "runway": "28R",
-              "full_name": "RNAV Runway 28R",
-              "type": "RNAV",
-              "waypoints": [
-                "CUVTU/iaf/a3100 APIWO/faf/a2300 KIGUW"
-              ]
-            }
+        "R6": { "cifp_id": "R6" },
+        "R0L": { "cifp_id": "R10L" },
+        "Z24": { "cifp_id": "RZ24" },
+        "Y24": { "cifp_id": "RY24" },
+        "Y8R": { "cifp_id": "IY28R" },
+        "Z8R": { "cifp_id": "IZ28R" },
+        "R8R": { "cifp_id": "R28R" }
       },
       "departure_routes": {
       "28R": {
@@ -821,9 +689,8 @@
       "eram_facility": true,
       "frequency": 125425,
       "radio_name": "Cleveland Center",
-      "scope_char": "C",
       "facility_id": "C",
-      "sector_id": "66"
+      "sector_id": "C66"
     },
     "BUF_TWR": {
       "frequency": 120500,
@@ -834,37 +701,31 @@
     "BUF_E_APP": {
       "frequency": 126150,
       "radio_name": "Buffalo Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "BUF_W_APP": {
       "frequency": 126500,
       "radio_name": "Buffalo Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "BUF_F_APP": {
       "frequency": 123800,
       "radio_name": "Buffalo Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "BUF_X_APP": {
       "frequency": 120050,
       "radio_name": "Buffalo Approach",
-      "scope_char": "X",
       "sector_id": "1X"
     },
     "IAG_TWR": {
       "frequency": 118500,
       "radio_name": "Niagara Tower",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "TOR_CTR": {
       "frequency": 128800,
       "radio_name": "Toronto Departure",
-      "scope_char": "T",
       "sector_id": "2T"
     }
   },

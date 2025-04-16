@@ -398,7 +398,7 @@
                     "exit": "CRE",
                     "destination": "KHPN",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
                     "airlines": [
                         {
                             "icao": "JBU",
@@ -518,7 +518,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -638,7 +638,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 33000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -950,7 +950,7 @@
                     "exit": "CRE",
                     "destination": "KHPN",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
                     "airlines": [
                         {
                             "icao": "JBU",
@@ -1034,7 +1034,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 35000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -1118,7 +1118,7 @@
                     "exit": "CRE",
                     "destination": "KJFK",
                     "altitude": 33000,
-                    "route": "PLMTO3 CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
+                    "route": "PLMTO3 CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE CAMRN4",
                     "airlines": [
                         {
                             "icao": "EDV",
@@ -1170,7 +1170,7 @@
                     "runway": "9",
                     "type": "ILS",
                     "waypoints": [
-                        "GIBLE/a1700 JOBOP/a1600"
+                        "GIBLE/a1700/hilpt/if/iaf JOBOP/a1600/faf"
                     ]
                 },
                 "R9": {
@@ -1269,7 +1269,7 @@
                     "exit": "CRE",
                     "destination": "KHPN",
                     "altitude": 33000,
-                    "route": "KMBEE2 KMBEE CRE LAANA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
+                    "route": "KMBEE2 KMBEE CRE LANNA Q109 DFENC SAWED Q97 BYSEL RADDS SIE BOUNO5",
                     "airlines": [
                         {
                             "icao": "TWY"
@@ -1570,7 +1570,6 @@
             "radio_name": "Jacksonville Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C74"
         },
         "JAX_72_CTR": {
@@ -1578,7 +1577,6 @@
             "radio_name": "Jacksonville Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C72"
         },
         "JAX_73_CTR": {
@@ -1586,38 +1584,32 @@
             "radio_name": "Jacksonville Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C73"
         },
         "SAV_N_APP": {
             "frequency": 125300,
             "radio_name": "Savannah Approach",
             "facility_id": "5",
-            "scope_char": "N",
             "sector_id": "1N"
         },
         "CHS_TWR": {
             "frequency": 126000,
             "radio_name": "Charleston Tower",
-            "scope_char": "T",
             "sector_id": "1T"
         },
         "JZI_TWR": {
             "frequency": 122800,
             "radio_name": "Executive Tower",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "CHS_W_APP": {
             "frequency": 120700,
             "radio_name": "Charleston Approach",
-            "scope_char": "W",
             "sector_id": "1W"
         },
         "CHS_E_APP": {
             "frequency": 121275,
             "radio_name": "Charleston Approach",
-            "scope_char": "E",
             "sector_id": "1E"
         }
     },

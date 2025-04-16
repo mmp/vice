@@ -6,115 +6,96 @@
             "radio_name": "Houston Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
             "sector_id": "C81"
         },
         "I90_DEP": {
             "frequency": 132250,
             "radio_name": "Houston Departure",
-            "scope_char": "M",
             "sector_id": "1M"
         },
         "I90_R_APP": {
             "frequency": 119700,
             "radio_name": "Houston Approach",
-            "scope_char": "R",
             "sector_id": "1R"
         },
         "I90_P_APP": {
             "frequency": 123800,
             "radio_name": "Houston Approach",
-            "scope_char": "P",
             "sector_id": "1P"
         },
         "I90_N_APP": {
             "frequency": 124350,
             "radio_name": "Houston Approach",
-            "scope_char": "N",
             "sector_id": "1N"
         },
         "I90_X_APP": {
             "frequency": 119175,
             "radio_name": "Houston Approach",
-            "scope_char": "X",
             "sector_id": "1X"
         },
         "I90_U_APP": {
             "frequency": 134300,
             "radio_name": "Houston Approach",
-            "scope_char": "U",
             "sector_id": "1U"
         },
         "I90_T_APP": {
             "frequency": 127475,
             "radio_name": "Houston Approach",
-            "scope_char": "T",
             "sector_id": "1T"
         },
         "I90_Z_APP": {
             "frequency": 124225,
             "radio_name": "Houston Approach",
-            "scope_char": "Z",
             "sector_id": "1Z"
         },
         "I90_B_APP": {
             "frequency": 134450,
             "radio_name": "Houston Approach",
-            "scope_char": "B",
             "sector_id": "1B"
         },
         "I90_J_APP": {
             "frequency": 121300,
             "radio_name": "Houston Approach",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "I90_D_APP": {
             "frequency": 120050,
             "radio_name": "Houston Approach",
-            "scope_char": "D",
             "sector_id": "1D"
         },
         "I90_G_APP": {
             "frequency": 119625,
             "radio_name": "Houston Approach",
-            "scope_char": "G",
             "sector_id": "1G"
         },
         "I90_H_APP": {
             "frequency": 133050,
             "radio_name": "Houston Approach",
-            "scope_char": "H",
             "sector_id": "1H"
         },
         "I90_A_APP": {
             "frequency": 119100,
             "radio_name": "Houston Approach",
-            "scope_char": "A",
             "sector_id": "1A"
         },
         "I90_I_APP": {
             "frequency": 120650,
             "radio_name": "Houston Approach",
-            "scope_char": "I",
             "sector_id": "1I"
         },
         "I90_O_APP": {
             "frequency": 134000,
             "radio_name": "Houston Approach",
-            "scope_char": "O",
             "sector_id": "1O"
         },
         "IAH_C_TWR": {
             "frequency": 125350,
             "radio_name": "Houston Tower",
-            "scope_char": "Z",
             "sector_id": "4Z"
         },
         "HOU_TWR": {
             "frequency": 118700,
             "radio_name": "Hobby Tower",
-            "scope_char": "O",
             "sector_id": "4O"
         },
         "SGR_TWR": {
@@ -156,71 +137,15 @@
     },
     "airports": {
         "KIAH": {
-            "approaches": {
-                "I5R": {
-                    "runway": "15R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "DUCOZ/a3000+/iaf GRAAF/a3000+/if VETTE/a3000+ JAKPO/a2000+"
-                    ]
-                },
-                "I6L": {
-                    "runway": "26L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BOZZZ/a8000/s210/iaf VANNN/a7000+/s210 MKAYE/a7000+ GRIEG/a5000+/if KERNS/a3000+ JEPNI/a2000+",
-                        "GARRR/a7000/iaf VANNN/a7000+/s210 MKAYE/a7000+ GRIEG/a5000+/if KERNS/a3000+ JEPNI/a2000+",
-                        "VANNN/a7000+/s210/iaf MKAYE/a7000+ GRIEG/a5000+/if KERNS/a3000+ JEPNI/a2000+"
-                    ]
-                },
-                "I6R": {
-                    "runway": "26R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "HOOTI/a6000/s210/iaf GRIZL/a6000+ ZAPPO/a5000+ NEWLY/a5000+ RAIDS/a4000+/if CHUBS/a3000+ OWELL/a2000+",
-                        "ZAPPO/a5000+/iaf NEWLY/a5000+ RAIDS/a4000+/if CHUBS/a3000+ OWELL/a2000+"
-                    ]
-                },
-                "I27": {
-                    "runway": "27",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CLSIK/a4000/s210/iaf GRUNG/a4000+ SILLS/a4000 TRANN/a3000+ DENTO/a2000+/if FESTA/a2000+ REDOC/a1500+",
-                        "RDFSH/a6000/s210/iaf GEYGR/a4000 SYYKO/a3000 TRANN/a3000+ DENTO/a2000+/if FESTA/a2000+ REDOC/a1500+",
-                        "SILLS/a4000/iaf TRANN/a3000+ DENTO/a2000+/if FESTA/a2000+ REDOC/a1500+"
-                    ]
-                },
-                "I3R": {
-                    "runway": "33R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "DUDMY/a2000+/faf JOLTE/a1600+"
-                    ]
-                },
-                "I8L": {
-                    "runway": "8L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "GUSHR/a6000/s210/iaf BEPEA/a4000+ LIMEE/a3000 KABBY/a3000+ KICKM/a3000+/if FLIBZ/a3000+ JACEN/a2000+",
-                        "MAAKO/iaf KABBY/a3000+ KICKM/a3000+/if FLIBZ/a3000+ JACEN/a2000+"
-                    ]
-                },
-                "I8R": {
-                    "runway": "8R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "LASSY/a7000+/s210/iaf DPLOY/a7000+ JELLI/a5000+/if REIGN/a4000+ EELPO/a3000+ MATON/a2000+",
-                        "TTORO/a8000/s210/iaf BGBUK/a7000+ LASSY/a7000+ DPLOY/a7000+ JELLI/a5000+/if REIGN/a4000+ EELPO/a3000+ MATON/a2000+",
-                        "WDLNS/a7000/s210/iaf POLLN/a7000+ DPLOY/a7000+ JELLI/a5000+/if REIGN/a4000+ EELPO/a3000+ MATON/a2000+"
-                    ]
-                },
-                "I9": {
-                    "runway": "9",
-                    "type": "ILS",
-                    "waypoints": [
-                        "URANG/a5000+/iaf CHILT/a5000+ MEDIC/a4000+/if DOHNN/a4000+ SAYNO/a3000+ HYWAY/a2000+"
-                    ]
-                }
+          "approaches": {
+            "I5R": { "cifp_id": "I15R" },
+            "I6L": { "cifp_id": "I26L" },
+            "I6R": { "cifp_id": "I26R" },
+            "I27": { "cifp_id": "I27" },
+            "I3R": { "cifp_id": "I33R" },
+            "I8L": { "cifp_id": "I8L" },
+            "I8R": { "cifp_id": "I8R" },
+            "I9": { "cifp_id": "I9" }
             },
             "departure_routes": {
                 "15L": {
@@ -911,34 +836,10 @@
         },
         "KHOU": {
             "approaches" : {
-                "I3R": {
-                    "runway": "13R",
-                    "type": "ILS",
-                    "waypoints": [
-                        "JABBS/a2000+ ROYCE/a2000+/faf"
-                    ]
-                },
-                "I1L": {
-                    "runway": "31L",
-                    "type": "ILS",
-                    "waypoints": [
-                        "BUNER/a4000+ LESLO/a2100+/faf"
-                    ]
-                },
-                "I4": {
-                    "runway": "4",
-                    "type": "ILS",
-                    "waypoints": [
-                        "GEEEO/a6000/s210/iaf CARCO/a4000+/if ELREN/a2000+ ESAAY/a1500+"
-                    ]
-                },
-                "R22": {
-                    "runway": "22",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "KAFDO/a2000+ AVVOS/a1600+/faf"
-                    ]
-                }
+              "I3R": { "cifp_id": "I13R" },
+              "I1L": { "cifp_id": "I31L" },
+              "I4": { "cifp_id": "I4" },
+              "R22": { "cifp_id": "R22" }
             },
             "departure_routes": {
                 "22": {
@@ -1254,21 +1155,8 @@
         },
         "KSGR": {
             "approaches": {
-                "R17": {
-                    "runway": "17",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "BASGE/iaf EBOKE/a2000+/if CASOB/a2000+",
-                        "DIZGY/iaf EBOKE/a2000+/if CASOB/a2000+"
-                    ]
-                },
-                "R35": {
-                    "runway": "35",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "YEYUS/iaf CAPEK/a2000+/if HULLO/a1800+"
-                    ]
-                }
+              "R17": { "cifp_id": "R17" },
+              "R35": { "cifp_id": "R35" }
             },
             "departure_routes": {
                 "17": {
@@ -1354,21 +1242,8 @@
         },
         "KGLS": {
             "approaches": {
-                "I14": {
-                    "runway": "14",
-                    "type": "ILS",
-                    "waypoints": [
-                        "VUH SWANE/a1800+/lpt4510.0nm/pta1800/iaf"
-                    ]
-                },
-                "R32": {
-                    "runway": "32",
-                    "type": "RNAV",
-                    "waypoints": [
-                        "KICET/iaf IDIYE/a2000+/if HUDIP/a1800+ JEREM/a900+",
-                        "YUCUT/iaf IDIYE/a2000+/if HUDIP/a1800+ JEREM/a900+"
-                    ]
-                }
+              "I14": { "cifp_id": "I14" },
+              "R32": { "cifp_id": "R32" }
             },
             "departure_routes": {
                 "14": {

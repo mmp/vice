@@ -3,49 +3,11 @@
   "airports": {
     "KPIT": {
       "approaches": {
-        "I0L": {
-          "full_name": "ILS Runway 10L",
-          "runway": "10L",
-          "type": "ILS",
-          "waypoints": [
-            "STOWI/iaf/a4000 RACOO/faf/a3000"
-          ]
-        },
-        "I0R": {
-          "full_name": "ILS Runway 10R",
-          "runway": "10R",
-          "type": "ILS",
-          "waypoints": [
-            "MUFTI/iaf WIILE/a4000 STARG/faf/a3000"
-          ]
-        },
-        "I8L": {
-          "full_name": "ILS Runway 28L",
-          "runway": "28L",
-          "type" : "ILS",
-          "waypoints": [
-            "COSLU/iaf/a4000 HALIN/a4000 PITTZ/faf/a3000",
-            "PEETE/iaf COSLU/if/a4000 HALIN/a4000 PITTZ/faf/a3000"
-          ]
-        },
-        "I8R": {
-          "full_name": "ILS Runway 28R",
-          "runway": "28R",
-          "type" : "ILS",
-          "waypoints": [
-            "KERRS/iaf/a5000 COFEE/a4000 ZAIKO/a3000 DOPNE/faf/a2300",
-            "NASTY/iaf/a6000 KERRS/if/a5000 COFEE/a4000 ZAIKO/a3000 DOPNE/faf/a2300"
-          ]
-        },
-      "I32": {
-        "full_name": "ILS Runway 32",
-        "runway": "32",
-        "type" : "ILS",
-        "waypoints": [
-          "GRUNZ/iaf/a6000 WYLER/if/a4000 TRINY/a2500 ZANTA/faf/a1760",
-          "AGC/iaf/a4000 WYLER/if/a4000 TRINY/a2500 ZANTA/faf/a1760"
-        ]
-      }
+        "I0L": { "cifp_id": "I10L" },
+        "I0R": { "cifp_id": "I10R" },
+        "I8L": { "cifp_id": "I28L" },
+        "I8R": { "cifp_id": "I28R" },
+        "I32": { "cifp_id": "I32" }
       },
       "approach_regions": {
         "28C": {
@@ -568,22 +530,8 @@
     },
     "KAGC": {
       "approaches": {
-            "I10": {
-              "full_name": "ILS Runway 10",
-              "runway": "10",
-              "type": "ILS",
-              "waypoints": [
-                "HYETO/iaf/a3000 SHANS/faf/a3000"
-              ]
-            },
-            "I28": {
-              "full_name": "ILS Runway 28",
-              "runway": "28",
-              "type": "ILS",
-              "waypoints": [
-                "GUGTE/iaf/a3000 HULDO/faf/a2500"
-              ]
-            }
+        "I10": { "cifp_id": "I10" },
+        "I28": { "cifp_id": "I28" }
       },
       "departure_routes": {
       "28": {
@@ -1140,44 +1088,37 @@
       "frequency": 126950,
       "radio_name": "Cleveland Center",
       "facility_id": "C",
-      "scope_char": "C",
-      "sector_id": "55"
+      "sector_id": "C55"
     },
     "PIT_TWR": {
       "frequency": 120500,
       "radio_name": "Pittsburgh Tower",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "PIT_D_APP": {
       "frequency": 123950,
       "radio_name": "Pittsburgh Approach",
       "default_airport": "KPIT",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "PIT_B_APP": {
       "frequency": 124150,
       "radio_name": "Pittsburgh Approach",
-      "scope_char": "B",
       "sector_id": "1B"
     },
     "PIT_S_DEP": {
       "frequency": 119350,
       "radio_name": "Pittsburgh Departure",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "PIT_N_DEP": {
       "frequency": 124750,
       "radio_name": "Pittsburgh Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "AGC_TWR": {
       "frequency": 121100,
       "radio_name": "Allegheny Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     }
   },

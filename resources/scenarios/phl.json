@@ -1,19 +1,25 @@
 {
   "tracon": "PHL",
   "airports": {
+    "KTTN": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KILG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KDYL": { "vfr": { "random_routes": { "rate": 5 } } },
+    "19N": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KAPG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KMIV": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPTW": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KOQN": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KLNS": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KXLL": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KRDG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KESN": { "vfr": { "random_routes": { "rate": 5 } } },
     "KPHL": {
       "name": "Philadelphia",
       "approaches": {
         "17Z": { "cifp_id": "IZ17" },
         "27L": { "cifp_id": "I27L" },
         "27R": { "cifp_id": "I27R" },
-        "9RZ": {
-          "runway": "9R",
-          "type": "ILS",
-          "waypoints": [
-            "MXE/iaf BWINE/if/a4000 ASOCI/a3000 KELEE/faf/a1800 BALDN/a740"
-          ]
-        },
+        "9RZ": { "cifp_id": "IZ9R" },
         "RVR": {
           "full_name": "River Visual Runway 9 Right",
           "runway": "9R",
@@ -387,7 +393,7 @@
           "altitude": 4000,
           "destination": "KABE",
           "exit": "FJC",
-          "route": "FJC ABE"
+          "route": "FJC"
         },
         {
           "airlines": [
@@ -5165,7 +5171,6 @@
     "Allentown Arrival Radar": {
       "frequency": 119650,
       "radio_name": "Allentown approach",
-      "scope_char": "F",
       "sector_id": "1A",
       "facility_id": "4"
     },
@@ -5180,28 +5185,24 @@
     "HAARP": {
       "frequency": 120800,
       "radio_name": "New York approach",
-      "scope_char": "V",
       "sector_id": "1V",
       "facility_id": "1"
     },
     "Yardley": {
       "frequency": 128550,
       "radio_name": "New York approach",
-      "scope_char": "P",
       "sector_id": "4P",
       "facility_id": "1"
     },
     "LGA Departure": {
       "frequency": 120400,
       "radio_name": "New York departure",
-      "scope_char": "L",
       "sector_id": "1L",
       "facility_id": "1"
     },
     "NY Center (Lancaster 26)": {
       "frequency": 120025,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N26",
       "facility_id": "C",
       "eram_facility": true
@@ -5209,7 +5210,6 @@
     "NY Center (Kennedy 56)": {
       "frequency": 125325,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N56",
       "facility_id": "C",
       "eram_facility": true
@@ -5217,7 +5217,6 @@
     "NY Center (Elmira 34)": {
       "frequency": 132175,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N34",
       "facility_id": "C",
       "eram_facility": true
@@ -5225,7 +5224,6 @@
     "NY Center (MANTA 66)": {
       "frequency": 133500,
       "radio_name": "New York center",
-      "scope_char": "C",
       "sector_id": "N66",
       "facility_id": "C",
       "eram_facility": true

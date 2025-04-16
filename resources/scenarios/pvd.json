@@ -2,26 +2,13 @@
     "tracon": "PVD",
       "airports": {
         "KPVD": {
-		  "hold_for_release": true,
+	  "hold_for_release": true,
           "approaches": {
-            "I23": {
-              "runway": "23",
-              "type": "ILS",
-              "waypoints": [
-                "FEDED/a2100+/if CUSKA/a2000+ WIVPA/a700+"
-              ]
-            },
+            "I23": { "cifp_id": "I23" },
             "I5": {
               "cifp_id": "I5"
             },
-			
-			"I34":{
-				"runway": "34",
-				"type": "ILS",
-				"waypoints": [
-				"BEVIN/a1900+/iaf ALLEY/a600+"
-				]
-			}
+	    "I34":{ "cifp_id": "I34" }
           },
           "departure_routes": {
             "23": {
@@ -76,22 +63,10 @@
           "tower_list": 1
         },
         "KOQU": {
-		 "hold_for_release": true,
+	  "hold_for_release": true,
           "approaches": {
-            "I16": {
-              "runway": "16",
-              "type": "ILS",
-              "waypoints": [
-                "FOSTY/iaf SALME/a2200+/if FALAG/a2000+"
-              ]
-            },
-            "R34": {
-              "runway": "34",
-              "type": "RNAV",
-              "waypoints": [
-                "BADTA/iaf COSAX/a1500+ CONEZ/a1500+ HULEM/a800+"
-              ]
-            }
+            "I16": { "cifp_id": "I16" },
+            "R34": { "cifp_id": "R34" }
           },
           "departure_routes": {
             "16": {
@@ -148,9 +123,8 @@
           }
         },
         "KEWB": {
-	      "hold_for_release": true,
+	  "hold_for_release": true,
           "approaches": {
-
           },
 
           "departure_routes": {
@@ -509,7 +483,6 @@
         "C18": {
           "frequency": 128750,
           "radio_name": "Boston Center",
-          "scope_char": "C",
           "sector_id": "C18",
           "facility_id": "C",
           "eram_facility": true
@@ -517,7 +490,6 @@
         "C32": {
           "frequency": 135800,
           "radio_name": "Boston Center",
-          "scope_char": "C",
           "sector_id": "C32",
           "facility_id": "C",
           "eram_facility": true
@@ -525,7 +497,6 @@
         "C34": {
           "frequency": 124850,
           "radio_name": "Boston Center",
-          "scope_char": "C",
           "sector_id": "C34",
           "facility_id": "C",
           "eram_facility": true
@@ -533,7 +504,6 @@
         "C42": {
           "frequency": 133420,
           "radio_name": "Boston Center",
-          "scope_char": "C",
           "sector_id": "C42",
           "facility_id": "C",
           "eram_facility": true
@@ -541,25 +511,21 @@
         "1A": {
           "frequency": 127900,
           "radio_name": "Providence Approach",
-          "scope_char": "A",
           "sector_id": "1A"
         },
-		"1D": {
+	"1D": {
           "frequency": 123675,
           "radio_name": "Providence Approach",
-          "scope_char": "D",
           "sector_id": "1D"
         },
         "PVD_TWR": {
           "frequency": 120700,
           "radio_name": "Providence Tower",
-          "scope_char": "T",
           "sector_id": "1T"
         },
         "OQU_TWR": {
           "frequency": 125650,
           "radio_name": "Quonset Tower",
-          "scope_char": "Q",
           "sector_id":  "1Q"
         }
       },

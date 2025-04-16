@@ -3,88 +3,15 @@
   "airports": {
     "KBHM": {
       "approaches": {
-        "I24": {
-          "runway": "24",
-          "type": "ILS",
-          "waypoints": [
-            "SPATT/iaf/a4000 HUKEV/a2700 LOWGA/faf/a2200 CUXOB/a1740"
-          ]
-        },
-        "Y24": {
-          "full_name": "RNAV Y Runway 24",
-          "runway": "24",
-          "type": "RNAV",
-          "waypoints": [
-            "SPATT/iaf/a3300 HUKEV/a2700 LOWGA/a2200 CUXOB/a1740"
-          ]
-        },
-        "Z24": {
-          "full_name": "RNAV Z Runway 24",
-          "runway": "24",
-          "type" : "RNAV",
-          "waypoints": [
-            "MREKK/iaf/a6000 SPATT/if/a4000 HUKEV/a2700 LOWGA/a2200",
-            "MOKEE NOCIM LOWGA/faf/a2200",
-            "VLKNN/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200",
-            "HESGA/a3000 MOPVE/a2500 ERIGE/a2200 LOWGA/s180/a2200"
-          ]
-        },
-        "I6": {
-          "runway": "6",
-          "type": "ILS",
-          "waypoints": [
-            "OKW/a3000 GUFLO/if/a2600 CEMPO/a2200"
-          ]
-        },
-        "Z6": {
-          "full_name": "RNAV Z Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "GUFLO/if/a2300 LELNE/faf/a2300",
-            "CRMSN/a9000 JAVJA/a6000 WOSIX/a4000 GUFLO/a2300 LELNE/faf/a2300",
-            "VLKNN/iaf/a3000 AYUCE/s180/a3000 CEWFA/s180/a2300 LELNE/faf/a2300",
-            "WENDO/a6000 MREKK/iaf/a4000 EMIZI/if/s180/a3000 AYUCE/s180/a2300 CEWFA/s180/a2300 LELNE/faf/s180/a2300",
-            "BAMTE/if/s180/a3000 RAVPE/s180/a2300 LELNE/faf/a2300"
-          ]
-        },
-        "Y6": {
-          "full_name": "RNAV Y Runway 6",
-          "runway": "6",
-          "type": "RNAV",
-          "waypoints": [
-            "OKW/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200",
-            "HEENA/iaf/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200",
-            "RIMZO/a3000 GUFLO/if/a3000 CEMPO/a2600 JUSGO/faf/a2200"
-          ]
-        },
-        "G18": {
-          "full_name": "RNAV GPS Runway 18",
-          "runway": "18",
-          "type": "RNAV",
-          "waypoints": [
-            "CAPUN/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300",
-            "ALEPE/iaf/a3500 COLIG/if/a3500 BIDPE/a2600 BASKN/faf/a2300",
-            "COLIG/iaf/a3500 BIDPE/a2600 BASKN/faf/a2300"
-          ]
-        },
-        "G36": {
-          "full_name": "RNAV GPS Runway 36",
-          "runway": "36",
-          "type": "RNAV",
-          "waypoints": [
-            "OKW/a3000 JAPAM/iaf/a3000 GOTBY/if/a3000 IMOBY/a2800 BERFY/a2300",
-            "GOTBY/iaf/a3000 IMOBY/a2800 BERFY/a2300"
-          ]
-        },
-        "I18": {
-          "full_name": "LOC Runway 18",
-          "runway": "18",
-          "type": "ILS",
-          "waypoints": [
-            "COLIG/iaf/a3500 BASKN/faf/a2300 IMTOY/a1380"
-          ]
-        }
+        "I24": { "cifp_id": "I24" },
+        "Y24": { "cifp_id": "RY24" },
+        "Z24": { "cifp_id": "RZ24" },
+        "I6": { "cifp_id": "I6" },
+        "Z6": { "cifp_id": "RZ6" },
+        "Y6": { "cifp_id": "RY6" },
+        "G18": { "cifp_id": "R18" },
+        "G36": { "cifp_id": "R36" },
+        "I18": { "cifp_id": "L18" }
       },
       "departure_routes": {
         "24": {
@@ -789,7 +716,6 @@
     "ATL_CTR": {
       "frequency": 132975,
       "radio_name": "Atlanta Center",
-      "scope_char": "C",
       "sector_id": "C43",
       "facility_id": "C",
       "eram_facility": true
@@ -811,31 +737,26 @@
     "BHM_N_APP": {
       "frequency": 127670,
       "radio_name": "Birmingham Approach",
-      "scope_char": "N",
       "sector_id": "1N"
     },
     "BHM_S_APP": {
       "frequency": 123800,
       "radio_name": "Birmingham Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "BHM_W_APP": {
       "frequency": 120150,
       "radio_name": "Birmingham Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "BHM_E_APP": {
       "frequency": 120050,
       "radio_name": "Birmingham Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "BHM_F_APP": {
       "frequency": 126150,
       "radio_name": "Birmingham Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     }
   },

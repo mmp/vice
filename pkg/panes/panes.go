@@ -5,7 +5,6 @@
 package panes
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -14,6 +13,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -27,10 +27,10 @@ type Pane interface {
 	Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger)
 
 	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
-	LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
 
 	// ResetSim is called when a brand new Sim is launched
-	ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
 	Hide() bool
@@ -42,11 +42,8 @@ type UIDrawer interface {
 	DrawUI(p platform.Platform, config *platform.Config)
 }
 
-type KeyboardFocus interface {
-	Take(p Pane)
-	TakeTemporary(p Pane)
-	Release()
-	Current() Pane
+type InfoWindowDrawer interface {
+	DrawInfo(c *server.ControlClient, p platform.Platform, lg *log.Logger)
 }
 
 type PaneUpgrader interface {
@@ -83,27 +80,47 @@ type Context struct {
 	Lg        *log.Logger
 
 	MenuBarHeight float32
-	AudioEnabled  *bool
 
-	KeyboardFocus KeyboardFocus
+	KeyboardFocus *KeyboardFocus
 
-	ControlClient *sim.ControlClient
+	ControlClient *server.ControlClient
+
+	// Full display size, including the menu and status bar.
+	displaySize [2]float32
 }
 
-func (ctx *Context) InitializeMouse(fullDisplayExtent math.Extent2D, p platform.Platform) {
+func (ctx *Context) InitializeMouse(p platform.Platform) {
 	ctx.Mouse = p.GetMouse()
 
-	// Convert to pane coordinates:
-	// platform gives us the mouse position w.r.t. the full window, so we need
-	// to subtract out displayExtent.p0 to get coordinates w.r.t. the
-	// current pane.  Further, it has (0,0) in the upper left corner of the
-	// window, so we need to flip y w.r.t. the full window resolution.
-	ctx.Mouse.Pos[0] = ctx.Mouse.Pos[0] - ctx.PaneExtent.P0[0]
-	ctx.Mouse.Pos[1] = fullDisplayExtent.P1[1] - 1 - ctx.PaneExtent.P0[1] - ctx.Mouse.Pos[1]
-
+	ctx.Mouse.Pos = ctx.WindowToPane(ctx.Mouse.Pos)
 	// Negate y to go to pane coordinates
+	ctx.Mouse.DeltaPos[1] *= -1
 	ctx.Mouse.Wheel[1] *= -1
 	ctx.Mouse.DragDelta[1] *= -1
+}
+
+func (ctx *Context) SetMousePosition(p [2]float32) {
+	ctx.Mouse.Pos = p
+	ctx.Platform.SetMousePosition(ctx.PaneToWindow(p))
+}
+
+// Convert to pane coordinates:
+// platform gives us the mouse position w.r.t. the full window, so we need
+// to subtract out displayExtent.p0 to get coordinates w.r.t. the
+// current pane.  Further, it has (0,0) in the upper left corner of the
+// window, so we need to flip y w.r.t. the full window resolution.
+func (ctx *Context) WindowToPane(p [2]float32) [2]float32 {
+	return [2]float32{
+		p[0] - ctx.PaneExtent.P0[0],
+		ctx.displaySize[1] - 1 - ctx.PaneExtent.P0[1] - p[1],
+	}
+}
+
+func (ctx *Context) PaneToWindow(p [2]float32) [2]float32 {
+	return [2]float32{
+		p[0] + ctx.PaneExtent.P0[0],
+		-(p[1] - ctx.displaySize[1] + 1 + ctx.PaneExtent.P0[1]),
+	}
 }
 
 func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
@@ -147,16 +164,14 @@ func NewEmptyPane() *EmptyPane { return &EmptyPane{} }
 
 func init() {
 	RegisterUnmarshalPane("EmptyPane", func(d []byte) (Pane, error) {
-		var p EmptyPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
+		return &EmptyPane{}, nil // nothing to unmarshal
 	})
 }
 
 func (ep *EmptyPane) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
-func (ep *EmptyPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
-func (ep *EmptyPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 func (ep *EmptyPane) Hide() bool                 { return false }

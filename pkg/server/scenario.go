@@ -1,12 +1,13 @@
-// pkg/sim/scenario.go
+// pkg/server/scenario.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package sim
+package server
 
 import (
 	"fmt"
 	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -19,23 +20,21 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/brunoga/deep"
-	"github.com/mmp/earcut-go"
 )
 
 type ScenarioGroup struct {
-	TRACON           string                    `json:"tracon"`
-	Name             string                    `json:"name"`
-	Airports         map[string]*av.Airport    `json:"airports"`
-	Fixes            map[string]math.Point2LL  `json:"-"`
-	FixesStrings     util.OrderedMap           `json:"fixes"`
-	Scenarios        map[string]*Scenario      `json:"scenarios"`
-	DefaultScenario  string                    `json:"default_scenario"`
-	ControlPositions map[string]*av.Controller `json:"control_positions"`
-	Airspace         Airspace                  `json:"airspace"`
-	InboundFlows     map[string]*InboundFlow   `json:"inbound_flows"`
+	TRACON           string                     `json:"tracon"`
+	Name             string                     `json:"name"`
+	Airports         map[string]*av.Airport     `json:"airports"`
+	Fixes            map[string]math.Point2LL   `json:"-"`
+	FixesStrings     util.OrderedMap            `json:"fixes"`
+	Scenarios        map[string]*Scenario       `json:"scenarios"`
+	DefaultScenario  string                     `json:"default_scenario"`
+	ControlPositions map[string]*av.Controller  `json:"control_positions"`
+	Airspace         av.Airspace                `json:"airspace"`
+	InboundFlows     map[string]*av.InboundFlow `json:"inbound_flows"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
@@ -45,121 +44,8 @@ type ScenarioGroup struct {
 	NmPerLatitude           float32 // Always 60
 	NmPerLongitude          float32 // Derived from Center
 	MagneticVariation       float32
-	MagneticAdjustment      float32                 `json:"magnetic_adjustment"`
-	STARSFacilityAdaptation STARSFacilityAdaptation `json:"stars_config"`
-}
-
-type InboundFlow struct {
-	Arrivals    []av.Arrival    `json:"arrivals"`
-	Overflights []av.Overflight `json:"overflights"`
-}
-
-type AirspaceAwareness struct {
-	Fix                 []string `json:"fixes"`
-	AltitudeRange       [2]int   `json:"altitude_range"`
-	ReceivingController string   `json:"receiving_controller"`
-	AircraftType        []string `json:"aircraft_type"`
-}
-
-type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness"`
-	ForceQLToSelf       bool                              `json:"force_ql_self"`
-	AllowLongScratchpad bool                              `json:"allow_long_scratchpad"`
-	VideoMapNames       []string                          `json:"stars_maps"`
-	VideoMapLabels      map[string]string                 `json:"map_labels"`
-	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	InhibitCAVolumes    []av.AirspaceVolume               `json:"inhibit_ca_volumes"`
-	RadarSites          map[string]*av.RadarSite          `json:"radar_sites"`
-	Center              math.Point2LL                     `json:"-"`
-	CenterString        string                            `json:"center"`
-	Range               float32                           `json:"range"`
-	Scratchpads         map[string]string                 `json:"scratchpads"`
-	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
-	Altimeters          []string                          `json:"altimeters"`
-
-	VideoMapFile      string                        `json:"video_map_file"`
-	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
-	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
-	BeaconBank        int                           `json:"beacon_bank"`
-	KeepLDB           bool                          `json:"keep_ldb"`
-
-	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
-	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
-	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
-
-	PDB struct {
-		ShowScratchpad2  bool `json:"show_scratchpad2"`
-		HideGroundspeed  bool `json:"hide_gs"`
-		ShowAircraftType bool `json:"show_aircraft_type"`
-		SplitGSAndCWT    bool `json:"split_gs_and_cwt"`
-	} `json:"pdb"`
-	Scratchpad1 struct {
-		DisplayExitFix     bool `json:"display_exit_fix"`
-		DisplayExitFix1    bool `json:"display_exit_fix_1"`
-		DisplayExitGate    bool `json:"display_exit_gate"`
-		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"scratchpad1"`
-	CoordinationLists []CoordinationList `json:"coordination_lists"`
-	RestrictionAreas  []RestrictionArea  `json:"restriction_areas"`
-	UseLegacyFont     bool               `json:"use_legacy_font"`
-}
-
-type STARSControllerConfig struct {
-	VideoMapNames []string      `json:"video_maps"`
-	DefaultMaps   []string      `json:"default_maps"`
-	Center        math.Point2LL `json:"-"`
-	CenterString  string        `json:"center"`
-	Range         float32       `json:"range"`
-}
-
-type CoordinationList struct {
-	Name          string   `json:"name"`
-	Id            string   `json:"id"`
-	Airports      []string `json:"airports"`
-	YellowEntries bool     `json:"yellow_entries"`
-}
-
-type SignificantPoint struct {
-	Name         string        // JSON comes in as a map from name to SignificantPoint; we set this.
-	ShortName    string        `json:"short_name"`
-	Abbreviation string        `json:"abbreviation"`
-	Description  string        `json:"description"`
-	Location     math.Point2LL `json:"location"`
-}
-
-// This many adapted and then this many user-defined
-const MaxRestrictionAreas = 100
-
-type RestrictionArea struct {
-	Title        string           `json:"title"`
-	Text         [2]string        `json:"text"`
-	BlinkingText bool             `json:"blinking_text"`
-	HideId       bool             `json:"hide_id"`
-	TextPosition math.Point2LL    `json:"text_position"`
-	CircleCenter math.Point2LL    `json:"circle_center"`
-	CircleRadius float32          `json:"circle_radius"`
-	VerticesUser av.WaypointArray `json:"vertices"`
-	Vertices     [][]math.Point2LL
-	Closed       bool `json:"closed"`
-	Shaded       bool `json:"shade_region"`
-	Color        int  `json:"color"`
-
-	Tris    [][3]math.Point2LL
-	Deleted bool
-}
-
-type Airspace struct {
-	Boundaries map[string][]math.Point2LL            `json:"boundaries"`
-	Volumes    map[string][]ControllerAirspaceVolume `json:"volumes"`
-}
-
-type ControllerAirspaceVolume struct {
-	LowerLimit    int               `json:"lower"`
-	UpperLimit    int               `json:"upper"`
-	Boundaries    [][]math.Point2LL `json:"boundary_polylines"` // not in JSON
-	BoundaryNames []string          `json:"boundaries"`
-	Label         string            `json:"label"`
-	LabelPosition math.Point2LL     `json:"label_position"`
+	MagneticAdjustment      float32                    `json:"magnetic_adjustment"`
+	STARSFacilityAdaptation av.STARSFacilityAdaptation `json:"stars_config"`
 }
 
 type Scenario struct {
@@ -177,27 +63,14 @@ type Scenario struct {
 
 	Airspace map[string][]string `json:"airspace"`
 
-	DepartureRunways []ScenarioGroupDepartureRunway `json:"departure_runways,omitempty"`
-	ArrivalRunways   []ScenarioGroupArrivalRunway   `json:"arrival_runways,omitempty"`
+	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
+	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
 	Center       math.Point2LL `json:"-"`
 	CenterString string        `json:"center"`
 	Range        float32       `json:"range"`
 	DefaultMaps  []string      `json:"default_maps"`
-}
-
-type ScenarioGroupDepartureRunway struct {
-	Airport     string `json:"airport"`
-	Runway      string `json:"runway"`
-	Category    string `json:"category,omitempty"`
-	DefaultRate int    `json:"rate"`
-
-	ExitRoutes map[string]*av.ExitRoute // copied from airport's  departure_routes
-}
-
-type ScenarioGroupArrivalRunway struct {
-	Airport string `json:"airport"`
-	Runway  string `json:"runway"`
+	VFRRateScale *float32      `json:"vfr_rate_scale"`
 }
 
 func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *av.VideoMapManifest) {
@@ -259,6 +132,22 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	})
 
+	// Add controllers to virtual controllers if not present
+	addController := func(tcp string) {
+		if tcp != "" && !slices.Contains(s.VirtualControllers, tcp) {
+			s.VirtualControllers = append(s.VirtualControllers, tcp)
+		}
+	}
+	addControllersFromWaypoints := func(route []av.Waypoint) {
+		for _, wp := range route {
+			addController(wp.TCPHandoff)
+		}
+	}
+	// Make sure all of the controllers used in airspace awareness will be there.
+	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
+		addController(aa.ReceivingController)
+	}
+
 	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
 	for i, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
@@ -278,6 +167,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 					// It's fine if multiple active runways cover the exit.
 					airportExits[rwy.Airport][exit] = nil
 				}
+
+				for _, r := range routes {
+					addControllersFromWaypoints(r.Waypoints)
+				}
 			}
 
 			if len(ap.Departures) == 0 {
@@ -285,26 +178,15 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			}
 
 			if rwy.Category != "" {
-				found := false
-				for _, dep := range ap.Departures {
-					if ap.ExitCategories[dep.Exit] == rwy.Category {
-						found = true
-						break
-					}
-				}
+				found := slices.ContainsFunc(ap.Departures, func(dep av.Departure) bool {
+					return ap.ExitCategories[dep.Exit] == rwy.Category
+				})
 				if !found {
 					e.ErrorString("no departures have exit category %q", rwy.Category)
 				}
 			}
 		}
 		e.Pop()
-	}
-
-	// Make sure all of the controllers used in airspace awareness will be there.
-	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
-		if !slices.Contains(s.VirtualControllers, aa.ReceivingController) {
-			s.VirtualControllers = append(s.VirtualControllers, aa.ReceivingController)
-		}
 	}
 
 	sort.Slice(s.ArrivalRunways, func(i, j int) bool {
@@ -355,7 +237,14 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			activeAirports[ap] = nil
 			activeDepartureAirports[rwy.Airport] = nil
 
-			if ap.DepartureController == "" {
+			if ap.DepartureController != "" {
+				// Make sure it's in the control positions
+				if _, ok := sg.ControlPositions[ap.DepartureController]; !ok {
+					e.ErrorString("controller %q for \"default_controller\" is unknown", ap.DepartureController)
+				} else if !slices.Contains(s.VirtualControllers, ap.DepartureController) {
+					s.VirtualControllers = append(s.VirtualControllers, ap.DepartureController)
+				}
+			} else {
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
 				for fix, route := range rwy.ExitRoutes {
@@ -462,8 +351,9 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 				} else if f, ok := sg.InboundFlows[flow]; !ok {
 					e.ErrorString("inbound flow %q not found in scenario group \"inbound_flows\"", flow)
 				} else {
+					// Is there a handoff to a human controller?
 					overflightHasHandoff := func(of av.Overflight) bool {
-						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff })
+						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
 					}
 					if len(f.Arrivals) == 0 && !slices.ContainsFunc(f.Overflights, overflightHasHandoff) {
 						// It's just overflights without handoffs
@@ -573,19 +463,13 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		if flow, ok := sg.InboundFlows[name]; !ok {
 			e.ErrorString("inbound flow not found")
 		} else {
-			// Add initial controllers to the controller list, if
-			// necessary.
 			for _, ar := range flow.Arrivals {
-				if ar.InitialController != "" &&
-					!slices.Contains(s.VirtualControllers, ar.InitialController) {
-					s.VirtualControllers = append(s.VirtualControllers, ar.InitialController)
-				}
+				addController(ar.InitialController)
+				addControllersFromWaypoints(ar.Waypoints)
 			}
 			for _, of := range flow.Overflights {
-				if of.InitialController != "" &&
-					!slices.Contains(s.VirtualControllers, of.InitialController) {
-					s.VirtualControllers = append(s.VirtualControllers, of.InitialController)
-				}
+				addController(of.InitialController)
+				addControllersFromWaypoints(of.Waypoints)
 			}
 
 			// Check the airports in it
@@ -610,7 +494,7 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 								// Make sure the airport has at least one
 								// active arrival runway.
 								if !slices.ContainsFunc(s.ArrivalRunways,
-									func(r ScenarioGroupArrivalRunway) bool {
+									func(r sim.ArrivalRunway) bool {
 										return r.Airport == airport
 									}) {
 									e.ErrorString("no runways listed in \"arrival_runways\" for %s even though there are %s arrivals in \"arrivals\"",
@@ -630,12 +514,12 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 			// flow if there will be a handoff to a non-virtual controller.
 			hasHandoff := false
 			for _, ar := range flow.Arrivals {
-				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
+				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
 					hasHandoff = true
 				}
 			}
 			for _, of := range flow.Overflights {
-				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.Handoff }) {
+				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
 					hasHandoff = true
 				}
 			}
@@ -700,6 +584,29 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 				}
 			}
 		}
+
+		// Handle beacon code blocks
+		for _, config := range fa.ControllerConfigs {
+			config.MonitoredBeaconCodeBlocks = nil // HACK: this is aliased if multiple controllers share a config.
+			if config.MonitoredBeaconCodeBlocksString == nil {
+				// None specified: 12xx block by default
+				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
+			} else {
+				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
+					s = strings.TrimSpace(s)
+					if code, err := av.ParseSquawkOrBlock(s); err != nil {
+						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+					} else {
+						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
+					}
+				}
+			}
+		}
+	}
+
+	if s.VFRRateScale == nil { // unspecified -> default to 1
+		one := float32(1)
+		s.VFRRateScale = &one
 	}
 }
 
@@ -726,6 +633,14 @@ func (sg *ScenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	}
 
 	return math.Point2LL{}, false
+}
+
+func (sg *ScenarioGroup) Similar(fix string) []string {
+	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Airports), d1, d2)
+	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Fixes), d1, d2)
+	return util.Select(len(d1) > 0, d1, d2)
 }
 
 var (
@@ -786,7 +701,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 				e.ErrorString("distance %q: %v", strs[3], err)
 			} else {
 				// Offset along the given heading and distance from the fix.
-				sg.Fixes[fix] = math.Offset2LL(pll, float32(hdg), float32(dist), sg.NmPerLongitude)
+				sg.Fixes[fix] = math.Offset2LL(pll, float32(hdg), float32(dist), sg.NmPerLongitude,
+					sg.MagneticVariation)
 			}
 		} else if pos, ok := sg.Locate(location); ok {
 			// It's something simple. Check this after FIX@HDG/DIST,
@@ -801,7 +717,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
-	sg.STARSFacilityAdaptation.PostDeserialize(e, sg, manifest)
+	PostDeserializeSTARSFacilityAdaptation(&sg.STARSFacilityAdaptation, e, sg, manifest)
 
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
@@ -874,6 +790,40 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if ctrl.RadioName == "" {
 			e.ErrorString("no \"radio_name\" specified")
 		}
+
+		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
+			e.ErrorString("missing \"eram_facility\" for center controller")
+		}
+		if ctrl.ERAMFacility {
+			if ctrl.FacilityIdentifier == "" {
+				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
+			}
+			if len(ctrl.TCP) < 2 {
+				e.ErrorString("must specify both facility and numeric sector for center controller")
+			} else {
+				if !(ctrl.TCP[0] >= 'A' && ctrl.TCP[0] <= 'Z') {
+					e.ErrorString("first character of center controller \"sector_id\" must be a letter")
+				}
+				if _, err := strconv.Atoi(ctrl.TCP[1:]); err != nil {
+					e.ErrorString("center controller \"sector_id\" must end with a number")
+				}
+			}
+		}
+
+		// Is an explicitly-given scope_char unnecessary?
+		if ctrl.Scope != "" {
+			if ctrl.FacilityIdentifier == ctrl.Scope {
+				e.ErrorString("\"scope_char\" is redundant since it matches \"facility_id\"")
+			}
+			if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" && len(ctrl.TCP) > 0 &&
+				ctrl.Scope == string(ctrl.TCP[len(ctrl.TCP)-1]) {
+				e.ErrorString("\"scope_char\" is redundant since it matches the last character of a local controller's \"sector_id\"")
+			}
+		}
+		if len(ctrl.Scope) > 1 {
+			e.ErrorString("\"scope_char\" may only be a single character")
+		}
+
 		e.Pop()
 	}
 
@@ -939,6 +889,13 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			*s = ctrl.Id()
 		}
 	}
+	rewriteWaypoints := func(wp av.WaypointArray) {
+		for _, w := range wp {
+			if w.TCPHandoff != "" {
+				rewrite(&w.TCPHandoff)
+			}
+		}
+	}
 
 	for _, s := range sg.Scenarios {
 		rewrite(&s.SoloController)
@@ -981,7 +938,17 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		for _, exitroutes := range ap.DepartureRoutes {
 			for _, route := range exitroutes {
 				rewrite(&route.HandoffController)
+				rewriteWaypoints(route.Waypoints)
 			}
+		}
+
+		for _, app := range ap.Approaches {
+			for _, wps := range app.Waypoints {
+				rewriteWaypoints(wps)
+			}
+		}
+		for _, dep := range ap.Departures {
+			rewriteWaypoints(dep.RouteWaypoints)
 		}
 	}
 
@@ -1005,16 +972,18 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {
 			rewrite(&flow.Arrivals[i].InitialController)
+			rewriteWaypoints(flow.Arrivals[i].Waypoints)
 		}
 		for i := range flow.Overflights {
 			rewrite(&flow.Overflights[i].InitialController)
+			rewriteWaypoints(flow.Overflights[i].Waypoints)
 		}
 	}
 
 	sg.ControlPositions = pos
 }
 
-func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {
+func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("stars_config")
@@ -1039,11 +1008,13 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		}
 
 		for ctrl, config := range s.ControllerConfigs {
-			if pos, ok := sg.Locate(config.CenterString); !ok {
-				e.ErrorString("unknown location %q specified for \"center\"", s.CenterString)
-			} else {
-				config.Center = pos
-				s.ControllerConfigs[ctrl] = config
+			if config.CenterString != "" {
+				if pos, ok := sg.Locate(config.CenterString); !ok {
+					e.ErrorString("unknown location %q specified for \"center\"", s.CenterString)
+				} else {
+					config.Center = pos
+					s.ControllerConfigs[ctrl] = config
+				}
 			}
 		}
 
@@ -1169,6 +1140,9 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	if s.PDB.SplitGSAndCWT && s.PDB.HideGroundspeed {
 		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
 	}
+	if s.PDB.DisplayCustomSPCs && len(s.CustomSPCs) == 0 {
+		e.ErrorString("\"display_custom_spcs\" was set but none were defined in \"custom_spcs\".")
+	}
 
 	disp := make(map[string]interface{})
 	if s.Scratchpad1.DisplayExitFix {
@@ -1187,6 +1161,15 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
 		e.ErrorString("Cannot specify " + strings.Join(d, " and ") + "for \"scratchpad1\"")
+	}
+
+	for _, spc := range s.CustomSPCs {
+		if len(spc) != 2 || spc[0] < 'A' || spc[0] > 'Z' || spc[1] < 'A' || spc[1] > 'Z' {
+			e.ErrorString("Invalid \"custom_spcs\" code %q: must be two characters between A-Z", spc)
+		}
+		if av.StringIsSPC(spc) {
+			e.ErrorString("%q is a standard SPC already", spc)
+		}
 	}
 
 	// Significant points
@@ -1249,6 +1232,19 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 			// And it shouldn't be any if it's not hold for release
 			e.ErrorString("Airport %q isn't \"hold_for_release\" but is in \"coordination_lists\": %s.", airport,
 				strings.Join(matches, ", "))
+		}
+	}
+
+	if s.MonitoredBeaconCodeBlocksString == nil {
+		s.MonitoredBeaconCodeBlocks = []av.Squawk{0o12} // 12xx block by default
+	} else {
+		for _, bl := range strings.Split(*s.MonitoredBeaconCodeBlocksString, ",") {
+			bl = strings.TrimSpace(bl)
+			if code, err := av.ParseSquawkOrBlock(bl); err != nil {
+				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
+			} else {
+				s.MonitoredBeaconCodeBlocks = append(s.MonitoredBeaconCodeBlocks, code)
+			}
 		}
 	}
 
@@ -1321,9 +1317,9 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	}
 
 	e.Push("\"restriction_areas\"")
-	if len(s.RestrictionAreas) > MaxRestrictionAreas {
+	if len(s.RestrictionAreas) > av.MaxRestrictionAreas {
 		e.ErrorString("No more than %d restriction areas may be specified; %d were given.",
-			MaxRestrictionAreas, len(s.RestrictionAreas))
+			av.MaxRestrictionAreas, len(s.RestrictionAreas))
 	}
 	for idx := range s.RestrictionAreas {
 		ra := &s.RestrictionAreas[idx]
@@ -1351,7 +1347,7 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 
 		if len(ra.VerticesUser) > 0 {
 			// Polygons
-			ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, e)
+			ra.VerticesUser = ra.VerticesUser.InitializeLocations(sg, sg.NmPerLongitude, sg.MagneticVariation, false, e)
 			var verts []math.Point2LL
 			for _, v := range ra.VerticesUser {
 				verts = append(verts, v.Location)
@@ -1395,48 +1391,6 @@ func (s *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger, sg *Scena
 	e.Pop() // stars_config
 }
 
-func (fa *STARSFacilityAdaptation) GetCoordinationFix(fp *STARSFlightPlan, acpos math.Point2LL, waypoints []av.Waypoint) (string, bool) {
-	for fix, adaptationFixes := range fa.CoordinationFixes {
-		if adaptationFix, err := adaptationFixes.Fix(fp.Altitude); err == nil {
-			if adaptationFix.Type == av.ZoneBasedFix {
-				// Exclude zone based fixes for now. They come in after the route-based fix
-				continue
-			}
-
-			// FIXME (as elsewhere): make this more robust
-			if strings.Contains(fp.Route, fix) {
-				return fix, true
-			}
-
-			// FIXME: why both this and checking fp.Route?
-			for _, waypoint := range waypoints {
-				if waypoint.Fix == fix {
-					return fix, true
-				}
-			}
-		}
-
-	}
-
-	var closestFix string
-	minDist := float32(1e30)
-	for fix, adaptationFixes := range fa.CoordinationFixes {
-		for _, adaptationFix := range adaptationFixes {
-			if adaptationFix.Type == av.ZoneBasedFix {
-				if loc, ok := av.DB.LookupWaypoint(fix); !ok {
-					// FIXME: check this (if it isn't already) at scenario load time.
-					panic(fix + ": not found in fixes database")
-				} else if dist := math.NMDistance2LL(acpos, loc); dist < minDist {
-					minDist = dist
-					closestFix = fix
-				}
-			}
-		}
-	}
-
-	return closestFix, closestFix != ""
-}
-
 func initializeSimConfigurations(sg *ScenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, multiController bool, e *util.ErrorLogger) {
 	config := &Configuration{
@@ -1445,10 +1399,18 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		DefaultScenario:  sg.DefaultScenario,
 	}
 
+	vfrAirports := make(map[string]*av.Airport)
+	for name, ap := range sg.Airports {
+		if ap.VFRRateSum() > 0 {
+			vfrAirports[name] = ap
+		}
+	}
 	for name, scenario := range sg.Scenarios {
+		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
+			scenario.InboundFlowDefaultRates)
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
-			LaunchConfig:        MakeLaunchConfig(scenario.DepartureRunways, scenario.InboundFlowDefaultRates),
+			LaunchConfig:        lc,
 			Wind:                scenario.Wind,
 			DepartureRunways:    scenario.DepartureRunways,
 			ArrivalRunways:      scenario.ArrivalRunways,
@@ -1495,52 +1457,6 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Airspace
-
-func InAirspace(p math.Point2LL, alt float32, volumes []ControllerAirspaceVolume) (bool, [][2]int) {
-	var altRanges [][2]int
-	for _, v := range volumes {
-		inside := false
-		for _, pts := range v.Boundaries {
-			if math.PointInPolygon2LL(p, pts) {
-				inside = !inside
-			}
-		}
-		if inside {
-			altRanges = append(altRanges, [2]int{v.LowerLimit, v.UpperLimit})
-		}
-	}
-
-	// Sort altitude ranges and then merge ones that have 1000 foot separation
-	sort.Slice(altRanges, func(i, j int) bool { return altRanges[i][0] < altRanges[j][0] })
-	var mergedAlts [][2]int
-	i := 0
-	inside := false
-	for i < len(altRanges) {
-		low := altRanges[i][0]
-		high := altRanges[i][1]
-
-		for i+1 < len(altRanges) {
-			if altRanges[i+1][0]-high <= 1000 {
-				// merge
-				high = altRanges[i+1][1]
-				i++
-			} else {
-				break
-			}
-		}
-
-		// 10 feet of slop for rounding error
-		inside = inside || (int(alt)+10 >= low && int(alt)-10 <= high)
-
-		mergedAlts = append(mergedAlts, [2]int{low, high})
-		i++
-	}
-
-	return inside, mergedAlts
-}
-
-///////////////////////////////////////////////////////////////////////////
 // LoadScenarioGroups
 
 func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *ScenarioGroup {
@@ -1559,7 +1475,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 	}
 
 	var s ScenarioGroup
-	if err := util.UnmarshalJSON(contents, &s); err != nil {
+	if err := util.UnmarshalJSONBytes(contents, &s); err != nil {
 		e.Error(err)
 		return nil
 	}
@@ -1760,88 +1676,4 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	return scenarioGroups, simConfigurations, mapManifests
-}
-
-///////////////////////////////////////////////////////////////////////////
-// RestrictionArea
-
-func RestrictionAreaFromTFR(tfr av.TFR) RestrictionArea {
-	ra := RestrictionArea{
-		Title:    tfr.LocalName,
-		Vertices: deep.MustCopy(tfr.Points),
-	}
-
-	if len(ra.Title) > 32 {
-		ra.Title = ra.Title[:32]
-	}
-
-	ra.HideId = true
-	ra.Closed = true
-	ra.Shaded = true // ??
-	ra.TextPosition = ra.AverageVertexPosition()
-
-	ra.UpdateTriangles()
-
-	return ra
-}
-
-func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
-	var c math.Point2LL
-	var n float32
-	for _, loop := range ra.Vertices {
-		n += float32(len(loop))
-		for _, v := range loop {
-			c = math.Add2f(c, v)
-		}
-	}
-	return math.Scale2f(c, math.Max(1, 1/n)) // avoid 1/0 and return (0,0) if there are no verts.
-}
-
-func (ra *RestrictionArea) UpdateTriangles() {
-	if !ra.Closed || !ra.Shaded {
-		ra.Tris = nil
-		return
-	}
-
-	clear(ra.Tris)
-	for _, loop := range ra.Vertices {
-		if len(loop) < 3 {
-			continue
-		}
-
-		vertices := make([]earcut.Vertex, len(loop))
-		for i, v := range loop {
-			vertices[i].P = [2]float64{float64(v[0]), float64(v[1])}
-		}
-
-		for _, tri := range earcut.Triangulate(earcut.Polygon{Rings: [][]earcut.Vertex{vertices}}) {
-			var v32 [3]math.Point2LL
-			for i, v64 := range tri.Vertices {
-				v32[i] = [2]float32{float32(v64.P[0]), float32(v64.P[1])}
-			}
-			ra.Tris = append(ra.Tris, v32)
-		}
-	}
-}
-
-func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
-	if ra.CircleRadius > 0 {
-		// Circle
-		delta := math.Sub2f(p, ra.CircleCenter)
-		ra.CircleCenter = p
-		ra.TextPosition = math.Add2f(ra.TextPosition, delta)
-	} else {
-		pc := ra.TextPosition
-		if pc.IsZero() {
-			pc = ra.AverageVertexPosition()
-		}
-		delta := math.Sub2f(p, pc)
-		ra.TextPosition = p
-
-		for _, loop := range ra.Vertices {
-			for i := range loop {
-				loop[i] = math.Add2f(loop[i], delta)
-			}
-		}
-	}
 }

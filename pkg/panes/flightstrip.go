@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -37,6 +38,7 @@ type FlightStripPane struct {
 	AutoRemoveHandoffs        bool
 	AddPushed                 bool
 	CollectDeparturesArrivals bool
+	DarkMode                  bool
 
 	strips        []string // callsigns
 	addedAircraft map[string]interface{}
@@ -155,11 +157,11 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 		// We've seen it before.
 		return
 	}
-	if ac.FlightPlan == nil {
+	if ac.FlightPlan == nil || ac.FlightPlan.Rules != av.IFR {
 		return
 	}
 
-	add := fsp.AutoAddTracked && ac.TrackingController == ss.PrimaryTCP && ac.FlightPlan != nil
+	add := fsp.AutoAddTracked && ac.TrackingController == ss.UserTCP && ac.FlightPlan != nil
 	add = add || ac.TrackingController == "" && fsp.AutoAddDepartures && ss.IsDeparture(ac)
 	add = add || ac.TrackingController == "" && fsp.AutoAddArrivals && ss.IsArrival(ac)
 	add = add || ac.TrackingController == "" && fsp.AutoAddOverflights && ss.IsOverflight(ac)
@@ -170,12 +172,15 @@ func (fsp *FlightStripPane) possiblyAddAircraft(ss *sim.State, ac *av.Aircraft) 
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedAircraft = make(map[string]interface{})
+	fsp.CIDs = make(map[string]int)
+	fsp.AllocatedCIDs = make(map[int]interface{})
+	fsp.AircraftTimes = make(map[string]time.Time)
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
@@ -188,7 +193,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 
 	remove := func(c string) {
-		fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool { return callsign != c })
+		fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign string) bool { return callsign != c })
 		if fsp.selectedAircraft == c {
 			fsp.selectedAircraft = ""
 		}
@@ -212,7 +217,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			}
 		case sim.InitiatedTrackEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.PrimaryTCP {
+				if fsp.AutoAddTracked && ac.TrackingController == ctx.ControlClient.UserTCP {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
@@ -222,13 +227,13 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			}
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.PrimaryTCP {
+				if fsp.AutoAddAcceptedHandoffs && ac.TrackingController == ctx.ControlClient.UserTCP {
 					fsp.possiblyAddAircraft(&ctx.ControlClient.State, ac)
 				}
 			}
 		case sim.HandoffControlEvent:
 			if ac, ok := ctx.ControlClient.Aircraft[event.Callsign]; ok {
-				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.PrimaryTCP {
+				if fsp.AutoRemoveHandoffs && ac.TrackingController != ctx.ControlClient.UserTCP {
 					remove(event.Callsign)
 				}
 			}
@@ -236,7 +241,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 
 	// Remove ones that have been deleted.
-	fsp.strips = util.FilterSlice(fsp.strips, func(callsign string) bool {
+	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(callsign string) bool {
 		return ctx.ControlClient.Aircraft[callsign] != nil
 	})
 
@@ -274,6 +279,7 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 	imgui.Checkbox("Automatically remove accepted handoffs", &fsp.AutoRemoveHandoffs)
 
 	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
+	imgui.Checkbox("Night mode", &fsp.DarkMode)
 
 	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
 	if newFont, changed := renderer.DrawFontSizeSelector(&id); changed {
@@ -331,10 +337,17 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		fsp.selectedStrip = len(fsp.strips) - 1
 	}
 
+	darkmode := func(rgb renderer.RGB) renderer.RGB {
+		if fsp.DarkMode {
+			return renderer.RGB{R: 1 - rgb.R, G: 1 - rgb.G, B: 1 - rgb.B}
+		}
+		return rgb
+	}
+
 	// Draw the background for all of them
 	qb := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
-	bgColor := renderer.RGB{.9, .9, .85}
+	bgColor := darkmode(renderer.RGB{.9, .9, .85})
 	y0, y1 := float32(0), float32(math.Min(len(fsp.strips), visibleStrips))*stripHeight-1
 	qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
 
@@ -349,7 +362,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	defer renderer.ReturnTrianglesDrawBuilder(trid)
 
 	// Draw from the bottom
-	style := renderer.TextStyle{Font: fsp.font, Color: renderer.RGB{.1, .1, .1}}
+	style := renderer.TextStyle{Font: fsp.font, Color: darkmode(renderer.RGB{.1, .1, .1})}
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1
 	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
@@ -495,7 +508,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 				cursorStyle := renderer.TextStyle{Font: fsp.font, Color: bgColor,
 					DrawBackground: true, BackgroundColor: style.Color}
 				editResult, _ = drawTextEdit(&strip.Annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
-					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, ctx.KeyboardFocus, cb)
+					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, *ctx.KeyboardFocus, cb)
 				if len(strip.Annotations[fsp.selectedAnnotation]) >= 3 {
 					// Limit it to three characters
 					strip.Annotations[fsp.selectedAnnotation] = strip.Annotations[fsp.selectedAnnotation][:3]
@@ -637,12 +650,12 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	*/
 	fsp.scrollbar.Draw(ctx, cb)
 
-	cb.SetRGB(UIControlColor)
+	cb.SetRGB(darkmode(UIControlColor))
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
-	cb.SetRGB(UITextHighlightColor)
+	cb.SetRGB(darkmode(UITextHighlightColor))
 	trid.GenerateCommands(cb)
 }
 

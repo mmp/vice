@@ -3,76 +3,52 @@
     "airports": {
         "KGJT": {
             "approaches": {
-                "I11": {
-                    "runway": "11",
-                    "type": "ILS",
-                    "waypoints": [
-                        "WINDO/a13000 BITAR/a12000 MACKS/iaf/a8200 LOMMA/if/a8200 JINNY/a6700",
-                        "ZUKSO/a8200/arc13JNC JISIG/iaf/a8200/arc13JNC LOMMA/if/a8200 JINNY/a6700"
-                    ]
+              "I11": { "cifp_id": "I11" },
+              "RY11": { "cifp_id": "RY11" },
+              "RZ11": {
+                "cifp_id": "RZ11"
                 },
-                "RY11": {
-                    "runway": "11",
-                    "type": "RNAV",
-                    "full_name": "RNAV Y Runway 11",
-                    "waypoints": [
-                        "MACKS/a9000 LOMMA/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU",
-                        "PACES/a9000 HASKI/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU",
-                        "JNC AVUXE/iaf/a8200 CARKU/if/a8200 ENIDE/a6300 WOPGU"
-                    ]
-                },
-                "RZ11": {
-                    "cifp_id": "RZ11"
-                },
-                "L29": {
-                    "runway": "29",
-                    "type": "RNAV",
-                    "full_name": "LDA DME Runway 29",
-                    "waypoints": [
-                        "SPADA/iaf/a8500/arc21JNC HRSON/a8500 ALVOJ/a6800"
-                    ]
-                },
-                "R29": {
-                    "runway": "29",
-                    "cifp_id": "R29"
-                }
+              "L29": { "cifp_id": "X29", "full_name": "LDA DME Runway 29" },
+              "R29": {
+                "cifp_id": "R29"
+              }
             },
             "departure_routes": {
                 "11": {
                     "SQUAT,PACES,DIRDY,BRICK,DBL": {
-                        "assigned_altitude": 8000,
-                        "sid": "GJT7",
-                        "waypoints": "_GJT29/h110"
+                        "assigned_altitude": 14000,
+                        "sid": "JNC8",
+                        "waypoints": "_GJT29/h150"
                     },
                     "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
-                        "assigned_altitude": 8000,
-                        "sid": "GRAND1",
-                        "waypoints": "_GJT29/h110"
+                        "assigned_altitude": 14000,
+                        "sid": "GRAND2",
+                        "waypoints": "_GJT29/h150"
                     },
                     "HAQHY": {
-                        "assigned_altitude": 8000,
-                        "sid": "NOKXI1",
-                        "waypoints": "NOKXI MIRXE"
+                        "assigned_altitude": 14000,
+                        "sid": "NOKXI2",
+                        "waypoints": "NOKXI/a7400+ MIRXE/a9600+ BATTZ/a11400+"
                     }
                 },
                 "29": {
                     "TESSY": {
-                        "assigned_altitude": 8000,
-                        "sid": "RHONE2",
-                        "waypoints": "_GJT11/h290 RHONE LOMMA"
+                        "assigned_altitude": 14000,
+                        "sid": "RHONE3",
+                        "waypoints": "_GJT11/h290 RHONE/a7500+ LOMMA/a8600+"
                     },
                     "SQUAT,PACES,DIRDY,BRICK,DBL": {
-                        "assigned_altitude": 6000,
-                        "sid": "GJT7",
+                        "assigned_altitude": 14000,
+                        "sid": "JNC8",
                         "waypoints": "_GJT11/h290"
                     },
                     "VEL,EKR,MTU.PUC,RIL,FQF,DVV,HBU,MTJ,DVC,HVE,OAB,ETL,JNC,CKW": {
-                        "assigned_altitude": 8000,
-                        "sid": "GRAND1",
+                        "assigned_altitude": 14000,
+                        "sid": "GRAND2",
                         "waypoints": "_GJT11/h290"
                     },
                     "HAQHY": {
-                        "assigned_altitude": 8000,
+                        "assigned_altitude": 14000,
                         "sid": "NOKXI1",
                         "waypoints": "_GJT11/h290"
                     }
@@ -86,6 +62,11 @@
                             "fleet": "fastGA"
                         }
                     ],
+					"altitude": [
+						25000,
+						23000,
+						25000
+					],
                     "destination": "KDEN",
                     "exit": "HAQHY",
                     "route": "HAQHY SSKII3"
@@ -93,9 +74,15 @@
                 {
                     "airlines": [
                         {
-                            "icao": "N"
+                            "icao": "N",
+							"fleet": "fastGA"
                         }
                     ],
+					"altitude": [
+						17000,
+						19000,
+						21000
+					],
                     "destination": "KTEX",
                     "exit": "ETL",
                     "route": "ETL KTEX"
@@ -106,6 +93,10 @@
                             "icao": "N"
                         }
                     ],
+					"altitude": [
+						15000,
+						17000
+					],
                     "destination": "KTEX",
                     "exit": "ETL",
                     "route": "ETL KTEX"
@@ -117,6 +108,12 @@
                             "fleet": "fastGA"
                         }
                     ],
+					"altitude": [
+						29000,
+						27000,
+						25000,
+						23000
+					],
                     "destination": "KCOS",
                     "exit": "JNC",
                     "route": "JNC HBU DBRY5"
@@ -128,9 +125,13 @@
                             "fleet": "fastGA"
                         }
                     ],
+					"altitude": [
+						24000,
+						22000
+					],
                     "destination": "KSLC",
                     "exit": "JNC",
-                    "route": "JNC HBU DBRY5"
+                    "route": "JNC J12 HELPR LEEHY5"
                 },
                 {
                     "airlines": [
@@ -139,6 +140,11 @@
                             "fleet": "fastGA"
                         }
                     ],
+					"altitude": [
+						33000,
+						31000,
+						29000
+					],
                     "destination": "KRAP",
                     "exit": "CKW",
                     "route": "CKW DDY"
@@ -168,6 +174,7 @@
                 "HAQHY": "HAQHY",
                 "CKW": "CKW"
             },
+			"hold_for_release": true,
             "tower_list": 1
         }
     },
@@ -548,7 +555,6 @@
         "GJT_APP": {
             "frequency": 119700,
             "radio_name": "Denver Approach",
-            "scope_char": "J",
             "sector_id": "1J"
         },
         "DEN_11_CTR": {
@@ -556,21 +562,18 @@
             "radio_name": "Denver Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
-            "sector_id": "11"
+            "sector_id": "C11"
         },
         "DEN_12_CTR": {
             "frequency": 125350,
             "radio_name": "Denver Center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
-            "sector_id": "12"
+            "sector_id": "C12"
         },
         "GJT_TWR": {
             "frequency": 118100,
             "radio_name": "Grand Junction Tower",
-            "scope_char": "T",
             "sector_id": "5T"
         }
     },
@@ -685,6 +688,15 @@
     },
     "stars_config": {
         "center": "KGJT",
+		"coordination_lists": [
+			{
+				"name": "Junction",
+				"id": "A",
+				"airports": [
+					"KGJT"
+				]
+			}
+		],
         "radar_sites": {
             "GJT": {
                 "char": "A",
@@ -719,30 +731,6 @@
             "TESSY": "TSY",
             "HAQHY": "HQY",
             "CKW": "CKW"
-        },
-        "significant_points": {
-            "BRICK": { "short_name": "BRK" },
-            "CKW": {  },
-            "DBL": {  },
-            "DIRDY": { "short_name": "DRB" },
-            "DVC": {  },
-            "DVV": {  },
-            "EKR": {  },
-            "ETL": {  },
-            "FQF": {  },
-            "HAQHY": { "short_name": "HQY" },
-            "HBU": {  },
-            "HVE": {  },
-            "JNC": {  },
-            "MTJ": {  },
-            "MTU": {  },
-            "OAB": {  },
-            "PACES": { "short_name": "PCS" },
-            "PUC": {  },
-            "RIL": {  },
-            "SQUAT": { "short_name": "SQT" },
-            "TESSY": { "short_name": "TSY" },
-            "VEL": {  }
         },
         "stars_maps": [
             "GJT AIRWAYS",

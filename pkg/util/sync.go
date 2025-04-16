@@ -7,11 +7,16 @@ package util
 import (
 	"encoding/json"
 	"log/slog"
+	gomath "math"
+	"runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +58,35 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 	tryTime := time.Now()
 	lg.Debug("attempting to acquire mutex", slog.Any("mutex", l))
 
-	l.Mutex.Lock()
+	if !l.Mutex.TryLock() {
+		// Lock with timeout.
+		locked := make(chan struct{}, 1)
+
+		go func() {
+			l.Mutex.Lock()
+			locked <- struct{}{}
+		}()
+
+	loop:
+		for {
+			select {
+			case <-locked:
+				break loop
+			case <-time.After(10 * time.Second):
+				lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
+					slog.Any("held_mutexes", heldMutexes))
+
+				var m runtime.MemStats
+				runtime.ReadMemStats(&m)
+				usage, _ := cpu.Percent(time.Second, false)
+
+				lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
+					int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
+					runtime.NumGoroutine())
+				lg.Errorf("Callstack for who holds: %s", strings.Join(MapSlice(l.acqStack, func(f log.StackFrame) string { return f.String() }), " | "))
+			}
+		}
+	}
 
 	heldMutexesMutex.Lock()
 	heldMutexes[l] = nil

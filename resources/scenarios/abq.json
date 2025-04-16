@@ -1,0 +1,903 @@
+{
+    "tracon": "ABQ",
+    "airports": {
+        "KABQ": {
+            "approaches": {
+              "I3": { "cifp_id": "I3" },
+              "I8": { "cifp_id": "I8" },
+              "RY3": { "cifp_id": "RY3" },
+			  "RZ3": { "cifp_id": "RZ3" },
+			  "RY8": { "cifp_id": "RY8" },
+			  "RZ8": { "cifp_id": "RZ8" },
+			  "RY1": { "cifp_id": "RY21" },
+			  "RZ1": { "cifp_id": "RZ21" },
+			  "RY6": { "cifp_id": "RY26" },
+			  "RZ6": { "cifp_id": "RZ26" }
+            },
+            "departure_routes": {
+                "3": {
+                    "POPRR": {
+                        "cleared_altitude": 20000,
+						"sid": "GRZZZ4",
+                        "waypoints": "N035.03.23.137,W106.35.20.443/flyover ROWHO GRZZZ/a13000+ DNIDE JLPNO POPRR"
+                    },
+					"FLAVA": {
+                        "cleared_altitude": 20000,
+						"sid": "GRZZZ4",
+                        "waypoints": "N035.03.23.137,W106.35.20.443/flyover ROWHO GRZZZ/a13000+ DNIDE FLAVA"
+                    },
+                    "JEMEZ": {
+                        "cleared_altitude": 20000,
+						"sid": "JEMEZ3",
+                        "waypoints": "N035.03.23.137,W106.35.20.443/flyover GRREN/a12000+/s250 FIREY JEMEZ"
+                    },
+					"TXO": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 FATTT MOLVE TXO"
+                    },
+					"CME": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 DADDY LARLE TACOZ CME"
+                    },
+					"ONM": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 HRDRK/a16000+ DUMMM ONM"
+                    },
+					"SJN": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.03.07.879,W106.35.41.894/a6000+/s200/flyover DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 PEPTE/a15000+ WUTUP/a16000+ LAMSE SJN"
+                    },
+					"GUP": {
+                        "cleared_altitude": 20000,
+						"sid": "RDRNR3",
+                        "waypoints": "N035.03.23.137,W106.35.20.443/a6000+/flyover RDRNR/a10000+ SPEDY/a12000+ BABYY BUSLE GUP"
+                    },
+                    "ZUN": {
+                        "cleared_altitude": 20000,
+						"sid": "RDRNR3",
+                        "waypoints": "N035.03.23.137,W106.35.20.443/a6000+/flyover RDRNR/a10000+ SPEDY/a12000+ PNYON ZUN"
+                    }
+                },
+				"8": {
+                    "POPRR": {
+                        "cleared_altitude": 20000,
+						"sid": "GRZZZ4",
+                        "waypoints": "TYILR/a5900+/s210/flyover ROWHO GRZZZ/a13000+ DNIDE JLPNO POPRR"
+                    },
+					"FLAVA": {
+                        "cleared_altitude": 20000,
+						"sid": "GRZZZ4",
+                        "waypoints": "TYILR/a5900+/s210/flyover ROWHO GRZZZ/a13000+ DNIDE FLAVA"
+                    },
+                    "JEMEZ": {
+                        "cleared_altitude": 20000,
+						"sid": "JEMEZ3",
+                        "waypoints": "TYILR/a5900+/s210/flyover GRREN/a12000+/s250 FIREY JEMEZ"
+                    },
+					"TXO": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 FATTT MOLVE TXO"
+                    },
+					"CME": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 DADDY LARLE TACOZ CME"
+                    },
+					"ONM": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 HRDRK/a16000+ DUMMM ONM"
+                    },
+					"SJN": {
+                        "cleared_altitude": 20000,
+						"sid": "MNZNO3",
+                        "waypoints": "N035.02.39.521,W106.33.52.525/a5860+/s200 DLSOL YUGLU/a9000- CIANE MNZNO/a11500+/s250 PEPTE/a15000+ WUTUP/a16000+ LAMSE SJN"
+                    },
+					"GUP": {
+                        "cleared_altitude": 20000,
+						"sid": "RDRNR3",
+                        "waypoints": "TYILR/a5900+/s210/flyover RDRNR/a10000+ SPEDY/a12000+ BABYY BUSLE GUP"
+                    },
+                    "ZUN": {
+                        "cleared_altitude": 20000,
+						"sid": "RDRNR3",
+                        "waypoints": "TYILR/a5900+/s210/flyover RDRNR/a10000+ SPEDY/a12000+ PNYON ZUN"
+                    }
+                },
+                "21": {
+                    "JLPNO": {
+                        "cleared_altitude": 20000,
+						"sid": "FYSTA3",
+                        "waypoints": "N034.59.44.866,W106.39.40.984/a6000+/flyover BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ POYOH JLPNO"
+                    },
+					"FTI": {
+                        "cleared_altitude": 20000,
+						"sid": "FYSTA3",
+                        "waypoints": "N034.59.44.866,W106.39.40.984/a6000+/flyover BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ MACHO FTI"
+                    },
+                    "ATOMK": {
+                        "cleared_altitude": 20000,
+						"sid": "ATOMK3",
+                        "waypoints": "N035.00.32.286,W106.38.46.574/a5860+/flyover FOXRR/a8000+ TYWEB/a10000+ TKILA/a11500/s250 FIREY ATOMK"
+                    },
+					"TXO": {
+                        "cleared_altitude": 20000,
+						"sid": "DOOKK3",
+                        "waypoints": "KABQ-3 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ FATTT MOLVE TXO"
+                    },
+					"CME": {
+                        "cleared_altitude": 20000,
+						"sid": "DOOKK3",
+                        "waypoints": "KABQ-3 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ DADDY LARLE TACOZ CME"
+                    },
+					"ONM": {
+                        "cleared_altitude": 20000,
+						"sid": "BOSQE3",
+                        "waypoints": "KABQ-3 JETOK/a9000- BOSQE/a10000 DUMMM ONM"
+                    },
+					"SJN": {
+                        "cleared_altitude": 20000,
+						"sid": "BOSQE3",
+                        "waypoints": "KABQ-3 JETOK/a9000- BOSQE/a10000 WUTUP/a16000+ LAMSE SJN"
+                    },
+					"GUP": {
+                        "cleared_altitude": 20000,
+						"sid": "ADYOS3",
+                        "waypoints": "KABQ-3 ASTAH/a9000- ADYOS BABYY BUSLE GUP"
+                    },
+                    "ZUN": {
+                        "cleared_altitude": 20000,
+						"sid": "ADYOS3",
+                        "waypoints": "KABQ-3 ASTAH/a9000- ADYOS PNYON ZUN"
+                    }
+                },
+                "26": {
+                    "JLPNO": {
+                        "cleared_altitude": 20000,
+						"sid": "FYSTA3",
+                        "waypoints": "N035.02.41.691,W106.42.06.745/a7000+ BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ POYOH JLPNO"
+                    },
+					"FTI": {
+                        "cleared_altitude": 20000,
+						"sid": "FYSTA3",
+                        "waypoints": "N035.02.41.691,W106.42.06.745/a7000+ BLUUN/a11000+ BURQI/a12000+/s250 FYSTA/a14000+ MACHO FTI"
+                    },
+                    "ATOMK": {
+                        "cleared_altitude": 20000,
+						"sid": "ATOMK3",
+                        "waypoints": "N035.02.42.789,W106.38.55.473/a5860+ FOXRR/a8000+ TYWEB/a10000+ TKILA/a11500/s250 FIREY ATOMK"
+                    },
+					"TXO": {
+                        "cleared_altitude": 20000,
+						"sid": "DOOKK3",
+                        "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ FATTT MOLVE TXO"
+                    },
+					"CME": {
+                        "cleared_altitude": 20000,
+						"sid": "DOOKK3",
+                        "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000-/s230 BIYEN/a11000+ DOOKK/a11500+ DADDY LARLE TACOZ CME"
+                    },
+					"ONM": {
+                        "cleared_altitude": 20000,
+						"sid": "BOSQE3",
+                        "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000- BOSQE/a10000+ DUMMM ONM"
+                    },
+					"SJN": {
+                        "cleared_altitude": 20000,
+						"sid": "BOSQE3",
+                        "waypoints": "N035.02.39.095,W106.39.36.727 JETOK/a9000- BOSQE/a10000+ WUTUP/a16000+ LAMSE SJN"
+                    },
+					"GUP": {
+                        "cleared_altitude": 20000,
+						"sid": "ADYOS3",
+                        "waypoints": "KABQ-8 ABQ ADYOS BABYY BUSLE GUP"
+                    },
+                    "ZUN": {
+                        "cleared_altitude": 20000,
+						"sid": "ADYOS3",
+                        "waypoints": "KABQ-8 ABQ ADYOS PNYON ZUN"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KDEN",
+                    "route": "ATOMK3 ATOMK GNDLA TBARR3",
+                    "exit": "ATOMK"
+                },
+				{
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KDEN",
+                    "route": "JEMEZ3 JEMEZ GNDLA TBARR3",
+                    "exit": "JEMEZ"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 34000,
+                    "destination": "KSEA",
+                    "route": "GUP WINEN YANKU ROOHZ PDT CHINS5",
+                    "exit": "GUP"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "ENY"
+                        },
+						{
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 35000,
+                    "destination": "KORD",
+                    "route": "FTI J18 KENTO J18 GCK J96 IRK BENKY6",
+                    "exit": "FTI"
+                },
+				{
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "ENY"
+                        },
+						{
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 35000,
+                    "destination": "KORD",
+                    "route": "FLAVA KENTO J18 GCK J96 IRK BENKY6",
+                    "exit": "FLAVA"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KDFW",
+                    "route": "TXO TURKI JOVEM6",
+                    "exit": "TXO"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "UAL",
+							"fleet": "short"
+                        },
+						{
+                            "icao": "ASH"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KIAH",
+                    "route": "CME SJT DIESL DRLLR5",
+                    "exit": "CME"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+							"fleet": "long"
+                        },
+						{
+                            "icao": "AAL",
+							"fleet": "short"
+                        },
+						{
+                            "icao": "SWA"
+                        }
+                    ],
+                    "altitude": 30000,
+                    "destination": "KPHX",
+                    "route": "ZUN EAGUL6",
+                    "exit": "ZUN"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KLGB",
+                    "route": "ZUN J6 DRK HIMDU DSNEE6",
+                    "exit": "ZUN"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KBUR",
+                    "route": "ZUN J6 DRK EED JANNY5",
+                    "exit": "ZUN"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+						{
+                            "icao": "NKS"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KLAS",
+                    "route": "GUP HAHAA RKSTR4",
+                    "exit": "GUP"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+							"fleet": "long"
+                        },
+						{
+                            "icao": "SWA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KLAX",
+                    "route": "ZUN J6 DRK J231 HIPPI GABBL HLYWD1",
+                    "exit": "ZUN"
+                }
+            ],
+            "exit_categories": {
+                "DEN": "South",
+                "ABQ": "North",
+                "BENNE": "South",
+                "BARGR": "Southwest",
+                "SENSE": "Northwest",
+                "POGTE": "Northeast",
+                "HAMER": "Southeast",
+                "SHOOP": "Southeast",
+                "MILKY": "Northweast",
+                "EGBER": "East",
+                "SNY": "East"
+            },
+            "tower_list": 1
+        }
+    },
+    "inbound_flows": {
+        "BRRTO1": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KABQ": [
+                            {
+                                "airport": "KLAX",
+                                "icao": "SWA"
+                            },
+							{
+                                "airport": "KLAX",
+								"fleet": "long",
+                                "icao": "SKW"
+                            },
+							{
+                                "airport": "KLGB",
+                                "icao": "SWA"
+                            }
+                        ]
+                    },
+                    "initial_altitude": 23000,
+                    "description": "",
+                    "initial_controller": "ABQ_16_CTR",
+                    "initial_speed": 270,
+                    "route": "BRRTO1",
+                    "waypoints": "BRRTO/a21000-28000/s270 ELRRA/a14000-18000/ho XMRKS/a11000+/s250",
+					"runway_waypoints": {
+						"KABQ": {
+						"3": "XMRKS/a11000+ SHWNA/a9000+ BIBQU/a8000+/s210",
+						"8": "XMRKS/a11000+ AMRRA/a10000+ UNCIR/a8000+/s210",
+						"21": "XMRKS/a11000+ AMRRA/a10000+ FOXRR/a1000/s210",
+						"26": "XMRKS/a11000+ STIKI/a10000/s210 BRNDO/a9000+/s210"
+						}
+					}
+                }
+            ]
+        },
+        "COLTR4": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KABQ": [
+                            {
+                                "airport": "KATL",
+								"fleet": "short",
+                                "icao": "DAL"
+                            },
+							{
+                                "airport": "KDFW",
+                                "icao": "ENY"
+                            },
+                            {
+                                "airport": "KDFW",
+                                "fleet": "short",
+                                "icao": "AAL"
+                            }
+                        ]
+                    },
+                    "initial_altitude": 14000,
+                    "description": "",
+                    "initial_controller": "ABQ_16_CTR",
+                    "initial_speed": 270,
+                    "route": "COLTR4",
+                    "waypoints": "COLTR/a14000-18000/ho YYLEE/a11000+/s250",
+					"runway_waypoints": {
+						"KABQ": {
+						"3": "YYLEE/a11000+/s250 CYOTE TNTOE/a10000/s210 SHYLE/h213",
+						"8": "YYLEE/a11000+/s250 CYOTE TNTOE/a10000/s210 COLNN/h256",
+						"21": "YYLEE/a11000+/s250 TACOH/a10000/s210",
+						"26": "YYLEE/a11000+/s250 TACOH/a10000/s210"
+						}
+					}
+                }
+            ]
+        },
+        "LOWBO3": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KABQ": [
+                            {
+                                "airport": "KSLC",
+								"fleet": "long",
+                                "icao": "SKW"
+                            },
+							{
+                                "airport": "KSLC",
+								"fleet": "short",
+                                "icao": "DAL"
+                            },
+                            {
+                                "airport": "KLAS",
+                                "icao": "SWA"
+                            },
+                            {
+                                "airport": "KLAS",
+                                "icao": "NKS"
+                            },
+                            {
+                                "airport": "KHND",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "initial_altitude": 16000,
+                    "description": "",
+                    "initial_controller": "ABQ_16_CTR",
+                    "initial_speed": 270,
+                    "route": "LOWBO3",
+                    "waypoints": "LOWBO/ho JOKLO/a14000-18000/s250 ITUNE",
+					"runway_waypoints": {
+						"KABQ": {
+						"3": "ITUNE MUSCC/a9000-12000 DWNLD/a9000-11000 CMSTR/a9000/s210",
+						"8": "ITUNE MUSCC/a9000-12000 DWNLD/a9000-11000 CMSTR/a9000/s210",
+						"21": "ITUNE SDUNX/a9000-10500 PASEO/a9000-10000 NODME/a9000/s210",
+						"26": "ITUNE SDUNX/a9000-10500 PASEO/a9000-10000 NODME/a9000/s210"
+						}
+					}
+                }
+            ]
+        },
+        "LZZRD4": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KABQ": [
+                            {
+                                "airport": "KIAH",
+                                "icao": "UAL",
+								"fleet": "short"
+                            }
+                        ]
+                    },
+                    "initial_altitude": 16000,
+                    "description": "",
+                    "initial_controller": "ABQ_16_CTR",
+                    "initial_speed": 270,
+                    "route": "LZZRD4",
+                    "waypoints": "HAKOR LZZRD/a14000-18000/s250/ho MKYON/a13000-15000",
+					"runway_waypoints": {
+						"KABQ": {
+						"3": "MKYON/a13000-15000 HAPEE/a11000-13000 COMRO/a10000/s210",
+						"8": "MKYON/a13000-15000 HAPEE/a11000-13000 COMRO/a10000/s210",
+						"21": "MKYON/a13000-15000 SOPPA PILLA/a10000/s210",
+						"26": "MKYON/a13000-15000 SOPPA PILLA/a10000/s210"
+						}
+					}
+                }
+            ]
+        },
+		"SNDIA4": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KABQ": [
+                            {
+                                "airport": "KDEN",
+                                "icao": "UAL",
+								"fleet": "short"
+                            },
+							{
+                                "airport": "KORD",
+                                "icao": "UAL",
+								"fleet": "short"
+                            },
+							{
+                                "airport": "KMDW",
+                                "icao": "SWA"
+                            },
+                            {
+                                "airport": "KDEN",
+                                "icao": "SKW",
+								"fleet": "long"
+                            },
+                            {
+                                "airport": "KBJC",
+                                "fleet": "fastGA",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "initial_altitude": 17000,
+                    "description": "",
+                    "initial_controller": "ABQ_16_CTR",
+                    "initial_speed": 270,
+                    "route": "SNDIA4",
+                    "waypoints": "SNDIA VLCNO/a14000-16000/s250/ho ASIDE/a10000-11000/s250",
+					"runway_waypoints": {
+						"KABQ": {
+						"3": "ASIDE/a10000-11000/s250 CRSTN/a9000/s210",
+						"8": "ASIDE/a10000-11000/s250 CRSTN/a9000/s210",
+						"21": "ASIDE/a10000-11000/s250 CADAT/a9000/s210",
+						"26": "ASIDE/a10000-11000/s250 CADAT/a9000/s210"
+						}
+					}
+                }
+            ]
+        }
+    },
+    "control_positions": {
+        "ABQ_TWR": {
+            "frequency": 120300,
+            "radio_name": "Albuqueque Tower",
+            "sector_id": "1T"
+        },
+		"ABQ_N_APP": {
+            "frequency": 127400,
+            "radio_name": "Albuquerque Approach",
+            "sector_id": "1N"
+        },
+        "ABQ_S_APP": {
+            "frequency": 123900,
+            "radio_name": "Albuqueque Approach",
+            "sector_id": "1S"
+        },
+		"ABQ_F_APP": {
+            "frequency": 126300,
+            "radio_name": "Albuqueque Approach",
+            "sector_id": "1F"
+        },
+        "ABQ_16_CTR": {
+            "frequency": 132800,
+            "radio_name": "Albuqueque Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "sector_id": "C16"
+        }
+    },
+    "default_scenario": "ABQ - East Flow",
+    "magnetic_adjustment": -8,
+    "name": "KABQ",
+    "primary_airport": "KABQ",
+    "scenarios": {
+        "ABQ - East Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KABQ",
+                    "runway": "3"
+                },
+                {
+                    "airport": "KABQ",
+                    "runway": "8"
+                }
+            ],
+            "inbound_rates": {
+                "BRRTO1": {
+                    "KABQ": 5
+                },
+                "COLTR4": {
+                    "KABQ": 5
+                },
+                "LOWBO3": {
+                    "KABQ": 5
+                },
+                "LZZRD4": {
+                    "KABQ": 5
+                },
+				"SNDIA4": {
+                    "KABQ": 5
+                }
+            },
+            "solo_controller": "ABQ_N_APP",
+			"multi_controllers": {
+                "default": {
+                    "ABQ_N_APP": {"primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"]},
+                    "ABQ_S_APP": {"backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4" ]},
+                    "ABQ_F_APP": {"backup": "ABQ_S_APP"}
+                }
+            },
+            "controllers": [
+                "ABQ_TWR",
+                "ABQ_N_APP",
+				"ABQ_F_APP",
+                "ABQ_S_APP",
+                "ABQ_16_CTR"
+            ],
+            "default_maps": [
+                "A001 East Flow"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KABQ",
+                    "rate": 15,
+                    "runway": "8"
+                }
+            ],
+            "wind": {
+                "direction": 50,
+                "speed": 12
+            }
+        },
+        "ABQ - West Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KABQ",
+                    "runway": "26"
+                }
+            ],
+            "inbound_rates": {
+                "BRRTO1": {
+                    "KABQ": 5
+                },
+                "COLTR4": {
+                    "KABQ": 5
+                },
+                "LOWBO3": {
+                    "KABQ": 5
+                },
+                "LZZRD4": {
+                    "KABQ": 5
+                },
+				"SNDIA4": {
+                    "KABQ": 5
+                }
+            },
+            "solo_controller": "ABQ_N_APP",
+			"multi_controllers": {
+                "default": {
+                    "ABQ_N_APP": {"primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"]},
+                    "ABQ_S_APP": {"backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4" ]},
+                    "ABQ_F_APP": {"backup": "ABQ_S_APP"}
+                }
+            },
+            "controllers": [
+                "ABQ_TWR",
+                "ABQ_N_APP",
+                "ABQ_S_APP",
+                "ABQ_16_CTR"
+            ],
+            "default_maps": [
+                "A002 West Flow"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KABQ",
+                    "rate": 15,
+                    "runway": "21"
+                },
+                {
+                    "airport": "KABQ",
+                    "rate": 5,
+                    "runway": "26"
+                }
+            ],
+            "wind": {
+                "direction": 250,
+                "speed": 12
+            }
+        },
+		"ABQ - Northeast Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KABQ",
+                    "runway": "3"
+                }
+            ],
+            "inbound_rates": {
+                "BRRTO1": {
+                    "KABQ": 5
+                },
+                "COLTR4": {
+                    "KABQ": 5
+                },
+                "LOWBO3": {
+                    "KABQ": 5
+                },
+                "LZZRD4": {
+                    "KABQ": 5
+                },
+				"SNDIA4": {
+                    "KABQ": 5
+                }
+            },
+            "solo_controller": "ABQ_N_APP",
+			"multi_controllers": {
+                "default": {
+                    "ABQ_N_APP": {"primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"]},
+                    "ABQ_S_APP": {"backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4" ]},
+                    "ABQ_F_APP": {"backup": "ABQ_S_APP"}
+                }
+            },
+            "controllers": [
+                "ABQ_TWR",
+                "ABQ_N_APP",
+                "ABQ_S_APP",
+                "ABQ_16_CTR"
+            ],
+            "default_maps": [
+                "A001 East Flow"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KABQ",
+                    "rate": 15,
+                    "runway": "3"
+                }
+            ],
+            "wind": {
+                "direction": 20,
+                "speed": 17
+            }
+        },
+		"ABQ - Southwest Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KABQ",
+                    "runway": "21"
+                }
+            ],
+            "inbound_rates": {
+                "BRRTO1": {
+                    "KABQ": 5
+                },
+                "COLTR4": {
+                    "KABQ": 5
+                },
+                "LOWBO3": {
+                    "KABQ": 5
+                },
+                "LZZRD4": {
+                    "KABQ": 5
+                },
+				"SNDIA4": {
+                    "KABQ": 5
+                }
+            },
+            "solo_controller": "ABQ_N_APP",
+			"multi_controllers": {
+                "default": {
+                    "ABQ_N_APP": {"primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"]},
+                    "ABQ_S_APP": {"backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4" ]},
+                    "ABQ_F_APP": {"backup": "ABQ_S_APP"}
+                }
+            },
+            "controllers": [
+                "ABQ_TWR",
+                "ABQ_N_APP",
+                "ABQ_S_APP",
+                "ABQ_16_CTR"
+            ],
+            "default_maps": [
+                "A002 West Flow"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KABQ",
+                    "rate": 15,
+                    "runway": "21"
+                }
+            ],
+            "wind": {
+                "direction": 210,
+                "speed": 17
+            }
+        }
+    },
+    "stars_config": {
+       "center": "KABQ",
+       "inhibit_ca_volumes": [
+            {
+                "name": "ABQ NO CA",
+                "type": "circle",
+                "floor": 0,
+                "ceiling": 9500,
+                "radius": 10,
+                "center": "KABQ"
+            }
+        ],
+        "radar_sites": {
+            "ABQ": {
+                "char": "A",
+                "position": "KABQ",
+                "elevation": 6155,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 40,
+        "scratchpads": {
+            "GUP": "GUP",
+			"ZUN": "ZUN",
+			"CME": "CME",
+			"FTI": "FTI",
+			"TXO": "TXO",
+			"ONM": "ONM",
+			"SJN": "SJN",
+			"ATOMK": "FIR",
+			"JEMEZ": "FIR", 
+			"POPRR": "JLP",
+			"JLPNO": "JLP",
+			"FLAVA": "FLA"
+        },
+        "stars_maps": [
+            "A001 East Flow",
+            "A002 West Flow",
+            "A011 ABQ MVA",
+			"A041 Class C"
+        ],
+        "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
+    }
+}

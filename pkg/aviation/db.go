@@ -25,6 +25,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/klauspost/compress/zstd"
 )
 
 var DB *StaticDatabase
@@ -46,6 +47,8 @@ type StaticDatabase struct {
 	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	BravoAirspace       map[string][]AirspaceVolume
+	CharlieAirspace     map[string][]AirspaceVolume
 }
 
 type FAAAirport struct {
@@ -55,7 +58,7 @@ type FAAAirport struct {
 	Elevation  int
 	Location   math.Point2LL
 	Runways    []Runway
-	Approaches map[string][]WaypointArray
+	Approaches map[string]Approach
 	STARs      map[string]STAR
 	ARTCC      string
 }
@@ -100,6 +103,38 @@ type AdaptationFix struct {
 }
 
 type AdaptationFixes []AdaptationFix
+
+///////////////////////////////////////////////////////////////////////////
+
+func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32) (*Runway, *Runway) {
+	w := wind.GetWindVector(ap.Location, float32(ap.Elevation))
+	// This gives the vector affecting the aircraft, so negate it. Also, as
+	// elsewhere, swap x and y in the args here since we want to measure
+	// angle w.r.t. +y.
+	angle := math.Degrees(math.Atan2(-w[0], -w[1]))
+	angle = math.NormalizeHeading(angle + magneticVariation)
+
+	// Find best aligned runway
+	minDelta := float32(1000)
+	bestRwy := -1
+	for i, rwy := range ap.Runways {
+		if _, ok := LookupOppositeRunway(ap.Id, rwy.Id); ok {
+			d := math.HeadingDifference(angle, rwy.Heading)
+			if d < minDelta {
+				minDelta = d
+				bestRwy = i
+			}
+		}
+	}
+	if bestRwy == -1 {
+		return nil, nil
+	}
+
+	rwy := ap.Runways[bestRwy]
+	opp, _ := LookupOppositeRunway(ap.Id, rwy.Id)
+
+	return &rwy, &opp
+}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -185,10 +220,18 @@ func init() {
 	go func() { db.MVAs = parseMVAs(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
+	wg.Add(1)
+	go func() {
+		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
+		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
+		wg.Done()
+	}()
 	wg.Wait()
 
 	for icao, ap := range airports {
-		db.Airports[icao] = ap
+		if icao != "4V4" { // Ignore the rw one for AAC.
+			db.Airports[icao] = ap
+		}
 	}
 
 	DB = db
@@ -216,8 +259,7 @@ func (d *dbResolver) Resolve(s string) (math.Point2LL, error) {
 // Utility function for parsing CSV files as strings; it breaks each line
 // of the file into fields and calls the provided callback function for
 // each one.
-func mungeCSV(filename string, raw string, fields []string, callback func([]string)) {
-	r := bytes.NewReader([]byte(raw))
+func mungeCSV(filename string, r io.Reader, fields []string, callback func([]string)) {
 	cr := csv.NewReader(r)
 	cr.ReuseRecord = true
 
@@ -257,8 +299,6 @@ func mungeCSV(filename string, raw string, fields []string, callback func([]stri
 
 func parseAirports() map[string]FAAAirport {
 	airports := make(map[string]FAAAirport)
-
-	airportsRaw := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
 
 	parse := func(s string) math.Point2LL {
 		loc, err := math.ParseLatLong([]byte(s))
@@ -308,7 +348,9 @@ func parseAirports() map[string]FAAAirport {
 		}}
 
 	// FAA database
-	mungeCSV("airports", string(airportsRaw),
+	r := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
+	defer r.Close()
+	mungeCSV("airports", r,
 		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country"},
 		func(s []string) {
 			atof := func(s string) float64 {
@@ -329,7 +371,7 @@ func parseAirports() map[string]FAAAirport {
 			// There are some foreign airports with 5-character ids; make
 			// sure not to include them since they can conflict with US fix
 			// names.
-			if len(id) == 3 || len(id) == 4 {
+			if (len(id) == 3 || len(id) == 4) && id != "4V4" { // Memory hole the rw 4V4 to make way for AAC
 				ap := FAAAirport{Id: id, Name: s[5], Country: s[6], Location: loc, Elevation: int(elevation)}
 				// US-based takes priority in case of a conflict. When
 				// there are multiple US-based airports with the same id
@@ -397,9 +439,10 @@ func parseAirports() map[string]FAAAirport {
 		Runway{Id: "36R", Threshold: parse("N42.46.31.65,E141.40.18.87"), Heading: 2, Elevation: 87},
 	})
 
-	artccsRaw := util.LoadResource("airport_artccs.json")
+	ar := util.LoadResource("airport_artccs.json")
+	defer ar.Close()
 	data := make(map[string]string) // Airport -> ARTCC
-	if err := util.UnmarshalJSON(artccsRaw, &data); err != nil {
+	if err := util.UnmarshalJSON(ar, &data); err != nil {
 		fmt.Fprintf(os.Stderr, "airport_artccs.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -415,12 +458,13 @@ func parseAirports() map[string]FAAAirport {
 }
 
 func parseAircraftPerformance() map[string]AircraftPerformance {
-	openscopeAircraft := util.LoadResource("openscope-aircraft.json")
+	r := util.LoadResource("openscope-aircraft.json")
+	defer r.Close()
 
 	var acStruct struct {
 		Aircraft []AircraftPerformance `json:"aircraft"`
 	}
-	if err := util.UnmarshalJSON(openscopeAircraft, &acStruct); err != nil {
+	if err := util.UnmarshalJSON(r, &acStruct); err != nil {
 		fmt.Fprintf(os.Stderr, "openscope-aircraft.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -467,18 +511,22 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 			fmt.Fprintf(os.Stderr, "%s: aircraft V2 %.0f seems suspiciously high (vs min %.01f)",
 				ac.ICAO, ac.Speed.V2, ac.Speed.Min)
 		}
+		if t := ac.Engine.AircraftType; t != "P" && t != "T" && t != "J" {
+			fmt.Fprintf(os.Stderr, "%s: aircraft type %q should be \"P\", \"T\", or \"J\".\n", ac.ICAO, t)
+		}
 	}
 
 	return ap
 }
 
 func parseAirlines() (map[string]Airline, map[string]string) {
-	openscopeAirlines := util.LoadResource("openscope-airlines.json")
+	r := util.LoadResource("openscope-airlines.json")
+	defer r.Close()
 
 	var alStruct struct {
 		Airlines []Airline `json:"airlines"`
 	}
-	if err := util.UnmarshalJSON([]byte(openscopeAirlines), &alStruct); err != nil {
+	if err := util.UnmarshalJSON(r, &alStruct); err != nil {
 		fmt.Fprintf(os.Stderr, "openscope-airlines.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -508,7 +556,9 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 // FAA Coded Instrument Flight Procedures (CIFP)
 // https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
 func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
-	return ParseARINC424(util.LoadRawResource("FAACIFP18.zst"))
+	r := util.LoadResource("FAACIFP18.zst")
+	defer r.Close()
+	return ParseARINC424(r)
 }
 
 type MagneticGrid struct {
@@ -533,11 +583,11 @@ func parseMagneticGrid() MagneticGrid {
 		LatLongStep:  0.25,
 	}
 
-	samples := util.LoadResource("magnetic_grid.txt.zst")
-	r := bufio.NewReader(bytes.NewReader(samples))
-
+	r := util.LoadResource("magnetic_grid.txt.zst")
+	defer r.Close()
+	br := bufio.NewReader(r)
 	for {
-		line, err := r.ReadString('\n')
+		line, err := br.ReadString('\n')
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -564,8 +614,9 @@ func parseMagneticGrid() MagneticGrid {
 func parseAdaptations() map[string]ERAMAdaptation {
 	adaptations := make(map[string]ERAMAdaptation)
 
-	adaptationsRaw := util.LoadResource("adaptations.json")
-	if err := util.UnmarshalJSON(adaptationsRaw, &adaptations); err != nil {
+	r := util.LoadResource("adaptations.json")
+	defer r.Close()
+	if err := util.UnmarshalJSON(r, &adaptations); err != nil {
 		fmt.Fprintf(os.Stderr, "adaptations.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -688,7 +739,7 @@ type MVAHorizontalProjection struct {
 func parseMVAs() map[string][]MVA {
 	// The MVA files are stored in a zip file to avoid the overhead of
 	// opening lots of files to read them in.
-	z := util.LoadResource("mva-fus3.zip")
+	z := util.LoadResourceBytes("mva-fus3.zip")
 	zr, err := zip.NewReader(bytes.NewReader(z), int64(len(z)))
 	if err != nil {
 		panic(err)
@@ -711,17 +762,13 @@ func parseMVAs() map[string][]MVA {
 				panic(err)
 			}
 
-			b, err := io.ReadAll(r)
+			zr, err := zstd.NewReader(r)
 			if err != nil {
 				panic(err)
 			}
+			defer zr.Close()
 
-			contents, err := util.DecompressZstd(string(b))
-			if err != nil {
-				panic(err)
-			}
-
-			decoder := xml.NewDecoder(strings.NewReader(contents))
+			decoder := xml.NewDecoder(zr)
 
 			var mvas []MVA
 			tracon := ""
@@ -798,16 +845,18 @@ func parseMVAs() map[string][]MVA {
 }
 
 func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
-	artccJSON := util.LoadResource("artccs.json")
+	ar := util.LoadResource("artccs.json")
+	defer ar.Close()
 	var artccs map[string]ARTCC
-	if err := util.UnmarshalJSON(artccJSON, &artccs); err != nil {
+	if err := util.UnmarshalJSON(ar, &artccs); err != nil {
 		fmt.Fprintf(os.Stderr, "artccs.json: %v\n", err)
 		os.Exit(1)
 	}
 
-	traconJSON := util.LoadResource("tracons.json")
+	tr := util.LoadResource("tracons.json")
+	defer tr.Close()
 	var tracons map[string]TRACON
-	if err := util.UnmarshalJSON(traconJSON, &tracons); err != nil {
+	if err := util.UnmarshalJSON(tr, &tracons); err != nil {
 		fmt.Fprintf(os.Stderr, "tracons.json: %v\n", err)
 		os.Exit(1)
 	}
@@ -820,6 +869,52 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	}
 
 	return artccs, tracons
+}
+
+func parseAirspace(filename string) map[string][]AirspaceVolume {
+	aj := util.LoadResource(filename)
+	defer aj.Close()
+
+	// These should match the definition in util/airspace.go
+	type AirspaceLoop [][2]float32
+	type Airspace struct {
+		Bottom, Top int
+		// First one is exterior; any additional ones are holes.
+		Loops []AirspaceLoop
+	}
+
+	var airspace map[string][]Airspace
+	if err := util.UnmarshalJSON(aj, &airspace); err != nil {
+		panic(err)
+	}
+
+	// Uplift to vice's internal AirspaceVolume representation.
+	convert := func(v [][2]float32) []math.Point2LL {
+		return util.MapSlice(v, func(p [2]float32) math.Point2LL { return math.Point2LL(p) })
+	}
+	av := make(map[string][]AirspaceVolume)
+	for name, as := range airspace {
+		var vols []AirspaceVolume
+		for _, a := range as {
+			bounds := math.Extent2DFromPoints(a.Loops[0])
+
+			vol := AirspaceVolume{
+				Name:          name,
+				Type:          AirspaceVolumePolygon,
+				Floor:         a.Bottom,
+				Ceiling:       a.Top,
+				Vertices:      convert(a.Loops[0]),
+				PolygonBounds: &bounds,
+			}
+			for _, l := range a.Loops[1:] {
+				vol.Holes = append(vol.Holes, convert(l))
+			}
+			vols = append(vols, vol)
+		}
+		av[name] = vols
+	}
+
+	return av
 }
 
 func (ap FAAAirport) ValidRunways() string {
@@ -839,7 +934,7 @@ func PrintCIFPRoutes(airport string) error {
 	fmt.Printf("\nApproaches:\n")
 	for _, appr := range util.SortedMapKeys(ap.Approaches) {
 		fmt.Printf("%-5s: ", appr)
-		for i, wp := range ap.Approaches[appr] {
+		for i, wp := range ap.Approaches[appr].Waypoints {
 			if i > 0 {
 				fmt.Printf("       ")
 			}
@@ -962,7 +1057,6 @@ func allTFRUrls() []string {
 // result on the provided chan when done.
 func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
 	// Semaphore to limit to 4 concurrent requests.
-	const n = 4
 	sem := make(chan interface{}, 4)
 	defer func() { close(sem) }()
 
@@ -1252,4 +1346,42 @@ func CWTDirectlyBehindSeparation(front, back string) float32 {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
 	}
 	return cwtBehindLookup[f][b]
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AirspaceGrid
+
+// AirspaceGrid organizes AirspaceVolume definitions and provides efficient in volume tests via
+// a grid in lat-long space that records which of a potentially large set of volumes overlap
+// grid cells. Grid cells are initialized on demand rather than upfront, which saves storage
+type AirspaceGrid struct {
+	volumes []*AirspaceVolume
+	entries map[[2]int][]*AirspaceVolume
+}
+
+func MakeAirspaceGrid(v []*AirspaceVolume) *AirspaceGrid {
+	return &AirspaceGrid{
+		volumes: slices.Clone(v),
+		entries: make(map[[2]int][]*AirspaceVolume),
+	}
+}
+
+func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
+	// Quantize coordinates to grid; roughly 6nm resolution (at least in
+	// latitude...)
+	xq, yq := int(10*p[0]), int(10*p[1])
+	pq := [2]int{xq, yq}
+
+	if _, ok := g.entries[pq]; !ok {
+		g.entries[pq] = util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
+			// Assumes both polygonal and an initialized PolygonBounds...
+			// The distance check has some slop in it just so we can be
+			// lazy about thinking about rounding in the grid quantization.
+			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(p), p) < 10
+		})
+	}
+
+	return slices.ContainsFunc(g.entries[pq], func(av *AirspaceVolume) bool {
+		return av.Inside(p, alt)
+	})
 }

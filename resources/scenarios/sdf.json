@@ -3,37 +3,11 @@
   "airports": {
     "KSDF": {
       "approaches": {
-        "I7L": {
-          "runway": "17L",
-          "type": "ILS",
-          "waypoints": [
-          "LEXXI/a6000 BLLAM/a5000 RACRR/a4000 SLGRR/a2500 KELEI/a1320"
-          ]
-        },
-        "I7R" : {
-          "runway": "17R",
-          "type": "ILS",
-          "waypoints":[
-          "SPYRS/a4000 BLGRS/a3000 CHRCL/a2500 VOYUK/a1300"
-          ]
-        },
-        "I5L": {
-          "runway": "35L",
-          "type": "ILS",
-          "waypoints": [
-            "BRBON/a6000 RDBRD/a5000 AWLEE/a4000 CRDNL/a2400 BARRR/a1380"
-          ]
-        },
-        "I5R": {
-          "runway": "35R",
-          "type": "ILS",
-          "waypoints": [
-          "PGSUS/a4000 UPSCO/a3000 PARCL/a2400"
-          ]
-        },
-        "R29": {
-          "cifp_id": "RZ29"
-        }
+        "I7L": {"cifp_id": "I17L" },
+        "I7R" : { "cifp_id": "I17R" },
+        "I5L": { "cifp_id": "I35L" },
+        "I5R": { "cifp_id": "I35R" },
+        "R29": { "cifp_id": "RZ29" }
       },
       "approach_regions": {
         "35R": {
@@ -590,10 +564,9 @@
   "IND_CTR": {
     "frequency": 119550,
     "radio_name": "Indianapolis Center",
-      "facility_id": "C",
-      "eram_facility": true,
-    "scope_char": "C",
-    "sector_id": "34"
+    "facility_id": "C",
+    "eram_facility": true,
+    "sector_id": "C34"
   },
   "CVG_APP": {
     "frequency": 123875,
@@ -605,50 +578,42 @@
   "SDF_E_TWR": {
     "frequency": 124200,
     "radio_name": "Louisville Tower",
-    "scope_char": "T",
     "sector_id": "4T"
   },
   "SDF_W_TWR": {
     "frequency": 135200,
     "radio_name": "Louisville Tower",
-    "scope_char": "L",
     "sector_id": "4L"
   },
   "SDF_A_APP": {
     "frequency": 134150,
     "radio_name": "Louisville Approach",
-    "scope_char": "A",
     "sector_id": "4A"
   },
   "SDF_I_APP": {
     "frequency": 132325,
     "radio_name": "Louisville Approach",
     "default_airport": "KSDF",
-    "scope_char": "I",
     "sector_id": "4I"
   },
   "SDF_E_APP": {
     "frequency": 135775,
     "radio_name": "Louisville Approach",
-    "scope_char": "E",
     "sector_id": "4E"
   },
   "SDF_W_APP": {
     "frequency": 120300,
     "radio_name": "Louisville Approach",
-    "scope_char": "W",
     "sector_id": "4W"
   },
   "SDF_D_DEP": {
     "frequency": 132075,
     "radio_name": "Louisville Departure",
-    "scope_char": "D",
     "sector_id": "4D"
   },
   "SDF_B_DEP": {
     "frequency": 123675,
     "radio_name": "Louisville Departure",
-    "scope_char": "B",
     "sector_id": "4B"
   }
 },

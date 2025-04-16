@@ -4,65 +4,13 @@
     "KTPA": { 
       "name": "Tampa",
       "approaches": {
-        "I1L": {
-          "full_name": "ILS Runway 1L",
-          "runway": "1L",
-          "type": "ILS",
-          "waypoints": [
-            "LAGOO/hilpt/iaf/a2600+ SELMN/a2600/faf"
-          ]
-        },
-        "R1L": {
-          "full_name": "RNAV Runway 1L",
-          "runway": "1L",
-          "type": "RNAV",
-          "waypoints": [
-            "FITPA/a2600/hilpt/iaf/nopt180 SNORK/a2600/faf"
-          ]
-        },
-        "R1R": {
-          "full_name": "RNAV Runway 1R",
-          "runway": "1R",
-          "type": "RNAV",
-          "waypoints": [
-            "MUWTY/hilpt/a2600+/iaf/nopt180 ANAZE/a2600/faf"
-          ]
-        },
-        "I9L": {
-          "full_name": "ILS Runway 19L",
-          "runway": "19L",
-          "type": "ILS",
-          "waypoints": [
-            "BUCCS/a3000/if POMSE/a2000/faf"
-          ]
-        },
-        "R9L": {
-          "full_name": "RNAV Runway 19L",
-          "runway": "19L",
-          "type": "RNAV",
-          "waypoints": [
-            "COBOX/a3000/if POMSE/a2000/faf",
-            "LZARD/iaf COBOX/a3000/if POMSE/a2000/faf",
-            "DARBS ZADSA/iaf COBOX/a3000/if POMSE/a2000/faf",
-            "JSTRM UFLIX ZPLIN/iaf COBOX/a3000/if POMSE/a2000/faf"
-          ]
-        },
-        "I9R": {
-          "full_name": "ILS Runway 19R",
-          "runway": "19R",
-          "type": "ILS",
-          "waypoints": [
-            "MERRA/a3000/iaf/hilpt FADDI/a3000 JMBOB/a2000/faf"
-          ]
-        },
-        "R9R": {
-          "full_name": "RNAV Runway 19R",
-          "runway": "19R",
-          "type": "RNAV",
-          "waypoints": [
-            "MERRA/a3000/if/iaf/hilpt FADDI/a3000 JMBOB/a2000/faf"
-          ]
-        }
+        "I1L": { "cifp_id": "I1L" },
+        "R1L": { "cifp_id": "R1L" },
+        "R1R": { "cifp_id": "R1R" },
+        "I9L": { "cifp_id": "I19L" },
+        "R9L": { "cifp_id": "RZ19L" },
+        "I9R": { "cifp_id": "I19R" },
+        "R9R": { "cifp_id": "R19R" }
       },
       "departure_routes": {
         "1L": {
@@ -612,38 +560,10 @@
     "KSRQ": {
       "name": "Sarasota",
       "approaches": {
-        "I32": {
-          "full_name": "ILS Runway 32",
-          "runway": "32",
-          "type": "ILS",
-          "waypoints": [
-            "ZABQO/pt45/pta1800 RINGY/a1800/iaf/faf"
-          ]
-        },
-        "R32": {
-          "full_name": "RNAV Runway 32",
-          "runway": "32",
-          "type": "RNAV",
-          "waypoints": [
-            "SABEE/iaf/nopt FAXID/if/iaf/a2000+/hilpt4nm/nopt180 RINGY/faf/a1800"
-          ]
-        },
-        "I14": {
-          "full_name": "ILS Runway 14",
-          "runway": "14",
-          "type": "ILS",
-          "waypoints": [
-            "PIE/iaf/nopt PASOE/if FRUGL/iaf/faf/a2000/hilpt1min"
-          ]
-        },
-        "R14": {
-          "full_name": "RNAV Runway 14",
-          "runway": "14",
-          "type": "RNAV",
-          "waypoints": [
-            "PIE/iaf/nopt PASOE/if/iaf/a2000+/hilpt4nm FRUGL/faf/a2000"
-          ]
-        }
+        "I32": { "cifp_id": "I32" },
+        "R32": { "cifp_id": "R32" },
+        "I14": { "cifp_id": "I14" },
+        "R14": { "cifp_id": "R14" }
       },
       "departure_routes": {
         "32": {
@@ -955,40 +875,10 @@
     "KPIE": {
       "name": "Clearwater",
       "approaches": {
-        "I36": {
-          "full_name": "ILS Runway 36",
-          "runway": "36",
-          "type": "ILS",
-          "waypoints": [
-            "RONXI/a2000+/if SONES/a2000/faf/lhilpt1min"
-          ]
-        },
-        "R36": {
-          "full_name": "RNAV Runway 36",
-          "runway": "36",
-          "type": "RNAV",
-          "waypoints": [
-            "RONXI/a2000+/if/lhilpt4nm SONES/a2000/faf"
-          ]
-        },
-        "I18": {
-          "full_name": "ILS Runway 18",
-          "runway": "18",
-          "type": "ILS",
-          "waypoints": [
-            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf",
-            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf"
-          ]
-        },
-        "R18": {
-          "full_name": "RNAV Runway 18",
-          "runway": "18",
-          "type": "RNAV",
-          "waypoints": [
-            "WIPSO/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf",
-            "DARBS/iaf/nopt ZEPUM/if CAPOK/a1500/hilpt1min/faf"
-          ]
-        }
+        "I36": { "cifp_id": "I36" },
+        "R36": { "cifp_id": "R36" },
+        "I18": { "cifp_id": "I18" },
+        "R18": { "cifp_id": "R18" }
       },
       "departure_routes": {
         "36": {
@@ -1138,34 +1028,9 @@
     },
     "KLAL": { 
       "approaches": {
-        "I10": {
-          "full_name": "ILS Runway 10",
-          "runway": "10",
-          "type": "ILS",
-          "waypoints": [
-            "ARSHW/if/iaf/a2700-6000/hilpt1min FLYEN/a1700/faf SUNFN/a720"
-          ]
-        },
-        "R10": {
-          "full_name": "RNAV Runway 10",
-          "runway": "10",
-          "type": "RNAV",
-          "waypoints": [
-            "ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720",
-            "GUUNR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720",
-            "BOMRR/s210/iaf/nopt ARSHW/if/iaf/a2700-6000/hilpt4nm/nopt180 FLYEN/a1700/faf SUNFN/a720"
-          ]
-        },
-        "R28": {
-          "full_name": "RNAV Runway 28",
-          "runway": "28",
-          "type": "RNAV",
-          "waypoints": [
-            "GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800",
-            "KONDE/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800",
-            "RETME/iaf/nopt GILDE/if/iaf/a2700-6000/hilpt4nm/nopt180 ECADE/a1700/faf CUVNA/a800"
-          ]
-        }
+        "I10": { "cifp_id": "I10" },
+        "R10": { "cifp_id": "R10" },
+        "R28": { "cifp_id": "R28" }
       }
     }
   },
@@ -2349,7 +2214,6 @@
         "radio_name": "Miami Center",
         "facility_id": "C",
         "eram_facility": true,
-        "scope_char": "C",
         "sector_id": "C46"
     },
     "JAX_30_CTR": {
@@ -2357,7 +2221,6 @@
       "radio_name": "Jacksonville Center",
       "facility_id": "J",
       "eram_facility": true,
-      "scope_char": "J",
       "sector_id": "J30"
     },
     "MCO_E_APP": {
@@ -2377,49 +2240,41 @@
     "TPA_E_APP": {
       "frequency": 118150,
       "radio_name": "Tampa Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "TPA_W_APP": {
       "frequency": 132520,
       "radio_name": "Tampa Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "TPA_G_DEP": {
       "frequency": 134250,
       "radio_name": "Tampa Departure",
-      "scope_char": "G",
       "sector_id": "1G"
     },
     "TPA_D_DEP": {
       "frequency": 118800,
       "radio_name": "Tampa Departure",
-      "scope_char": "D",
       "sector_id": "1D"
     },
     "TPA_P_APP": {
       "frequency": 125300,
       "radio_name": "Tampa Approach",
-      "scope_char": "P",
       "sector_id": "1P"
     },
     "TPA_S_APP": {
       "frequency": 119650,
       "radio_name": "Tampa Approach",
-      "scope_char": "S",
       "sector_id": "1S"
     },
     "TPA_F_APP": {
       "frequency": 118500,
       "radio_name": "Tampa Approach",
-      "scope_char": "F",
       "sector_id": "1F"
     },
     "TPA_W_TWR": {
       "frequency": 119500,
       "radio_name": "Tampa West Tower",
-      "scope_char": "T",
       "sector_id": "1T"
     },
     "TPA_E_TWR": {

@@ -34,15 +34,18 @@ type Aircraft struct {
 	PointOutHistory     []string
 
 	// STARS-related state that is globally visible
-	TrackingController        string // Who has the radar track
-	ControllingController     string // Who has control; not necessarily the same as TrackingController
-	HandoffTrackController    string // Handoff offered but not yet accepted
-	GlobalLeaderLineDirection *math.CardinalOrdinalDirection
-	RedirectedHandoff         RedirectedHandoff
-	SPCOverride               string
+	TrackingController          string // Who has the radar track
+	ControllingController       string // Who has control; not necessarily the same as TrackingController
+	HandoffTrackController      string // Handoff offered but not yet accepted
+	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
+	RedirectedHandoff           RedirectedHandoff
+	SPCOverride                 string
+	PilotReportedAltitude       int
+	InhibitModeCAltitudeDisplay bool
 
 	HoldForRelease   bool
 	Released         bool // only used for hold for release
+	ReleaseTime      time.Time
 	WaitingForLaunch bool // for departures
 
 	// The controller who gave approach clearance
@@ -68,12 +71,6 @@ type Aircraft struct {
 	WaypointHandoffController string
 }
 
-type RedirectedHandoff struct {
-	OriginalOwner string   // Controller callsign
-	Redirector    []string // Controller callsign
-	RedirectedTo  string   // Controller callsign
-}
-
 type PilotResponse struct {
 	Message    string
 	Unexpected bool // should it be highlighted in the UI
@@ -97,10 +94,6 @@ func (ac *Aircraft) NewFlightPlan(r FlightRules, acType, dep, arr string) *Fligh
 
 func (ac *Aircraft) TAS() float32 {
 	return ac.Nav.TAS()
-}
-
-func (ac *Aircraft) IsAssociated() bool {
-	return ac.FlightPlan != nil && ac.Squawk == ac.FlightPlan.AssignedSquawk && ac.Mode == Charlie
 }
 
 func (ac *Aircraft) HandleControllerDisconnect(callsign string, primaryController string) {
@@ -177,12 +170,18 @@ func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
 	}}
 }
 
-func (ac *Aircraft) Update(wind WindModel, simlg *log.Logger) *Waypoint {
-	lg := simlg.With(slog.String("callsign", ac.Callsign))
+func (ac *Aircraft) Update(wind WindModel, lg *log.Logger) *Waypoint {
+	if lg != nil {
+		lg = lg.With(slog.String("callsign", ac.Callsign))
+	}
 
-	passedWaypoint := ac.Nav.Update(wind, lg)
+	passedWaypoint := ac.Nav.Update(wind, ac.FlightPlan, lg)
 	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
+
+		if passedWaypoint.ClearApproach {
+			ac.ApproachController = ac.ControllingController
+		}
 	}
 
 	return passedWaypoint
@@ -317,7 +316,7 @@ func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.DescendViaSTAR())
 }
 
-func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Logger) []RadioTransmission {
+func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.
 		return nil
@@ -338,13 +337,13 @@ func (ac *Aircraft) ContactTower(controllers map[string]*Controller, lg *log.Log
 	}
 }
 
-func (ac *Aircraft) InterceptLocalizer() []RadioTransmission {
-	resp := ac.Nav.InterceptLocalizer(ac.FlightPlan.ArrivalAirport)
+func (ac *Aircraft) InterceptApproach() []RadioTransmission {
+	resp := ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport)
 	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffController string, goAround bool,
-	nmPerLongitude float32, magneticVariation float32, lg *log.Logger) error {
+	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 	ac.Scratchpad = arr.Scratchpad
@@ -370,16 +369,24 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, arrivalHandoffC
 		ac.FlightPlan.Route = "/. " + arr.STAR
 	}
 
-	if goAround {
-		d := 0.1 + .6*rand.Float32()
-		ac.GoAroundDistance = &d
-	}
-
-	nav := MakeArrivalNav(arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, lg)
+	nav := MakeArrivalNav(ac.Callsign, arr, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation,
+		wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
+
+	// VFRs don't go around since they aren't talking to us.
+	goAround = goAround && ac.FlightPlan.Rules == IFR
+	// If it's only controlled by virtual controllers, then don't let it go
+	// around.  Note that this test misses the case where a human has
+	// control from the start, though that shouldn't be happening...
+	goAround = goAround && slices.ContainsFunc(ac.Nav.Waypoints, func(wp Waypoint) bool { return wp.HumanHandoff })
+	if goAround {
+		// Don't go around
+		d := 0.1 + .6*rand.Float32()
+		ac.GoAroundDistance = &d
+	}
 
 	if arr.ExpectApproach.A != nil {
 		lg = lg.With(slog.String("callsign", ac.Callsign), slog.Any("aircraft", ac))
@@ -398,10 +405,10 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	runway string, exitRoute ExitRoute, nmPerLongitude float32,
 	magneticVariation float32, scratchpads map[string]string,
 	primaryController string, multiControllers SplitConfiguration,
-	lg *log.Logger) error {
+	wind WindModel, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
-	wp = util.FilterSlice(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
+	wp = util.FilterSliceInPlace(wp, func(wp Waypoint) bool { return !wp.Location.IsZero() })
 
 	if exitRoute.SID != "" {
 		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
@@ -430,16 +437,18 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 		ac.FlightPlan.Altitude = dep.Altitudes[idx]
 	}
 
-	ac.HoldForRelease = ap.HoldForRelease
+	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == IFR // VFRs aren't held
 
-	nav := MakeDepartureNav(*ac.FlightPlan, perf, exitRoute.AssignedAltitude,
-		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, nmPerLongitude, magneticVariation, lg)
+	randomizeAltitudeRange := ac.FlightPlan.Rules == VFR
+	nav := MakeDepartureNav(ac.Callsign, *ac.FlightPlan, perf, exitRoute.AssignedAltitude,
+		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
+		nmPerLongitude, magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
 	ac.Nav = *nav
 
-	if ap.DepartureController != "" {
+	if ap.DepartureController != "" && ap.DepartureController != primaryController {
 		// starting out with a virtual controller
 		ac.TrackingController = ap.DepartureController
 		ac.ControllingController = ap.DepartureController
@@ -470,8 +479,33 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	return nil
 }
 
+func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt int,
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, wind WindModel,
+	lg *log.Logger) error {
+	wp := util.DuplicateSlice(wps)
+
+	perf, ok := DB.AircraftPerformance[ac.FlightPlan.BaseType()]
+	if !ok {
+		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.BaseType())
+		return ErrUnknownAircraftType
+	}
+
+	ac.FlightPlan.Altitude = math.Min(alt, int(perf.Ceiling))
+
+	nav := MakeDepartureNav(ac.Callsign, *ac.FlightPlan, perf, 0, /* assigned alt */
+		ac.FlightPlan.Altitude /* cleared alt */, 0 /* speed restriction */, wp,
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, wind, lg)
+	if nav == nil {
+		return fmt.Errorf("error initializing Nav")
+	}
+	ac.Nav = *nav
+	ac.Nav.Check(lg)
+
+	return nil
+}
+
 func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPerLongitude float32,
-	magneticVariation float32, lg *log.Logger) error {
+	magneticVariation float32, wind WindModel, lg *log.Logger) error {
 	ac.Scratchpad = of.Scratchpad
 	ac.SecondaryScratchpad = of.SecondaryScratchpad
 	ac.TrackingController = of.InitialController
@@ -491,7 +525,8 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, controller string, nmPe
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 
-	nav := MakeOverflightNav(of, *ac.FlightPlan, perf, nmPerLongitude, magneticVariation, lg)
+	nav := MakeOverflightNav(ac.Callsign, of, *ac.FlightPlan, perf, nmPerLongitude,
+		magneticVariation, wind, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -627,64 +662,10 @@ func (ac *Aircraft) CWT() string {
 	return perf.Category.CWT
 }
 
-///////////////////////////////////////////////////////////////////////////
-// RedirectedHandoff methods
-
-func (rd *RedirectedHandoff) GetLastRedirector() string {
-	if length := len(rd.Redirector); length > 0 {
-		return rd.Redirector[length-1]
-	} else {
-		return ""
-	}
-}
-
-func (rd *RedirectedHandoff) ShowRDIndicator(callsign string, RDIndicatorEnd time.Time) bool {
-	// Show "RD" to the redirect target, last redirector until the RD is accepted.
-	// Show "RD" to the original owner up to 30 seconds after the RD is accepted.
-	return rd.RedirectedTo == callsign || rd.GetLastRedirector() == callsign ||
-		rd.OriginalOwner == callsign || time.Until(RDIndicatorEnd) > 0
-}
-
-func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl string) bool {
-	// True if the 2nd redirector redirects back to the 1st redirector
-	return (len(rd.Redirector) == 1 || (len(rd.Redirector) > 1) && rd.Redirector[1] == ctrl) && octrl == rd.Redirector[0]
-}
-
-func (rd *RedirectedHandoff) AddRedirector(ctrl *Controller) {
-	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Id() {
-		// Don't append the same controller multiple times
-		// (the case in which the last redirector recalls and then redirects again)
-		rd.Redirector = append(rd.Redirector, ctrl.Id())
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionContact    = iota // Messages initiated by the pilot
-	RadioTransmissionReadback          // Reading back an instruction
-	RadioTransmissionUnexpected        // Something urgent or unusual
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	default:
-		return "(unhandled type)"
-	}
-}
-
-type RadioTransmission struct {
-	Controller string
-	Message    string
-	Type       RadioTransmissionType
+func (ac *Aircraft) HandingOffTo(tcp string) bool {
+	return (ac.HandoffTrackController == tcp &&
+		!slices.Contains(ac.RedirectedHandoff.Redirector, tcp)) || // not a redirector
+		ac.RedirectedHandoff.RedirectedTo == tcp // redirected to
 }
 
 func PlausibleFinalAltitude(fp *FlightPlan, perf AircraftPerformance, nmPerLongitude float32,

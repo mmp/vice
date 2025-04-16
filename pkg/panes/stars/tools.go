@@ -26,7 +26,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -52,13 +51,14 @@ const numWxHistory = 3
 
 const numWxLevels = 6
 
-// Block size in pixels of the quads in the converted radar image used for
-// display.
-const wxBlockRes = 2
+const wxFetchResolution = 512
 
-// Latitude-longitude extent of the fetched image; the requests are +/-
-// this much from the current center.
-const wxLatLongExtent = 2.5
+// Fetch this many nm out from the center; should evenly divide wxFetchResolution
+const wxFetchDistance = 128
+
+// Pixels in the image that correspond to a WX block on the scope; we fetch
+// +/- wxFetchDistance an d blocks are 0.5nm so here we go.
+const wxBlockRes = wxFetchResolution / (2 * wxFetchDistance) * 0.5
 
 // Activate must be called to initialize the WeatherRadar before weather
 // radar images can be fetched.
@@ -283,9 +283,16 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [numWxLevels]*renderer
 		fetchTimer.Reset(fetchRate)
 		lg.Infof("Getting WX, center %v", center)
 
+		// Figure out how far out in degrees latitude / longitude to fetch.
+		// Latitude is easy: 60nm per degree
+		dlat := float32(wxFetchDistance) / 60
+		// Longitude: figure out nm per degree at center
+		nmPerLong := 60 * math.Cos(math.Radians(center[1]))
+		dlong := wxFetchDistance / nmPerLong
+
 		// Lat-long bounds of the region we're going to request weather for.
-		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{wxLatLongExtent, wxLatLongExtent}),
-			P1: math.Add2LL(center, math.Point2LL{wxLatLongExtent, wxLatLongExtent})}
+		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{dlong, dlat}),
+			P1: math.Add2LL(center, math.Point2LL{dlong, dlat})}
 
 		// The weather radar image comes via a WMS GetMap request from the NOAA.
 		//
@@ -298,8 +305,8 @@ func fetchWeather(reqChan chan math.Point2LL, cbChan chan [numWxLevels]*renderer
 		params.Add("SERVICE", "WMS")
 		params.Add("REQUEST", "GetMap")
 		params.Add("FORMAT", "image/png")
-		params.Add("WIDTH", "2048")
-		params.Add("HEIGHT", "2048")
+		params.Add("WIDTH", fmt.Sprintf("%d", wxFetchResolution))
+		params.Add("HEIGHT", fmt.Sprintf("%d", wxFetchResolution))
 		params.Add("LAYERS", "conus_bref_qcd")
 		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.P0[0], rb.P0[1], rb.P1[0], rb.P1[1]))
 
@@ -584,7 +591,8 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 
 	// Window coordinates of the center point.
 	// TODO: should we explicitly handle the case of this being outside the window?
-	pw := transforms.WindowFromLatLongP(ps.CurrentCenter)
+	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
+	pw := transforms.WindowFromLatLongP(ctr)
 	bounds := math.Extent2D{P1: [2]float32{scopeExtent.Width(), scopeExtent.Height()}}
 	font := sp.systemFont(ctx, ps.CharSize.Tools)
 	color := ps.Brightness.Compass.ScaleRGB(STARSCompassColor)
@@ -670,7 +678,7 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransfor
 	}
 
 	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
-	ctr := util.Select(ps.RangeRingsUserCenter, ps.RangeRingsCenter, ps.Center)
+	ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
 	centerWindow := transforms.WindowFromLatLongP(ctr)
 
 	ld := renderer.GetLinesDrawBuilder()
@@ -817,6 +825,39 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransfo
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.SetRGB(color)
 	td.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	if !sp.showVFRAirports {
+		return
+	}
+
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	ps := sp.currentPrefs()
+	color := ps.Brightness.Lines.RGB()
+	style := renderer.TextStyle{
+		Font:  sp.systemFont(ctx, ps.CharSize.Tools),
+		Color: color,
+	}
+
+	for name, ap := range ctx.ControlClient.State.DepartureAirports {
+		if ap.VFRRateSum() > 0 {
+			pll := av.DB.Airports[name].Location
+			pw := transforms.WindowFromLatLongP(pll)
+			ld.AddCircle(pw, 10, 32)
+
+			td.AddText(name, math.Add2f(pw, [2]float32{12, 0}), style)
+		}
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.SetRGB(color)
+	td.GenerateCommands(cb)
+	ld.GenerateCommands(cb)
 }
 
 // Draw all of the range-bearing lines that have been specified.
@@ -1007,15 +1048,10 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, color renderer.RGB,
-	cb *renderer.CommandBuffer) {
-	drawArrivals := ctx.ControlClient.ScopeDrawArrivals()
-	drawApproaches := ctx.ControlClient.ScopeDrawApproaches()
-	drawDepartures := ctx.ControlClient.ScopeDrawDepartures()
-	drawOverflights := ctx.ControlClient.ScopeDrawOverflights()
-	drawAirspace := ctx.ControlClient.ScopeDrawAirspace()
-
-	if len(drawArrivals) == 0 && len(drawApproaches) == 0 && len(drawDepartures) == 0 && len(drawOverflights) == 0 && len(drawAirspace) == 0 {
+func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	color renderer.RGB, cb *renderer.CommandBuffer) {
+	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
+		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
 		return
 	}
 
@@ -1040,15 +1076,15 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 		DrawBackground: true}
 
 	// STARS
-	if drawArrivals != nil {
+	if sp.scopeDraw.arrivals != nil {
 		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
-			if drawArrivals[name] == nil {
+			if sp.scopeDraw.arrivals[name] == nil {
 				continue
 			}
 
 			arrivals := ctx.ControlClient.InboundFlows[name].Arrivals
 			for i, arr := range arrivals {
-				if drawArrivals == nil || !drawArrivals[name][i] {
+				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
 					continue
 				}
 
@@ -1082,15 +1118,15 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	}
 
 	// Approaches
-	if drawApproaches != nil {
+	if sp.scopeDraw.approaches != nil {
 		for _, rwy := range ctx.ControlClient.ArrivalRunways {
-			if drawApproaches[rwy.Airport] == nil {
+			if sp.scopeDraw.approaches[rwy.Airport] == nil {
 				continue
 			}
 			ap := ctx.ControlClient.Airports[rwy.Airport]
 			for _, name := range util.SortedMapKeys(ap.Approaches) {
 				appr := ap.Approaches[name]
-				if appr.Runway == rwy.Runway && drawApproaches[rwy.Airport][name] {
+				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
 					}
@@ -1100,21 +1136,21 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	}
 
 	// Departure routes
-	if drawDepartures != nil {
+	if sp.scopeDraw.departures != nil {
 		for _, name := range util.SortedMapKeys(ctx.ControlClient.Airports) {
-			if drawDepartures[name] == nil {
+			if sp.scopeDraw.departures[name] == nil {
 				continue
 			}
 
 			ap := ctx.ControlClient.Airports[name]
 			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-				if drawDepartures[name][rwy] == nil {
+				if sp.scopeDraw.departures[name][rwy] == nil {
 					continue
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
 				for _, exit := range util.SortedMapKeys(exitRoutes) {
-					if drawDepartures[name][rwy][exit] {
+					if sp.scopeDraw.departures[name][rwy][exit] {
 						drawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr)
 					}
@@ -1124,15 +1160,15 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	}
 
 	// Overflights
-	if drawOverflights != nil {
+	if sp.scopeDraw.overflights != nil {
 		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
-			if drawOverflights[name] == nil {
+			if sp.scopeDraw.overflights[name] == nil {
 				continue
 			}
 
 			overflights := ctx.ControlClient.InboundFlows[name].Overflights
 			for i, of := range overflights {
-				if drawOverflights == nil || !drawOverflights[name][i] {
+				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
 					continue
 				}
 
@@ -1141,13 +1177,13 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 		}
 	}
 
-	if drawAirspace != nil {
+	if sp.scopeDraw.airspace != nil {
 		ps := sp.currentPrefs()
 		rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
 
-		for _, ctrl := range util.SortedMapKeys(drawAirspace) {
-			for _, volname := range util.SortedMapKeys(drawAirspace[ctrl]) {
-				if !drawAirspace[ctrl][volname] {
+		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
+			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
+				if !sp.scopeDraw.airspace[ctrl][volname] {
 					continue
 				}
 
@@ -1437,6 +1473,31 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 		const nSegments = 8
 		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments)
 
+		// If /radius has been specified, draw a corresponding circle
+		if wp.Radius > 0 {
+			ld.AddLatLongCircle(wp.Location, ctx.ControlClient.NmPerLongitude,
+				wp.Radius, 32)
+		}
+
+		// For /shift, extend the line beyond the waypoint (just in case)
+		// and draw perpendicular bars at the ends.
+		if wp.Shift > 0 {
+			prev := waypoints[i-1]
+			v := math.Sub2f(wp.Location, prev.Location)
+			v = math.Scale2f(v, 1/math.NMDistance2LL(wp.Location, prev.Location)) // ~1nm length
+			v = math.Scale2f(v, wp.Shift/2)
+
+			// extend the line
+			e0, e1 := math.Sub2f(wp.Location, v), math.Add2f(wp.Location, v)
+			ld.AddLine(wp.Location, e1)
+
+			perp := [2]float32{-v[1], v[0]}
+			perp = math.Scale2f(perp, 0.125) // shorter
+
+			ld.AddLine(math.Sub2f(e0, perp), math.Add2f(e0, perp))
+			ld.AddLine(math.Sub2f(e1, perp), math.Add2f(e1, perp))
+		}
+
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j
 			if idx < 0 || idx >= len(waypoints) {
@@ -1538,8 +1599,13 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 			continue
 		}
 
-		trk := sp.getTrack(ctx, ac)
-		ourTrack := trk != nil && trk.TrackOwner == ctx.ControlClient.PrimaryTCP
+		if ac.TrackingController == "" && !state.DisplayPTL {
+			// untracked only PTLs if they're individually enabled (I think); 6-13.
+			continue
+		}
+		// We have it or it's an inbound handoff to us.
+		ourTrack := ac.TrackingController == ctx.ControlClient.UserTCP ||
+			ac.HandoffTrackController == ctx.ControlClient.UserTCP
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}
@@ -1723,6 +1789,27 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	ld.GenerateCommands(cb)
 }
 
+func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	if len(sp.drawRoutePoints) == 0 {
+		return
+	}
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	for i, pt := range sp.drawRoutePoints {
+		pwin := transforms.WindowFromLatLongP(pt)
+		ld.AddCircle(pwin, 10, 30)
+		if i+1 < len(sp.drawRoutePoints) {
+			ld.AddLine(pwin, transforms.WindowFromLatLongP(sp.drawRoutePoints[i+1]))
+		}
+	}
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(renderer.RGB{1, .3, .3})
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+}
+
 type STARSRangeBearingLine struct {
 	P [2]struct {
 		// If callsign is given, use that aircraft's position;
@@ -1775,7 +1862,7 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
-	var closest *sim.SignificantPoint
+	var closest *av.SignificantPoint
 	for _, sigpt := range sp.significantPointsSlice {
 		d := math.NMDistance2LL(sigpt.Location, p1)
 		if d < minDist {
@@ -1797,7 +1884,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 	sp.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 
 	// 6-148
-	format := func(sig sim.SignificantPoint) string {
+	format := func(sig av.SignificantPoint) string {
 		d := math.NMDistance2LL(p0, sig.Location)
 		str := ""
 		if d > 1 { // no bearing range if within 1nm

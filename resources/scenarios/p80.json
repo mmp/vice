@@ -4,89 +4,14 @@
     "KPDX": {
       "name": "Portland Intl Airport",
       "approaches": {
-        "I0L": {
-          "full_name": "ILS Runway 10L",
-          "runway": "10L",
-          "type": "ILS",
-          "waypoints": [
-            "BUXOM/if/a3000 TRAYL/a2300 BLAZR/a2000 JALAG/a1100"
-          ]
-        },
-        "I0R": {
-          "full_name": "ILS Runway 10R",
-          "runway": "10R",
-          "type": "ILS",
-          "waypoints": [
-            "SCAPO/if/a4000 HAIRN/a3100 POWLZ/a2000 JADNU/a860",
-            "HAIRN/a3100 POWLZ/a2000 JADNU/a860"
-          ]
-        },
-        "I8L": {
-          "full_name": "ILS Runway 28L",
-          "runway": "28L",
-          "type": "ILS",
-          "waypoints": [
-            "HANAH/a2900 ADDUM/a2000 YINUP/a1280",
-            "REEDI/iaf/a5700 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280",
-            "SHAFR/iaf/a5700 REEDI/iaf/a5700 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280",
-            "MAVER/a4000 WALAP/iaf/a4000 HPSTR/if/a3700 HANAH/a2900 ADDUM/a2000 YINUP/a1280"
-          ]
-        },
-        "I8R": {
-          "full_name": "ILS Runway 28R",
-          "runway": "28R",
-          "type": "ILS",
-          "waypoints": [
-            "OMMSI/a2900 TOLOC/a2000 WUGPU/a1260",
-            "REEDI/iaf/a5700 NACIY/iaf/a3700 OMMSI/if/a2900 TOLOC/if/a2000 WUGPU/if/a1260",
-            "SHAFR/iaf/a5700 REEDI/iaf/a5700 NACIY/if/a3700 OMMSI/a2900 TOLOC/a2000 WUGPU/a1260",
-            "MAVER/a4000 CUKIS/iaf/a4000 NACIY/if/a3700 OMMSI/a2900 TOLOC/a2000 WUGPU/a1260"
-          ]
-        },
-        "Z0L": {
-          "full_name": "RNAV Z Runway 10L",
-          "runway": "10L",
-          "type": "RNAV",
-          "waypoints": [
-            "BLAZR/faf/a2000",
-            "BUXOM/if/a3000 TRAYL/if/a2300 TTIDE/a2300 BLAZR/faf/a2000",
-            "CIZZL/iaf/s210/a5000 DAYSS/arc3.5/if/a4500 RIPPP/arc4.5/if/a3500 TTIDE/a2300 BLAZR/faf/a2000",
-            "MYCRO/iaf/s210/a5000 GAMBE/arc5.9/if/a4000 TTIDE/a2300 BLAZR/faf/a2000",
-            "VOODU/iaf/s210/a5000 RIPPP/arc4.5/if/a3500 TTIDE/a2300 BLAZR/faf/a2000"
-          ]
-        },
-        "Z0R": {
-          "full_name": "RNAV Z Runway 10R",
-          "runway": "10R",
-          "type": "RNAV",
-          "waypoints": [
-            "POWLZ/faf/a2000",
-            "CIZZL/iaf/s210/a5000 DAYSS/arc3.7/if/a4500 CATUL/arc5.0/if/a3500 POWLZ/faf/a2000",
-            "MYCRO/iaf/s210/a5000 TOWWN/arc3.5/if/a3800 MIVUE/arc2.6/a2800 POWLZ/faf/a2000",
-            "SCAPO/if/a4000 WETTR/a4000 SAUVI/a2900 POWLZ/faf/a2000",
-            "VOODU/iaf/s210/a5000 CATUL/arc5/if/a3500 POWLZ/faf/a2000"
-          ]
-        },
-        "Z8L": {
-          "full_name": "RNAV Z Runway 28L",
-          "runway": "28L",
-          "type": "RNAV",
-          "waypoints": [
-            "ADDUM/faf/a2000",
-            "HPSTR/if/a2900 HANAH/a2900 ADDUM/faf/a2000",
-            "ROAGE/if/s210/a4000+ DSHUT/arc2.2/a3200 NOLGE/arc1.6/a2500 ADDUM/faf/a2000"
-          ]
-        },
-        "Z8R": {
-          "full_name": "RNAV Z Runway 28R",
-          "runway": "28R",
-          "type": "RNAV",
-          "waypoints": [
-            "TOLOC/faf/a2000",
-            "NACIY/if/a2900 OMMSI/a2900 TOLOC/faf/a2000",
-            "ROAGE/if/s210/a4000+ BYKES/a3200/arc4 TOLOC/faf/a2000"
-          ]
-        }
+        "I0L": { "cifp_id": "I10L" },
+        "I0R": { "cifp_id": "I10R" },
+        "I8L": { "cifp_id": "I28L" },
+        "I8R": { "cifp_id": "I28R" },
+        "Z0L": { "cifp_id": "RZ10L" },
+        "Z0R": { "cifp_id": "RZ10R" },
+        "Z8L": { "cifp_id": "RZ28L" },
+        "Z8R": { "cifp_id": "RZ28R" }
       },
       "departure_routes": {
         "10L": {
@@ -304,7 +229,7 @@
           ],
           "destination": "PAFA",
           "exit": "ARRIE",
-          "route": "PTLD2 ARRIE TOU J523 INHAM YJQ HANRY J502 SSR Q902 RDFLG HRDNG4"
+          "route": "PTLD2 ARRIE TOU J523 INHAM HANRY J502 SSR Q902 RDFLG HRDNG4"
         },
         {
           "airlines": [
@@ -351,6 +276,84 @@
         "RIELY": "WHAMY4"
       },
       "tower_list": 1
+    },
+    "KDLS": {
+      "vfr": {
+        "random_routes": { "fleet": "GAturbine", "rate": 7 }
+      }
+    },
+    "KTMK": {
+      "vfr": {
+        "random_routes": { "fleet": "GAturbine", "rate": 7 }
+      }
+    },
+    "KAST": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KSLE": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KYKM": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KONP": {
+      "vfr": {
+        "random_routes": { "fleet": "GAmultipiston", "rate": 7 }
+      }
+    },
+    "KTTD": {
+      "vfr": {
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N045.26.15.563,W122.15.14.913/a1000-1500 N045.16.10.875,W122.10.04.193 N045.15.57.032,W122.22.19.617/a4000 N045.20.25.305,W122.31.07.813 N045.25.25.135,W122.26.12.308 N045.22.19.233,W122.32.28.452 N045.28.13.405,W122.29.25.640/a1000-1500",
+            "fleet": "lightGA",
+            "destination": "KTTD"
+          }
+        ]
+      }
+    },
+    "KUAO": {
+      "vfr": {
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N045.13.40.857,W122.44.15.258/a1500 N045.17.42.144,W122.44.16.301/a2500 N045.25.07.022,W122.48.16.215",
+            "fleet": "lightGA",
+            "destination": "KHIO"
+          }
+        ]
+      }
+    },
+    "KKLS": {
+      "vfr": {
+        "routes": [
+          {
+          "rate": 8,
+          "waypoints": "N046.17.48.695,W122.43.38.893 N046.05.36.634,W122.38.55.665/a6000 N045.55.49.676,W122.43.35.295 N045.51.34.052,W122.30.21.890 N046.03.16.270,W122.26.02.585 N045.53.20.317,W122.07.47.907 N045.44.57.555,W122.10.52.203 N046.19.54.406,W122.48.42.308",
+          "fleet": "GAmultipiston",
+            "destination": "KKLS"
+          }
+        ]
+      }
+    },
+    "KHIO": {
+      "vfr": {
+        "routes": [
+          {
+            "rate": 8,
+            "waypoints": "N045.35.24.920,W123.01.23.743/a1500 N045.38.42.399,W123.10.12.982/a3000",
+            "fleet": "lightGA",
+            "destination": "KTMK"
+          }
+        ]
+      }
     }
   },
   "airspace": {
@@ -3366,11 +3369,11 @@
     ]
   }
 },
+
   "control_positions": {
     "SEA_16_CTR": {
       "frequency": 135450,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S16",
       "facility_id": "C",
       "eram_facility": true
@@ -3378,7 +3381,6 @@
     "SEA_32_CTR": {
       "frequency": 126600,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S32",
       "facility_id": "C",
       "eram_facility": true
@@ -3386,7 +3388,6 @@
       "SEA_02_CTR": {
       "frequency": 120300,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S02",
       "facility_id": "C",
       "eram_facility": true
@@ -3394,7 +3395,6 @@
     "SEA_42_CTR": {
       "frequency": 132070,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S42",
       "facility_id": "C",
       "eram_facility": true
@@ -3402,7 +3402,6 @@
     "SEA_46_CTR": {
       "frequency": 124350,
       "radio_name": "Seattle Center",
-      "scope_char": "C",
       "sector_id": "S46",
       "facility_id": "C",
       "eram_facility": true
@@ -3410,47 +3409,40 @@
     "PDX_N_TWR": {
       "frequency": 118700,
       "radio_name": "Portland North Tower",
-      "scope_char": "J",
       "sector_id": "2J"
     },
     "PDX_S_TWR": {
       "frequency": 123775,
       "radio_name": "Portland South Tower",
-      "scope_char": "A",
       "sector_id": "2A"
     },
     "TTD_TWR": {
       "frequency": 120900,
       "radio_name": "Troutdale Tower",
-      "scope_char": "B",
       "sector_id": "2B"
     },
     "PDX_APP": {
       "frequency": 124350,
       "radio_name": "Portland Approach",
-      "scope_char": "W",
       "sector_id": "1W"
     },
     "PDX_S_APP": {
       "frequency": 118100,
       "radio_name": "Portland South Approach",
-      "scope_char": "E",
       "sector_id": "1E"
     },
     "PDX_F_APP":{
         "frequency": 126900,
         "radio_name": "Portland Approach",
-        "scope_char": "F",
         "sector_id": "1F"
     },
     "PDX_DEP":{
       "frequency": 124350,
       "radio_name": "Portland Departure",
-      "scope_char": "D",
       "sector_id": "1D"
     }
   },
-  "default_scenario": "KPDX_West Flow",
+  "default_scenario": "KPDX West",
   "fixes": {
     "_PDX_28R": "N45.35.02.9,W122.34.06.0",
     "_PDX_28L": "N45.34.49.9,W122.35.02.2",
@@ -3469,13 +3461,7 @@
   "name": "P80",
   "primary_airport": "KPDX",
   "scenarios": {
-    "KPDX_West Flow": {
-      "airspace": {
-        "PDX_APP": [ "PDXAPP" ],
-        "PDX_S_APP": [ "PDXAPP" ],
-        "PDX_DEP": [ "PDXAPP" ],
-        "PDX_F_APP" : [ "PDX_WEST_FINAL" ]
-      },
+    "KPDX West": {
       "arrival_runways": [
         {
           "airport": "KPDX",
@@ -3486,7 +3472,13 @@
           "runway": "28L"
         }
       ],
-      "arrivals": {
+      "airspace": {
+        "PDX_APP": [ "PDXAPP" ],
+        "PDX_S_APP": [ "PDXAPP" ],
+        "PDX_DEP": [ "PDXAPP" ],
+        "PDX_F_APP" : [ "PDX_WEST_FINAL" ]
+      },
+      "inbound_rates": {
         "HHOOD5West": {
           "KPDX": 5
         },
@@ -3540,7 +3532,7 @@
         "speed": 5
       }
     },
-    "KPDX_East Flow": {
+    "KPDX East": {
       "airspace": {
         "PDX_APP": [ "PDXAPP" ],
         "PDX_S_APP": [ "PDXAPP" ],
@@ -3557,14 +3549,14 @@
           "runway": "10R"
         }
       ],
-      "arrivals": {
-        "TMBERS3East": {
+      "inbound_rates": {
+        "HHOOD5East": {
           "KPDX": 5
         },
         "KRATR2East": {
           "KPDX": 6
         },
-        "HHOOD5East": {
+        "TMBERS3East": {
           "KPDX": 7
         },
         "OCITY3East": {
@@ -3611,7 +3603,7 @@
         "speed": 5
       }
     },
-    "KPDX_Westflow Final": {
+    "KPDX Final West": {
       "airspace": {
         "PDX_F_APP": [ "PDX_WEST_FINAL" ]
       },
@@ -3653,7 +3645,7 @@
       },
       "default_maps": ["RWY 28" ]
     },
-    "KPDX_Eastflow Final": {
+    "KPDX Final East": {
       "airspace": {
         "PDX_F_APP": [ "PDX_EAST_FINAL" ]
       },

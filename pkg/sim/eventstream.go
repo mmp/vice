@@ -31,10 +31,6 @@ type EventStream struct {
 	lg            *log.Logger
 }
 
-type EventPoster interface {
-	PostEvent(Event)
-}
-
 type EventsSubscription struct {
 	stream *EventStream
 	// offset is offset in the EventStream stream array up to which the
@@ -210,6 +206,7 @@ const (
 	ForceQLEvent
 	TransferAcceptedEvent
 	TransferRejectedEvent
+	RecalledPointOutEvent
 	NumEventTypes
 )
 
@@ -218,7 +215,8 @@ func (t EventType) String() string {
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
 		"GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut", "Ident", "HandoffControl",
-		"SetGlobalLeaderLine", "TrackClicked", "ForceQL", "TransferAccepted", "TransferRejected"}[t]
+		"SetGlobalLeaderLine", "TrackClicked", "ForceQL", "TransferAccepted", "TransferRejected",
+		"RecalledPointOut"}[t]
 }
 
 type Event struct {

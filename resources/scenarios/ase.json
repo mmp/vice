@@ -3,28 +3,37 @@
     "airports": {
         "KASE": {
             "approaches": {
-                "L15": {
-                    "runway": "15",
-                    "full_name": "Localizer DME Runway 15",
-                    "type": "ILS",
-                    "waypoints": [
-                        "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
-                        "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG",
-                        "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800 KYACK/a10300 RAFTR/a9700 CEYAG"
-                    ]
-                },
-				"R15": {
-					"cifp_id": "RFNV",
-					"runway": "15"
-				},
-                "V33": {
-                    "full_name": "Visual Approach Runway 33",
-                    "runway": "33",
-                    "type": "Visual",
-                    "waypoints": [
-                        "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
-                    ]
-                }
+              "L15": {
+                "runway": "15",
+                "full_name": "Localizer DME Runway 15",
+                "type": "Localizer",
+                "waypoints": [
+                  "AJAXX/iaf/a13600 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800/faf KYACK/a10300 RAFTR/a9700 CEYAG",
+                  "WOKUV/a14000/arc4DBL/iaf IVKEF/arc4DBL/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800/faf KYACK/a10300 RAFTR/a9700 CEYAG",
+                  "BULDG/a16500 WERNR/iaf/a14000 ZAKOR/arc4DBL/a14000 LIFTT/if/a13600 TIKET/a12300 XTREM/a10800/faf KYACK/a10300 RAFTR/a9700 CEYAG"
+                ]
+              },
+	      "R15": {
+		"cifp_id": "RFNV",
+		"runway": "15"
+	      },
+	      "LDE": {
+		"runway": "15",
+		"full_name": "Localizer DME Echo Runway 15",
+		"type": "Localizer",
+		"waypoints": [
+		  "DBL/iaf JARGU/if/a13400 KICER/a12900 FIMSO/a12300 DOYPE/a11700/faf CEYAG",
+		  "AJAXX/iaf JARGU/if/a13400 KICER/a12900 FIMSO/a12300 DOYPE/a11700/faf CEYAG"
+		]
+	      },
+              "V33": {
+                "full_name": "Visual Approach Runway 33",
+                "runway": "33",
+                "type": "Visual",
+                "waypoints": [
+                  "GUILT/iaf/a10000 N039.06.26.924,W106.45.53.640/faf"
+                ]
+              }
             },
             "departure_routes": {
                 "33": {
@@ -207,7 +216,7 @@
         }
     },
     "inbound_flows": {
-        "EAST": {
+        "LAWSN": {
             "arrivals": [
                 {
                     "airlines": {
@@ -234,13 +243,14 @@
                             }
                         ]
                     },
+					"assigned_altitude": 20000,
                     "cruise_altitude": 24000,
-                    "initial_altitude": 17000,
-                    "description": "",
+                    "initial_altitude": 23000,
+                    "description": "Northeast (D01)",
                     "initial_controller": "DEN_11_CTR",
-                    "initial_speed": 210,
-                    "route": "BULDG WERNR",
-                    "waypoints": "BULDG N039.35.44.764,W106.27.16.715/ho WERNR"
+                    "initial_speed": 300,
+                    "route": "WERNR ZAKOR DBL KASE",
+                    "waypoints": "N039.37.27.994,W106.08.45.942 N039.36.38.652,W106.14.29.403/ho WERNR ZAKOR DBL"
                 },
                 {
                     "airlines": {
@@ -257,17 +267,18 @@
                             }
                         ]
                     },
+					"assigned_altitude": 20000,
                     "cruise_altitude": 24000,
-                    "initial_altitude": 18000,
-                    "description": "",
+                    "initial_altitude": 23000,
+                    "description": "Northeast (D01 Sats)",
                     "initial_controller": "DEN_11_CTR",
-                    "initial_speed": 180,
+                    "initial_speed": 310,
                     "route": "DBL KASE",
-                    "waypoints": "N039.32.32.792,W106.20.38.351/a17000 N039.31.38.629,W106.25.10.070/s210/ho DBL"
+                    "waypoints": "N039.35.22.311,W106.09.15.633 N039.34.38.901,W106.12.39.704/ho DBL"
                 }
             ]
         },
-        "SOUTH": {
+        "HAREI": {
             "arrivals": [
                 {
                     "airlines": {
@@ -287,17 +298,18 @@
                             }
                         ]
                     },
+					"assigned_altitude": 17000,
                     "cruise_altitude": 26000,
-                    "initial_altitude": 18000,
-                    "description": "",
+                    "initial_altitude": 21000,
+                    "description": "Southeast",
                     "initial_controller": "DEN_11_CTR",
-                    "initial_speed": 210,
+                    "initial_speed": 300,
                     "route": "DBL KASE",
-                    "waypoints": "N038.50.33.682,W106.22.23.325 N038.58.54.837,W106.29.24.074 N038.58.54.837,W106.29.24.074/s210/ho DBL"
+                    "waypoints": "N038.48.47.993,W106.20.40.521 N038.54.37.880,W106.25.46.847/ho DBL"
                 }
             ]
         },
-        "WEST": {
+        "LOYYD": {
             "arrivals": [
                 {
                     "airlines": {
@@ -320,13 +332,14 @@
                             }
                         ]
                     },
+					"assigned_altitude": 20000,
                     "cruise_altitude": 23000,
-                    "initial_altitude": 19000,
-                    "description": "",
+                    "initial_altitude": 22000,
+                    "description": "Southwest",
                     "initial_controller": "DEN_11_CTR",
-                    "initial_speed": 210,
+                    "initial_speed": 340,
                     "route": "KASE",
-                    "waypoints": "N039.07.43.211,W107.31.40.772/a19000 N039.08.45.805,W107.27.37.672/s210/a17000/ho"
+                    "waypoints": "N039.04.40.165,W107.42.49.949 N039.06.02.150,W107.37.57.301/ho LOYYD SKIER DBL KASE"
                 }
             ]
         }
@@ -335,22 +348,19 @@
         "ASE_APP": {
             "frequency": 123800,
             "radio_name": "Aspen approach",
-            "scope_char": "A",
             "sector_id": "1A"
         },
         "ASE_TWR": {
             "frequency": 118850,
             "radio_name": "Aspen tower",
-            "scope_char": "T",
-            "sector_id": "AT"
+            "sector_id": "1T"
         },
         "DEN_11_CTR": {
             "frequency": 120475,
             "radio_name": "Denver center",
             "facility_id": "C",
             "eram_facility": true,
-            "scope_char": "C",
-            "sector_id": "D11"
+            "sector_id": "C11"
         }
     },
     "default_scenario": "VMC 15",
@@ -373,13 +383,13 @@
                 }
             ],
             "inbound_rates": {
-                "WEST": {
+                "LAWSN": {
                     "KASE": 5
                 },
-                "EAST": {
+                "HAREI": {
                     "KASE": 5
                 },
-                "SOUTH": {
+                "LOYYD": {
                     "KASE": 5
                 }
             },
@@ -435,11 +445,11 @@
         },
         "scratchpads": {
             "RLG": "RLG",
-	    "RIL": "RIL",
+			"RIL": "RIL",
             "JNC": "JNC",
             "EKR": "EKR",
             "DBL": "DBL",
-	    "LINDZ": "LIN"
+			"LINDZ": "LIN"
         },
         "significant_points": {
             "DBL": {  },
