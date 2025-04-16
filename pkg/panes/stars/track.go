@@ -225,7 +225,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 	// See if any aircraft we have state for have been removed
 	for callsign := range sp.TrackState {
-		if strings.HasPrefix(string(callsign), "__") {
+		if strings.HasPrefix(string(callsign), "__") { // unsupported fp
 			acid := sim.ACID(strings.TrimPrefix(string(callsign), "__"))
 			if !slices.ContainsFunc(ctx.Client.State.UnassociatedFlightPlans,
 				func(fp *sim.STARSFlightPlan) bool { return fp.ACID == acid }) {
@@ -444,7 +444,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 	sp.lastTrackUpdate = now
 
-	for _, trk := range ctx.Client.State.Tracks {
+	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		state.previousTrack = state.track

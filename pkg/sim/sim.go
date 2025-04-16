@@ -972,9 +972,9 @@ func (s *Sim) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
 			return ac.STARSFlightPlan
 		}
 	}
-	for i, fp := range s.State.UnassociatedFlightPlans {
+	for i, fp := range s.STARSComputer.FlightPlans {
 		if fp.ACID == acid {
-			return s.State.UnassociatedFlightPlans[i]
+			return s.STARSComputer.FlightPlans[i]
 		}
 	}
 	return nil
@@ -986,6 +986,10 @@ func (t *Track) IsAssociated() bool {
 
 func (t *Track) IsUnassociated() bool {
 	return t.FlightPlan == nil
+}
+
+func (t *Track) IsUnsupportedDB() bool {
+	return t.FlightPlan != nil && !t.FlightPlan.Location.IsZero()
 }
 
 func (t *Track) IsDeparture() bool {

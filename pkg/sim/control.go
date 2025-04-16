@@ -551,7 +551,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 
 	return s.dispatchFlightPlanCommand(tcp, acid,
 		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
-			if ac.STARSFlightPlan.HandoffTrackController == tcp {
+			if fp.HandoffTrackController == tcp {
 				return nil
 			}
 			if po, ok := s.PointOuts[fp.ACID]; ok && po.ToController == tcp {

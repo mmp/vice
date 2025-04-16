@@ -480,7 +480,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	}
 
 	// Various other values that will be repeatedly useful below...
-	unsupportedDB := sfp != nil && !sfp.Location.IsZero()
 	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1) && trk.ADSBCallsign != ""
 	var actype string
 	if sfp != nil {
@@ -491,7 +490,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
 	// altitude or inhibit mode C.
 	altitude := fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-	if unsupportedDB {
+	if trk.IsUnsupportedDB() {
 		altitude = ""
 	} else if sfp != nil && sfp.PilotReportedAltitude != 0 {
 		altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
@@ -506,7 +505,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode
 
 	groundspeed := fmt.Sprintf("%02d", int(trk.Groundspeed+5)/10)
-	beaconMismatch := trk.IsAssociated() && trk.Squawk != sfp.AssignedSquawk && !squawkingSPC && !unsupportedDB
+	beaconMismatch := trk.IsAssociated() && trk.Squawk != sfp.AssignedSquawk && !squawkingSPC && !trk.IsUnsupportedDB()
 
 	// Figure out what to display for scratchpad 1 (used in both FDB and PDBs)
 	sp1 := ""
@@ -841,7 +840,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 
 		// Field 6: ATPA info and possibly beacon code; doesn't apply to unsupported DB
 		idx6 := 0
-		if !unsupportedDB {
+		if !trk.IsUnsupportedDB() {
 			if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
 				formatDBText(db.field6[idx6][:], "*TPA", color, false)
 				idx6++
@@ -1047,6 +1046,8 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 		} else if slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.UserTCP) {
 			// Had it but redirected it
 			return true
+		} else if trk.IsUnsupportedDB() {
+			return true
 		}
 
 		// Check altitude filters
@@ -1188,8 +1189,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, trk sim.Track) bool 
 }
 
 func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtype DatablockType) []dbChar {
-	unsupportedDB := trk.IsAssociated() && !trk.FlightPlan.Location.IsZero()
-	if unsupportedDB {
+	if trk.IsUnsupportedDB() {
 		return nil
 	}
 

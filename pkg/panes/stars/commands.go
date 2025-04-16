@@ -3220,8 +3220,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 				return
 			} else if len(cmd) > 2 && cmd[:2] == "*P" {
-				// Not allowed for unassociated tracks unsupported datablocks
-				if trk.FlightPlan != nil && !trk.FlightPlan.Location.IsZero() {
+				// Not allowed for unsupported datablocks
+				if trk.IsUnsupportedDB() {
 					status.err = ErrSTARSIllegalTrack
 				} else if r, err := strconv.Atoi(cmd[2:]); err == nil {
 					if r < 1 || r > 30 {
