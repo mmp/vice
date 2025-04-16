@@ -1057,7 +1057,8 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 // events to the spinner.
 func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
-	if drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active {
+	commandModeSelected := !active && sp.commandMode == commandMode
+	if (drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active) || commandModeSelected {
 		sp.setCommandMode(ctx, commandMode)
 
 		sp.savedMousePosition = ctx.Mouse.Pos
