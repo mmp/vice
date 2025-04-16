@@ -835,7 +835,6 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly go around
-			// FIXME: maintain GoAroundDistance, state, in Sim, not Aircraft
 			if ac.GoAroundDistance != nil {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 					s.lg.Info("randomly going around")
@@ -874,7 +873,7 @@ func (s *Sim) updateState() {
 			}
 
 			// Cull far-away aircraft
-			if math.NMDistance2LL(ac.Position(), s.State.Center) > 250 {
+			if math.NMDistance2LL(ac.Position(), s.State.Center) > 125 {
 				s.lg.Info("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}
