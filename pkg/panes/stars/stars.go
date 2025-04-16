@@ -1222,40 +1222,34 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 	now := ctx.Client.State.SimTime
 
 	for _, trk := range ctx.Client.State.Tracks {
-		if !trk.IsAirborne {
-			continue
-		}
-
-		state := sp.TrackState[trk.ADSBCallsign]
-		// This includes the case of a spawned aircraft for which we don't
-		// yet have a radar track.
-		if state.LostTrack(now) {
-			continue
-		}
-
 		visible := false
+		state := sp.TrackState[trk.ADSBCallsign]
 
-		if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
-			// visible unless if it's almost on the ground
-			if trk.IsDeparture() &&
-				trk.Altitude < trk.DepartureAirportElevation+100 &&
-				math.NMDistance2LL(trk.Location, trk.DepartureAirportLocation) < 3 {
-				continue
-			} else if trk.IsArrival() &&
-				trk.Altitude < trk.ArrivalAirportElevation+100 &&
-				math.NMDistance2LL(trk.Location, trk.ArrivalAirportLocation) < 3 {
-				continue
-			}
+		if trk.IsUnsupportedDB() {
 			visible = true
-		} else {
-			// Otherwise see if any of the radars can see it
-			for id, site := range ctx.FacilityAdaptation.RadarSites {
-				if single && ps.RadarSiteSelected != id {
+		} else if trk.IsAirborne && !state.LostTrack(now) {
+			if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
+				// visible unless if it's almost on the ground
+				if trk.IsDeparture() &&
+					trk.Altitude < trk.DepartureAirportElevation+100 &&
+					math.NMDistance2LL(trk.Location, trk.DepartureAirportLocation) < 3 {
+					continue
+				} else if trk.IsArrival() &&
+					trk.Altitude < trk.ArrivalAirportElevation+100 &&
+					math.NMDistance2LL(trk.Location, trk.ArrivalAirportLocation) < 3 {
 					continue
 				}
+				visible = true
+			} else {
+				// Otherwise see if any of the radars can see it
+				for id, site := range ctx.FacilityAdaptation.RadarSites {
+					if single && ps.RadarSiteSelected != id {
+						continue
+					}
 
-				if p, s, _ := site.CheckVisibility(trk.Location, int(trk.Altitude)); p || s {
-					visible = true
+					if p, s, _ := site.CheckVisibility(trk.Location, int(trk.Altitude)); p || s {
+						visible = true
+					}
 				}
 			}
 		}
@@ -1268,20 +1262,6 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 				state.FirstRadarTrack = now
 			}
 		}
-	}
-
-	// Make up fake tracks for unsupported datablocks
-	for i, fp := range ctx.Client.State.UnassociatedFlightPlans {
-		if fp.Location.IsZero() {
-			continue
-		}
-		tracks = append(tracks, sim.Track{
-			RadarTrack: av.RadarTrack{
-				ADSBCallsign: av.ADSBCallsign("__" + string(fp.ACID)),
-				Location:     fp.Location,
-			},
-			FlightPlan: ctx.Client.State.UnassociatedFlightPlans[i],
-		})
 	}
 
 	return tracks

@@ -597,6 +597,21 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 		update.Tracks[callsign] = &rt
 	}
 
+	// Make up fake tracks for unsupported datablocks
+	for i, fp := range update.UnassociatedFlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		callsign := av.ADSBCallsign("__" + string(fp.ACID))
+		update.Tracks[callsign] = &Track{
+			RadarTrack: av.RadarTrack{
+				ADSBCallsign: callsign,
+				Location:     fp.Location,
+			},
+			FlightPlan: update.UnassociatedFlightPlans[i],
+		}
+	}
+
 	if localServer {
 		*update = deep.MustCopy(*update)
 	}
