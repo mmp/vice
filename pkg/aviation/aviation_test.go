@@ -97,8 +97,8 @@ func TestSquawkCodePoolBasics(t *testing.T) {
 			t.Errorf("unused squawk reported as assigned")
 		}
 
-		if err := p.Claim(sq); err != nil {
-			t.Errorf("unable to claim unassigned code")
+		if err := p.Take(sq); err != nil {
+			t.Errorf("unable to take unassigned code")
 		}
 
 		if !p.IsAssigned(sq) {
