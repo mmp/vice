@@ -597,7 +597,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 		// TODO: [mode S equipage] [target identification] [target address]
 
 	case av.FlightTypeDeparture:
-		if state == nil || state.FirstRadarTrack.IsZero() {
+		if state == nil || state.FirstRadarTrackTime.IsZero() {
 			// Proposed departure
 			result += aircraftType + " "
 			result += fp.AssignedSquawk.String() + " " + fp.TrackingController + "\n"
@@ -612,7 +612,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 			// Active departure
 			result += fp.AssignedSquawk.String() + " "
 			result += fmtfix(fp.EntryFix)
-			result += "D" + fmtTime(state.FirstRadarTrack) + " "
+			result += "D" + fmtTime(state.FirstRadarTrackTime) + " "
 			if trk != nil {
 				result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100) + "\n"
 			}
@@ -633,7 +633,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 
 		result += fmtfix(fp.EntryFix)
 		if state != nil {
-			result += "A" + fmtTime(state.FirstRadarTrack) + " "
+			result += "A" + fmtTime(state.FirstRadarTrackTime) + " "
 		}
 		result += fmtfix(fp.ExitFix)
 		// TODO: [mode S equipage] [target identification] [target address]

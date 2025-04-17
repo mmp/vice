@@ -94,9 +94,9 @@ type TrackState struct {
 	// a different code, we get a flashing DB in the datablock.
 	DBAcknowledged av.Squawk
 
-	FirstSeen          time.Time
-	FirstRadarTrack    time.Time
-	EnteredOurAirspace bool
+	FirstSeen           time.Time
+	FirstRadarTrackTime time.Time
+	EnteredOurAirspace  bool
 
 	OutboundHandoffAccepted bool
 	OutboundHandoffFlashEnd time.Time
