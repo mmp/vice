@@ -151,6 +151,8 @@ type STARSPane struct {
 	DisplayBeaconCode        av.Squawk
 	DisplayBeaconCodeEndTime time.Time
 
+	DisplayRequestedAltitude bool
+
 	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeSpinner     dcbSpinner
 
@@ -414,6 +416,8 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 }
 
 func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
+
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)

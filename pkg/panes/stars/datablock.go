@@ -831,7 +831,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 			}
 
 			if !forceACType && (state == nil || (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
-				(state.DisplayRequestedAltitude == nil && sp.currentPrefs().DisplayRequestedAltitude)) {
+				(state.DisplayRequestedAltitude == nil && sp.DisplayRequestedAltitude)) {
 				if alt := sfp.RequestedAltitude; alt != 0 {
 					// FIXME: 2-67: with 2-char TCPs, the "R" goes in the
 					// second place in field 4 when requested altitude is

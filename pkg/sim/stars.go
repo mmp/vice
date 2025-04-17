@@ -325,6 +325,10 @@ type STARSFacilityAdaptation struct {
 		DisplayCustomSPCs bool `json:"display_custom_spcs"`
 	} `json:"pdb"`
 
+	FDB struct {
+		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
+	} `json:"fdb"`
+
 	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
 		DisplayExitFix1    bool `json:"display_exit_fix_1"`

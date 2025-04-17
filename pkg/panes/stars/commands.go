@@ -1486,15 +1486,15 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				status.clear = true
 				return
 			case "A": // toggle
-				ps.DisplayRequestedAltitude = !ps.DisplayRequestedAltitude
+				sp.DisplayRequestedAltitude = !sp.DisplayRequestedAltitude
 				status.clear = true
 				return
 			case "AE": // enable
-				ps.DisplayRequestedAltitude = true
+				sp.DisplayRequestedAltitude = true
 				status.clear = true
 				return
 			case "AI": // inhibit
-				ps.DisplayRequestedAltitude = false
+				sp.DisplayRequestedAltitude = false
 				status.clear = true
 				return
 			}
@@ -3581,7 +3581,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 						status.err = ErrSTARSIllegalFunction
 					} else {
 						if state.DisplayRequestedAltitude == nil {
-							b := ps.DisplayRequestedAltitude // inherit from system-wide
+							b := sp.DisplayRequestedAltitude // inherit from system-wide
 							state.DisplayRequestedAltitude = &b
 						}
 						*state.DisplayRequestedAltitude = !*state.DisplayRequestedAltitude
