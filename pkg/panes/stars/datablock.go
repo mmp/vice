@@ -918,14 +918,11 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 	forceFDB := false
 	if trk.IsAssociated() {
 		if tcps, ok := sp.PointOuts[trk.FlightPlan.ACID]; ok && tcps.To == ctx.UserTCP {
-			inboundPointOut = true
-		}
-
-		forceFDB = inboundPointOut
-		forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
-		forceFDB = forceFDB || trk.HandingOffTo(ctx.UserTCP)
-		if tcps, ok := sp.PointOuts[trk.FlightPlan.ACID]; ok && tcps.To == ctx.UserTCP {
 			forceFDB = true
+			inboundPointOut = true
+		} else {
+			forceFDB = forceFDB || (state.OutboundHandoffAccepted && ctx.Now.Before(state.OutboundHandoffFlashEnd))
+			forceFDB = forceFDB || trk.HandingOffTo(ctx.UserTCP)
 		}
 	}
 
@@ -966,13 +963,15 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 		sfp := trk.FlightPlan
 		if _, ok := sp.ForceQLACIDs[sfp.ACID]; ok {
 			// Check if we're the controller being ForceQL
-			color = STARSInboundPointOutColor
+			color = STARSTrackAlertColor
 		} else if state.PointOutAcknowledged || state.ForceQL {
 			// Ack'ed point out to us (but not cleared) or force quick look.
-			color = STARSInboundPointOutColor
+			color = STARSTrackAlertColor
 		} else if inboundPointOut {
 			// Pointed out to us.
-			color = STARSInboundPointOutColor
+			color = STARSTrackAlertColor
+		} else if state.DatablockAlert {
+			color = STARSTrackAlertColor
 		} else if sfp.TrackingController == ctx.UserTCP { //change
 			// we own the track track
 			color = STARSTrackedAircraftColor

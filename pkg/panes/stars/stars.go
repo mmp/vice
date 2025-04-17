@@ -61,7 +61,7 @@ var (
 	STARSJRingConeColor         = renderer.RGB{.5, .5, 1}
 	STARSTrackedAircraftColor   = renderer.RGB{1, 1, 1}
 	STARSUntrackedAircraftColor = renderer.RGB{0, 1, 0}
-	STARSInboundPointOutColor   = renderer.RGB{1, 1, 0}
+	STARSTrackAlertColor        = renderer.RGB{1, 1, 0}
 	STARSGhostColor             = renderer.RGB{1, 1, 0}
 	STARSSelectedAircraftColor  = renderer.RGB{0, 1, 1}
 

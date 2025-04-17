@@ -122,6 +122,10 @@ type TrackState struct {
 	// applies globally.
 	InhibitACTypeDisplay      *bool
 	ForceACTypeDisplayEndTime time.Time
+
+	// Draw the datablock in yellow (until cleared); currently only used for
+	// [MF]Y[SLEW] quick flight plans
+	DatablockAlert bool
 }
 
 type ATPAStatus int

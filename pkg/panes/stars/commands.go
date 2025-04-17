@@ -2953,6 +2953,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else if state.ForceQL {
 					state.ForceQL = false
 					status.clear = true
+				} else if state.DatablockAlert {
+					state.DatablockAlert = false
+					status.clear = true
 				} else if _, ok := sp.RejectedPointOuts[acid]; ok {
 					// ack rejected point out
 					delete(sp.RejectedPointOuts, acid)
@@ -3191,6 +3194,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 					status.err = err
 				} else {
+					state.DatablockAlert = true // Display DB in yellow until it's slewed.
 					status.clear = true
 				}
 				return
