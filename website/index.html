@@ -6761,9 +6761,21 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Allows specifying various adapted configurations for full datablocks.
                   The following member is available ("false" by default):
                   <ul>
-                    <li>"display_requested_altitude": if true, the requested altitudes of aircraft that
+                    <li>"display_requested_altitude": (Boolean value) if true, the requested altitudes of aircraft that
                       have them in their flight plans are shown in the datablock (multiplexed with
                       aircraft type and groundspeed).</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"flight_plan"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations for STARS flight plans.
+                  The following member is available:
+                  <ul>
+                    <li>"quick_acid": string that gives the up-to-3 character callsign that is used
+                      when a quick flight plan is generated for an aircraft by entering "Y" and slewing it.
+                      A unique integer identifier is added to this ACID. If unset, "VCE" is used by default.</li>
                   </ul>
                 </td>
               </tr>
