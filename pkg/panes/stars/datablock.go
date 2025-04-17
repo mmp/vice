@@ -800,7 +800,12 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		rulesCategory += sfp.CWTCategory + " "
 
 		field5Idx := 0
-		if state != nil {
+		// 6-107 force display / inhibit ac type display
+		inhibitACType := sfp.InhibitACTypeDisplay ||
+			(state != nil && state.InhibitACTypeDisplay != nil && *state.InhibitACTypeDisplay)
+		forceACType := ctx.Now.Before(sfp.ForceACTypeDisplayEndTime) ||
+			(state != nil && ctx.Now.Before(state.ForceACTypeDisplayEndTime))
+		if state != nil && !forceACType {
 			if state.IFFlashing {
 				if trk.Ident {
 					formatDBText(db.field5[0][:], "IF"+"ID", color, true)
@@ -820,13 +825,13 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		// Field 5: +aircraft type and possibly requested altitude, if not
 		// identing.
 		if !trk.Ident {
-			if actype != "" {
+			if actype != "" && !inhibitACType {
 				formatDBText(db.field5[field5Idx][:], actype+" ", color, false)
 				field5Idx++
 			}
 
-			if state == nil || (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
-				(state.DisplayRequestedAltitude == nil && sp.currentPrefs().DisplayRequestedAltitude) {
+			if !forceACType && (state == nil || (state.DisplayRequestedAltitude != nil && *state.DisplayRequestedAltitude) ||
+				(state.DisplayRequestedAltitude == nil && sp.currentPrefs().DisplayRequestedAltitude)) {
 				if alt := sfp.RequestedAltitude; alt != 0 {
 					// FIXME: 2-67: with 2-char TCPs, the "R" goes in the
 					// second place in field 4 when requested altitude is

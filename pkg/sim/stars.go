@@ -425,6 +425,9 @@ type STARSFlightPlan struct {
 	ContainedFacilities []string
 	AutoAssociate       bool
 	RedirectedHandoff   RedirectedHandoff
+
+	InhibitACTypeDisplay      bool
+	ForceACTypeDisplayEndTime time.Time
 }
 
 type ACID string
@@ -466,6 +469,9 @@ type STARSFlightPlanSpecifier struct {
 	DisableCA                   util.Optional[bool]
 	MCISuppressedCode           util.Optional[av.Squawk]
 	GlobalLeaderLineDirection   util.Optional[*math.CardinalOrdinalDirection]
+
+	InhibitACTypeDisplay      util.Optional[bool]
+	ForceACTypeDisplayEndTime util.Optional[time.Time]
 
 	// Specifiers used when creating flight plans but not held on beyond
 	// that.
@@ -512,6 +518,9 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		DisableCA:                   s.DisableCA.GetOr(false),
 		MCISuppressedCode:           s.MCISuppressedCode.GetOr(av.Squawk(0)),
 		GlobalLeaderLineDirection:   s.GlobalLeaderLineDirection.GetOr(nil),
+
+		InhibitACTypeDisplay:      s.InhibitACTypeDisplay.GetOr(false),
+		ForceACTypeDisplayEndTime: s.ForceACTypeDisplayEndTime.GetOr(time.Time{}),
 
 		AutoAssociate: s.AutoAssociate,
 	}
@@ -592,6 +601,12 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.GlobalLeaderLineDirection.IsSet {
 		fp.GlobalLeaderLineDirection = spec.GlobalLeaderLineDirection.Get()
+	}
+	if spec.InhibitACTypeDisplay.IsSet {
+		fp.InhibitACTypeDisplay = spec.InhibitACTypeDisplay.Get()
+	}
+	if spec.ForceACTypeDisplayEndTime.IsSet {
+		fp.ForceACTypeDisplayEndTime = spec.ForceACTypeDisplayEndTime.Get()
 	}
 }
 

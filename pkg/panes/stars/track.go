@@ -116,6 +116,12 @@ type TrackState struct {
 	// entirely.
 	PointOutAcknowledged bool
 	ForceQL              bool
+
+	// This is for [FLT DATA][SLEW] of an unowned FDB in which case it only
+	// applies locally; for owned tracks, the flight plan is modified so it
+	// applies globally.
+	InhibitACTypeDisplay      *bool
+	ForceACTypeDisplayEndTime time.Time
 }
 
 type ATPAStatus int

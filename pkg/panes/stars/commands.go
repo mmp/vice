@@ -3649,6 +3649,49 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			}
 
+		case CommandModeFlightData:
+			// 6-107 toggle display of aircraft type in FDB
+			if dt := sp.datablockType(ctx, *trk); dt != FullDatablock {
+				status.err = ErrSTARSIllegalTrack
+			} else if trk.FlightPlan.AircraftType == "" {
+				status.err = ErrSTARSIllegalFunction
+			} else {
+				fp := trk.FlightPlan
+				if fp.TrackingController == ctx.UserTCP {
+					// Owned track, so we'll modify the flight plan so this applies for all controllers
+					spec := sim.STARSFlightPlanSpecifier{}
+					if !fp.InhibitACTypeDisplay && ctx.Now.Before(fp.ForceACTypeDisplayEndTime) {
+						// It's currently visible; extend the time
+						// TODO: make the times adaptable
+						spec.ForceACTypeDisplayEndTime.Set(ctx.Now.Add(5 * time.Second))
+					} else {
+						// Toggle display
+						spec.InhibitACTypeDisplay.Set(!fp.InhibitACTypeDisplay)
+						if !spec.InhibitACTypeDisplay.Get() {
+							// It was made visible; keep it visible for a bit
+							spec.ForceACTypeDisplayEndTime.Set(ctx.Now.Add(5 * time.Second))
+						}
+					}
+					sp.modifyFlightPlan(ctx, fp.ACID, spec, false /* don't display fp */)
+				} else {
+					// Someone else owns it so it will just apply locally.
+					if state.InhibitACTypeDisplay == nil {
+						t := true
+						state.InhibitACTypeDisplay = &t
+					} else if !*state.InhibitACTypeDisplay && ctx.Now.Before(state.ForceACTypeDisplayEndTime) {
+						// Currently visible; extend the time
+						state.ForceACTypeDisplayEndTime = ctx.Now.Add(5 * time.Second)
+					} else {
+						*state.InhibitACTypeDisplay = !*state.InhibitACTypeDisplay
+						if !*state.InhibitACTypeDisplay {
+							state.ForceACTypeDisplayEndTime = ctx.Now.Add(5 * time.Second) // TODO: this is adaptable
+						}
+					}
+				}
+				status.clear = true
+			}
+			return
+
 		case CommandModeCollisionAlert:
 			if cmd == "K" {
 				if trk.IsUnassociated() {
