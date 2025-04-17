@@ -14,6 +14,7 @@ import (
 	"net/rpc"
 	"os"
 	"runtime"
+	"strconv"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -301,8 +302,16 @@ func launchHTTPStats(sm *SimManager) {
 		}
 	})
 
-	if err := http.ListenAndServe(":6502", nil); err != nil {
-		sm.lg.Errorf("Failed to start HTTP server for stats: %v\n", err)
+	port := 6502
+	var err error
+	for i := range 4 {
+		if err = http.ListenAndServe(":"+strconv.Itoa(port+i), nil); err == nil {
+			sm.lg.Infof("Started HTTP stats server on port %d", port)
+			break
+		}
+	}
+	if err != nil {
+		sm.lg.Warnf("Unable to start HTTP stats server")
 	}
 }
 
