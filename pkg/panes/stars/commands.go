@@ -3337,7 +3337,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			checkfp := func(s string, primary bool) bool {
 				return checkScratchpad(ctx, s, !primary, false /* !implied */) == nil
 			}
-			if fp := ctx.Client.State.FindMatchingFlightPlan(first); fp != nil {
+			if trk.IsAssociated() {
+				status.err = ErrSTARSIllegalTrack
+			} else if fp := ctx.Client.State.FindMatchingFlightPlan(first); fp != nil {
 				// 5-72 activate existing FP
 				if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2,ALT_A", rest, checkfp); err != nil {
 					status.err = err
@@ -3738,6 +3740,23 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		} else if cmd != "" {
 			status.err = ErrSTARSCommandFormat
 		}
+
+	case CommandModeInitiateControl:
+		// 5-72 create unsupported datablock from existing flight plan
+		first, rest, _ := strings.Cut(cmd, " ")
+		checkfp := func(s string, primary bool) bool {
+			return checkScratchpad(ctx, s, !primary, false /* !implied */) == nil
+		}
+		if fp := ctx.Client.State.FindMatchingFlightPlan(first); fp == nil {
+			status.err = ErrSTARSNoFlight
+		} else if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2,ALT_A", rest, checkfp); err != nil {
+			status.err = err
+		} else {
+			spec.Location.Set(transforms.LatLongFromWindowP(mousePosition))
+			sp.modifyFlightPlan(ctx, fp.ACID, spec, false /* no display */)
+			status.clear = true
+		}
+		return
 
 	case CommandModeMultiFunc:
 		cmd = sp.multiFuncPrefix + cmd
