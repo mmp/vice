@@ -4137,7 +4137,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			// Otherwise leave sp.dwellAircraft as is
 		}
 	} else {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil && !trk.IsUnsupportedDB() {
 			td := renderer.GetTextDrawBuilder()
 			defer renderer.ReturnTextDrawBuilder(td)
 
