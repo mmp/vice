@@ -724,8 +724,8 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 	case CommandModeTerminateControl:
 		if cmd == "ALL" {
-			for _, trk := range ctx.Client.State.Tracks {
-				if trk.IsAssociated() && trk.FlightPlan.TrackingController == ctx.UserTCP {
+			for _, trk := range tracks {
+				if (trk.IsAssociated() || trk.IsUnsupportedDB()) && trk.FlightPlan.TrackingController == ctx.UserTCP {
 					sp.deleteFlightPlan(ctx, trk.FlightPlan.ACID)
 				}
 			}
