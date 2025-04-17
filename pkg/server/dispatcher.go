@@ -100,6 +100,16 @@ func (sd *Dispatcher) TogglePause(token string, _ *struct{}) error {
 	}
 }
 
+func (sd *Dispatcher) FastForward(token string, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return s.FastForward(ctrl.tcp)
+	}
+}
+
 type SetGlobalLeaderLineArgs struct {
 	ControllerToken string
 	ACID            sim.ACID

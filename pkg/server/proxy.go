@@ -22,6 +22,10 @@ func (p *proxy) TogglePause() *rpc.Call {
 	return p.Client.Go("Sim.TogglePause", p.ControllerToken, nil, nil)
 }
 
+func (p *proxy) FastForward() *rpc.Call {
+	return p.Client.Go("Sim.FastForward", p.ControllerToken, nil, nil)
+}
+
 func (p *proxy) SignOff(_, _ *struct{}) error {
 	if err := p.Client.CallWithTimeout("Sim.SignOff", p.ControllerToken, nil); err != nil {
 		return err

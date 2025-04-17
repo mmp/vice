@@ -545,8 +545,17 @@ func (c *ControlClient) GetSerializeSim() (*sim.Sim, error) {
 }
 
 func (c *ControlClient) ToggleSimPause() {
+	c.State.Paused = !c.State.Paused // improve local UI responsiveness
+
 	c.pendingCalls = append(c.pendingCalls, &util.PendingCall{
 		Call:      c.proxy.TogglePause(),
+		IssueTime: time.Now(),
+	})
+}
+
+func (c *ControlClient) FastForward() {
+	c.pendingCalls = append(c.pendingCalls, &util.PendingCall{
+		Call:      c.proxy.FastForward(),
 		IssueTime: time.Now(),
 	})
 }

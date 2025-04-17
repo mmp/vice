@@ -379,6 +379,24 @@ func (s *Sim) TogglePause(tcp string) error {
 	return nil
 }
 
+func (s *Sim) FastForward(tcp string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	for i := 0; i < 15; i++ {
+		s.State.SimTime = s.State.SimTime.Add(time.Second)
+		s.updateState()
+	}
+	s.updateTimeSlop = 0
+	s.lastUpdateTime = time.Now()
+
+	s.eventStream.Post(Event{
+		Type:    GlobalMessageEvent,
+		Message: tcp + " has fast-forwarded the sim",
+	})
+	return nil
+}
+
 func (s *Sim) IdleTime() time.Duration {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

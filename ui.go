@@ -206,6 +206,15 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 					imgui.SetTooltip("Pause simulation")
 				}
 			}
+
+			uiStartDisable(controlClient.State.Paused)
+			if imgui.Button(renderer.FontAwesomeIconFastForward) {
+				controlClient.FastForward()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Advance simulation by 15 seconds")
+			}
+			uiEndDisable(controlClient.State.Paused)
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
