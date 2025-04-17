@@ -310,6 +310,12 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 		}
 	}
 
+	if spec.TrackingController.IsSet {
+		if _, ok := s.State.Controllers[spec.TrackingController.Get()]; !ok {
+			return STARSFlightPlan{}, ErrUnknownController
+		}
+	}
+
 	if ac != nil {
 		if ac.STARSFlightPlan.TrackingController != tcp {
 			return STARSFlightPlan{}, av.ErrOtherControllerHasTrack
