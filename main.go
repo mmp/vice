@@ -12,7 +12,6 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"log/slog"
 	_ "net/http/pprof"
 	"os"
 	"runtime"
@@ -288,8 +287,8 @@ func main() {
 			plat.PostRender()
 
 			// Periodically log current memory use, etc.
-			if stats.redraws%18000 == 0 {
-				lg.Info("performance", slog.Any("stats", stats))
+			if stats.redraws%18000 == 9000 { // Every 5min at 60fps, starting 2.5min after launch
+				lg.Info("performance", "stats", stats)
 			}
 
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
