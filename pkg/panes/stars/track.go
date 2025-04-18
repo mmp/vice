@@ -149,6 +149,10 @@ type AircraftState struct {
 	// entirely.
 	PointOutAcknowledged bool
 	ForceQL              bool
+
+	// Unreasonable Mode-C
+	UnreasonableModeC       bool
+	ConsecutiveNormalTracks int
 }
 
 type ATPAStatus int
@@ -166,6 +170,10 @@ const (
 	GhostStateRegular = iota
 	GhostStateSuppressed
 	GhostStateForced
+)
+
+const (
+	FPMThreshold = 8400 / 100
 )
 
 func (s *AircraftState) TrackAltitude() int {
@@ -480,7 +488,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 			ctx.Lg.Errorf("%s: not found in Aircraft?", callsign)
 			continue
 		}
-
+		sp.checkUnreasonableModeC(state, callsign)
 		state.previousTrack = state.track
 		state.track = av.RadarTrack{
 			Position:    ac.Position(),
@@ -517,6 +525,32 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME(mtrokel): should this be happening in the STARSComputer Update method?
 	if !ctx.ControlClient.STARSFacilityAdaptation.KeepLDB {
 		ctx.ControlClient.STARSComputer().UpdateAssociatedFlightPlans(aircraft)
+	}
+}
+
+func (sp *STARSPane) checkUnreasonableModeC(state *AircraftState, callsign string) {
+	changeInAltitude := float64(state.previousTrack.Altitude - state.track.Altitude)
+	changeInTime := state.previousTrack.Time.Sub(state.track.Time)
+	changeInTimeSeconds := changeInTime.Seconds()
+
+	var change float64
+
+	if changeInTimeSeconds != 0 {
+		change = changeInAltitude / changeInTimeSeconds
+	} else {
+		change = 0
+	}
+
+	st := sp.Aircraft[callsign]
+	if change > FPMThreshold || change < -FPMThreshold {
+		st.UnreasonableModeC = true
+		st.ConsecutiveNormalTracks = 0
+	} else if st.UnreasonableModeC {
+		st.ConsecutiveNormalTracks++
+		if st.ConsecutiveNormalTracks >= 5 {
+			st.UnreasonableModeC = false
+			st.ConsecutiveNormalTracks = 0
+		}
 	}
 }
 
