@@ -3,14 +3,14 @@
 	"airports": {
 		"KAUS": {
 			"approaches": {
-			  "I8L": { "cifp_id": "I18L" },
-			  "I8R": { "cifp_id": "I18R" },
-			  "I6L": { "cifp_id": "I36L" },
-			  "I6R": { "cifp_id": "I36R" },
-			  "R6L": { "cifp_id": "RZ36L", "full_name": "RNAV RNP Runway 36L" },
-			  "R6R": { "cifp_id": "RZ36R", "full_name": "RNAV RNP Runway 36R" },
-			  "R8R": { "cifp_id": "RZ18R", "full_name": "RNAV RNP Runway 18R" },
-			  "R8L": { "cifp_id": "RZ18L", "full_name": "RNAV RNP Runway 18L" }
+				"I8L": { "cifp_id": "I18L" },
+				"I8R": { "cifp_id": "I18R" },
+				"I6L": { "cifp_id": "I36L" },
+				"I6R": { "cifp_id": "I36R" },
+				"R6L": { "cifp_id": "RZ36L", "full_name": "RNAV RNP Runway 36L" },
+				"R6R": { "cifp_id": "RZ36R", "full_name": "RNAV RNP Runway 36R" },
+				"R8R": { "cifp_id": "RZ18R", "full_name": "RNAV RNP Runway 18R" },
+				"R8L": { "cifp_id": "RZ18L", "full_name": "RNAV RNP Runway 18L" }
 			},
 			"departure_routes": {
 				"18L": {
@@ -310,9 +310,10 @@
 		"KHYI": {
 			"hold_for_release": true,
 			"approaches": {
-			  "R13": { "cifp_id": "R13" },
-			  "R31": { "cifp_id": "R31" }
+				"R13": { "cifp_id": "R13" },
+				"R31": { "cifp_id": "R31" }
 			},
+			"vfr": { "random_routes": { "rate": 8 } },
 			"departure_routes": {
 				"13": {
 					"ZENZI": {
@@ -466,9 +467,10 @@
 		"KGTU": {
 			"hold_for_release": true,
 			"approaches": {
-			  "R11": { "cifp_id": "R11" },
-			  "R29": { "cifp_id": "R29" }
+				"R11": { "cifp_id": "R11" },
+				"R29": { "cifp_id": "R29" }
 			},
+			"vfr": { "random_routes": { "rate": 6 } },
 			"departure_routes": {
 				"29": {
 					"AMUSE": {
@@ -605,640 +607,640 @@
 			]
 		}
 	},
-    "inbound_flows": {
-        "DXEEE3N": {
-            "arrivals": [
-                {
-                    "waypoints": "VIDAA PUDDY/a14000 ORINT/a13000/ho DXEEE/a12000/s250 BAAAB SMILN/a11000 FAACE LIPSS/a4000/s210 STNSN TATAU/h180",
-                    "cruise_altitude": 20000,
-                    "star": "DXEEE3",
-                    "initial_controller": "HOU_50_CTR",
-                    "initial_altitude": 17000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KHRL"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KHRL"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KLRD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KCRP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KCRP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KHRL"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KLRD"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "DXEEE3S": {
-            "arrivals": [
-                {
-                    "waypoints": "VIDAA PUDDY/a14000 ORINT/a13000/ho DXEEE/a12000/s250 BAAAB SMILN/a11000 PLANX/a8000 DBORD TRPPN/a6000/s210 SNOTT/h5",
-                    "cruise_altitude": 20000,
-                    "star": "DXEEE3",
-                    "initial_controller": "HOU_50_CTR",
-                    "initial_altitude": 17000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KHRL"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KHRL"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KLRD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KCRP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KCRP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KHRL"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KLRD"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "GABOO1": {
-            "arrivals": [
-                {
-                    "waypoints": "GABOO/a11000 SEWZY/a10000/ho/h194",
-                    "cruise_altitude": 36000,
-                    "star": "GABOO1",
-                    "initial_controller": "HOU_96_CTR",
-                    "initial_altitude": 11000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KHYI": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KAFW"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KMSP"
-                            },
-                            {
-                                "icao": "DPJ",
-                                "airport": "KAPA"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "LAIKS3N": {
-            "arrivals": [
-                {
-                    "waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 TRVSS/a8000 RATTT/a5000/s220 LAIDY/a5000/s210/h180",
-                    "cruise_altitude": 37000,
-                    "star": "LAIKS3",
-                    "initial_controller": "HOU_50_CTR",
-                    "initial_altitude": 12000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KELP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KBUR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KABQ"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "LAIKS3S": {
-            "arrivals": [
-                {
-                    "waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 CRLOS/a5000 HOUKM/a5000/s210/h142",
-                    "cruise_altitude": 37000,
-                    "star": "LAIKS3",
-                    "initial_controller": "HOU_50_CTR",
-                    "initial_altitude": 12000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLAX"
-                            },
-                            {
-                                "icao": "ASA",
-                                "airport": "KSEA"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KELP"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KPHX"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KSFO"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KOAK"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KBUR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KSAN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KABQ"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "SEWZY6N": {
-            "arrivals": [
-                {
-                    "waypoints": "GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 HHOOF MMARE/a6000/s220 SMRFF/a5000/s210/h175",
-                    "cruise_altitude": 36000,
-                    "star": "SEWZY6",
-                    "initial_controller": "HOU_96_CTR",
-                    "initial_altitude": 13000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KMDW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "JIA",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "JIA",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLE"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KSTL"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "SEWZY6S": {
-            "arrivals": [
-                {
-                    "waypoints": "GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 MGTEC/a5000/s220 JEDYE/a4000/s210/h190",
-                    "cruise_altitude": 36000,
-                    "star": "SEWZY6",
-                    "initial_controller": "HOU_96_CTR",
-                    "initial_altitude": 13000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "SWA",
-                                "airport": "KMDW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "JIA",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "JIA",
-                                "airport": "KDFW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KDEN"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KDAL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLE"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KSTL"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "TOAMY": {
-            "arrivals": [
-                {
-                    "waypoints": "CLL TOAMY/a4000/ho/h265",
-                    "cruise_altitude": 4000,
-                    "route": "/.TOAMY",
-                    "initial_controller": "I90_U_APP",
-                    "initial_altitude": 4000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KGTU": [
-                            {
-                                "icao": "N",
-                                "airport": "KCLL"
-                            },
-                            {
-                                "icao": "N",
-                                "airport": "KCLL"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "WLEEE7N": {
-            "arrivals": [
-                {
-                    "waypoints": "MNURE WLEEE/a12000/s280/ho BITER/a11000 MUSEC/a6000 TOONE/a4000 BOWTZ/a4000/s210 SCUTE/a4000/h180",
-                    "cruise_altitude": 34000,
-                    "star": "WLEEE7",
-                    "initial_controller": "HOU_80_CTR",
-                    "initial_altitude": 12000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "UPS",
-                                "airport": "KSDF"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "long",
-                                "airport": "KMIA"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KJAX"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "long",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "long",
-                                "airport": "EDDM"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "long",
-                                "airport": "EDDF"
-                            },
-                            {
-                                "icao": "DLH",
-                                "fleet": "long",
-                                "airport": "EDDM"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KEYW"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KMSY"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KMSY"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KHOU"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KBTR"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KTPA"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KTLH"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KABY"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KHPN"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KRIC"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KPHL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "WLEEE7S": {
-            "arrivals": [
-                {
-                    "waypoints": "MNURE WLEEE/a12000/s280/ho BITER/a11000 ISHOV BASTO/a8000 LUKKE/a6000 XWING/a4000/s210 SSURF BEESO/a4000/h355",
-                    "cruise_altitude": 34000,
-                    "star": "WLEEE7",
-                    "initial_controller": "HOU_80_CTR",
-                    "initial_altitude": 12000,
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KAUS": [
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "UAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            },
-                            {
-                                "icao": "UPS",
-                                "airport": "KSDF"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "long",
-                                "airport": "KMIA"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KJAX"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "long",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "long",
-                                "airport": "EDDM"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "long",
-                                "airport": "EDDF"
-                            },
-                            {
-                                "icao": "DLH",
-                                "fleet": "long",
-                                "airport": "EDDM"
-                            },
-                            {
-                                "icao": "DAL",
-                                "fleet": "short",
-                                "airport": "KEYW"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KMSY"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KMSY"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KHOU"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KBTR"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KTPA"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KTLH"
-                            },
-                            {
-                                "icao": "EJA",
-                                "airport": "KABY"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KHPN"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KRIC"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KPHL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "fleet": "short",
-                                "airport": "KIAH"
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    },
+	"inbound_flows": {
+		"DXEEE3N": {
+			"arrivals": [
+				{
+					"waypoints": "VIDAA PUDDY/a14000 ORINT/a13000/ho DXEEE/a12000/s250 BAAAB SMILN/a11000 FAACE LIPSS/a4000/s210 STNSN TATAU/h180",
+					"cruise_altitude": 20000,
+					"star": "DXEEE3",
+					"initial_controller": "HOU_50_CTR",
+					"initial_altitude": 17000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "SWA",
+								"airport": "KHRL"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KHRL"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KLRD"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KCRP"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KCRP"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KHRL"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KLRD"
+							}
+						]
+					}
+				}
+			]
+		},
+		"DXEEE3S": {
+			"arrivals": [
+				{
+					"waypoints": "VIDAA PUDDY/a14000 ORINT/a13000/ho DXEEE/a12000/s250 BAAAB SMILN/a11000 PLANX/a8000 DBORD TRPPN/a6000/s210 SNOTT/h5",
+					"cruise_altitude": 20000,
+					"star": "DXEEE3",
+					"initial_controller": "HOU_50_CTR",
+					"initial_altitude": 17000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "SWA",
+								"airport": "KHRL"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KHRL"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KLRD"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KCRP"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KCRP"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KHRL"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KLRD"
+							}
+						]
+					}
+				}
+			]
+		},
+		"GABOO1": {
+			"arrivals": [
+				{
+					"waypoints": "GABOO/a11000 SEWZY/a10000/ho/h194",
+					"cruise_altitude": 36000,
+					"star": "GABOO1",
+					"initial_controller": "HOU_96_CTR",
+					"initial_altitude": 11000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KHYI": [
+							{
+								"icao": "N",
+								"fleet": "fastGA",
+								"airport": "KAFW"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "N",
+								"fleet": "fastGA",
+								"airport": "KMSP"
+							},
+							{
+								"icao": "DPJ",
+								"airport": "KAPA"
+							}
+						]
+					}
+				}
+			]
+		},
+		"LAIKS3N": {
+			"arrivals": [
+				{
+					"waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 TRVSS/a8000 RATTT/a5000/s220 LAIDY/a5000/s210/h180",
+					"cruise_altitude": 37000,
+					"star": "LAIKS3",
+					"initial_controller": "HOU_50_CTR",
+					"initial_altitude": 12000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "SWA",
+								"airport": "KSAN"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KLAX"
+							},
+							{
+								"icao": "ASA",
+								"airport": "KSEA"
+							},
+							{
+								"icao": "UAL",
+								"fleet": "short",
+								"airport": "KDEN"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KELP"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KPHX"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KPHX"
+							},
+							{
+								"icao": "UAL",
+								"airport": "KSFO"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KOAK"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KBUR"
+							},
+							{
+								"icao": "DAL",
+								"fleet": "short",
+								"airport": "KSAN"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KABQ"
+							}
+						]
+					}
+				}
+			]
+		},
+		"LAIKS3S": {
+			"arrivals": [
+				{
+					"waypoints": "SZAGI LAIKS/a12000/ho BOYZZ/a8000 CRLOS/a5000 HOUKM/a5000/s210/h142",
+					"cruise_altitude": 37000,
+					"star": "LAIKS3",
+					"initial_controller": "HOU_50_CTR",
+					"initial_altitude": 12000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "SWA",
+								"airport": "KSAN"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KLAX"
+							},
+							{
+								"icao": "ASA",
+								"airport": "KSEA"
+							},
+							{
+								"icao": "UAL",
+								"fleet": "short",
+								"airport": "KDEN"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KELP"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KPHX"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KPHX"
+							},
+							{
+								"icao": "UAL",
+								"airport": "KSFO"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KOAK"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KBUR"
+							},
+							{
+								"icao": "DAL",
+								"fleet": "short",
+								"airport": "KSAN"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KABQ"
+							}
+						]
+					}
+				}
+			]
+		},
+		"SEWZY6N": {
+			"arrivals": [
+				{
+					"waypoints": "GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 HHOOF MMARE/a6000/s220 SMRFF/a5000/s210/h175",
+					"cruise_altitude": 36000,
+					"star": "SEWZY6",
+					"initial_controller": "HOU_96_CTR",
+					"initial_altitude": 13000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "SWA",
+								"airport": "KMDW"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KORD"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "JIA",
+								"airport": "KDFW"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "JIA",
+								"airport": "KDFW"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KMSP"
+							},
+							{
+								"icao": "UAL",
+								"airport": "KDEN"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "AAL",
+								"airport": "KCLE"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KSTL"
+							}
+						]
+					}
+				}
+			]
+		},
+		"SEWZY6S": {
+			"arrivals": [
+				{
+					"waypoints": "GABOO/a13000/s250/ho SEWZY/a12000 VADRR/a8000 MGTEC/a5000/s220 JEDYE/a4000/s210/h190",
+					"cruise_altitude": 36000,
+					"star": "SEWZY6",
+					"initial_controller": "HOU_96_CTR",
+					"initial_altitude": 13000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "SWA",
+								"airport": "KMDW"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KORD"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "JIA",
+								"airport": "KDFW"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "JIA",
+								"airport": "KDFW"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KMSP"
+							},
+							{
+								"icao": "UAL",
+								"airport": "KDEN"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KDAL"
+							},
+							{
+								"icao": "AAL",
+								"airport": "KCLE"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KSTL"
+							}
+						]
+					}
+				}
+			]
+		},
+		"TOAMY": {
+			"arrivals": [
+				{
+					"waypoints": "CLL TOAMY/a4000/ho/h265",
+					"cruise_altitude": 4000,
+					"route": "/.TOAMY",
+					"initial_controller": "I90_U_APP",
+					"initial_altitude": 4000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KGTU": [
+							{
+								"icao": "N",
+								"airport": "KCLL"
+							},
+							{
+								"icao": "N",
+								"airport": "KCLL"
+							}
+						]
+					}
+				}
+			]
+		},
+		"WLEEE7N": {
+			"arrivals": [
+				{
+					"waypoints": "MNURE WLEEE/a12000/s280/ho BITER/a11000 MUSEC/a6000 TOONE/a4000 BOWTZ/a4000/s210 SCUTE/a4000/h180",
+					"cruise_altitude": 34000,
+					"star": "WLEEE7",
+					"initial_controller": "HOU_80_CTR",
+					"initial_altitude": 12000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "DAL",
+								"airport": "KATL"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KATL"
+							},
+							{
+								"icao": "UAL",
+								"fleet": "short",
+								"airport": "KIAH"
+							},
+							{
+								"icao": "UPS",
+								"airport": "KSDF"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "long",
+								"airport": "KMIA"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KJAX"
+							},
+							{
+								"icao": "DAL",
+								"fleet": "long",
+								"airport": "KATL"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "long",
+								"airport": "EDDM"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "long",
+								"airport": "EDDF"
+							},
+							{
+								"icao": "DLH",
+								"fleet": "long",
+								"airport": "EDDM"
+							},
+							{
+								"icao": "DAL",
+								"fleet": "short",
+								"airport": "KEYW"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KMSY"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KMSY"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KHOU"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KBTR"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KTPA"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KTLH"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KABY"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KHPN"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KRIC"
+							},
+							{
+								"icao": "AAL",
+								"airport": "KPHL"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "short",
+								"airport": "KIAH"
+							}
+						]
+					}
+				}
+			]
+		},
+		"WLEEE7S": {
+			"arrivals": [
+				{
+					"waypoints": "MNURE WLEEE/a12000/s280/ho BITER/a11000 ISHOV BASTO/a8000 LUKKE/a6000 XWING/a4000/s210 SSURF BEESO/a4000/h355",
+					"cruise_altitude": 34000,
+					"star": "WLEEE7",
+					"initial_controller": "HOU_80_CTR",
+					"initial_altitude": 12000,
+					"initial_speed": 280,
+					"expect_approach": null,
+					"airlines": {
+						"KAUS": [
+							{
+								"icao": "DAL",
+								"airport": "KATL"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KATL"
+							},
+							{
+								"icao": "UAL",
+								"fleet": "short",
+								"airport": "KIAH"
+							},
+							{
+								"icao": "UPS",
+								"airport": "KSDF"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "long",
+								"airport": "KMIA"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KJAX"
+							},
+							{
+								"icao": "DAL",
+								"fleet": "long",
+								"airport": "KATL"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "long",
+								"airport": "EDDM"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "long",
+								"airport": "EDDF"
+							},
+							{
+								"icao": "DLH",
+								"fleet": "long",
+								"airport": "EDDM"
+							},
+							{
+								"icao": "DAL",
+								"fleet": "short",
+								"airport": "KEYW"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KMSY"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KMSY"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KHOU"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KBTR"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KTPA"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KTLH"
+							},
+							{
+								"icao": "EJA",
+								"airport": "KABY"
+							},
+							{
+								"icao": "SWA",
+								"airport": "KHPN"
+							},
+							{
+								"icao": "DAL",
+								"airport": "KRIC"
+							},
+							{
+								"icao": "AAL",
+								"airport": "KPHL"
+							},
+							{
+								"icao": "AAL",
+								"fleet": "short",
+								"airport": "KIAH"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
 	"control_positions": {
 		"HOU_50_CTR": {
 			"frequency": 134200,
@@ -1332,11 +1334,11 @@
 	"primary_airport": "KAUS",
 	"scenarios": {
 		"AUS TRACON South": {
-		        "airspace": {
-                          "AUS_W_APP": [ "AUS_W_APP" ],
-                          "AUS_E_APP": [ "AUS_W_APP" ],
-                          "AUS_F_APP": [ "AUS_W_APP" ]
-                        },
+			"airspace": {
+				"AUS_W_APP": ["AUS_W_APP"],
+				"AUS_E_APP": ["AUS_W_APP"],
+				"AUS_F_APP": ["AUS_W_APP"]
+			},
 			"arrival_runways": [
 				{
 					"airport": "KAUS",
@@ -1458,11 +1460,11 @@
 			}
 		},
 		"AUS TRACON North": {
-		        "airspace": {
-                          "AUS_W_APP": [ "AUS_W_APP" ],
-                          "AUS_E_APP": [ "AUS_W_APP" ],
-                          "AUS_F_APP": [ "AUS_W_APP" ]
-                        },
+			"airspace": {
+				"AUS_W_APP": ["AUS_W_APP"],
+				"AUS_E_APP": ["AUS_W_APP"],
+				"AUS_F_APP": ["AUS_W_APP"]
+			},
 			"arrival_runways": [
 				{
 					"airport": "KAUS",
