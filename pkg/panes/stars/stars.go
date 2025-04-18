@@ -556,6 +556,32 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	addAirspace(av.DB.BravoAirspace, "B")
 	addAirspace(av.DB.CharlieAirspace, "C")
 
+	// Flight plan acquisition areas
+	for _, vol := range ss.STARSFacilityAdaptation.AcquisitionVolumes {
+		acqmap := sim.VideoMap{
+			Label:    strings.ToUpper(vol.Name),
+			Name:     strings.ToUpper(vol.Name + " ACQUISITION AREA"),
+			Id:       asId,
+			Category: VideoMapProcessingAreas,
+		}
+		vol.GenerateDrawCommands(&acqmap.CommandBuffer, ss.NmPerLongitude)
+
+		addMap(acqmap)
+		asId++
+	}
+	for _, vol := range ss.STARSFacilityAdaptation.DropVolumes {
+		dropmap := sim.VideoMap{
+			Label:    strings.ToUpper(vol.Name),
+			Name:     strings.ToUpper(vol.Name + " DROP AREA"),
+			Id:       asId,
+			Category: VideoMapProcessingAreas,
+		}
+		vol.GenerateDrawCommands(&dropmap.CommandBuffer, ss.NmPerLongitude)
+
+		addMap(dropmap)
+		asId++
+	}
+
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {

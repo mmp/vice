@@ -605,10 +605,6 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	// The remaining checks are independent of the scenario so can live
-	// closer to the definition of STARSFacilityAdaptation.
-	fa.PostDeserialize(e)
-
 	if s.VFRRateScale == nil { // unspecified -> default to 1
 		one := float32(1)
 		s.VFRRateScale = &one
@@ -662,13 +658,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
-	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.Locate(ctr); !ok {
-		e.ErrorString("unknown location %q specified for \"center\"", ctr)
-	} else {
-		sg.STARSFacilityAdaptation.Center = pos
-	}
+	sg.STARSFacilityAdaptation.PostDeserialize(sg, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))

@@ -7,12 +7,14 @@ package aviation
 import (
 	"fmt"
 	"sort"
+	"strings"
 
-	"github.com/brunoga/deep"
-	"github.com/mmp/earcut-go"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
+	"github.com/mmp/earcut-go"
 )
 
 type AirspaceVolume struct {
@@ -21,8 +23,9 @@ type AirspaceVolume struct {
 	Floor   int                `json:"floor"`
 	Ceiling int                `json:"ceiling"`
 	// Polygon
-	PolygonBounds *math.Extent2D    // not always set
-	Vertices      []math.Point2LL   `json:"vertices"`
+	PolygonBounds *math.Extent2D               // not always set
+	VerticesStr   util.OneOf[string, []string] `json:"vertices"`
+	Vertices      []math.Point2LL
 	Holes         [][]math.Point2LL `json:"holes"`
 	// Circle
 	Center math.Point2LL `json:"center"`
@@ -115,7 +118,7 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerL
 	renderer.ReturnLinesDrawBuilder(ld)
 }
 
-func (a *AirspaceVolume) PostDeserialize(e *util.ErrorLogger) {
+func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 	if a.Name == "" {
 		e.ErrorString("must provide \"name\" with airspace volume")
 	}
@@ -127,11 +130,26 @@ func (a *AirspaceVolume) PostDeserialize(e *util.ErrorLogger) {
 		e.ErrorString("must provide \"type\" with airspace volume")
 
 	case AirspaceVolumePolygon:
-		if len(a.Vertices) == 0 {
+		var vstrs []string
+		if a.VerticesStr.A != nil { // single string provided
+			vstrs = strings.Fields(*a.VerticesStr.A)
+		} else {
+			vstrs = *a.VerticesStr.B
+		}
+		if len(vstrs) == 0 {
 			e.ErrorString("must provide \"vertices\" with \"polygon\" airspace volume")
-		} else if len(a.Vertices) < 3 {
+		} else if len(vstrs) < 3 {
 			e.ErrorString("must provide at least 3 \"vertices\" with \"polygon\" airspace volume")
 		}
+
+		for _, s := range vstrs {
+			if p, ok := loc.Locate(s); !ok {
+				e.ErrorString("unknown point %q in \"vertices\"", s)
+			} else {
+				a.Vertices = append(a.Vertices, p)
+			}
+		}
+
 		b := math.Extent2DFromPoints(util.MapSlice(a.Vertices, func(p math.Point2LL) [2]float32 { return p }))
 		a.PolygonBounds = &b
 

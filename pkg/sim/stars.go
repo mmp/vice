@@ -290,7 +290,6 @@ type STARSFacilityAdaptation struct {
 	VideoMapNames       []string                          `json:"stars_maps"`
 	VideoMapLabels      map[string]string                 `json:"map_labels"`
 	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	InhibitCAVolumes    []av.AirspaceVolume               `json:"inhibit_ca_volumes"`
 	RadarSites          map[string]*av.RadarSite          `json:"radar_sites"`
 	Center              math.Point2LL                     `json:"-"`
 	CenterString        string                            `json:"center"`
@@ -298,6 +297,11 @@ type STARSFacilityAdaptation struct {
 	Scratchpads         map[string]string                 `json:"scratchpads"`
 	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
 	Altimeters          []string                          `json:"altimeters"`
+
+	// Airpsace filters
+	InhibitCAVolumes   []av.AirspaceVolume `json:"inhibit_ca_volumes"`
+	AcquisitionVolumes []av.AirspaceVolume `json:"acquisition_volumes"`
+	DropVolumes        []av.AirspaceVolume `json:"drop_volumes"`
 
 	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
@@ -643,24 +647,42 @@ const (
 	LocalNonEnroute
 )
 
-func (fa *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger) {
+func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	e.Push("\"flight_plan\"")
+	if ctr := fa.CenterString; ctr == "" {
+		e.ErrorString("No \"center\" specified")
+	} else if pos, ok := loc.Locate(ctr); !ok {
+		e.ErrorString("unknown location %q specified for \"center\"", ctr)
+	} else {
+		fa.Center = pos
+	}
 
 	// Acquisition/Drop volumes
-	for i, vol := range fa.FlightPlan.AcquisitionVolumes {
+	if len(fa.AcquisitionVolumes) == 0 {
+		fa.AcquisitionVolumes = append(fa.AcquisitionVolumes,
+			av.AirspaceVolume{
+				Name:    "Default",
+				Type:    av.AirspaceVolumeCircle,
+				Floor:   0,
+				Ceiling: 10000,
+				Center:  fa.Center,
+				Radius:  30,
+			})
+	}
+	for i, vol := range fa.AcquisitionVolumes {
 		e.Push("Acquisition volume #" + strconv.Itoa(i+1) + " " + vol.Name)
-		fa.FlightPlan.AcquisitionVolumes[i].PostDeserialize(e)
+		fa.AcquisitionVolumes[i].PostDeserialize(loc, e)
 		e.Pop()
 	}
-	for i, vol := range fa.FlightPlan.DropVolumes {
+	for i, vol := range fa.DropVolumes {
 		e.Push("Drop volume #" + strconv.Itoa(i+1) + " " + vol.Name)
-		fa.FlightPlan.DropVolumes[i].PostDeserialize(e)
+		fa.DropVolumes[i].PostDeserialize(loc, e)
 		e.Pop()
 	}
 
 	// Quick FP ACID
+	e.Push("\"flight_plan\"")
 	fa.FlightPlan.QuickACID = strings.ToUpper(fa.FlightPlan.QuickACID)
 	if qa := fa.FlightPlan.QuickACID; qa == "" {
 		fa.FlightPlan.QuickACID = "VCE"
@@ -687,6 +709,5 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger) {
 			e.ErrorString("Expansion %q for %q must start with a letter", exp, abbrev)
 		}
 	}
-
 	e.Pop()
 }
