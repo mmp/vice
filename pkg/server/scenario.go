@@ -699,7 +699,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
 			if pll, ok := sg.Locate(strs[1]); !ok {
-				e.ErrorString("base fix \"" + strs[1] + "\" unknown")
+				e.ErrorString("base fix %q unknown", strs[1])
 			} else if hdg, err := strconv.Atoi(strs[2]); err != nil {
 				e.ErrorString("heading %q: %v", strs[2], err)
 			} else if dist, err := strconv.ParseFloat(strs[3], 32); err != nil {
@@ -1166,7 +1166,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 	if len(disp) > 1 {
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
-		e.ErrorString("Cannot specify " + strings.Join(d, " and ") + "for \"scratchpad1\"")
+		e.ErrorString("Cannot specify %s for \"scratchpad1\"", strings.Join(d, " and "))
 	}
 
 	for _, spc := range s.CustomSPCs {
@@ -1302,7 +1302,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 	for _, aa := range s.AirspaceAwareness {
 		for _, fix := range aa.Fix {
 			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
-				e.ErrorString(fix + ": fix unknown")
+				e.ErrorString("%s : fix unknown", fix)
 			}
 		}
 
@@ -1312,7 +1312,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 		}
 
 		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
-			e.ErrorString(aa.ReceivingController + ": controller unknown")
+			e.ErrorString("%s: controller unknown", aa.ReceivingController)
 		}
 
 		for _, t := range aa.AircraftType {

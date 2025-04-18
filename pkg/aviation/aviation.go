@@ -792,7 +792,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	for arrivalAirport, airlines := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
 		if len(airlines) == 0 {
-			e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
+			e.ErrorString("no \"airlines\" specified for arrivals to %q", arrivalAirport)
 		}
 		for _, al := range airlines {
 			al.Check(e)
