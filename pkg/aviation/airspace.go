@@ -12,6 +12,7 @@ import (
 	"github.com/mmp/earcut-go"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type AirspaceVolume struct {
@@ -31,7 +32,8 @@ type AirspaceVolume struct {
 type AirspaceVolumeType int
 
 const (
-	AirspaceVolumePolygon = iota
+	AirspaceVolumeUnknown AirspaceVolumeType = iota
+	AirspaceVolumePolygon
 	AirspaceVolumeCircle
 )
 
@@ -111,6 +113,36 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerL
 
 	ld.GenerateCommands(cb)
 	renderer.ReturnLinesDrawBuilder(ld)
+}
+
+func (a *AirspaceVolume) PostDeserialize(e *util.ErrorLogger) {
+	if a.Name == "" {
+		e.ErrorString("must provide \"name\" with airspace volume")
+	}
+	if a.Floor > a.Ceiling {
+		e.ErrorString("\"floor\" %d is above \"ceiling\" %d", a.Floor, a.Ceiling)
+	}
+	switch a.Type {
+	case AirspaceVolumeUnknown:
+		e.ErrorString("must provide \"type\" with airspace volume")
+
+	case AirspaceVolumePolygon:
+		if len(a.Vertices) == 0 {
+			e.ErrorString("must provide \"vertices\" with \"polygon\" airspace volume")
+		} else if len(a.Vertices) < 3 {
+			e.ErrorString("must provide at least 3 \"vertices\" with \"polygon\" airspace volume")
+		}
+		b := math.Extent2DFromPoints(util.MapSlice(a.Vertices, func(p math.Point2LL) [2]float32 { return p }))
+		a.PolygonBounds = &b
+
+	case AirspaceVolumeCircle:
+		if a.Radius == 0 {
+			e.ErrorString("must provide \"radius\" with \"circle\" airspace volume")
+		}
+		if a.Center.IsZero() {
+			e.ErrorString("must provide \"center\" with \"circle\" airspace volume")
+		}
+	}
 }
 
 type ApproachRegion struct {
