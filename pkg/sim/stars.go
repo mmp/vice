@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -641,3 +642,51 @@ const (
 	// plan that is made at a STARS facility and gets a local code.
 	LocalNonEnroute
 )
+
+func (fa *STARSFacilityAdaptation) PostDeserialize(e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
+	e.Push("\"flight_plan\"")
+
+	// Acquisition/Drop volumes
+	for i, vol := range fa.FlightPlan.AcquisitionVolumes {
+		e.Push("Acquisition volume #" + strconv.Itoa(i+1) + " " + vol.Name)
+		fa.FlightPlan.AcquisitionVolumes[i].PostDeserialize(e)
+		e.Pop()
+	}
+	for i, vol := range fa.FlightPlan.DropVolumes {
+		e.Push("Drop volume #" + strconv.Itoa(i+1) + " " + vol.Name)
+		fa.FlightPlan.DropVolumes[i].PostDeserialize(e)
+		e.Pop()
+	}
+
+	// Quick FP ACID
+	fa.FlightPlan.QuickACID = strings.ToUpper(fa.FlightPlan.QuickACID)
+	if qa := fa.FlightPlan.QuickACID; qa == "" {
+		fa.FlightPlan.QuickACID = "VCE"
+	} else {
+		if qa[0] < 'A' || qa[0] > 'Z' {
+			e.ErrorString("\"quick_acid\" must start with a letter")
+		}
+		if len(qa) > 3 {
+			e.ErrorString("\"quick_acid\" can't be more than three characters")
+		}
+	}
+
+	// ACID expansions
+	for abbrev, exp := range fa.FlightPlan.ACIDExpansions {
+		if len(abbrev) != 1 {
+			e.ErrorString("Abbreviation %q is not allowed: must be a single character", abbrev)
+		}
+		if !strings.Contains("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+.*^/", abbrev) {
+			e.ErrorString("Abbreviation %q must be A-Z, 0-9, +, ., *, ^, or /", abbrev)
+		}
+		if len(exp) == 0 {
+			e.ErrorString("Must specify an expansion for %q", abbrev)
+		} else if exp[0] < 'A' || exp[0] > 'Z' {
+			e.ErrorString("Expansion %q for %q must start with a letter", exp, abbrev)
+		}
+	}
+
+	e.Pop()
+}
