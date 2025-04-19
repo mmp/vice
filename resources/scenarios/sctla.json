@@ -677,7 +677,7 @@
   "BIGBR3_FINAL": {
     "arrivals": [
       {
-        "waypoints": "BIGBR/a13000-14000 DRYSS/a10000-12000 TOMYS/a9000+ CLIFY/a7000/s220 HNCHE SASSI/a7000/s210/h251",
+        "waypoints": "BIGBR/a13000-14000 DRYSS/a10000-12000 TOMYS/a9000+ CLIFY/a7000/s220/ho HNCHE SASSI/a7000/s210/h251",
         "route": "BIGBR3.I6L",
         "initial_controller": "LAX_F_APP",
         "initial_altitude": 13000,
@@ -968,7 +968,7 @@
   "BRUEN2_FINAL": {
     "arrivals": [
       {
-        "waypoints": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220 WNDFL/a6000/s210 NIKEY/h251",
+        "waypoints": "SHRTZ/a13000-14000 LADDD/a10000-12000 JOELZ/a8000-9000 NORML/a6000+/s220/ho WNDFL/a6000/s210 NIKEY/h251",
         "route": "BRUEN2.I7R",
         "initial_controller": "LAX_F_APP",
         "initial_altitude": 13000,
