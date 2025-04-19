@@ -537,8 +537,6 @@ func (sp *STARSPane) checkUnreasonableModeC(state *AircraftState, callsign strin
 
 	if changeInTimeSeconds != 0 {
 		change = changeInAltitude / changeInTimeSeconds
-	} else {
-		change = 0
 	}
 
 	st := sp.Aircraft[callsign]
