@@ -312,8 +312,10 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 							sm.lg.Warnf("%s: signing off idle controller", tcp)
 							if err := sm.signOff(ctrl.token); err != nil {
 								sm.lg.Errorf("%s: error signing off idle controller: %v", tcp, err)
-								delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
-								delete(sm.controllersByToken, token)
+								if _, ok := sm.controllersByToken[token]; ok {
+									delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
+									delete(sm.controllersByToken, token)
+								}
 							}
 						}
 					}
