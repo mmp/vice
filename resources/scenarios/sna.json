@@ -109,7 +109,7 @@
                     "BEALE,MISEN": {
                         "assigned_altitude": 5000,
                         "sid": "HOBOW3",
-                        "waypoints": "LIION CHOAK JAABB KLNCH/s210 TKDWN TRAYN/a10000-12000 JUMPP HOBOW CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY GUNNR"
+                        "waypoints": "LIION CHOAK JAABB KLNCH/s210 TKDWN TRAYN/a10000-12000 JUMPP HOBOW CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS"
                     },
                     "CNERY": {
                         "assigned_altitude": 5000,
@@ -470,6 +470,7 @@
                     ],
                     "destination": "KPHX",
                     "exit": "CNERY",
+					"scratchpad": "FRT",
                     "route": "CNERY BLH HYDRR1"
                 },
                 {
@@ -480,6 +481,7 @@
                     ],
                     "destination": "KLAS",
                     "exit": "MISEN",
+					"scratchpad": "ZMM",
                     "route": "MISEN RNDRZ3"
                 },
 				{
@@ -490,6 +492,7 @@
                     ],
                     "destination": "KMDW",
                     "exit": "BEALE",
+					"scratchpad": "ZMM",
                     "route": "BEALE J146 DICEE KD48S GLD KP60C PWE JALAP ENDEE6"
                 },
                 {
@@ -500,6 +503,7 @@
                     ],
                     "destination": "KHOU",
                     "exit": "CNERY",
+					"scratchpad": "FRT",
                     "route": "CNERY BLH J169 KOFFA J169 TFD J50 SSO ELP J2 FST J138 SAT BELLR5"
                 }
             ],
@@ -535,7 +539,7 @@
         "initial_controller": "ONT_V_APP",
         "initial_altitude": 11000,
         "initial_speed": 250,
-        "scratchpad": "Z0R",
+        "secondary_scratchpad": "GZ",
         "expect_approach": "Z0R",
         "airlines": {
           "KSNA": [
@@ -597,7 +601,7 @@
         "initial_controller": "ONT_V_APP",
         "initial_altitude": 10000,
         "initial_speed": 250,
-        "scratchpad": "Z0R",
+        "secondary_scratchpad": "GZ",
         "expect_approach": "Z0R",
         "airlines": {
           "KSNA": [
@@ -699,19 +703,7 @@
             },
             {
               "icao": "SWA",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KDSM"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KEWR"
+              "airport": "KDAL"
             }
           ]
         }
@@ -763,19 +755,7 @@
             },
             {
               "icao": "SWA",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KDSM"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KEWR"
+              "airport": "KDAL"
             }
           ]
         }
@@ -803,13 +783,13 @@
   "GOATZ2/KARLB3": {
     "arrivals": [
       {
-        "waypoints": "GOATZ/a16000/s280 DIRBY/ho PHUNN/a14000 SHHOW/a12000- ZAPPP/a9000+ BUFIE/a8000- SLI/a7000/s210 TRNDO/a5000/s210 HIGHT/a4500 OUTDO/a3600 HUNDA/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128",
+        "waypoints": "GOATZ/a16000/s280 DIRBY/ho PHUNN/a14000 SHHOW/a12000- ZAPPP/a9000+ BUFIE/a8000- SLI/a7000/s210 TRNDO/a5000/s210/clearapp",
         "cruise_altitude": 40000,
         "star": "GOATZ2",
         "initial_controller": "LAX_28_CTR",
         "initial_altitude": 16000,
         "initial_speed": 280,
-        "expect_approach": null,
+        "expect_approach": "I5L",
         "airlines": {
           "KLAX": [
             {
@@ -899,13 +879,13 @@
   "OHSEA3.FINAL": {
     "arrivals": [
       {
-        "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s200 MNNIE/a4000 KLIPP/arc5.7 CALIT ZETOV/a1400 KSNA-20R/a40",
+        "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s200/h16",
         "cruise_altitude": 35000,
         "star": "OHSEA3",
         "initial_controller": "SNA_R_APP",
         "initial_altitude": 7000,
         "initial_speed": 220,
-        "expect_approach": null,
+        "expect_approach": "Z0R",
         "airlines": {
           "KSNA": [
             {
@@ -952,13 +932,13 @@
   "OLAAA2": {
     "arrivals": [
       {
-        "waypoints": "33.1922222,-117.03805555555556/a16000 CYNDE/a14000-/ho OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210 HIGHT/a4500 OUTDO/a3600 HUNDA/a3600 GIGII/a1900 LADLE/a700 _LAX_25L/a128",
+        "waypoints": "33.1922222,-117.03805555555556/a16000 CYNDE/a14000-/ho OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210/clearapp",
         "cruise_altitude": 39000,
         "star": "OLAAA2",
         "initial_controller": "LAX_12_CTR",
         "initial_altitude": 16000,
         "initial_speed": 280,
-        "expect_approach": null,
+        "expect_approach": "I5L",
         "airlines": {
           "KLAX": [
             {
@@ -997,13 +977,13 @@
   "OLAAA2.E": {
     "arrivals": [
       {
-        "waypoints": "33.1922222,-117.03805555555556/a16000 CYNDE/a14000-/ho OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210/h360 SXC TANDY/a5000 N033.53.06.337,W118.40.44.046 TIMSE/a2600 FUMBL/a1800 _LAX_7R/a122/delete",
+        "waypoints": "33.1922222,-117.03805555555556/a16000 CYNDE/a14000-/ho OLAAA/a12000-13000 PESOZ MADOW/a8000- TOZEK/a7000 SLI/a7000/s210 TRNDO/a5000/s210/h360 SXC TANDY/a5000 N033.53.06.337,W118.40.44.046 TIMSE/a2600/clearapp",
         "cruise_altitude": 39000,
         "star": "OLAAA2",
         "initial_controller": "LAX_12_CTR",
         "initial_altitude": 16000,
         "initial_speed": 280,
-        "expect_approach": null,
+        "expect_approach": "I7R",
         "airlines": {
           "KLAX": [
             {
