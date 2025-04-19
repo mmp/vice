@@ -490,7 +490,13 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, ac *av.Aircraft) datablock
 
 	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
 	// altitude or inhibit mode C.
+
 	altitude := fmt.Sprintf("%03d", (state.TrackAltitude()+50)/100)
+
+	// if we ever flagged an unreasonable Mode‑C, override it
+	if state.UnreasonableModeC {
+		altitude = "XXX"
+	}
 	if ac.PilotReportedAltitude != 0 {
 		altitude = fmt.Sprintf("%03d", (ac.PilotReportedAltitude+50)/100)
 	} else if ac.InhibitModeCAltitudeDisplay {
