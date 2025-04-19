@@ -2400,7 +2400,7 @@
             "tower_list": 1
         },
         "KAFW": {
-            "name": "Forth Worth Aliance",
+            "name": "Forth Worth Alliance",
             "hold_for_release": true,
             "approaches": {
               "I6L": { "cifp_id": "I16L" },
@@ -2444,12 +2444,12 @@
                     "HUDAD": {
                         "cleared_altitude": 3000,
                         "sid": "SWABR1",
-                        "waypoints": "_AFW_34R/h166 BOTCH SWABR PGLET MUTEE"
+                        "waypoints": "_AFW_34R/h166 BOTCH PGLET MUTEE"
                     },
                     "HULZE": {
                         "cleared_altitude": 3000,
                         "sid": "SWABR1",
-                        "waypoints": "_AFW_34R/h166 BOTCH SWABR TYGGR DBLSS HRPER"
+                        "waypoints": "_AFW_34R/h166 BOTCH TYGGR DBLSS HRPER"
                     }
                 },
                 "34R": {
@@ -2486,12 +2486,12 @@
                         "HUDAD": {
                             "cleared_altitude": 3000,
                             "sid": "SWABR1",
-                            "waypoints": "_AFW_16L/h346 BOTCH SWABR PGLET MUTEE"
+                            "waypoints": "_AFW_16L/h346 BOTCH PGLET MUTEE"
                         },
                         "HULZE": {
                             "cleared_altitude": 3000,
                             "sid": "SWABR1",
-                            "waypoints": "_AFW_16L/h346 BOTCH SWABR TYGGR DBLSS HRPER"
+                            "waypoints": "_AFW_16L/h346 BOTCH TYGGR DBLSS HRPER"
                         }
                 }
             },

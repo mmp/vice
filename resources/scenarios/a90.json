@@ -4883,12 +4883,12 @@
       }
     ]
   },
-  "DEEPO1": {
+  "DEEPO2": {
     "arrivals": [
       {
         "spawn": "DEEPO@0.6",
         "cruise_altitude": 15000,
-        "star": "DEEPO1",
+        "star": "DEEPO2",
         "initial_controller": "BOS_37_CTR",
         "initial_altitude": 13000,
         "initial_speed": 310,
@@ -7311,7 +7311,7 @@
                     "KMHT": 2,
                     "KPSM": 5
                 },
-                "DEEPO1": {
+                "DEEPO2": {
                     "KACK": 5
                 },
                 "NEWBE3": {
@@ -7334,7 +7334,7 @@
                 "MHT_E_APP": {"backup": "MHT_Z_APP", "arrivals":["ENE"]},
                 "MHT_P_APP": {"backup": "MHT_E_APP", "departures":["KPSM"]},
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
-                "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
+                "ACK_N_APP": {"arrivals": ["DEEPO2","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
                 "ACK_O_APP": {"backup": "ACK_DEP"},
                 "ACK_Y_APP": {"backup": "ACK_O_APP"},
@@ -7551,7 +7551,7 @@
                     "KMHT": 2,
                     "KPSM": 5
                 },
-                "DEEPO1": {
+                "DEEPO2": {
                     "KACK": 10
                 },
                 "NEWBE3": {
@@ -7574,7 +7574,7 @@
                 "MHT_E_APP": {"backup": "MHT_Z_APP", "arrivals":["ENE"]},
                 "MHT_P_APP": {"backup": "MHT_E_APP", "departures":["KPSM"]},
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
-                "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
+                "ACK_N_APP": {"arrivals": ["DEEPO2","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
                 "ACK_O_APP": {"backup": "ACK_DEP"},
                 "ACK_Y_APP": {"backup": "ACK_O_APP"},
@@ -7791,7 +7791,7 @@
                     "KMHT": 2,
                     "KPSM": 5
                 },
-                "DEEPO1": {
+                "DEEPO2": {
                     "KACK": 10
                 },
                 "NEWBE3": {
@@ -7814,7 +7814,7 @@
                 "MHT_E_APP": {"backup": "MHT_Z_APP", "arrivals":["ENE"]},
                 "MHT_P_APP": {"backup": "MHT_E_APP", "departures":["KPSM"]},
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
-                "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
+                "ACK_N_APP": {"arrivals": ["DEEPO2","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
                 "ACK_O_APP": {"backup": "ACK_DEP"},
                 "ACK_Y_APP": {"backup": "ACK_O_APP"},
@@ -8023,7 +8023,7 @@
                     "KMHT": 2,
                     "KPSM": 5
                 },
-                "DEEPO1": {
+                "DEEPO2": {
                     "KACK": 10
                 },
                 "NEWBE3": {
@@ -8046,7 +8046,7 @@
                 "MHT_E_APP": {"backup": "MHT_Z_APP", "arrivals":["ENE"]},
                 "MHT_P_APP": {"backup": "MHT_E_APP", "departures":["KPSM"]},
                 "MHT_W_APP": {"backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"]},
-                "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "backup": "BOS_DEP"},
+                "ACK_N_APP": {"arrivals": ["DEEPO2","NEWBE3"], "backup": "BOS_DEP"},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
                 "ACK_O_APP": {"backup": "ACK_DEP"},
                 "ACK_Y_APP": {"backup": "ACK_O_APP"},
