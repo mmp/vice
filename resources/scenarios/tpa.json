@@ -5,10 +5,12 @@
       "name": "Tampa",
       "approaches": {
         "I1L": { "cifp_id": "I1L" },
-        "R1L": { "cifp_id": "R1L" },
-        "R1R": { "cifp_id": "R1R" },
+        "RY1L": { "cifp_id": "RY1L" },
+		"RZ1L": { "cifp_id": "RZ1L" },
+        "RY1R": { "cifp_id": "RY1R" },
+		"RZ1R": { "cifp_id": "RZ1R" },
         "I9L": { "cifp_id": "I19L" },
-        "R9L": { "cifp_id": "RZ19L" },
+        "R9L": { "cifp_id": "R19L" },
         "I9R": { "cifp_id": "I19R" },
         "R9R": { "cifp_id": "R19R" }
       },
