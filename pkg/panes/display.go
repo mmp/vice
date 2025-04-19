@@ -17,7 +17,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
@@ -443,12 +443,12 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	// mouseConsumerOverride so that we can continue to dispatch mouse
 	// events to that Pane until the mouse button is released, even if the
 	// mouse is no longer above it.
-	isDragging := imgui.IsMouseDragging(platform.MouseButtonPrimary, 0.) ||
-		imgui.IsMouseDragging(platform.MouseButtonSecondary, 0.) ||
-		imgui.IsMouseDragging(platform.MouseButtonTertiary, 0.)
-	isClicked := imgui.IsMouseClicked(platform.MouseButtonPrimary) ||
-		imgui.IsMouseClicked(platform.MouseButtonSecondary) ||
-		imgui.IsMouseClicked(platform.MouseButtonTertiary)
+	isDragging := imgui.IsMouseDraggingV(platform.MouseButtonPrimary, 0.) ||
+		imgui.IsMouseDraggingV(platform.MouseButtonSecondary, 0.) ||
+		imgui.IsMouseDraggingV(platform.MouseButtonTertiary, 0.)
+	isClicked := imgui.IsMouseClickedBool(platform.MouseButtonPrimary) ||
+		imgui.IsMouseClickedBool(platform.MouseButtonSecondary) ||
+		imgui.IsMouseClickedBool(platform.MouseButtonTertiary)
 	if !io.WantCaptureMouse() && (isDragging || isClicked) && wm.mouseConsumerOverride == nil {
 		wm.mouseConsumerOverride = mousePane
 	} else if io.WantCaptureMouse() {

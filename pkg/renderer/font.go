@@ -18,9 +18,11 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/util"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/IconFontCppHeaders"
-	"github.com/mmp/imgui-go/v4"
 )
+
+var ttfPinner runtime.Pinner
 
 // Each loaded (font,size) combination is represented by (surprise) a Font.
 type Font struct {
@@ -82,10 +84,10 @@ type FontIdentifier struct {
 // Internal: lookup the glyph for a rune in imgui's font atlas and then
 // copy over the necessary information into our Glyph structure.
 func (f *Font) createGlyph(ch rune) *Glyph {
-	ig := f.Ifont.FindGlyph(ch)
+	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
 	return &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
-		AdvanceX: ig.AdvanceX(), Visible: ig.Visible()}
+		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}
 }
 
 func (f *Font) AddGlyph(ch int, g *Glyph) {
@@ -226,16 +228,6 @@ var (
 	}
 )
 
-// From imgui-go:
-// unrealisticLargePointer is used to cast an arbitrary native pointer to a slice.
-// Its value is chosen to fit into a 32bit architecture, and still be large
-// enough to cover "any" data blob. Note that this value is in bytes.
-const unrealisticLargePointer = 1 << 30
-
-func ptrToUint16Slice(p unsafe.Pointer) []uint16 {
-	return (*[unrealisticLargePointer / 2]uint16)(p)[:]
-}
-
 func FontsInit(r Renderer, p platform.Platform) {
 	lg.Info("Starting to initialize fonts")
 	fonts = make(map[FontIdentifier]*Font)
@@ -244,26 +236,16 @@ func FontsInit(r Renderer, p platform.Platform) {
 	// Given a map that specifies the icons used in an icon font, returns
 	// an imgui.GlyphRanges that encompasses those icons.  This GlyphRanges
 	// is then used shortly when the fonts are loaded.
-	glyphRangeForIcons := func(icons map[string]string) imgui.GlyphRanges {
-		// imgui represents such glyph ranges as an array of uint16s, where
-		// each range is given by two successive values and where a value
-		// of 0 denotes the end of the array.  We need to resort to malloc
-		// for this array since imgui's AddFontFromMemoryTTF() function
-		// holds on to its pointer.  (Thus, using a slice or go's new fails
-		// unpredictably, since go's GC will happily reclaim the memory.)
-		r := C.malloc(C.size_t(4*len(icons) + 2))
-		ranges := ptrToUint16Slice(r)
-		i := 0
+	glyphRangeForIcons := func(icons map[string]string) imgui.GlyphRange {
+		builder := imgui.NewFontGlyphRangesBuilder()
 		for _, str := range icons {
 			unicode, _ := utf8.DecodeRuneInString(str)
-			// The specified range is inclusive so we just double-up the
-			// unicode value.
-			ranges[i] = uint16(unicode)
-			ranges[i+1] = uint16(unicode)
-			i += 2
+			builder.AddChar(imgui.Wchar(unicode))
 		}
-		ranges[i] = 0
-		return imgui.GlyphRanges(r)
+
+		r := imgui.NewGlyphRange()
+		builder.BuildRanges(r)
+		return r
 	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
@@ -287,17 +269,24 @@ func FontsInit(r Renderer, p platform.Platform) {
 				sp = float32(int(sp + 0.5))
 			}
 
-			ifont := io.Fonts().AddFontFromMemoryTTFV(ttf, sp, imgui.DefaultFontConfig, imgui.EmptyGlyphRanges)
+			addTTF := func(ttf []byte, sp float32, fconfig *imgui.FontConfig, r imgui.GlyphRange) *imgui.Font {
+				ttfPinner.Pin(&ttf[0])
+				return io.Fonts().AddFontFromMemoryTTFV(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)),
+					sp, fconfig, r.Data())
+			}
+
+			ttfPinner.Pin(&ttf[0])
+			ifont := io.Fonts().AddFontFromMemoryTTF(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp)
 
 			config := imgui.NewFontConfig()
 			config.SetMergeMode(true)
 			// Scale down the font size by an ad-hoc factor to (generally)
 			// make the icon sizes match the font's character sizes.
-			io.Fonts().AddFontFromMemoryTTFV(faTTF, .8*sp, config, faGlyphRange)
-			io.Fonts().AddFontFromMemoryTTFV(fabrTTF, .8*sp, config, faBrandsGlyphRange)
+			addTTF(faTTF, .8*sp, config, faGlyphRange)
+			addTTF(fabrTTF, .8*sp, config, faBrandsGlyphRange)
 
 			id := FontIdentifier{Name: name, Size: size}
-			fonts[id] = MakeFont(int(sp), mono, id, &ifont)
+			fonts[id] = MakeFont(int(sp), mono, id, ifont)
 		}
 	}
 
@@ -310,14 +299,14 @@ func FontsInit(r Renderer, p platform.Platform) {
 	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
 	add("Inconsolata_Condensed-Regular.ttf.zst", true, "Inconsolata Condensed Regular")
 
-	img := io.Fonts().TextureDataRGBA32()
-	lg.Infof("Fonts texture used %.1f MB", float32(img.Width*img.Height*4)/(1024*1024))
+	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
+	lg.Infof("Fonts texture used %.1f MB", float32(w*h*bpp)/(1024*1024))
 	rgb8Image := &image.RGBA{
-		Pix:    unsafe.Slice((*uint8)(img.Pixels), 4*img.Width*img.Height),
-		Stride: 4 * img.Width,
-		Rect:   image.Rectangle{Max: image.Point{X: img.Width, Y: img.Height}}}
+		Pix:    unsafe.Slice((*uint8)(pixels), bpp*w*h),
+		Stride: int(4 * w),
+		Rect:   image.Rectangle{Max: image.Point{X: int(w), Y: int(h)}}}
 	atlasId := r.CreateTextureFromImage(rgb8Image, true /* nearest */)
-	io.Fonts().SetTextureID(imgui.TextureID(atlasId))
+	io.Fonts().SetTexID(imgui.TextureID(atlasId))
 
 	// Patch up the texture id after the atlas was created with the
 	// TextureDataRGBA32 call above.
@@ -358,8 +347,8 @@ func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bo
 				lastFontName = font.Name
 				// Use the 14pt version of the font in the combo box.
 				displayFont := GetFont(FontIdentifier{Name: font.Name, Size: 14})
-				imgui.PushFont(displayFont.Ifont)
-				if imgui.SelectableV(font.Name, id.Name == font.Name, 0, imgui.Vec2{}) {
+				imgui.PushFont(&displayFont.Ifont)
+				if imgui.SelectableBoolV(font.Name, id.Name == font.Name, 0, imgui.Vec2{}) {
 					id.Name = font.Name
 					changed = true
 					newFont = GetFont(*id)
@@ -382,7 +371,7 @@ func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {
 	if imgui.BeginComboV(fmt.Sprintf("Font Size##%s", id.Name), strconv.Itoa(id.Size), imgui.ComboFlagsHeightLarge) {
 		for _, font := range getAllFonts() {
 			if font.Name == id.Name {
-				if imgui.SelectableV(strconv.Itoa(font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {
+				if imgui.SelectableBoolV(strconv.Itoa(font.Size), id.Size == font.Size, 0, imgui.Vec2{}) {
 					id.Size = font.Size
 					newFont = GetFont(font)
 					changed = true

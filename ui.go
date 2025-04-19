@@ -27,7 +27,7 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/pkg/browser"
 )
 
@@ -66,7 +66,7 @@ var (
 )
 
 func imguiInit() *imgui.Context {
-	context := imgui.CreateContext(nil)
+	context := imgui.CreateContext()
 	imgui.CurrentIO().SetIniFilename("")
 
 	// General imgui styling
@@ -152,24 +152,6 @@ func uiShowTargetGenCommandModeDialog(p platform.Platform, config *Config) {
 	uiShowModalDialog(NewModalDialogBox(client, p), true)
 }
 
-// If |b| is true, all following imgui elements will be disabled (and drawn
-// accordingly).
-func uiStartDisable(b bool) {
-	if b {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
-}
-
-// Each call to uiStartDisable should have a matching call to uiEndDisable,
-// with the same Boolean value passed to it.
-func uiEndDisable(b bool) {
-	if b {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
-}
-
 func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
 	controlClient *server.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
@@ -186,9 +168,9 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 		}
 	}
 
-	imgui.PushFont(ui.font.Ifont)
+	imgui.PushFont(&ui.font.Ifont)
 	if imgui.BeginMainMenuBar() {
-		imgui.PushStyleColor(imgui.StyleColorButton, imgui.CurrentStyle().Color(imgui.StyleColorMenuBarBg))
+		imgui.PushStyleColorVec4(imgui.ColButton, imgui.CurrentStyle().Colors()[imgui.ColMenuBarBg])
 
 		if controlClient != nil && controlClient.Connected() {
 			if controlClient.State.Paused {
@@ -207,14 +189,18 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 				}
 			}
 
-			uiStartDisable(controlClient.State.Paused)
+			if controlClient.State.Paused {
+				imgui.BeginDisabled()
+			}
 			if imgui.Button(renderer.FontAwesomeIconFastForward) {
 				controlClient.FastForward()
 			}
 			if imgui.IsItemHovered() {
 				imgui.SetTooltip("Advance simulation by 15 seconds")
 			}
-			uiEndDisable(controlClient.State.Paused)
+			if controlClient.State.Paused {
+				imgui.EndDisabled()
+			}
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
@@ -250,7 +236,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 		flashDep := controlClient != nil && !ui.showLaunchControl &&
 			len(controlClient.State.GetRegularReleaseDepartures()) > 0 && (time.Now().UnixMilli()/500)&1 == 1
 		if flashDep {
-			imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{0, .8, 0, 1})
+			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{0, .8, 0, 1})
 		}
 		if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 			ui.showLaunchControl = !ui.showLaunchControl
@@ -319,7 +305,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 
 	drawActiveDialogBoxes()
 
-	uiDrawKeyboardWindow(controlClient, config)
+	uiDrawKeyboardWindow(controlClient, config, p)
 
 	imgui.PopFont()
 
@@ -356,7 +342,7 @@ func setCursorForRightButtons(text []string) {
 	width := float32(0)
 
 	for i, t := range text {
-		width += imgui.CalcTextSize(t, false, 100000).X + 2*style.FramePadding().X
+		width += imgui.CalcTextSize(t).X + 2*style.FramePadding().X
 		if i > 0 {
 			// space between buttons
 			width += style.ItemSpacing().X
@@ -397,7 +383,7 @@ func (m *ModalDialogBox) Draw() {
 	}
 
 	title := fmt.Sprintf("%s##%p", m.client.Title(), m)
-	imgui.OpenPopup(title)
+	imgui.OpenPopupStr(title)
 
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
@@ -422,7 +408,9 @@ func (m *ModalDialogBox) Draw() {
 		setCursorForRightButtons(allButtonText)
 
 		for i, b := range buttons {
-			uiStartDisable(b.disabled)
+			if b.disabled {
+				imgui.BeginDisabled()
+			}
 			if i > 0 {
 				imgui.SameLine()
 			}
@@ -433,9 +421,10 @@ func (m *ModalDialogBox) Draw() {
 					m.isOpen = false
 				}
 			}
-			uiEndDisable(b.disabled)
+			if b.disabled {
+				imgui.EndDisabled()
+			}
 		}
-
 		imgui.EndPopup()
 	}
 }
@@ -833,28 +822,28 @@ func showAboutDialog() {
 	center := func(s string) {
 		// https://stackoverflow.com/a/67855985
 		ww := imgui.WindowSize().X
-		tw := imgui.CalcTextSize(s, false, 0).X
+		tw := imgui.CalcTextSize(s).X
 		imgui.SetCursorPos(imgui.Vec2{(ww - tw) * 0.5, imgui.CursorPosY()})
 		imgui.Text(s)
 	}
 
-	imgui.PushFont(ui.aboutFont.Ifont)
+	imgui.PushFont(&ui.aboutFont.Ifont)
 	center("vice")
 	center(renderer.FontAwesomeIconCopyright + "2023 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
-	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
+	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")
 	}
 	center("Current build: " + buildVersion)
 	center("Source code: " + renderer.FontAwesomeIconGithub)
-	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
+	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://github.com/mmp/vice")
 	}
 	imgui.PopFont()
 
 	imgui.Separator()
 
-	imgui.PushFont(ui.aboutFontSmall.Ifont)
+	imgui.PushFont(&ui.aboutFontSmall.Ifont)
 	// We would very much like to use imgui.{Push,Pop}TextWrapPos()
 	// here, but for unclear reasons that makes the info window
 	// vertically maximized. So we hand-wrap the lines for the
@@ -968,7 +957,7 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(ui.font.Ifont)
+		imgui.PushFont(&ui.font.Ifont)
 		d.Draw()
 		imgui.PopFont()
 
@@ -1055,25 +1044,26 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(c *server.ControlClient, config *Config) {
+func uiDrawKeyboardWindow(c *server.ControlClient, config *Config, platform platform.Platform) {
 	if !keyboardWindowVisible {
 		return
 	}
 
-	imgui.BeginV("Keyboard Command Reference", &keyboardWindowVisible, 0)
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 300}, imgui.Vec2{-1, float32(platform.WindowSize()[1]) * 19 / 20})
+	imgui.BeginV("Keyboard Command Reference", &keyboardWindowVisible, imgui.WindowFlagsAlwaysAutoResize)
 
 	style := imgui.CurrentStyle()
 
 	// Initial line with a link to the website
 	imgui.Text("See the ")
 	imgui.SameLineV(0, 0)
-	imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{0.4, 0.6, 1, 1})
+	imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{0.4, 0.6, 1, 1})
 	imgui.Text("vice website")
 	// Underline the link
 	min, max := imgui.ItemRectMin(), imgui.ItemRectMax()
-	color := style.Color(imgui.StyleColorText)
-	imgui.WindowDrawList().AddLine(imgui.Vec2{min.X, max.Y}, max, imgui.PackedColorFromVec4(color))
-	if imgui.IsItemHovered() && imgui.IsMouseClicked(0) {
+	color := imgui.CurrentStyle().Colors()[imgui.ColText]
+	imgui.WindowDrawList().AddLine(imgui.Vec2{min.X, max.Y}, max, imgui.ColorU32Vec4(color))
+	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://pharr.org/vice/")
 	}
 	imgui.PopStyleColor()
@@ -1101,13 +1091,13 @@ func uiDrawKeyboardWindow(c *server.ControlClient, config *Config) {
 		selectedCommandTypes = ACControlPrimary
 	}
 	if imgui.BeginComboV("Command Group", selectedCommandTypes, imgui.ComboFlagsHeightLarge) {
-		if imgui.SelectableV(ACControlPrimary, selectedCommandTypes == ACControlPrimary, 0, imgui.Vec2{}) {
+		if imgui.SelectableBoolV(ACControlPrimary, selectedCommandTypes == ACControlPrimary, 0, imgui.Vec2{}) {
 			selectedCommandTypes = ACControlPrimary
 		}
-		if imgui.SelectableV(ACControlSecondary, selectedCommandTypes == ACControlSecondary, 0, imgui.Vec2{}) {
+		if imgui.SelectableBoolV(ACControlSecondary, selectedCommandTypes == ACControlSecondary, 0, imgui.Vec2{}) {
 			selectedCommandTypes = ACControlSecondary
 		}
-		if imgui.SelectableV(STARS, selectedCommandTypes == STARS, 0, imgui.Vec2{}) {
+		if imgui.SelectableBoolV(STARS, selectedCommandTypes == STARS, 0, imgui.Vec2{}) {
 			selectedCommandTypes = STARS
 		}
 		imgui.EndCombo()
@@ -1210,15 +1200,15 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to write "*D*_alt_".
 func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
 	// regularFont is the default and starting point
-	imgui.PushFont(regularFont.Ifont)
+	imgui.PushFont(&regularFont.Ifont)
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		imgui.PushFont(fixedFont.Ifont)
-		sz := imgui.CalcTextSize(s, false, 0)
+		imgui.PushFont(&fixedFont.Ifont)
+		sz := imgui.CalcTextSize(s)
 		imgui.PopFont()
 		return sz.X
 	}
@@ -1269,7 +1259,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = true, false
-					imgui.PushFont(fixedFont.Ifont)
+					imgui.PushFont(&fixedFont.Ifont)
 				}
 
 			case '_':
@@ -1284,7 +1274,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = false, true
-					imgui.PushFont(italicFont.Ifont)
+					imgui.PushFont(&italicFont.Ifont)
 				}
 
 			default:
@@ -1367,7 +1357,7 @@ func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Pl
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := renderer.AvailableFontSizes("Roboto Regular")
 		for _, size := range sizes {
-			if imgui.SelectableV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
 				config.UIFontSize = size
 				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
 			}
@@ -1375,7 +1365,7 @@ func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Pl
 		imgui.EndCombo()
 	}
 
-	if imgui.CollapsingHeader("Display") {
+	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
 		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {
 			uiShowModalDialog(NewModalDialogBox(
 				&MessageModalClient{
@@ -1390,7 +1380,7 @@ func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Pl
 		monitorNames := p.GetAllMonitorNames()
 		if imgui.BeginComboV("Monitor", monitorNames[config.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {
-				if imgui.SelectableV(monitor, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
+				if imgui.SelectableBoolV(monitor, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
 					config.FullScreenMonitor = index
 
 					p.EnableFullScreen(p.IsFullScreen())
@@ -1403,7 +1393,7 @@ func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Pl
 
 	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
 		if draw, ok := pane.(panes.UIDrawer); ok {
-			if imgui.CollapsingHeader(draw.DisplayName()) {
+			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}
 		}

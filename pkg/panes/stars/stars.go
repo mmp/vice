@@ -27,7 +27,7 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 // IFR TRACON separation requirements
@@ -146,7 +146,7 @@ type STARSPane struct {
 	FlipNumericKeypad bool
 	TgtGenKey         byte
 
-	FontSelection int
+	FontSelection int32
 
 	DisplayBeaconCode        av.Squawk
 	DisplayBeaconCodeEndTime time.Time

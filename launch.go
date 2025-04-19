@@ -27,7 +27,7 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 var (
@@ -115,7 +115,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 	}
 
 	if c.displayError != nil {
-		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		if errors.Is(c.displayError, server.ErrRPCTimeout) || util.IsRPCServerError(c.displayError) {
 			imgui.Text("Unable to reach vice server")
 		} else if errors.Is(c.displayError, server.ErrInvalidPassword) {
@@ -137,7 +137,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			origType := c.NewSimType
 
 			imgui.TableNextColumn()
-			if imgui.RadioButtonInt("Create single-controller", &c.NewSimType, server.NewSimCreateLocal) &&
+			if imgui.RadioButtonIntPtr("Create single-controller", &c.NewSimType, server.NewSimCreateLocal) &&
 				origType != server.NewSimCreateLocal {
 				c.selectedServer = c.mgr.LocalServer
 				c.SetTRACON(*c.defaultTRACON)
@@ -147,7 +147,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
-			if imgui.RadioButtonInt("Create multi-controller", &c.NewSimType, server.NewSimCreateRemote) &&
+			if imgui.RadioButtonIntPtr("Create multi-controller", &c.NewSimType, server.NewSimCreateRemote) &&
 				origType != server.NewSimCreateRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.SetTRACON(*c.defaultTRACON)
@@ -158,18 +158,22 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
-			uiStartDisable(len(c.mgr.RemoteServer.GetRunningSims()) == 0)
-			if imgui.RadioButtonInt("Join multi-controller", &c.NewSimType, server.NewSimJoinRemote) &&
+			if len(c.mgr.RemoteServer.GetRunningSims()) == 0 {
+				imgui.BeginDisabled()
+			}
+			if imgui.RadioButtonIntPtr("Join multi-controller", &c.NewSimType, server.NewSimJoinRemote) &&
 				origType != server.NewSimJoinRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.displayError = nil
 			}
-			uiEndDisable(len(c.mgr.RemoteServer.GetRunningSims()) == 0)
+			if len(c.mgr.RemoteServer.GetRunningSims()) == 0 {
+				imgui.EndDisabled()
+			}
 
 			imgui.EndTable()
 		}
 	} else {
-		imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{1, .5, .5, 1})
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		imgui.Text("Unable to connect to the multi-controller vice server; " +
 			"only single-player scenarios are available.")
 		imgui.PopStyleColor()
@@ -195,11 +199,10 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				artccs[av.DB.TRACONs[tracon].ARTCC] = nil
 			}
 			imgui.TableNextColumn()
-			if imgui.BeginChildV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
-				imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, artcc := range util.SortedMapKeys(artccs) {
 					label := fmt.Sprintf("%s (%s)", artcc, strings.ReplaceAll(av.DB.ARTCCs[artcc].Name, " Center", ""))
-					if imgui.SelectableV(label, artcc == av.DB.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
+					if imgui.SelectableBoolV(label, artcc == av.DB.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
 						artcc != av.DB.TRACONs[c.TRACONName].ARTCC {
 						// a new ARTCC was chosen; reset the TRACON to the first one with that ARTCC
 						idx := slices.IndexFunc(allTRACONs, func(tracon string) bool { return artcc == av.DB.TRACONs[tracon].ARTCC })
@@ -211,8 +214,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 
 			// TRACONs for selected ARTCC
 			imgui.TableNextColumn()
-			if imgui.BeginChildV("tracons", imgui.Vec2{tableScale * 150, tableScale * 350}, false, /* border */
-				imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("tracons", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, tracon := range allTRACONs {
 					if av.DB.TRACONs[tracon].ARTCC != av.DB.TRACONs[c.TRACONName].ARTCC {
 						continue
@@ -221,7 +223,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 					name = strings.TrimSuffix(name, " ATCT/TRACON")
 					name = strings.TrimSuffix(name, " Tower")
 					label := fmt.Sprintf("%s (%s)", tracon, name)
-					if imgui.SelectableV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
+					if imgui.SelectableBoolV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
 						// TRACON selected
 						c.SetTRACON(tracon)
 					}
@@ -231,12 +233,11 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 
 			// Scenarios for the tracon
 			imgui.TableNextColumn()
-			if imgui.BeginChildV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, false, /* border */
-				imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, groupName := range util.SortedMapKeys(c.selectedTRACONConfigs) {
 					group := c.selectedTRACONConfigs[groupName]
 					for _, name := range util.SortedMapKeys(group.ScenarioConfigs) {
-						if imgui.SelectableV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
+						if imgui.SelectableBoolV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
 							c.SetScenario(groupName, name)
 						}
 					}
@@ -250,7 +251,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
 			if imgui.BeginComboV("Split", c.Scenario.SelectedSplit, imgui.ComboFlagsHeightLarge) {
 				for _, split := range sc.Splits() {
-					if imgui.SelectableV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
+					if imgui.SelectableBoolV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
 						var err error
 						c.Scenario.SelectedSplit = split
 						c.Scenario.SelectedController, err = sc.GetPrimaryController(split)
@@ -308,20 +309,24 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Wind:")
-			uiStartDisable(!validAirport)
+			if !validAirport {
+				imgui.BeginDisabled()
+			}
 			imgui.Checkbox("Live Weather", &c.LiveWeather)
 			if !validAirport {
 				c.LiveWeather = false
 			}
-			uiEndDisable(!validAirport)
+			if !validAirport {
+				imgui.EndDisabled()
+			}
 
 			if c.NewSimType == server.NewSimCreateRemote {
 				imgui.Checkbox("Require Password", &c.RequirePassword)
 				if c.RequirePassword {
-					imgui.InputTextV("Password", &c.Password, 0, nil)
+					imgui.InputTextMultiline("Password", &c.Password, imgui.Vec2{}, 0, nil)
 					if c.Password == "" {
 						imgui.SameLine()
-						imgui.PushStyleColor(imgui.StyleColorText, imgui.Vec4{.7, .1, .1, 1})
+						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
 						imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
 						imgui.PopStyleColor()
 					}
@@ -354,12 +359,16 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				imgui.Text(fmt.Sprintf("%s at %d", dir, wind.Speed))
 			}
 
-			uiStartDisable(!c.LiveWeather)
+			if !c.LiveWeather {
+				imgui.BeginDisabled()
+			}
 			refresh := imgui.Button("Refresh Weather")
 			if refresh {
 				refreshWeather()
 			}
-			uiEndDisable(!c.LiveWeather)
+			if !c.LiveWeather {
+				imgui.EndDisabled()
+			}
 			imgui.EndTable()
 		}
 	} else {
@@ -394,7 +403,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 					continue
 				}
 
-				imgui.PushID(simName)
+				imgui.PushIDStr(simName)
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 
@@ -405,8 +414,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				imgui.TableNextColumn()
 
 				selected := simName == c.SelectedRemoteSim
-				selFlags := imgui.SelectableFlagsSpanAllColumns | imgui.SelectableFlagsDontClosePopups
-				if imgui.SelectableV(simName, selected, selFlags, imgui.Vec2{}) {
+				selFlags := imgui.SelectableFlagsSpanAllColumns | imgui.SelectableFlagsNoAutoClosePopups
+				if imgui.SelectableBoolV(simName, selected, selFlags, imgui.Vec2{}) {
 					c.SelectedRemoteSim = simName
 
 					rs = runningSims[c.SelectedRemoteSim]
@@ -444,29 +453,33 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			return id
 		}
 
-		if imgui.BeginComboV("Position", fmtPosition(c.SelectedRemoteSimPosition), 0) {
+		if imgui.BeginCombo("Position", fmtPosition(c.SelectedRemoteSimPosition)) {
 			for _, pos := range util.SortedMapKeys(rs.AvailablePositions) {
 				if pos[0] == '_' {
 					continue
 				}
 
-				if imgui.SelectableV(fmtPosition(pos), pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+				if imgui.SelectableBoolV(fmtPosition(pos), pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
 					c.SelectedRemoteSimPosition = pos
 				}
 			}
 
-			if imgui.SelectableV("Observer", "Observer" == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV("Observer", "Observer" == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
 				c.SelectedRemoteSimPosition = "Observer"
 			}
 
 			imgui.EndCombo()
 		}
 		if rs.RequirePassword {
-			imgui.InputTextV("Password", &c.RemoteSimPassword, 0, nil)
+			imgui.InputTextMultiline("Password", &c.RemoteSimPassword, imgui.Vec2{}, 0, nil)
 		}
-		uiStartDisable(!rs.InstructorAllowed)
+		if !rs.InstructorAllowed {
+			imgui.BeginDisabled()
+		}
 		imgui.Checkbox("Sign-in as Instructor", &c.Instructor)
-		uiEndDisable(!rs.InstructorAllowed)
+		if !rs.InstructorAllowed {
+			imgui.EndDisabled()
+		}
 	}
 
 	return false
@@ -598,10 +611,12 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-	uiStartDisable(lc.DepartureRateScale == 0)
+	if lc.DepartureRateScale == 0 {
+		imgui.BeginDisabled()
+	}
 	adrColumns := math.Min(3, maxDepartureCategories)
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	if imgui.BeginTableV("departureRunways", 2+2*adrColumns, flags, imgui.Vec2{tableScale * float32(200+200*adrColumns), 0}, 0.) {
+	if imgui.BeginTableV("departureRunways", int32(2+2*adrColumns), flags, imgui.Vec2{tableScale * float32(200+200*adrColumns), 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		imgui.TableSetupColumn("Runway")
 		for range adrColumns {
@@ -611,9 +626,9 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		imgui.TableHeadersRow()
 
 		for _, airport := range util.SortedMapKeys(lc.DepartureRates) {
-			imgui.PushID(airport)
+			imgui.PushIDStr(airport)
 			for _, runway := range util.SortedMapKeys(lc.DepartureRates[airport]) {
-				imgui.PushID(runway)
+				imgui.PushIDStr(runway)
 				adrColumn := 0
 
 				imgui.TableNextRow()
@@ -625,7 +640,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 				imgui.TableNextColumn()
 
 				for _, category := range util.SortedMapKeys(lc.DepartureRates[airport][runway]) {
-					imgui.PushID(category)
+					imgui.PushIDStr(category)
 
 					if adrColumn > 0 && adrColumn%adrColumns == 0 {
 						// Overflow
@@ -658,7 +673,9 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		}
 		imgui.EndTable()
 	}
-	uiEndDisable(lc.DepartureRateScale == 0)
+	if lc.DepartureRateScale == 0 {
+		imgui.EndDisabled()
+	}
 
 	if len(lc.VFRAirports) > 0 {
 		imgui.Separator()
@@ -712,20 +729,26 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	changed = imgui.SliderFloatV("Go around probability", &lc.GoAroundRate, 0, 1, "%.02f", 0) || changed
 
 	changed = imgui.Checkbox("Include random arrival pushes", &lc.ArrivalPushes) || changed
-	uiStartDisable(!lc.ArrivalPushes)
+	if !lc.ArrivalPushes {
+		imgui.BeginDisabled()
+	}
 	freq := int32(lc.ArrivalPushFrequencyMinutes)
 	changed = imgui.SliderInt("Push frequency (minutes)", &freq, 3, 60) || changed
 	lc.ArrivalPushFrequencyMinutes = int(freq)
 	min := int32(lc.ArrivalPushLengthMinutes)
 	changed = imgui.SliderInt("Length of push (minutes)", &min, 5, 30) || changed
 	lc.ArrivalPushLengthMinutes = int(min)
-	uiEndDisable(!lc.ArrivalPushes)
+	if !lc.ArrivalPushes {
+		imgui.EndDisabled()
+	}
 
 	aarColumns := math.Min(3, maxAirportFlows)
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	uiStartDisable(lc.InboundFlowRateScale == 0)
-	if imgui.BeginTableV("arrivalgroups", 1+2*aarColumns, flags, imgui.Vec2{tableScale * float32(150+250*aarColumns), 0}, 0.) {
+	if lc.InboundFlowRateScale == 0 {
+		imgui.BeginDisabled()
+	}
+	if imgui.BeginTableV("arrivalgroups", int32(1+2*aarColumns), flags, imgui.Vec2{tableScale * float32(150+250*aarColumns), 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
 		for range aarColumns {
 			imgui.TableSetupColumn("Arrival")
@@ -734,14 +757,14 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		imgui.TableHeadersRow()
 
 		for _, ap := range util.SortedMapKeys(numAirportFlows) {
-			imgui.PushID(ap)
+			imgui.PushIDStr(ap)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(ap)
 
 			aarCol := 0
 			for _, group := range util.SortedMapKeys(lc.InboundFlowRates) {
-				imgui.PushID(group)
+				imgui.PushIDStr(group)
 				if rate, ok := lc.InboundFlowRates[group][ap]; ok {
 					if aarCol > 0 && aarCol%aarColumns == 0 {
 						// Overflow
@@ -766,7 +789,9 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		}
 		imgui.EndTable()
 	}
-	uiEndDisable(lc.InboundFlowRateScale == 0)
+	if lc.InboundFlowRateScale == 0 {
+		imgui.EndDisabled()
+	}
 
 	imgui.Separator()
 
@@ -793,14 +818,16 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	uiStartDisable(lc.InboundFlowRateScale == 0)
+	if lc.InboundFlowRateScale == 0 {
+		imgui.BeginDisabled()
+	}
 	if imgui.BeginTableV("overflights", 2, flags, imgui.Vec2{tableScale * 400, 0}, 0.) {
 		imgui.TableSetupColumn("Group")
 		imgui.TableSetupColumn("Rate")
 		imgui.TableHeadersRow()
 
 		for _, group := range util.SortedMapKeys(overflightGroups) {
-			imgui.PushID(group)
+			imgui.PushIDStr(group)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(group)
@@ -814,7 +841,9 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 		}
 		imgui.EndTable()
 	}
-	uiEndDisable(lc.InboundFlowRateScale == 0)
+	if lc.InboundFlowRateScale == 0 {
+		imgui.EndDisabled()
+	}
 
 	return
 }
@@ -967,11 +996,11 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()
-		if imgui.RadioButtonInt("Manual", &lc.client.State.LaunchConfig.Mode, sim.LaunchManual) {
+		if imgui.RadioButtonIntPtr("Manual", &lc.client.State.LaunchConfig.Mode, sim.LaunchManual) {
 			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 		}
 		imgui.SameLine()
-		if imgui.RadioButtonInt("Automatic", &lc.client.State.LaunchConfig.Mode, sim.LaunchAutomatic) {
+		if imgui.RadioButtonIntPtr("Automatic", &lc.client.State.LaunchConfig.Mode, sim.LaunchAutomatic) {
 			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 		}
 
@@ -1043,7 +1072,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 			}
 
-			if imgui.CollapsingHeader("Departures") {
+			if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
 				ndep := util.ReduceSlice(lc.departures, func(dep *LaunchDeparture, n int) int {
 					return n + dep.TotalLaunches
 				}, 0)
@@ -1071,7 +1100,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 
 				nColumns := math.Min(3, maxCategories)
-				if imgui.BeginTableV("dep", 1+9*nColumns, flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
+				if imgui.BeginTableV("dep", int32(1+9*nColumns), flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
 					for range nColumns {
 						imgui.TableSetupColumn("Rwy")
@@ -1110,7 +1139,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 						imgui.TableNextColumn()
 						imgui.Text(dep.Category)
 
-						imgui.PushID(dep.Airport + " " + dep.Runway + " " + dep.Category)
+						imgui.PushIDStr(dep.Airport + " " + dep.Runway + " " + dep.Category)
 
 						imgui.TableNextColumn()
 						imgui.Text(strconv.Itoa(dep.TotalLaunches))
@@ -1154,7 +1183,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 			}
 
-			if len(lc.vfrDepartures) > 0 && imgui.CollapsingHeader("VFR Departures") {
+			if len(lc.vfrDepartures) > 0 && imgui.CollapsingHeaderBoolPtr("VFR Departures", nil) {
 				ndep := util.ReduceSlice(lc.vfrDepartures, func(dep *LaunchDeparture, n int) int {
 					return n + dep.TotalLaunches
 				}, 0)
@@ -1162,7 +1191,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				imgui.Text(fmt.Sprintf("VFR Departures: %d total", ndep))
 
 				nColumns := math.Min(2, len(lc.vfrDepartures))
-				if imgui.BeginTableV("vfrdep", 9*nColumns, flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
+				if imgui.BeginTableV("vfrdep", int32(9*nColumns), flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
 					for range nColumns {
 						imgui.TableSetupColumn("Airport")
 						imgui.TableSetupColumn("Rwy")
@@ -1182,7 +1211,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							imgui.TableNextRow()
 						}
 
-						imgui.PushID(dep.Airport)
+						imgui.PushIDStr(dep.Airport)
 						imgui.TableNextColumn()
 						imgui.Text(dep.Airport)
 						imgui.TableNextColumn()
@@ -1232,7 +1261,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 			}
 
-			if imgui.CollapsingHeader("Arrivals / Overflights") {
+			if imgui.CollapsingHeaderBoolPtr("Arrivals / Overflights", nil) {
 				narof := util.ReduceSlice(lc.arrivalsOverflights, func(arr *LaunchArrivalOverflight, n int) int {
 					return n + arr.TotalLaunches
 				}, 0)
@@ -1257,7 +1286,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 				numColumns := math.Min(maxGroups, 3)
 
-				if imgui.BeginTableV("arrof", 1+7*numColumns, flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
+				if imgui.BeginTableV("arrof", int32(1+7*numColumns), flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
 					for range numColumns {
 						imgui.TableSetupColumn("Group")
@@ -1288,7 +1317,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							curColumn++
 						}
 
-						imgui.PushID(arof.Group + arof.Airport)
+						imgui.PushIDStr(arof.Group + arof.Airport)
 
 						imgui.TableNextColumn()
 						imgui.Text(arof.Group)
@@ -1333,10 +1362,10 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			}
 		} else {
 			changed := false
-			if imgui.CollapsingHeader("Departures") {
+			if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
 				changed = drawDepartureUI(&lc.client.State.LaunchConfig, p)
 			}
-			if imgui.CollapsingHeader("Arrivals / Overflights") {
+			if imgui.CollapsingHeaderBoolPtr("Arrivals / Overflights", nil) {
 				changed = drawArrivalUI(&lc.client.State.LaunchConfig, p) || changed
 				changed = drawOverflightUI(&lc.client.State.LaunchConfig, p) || changed
 			}
@@ -1352,7 +1381,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
 	releaseAircraft := lc.client.State.GetRegularReleaseDepartures()
-	if len(releaseAircraft) > 0 && imgui.CollapsingHeader("Hold For Release") {
+	if len(releaseAircraft) > 0 && imgui.CollapsingHeaderBoolPtr("Hold For Release", nil) {
 		slices.SortFunc(releaseAircraft, func(a, b sim.ReleaseDeparture) int {
 			// Just by airport, otherwise leave in FIFO order
 			return strings.Compare(a.DepartureAirport, b.DepartureAirport)
@@ -1368,7 +1397,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 			lastAp := ""
 			for _, ac := range releaseAircraft {
-				imgui.PushID(string(ac.ADSBCallsign))
+				imgui.PushIDStr(string(ac.ADSBCallsign))
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.Text(ac.DepartureAirport)
@@ -1404,13 +1433,13 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
-	sz := imgui.CalcTextSize(c.State.SimDescription, false, 0)
+	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
 
 	show := true
 	imgui.BeginV(c.State.SimDescription, &show, imgui.WindowFlagsAlwaysAutoResize)
 
-	if imgui.CollapsingHeader("Controllers") {
+	if imgui.CollapsingHeaderBoolPtr("Controllers", nil) {
 		// Make big(ish) tables somewhat more legible
 		tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 			imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
@@ -1443,7 +1472,7 @@ func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.
 					sq := renderer.FontAwesomeIconCheckSquare
 					// Center the square in the column
 					// https://stackoverflow.com/a/66109051
-					pos := imgui.CursorPosX() + float32(imgui.ColumnWidth()) - imgui.CalcTextSize(sq, false, 0).X - imgui.ScrollX() -
+					pos := imgui.CursorPosX() + float32(imgui.ColumnWidth()) - imgui.CalcTextSize(sq).X - imgui.ScrollX() -
 						2*imgui.CurrentStyle().ItemSpacing().X
 					if pos > imgui.CursorPosX() {
 						imgui.SetCursorPos(imgui.Vec2{X: pos, Y: imgui.CursorPos().Y})

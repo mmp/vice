@@ -71,7 +71,7 @@ type Server struct {
 
 type NewSimConfiguration struct {
 	// FIXME: unify Password/RemoteSimPassword, SelectedRemoteSim / NewSimName, etc.
-	NewSimType   int
+	NewSimType   int32
 	NewSimName   string
 	GroupName    string
 	ScenarioName string

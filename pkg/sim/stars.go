@@ -318,8 +318,10 @@ type STARSFacilityAdaptation struct {
 	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
 	FlightPlan struct {
-		QuickACID      string            `json:"quick_acid"`
-		ACIDExpansions map[string]string `json:"acid_expansions"`
+		AcquisitionVolumes []av.AirspaceVolume `json:"acquisition_volumes"`
+		DropVolumes        []av.AirspaceVolume `json:"drop_volumes"`
+		QuickACID          string              `json:"quick_acid"`
+		ACIDExpansions     map[string]string   `json:"acid_expansions"`
 	} `json:"flight_plan"`
 
 	PDB struct {

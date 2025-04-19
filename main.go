@@ -5,7 +5,7 @@
 package main
 
 // This file contains the implementation of the main() function, which
-// initializes the system and then runs the event loop until the system
+// Initializes the system and then runs the event loop until the system
 // exits.
 
 import (
@@ -29,8 +29,8 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/apenwarr/fixconsole"
-	"github.com/mmp/imgui-go/v4"
 )
 
 var (
@@ -209,7 +209,7 @@ func main() {
 		if configErr != nil {
 			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
 		}
-		imgui.CurrentIO().SetClipboard(plat.GetClipboard())
+		imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
 
 		render, err = renderer.NewOpenGL2Renderer(lg)
 		if err != nil {

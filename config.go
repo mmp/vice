@@ -23,7 +23,7 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 // Slightly convoluted, but the full Config definition is split into

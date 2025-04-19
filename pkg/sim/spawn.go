@@ -74,7 +74,7 @@ type DepartureAircraft struct {
 }
 
 const (
-	LaunchAutomatic = iota
+	LaunchAutomatic int32 = iota
 	LaunchManual
 )
 
@@ -86,7 +86,7 @@ type LaunchConfig struct {
 	// launch control may be taken by any signed in controller.
 	Controller string
 	// LaunchManual or LaunchAutomatic
-	Mode int
+	Mode int32
 
 	GoAroundRate float32
 	// airport -> runway -> category -> rate

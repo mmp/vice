@@ -2,6 +2,8 @@ module github.com/mmp/vice
 
 go 1.24.0
 
+toolchain go1.24.2
+
 require (
 	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29
 	github.com/brunoga/deep v1.2.3
@@ -14,7 +16,6 @@ require (
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20230128161750-16b51f1632c6
-	github.com/mmp/imgui-go/v4 v4.0.0-20220911181801-968a517f674f
 	github.com/paulmach/orb v0.11.1
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/shirou/gopsutil v3.21.11+incompatible
@@ -25,6 +26,7 @@ require (
 )
 
 require (
+	github.com/AllenDang/cimgui-go v1.3.1 // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/antchfx/htmlquery v1.3.0 // indirect
@@ -35,7 +37,6 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/inkyblackness/imgui-go/v4 v4.5.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect

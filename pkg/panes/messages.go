@@ -10,7 +10,6 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/mmp/imgui-go/v4"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
@@ -19,6 +18,8 @@ import (
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 type Message struct {
@@ -110,9 +111,9 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 
 	imgui.Separator()
-	if imgui.BeginComboV("Audio alert", mp.AudioAlertSelection, 0 /* flags */) {
+	if imgui.BeginCombo("Audio alert", mp.AudioAlertSelection) {
 		for _, alert := range util.SortedMapKeys(audioAlerts) {
-			if imgui.SelectableV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
 				mp.AudioAlertSelection = alert
 				p.PlayAudioOnce(mp.alertAudioIndex[alert])
 			}

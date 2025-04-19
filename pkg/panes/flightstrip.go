@@ -20,7 +20,7 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 type FlightStripPane struct {
@@ -228,7 +228,9 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 	imgui.Checkbox("Show flight strips", &show)
 	fsp.HideFlightStrips = !show
 
-	uiStartDisable(fsp.HideFlightStrips)
+	if fsp.HideFlightStrips {
+		imgui.BeginDisabled()
+	}
 	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
 	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
 	imgui.Checkbox("Automatically add overflights", &fsp.AutoAddOverflights)
@@ -246,7 +248,9 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 		fsp.FontSize = newFont.Size
 		fsp.font = newFont
 	}
-	uiEndDisable(fsp.HideFlightStrips)
+	if fsp.HideFlightStrips {
+		imgui.EndDisabled()
+	}
 }
 
 func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
@@ -519,7 +523,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			stripIndex += scrollOffset
 			if stripIndex < len(fsp.strips) {
 				io := imgui.CurrentIO()
-				if io.KeyShiftPressed() {
+				if io.KeyShift() {
 					// delete the flight strip
 					copy(fsp.strips[stripIndex:], fsp.strips[stripIndex+1:])
 					fsp.strips = fsp.strips[:len(fsp.strips)-1]
@@ -616,24 +620,6 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	trid.GenerateCommands(cb)
 }
 
-// If |b| is true, all following imgui elements will be disabled (and drawn
-// accordingly).
-func uiStartDisable(b bool) {
-	if b {
-		imgui.PushItemFlag(imgui.ItemFlagsDisabled, true)
-		imgui.PushStyleVarFloat(imgui.StyleVarAlpha, imgui.CurrentStyle().Alpha()*0.5)
-	}
-}
-
-// Each call to uiStartDisable should have a matching call to uiEndDisable,
-// with the same Boolean value passed to it.
-func uiEndDisable(b bool) {
-	if b {
-		imgui.PopItemFlag()
-		imgui.PopStyleVar()
-	}
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Text editing
 
@@ -670,30 +656,30 @@ func drawTextEdit(s *string, cursor *int, keyboard *platform.KeyboardState, pos 
 
 	// Handle various special keys.
 	if keyboard != nil {
-		if keyboard.WasPressed(platform.KeyBackspace) && *cursor > 0 {
+		if keyboard.WasPressed(imgui.KeyBackspace) && *cursor > 0 {
 			*s = (*s)[:*cursor-1] + (*s)[*cursor:]
 			*cursor--
 		}
-		if keyboard.WasPressed(platform.KeyDelete) && *cursor < len(*s)-1 {
+		if keyboard.WasPressed(imgui.KeyDelete) && *cursor < len(*s)-1 {
 			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
 		}
-		if keyboard.WasPressed(platform.KeyLeftArrow) {
+		if keyboard.WasPressed(imgui.KeyLeftArrow) {
 			*cursor = math.Max(*cursor-1, 0)
 		}
-		if keyboard.WasPressed(platform.KeyRightArrow) {
+		if keyboard.WasPressed(imgui.KeyRightArrow) {
 			*cursor = math.Min(*cursor+1, len(*s))
 		}
-		if keyboard.WasPressed(platform.KeyEscape) {
+		if keyboard.WasPressed(imgui.KeyEscape) {
 			// clear out the string
 			*s = ""
 			*cursor = 0
 		}
-		if keyboard.WasPressed(platform.KeyEnter) {
+		if keyboard.WasPressed(imgui.KeyEnter) {
 			focus.Release()
 			exit = textEditReturnEnter
 		}
-		if keyboard.WasPressed(platform.KeyTab) {
-			if keyboard.WasPressed(platform.KeyShift) {
+		if keyboard.WasPressed(imgui.KeyTab) {
+			if keyboard.KeyShift() {
 				exit = textEditReturnPrev
 			} else {
 				exit = textEditReturnNext

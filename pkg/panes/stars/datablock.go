@@ -12,10 +12,11 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 type DatablockType int
@@ -335,7 +336,7 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockT
 		// The track owner is known, so it will be a P/FDB
 		state := sp.TrackState[trk.ADSBCallsign]
 
-		beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1)
+		beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(imgui.KeyF1)
 		if beaconator {
 			// Partial is always full with the beaconator, so we're done
 			// here in that case.
@@ -480,7 +481,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	}
 
 	// Various other values that will be repeatedly useful below...
-	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(platform.KeyF1) && trk.ADSBCallsign != ""
+	beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(imgui.KeyF1) && trk.ADSBCallsign != ""
 	var actype string
 	if sfp != nil {
 		actype = sfp.AircraftType

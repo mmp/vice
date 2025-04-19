@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/davecgh/go-spew/spew"
 )
 
@@ -190,7 +191,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
-		case platform.KeyBackspace:
+		case imgui.KeyBackspace:
 			if len(sp.previewAreaInput) > 0 {
 				// We need to be careful to deal with UTF8 for the triangle...
 				r := []rune(sp.previewAreaInput)
@@ -202,10 +203,10 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				sp.drawRoutePoints = sp.drawRoutePoints[:n-1]
 			}
 
-		case platform.KeyEnd:
+		case imgui.KeyEnd:
 			sp.setCommandMode(ctx, CommandModeMin)
 
-		case platform.KeyEnter:
+		case imgui.KeyEnter:
 			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
@@ -216,97 +217,97 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				sp.previewAreaOutput = status.output
 			}
 
-		case platform.KeyEscape:
+		case imgui.KeyEscape:
 			if sp.activeSpinner != nil {
 				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
 			} else {
 				sp.setCommandMode(ctx, CommandModeNone)
 			}
 
-		case platform.KeyF1:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) {
+		case imgui.KeyF1:
+			if ctx.Keyboard.KeyControl() {
 				// Recenter
 				ps.UseUserCenter = false
 			}
-			if ctx.Keyboard.WasPressed(platform.KeyShift) {
+			if ctx.Keyboard.KeyShift() {
 				// Treat this as F13
 				sp.setCommandMode(ctx, CommandModeReleaseDeparture)
 			}
 
-		case platform.KeyF2:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) {
+		case imgui.KeyF2:
+			if ctx.Keyboard.KeyControl() {
 				sp.setCommandMode(ctx, CommandModeMaps)
 			}
 
-		case platform.KeyF3:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF3:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeBrite)
 			} else {
 				sp.setCommandMode(ctx, CommandModeInitiateControl)
 			}
 
-		case platform.KeyF4:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF4:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeLDR)
 			} else {
 				sp.setCommandMode(ctx, CommandModeTerminateControl)
 			}
 
-		case platform.KeyF5:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF5:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeCharSize)
 			} else {
 				sp.setCommandMode(ctx, CommandModeHandOff)
 			}
 
-		case platform.KeyF6:
+		case imgui.KeyF6:
 			sp.setCommandMode(ctx, CommandModeFlightData)
 
-		case platform.KeyF7:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF7:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeNone)
 				sp.dcbShowAux = !sp.dcbShowAux
 			} else {
 				sp.setCommandMode(ctx, CommandModeMultiFunc)
 			}
 
-		case platform.KeyF8:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) {
+		case imgui.KeyF8:
+			if ctx.Keyboard.KeyControl() {
 				sp.resetInputState(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			} else {
 				sp.setCommandMode(ctx, CommandModeWX)
 			}
 
-		case platform.KeyF9:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF9:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeRangeRings)
 			} else {
 				sp.setCommandMode(ctx, CommandModeVFRPlan)
 			}
 
-		case platform.KeyF10:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF10:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeRange)
 			}
 
-		case platform.KeyF11:
-			if ctx.Keyboard.WasPressed(platform.KeyControl) && ps.DisplayDCB {
+		case imgui.KeyF11:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
 				sp.setCommandMode(ctx, CommandModeSite)
 			} else {
 				sp.setCommandMode(ctx, CommandModeCollisionAlert)
 			}
 
-		case platform.KeyF12:
+		case imgui.KeyF12:
 			sp.setCommandMode(ctx, CommandModeRestrictionArea)
 
-		case platform.KeyF13:
+		case imgui.KeyF13:
 			sp.setCommandMode(ctx, CommandModeReleaseDeparture)
 
-		case platform.KeyInsert:
+		case imgui.KeyInsert:
 			sp.setCommandMode(ctx, CommandModePref)
 
-		case platform.KeyTab:
+		case imgui.KeyTab:
 			sp.setCommandMode(ctx, CommandModeTargetGen)
 		}
 	}
@@ -4016,7 +4017,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		for _, p := range sp.drawRoutePoints {
 			cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
 		}
-		ctx.Platform.GetClipboard().SetText(strings.Join(cb, " "))
+		ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
 		status.output = fmt.Sprintf("%d POINTS", len(sp.drawRoutePoints))
 		return
 	}
@@ -4119,7 +4120,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			r := ps.Range
 			ps.Range += func() float32 {
 				if ctx.Keyboard != nil {
-					if _, ok := ctx.Keyboard.Pressed[platform.KeyControl]; ok {
+					if ctx.Keyboard.KeyControl() {
 						return 3 * mouse.Wheel[1]
 					}
 				}
@@ -4143,13 +4144,13 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 	}
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
-		if ctx.Keyboard != nil && ctx.Keyboard.WasPressed(platform.KeyShift) && ctx.Keyboard.WasPressed(platform.KeyControl) {
+		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-			ctx.Platform.GetClipboard().SetText(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
+			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.Keyboard != nil && ctx.Keyboard.WasPressed(platform.KeyControl) && !ctx.Keyboard.WasPressed(platform.KeyShift) { // There is a conflict between this and initating a track CRC-style,
+		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() && !ctx.Keyboard.KeyShift() { // There is a conflict between this and initating a track CRC-style,
 			// so making sure that shift isn't being pressed would be a good idea.
 			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 				if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
