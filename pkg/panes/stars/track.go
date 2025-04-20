@@ -1300,14 +1300,19 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
+	tsz := sp.getTrackSize(ctx, transforms)
 	draw := func(tracks []sim.Track) {
 		for _, trk := range tracks {
 			if db := dbs[trk.ADSBCallsign]; db != nil {
 				baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
 				pac := transforms.WindowFromLatLongP(trk.Location)
 				v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ctx, trk))
+				// Offset the starting point to the edge of the track circle;
+				// this doesn't matter when we're drawing the circle but is
+				// helpful for unsupported DBs.
+				p0 := math.Add2f(pac, math.Scale2f(math.Normalize2f(v), tsz/2))
 				v = math.Scale2f(v, ctx.DrawPixelScale)
-				ld.AddLine(pac, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
+				ld.AddLine(p0, math.Add2f(pac, v), brightness.ScaleRGB(baseColor))
 			}
 		}
 	}
