@@ -827,7 +827,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		// identing.
 		if !trk.Ident {
 			if actype != "" && !inhibitACType {
-				formatDBText(db.field5[field5Idx][:], actype+" ", color, false)
+				rnav := util.Select(sfp.RNAV, "^", " ")
+				formatDBText(db.field5[field5Idx][:], actype+rnav, color, false)
 				field5Idx++
 			}
 
