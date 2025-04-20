@@ -422,22 +422,8 @@ func (g *glfwPlatform) keyChange(window *glfw.Window, key glfw.Key, scancode int
 }
 
 func (g *glfwPlatform) charChange(window *glfw.Window, char rune) {
-	// Ignore alt + numpad
-	switch char {
-	case '\u263A',
-		'\u263B',
-		'\u2665',
-		'\u2666',
-		'\u2663',
-		'\u2660',
-		'\u2022',
-		'\u25D8',
-		'\u25CB':
-		return
-	}
-
 	g.anyEvents = true
-	g.imguiIO.AddInputCharacters(string(char))
+	g.imguiIO.AddInputCharactersUTF8(string(char))
 	g.inputCharacters = g.inputCharacters + string(char)
 }
 
