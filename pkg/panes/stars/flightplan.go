@@ -73,6 +73,10 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 func parseOneFlightPlan(format string, text string, checkSp func(s string, primary bool) bool) (sim.STARSFlightPlanSpecifier, error) {
 	spec := sim.STARSFlightPlanSpecifier{}
 
+	if text == "" {
+		return spec, ErrSTARSCommandFormat
+	}
+
 	text, _, ok := strings.Cut(text, " ")
 	if ok {
 		// Extra junk at the end
