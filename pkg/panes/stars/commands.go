@@ -2888,8 +2888,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					state.RDIndicatorEnd = time.Time{}
 					status.clear = true
 					return
-				} else if trk.IsAssociated() && trk.FlightPlan.RedirectedHandoff.RedirectedTo == ctx.UserTCP ||
-					trk.FlightPlan.RedirectedHandoff.GetLastRedirector() == ctx.UserTCP {
+				} else if trk.IsAssociated() && (trk.FlightPlan.RedirectedHandoff.RedirectedTo == ctx.UserTCP ||
+					trk.FlightPlan.RedirectedHandoff.GetLastRedirector() == ctx.UserTCP) {
 					sp.acceptRedirectedHandoff(ctx, acid)
 					status.clear = true
 					return
