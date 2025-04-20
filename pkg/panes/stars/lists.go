@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
@@ -447,13 +448,62 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero()
 		})
 
+	for _, fp := range vfr {
+		if _, ok := sp.VFRFPFirstSeen[fp.ACID]; !ok {
+			sp.VFRFPFirstSeen[fp.ACID] = ctx.Now
+		}
+	}
+	slices.SortFunc(vfr, func(a, b *sim.STARSFlightPlan) int {
+		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
+	})
+
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
 	if len(vfr) > ps.VFRList.Lines {
 		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 	}
 	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
-		text.WriteString(fmt.Sprintf("%2d %-7s %s\n", vfr[i].ListIndex, vfr[i].ACID, vfr[i].AssignedSquawk))
+		fp := vfr[i]
+		text.WriteString(fmt.Sprintf("%2d ", vfr[i].ListIndex))
+		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
+		acid := ""
+		if fp.DisableMSAW {
+			if fp.DisableCA {
+				acid = "+"
+			} else {
+				acid = "*"
+			}
+		} else if fp.DisableCA {
+			acid = STARSTriangleCharacter
+		}
+		text.WriteString(fmt.Sprintf("%-7s ", acid+string(vfr[i].ACID)))
+		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
+			text.WriteByte('/')
+		} else {
+			text.WriteByte(' ')
+		}
+		haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+		if haveCode {
+			text.WriteString(fp.AssignedSquawk.String())
+		} else {
+			text.WriteString("    ")
+		}
+		text.WriteByte(' ')
+		if !haveCode {
+			text.WriteString("VFR")
+		} else {
+			if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
+				text.WriteByte(fp.EntryFix[0])
+			} else {
+				text.WriteByte(' ')
+			}
+			if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
+				text.WriteByte(fp.ExitFix[0])
+			} else {
+				text.WriteByte(' ')
+			}
+		}
+		text.WriteByte('\n')
 	}
 
 	if text.Len() > 0 {
@@ -506,7 +556,17 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		fp := plans[i]
 		text.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-		text.WriteString(fmt.Sprintf("%-7s ", fp.ACID))
+		acid := ""
+		if fp.DisableMSAW {
+			if fp.DisableCA {
+				acid = "+"
+			} else {
+				acid = "*"
+			}
+		} else if fp.DisableCA {
+			acid = STARSTriangleCharacter
+		}
+		text.WriteString(fmt.Sprintf("%-7s ", acid+string(fp.ACID)))
 		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {

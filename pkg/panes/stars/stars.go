@@ -153,6 +153,9 @@ type STARSPane struct {
 
 	DisplayRequestedAltitude bool
 
+	// When VFR flight plans were first seen (used for sorting in VFR list)
+	VFRFPFirstSeen map[sim.ACID]time.Time
+
 	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) CommandStatus
 	activeSpinner     dcbSpinner
 
@@ -400,6 +403,9 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	if sp.TrackState == nil {
 		sp.TrackState = make(map[av.ADSBCallsign]*TrackState)
 	}
+	if sp.VFRFPFirstSeen == nil {
+		sp.VFRFPFirstSeen = make(map[sim.ACID]time.Time)
+	}
 
 	sp.events = eventStream.Subscribe()
 
@@ -440,6 +446,7 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 			})
 		}
 	}
+	clear(sp.VFRFPFirstSeen)
 
 	// Update maps before resetting the prefs since we may rewrite some map
 	// ids and we want to use the right ones when we're enabling the
