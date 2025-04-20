@@ -442,7 +442,10 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.STARSFlightPlan) bool { return fp.Rules != av.FlightRulesIFR })
+		func(fp *sim.STARSFlightPlan) bool {
+			// Don't include IFR or unsupported VFR DBs
+			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero()
+		})
 
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")

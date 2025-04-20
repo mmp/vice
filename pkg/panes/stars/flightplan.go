@@ -52,6 +52,7 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 	"PLUS_ALT_A":      parseFpPlusAssignedAltitude,
 	"PLUS_PLUS_ALT_R": parseFpPlus2RequestedAltitude,
 	"PLUS_SP2":        parseFpPlusSp2,
+	"RNAV":            parseFpRNAVToggle,
 	"RULES":           parseFpFlightRules,
 	"SP1":             parseFpSp1,
 	"TCP":             parseFpTCP,
@@ -336,6 +337,14 @@ func parseFpFixPair(s string, checkSp func(s string, primary bool) bool, spec *s
 		return parseFpTypeOfFlight(flttp, checkSp, spec)
 	}
 	return true, nil
+}
+
+func parseFpRNAVToggle(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+	if s == "R" {
+		spec.RNAVToggle.Set(true)
+		return true, nil
+	}
+	return false, nil
 }
 
 func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {

@@ -469,7 +469,8 @@ type STARSFlightPlanSpecifier struct {
 	Scratchpad          util.Optional[string]
 	SecondaryScratchpad util.Optional[string]
 
-	RNAV util.Optional[bool]
+	RNAV       util.Optional[bool]
+	RNAVToggle util.Optional[bool]
 
 	Location util.Optional[math.Point2LL]
 
@@ -550,11 +551,13 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.Rules.IsSet {
 		fp.Rules = spec.Rules.Get()
+		if fp.Rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
+			fp.DisableMSAW = true
+		}
 	}
 	if spec.ETAOrPTD.IsSet {
 		fp.ETAOrPTD = spec.ETAOrPTD.Get()
 	}
-
 	if spec.AssignedSquawk.IsSet {
 		fp.AssignedSquawk = spec.AssignedSquawk.Get()
 	}
@@ -588,6 +591,9 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.RNAV.IsSet {
 		fp.RNAV = spec.RNAV.Get()
+	}
+	if spec.RNAVToggle.IsSet && spec.RNAVToggle.Get() {
+		fp.RNAV = !fp.RNAV
 	}
 	if spec.Location.IsSet {
 		fp.Location = spec.Location.Get()

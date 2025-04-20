@@ -328,7 +328,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 	}
 
 	lookupTrack := func(s string) *sim.Track {
-		if trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(s)); ok {
+		if trk, ok := ctx.GetTrackByACID(sim.ACID(s)); ok {
 			return trk
 		}
 
@@ -995,6 +995,20 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				status.clear = true
 				return
 			}
+
+		case "H":
+			// 5-178: modify rnav symbol, a/c type, eq suffix, or flight rules
+			if id, mod, ok := strings.Cut(cmd, " "); !ok {
+				status.err = ErrSTARSCommandFormat
+			} else if trk := lookupTrack(id); trk == nil || trk.IsUnassociated() {
+				status.err = ErrSTARSIllegalTrack
+			} else if spec, err := parseOneFlightPlan("RNAV,#/AC_TYPE/EQ,RULES", mod, nil); err != nil {
+				status.err = err
+			} else {
+				sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+				status.clear = true
+			}
+			return
 
 		case "I":
 			if cmd == "*" {
@@ -3434,6 +3448,18 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 				} else {
 					status.err = ErrSTARSCommandFormat
+				}
+				return
+
+			case "H":
+				// 5-178: modify rnav symbol, a/c type, eq suffix, or flight rules
+				if spec, err := parseOneFlightPlan("RNAV,#/AC_TYPE/EQ,RULES", cmd, nil); err != nil {
+					status.err = err
+				} else if trk.IsUnassociated() {
+					status.err = ErrSTARSIllegalTrack
+				} else {
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+					status.clear = true
 				}
 				return
 

@@ -146,6 +146,14 @@ func (ctx *Context) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track,
 	return ctx.Client.State.GetOurTrackByCallsign(callsign)
 }
 
+func (ctx *Context) GetTrackByACID(acid sim.ACID) (*sim.Track, bool) {
+	return ctx.Client.State.GetTrackByACID(acid)
+}
+
+func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
+	return ctx.Client.State.GetOurTrackByACID(acid)
+}
+
 var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))
 
 func RegisterUnmarshalPane(name string, fn func([]byte) (Pane, error)) {
