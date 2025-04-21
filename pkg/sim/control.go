@@ -309,7 +309,7 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
 
 	if spec.AssignedSquawk.IsSet {
 		sq := spec.AssignedSquawk.Get()
-		if (sq >= 0o1200 && sq <= 0o1202) || (sq&0o100) == 0 {
+		if (sq >= 0o1200 && sq <= 0o1202) || (sq%0o100) == 0 {
 			return ErrIllegalBeaconCode
 		}
 		if ok, _ := av.SquawkIsSPC(sq); ok {
