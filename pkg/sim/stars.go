@@ -399,7 +399,6 @@ type STARSFlightPlan struct {
 	AircraftCount   int
 	AircraftType    string
 	EquipmentSuffix string
-	CWTCategory     string
 
 	TypeOfFlight av.TypeOfFlight
 
@@ -439,6 +438,7 @@ type STARSFlightPlan struct {
 
 	InhibitACTypeDisplay      bool
 	ForceACTypeDisplayEndTime time.Time
+	CWTCategory               string
 }
 
 type ACID string
@@ -458,7 +458,6 @@ type STARSFlightPlanSpecifier struct {
 	AircraftCount   util.Optional[int]
 	AircraftType    util.Optional[string]
 	EquipmentSuffix util.Optional[string]
-	CWTCategory     util.Optional[string]
 
 	TypeOfFlight util.Optional[av.TypeOfFlight]
 
@@ -507,7 +506,6 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		AircraftCount:   s.AircraftCount.GetOr(1),
 		AircraftType:    s.AircraftType.GetOr(""),
 		EquipmentSuffix: s.EquipmentSuffix.GetOr(""),
-		CWTCategory:     s.CWTCategory.GetOr(""),
 
 		TypeOfFlight:       s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
 		TrackingController: s.TrackingController.GetOr(""),
@@ -566,7 +564,12 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 		fp.AircraftType = spec.AircraftType.Get()
 		fp.AircraftCount = spec.AircraftCount.GetOr(1)
 		fp.EquipmentSuffix = spec.EquipmentSuffix.GetOr("")
-		fp.CWTCategory = spec.CWTCategory.GetOr("")
+
+		if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+			fp.CWTCategory = perf.Category.CWT
+		} else {
+			fp.CWTCategory = ""
+		}
 	}
 	if spec.TypeOfFlight.IsSet {
 		fp.TypeOfFlight = spec.TypeOfFlight.Get()
