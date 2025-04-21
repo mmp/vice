@@ -363,7 +363,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 		}
 
 		// Modify assigned
-		if spec.EntryFix.IsSet || spec.ExitFix.IsSet || spec.ETAOrPTD.IsSet {
+		if spec.EntryFix.IsSet || spec.ExitFix.IsSet || spec.CoordinationTime.IsSet {
 			// These can only be set for non-active flight plans: 5-171
 			return STARSFlightPlan{}, ErrTrackIsActive
 		}

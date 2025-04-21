@@ -56,7 +56,8 @@ import (
 // 35: VFRRunways in sim.State, METAR Wind struct changes
 // 36: STARS center representation changes
 // 37: rework STARS flight plan (et al)
-const ViceSerializeVersion = 37
+// 38: rework STARS flight plan (et al) ongoing
+const ViceSerializeVersion = 38
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

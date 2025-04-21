@@ -389,7 +389,7 @@ type STARSFlightPlan struct {
 	ExitFix               string
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
-	ETAOrPTD              time.Time // predicted time of arrival / proposed time of departure
+	CoordinationTime      time.Time
 
 	AssignedSquawk av.Squawk
 
@@ -431,7 +431,6 @@ type STARSFlightPlan struct {
 	// for /ho and for departures
 	InboundHandoffController string
 
-	CoordinationTime    CoordinationTime
 	CoordinationFix     string
 	ContainedFacilities []string
 	AutoAssociate       bool
@@ -450,7 +449,7 @@ type STARSFlightPlanSpecifier struct {
 	ExitFix               util.Optional[string]
 	ExitFixIsIntermediate util.Optional[bool]
 	Rules                 util.Optional[av.FlightRules]
-	ETAOrPTD              util.Optional[time.Time]
+	CoordinationTime      util.Optional[time.Time]
 
 	AssignedSquawk util.Optional[av.Squawk]
 
@@ -500,7 +499,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		ExitFix:               s.ExitFix.GetOr(""),
 		ExitFixIsIntermediate: s.ExitFixIsIntermediate.GetOr(false),
 		Rules:                 s.Rules.GetOr(av.FlightRulesUnknown),
-		ETAOrPTD:              s.ETAOrPTD.GetOr(time.Time{}),
+		CoordinationTime:      s.CoordinationTime.GetOr(time.Time{}),
 
 		AssignedSquawk: s.AssignedSquawk.GetOr(av.Squawk(0)),
 
@@ -554,8 +553,8 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 			fp.DisableMSAW = true
 		}
 	}
-	if spec.ETAOrPTD.IsSet {
-		fp.ETAOrPTD = spec.ETAOrPTD.Get()
+	if spec.CoordinationTime.IsSet {
+		fp.CoordinationTime = spec.CoordinationTime.Get()
 	}
 	if spec.AssignedSquawk.IsSet {
 		fp.AssignedSquawk = spec.AssignedSquawk.Get()
@@ -629,11 +628,6 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	if spec.ForceACTypeDisplayEndTime.IsSet {
 		fp.ForceACTypeDisplayEndTime = spec.ForceACTypeDisplayEndTime.Get()
 	}
-}
-
-type CoordinationTime struct {
-	Time time.Time
-	Type string // A for arrivals, P for Departures, E for overflights
 }
 
 type STARSFlightPlanType int

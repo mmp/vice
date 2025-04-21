@@ -46,7 +46,7 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 	"ALT_P":           parseFpPilotAltitude,
 	"ALT_R":           parseFpRequestedAltitude,
 	"BEACON":          parseFpBeacon,
-	"ETA_PTD":         parseFpETAPTD,
+	"COORD_TIME":      parseFPCoordinationTime,
 	"FIX_PAIR":        parseFpFixPair,
 	"FLT_TYPE":        parseFpTypeOfFlight,
 	"PLUS_ALT_A":      parseFpPlusAssignedAltitude,
@@ -305,7 +305,7 @@ func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *si
 	return false, nil
 }
 
-func parseFpETAPTD(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFPCoordinationTime(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
 	if len(s) != 5 || s[4] != 'E' {
 		return false, ErrSTARSCommandFormat
 	}
@@ -315,7 +315,7 @@ func parseFpETAPTD(s string, checkSp func(s string, primary bool) bool, spec *si
 		return false, ErrSTARSCommandFormat
 	}
 
-	spec.ETAOrPTD.Set(t)
+	spec.CoordinationTime.Set(t)
 
 	return true, nil
 }
@@ -597,10 +597,14 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 
 		result += fmtfix(fp.EntryFix)
 		if state != nil {
-			result += "E" + fmtTime(state.FirstSeen) + " "
+			result += "E" + fmtTime(state.FirstRadarTrackTime) + " "
+		} else {
+			result += "E" + fmtTime(fp.CoordinationTime) + " "
 		}
 		result += fmtfix(fp.ExitFix)
-		result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + "\n"
+		if fp.RequestedAltitude != 0 {
+			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + "\n"
+		}
 
 		// TODO: [mode S equipage] [target identification] [target address]
 
@@ -612,8 +616,8 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 
 			result += fmtfix(fp.EntryFix)
 			result += fmtfix(fp.ExitFix)
-			if state != nil {
-				result += "P" + fmtTime(state.FirstSeen) + " "
+			if !fp.CoordinationTime.IsZero() {
+				result += "P" + fmtTime(fp.CoordinationTime) + " "
 			}
 			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
 		} else {
@@ -642,6 +646,8 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 		result += fmtfix(fp.EntryFix)
 		if state != nil {
 			result += "A" + fmtTime(state.FirstRadarTrackTime) + " "
+		} else {
+			result += "A" + fmtTime(fp.CoordinationTime) + " "
 		}
 		result += fmtfix(fp.ExitFix)
 		// TODO: [mode S equipage] [target identification] [target address]
