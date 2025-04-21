@@ -681,9 +681,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					// Implied entry of VFR FP: 5-94
 					spec.Rules.Set(av.FlightRulesVFR)
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
-					if !spec.TrackingController.IsSet {
-						spec.TrackingController.Set(ctx.UserTCP)
-					}
 					sp.createFlightPlan(ctx, spec)
 					status.clear = true
 				} else {
@@ -697,9 +694,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// Implied entry of abbreviated flight plan 5-89
 				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeArrival)
-				if !spec.TrackingController.IsSet {
-					spec.TrackingController.Set(ctx.UserTCP)
-				}
 				sp.createFlightPlan(ctx, spec)
 				status.clear = true
 				return
@@ -716,7 +710,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.AutoAssociate = true
-			spec.TrackingController.Set(ctx.UserTCP)
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 		} else {
@@ -842,7 +835,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// Create/modify VFR FP: 5-133
 			spec.Rules.Set(av.FlightRulesVFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			spec.TrackingController.Set(ctx.UserTCP)
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 		} else {
@@ -1740,9 +1732,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		if spec, err := parseFlightPlan(createFpFormat, cmd, checkfp); err == nil {
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			if !spec.TrackingController.IsSet {
-				spec.TrackingController.Set(ctx.UserTCP)
-			}
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 		} else {
@@ -2707,6 +2696,10 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign av.ADSBCal
 }
 
 func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier) error {
+	if !spec.TrackingController.IsSet {
+		spec.TrackingController.Set(ctx.UserTCP)
+	}
+
 	ctx.Client.AssociateFlightPlan(callsign, spec,
 		func(any) {
 			if trk, ok := ctx.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
@@ -3210,7 +3203,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				spec := sim.STARSFlightPlanSpecifier{CreateQuick: true}
 				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeOverflight)
-				spec.TrackingController.Set(ctx.UserTCP)
 				if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 					status.err = err
 				} else {
@@ -3345,7 +3337,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					} else {
 						spec.Rules.Set(av.FlightRulesIFR)
 						spec.TypeOfFlight.Set(av.FlightTypeArrival)
-						spec.TrackingController.Set(ctx.UserTCP)
 						if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 							status.err = err
 						} else {
@@ -3379,7 +3370,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else {
 					spec.Rules.Set(av.FlightRulesIFR)
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
-					spec.TrackingController.Set(ctx.UserTCP)
 					if !spec.AssignedSquawk.IsSet { // take the current code from the aircraft
 						spec.AssignedSquawk.Set(trk.Squawk)
 					}
@@ -3820,7 +3810,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			// 5-99 create Unsupported datablock
 			spec.Rules.Set(av.FlightRulesIFR)
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			spec.TrackingController.Set(ctx.UserTCP)
 			spec.Location.Set(transforms.LatLongFromWindowP(mousePosition))
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
@@ -4525,6 +4514,9 @@ func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [
 }
 
 func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.STARSFlightPlanSpecifier) {
+	if !spec.TrackingController.IsSet {
+		spec.TrackingController.Set(ctx.UserTCP)
+	}
 	ctx.Client.CreateFlightPlan(spec, sim.LocalNonEnroute,
 		func(fp sim.STARSFlightPlan) {
 			sp.previewAreaOutput = sp.formatFlightPlan(ctx, &fp, nil)
