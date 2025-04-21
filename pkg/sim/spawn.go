@@ -902,10 +902,10 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 
 	starsFp := STARSFlightPlan{
-		ACID:     ACID(ac.ADSBCallsign),
-		EntryFix: "", // TODO
-		ExitFix:  util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
-		ETAOrPTD: getAircraftTime(s.State.SimTime),
+		ACID:             ACID(ac.ADSBCallsign),
+		EntryFix:         "", // TODO
+		ExitFix:          util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
+		CoordinationTime: getAircraftTime(s.State.SimTime),
 
 		TrackingController:       arr.InitialController,
 		ControllingController:    arr.InitialController,
@@ -1039,10 +1039,10 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
 	starsFp := STARSFlightPlan{
-		ACID:     ACID(ac.ADSBCallsign),
-		EntryFix: util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
-		ExitFix:  shortExit,
-		ETAOrPTD: getAircraftTime(s.State.SimTime),
+		ACID:             ACID(ac.ADSBCallsign),
+		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
+		ExitFix:          shortExit,
+		CoordinationTime: getAircraftTime(s.State.SimTime),
 
 		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeDeparture,
@@ -1145,10 +1145,10 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	}
 
 	starsFp := STARSFlightPlan{
-		ACID:     ACID(ac.ADSBCallsign),
-		EntryFix: "", // TODO
-		ExitFix:  "", // TODO
-		ETAOrPTD: getAircraftTime(s.State.SimTime),
+		ACID:             ACID(ac.ADSBCallsign),
+		EntryFix:         "", // TODO
+		ExitFix:          "", // TODO
+		CoordinationTime: getAircraftTime(s.State.SimTime),
 
 		TrackingController:       of.InitialController,
 		ControllingController:    of.InitialController,

@@ -94,7 +94,6 @@ type TrackState struct {
 	// a different code, we get a flashing DB in the datablock.
 	DBAcknowledged av.Squawk
 
-	FirstSeen           time.Time
 	FirstRadarTrackTime time.Time
 	EnteredOurAirspace  bool
 
@@ -208,7 +207,6 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			if trk.IsAssociated() {
 				sa.UseGlobalLeaderLine = trk.FlightPlan.GlobalLeaderLineDirection != nil
 			}
-			sa.FirstSeen = ctx.Client.State.SimTime
 
 			sp.TrackState[trk.ADSBCallsign] = sa
 		}
@@ -229,7 +227,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		}
 		callsign := av.ADSBCallsign("__" + string(fp.ACID)) // fake callsign to identify for state
 		if _, ok := sp.TrackState[callsign]; !ok {
-			sp.TrackState[callsign] = &TrackState{FirstSeen: ctx.Client.State.SimTime}
+			sp.TrackState[callsign] = &TrackState{}
 		}
 	}
 

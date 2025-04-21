@@ -621,6 +621,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				var spec sim.STARSFlightPlanSpecifier
 				spec.ACID.Set(acid)
 				spec.AssignedSquawk.Set(sq)
+				spec.CoordinationTime.Set(ctx.Now)
 				switch cmd[5:] {
 				case "":
 					// no flight rules, no problem
@@ -1109,7 +1110,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				if fp, _ := lookupFlightPlan(id); fp == nil {
 					status.err = ErrSTARSNoFlight
 				} else {
-					const modFpFormat = "ACID,BEACON,TCP,ETA_PTD,FIX_PAIR,TRI_SP1,PLUS_SP2,TRI_ALT_A,ALT_R"
+					const modFpFormat = "ACID,BEACON,TCP,COORD_TIME,FIX_PAIR,TRI_SP1,PLUS_SP2,TRI_ALT_A,ALT_R"
 					checkfp := func(s string, primary bool) bool {
 						return checkScratchpad(ctx, s, !primary, false /* not implied */) == nil
 					}
@@ -1734,7 +1735,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 	case CommandModeFlightData:
 		// Create flight plan 5-109
-		const createFpFormat = "+ACID?BEACON,TCP/FIX_PAIR,ETA_PTD,TRI_SP1,PLUS_SP2,#/AC_TYPE/EQ,ALT_R,RULES"
+		const createFpFormat = "+ACID?BEACON,TCP/FIX_PAIR,COORD_TIME,TRI_SP1,PLUS_SP2,#/AC_TYPE/EQ,ALT_R,RULES"
 		checkfp := func(s string, primary bool) bool { return checkScratchpad(ctx, s, !primary, false) == nil }
 		if spec, err := parseFlightPlan(createFpFormat, cmd, checkfp); err == nil {
 			spec.Rules.Set(av.FlightRulesIFR)
@@ -3492,7 +3493,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 				} else {
 					// 5-171 Modify flight plan
-					const modFpFormat = "ACID,BEACON,TCP,FIX_PAIR,ETA_PTD,TRI_SP1,PLUS_SP1,TRI_ALT_A,ALT_R"
+					const modFpFormat = "ACID,BEACON,TCP,FIX_PAIR,COORD_TIME,TRI_SP1,PLUS_SP1,TRI_ALT_A,ALT_R"
 					checkfp := func(s string, primary bool) bool {
 						return checkScratchpad(ctx, s, !primary, false /* not implied */) == nil
 					}

@@ -414,7 +414,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		x += width0
 		if sfp.TypeOfFlight == av.FlightTypeDeparture {
 			// Second column; 3 entries: squawk, proposed time, requested altitude
-			proposedTime := "P" + sfp.ETAOrPTD.UTC().Format("1504")
+			proposedTime := "P" + sfp.CoordinationTime.UTC().Format("1504")
 			drawColumn(sfp.AssignedSquawk.String(), proposedTime, strconv.Itoa(sfp.RequestedAltitude/100),
 				width1, true)
 
@@ -433,7 +433,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 			x += width1
 			// Third column: eta of arrival at coordination fix / destination airport, empty, empty
-			arrivalTime := "A" + sfp.ETAOrPTD.UTC().Format("1504")
+			arrivalTime := "A" + sfp.CoordinationTime.UTC().Format("1504")
 			drawColumn(arrivalTime, "", "", width2, false)
 
 			// Fourth column: IFR, destination airport
@@ -446,7 +446,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 			x += width1
 			// Third column: eta of arrival at entry coordination fix, empty, empty
-			arrivalTime := "E" + sfp.ETAOrPTD.UTC().Format("1504")
+			arrivalTime := "E" + sfp.CoordinationTime.UTC().Format("1504")
 			drawColumn(arrivalTime, "", "", width2, false)
 
 			// Fourth column: altitude, route
