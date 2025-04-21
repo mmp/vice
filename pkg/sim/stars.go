@@ -322,6 +322,7 @@ type STARSFacilityAdaptation struct {
 		DropVolumes        []av.AirspaceVolume `json:"drop_volumes"`
 		QuickACID          string              `json:"quick_acid"`
 		ACIDExpansions     map[string]string   `json:"acid_expansions"`
+		ModifyAfterDisplay bool                `json:"modify_after_display"`
 	} `json:"flight_plan"`
 
 	PDB struct {
