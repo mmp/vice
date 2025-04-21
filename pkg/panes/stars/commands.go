@@ -916,12 +916,16 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// D(callsign) / D(beacon) / D(line #)
 				// Display flight plan: 5-186
 				status.output = sp.formatFlightPlan(ctx, fp, trk)
-				// This goes into [multifunc]M mode while the flight plan
-				// is displayed, so status.clear is *not* set; we add a
-				// space so that the modification entry can be entered
-				// directly.
-				sp.multiFuncPrefix = "M"
-				sp.previewAreaInput += " "
+				if ctx.FacilityAdaptation.FlightPlan.ModifyAfterDisplay {
+					// This goes into [multifunc]M mode while the flight plan
+					// is displayed, so status.clear is *not* set; we add a
+					// space so that the modification entry can be entered
+					// directly.
+					sp.multiFuncPrefix = "M"
+					sp.previewAreaInput += " "
+				} else {
+					status.clear = true
+				}
 			} else {
 				status.err = ErrSTARSNoFlight
 			}
@@ -1102,19 +1106,19 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			if id, entry, ok := strings.Cut(cmd, " "); !ok {
 				status.err = ErrSTARSCommandFormat
 			} else {
-				fp, _ := lookupFlightPlan(id)
-				if fp == nil {
+				if fp, _ := lookupFlightPlan(id); fp == nil {
 					status.err = ErrSTARSNoFlight
-				}
-				const modFpFormat = "ACID,BEACON,TCP,ETA_PTD,FIX_PAIR,TRI_SP1,PLUS_SP2,TRI_ALT_A,ALT_R"
-				checkfp := func(s string, primary bool) bool {
-					return checkScratchpad(ctx, s, !primary, false /* not implied */) == nil
-				}
-				if spec, err := parseOneFlightPlan(modFpFormat, entry, checkfp); err != nil {
-					status.err = err
 				} else {
-					sp.modifyFlightPlan(ctx, fp.ACID, spec, false /* don't display fp */)
-					status.clear = true
+					const modFpFormat = "ACID,BEACON,TCP,ETA_PTD,FIX_PAIR,TRI_SP1,PLUS_SP2,TRI_ALT_A,ALT_R"
+					checkfp := func(s string, primary bool) bool {
+						return checkScratchpad(ctx, s, !primary, false /* not implied */) == nil
+					}
+					if spec, err := parseOneFlightPlan(modFpFormat, entry, checkfp); err != nil {
+						status.err = err
+					} else {
+						sp.modifyFlightPlan(ctx, fp.ACID, spec, false /* don't display fp */)
+						status.clear = true
+					}
 				}
 			}
 			return
@@ -3444,7 +3448,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 						status.err = ErrSTARSNoFlight
 					} else {
 						status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
-						status.clear = true
+						if ctx.FacilityAdaptation.FlightPlan.ModifyAfterDisplay {
+							// This goes into [multifunc]M mode while the flight plan
+							// is displayed, so status.clear is *not* set; we add a
+							// space so that the modification entry can be entered
+							// directly.
+							sp.multiFuncPrefix = "M"
+							sp.previewAreaInput = string(trk.FlightPlan.ACID) + " "
+						} else {
+							status.clear = true
+						}
 					}
 				} else {
 					status.err = ErrSTARSCommandFormat

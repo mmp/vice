@@ -6558,6 +6558,35 @@
   },
   "stars_config": {
     "center": "KJFK",
+    "flight_plan": {
+      "modify_after_display": true,
+      "acquisition_volumes": [
+        {
+          "name": "Circle",
+          "type": "circle",
+          "center": "KJFK",
+          "radius": 25,
+          "floor": 0,
+          "ceiling": 10000
+        },
+        {
+          "name": "camrn",
+          "type": "polygon",
+          "vertices": ["N039.53.37.153,W073.18.56.563", "N040.12.56.142,W073.26.12.335", "N040.04.25.003,W074.07.24.754", "N039.45.45.675,W074.01.09.323" ],
+          "floor": 0,
+          "ceiling": 13000
+        }
+      ],
+      "drop_volumes": [
+        {
+          "name": "center",
+          "type": "polygon",
+          "vertices": "N040.07.18.697,W073.27.22.071 N040.35.37.815,W072.57.40.720 N040.39.31.893,W072.33.51.921 N039.49.30.483,W073.24.08.684",
+          "floor": 10000,
+          "ceiling": 18000
+        }
+      ]
+    },
   "pdb": { "hide_gs": true },
     "coordination_fixes": {
       "MERIT": [

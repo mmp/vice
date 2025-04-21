@@ -6771,8 +6771,11 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"flight_plan"</td>
                 <td>Object</td>
                 <td>Allows specifying various adapted configurations for STARS flight plans.
-                  The following member is available:
+                  The following members are available:
                   <ul>
+                    <li>"modify_after_display": Boolean value; if set, then after a flight plan is
+                      displayed with the <code>[MULTIFUNC]D</code> command, an element in the flight
+                      plan can be immediately modified, as if <code>[MULTIFUNC]M</code> had been entered.</li>
                     <li>"quick_acid": string that gives the up-to-3 character callsign that is used
                       when a quick flight plan is generated for an aircraft by entering "Y" and slewing it.
                       A unique integer identifier is added to this ACID. If unset, "VCE" is used by default.</li>
