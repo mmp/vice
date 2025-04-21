@@ -166,7 +166,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	isKeyboardCommandMode := func(m CommandMode) bool {
-		return m == CommandModeNone || m == CommandModeInitiateControl || m == CommandModeTerminateControl ||
+		return m == CommandModeNone || m == CommandModeInitiateControl || m == CommandModeTrackReposition ||
+			m == CommandModeTrackSuspend || m == CommandModeTerminateControl ||
 			m == CommandModeHandOff || m == CommandModeVFRPlan || m == CommandModeMultiFunc ||
 			m == CommandModeFlightData || m == CommandModeCollisionAlert || m == CommandModeMin ||
 			m == CommandModeTargetGen || m == CommandModeReleaseDeparture || m == CommandModeRestrictionArea ||

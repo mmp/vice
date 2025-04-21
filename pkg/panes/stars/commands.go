@@ -35,6 +35,8 @@ const (
 	// Keyboard command entry modes; can be main or DCB menu for these; sp.dcbShowAux decides.
 	CommandModeNone CommandMode = iota
 	CommandModeInitiateControl
+	CommandModeTrackReposition
+	CommandModeTrackSuspend
 	CommandModeTerminateControl
 	CommandModeHandOff
 	CommandModeVFRPlan
@@ -81,6 +83,10 @@ func (c CommandMode) PreviewString() string {
 		return ""
 	case CommandModeInitiateControl:
 		return "IC"
+	case CommandModeTrackReposition:
+		return "RP"
+	case CommandModeTrackSuspend:
+		return "SU"
 	case CommandModeTerminateControl:
 		return "TC"
 	case CommandModeHandOff:
@@ -226,86 +232,104 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 		case imgui.KeyF1:
 			if ctx.Keyboard.KeyControl() {
-				// Recenter
-				ps.UseUserCenter = false
-			}
-			if ctx.Keyboard.KeyShift() {
-				// Treat this as F13
+				// Beaconator; handled elsewhere
+			} else if ctx.Keyboard.KeyShift() { // F13
 				sp.setCommandMode(ctx, CommandModeReleaseDeparture)
-			}
-
-		case imgui.KeyF2:
-			if ctx.Keyboard.KeyControl() {
-				sp.setCommandMode(ctx, CommandModeMaps)
-			}
-
-		case imgui.KeyF3:
-			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeBrite)
-			} else {
+			} else { // INIT CNTL
 				sp.setCommandMode(ctx, CommandModeInitiateControl)
 			}
 
+		case imgui.KeyF2:
+			if ctx.Keyboard.KeyControl() { // CNTR
+				ps.UseUserCenter = false
+			} else { // TRK RPOS
+				sp.setCommandMode(ctx, CommandModeTrackReposition)
+			}
+
+		case imgui.KeyF3:
+			if ctx.Keyboard.KeyControl() { // MAPS
+				sp.setCommandMode(ctx, CommandModeMaps)
+			} else { // TRK SUSP
+				sp.setCommandMode(ctx, CommandModeTrackSuspend)
+			}
+
 		case imgui.KeyF4:
-			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeLDR)
+			if ctx.Keyboard.KeyControl() {
+				sp.setCommandMode(ctx, CommandModeWX)
 			} else {
 				sp.setCommandMode(ctx, CommandModeTerminateControl)
 			}
 
 		case imgui.KeyF5:
-			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeCharSize)
+			if ctx.Keyboard.KeyControl() {
+				sp.setCommandMode(ctx, CommandModeBrite)
 			} else {
 				sp.setCommandMode(ctx, CommandModeHandOff)
 			}
 
 		case imgui.KeyF6:
-			sp.setCommandMode(ctx, CommandModeFlightData)
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
+				sp.setCommandMode(ctx, CommandModeLDR)
+			} else {
+				sp.setCommandMode(ctx, CommandModeFlightData)
+			}
 
 		case imgui.KeyF7:
 			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeNone)
-				sp.dcbShowAux = !sp.dcbShowAux
+				sp.setCommandMode(ctx, CommandModeCharSize)
 			} else {
 				sp.setCommandMode(ctx, CommandModeMultiFunc)
 			}
 
 		case imgui.KeyF8:
-			if ctx.Keyboard.KeyControl() {
-				sp.resetInputState(ctx)
-				ps.DisplayDCB = !ps.DisplayDCB
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
+				sp.dcbShowAux = !sp.dcbShowAux
 			} else {
-				sp.setCommandMode(ctx, CommandModeWX)
+				// TODO: FMA alerts / TSAS
+				sp.setCommandMode(ctx, CommandModeNone)
 			}
 
 		case imgui.KeyF9:
 			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeRangeRings)
+				sp.resetInputState(ctx)
+				ps.DisplayDCB = !ps.DisplayDCB
 			} else {
 				sp.setCommandMode(ctx, CommandModeVFRPlan)
 			}
 
 		case imgui.KeyF10:
 			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeRange)
+				sp.setCommandMode(ctx, CommandModeRangeRings)
+			} else {
+				// TODO: Printout/save interfacility data transfer messages (IFDT)
+				sp.setCommandMode(ctx, CommandModeNone)
 			}
 
 		case imgui.KeyF11:
 			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
-				sp.setCommandMode(ctx, CommandModeSite)
+				sp.setCommandMode(ctx, CommandModeRange)
 			} else {
 				sp.setCommandMode(ctx, CommandModeCollisionAlert)
 			}
 
 		case imgui.KeyF12:
-			sp.setCommandMode(ctx, CommandModeRestrictionArea)
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
+				sp.setCommandMode(ctx, CommandModePref)
+			} else {
+				sp.setCommandMode(ctx, CommandModeRestrictionArea)
+			}
 
 		case imgui.KeyF13:
-			sp.setCommandMode(ctx, CommandModeReleaseDeparture)
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
+				sp.setCommandMode(ctx, CommandModeSite)
+			} else {
+				sp.setCommandMode(ctx, CommandModeReleaseDeparture)
+			}
 
-		case imgui.KeyInsert:
-			sp.setCommandMode(ctx, CommandModePref)
+		case imgui.KeyF14:
+			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
+				sp.setCommandMode(ctx, CommandModeSite)
+			}
 
 		case imgui.KeyTab:
 			sp.setCommandMode(ctx, CommandModeTargetGen)
