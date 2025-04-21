@@ -421,6 +421,7 @@ type STARSFlightPlan struct {
 	DisableCA                   bool
 	MCISuppressedCode           av.Squawk
 	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
+	QuickFlightPlan             bool
 
 	// FIXME: the following are all used internally by NAS code. It's
 	// convenient to have them here but this stuff should just be managed
@@ -480,6 +481,7 @@ type STARSFlightPlanSpecifier struct {
 	DisableCA                   util.Optional[bool]
 	MCISuppressedCode           util.Optional[av.Squawk]
 	GlobalLeaderLineDirection   util.Optional[*math.CardinalOrdinalDirection]
+	QuickFlightPlan             util.Optional[bool]
 
 	InhibitACTypeDisplay      util.Optional[bool]
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
@@ -489,7 +491,6 @@ type STARSFlightPlanSpecifier struct {
 	AssignIFRSquawk bool
 	AssignVFRSquawk bool
 	AutoAssociate   bool
-	CreateQuick     bool
 }
 
 func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
@@ -528,6 +529,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		DisableCA:                   s.DisableCA.GetOr(false),
 		MCISuppressedCode:           s.MCISuppressedCode.GetOr(av.Squawk(0)),
 		GlobalLeaderLineDirection:   s.GlobalLeaderLineDirection.GetOr(nil),
+		QuickFlightPlan:             s.QuickFlightPlan.GetOr(false),
 
 		InhibitACTypeDisplay:      s.InhibitACTypeDisplay.GetOr(false),
 		ForceACTypeDisplayEndTime: s.ForceACTypeDisplayEndTime.GetOr(time.Time{}),
@@ -621,6 +623,9 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.GlobalLeaderLineDirection.IsSet {
 		fp.GlobalLeaderLineDirection = spec.GlobalLeaderLineDirection.Get()
+	}
+	if spec.QuickFlightPlan.IsSet {
+		fp.QuickFlightPlan = spec.QuickFlightPlan.Get()
 	}
 	if spec.InhibitACTypeDisplay.IsSet {
 		fp.InhibitACTypeDisplay = spec.InhibitACTypeDisplay.Get()

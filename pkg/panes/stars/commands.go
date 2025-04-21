@@ -613,21 +613,19 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					status.err = ErrSTARSDuplicateACID
 					return
 				}
-				if ctx.Client.State.BeaconCodeInUse(sq) {
-					status.err = ErrSTARSIllegalCode
-					return
-				}
 
-				var spec sim.STARSFlightPlanSpecifier
+				spec := sim.STARSFlightPlanSpecifier{
+					AutoAssociate: true,
+				}
+				spec.QuickFlightPlan.Set(true)
 				spec.ACID.Set(acid)
 				spec.AssignedSquawk.Set(sq)
+				spec.TypeOfFlight.Set(av.FlightTypeOverflight)
 				spec.CoordinationTime.Set(ctx.Now)
 				switch cmd[5:] {
-				case "":
-					// no flight rules, no problem
 				case "V", "P": // VFR or VFR on top
 					spec.Rules.Set(av.FlightRulesVFR)
-				case "E": // enroute
+				case "E", "": // enroute, default
 					spec.Rules.Set(av.FlightRulesIFR)
 				default:
 					status.err = ErrSTARSIllegalValue
@@ -3200,13 +3198,14 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			} else if cmd == "Y" && trk.IsUnassociated() {
 				// 5-145: create quick ACID flight plan
-				spec := sim.STARSFlightPlanSpecifier{CreateQuick: true}
+				var spec sim.STARSFlightPlanSpecifier
+				spec.QuickFlightPlan.Set(true)
 				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeOverflight)
 				if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 					status.err = err
 				} else {
-					state.DatablockAlert = true // Display DB in yellow until it's slewed.
+					state.DatablockAlert = true // yellow until slewed
 					status.clear = true
 				}
 				return

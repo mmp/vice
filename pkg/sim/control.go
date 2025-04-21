@@ -398,7 +398,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if spec.CreateQuick {
+	if spec.QuickFlightPlan.IsSet && spec.QuickFlightPlan.Get() {
 		base := s.State.STARSFacilityAdaptation.FlightPlan.QuickACID
 		acid := base + fmt.Sprintf("%02d", s.State.QuickFlightPlanIndex%100)
 		spec.ACID.Set(ACID(acid))
@@ -428,14 +428,14 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			// The flight plan was created in the validation function so we
 			// could return any errors from there.
-			ac.AssociateFlightPlan(s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get()))
+			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
+			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
 
-			ac.STARSFlightPlan.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
+			ac.AssociateFlightPlan(fp)
 
 			s.eventStream.Post(Event{
-				Type:         InitiatedTrackEvent,
-				ADSBCallsign: ac.ADSBCallsign,
-				ToController: tcp,
+				Type: FlightPlanAssociatedEvent,
+				ACID: fp.ACID,
 			})
 
 			return nil
@@ -464,10 +464,17 @@ func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID
 			return nil
 		},
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			ac.STARSFlightPlan = fp
 			// TODO: needed?
-			ac.STARSFlightPlan.TrackingController = tcp
-			ac.STARSFlightPlan.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
+			fp.TrackingController = tcp
+			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
+
+			ac.AssociateFlightPlan(fp)
+
+			s.eventStream.Post(Event{
+				Type: FlightPlanAssociatedEvent,
+				ACID: fp.ACID,
+			})
+
 			return nil
 		})
 }

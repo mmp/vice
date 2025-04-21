@@ -53,7 +53,7 @@ func TestEventStreamCompact(t *testing.T) {
 		// Add a bunch of consecutive numbers to the stream
 		n := rand.Intn(255)
 		for j := 0; j < n; j++ {
-			es.Post(Event{Type: EventType((i + j) % NumEventTypes)})
+			es.Post(Event{Type: EventType((i + j) % int(NumEventTypes))})
 		}
 		i += n
 
@@ -70,7 +70,7 @@ func TestEventStreamCompact(t *testing.T) {
 				if idx[c] != int(sv.Type) {
 					t.Errorf("expected %d, got %d for consumer %d", idx[c], int(sv.Type), c)
 				}
-				idx[c] = (idx[c] + 1) % NumEventTypes
+				idx[c] = (idx[c] + 1) % int(NumEventTypes)
 			}
 		}
 

@@ -182,7 +182,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 				fsp.possiblyAdd(fp, ctx.UserTCP)
 			}
 
-		case sim.InitiatedTrackEvent:
+		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddTracked {
 				fsp.possiblyAdd(fp, ctx.UserTCP)
 			}

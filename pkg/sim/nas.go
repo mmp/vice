@@ -83,10 +83,8 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 }
 
 func (sc *STARSComputer) Update(s *Sim) {
-	// Check flight plans created via [INIT CTL] 5-120: these
+	// Flight plans created via [INIT CTL] 5-120 and quick flight plans
 	// auto-associate if there is a single aircraft squawking the code.
-	// (It's slightly unclear if this check is only done when the FP is
-	// first entered or if it should be done every update, as we do now.)
 	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans,
 		func(fp *STARSFlightPlan) bool {
 			if !fp.AutoAssociate {
@@ -105,6 +103,10 @@ func (sc *STARSComputer) Update(s *Sim) {
 			}
 			if match != nil {
 				match.AssociateFlightPlan(fp)
+				s.eventStream.Post(Event{
+					Type: FlightPlanAssociatedEvent,
+					ACID: fp.ACID,
+				})
 			}
 			return match == nil // keep it in sc.FlightPlans if not match
 		})
@@ -178,6 +180,10 @@ func (sc *STARSComputer) Update(s *Sim) {
 				fp.TrackingController = s.State.ResolveController(fp.TrackingController)
 
 				ac.AssociateFlightPlan(fp)
+				s.eventStream.Post(Event{
+					Type: FlightPlanAssociatedEvent,
+					ACID: fp.ACID,
+				})
 
 				// Remove it from the released departures list
 				sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,

@@ -320,10 +320,16 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 			delete(sp.PointOuts, event.ACID)
 
-		case sim.InitiatedTrackEvent:
-			if event.ToController == ctx.UserTCP {
-				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					state.DisplayFDB = true
+		case sim.FlightPlanAssociatedEvent:
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
+				if fp.TrackingController == ctx.UserTCP {
+					if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
+						state.DisplayFDB = true
+
+						if fp.QuickFlightPlan {
+							state.DatablockAlert = true // display in yellow until slewed
+						}
+					}
 				}
 			}
 

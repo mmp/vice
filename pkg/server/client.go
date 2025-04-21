@@ -189,7 +189,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.S
 		if fp.TrackingController == "" {
 			fp.TrackingController = c.State.UserTCP
 		}
-		if spec.CreateQuick {
+		if spec.QuickFlightPlan.IsSet && spec.QuickFlightPlan.Get() {
 			fp.ACID = sim.ACID(c.State.STARSFacilityAdaptation.FlightPlan.QuickACID +
 				fmt.Sprintf("%02d", c.State.QuickFlightPlanIndex%100))
 		}
