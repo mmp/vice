@@ -41,6 +41,7 @@ type fpEntryParseFunc func(s string, checkSp func(s string, primary bool) bool, 
 var fpParseFuncs = map[string]fpEntryParseFunc{
 	"ACID":            parseFpACID,
 	"#/AC_TYPE/EQ":    parseFpNumAcTypeEqSuffix,
+	"#/AC_TYPE4/EQ":   parseFpNumAcType4EqSuffix,
 	"AC_TYPE/EQ":      parseFpAcTypeEqSuffix,
 	"ALT_A":           parseFpAssignedAltitude,
 	"ALT_P":           parseFpPilotAltitude,
@@ -215,6 +216,32 @@ func parseFpNumAcTypeEqSuffix(s string, checkSp func(s string, primary bool) boo
 
 	// Handle the rest of it
 	return parseFpAcTypeEqSuffix(s, checkSp, spec)
+}
+
+// F16* 2/B2**/G : require 4 chars for actype
+func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+	if s == "" {
+		return false, ErrSTARSCommandFormat
+	}
+
+	tf := strings.Split(s, "/")
+	if len(tf) == 3 { // formation # / actype / eq suffix
+		if count, err := strconv.Atoi(tf[0]); err != nil || len(tf[0]) > 2 { // 2 digits max
+			return true, ErrSTARSCommandFormat
+		} else {
+			spec.AircraftCount.Set(count)
+			tf = tf[1:]
+		}
+	}
+
+	if len(tf[0]) != 4 {
+		return false, ErrSTARSCommandFormat
+	}
+
+	tf[0] = strings.TrimRight(tf[0], "*")
+
+	// Handle the rest of it
+	return parseFpAcTypeEqSuffix(strings.Join(tf, "/"), checkSp, spec)
 }
 
 // A320/G, C172
