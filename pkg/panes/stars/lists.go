@@ -476,7 +476,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else if fp.DisableCA {
 			acid = STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-7s ", acid+string(vfr[i].ACID)))
+		text.WriteString(fmt.Sprintf("%-8s ", acid+string(vfr[i].ACID)))
 		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
@@ -566,7 +566,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else if fp.DisableCA {
 			acid = STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-7s ", acid+string(fp.ACID)))
+		text.WriteString(fmt.Sprintf("%-8s ", acid+string(fp.ACID)))
 		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
