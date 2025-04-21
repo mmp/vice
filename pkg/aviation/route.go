@@ -1003,7 +1003,7 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 						errstr += fmt.Sprintf("%s (%.1fnm) ", s, dist[s])
 					}
 				}
-				e.ErrorString(errstr)
+				e.ErrorString("%s", errstr)
 			}
 		} else {
 			waypoints[i].Location = pos
@@ -1102,7 +1102,7 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 			var ok bool
 			if wp.Arc.Center, ok = loc.Locate(wp.Arc.Fix); !ok {
 				if e != nil {
-					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+					e.ErrorString("unable to locate arc center %q", wp.Arc.Fix)
 					e.Pop()
 				}
 				continue

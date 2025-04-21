@@ -17,7 +17,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
@@ -443,12 +443,12 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	// mouseConsumerOverride so that we can continue to dispatch mouse
 	// events to that Pane until the mouse button is released, even if the
 	// mouse is no longer above it.
-	isDragging := imgui.IsMouseDragging(platform.MouseButtonPrimary, 0.) ||
-		imgui.IsMouseDragging(platform.MouseButtonSecondary, 0.) ||
-		imgui.IsMouseDragging(platform.MouseButtonTertiary, 0.)
-	isClicked := imgui.IsMouseClicked(platform.MouseButtonPrimary) ||
-		imgui.IsMouseClicked(platform.MouseButtonSecondary) ||
-		imgui.IsMouseClicked(platform.MouseButtonTertiary)
+	isDragging := imgui.IsMouseDraggingV(platform.MouseButtonPrimary, 0.) ||
+		imgui.IsMouseDraggingV(platform.MouseButtonSecondary, 0.) ||
+		imgui.IsMouseDraggingV(platform.MouseButtonTertiary, 0.)
+	isClicked := imgui.IsMouseClickedBool(platform.MouseButtonPrimary) ||
+		imgui.IsMouseClickedBool(platform.MouseButtonSecondary) ||
+		imgui.IsMouseClickedBool(platform.MouseButtonTertiary)
 	if !io.WantCaptureMouse() && (isDragging || isClicked) && wm.mouseConsumerOverride == nil {
 		wm.mouseConsumerOverride = mousePane
 	} else if io.WantCaptureMouse() {
@@ -479,21 +479,25 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 		func(paneExtent math.Extent2D, parentExtent math.Extent2D, pane Pane) {
 			haveFocus := pane == wm.focus.Current() && !imgui.CurrentIO().WantCaptureKeyboard()
 			ctx := Context{
-				PaneExtent:       paneExtent,
-				ParentPaneExtent: parentExtent,
-				Platform:         p,
-				DrawPixelScale:   util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1)),
-				PixelsPerInch:    util.Select(runtime.GOOS == "windows", 96*p.DPIScale(), 72),
-				DPIScale:         p.DPIScale(),
-				Renderer:         r,
-				Keyboard:         keyboard,
-				HaveFocus:        haveFocus,
-				Now:              time.Now(),
-				Lg:               lg,
-				MenuBarHeight:    menuBarHeight,
-				KeyboardFocus:    &wm.focus,
-				ControlClient:    controlClient,
-				displaySize:      p.DisplaySize(),
+				PaneExtent:         paneExtent,
+				ParentPaneExtent:   parentExtent,
+				Platform:           p,
+				DrawPixelScale:     util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1)),
+				PixelsPerInch:      util.Select(runtime.GOOS == "windows", 96*p.DPIScale(), 72),
+				DPIScale:           p.DPIScale(),
+				Renderer:           r,
+				Keyboard:           keyboard,
+				HaveFocus:          haveFocus,
+				Now:                time.Now(),
+				Lg:                 lg,
+				MenuBarHeight:      menuBarHeight,
+				KeyboardFocus:      &wm.focus,
+				Client:             controlClient,
+				UserTCP:            controlClient.State.UserTCP,
+				NmPerLongitude:     controlClient.State.NmPerLongitude,
+				MagneticVariation:  controlClient.State.MagneticVariation,
+				FacilityAdaptation: &controlClient.State.STARSFacilityAdaptation,
+				displaySize:        p.DisplaySize(),
 			}
 
 			// Similarly make the mouse events available only to the

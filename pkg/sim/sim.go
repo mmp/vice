@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
+	"github.com/davecgh/go-spew/spew"
 )
 
 type Sim struct {
@@ -23,8 +24,13 @@ type Sim struct {
 
 	mu util.LoggingMutex
 
+	Aircraft map[av.ADSBCallsign]*Aircraft
+
 	SignOnPositions  map[string]*av.Controller
 	humanControllers map[string]*EventsSubscription
+
+	STARSComputer *STARSComputer
+	ERAMComputer  *ERAMComputer
 
 	eventStream *EventStream
 	lg          *log.Logger
@@ -34,9 +40,8 @@ type Sim struct {
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]time.Time
 
-	Handoffs map[string]Handoff
-	// a/c callsign -> PointOut
-	PointOuts map[string]PointOut
+	Handoffs  map[ACID]Handoff
+	PointOuts map[ACID]PointOut
 
 	ReportingPoints []av.ReportingPoint
 
@@ -47,7 +52,6 @@ type Sim struct {
 	lastSimUpdate  time.Time
 	updateTimeSlop time.Duration
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
-	lastLogTime    time.Time
 
 	prespawn                 bool
 	prespawnUncontrolledOnly bool
@@ -60,6 +64,51 @@ type Sim struct {
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
+}
+
+type Aircraft struct {
+	av.Aircraft
+
+	STARSFlightPlan *STARSFlightPlan
+
+	HoldForRelease   bool
+	Released         bool // only used for hold for release
+	ReleaseTime      time.Time
+	WaitingForLaunch bool // for departures
+
+	GoAroundDistance *float32
+
+	// Departure related state
+	DepartureContactAltitude float32
+
+	// The controller who gave approach clearance
+	ApproachController string
+}
+
+type AircraftDisplayState struct {
+	Spew        string // for debugging
+	FlightState string // for display when paused
+}
+
+type Track struct {
+	av.RadarTrack
+
+	FlightPlan *STARSFlightPlan
+
+	// Sort of hacky to carry these along here but it's convenient...
+	DepartureAirport          string
+	DepartureAirportElevation float32
+	DepartureAirportLocation  math.Point2LL
+	ArrivalAirport            string
+	ArrivalAirportElevation   float32
+	ArrivalAirportLocation    math.Point2LL
+	IsAirborne                bool
+	OnExtendedCenterline      bool
+	OnApproach                bool
+	ATPAVolume                *av.ATPAVolume
+	MVAsApply                 bool
+	HoldForRelease            bool
+	Route                     []math.Point2LL
 }
 
 type DepartureRunway struct {
@@ -110,7 +159,7 @@ type NewSimConfiguration struct {
 	TFRs                    []av.TFR
 	LiveWeather             bool
 	Wind                    av.Wind
-	STARSFacilityAdaptation av.STARSFacilityAdaptation
+	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
 	ReportingPoints   []av.ReportingPoint
@@ -122,12 +171,20 @@ type NewSimConfiguration struct {
 	Airspace          av.Airspace
 }
 
-func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *Sim {
+func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
+	beaconBank := util.Select(config.STARSFacilityAdaptation.BeaconBank != 0,
+		config.STARSFacilityAdaptation.BeaconBank, 3) // don't hand out 00xx codes
+
 	s := &Sim{
+		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
+
 		DepartureState:   make(map[string]map[string]*RunwayLaunchState),
 		NextInboundSpawn: make(map[string]time.Time),
 
 		SignOnPositions: config.SignOnPositions,
+
+		ERAMComputer:  makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC),
+		STARSComputer: makeSTARSComputer(config.TRACON, beaconBank),
 
 		humanControllers: make(map[string]*EventsSubscription),
 
@@ -138,8 +195,8 @@ func NewSim(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.L
 
 		lastUpdateTime: time.Now(),
 
-		Handoffs:  make(map[string]Handoff),
-		PointOuts: make(map[string]PointOut),
+		Handoffs:  make(map[ACID]Handoff),
+		PointOuts: make(map[ACID]PointOut),
 
 		Instructors: make(map[string]bool),
 	}
@@ -162,8 +219,6 @@ func (s *Sim) Activate(lg *log.Logger) {
 
 	now := time.Now()
 	s.lastUpdateTime = now
-
-	s.State.Activate(s.lg)
 }
 
 func (s *Sim) GetSerializeSim() Sim {
@@ -193,7 +248,12 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 	if err := s.signOn(tcp, instructor); err != nil {
 		return nil, err
 	}
-	return s.State.GetStateForController(tcp), nil
+
+	state := s.State.GetStateForController(tcp)
+	var update WorldUpdate
+	s.GetWorldUpdate(tcp, &update, true /* local: may not be, but this is the safe choice */)
+	update.UpdateState(state, s.eventStream)
+	return state, nil
 }
 
 func (s *Sim) signOn(tcp string, instructor bool) error {
@@ -243,8 +303,8 @@ func (s *Sim) SignOff(tcp string) error {
 	}
 
 	// Drop track on controlled aircraft
-	for _, ac := range s.State.Aircraft {
-		ac.HandleControllerDisconnect(tcp, s.State.PrimaryController)
+	for _, ac := range s.Aircraft {
+		ac.handleControllerDisconnect(tcp, s.State.PrimaryController)
 	}
 
 	if tcp == s.State.LaunchConfig.Controller {
@@ -286,18 +346,18 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 	delete(s.humanControllers, fromTCP)
 	delete(s.State.Controllers, fromTCP)
 	delete(s.Instructors, fromTCP)
-	slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
+	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
 
 	s.eventStream.Post(Event{
 		Type:    StatusMessageEvent,
 		Message: fromTCP + " has signed off.",
 	})
 
-	for _, ac := range s.State.Aircraft {
+	for _, ac := range s.Aircraft {
 		if keepTracks {
-			ac.TransferTracks(fromTCP, toTCP)
+			ac.transferTracks(fromTCP, toTCP)
 		} else {
-			ac.HandleControllerDisconnect(fromTCP, s.State.PrimaryController)
+			ac.handleControllerDisconnect(fromTCP, s.State.PrimaryController)
 		}
 	}
 
@@ -315,6 +375,24 @@ func (s *Sim) TogglePause(tcp string) error {
 	s.eventStream.Post(Event{
 		Type:    GlobalMessageEvent,
 		Message: tcp + " has " + util.Select(s.State.Paused, "paused", "unpaused") + " the sim",
+	})
+	return nil
+}
+
+func (s *Sim) FastForward(tcp string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	for i := 0; i < 15; i++ {
+		s.State.SimTime = s.State.SimTime.Add(time.Second)
+		s.updateState()
+	}
+	s.updateTimeSlop = 0
+	s.lastUpdateTime = time.Now()
+
+	s.eventStream.Post(Event{
+		Type:    GlobalMessageEvent,
+		Message: tcp + " has fast-forwarded the sim",
 	})
 	return nil
 }
@@ -440,23 +518,26 @@ type GlobalMessage struct {
 }
 
 type WorldUpdate struct {
-	Aircraft         map[string]*av.Aircraft
+	Tracks                  map[av.ADSBCallsign]*Track
+	UnassociatedFlightPlans []*STARSFlightPlan
+	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
+	ReleaseDepartures       []ReleaseDeparture
+
 	Controllers      map[string]*av.Controller
 	HumanControllers []string
 
 	Time time.Time
 
-	ERAMComputers *ERAMComputers
-
 	LaunchConfig LaunchConfig
 
 	UserRestrictionAreas []av.RestrictionArea
 
-	SimIsPaused        bool
-	SimRate            float32
-	TotalIFR, TotalVFR int
-	Events             []Event
-	Instructors        map[string]bool
+	SimIsPaused          bool
+	SimRate              float32
+	TotalIFR, TotalVFR   int
+	Events               []Event
+	Instructors          map[string]bool
+	QuickFlightPlanIndex int
 }
 
 func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) {
@@ -469,19 +550,84 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 	}
 
 	*update = WorldUpdate{
-		Aircraft:             s.State.Aircraft,
-		Controllers:          s.State.Controllers,
-		HumanControllers:     slices.Collect(maps.Keys(s.humanControllers)),
-		ERAMComputers:        s.State.ERAMComputers,
-		Time:                 s.State.SimTime,
-		LaunchConfig:         s.State.LaunchConfig,
+		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
+
+		Controllers:      s.State.Controllers,
+		HumanControllers: slices.Collect(maps.Keys(s.humanControllers)),
+
+		Time: s.State.SimTime,
+
+		LaunchConfig: s.State.LaunchConfig,
+
+		UserRestrictionAreas: s.State.UserRestrictionAreas,
 		SimIsPaused:          s.State.Paused,
 		SimRate:              s.State.SimRate,
 		TotalIFR:             s.State.TotalIFR,
 		TotalVFR:             s.State.TotalVFR,
 		Events:               events,
-		UserRestrictionAreas: s.State.UserRestrictionAreas,
 		Instructors:          s.Instructors,
+		QuickFlightPlanIndex: s.State.QuickFlightPlanIndex,
+	}
+
+	update.ACFlightPlans = make(map[av.ADSBCallsign]av.FlightPlan)
+	for cs, ac := range s.Aircraft {
+		update.ACFlightPlans[cs] = ac.FlightPlan
+	}
+
+	for _, ac := range s.STARSComputer.HoldForRelease {
+		update.ReleaseDepartures = append(update.ReleaseDepartures,
+			ReleaseDeparture{
+				ADSBCallsign:        ac.ADSBCallsign,
+				DepartureAirport:    ac.FlightPlan.DepartureAirport, // TODO: STARS fp entry fix?
+				DepartureController: ac.STARSFlightPlan.InboundHandoffController,
+				Released:            ac.Released,
+				Squawk:              ac.Squawk,
+				ListIndex:           ac.STARSFlightPlan.ListIndex,
+				AircraftType:        ac.STARSFlightPlan.AircraftType,
+				Exit:                ac.STARSFlightPlan.ExitFix,
+			})
+	}
+
+	update.Tracks = make(map[av.ADSBCallsign]*Track)
+	for _, callsign := range util.SortedMapKeys(s.Aircraft) {
+		ac := s.Aircraft[callsign]
+		rt := Track{
+			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
+			FlightPlan:                ac.STARSFlightPlan,
+			DepartureAirport:          ac.FlightPlan.DepartureAirport,
+			DepartureAirportElevation: ac.DepartureAirportElevation(),
+			DepartureAirportLocation:  ac.DepartureAirportLocation(),
+			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
+			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
+			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
+			IsAirborne:                ac.IsAirborne(),
+			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
+			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			MVAsApply:                 ac.MVAsApply(),
+			HoldForRelease:            ac.HoldForRelease,
+			ATPAVolume:                ac.ATPAVolume(),
+		}
+
+		for _, wp := range ac.Nav.Waypoints {
+			rt.Route = append(rt.Route, wp.Location)
+		}
+
+		update.Tracks[callsign] = &rt
+	}
+
+	// Make up fake tracks for unsupported datablocks
+	for i, fp := range update.UnassociatedFlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		callsign := av.ADSBCallsign("__" + string(fp.ACID))
+		update.Tracks[callsign] = &Track{
+			RadarTrack: av.RadarTrack{
+				ADSBCallsign: callsign,
+				Location:     fp.Location,
+			},
+			FlightPlan: update.UnassociatedFlightPlans[i],
+		}
 	}
 
 	if localServer {
@@ -489,23 +635,31 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 	}
 }
 
-func (s *Sim) ResolveController(tcp string) string {
-	if s.State.MultiControllers == nil {
-		// Single controller
-		return s.State.PrimaryController
-	} else {
-		c, err := s.State.MultiControllers.ResolveController(tcp,
-			func(callsign string) bool {
-				return s.isActiveHumanController(callsign)
-			})
-		if err != nil {
-			s.lg.Errorf("%s: unable to resolve controller: %v", tcp, err)
-		}
+func (wu *WorldUpdate) UpdateState(state *State, eventStream *EventStream) {
+	state.Tracks = wu.Tracks
+	if wu.Controllers != nil {
+		state.Controllers = wu.Controllers
+	}
+	state.HumanControllers = wu.HumanControllers
+	state.ACFlightPlans = wu.ACFlightPlans
+	state.UnassociatedFlightPlans = wu.UnassociatedFlightPlans
+	state.ReleaseDepartures = wu.ReleaseDepartures
+	state.LaunchConfig = wu.LaunchConfig
 
-		if c == "" { // This shouldn't happen...
-			return s.State.PrimaryController
-		}
-		return c
+	state.UserRestrictionAreas = wu.UserRestrictionAreas
+
+	state.SimTime = wu.Time
+	state.Paused = wu.SimIsPaused
+	state.SimRate = wu.SimRate
+	state.TotalIFR = wu.TotalIFR
+	state.TotalVFR = wu.TotalVFR
+	state.Instructors = wu.Instructors
+	state.QuickFlightPlanIndex = wu.QuickFlightPlanIndex
+
+	// Important: do this after updating aircraft, controllers, etc.,
+	// so that they reflect any changes the events are flagging.
+	for _, e := range wu.Events {
+		eventStream.Post(e)
 	}
 }
 
@@ -529,7 +683,7 @@ func (s *Sim) Update() {
 		}
 	}()
 
-	for _, ac := range s.State.Aircraft {
+	for _, ac := range s.Aircraft {
 		ac.Check(s.lg)
 	}
 
@@ -558,7 +712,6 @@ func (s *Sim) Update() {
 		s.updateState()
 	}
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
-	s.State.SimTime = s.State.SimTime
 
 	s.lastUpdateTime = time.Now()
 }
@@ -567,46 +720,37 @@ func (s *Sim) Update() {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
-	for callsign, ho := range s.Handoffs {
+	for acid, ho := range s.Handoffs {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
 		}
 
-		if ac, ok := s.State.Aircraft[callsign]; ok && ac.HandoffTrackController != "" {
-			human := s.isActiveHumanController(ac.HandoffTrackController)
-			if !human {
+		if fp := s.GetFlightPlanForACID(acid); fp != nil {
+			if fp.HandoffTrackController != "" && !s.isActiveHumanController(fp.HandoffTrackController) {
 				// Automated accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedHandoffEvent,
-					FromController: ac.TrackingController,
-					ToController:   ac.HandoffTrackController,
-					Callsign:       ac.Callsign,
+					FromController: fp.TrackingController,
+					ToController:   fp.HandoffTrackController,
+					ACID:           fp.ACID,
 				})
-				s.lg.Info("automatic handoff accept", slog.String("callsign", ac.Callsign),
-					slog.String("from", ac.TrackingController),
-					slog.String("to", ac.HandoffTrackController))
+				s.lg.Info("automatic handoff accept", slog.String("acid", string(fp.ACID)),
+					slog.String("from", fp.TrackingController),
+					slog.String("to", fp.HandoffTrackController))
 
-				_, receivingSTARS, err := s.State.ERAMComputers.FacilityComputers(ho.ReceivingFacility)
-				if err != nil {
-					//s.lg.Errorf("%s: FacilityComputers(): %v", ho.ReceivingFacility, err)
-				} else if err := s.State.STARSComputer().AutomatedAcceptHandoff(ac, ac.HandoffTrackController,
-					receivingSTARS, s.State.Controllers, s.State.SimTime); err != nil {
-					//s.lg.Errorf("AutomatedAcceptHandoff: %v", err)
-				}
-
-				ac.TrackingController = ac.HandoffTrackController
-				ac.HandoffTrackController = ""
+				fp.TrackingController = fp.HandoffTrackController
+				fp.HandoffTrackController = ""
 			}
 		}
-		delete(s.Handoffs, callsign)
+		delete(s.Handoffs, acid)
 	}
 
-	for callsign, po := range s.PointOuts {
+	for acid, po := range s.PointOuts {
 		if !now.After(po.AcceptTime) {
 			continue
 		}
 
-		if ac, ok := s.State.Aircraft[callsign]; ok && !s.isActiveHumanController(po.ToController) {
+		if fp := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(po.ToController) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -614,19 +758,19 @@ func (s *Sim) updateState() {
 				Type:           AcknowledgedPointOutEvent,
 				FromController: po.ToController,
 				ToController:   po.FromController,
-				Callsign:       ac.Callsign,
+				ACID:           acid,
 			})
-			s.lg.Info("automatic pointout accept", slog.String("callsign", ac.Callsign),
+			s.lg.Info("automatic pointout accept", slog.String("acid", string(acid)),
 				slog.String("by", po.ToController), slog.String("to", po.FromController))
 
-			delete(s.PointOuts, callsign)
+			delete(s.PointOuts, acid)
 		}
 	}
 
 	// Update the simulation state once a second.
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
-		for callsign, ac := range s.State.Aircraft {
+		for callsign, ac := range s.Aircraft {
 			if ac.HoldForRelease && !ac.Released {
 				// nvm...
 				continue
@@ -637,57 +781,73 @@ func (s *Sim) updateState() {
 
 			passedWaypoint := ac.Update(s.State, nil /* s.lg*/)
 			if passedWaypoint != nil {
+				// Handoffs still happen for "unassociated" (to us) tracks
+				// when they're currently tracked by an external facility.
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
-					s.handoffTrack(ac.TrackingController, s.ResolveController(ac.WaypointHandoffController),
-						ac.Callsign)
+					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					if sfp != nil {
+						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
+					}
 				} else if passedWaypoint.TCPHandoff != "" {
-					s.handoffTrack(ac.TrackingController, passedWaypoint.TCPHandoff, ac.Callsign)
-				}
-
-				if passedWaypoint.TransferComms {
-					// We didn't enqueue this before since we knew an
-					// explicit comms handoff was coming so go ahead and
-					// send them to the controller's frequency. Note that
-					// we use WaypointHandoffController and not
-					// ac.TrackingController, since the human controller
-					// may have already flashed the track to a virtual
-					// controller.
-					ctrl := s.ResolveController(ac.WaypointHandoffController)
-					s.enqueueControllerContact(ac.Callsign, ctrl, 0 /* no delay */)
-				}
-
-				// Update scratchpads if the waypoint has scratchpad commands
-				// Only update if aircraft is not controlled by a human
-				if !s.isActiveHumanController(ac.ControllingController) {
-					if passedWaypoint.PrimaryScratchpad != "" {
-						ac.Scratchpad = passedWaypoint.PrimaryScratchpad
-					}
-					if passedWaypoint.ClearPrimaryScratchpad {
-						ac.Scratchpad = ""
-					}
-					if passedWaypoint.SecondaryScratchpad != "" {
-						ac.SecondaryScratchpad = passedWaypoint.SecondaryScratchpad
-					}
-					if passedWaypoint.ClearSecondaryScratchpad {
-						ac.SecondaryScratchpad = ""
+					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					if sfp != nil {
+						s.handoffTrack(sfp, passedWaypoint.TCPHandoff)
 					}
 				}
 
-				if passedWaypoint.PointOut != "" {
-					if ctrl, ok := s.State.Controllers[passedWaypoint.PointOut]; ok {
-						// Don't do the point out if a human is controlling the aircraft.
-						if !s.isActiveHumanController(ac.ControllingController) {
-							fromCtrl := s.State.Controllers[ac.ControllingController]
-							s.pointOut(ac.Callsign, fromCtrl, ctrl)
-							break
+				if ac.IsAssociated() {
+					// Things that only apply to associated aircraft
+					sfp := ac.STARSFlightPlan
+
+					if passedWaypoint.ClearApproach {
+						ac.ApproachController = sfp.ControllingController
+					}
+
+					if passedWaypoint.TransferComms {
+						// We didn't enqueue this before since we knew an
+						// explicit comms handoff was coming so go ahead and
+						// send them to the controller's frequency. Note that
+						// we use InboundHandoffController and not
+						// ac.TrackingController, since the human controller
+						// may have already flashed the track to a virtual
+						// controller.
+						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
+						s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+					}
+
+					// Update scratchpads if the waypoint has scratchpad commands
+					// Only update if aircraft is not controlled by a human
+					if !s.isActiveHumanController(sfp.ControllingController) {
+						if passedWaypoint.PrimaryScratchpad != "" {
+							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad
+						}
+						if passedWaypoint.ClearPrimaryScratchpad {
+							sfp.Scratchpad = ""
+						}
+						if passedWaypoint.SecondaryScratchpad != "" {
+							sfp.SecondaryScratchpad = passedWaypoint.SecondaryScratchpad
+						}
+						if passedWaypoint.ClearSecondaryScratchpad {
+							sfp.SecondaryScratchpad = ""
+						}
+					}
+
+					if passedWaypoint.PointOut != "" {
+						if ctrl, ok := s.State.Controllers[passedWaypoint.PointOut]; ok {
+							// Don't do the point out if a human is controlling the aircraft.
+							if !s.isActiveHumanController(sfp.ControllingController) {
+								fromCtrl := s.State.Controllers[sfp.ControllingController]
+								s.pointOut(sfp.ACID, fromCtrl, ctrl)
+								break
+							}
 						}
 					}
 				}
 
 				if passedWaypoint.Delete {
 					s.lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
-					s.State.DeleteAircraft(ac)
+					s.deleteAircraft(ac)
 				}
 
 				if passedWaypoint.Land {
@@ -698,7 +858,7 @@ func (s *Sim) updateState() {
 					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+150
 					if lowEnough {
 						s.lg.Info("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
-						s.State.DeleteAircraft(ac)
+						s.deleteAircraft(ac)
 					} else {
 						s.goAround(ac)
 					}
@@ -706,7 +866,6 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly go around
-			// FIXME: maintain GoAroundDistance, state, in Sim, not Aircraft
 			if ac.GoAroundDistance != nil {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
 					s.lg.Info("randomly going around")
@@ -719,8 +878,8 @@ func (s *Sim) updateState() {
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
 				!s.prespawn {
 				// Time to check in
-				ctrl := s.ResolveController(ac.DepartureContactController)
-				s.lg.Info("contacting departure controller", slog.String("callsign", ctrl))
+				tcp := s.State.ResolveController(ac.STARSFlightPlan.InboundHandoffController)
+				s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
 
 				airportName := ac.FlightPlan.DepartureAirport
 				if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
@@ -728,8 +887,8 @@ func (s *Sim) updateState() {
 				}
 
 				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
-				s.postRadioEvents(ac.Callsign, []av.RadioTransmission{av.RadioTransmission{
-					Controller: ctrl,
+				s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
+					Controller: tcp,
 					Message:    msg,
 					Type:       av.RadioTransmissionContact,
 				}})
@@ -741,13 +900,13 @@ func (s *Sim) updateState() {
 				// issuing control commands.. (Note that track may have
 				// already been handed off to the next controller at this
 				// point.)
-				ac.ControllingController = ctrl
+				ac.STARSFlightPlan.ControllingController = tcp
 			}
 
 			// Cull far-away aircraft
-			if math.NMDistance2LL(ac.Position(), s.State.Center) > 250 {
-				s.lg.Info("culled far-away aircraft", slog.String("callsign", callsign))
-				s.State.DeleteAircraft(ac)
+			if math.NMDistance2LL(ac.Position(), s.State.Center) > 125 {
+				s.lg.Info("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
+				s.deleteAircraft(ac)
 			}
 		}
 
@@ -756,40 +915,207 @@ func (s *Sim) updateState() {
 
 		s.spawnAircraft()
 
-		s.State.ERAMComputers.Update(s)
+		s.ERAMComputer.Update(s)
+		s.STARSComputer.Update(s)
 	}
 }
 
-func (s *Sim) goAround(ac *av.Aircraft) {
+func (s *Sim) goAround(ac *Aircraft) {
+	if ac.IsUnassociated() { // this shouldn't happen...
+		return
+	}
+	sfp := ac.STARSFlightPlan
+
 	// Update controller before calling GoAround so the
 	// transmission goes to the right controller.
-	ac.ControllingController = s.State.DepartureController(ac, s.lg)
+	// FIXME: we going to the approach controller is often the wrong thing;
+	// we need some more functionality for specifying go around procedures
+	// in general.
+
+	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachController
+
+	sfp.ControllingController = s.State.ResolveController(ac.ApproachController)
+
 	rt := ac.GoAround()
-	s.postRadioEvents(ac.Callsign, rt)
+	s.postRadioEvents(ac.ADSBCallsign, ac.ApproachController, rt)
 
 	// If it was handed off to tower, hand it back to us
-	if ac.TrackingController != "" && ac.TrackingController != ac.ApproachController {
-		ac.HandoffTrackController = s.State.DepartureController(ac, s.lg)
-		if ac.HandoffTrackController == "" {
-			ac.HandoffTrackController = ac.ApproachController
-		}
+	if towerHadTrack {
+		sfp.HandoffTrackController = sfp.ControllingController
+
 		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,
-			Callsign:       ac.Callsign,
-			FromController: ac.TrackingController,
+			ADSBCallsign:   ac.ADSBCallsign,
+			FromController: sfp.TrackingController,
 			ToController:   ac.ApproachController,
 		})
 	}
 }
 
-func (s *Sim) postRadioEvents(from string, transmissions []av.RadioTransmission) {
+func (s *Sim) postRadioEvents(from av.ADSBCallsign, defaultTCP string, transmissions []av.RadioTransmission) {
 	for _, rt := range transmissions {
+		if rt.Controller == "" {
+			rt.Controller = defaultTCP
+		}
 		s.eventStream.Post(Event{
 			Type:                  RadioTransmissionEvent,
-			Callsign:              from,
+			ADSBCallsign:          from,
 			ToController:          rt.Controller,
 			Message:               rt.Message,
 			RadioTransmissionType: rt.Type,
 		})
 	}
+}
+
+func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	for cs, ac := range s.Aircraft {
+		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
+			return cs, true
+		}
+	}
+	return av.ADSBCallsign(""), false
+}
+
+func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplayState, error) {
+	if ac, ok := s.Aircraft[callsign]; !ok {
+		return AircraftDisplayState{}, ErrNoMatchingFlight
+	} else {
+		return AircraftDisplayState{
+			Spew:        spew.Sdump(ac),
+			FlightState: ac.NavSummary(s.lg),
+		}, nil
+	}
+}
+
+func (s *Sim) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
+	// Fast path
+	if ac, ok := s.Aircraft[av.ADSBCallsign(acid)]; ok {
+		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
+			return ac.STARSFlightPlan
+		}
+	}
+	for _, ac := range s.Aircraft {
+		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
+			return ac.STARSFlightPlan
+		}
+	}
+	for i, fp := range s.STARSComputer.FlightPlans {
+		if fp.ACID == acid {
+			return s.STARSComputer.FlightPlans[i]
+		}
+	}
+	return nil
+}
+
+func (t *Track) IsAssociated() bool {
+	return t.FlightPlan != nil
+}
+
+func (t *Track) IsUnassociated() bool {
+	return t.FlightPlan == nil
+}
+
+func (t *Track) IsUnsupportedDB() bool {
+	return t.FlightPlan != nil && !t.FlightPlan.Location.IsZero()
+}
+
+func (t *Track) IsDeparture() bool {
+	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeDeparture
+}
+
+func (t *Track) IsArrival() bool {
+	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeArrival
+}
+
+func (t *Track) IsOverflight() bool {
+	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeOverflight
+}
+
+func (t *Track) HandingOffTo(tcp string) bool {
+	if t.IsUnassociated() {
+		return false
+	}
+
+	sfp := t.FlightPlan
+	return sfp.HandoffTrackController == tcp &&
+		(!slices.Contains(sfp.RedirectedHandoff.Redirector, tcp) || // not a redirector
+			sfp.RedirectedHandoff.RedirectedTo == tcp) // redirected to
+}
+
+func (ac *Aircraft) transferTracks(from, to string) {
+	if ac.ApproachController == from {
+		ac.ApproachController = to
+	}
+
+	if ac.IsUnassociated() {
+		return
+	}
+
+	sfp := ac.STARSFlightPlan
+	if sfp.HandoffTrackController == from {
+		sfp.HandoffTrackController = to
+	}
+	if sfp.TrackingController == from {
+		sfp.TrackingController = to
+	}
+	if sfp.ControllingController == from {
+		sfp.ControllingController = to
+	}
+}
+
+func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryController string) {
+	if callsign == primaryController {
+		// Don't change anything; the sim will pause without the primary
+		// controller, so we might as well have all of the tracks and
+		// inbound handoffs waiting for them when they return.
+		return
+	}
+	if ac.IsUnassociated() {
+		return
+	}
+
+	sfp := ac.STARSFlightPlan
+	if sfp.HandoffTrackController == callsign {
+		// Otherwise redirect handoffs to the primary controller. This is
+		// not a perfect solution; for an arrival, for example, we should
+		// re-resolve it based on the signed-in controllers, as is done in
+		// Sim updateState() for arrivals when they are first handed
+		// off. We don't have all of that information here, though...
+		sfp.HandoffTrackController = primaryController
+	}
+
+	if sfp.ControllingController == callsign {
+		if sfp.TrackingController == callsign {
+			// Drop track of aircraft that we control
+			sfp.TrackingController = ""
+			sfp.ControllingController = ""
+		} else {
+			// Another controller has the track but not yet control;
+			// just give them control
+			sfp.ControllingController = sfp.TrackingController
+		}
+	}
+}
+
+func (ac *Aircraft) IsUnassociated() bool {
+	return ac.STARSFlightPlan == nil
+}
+
+func (ac *Aircraft) IsAssociated() bool {
+	return ac.STARSFlightPlan != nil
+}
+
+func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
+	ac.STARSFlightPlan = fp
+}
+
+func (ac *Aircraft) UpdateFlightPlan(spec STARSFlightPlanSpecifier) STARSFlightPlan {
+	if ac.STARSFlightPlan != nil {
+		ac.STARSFlightPlan.Update(spec)
+		return *ac.STARSFlightPlan
+	}
+	return spec.GetFlightPlan()
 }

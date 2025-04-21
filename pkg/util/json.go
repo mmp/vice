@@ -168,7 +168,7 @@ func typeCheckJSON(json interface{}, ty reflect.Type, structTypeCache map[reflec
 					typeCheckJSON(values, ty, structTypeCache, e)
 					e.Pop()
 				} else {
-					e.ErrorString("The entry \"" + item + "\" is not an expected JSON object. Is it misspelled?")
+					e.ErrorString("The entry %q is not an expected JSON object. Is it misspelled?", item)
 				}
 			}
 		}

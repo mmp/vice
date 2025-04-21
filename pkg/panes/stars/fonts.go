@@ -69,7 +69,7 @@ func (sp *STARSPane) systemFont(ctx *panes.Context, idx int) *renderer.Font {
 		return sp.systemFontA[idx]
 	} else if sp.FontSelection == fontARTS {
 		return sp.systemFontB[idx]
-	} else if ctx.ControlClient.STARSFacilityAdaptation.UseLegacyFont {
+	} else if ctx.FacilityAdaptation.UseLegacyFont {
 		return sp.systemFontA[idx]
 	} else {
 		return sp.systemFontB[idx]
@@ -81,7 +81,7 @@ func (sp *STARSPane) systemOutlineFont(ctx *panes.Context, idx int) *renderer.Fo
 		return sp.systemOutlineFontA[idx]
 	} else if sp.FontSelection == fontARTS {
 		return sp.systemOutlineFontB[idx]
-	} else if ctx.ControlClient.STARSFacilityAdaptation.UseLegacyFont {
+	} else if ctx.FacilityAdaptation.UseLegacyFont {
 		return sp.systemOutlineFontA[idx]
 	} else {
 		return sp.systemOutlineFontB[idx]
@@ -93,7 +93,7 @@ func (sp *STARSPane) dcbFont(ctx *panes.Context, idx int) *renderer.Font {
 		return sp.dcbFontA[idx]
 	} else if sp.FontSelection == fontARTS {
 		return sp.dcbFontB[idx]
-	} else if ctx.ControlClient.STARSFacilityAdaptation.UseLegacyFont {
+	} else if ctx.FacilityAdaptation.UseLegacyFont {
 		return sp.dcbFontA[idx]
 	} else {
 		return sp.dcbFontB[idx]

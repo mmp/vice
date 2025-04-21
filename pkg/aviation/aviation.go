@@ -7,12 +7,11 @@ package aviation
 import (
 	"fmt"
 	"maps"
-	"math/bits"
 	"slices"
 	"strconv"
 	"strings"
-	"time"
 
+	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
@@ -62,6 +61,15 @@ type ArrivalAirline struct {
 	AirlineSpecifier
 	Airport string `json:"airport"`
 }
+
+type TypeOfFlight int
+
+const (
+	FlightTypeUnknown TypeOfFlight = iota
+	FlightTypeDeparture
+	FlightTypeArrival
+	FlightTypeOverflight
+)
 
 func (a AirlineSpecifier) Aircraft() []FleetAircraft {
 	if a.Fleet == "" && len(a.AircraftTypes) == 0 {
@@ -118,6 +126,120 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 			}
 		}
 		e.Pop()
+	}
+}
+
+var badCallsigns map[string]interface{} = map[string]interface{}{
+	// 9/11
+	"AAL11":  nil,
+	"UAL175": nil,
+	"AAL77":  nil,
+	"UAL93":  nil,
+
+	// Pilot suicide
+	"MAS17":   nil,
+	"MAS370":  nil,
+	"GWI18G":  nil,
+	"GWI9525": nil,
+	"MSR990":  nil,
+
+	// Hijackings
+	"FDX705":  nil,
+	"AFR8969": nil,
+
+	// Selected major crashes (leaning toward callsigns vice uses or is
+	// likely to use in the future, via
+	// https://en.wikipedia.org/wiki/List_of_deadliest_aircraft_accidents_and_incidents
+	"PAA1736": nil,
+	"KLM4805": nil,
+	"JAL123":  nil,
+	"AIC182":  nil,
+	"AAL191":  nil,
+	"PAA103":  nil,
+	"KAL007":  nil,
+	"AAL587":  nil,
+	"CAL140":  nil,
+	"TWA800":  nil,
+	"SWR111":  nil,
+	"KAL801":  nil,
+	"AFR447":  nil,
+	"CAL611":  nil,
+	"LOT5055": nil,
+	"ICE001":  nil,
+	"PSA5342": nil,
+}
+
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
+	dbAirline, ok := DB.Airlines[a.ICAO]
+	if !ok {
+		// TODO: this should be caught at load validation time...
+		lg.Errorf("Airline %q not found in database", a.ICAO)
+		return "", ""
+	}
+
+	// Sample according to fleet count
+	acCount := 0
+	for _, ac := range a.Aircraft() {
+		// Reservoir sampling...
+		acCount += ac.Count
+		if rand.Float32() < float32(ac.Count)/float32(acCount) {
+			actype = ac.ICAO
+		}
+	}
+
+	if _, ok := DB.AircraftPerformance[actype]; !ok {
+		// TODO: validation stage...
+		lg.Errorf("Aircraft %q not found in performance database for airline %+v",
+			actype, a)
+		return "", ""
+	}
+
+	// random callsign
+	callsign = strings.ToUpper(dbAirline.ICAO)
+	for {
+		format := "####"
+		if len(dbAirline.Callsign.CallsignFormats) > 0 {
+			f, ok := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
+				func(f string) int {
+					if _, wt, ok := strings.Cut(f, "x"); ok { // we have a weight
+						if v, err := strconv.Atoi(wt); err == nil {
+							return v
+						}
+					}
+					return 1
+				})
+			if ok {
+				format = f
+			}
+		}
+
+		id := ""
+	loop:
+		for i, ch := range format {
+			switch ch {
+			case '#':
+				if i == 0 {
+					// Don't start with a 0.
+					id += strconv.Itoa(1 + rand.Intn(9))
+				} else {
+					id += strconv.Itoa(rand.Intn(10))
+				}
+			case '@':
+				id += string(rune('A' + rand.Intn(26)))
+			case 'x':
+				break loop
+			}
+		}
+		if !checkCallsign(callsign + id) { // duplicate
+			id = ""
+			continue
+		} else if _, ok := badCallsigns[callsign+id]; ok {
+			id = ""
+			continue // nope
+		} else {
+			callsign += id
+			return
+		}
 	}
 }
 
@@ -188,39 +310,31 @@ func (f Frequency) String() string {
 type FlightRules int
 
 const (
-	UNKNOWN FlightRules = iota
-	IFR
-	VFR
-	DVFR
-	SVFR
+	FlightRulesUnknown FlightRules = iota
+	FlightRulesIFR
+	FlightRulesVFR
+	FlightRulesDVFR
+	FlightRulesSVFR
 )
 
 func (f FlightRules) String() string {
 	return [...]string{"Unknown", "IFR", "VFR", "DVFR", "SVFR"}[f]
 }
 
+// FlightPlan represents the flight plan from the perspective of the
+// Aircraft: who they are, what they're doing, how they're going to get
+// there.
 type FlightPlan struct {
-	Callsign       string
-	Rules          FlightRules
-	AircraftType   string
-	CruiseSpeed    int
-	AssignedSquawk Squawk // from ATC
-	// An ECID (CID) are three alpha-numeric characters (eg. 971, 43A,
-	// etc.) and is what ERAM assigns to a track to act as another way to
-	// identify that track. To execute commands, controllers may use the
-	// ECID instead of the aircrafts callsign.
-	ECID                   string
-	DepartureAirport       string
-	DepartTimeEst          int
-	DepartTimeActual       int
-	Altitude               int
-	ArrivalAirport         string
-	Hours, Minutes         int
-	FuelHours, FuelMinutes int
-	AlternateAirport       string
-	Exit                   string
-	Route                  string
-	Remarks                string
+	Rules            FlightRules
+	AircraftType     string
+	CruiseSpeed      int
+	DepartureAirport string
+	Altitude         int
+	ArrivalAirport   string
+	AlternateAirport string
+	Exit             string
+	Route            string
+	Remarks          string
 }
 
 type FlightStrip struct {
@@ -294,13 +408,6 @@ func StringIsSPC(code string) bool {
 	return false
 }
 
-type RadarTrack struct {
-	Position    math.Point2LL
-	Altitude    int
-	Groundspeed int
-	Time        time.Time
-}
-
 func FormatAltitude(falt float32) string {
 	alt := int(falt)
 	if alt >= 18000 {
@@ -323,41 +430,13 @@ func FormatAltitude(falt float32) string {
 type TransponderMode int
 
 const (
-	Standby  TransponderMode = iota /* off */
-	Altitude                        /* mode C */
-	On                              /* mode A */
+	TransponderModeStandby  TransponderMode = iota /* off */
+	TransponderModeAltitude                        /* mode C */
+	TransponderModeOn                              /* mode A */
 )
 
 func (t TransponderMode) String() string {
 	return [...]string{"Standby", "Altitude", "On"}[t]
-}
-
-func (fp FlightPlan) BaseType() string {
-	s := strings.TrimPrefix(fp.TypeWithoutSuffix(), "H/")
-	s = strings.TrimPrefix(s, "S/")
-	s = strings.TrimPrefix(s, "J/")
-	return s
-}
-
-func (fp FlightPlan) TypeWithoutSuffix() string {
-	// try to chop off equipment suffix
-	actypeFields := strings.Split(fp.AircraftType, "/")
-	switch len(actypeFields) {
-	case 3:
-		// Heavy (presumably), with suffix
-		return actypeFields[0] + "/" + actypeFields[1]
-	case 2:
-		if actypeFields[0] == "H" || actypeFields[0] == "S" || actypeFields[0] == "J" {
-			// Heavy or super, no suffix
-			return actypeFields[0] + "/" + actypeFields[1]
-		} else {
-			// No heavy, with suffix
-			return actypeFields[0]
-		}
-	default:
-		// Who knows, so leave it alone
-		return fp.AircraftType
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -713,7 +792,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	for arrivalAirport, airlines := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
 		if len(airlines) == 0 {
-			e.ErrorString("no \"airlines\" specified for arrivals to " + arrivalAirport)
+			e.ErrorString("no \"airlines\" specified for arrivals to %q", arrivalAirport)
 		}
 		for _, al := range airlines {
 			al.Check(e)
@@ -736,7 +815,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		}
 		// Ugly way to get the key from a one-element map
 		var airport string
-		for airport, _ = range ar.Airlines {
+		for airport = range ar.Airlines {
 		}
 		// We checked the arrival airports were valid above, no need to issue an error if not found.
 		if ap, ok := airports[airport]; ok {
@@ -809,90 +888,86 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 // SquawkCodePool
 
 type SquawkCodePool struct {
-	First, Last Squawk // inclusive range of codes
-	// Available squawk codes are represented by a bitset
-	AssignedBits []uint64
+	Available *util.IntRangeSet
+
+	// Initial is maintained as a read-only snapshot of the initial set of
+	// available codes; it allows us to catch cases where the caller tries
+	// to return code that is inside the range we cover but was removed
+	// from the pool when it was first initialized.
+	Initial *util.IntRangeSet
 }
 
 func makePool(first, last int) *SquawkCodePool {
-	ncodes := last - first + 1
-	nalloc := (ncodes + 63) / 64
-
 	p := &SquawkCodePool{
-		First:        Squawk(first),
-		Last:         Squawk(last),
-		AssignedBits: make([]uint64, nalloc),
+		Initial: util.MakeIntRangeSet(first, last),
 	}
 
-	p.removeInvalidCodes()
+	removeInvalidCodes(p.Initial)
 
-	// Mark the excess invalid codes in the last entry of AssignedBits as
-	// taken so that we don't try to assign them later.
-	slop := ncodes % 64
-	p.AssignedBits[nalloc-1] |= ^uint64(0) << slop
+	p.Available = p.Initial.Clone()
 
 	return p
 }
 
-func (p *SquawkCodePool) removeInvalidCodes() {
+func removeInvalidCodes(codes *util.IntRangeSet) {
 	// Remove the non-discrete codes (i.e., ones ending in 00).
 	for i := 0; i <= 0o7700; i += 0o100 {
-		_ = p.Claim(Squawk(i))
+		_ = codes.Take(i)
 	}
 
-	claimRange := func(start, end int) {
-		for i := start; i < end; i++ {
-			_ = p.Claim(Squawk(i))
+	takeRange := func(start, end int) {
+		for i := start; i <= end; i++ {
+			_ = codes.Take(i)
 		}
 	}
-	claimBlock := func(start int) {
-		claimRange(start, start+64)
+	takeBlock := func(start int) {
+		takeRange(start, start+64)
 	}
 
 	// Remove various reserved squawk codes, per 7110.66G
 	// https://www.faa.gov/documentLibrary/media/Order/FAA_Order_JO_7110.66G_NBCAP.pdf.
-	_ = p.Claim(0o1200)
-	_ = p.Claim(0o1201)
-	_ = p.Claim(0o1202)
-	_ = p.Claim(0o1205)
-	_ = p.Claim(0o1206)
-	claimRange(0o1207, 0o1233)
-	claimRange(0o1235, 0o1254)
-	claimRange(0o1256, 0o1272)
-	_ = p.Claim(0o1234)
-	_ = p.Claim(0o1255)
-	claimRange(0o1273, 0o1275)
-	_ = p.Claim(0o1276)
-	_ = p.Claim(0o1277)
-	_ = p.Claim(0o2000)
-	claimRange(0o4400, 0o4433)
-	claimRange(0o4434, 0o4437)
-	claimRange(0o4440, 0o4452)
-	_ = p.Claim(0o4453)
-	claimRange(0o4454, 0o4477)
-	_ = p.Claim(0o7400)
-	claimRange(0o7501, 0o7577)
-	_ = p.Claim(0o7500)
-	_ = p.Claim(0o7600)
-	claimRange(0o7601, 0o7607)
-	_ = p.Claim(0o7700)
-	claimRange(0o7701, 0o7707)
-	_ = p.Claim(0o7777)
+	_ = codes.Take(0o1200)
+	_ = codes.Take(0o1201)
+	_ = codes.Take(0o1202)
+	_ = codes.Take(0o1205)
+	_ = codes.Take(0o1206)
+	takeRange(0o1207, 0o1233)
+	takeRange(0o1235, 0o1254)
+	takeRange(0o1256, 0o1272)
+	_ = codes.Take(0o1234)
+	_ = codes.Take(0o1255)
+	takeRange(0o1273, 0o1275)
+	_ = codes.Take(0o1276)
+	_ = codes.Take(0o1277)
+	_ = codes.Take(0o2000)
+	takeRange(0o4400, 0o4433)
+	takeRange(0o4434, 0o4437)
+	takeRange(0o4440, 0o4452)
+	_ = codes.Take(0o4453)
+	takeRange(0o4454, 0o4477)
+	_ = codes.Take(0o7400)
+	takeRange(0o7501, 0o7577)
+	_ = codes.Take(0o7500)
+	_ = codes.Take(0o7600)
+	takeRange(0o7601, 0o7607)
+	_ = codes.Take(0o7700)
+	takeRange(0o7701, 0o7707)
+	_ = codes.Take(0o7777)
 
 	// TODO? 0100, 0200, 0300, 0400 blocks?
 
 	// FIXME: these probably shouldn't be hardcoded like this but should be available to PCT.
-	claimBlock(0o5100) // PCT TRACON for DC SFRA/FRZ
-	claimBlock(0o5200) // PCT TRACON for DC SFRA/FRZ
+	takeBlock(0o5100) // PCT TRACON for DC SFRA/FRZ
+	takeBlock(0o5200) // PCT TRACON for DC SFRA/FRZ
 
-	claimBlock(0o5000)
-	claimBlock(0o5400)
-	claimBlock(0o6100)
-	claimBlock(0o6400)
+	takeBlock(0o5000)
+	takeBlock(0o5400)
+	takeBlock(0o6100)
+	takeBlock(0o6400)
 
-	_ = p.Claim(0o7777)
+	_ = codes.Take(0o7777)
 	for squawk := range spcs {
-		_ = p.Claim(squawk)
+		_ = codes.Take(int(squawk))
 	}
 }
 
@@ -905,85 +980,39 @@ func MakeSquawkBankCodePool(bank int) *SquawkCodePool {
 }
 
 func (p *SquawkCodePool) Get() (Squawk, error) {
-	start := rand.Intn(len(p.AssignedBits)) // random starting point in p.AssignedBits
-	rot := rand.Intn(64)                    // random rotation to randomize search start within each uint64
-
-	for i := range len(p.AssignedBits) {
-		// Start the search at start, then wrap around.
-		idx := (start + i) % len(p.AssignedBits)
-
-		if p.AssignedBits[idx] == ^uint64(0) {
-			// All are assigned in this chunk of 64 squawk codes.
-			continue
-		}
-
-		// Flip it around and see which ones are available.
-		available := ^p.AssignedBits[idx]
-
-		// Randomly rotate the bits so that when we start searching for a
-		// set bit starting from the low bit, we effectively randomize
-		// which bit index we're starting from.
-		available = bits.RotateLeft64(available, rot)
-
-		// Find the last set bit and then map that back to a bit index in
-		// the unrotated bits.
-		bit := (bits.TrailingZeros64(available) + 64 - rot) % 64
-
-		// Record that we've taken it
-		p.AssignedBits[idx] |= (1 << bit)
-
-		return p.First + Squawk(64*idx+bit), nil
+	code, err := p.Available.GetRandom()
+	if err != nil {
+		return Squawk(0), ErrNoMoreAvailableSquawkCodes
+	} else {
+		return Squawk(code), nil
 	}
-
-	return Squawk(0), ErrNoMoreAvailableSquawkCodes
-}
-
-func (p *SquawkCodePool) indices(code Squawk) (int, int, error) {
-	if code < p.First || code > p.Last {
-		return 0, 0, ErrSquawkCodeNotManagedByPool
-	}
-	offset := int(code - p.First)
-	return offset / 64, offset % 64, nil
 }
 
 func (p *SquawkCodePool) IsAssigned(code Squawk) bool {
-	if idx, bit, err := p.indices(code); err == nil {
-		return p.AssignedBits[idx]&(1<<bit) != 0
-	}
-	return false
+	return !p.Available.IsAvailable(int(code))
 }
 
 func (p *SquawkCodePool) Return(code Squawk) error {
-	if !p.IsAssigned(code) {
-		return ErrSquawkCodeUnassigned
-	}
-	if idx, bit, err := p.indices(code); err != nil {
-		return err
-	} else {
-		// Clear the bit
-		p.AssignedBits[idx] &= ^(1 << bit)
+	if !p.Initial.InRange(int(code)) || !p.Initial.IsAvailable(int(code)) {
+		// It's not ours; just ignore it.
 		return nil
 	}
+	if err := p.Available.Return(int(code)); err != nil {
+		return ErrSquawkCodeUnassigned
+	}
+	return nil
 }
 
-func (p *SquawkCodePool) Claim(code Squawk) error {
+func (p *SquawkCodePool) Take(code Squawk) error {
 	if p.IsAssigned(code) {
 		return ErrSquawkCodeAlreadyAssigned
 	}
-	if idx, bit, err := p.indices(code); err != nil {
-		return err
-	} else {
-		// Set the bit
-		p.AssignedBits[idx] |= (1 << bit)
-		return nil
+	if err := p.Available.Take(int(code)); err != nil {
+		return ErrSquawkCodeNotManagedByPool
 	}
+	return nil
 }
 
 func (p *SquawkCodePool) NumAvailable() int {
-	n := int(p.Last - p.First + 1) // total possible
-	for _, b := range p.AssignedBits {
-		// Reduce the count based on how many are assigned.
-		n -= bits.OnesCount64(b)
-	}
-	return n
+	return p.Available.Count()
 }

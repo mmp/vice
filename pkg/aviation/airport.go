@@ -73,8 +73,8 @@ type ConvergingRunways struct {
 	RunwayIntersection     math.Point2LL                    // not in JSON, set during deserialize
 }
 
-type GhostAircraft struct {
-	Callsign            string
+type GhostTrack struct {
+	ADSBCallsign        ADSBCallsign
 	Position            math.Point2LL
 	Groundspeed         int
 	LeaderLineDirection math.CardinalOrdinalDirection
@@ -101,11 +101,11 @@ func (ar *ApproachRegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, m
 	return
 }
 
-func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, heading float32, scratchpad string,
-	forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection, runwayIntersection [2]float32,
-	nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostAircraft {
+func (ar *ApproachRegion) TryMakeGhost(trk RadarTrack, heading float32,
+	scratchpad string, forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection,
+	runwayIntersection [2]float32, nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostTrack {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
-	lat, vert := ar.Inside(track.Position, float32(track.Altitude), nmPerLongitude, magneticVariation)
+	lat, vert := ar.Inside(trk.Location, float32(trk.Altitude), nmPerLongitude, magneticVariation)
 	if !lat {
 		return nil
 	}
@@ -145,10 +145,10 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 		return math.NM2LL(p, nmPerLongitude)
 	}
 
-	ghost := &GhostAircraft{
-		Callsign:            callsign,
-		Position:            remap(track.Position),
-		Groundspeed:         track.Groundspeed,
+	ghost := &GhostTrack{
+		ADSBCallsign:        trk.ADSBCallsign,
+		Position:            remap(trk.Location),
+		Groundspeed:         int(trk.Groundspeed),
 		LeaderLineDirection: leaderDirection,
 	}
 

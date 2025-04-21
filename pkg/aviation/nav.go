@@ -173,9 +173,9 @@ const (
 	OnApproachCourse
 )
 
-func MakeArrivalNav(callsign string, arr *Arrival, fp FlightPlan, perf AircraftPerformance,
+func MakeArrivalNav(callsign ADSBCallsign, arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == VFR
+	randomizeAltitudeRange := fp.Rules == FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
 		magneticVariation, wind, lg); nav != nil {
 		spd := arr.SpeedRestriction
@@ -200,7 +200,7 @@ func MakeArrivalNav(callsign string, arr *Arrival, fp FlightPlan, perf AircraftP
 	return nil
 }
 
-func MakeDepartureNav(callsign string, fp FlightPlan, perf AircraftPerformance,
+func MakeDepartureNav(callsign ADSBCallsign, fp FlightPlan, perf AircraftPerformance,
 	assignedAlt, clearedAlt, speedRestriction int, wp []Waypoint, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
@@ -223,9 +223,9 @@ func MakeDepartureNav(callsign string, fp FlightPlan, perf AircraftPerformance,
 	return nil
 }
 
-func MakeOverflightNav(callsign string, of *Overflight, fp FlightPlan, perf AircraftPerformance,
+func MakeOverflightNav(callsign ADSBCallsign, of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == VFR
+	randomizeAltitudeRange := fp.Rules == FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
 		magneticVariation, wind, lg); nav != nil {
 		spd := of.SpeedRestriction
@@ -251,7 +251,7 @@ func MakeOverflightNav(callsign string, of *Overflight, fp FlightPlan, perf Airc
 	return nil
 }
 
-func makeNav(callsign string, fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
+func makeNav(callsign ADSBCallsign, fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
@@ -260,12 +260,12 @@ func makeNav(callsign string, fp FlightPlan, perf AircraftPerformance, wp []Wayp
 		FixAssignments: make(map[string]NavFixAssignment),
 		Rand:           rand.New(),
 	}
-	nav.Rand.Seed(util.HashString64(callsign))
+	nav.Rand.Seed(util.HashString64(string(callsign)))
 
 	nav.Waypoints = RandomizeRoute(nav.Waypoints, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, wind, lg)
 
-	if fp.Rules == IFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
+	if fp.Rules == FlightRulesIFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
 		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
 			slog.Any("flightplan", fp))
 	}
@@ -398,6 +398,9 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 // from the infinite line defined by the assigned approach localizer
 func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	approach := nav.Approach.Assigned
+	if approach == nil {
+		return false
+	}
 	localizer := approach.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	distance := math.PointLineDistance(
 		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),

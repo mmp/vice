@@ -138,7 +138,8 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 		err := cm.updateRemoteSimsError
 		cm.updateRemoteSimsError = nil
 		return err
-	} else if time.Since(cm.lastRemoteSimsUpdate) > 2*time.Second && cm.RemoteServer != nil {
+	} else if time.Since(cm.lastRemoteSimsUpdate) > 2*time.Second &&
+		cm.RemoteServer != nil && cm.updateRemoteSimsCall == nil {
 		cm.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		cm.updateRemoteSimsError = nil
@@ -183,7 +184,7 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
 
 	case remoteServerConn := <-cm.remoteSimServerChan:
 		if err := remoteServerConn.Err; err != nil {
-			lg.Warn("Unable to connect to remote server", slog.Any("error", err))
+			lg.Info("Unable to connect to remote server", slog.Any("error", err))
 
 			if err.Error() == ErrRPCVersionMismatch.Error() {
 				cm.serverRPCVersionMismatch = true

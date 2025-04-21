@@ -7,7 +7,7 @@ package platform
 import (
 	"github.com/mmp/vice/pkg/math"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 // Platform is the interface that abstracts platform-specific features like
@@ -67,7 +67,7 @@ type Platform interface {
 
 	// GetClipboard() returns an object that implements the imgui.Clipboard
 	// interface so that copy and paste can be supported.
-	GetClipboard() imgui.Clipboard
+	GetClipboard() imgui.ClipboardHandler
 
 	// Enables a mode where the mouse is constrained to be within the
 	// specified pixel extent, specified in window coordinates.

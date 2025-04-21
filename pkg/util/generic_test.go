@@ -439,3 +439,17 @@ func TestSliceReverseValues2(t *testing.T) {
 		t.Errorf("SliceReverseValues2 should iterate %d times, got %d", len(s), count)
 	}
 }
+
+func TestSeqLookup(t *testing.T) {
+	s := []int{1, 2, 3, 4, 5}
+
+	if _, ok := SeqLookupFunc(slices.Values(s), func(a int) bool { return a == 0 }); ok {
+		t.Errorf("unexpectedly found 0 in %+v", s)
+	}
+
+	if v, ok := SeqLookupFunc(slices.Values(s), func(a int) bool { return a%2 == 0 }); !ok {
+		t.Errorf("didn't find even in %+v", s)
+	} else if v != 2 {
+		t.Errorf("didn't find 2 as first even in %+v: got %d", s, v)
+	}
+}

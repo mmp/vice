@@ -44,8 +44,8 @@ type ScenarioGroup struct {
 	NmPerLatitude           float32 // Always 60
 	NmPerLongitude          float32 // Derived from Center
 	MagneticVariation       float32
-	MagneticAdjustment      float32                    `json:"magnetic_adjustment"`
-	STARSFacilityAdaptation av.STARSFacilityAdaptation `json:"stars_config"`
+	MagneticAdjustment      float32                     `json:"magnetic_adjustment"`
+	STARSFacilityAdaptation sim.STARSFacilityAdaptation `json:"stars_config"`
 }
 
 type Scenario struct {
@@ -73,7 +73,7 @@ type Scenario struct {
 	VFRRateScale *float32      `json:"vfr_rate_scale"`
 }
 
-func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *av.VideoMapManifest) {
+func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Temporary backwards-compatibility for inbound flows
@@ -558,7 +558,8 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	fa := sg.STARSFacilityAdaptation
+	// STARSFacilityAdaptaion checks
+	fa := &sg.STARSFacilityAdaptation
 	if len(s.DefaultMaps) > 0 {
 		if len(fa.ControllerConfigs) > 0 {
 			e.ErrorString("\"default_maps\" is not allowed when \"controller_configs\" is set in \"stars_config\"")
@@ -649,7 +650,7 @@ var (
 )
 
 func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
-	manifest *av.VideoMapManifest) {
+	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Rewrite legacy files to be TCP-based.
@@ -657,13 +658,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
-	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.Locate(ctr); !ok {
-		e.ErrorString("unknown location %q specified for \"center\"", ctr)
-	} else {
-		sg.STARSFacilityAdaptation.Center = pos
-	}
+	sg.STARSFacilityAdaptation.PostDeserialize(sg, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))
@@ -694,7 +689,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
 			if pll, ok := sg.Locate(strs[1]); !ok {
-				e.ErrorString("base fix \"" + strs[1] + "\" unknown")
+				e.ErrorString("base fix %q unknown", strs[1])
 			} else if hdg, err := strconv.Atoi(strs[2]); err != nil {
 				e.ErrorString("heading %q: %v", strs[2], err)
 			} else if dist, err := strconv.ParseFloat(strs[3], 32); err != nil {
@@ -983,7 +978,8 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	sg.ControlPositions = pos
 }
 
-func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {
+func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *util.ErrorLogger, sg *ScenarioGroup,
+	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("stars_config")
@@ -1160,7 +1156,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 	if len(disp) > 1 {
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
-		e.ErrorString("Cannot specify " + strings.Join(d, " and ") + "for \"scratchpad1\"")
+		e.ErrorString("Cannot specify %s for \"scratchpad1\"", strings.Join(d, " and "))
 	}
 
 	for _, spc := range s.CustomSPCs {
@@ -1296,7 +1292,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 	for _, aa := range s.AirspaceAwareness {
 		for _, fix := range aa.Fix {
 			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
-				e.ErrorString(fix + ": fix unknown")
+				e.ErrorString("%s : fix unknown", fix)
 			}
 		}
 
@@ -1306,7 +1302,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 		}
 
 		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
-			e.ErrorString(aa.ReceivingController + ": controller unknown")
+			e.ErrorString("%s: controller unknown", aa.ReceivingController)
 		}
 
 		for _, t := range aa.AircraftType {
@@ -1498,7 +1494,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*av.VideoMapManifest) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest) {
 	start := time.Now()
 
 	// First load the scenarios.
@@ -1581,7 +1577,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	}
 
 	// Next load the video map manifests so we can validate the map references in scenarios.
-	mapManifests := make(map[string]*av.VideoMapManifest)
+	mapManifests := make(map[string]*sim.VideoMapManifest)
 	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -1593,7 +1589,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			mapManifests[path], err = av.LoadVideoMapManifest(path)
+			mapManifests[path], err = sim.LoadVideoMapManifest(path)
 		}
 
 		return err
@@ -1607,7 +1603,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 
 	// Load the video map specified on the command line, if any.
 	if extraVideoMapFilename != "" {
-		mapManifests[extraVideoMapFilename], err = av.LoadVideoMapManifest(extraVideoMapFilename)
+		mapManifests[extraVideoMapFilename], err = sim.LoadVideoMapManifest(extraVideoMapFilename)
 		if err != nil {
 			lg.Errorf("%s: %v", extraVideoMapFilename, err)
 			os.Exit(1)

@@ -145,7 +145,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 			// Get the map label, either the default or user-specified.
 			label := m.Label
-			if l, ok := ctx.ControlClient.STARSFacilityAdaptation.VideoMapLabels[m.Name]; ok {
+			if l, ok := ctx.FacilityAdaptation.VideoMapLabels[m.Name]; ok {
 				label = l
 			}
 
@@ -265,8 +265,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
-		site := sp.radarSiteId(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites)
-		if len(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == 0 {
+		site := sp.radarSiteId(ctx.FacilityAdaptation.RadarSites)
+		if len(ctx.FacilityAdaptation.RadarSites) == 0 {
 			disabledButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale)
 		} else if selectButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeSite)
@@ -454,7 +454,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	if sp.commandMode == CommandModeSite {
-		radarSites := ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites
+		radarSites := ctx.FacilityAdaptation.RadarSites
 		rewindDCBCursor(3+len(radarSites)+3, buttonScale)
 		dcbStartCaptureMouseRegion()
 
@@ -509,7 +509,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
-			sp.prefSet.ResetDefault(ctx.ControlClient.State, ctx.Platform, sp)
+			sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 		}
 		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {
@@ -1057,7 +1057,8 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 // events to the spinner.
 func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
-	if drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active {
+	commandModeSelected := !active && sp.commandMode == commandMode
+	if (drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active) || commandModeSelected {
 		sp.setCommandMode(ctx, commandMode)
 
 		sp.savedMousePosition = ctx.Mouse.Pos

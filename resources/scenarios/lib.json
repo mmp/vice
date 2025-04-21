@@ -2868,6 +2868,7 @@
   "center": "N040.45.26.477,W074.24.28.789",
   "range": 60,
   "pdb": { "hide_gs": true },
+  "fdb": { "display_requested_altitude": true },
   "radar_sites": {
     "EWR": {
       "char": "E",

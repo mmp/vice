@@ -29,7 +29,9 @@ var (
 	ErrSTARSAmbiguousACID     = NewSTARSError("AMB ACID")
 	ErrSTARSBeaconMismatch    = NewSTARSError("BCN MISMATCH")
 	ErrSTARSCapacity          = NewSTARSError("CAPACITY")
+	ErrSTARSCapacityBeacon    = NewSTARSError("CAPACITY - BCN")
 	ErrSTARSCommandFormat     = NewSTARSError("FORMAT")
+	ErrSTARSDuplicateACID     = NewSTARSError("DUP NEW ID")
 	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
 	ErrSTARSDuplicateCommand  = NewSTARSError("DUP CMD")
 	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
@@ -63,36 +65,51 @@ var (
 )
 
 var starsErrorRemap = map[error]*STARSError{
-	sim.ErrAircraftAlreadyReleased:     ErrSTARSDuplicateCommand,
-	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
 	av.ErrClearedForUnexpectedApproach: ErrSTARSIllegalValue,
 	av.ErrFixNotInRoute:                ErrSTARSIllegalFix,
-	sim.ErrIllegalACID:                 ErrSTARSIllegalACID,
-	sim.ErrIllegalFunction:             ErrSTARSIllegalFunction,
 	av.ErrInvalidAltitude:              ErrSTARSIllegalValue,
 	av.ErrInvalidApproach:              ErrSTARSIllegalValue,
-	server.ErrInvalidCommandSyntax:     ErrSTARSCommandFormat,
 	av.ErrInvalidController:            ErrSTARSIllegalPosition,
-	sim.ErrInvalidDepartureController:  ErrSTARSIllegalFunction,
 	av.ErrInvalidFacility:              ErrSTARSIllegalTrack,
 	av.ErrInvalidHeading:               ErrSTARSIllegalValue,
-	sim.ErrInvalidRestrictionAreaIndex: ErrSTARSIllegalGeoId,
 	av.ErrNoAircraftForCallsign:        ErrSTARSNoFlight,
 	av.ErrNoController:                 ErrSTARSIllegalSector,
 	av.ErrNoFlightPlan:                 ErrSTARSIllegalFlight,
+	av.ErrNoMoreAvailableSquawkCodes:   ErrSTARSCapacityBeacon,
 	av.ErrNotBeingHandedOffToMe:        ErrSTARSIllegalTrack,
-	av.ErrNotPointedOutByMe:            ErrSTARSIllegalTrack,
-	av.ErrNotPointedOutToMe:            ErrSTARSIllegalTrack,
 	av.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	av.ErrNotFlyingRoute:               ErrSTARSIllegalValue,
+	av.ErrNotPointedOutByMe:            ErrSTARSIllegalTrack,
+	av.ErrNotPointedOutToMe:            ErrSTARSIllegalTrack,
 	av.ErrOtherControllerHasTrack:      ErrSTARSIllegalTrack,
-	sim.ErrTooManyRestrictionAreas:     ErrSTARSCapacity,
 	av.ErrUnableCommand:                ErrSTARSIllegalValue,
 	av.ErrUnknownAircraftType:          ErrSTARSIllegalParam,
 	av.ErrUnknownAirport:               ErrSTARSIllegalAirport,
 	av.ErrUnknownApproach:              ErrSTARSIllegalValue,
-	sim.ErrUnknownController:           ErrSTARSIllegalPosition,
 	av.ErrUnknownRunway:                ErrSTARSIllegalValue,
+
+	server.ErrInvalidCommandSyntax: ErrSTARSCommandFormat,
+
+	sim.ErrAircraftAlreadyReleased:     ErrSTARSDuplicateCommand,
+	sim.ErrBeaconMismatch:              ErrSTARSBeaconMismatch,
+	sim.ErrDuplicateACID:               ErrSTARSDuplicateACID,
+	sim.ErrDuplicateBeacon:             ErrSTARSDuplicateBeacon,
+	sim.ErrIllegalACID:                 ErrSTARSIllegalACID,
+	sim.ErrIllegalACType:               ErrSTARSIllegalACType,
+	sim.ErrIllegalFunction:             ErrSTARSIllegalFunction,
+	sim.ErrIllegalScratchpad:           ErrSTARSIllegalScratchpad,
+	sim.ErrInvalidAbbreviatedFP:        ErrSTARSCommandFormat,
+	sim.ErrInvalidDepartureController:  ErrSTARSIllegalFunction,
+	sim.ErrInvalidRestrictionAreaIndex: ErrSTARSIllegalGeoId,
+	sim.ErrNoMatchingFlight:            ErrSTARSNoFlight,
+	sim.ErrNoMoreListIndices:           ErrSTARSCapacity,
+	sim.ErrNotLaunchController:         ErrSTARSIllegalTrack,
+	sim.ErrTooManyRestrictionAreas:     ErrSTARSCapacity,
+	sim.ErrTrackIsActive:               ErrSTARSIllegalTrack,
+	sim.ErrTrackIsBeingHandedOff:       ErrSTARSIllegalTrack,
+	sim.ErrTrackIsNotActive:            ErrSTARSIllegalTrack,
+	sim.ErrUnknownController:           ErrSTARSIllegalPosition,
+	sim.ErrUnknownControllerFacility:   ErrSTARSIllegalPosition,
 }
 
 func GetSTARSError(e error, lg *log.Logger) *STARSError {

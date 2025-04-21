@@ -50294,6 +50294,24 @@
     }
   },
   {
+    "icao": "CNV",
+    "name": "USN Air Logistics",
+    "callsign": {
+      "name":"Convoy",
+      "callsignFormats": [
+        "##"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "B737",
+          10
+        ]
+      ] 
+    }
+  },
+  {
     "icao": "horse",
     "name": "USAF",
     "callsign": {

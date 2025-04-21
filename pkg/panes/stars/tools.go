@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -677,7 +678,7 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransfor
 		return
 	}
 
-	pixelDistanceNm := transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
+	pixelDistanceNm := transforms.PixelDistanceNM(ctx.NmPerLongitude)
 	ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
 	centerWindow := transforms.WindowFromLatLongP(ctr)
 
@@ -844,7 +845,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransfo
 		Color: color,
 	}
 
-	for name, ap := range ctx.ControlClient.State.DepartureAirports {
+	for name, ap := range ctx.Client.State.DepartureAirports {
 		if ap.VFRRateSum() > 0 {
 			pll := av.DB.Airports[name].Location
 			pw := transforms.WindowFromLatLongP(pll)
@@ -861,7 +862,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransfo
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -876,7 +877,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 
 	drawRBL := func(p0 math.Point2LL, p1 math.Point2LL, idx int, gs float32) {
 		// Format the range-bearing line text for the two positions.
-		hdg := math.Heading2LL(p0, p1, ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
+		hdg := math.Heading2LL(p0, p1, ctx.NmPerLongitude, ctx.MagneticVariation)
 		dist := math.NMDistance2LL(p0, p1)
 		text := fmt.Sprintf(" %03d/%.2f", int(hdg+.5), dist) // leading space for alignment
 		if gs != 0 {
@@ -898,12 +899,10 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 		wp := sp.wipRBL.P[0]
 		if ctx.Mouse != nil {
 			p1 := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
-			if wp.Callsign != "" {
-				if ac := ctx.ControlClient.Aircraft[wp.Callsign]; ac != nil && sp.datablockVisible(ac, ctx) &&
-					slices.Contains(aircraft, ac) {
-					if state, ok := sp.Aircraft[wp.Callsign]; ok {
-						drawRBL(state.TrackPosition(), p1, len(sp.RangeBearingLines)+1, ac.GS())
-					}
+			if wp.ADSBCallsign != "" {
+				if trk, ok := ctx.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
+					slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
+					drawRBL(trk.Location, p1, len(sp.RangeBearingLines)+1, trk.Groundspeed)
 				}
 			} else {
 				drawRBL(wp.Loc, p1, len(sp.RangeBearingLines)+1, 0)
@@ -912,21 +911,21 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 	}
 
 	for i, rbl := range sp.RangeBearingLines {
-		if p0, p1 := rbl.GetPoints(ctx, aircraft, sp); !p0.IsZero() && !p1.IsZero() {
+		if p0, p1 := rbl.GetPoints(ctx, tracks, sp); !p0.IsZero() && !p1.IsZero() {
 			gs := float32(0)
 
 			// If one but not both are tracks, get the groundspeed so we
 			// can display an ETA.
-			if rbl.P[0].Callsign != "" {
-				if rbl.P[1].Callsign == "" {
-					if ac := ctx.ControlClient.Aircraft[rbl.P[0].Callsign]; ac != nil {
-						gs = ac.GS()
+			if rbl.P[0].ADSBCallsign != "" {
+				if rbl.P[1].ADSBCallsign == "" {
+					if trk, ok := ctx.GetTrackByCallsign(rbl.P[0].ADSBCallsign); ok {
+						gs = trk.Groundspeed
 					}
 				}
-			} else if rbl.P[1].Callsign != "" {
-				if rbl.P[0].Callsign == "" {
-					if ac := ctx.ControlClient.Aircraft[rbl.P[1].Callsign]; ac != nil {
-						gs = ac.GS()
+			} else if rbl.P[1].ADSBCallsign != "" {
+				if rbl.P[0].ADSBCallsign == "" {
+					if trk, ok := ctx.GetTrackByCallsign(rbl.P[1].ADSBCallsign); ok {
+						gs = trk.Groundspeed
 					}
 				}
 			}
@@ -937,7 +936,7 @@ func (sp *STARSPane) drawRBLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 
 	// Remove stale ones that include aircraft that have landed, etc.
 	sp.RangeBearingLines = util.FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
-		p0, p1 := rbl.GetPoints(ctx, aircraft, sp)
+		p0, p1 := rbl.GetPoints(ctx, tracks, sp)
 		return !p0.IsZero() && !p1.IsZero()
 	})
 
@@ -954,29 +953,32 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 		// Two aircraft haven't been specified.
 		return
 	}
-	ac0, ok0 := ctx.ControlClient.Aircraft[cs0]
-	ac1, ok1 := ctx.ControlClient.Aircraft[cs1]
+	trk0, ok0 := ctx.GetTrackByCallsign(cs0)
+	trk1, ok1 := ctx.GetTrackByCallsign(cs1)
 	if !ok0 || !ok1 {
-		// Missing aircraft
+		// Missing track(s)
 		return
 	}
 
 	ps := sp.currentPrefs()
 	color := ps.Brightness.Lines.RGB()
 
-	s0, ok0 := sp.Aircraft[ac0.Callsign]
-	s1, ok1 := sp.Aircraft[ac1.Callsign]
+	s0, ok0 := sp.TrackState[trk0.ADSBCallsign]
+	s1, ok1 := sp.TrackState[trk0.ADSBCallsign]
 	if !ok0 || !ok1 {
 		return
 	}
 
 	// Go ahead and draw the minimum separation lines and text.
-	p0ll, p1ll := s0.TrackPosition(), s1.TrackPosition()
-	d0ll := s0.HeadingVector(ac0.NmPerLongitude(), ac0.MagneticVariation())
-	d1ll := s1.HeadingVector(ac1.NmPerLongitude(), ac1.MagneticVariation())
+	p0ll, p1ll := trk0.Location, trk1.Location
+	nmPerLongitude := ctx.NmPerLongitude
+	magneticVariation := ctx.MagneticVariation
 
-	p0, d0 := math.LL2NM(p0ll, ac0.NmPerLongitude()), math.LL2NM(d0ll, ac0.NmPerLongitude())
-	p1, d1 := math.LL2NM(p1ll, ac1.NmPerLongitude()), math.LL2NM(d1ll, ac1.NmPerLongitude())
+	d0ll := s0.HeadingVector(nmPerLongitude, magneticVariation)
+	d1ll := s1.HeadingVector(nmPerLongitude, magneticVariation)
+
+	p0, d0 := math.LL2NM(p0ll, nmPerLongitude), math.LL2NM(d0ll, nmPerLongitude)
+	p1, d1 := math.LL2NM(p1ll, nmPerLongitude), math.LL2NM(d1ll, nmPerLongitude)
 
 	// Find the parametric distance along the respective rays of the
 	// aircrafts' courses where they at at a minimum distance; this is
@@ -1010,8 +1012,8 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 		// Closest approach in the future: draw a line from each track to
 		// the minimum separation line as well as the minimum separation
 		// line itself.
-		p0tmin = math.NM2LL(math.Add2f(p0, math.Scale2f(d0, tmin)), ac0.NmPerLongitude())
-		p1tmin = math.NM2LL(math.Add2f(p1, math.Scale2f(d1, tmin)), ac1.NmPerLongitude())
+		p0tmin = math.NM2LL(math.Add2f(p0, math.Scale2f(d0, tmin)), nmPerLongitude)
+		p1tmin = math.NM2LL(math.Add2f(p1, math.Scale2f(d1, tmin)), nmPerLongitude)
 		ld.AddLine(p0ll, p0tmin, color)
 		ld.AddLine(p0tmin, p1tmin, color)
 		ld.AddLine(p1tmin, p1ll, color)
@@ -1077,12 +1079,12 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 
 	// STARS
 	if sp.scopeDraw.arrivals != nil {
-		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
+		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.arrivals[name] == nil {
 				continue
 			}
 
-			arrivals := ctx.ControlClient.InboundFlows[name].Arrivals
+			arrivals := ctx.Client.State.InboundFlows[name].Arrivals
 			for i, arr := range arrivals {
 				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
 					continue
@@ -1104,11 +1106,11 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 						} else if wp[0].Heading != 0 {
 							// This should be the only other case... The heading arrow is drawn
 							// up to 2nm out, so put the runway 1nm along its axis.
-							a := math.Radians(float32(wp[0].Heading) - ctx.ControlClient.MagneticVariation)
+							a := math.Radians(float32(wp[0].Heading) - ctx.MagneticVariation)
 							v := [2]float32{math.Sin(a), math.Cos(a)}
-							pend := math.LL2NM(wp[0].Location, ctx.ControlClient.NmPerLongitude)
+							pend := math.LL2NM(wp[0].Location, ctx.NmPerLongitude)
 							pend = math.Add2f(pend, v)
-							pell := math.NM2LL(pend, ctx.ControlClient.NmPerLongitude)
+							pell := math.NM2LL(pend, ctx.NmPerLongitude)
 							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
 						}
 					}
@@ -1119,11 +1121,11 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 
 	// Approaches
 	if sp.scopeDraw.approaches != nil {
-		for _, rwy := range ctx.ControlClient.ArrivalRunways {
+		for _, rwy := range ctx.Client.State.ArrivalRunways {
 			if sp.scopeDraw.approaches[rwy.Airport] == nil {
 				continue
 			}
-			ap := ctx.ControlClient.Airports[rwy.Airport]
+			ap := ctx.Client.State.Airports[rwy.Airport]
 			for _, name := range util.SortedMapKeys(ap.Approaches) {
 				appr := ap.Approaches[name]
 				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
@@ -1137,12 +1139,12 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 
 	// Departure routes
 	if sp.scopeDraw.departures != nil {
-		for _, name := range util.SortedMapKeys(ctx.ControlClient.Airports) {
+		for _, name := range util.SortedMapKeys(ctx.Client.State.Airports) {
 			if sp.scopeDraw.departures[name] == nil {
 				continue
 			}
 
-			ap := ctx.ControlClient.Airports[name]
+			ap := ctx.Client.State.Airports[name]
 			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
 				if sp.scopeDraw.departures[name][rwy] == nil {
 					continue
@@ -1161,12 +1163,12 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 
 	// Overflights
 	if sp.scopeDraw.overflights != nil {
-		for _, name := range util.SortedMapKeys(ctx.ControlClient.InboundFlows) {
+		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.overflights[name] == nil {
 				continue
 			}
 
-			overflights := ctx.ControlClient.InboundFlows[name].Overflights
+			overflights := ctx.Client.State.InboundFlows[name].Overflights
 			for i, of := range overflights {
 				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
 					continue
@@ -1187,7 +1189,7 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 					continue
 				}
 
-				for _, vol := range ctx.ControlClient.Airspace[ctrl][volname] {
+				for _, vol := range ctx.Client.State.Airspace[ctrl][volname] {
 					for _, pts := range vol.Boundaries {
 						for i := range pts[:len(pts)-1] {
 							ld.AddLine(pts[i], pts[i+1])
@@ -1272,25 +1274,25 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 	drawArrow := func(p [2]float32, a float32) {
 		aa := a + math.Radians(180+30)
 		pa := math.Add2f(p, math.Scale2f([2]float32{math.Sin(aa), math.Cos(aa)}, 0.5))
-		ld.AddLine(math.NM2LL(p, ctx.ControlClient.NmPerLongitude), math.NM2LL(pa, ctx.ControlClient.NmPerLongitude))
+		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pa, ctx.NmPerLongitude))
 
 		ba := a - math.Radians(180+30)
 		pb := math.Add2f(p, math.Scale2f([2]float32{math.Sin(ba), math.Cos(ba)}, 0.5))
-		ld.AddLine(math.NM2LL(p, ctx.ControlClient.NmPerLongitude), math.NM2LL(pb, ctx.ControlClient.NmPerLongitude))
+		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pb, ctx.NmPerLongitude))
 	}
 
 	for i, wp := range waypoints {
 		if wp.Heading != 0 {
 			// Don't draw a segment to the next waypoint (if there is one)
 			// but instead draw an arrow showing the heading.
-			a := math.Radians(float32(wp.Heading) - ctx.ControlClient.MagneticVariation)
+			a := math.Radians(float32(wp.Heading) - ctx.MagneticVariation)
 			v := [2]float32{math.Sin(a), math.Cos(a)}
 			v = math.Scale2f(v, 2)
-			pend := math.LL2NM(waypoints[i].Location, ctx.ControlClient.NmPerLongitude)
+			pend := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
 			pend = math.Add2f(pend, v)
 
 			// center line
-			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, ctx.ControlClient.NmPerLongitude))
+			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, ctx.NmPerLongitude))
 
 			// arrowhead at the end
 			drawArrow(pend, a)
@@ -1304,13 +1306,13 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				// point in nm coordinates and store it in r0 and do the
 				// same for the end point. Then we will interpolate those
 				// radii along the arc.
-				pc := math.LL2NM(wp.Arc.Center, ctx.ControlClient.NmPerLongitude)
-				p0 := math.LL2NM(waypoints[i].Location, ctx.ControlClient.NmPerLongitude)
+				pc := math.LL2NM(wp.Arc.Center, ctx.NmPerLongitude)
+				p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
 				r0 := math.Distance2f(p0, pc)
 				v0 := math.Normalize2f(math.Sub2f(p0, pc))
 				a0 := math.NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
 
-				p1 := math.LL2NM(waypoints[i+1].Location, ctx.ControlClient.NmPerLongitude)
+				p1 := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
 				r1 := math.Distance2f(p1, pc)
 				v1 := math.Normalize2f(math.Sub2f(p1, pc))
 				a1 := math.NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
@@ -1328,7 +1330,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					a = math.NormalizeHeading(a)
 					r := math.Lerp(float32(i)/float32(n), r0, r1)
 					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
-					pnext := math.NM2LL(math.Add2f(pc, v), ctx.ControlClient.NmPerLongitude)
+					pnext := math.NM2LL(math.Add2f(pc, v), ctx.NmPerLongitude)
 					ld.AddLine(pprev, pnext)
 					pprev = pnext
 
@@ -1348,8 +1350,8 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					// the segment, unless the next waypoint has a
 					// procedure turn. In that case, we'll let the PT draw
 					// the arrow..
-					p0 := math.LL2NM(waypoints[i].Location, ctx.ControlClient.NmPerLongitude)
-					p1 := math.LL2NM(waypoints[i+1].Location, ctx.ControlClient.NmPerLongitude)
+					p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
+					p1 := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
 					v := math.Sub2f(p1, p0)
 					drawArrow(math.Mid2f(p0, p1), math.Atan2(v[0], v[1]))
 				}
@@ -1369,10 +1371,10 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				// later transform to lat-long to draw on the scope.
 				toNM := math.Identity3x3()
 
-				pnm := math.LL2NM(wp.Location, ctx.ControlClient.NmPerLongitude)
+				pnm := math.LL2NM(wp.Location, ctx.NmPerLongitude)
 				toNM = toNM.Translate(pnm[0], pnm[1])
 
-				p1nm := math.LL2NM(waypoints[i+1].Location, ctx.ControlClient.NmPerLongitude)
+				p1nm := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
 				v := math.Sub2f(p1nm, pnm)
 				hdg := math.Atan2(v[0], v[1])
 				toNM = toNM.Rotate(-hdg)
@@ -1445,7 +1447,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				}
 
 				for _, l := range lines {
-					l0, l1 := math.NM2LL(l[0], ctx.ControlClient.NmPerLongitude), math.NM2LL(l[1], ctx.ControlClient.NmPerLongitude)
+					l0, l1 := math.NM2LL(l[0], ctx.NmPerLongitude), math.NM2LL(l[1], ctx.NmPerLongitude)
 					ld.AddLine(l0, l1)
 				}
 			}
@@ -1475,7 +1477,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 
 		// If /radius has been specified, draw a corresponding circle
 		if wp.Radius > 0 {
-			ld.AddLatLongCircle(wp.Location, ctx.ControlClient.NmPerLongitude,
+			ld.AddLatLongCircle(wp.Location, ctx.NmPerLongitude,
 				wp.Radius, 32)
 		}
 
@@ -1503,7 +1505,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			if idx < 0 || idx >= len(waypoints) {
 				return [2]float32{}, false
 			}
-			return math.LL2NM(waypoints[idx].Location, ctx.ControlClient.NmPerLongitude), true
+			return math.LL2NM(waypoints[idx].Location, ctx.NmPerLongitude), true
 		})
 
 		// Draw the text for the waypoint, including fix name, any
@@ -1584,7 +1586,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 	}
 }
 
-func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1592,20 +1594,20 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 
 	color := ps.Brightness.Lines.RGB()
 
-	now := ctx.ControlClient.SimTime
-	for _, ac := range aircraft {
-		state := sp.Aircraft[ac.Callsign]
+	now := ctx.Client.State.SimTime
+	for _, trk := range tracks {
+		state := sp.TrackState[trk.ADSBCallsign]
 		if state.LostTrack(now) || !state.HaveHeading() {
 			continue
 		}
 
-		if ac.TrackingController == "" && !state.DisplayPTL {
+		if trk.IsUnassociated() && !state.DisplayPTL {
 			// untracked only PTLs if they're individually enabled (I think); 6-13.
 			continue
 		}
 		// We have it or it's an inbound handoff to us.
-		ourTrack := ac.TrackingController == ctx.ControlClient.UserTCP ||
-			ac.HandoffTrackController == ctx.ControlClient.UserTCP
+		ourTrack := trk.IsAssociated() && (trk.FlightPlan.TrackingController == ctx.UserTCP ||
+			trk.FlightPlan.HandoffTrackController == ctx.UserTCP)
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}
@@ -1615,24 +1617,24 @@ func (sp *STARSPane) drawPTLs(aircraft []*av.Aircraft, ctx *panes.Context, trans
 		}
 
 		// convert PTL length (minutes) to estimated distance a/c will travel
-		dist := float32(state.TrackGroundspeed()) / 60 * ps.PTLLength
+		dist := float32(trk.Groundspeed) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
-		hdg := state.TrackHeading(ac.NmPerLongitude())
+		hdg := state.TrackHeading(ctx.NmPerLongitude)
 		h := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
 		h = math.Scale2f(h, dist)
-		end := math.Add2f(math.LL2NM(state.TrackPosition(), ac.NmPerLongitude()), h)
+		end := math.Add2f(math.LL2NM(trk.Location, ctx.NmPerLongitude), h)
 
-		ld.AddLine(state.TrackPosition(), math.NM2LL(end, ac.NmPerLongitude()), color)
+		ld.AddLine(trk.Location, math.NM2LL(end, ctx.NmPerLongitude), color)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Context, transforms ScopeTransformations,
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	now := ctx.ControlClient.SimTime
+	now := ctx.Client.State.SimTime
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -1644,8 +1646,8 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 
-	for _, ac := range aircraft {
-		state := sp.Aircraft[ac.Callsign]
+	for _, trk := range tracks {
+		state := sp.TrackState[trk.ADSBCallsign]
 		if state.LostTrack(now) {
 			continue
 		}
@@ -1662,8 +1664,8 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 
 		if state.JRingRadius > 0 {
 			const nsegs = 360
-			pc := transforms.WindowFromLatLongP(state.TrackPosition())
-			radius := state.JRingRadius / transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
+			pc := transforms.WindowFromLatLongP(trk.Location)
+			radius := state.JRingRadius / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 			ld.AddCircle(pc, radius, nsegs, color)
 
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
@@ -1698,7 +1700,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
 			// Find the length of the cone in pixel coordinates)
 			lengthNM := math.Max(state.ConeLength, state.MinimumMIT)
-			length := lengthNM / transforms.PixelDistanceNM(ctx.ControlClient.NmPerLongitude)
+			length := lengthNM / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 
 			// Form a triangle; the end of the cone is 10 pixels wide
 			pts := [3][2]float32{{0, 0}, {-5, length}, {5, length}}
@@ -1708,14 +1710,13 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 			var coneHeading float32
 			if drawATPACone {
 				// The cone is oriented to point toward the leading aircraft.
-				if sfront, ok := sp.Aircraft[state.ATPALeadAircraftCallsign]; ok {
-					coneHeading = math.Heading2LL(state.TrackPosition(), sfront.TrackPosition(),
-						ac.NmPerLongitude(), ac.MagneticVariation())
-
+				if tfront, ok := ctx.GetTrackByCallsign(state.ATPALeadAircraftCallsign); ok {
+					coneHeading = math.Heading2LL(trk.Location, tfront.Location,
+						ctx.NmPerLongitude, ctx.MagneticVariation)
 				}
 			} else {
 				// The cone is oriented along the aircraft's heading.
-				coneHeading = state.TrackHeading(ac.NmPerLongitude()) + ac.MagneticVariation()
+				coneHeading = state.TrackHeading(ctx.NmPerLongitude) + ctx.MagneticVariation
 			}
 			rot := math.Rotator2f(coneHeading)
 			for i := range pts {
@@ -1731,7 +1732,7 @@ func (sp *STARSPane) drawRingsAndCones(aircraft []*av.Aircraft, ctx *panes.Conte
 
 			// We've got what we need to draw a polyline with the
 			// aircraft's position as an anchor.
-			pw := transforms.WindowFromLatLongP(state.TrackPosition())
+			pw := transforms.WindowFromLatLongP(trk.Location)
 			for i := range pts {
 				pts[i] = math.Add2f(pts[i], pw)
 			}
@@ -1767,7 +1768,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	if sp.drawRouteAircraft == "" {
 		return
 	}
-	ac, ok := ctx.ControlClient.Aircraft[sp.drawRouteAircraft]
+	trk, ok := ctx.GetTrackByCallsign(sp.drawRouteAircraft)
 	if !ok {
 		sp.drawRouteAircraft = ""
 		return
@@ -1776,10 +1777,10 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
-	prev := ac.Position()
-	for _, wp := range ac.Nav.Waypoints {
-		ld.AddLine(prev, wp.Location)
-		prev = wp.Location
+	prev := trk.Location
+	for _, p := range trk.Route {
+		ld.AddLine(prev, p)
+		prev = p
 	}
 
 	prefs := sp.currentPrefs()
@@ -1814,32 +1815,30 @@ type STARSRangeBearingLine struct {
 	P [2]struct {
 		// If callsign is given, use that aircraft's position;
 		// otherwise we have a fixed position.
-		Loc      math.Point2LL
-		Callsign string
+		Loc          math.Point2LL
+		ADSBCallsign av.ADSBCallsign
 	}
 }
 
-func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, visibleAircraft []*av.Aircraft, sp *STARSPane) (p0, p1 math.Point2LL) {
-	// Each line endpoint may be specified either by an aircraft's
+func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Track, sp *STARSPane) (math.Point2LL, math.Point2LL) {
+	// Each line endpoint may be specified either by a track's
 	// position or by a fixed position. We'll start with the fixed
-	// position and then override it if there's a valid *Aircraft.
-	p0, p1 = rbl.P[0].Loc, rbl.P[1].Loc
-	if ac := ctx.ControlClient.Aircraft[rbl.P[0].Callsign]; ac != nil {
-		state, ok := sp.Aircraft[ac.Callsign]
-		if ok && !state.LostTrack(ctx.ControlClient.SimTime) && slices.Contains(visibleAircraft, ac) {
-			p0 = state.TrackPosition()
+	// position and then override it if there's a valid *RadarTrack.
+	getLoc := func(i int) math.Point2LL {
+		p := rbl.P[i].Loc
+		if trk, ok := ctx.GetTrackByCallsign(rbl.P[i].ADSBCallsign); ok {
+			state, ok := sp.TrackState[trk.ADSBCallsign]
+			if ok && !state.LostTrack(ctx.Client.State.SimTime) &&
+				slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
+				return trk.Location
+			}
 		}
+		return p
 	}
-	if ac := ctx.ControlClient.Aircraft[rbl.P[1].Callsign]; ac != nil {
-		state, ok := sp.Aircraft[ac.Callsign]
-		if ok && !state.LostTrack(ctx.ControlClient.SimTime) && slices.Contains(visibleAircraft, ac) {
-			p1 = state.TrackPosition()
-		}
-	}
-	return
+	return getLoc(0), getLoc(1)
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track) func([2]float32, ScopeTransformations) (status CommandStatus) {
 	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 		if sp.wipRBL == nil {
 			// this shouldn't happen, but let's not crash if it does...
@@ -1848,8 +1847,8 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 
 		rbl := *sp.wipRBL
 		sp.wipRBL = nil
-		if ac, _ := sp.tryGetClosestAircraft(ctx, pw, transforms); ac != nil {
-			rbl.P[1].Callsign = ac.Callsign
+		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
+			rbl.P[1].ADSBCallsign = trk.ADSBCallsign
 		} else {
 			rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
 		}
@@ -1862,7 +1861,7 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, S
 func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
-	var closest *av.SignificantPoint
+	var closest *sim.SignificantPoint
 	for _, sigpt := range sp.significantPointsSlice {
 		d := math.NMDistance2LL(sigpt.Location, p1)
 		if d < minDist {
@@ -1884,7 +1883,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 	sp.highlightedLocationEndTime = time.Now().Add(5 * time.Second)
 
 	// 6-148
-	format := func(sig av.SignificantPoint) string {
+	format := func(sig sim.SignificantPoint) string {
 		d := math.NMDistance2LL(p0, sig.Location)
 		str := ""
 		if d > 1 { // no bearing range if within 1nm
@@ -1929,7 +1928,7 @@ func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane) func([2]f
 		} else {
 			p1 := transforms.LatLongFromWindowP(pw)
 			return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
-				ctx.ControlClient.NmPerLongitude, ctx.ControlClient.MagneticVariation)
+				ctx.NmPerLongitude, ctx.MagneticVariation)
 		}
 	}
 }

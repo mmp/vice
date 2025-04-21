@@ -22,7 +22,7 @@
         "runway": "1",
         "type": "Visual",
         "waypoints": [
-          "KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
+          "N038.30.10.560,W077.00.05.136 KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
         ]
       },
       "R15": { "cifp_id": "R15" },
@@ -3481,11 +3481,11 @@
         }
     ]
   },
-  "RAVNN7": {
+  "RAVNN8": {
     "arrivals": [
       {
         "waypoints": "DFORT/a18000+ WALKN/a16000/s280/ho JAYOH/a12000 CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
-        "star": "RAVNN7",
+        "star": "RAVNN8",
         "initial_controller": "ZDC_01_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
@@ -3523,7 +3523,7 @@
       },
 	  {
         "waypoints": "ECHOZ/a20000+ DNKEY/a19000/ho FIMBO/a16000 UDUDE/a13000+ REXEE/a12000+ ELDEE/a11000- CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
-        "star": "RAVNN7",
+        "star": "RAVNN8",
         "initial_controller": "ZDC_01_CTR",
         "initial_altitude": 20000,
         "initial_speed": 280,
@@ -3799,7 +3799,7 @@
         "TRUPS5": {
           "KDCA": 10
         },
-        "RAVNN7": {
+        "RAVNN8": {
           "KBWI": 10
         }
       },
@@ -3811,7 +3811,7 @@
             "DCA_Y_DEP": {"backup": "DCA_K_DEP", "departures": [ "KDCA/SCRAM6", "KDCA/HORTO4", "KDCA/JDUBB4", "KDCA/WYNGS5", "KDCA/CLTCH3", "KDCA/REBLL5" ] },
 			"DCA_E_APP": {"backup": "DCA_J_APP", "inbound_flows": ["CLIPR3/SKILS5","DEALE3.N"]},
             "DCA_L_APP": {"backup": "DCA_Y_DEP", "inbound_flows": ["FRDMM6","TRUPS5", "BUNZZ3/RNLDI4"]},
-			"DCA_D_APP": {"backup": "DCA_K_DEP", "inbound_flows": ["RAVNN7"]},
+			"DCA_D_APP": {"backup": "DCA_K_DEP", "inbound_flows": ["RAVNN8"]},
             "DCA_F_APP": {"backup": "DCA_L_APP"},
             "DCA_A_APP": {"backup": "DCA_K_DEP"},
             "DCA_V_APP": {"backup": "DCA_J_APP"}
@@ -3887,7 +3887,7 @@
         "TRUPS5": {
           "KDCA": 10
         },
-        "RAVNN7": {
+        "RAVNN8": {
           "KBWI": 10
         }
       },
@@ -3899,7 +3899,7 @@
             "DCA_Y_DEP": {"backup": "DCA_K_DEP", "departures": [ "KDCA/SCRAM6", "KDCA/HORTO4", "KDCA/JDUBB4", "KDCA/WYNGS5", "KDCA/CLTCH3", "KDCA/REBLL5" ] },
 			"DCA_E_APP": {"backup": "DCA_J_APP", "arrivals": ["CLIPR3/SKILS5","DEALE3.S"]},
             "DCA_L_APP": {"backup": "DCA_Y_DEP", "arrivals": ["FRDMM6","TRUPS5"]},
-			"DCA_D_APP": {"backup": "DCA_K_DEP", "arrivals": ["RAVNN7"]},
+			"DCA_D_APP": {"backup": "DCA_K_DEP", "arrivals": ["RAVNN8"]},
             "DCA_F_APP": {"backup": "DCA_L_APP"},
             "DCA_A_APP": {"backup": "DCA_K_DEP"},
             "DCA_V_APP": {"backup": "DCA_J_APP"}

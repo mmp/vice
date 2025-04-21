@@ -5,14 +5,13 @@
 package main
 
 // This file contains the implementation of the main() function, which
-// initializes the system and then runs the event loop until the system
+// Initializes the system and then runs the event loop until the system
 // exits.
 
 import (
 	_ "embed"
 	"flag"
 	"fmt"
-	"log/slog"
 	_ "net/http/pprof"
 	"os"
 	"runtime"
@@ -30,8 +29,8 @@ import (
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/apenwarr/fixconsole"
-	"github.com/mmp/imgui-go/v4"
 )
 
 var (
@@ -103,7 +102,7 @@ func main() {
 			}
 		}
 		for m := range videoMaps {
-			av.CheckVideoMapManifest(m, &e)
+			sim.CheckVideoMapManifest(m, &e)
 		}
 
 		if e.HaveErrors() {
@@ -138,7 +137,7 @@ func main() {
 		}
 	} else if *listMaps != "" {
 		var e util.ErrorLogger
-		av.PrintVideoMaps(*listMaps, &e)
+		sim.PrintVideoMaps(*listMaps, &e)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 		}
@@ -210,7 +209,7 @@ func main() {
 		if configErr != nil {
 			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
 		}
-		imgui.CurrentIO().SetClipboard(plat.GetClipboard())
+		imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
 
 		render, err = renderer.NewOpenGL2Renderer(lg)
 		if err != nil {
@@ -288,8 +287,8 @@ func main() {
 			plat.PostRender()
 
 			// Periodically log current memory use, etc.
-			if stats.redraws%18000 == 0 {
-				lg.Info("performance", slog.Any("stats", stats))
+			if stats.redraws%18000 == 9000 { // Every 5min at 60fps, starting 2.5min after launch
+				lg.Info("performance", "stats", stats)
 			}
 
 			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
