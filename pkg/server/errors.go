@@ -58,6 +58,7 @@ var errorStringToError = map[string]error{
 	sim.ErrDuplicateBeacon.Error():             sim.ErrDuplicateBeacon,
 	sim.ErrIllegalACID.Error():                 sim.ErrIllegalACID,
 	sim.ErrIllegalACType.Error():               sim.ErrIllegalACType,
+	sim.ErrIllegalBeaconCode.Error():           sim.ErrIllegalBeaconCode,
 	sim.ErrIllegalFunction.Error():             sim.ErrIllegalFunction,
 	sim.ErrIllegalScratchpad.Error():           sim.ErrIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP.Error():        sim.ErrInvalidAbbreviatedFP,

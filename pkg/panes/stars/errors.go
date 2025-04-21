@@ -96,6 +96,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrDuplicateBeacon:             ErrSTARSDuplicateBeacon,
 	sim.ErrIllegalACID:                 ErrSTARSIllegalACID,
 	sim.ErrIllegalACType:               ErrSTARSIllegalACType,
+	sim.ErrIllegalBeaconCode:           ErrSTARSIllegalCode,
 	sim.ErrIllegalFunction:             ErrSTARSIllegalFunction,
 	sim.ErrIllegalScratchpad:           ErrSTARSIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP:        ErrSTARSCommandFormat,

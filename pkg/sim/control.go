@@ -259,6 +259,10 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		}
 	}
 
+	if err := s.checkFlightPlanSpecifier(spec); err != nil {
+		return STARSFlightPlan{}, err
+	}
+
 	fp := spec.GetFlightPlan()
 
 	if util.SeqContainsFunc(maps.Values(s.Aircraft),
@@ -269,15 +273,6 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		func(fp2 *STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
 		return STARSFlightPlan{}, ErrDuplicateACID
 	}
-
-	if fp.TrackingController != "" {
-		// TODO: this will need to be more sophisticated with consolidation.
-		if _, ok := s.State.Controllers[fp.TrackingController]; !ok {
-			return STARSFlightPlan{}, ErrUnknownController
-		}
-	}
-
-	// TODO: validate entry/exit fixes
 
 	var err error
 	switch ty {
@@ -298,6 +293,31 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 	return fp, err
 }
 
+// General checks both for create and modify.
+func (s *Sim) checkFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
+	if spec.TrackingController.IsSet {
+		tcp := spec.TrackingController.Get()
+		// TODO: this will need to be more sophisticated with consolidation.
+		if _, ok := s.State.Controllers[tcp]; !ok {
+			return ErrUnknownController
+		}
+	}
+
+	if spec.AssignedSquawk.IsSet {
+		sq := spec.AssignedSquawk.Get()
+		if (sq >= 0o1200 && sq <= 0o1202) || (sq&0o100) == 0 {
+			return ErrIllegalBeaconCode
+		}
+		if ok, _ := av.SquawkIsSPC(sq); ok {
+			return ErrIllegalBeaconCode
+		}
+	}
+
+	// TODO: validate entry/exit fixes
+
+	return nil
+}
+
 func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -310,10 +330,8 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 		}
 	}
 
-	if spec.TrackingController.IsSet {
-		if _, ok := s.State.Controllers[spec.TrackingController.Get()]; !ok {
-			return STARSFlightPlan{}, ErrUnknownController
-		}
+	if err := s.checkFlightPlanSpecifier(spec); err != nil {
+		return STARSFlightPlan{}, err
 	}
 
 	if ac != nil {

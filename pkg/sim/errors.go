@@ -16,6 +16,7 @@ var (
 	ErrDuplicateBeacon             = errors.New("Duplicate beacon code")
 	ErrIllegalACID                 = errors.New("Illegal ACID")
 	ErrIllegalACType               = errors.New("Illegal aircraft type")
+	ErrIllegalBeaconCode           = errors.New("Illegal beacon code")
 	ErrIllegalFunction             = errors.New("Illegal function")
 	ErrIllegalScratchpad           = errors.New("Illegal scratchpad")
 	ErrInvalidAbbreviatedFP        = errors.New("Invalid abbreviated flight plan")
