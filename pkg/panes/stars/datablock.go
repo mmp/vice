@@ -685,17 +685,18 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		} else if sfp.TypeOfFlight == av.FlightTypeOverflight {
 			rulesCategory = "E"
 		}
+		cwt := util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
 		if fa.PDB.SplitGSAndCWT {
 			// [GS, CWT] timesliced
 			formatDBText(db.field3[0][:], groundspeed, color, false)
-			formatDBText(db.field3[1][:], rulesCategory+sfp.CWTCategory, color, false)
+			formatDBText(db.field3[1][:], rulesCategory+cwt, color, false)
 		} else {
 			if fa.PDB.HideGroundspeed {
 				// [CWT]
-				formatDBText(db.field3[0][:], rulesCategory+sfp.CWTCategory, color, false)
+				formatDBText(db.field3[0][:], rulesCategory+cwt, color, false)
 			} else {
 				// [GS CWT]
-				formatDBText(db.field3[0][:], groundspeed+rulesCategory+sfp.CWTCategory, color, false)
+				formatDBText(db.field3[0][:], groundspeed+rulesCategory+cwt, color, false)
 			}
 			if fa.PDB.ShowAircraftType {
 				// [ACTYPE]
@@ -798,7 +799,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		} else if sfp.TypeOfFlight == av.FlightTypeOverflight {
 			rulesCategory = "E"
 		}
-		rulesCategory += sfp.CWTCategory + " "
+		rulesCategory += util.Select(sfp.CWTCategory != "", sfp.CWTCategory, " ")
+		rulesCategory += " "
 
 		field5Idx := 0
 		// 6-107 force display / inhibit ac type display
@@ -858,7 +860,11 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 				} else if state.ATPAStatus == ATPAStatusAlert {
 					distColor = STARSATPAAlertColor
 				}
-				formatDBText(db.field6[idx6][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
+				if sfp.CWTCategory == "" {
+					formatDBText(db.field6[idx6][:], "NOWGT", distColor, false)
+				} else {
+					formatDBText(db.field6[idx6][:], fmt.Sprintf("%.2f", state.IntrailDistance), distColor, false)
+				}
 				idx6++
 			}
 			if displayBeaconCode {

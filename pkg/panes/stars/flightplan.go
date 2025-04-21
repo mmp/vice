@@ -228,12 +228,7 @@ func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, 
 
 	actype = strings.TrimRight(actype, "*") // hack: for ones that require 4 chars
 
-	perf, ok := av.DB.AircraftPerformance[actype]
-	if !ok { // AC doesn't exist
-		return true, ErrSTARSIllegalACType
-	}
 	spec.AircraftType.Set(actype)
-	spec.CWTCategory.Set(perf.Category.CWT)
 
 	// equipment suffix?
 	if len(suffix) > 0 {

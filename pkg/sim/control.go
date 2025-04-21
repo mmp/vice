@@ -259,7 +259,7 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		}
 	}
 
-	if err := s.checkFlightPlanSpecifier(spec); err != nil {
+	if err := s.preCheckFlightPlanSpecifier(spec); err != nil {
 		return STARSFlightPlan{}, err
 	}
 
@@ -290,11 +290,15 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 		panic("unhandled STARSFlightPlanType")
 	}
 
+	if err == nil {
+		err = s.postCheckFlightPlanSpecifier(spec)
+	}
+
 	return fp, err
 }
 
-// General checks both for create and modify.
-func (s *Sim) checkFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
+// General checks both for create and modify; this returns errors that prevent fp creation.
+func (s *Sim) preCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
 	if spec.TrackingController.IsSet {
 		tcp := spec.TrackingController.Get()
 		// TODO: this will need to be more sophisticated with consolidation.
@@ -318,6 +322,18 @@ func (s *Sim) checkFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
 	return nil
 }
 
+// General checks both for create and modify; this returns informational
+// messages that don't prevent the fp from being created.
+func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
+	if spec.AircraftType.IsSet {
+		if _, ok := av.DB.AircraftPerformance[spec.AircraftType.Get()]; !ok {
+			return ErrIllegalACType
+		}
+	}
+
+	return nil
+}
+
 func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -330,7 +346,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 		}
 	}
 
-	if err := s.checkFlightPlanSpecifier(spec); err != nil {
+	if err := s.preCheckFlightPlanSpecifier(spec); err != nil {
 		return STARSFlightPlan{}, err
 	}
 
@@ -361,14 +377,18 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 			ac.STARSFlightPlan.PilotReportedAltitude = 0
 		}
 
-		return ac.UpdateFlightPlan(spec), nil
+		return ac.UpdateFlightPlan(spec), s.postCheckFlightPlanSpecifier(spec)
 	} else {
 		// Modify pending
 		if spec.AssignedAltitude.IsSet {
 			return STARSFlightPlan{}, ErrTrackIsNotActive
 		}
 
-		return s.STARSComputer.ModifyFlightPlan(acid, spec)
+		fp, err := s.STARSComputer.ModifyFlightPlan(acid, spec)
+		if err == nil {
+			err = s.postCheckFlightPlanSpecifier(spec)
+		}
+		return fp, err
 	}
 }
 

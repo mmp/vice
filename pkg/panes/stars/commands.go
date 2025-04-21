@@ -3313,13 +3313,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 
 				if second != "" {
-					spec2, err := parseOneFlightPlan("AC_TYPE/EQ", second, nil)
-					if err != nil {
+					if spec2, err := parseOneFlightPlan("AC_TYPE/EQ", second, nil); err != nil {
 						status.err = err
 						return
+					} else {
+						spec.AircraftType = spec2.AircraftType
+						spec.EquipmentSuffix = spec2.EquipmentSuffix
 					}
-					spec.AircraftType = spec2.AircraftType
-					spec.EquipmentSuffix = spec2.EquipmentSuffix
 				}
 
 				sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
