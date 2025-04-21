@@ -917,10 +917,9 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		Scratchpad:          arr.Scratchpad,
 		SecondaryScratchpad: arr.SecondaryScratchpad,
 
-		AircraftCount:   1,
-		AircraftType:    ac.FlightPlan.AircraftType,
-		EquipmentSuffix: "G",
-		CWTCategory:     av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount: 1,
+		AircraftType:  ac.FlightPlan.AircraftType,
+		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 
 	// VFRs don't go around since they aren't talking to us.
@@ -1052,10 +1051,9 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		SecondaryScratchpad: dep.SecondaryScratchpad,
 		RequestedAltitude:   ac.FlightPlan.Altitude,
 
-		AircraftCount:   1,
-		AircraftType:    ac.FlightPlan.AircraftType,
-		EquipmentSuffix: "G",
-		CWTCategory:     av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount: 1,
+		AircraftType:  ac.FlightPlan.AircraftType,
+		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1159,10 +1157,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		Scratchpad:          of.Scratchpad,
 		SecondaryScratchpad: of.SecondaryScratchpad,
 
-		AircraftCount:   1,
-		AircraftType:    ac.FlightPlan.AircraftType,
-		EquipmentSuffix: "G",
-		CWTCategory:     av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount: 1,
+		AircraftType:  ac.FlightPlan.AircraftType,
+		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 	}
 
 	// Like departures, these are already associated
