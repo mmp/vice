@@ -493,7 +493,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	altitude := fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
 	if state.UnreasonableModeC {
 		altitude = "XXX"
-	}	else if trk.IsUnsupportedDB() {
+	} else if trk.IsUnsupportedDB() {
 		altitude = ""
 	} else if sfp != nil && sfp.PilotReportedAltitude != 0 {
 		altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)

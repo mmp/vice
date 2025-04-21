@@ -23,9 +23,10 @@ type TrackState struct {
 	// from the sensor as well as the previous one. This gives us the
 	// freshest possible information for things like calculating headings,
 	// rates of altitude change, etc.
-	track         av.RadarTrack
-	previousTrack av.RadarTrack
-	trackTime     time.Time
+	track             av.RadarTrack
+	trackTime         time.Time
+	previousTrack     av.RadarTrack
+	previousTrackTime time.Time
 
 	// Radar track history is maintained with a ring buffer where
 	// historyTracksIndex is the index of the next track to be written.
@@ -119,7 +120,7 @@ type TrackState struct {
 	// Unreasonable Mode-C
 	UnreasonableModeC       bool
 	ConsecutiveNormalTracks int
-  
+
 	// This is for [FLT DATA][SLEW] of an unowned FDB in which case it only
 	// applies locally; for owned tracks, the flight plan is modified so it
 	// applies globally.
@@ -464,10 +465,11 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		state.previousTrack = state.track
+		state.previousTrackTime = state.trackTime
 		state.track = trk.RadarTrack
 		state.trackTime = now
-    
-    sp.checkUnreasonableModeC(state)
+
+		sp.checkUnreasonableModeC(state)
 	}
 
 	// Update low altitude alerts now that we have updated tracks
@@ -490,9 +492,9 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	sp.updateInTrailDistance(ctx, tracks)
 }
 
-func (sp *STARSPane) checkUnreasonableModeC(state *AircraftState) {
+func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 	changeInAltitude := float64(state.previousTrack.Altitude - state.track.Altitude)
-	changeInTime := state.previousTrack.Time.Sub(state.track.Time)
+	changeInTime := state.previousTrackTime.Sub(state.trackTime)
 	changeInTimeSeconds := changeInTime.Seconds()
 
 	var change float64
@@ -501,7 +503,6 @@ func (sp *STARSPane) checkUnreasonableModeC(state *AircraftState) {
 		change = changeInAltitude / changeInTimeSeconds
 	}
 
-	state := sp.Aircraft[callsign]
 	if change > FPMThreshold || change < -FPMThreshold {
 		state.UnreasonableModeC = true
 		state.ConsecutiveNormalTracks = 0
