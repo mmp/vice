@@ -23,9 +23,10 @@ type TrackState struct {
 	// from the sensor as well as the previous one. This gives us the
 	// freshest possible information for things like calculating headings,
 	// rates of altitude change, etc.
-	track         av.RadarTrack
-	previousTrack av.RadarTrack
-	trackTime     time.Time
+	track             av.RadarTrack
+	trackTime         time.Time
+	previousTrack     av.RadarTrack
+	previousTrackTime time.Time
 
 	// Radar track history is maintained with a ring buffer where
 	// historyTracksIndex is the index of the next track to be written.
@@ -116,6 +117,10 @@ type TrackState struct {
 	PointOutAcknowledged bool
 	ForceQL              bool
 
+	// Unreasonable Mode-C
+	UnreasonableModeC       bool
+	ConsecutiveNormalTracks int
+
 	// This is for [FLT DATA][SLEW] of an unowned FDB in which case it only
 	// applies locally; for owned tracks, the flight plan is modified so it
 	// applies globally.
@@ -142,6 +147,10 @@ const (
 	GhostStateRegular = iota
 	GhostStateSuppressed
 	GhostStateForced
+)
+
+const (
+	FPMThreshold = 8400 / 100
 )
 
 func (ts *TrackState) TrackDeltaAltitude() int {
@@ -456,8 +465,11 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		state.previousTrack = state.track
+		state.previousTrackTime = state.trackTime
 		state.track = trk.RadarTrack
 		state.trackTime = now
+
+		sp.checkUnreasonableModeC(state)
 	}
 
 	// Update low altitude alerts now that we have updated tracks
@@ -478,6 +490,29 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 	sp.updateCAAircraft(ctx, tracks)
 	sp.updateInTrailDistance(ctx, tracks)
+}
+
+func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
+	changeInAltitude := float64(state.previousTrack.Altitude - state.track.Altitude)
+	changeInTime := state.previousTrackTime.Sub(state.trackTime)
+	changeInTimeSeconds := changeInTime.Seconds()
+
+	var change float64
+
+	if changeInTimeSeconds != 0 {
+		change = changeInAltitude / changeInTimeSeconds
+	}
+
+	if change > FPMThreshold || change < -FPMThreshold {
+		state.UnreasonableModeC = true
+		state.ConsecutiveNormalTracks = 0
+	} else if state.UnreasonableModeC {
+		state.ConsecutiveNormalTracks++
+		if state.ConsecutiveNormalTracks >= 5 {
+			state.UnreasonableModeC = false
+			state.ConsecutiveNormalTracks = 0
+		}
+	}
 }
 
 func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,

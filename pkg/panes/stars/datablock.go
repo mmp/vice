@@ -491,7 +491,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
 	// altitude or inhibit mode C.
 	altitude := fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-	if trk.IsUnsupportedDB() {
+	if state.UnreasonableModeC {
+		altitude = "XXX"
+	} else if trk.IsUnsupportedDB() {
 		altitude = ""
 	} else if sfp != nil && sfp.PilotReportedAltitude != 0 {
 		altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
