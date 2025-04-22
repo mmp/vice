@@ -3360,6 +3360,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					} else {
 						spec.Rules.Set(av.FlightRulesIFR)
 						spec.TypeOfFlight.Set(av.FlightTypeArrival)
+						if !spec.AssignedSquawk.IsSet {
+							spec.AssignedSquawk.Set(trk.Squawk)
+						}
 						if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
 							status.err = err
 						} else {
