@@ -252,14 +252,7 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	if spec.Rules.IsSet && spec.Rules.Get() == av.FlightRulesVFR {
-		// Disable MSAW for VFR flight plans unless specifically enabled.
-		if !spec.DisableMSAW.IsSet {
-			spec.DisableMSAW.Set(true)
-		}
-	}
-
-	if err := s.preCheckFlightPlanSpecifier(spec); err != nil {
+	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
 		return STARSFlightPlan{}, err
 	}
 
@@ -298,7 +291,14 @@ func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFli
 }
 
 // General checks both for create and modify; this returns errors that prevent fp creation.
-func (s *Sim) preCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
+func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error {
+	if spec.Rules.IsSet && spec.Rules.Get() == av.FlightRulesVFR {
+		// Disable MSAW for VFR flight plans unless specifically enabled.
+		if !spec.DisableMSAW.IsSet {
+			spec.DisableMSAW.Set(true)
+		}
+	}
+
 	if spec.TrackingController.IsSet {
 		tcp := spec.TrackingController.Get()
 		// TODO: this will need to be more sophisticated with consolidation.
@@ -346,7 +346,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 		}
 	}
 
-	if err := s.preCheckFlightPlanSpecifier(spec); err != nil {
+	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
 		return STARSFlightPlan{}, err
 	}
 
@@ -408,7 +408,11 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 		spec.ACID.Set(ACID(callsign))
 	}
 
-	return s.dispatchAircraftCommand(spec.TrackingController.Get(), callsign,
+	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
+		return err
+	}
+
+	err := s.dispatchAircraftCommand(spec.TrackingController.Get(), callsign,
 		func(tcp string, ac *Aircraft) error {
 			// Make sure no one has the track already
 			if ac.IsAssociated() {
@@ -426,8 +430,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 			return nil
 		},
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			// The flight plan was created in the validation function so we
-			// could return any errors from there.
+			// Either the flight plan was passed in or fp was initialized  in the validation function.
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
 			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
 
@@ -440,6 +443,11 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 
 			return nil
 		})
+
+	if err == nil {
+		err = s.postCheckFlightPlanSpecifier(spec)
+	}
+	return err
 }
 
 // Flight plan for acid must already exist; spec gives optional amendments.
