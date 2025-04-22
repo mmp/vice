@@ -337,6 +337,32 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	}
 }
 
+func lookupFlightPlan(ctx *panes.Context, s string) (*sim.STARSFlightPlan, *sim.Track) {
+	sq, err := av.ParseSquawk(s)
+	if err != nil {
+		sq = av.Squawk(0)
+	}
+	idx, err := strconv.Atoi(s)
+	if err != nil {
+		idx = -1
+	}
+
+	state := &ctx.Client.State
+	for _, trk := range state.Tracks {
+		if trk.IsAssociated() && (trk.FlightPlan.ACID == sim.ACID(s) ||
+			trk.FlightPlan.AssignedSquawk == sq || trk.FlightPlan.ListIndex == idx) {
+			return trk.FlightPlan, trk
+		}
+	}
+	for i, fp := range state.UnassociatedFlightPlans {
+		if fp.ACID == sim.ACID(s) || fp.AssignedSquawk == sq || fp.ListIndex == idx {
+			return state.UnassociatedFlightPlans[i], nil
+		}
+	}
+
+	return nil, nil
+}
+
 func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks []sim.Track) (status CommandStatus) {
 	// If there's an active spinner, it gets keyboard input; we thus won't
 	// worry about the corresponding CommandModes in the following.
@@ -375,32 +401,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		}
 
 		return nil
-	}
-
-	lookupFlightPlan := func(s string) (*sim.STARSFlightPlan, *sim.Track) {
-		sq, err := av.ParseSquawk(s)
-		if err != nil {
-			sq = av.Squawk(0)
-		}
-		idx, err := strconv.Atoi(s)
-		if err != nil {
-			idx = -1
-		}
-
-		state := &ctx.Client.State
-		for _, trk := range state.Tracks {
-			if trk.IsAssociated() && (trk.FlightPlan.ACID == sim.ACID(s) ||
-				trk.FlightPlan.AssignedSquawk == sq || trk.FlightPlan.ListIndex == idx) {
-				return trk.FlightPlan, trk
-			}
-		}
-		for i, fp := range state.UnassociatedFlightPlans {
-			if fp.ACID == sim.ACID(s) || fp.AssignedSquawk == sq || fp.ListIndex == idx {
-				return state.UnassociatedFlightPlans[i], nil
-			}
-		}
-
-		return nil, nil
 	}
 
 	ps := sp.currentPrefs()
@@ -927,7 +927,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			} else if len(cmd) == 1 {
 				// illegal value for dwell
 				status.err = ErrSTARSIllegalValue
-			} else if fp, trk := lookupFlightPlan(cmd); fp != nil {
+			} else if fp, trk := lookupFlightPlan(ctx, cmd); fp != nil {
 				// D(callsign) / D(beacon) / D(line #)
 				// Display flight plan: 5-186
 				status.output = sp.formatFlightPlan(ctx, fp, trk)
@@ -1121,7 +1121,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			if id, entry, ok := strings.Cut(cmd, " "); !ok {
 				status.err = ErrSTARSCommandFormat
 			} else {
-				if fp, _ := lookupFlightPlan(id); fp == nil {
+				if fp, _ := lookupFlightPlan(ctx, id); fp == nil {
 					status.err = ErrSTARSNoFlight
 				} else {
 					const modFpFormat = "ACID,BEACON,TCP,COORD_TIME,FIX_PAIR,TRI_SP1,PLUS_SP2,TRI_ALT_A,ALT_R"
@@ -2608,6 +2608,28 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 	return
 }
 
+func trackRepositionSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
+	acid sim.ACID) func([2]float32, ScopeTransformations) (status CommandStatus) {
+	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+		// either associate with unassociated or make unsupported
+		// if clicked on associated:
+		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
+			if trk.IsAssociated() {
+				status.err = ErrSTARSIllegalTrack
+			} else {
+				sp.repositionTrack(ctx, acid, trk.ADSBCallsign, math.Point2LL{})
+				status.clear = true
+			}
+		} else {
+			// Didn't click a track; make it an unsupported db
+			p := transforms.LatLongFromWindowP(pw)
+			sp.repositionTrack(ctx, acid, "", p)
+			status.clear = true
+		}
+		return
+	}
+}
+
 func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	if sp.ReleaseRequests == nil {
 		sp.ReleaseRequests = make(map[av.ADSBCallsign]interface{})
@@ -2743,6 +2765,11 @@ func (sp *STARSPane) activateFlightPlan(ctx *panes.Context, trackCallsign av.ADS
 
 func (sp *STARSPane) deleteFlightPlan(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.DeleteFlightPlan(acid, nil, func(err error) { sp.displayError(err, ctx, "") })
+}
+
+func (sp *STARSPane) repositionTrack(ctx *panes.Context, acid sim.ACID, callsign av.ADSBCallsign, p math.Point2LL) {
+	ctx.Client.RepositionTrack(acid, callsign, p, nil,
+		func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
@@ -3411,6 +3438,31 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 			return
 
+		case CommandModeTrackReposition:
+			// 5-191 reposition active track's (or unsupported) fdb
+			if cmd != "" {
+				// Entered ACID (et al) and slewed a track to receive the fp.
+				if fp, _ := lookupFlightPlan(ctx, cmd); fp == nil {
+					status.err = ErrSTARSNoFlight
+				} else if fp.HandoffTrackController != "" {
+					status.err = ErrSTARSIllegalTrack
+				} else if trk.IsAssociated() {
+					status.err = ErrSTARSIllegalTrack
+				} else {
+					sp.repositionTrack(ctx, fp.ACID, trk.ADSBCallsign, math.Point2LL{})
+					status.clear = true
+				}
+			} else {
+				// Slewed a first track; set up to get a second slew of a track or location.
+				if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != "" {
+					status.err = ErrSTARSIllegalTrack
+				} else {
+					status.output = "FORMAT" // informational
+					sp.scopeClickHandler = trackRepositionSecondClickHandler(ctx, sp, tracks, trk.FlightPlan.ACID)
+				}
+			}
+			return
+
 		case CommandModeTerminateControl:
 			// 5-83
 			if trk.IsAssociated() {
@@ -3861,6 +3913,24 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			spec.Location.Set(transforms.LatLongFromWindowP(mousePosition))
 			sp.modifyFlightPlan(ctx, fp.ACID, spec, false /* no display */)
 			status.clear = true
+		}
+		return
+
+	case CommandModeTrackReposition:
+		// 5-191 reposition active track's (or unsupported) fdb
+		if cmd != "" {
+			// Entered ACID (et al) and slewed a location to create/move an unsupported DB
+			if fp, _ := lookupFlightPlan(ctx, cmd); fp == nil {
+				status.err = ErrSTARSNoFlight
+			} else if fp.HandoffTrackController != "" {
+				status.err = ErrSTARSIllegalTrack
+			} else {
+				pll := transforms.LatLongFromWindowP(mousePosition)
+				sp.repositionTrack(ctx, fp.ACID, "", pll)
+				status.clear = true
+			}
+		} else {
+			status.err = ErrSTARSCommandFormat
 		}
 		return
 

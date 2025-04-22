@@ -217,6 +217,23 @@ func (sd *Dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, _ *struct{}) er
 	}
 }
 
+type RepositionTrackArgs struct {
+	ControllerToken string
+	ACID            sim.ACID        // from
+	Callsign        av.ADSBCallsign // to
+	Position        math.Point2LL   // to
+}
+
+func (sd *Dispatcher) RepositionTrack(rt *RepositionTrackArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(rt.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return s.RepositionTrack(ctrl.tcp, rt.ACID, rt.Callsign, rt.Position)
+	}
+}
+
 type HandoffArgs struct {
 	ControllerToken string
 	ACID            sim.ACID

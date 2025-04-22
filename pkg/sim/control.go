@@ -513,6 +513,71 @@ func (s *Sim) deleteFlightPlan(fp *STARSFlightPlan) {
 	s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
 }
 
+func (s *Sim) RepositionTrack(tcp string, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {
+	// Find the corresponding flight plan.
+	var fp *STARSFlightPlan
+	// First look for the referenced flight plan in associated aircraft.
+	for _, ac := range s.Aircraft {
+		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
+			if ac.STARSFlightPlan.TrackingController != tcp {
+				return av.ErrOtherControllerHasTrack
+			} else if ac.STARSFlightPlan.HandoffTrackController != "" {
+				return ErrTrackIsBeingHandedOff
+			} else {
+				fp = ac.STARSFlightPlan
+				ac.STARSFlightPlan = nil
+				break
+			}
+		}
+	}
+	if fp == nil {
+		// Try unsupported DBs if we didn't find it there.
+		for i, sfp := range s.STARSComputer.FlightPlans {
+			if !sfp.Location.IsZero() && sfp.ACID == acid {
+				if sfp.TrackingController != tcp {
+					return av.ErrOtherControllerHasTrack
+				} else if sfp.HandoffTrackController != "" {
+					return ErrTrackIsBeingHandedOff
+				} else {
+					fp = sfp
+					s.STARSComputer.FlightPlans = slices.Delete(s.STARSComputer.FlightPlans, i, i+1)
+					break
+				}
+			}
+		}
+	}
+	if fp == nil {
+		return ErrNoMatchingFlightPlan
+	}
+	fp.Location = math.Point2LL{}
+
+	// These are cleared when a track is repositioned.
+	if fp.Rules == av.FlightRulesIFR {
+		fp.DisableMSAW = false
+		fp.DisableCA = false
+		// TODO: clear CA inhibit pair
+	}
+
+	if callsign != "" { // Associating it with an active track
+		if ac, ok := s.Aircraft[callsign]; !ok {
+			return ErrNoMatchingFlight
+		} else if ac.IsAssociated() {
+			return ErrTrackIsActive
+		} else {
+			ac.AssociateFlightPlan(fp)
+			s.eventStream.Post(Event{
+				Type: FlightPlanAssociatedEvent,
+				ACID: fp.ACID,
+			})
+			return nil
+		}
+	} else { // Creating / moving an unsupported DB.
+		fp.Location = p
+		s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
+	}
+	return nil
+}
+
 func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

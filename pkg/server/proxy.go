@@ -122,6 +122,15 @@ func (p *proxy) DeleteFlightPlan(acid sim.ACID) *rpc.Call {
 	}, nil, nil)
 }
 
+func (p *proxy) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign, pos math.Point2LL) *rpc.Call {
+	return p.Client.Go("Sim.RepositionTrack", &RepositionTrackArgs{
+		ControllerToken: p.ControllerToken,
+		ACID:            acid,
+		Callsign:        callsign,
+		Position:        pos,
+	}, nil, nil)
+}
+
 func (p *proxy) HandoffTrack(acid sim.ACID, tcp string) *rpc.Call {
 	return p.Client.Go("Sim.HandoffTrack", &HandoffArgs{
 		ControllerToken: p.ControllerToken,

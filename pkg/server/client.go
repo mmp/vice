@@ -233,6 +233,16 @@ func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, success func(any), err f
 		})
 }
 
+func (c *ControlClient) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign, p math.Point2LL, success func(any), err func(error)) {
+	c.pendingCalls = append(c.pendingCalls,
+		&util.PendingCall{
+			Call:      c.proxy.RepositionTrack(acid, callsign, p),
+			IssueTime: time.Now(),
+			OnSuccess: success,
+			OnErr:     err,
+		})
+}
+
 func (c *ControlClient) HandoffTrack(acid sim.ACID, controller string, success func(any), err func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		&util.PendingCall{
