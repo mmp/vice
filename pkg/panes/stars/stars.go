@@ -774,6 +774,40 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		sp.lastHistoryTrackUpdate = time.Time{}
 		sp.discardTracks = false
 	}
+
+	sp.drawPauseOverlay(ctx, cb)
+}
+
+func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuffer) {
+	if !ctx.Client.State.Paused {
+		return
+	}
+
+	text := "SIMULATION PAUSED"
+	font := sp.systemFontB[5] // Largest font
+	center := [2]float32{ctx.PaneExtent.Width() / 2, ctx.PaneExtent.Height() / 2}
+
+	quad := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
+	quad.AddQuad(
+		[2]float32{center[0] - 150, center[1] - 30}, // Left-top
+		[2]float32{center[0] + 150, center[1] - 30}, // Right-top
+		[2]float32{center[0] + 150, center[1] + 30}, // Right-bottom
+		[2]float32{center[0] - 150, center[1] + 30}, // Left-bottom
+		renderer.RGB{R: 1, G: 0, B: 0})              // Solid red
+
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	td.AddTextCentered(text, center, renderer.TextStyle{
+		Font:  font,
+		Color: renderer.RGB{R: 1, G: 1, B: 1},
+	})
+
+	// draws
+	transforms := GetScopeTransformations(ctx.PaneExtent, 0, 0, [2]float32{}, 0, 0)
+	transforms.LoadWindowViewingMatrices(cb)
+	quad.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
