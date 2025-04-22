@@ -2721,6 +2721,9 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserTCP)
 	}
+	if !spec.CoordinationTime.IsSet {
+		spec.CoordinationTime.Set(ctx.Now)
+	}
 
 	ctx.Client.AssociateFlightPlan(callsign, spec,
 		func(any) {
@@ -4543,6 +4546,10 @@ func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.STARSFlightPl
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserTCP)
 	}
+	if !spec.CoordinationTime.IsSet {
+		spec.CoordinationTime.Set(ctx.Now)
+	}
+
 	ctx.Client.CreateFlightPlan(spec, sim.LocalNonEnroute,
 		func(fp sim.STARSFlightPlan) {
 			sp.previewAreaOutput = sp.formatFlightPlan(ctx, &fp, nil)
