@@ -231,23 +231,6 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 		})
 }
 
-func (s *Sim) SetGlobalLeaderLine(tcp string, acid ACID, dir *math.CardinalOrdinalDirection) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.dispatchTrackedFlightPlanCommand(tcp, acid, nil,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
-			fp.GlobalLeaderLineDirection = dir
-			s.eventStream.Post(Event{
-				Type:                SetGlobalLeaderLineEvent,
-				ACID:                acid,
-				FromController:      tcp,
-				LeaderLineDirection: dir,
-			})
-			return nil
-		})
-}
-
 func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -375,6 +358,15 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 			ac.Mode == av.TransponderModeAltitude {
 			// Clear pilot reported if toggled on and we have mode-C altitude
 			ac.STARSFlightPlan.PilotReportedAltitude = 0
+		}
+
+		if spec.GlobalLeaderLineDirection.IsSet {
+			s.eventStream.Post(Event{
+				Type:                SetGlobalLeaderLineEvent,
+				ACID:                acid,
+				FromController:      tcp,
+				LeaderLineDirection: spec.GlobalLeaderLineDirection.Get(),
+			})
 		}
 
 		return ac.UpdateFlightPlan(spec), s.postCheckFlightPlanSpecifier(spec)

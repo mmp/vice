@@ -55,6 +55,8 @@ type State struct {
 	UserTCP           string
 	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
+	GenerationIndex int
+
 	DepartureRunways []DepartureRunway
 	ArrivalRunways   []ArrivalRunway
 	InboundFlows     map[string]*av.InboundFlow

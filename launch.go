@@ -934,12 +934,12 @@ func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *Laun
 }
 
 func (lc *LaunchControlWindow) spawnIFRDeparture(dep *LaunchDeparture) {
-	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesIFR, &dep.Aircraft, nil,
+	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesIFR, &dep.Aircraft,
 		func(err error) { lc.lg.Warnf("CreateDeparture: %v", err) })
 }
 
 func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
-	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesVFR, &dep.Aircraft, nil,
+	lc.client.CreateDeparture(dep.Airport, dep.Runway, dep.Category, av.FlightRulesVFR, &dep.Aircraft,
 		func(err error) {
 			if server.TryDecodeError(err) != sim.ErrViolatedAirspace {
 				lc.lg.Warnf("CreateDeparture: %v", err)
@@ -949,10 +949,10 @@ func (lc *LaunchControlWindow) spawnVFRDeparture(dep *LaunchDeparture) {
 
 func (lc *LaunchControlWindow) spawnArrivalOverflight(lac *LaunchArrivalOverflight) {
 	if lac.Airport != "overflights" {
-		lc.client.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft, nil,
+		lc.client.CreateArrival(lac.Group, lac.Airport, &lac.Aircraft,
 			func(err error) { lc.lg.Warnf("CreateArrival: %v", err) })
 	} else {
-		lc.client.CreateOverflight(lac.Group, &lac.Aircraft, nil,
+		lc.client.CreateOverflight(lac.Group, &lac.Aircraft,
 			func(err error) { lc.lg.Warnf("CreateOverflight: %v", err) })
 	}
 }
@@ -1412,7 +1412,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					lastAp = ac.DepartureAirport
 					imgui.TableNextColumn()
 					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-						lc.client.ReleaseDeparture(ac.ADSBCallsign, nil,
+						lc.client.ReleaseDeparture(ac.ADSBCallsign,
 							func(err error) { lc.lg.Errorf("%s: %v", ac.ADSBCallsign, err) })
 					}
 				}

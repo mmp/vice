@@ -2096,7 +2096,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				}
 
 				delete(ps.RestrictionAreaSettings, n)
-				ctx.Client.DeleteRestrictionArea(n, nil, func(err error) { sp.displayError(err, ctx, "") })
+				ctx.Client.DeleteRestrictionArea(n, func(err error) { sp.displayError(err, ctx, "") })
 				status.clear = true
 			} else {
 				status.err = ErrSTARSCommandFormat
@@ -2209,7 +2209,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			case 0:
 				status.err = ErrSTARSIllegalFlight
 			case 1:
-				ctx.Client.ReleaseDeparture(unack[0].ADSBCallsign, nil,
+				ctx.Client.ReleaseDeparture(unack[0].ADSBCallsign,
 					func(err error) { sp.displayError(err, ctx, "") })
 				status.clear = true
 			default:
@@ -2287,7 +2287,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				}
 			} else if !rel.Released {
 				rel.Released = true // hack for instant update pending the next server update
-				ctx.Client.ReleaseDeparture(rel.ADSBCallsign, nil,
+				ctx.Client.ReleaseDeparture(rel.ADSBCallsign,
 					func(err error) { sp.displayError(err, ctx, "") })
 				status.clear = true
 			} else {
@@ -2656,7 +2656,7 @@ func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 			if _, ok := sp.ReleaseRequests[dep.ADSBCallsign]; !ok {
 				// Haven't seen this one before
 				if cl.AutoRelease {
-					ctx.Client.ReleaseDeparture(dep.ADSBCallsign, nil,
+					ctx.Client.ReleaseDeparture(dep.ADSBCallsign,
 						func(err error) { ctx.Lg.Errorf("%s: %v", dep.ADSBCallsign, err) })
 				}
 				// Note that we've seen it, whether or not it was auto-released.
@@ -2748,32 +2748,35 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 	}
 
 	ctx.Client.AssociateFlightPlan(callsign, spec,
-		func(any) {
-			if trk, ok := ctx.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
-				sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
+		func(err error) {
+			if err == nil {
+				if trk, ok := ctx.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
+					sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
+				}
+			} else {
+				sp.displayError(err, ctx, "")
 			}
-		},
-		func(err error) { sp.displayError(err, ctx, "") })
+		})
 	return nil
 }
 
 func (sp *STARSPane) activateFlightPlan(ctx *panes.Context, trackCallsign av.ADSBCallsign, fpACID sim.ACID,
 	spec *sim.STARSFlightPlanSpecifier) {
-	ctx.Client.ActivateFlightPlan(trackCallsign, fpACID, spec, nil,
+	ctx.Client.ActivateFlightPlan(trackCallsign, fpACID, spec,
 		func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) deleteFlightPlan(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.DeleteFlightPlan(acid, nil, func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.DeleteFlightPlan(acid, func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) repositionTrack(ctx *panes.Context, acid sim.ACID, callsign av.ADSBCallsign, p math.Point2LL) {
-	ctx.Client.RepositionTrack(acid, callsign, p, nil,
+	ctx.Client.RepositionTrack(acid, callsign, p,
 		func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.AcceptHandoff(acid, nil,
+	ctx.Client.AcceptHandoff(acid,
 		func(err error) { sp.displayError(err, ctx, "") })
 }
 
@@ -2783,7 +2786,7 @@ func (sp *STARSPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller 
 		return ErrSTARSIllegalPosition
 	}
 
-	ctx.Client.HandoffTrack(acid, control.Id(), nil,
+	ctx.Client.HandoffTrack(acid, control.Id(),
 		func(err error) { sp.displayError(err, ctx, "") })
 
 	return nil
@@ -2810,17 +2813,15 @@ func (sp *STARSPane) setLeaderLine(ctx *panes.Context, trk sim.Track, cmd string
 }
 
 func (sp *STARSPane) forceQL(ctx *panes.Context, acid sim.ACID, tcp string) {
-	ctx.Client.ForceQL(acid, tcp, nil,
-		func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.ForceQL(acid, tcp, func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) redirectHandoff(ctx *panes.Context, acid sim.ACID, tcp string) {
-	ctx.Client.RedirectHandoff(acid, tcp, nil,
-		func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.RedirectHandoff(acid, tcp, func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) acceptRedirectedHandoff(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.AcceptRedirectedHandoff(acid, nil,
+	ctx.Client.AcceptRedirectedHandoff(acid,
 		func(err error) { sp.displayError(err, ctx, "") })
 }
 
@@ -2833,23 +2834,20 @@ func (sp *STARSPane) removeForceQL(ctx *panes.Context, acid sim.ACID) bool {
 }
 
 func (sp *STARSPane) pointOut(ctx *panes.Context, acid sim.ACID, tcp string) {
-	ctx.Client.PointOut(acid, tcp, nil,
+	ctx.Client.PointOut(acid, tcp,
 		func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) acknowledgePointOut(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.AcknowledgePointOut(acid, nil,
-		func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.AcknowledgePointOut(acid, func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) recallPointOut(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.RecallPointOut(acid, nil,
-		func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.RecallPointOut(acid, func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) cancelHandoff(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.CancelHandoff(acid, nil,
-		func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.CancelHandoff(acid, func(err error) { sp.displayError(err, ctx, "") })
 }
 
 func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.Track, code string) (status CommandStatus) {
@@ -3147,8 +3145,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			} else if cmd == "UN" && trk.IsAssociated() {
-				ctx.Client.RejectPointOut(trk.FlightPlan.ACID, nil,
-					func(err error) { sp.displayError(err, ctx, "") })
+				ctx.Client.RejectPointOut(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
 				status.clear = true
 				return
 			} else if spec, err := parseOneFlightPlan("#/AC_TYPE4/EQ", cmd, nil); err == nil {
@@ -4157,29 +4154,29 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 }
 
 func (sp *STARSPane) createRestrictionArea(ctx *panes.Context, ra av.RestrictionArea) {
-	// Go ahead and make it visible, assuming which index will be assigned
-	// to reduce update latency.
-	ps := sp.currentPrefs()
-	idx := len(ctx.Client.State.UserRestrictionAreas)
-	ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
-
-	ctx.Client.CreateRestrictionArea(ra, func(idx int) {
-		// Just in case (e.g. a race with another controller also adding
-		// one), make sure we have the one we made visible.
-		ps := sp.currentPrefs()
-		ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
-	}, func(err error) { sp.displayError(err, ctx, "") })
+	ctx.Client.CreateRestrictionArea(ra, func(idx int, err error) {
+		if err == nil {
+			ps := sp.currentPrefs()
+			ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
+		} else {
+			sp.displayError(err, ctx, "")
+		}
+	})
 }
 
 func (sp *STARSPane) updateRestrictionArea(ctx *panes.Context, idx int, ra av.RestrictionArea) {
-	ctx.Client.UpdateRestrictionArea(idx, ra, func(any) {
-		ps := sp.currentPrefs()
-		if settings, ok := ps.RestrictionAreaSettings[idx]; ok {
-			settings.Visible = true
+	ctx.Client.UpdateRestrictionArea(idx, ra, func(err error) {
+		if err == nil {
+			ps := sp.currentPrefs()
+			if settings, ok := ps.RestrictionAreaSettings[idx]; ok {
+				settings.Visible = true
+			} else {
+				ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
+			}
 		} else {
-			ps.RestrictionAreaSettings[idx] = &RestrictionAreaSettings{Visible: true}
+			sp.displayError(err, ctx, "")
 		}
-	}, func(err error) { sp.displayError(err, ctx, "") })
+	})
 }
 
 // Returns the cardinal-ordinal direction associated with the numbpad keys,
@@ -4621,11 +4618,15 @@ func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.STARSFlightPl
 	}
 
 	ctx.Client.CreateFlightPlan(spec, sim.LocalNonEnroute,
-		func(fp sim.STARSFlightPlan) {
-			sp.previewAreaOutput = sp.formatFlightPlan(ctx, &fp, nil)
-		},
-		func(err error) { sp.displayError(err, ctx, "") })
-
+		func(err error) {
+			if err == nil {
+				if fp := ctx.Client.State.GetFlightPlanForACID(spec.ACID.Get()); fp != nil {
+					sp.previewAreaOutput = sp.formatFlightPlan(ctx, fp, nil)
+				}
+			} else {
+				sp.displayError(err, ctx, "")
+			}
+		})
 }
 
 func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec sim.STARSFlightPlanSpecifier, display bool) {
@@ -4634,25 +4635,26 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 	}
 
 	ctx.Client.ModifyFlightPlan(acid, spec,
-		func(fp sim.STARSFlightPlan) {
-			if spec.RequestedAltitude.IsSet {
-				if state, ok := sp.trackStateForACID(ctx, acid); ok {
-					t := true
-					state.DisplayRequestedAltitude = &t
-				}
-			}
-			if spec.Scratchpad.IsSet && spec.Scratchpad.Get() == "" {
-				if state, ok := sp.trackStateForACID(ctx, acid); ok {
-					state.ClearedScratchpadAlternate = true
-				}
-			}
-			if display {
-				trk, _ := ctx.Client.State.GetTrackByACID(acid)
-				sp.previewAreaOutput = sp.formatFlightPlan(ctx, &fp, trk)
-			}
-		},
 		func(err error) {
-			sp.displayError(err, ctx, acid)
+			if err == nil {
+				if spec.RequestedAltitude.IsSet {
+					if state, ok := sp.trackStateForACID(ctx, acid); ok {
+						t := true
+						state.DisplayRequestedAltitude = &t
+					}
+				}
+				if spec.Scratchpad.IsSet && spec.Scratchpad.Get() == "" {
+					if state, ok := sp.trackStateForACID(ctx, acid); ok {
+						state.ClearedScratchpadAlternate = true
+					}
+				}
+				if display {
+					trk, _ := ctx.Client.State.GetTrackByACID(acid)
+					sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
+				}
+			} else {
+				sp.displayError(err, ctx, acid)
+			}
 		})
 }
 

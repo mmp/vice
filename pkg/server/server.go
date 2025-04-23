@@ -64,7 +64,7 @@ const ViceServerPort = 8000 + ViceRPCVersion
 const ViceRPCVersion = ViceSerializeVersion
 
 type Server struct {
-	*util.RPCClient
+	*RPCClient
 	name        string
 	configs     map[string]map[string]*Configuration
 	runningSims map[string]*RemoteSim
@@ -152,7 +152,7 @@ func RunServer(extraScenario string, extraVideoMap string, serverPort int, lg *l
 	}
 }
 
-func getClient(hostname string, lg *log.Logger) (*util.RPCClient, error) {
+func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
 	conn, err := net.Dial("tcp", hostname)
 	if err != nil {
 		return nil, err
@@ -165,7 +165,7 @@ func getClient(hostname string, lg *log.Logger) (*util.RPCClient, error) {
 
 	codec := util.MakeGOBClientCodec(cc)
 	codec = util.MakeLoggingClientCodec(hostname, codec, lg)
-	return &util.RPCClient{rpc.NewClientWithCodec(codec)}, nil
+	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
 
 func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnection {

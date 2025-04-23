@@ -24,7 +24,7 @@ type ConnectionManager struct {
 	serverRPCVersionMismatch bool
 
 	lastRemoteSimsUpdate  time.Time
-	updateRemoteSimsCall  *util.PendingCall
+	updateRemoteSimsCall  *PendingCall
 	updateRemoteSimsError error
 
 	LocalServer   *Server
@@ -59,7 +59,7 @@ func MakeServerConnection(address, additionalScenario, additionalVideoMap string
 	return cm, err
 }
 
-func (cm *ConnectionManager) NewConnection(state sim.State, controllerToken string, client *util.RPCClient) {
+func (cm *ConnectionManager) NewConnection(state sim.State, controllerToken string, client *RPCClient) {
 	cm.newSimConnectionChan <- Connection{
 		SimState: state,
 		SimProxy: &proxy{
@@ -133,7 +133,7 @@ func (cm *ConnectionManager) Disconnect() {
 }
 
 func (cm *ConnectionManager) UpdateRemoteSims() error {
-	if cm.updateRemoteSimsCall != nil && cm.updateRemoteSimsCall.CheckFinished() {
+	if cm.updateRemoteSimsCall != nil && cm.updateRemoteSimsCall.CheckFinished(nil, nil) {
 		cm.updateRemoteSimsCall = nil
 		err := cm.updateRemoteSimsError
 		cm.updateRemoteSimsError = nil
@@ -143,24 +143,22 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 		cm.lastRemoteSimsUpdate = time.Now()
 		var rs map[string]*RemoteSim
 		cm.updateRemoteSimsError = nil
-		cm.updateRemoteSimsCall = &util.PendingCall{
-			Call:      cm.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
-			IssueTime: time.Now(),
-			OnSuccess: func(result any) {
-				if cm.RemoteServer != nil {
-					cm.RemoteServer.setRunningSims(rs)
-				}
-			},
-			OnErr: func(e error) {
-				cm.updateRemoteSimsError = e
+		cm.updateRemoteSimsCall = makeRPCCall(cm.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
+			func(err error) {
+				if err == nil {
+					if cm.RemoteServer != nil {
+						cm.RemoteServer.setRunningSims(rs)
+					}
+				} else {
+					cm.updateRemoteSimsError = err
 
-				// nil out the server if we've lost the connection; the
-				// main loop will attempt to reconnect.
-				if util.IsRPCServerError(e) {
-					cm.RemoteServer = nil
+					// nil out the server if we've lost the connection; the
+					// main loop will attempt to reconnect.
+					if util.IsRPCServerError(err) {
+						cm.RemoteServer = nil
+					}
 				}
-			},
-		}
+			})
 	}
 	return nil
 }

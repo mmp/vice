@@ -15,7 +15,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/brunoga/deep"
 	"github.com/davecgh/go-spew/spew"
 )
 
@@ -31,6 +30,8 @@ type Sim struct {
 
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
+
+	GenerationIndex int // for sequencing StateUpdates
 
 	eventStream *EventStream
 	lg          *log.Logger
@@ -250,9 +251,9 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 	}
 
 	state := s.State.GetStateForController(tcp)
-	var update WorldUpdate
-	s.GetWorldUpdate(tcp, &update, true /* local: may not be, but this is the safe choice */)
-	update.UpdateState(state, s.eventStream)
+	var update StateUpdate
+	s.GetStateUpdate(tcp, &update)
+	update.Apply(state, s.eventStream)
 	return state, nil
 }
 
@@ -517,7 +518,8 @@ type GlobalMessage struct {
 	FromController string
 }
 
-type WorldUpdate struct {
+type StateUpdate struct {
+	GenerationIndex         int
 	Tracks                  map[av.ADSBCallsign]*Track
 	UnassociatedFlightPlans []*STARSFlightPlan
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
@@ -540,7 +542,7 @@ type WorldUpdate struct {
 	QuickFlightPlanIndex int
 }
 
-func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) {
+func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -549,7 +551,7 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 		events = sub.Get()
 	}
 
-	*update = WorldUpdate{
+	*update = StateUpdate{
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 
 		Controllers:      s.State.Controllers,
@@ -568,6 +570,9 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 		Instructors:          s.Instructors,
 		QuickFlightPlanIndex: s.State.QuickFlightPlanIndex,
 	}
+
+	s.GenerationIndex++
+	update.GenerationIndex = s.GenerationIndex
 
 	update.ACFlightPlans = make(map[av.ADSBCallsign]av.FlightPlan)
 	for cs, ac := range s.Aircraft {
@@ -629,36 +634,36 @@ func (s *Sim) GetWorldUpdate(tcp string, update *WorldUpdate, localServer bool) 
 			FlightPlan: update.UnassociatedFlightPlans[i],
 		}
 	}
-
-	if localServer {
-		*update = deep.MustCopy(*update)
-	}
 }
 
-func (wu *WorldUpdate) UpdateState(state *State, eventStream *EventStream) {
-	state.Tracks = wu.Tracks
-	if wu.Controllers != nil {
-		state.Controllers = wu.Controllers
+func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
+	// Make sure the generation index is above the current index so that if
+	// updates are returned out of order we ignore stale ones.
+	if state.GenerationIndex < su.GenerationIndex {
+		state.Tracks = su.Tracks
+		if su.Controllers != nil {
+			state.Controllers = su.Controllers
+		}
+		state.HumanControllers = su.HumanControllers
+		state.ACFlightPlans = su.ACFlightPlans
+		state.UnassociatedFlightPlans = su.UnassociatedFlightPlans
+		state.ReleaseDepartures = su.ReleaseDepartures
+		state.LaunchConfig = su.LaunchConfig
+
+		state.UserRestrictionAreas = su.UserRestrictionAreas
+
+		state.SimTime = su.Time
+		state.Paused = su.SimIsPaused
+		state.SimRate = su.SimRate
+		state.TotalIFR = su.TotalIFR
+		state.TotalVFR = su.TotalVFR
+		state.Instructors = su.Instructors
+		state.QuickFlightPlanIndex = su.QuickFlightPlanIndex
 	}
-	state.HumanControllers = wu.HumanControllers
-	state.ACFlightPlans = wu.ACFlightPlans
-	state.UnassociatedFlightPlans = wu.UnassociatedFlightPlans
-	state.ReleaseDepartures = wu.ReleaseDepartures
-	state.LaunchConfig = wu.LaunchConfig
-
-	state.UserRestrictionAreas = wu.UserRestrictionAreas
-
-	state.SimTime = wu.Time
-	state.Paused = wu.SimIsPaused
-	state.SimRate = wu.SimRate
-	state.TotalIFR = wu.TotalIFR
-	state.TotalVFR = wu.TotalVFR
-	state.Instructors = wu.Instructors
-	state.QuickFlightPlanIndex = wu.QuickFlightPlanIndex
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
-	for _, e := range wu.Events {
+	for _, e := range su.Events {
 		eventStream.Post(e)
 	}
 }

@@ -480,7 +480,7 @@ type simStatus struct {
 	TotalIFR, TotalVFR int
 }
 
-func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) error {
+func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) error {
 	sm.mu.Lock(sm.lg)
 
 	if ctrl, ok := sm.controllersByToken[token]; !ok {
@@ -498,12 +498,9 @@ func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) erro
 			})
 		}
 
-		// Grab this before unlock.
-		local := ctrl.asim.local
-
 		sm.mu.Unlock(sm.lg)
 
-		s.GetWorldUpdate(ctrl.tcp, update, local)
+		s.GetStateUpdate(ctrl.tcp, update)
 
 		return nil
 	}
