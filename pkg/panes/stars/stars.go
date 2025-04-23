@@ -774,6 +774,51 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		sp.lastHistoryTrackUpdate = time.Time{}
 		sp.discardTracks = false
 	}
+
+	sp.drawPauseOverlay(ctx, cb)
+}
+
+func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuffer) {
+	if !ctx.Client.State.Paused {
+		return
+	}
+
+	text := "SIMULATION PAUSED"
+	font := sp.systemFontA[3] // Largest font
+
+	// Get pane width
+	width := ctx.PaneExtent.Width()
+	height := ctx.PaneExtent.Height()
+
+	// Fixed position from top
+	topOffset := height - 140
+	textY := topOffset + 30      // Text will be 30px below top (in middle of background quad)
+	quadTop := topOffset + 45    // Background extends 15px above text
+	quadBottom := topOffset + 15 // Background extends 15px below text
+
+	// Draw background quad (fixed width of 360px centered horizontally)
+	quad := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(quad)
+	quad.AddQuad(
+		[2]float32{width/2 - 180, quadTop},    // Left-top
+		[2]float32{width/2 + 180, quadTop},    // Right-top
+		[2]float32{width/2 + 180, quadBottom}, // Right-bottom
+		[2]float32{width/2 - 180, quadBottom}, // Left-bottom
+		renderer.RGB{R: 1, G: 0, B: 0})        // Solid red
+
+	// Draw text
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	td.AddTextCentered(text, [2]float32{width / 2, textY}, renderer.TextStyle{
+		Font:  font,
+		Color: renderer.RGB{R: 1, G: 1, B: 1},
+	})
+
+	// Apply transformations and draw
+	transforms := GetScopeTransformations(ctx.PaneExtent, 0, 0, [2]float32{}, 0, 0)
+	transforms.LoadWindowViewingMatrices(cb)
+	quad.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
