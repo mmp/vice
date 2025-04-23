@@ -39,6 +39,7 @@ type MessagesPane struct {
 	AudioAlertSelection        string
 	ContactTransmissionsAlert  bool
 	ReadbackTransmissionsAlert bool
+	IsVisible                  bool
 
 	font            *renderer.Font
 	scrollbar       *ScrollBar
@@ -57,13 +58,15 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 15},
+
+		IsVisible: true,
 	}
 }
 
 func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
-func (mp *MessagesPane) Hide() bool { return false }
+func (mp *MessagesPane) Hide() bool { return !mp.IsVisible }
 
 func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
@@ -106,6 +109,9 @@ func (mp *MessagesPane) Upgrade(prev, current int) {
 }
 
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
+
+	imgui.Checkbox("Show Messages Pane", &mp.IsVisible)
+
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
