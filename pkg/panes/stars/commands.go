@@ -608,7 +608,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				} else {
 					sp.wipRBL = &STARSRangeBearingLine{}
 					sp.wipRBL.P[0].Loc = p
-					sp.scopeClickHandler = rblSecondClickHandler(ctx, sp, tracks)
+					sp.scopeClickHandler = rblSecondClickHandler
 					sp.previewAreaInput = "*T" // set up for the second point
 				}
 			} else {
@@ -2608,9 +2608,9 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 	return
 }
 
-func trackRepositionSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-	acid sim.ACID) func([2]float32, ScopeTransformations) (status CommandStatus) {
-	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+func trackRepositionSecondClickHandler(acid sim.ACID) scopeClickHandlerFunc {
+	return func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+		transforms ScopeTransformations) (status CommandStatus) {
 		// either associate with unassociated or make unsupported
 		// if clicked on associated:
 		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
@@ -3086,7 +3086,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				from := trk.Location
 				nmPerLongitude := ctx.NmPerLongitude
 				magneticVariation := ctx.MagneticVariation
-				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
+					pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 					p := transforms.LatLongFromWindowP(pw)
 					hdg := math.Heading2LL(from, p, nmPerLongitude, magneticVariation)
 					dist := math.NMDistance2LL(from, p)
@@ -3113,7 +3114,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// 6-148 range/bearing to significant point
 				p := trk.Location
 				sp.wipSignificantPoint = &p
-				sp.scopeClickHandler = toSignificantPointClickHandler(ctx, sp)
+				sp.scopeClickHandler = toSignificantPointClickHandler
 				sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
 				return
 			} else if cmd == "*J" {
@@ -3130,7 +3131,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				// range bearing line
 				sp.wipRBL = &STARSRangeBearingLine{}
 				sp.wipRBL.P[0].ADSBCallsign = trk.ADSBCallsign
-				sp.scopeClickHandler = rblSecondClickHandler(ctx, sp, tracks)
+				sp.scopeClickHandler = rblSecondClickHandler
 				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if trk.IsAssociated() && ctx.Client.StringIsSPC(cmd) {
@@ -3455,7 +3456,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = ErrSTARSIllegalTrack
 				} else {
 					status.output = "FORMAT" // informational
-					sp.scopeClickHandler = trackRepositionSecondClickHandler(ctx, sp, tracks, trk.FlightPlan.ACID)
+					sp.scopeClickHandler = trackRepositionSecondClickHandler(trk.FlightPlan.ACID)
 				}
 			}
 			return
@@ -3830,7 +3831,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 		case CommandModeMin:
 			if cmd == "" {
 				sp.MinSepAircraft[0] = trk.ADSBCallsign
-				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
+					pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
 					if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
 						sp.MinSepAircraft[1] = trk.ADSBCallsign
 						status.clear = true
@@ -3860,13 +3862,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			// 6-148 range/bearing to significant point
 			p := transforms.LatLongFromWindowP(mousePosition)
 			sp.wipSignificantPoint = &p
-			sp.scopeClickHandler = toSignificantPointClickHandler(ctx, sp)
+			sp.scopeClickHandler = toSignificantPointClickHandler
 			sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
 			return
 		} else if cmd == "*T" {
 			sp.wipRBL = &STARSRangeBearingLine{}
 			sp.wipRBL.P[0].Loc = transforms.LatLongFromWindowP(mousePosition)
-			sp.scopeClickHandler = rblSecondClickHandler(ctx, sp, tracks)
+			sp.scopeClickHandler = rblSecondClickHandler
 			return
 		} else if sp.capture.enabled {
 			if cmd == "CR" {
@@ -4289,7 +4291,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		// and then clear it out.
 		var status CommandStatus
 		if sp.scopeClickHandler != nil {
-			status = sp.scopeClickHandler(ctx.Mouse.Pos, transforms)
+			status = sp.scopeClickHandler(ctx, sp, tracks, ctx.Mouse.Pos, transforms)
 		}
 		if sp.scopeClickHandler == nil {
 			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms, tracks)

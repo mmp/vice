@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
@@ -224,7 +225,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				sp.setCommandMode(ctx, CommandModeNone)
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
-				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
+					pw [2]float32, transforms ScopeTransformations) CommandStatus {
 					ps.RangeRingsUserCenter = transforms.LatLongFromWindowP(pw)
 					ps.UseUserRangeRingsCenter = true
 					return CommandStatus{clear: true}
@@ -1037,7 +1039,8 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 		sp.savedMousePosition = ctx.Mouse.Pos
 		ctx.Platform.StartMouseDeltaMode()
 
-		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+			transforms ScopeTransformations) CommandStatus {
 			sp.resetInputState(ctx)
 			ctx.Platform.StopMouseDeltaMode()
 			ctx.SetMousePosition(sp.savedMousePosition)
@@ -1067,7 +1070,8 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 		ctx.Platform.StartMouseDeltaMode()
 		sp.activeSpinner = spinner
 
-		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+			transforms ScopeTransformations) CommandStatus {
 			sp.resetInputState(ctx)
 			return CommandStatus{clear: true}
 		}

@@ -156,7 +156,7 @@ type STARSPane struct {
 	// When VFR flight plans were first seen (used for sorting in VFR list)
 	VFRFPFirstSeen map[sim.ACID]time.Time
 
-	scopeClickHandler func(pw [2]float32, transforms ScopeTransformations) CommandStatus
+	scopeClickHandler scopeClickHandlerFunc
 	activeSpinner     dcbSpinner
 
 	savedMousePosition [2]float32
@@ -230,6 +230,8 @@ type STARSPane struct {
 	pdbArena util.ObjectArena[partialDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
 }
+
+type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, ScopeTransformations) CommandStatus
 
 type PointOutControllers struct {
 	From, To string

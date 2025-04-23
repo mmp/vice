@@ -1838,24 +1838,23 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Trac
 	return getLoc(0), getLoc(1)
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track) func([2]float32, ScopeTransformations) (status CommandStatus) {
-	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-		if sp.wipRBL == nil {
-			// this shouldn't happen, but let's not crash if it does...
-			return
-		}
-
-		rbl := *sp.wipRBL
-		sp.wipRBL = nil
-		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
-			rbl.P[1].ADSBCallsign = trk.ADSBCallsign
-		} else {
-			rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
-		}
-		sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
-		status.clear = true
+func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+	transforms ScopeTransformations) (status CommandStatus) {
+	if sp.wipRBL == nil {
+		// this shouldn't happen, but let's not crash if it does...
 		return
 	}
+
+	rbl := *sp.wipRBL
+	sp.wipRBL = nil
+	if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
+		rbl.P[1].ADSBCallsign = trk.ADSBCallsign
+	} else {
+		rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
+	}
+	sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
+	status.clear = true
+	return
 }
 
 func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
@@ -1920,15 +1919,14 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 	return
 }
 
-func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane) func([2]float32, ScopeTransformations) (status CommandStatus) {
-	return func(pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-		if sp.wipSignificantPoint == nil {
-			status.clear = true
-			return
-		} else {
-			p1 := transforms.LatLongFromWindowP(pw)
-			return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
-				ctx.NmPerLongitude, ctx.MagneticVariation)
-		}
+func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+	transforms ScopeTransformations) (status CommandStatus) {
+	if sp.wipSignificantPoint == nil {
+		status.clear = true
+		return
+	} else {
+		p1 := transforms.LatLongFromWindowP(pw)
+		return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
+			ctx.NmPerLongitude, ctx.MagneticVariation)
 	}
 }
