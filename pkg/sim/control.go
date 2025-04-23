@@ -82,7 +82,7 @@ func (s *Sim) dispatchTrackedAircraftCommand(tcp string, callsign av.ADSBCallsig
 func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
 	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission) error {
-	fp := s.GetFlightPlanForACID(acid)
+	fp, _ := s.GetFlightPlanForACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -317,47 +317,34 @@ func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error 
 	return nil
 }
 
-func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
+func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	var ac *Aircraft
-	for _, a := range s.Aircraft {
-		if a.IsAssociated() && a.STARSFlightPlan.ACID == acid {
-			ac = a
-			break
-		}
+	fp, active := s.GetFlightPlanForACID(acid)
+	if fp == nil {
+		return ErrNoMatchingFlightPlan
 	}
 
 	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
-		return STARSFlightPlan{}, err
+		return err
 	}
 
-	if ac != nil {
-		if ac.STARSFlightPlan.TrackingController != tcp {
-			return STARSFlightPlan{}, av.ErrOtherControllerHasTrack
-		}
-
-		if ac.Mode == av.TransponderModeAltitude && !ac.STARSFlightPlan.InhibitModeCAltitudeDisplay &&
-			spec.PilotReportedAltitude.GetOr(0) != 0 {
-			// 5-166: must inhibit mode C display if we are getting altitude from the aircraft
-			// Allow zero to clear it which various STARS commands do implicitly.
-			return STARSFlightPlan{}, ErrIllegalFunction
-		}
-
+	// Can't set assigned altitude for non-associated tracks.
+	if !active && spec.AssignedAltitude.IsSet {
+		return ErrTrackIsNotActive
+	}
+	if fp.TrackingController != tcp {
+		return av.ErrOtherControllerHasTrack
+	}
+	if active {
 		// Modify assigned
 		if spec.EntryFix.IsSet || spec.ExitFix.IsSet || spec.CoordinationTime.IsSet {
 			// These can only be set for non-active flight plans: 5-171
-			return STARSFlightPlan{}, ErrTrackIsActive
+			return ErrTrackIsActive
 		}
-		if ac.STARSFlightPlan.HandoffTrackController != "" {
-			return STARSFlightPlan{}, ErrTrackIsBeingHandedOff
-		}
-
-		if spec.InhibitModeCAltitudeDisplay.IsSet && !spec.InhibitModeCAltitudeDisplay.Get() &&
-			ac.Mode == av.TransponderModeAltitude {
-			// Clear pilot reported if toggled on and we have mode-C altitude
-			ac.STARSFlightPlan.PilotReportedAltitude = 0
+		if fp.HandoffTrackController != "" {
+			return ErrTrackIsBeingHandedOff
 		}
 
 		if spec.GlobalLeaderLineDirection.IsSet {
@@ -368,20 +355,11 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 				LeaderLineDirection: spec.GlobalLeaderLineDirection.Get(),
 			})
 		}
-
-		return ac.UpdateFlightPlan(spec), s.postCheckFlightPlanSpecifier(spec)
-	} else {
-		// Modify pending
-		if spec.AssignedAltitude.IsSet {
-			return STARSFlightPlan{}, ErrTrackIsNotActive
-		}
-
-		fp, err := s.STARSComputer.ModifyFlightPlan(acid, spec)
-		if err == nil {
-			err = s.postCheckFlightPlanSpecifier(spec)
-		}
-		return fp, err
 	}
+
+	fp.Update(spec)
+
+	return s.postCheckFlightPlanSpecifier(spec)
 }
 
 // Associate the specified flight plan with the track. Flight plan for ACID

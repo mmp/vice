@@ -187,7 +187,7 @@ func (sd *Dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *sim.St
 	if ctrl, s, ok := sd.sm.LookupController(mfp.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		_, err := s.ModifyFlightPlan(ctrl.tcp, mfp.ACID, mfp.FlightPlanSpecifier)
+		err := s.ModifyFlightPlan(ctrl.tcp, mfp.ACID, mfp.FlightPlanSpecifier)
 		if err == nil {
 			s.GetStateUpdate(ctrl.tcp, update)
 		}

@@ -236,14 +236,6 @@ func (sc *STARSComputer) CreateFlightPlan(fp STARSFlightPlan) (STARSFlightPlan, 
 	return fp, nil
 }
 
-func (sc *STARSComputer) ModifyFlightPlan(acid ACID, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
-	if fp2 := sc.lookupFlightPlanByACID(acid); fp2 != nil {
-		fp2.Update(spec)
-		return *fp2, nil
-	}
-	return STARSFlightPlan{}, ErrIllegalACID
-}
-
 func (sc *STARSComputer) getListIndex() (int, error) {
 	if len(sc.AvailableIndices) == 0 {
 		return 0, ErrNoMoreListIndices

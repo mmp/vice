@@ -730,7 +730,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp := s.GetFlightPlanForACID(acid); fp != nil {
+		if fp, _ := s.GetFlightPlanForACID(acid); fp != nil {
 			if fp.HandoffTrackController != "" && !s.isActiveHumanController(fp.HandoffTrackController) {
 				// Automated accept
 				s.eventStream.Post(Event{
@@ -755,7 +755,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(po.ToController) {
+		if fp, _ := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(po.ToController) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -995,24 +995,19 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	}
 }
 
-func (s *Sim) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
-	// Fast path
-	if ac, ok := s.Aircraft[av.ADSBCallsign(acid)]; ok {
-		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
-			return ac.STARSFlightPlan
-		}
-	}
+// bool indicates whether it's active
+func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, bool) {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
-			return ac.STARSFlightPlan
+			return ac.STARSFlightPlan, true
 		}
 	}
 	for i, fp := range s.STARSComputer.FlightPlans {
 		if fp.ACID == acid {
-			return s.STARSComputer.FlightPlans[i]
+			return s.STARSComputer.FlightPlans[i], !fp.Location.IsZero()
 		}
 	}
-	return nil
+	return nil, false
 }
 
 func (t *Track) IsAssociated() bool {
@@ -1115,12 +1110,4 @@ func (ac *Aircraft) IsAssociated() bool {
 
 func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
 	ac.STARSFlightPlan = fp
-}
-
-func (ac *Aircraft) UpdateFlightPlan(spec STARSFlightPlanSpecifier) STARSFlightPlan {
-	if ac.STARSFlightPlan != nil {
-		ac.STARSFlightPlan.Update(spec)
-		return *ac.STARSFlightPlan
-	}
-	return spec.GetFlightPlan()
 }

@@ -1718,6 +1718,11 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 						return checkScratchpad(ctx, s, !primary, false /* !implied */) == nil
 					}); err != nil {
 					status.err = err
+				} else if trk.Mode == av.TransponderModeAltitude && !trk.FlightPlan.InhibitModeCAltitudeDisplay &&
+					spec.PilotReportedAltitude.GetOr(0) != 0 {
+					// 5-166: pilot-reported altitude can't be entered if mode-c is available and it hasn't
+					// been toggled off. (Though allow zero to clear pilot-reported altitude.)
+					status.err = ErrSTARSIllegalFunction
 				} else {
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
 					status.clear = true
@@ -3370,9 +3375,15 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 				}
 
-				sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
-
-				status.clear = true
+				if trk.Mode == av.TransponderModeAltitude && !trk.FlightPlan.InhibitModeCAltitudeDisplay &&
+					spec.PilotReportedAltitude.GetOr(0) != 0 {
+					// 5-166: pilot-reported altitude can't be entered if mode-c is available and it hasn't
+					// been toggled off. (Though allow zero to clear pilot-reported altitude.)
+					status.err = ErrSTARSIllegalFunction
+				} else {
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
+					status.clear = true
+				}
 				return
 			} else if trk.IsUnassociated() && len(cmd) > 0 {
 				// 5-70 activate fp and associate
@@ -3557,7 +3568,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			case "M":
 				if cmd == "" && trk.IsAssociated() {
 					var spec sim.STARSFlightPlanSpecifier
-					spec.InhibitModeCAltitudeDisplay.Set(!trk.FlightPlan.InhibitModeCAltitudeDisplay)
+					inhibit := !trk.FlightPlan.InhibitModeCAltitudeDisplay
+					spec.InhibitModeCAltitudeDisplay.Set(inhibit)
+					if trk.Mode == av.TransponderModeAltitude && !inhibit {
+						// Clear pilot reported if inhibit toggled on and we have mode-C altitude
+						spec.PilotReportedAltitude.Set(0)
+					}
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
 					status.clear = true
 				} else {
@@ -3756,6 +3772,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = err
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
+				} else if trk.Mode == av.TransponderModeAltitude && !trk.FlightPlan.InhibitModeCAltitudeDisplay &&
+					spec.PilotReportedAltitude.GetOr(0) != 0 {
+					// 5-166: pilot-reported altitude can't be entered if mode-c is available and it hasn't
+					// been toggled off. (Though allow zero to clear pilot-reported altitude.)
+					status.err = ErrSTARSIllegalFunction
 				} else {
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
