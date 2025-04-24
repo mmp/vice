@@ -170,7 +170,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 }
 
 func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
-	dbAirline, ok := DB.Airlines[a.ICAO]
+	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
 		lg.Errorf("Airline %q not found in database", a.ICAO)
