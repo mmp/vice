@@ -1748,6 +1748,24 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				status.clear = true
 				return
 			}
+
+			if len(cmd) > 0 && cmd[0] == 'Z' {
+				// 5-81 Toggle hold state
+				if _, id, ok := strings.Cut(cmd, " "); !ok {
+					status.err = ErrSTARSCommandFormat
+				} else if trk := lookupTrack(id); trk == nil {
+					status.err = ErrSTARSCommandFormat
+				} else if trk.IsUnassociated() {
+					status.err = ErrSTARSNoFlight
+				} else {
+					var spec sim.STARSFlightPlanSpecifier
+					spec.HoldState.Set(!trk.FlightPlan.HoldState)
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+					status.clear = true
+				}
+				return
+			}
+
 			status.err = ErrSTARSCommandFormat
 			return
 		}
@@ -3780,6 +3798,22 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else {
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
+				}
+				return
+
+			case "Z":
+				// 5-81 Toggle hold state
+				if cmd == "Z" {
+					if trk.IsUnassociated() {
+						status.err = ErrSTARSNoFlight
+					} else {
+						var spec sim.STARSFlightPlanSpecifier
+						spec.HoldState.Set(!trk.FlightPlan.HoldState)
+						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+						status.clear = true
+					}
+				} else {
+					status.err = ErrSTARSCommandFormat
 				}
 				return
 			}

@@ -818,7 +818,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 					formatDBText(db.field5[0][:], "IF"+rulesCategory, color, true)
 				}
 			} else {
-				idx := formatDBText(db.field5[0][:], groundspeed, color, false)
+				gs := util.Select(sfp.HoldState, "HL", groundspeed)
+				idx := formatDBText(db.field5[0][:], gs, color, false)
 				if trk.Ident {
 					formatDBText(db.field5[0][idx:], "ID", color, true)
 				} else {
