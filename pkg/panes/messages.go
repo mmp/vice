@@ -58,7 +58,7 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 15},
+		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
 
 		HideMessagePane: false,
 	}
