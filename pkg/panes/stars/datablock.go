@@ -830,7 +830,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 			(state != nil && state.InhibitACTypeDisplay != nil && *state.InhibitACTypeDisplay)
 		forceACType := ctx.Now.Before(sfp.ForceACTypeDisplayEndTime) ||
 			(state != nil && ctx.Now.Before(state.ForceACTypeDisplayEndTime))
-		if state != nil && !forceACType {
+		if state != nil && !forceACType && !trk.IsUnsupportedDB() {
 			if state.IFFlashing {
 				if trk.Ident {
 					formatDBText(db.field5[0][:], "IF"+"ID", color, true)
