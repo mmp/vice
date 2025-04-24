@@ -65,6 +65,8 @@ type TrackState struct {
 	UNFlashingEndTime time.Time
 	IFFlashing        bool // Will continue to flash unless slewed or a successful handoff
 
+	SuspendedShowAltitudeEndTime time.Time
+
 	AcceptedHandoffSector     string
 	AcceptedHandoffDisplayEnd time.Time
 

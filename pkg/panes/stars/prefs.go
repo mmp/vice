@@ -179,6 +179,8 @@ type CommonPreferences struct {
 
 	DwellMode DwellMode
 
+	DisplaySuspendedTrackAltitude bool
+
 	Brightness struct {
 		DCB                STARSBrightness
 		BackgroundContrast STARSBrightness

@@ -6,6 +6,7 @@ package stars
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 	"sort"
 	"strconv"
@@ -707,8 +708,35 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 }
 
 func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
-	// TODO
-	td.AddText("COAST/SUSPEND", pw, style)
+	var text strings.Builder
+
+	text.WriteString("COAST/SUSPEND\n")
+
+	// Get suspended tracks (coast not yet supported)
+	tracks := slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks),
+		func(t *sim.Track) bool { return t.IsAssociated() && t.FlightPlan.Suspended }))
+	// Sort by list index
+	slices.SortFunc(tracks,
+		func(a, b *sim.Track) int { return a.FlightPlan.CoastSuspendIndex - b.FlightPlan.CoastSuspendIndex })
+
+	for _, trk := range tracks {
+		text.WriteString(fmt.Sprintf("%2d ", trk.FlightPlan.CoastSuspendIndex))
+		text.WriteString(fmt.Sprintf("%-8s ", trk.ADSBCallsign))
+		text.WriteString("S ") // suspend only for now
+		text.WriteString(trk.Squawk.String() + " ")
+
+		// For suspended, we always just show altitude (of one sort or another)
+		if trk.Mode == av.TransponderModeAltitude {
+			text.WriteString(fmt.Sprintf("%03d", int(trk.Altitude+50)/100))
+		} else if trk.FlightPlan.PilotReportedAltitude != 0 {
+			text.WriteString(fmt.Sprintf("%03d", trk.FlightPlan.PilotReportedAltitude))
+		} else {
+			text.WriteString("RDR")
+		}
+		text.WriteByte('\n')
+	}
+
+	td.AddText(text.String(), pw, style)
 }
 
 func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {

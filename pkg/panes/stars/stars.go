@@ -123,6 +123,8 @@ type STARSPane struct {
 	RejectedPointOuts map[sim.ACID]interface{}
 	ForceQLACIDs      map[sim.ACID]interface{}
 
+	CoastSuspendIndex int // Next index to assign
+
 	// Hold for release callsigns we have seen but not released. (We need
 	// to track this since auto release only applies to new ones seen after
 	// it is enabled.)

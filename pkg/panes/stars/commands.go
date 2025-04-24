@@ -734,8 +734,38 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			spec.AutoAssociate = true
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
+		} else if first, rest, ok := strings.Cut(cmd, " "); ok {
+			if trk := lookupTrack(first); trk == nil {
+				status.err = ErrSTARSNoFlight
+			} else if trk.IsAssociated() && trk.FlightPlan.Suspended {
+				// 5-77 unsuspend flight plan
+				if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2", rest, checkfp); err != nil {
+					status.err = err
+				} else {
+					spec.Suspended.Set(false)
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+					status.clear = true
+				}
+			} else {
+				status.err = ErrSTARSCommandFormat
+			}
+		}
+		return
+
+	case CommandModeTrackSuspend:
+		if cmd == "E" {
+			// 5-206 enable display of altitude for active suspended tracks
+			ps.DisplaySuspendedTrackAltitude = true
+			status.clear = true
+		} else if cmd == "I" {
+			// 5-206 inhibit display of altitude for active suspended tracks
+			ps.DisplaySuspendedTrackAltitude = false
+			status.clear = true
+		} else if trk := lookupTrack(cmd); trk == nil {
+			status.err = ErrSTARSNoFlight
 		} else {
-			status.err = err
+			// 5-75 suspend flight plan
+			status = sp.suspendFlightPlan(ctx, trk)
 		}
 		return
 
@@ -2793,6 +2823,38 @@ func (sp *STARSPane) deleteFlightPlan(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.DeleteFlightPlan(acid, func(err error) { sp.displayError(err, ctx, "") })
 }
 
+func (sp *STARSPane) suspendFlightPlan(ctx *panes.Context, trk *sim.Track) (status CommandStatus) {
+	// 5-75 suspend flight plan
+	status.err = ErrSTARSNoFlight
+	if trk.IsUnassociated() {
+		status.err = ErrSTARSIllegalTrack
+	} else if state := sp.TrackState[trk.ADSBCallsign]; state.MSAW || state.SPCAlert {
+		status.err = ErrSTARSIllegalTrack
+	} else if slices.ContainsFunc(sp.CAAircraft,
+		func(ca CAAircraft) bool {
+			return ca.ADSBCallsigns[0] == trk.ADSBCallsign ||
+				ca.ADSBCallsigns[1] == trk.ADSBCallsign
+		}) {
+		status.err = ErrSTARSIllegalTrack
+	} else if slices.ContainsFunc(sp.MCIAircraft,
+		func(mci CAAircraft) bool { return mci.ADSBCallsigns[0] == trk.ADSBCallsign }) {
+		status.err = ErrSTARSIllegalTrack
+	} else {
+		var spec sim.STARSFlightPlanSpecifier
+		spec.Suspended.Set(true)
+		spec.CoastSuspendIndex.Set(sp.CoastSuspendIndex % 100)
+		if trk.FlightPlan.Rules == av.FlightRulesIFR {
+			// Suspending the flight plan clears these
+			spec.DisableMSAW.Set(false)
+			spec.DisableCA.Set(false)
+		}
+		sp.CoastSuspendIndex++
+		sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
+		status.clear = true
+	}
+	return
+}
+
 func (sp *STARSPane) repositionTrack(ctx *panes.Context, acid sim.ACID, callsign av.ADSBCallsign, p math.Point2LL) {
 	ctx.Client.RepositionTrack(acid, callsign, p,
 		func(err error) { sp.displayError(err, ctx, "") })
@@ -3055,6 +3117,12 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 					state.OutboundHandoffAccepted = false
 					state.OutboundHandoffFlashEnd = ctx.Now
+					return
+				} else if trk.IsAssociated() && trk.FlightPlan.Suspended {
+					// temporarily show altitude in datablock
+					state.SuspendedShowAltitudeEndTime = ctx.Now.Add(5 * time.Second)
+					// and show the FP in the preview area
+					status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 					return
 				} else if trk.IsAssociated() && trk.Squawk != trk.FlightPlan.AssignedSquawk {
 					// 5-147: change ABC to RBC for track in mismatch
@@ -3435,7 +3503,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			checkfp := func(s string, primary bool) bool {
 				return checkScratchpad(ctx, s, !primary, false /* !implied */) == nil
 			}
-			if trk.IsAssociated() {
+			if trk.IsAssociated() && trk.FlightPlan.Suspended {
+				// 5-77 unsuspend flight plan
+				if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2", cmd, checkfp); err != nil {
+					status.err = err
+				} else {
+					spec.Suspended.Set(false)
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+					status.clear = true
+				}
+			} else if trk.IsAssociated() {
 				status.err = ErrSTARSIllegalTrack
 			} else if fp := ctx.Client.State.FindMatchingFlightPlan(first); fp != nil {
 				// 5-72 activate existing FP
@@ -3488,6 +3565,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					sp.scopeClickHandler = trackRepositionSecondClickHandler(trk.FlightPlan.ACID)
 				}
 			}
+			return
+
+		case CommandModeTrackSuspend:
+			// 5-75 suspend flight plan
+			status = sp.suspendFlightPlan(ctx, trk)
 			return
 
 		case CommandModeTerminateControl:

@@ -423,6 +423,8 @@ type STARSFlightPlan struct {
 	GlobalLeaderLineDirection   *math.CardinalOrdinalDirection
 	QuickFlightPlan             bool
 	HoldState                   bool
+	Suspended                   bool
+	CoastSuspendIndex           int
 
 	// FIXME: the following are all used internally by NAS code. It's
 	// convenient to have them here but this stuff should just be managed
@@ -484,6 +486,8 @@ type STARSFlightPlanSpecifier struct {
 	GlobalLeaderLineDirection   util.Optional[*math.CardinalOrdinalDirection]
 	QuickFlightPlan             util.Optional[bool]
 	HoldState                   util.Optional[bool]
+	Suspended                   util.Optional[bool]
+	CoastSuspendIndex           util.Optional[int]
 
 	InhibitACTypeDisplay      util.Optional[bool]
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
@@ -533,6 +537,8 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 		GlobalLeaderLineDirection:   s.GlobalLeaderLineDirection.GetOr(nil),
 		QuickFlightPlan:             s.QuickFlightPlan.GetOr(false),
 		HoldState:                   s.HoldState.GetOr(false),
+		Suspended:                   s.Suspended.GetOr(false),
+		CoastSuspendIndex:           s.CoastSuspendIndex.GetOr(0),
 
 		InhibitACTypeDisplay:      s.InhibitACTypeDisplay.GetOr(false),
 		ForceACTypeDisplayEndTime: s.ForceACTypeDisplayEndTime.GetOr(time.Time{}),
@@ -632,6 +638,12 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	}
 	if spec.HoldState.IsSet {
 		fp.HoldState = spec.HoldState.Get()
+	}
+	if spec.Suspended.IsSet {
+		fp.Suspended = spec.Suspended.Get()
+	}
+	if spec.CoastSuspendIndex.IsSet {
+		fp.CoastSuspendIndex = spec.CoastSuspendIndex.Get()
 	}
 	if spec.InhibitACTypeDisplay.IsSet {
 		fp.InhibitACTypeDisplay = spec.InhibitACTypeDisplay.Get()

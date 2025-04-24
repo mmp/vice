@@ -647,6 +647,16 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		fa := ctx.FacilityAdaptation
 		db := sp.pdbArena.AllocClear()
 
+		if sfp.Suspended {
+			s := fmt.Sprintf("%d", sfp.CoastSuspendIndex)
+			if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
+				state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
+				s += " " + altitude
+			}
+			formatDBText(db.field0[:], s, color, false)
+			return db
+		}
+
 		// Field0: TODO cautions in yellow
 		// TODO: 2-69 doesn't list CA/MCI, so should this be blank even in
 		// those cases? (Note that SPC upgrades partial to full datablocks.)
@@ -716,6 +726,16 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	case FullDatablock:
 		fa := ctx.FacilityAdaptation
 		db := sp.fdbArena.AllocClear()
+
+		if sfp.Suspended {
+			s := fmt.Sprintf("%d", sfp.CoastSuspendIndex)
+			if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
+				state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
+				s += " " + altitude
+			}
+			formatDBText(db.field1[:], s, color, false)
+			return db
+		}
 
 		// Line 0
 		// Field 0: special conditions, safety alerts (red), cautions (yellow)
