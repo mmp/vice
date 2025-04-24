@@ -612,14 +612,23 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 		return f + "  "
 	}
 
+	trkalt := func() string {
+		if trk == nil {
+			return ""
+		} else if trk.Mode == av.TransponderModeAltitude {
+			return fmt.Sprintf("%03d ", int(trk.Altitude+50)/100)
+		} else if fp.PilotReportedAltitude != 0 {
+			return fmt.Sprintf("%03d ", fp.PilotReportedAltitude/100)
+		} else {
+			return "RDR "
+		}
+	}
 	result := string(fp.ACID) + " " // all start with aricraft id
 	switch fp.TypeOfFlight {
 	case av.FlightTypeOverflight:
 		result += aircraftType + " "
 		result += fp.AssignedSquawk.String() + " " + fp.TrackingController + " "
-		if trk != nil {
-			result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-		}
+		result += trkalt()
 		result += "\n"
 
 		result += fmtfix(fp.EntryFix)
@@ -652,9 +661,8 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 			result += fp.AssignedSquawk.String() + " "
 			result += fmtfix(fp.EntryFix)
 			result += "D" + fmtTime(state.FirstRadarTrackTime) + " "
-			if trk != nil {
-				result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100) + "\n"
-			}
+			result += trkalt() + "\n"
+
 			result += fmtfix(fp.ExitFix)
 			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + " "
 			result += aircraftType
@@ -665,10 +673,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 		result += aircraftType + " "
 		result += fp.AssignedSquawk.String() + " "
 		result += fp.TrackingController + " "
-		if trk != nil {
-			result += fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-		}
-		result += "\n"
+		result += trkalt() + "\n"
 
 		result += fmtfix(fp.EntryFix)
 		if state != nil {
