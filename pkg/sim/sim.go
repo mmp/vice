@@ -31,6 +31,8 @@ type Sim struct {
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
 
+	LocalCodePool *av.LocalSquawkCodePool
+
 	GenerationIndex int // for sequencing StateUpdates
 
 	eventStream *EventStream
@@ -173,9 +175,6 @@ type NewSimConfiguration struct {
 }
 
 func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
-	beaconBank := util.Select(config.STARSFacilityAdaptation.BeaconBank != 0,
-		config.STARSFacilityAdaptation.BeaconBank, 3) // don't hand out 00xx codes
-
 	s := &Sim{
 		Aircraft: make(map[av.ADSBCallsign]*Aircraft),
 
@@ -184,8 +183,9 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		SignOnPositions: config.SignOnPositions,
 
-		ERAMComputer:  makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC),
-		STARSComputer: makeSTARSComputer(config.TRACON, beaconBank),
+		STARSComputer: makeSTARSComputer(config.TRACON),
+
+		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
 		humanControllers: make(map[string]*EventsSubscription),
 
@@ -201,6 +201,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		Instructors: make(map[string]bool),
 	}
+
+	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
 	s.State = newState(config, manifest, lg)
 

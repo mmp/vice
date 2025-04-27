@@ -436,6 +436,29 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 }
 
+func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]interface{} {
+	n := len(ctx.Client.State.UnassociatedFlightPlans) + len(ctx.Client.State.Tracks)
+	count := make(map[av.Squawk]int, n)
+
+	for _, fp := range ctx.Client.State.UnassociatedFlightPlans {
+		count[fp.AssignedSquawk]++
+	}
+	for _, trk := range ctx.Client.State.Tracks {
+		// TODO: are unsupported being counted twice?
+		if trk.IsAssociated() {
+			count[trk.FlightPlan.AssignedSquawk]++
+		}
+	}
+
+	dupes := make(map[av.Squawk]interface{})
+	for sq, n := range count {
+		if n > 1 {
+			dupes[sq] = nil
+		}
+	}
+	return dupes
+}
+
 func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
@@ -445,8 +468,8 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
 		func(fp *sim.STARSFlightPlan) bool {
-			// Don't include IFR or unsupported VFR DBs
-			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero()
+			// Only include NAS VFR flight plans.
+			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero() && fp.PlanType == sim.LocalEnroute
 		})
 
 	for _, fp := range vfr {
@@ -457,6 +480,8 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	slices.SortFunc(vfr, func(a, b *sim.STARSFlightPlan) int {
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
+
+	dupes := getDuplicateBeaconCodes(ctx)
 
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
@@ -478,7 +503,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 			acid = STARSTriangleCharacter
 		}
 		text.WriteString(fmt.Sprintf("%-8s ", acid+string(vfr[i].ACID)))
-		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
+		if _, ok := dupes[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
 			text.WriteByte(' ')
@@ -521,10 +546,6 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
 		func(fp *sim.STARSFlightPlan) bool {
-			if fp.Rules != av.FlightRulesIFR {
-				return false
-			}
-
 			if !fp.Location.IsZero() {
 				// Unsupported DBs aren't included in the list.
 				return false
@@ -547,6 +568,8 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		return strings.Compare(string(a.ACID), string(b.ACID))
 	})
 
+	dupes := getDuplicateBeaconCodes(ctx)
+
 	var text strings.Builder
 
 	text.WriteString("FLIGHT PLAN\n")
@@ -568,7 +591,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 			acid = STARSTriangleCharacter
 		}
 		text.WriteString(fmt.Sprintf("%-8s ", acid+string(fp.ACID)))
-		if _, ok := sp.DuplicateBeacons[fp.AssignedSquawk]; ok {
+		if _, ok := dupes[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
 			text.WriteByte(' ')
@@ -582,17 +605,17 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		}
 		if fp.Rules == av.FlightRulesVFR {
 			text.WriteString("VFR")
-		}
-		// entry/exit fix characters
-		if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
-			text.WriteByte(fp.EntryFix[0])
 		} else {
-			text.WriteByte(' ')
-		}
-		if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
-			text.WriteByte(fp.ExitFix[0])
-		} else {
-			text.WriteByte(' ')
+			if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
+				text.WriteByte(fp.EntryFix[0])
+			} else {
+				text.WriteByte(' ')
+			}
+			if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
+				text.WriteByte(fp.ExitFix[0])
+			} else {
+				text.WriteByte(' ')
+			}
 		}
 		text.WriteByte('\n')
 	}

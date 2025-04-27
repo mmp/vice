@@ -309,26 +309,14 @@ func parseFpTriAssignedAltitude(s string, checkSp func(s string, primary bool) b
 }
 
 func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
-	if s == "+" { // auto-assign IFR
-		spec.AssignIFRSquawk = true
-		spec.AssignVFRSquawk = false
+	if s == "+" || s == "/" || s == "/1" || s == "/2" || s == "/3" || s == "/4" ||
+		(len(s) == 4 && util.IsAllNumbers(s)) {
+		spec.SquawkAssignment.Set(s)
 		return true, nil
-	} else if s == "/" { // auto-assign VFR
-		spec.AssignIFRSquawk = false
-		spec.AssignVFRSquawk = true
-		return true, nil
-	} else if len(s) == 4 && util.IsAllNumbers(s) {
-		if sq, err := av.ParseSquawk(s); err == nil {
-			spec.AssignedSquawk.Set(sq)
-			spec.AssignIFRSquawk = false
-			spec.AssignVFRSquawk = false
-			return true, nil
-		} else {
-			return true, err
-		}
+	} else {
+		return false, nil
 	}
 
-	// TODO? /1, /2, /3, /4: assign from specific pools
 	return false, nil
 }
 

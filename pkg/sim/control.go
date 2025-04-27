@@ -231,46 +231,35 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 		})
 }
 
-func (s *Sim) CreateFlightPlan(tcp string, ty STARSFlightPlanType, spec STARSFlightPlanSpecifier) (STARSFlightPlan, error) {
+func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
-		return STARSFlightPlan{}, err
+		return err
 	}
 
-	fp := spec.GetFlightPlan()
+	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+	if err != nil {
+		return err
+	}
 
 	if util.SeqContainsFunc(maps.Values(s.Aircraft),
 		func(ac *Aircraft) bool { return ac.IsAssociated() && ac.STARSFlightPlan.ACID == fp.ACID }) {
-		return STARSFlightPlan{}, ErrDuplicateACID
+		return ErrDuplicateACID
 	}
 	if slices.ContainsFunc(s.State.UnassociatedFlightPlans,
 		func(fp2 *STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
-		return STARSFlightPlan{}, ErrDuplicateACID
+		return ErrDuplicateACID
 	}
 
-	var err error
-	switch ty {
-	case LocalNonEnroute:
-		fp, err = s.STARSComputer.CreateFlightPlan(fp)
-	case LocalEnroute, RemoteEnroute:
-		var sq av.Squawk
-		sq, err = s.ERAMComputer.CreateSquawk()
-		if err != nil {
-			return fp, err
-		}
-		fp.AssignedSquawk = sq
-		fp, err = s.STARSComputer.CreateFlightPlan(fp)
-	default:
-		panic("unhandled STARSFlightPlanType")
-	}
+	fp, err = s.STARSComputer.CreateFlightPlan(fp)
 
 	if err == nil {
 		err = s.postCheckFlightPlanSpecifier(spec)
 	}
 
-	return fp, err
+	return err
 }
 
 // General checks both for create and modify; this returns errors that prevent fp creation.
@@ -290,13 +279,11 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error 
 		}
 	}
 
-	if spec.AssignedSquawk.IsSet {
-		sq := spec.AssignedSquawk.Get()
-		if (sq >= 0o1200 && sq <= 0o1202) || (sq%0o100) == 0 {
-			return ErrIllegalBeaconCode
-		}
-		if ok, _ := av.SquawkIsSPC(sq); ok {
-			return ErrIllegalBeaconCode
+	if spec.SquawkAssignment.IsSet {
+		if str := spec.SquawkAssignment.Get(); len(str) == 4 {
+			if sq, err := av.ParseSquawk(str); err == nil && s.LocalCodePool.IsReservedVFRCode(sq) {
+				return ErrIllegalBeaconCode
+			}
 		}
 	}
 
@@ -357,7 +344,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 		}
 	}
 
-	fp.Update(spec)
+	fp.Update(spec, s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
 
 	return s.postCheckFlightPlanSpecifier(spec)
 }
@@ -392,7 +379,10 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 				return ErrDuplicateACID
 			}
 
-			fp := spec.GetFlightPlan()
+			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+			if err != nil {
+				return err
+			}
 			if _, err := s.STARSComputer.CreateFlightPlan(fp); err != nil {
 				return err
 			}
@@ -431,7 +421,7 @@ func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID
 		return ErrNoMatchingFlightPlan
 	}
 	if spec != nil {
-		fp.Update(*spec)
+		fp.Update(*spec, s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
 	}
 
 	return s.dispatchAircraftCommand(tcp, callsign,
@@ -479,8 +469,11 @@ func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 
 func (s *Sim) deleteFlightPlan(fp *STARSFlightPlan) {
 	s.STARSComputer.returnListIndex(fp.ListIndex)
-	s.STARSComputer.SquawkCodePool.Return(fp.AssignedSquawk)
-	s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
+	if fp.PlanType == LocalNonEnroute {
+		s.LocalCodePool.Return(fp.AssignedSquawk)
+	} else {
+		s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
+	}
 }
 
 func (s *Sim) RepositionTrack(tcp string, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {

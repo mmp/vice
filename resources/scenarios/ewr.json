@@ -10788,7 +10788,6 @@
     "center": "N040.43.34.389,W074.28.54.713",
   "pdb": { "hide_gs": true },
     "range": 60,
-    "beacon_bank": 6,
     "coordination_fixes": {
       "FLOSI": [
         {

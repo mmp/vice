@@ -309,9 +309,10 @@ type STARSFacilityAdaptation struct {
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
 	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
-	BeaconBank        int                           `json:"beacon_bank"`
 	KeepLDB           bool                          `json:"keep_ldb"`
 	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
+
+	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes"`
 
 	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
 	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
@@ -390,6 +391,7 @@ type STARSFlightPlan struct {
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time
+	PlanType              STARSFlightPlanType
 
 	AssignedSquawk av.Squawk
 
@@ -454,8 +456,9 @@ type STARSFlightPlanSpecifier struct {
 	ExitFixIsIntermediate util.Optional[bool]
 	Rules                 util.Optional[av.FlightRules]
 	CoordinationTime      util.Optional[time.Time]
+	PlanType              util.Optional[STARSFlightPlanType]
 
-	AssignedSquawk util.Optional[av.Squawk]
+	SquawkAssignment util.Optional[string]
 
 	TrackingController util.Optional[string]
 
@@ -494,21 +497,18 @@ type STARSFlightPlanSpecifier struct {
 
 	// Specifiers used when creating flight plans but not held on beyond
 	// that.
-	AssignIFRSquawk bool
-	AssignVFRSquawk bool
-	AutoAssociate   bool
+	AutoAssociate bool
 }
 
-func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
-	return STARSFlightPlan{
+func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
+	nasPool *av.EnrouteSquawkCodePool) (STARSFlightPlan, error) {
+	sfp := STARSFlightPlan{
 		ACID:                  s.ACID.GetOr(""),
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
 		ExitFixIsIntermediate: s.ExitFixIsIntermediate.GetOr(false),
-		Rules:                 s.Rules.GetOr(av.FlightRulesUnknown),
 		CoordinationTime:      s.CoordinationTime.GetOr(time.Time{}),
-
-		AssignedSquawk: s.AssignedSquawk.GetOr(av.Squawk(0)),
+		PlanType:              s.PlanType.GetOr(UnknownFlightPlanType),
 
 		AircraftCount:   s.AircraftCount.GetOr(1),
 		AircraftType:    s.AircraftType.GetOr(""),
@@ -545,9 +545,40 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan() STARSFlightPlan {
 
 		AutoAssociate: s.AutoAssociate,
 	}
+
+	// Handle beacon code assignment
+	sq, rules, err := assignCode(s.SquawkAssignment, sfp.PlanType, sfp.Rules, localPool, nasPool)
+	sfp.AssignedSquawk = sq
+	sfp.Rules = s.Rules.GetOr(rules) // explicit rules from caller override squawk code pool rules
+
+	if sfp.Rules != av.FlightRulesIFR && !s.DisableMSAW.IsSet {
+		sfp.DisableMSAW = true
+	}
+
+	return sfp, err
 }
 
-func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
+func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, rules av.FlightRules,
+	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
+	if planType == LocalEnroute {
+		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
+		if assignment.IsSet == false || assignment.Get() == "" {
+			sq, err := nasPool.Get()
+			return sq, rules, err
+		} else {
+			sq, err := av.ParseSquawk(assignment.Get())
+			if err == nil {
+				nasPool.Take(sq)
+			}
+			return sq, rules, err
+		}
+	} else {
+		return localPool.Get(assignment.GetOr(""), rules)
+	}
+}
+
+func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
+	nasPool *av.EnrouteSquawkCodePool) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
 	}
@@ -567,8 +598,20 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	if spec.CoordinationTime.IsSet {
 		fp.CoordinationTime = spec.CoordinationTime.Get()
 	}
-	if spec.AssignedSquawk.IsSet {
-		fp.AssignedSquawk = spec.AssignedSquawk.Get()
+	if spec.PlanType.IsSet {
+		fp.PlanType = spec.PlanType.Get()
+	}
+	if spec.SquawkAssignment.IsSet {
+		var rules av.FlightRules
+		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, localPool, nasPool)
+		if !spec.Rules.IsSet {
+			// Only take the rules from the pool if no rules were given in spec.
+			fp.Rules = rules
+			// Disable MSAW for VFRs
+			if rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
+				fp.DisableMSAW = true
+			}
+		}
 	}
 
 	if spec.AircraftType.IsSet {
@@ -651,15 +694,18 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier) {
 	if spec.ForceACTypeDisplayEndTime.IsSet {
 		fp.ForceACTypeDisplayEndTime = spec.ForceACTypeDisplayEndTime.Get()
 	}
+	return
 }
 
 type STARSFlightPlanType int
 
 // Flight plan types (STARS)
 const (
+	UnknownFlightPlanType STARSFlightPlanType = iota
+
 	// Flight plan received from a NAS ARTCC.  This is a flight plan that
 	// has been sent over by an overlying ERAM facility.
-	RemoteEnroute STARSFlightPlanType = iota
+	RemoteEnroute
 
 	// Flight plan received from an adjacent terminal facility This is a
 	// flight plan that has been sent over by another STARS facility.

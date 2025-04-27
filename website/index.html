@@ -6981,6 +6981,37 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"ssr_codes"</td>
+                <td>Object</td>
+                <td>This defines Secondary Surveillance Radar (SSR) codes for the facility; these are
+                  various ranges of beacon codes that are assigned to local aircraft or have other
+                  special meanings. Its members are:
+                  <ul>
+                    <li>"auto_assignable_codes": object specifying beacon codes available for local VFR and IFR
+                      flight plans. It has the members "vfr" and "ifr", which are used for VFR and IFR flight plans,
+                      respectively, and "1", "2", "3", and "4", which specify beacon code banks that can be assigned
+                      with syntax like <code>/1</code> when specifying a flight plan. Each of these objects has these members:
+                      <ul>
+                        <li>"range": string specifying a single beacon code or a range of beacon codes (inclusive).
+                          Examples: "1200", "0301-0377".
+                        </li>
+                        <li>"flight_rules": string, either "v" or "i", indicating VFR or IFR, respectively. This may only
+                          be specified for the numbered pools; it is predetermined for the "vfr" and "ifr" pools.
+                        </li>
+                        <li>"backups": optional string specifying one or more backup pools to use if the initial
+                          pool tried has no more remaining codes. Only numbered pools may be given.
+                          Example: "234".
+                        </li>
+                      </ul>
+                    </li>
+                    <li>"beacon_code_table": object with a single member, "vfr_codes", which is an array of strings specifying
+                      beacon codes or beacon code ranges used for VFR aircraft without STARS flight plans.
+                      Codes in these ranges cannot be manually assigned to flight plans. Default: 1200-1277.
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
                 <td>"stars_maps"</td>
                 <td>Array of strings</td>
                 <td>These strings specify the available video maps shown in the STARS DCB;

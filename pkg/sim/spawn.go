@@ -906,6 +906,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		EntryFix:         "", // TODO
 		ExitFix:          util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
 		CoordinationTime: getAircraftTime(s.State.SimTime),
+		PlanType:         RemoteEnroute,
 
 		TrackingController:       arr.InitialController,
 		ControllingController:    arr.InitialController,
@@ -1042,6 +1043,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:          shortExit,
 		CoordinationTime: getAircraftTime(s.State.SimTime),
+		PlanType:         RemoteEnroute,
 
 		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeDeparture,
@@ -1147,6 +1149,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		EntryFix:         "", // TODO
 		ExitFix:          "", // TODO
 		CoordinationTime: getAircraftTime(s.State.SimTime),
+		PlanType:         RemoteEnroute,
 
 		TrackingController:       of.InitialController,
 		ControllingController:    of.InitialController,

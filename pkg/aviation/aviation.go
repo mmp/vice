@@ -5,6 +5,7 @@
 package aviation
 
 import (
+	"errors"
 	"fmt"
 	"maps"
 	"slices"
@@ -885,9 +886,9 @@ func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SquawkCodePool
+// EnrouteSquawkCodePool
 
-type SquawkCodePool struct {
+type EnrouteSquawkCodePool struct {
 	Available *util.IntRangeSet
 
 	// Initial is maintained as a read-only snapshot of the initial set of
@@ -895,18 +896,6 @@ type SquawkCodePool struct {
 	// to return code that is inside the range we cover but was removed
 	// from the pool when it was first initialized.
 	Initial *util.IntRangeSet
-}
-
-func makePool(first, last int) *SquawkCodePool {
-	p := &SquawkCodePool{
-		Initial: util.MakeIntRangeSet(first, last),
-	}
-
-	removeInvalidCodes(p.Initial)
-
-	p.Available = p.Initial.Clone()
-
-	return p
 }
 
 func removeInvalidCodes(codes *util.IntRangeSet) {
@@ -971,15 +960,33 @@ func removeInvalidCodes(codes *util.IntRangeSet) {
 	}
 }
 
-func MakeCompleteSquawkCodePool() *SquawkCodePool {
-	return makePool(0o1001, 0o7777)
+func MakeEnrouteSquawkCodePool(loc *LocalSquawkCodePool) *EnrouteSquawkCodePool {
+	p := &EnrouteSquawkCodePool{
+		Initial: util.MakeIntRangeSet(0o1001, 0o7777),
+	}
+
+	removeInvalidCodes(p.Initial)
+
+	// Remove codes in the local pool as well
+	if loc != nil {
+		for _, pool := range loc.Pools {
+			for sq := pool.Range[0]; sq <= pool.Range[1]; sq++ {
+				_ = p.Initial.Take(int(sq))
+			}
+		}
+		for _, r := range loc.BeaconCodeTable.VFRCodes {
+			for sq := r[0]; sq <= r[1]; sq++ {
+				_ = p.Initial.Take(int(sq))
+			}
+		}
+	}
+
+	p.Available = p.Initial.Clone()
+
+	return p
 }
 
-func MakeSquawkBankCodePool(bank int) *SquawkCodePool {
-	return makePool(bank*0o100+1, bank*0o100+0o77)
-}
-
-func (p *SquawkCodePool) Get() (Squawk, error) {
+func (p *EnrouteSquawkCodePool) Get() (Squawk, error) {
 	code, err := p.Available.GetRandom()
 	if err != nil {
 		return Squawk(0), ErrNoMoreAvailableSquawkCodes
@@ -988,11 +995,11 @@ func (p *SquawkCodePool) Get() (Squawk, error) {
 	}
 }
 
-func (p *SquawkCodePool) IsAssigned(code Squawk) bool {
+func (p *EnrouteSquawkCodePool) IsAssigned(code Squawk) bool {
 	return !p.Available.IsAvailable(int(code))
 }
 
-func (p *SquawkCodePool) Return(code Squawk) error {
+func (p *EnrouteSquawkCodePool) Return(code Squawk) error {
 	if !p.Initial.InRange(int(code)) || !p.Initial.IsAvailable(int(code)) {
 		// It's not ours; just ignore it.
 		return nil
@@ -1003,7 +1010,7 @@ func (p *SquawkCodePool) Return(code Squawk) error {
 	return nil
 }
 
-func (p *SquawkCodePool) Take(code Squawk) error {
+func (p *EnrouteSquawkCodePool) Take(code Squawk) error {
 	if p.IsAssigned(code) {
 		return ErrSquawkCodeAlreadyAssigned
 	}
@@ -1013,6 +1020,241 @@ func (p *SquawkCodePool) Take(code Squawk) error {
 	return nil
 }
 
-func (p *SquawkCodePool) NumAvailable() int {
+func (p *EnrouteSquawkCodePool) NumAvailable() int {
 	return p.Available.Count()
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LocalSquawkCodePool
+
+// SSR Codes Windows
+type LocalSquawkCodePoolSpecifier struct {
+	Pools           map[string]PoolSpecifier `json:"auto_assignable_codes"`
+	BeaconCodeTable BeaconCodeTableSpecifier `json:"beacon_code_table"`
+}
+
+type PoolSpecifier struct {
+	Range   string `json:"range"`
+	Rules   string `json:"flight_rules"`
+	Backups string `json:"backup_pool_list"`
+	// TODO: no_flight_plan_exclusion: bool, if true, don't show WHO in DB if it exits the departure filter region.
+}
+
+type BeaconCodeTableSpecifier struct {
+	VFRCodes []string `json:"vfr_codes"`
+	// TODO: MSAW
+}
+
+// Doesn't return an error since errors are logged to the ErrorLogger
+// (which in turn will cause validation to fail if there are any issues...)
+func parseCodeRange(s string, e *util.ErrorLogger) [2]Squawk {
+	if low, high, ok := strings.Cut(s, "-"); ok {
+		// Code range
+		slow, err := ParseSquawk(low)
+		if err != nil {
+			e.ErrorString("Invalid squawk code %q", low)
+		}
+		shigh, err := ParseSquawk(high)
+		if err != nil {
+			e.ErrorString("Invalid squawk code %q", high)
+		}
+		if slow > shigh {
+			e.ErrorString("first squawk code %q is greater than second %q", slow, shigh)
+		}
+		return [2]Squawk{slow, shigh}
+	} else {
+		// Single code
+		sq, err := ParseSquawk(s)
+		if err != nil {
+			e.ErrorString("Invalid squawk code %q", s)
+		}
+		return [2]Squawk{sq, sq}
+	}
+}
+
+func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
+	defer e.CheckDepth(e.CurrentDepth())
+
+	if len(s.Pools) == 0 {
+		return
+	} else {
+		if vpool, ok := s.Pools["vfr"]; !ok {
+			e.ErrorString("must specify \"vfr\" squawk pool")
+		} else if vpool.Rules != "" && vpool.Rules != "v" {
+			e.ErrorString("\"rules\" cannot be specified for the \"vfr\" pool")
+		}
+
+		if ipool, ok := s.Pools["ifr"]; !ok {
+			e.ErrorString("must specify \"ifr\" squawk pool")
+		} else if ipool.Rules != "" && ipool.Rules != "i" {
+			e.ErrorString("\"rules\" cannot be specified for the \"ifr\" pool")
+		}
+		// Numbered ones optional(?)
+
+		var ranges [][2]Squawk
+		for name, spec := range s.Pools {
+			e.Push("Code pool " + name)
+			if name != "ifr" && name != "vfr" && name != "1" && name != "2" &&
+				name != "3" && name != "4" {
+				e.ErrorString("Pool name %q is invalid: must be one of \"ifr\", \"vfr\", "+
+					"\"1\", \"2\", \"3\", or \"4\".", name)
+			}
+
+			r := parseCodeRange(spec.Range, e)
+			for _, pr := range ranges {
+				if (r[0] >= pr[0] && r[0] <= pr[1]) || (r[1] >= pr[0] && r[1] <= pr[1]) {
+					e.ErrorString("Range %s-%s overlaps with other range %s-%s", r[0], r[1], pr[0], pr[1])
+				}
+			}
+			ranges = append(ranges, r)
+
+			if spec.Rules != "" && spec.Rules != "i" && spec.Rules != "v" {
+				e.ErrorString("\"rules\" must be \"i\" or \"v\"")
+			}
+
+			for i, ch := range spec.Backups {
+				if string(ch) == strings.TrimPrefix(name, "/") {
+					e.ErrorString("Can't specify ourself %q as a backup pool", string(ch))
+				} else if strings.Contains(spec.Backups[:i], string(ch)) {
+					e.ErrorString("Can't repeat the same backup pool %q", string(ch))
+				} else if ch < '1' && ch > '4' {
+					e.ErrorString("Backup pools can only contain \"1\", \"2\", \"3\", or \"4\".")
+				}
+			}
+
+			e.Pop()
+		}
+	}
+
+	e.Push("\"beacon_code_table\"")
+	for _, cr := range s.BeaconCodeTable.VFRCodes {
+		_ = parseCodeRange(cr, e)
+	}
+	e.Pop()
+}
+
+type LocalSquawkCodePool struct {
+	Pools           map[string]LocalPool
+	BeaconCodeTable BeaconCodeTable
+}
+
+type BeaconCodeTable struct {
+	VFRCodes [][2]Squawk
+	// TODO: MSAW
+}
+
+type LocalPool struct {
+	Available   *util.IntRangeSet
+	Range       [2]Squawk
+	Backups     string
+	FlightRules FlightRules
+}
+
+func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCodePool {
+	// Assume spec has already been validated
+	p := &LocalSquawkCodePool{Pools: make(map[string]LocalPool)}
+	if len(spec.Pools) == 0 {
+		// Return a reasonable default
+		p.Pools["vfr"] = LocalPool{
+			Available:   util.MakeIntRangeSet(0o201, 0o277),
+			Range:       [2]Squawk{0o0201, 0o0277},
+			FlightRules: FlightRulesVFR,
+		}
+		p.Pools["ifr"] = LocalPool{
+			Available:   util.MakeIntRangeSet(0o301, 0o377),
+			Range:       [2]Squawk{0o0301, 0o0377},
+			FlightRules: FlightRulesIFR,
+		}
+	} else {
+		for name, pspec := range spec.Pools {
+			r := parseCodeRange(pspec.Range, nil)
+			p.Pools[name] = LocalPool{
+				Available: util.MakeIntRangeSet(int(r[0]), int(r[1])),
+				Range:     r,
+				Backups:   pspec.Backups,
+				FlightRules: func() FlightRules {
+					if name == "vfr" || pspec.Rules == "v" {
+						return FlightRulesVFR
+					}
+					return FlightRulesIFR
+				}(),
+			}
+		}
+	}
+
+	if len(spec.BeaconCodeTable.VFRCodes) == 0 {
+		p.BeaconCodeTable.VFRCodes = [][2]Squawk{[2]Squawk{0o1200, 0o1277}}
+	} else {
+		for _, cr := range spec.BeaconCodeTable.VFRCodes {
+			p.BeaconCodeTable.VFRCodes = append(p.BeaconCodeTable.VFRCodes, parseCodeRange(cr, nil))
+		}
+	}
+
+	return p
+}
+
+func (p *LocalSquawkCodePool) IsReservedVFRCode(sq Squawk) bool {
+	for _, r := range p.BeaconCodeTable.VFRCodes {
+		if sq >= r[0] && sq <= r[1] {
+			return true
+		}
+	}
+	return false
+}
+
+// inbound rules are only used to choose a VFR/IFR pool if spec == ""
+func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules) (Squawk, FlightRules, error) {
+	if spec == "" {
+		if rules == FlightRulesIFR {
+			spec = "ifr"
+		} else {
+			spec = "vfr"
+		}
+	} else if spec == "+" {
+		spec = "ifr"
+	} else if spec == "/" {
+		spec = "vfr"
+	} else if len(spec) == 2 && spec[0] == '/' {
+		spec = spec[1:]
+	}
+
+	if sq, err := ParseSquawk(spec); err == nil && len(spec) == 4 {
+		// Remove it from the corresponding pool for auto-assignment. (But
+		// it's ok to assign the same code multiple times...)
+		for _, pool := range p.Pools {
+			if sq >= pool.Range[0] && sq <= pool.Range[1] {
+				_ = pool.Available.Take(int(sq))
+				return sq, pool.FlightRules, nil
+			}
+		}
+		// It's fine if it's not it any of the pools
+		return sq, rules, nil
+	}
+
+	if pool, ok := p.Pools[spec]; !ok {
+		fmt.Printf("%s: no pool available!\n", spec)
+		return Squawk(0), FlightRulesUnknown, errors.New("bad pool specifier")
+	} else {
+		backups := pool.Backups
+		rules := pool.FlightRules // initial pool's rules are sticky even if we go to a backup
+		for {
+			if sq, err := pool.Available.GetRandom(); err == nil {
+				return Squawk(sq), rules, nil
+			} else if len(backups) == 0 {
+				return Squawk(sq), rules, err
+			} else {
+				pool = p.Pools[string(backups[0])]
+				backups = backups[1:]
+			}
+		}
+	}
+}
+
+func (p *LocalSquawkCodePool) Return(sq Squawk) error {
+	for _, pool := range p.Pools {
+		if pool.Available.InRange(int(sq)) {
+			return pool.Available.Return(int(sq))
+		}
+	}
+	return fmt.Errorf("returned code %s not in any pool's range", sq)
 }

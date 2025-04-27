@@ -6558,6 +6558,35 @@
   },
   "stars_config": {
     "center": "KJFK",
+    "ssr_codes": {
+      "auto_assignable_codes": {
+        "ifr": {
+          "range": "1501-1677"
+        },
+        "vfr": {
+          "range": "0301-0377"
+        },
+        "1": {
+          "range": "0401-0477",
+          "backup_pool_list": "234"
+        },
+        "2": {
+          "range": "0501-0577",
+          "backup_pool_list": "234"
+        },
+        "3": {
+          "range": "0601-0677",
+          "backup_pool_list": "234"
+        },
+        "4": {
+          "range": "0701-0777",
+          "backup_pool_list": "123"
+        }
+      },
+      "beacon_code_table": {
+        "vfr_codes": [ "1200-1202" ]
+      }
+    },
     "flight_plan": {
       "modify_after_display": true,
       "acquisition_volumes": [

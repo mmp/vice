@@ -158,7 +158,6 @@ func (sd *Dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim
 type CreateFlightPlanArgs struct {
 	ControllerToken     string
 	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
-	Type                sim.STARSFlightPlanType
 }
 
 func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.StateUpdate) error {
@@ -167,7 +166,7 @@ func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.St
 	if ctrl, s, ok := sd.sm.LookupController(cfp.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		_, err := s.CreateFlightPlan(ctrl.tcp, cfp.Type, cfp.FlightPlanSpecifier)
+		err := s.CreateFlightPlan(ctrl.tcp, cfp.FlightPlanSpecifier)
 		if err == nil {
 			s.GetStateUpdate(ctrl.tcp, update)
 		}

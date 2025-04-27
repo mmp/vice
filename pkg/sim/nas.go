@@ -12,7 +12,7 @@ import (
 )
 
 type ERAMComputer struct {
-	SquawkCodePool *av.SquawkCodePool
+	SquawkCodePool *av.EnrouteSquawkCodePool
 	Identifier     string
 	Adaptation     av.ERAMAdaptation
 }
@@ -20,15 +20,14 @@ type ERAMComputer struct {
 type STARSComputer struct {
 	Identifier       string
 	FlightPlans      []*STARSFlightPlan
-	SquawkCodePool   *av.SquawkCodePool
 	HoldForRelease   []*Aircraft
 	AvailableIndices []int
 }
 
-func makeERAMComputer(fac string) *ERAMComputer {
+func makeERAMComputer(fac string, loc *av.LocalSquawkCodePool) *ERAMComputer {
 	ec := &ERAMComputer{
 		Adaptation:     av.DB.ERAMAdaptations[fac],
-		SquawkCodePool: av.MakeCompleteSquawkCodePool(),
+		SquawkCodePool: av.MakeEnrouteSquawkCodePool(loc),
 		Identifier:     fac,
 	}
 
@@ -46,10 +45,9 @@ func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {
 func (ec *ERAMComputer) Update(s *Sim) {
 }
 
-func makeSTARSComputer(id string, beaconBank int) *STARSComputer {
+func makeSTARSComputer(id string) *STARSComputer {
 	sc := &STARSComputer{
 		Identifier:       id,
-		SquawkCodePool:   av.MakeSquawkBankCodePool(beaconBank),
 		AvailableIndices: make([]int, 99),
 	}
 
@@ -217,15 +215,6 @@ func (sc *STARSComputer) CreateFlightPlan(fp STARSFlightPlan) (STARSFlightPlan, 
 	}
 
 	var err error
-	if fp.AssignedSquawk == av.Squawk(0) {
-		fp.AssignedSquawk, err = sc.SquawkCodePool.Get()
-		if err != nil {
-			return fp, err
-		}
-	} else {
-		// TODO: claim the squawk code so we don't assign it?
-	}
-
 	fp.ListIndex, err = sc.getListIndex()
 	if err != nil {
 		return fp, err

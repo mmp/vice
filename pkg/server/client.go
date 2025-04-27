@@ -163,10 +163,10 @@ func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
 	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.GlobalMessage(global), nil))
 }
 
-func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, ty sim.STARSFlightPlanType, callback func(error)) {
+func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
 	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.CreateFlightPlan(spec, ty, &update), &update, callback))
+		makeStateUpdateRPCCall(c.proxy.CreateFlightPlan(spec, &update), &update, callback))
 }
 
 func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlanSpecifier, callback func(error)) {

@@ -73,10 +73,9 @@ func (p *proxy) TakeOrReturnLaunchControl() *rpc.Call {
 	return p.Client.Go("Sim.TakeOrReturnLaunchControl", p.ControllerToken, nil, nil)
 }
 
-func (p *proxy) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, ty sim.STARSFlightPlanType, update *sim.StateUpdate) *rpc.Call {
+func (p *proxy) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.CreateFlightPlan", &CreateFlightPlanArgs{
 		ControllerToken:     p.ControllerToken,
-		Type:                ty,
 		FlightPlanSpecifier: spec,
 	}, update, nil)
 }
