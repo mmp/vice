@@ -2795,7 +2795,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign av.ADSBCal
 	sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
 }
 
-func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier) error {
+func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserTCP)
 	}
@@ -2813,7 +2813,6 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 				sp.displayError(err, ctx, "")
 			}
 		})
-	return nil
 }
 
 func (sp *STARSPane) activateFlightPlan(ctx *panes.Context, trackCallsign av.ADSBCallsign, fpACID sim.ACID,
@@ -3408,12 +3407,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				spec.QuickFlightPlan.Set(true)
 				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeOverflight)
-				if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
-					status.err = err
-				} else {
-					state.DatablockAlert = true // yellow until slewed
-					status.clear = true
-				}
+
+				sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec)
+
+				state.DatablockAlert = true // yellow until slewed
+				status.clear = true
 				return
 			} else if cmd == ".ROUTE" {
 				sp.drawRouteAircraft = trk.ADSBCallsign
@@ -3505,11 +3503,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 						if !spec.SquawkAssignment.IsSet {
 							spec.SquawkAssignment.Set(trk.Squawk.String())
 						}
-						if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
-							status.err = err
-						} else {
-							status.clear = true
-						}
+						sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec)
+						status.clear = true
 					}
 				}
 				return
@@ -3549,11 +3544,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if !spec.SquawkAssignment.IsSet { // take the current code from the aircraft
 						spec.SquawkAssignment.Set(trk.Squawk.String())
 					}
-					if err := sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec); err != nil {
-						status.err = err
-					} else {
-						status.clear = true
-					}
+					sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec)
+					status.clear = true
 				}
 			}
 			return
