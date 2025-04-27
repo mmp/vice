@@ -487,6 +487,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 
 func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	drawDepartureUI(&c.Scenario.LaunchConfig, p)
+	drawVFRDepartureUI(&c.Scenario.LaunchConfig, p)
 	drawArrivalUI(&c.Scenario.LaunchConfig, p)
 	drawOverflightUI(&c.Scenario.LaunchConfig, p)
 	return false
@@ -677,21 +678,27 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		imgui.EndDisabled()
 	}
 
-	if len(lc.VFRAirports) > 0 {
-		imgui.Separator()
+	imgui.Separator()
 
-		sumVFRRates := 0
-		for _, ap := range lc.VFRAirports {
-			r := float32(ap.VFRRateSum()) * lc.VFRDepartureRateScale
-			if r > 0 {
-				sumVFRRates += int(r)
-			}
-		}
-		imgui.Text(fmt.Sprintf("Overall VFR departure rate: %d / hour", sumVFRRates))
-		// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
-		// from being here initially.
-		changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
+	return
+}
+
+func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
+	if len(lc.VFRAirports) == 0 {
+		return
 	}
+
+	sumVFRRates := 0
+	for _, ap := range lc.VFRAirports {
+		r := float32(ap.VFRRateSum()) * lc.VFRDepartureRateScale
+		if r > 0 {
+			sumVFRRates += int(r)
+		}
+	}
+	imgui.Text(fmt.Sprintf("Overall VFR departure rate: %d / hour", sumVFRRates))
+	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
+	// from being here initially.
+	changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
 
 	imgui.Separator()
 
@@ -1364,6 +1371,10 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			changed := false
 			if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
 				changed = drawDepartureUI(&lc.client.State.LaunchConfig, p)
+			}
+			if len(lc.client.State.LaunchConfig.VFRAirports) > 0 &&
+				imgui.CollapsingHeaderBoolPtr("VFR Departures", nil) {
+				changed = drawVFRDepartureUI(&lc.client.State.LaunchConfig, p) || changed
 			}
 			if imgui.CollapsingHeaderBoolPtr("Arrivals / Overflights", nil) {
 				changed = drawArrivalUI(&lc.client.State.LaunchConfig, p) || changed
