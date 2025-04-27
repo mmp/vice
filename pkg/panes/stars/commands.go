@@ -638,9 +638,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					return
 				}
 
-				spec := sim.STARSFlightPlanSpecifier{
-					AutoAssociate: true,
-				}
+				var spec sim.STARSFlightPlanSpecifier
 				spec.QuickFlightPlan.Set(true)
 				spec.ACID.Set(acid)
 				spec.SquawkAssignment.Set(sq.String())
@@ -733,7 +731,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// Pending FP with discrete beacon code 5-120
 			spec.TypeOfFlight.Set(av.FlightTypeArrival)
 			spec.PlanType.Set(sim.LocalNonEnroute)
-			spec.AutoAssociate = true
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
 		} else if first, rest, ok := strings.Cut(cmd, " "); ok {

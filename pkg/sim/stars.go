@@ -439,7 +439,6 @@ type STARSFlightPlan struct {
 
 	CoordinationFix     string
 	ContainedFacilities []string
-	AutoAssociate       bool
 	RedirectedHandoff   RedirectedHandoff
 
 	InhibitACTypeDisplay      bool
@@ -495,10 +494,6 @@ type STARSFlightPlanSpecifier struct {
 
 	InhibitACTypeDisplay      util.Optional[bool]
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
-
-	// Specifiers used when creating flight plans but not held on beyond
-	// that.
-	AutoAssociate bool
 }
 
 func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
@@ -543,8 +538,6 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 
 		InhibitACTypeDisplay:      s.InhibitACTypeDisplay.GetOr(false),
 		ForceACTypeDisplayEndTime: s.ForceACTypeDisplayEndTime.GetOr(time.Time{}),
-
-		AutoAssociate: s.AutoAssociate,
 	}
 
 	// Handle beacon code assignment

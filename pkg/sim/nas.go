@@ -85,10 +85,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 	// auto-associate if there is a single aircraft squawking the code.
 	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans,
 		func(fp *STARSFlightPlan) bool {
-			if !fp.AutoAssociate {
-				return true
-			}
-
+			// TODO: should be checking auto-acquire volumes
 			var match *Aircraft
 			for _, ac := range s.Aircraft {
 				if ac.IsAirborne() && ac.Squawk == fp.AssignedSquawk {
@@ -154,23 +151,23 @@ func (sc *STARSComputer) Update(s *Sim) {
 				continue
 			}
 
-			var autoAssociate bool
+			var associate bool
 			switch fp.TypeOfFlight {
 			case av.FlightTypeDeparture:
 				// Use a higher altitude threshold than is used for whether tracks
 				// are visible in STARS so they are initially unassociated for a
 				// few ticks.
-				autoAssociate = float32(ac.Altitude()) > ac.DepartureAirportElevation()+200 &&
+				associate = float32(ac.Altitude()) > ac.DepartureAirportElevation()+200 &&
 					inVolumes(s.State.STARSFacilityAdaptation.AcquisitionVolumes)
 
 			case av.FlightTypeArrival, av.FlightTypeOverflight:
 				// Otherwise we associate when we have an inbound handoff from
 				// an external facility.
-				autoAssociate = (fp.HandoffTrackController != "" && !isExternal(fp.HandoffTrackController)) ||
+				associate = (fp.HandoffTrackController != "" && !isExternal(fp.HandoffTrackController)) ||
 					inVolumes(s.State.STARSFacilityAdaptation.AcquisitionVolumes)
 			}
 
-			if autoAssociate {
+			if associate {
 				sc.FlightPlans = slices.Delete(sc.FlightPlans, fpIdx, fpIdx+1)
 
 				// For multi-controller, resolve to the one covering the
