@@ -266,15 +266,8 @@ func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error 
 func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error {
 	if spec.ACID.IsSet {
 		acid := spec.ACID.Get()
-		if len(acid) < 3 {
-			// ACID must be at least 3 characters.
+		if !IsValidACID(string(acid)) {
 			return ErrIllegalACID
-		}
-		for _, ch := range acid {
-			if !((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
-				// ACID must be alphanumeric
-				return ErrIllegalACID
-			}
 		}
 	}
 

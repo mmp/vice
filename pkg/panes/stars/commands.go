@@ -3156,6 +3156,192 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					// 5-202
 					status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
+			} else if cmd[0] == '*' {
+				// Lots of things start with an asterisk...
+				if cmd == "*" {
+					from := trk.Location
+					nmPerLongitude := ctx.NmPerLongitude
+					magneticVariation := ctx.MagneticVariation
+					sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
+						pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+						p := transforms.LatLongFromWindowP(pw)
+						hdg := math.Heading2LL(from, p, nmPerLongitude, magneticVariation)
+						dist := math.NMDistance2LL(from, p)
+
+						status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
+						status.clear = true
+						return
+					}
+					return
+				} else if cmd == "*F" {
+					// 6-148 range/bearing to significant point
+					p := trk.Location
+					sp.wipSignificantPoint = &p
+					sp.scopeClickHandler = toSignificantPointClickHandler
+					sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
+					return
+				} else if cmd == "*J" {
+					// remove j-ring for aircraft
+					state.JRingRadius = 0
+					status.clear = true
+					return
+				} else if cmd == "*P" {
+					// remove cone for aircraft
+					state.ConeLength = 0
+					status.clear = true
+					return
+				} else if cmd == "*T" {
+					// range bearing line
+					sp.wipRBL = &STARSRangeBearingLine{}
+					sp.wipRBL.P[0].ADSBCallsign = trk.ADSBCallsign
+					sp.scopeClickHandler = rblSecondClickHandler
+					// Do not clear the input area to allow entering a fix for the second location
+					return
+				} else if strings.HasPrefix(cmd, "**") { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
+					// STARS Manual 6-70 (On slew). Cannot go interfacility
+					// TODO: Or can be used to accept a pointout as a handoff.
+
+					if cmd == "**" { // Non specified TCP
+						if ctx.FacilityAdaptation.ForceQLToSelf && trk.IsAssociated() &&
+							trk.FlightPlan.TrackingController == ctx.UserTCP {
+							state.ForceQL = true
+							status.clear = true
+						} else {
+							status.err = ErrSTARSIllegalPosition
+						}
+					} else if trk.IsUnassociated() {
+						status.err = ErrSTARSIllegalTrack
+					} else {
+						tcps := strings.Split(cmd[2:], " ")
+						if len(tcps) > 0 && tcps[0] == "ALL" {
+							// Force QL for all TCP
+							// Find user fac
+							if ctrl, ok := ctx.Client.State.Controllers[ctx.UserTCP]; ok && !ctrl.ERAMFacility {
+								sp.forceQL(ctx, trk.FlightPlan.ACID, ctx.UserTCP)
+							}
+							status.clear = true
+						}
+						for _, tcp := range tcps {
+							control := sp.lookupControllerForId(ctx, tcp, trk.FlightPlan.ACID)
+							if control == nil {
+								status.err = ErrSTARSIllegalPosition
+							} else {
+								sp.forceQL(ctx, trk.FlightPlan.ACID, control.Id())
+								status.clear = true
+							}
+						}
+					}
+					return
+				} else if cmd == "*D+" {
+					// TODO: this and the following two should give ILL FNCT if
+					// there's no j-ring/[A]TPA cone being displayed for the
+					// track (6-173).
+
+					// toggle TPA size display
+					if state.DisplayTPASize == nil {
+						b := ps.DisplayTPASize // new variable; don't alias ps.DisplayTPASize!
+						state.DisplayTPASize = &b
+					}
+					*state.DisplayTPASize = !*state.DisplayTPASize
+					status.clear = true
+					return
+				} else if cmd == "*D+E" {
+					// enable TPA size display
+					b := true
+					state.DisplayTPASize = &b
+					status.clear = true
+					return
+				} else if cmd == "*D+I" {
+					// inhibit TPA size display
+					b := false
+					state.DisplayTPASize = &b
+					status.clear = true
+					return
+				} else if cmd == "*AE" {
+					// Enable ATPA warning/alert cones for the track
+					// TODO: for this and *AI and the two *B commands below, we
+					// should issue an error if not IFR, not displaying FDB, or
+					// not in ATPA approach volume (6-176).
+					b := true
+					state.DisplayATPAWarnAlert = &b
+					status.clear = true
+					return
+				} else if cmd == "*AI" {
+					// Inhibit ATPA warning/alert cones for the track
+					b := false
+					state.DisplayATPAWarnAlert = &b
+					status.clear = true
+					return
+				} else if cmd == "*BE" {
+					// Enable ATPA monitor cones for the track
+					b := true
+					state.DisplayATPAMonitor = &b
+					status.clear = true
+					return
+				} else if cmd == "*BI" {
+					// Inhibit ATPA monitor cones for the track
+					b := false
+					state.DisplayATPAMonitor = &b
+					status.clear = true
+					return
+				} else if len(cmd) > 2 && cmd[:2] == "*P" {
+					if r, err := strconv.Atoi(cmd[2:]); err == nil {
+						// Not allowed for unsupported datablocks
+						if trk.IsUnsupportedDB() {
+							status.err = ErrSTARSIllegalTrack
+						} else if r < 1 || r > 30 {
+							status.err = ErrSTARSIllegalValue
+						} else {
+							state.ConeLength = float32(r)
+							state.JRingRadius = 0 // can't have both
+						}
+						status.clear = true
+						return
+					} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
+						if trk.IsUnsupportedDB() {
+							status.err = ErrSTARSIllegalTrack
+						} else if r < 1 || r > 30 {
+							status.err = ErrSTARSIllegalValue
+						} else {
+							state.ConeLength = float32(r)
+							state.JRingRadius = 0 // can't have both
+						}
+						status.clear = true
+						return
+					}
+					// Don't issue an error if it didn't parse; maybe they're setting the ACID
+				} else if len(cmd) > 2 && cmd[:2] == "*J" {
+					if r, err := strconv.Atoi(cmd[2:]); err == nil {
+						if r < 1 || r > 30 {
+							status.err = ErrSTARSIllegalValue
+						} else {
+							state.JRingRadius = float32(r)
+							state.ConeLength = 0 // can't have both
+						}
+						status.clear = true
+						return
+					} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
+						if r < 1 || r > 30 {
+							status.err = ErrSTARSIllegalValue
+						} else {
+							state.JRingRadius = float32(r)
+							state.ConeLength = 0 // can't have both
+						}
+						status.clear = true
+						return
+					}
+					// As with *P, don't return an error if it didn't parse, maybe set ACID below.
+				}
+
+				if sim.IsValidACID(cmd[1:]) {
+					var spec sim.STARSFlightPlanSpecifier
+					spec.ACID.Set(sim.ACID(cmd[1:]))
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+					status.clear = true
+				} else {
+					status.err = ErrSTARSCommandFormat
+				}
+				return
 			} else if cmd == "." {
 				if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
@@ -3176,21 +3362,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 				}
 				return
-			} else if cmd == "*" {
-				from := trk.Location
-				nmPerLongitude := ctx.NmPerLongitude
-				magneticVariation := ctx.MagneticVariation
-				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-					pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
-					p := transforms.LatLongFromWindowP(pw)
-					hdg := math.Heading2LL(from, p, nmPerLongitude, magneticVariation)
-					dist := math.NMDistance2LL(from, p)
-
-					status.output = fmt.Sprintf("%03d/%.2f", int(hdg+.5), dist)
-					status.clear = true
-					return
-				}
-				return
 			} else if trySetLeaderLine(cmd) {
 				status.clear = true
 				return
@@ -3203,30 +3374,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					fmt.Println(ads.Spew + "\n\n\n" + spew.Sdump(state))
 				}
 				status.clear = true
-				return
-			} else if cmd == "*F" {
-				// 6-148 range/bearing to significant point
-				p := trk.Location
-				sp.wipSignificantPoint = &p
-				sp.scopeClickHandler = toSignificantPointClickHandler
-				sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
-				return
-			} else if cmd == "*J" {
-				// remove j-ring for aircraft
-				state.JRingRadius = 0
-				status.clear = true
-				return
-			} else if cmd == "*P" {
-				// remove cone for aircraft
-				state.ConeLength = 0
-				status.clear = true
-				return
-			} else if cmd == "*T" {
-				// range bearing line
-				sp.wipRBL = &STARSRangeBearingLine{}
-				sp.wipRBL.P[0].ADSBCallsign = trk.ADSBCallsign
-				sp.scopeClickHandler = rblSecondClickHandler
-				// Do not clear the input area to allow entering a fix for the second location
 				return
 			} else if trk.IsAssociated() && ctx.Client.StringIsSPC(cmd) {
 				state.SPCAcknowledged = false
@@ -3255,93 +3402,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 				}
 				return
-			} else if lc := len(cmd); lc >= 2 && cmd[0:2] == "**" { // Force QL. You need to specify a TCP unless otherwise specified in STARS config
-				// STARS Manual 6-70 (On slew). Cannot go interfacility
-				// TODO: Or can be used to accept a pointout as a handoff.
-
-				if cmd == "**" { // Non specified TCP
-					if ctx.FacilityAdaptation.ForceQLToSelf && trk.IsAssociated() &&
-						trk.FlightPlan.TrackingController == ctx.UserTCP {
-						state.ForceQL = true
-						status.clear = true
-					} else {
-						status.err = ErrSTARSIllegalPosition
-					}
-				} else if trk.IsUnassociated() {
-					status.err = ErrSTARSIllegalTrack
-				} else {
-					tcps := strings.Split(cmd[2:], " ")
-					if len(tcps) > 0 && tcps[0] == "ALL" {
-						// Force QL for all TCP
-						// Find user fac
-						if ctrl, ok := ctx.Client.State.Controllers[ctx.UserTCP]; ok && !ctrl.ERAMFacility {
-							sp.forceQL(ctx, trk.FlightPlan.ACID, ctx.UserTCP)
-						}
-						status.clear = true
-					}
-					for _, tcp := range tcps {
-						control := sp.lookupControllerForId(ctx, tcp, trk.FlightPlan.ACID)
-						if control == nil {
-							status.err = ErrSTARSIllegalPosition
-						} else {
-							sp.forceQL(ctx, trk.FlightPlan.ACID, control.Id())
-							status.clear = true
-						}
-					}
-				}
-				return
-			} else if cmd == "*D+" {
-				// TODO: this and the following two should give ILL FNCT if
-				// there's no j-ring/[A]TPA cone being displayed for the
-				// track (6-173).
-
-				// toggle TPA size display
-				if state.DisplayTPASize == nil {
-					b := ps.DisplayTPASize // new variable; don't alias ps.DisplayTPASize!
-					state.DisplayTPASize = &b
-				}
-				*state.DisplayTPASize = !*state.DisplayTPASize
-				status.clear = true
-				return
-			} else if cmd == "*D+E" {
-				// enable TPA size display
-				b := true
-				state.DisplayTPASize = &b
-				status.clear = true
-				return
-			} else if cmd == "*D+I" {
-				// inhibit TPA size display
-				b := false
-				state.DisplayTPASize = &b
-				status.clear = true
-				return
-			} else if cmd == "*AE" {
-				// Enable ATPA warning/alert cones for the track
-				// TODO: for this and *AI and the two *B commands below, we
-				// should issue an error if not IFR, not displaying FDB, or
-				// not in ATPA approach volume (6-176).
-				b := true
-				state.DisplayATPAWarnAlert = &b
-				status.clear = true
-				return
-			} else if cmd == "*AI" {
-				// Inhibit ATPA warning/alert cones for the track
-				b := false
-				state.DisplayATPAWarnAlert = &b
-				status.clear = true
-				return
-			} else if cmd == "*BE" {
-				// Enable ATPA monitor cones for the track
-				b := true
-				state.DisplayATPAMonitor = &b
-				status.clear = true
-				return
-			} else if cmd == "*BI" {
-				// Inhibit ATPA monitor cones for the track
-				b := false
-				state.DisplayATPAMonitor = &b
-				status.clear = true
-				return
 			} else if cmd == "Y" && trk.IsUnassociated() {
 				// 5-145: create quick ACID flight plan
 				var spec sim.STARSFlightPlanSpecifier
@@ -3358,51 +3418,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else if cmd == ".ROUTE" {
 				sp.drawRouteAircraft = trk.ADSBCallsign
 				status.clear = true
-				return
-			} else if len(cmd) > 2 && cmd[:2] == "*J" {
-				if r, err := strconv.Atoi(cmd[2:]); err == nil {
-					if r < 1 || r > 30 {
-						status.err = ErrSTARSIllegalValue
-					} else {
-						state.JRingRadius = float32(r)
-						state.ConeLength = 0 // can't have both
-					}
-					status.clear = true
-				} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
-					if r < 1 || r > 30 {
-						status.err = ErrSTARSIllegalValue
-					} else {
-						state.JRingRadius = float32(r)
-						state.ConeLength = 0 // can't have both
-					}
-					status.clear = true
-				} else {
-					status.err = ErrSTARSIllegalParam
-				}
-				return
-			} else if len(cmd) > 2 && cmd[:2] == "*P" {
-				// Not allowed for unsupported datablocks
-				if trk.IsUnsupportedDB() {
-					status.err = ErrSTARSIllegalTrack
-				} else if r, err := strconv.Atoi(cmd[2:]); err == nil {
-					if r < 1 || r > 30 {
-						status.err = ErrSTARSIllegalValue
-					} else {
-						state.ConeLength = float32(r)
-						state.JRingRadius = 0 // can't have both
-					}
-					status.clear = true
-				} else if r, err := strconv.ParseFloat(cmd[2:], 32); err == nil {
-					if r < 1 || r > 30 {
-						status.err = ErrSTARSIllegalValue
-					} else {
-						state.ConeLength = float32(r)
-						state.JRingRadius = 0 // can't have both
-					}
-					status.clear = true
-				} else {
-					status.err = ErrSTARSIllegalParam
-				}
 				return
 			} else if lc := len(cmd); lc >= 2 && cmd[lc-1] == '*' { // Some sort of pointout
 				// First check for errors. (Manual 6-64, 6-73)

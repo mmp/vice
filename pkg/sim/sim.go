@@ -1012,6 +1012,19 @@ func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, bool) {
 	return nil, false
 }
 
+func IsValidACID(acid string) bool {
+	if len(acid) < 3 {
+		return false
+	}
+	for _, ch := range acid {
+		if !((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
+			// ACID must be alphanumeric
+			return false
+		}
+	}
+	return true
+}
+
 func (t *Track) IsAssociated() bool {
 	return t.FlightPlan != nil
 }
