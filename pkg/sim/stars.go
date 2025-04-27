@@ -458,7 +458,8 @@ type STARSFlightPlanSpecifier struct {
 	CoordinationTime      util.Optional[time.Time]
 	PlanType              util.Optional[STARSFlightPlanType]
 
-	SquawkAssignment util.Optional[string]
+	SquawkAssignment         util.Optional[string]
+	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
 
 	TrackingController util.Optional[string]
 
@@ -547,9 +548,14 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 	}
 
 	// Handle beacon code assignment
-	sq, rules, err := assignCode(s.SquawkAssignment, sfp.PlanType, sfp.Rules, localPool, nasPool)
-	sfp.AssignedSquawk = sq
-	sfp.Rules = s.Rules.GetOr(rules) // explicit rules from caller override squawk code pool rules
+	var err error
+	if s.ImplicitSquawkAssignment.IsSet {
+		sfp.AssignedSquawk = s.ImplicitSquawkAssignment.Get()
+	} else {
+		var rules av.FlightRules
+		sfp.AssignedSquawk, rules, err = assignCode(s.SquawkAssignment, sfp.PlanType, sfp.Rules, localPool, nasPool)
+		sfp.Rules = s.Rules.GetOr(rules) // explicit rules from caller override squawk code pool rules
+	}
 
 	if sfp.Rules != av.FlightRulesIFR && !s.DisableMSAW.IsSet {
 		sfp.DisableMSAW = true

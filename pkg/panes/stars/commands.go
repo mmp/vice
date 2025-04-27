@@ -3130,7 +3130,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					// 5-147: change ABC to RBC for track in mismatch
 					spec := sim.STARSFlightPlanSpecifier{}
 					spec.ACID.Set(trk.FlightPlan.ACID)
-					spec.SquawkAssignment.Set(trk.Squawk.String())
+					spec.ImplicitSquawkAssignment.Set(trk.Squawk)
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
 					return
@@ -3501,7 +3501,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					} else {
 						spec.TypeOfFlight.Set(av.FlightTypeArrival)
 						if !spec.SquawkAssignment.IsSet {
-							spec.SquawkAssignment.Set(trk.Squawk.String())
+							spec.ImplicitSquawkAssignment.Set(trk.Squawk)
 						}
 						sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec)
 						status.clear = true
@@ -3542,7 +3542,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else {
 					spec.TypeOfFlight.Set(av.FlightTypeArrival)
 					if !spec.SquawkAssignment.IsSet { // take the current code from the aircraft
-						spec.SquawkAssignment.Set(trk.Squawk.String())
+						spec.ImplicitSquawkAssignment.Set(trk.Squawk)
 					}
 					sp.associateFlightPlan(ctx, trk.ADSBCallsign, spec)
 					status.clear = true
