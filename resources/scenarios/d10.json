@@ -5204,7 +5204,8 @@
                 "speed": 7
             }
         },
-        "DFW South Finals": {
+      "DFW South Finals": {
+        "vfr_rate_scale": 0,
             "arrival_runways": [
                 {
                     "airport": "KDFW",
