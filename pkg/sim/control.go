@@ -193,7 +193,15 @@ func (s *Sim) ChangeSquawk(tcp string, callsign av.ADSBCallsign, sq av.Squawk) e
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControlledAircraftCommand(tcp, callsign,
+	return s.dispatchAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) error {
+			// Allow issuing this command to random unassociated VFRs but
+			// not IFRs that other controllers already own.
+			if ac.IsAssociated() && ac.STARSFlightPlan.ControllingController != tcp && !s.Instructors[tcp] {
+				return av.ErrOtherControllerHasTrack
+			}
+			return nil
+		},
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
