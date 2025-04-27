@@ -555,6 +555,11 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 		sfp.DisableMSAW = true
 	}
 
+	// Exit fix is shown in scratchpad for NAS flight plans.
+	if sfp.PlanType == LocalEnroute && s.ExitFix.IsSet {
+		sfp.Scratchpad = s.ExitFix.Get()
+	}
+
 	return sfp, err
 }
 
@@ -582,12 +587,20 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
 	}
+	if spec.PlanType.IsSet { // do before exit fix
+		fp.PlanType = spec.PlanType.Get()
+	}
 	if spec.EntryFix.IsSet {
 		fp.EntryFix = spec.EntryFix.Get()
 	}
 	if spec.ExitFix.IsSet {
 		fp.ExitFix = spec.ExitFix.Get()
 		fp.ExitFixIsIntermediate = spec.ExitFixIsIntermediate.GetOr(false)
+
+		// Exit fix is shown in scratchpad for NAS flight plans.
+		if fp.PlanType == LocalEnroute && spec.ExitFix.IsSet {
+			fp.Scratchpad = spec.ExitFix.Get()
+		}
 	}
 	if spec.Rules.IsSet {
 		fp.Rules = spec.Rules.Get()
@@ -597,9 +610,6 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	}
 	if spec.CoordinationTime.IsSet {
 		fp.CoordinationTime = spec.CoordinationTime.Get()
-	}
-	if spec.PlanType.IsSet {
-		fp.PlanType = spec.PlanType.Get()
 	}
 	if spec.SquawkAssignment.IsSet {
 		var rules av.FlightRules
