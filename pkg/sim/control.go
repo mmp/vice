@@ -264,6 +264,20 @@ func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error 
 
 // General checks both for create and modify; this returns errors that prevent fp creation.
 func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error {
+	if spec.ACID.IsSet {
+		acid := spec.ACID.Get()
+		if len(acid) < 3 {
+			// ACID must be at least 3 characters.
+			return ErrIllegalACID
+		}
+		for _, ch := range acid {
+			if !((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
+				// ACID must be alphanumeric
+				return ErrIllegalACID
+			}
+		}
+	}
+
 	if spec.Rules.IsSet && spec.Rules.Get() == av.FlightRulesVFR {
 		// Disable MSAW for VFR flight plans unless specifically enabled.
 		if !spec.DisableMSAW.IsSet {
