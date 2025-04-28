@@ -10,6 +10,7 @@ import (
 	"slices"
 	"time"
 
+	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
@@ -644,6 +645,12 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			FlightPlan: update.UnassociatedFlightPlans[i],
 		}
 	}
+
+	// While it seemed that this could be skipped, it's actually necessary
+	// to avoid races: while another copy is made as it's marshaled to be
+	// returned from RPC call, there may be other updates to the sim state
+	// between this function returning and that happening.
+	*update = deep.MustCopy(*update)
 }
 
 func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
