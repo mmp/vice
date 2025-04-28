@@ -602,7 +602,12 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 		}
 	}
 	if spec.Rules.IsSet {
-		fp.Rules = spec.Rules.Get()
+		if spec.Rules.Get() == fp.Rules {
+			// same as current, so clears flight rules, which in turn implies IFR
+			fp.Rules = av.FlightRulesIFR
+		} else {
+			fp.Rules = spec.Rules.Get()
+		}
 		if fp.Rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
 			fp.DisableMSAW = true
 		}

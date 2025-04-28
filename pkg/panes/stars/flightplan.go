@@ -368,7 +368,7 @@ func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spe
 			spec.Rules.Set(av.FlightRulesVFR)
 			return true, nil
 
-		case "E" /* enroute */ :
+		case "E" /* enroute */, "":
 			spec.Rules.Set(av.FlightRulesIFR)
 			return true, nil
 
