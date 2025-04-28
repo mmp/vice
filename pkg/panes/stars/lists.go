@@ -492,17 +492,17 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		fp := vfr[i]
 		text.WriteString(fmt.Sprintf("%2d ", vfr[i].ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-		acid := ""
+		acid := string(vfr[i].ACID)
 		if fp.DisableMSAW {
 			if fp.DisableCA {
-				acid = "+"
+				acid += "+"
 			} else {
-				acid = "*"
+				acid += "*"
 			}
 		} else if fp.DisableCA {
-			acid = STARSTriangleCharacter
+			acid += STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", acid+string(vfr[i].ACID)))
+		text.WriteString(fmt.Sprintf("%-8s ", acid))
 		if _, ok := dupes[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
@@ -585,17 +585,17 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		fp := plans[i]
 		text.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-		acid := ""
+		acid := string(fp.ACID)
 		if fp.DisableMSAW {
 			if fp.DisableCA {
-				acid = "+"
+				acid += "+"
 			} else {
-				acid = "*"
+				acid += "*"
 			}
 		} else if fp.DisableCA {
-			acid = STARSTriangleCharacter
+			acid += STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", acid+string(fp.ACID)))
+		text.WriteString(fmt.Sprintf("%-8s ", acid))
 		if _, ok := dupes[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
