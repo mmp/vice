@@ -9,6 +9,7 @@ import (
 	"iter"
 	"slices"
 	"strings"
+	"sync"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -94,28 +95,39 @@ func (r *Rand) Uint32() uint32 {
 
 // Drop-in replacement for the subset of math/rand that we use...
 var r Rand
+var mu sync.Mutex // though sadly, we're grabbing this for each call with it..
 
 func init() {
 	r = New()
 }
 
 func Seed(s int64) {
+	mu.Lock()
+	defer mu.Unlock()
 	r.PCG32.Seed(uint64(s), pcg32Increment)
 }
 
 func Intn(n int) int {
+	mu.Lock()
+	defer mu.Unlock()
 	return int(r.Bounded(uint32(n)))
 }
 
 func Int31n(n int32) int32 {
+	mu.Lock()
+	defer mu.Unlock()
 	return int32(r.Bounded(uint32(n)))
 }
 
 func Float32() float32 {
+	mu.Lock()
+	defer mu.Unlock()
 	return float32(r.Random()) / (1<<32 - 1)
 }
 
 func Uint32() uint32 {
+	mu.Lock()
+	defer mu.Unlock()
 	return r.Uint32()
 }
 
