@@ -559,6 +559,11 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 			// TODO: should also include flight plans that we entered but
 			// assigned a different initial controller to.
 
+			if fp.InboundHandoffController == "" {
+				// Only controlled by virtual
+				return false
+			}
+
 			ctrl := ctx.Client.State.ResolveController(fp.InboundHandoffController)
 			return ctrl == ctx.UserTCP
 		})
