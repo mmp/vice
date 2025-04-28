@@ -90,6 +90,9 @@ var errorStringToError = map[string]error{
 }
 
 func TryDecodeError(e error) error {
+	if e == nil {
+		return e
+	}
 	if err, ok := errorStringToError[e.Error()]; ok {
 		return err
 	}
