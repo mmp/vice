@@ -333,6 +333,9 @@ func (s *Sim) SignOff(tcp string) error {
 }
 
 func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
 	s.lg.Infof("%s: switching to %s", fromTCP, toTCP)
 
 	// Make sure we can successfully sign on before signing off from the
