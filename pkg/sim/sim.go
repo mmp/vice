@@ -582,16 +582,21 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 	}
 
 	for _, ac := range s.STARSComputer.HoldForRelease {
+		fp, _ := s.GetFlightPlanForACID(ACID(ac.ADSBCallsign))
+		if fp == nil {
+			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
+			continue
+		}
 		update.ReleaseDepartures = append(update.ReleaseDepartures,
 			ReleaseDeparture{
 				ADSBCallsign:        ac.ADSBCallsign,
-				DepartureAirport:    ac.FlightPlan.DepartureAirport, // TODO: STARS fp entry fix?
-				DepartureController: ac.STARSFlightPlan.InboundHandoffController,
+				DepartureAirport:    "K" + fp.EntryFix,
+				DepartureController: fp.InboundHandoffController,
 				Released:            ac.Released,
 				Squawk:              ac.Squawk,
-				ListIndex:           ac.STARSFlightPlan.ListIndex,
-				AircraftType:        ac.STARSFlightPlan.AircraftType,
-				Exit:                ac.STARSFlightPlan.ExitFix,
+				ListIndex:           fp.ListIndex,
+				AircraftType:        fp.AircraftType,
+				Exit:                fp.ExitFix,
 			})
 	}
 
