@@ -669,6 +669,8 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		state.TotalVFR = su.TotalVFR
 		state.Instructors = su.Instructors
 		state.QuickFlightPlanIndex = su.QuickFlightPlanIndex
+
+		state.GenerationIndex = su.GenerationIndex
 	}
 
 	// Important: do this after updating aircraft, controllers, etc.,
