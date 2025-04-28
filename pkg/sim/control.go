@@ -78,6 +78,21 @@ func (s *Sim) dispatchTrackedAircraftCommand(tcp string, callsign av.ADSBCallsig
 		cmd)
 }
 
+// Can issue both to aircraft we track but also unassociated VFRs
+func (s *Sim) dispatchVFRAircraftCommand(tcp string, callsign av.ADSBCallsign,
+	cmd func(tcp string, ac *Aircraft) []av.RadioTransmission) error {
+	return s.dispatchAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) error {
+			// Allow issuing this command to random unassociated VFRs but
+			// not IFRs that other controllers already own.
+			if ac.IsAssociated() && ac.STARSFlightPlan.ControllingController != tcp && !s.Instructors[tcp] {
+				return av.ErrOtherControllerHasTrack
+			}
+			return nil
+		},
+		cmd)
+}
+
 // Note that ac may be nil, but flight plan will not be!
 func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
@@ -193,15 +208,7 @@ func (s *Sim) ChangeSquawk(tcp string, callsign av.ADSBCallsign, sq av.Squawk) e
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchAircraftCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			// Allow issuing this command to random unassociated VFRs but
-			// not IFRs that other controllers already own.
-			if ac.IsAssociated() && ac.STARSFlightPlan.ControllingController != tcp && !s.Instructors[tcp] {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
+	return s.dispatchVFRAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
@@ -217,7 +224,7 @@ func (s *Sim) ChangeTransponderMode(tcp string, callsign av.ADSBCallsign, mode a
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControlledAircraftCommand(tcp, callsign,
+	return s.dispatchVFRAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
@@ -233,7 +240,7 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControlledAircraftCommand(tcp, callsign,
+	return s.dispatchVFRAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.Ident(s.State.SimTime)
 		})
