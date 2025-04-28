@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"net"
 	"net/rpc"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -212,6 +213,7 @@ type LoggingConn struct {
 	sent, received int64
 	start          time.Time
 	lastReport     time.Time
+	mu             sync.Mutex
 }
 
 func MakeLoggingConn(c net.Conn, lg *log.Logger) *LoggingConn {
@@ -248,6 +250,9 @@ func (c *LoggingConn) Write(b []byte) (n int, err error) {
 }
 
 func (c *LoggingConn) maybeReport() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if time.Since(c.lastReport) > 1*time.Minute {
 		min := time.Since(c.start).Minutes()
 		rec, sent := atomic.LoadInt64(&c.received), atomic.LoadInt64(&c.sent)
