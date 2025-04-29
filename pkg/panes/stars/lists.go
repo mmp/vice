@@ -1030,6 +1030,10 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		// deleted from the list by the controller.
 		rel := util.FilterSlice(releaseDepartures,
 			func(dep sim.ReleaseDeparture) bool {
+				if ctx.Client.State.ResolveController(dep.DepartureController) != ctx.UserTCP {
+					return false
+				}
+
 				if !slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return false
 				}
