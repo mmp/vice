@@ -218,11 +218,27 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.Pop()
 				continue
 			} else {
-				// Copy the approach from the database
+				// Copy the approach from the database, doing checks to
+				// make sure bogus overrides haven't been specified.
+				if appr.Type != UnknownApproach {
+					e.ErrorString("\"type\" cannot be given with \"cifp_id\" approaches")
+				}
 				appr.Type = dbAppr.Type
-				if appr.Runway == "" {
+
+				if len(appr.Waypoints) > 0 {
+					e.ErrorString("\"waypoints\" cannot be given with \"cifp_id\" approaches")
+				}
+
+				if dbAppr.Runway == "" {
+					if appr.Runway == "" {
+						e.ErrorString("\"runway\" must be specified: the CIFP approach is not runway-specific")
+					}
+				} else if appr.Runway != "" && appr.Runway != dbAppr.Runway {
+					e.ErrorString("specified \"runway\" doesn't match the one %q in the CIFP approach", dbAppr.Runway)
+				} else {
 					appr.Runway = dbAppr.Runway
 				}
+
 				if appr.ApproachHeading == 0 {
 					appr.ApproachHeading = dbAppr.ApproachHeading
 				}
@@ -235,10 +251,16 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(wps))
 				}
 			}
-		}
-
-		if appr.Runway == "" {
-			e.ErrorString("Must specify \"runway\"")
+		} else {
+			if appr.Type == UnknownApproach {
+				e.ErrorString("Must specify \"type\"")
+			}
+			if appr.Runway == "" {
+				e.ErrorString("Must specify \"runway\"")
+			}
+			if len(appr.Waypoints) == 0 {
+				e.ErrorString("Must specify \"waypoints\"")
+			}
 		}
 		rwy, ok := LookupRunway(icao, appr.Runway)
 		if !ok {
