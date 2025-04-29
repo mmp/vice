@@ -9,7 +9,6 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/rand"
-	"github.com/mmp/vice/pkg/util"
 )
 
 type ERAMComputer struct {
@@ -82,31 +81,6 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 }
 
 func (sc *STARSComputer) Update(s *Sim) {
-	// Flight plans created via [INIT CTL] 5-120 and quick flight plans
-	// auto-associate if there is a single aircraft squawking the code.
-	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans,
-		func(fp *STARSFlightPlan) bool {
-			// TODO: should be checking auto-acquire volumes
-			var match *Aircraft
-			for _, ac := range s.Aircraft {
-				if ac.IsAirborne() && ac.Squawk == fp.AssignedSquawk {
-					if match != nil { // already found another match
-						match = nil
-						break
-					}
-					match = ac
-				}
-			}
-			if match != nil {
-				match.AssociateFlightPlan(fp)
-				s.eventStream.Post(Event{
-					Type: FlightPlanAssociatedEvent,
-					ACID: fp.ACID,
-				})
-			}
-			return match == nil // keep it in sc.FlightPlans if not match
-		})
-
 	for _, ac := range s.Aircraft {
 		if !ac.IsAirborne() || ac.Squawk == 0o1200 {
 			continue
@@ -176,6 +150,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 				fp.TrackingController = s.State.ResolveController(fp.TrackingController)
 
 				ac.AssociateFlightPlan(fp)
+
 				s.eventStream.Post(Event{
 					Type: FlightPlanAssociatedEvent,
 					ACID: fp.ACID,
