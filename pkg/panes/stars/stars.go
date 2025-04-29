@@ -1313,7 +1313,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 
 		if trk.IsUnsupportedDB() {
 			visible = true
-		} else if trk.IsAirborne && !state.LostTrack(now) {
+		} else if trk.IsAirborne {
 			if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
 				// visible unless if it's almost on the ground
 				if trk.IsDeparture() &&
