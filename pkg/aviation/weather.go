@@ -46,17 +46,17 @@ func (w Wind) String() string {
 	}
 }
 
-func (w Wind) Randomize() Wind {
-	w.Speed += -3 + rand.Intn(6)
+func (w Wind) Randomize(r *rand.Rand) Wind {
+	w.Speed += -3 + r.Intn(6)
 	if w.Speed < 0 {
 		w.Speed = 0
 	} else if w.Speed < 4 {
 		w.Variable = true
 	} else {
 		dir := 10 * ((w.Direction + 5) / 10)
-		dir += [3]int{-10, 0, 10}[rand.Intn(3)]
+		dir += [3]int{-10, 0, 10}[r.Intn(3)]
 		w.Direction = dir
-		gst := w.Gust - 3 + rand.Intn(6)
+		gst := w.Gust - 3 + r.Intn(6)
 		if gst-w.Speed > 5 {
 			w.Gust = gst
 		}

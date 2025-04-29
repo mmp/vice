@@ -46,9 +46,9 @@ func MakeIntRangeSet(first, last int) *IntRangeSet {
 	return s
 }
 
-func (s *IntRangeSet) GetRandom() (int, error) {
-	start := rand.Intn(len(s.AvailableBits)) // random starting point in p.AssignedBits
-	rot := rand.Intn(64)                     // random rotation to randomize search start within each uint64
+func (s *IntRangeSet) GetRandom(r *rand.Rand) (int, error) {
+	start := r.Intn(len(s.AvailableBits)) // random starting point in p.AssignedBits
+	rot := r.Intn(64)                     // random rotation to randomize search start within each uint64
 
 	for i := range len(s.AvailableBits) {
 		// Start the search at start, then wrap around.

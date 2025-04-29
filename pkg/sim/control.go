@@ -605,7 +605,7 @@ func (s *Sim) handoffTrack(fp *STARSFlightPlan, toTCP string) {
 	// Add them to the auto-accept map even if the target controller is
 	// currently signed in; this way, if they sign off in the interim, we
 	// still end up accepting it automatically.
-	acceptDelay := 4 + rand.Intn(10)
+	acceptDelay := 4 + s.Rand.Intn(10)
 	s.Handoffs[fp.ACID] = Handoff{
 		AutoAcceptTime: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
@@ -635,8 +635,8 @@ func (s *Sim) HandoffControl(tcp string, acid ACID) error {
 					})
 					return radioTransmissions
 				}
-				bye := rand.Sample("good day", "seeya")
-				contact := rand.Sample("contact ", "over to ", "")
+				bye := rand.Sample(s.Rand, "good day", "seeya")
+				contact := rand.Sample(s.Rand, "contact ", "over to ", "")
 				goodbye := contact + octrl.RadioName + " on " + octrl.Frequency.String() + ", " + bye
 				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 					Controller: sfp.ControllingController,
@@ -664,7 +664,7 @@ func (s *Sim) HandoffControl(tcp string, acid ACID) error {
 
 			// In 5-10 seconds, have the aircraft contact the new controller
 			// (and give them control only then).
-			wait := time.Duration(5+rand.Intn(10)) * time.Second
+			wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
 			s.enqueueControllerContact(ac.ADSBCallsign, sfp.TrackingController, wait)
 
 			return radioTransmissions
@@ -707,7 +707,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 					// For a handoff from a virtual controller, cue up a delayed
 					// contact message unless there's a point later in the route when
 					// comms are to be transferred.
-					wait := time.Duration(5+rand.Intn(10)) * time.Second
+					wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
 					s.enqueueControllerContact(ac.ADSBCallsign, tcp, wait)
 				}
 			}
@@ -849,7 +849,7 @@ func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 		ACID:           acid,
 	})
 
-	acceptDelay := 4 + rand.Intn(10)
+	acceptDelay := 4 + s.Rand.Intn(10)
 	s.PointOuts[acid] = PointOut{
 		FromController: from.Id(),
 		ToController:   to.Id(),
@@ -1251,7 +1251,7 @@ type FutureOnCourse struct {
 }
 
 func (s *Sim) enqueueDepartOnCourse(callsign av.ADSBCallsign) {
-	wait := time.Duration(10+rand.Intn(15)) * time.Second
+	wait := time.Duration(10+s.Rand.Intn(15)) * time.Second
 	s.FutureOnCourse = append(s.FutureOnCourse,
 		FutureOnCourse{ADSBCallsign: callsign, Time: s.State.SimTime.Add(wait)})
 }
@@ -1264,7 +1264,7 @@ type FutureChangeSquawk struct {
 }
 
 func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk, mode av.TransponderMode) {
-	wait := time.Duration(5+rand.Intn(5)) * time.Second
+	wait := time.Duration(5+s.Rand.Intn(5)) * time.Second
 	s.FutureSquawkChanges = append(s.FutureSquawkChanges,
 		FutureChangeSquawk{ADSBCallsign: callsign, Code: code, Mode: mode, Time: s.State.SimTime.Add(wait)})
 }

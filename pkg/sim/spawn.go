@@ -169,7 +169,7 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 			if newSum != oldSum {
 				pushActive := s.State.SimTime.Before(s.PushEnd)
 				s.lg.Infof("%s: inbound flow rate changed %f -> %f", group, oldSum, newSum)
-				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive))
+				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive, s.Rand))
 			}
 		}
 	}
@@ -215,7 +215,7 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway string) {
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway string) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State /* wind */)
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State /* wind */, s.Rand)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
@@ -290,13 +290,13 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 			return time.Now().Add(365 * 24 * time.Hour)
 		}
 		avgWait := int(3600 / rate)
-		delta := rand.Intn(avgWait) - avgWait/2
+		delta := s.Rand.Intn(avgWait) - avgWait/2
 		return now.Add(time.Duration(delta) * time.Second)
 	}
 
 	if s.State.LaunchConfig.ArrivalPushes {
 		// Figure out when the next arrival push will start
-		m := 1 + rand.Intn(s.State.LaunchConfig.ArrivalPushFrequencyMinutes)
+		m := 1 + s.Rand.Intn(s.State.LaunchConfig.ArrivalPushFrequencyMinutes)
 		s.NextPushStart = now.Add(time.Duration(m) * time.Minute)
 	}
 
@@ -355,21 +355,21 @@ func sumRateMap(rates map[string]float32, scale float32) float32 {
 
 // sampleRateMap randomly samples elements from a map of some type T to a
 // rate with probability proportional to the element's rate.
-func sampleRateMap[T comparable](rates map[T]float32, scale float32) (T, float32) {
+func sampleRateMap[T comparable](rates map[T]float32, scale float32, r *rand.Rand) (T, float32) {
 	var rateSum float32
 	var result T
 	for item, rate := range rates {
 		rate = scaleRate(rate, scale)
 		rateSum += rate
 		// Weighted reservoir sampling...
-		if rateSum == 0 || rand.Float32() < rate/rateSum {
+		if rateSum == 0 || r.Float32() < rate/rateSum {
 			result = item
 		}
 	}
 	return result, rateSum
 }
 
-func randomWait(rate float32, pushActive bool) time.Duration {
+func randomWait(rate float32, pushActive bool, r *rand.Rand) time.Duration {
 	if rate == 0 {
 		return 365 * 24 * time.Hour
 	}
@@ -378,7 +378,7 @@ func randomWait(rate float32, pushActive bool) time.Duration {
 	}
 
 	avgSeconds := 3600 / rate
-	seconds := math.Lerp(rand.Float32(), .85*avgSeconds, 1.15*avgSeconds)
+	seconds := math.Lerp(r.Float32(), .85*avgSeconds, 1.15*avgSeconds)
 	return time.Duration(seconds * float32(time.Second))
 }
 
@@ -412,7 +412,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 	}
 	if !s.PushEnd.IsZero() && now.After(s.PushEnd) {
 		// end push
-		m := -2 + rand.Intn(4) + s.State.LaunchConfig.ArrivalPushFrequencyMinutes
+		m := -2 + s.Rand.Intn(4) + s.State.LaunchConfig.ArrivalPushFrequencyMinutes
 		s.NextPushStart = now.Add(time.Duration(m) * time.Minute)
 		s.lg.Info("arrival push ending", slog.Time("next_start", s.NextPushStart))
 		s.PushEnd = time.Time{}
@@ -422,7 +422,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 
 	for group, rates := range s.State.LaunchConfig.InboundFlowRates {
 		if now.After(s.NextInboundSpawn[group]) {
-			flow, rateSum := sampleRateMap(rates, s.State.LaunchConfig.InboundFlowRateScale)
+			flow, rateSum := sampleRateMap(rates, s.State.LaunchConfig.InboundFlowRateScale, s.Rand)
 
 			var ac *Aircraft
 			var err error
@@ -441,7 +441,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 				} else {
 					s.addAircraftNoLock(*ac)
 				}
-				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive))
+				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive, s.Rand))
 			}
 		}
 	}
@@ -458,14 +458,14 @@ func (s *Sim) spawnDepartures() {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
 					s.addDepartureToPool(ac, runway)
 					r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-					depState.NextIFRSpawn = now.Add(randomWait(r, false))
+					depState.NextIFRSpawn = now.Add(randomWait(r, false, s.Rand))
 				}
 			}
 			if now.After(depState.NextVFRSpawn) {
 				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {
 					s.addDepartureToPool(ac, runway)
 					r := scaleRate(depState.VFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-					depState.NextVFRSpawn = now.Add(randomWait(r, false))
+					depState.NextVFRSpawn = now.Add(randomWait(r, false, s.Rand))
 				}
 			}
 		}
@@ -510,7 +510,7 @@ func (s *Sim) updateDepartureSequence() {
 					}
 					ac := s.Aircraft[dep.ADSBCallsign]
 					if ac.HoldForRelease {
-						dep.RequestReleaseTime = now.Add(time.Duration(60+rand.Intn(60)) * time.Second)
+						dep.RequestReleaseTime = now.Add(time.Duration(60+s.Rand.Intn(60)) * time.Second)
 						s.STARSComputer.AddHeldDeparture(ac)
 						depState.Held = append(depState.Held, dep)
 					} else {
@@ -536,7 +536,7 @@ func (s *Sim) updateDepartureSequence() {
 						break
 					}
 					depState.Held[i].ReleaseRequested = true
-					depState.Held[i].ReleaseDelay = time.Duration(20+rand.Intn(100)) * time.Second
+					depState.Held[i].ReleaseDelay = time.Duration(20+s.Rand.Intn(100)) * time.Second
 				}
 			}
 			if len(depState.Held) > 0 {
@@ -731,7 +731,7 @@ func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *Aircraft, err err
 
 	rates, ok := s.State.LaunchConfig.DepartureRates[airport][runway]
 	if ok {
-		category, rateSum := sampleRateMap(rates, s.State.LaunchConfig.DepartureRateScale)
+		category, rateSum := sampleRateMap(rates, s.State.LaunchConfig.DepartureRateScale, s.Rand)
 		if rateSum > 0 {
 			ac, err = s.createIFRDepartureNoLock(airport, runway, category)
 
@@ -773,7 +773,7 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 			if route.Rate > 0 {
 				rateSum += route.Rate
 				p := float32(route.Rate) / float32(rateSum)
-				if rand.Float32() < p {
+				if s.Rand.Float32() < p {
 					sampledRandoms = nil
 					sampledRoute = &route
 				}
@@ -785,7 +785,7 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
-				arrive, ok := rand.SampleWeightedSeq(maps.Keys(s.State.DepartureAirports),
+				arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
 					func(ap string) int { return s.State.DepartureAirports[ap].VFRRateSum() })
 				if !ok {
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
@@ -834,7 +834,7 @@ func (d *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
 		return
 	}
 	d.IFRSpawnRate = r
-	d.NextIFRSpawn = s.State.SimTime.Add(randomWait(r*2, false))
+	d.NextIFRSpawn = s.State.SimTime.Add(randomWait(r*2, false, s.Rand))
 	d.cullDepartures(s)
 }
 
@@ -843,7 +843,7 @@ func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 		return
 	}
 	d.VFRSpawnRate = r
-	d.NextVFRSpawn = s.State.SimTime.Add(randomWait(r*2, false))
+	d.NextVFRSpawn = s.State.SimTime.Add(randomWait(r*2, false, s.Rand))
 	d.cullDepartures(s)
 }
 
@@ -856,7 +856,7 @@ func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircra
 func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraft, error) {
 	arrivals := s.State.InboundFlows[group].Arrivals
 	// Randomly sample from the arrivals that have a route to this airport.
-	idx := rand.SampleFiltered(arrivals, func(ar av.Arrival) bool {
+	idx := rand.SampleFiltered(s.Rand, arrivals, func(ar av.Arrival) bool {
 		_, ok := ar.Airlines[arrivalAirport]
 		return ok
 	})
@@ -867,7 +867,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 	arr := arrivals[idx]
 
-	airline := rand.SampleSlice(arr.Airlines[arrivalAirport])
+	airline := rand.SampleSlice(s.Rand, arr.Airlines[arrivalAirport])
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -905,7 +905,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
-		CoordinationTime: getAircraftTime(s.State.SimTime),
+		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
 		TrackingController:       arr.InitialController,
@@ -924,13 +924,13 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 
 	// VFRs don't go around since they aren't talking to us.
-	goAround := rand.Float32() < s.State.LaunchConfig.GoAroundRate && ac.FlightPlan.Rules == av.FlightRulesIFR
+	goAround := s.Rand.Float32() < s.State.LaunchConfig.GoAroundRate && ac.FlightPlan.Rules == av.FlightRulesIFR
 	// If it's only controlled by virtual controllers, then don't let it go
 	// around.  Note that this test misses the case where a human has
 	// control from the start, though that shouldn't be happening...
 	goAround = goAround && slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
 	if goAround {
-		d := 0.1 + .6*rand.Float32()
+		d := 0.1 + .6*s.Rand.Float32()
 		ac.GoAroundDistance = &d
 	}
 
@@ -948,7 +948,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 }
 
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
-	actype, callsign := al.SampleAcTypeAndCallsign(func(callsign string) bool {
+	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, func(callsign string) bool {
 		_, ok := s.Aircraft[av.ADSBCallsign(callsign)]
 		return !ok
 	}, lg)
@@ -978,7 +978,7 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 
 	for range 50 {
 		// Sample destination airport: may be where we started from.
-		arrive, ok := rand.SampleWeightedSeq(maps.Keys(s.State.DepartureAirports),
+		arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
 			func(ap string) int { return s.State.DepartureAirports[ap].VFRRateSum() })
 		if !ok {
 			return nil, nil
@@ -1010,7 +1010,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	rwy := &s.State.DepartureRunways[idx]
 
 	// Sample uniformly, minding the category, if specified
-	idx = rand.SampleFiltered(ap.Departures,
+	idx = rand.SampleFiltered(s.Rand, ap.Departures,
 		func(d av.Departure) bool {
 			_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
 			return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
@@ -1022,7 +1022,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 	dep := &ap.Departures[idx]
 
-	airline := rand.SampleSlice(dep.Airlines)
+	airline := rand.SampleSlice(s.Rand, dep.Airlines)
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -1042,7 +1042,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:          shortExit,
-		CoordinationTime: getAircraftTime(s.State.SimTime),
+		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
 		Rules:        av.FlightRulesIFR,
@@ -1079,7 +1079,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		}
 
 		ac.DepartureContactAltitude =
-			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(rand.Intn(500))
+			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
 		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		starsFp.TrackingController = ctrl
 		starsFp.InboundHandoffController = ctrl
@@ -1110,9 +1110,9 @@ func (s *Sim) CreateOverflight(group string) (*Aircraft, error) {
 func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	overflights := s.State.InboundFlows[group].Overflights
 	// Randomly sample an overflight
-	of := rand.SampleSlice(overflights)
+	of := rand.SampleSlice(s.Rand, overflights)
 
-	airline := rand.SampleSlice(of.Airlines)
+	airline := rand.SampleSlice(s.Rand, of.Airlines)
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft")
@@ -1148,7 +1148,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          "", // TODO
-		CoordinationTime: getAircraftTime(s.State.SimTime),
+		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
 		TrackingController:       of.InitialController,
@@ -1178,11 +1178,11 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	return ac, err
 }
 
-func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign: ac.ADSBCallsign,
 		SpawnTime:    now,
-		DepartGate:   now.Add(time.Duration(5+rand.Intn(5)) * time.Minute),
+		DepartGate:   now.Add(time.Duration(5+r.Intn(5)) * time.Minute),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
@@ -1213,7 +1213,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	rules := av.FlightRulesVFR
 	ac.Squawk = 0o1200
-	if r := rand.Float32(); r < .02 {
+	if r := s.Rand.Float32(); r < .02 {
 		ac.Mode = av.TransponderModeOn // mode-A
 	} else if r < .03 {
 		ac.Mode = av.TransponderModeStandby // flat out off
@@ -1225,7 +1225,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	base := math.Max(depap.Elevation, arrap.Elevation)
 	base = 1000 + 1000*(base/1000) // round to 1000s.
 	var alt int
-	randalt := func(n int) int { return base + (1+rand.Intn(n))*1000 }
+	randalt := func(n int) int { return base + (1+s.Rand.Intn(n))*1000 }
 	if dist == 0 {
 		// returning to same airport
 		alt = randalt(4)
@@ -1243,8 +1243,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	mid := math.Mid2f(depap.Location, arrap.Location)
 	if arrive == depart {
-		dist := float32(10 + rand.Intn(20))
-		hdg := float32(1 + rand.Intn(360))
+		dist := float32(10 + s.Rand.Intn(20))
+		hdg := float32(1 + s.Rand.Intn(360))
 		v := [2]float32{dist * math.Sin(math.Radians(hdg)), dist * math.Cos(math.Radians(hdg))}
 		dnm := math.LL2NM(depap.Location, s.State.NmPerLongitude)
 		midnm := math.Add2f(dnm, v)
@@ -1293,9 +1293,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		radius := .15 * dist
 		airwork := func() bool {
 			if depart == arrive {
-				return rand.Intn(3) == 0
+				return s.Rand.Intn(3) == 0
 			}
-			return rand.Intn(10) == 0
+			return s.Rand.Intn(10) == 0
 		}()
 
 		const nsteps = 10
@@ -1326,8 +1326,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 			})
 
 			if airwork && i == nsteps/2 {
-				wps[len(wps)-1].AirworkRadius = 4 + rand.Intn(4)
-				wps[len(wps)-1].AirworkMinutes = 5 + rand.Intn(15)
+				wps[len(wps)-1].AirworkRadius = 4 + s.Rand.Intn(4)
+				wps[len(wps)-1].AirworkMinutes = 5 + s.Rand.Intn(15)
 				wps[len(wps)-1].AltitudeRestriction.Range[0] -= 500
 				wps[len(wps)-1].AltitudeRestriction.Range[1] += 2000
 			}
@@ -1376,13 +1376,13 @@ func (s *Sim) initializeAirspaceGrids() {
 	s.charlieAirspace = initAirspace(av.DB.CharlieAirspace)
 }
 
-func getAircraftTime(now time.Time) time.Time {
+func getAircraftTime(now time.Time, r *rand.Rand) time.Time {
 	// Hallucinate a random time around the present for the aircraft.
-	delta := time.Duration(-20 + rand.Intn(40))
+	delta := time.Duration(-20 + r.Intn(40))
 	t := now.Add(delta * time.Minute)
 
 	// 9 times out of 10, make it a multiple of 5 minutes
-	if rand.Intn(10) != 9 {
+	if r.Intn(10) != 9 {
 		dm := t.Minute() % 5
 		t = t.Add(time.Duration(5-dm) * time.Minute)
 	}

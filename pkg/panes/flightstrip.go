@@ -112,7 +112,7 @@ func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
 	}
 
 	// Find a free one. Start searching at a random offset.
-	start := rand.Intn(1000)
+	start := rand.Make().Intn(1000)
 	for i := range 1000 {
 		idx := (start + i) % 1000
 		if _, ok := fsp.AllocatedCIDs[idx]; !ok {

@@ -72,7 +72,7 @@ func (c *NewSimConfiguration) SetTRACON(name string) {
 			c.lg.Errorf("%s: TRACON not found!", name)
 		}
 		// Pick one at random
-		name = util.SortedMapKeys(configs)[rand.Intn(len(configs))]
+		name = util.SortedMapKeys(configs)[rand.Make().Intn(len(configs))]
 		c.selectedTRACONConfigs = configs[name]
 	}
 	c.TRACONName = name

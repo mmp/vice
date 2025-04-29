@@ -199,15 +199,16 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 	}
 
 	// Make some fake METARs; slightly different for all airports.
-	alt := 2980 + rand.Intn(40)
+	r := rand.Make()
+	alt := 2980 + r.Intn(40)
 
 	fakeMETAR := func(icao []string) {
 		for _, ap := range icao {
 			ss.METAR[ap] = &av.METAR{
 				// Just provide the stuff that the STARS display shows
 				AirportICAO: ap,
-				Wind:        ss.Wind.Randomize(),
-				Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
+				Wind:        ss.Wind.Randomize(r),
+				Altimeter:   fmt.Sprintf("A%d", alt-2+r.Intn(4)),
 			}
 		}
 	}

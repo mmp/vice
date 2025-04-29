@@ -102,7 +102,7 @@ const (
 )
 
 func MakeNewSimConfiguration() NewSimConfiguration {
-	return NewSimConfiguration{NewSimName: rand.AdjectiveNoun()}
+	return NewSimConfiguration{NewSimName: rand.Make().AdjectiveNoun()}
 }
 
 type RemoteSim struct {

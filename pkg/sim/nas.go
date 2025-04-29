@@ -8,6 +8,7 @@ import (
 	"slices"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -35,7 +36,7 @@ func makeERAMComputer(fac string, loc *av.LocalSquawkCodePool) *ERAMComputer {
 }
 
 func (ec *ERAMComputer) CreateSquawk() (av.Squawk, error) {
-	return ec.SquawkCodePool.Get()
+	return ec.SquawkCodePool.Get(rand.Make())
 }
 
 func (ec *ERAMComputer) ReturnSquawk(code av.Squawk) error {

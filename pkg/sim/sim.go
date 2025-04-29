@@ -14,6 +14,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/davecgh/go-spew/spew"
@@ -64,6 +65,8 @@ type Sim struct {
 	PushEnd       time.Time
 
 	Instructors map[string]bool
+
+	Rand *rand.Rand
 
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
@@ -201,6 +204,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		PointOuts: make(map[ACID]PointOut),
 
 		Instructors: make(map[string]bool),
+
+		Rand: rand.Make(),
 	}
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)

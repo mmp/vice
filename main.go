@@ -23,7 +23,6 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
-	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
@@ -65,8 +64,6 @@ func init() {
 
 func main() {
 	flag.Parse()
-
-	rand.Seed(time.Now().UnixNano())
 
 	// Common initialization for both client and server
 	if err := fixconsole.FixConsoleIfNeeded(); err != nil {

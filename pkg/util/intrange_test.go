@@ -8,8 +8,7 @@ import (
 	"errors"
 	"testing"
 
-	"math/rand"
-	"time"
+	"github.com/mmp/vice/pkg/rand"
 )
 
 func TestMakeIntRangeSet(t *testing.T) {
@@ -81,9 +80,9 @@ func TestGetRandom(t *testing.T) {
 	s := MakeIntRangeSet(1000, 1020)
 
 	seen := map[int]bool{}
-	rand.Seed(time.Now().UnixNano())
+	r := rand.Make()
 	for i := 0; i < 21; i++ {
-		v, err := s.GetRandom()
+		v, err := s.GetRandom(r)
 		if err != nil {
 			t.Fatalf("unexpected error from GetRandom: %v", err)
 		}
@@ -94,7 +93,7 @@ func TestGetRandom(t *testing.T) {
 	}
 
 	// Now it should be empty
-	_, err := s.GetRandom()
+	_, err := s.GetRandom(r)
 	if !errors.Is(err, ErrIntRangeSetEmpty) {
 		t.Errorf("expected ErrIntRangeSetEmpty after consuming all values, got %v", err)
 	}

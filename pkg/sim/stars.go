@@ -20,6 +20,7 @@ import (
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 
@@ -567,7 +568,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
 		if assignment.IsSet == false || assignment.Get() == "" {
-			sq, err := nasPool.Get()
+			sq, err := nasPool.Get(rand.Make())
 			return sq, rules, err
 		} else {
 			sq, err := av.ParseSquawk(assignment.Get())
@@ -577,7 +578,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 			return sq, rules, err
 		}
 	} else {
-		return localPool.Get(assignment.GetOr(""), rules)
+		return localPool.Get(assignment.GetOr(""), rules, rand.Make())
 	}
 }
 

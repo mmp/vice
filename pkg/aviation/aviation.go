@@ -170,7 +170,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"PSA5342": nil,
 }
 
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -183,7 +183,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) b
 	for _, ac := range a.Aircraft() {
 		// Reservoir sampling...
 		acCount += ac.Count
-		if rand.Float32() < float32(ac.Count)/float32(acCount) {
+		if r.Float32() < float32(ac.Count)/float32(acCount) {
 			actype = ac.ICAO
 		}
 	}
@@ -200,7 +200,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) b
 	for {
 		format := "####"
 		if len(dbAirline.Callsign.CallsignFormats) > 0 {
-			f, ok := rand.SampleWeighted(dbAirline.Callsign.CallsignFormats,
+			f, ok := rand.SampleWeighted(r, dbAirline.Callsign.CallsignFormats,
 				func(f string) int {
 					if _, wt, ok := strings.Cut(f, "x"); ok { // we have a weight
 						if v, err := strconv.Atoi(wt); err == nil {
@@ -221,12 +221,12 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(checkCallsign func(s string) b
 			case '#':
 				if i == 0 {
 					// Don't start with a 0.
-					id += strconv.Itoa(1 + rand.Intn(9))
+					id += strconv.Itoa(1 + r.Intn(9))
 				} else {
-					id += strconv.Itoa(rand.Intn(10))
+					id += strconv.Itoa(r.Intn(10))
 				}
 			case '@':
-				id += string(rune('A' + rand.Intn(26)))
+				id += string(rune('A' + r.Intn(26)))
 			case 'x':
 				break loop
 			}
@@ -986,8 +986,8 @@ func MakeEnrouteSquawkCodePool(loc *LocalSquawkCodePool) *EnrouteSquawkCodePool 
 	return p
 }
 
-func (p *EnrouteSquawkCodePool) Get() (Squawk, error) {
-	code, err := p.Available.GetRandom()
+func (p *EnrouteSquawkCodePool) Get(r *rand.Rand) (Squawk, error) {
+	code, err := p.Available.GetRandom(r)
 	if err != nil {
 		return Squawk(0), ErrNoMoreAvailableSquawkCodes
 	} else {
@@ -1203,7 +1203,7 @@ func (p *LocalSquawkCodePool) IsReservedVFRCode(sq Squawk) bool {
 }
 
 // inbound rules are only used to choose a VFR/IFR pool if spec == ""
-func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules) (Squawk, FlightRules, error) {
+func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) (Squawk, FlightRules, error) {
 	if spec == "" {
 		if rules == FlightRulesIFR {
 			spec = "ifr"
@@ -1238,7 +1238,7 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules) (Squawk, Fligh
 		backups := pool.Backups
 		rules := pool.FlightRules // initial pool's rules are sticky even if we go to a backup
 		for {
-			if sq, err := pool.Available.GetRandom(); err == nil {
+			if sq, err := pool.Available.GetRandom(r); err == nil {
 				return Squawk(sq), rules, nil
 			} else if len(backups) == 0 {
 				return Squawk(sq), rules, err

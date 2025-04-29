@@ -82,7 +82,8 @@ func TestParseAltitudeRestriction(t *testing.T) {
 func TestSquawkCodePoolBasics(t *testing.T) {
 	p := MakeEnrouteSquawkCodePool(nil)
 
-	sq, err := p.Get()
+	r := rand.Make()
+	sq, err := p.Get(r)
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -112,8 +113,9 @@ func TestSquawkCodePoolRandoms(t *testing.T) {
 	p := MakeEnrouteSquawkCodePool(nil)
 	assigned := make(map[Squawk]interface{})
 
+	r := rand.Make()
 	for i := range 100000 {
-		sq, err := p.Get()
+		sq, err := p.Get(r)
 		if err != nil && p.NumAvailable() > 0 {
 			t.Errorf("unexpected error: %v", err)
 		} else if _, ok := assigned[sq]; ok {
@@ -132,7 +134,7 @@ func TestSquawkCodePoolRandoms(t *testing.T) {
 		}
 
 		avail := p.NumAvailable()
-		if rand.Float32() < .4 || avail == 0 {
+		if r.Float32() < .4 || avail == 0 {
 			// return one of ours
 			for sq = range assigned {
 				delete(assigned, sq)
@@ -231,9 +233,10 @@ func TestLocalSquawkCodePool(t *testing.T) {
 
 	pool := MakeLocalSquawkCodePool(spec)
 
+	r := rand.Make()
 	seen := make(map[Squawk]interface{})
 	get := func(spec string, rules FlightRules) Squawk {
-		sq, _, err := pool.Get(spec, rules)
+		sq, _, err := pool.Get(spec, rules, r)
 		if err != nil {
 			t.Errorf("+: %s", err)
 		}
@@ -253,7 +256,7 @@ func TestLocalSquawkCodePool(t *testing.T) {
 	if c := get("/3", FlightRulesUnknown); c != 0o1602 {
 		t.Errorf("unexpected code %s", c)
 	}
-	if _, _, err := pool.Get("/3", FlightRulesUnknown); err == nil {
+	if _, _, err := pool.Get("/3", FlightRulesUnknown, r); err == nil {
 		t.Errorf("didn't get expected error from empty pool")
 	}
 
@@ -280,7 +283,7 @@ func TestLocalSquawkCodePool(t *testing.T) {
 	}
 
 	// Now IFR should fail and going to pool 1 directly should go to pool 2.
-	if _, _, err := pool.Get("ifr", FlightRulesIFR); err == nil {
+	if _, _, err := pool.Get("ifr", FlightRulesIFR, r); err == nil {
 		t.Errorf("didn't get expected error from empty pool")
 	}
 	if c := get("/1", FlightRulesIFR); c < 0o0401 || c > 0o0477 {

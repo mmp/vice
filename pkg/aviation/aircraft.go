@@ -144,7 +144,7 @@ func (ac *Aircraft) GoAround() []RadioTransmission {
 }
 
 func (ac *Aircraft) Ident(now time.Time) []RadioTransmission {
-	ac.IdentStartTime = now.Add(time.Duration(2+rand.Intn(3)) * time.Second) // delay the start a bit
+	ac.IdentStartTime = now.Add(time.Duration(2+ac.Nav.Rand.Intn(3)) * time.Second) // delay the start a bit
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
 
 	return []RadioTransmission{RadioTransmission{
@@ -199,13 +199,13 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmiss
 func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnLeft)
-	return ac.readback(rand.Sample("turn %d degrees left", "%d to the left"), deg)
+	return ac.readback(rand.Sample(ac.Nav.Rand, "turn %d degrees left", "%d to the left"), deg)
 }
 
 func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnRight)
-	return ac.readback(rand.Sample("turn %d degrees right", "%d to the right"), deg)
+	return ac.readback(rand.Sample(ac.Nav.Rand, "turn %d degrees right", "%d to the right"), deg)
 }
 
 func (ac *Aircraft) FlyPresentHeading() []RadioTransmission {
@@ -302,7 +302,7 @@ func (ac *Aircraft) InitializeArrival(ap *Airport, arr *Arrival, nmPerLongitude 
 	ac.FlightPlan.Altitude = int(arr.CruiseAltitude)
 	if ac.FlightPlan.Altitude == 0 { // unspecified
 		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation)
+			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, rand.Make())
 	}
 	if arr.Route != "" {
 		ac.FlightPlan.Route = arr.Route
@@ -352,10 +352,11 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 
 	ac.FlightPlan.Exit = dep.Exit
 
-	idx := rand.SampleFiltered(dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
+	r := rand.Make()
+	idx := rand.SampleFiltered(r, dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
 	if idx == -1 {
 		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation)
+			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, r)
 	} else {
 		ac.FlightPlan.Altitude = dep.Altitudes[idx]
 	}
@@ -413,7 +414,7 @@ func (ac *Aircraft) InitializeOverflight(of *Overflight, nmPerLongitude float32,
 	ac.FlightPlan.Altitude = int(of.CruiseAltitude)
 	if ac.FlightPlan.Altitude == 0 { // unspecified
 		ac.FlightPlan.Altitude =
-			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation)
+			PlausibleFinalAltitude(ac.FlightPlan, perf, nmPerLongitude, magneticVariation, rand.Make())
 	}
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 	ac.TypeOfFlight = FlightTypeOverflight
@@ -547,8 +548,7 @@ func (ac *Aircraft) CWT() string {
 	return perf.Category.CWT
 }
 
-func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongitude float32,
-	magneticVariation float32) (altitude int) {
+func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32, r *rand.Rand) (altitude int) {
 	// try to figure out direction of flight
 	dep, dok := DB.Airports[fp.DepartureAirport]
 	arr, aok := DB.Airports[fp.ArrivalAirport]
@@ -578,7 +578,7 @@ func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongit
 
 	}
 	// Randomize the altitude a bit
-	alt = (alt - delta + rand.Intn(2*delta+1))
+	alt = (alt - delta + r.Intn(2*delta+1))
 
 	altitude = alt * 1000
 	altitude = math.Min(altitude, int(perf.Ceiling))
