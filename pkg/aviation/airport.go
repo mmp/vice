@@ -704,7 +704,8 @@ type DepartureAirline struct {
 type ApproachType int
 
 const (
-	ILSApproach ApproachType = iota
+	UnknownApproach ApproachType = iota
+	ILSApproach
 	RNAVApproach
 	ChartedVisualApproach
 	LocalizerApproach
@@ -712,11 +713,13 @@ const (
 )
 
 func (at ApproachType) String() string {
-	return []string{"ILS", "RNAV", "Charted Visual", "Localizer", "VOR"}[at]
+	return []string{"Unknown", "ILS", "RNAV", "Charted Visual", "Localizer", "VOR"}[at]
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
 	switch at {
+	case UnknownApproach:
+		return []byte("\"Unknown\""), nil
 	case ILSApproach:
 		return []byte("\"ILS\""), nil
 	case RNAVApproach:
@@ -734,6 +737,10 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 
 func (at *ApproachType) UnmarshalJSON(b []byte) error {
 	switch string(b) {
+	case "\"Unknown\"":
+		*at = UnknownApproach
+		return nil
+
 	case "\"ILS\"":
 		*at = ILSApproach
 		return nil
