@@ -476,6 +476,26 @@ func MapSeq2[K, V, K2, V2 any](seq iter.Seq2[K, V], f func(K, V) (K2, V2)) iter.
 	}
 }
 
+func Seq2Keys[K, V any](seq iter.Seq2[K, V]) iter.Seq[K] {
+	return func(yield func(K) bool) {
+		for k := range seq {
+			if !yield(k) {
+				break
+			}
+		}
+	}
+}
+
+func Seq2Values[K, V any](seq iter.Seq2[K, V]) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		for _, v := range seq {
+			if !yield(v) {
+				break
+			}
+		}
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 
 type Optional[T any] struct {

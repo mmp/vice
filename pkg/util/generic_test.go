@@ -339,6 +339,28 @@ func TestFilterSeq2(t *testing.T) {
 	}
 }
 
+func TestSeqKeyValues(t *testing.T) {
+	m := map[string]int{
+		"one": 1, "two": 2, "ten": 10, "zero": 0, "six": 6,
+	}
+
+	mv := slices.Collect(maps.Values(m))
+	slices.Sort(mv)
+	v := slices.Collect(Seq2Values(maps.All(m)))
+	slices.Sort(v)
+	if !slices.Equal(mv, v) {
+		t.Errorf("values mismatch: got %+v expected %+v", v, mv)
+	}
+
+	mk := slices.Collect(maps.Keys(m))
+	slices.Sort(mk)
+	k := slices.Collect(Seq2Keys(maps.All(m)))
+	slices.Sort(k)
+	if !slices.Equal(mk, k) {
+		t.Errorf("values mismatch: got %+v expected %+v", k, mk)
+	}
+}
+
 func TestSeqContains(t *testing.T) {
 	s := []int{1, 2, 3, 4, 5}
 	if !SeqContains(slices.Values(s), 3) {
