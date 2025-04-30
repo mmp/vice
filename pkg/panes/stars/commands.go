@@ -2824,7 +2824,6 @@ func (sp *STARSPane) deleteFlightPlan(ctx *panes.Context, acid sim.ACID) {
 
 func (sp *STARSPane) suspendFlightPlan(ctx *panes.Context, trk *sim.Track) (status CommandStatus) {
 	// 5-75 suspend flight plan
-	status.err = ErrSTARSNoFlight
 	if trk.IsUnassociated() {
 		status.err = ErrSTARSIllegalTrack
 	} else if state := sp.TrackState[trk.ADSBCallsign]; state.MSAW || state.SPCAlert {
