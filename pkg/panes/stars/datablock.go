@@ -7,6 +7,7 @@ package stars
 import (
 	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -25,6 +26,7 @@ const (
 	PartialDatablock DatablockType = iota
 	LimitedDatablock
 	FullDatablock
+	SuspendedDatablock
 )
 
 // datablock is a simple interface that abstracts the various types of
@@ -194,6 +196,20 @@ func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, fon
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// suspendedDatablock
+
+type suspendedDatablock struct {
+	// Line 0
+	field0 [8]dbChar
+}
+
+func (db suspendedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
+	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	lines := []dbLine{dbMakeLine(db.field0[:])}
+	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
+}
+
+///////////////////////////////////////////////////////////////////////////
 // ghostDatablock
 
 // both partial and full in the same one
@@ -211,6 +227,7 @@ func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font 
 		dbMakeLine(db.field1[:]),
 	}
 	// Leader aligns with line 0, so no offset is needed
+	pt[1] += float32(font.Size) // align leader with line 1
 	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
 
@@ -333,8 +350,12 @@ func (sp *STARSPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockT
 		// Must be limited, regardless of anything else.
 		return LimitedDatablock
 	} else {
-		// The track owner is known, so it will be a P/FDB
+		// The track owner is known, so it will be a P/FDB (or suspended)
 		state := sp.TrackState[trk.ADSBCallsign]
+
+		if trk.FlightPlan.Suspended {
+			return SuspendedDatablock
+		}
 
 		beaconator := ctx.Keyboard != nil && ctx.Keyboard.IsFKeyHeld(imgui.KeyF1) && ctx.Keyboard.KeyControl()
 		if beaconator {
@@ -419,6 +440,7 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) ma
 	sp.fdbArena.Reset()
 	sp.pdbArena.Reset()
 	sp.ldbArena.Reset()
+	sp.sdbArena.Reset()
 
 	m := make(map[av.ADSBCallsign]datablock)
 	for _, trk := range tracks {
@@ -647,16 +669,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		fa := ctx.FacilityAdaptation
 		db := sp.pdbArena.AllocClear()
 
-		if sfp.Suspended {
-			s := fmt.Sprintf("%d", sfp.CoastSuspendIndex)
-			if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
-				state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
-				s += " " + altitude
-			}
-			formatDBText(db.field0[:], s, color, false)
-			return db
-		}
-
 		// Field0: TODO cautions in yellow
 		// TODO: 2-69 doesn't list CA/MCI, so should this be blank even in
 		// those cases? (Note that SPC upgrades partial to full datablocks.)
@@ -726,16 +738,6 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	case FullDatablock:
 		fa := ctx.FacilityAdaptation
 		db := sp.fdbArena.AllocClear()
-
-		if sfp.Suspended {
-			s := fmt.Sprintf("%d", sfp.CoastSuspendIndex)
-			if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
-				state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
-				s += " " + altitude
-			}
-			formatDBText(db.field1[:], s, color, false)
-			return db
-		}
 
 		// Line 0
 		// Field 0: special conditions, safety alerts (red), cautions (yellow)
@@ -911,6 +913,17 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 			formatDBText(db.field7[idx][:], sfp.AssignedSquawk.String(), color, true)
 		}
 
+		return db
+
+	case SuspendedDatablock:
+		db := sp.sdbArena.AllocClear()
+
+		s := strconv.Itoa(sfp.CoastSuspendIndex)
+		if sp.currentPrefs().DisplaySuspendedTrackAltitude ||
+			state.SuspendedShowAltitudeEndTime.After(ctx.Now) && trk.Mode == av.TransponderModeAltitude {
+			s += " " + altitude
+		}
+		formatDBText(db.field0[:], s, color, false)
 		return db
 	}
 
@@ -1102,7 +1115,7 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 
 	// Partition them by DB type so we can draw FDBs last
-	var ldbs, pdbs, fdbs []sim.Track
+	var ldbs, pdbs, sdbs, fdbs []sim.Track
 
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -1117,6 +1130,8 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 			pdbs = append(pdbs, trk)
 		case FullDatablock:
 			fdbs = append(fdbs, trk)
+		case SuspendedDatablock:
+			sdbs = append(sdbs, trk)
 		}
 	}
 
@@ -1136,11 +1151,17 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 		ldbs = moveDwelledToEnd(ldbs)
 		pdbs = moveDwelledToEnd(pdbs)
 		fdbs = moveDwelledToEnd(fdbs)
+		sdbs = moveDwelledToEnd(sdbs)
 	}
 
-	leaderLineEndpoint := func(pw [2]float32, leaderLineDirection math.CardinalOrdinalDirection) [2]float32 {
-		vll := sp.getLeaderLineVector(ctx, leaderLineDirection)
+	leaderLineEndpoint := func(pw [2]float32, trk sim.Track, leaderLineDirection math.CardinalOrdinalDirection) [2]float32 {
+		var vll [2]float32
+		suspended := trk.IsAssociated() && trk.FlightPlan.Suspended
+		if !suspended {
+			vll = sp.getLeaderLineVector(ctx, leaderLineDirection)
+		}
 		pll := math.Add2f(pw, math.Scale2f(vll, ctx.DrawPixelScale))
+
 		if math.Length2f(vll) == 0 {
 			// no leader line is being drawn; make sure that the datablock
 			// doesn't overlap the target track.
@@ -1157,7 +1178,7 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 	}
 
 	var strBuilder strings.Builder
-	for _, dbTrack := range [][]sim.Track{ldbs, pdbs, fdbs} {
+	for _, dbTrack := range [][]sim.Track{ldbs, pdbs, sdbs, fdbs} {
 		for _, trk := range dbTrack {
 			db := dbs[trk.ADSBCallsign]
 			if db == nil {
@@ -1169,10 +1190,11 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 				continue
 			}
 
-			// Calculate the endpoint of the leader line
+			// Calculate the endpoint of the leader line and hence where to
+			// start drawing the datablock.
 			pac := transforms.WindowFromLatLongP(trk.Location)
 			leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
-			pll := leaderLineEndpoint(pac, leaderLineDirection)
+			pll := leaderLineEndpoint(pac, trk, leaderLineDirection)
 
 			halfSeconds := realNow.UnixMilli() / 500
 			db.draw(td, pll, font, &strBuilder, brightness, leaderLineDirection, halfSeconds)

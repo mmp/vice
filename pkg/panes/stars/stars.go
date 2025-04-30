@@ -231,6 +231,7 @@ type STARSPane struct {
 	fdbArena util.ObjectArena[fullDatablock]
 	pdbArena util.ObjectArena[partialDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
+	sdbArena util.ObjectArena[suspendedDatablock]
 }
 
 type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, ScopeTransformations) CommandStatus

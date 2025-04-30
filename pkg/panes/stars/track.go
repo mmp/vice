@@ -1344,6 +1344,11 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs
 	tsz := sp.getTrackSize(ctx, transforms)
 	draw := func(tracks []sim.Track) {
 		for _, trk := range tracks {
+			if trk.IsAssociated() && trk.FlightPlan.Suspended {
+				// no leader line for suspended
+				continue
+			}
+
 			if db := dbs[trk.ADSBCallsign]; db != nil {
 				baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
 				pac := transforms.WindowFromLatLongP(trk.Location)
@@ -1371,7 +1376,10 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 
 	if trk.IsAssociated() {
 		sfp := trk.FlightPlan
-		if state.UseGlobalLeaderLine {
+		if sfp.Suspended {
+			// Suspended are always north, evidently.
+			return math.North
+		} else if state.UseGlobalLeaderLine {
 			return *sfp.GlobalLeaderLineDirection
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
