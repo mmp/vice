@@ -416,6 +416,18 @@ func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] {
 	}
 }
 
+func FilterSeq2[K, V any](seq iter.Seq2[K, V], pred func(K, V) bool) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for k, v := range seq {
+			if pred(k, v) {
+				if !yield(k, v) {
+					return
+				}
+			}
+		}
+	}
+}
+
 func SeqContains[T comparable](seq iter.Seq[T], v T) bool {
 	for s := range seq {
 		if s == v {

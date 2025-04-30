@@ -305,6 +305,40 @@ func TestFilterSeq(t *testing.T) {
 	}
 }
 
+func TestFilterSeq2(t *testing.T) {
+	m := map[string]int{
+		"one": 1, "two": 2, "ten": 10, "zero": 0, "six": 6,
+	}
+
+	type testcase struct {
+		pred   func(string, int) bool
+		expect map[string]int
+	}
+	for i, c := range []testcase{
+		testcase{
+			pred:   func(s string, v int) bool { return v > 6 },
+			expect: map[string]int{"ten": 10},
+		},
+		testcase{
+			pred:   func(s string, v int) bool { return len(s) == 3 },
+			expect: map[string]int{"one": 1, "two": 2, "ten": 10, "six": 6},
+		},
+		testcase{
+			pred:   func(s string, v int) bool { return true },
+			expect: m,
+		},
+		testcase{
+			pred:   func(s string, v int) bool { return false },
+			expect: nil,
+		},
+	} {
+		r := maps.Collect(FilterSeq2(maps.All(m), c.pred))
+		if !maps.Equal(r, c.expect) {
+			t.Errorf("case %d: got %+v expected %+v", i, r, c.expect)
+		}
+	}
+}
+
 func TestSeqContains(t *testing.T) {
 	s := []int{1, 2, 3, 4, 5}
 	if !SeqContains(slices.Values(s), 3) {
