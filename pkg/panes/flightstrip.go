@@ -47,6 +47,7 @@ type FlightStripPane struct {
 	selectedStrip       int
 	selectedAnnotation  int
 	annotationCursorPos int
+	annotations         map[sim.ACID][9]string
 
 	events    *sim.EventsSubscription
 	scrollbar *ScrollBar
@@ -80,6 +81,7 @@ func NewFlightStripPane() *FlightStripPane {
 		selectedAnnotation: -1,
 		CIDs:               make(map[sim.ACID]int),
 		AllocatedCIDs:      make(map[int]interface{}),
+		annotations:        make(map[sim.ACID][9]string),
 	}
 }
 
@@ -102,6 +104,9 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.AllocatedCIDs == nil {
 		fsp.AllocatedCIDs = make(map[int]interface{})
 	}
+	if fsp.annotations == nil {
+		fsp.annotations = make(map[sim.ACID][9]string)
+	}
 
 	fsp.events = eventStream.Subscribe()
 }
@@ -112,7 +117,7 @@ func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
 	}
 
 	// Find a free one. Start searching at a random offset.
-	start := rand.Make().Intn(1000)
+	start := rand.Intn(1000)
 	for i := range 1000 {
 		idx := (start + i) % 1000
 		if _, ok := fsp.AllocatedCIDs[idx]; !ok {
@@ -135,6 +140,7 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 	if fp.TrackingController == tcp {
 		fsp.strips = append(fsp.strips, fp.ACID)
 		fsp.addedPlans[fp.ACID] = nil
+		fsp.annotations[fp.ACID] = [9]string{"", "", "", "", "", "", "", "", ""}
 	}
 }
 
@@ -146,9 +152,20 @@ func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State,
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)
 	fsp.AllocatedCIDs = make(map[int]interface{})
+	fsp.annotations = make(map[sim.ACID][9]string)
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
+
+func clamp(x, min, max int) int {
+	if x < min {
+		return min
+	}
+	if x > max {
+		return max
+	}
+	return x
+}
 
 func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// First account for changes in world.Aircraft
@@ -335,7 +352,8 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			continue
 		}
 		fp := ctx.Client.State.ACFlightPlans[av.ADSBCallsign(fsp.strips[i])] // HAX: conflates callsign/ACID
-		var strip av.FlightStrip
+		acid := fsp.strips[i]
+		annots := fsp.annotations[acid]
 
 		x := float32(0)
 
@@ -459,23 +477,29 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		// Annotations
 		x += widthCenter
 		var editResult int
-		for ai, ann := range strip.Annotations {
+		for ai, ann := range annots {
 			ix, iy := ai%3, ai/3
 			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*stripHeight/3
 
 			if ctx.HaveFocus && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
-				// If were currently editing this annotation, don't draw it
-				// normally but instead draw it including a cursor, update
-				// it according to keyboard input, etc.
-				cursorStyle := renderer.TextStyle{Font: fsp.font, Color: bgColor,
-					DrawBackground: true, BackgroundColor: style.Color}
-				editResult, _ = drawTextEdit(&strip.Annotations[fsp.selectedAnnotation], &fsp.annotationCursorPos,
-					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, *ctx.KeyboardFocus, cb)
-				if len(strip.Annotations[fsp.selectedAnnotation]) >= 3 {
-					// Limit it to three characters
-					strip.Annotations[fsp.selectedAnnotation] = strip.Annotations[fsp.selectedAnnotation][:3]
-					fsp.annotationCursorPos = math.Min(fsp.annotationCursorPos, len(strip.Annotations[fsp.selectedAnnotation]))
+				// drawTextEdit on our local array slot
+				cursorStyle := renderer.TextStyle{
+					Font:            fsp.font,
+					Color:           bgColor,
+					DrawBackground:  true,
+					BackgroundColor: style.Color,
 				}
+				editResult, _ = drawTextEdit(&annots[ai], &fsp.annotationCursorPos,
+					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, *ctx.KeyboardFocus, cb)
+
+				// truncate to 3 chars
+				if len(annots[ai]) > 3 {
+					annots[ai] = annots[ai][:3]
+					fsp.annotationCursorPos = math.Min(fsp.annotationCursorPos, len(annots[ai]))
+				}
+
+				// write back into the pane’s map
+				fsp.annotations[acid] = annots
 			} else {
 				td.AddText(ann, [2]float32{xp, yp}, style)
 			}
@@ -492,11 +516,10 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			ctx.KeyboardFocus.Release()
 		case textEditReturnNext:
 			fsp.selectedAnnotation = (fsp.selectedAnnotation + 1) % 9
-			fsp.annotationCursorPos = len(strip.Annotations[fsp.selectedAnnotation])
+			fsp.annotationCursorPos = len(annots[fsp.selectedAnnotation])
 		case textEditReturnPrev:
-			// +8 rather than -1 to keep it positive for the mod...
 			fsp.selectedAnnotation = (fsp.selectedAnnotation + 8) % 9
-			fsp.annotationCursorPos = len(strip.Annotations[fsp.selectedAnnotation])
+			fsp.annotationCursorPos = len(annots[fsp.selectedAnnotation])
 		}
 
 		// Horizontal lines
@@ -530,6 +553,27 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 				} else {
 					// select the aircraft
 					fsp.selectedACID = fsp.strips[stripIndex]
+				}
+			}
+		}
+		if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
+			mx, my := ctx.Mouse.Pos[0], ctx.Mouse.Pos[1]
+			// compute left edge of the 3-column annotation area:
+			annotationStartX := drawWidth - 3*widthAnn
+			if mx >= annotationStartX && mx <= drawWidth {
+				// which strip row?
+				row := int(my/stripHeight) + scrollOffset
+				if row >= scrollOffset && row < len(fsp.strips) {
+					// take focus
+					ctx.KeyboardFocus.Take(fsp)
+					fsp.selectedStrip = row
+					// column index 0..2
+					col := int((mx - annotationStartX) / widthAnn)
+					// row within the 3 rows of that cell
+					innerRow := 2 - (int(my)%int(stripHeight))/(int(stripHeight)/3)
+					ai := innerRow*3 + col
+					fsp.selectedAnnotation = clamp(ai, 0, 8)
+					fsp.annotationCursorPos = len(fsp.annotations[fsp.strips[row]][fsp.selectedAnnotation])
 				}
 			}
 		}
