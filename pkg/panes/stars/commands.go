@@ -290,7 +290,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			}
 
 		case imgui.KeyF9:
-			if ctx.Keyboard.KeyControl() && ps.DisplayDCB {
+			if ctx.Keyboard.KeyControl() {
 				sp.resetInputState(ctx)
 				ps.DisplayDCB = !ps.DisplayDCB
 			} else {
