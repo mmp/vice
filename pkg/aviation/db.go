@@ -49,6 +49,7 @@ type StaticDatabase struct {
 	MVAs                map[string][]MVA // TRACON -> MVAs
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
+	DeltaAirspace       map[string][]AirspaceVolume
 }
 
 type FAAAirport struct {
@@ -225,6 +226,7 @@ func init() {
 	go func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
 		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
+		db.DeltaAirspace = parseAirspace("delta-airspace.json.zst")
 		wg.Done()
 	}()
 	wg.Wait()
@@ -1210,6 +1212,29 @@ func CWTDirectlyBehindSeparation(front, back string) float32 {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
 	}
 	return cwtBehindLookup[f][b]
+}
+
+func inAirspace(airspace map[string][]AirspaceVolume, p math.Point2LL, alt int) bool {
+	for _, vols := range airspace {
+		if slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
+			return vol.Inside(p, alt)
+		}) {
+			return true
+		}
+	}
+	return false
+}
+
+func InBravoAirspace(p math.Point2LL, alt int) bool {
+	return inAirspace(DB.BravoAirspace, p, alt)
+}
+
+func InCharlieAirspace(p math.Point2LL, alt int) bool {
+	return inAirspace(DB.CharlieAirspace, p, alt)
+}
+
+func InDeltaAirspace(p math.Point2LL, alt int) bool {
+	return inAirspace(DB.DeltaAirspace, p, alt)
 }
 
 ///////////////////////////////////////////////////////////////////////////
