@@ -1060,9 +1060,11 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 	}
 
 	if trk.IsUnassociated() {
+		if ctx.Now.Before(state.FullLDBEndTime) {
+			return true
+		}
 		if trk.Mode == av.TransponderModeStandby {
-			// unassociated also primary only, only show a datablock if it's been slewed
-			return ctx.Now.Before(state.FullLDBEndTime)
+			return false
 		}
 		// Check altitude filters
 		return int(trk.Altitude) >= af.Unassociated[0] && int(trk.Altitude) <= af.Unassociated[1]
