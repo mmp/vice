@@ -1196,7 +1196,8 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 
 			// Calculate the endpoint of the leader line and hence where to
 			// start drawing the datablock.
-			pac := transforms.WindowFromLatLongP(trk.Location)
+			state := sp.TrackState[trk.ADSBCallsign]
+			pac := transforms.WindowFromLatLongP(state.track.Location)
 			leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
 			pll := leaderLineEndpoint(pac, trk, leaderLineDirection)
 

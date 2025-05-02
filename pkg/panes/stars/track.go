@@ -447,13 +447,13 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 
 		// Check MSAW suppression filters
 		msawFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitMSAW
-		if msawFilter.Inside(trk.Location, int(trk.Altitude)) {
+		if msawFilter.Inside(state.track.Location, int(state.track.Altitude)) {
 			state.MSAW = false
 			continue
 		}
 
 		warn := slices.ContainsFunc(mvas, func(mva av.MVA) bool {
-			return alt < mva.MinimumLimit && mva.Inside(trk.Location)
+			return alt < mva.MinimumLimit && mva.Inside(state.track.Location)
 		})
 
 		if !warn && state.InhibitMSAW {
@@ -534,9 +534,10 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 			// Don't bother checking if quicklook isn't possible
 			state.QuicklookFilterApplies = false
 		} else {
+			state := sp.TrackState[trk.ADSBCallsign]
 			state.QuicklookFilterApplies = slices.ContainsFunc(qlfilt,
 				func(f sim.FilterRegion) bool {
-					return f.Inside(trk.Location, int(trk.Altitude))
+					return f.Inside(state.track.Location, int(state.track.Altitude))
 				})
 		}
 	}
@@ -773,8 +774,8 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 	ps := sp.currentPrefs()
 	// TODO: orient based on radar center if just one radar
 
-	pos := trk.Location
-	isUnsupported := trk.Altitude == 0 && trk.FlightPlan != nil // FIXME: there's surely a better way to do this
+	pos := state.track.Location
+	isUnsupported := state.track.Altitude == 0 && trk.FlightPlan != nil // FIXME: there's surely a better way to do this
 	pw := transforms.WindowFromLatLongP(pos)
 	// On high DPI windows displays we need to scale up the tracks
 
@@ -976,7 +977,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	state := sp.TrackState[trk.ADSBCallsign]
 	vols := ctx.Client.ControllerAirspace(ctx.UserTCP)
 
-	inside, alts := av.InAirspace(trk.Location, trk.Altitude, vols)
+	inside, alts := av.InAirspace(state.track.Location, state.track.Altitude, vols)
 	if state.EnteredOurAirspace && !inside {
 		return alts, true
 	} else if inside {
@@ -1000,7 +1001,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 
 	inCAInhibitFilter := func(trk *sim.Track) bool {
 		nocaFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitCA
-		return nocaFilter.Inside(trk.Location, int(trk.Altitude))
+		state := sp.TrackState[trk.ADSBCallsign]
+		return nocaFilter.Inside(state.track.Location, int(state.track.Altitude))
 	}
 
 	nmPerLongitude := ctx.NmPerLongitude
@@ -1197,7 +1199,7 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Trac
 			}
 
 			state := sp.TrackState[trk.ADSBCallsign]
-			return vol.Inside(trk.Location, trk.Altitude,
+			return vol.Inside(state.track.Location, state.track.Altitude,
 				state.TrackHeading(nmPerLongitude)+magneticVariation,
 				nmPerLongitude, magneticVariation)
 		})
@@ -1389,7 +1391,9 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs
 
 			if db := dbs[trk.ADSBCallsign]; db != nil {
 				baseColor, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
-				pac := transforms.WindowFromLatLongP(trk.Location)
+				state := sp.TrackState[trk.ADSBCallsign]
+				pac := transforms.WindowFromLatLongP(state.track.Location)
+
 				v := sp.getLeaderLineVector(ctx, sp.getLeaderLineDirection(ctx, trk))
 				// Offset the starting point to the edge of the track circle;
 				// this doesn't matter when we're drawing the circle but is

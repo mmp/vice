@@ -788,7 +788,8 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				}
 
 				ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
-				d := math.NMDistance2LL(ctr, trk.Location)
+				state := sp.TrackState[trk.ADSBCallsign]
+				d := math.NMDistance2LL(ctr, state.track.Location)
 				if closest == nil || d < closestDistance {
 					closest = &trk
 					closestDistance = d
@@ -3218,7 +3219,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			} else if cmd[0] == '*' {
 				// Lots of things start with an asterisk...
 				if cmd == "*" {
-					from := trk.Location
+					state := sp.TrackState[trk.ADSBCallsign]
+					from := state.track.Location
 					nmPerLongitude := ctx.NmPerLongitude
 					magneticVariation := ctx.MagneticVariation
 					sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
@@ -3234,7 +3236,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					return
 				} else if cmd == "*F" {
 					// 6-148 range/bearing to significant point
-					p := trk.Location
+					state := sp.TrackState[trk.ADSBCallsign]
+					p := state.track.Location
 					sp.wipSignificantPoint = &p
 					sp.scopeClickHandler = toSignificantPointClickHandler
 					sp.previewAreaInput += " " // sort of a hack: if the fix is entered via keyboard, it appears on the next line
@@ -3789,7 +3792,8 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 										continue
 									}
 									region := sp.ConvergingRunways[i].ApproachRegions[j]
-									if lat, _ := region.Inside(trk.Location, trk.Altitude,
+									state := sp.TrackState[trk.ADSBCallsign]
+									if lat, _ := region.Inside(state.track.Location, trk.Altitude,
 										ctx.NmPerLongitude, ctx.MagneticVariation); lat {
 										// All good. Whew
 										if state.Ghost.State == GhostStateForced {
@@ -4542,7 +4546,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 				LineSpacing: 0}
 
 			// Track position in window coordinates
-			pac := transforms.WindowFromLatLongP(trk.Location)
+			state := sp.TrackState[trk.ADSBCallsign]
+			pac := transforms.WindowFromLatLongP(state.track.Location)
 
 			// Upper-left corner of where we start drawing the text
 			pad := float32(5)
