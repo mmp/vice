@@ -836,6 +836,9 @@ func (s *Sim) PointOut(fromTCP string, acid ACID, toTCP string) error {
 			} else if toTCP == fromTCP {
 				// Can't point out to ourself
 				return av.ErrInvalidController
+			} else if fp.HandoffTrackController != "" {
+				// Can't point out if it's being handed off
+				return ErrTrackIsBeingHandedOff
 			}
 			return nil
 		},

@@ -3483,8 +3483,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = ErrSTARSIllegalTrack
 				} else if _, ok := sp.PointOuts[trk.FlightPlan.ACID]; ok {
 					status.err = ErrSTARSIllegalTrack
-				} else if trk.FlightPlan.HandoffTrackController != ctx.UserTCP {
-					status.err = ErrSTARSIllegalTrack
 				} else {
 					control := sp.lookupControllerForId(ctx, strings.TrimSuffix(cmd, "*"), trk.FlightPlan.ACID)
 					if control == nil {
