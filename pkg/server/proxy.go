@@ -49,8 +49,8 @@ func (p *proxy) GetSerializeSim() (*sim.Sim, error) {
 	return &s, err
 }
 
-func (p *proxy) GetStateUpdate(wu *sim.StateUpdate) *rpc.Call {
-	return p.Client.Go("Sim.GetStateUpdate", p.ControllerToken, wu, nil)
+func (p *proxy) GetStateUpdate(update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.GetStateUpdate", p.ControllerToken, update, nil)
 }
 
 func (p *proxy) SetSimRate(r float32) *rpc.Call {
@@ -179,28 +179,28 @@ func (p *proxy) PointOut(acid sim.ACID, controller string, update *sim.StateUpda
 		ControllerToken: p.ControllerToken,
 		ACID:            acid,
 		Controller:      controller,
-	}, nil, nil)
+	}, update, nil)
 }
 
 func (p *proxy) AcknowledgePointOut(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.AcknowledgePointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
 		ACID:            acid,
-	}, nil, nil)
+	}, update, nil)
 }
 
 func (p *proxy) RecallPointOut(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.RecallPointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
 		ACID:            acid,
-	}, nil, nil)
+	}, update, nil)
 }
 
 func (p *proxy) RejectPointOut(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.RejectPointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
 		ACID:            acid,
-	}, nil, nil)
+	}, update, nil)
 }
 
 func (p *proxy) ReleaseDeparture(callsign av.ADSBCallsign, update *sim.StateUpdate) *rpc.Call {
