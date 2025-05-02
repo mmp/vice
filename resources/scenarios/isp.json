@@ -3041,9 +3041,11 @@
       { "name": "FOK.", "id": "C", "airports": [ "KFOK" ] },
       { "name": "OXC.", "id": "D", "airports": [ "KOXC" ] }
     ],
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
         {
-            "name": "ISP NO CA",
+            "id": "ISPNOCA",
+            "description": "ISP CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 1200,
@@ -3051,14 +3053,16 @@
             "center": "KISP"
         },
         {
-            "name": "HVN NO CA",
+            "id": "HVNNOCA",
+            "description": "HVN CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 1200,
             "radius": 2,
             "center": "KHVN"
         }
-    ],
+    ]
+      },
     "force_ql_self": true,
     "scratchpad1": { "display_exit_fix": true },
     "significant_points": {

@@ -80,85 +80,72 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 	sc.HoldForRelease = append(sc.HoldForRelease, ac)
 }
 
-func (sc *STARSComputer) Update(s *Sim) {
+func (sc *STARSComputer) CheckAirspaceFilterVolumes(s *Sim) {
 	for _, ac := range s.Aircraft {
 		if !ac.IsAirborne() || ac.Squawk == 0o1200 {
 			continue
 		}
 
-		isExternal := func(tcp string) bool {
-			ctrl, ok := s.State.Controllers[tcp]
-			return ok && ctrl.FacilityIdentifier != ""
+		inVolumes := func(f FilterRegions) bool {
+			return f.Inside(ac.Position(), int(ac.Altitude()))
 		}
 
-		inVolumes := func(vols []av.AirspaceVolume) bool {
-			return slices.ContainsFunc(vols,
-				func(vol av.AirspaceVolume) bool { return vol.Inside(ac.Position(), int(ac.Altitude())) })
-		}
+		filters := s.State.STARSFacilityAdaptation.Filters
 
-		if ac.IsAssociated() {
-			if ac.STARSFlightPlan.TypeOfFlight == av.FlightTypeDeparture {
-				for _, vol := range s.State.STARSFacilityAdaptation.DropVolumes {
-					if vol.Inside(ac.Position(), int(ac.Altitude())) {
-						if isExternal(ac.STARSFlightPlan.TrackingController) {
-							// Return beacon code, list index
-							s.deleteFlightPlan(ac.STARSFlightPlan)
-							ac.STARSFlightPlan = nil
-							break
-						}
+		if ac.IsAssociated() { // drop?
+			drop := func() bool {
+				fp := ac.STARSFlightPlan
+				if fp.TypeOfFlight == av.FlightTypeArrival && inVolumes(filters.ArrivalDrop) {
+					return true
+				} else if ac.HasBeenLocallyOwned && s.State.IsExternalController(fp.TrackingController) &&
+					inVolumes(filters.SecondaryDrop) {
+					return true
+				} else {
+					return false
+				}
+			}()
+			if drop {
+				// Return beacon code, list index
+				s.deleteFlightPlan(ac.STARSFlightPlan)
+				ac.STARSFlightPlan = nil
+			}
+		} else { // unassociated--associate?
+			associate := func() bool {
+				if ac.TypeOfFlight == av.FlightTypeDeparture {
+					if inVolumes(filters.DepartureAcquisition) {
+						return true
+					}
+				} else { // arrival or overflight
+					if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil &&
+						fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController) {
+						// Inbound handoff from an external facility
+						return true
+					} else if inVolumes(filters.ArrivalAcquisition) {
+						return true
 					}
 				}
-			}
-		} else {
-			// Is there a flight plan matching its beacon code?
-			var fp *STARSFlightPlan
-			var fpIdx int
-			for i := range sc.FlightPlans {
-				if ac.Squawk == sc.FlightPlans[i].AssignedSquawk {
-					fpIdx = i
-					fp = sc.FlightPlans[i]
-					break
-				}
-			}
-			if fp == nil {
-				// This shouldn't happen in general but may happen if the FP
-				// was modified to change the ACID.
-				continue
-			}
-
-			var associate bool
-			switch fp.TypeOfFlight {
-			case av.FlightTypeDeparture:
-				// Use a higher altitude threshold than is used for whether tracks
-				// are visible in STARS so they are initially unassociated for a
-				// few ticks.
-				associate = float32(ac.Altitude()) > ac.DepartureAirportElevation()+200 &&
-					inVolumes(s.State.STARSFacilityAdaptation.AcquisitionVolumes)
-
-			case av.FlightTypeArrival, av.FlightTypeOverflight:
-				// Otherwise we associate when we have an inbound handoff from
-				// an external facility.
-				associate = (fp.HandoffTrackController != "" && !isExternal(fp.HandoffTrackController)) ||
-					inVolumes(s.State.STARSFacilityAdaptation.AcquisitionVolumes)
-			}
-
+				return false
+			}()
 			if associate {
-				sc.FlightPlans = slices.Delete(sc.FlightPlans, fpIdx, fpIdx+1)
+				if fp := sc.takeFlightPlanBySquawk(ac.Squawk); fp == nil {
+					ac.MissingFlightPlan = true
+				} else {
+					// For multi-controller, resolve to the one covering the
+					// departure position based on who is signed in now.
+					fp.TrackingController = s.State.ResolveController(fp.TrackingController)
+					ac.HasBeenLocallyOwned = ac.HasBeenLocallyOwned || s.State.IsLocalController(fp.TrackingController)
 
-				// For multi-controller, resolve to the one covering the
-				// departure position based on who is signed in now.
-				fp.TrackingController = s.State.ResolveController(fp.TrackingController)
+					ac.AssociateFlightPlan(fp)
 
-				ac.AssociateFlightPlan(fp)
+					s.eventStream.Post(Event{
+						Type: FlightPlanAssociatedEvent,
+						ACID: fp.ACID,
+					})
 
-				s.eventStream.Post(Event{
-					Type: FlightPlanAssociatedEvent,
-					ACID: fp.ACID,
-				})
-
-				// Remove it from the released departures list
-				sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
-					func(ac2 *Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })
+					// Remove it from the released departures list
+					sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
+						func(ac2 *Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })
+				}
 			}
 		}
 	}
@@ -177,6 +164,24 @@ func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *STARSFlightPlan {
 		func(fp *STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		fp := sc.FlightPlans[idx]
 		sc.FlightPlans = append(sc.FlightPlans[:idx], sc.FlightPlans[idx+1:]...)
+		return fp
+	}
+	return nil
+}
+
+func (sc *STARSComputer) lookupFlightPlanBySquawk(sq av.Squawk) *STARSFlightPlan {
+	if idx := slices.IndexFunc(sc.FlightPlans,
+		func(fp *STARSFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
+		return sc.FlightPlans[idx]
+	}
+	return nil
+}
+
+func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *STARSFlightPlan {
+	if idx := slices.IndexFunc(sc.FlightPlans,
+		func(fp *STARSFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
+		fp := sc.FlightPlans[idx]
+		sc.FlightPlans = slices.Delete(sc.FlightPlans, idx, idx+1)
 		return fp
 	}
 	return nil

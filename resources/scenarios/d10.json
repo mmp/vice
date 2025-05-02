@@ -5611,10 +5611,12 @@
         }
     },
     "stars_config": {
-    "center": "KDFW",
-    "inhibit_ca_volumes": [
+	"center": "KDFW",
+	"filters": {
+    "inhibit_ca": [
         {
-            "name": "DFW SOUTH",
+            "id": "FWSNOCA",
+            "description": "DFW SOUTH CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 6000,
@@ -5627,7 +5629,8 @@
             ]
         },
         {
-            "name": "DFW NORTH",
+            "id": "FWNNOCA",
+            "description": "DFW NORTH CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 6000,
@@ -5640,7 +5643,8 @@
             ]
         },
         {
-            "name": "DAL SOUTH",
+            "id": "ALSNOCA",
+            "description": "DAL SOUTH CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 3000,
@@ -5653,7 +5657,8 @@
             ]
         },
         {
-            "name": "DAL SOUTH",
+            "id": "ALNNOCA",
+            "description": "DAL NORTH CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 1169,
@@ -5665,7 +5670,8 @@
                 "32.85097,-96.87249"
             ]
         }
-    ],
+    ]
+	},
     "radar_sites": {
         "EAST": {
             "char": "A",

@@ -1024,10 +1024,12 @@
             }
         ]
         },
-        "center": "KGSO",
-        "inhibit_ca_volumes": [
+          "center": "KGSO",
+	  "filters": {
+        "inhibit_ca": [
           {
-            "name": "BHM NO CA",
+            "id": "BNOCA A",
+            "description": "BHM CONFLICT SUPPRESS AREA A",
             "type": "polygon",
             "floor": 0,
             "ceiling": 3500,
@@ -1039,7 +1041,8 @@
             ]
         },
         {
-          "name": "BHM NO CA",
+          "id": "BNOCA B",
+          "description": "BHM CONFLICT SUPPRESS AREA B",
           "type": "polygon",
           "floor": 0,
           "ceiling": 3500,
@@ -1050,7 +1053,8 @@
               "-86.794879,33.672271"
           ]
         }
-      ],
+	]
+	  },
       "radar_sites": {
         "BHM": {
           "char": "B",

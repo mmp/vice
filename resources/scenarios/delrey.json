@@ -4414,10 +4414,12 @@
                   "from": "ZLA"
               }
           ]
-},
-"inhibit_ca_volumes": [
+  },
+      "filters": {
+"inhibit_ca": [
         {
-            "name": "DEL REY WEST NO CA",
+            "id": "W NOCA",
+            "description": "DEL REY WEST CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 5000,
@@ -4429,7 +4431,8 @@
             ]
         },
 		{
-            "name": "DEL REY EAST NO CA",
+            "id": "E NOCA",
+            "description": "DEL REY EAST CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 5000,
@@ -4441,7 +4444,8 @@
 				"N033.55.49.909,W118.25.03.561"
             ]
         }
-   ],
+]
+      },
    "airspace_awareness": [
 	{
         "fixes": [

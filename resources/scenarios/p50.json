@@ -1939,9 +1939,11 @@
             "slope_angle": 0.3
           }
     },
-    "inhibit_ca_volumes": [
+	"filters": {
+    "inhibit_ca": [
         {
-            "name": "PHX NO CA",
+            "id": "PHXNOCA",
+            "description": "PHX CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 4000,
@@ -1959,7 +1961,8 @@
 				"N033.26.38.139,W112.00.53.833"
             ]
         }
-    ],
+    ]
+	},
 	"range": 40,
     "scratchpads": {
         "JNIPR": "BRK",

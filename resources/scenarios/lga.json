@@ -2582,16 +2582,19 @@
   },
   "range": 60,
       "force_ql_self": true,
-  "inhibit_ca_volumes": [
+      "filters": {
+  "inhibit_ca": [
     {
-      "name": "LGA NO CA",
+      "id": "LGANOCA",
+      "description": "LGA CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1200,
       "radius": 2,
       "center": "KLGA"
     }
-  ],
+  ]
+      },
   "radar_sites": {
     "EWR": {
       "char": "E",

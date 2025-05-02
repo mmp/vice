@@ -112,7 +112,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-departures">Departures</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Airspace</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a></li>
 	</ul>
@@ -817,6 +817,8 @@ how it simulates aircraft or the STARS interface.
               </li>
               <li>Facility engineering:
                 <ul>
+                  <li>inhibit_ca_volumes -> filters / inhibit_ca</li>
+                  <li>name -> label, added "description"
                 </ul>
               </li>
             </ul>
@@ -4323,7 +4325,7 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
 
-              <h3 id="airspace" class="section-heading">Airspace</h3>
+              <h3 id="airspace" class="section-heading">Controller Airspace</h3>
 
               <p><i>Note: this feature is not present in real-world STARS.</i></p>
             <p>
@@ -4341,7 +4343,7 @@ how it simulates aircraft or the STARS interface.
             </div>
             <br>
             <p>The airspace volumes associated with controllers can be displayed by clicking on the
-              <i class="fas fa-question-circle"></i> button in the menubar to display the information window
+              <i class="fas fa-question-circle"></i> button in the menu bar to display the information window
               and then opening the "Airspace" section.</p>
 
           </section>
@@ -6415,11 +6417,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
 
           <section class="docs-section" id="fe-airspace">
-            <h2 class="section-heading">Airspace</h2>
+            <h2 class="section-heading">Controller Airspace</h2>
 
-            <p>Airspace volumes may optionally be specified using the "airspace" object in the scenario group.
-              These volumes may be assigned to controllers in scenarios, in which case <i>vice</i> will show an
-              alert when aircraft are outside of the controller's airspace.  The airspace object has two members: 
+            <p>Airspace volumes representing areas that particular controllers are responsible for may optionally be specified
+              using the "airspace" object in the scenario group. If specified, <i>vice</i> will show an
+              alert when aircraft owned by a controller are outside of their airspace.
+            </p>
+            <p>
+              The airspace object has two members:
             </p>
             <table class="table">
             <thead>
@@ -6727,22 +6732,15 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
               </tr>
               <tr>
-                <td>"beacon_bank"</td>
-                <td>Number</td>
-                <td>This should be an integer between 1 and 7: it gives the range of beacon codes that should
-                  be assigned to aircraft: e.g. 1 means from 0101 to 0107.</td>
-              </tr>
-              <tr>
                 <td>"controller_configs"</td>
                 <td>Object</td>
                 <td>Each entry specifies controller-specific configuration properties.
-                  The applicable control positions are specified via members given as a comma-separated string of positions
-                  (e.g., "JFK_G_APP,JFK_K_APP"). The following properties may be specified for each one:
+                  The applicable control positions are specified via members given as a comma-separated string of TCP positions
+                  (e.g., "2G,2K"). The following properties may be specified for each one:
                   <br>
                   <ul>
                     <li>"beacon_code_blocks": a string containing a comma-separated list of beacon code banks
                       (two digits) or discrete beacon codes (four digits) that should be monitored by default.</li>
-                      If specified, this overrides any range specified in the scenario or scenario group.</li>
                     <li>"center": the initial center of the controller's STARS scope.
                       If specified, this overrides any center specified in the scenario or scenario group.</li>
                     <li>"default_maps": an array of strings that specifies which maps in "video_maps"
@@ -6790,6 +6788,42 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"filters"</td>
+                <td>Objects</td>
+                <td>Each member of this object defines a <a href="#fe-stars-filters">filter region</a> inside
+                  which STARS applies special rules to aircraft. The following types of filters may be specified:
+                  <ul>
+		    <li>"arrival_acquisition": when an arrival enters this filter region, its flight plan
+                      associates (if available), even if it is still controlled by an external controller
+                      and a handoff hasn't been initiated.</li>
+		    <li>"arrival_drop": when an arrival enters one of the specified filters, their flight
+                      plan disassociates from the aircraft and is deleted. A default volume of 2nm radius up to 500' AGL
+                      around each arrival airport is generated if no filters are specified.</li>
+		    <li>"departure_acquisition": when a departure enters one of the filters, STARS attempts
+                      to find the flight plan corresponding to the beacon code the aircraft is squawking.
+                      The default volumes are 2nm circles from 100' to 1,000' AGL around the airport.</li>
+                    <li>"inhibit_ca": collision alerts are disabled for aircraft within the filter's volume.
+                      These are especially useful around airports so that alerts aren't issued for aircraft
+                      arriving/departing on parallel runways, for example.
+                      If not specified, a default volume of a circle with a 3nm radius going up to 1,500' AGL
+                      around each airport is used.</li>
+                    <li>"inhibit_msaw": minimum safe altitude warnings (MSAW) are disabled for aircraft
+                      within the filter's volume. Like "inhibit_ca", this is also useful around airports and
+                      a volume of a 3nm radius circle going up to 1,500' AGL around each airport is used
+                      if none are specified. </li>
+                    <li>"quicklook": the full datablock of any tracks owned by another controller is displayed
+                      rather than the partial datablock for tracks in the filter region.</li>
+		    <li>"secondary_drop": if an associated <b>exits</b> a secondary drop filter region, is controlled
+                      by a controller outside of the TRACON, and was previously controlled by a controller
+                      inside the current TRACON, its flight plan disassociates and is deleted.
+                      (Note that the test is that it exits the region, unlike the others that check for being
+                      inside the region. Secondary drop region are thus often specified along the boundary of
+                      a TRACON.)
+                      There are no default "secondary_drop" filters.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
                 <td>"flight_plan"</td>
                 <td>Object</td>
                 <td>Allows specifying various adapted configurations for STARS flight plans.
@@ -6822,35 +6856,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Number</td>
                 <td>If non-zero, gives the number of seconds that the sector id for a handoff to/from an
                   external facilities is shown in the datablock after the handoff has been accepted.</td>
-              </tr>
-              <tr>
-                <td>"inhibit_ca_volumes"</td>
-                <td>Array of objects</td>
-                <td>Each entry specifies a volume of space where collision
-                  alerts are inhibited. It can be useful to specify these
-                  around airports so that alerts aren't issued for aircraft
-                  arriving/departing on parallel runways. Each object has
-                  the following members:
-                  <ul>
-                    <li>"name": a string used to identify the volume in
-                      system lists.</li>
-                    <li>"type": either "circle" or "polygon"</li>
-                    <li>"floor": number giving the minimum altitude of the volume.</li>
-                    <li>"ceiling": number giving the maximum altitude of
-                      the volume.</li>
-                  </ul>
-                  For "circle" volumes, there are two additional members:
-                  <ul>
-                    <li>"center": the location of the center of the volume.</li>
-                    <li>"radius": the radius of the volume, in nautical miles.</li>
-                  </ul>
-                  For "polygon" volumes, an additional parameter specifies
-                  its extent:
-                  <ul>
-                    <li>"vertices": an array of locations specifying the
-                    outline of the volume.</li>
-                  </ul>
-                </td>
               </tr>
               <tr>
                 <td>"maps_labels"</td>
@@ -7039,6 +7044,43 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
             </tbody>
             </table>
+
+            <h3 id="fe-stars-filters">Filter Regions</h3>
+
+            <p>STARS uses <emph>filter regions</emph> to manage a number of behaviors that are enabled or disabled
+              depending on whether an aircraft's track is within particular volumes of space.
+              These regions are defined under "filters" in the <a href="#fe-stars-videomaps">stars_config</a> object.
+              As an example, the "inhibit_ca" filter is used to disable collision alerts
+              close to airports so that spurious alerts aren't issued between departing and arriving aircraft.
+              The lateral extent of filter volumes volumes can be defined either with a polygon or a circle and their
+              vertical extent is given by a single range of altitudes.
+              The following volume object is used to specify them.
+            </p>
+            <p>Four members are used for both types of filters:
+            <ul>
+              <li>"id": a short string (no more than 7 characters) used to identify the volume.
+                "id"s must be provided for all filter regions and must be unique among the filter
+                regions of the same type.</li>
+              <li>"description": a longer string used to identify the volume in system lists.</li>
+              <li>"type": either "circle" or "polygon"</li>
+              <li>"floor": number giving the minimum altitude of the volume.</li>
+              <li>"ceiling": number giving the maximum altitude of the volume.</li>
+            </ul>
+            For "circle" volumes, there are two additional members:
+            <ul>
+              <li>"center": the location of the center of the volume.</li>
+              <li>"radius": the radius of the volume, in nautical miles.</li>
+            </ul>
+            For "polygon" volumes, an additional member specifies its lateral extent:
+            <ul>
+              <li>"vertices": an array of polygon vertex locations specifying the
+                outline of the volume.</li>
+            </ul>
+            <p>
+            For polygonal filter volumes, the last vertex and the first vertex will automatically be connected;
+            it's not necessary to close the polygon yourself.
+            </p>
+
 
             <h3>Video Maps</h3>
 

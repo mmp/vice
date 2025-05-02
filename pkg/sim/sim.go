@@ -78,10 +78,13 @@ type Aircraft struct {
 
 	STARSFlightPlan *STARSFlightPlan
 
-	HoldForRelease   bool
-	Released         bool // only used for hold for release
-	ReleaseTime      time.Time
-	WaitingForLaunch bool // for departures
+	HoldForRelease    bool
+	Released          bool // only used for hold for release
+	ReleaseTime       time.Time
+	WaitingForLaunch  bool // for departures
+	MissingFlightPlan bool
+
+	HasBeenLocallyOwned bool // has a local controller ever owned the track?
 
 	GoAroundDistance *float32
 
@@ -115,6 +118,7 @@ type Track struct {
 	ATPAVolume                *av.ATPAVolume
 	MVAsApply                 bool
 	HoldForRelease            bool
+	MissingFlightPlan         bool
 	Route                     []math.Point2LL
 }
 
@@ -626,6 +630,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
 			MVAsApply:                 ac.MVAsApply(),
 			HoldForRelease:            ac.HoldForRelease,
+			MissingFlightPlan:         ac.MissingFlightPlan,
 			ATPAVolume:                ac.ATPAVolume(),
 		}
 
@@ -907,29 +912,35 @@ func (s *Sim) updateState() {
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
 				!s.prespawn {
 				// Time to check in
-				tcp := s.State.ResolveController(ac.STARSFlightPlan.InboundHandoffController)
-				s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
-
-				airportName := ac.FlightPlan.DepartureAirport
-				if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
-					airportName = ap.Name
+				fp := ac.STARSFlightPlan
+				if fp == nil {
+					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}
+				if fp != nil {
+					tcp := s.State.ResolveController(fp.InboundHandoffController)
+					s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
 
-				msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
-				s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
-					Controller: tcp,
-					Message:    msg,
-					Type:       av.RadioTransmissionContact,
-				}})
+					airportName := ac.FlightPlan.DepartureAirport
+					if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
+						airportName = ap.Name
+					}
 
-				// Clear this out so we only send one contact message
-				ac.DepartureContactAltitude = 0
+					msg := "departing " + airportName + ", " + ac.Nav.DepartureMessage()
+					s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
+						Controller: tcp,
+						Message:    msg,
+						Type:       av.RadioTransmissionContact,
+					}})
 
-				// Only after we're on frequency can the controller start
-				// issuing control commands.. (Note that track may have
-				// already been handed off to the next controller at this
-				// point.)
-				ac.STARSFlightPlan.ControllingController = tcp
+					// Clear this out so we only send one contact message
+					ac.DepartureContactAltitude = 0
+
+					// Only after we're on frequency can the controller start
+					// issuing control commands.. (Note that track may have
+					// already been handed off to the next controller at this
+					// point.)
+					fp.ControllingController = tcp
+				}
 			}
 
 			// Cull far-away aircraft
@@ -945,7 +956,7 @@ func (s *Sim) updateState() {
 		s.spawnAircraft()
 
 		s.ERAMComputer.Update(s)
-		s.STARSComputer.Update(s)
+		s.STARSComputer.CheckAirspaceFilterVolumes(s)
 	}
 }
 

@@ -4123,9 +4123,11 @@
                 }
             ]
         },
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "DTW South",
+                "id": "S NOCA",
+                "description": "DTW South CONFLICT SUPPRESS",
                 "type": "polygon",
                 "floor": 0,
                 "ceiling": 6000,
@@ -4137,7 +4139,8 @@
                 ]
             },
             {
-                "name": "DTW North",
+                "id": "N NOCA",
+                "description": "DTW North CONFLICT SUPPRESS",
                 "type": "polygon",
                 "floor": 0,
                 "ceiling": 6000,
@@ -4149,7 +4152,8 @@
                 ]
             },
             {
-                "name": "DTW West",
+                "id": "W NOCA",
+                "description": "DTW West CONFLICT SUPPRESS",
                 "type": "polygon",
                 "floor": 0,
                 "ceiling": 6000,
@@ -4160,7 +4164,8 @@
                     "N042.16.22.356,W082.43.29.335"
                 ]
             }
-        ],
+        ]
+	},
         "scratchpads": {
             "SINKR": "SIN",
             "ZEGBI": "ZEG",

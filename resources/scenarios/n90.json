@@ -9882,10 +9882,12 @@
   }
 ]
   },
-  "range": 80,
-  "inhibit_ca_volumes": [
+      "range": 80,
+      "filters": {
+  "inhibit_ca": [
     {
-      "name": "EWR NO CA",
+      "id": "EWRNOCA",
+      "description": "EWR CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1200,
@@ -9893,7 +9895,8 @@
       "center": "KEWR"
     },
     {
-      "name": "LGA NO CA",
+      "id": "LGANOCA",
+      "description": "LGA CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1200,
@@ -9901,7 +9904,8 @@
       "center": "KLGA"
     },
     {
-      "name": "JFK NO CA",
+      "id": "JFKNOCA",
+      "description": "JFK CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9909,14 +9913,17 @@
       "center": "KJFK"
     },
     {
-      "name": "HVN NO CA",
+      "id": "HVNNOCA",
+      "description": "HVN CONFLICT SUPPRESS",
+      "type": "circle",
       "floor": 0,
       "ceiling": 1500,
       "radius": 3,
       "center": "KHVN"
     },
     {
-      "name": "ISP NO CA",
+      "id": "ISPNOCA",
+      "description": "ISP CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9924,7 +9931,8 @@
       "center": "KISP"
     },
     {
-      "name": "HPN NO CA",
+      "id": "HPNNOCA",
+      "description": "HPN CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9932,7 +9940,8 @@
       "center": "KHPN"
     },
     {
-      "name": "TEB NO CA",
+      "id": "TEBNOCA",
+      "description": "TEB CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9940,7 +9949,8 @@
       "center": "KTEB"
     },
     {
-      "name": "MMU NO CA",
+      "id": "MMUNOCA",
+      "description": "MMU CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9948,7 +9958,8 @@
       "center": "KMMU"
     },
     {
-      "name": "DXR NO CA",
+      "id": "DXRNOCA",
+      "description": "DXR CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9956,7 +9967,8 @@
       "center": "KDXR"
     },
     {
-      "name": "CDW NO CA",
+      "id": "CDWNOCA",
+      "description": "CDW CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9964,7 +9976,8 @@
       "center": "KCDW"
     },
     {
-      "name": "SWF NO CA",
+      "id": "SWFNOCA",
+      "description": "SWF CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9972,14 +9985,16 @@
       "center": "KSWF"
     },
     {
-      "name": "POU NO CA",
+      "id": "POUNOCA",
+      "description": "POU CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
       "radius": 3,
       "center": "KPOU"
     }
-  ],
+  ]
+      },
   "radar_sites": {
     "EWR": {
       "char": "E",

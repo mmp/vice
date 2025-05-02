@@ -1905,9 +1905,11 @@
       }
   ]
   },
-  "inhibit_ca_volumes": [
+  "filters": {
+  "inhibit_ca": [
     {
-      "name": "KAAC NO CA",
+      "id": "AACNOCA",
+      "description": "AAC CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1200,
@@ -1915,7 +1917,8 @@
       "center": "KAAC"
     },
     {
-      "name": "KAAC APPR NO CA",
+      "id": "APPNOCA",
+      "description": "AAC APPR CONFLICT SUPPRESS",
       "type": "polygon",
       "floor": 0,
       "ceiling": 2000,
@@ -1926,7 +1929,8 @@
         "N036.10.22.608,W095.32.50.755"
       ]
     }
-  ],
+  ]
+  },
     "airspace_awareness": [
       {
          "fixes": [

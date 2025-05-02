@@ -1587,10 +1587,12 @@
 		}
 	},
 	"stars_config": {
-		"center": "KAUS",
-		"inhibit_ca_volumes": [
+	    "center": "KAUS",
+	    "filters": {
+		"inhibit_ca": [
 			{
-				"name": "AUS NO CA",
+				"id": "AUSNOCA",
+				"description": "AUS CONFLICT SUPPRESS",
 				"type": "polygon",
 				"floor": 0,
 				"ceiling": 7000,
@@ -1602,7 +1604,8 @@
 					"N30.32.34.436,W97.48.10.531"
 				]
 			}
-		],
+		]
+	    },
 		"radar_sites": {
 			"AUS": {
 				"char": "A",

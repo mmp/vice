@@ -12494,9 +12494,11 @@
 				]
 			}
 		],
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "D01 NO CA",
+                "id": "D01NOCA",
+                "description": "D01 CONFLICT SUPPRESS",
                 "type": "polygon",
                 "floor": 5000,
                 "ceiling": 13000,
@@ -12507,7 +12509,8 @@
                     "N040.24.22.019,W104.31.03.253"
                 ]
             }
-        ],
+        ]
+	},
         "radar_sites": {
             "DEN": {
                 "char": "D",

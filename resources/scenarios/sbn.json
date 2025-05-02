@@ -1526,16 +1526,19 @@
                 "receiving_controller": "CHI_35_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
-            {
-                "name": "SBN NO CA",
-                "type": "circle",
-                "floor": 0,
-                "radius": 4,
-                "ceiling": 3000,
-                "center": "KSBN"
-            }
-        ],
+	"filters": {
+            "inhibit_ca": [
+		{
+                    "id": "SBNNOCA",
+                    "description": "SBN CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "radius": 4,
+                    "ceiling": 3000,
+                    "center": "KSBN"
+		}
+            ]
+	},
         "scratchpads": {
             "OXI": "OXI",
             "HYK": "HYK",

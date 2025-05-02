@@ -2644,9 +2644,11 @@
             ]
         },
         "range": 55,
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "MDT NO CA",
+                "id": "MDTNOCA",
+                "description": "MDT CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 1300,
@@ -2654,14 +2656,16 @@
                 "radius": 4
             },
             {
-                "name": "CXY NO CA",
+                "id": "CXYNOCA",
+                "description": "CXY CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 1300,
                 "center": "N040.12.51.253,W076.50.48.403",
                 "radius": 4
             }
-        ],
+        ]
+	},
         "radar_sites": {
             "MDT": {
                 "char": "M",

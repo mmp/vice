@@ -5889,9 +5889,11 @@
         "slope_angle": 0.3
       }
     },
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
       {
-        "name": "MIA NO CA",
+        "id": "MIANOCA",
+        "description": "MIA CONFLICT SUPPRESS",
         "type": "polygon",
         "floor": 0,
         "ceiling": 3000,
@@ -5903,7 +5905,8 @@
         ]
       },
       {
-        "name": "FLL NO CA",
+        "id": "FLLNOCA",
+        "description": "FLL CONFLICT SUPPRESS",
         "type": "polygon",
         "floor": 0,
         "ceiling": 3000,
@@ -5915,7 +5918,8 @@
         ]
       },
       {
-        "name": "FXE NO CA",
+        "id": "FXENOCA",
+        "description": "FXE CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
@@ -5923,7 +5927,8 @@
         "center": "N26.11.49.540,W80.10.13.363"
       },
       {
-        "name": "OPF NO CA",
+        "id": "OPFNOCA",
+        "description": "OPF CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
@@ -5931,14 +5936,16 @@
         "center": "N25.54.25.166,W80.16.29.327"
       },
       {
-        "name": "TMV NO CA",
+        "id": "TMVNOCA",
+        "description": "TMV CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
         "radius": 7,
         "center": "N25.38.53.381,W80.25.49.415"
       }
-    ],
+    ]
+      },
     "scratchpads": {
       "DUCEN": "ALT",
       "ALTNN": "ALT",

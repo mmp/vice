@@ -2761,9 +2761,11 @@
             }
         ]
     },
-	"inhibit_ca_volumes": [
+      "filters": {
+	"inhibit_ca": [
         {
-            "name": "IAD NO CA",
+            "id": "IADNOCA",
+            "description": "IAD CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 5000,
@@ -2777,7 +2779,8 @@
 				"N038.56.57.778,W077.28.58.943"
             ]
         }
-    ],
+	]
+      },
 	"range": 63,
     "scratchpads": {
       "COLIN": "AME",

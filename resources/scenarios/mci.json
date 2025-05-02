@@ -3000,14 +3000,19 @@
                 "receiving_controller": "KC_48_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
+	"filters": {
+          "inhibit_ca": [
             {
-                "name": "MCI NO CA",
-                "type": "circle",
-                "floor": 3000,
-                "center": "KMCI"
+              "id": "MCINOCA",
+              "description": "MCI CONFLICT SUPPRESS",
+              "type": "circle",
+              "floor": 1000,
+              "ceiling": 3000,
+              "radius": 3,
+              "center": "KMCI"
             }
-        ],
+          ]
+	},
         "scratchpads": {
             "SIFER": "SIF",
             "ARENZ": "ARE",

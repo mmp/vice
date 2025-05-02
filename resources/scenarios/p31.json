@@ -1020,16 +1020,19 @@
             "receiving_controller": "JAX_10_CTR"
         }
     ],
-    "inhibit_ca_volumes": [
+	"filters": {
+    "inhibit_ca": [
         {
-            "name": "PNS NO CA",
+            "id": "PNSNOCA",
+            "description": "PNS CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 3000,
             "radius": 7,
             "center": "KPNS"
         }
-    ],
+    ]
+	},
     "force_ql_self": true,
     "scratchpads": {
         "AEX":   "",

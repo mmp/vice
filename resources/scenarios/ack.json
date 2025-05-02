@@ -796,9 +796,11 @@
                 "receiving_controller": "BOS_37_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "KACK NO CA",
+                "id": "ACKNOCA",
+                "description": "ACK CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 2000,
@@ -806,14 +808,16 @@
                 "center": "KACK"
             },
             {
-                "name": "KMVY NO CA",
+                "id": "MVYNOCA",
+                "description": "MVY CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 2000,
                 "radius": 5,
                 "center": "KMVY"
             }
-        ],
+        ]
+	},
         "force_ql_self": true,
         "scratchpads": {
             "CCC": "PRT",

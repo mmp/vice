@@ -408,10 +408,6 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 	return ss.Center
 }
 
-func (ss *State) InhibitCAVolumes() []av.AirspaceVolume {
-	return ss.STARSFacilityAdaptation.InhibitCAVolumes
-}
-
 func (ss *State) AverageWindVector() [2]float32 {
 	d := math.OppositeHeading(float32(ss.Wind.Direction))
 	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
@@ -552,4 +548,14 @@ func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
 		}
 	}
 	return nil
+}
+
+func (ss *State) IsExternalController(tcp string) bool {
+	ctrl, ok := ss.Controllers[tcp]
+	return ok && ctrl.FacilityIdentifier != ""
+}
+
+func (ss *State) IsLocalController(tcp string) bool {
+	ctrl, ok := ss.Controllers[tcp]
+	return ok && ctrl.FacilityIdentifier == ""
 }

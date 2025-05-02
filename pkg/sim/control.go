@@ -416,6 +416,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
 			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
 
+			ac.HasBeenLocallyOwned = true
 			ac.AssociateFlightPlan(fp)
 
 			s.eventStream.Post(Event{
@@ -457,6 +458,7 @@ func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID
 			// TODO: needed?
 			fp.TrackingController = tcp
 			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
+			ac.HasBeenLocallyOwned = true
 
 			ac.AssociateFlightPlan(fp)
 
@@ -550,6 +552,8 @@ func (s *Sim) RepositionTrack(tcp string, acid ACID, callsign av.ADSBCallsign, p
 			return ErrTrackIsActive
 		} else {
 			ac.AssociateFlightPlan(fp)
+			ac.HasBeenLocallyOwned = ac.HasBeenLocallyOwned || s.State.IsLocalController(fp.TrackingController)
+
 			s.eventStream.Post(Event{
 				Type: FlightPlanAssociatedEvent,
 				ACID: fp.ACID,
@@ -696,6 +700,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 
 			fp.HandoffTrackController = ""
 			fp.TrackingController = tcp
+			ac.HasBeenLocallyOwned = true
 
 			// Clean up if a point out was accepted as a handoff
 			delete(s.PointOuts, acid)
@@ -703,7 +708,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 					func(wp av.Waypoint) bool { return wp.TransferComms })
-				if !haveTransferComms && !s.isActiveHumanController(ac.STARSFlightPlan.ControllingController) {
+				if !haveTransferComms && !s.isActiveHumanController(fp.ControllingController) {
 					// For a handoff from a virtual controller, cue up a delayed
 					// contact message unless there's a point later in the route when
 					// comms are to be transferred.
@@ -784,6 +789,7 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
 				fp.ControllingController = tcp
 				fp.HandoffTrackController = ""
 				fp.TrackingController = rh.RedirectedTo
+				ac.HasBeenLocallyOwned = true
 				*rh = RedirectedHandoff{}
 			} else if rh.GetLastRedirector() == tcp { // Recall (only the last redirector is able to recall)
 				if len(rh.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"

@@ -1249,10 +1249,12 @@
             "fixes": ["LEINY", "ABR", "SMERF", "FAR"],
             "receiving_controller": "MSP_10_CTR"
           }
-      ],
-        "inhibit_ca_volumes": [
+	],
+	  "filters": {
+        "inhibit_ca": [
           {
-            "name": "MSP 12",
+            "id": "12NOCA",
+            "description": "MSP 12 CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 6000,
@@ -1265,7 +1267,8 @@
             ]
           },
           {
-            "name": "MSP 30",
+            "id": "30NOCA",
+            "description": "MSP 30 CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 6000,
@@ -1277,7 +1280,8 @@
                 "N044.46.98.000,W093.15.89.000"
             ]
           }
-        ],
+        ]
+	  },
         "radar_sites": {
           "MSP": {
             "char": "A",

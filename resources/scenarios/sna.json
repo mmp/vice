@@ -2243,25 +2243,29 @@
             "slope_angle": 0.175
         }
     },
-    "inhibit_ca_volumes": [
-        {
-            "name": "SNA CONFLICT COMPRESS",
-            "type": "circle",
-            "floor": 0,
-            "ceiling": 3000,
-            "radius": 12.4,
-            "center": "KSNA"
-        },
-        {
-            "name": "LGB CONFLICT COMPRESS",
-            "type": "circle",
-            "floor": 0,
-            "ceiling": 3000,
-            "radius": 11,
-            "center": "KLGB"
-        }
-    ],
-	"range": 30,
+    "filters": {
+	"inhibit_ca": [
+            {
+		"id": "SNANOCA",
+		"description": "SNA CONFLICT SUPPRESS",
+		"type": "circle",
+		"floor": 0,
+		"ceiling": 3000,
+		"radius": 12.4,
+		"center": "KSNA"
+            },
+            {
+		"id": "LGBNOCA",
+		"description": "LGB CONFLICT SUPPRESS",
+		"type": "circle",
+		"floor": 0,
+		"ceiling": 3000,
+		"radius": 11,
+		"center": "KLGB"
+            }
+	]
+    },
+    "range": 30,
     "scratchpads": {
        "BEALE": "FIN",
        "MISEN": "FIN",

@@ -682,16 +682,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				return
 			} else if cmd == ctx.UserTCP { // TODO: any TCP assigned to this scope
 				// 6-91 show QL information in the preview area
-				if ps.QuickLookAll {
-					status.output = "ALL"
-					if ps.QuickLookAllIsPlus {
-						status.output += "+"
-					}
-				} else {
-					pstrs := util.MapSlice(ps.QuickLookPositions, func(p QuickLookPosition) string { return p.String() })
-					status.output = strings.Join(pstrs, " ")
-				}
-				status.clear = true
+				status = sp.displayQLStatus(ctx)
 				return
 			} else if _, err := sp.updateQL(ctx, cmd); err == nil {
 				// It was valid quicklook positions
@@ -1529,6 +1520,34 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					ps.QuickLookPositions = nil
 				}
 				status.clear = true
+				return
+			} else if cmd == ctx.UserTCP { // TODO: any TCP assigned to this scope
+				status = sp.displayQLStatus(ctx)
+				return
+			} else if cmd == "*" {
+				// 6-111 disable all quicklook regions
+				clear(ps.DisabledQuicklookRegions)
+				for _, f := range ctx.FacilityAdaptation.Filters.Quicklook {
+					ps.DisabledQuicklookRegions = append(ps.DisabledQuicklookRegions, f.Id)
+				}
+				sp.updateQuicklookRegionTracks(ctx, tracks)
+				status.clear = true
+				return
+			} else if id, op, _ := strings.Cut(cmd, " "); ctx.FacilityAdaptation.Filters.Quicklook.HaveId(id) {
+				enable := op == "E" || (op == "" && slices.Contains(ps.DisabledQuicklookRegions, id))
+				inhibit := op == "I" || (op == "" && !slices.Contains(ps.DisabledQuicklookRegions, id))
+				if enable {
+					ps.DisabledQuicklookRegions = slices.DeleteFunc(ps.DisabledQuicklookRegions,
+						func(s string) bool { return s == id })
+					sp.updateQuicklookRegionTracks(ctx, tracks)
+					status.clear = true
+				} else if inhibit {
+					ps.DisabledQuicklookRegions = append(ps.DisabledQuicklookRegions, id)
+					sp.updateQuicklookRegionTracks(ctx, tracks)
+					status.clear = true
+				} else {
+					status.err = ErrSTARSCommandFormat
+				}
 				return
 			} else {
 				input, err := sp.updateQL(ctx, cmd)
@@ -2397,6 +2416,46 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 	return
 }
 
+func (sp *STARSPane) displayQLStatus(ctx *panes.Context) (status CommandStatus) {
+	ps := sp.currentPrefs()
+	if ps.QuickLookAll {
+		status.output = "ALL"
+		if ps.QuickLookAllIsPlus {
+			status.output += "+"
+		}
+	} else {
+		pstrs := util.MapSlice(ps.QuickLookPositions, func(p QuickLookPosition) string { return p.String() })
+		status.output = strings.Join(pstrs, " ")
+	}
+
+	var active, inactive []string
+	for _, f := range ctx.FacilityAdaptation.Filters.Quicklook {
+		if slices.Contains(ps.DisabledQuicklookRegions, f.Id) {
+			inactive = append(inactive, f.Id)
+		} else {
+			active = append(active, f.Id)
+		}
+	}
+	print := func(regions []string, ty string) {
+		if len(regions) == 0 {
+			return
+		}
+		if status.output != "" {
+			status.output += "\n"
+		}
+		status.output += ty + " QUICKLOOK REGIONS\n"
+		slices.Sort(regions)
+		out, _ := util.WrapText(strings.Join(regions, " "), 32, 0, false)
+		status.output += out
+	}
+
+	print(active, "ACTIVE")
+	print(inactive, "INACTIVE")
+
+	status.clear = true
+	return
+}
+
 func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 	ps := sp.currentPrefs()
 	if ps.AutoCursorHome {
@@ -3109,6 +3168,11 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					return
 				} else if state.IFFlashing {
 					state.IFFlashing = false
+					status.clear = true
+					return
+				} else if trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged {
+					state.MissingFlightPlanAcknowledged = true
+					status.clear = true
 					return
 				} else if state.OutboundHandoffAccepted {
 					// ack an accepted handoff

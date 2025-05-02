@@ -40063,20 +40063,23 @@
           "WALET": { },
           "YAALL": { }
       },
-      "inhibit_ca_volumes": [
-        {
-            "name": "ATL NO CA",
-            "type": "polygon",
-            "floor": 100,
-            "ceiling": 7000,
-            "vertices": [
-                "N033.46.44.205,W084.57.26.438",
-                "N033.29.50.112,W084.57.34.980",
-                "N033.29.53.902,W083.53.59.675",
-                "N033.46.52.472,W083.54.04.070"
-            ]
-        }
-    ],
+      "filters": {
+	  "inhibit_ca": [
+              {
+		  "id": "ATLNOCA",
+		  "description": "ATL CONFLICT SUPPRESS",
+		  "type": "polygon",
+		  "floor": 100,
+		  "ceiling": 7000,
+		  "vertices": [
+                      "N033.46.44.205,W084.57.26.438",
+                      "N033.29.50.112,W084.57.34.980",
+                      "N033.29.53.902,W083.53.59.675",
+                      "N033.46.52.472,W083.54.04.070"
+		  ]
+              }
+	  ]
+      },
     "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
     "airspace_awareness": [
       {

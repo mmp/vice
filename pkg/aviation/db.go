@@ -811,8 +811,13 @@ func parseAirspace(filename string) map[string][]AirspaceVolume {
 		for _, a := range as {
 			bounds := math.Extent2DFromPoints(a.Loops[0])
 
+			id := name
+			if len(id) > 7 {
+				id = id[:7]
+			}
 			vol := AirspaceVolume{
-				Name:          name,
+				Id:            id,
+				Description:   name,
 				Type:          AirspaceVolumePolygon,
 				Floor:         a.Bottom,
 				Ceiling:       a.Top,

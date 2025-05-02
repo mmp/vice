@@ -4361,16 +4361,19 @@
                 }
             ]
 },
-  "inhibit_ca_volumes": [
+    "filters": {
+  "inhibit_ca": [
     {
-      "name": "DCA NO CA",
+      "id": "DCANOCA",
+      "description": "DCA CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
       "radius": 5,
       "center": "N38.51.34.118,W77.02.10.979"
     }
-  ],
+  ]
+    },
   "radar_sites": {
     "DCA": {
       "char": "D",

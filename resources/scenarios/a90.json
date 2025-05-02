@@ -8531,32 +8531,37 @@
                 "receiving_controller": "BOS_37_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
-            {
-                "name": "MHT NO CA",
-                "type": "circle",
-                "floor": 0,
-                "ceiling": 2000,
-                "radius": 5,
-                "center": "KMHT"
-            },
-            {
-                "name": "PSM NO CA",
-                "type": "circle",
-                "floor": 0,
-                "ceiling": 2000,
-                "radius": 5,
-                "center": "KPSM"
-            },
-            {
-                "name": "BOS NO CA",
-                "type": "circle",
-                "floor": 0,
-                "ceiling": 2000,
-                "radius": 7,
-                "center": "N042.23.05.581,W071.00.43.615"
-              }
-        ],
+	"filters": {
+            "inhibit_ca": [
+		{
+                    "id": "MHTNOCA",
+                    "description": "MHT CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 5,
+                    "center": "KMHT"
+		},
+		{
+                    "id": "PSMNOCA",
+                    "description": "PSM CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 5,
+                    "center": "KPSM"
+		},
+		{
+                    "id": "BOSNOCA",
+                    "description": "BOS CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 7,
+                    "center": "N042.23.05.581,W071.00.43.615"
+		}
+            ]
+	},
         "force_ql_self": true,
         "scratchpads": {
             "CCC": "PRT",

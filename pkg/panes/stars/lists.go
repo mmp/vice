@@ -781,7 +781,15 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 		_, vis := ps.VideoMapVisible[m.Id]
 		text.WriteString(util.Select(vis, ">", " "))
 		text.WriteString(fmt.Sprintf("%3d ", m.Id))
-		text.WriteString(fmt.Sprintf("%-8s ", strings.ToUpper(m.Label)))
+		fmtlabel := func(s string) string {
+			if len(s) > 8 {
+				s = s[:8]
+			}
+			s = strings.ToUpper(s)
+			s = strings.ReplaceAll(s, " ", "_")
+			return s
+		}
+		text.WriteString(fmt.Sprintf("%-8s ", fmtlabel(m.Label)))
 		text.WriteString(strings.ToUpper(m.Name) + "\n")
 	}
 

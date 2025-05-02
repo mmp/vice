@@ -1333,10 +1333,12 @@
                     "from": "ZID"
                 }
             ]
-        },
-  "inhibit_ca_volumes": [
-    {
-      "name": "IND CA SUPPRESSION",
+  },
+      "filters": {
+  "inhibit_ca": [
+      {
+      "id": "INDNOCA",
+      "description": "IND CA SUPPRESSION",
       "type": "circle",
       "floor": 0,
       "ceiling": 3000,
@@ -1344,7 +1346,8 @@
       "radius": 3
     },
     {
-      "name": "RWY23 SFC-2400",
+      "id": "23S2-CA",
+      "description": "RWY23 SFC-2400 CA SUPPRESSION",
       "type": "polygon",
       "floor": 0,
       "ceiling": 2400,
@@ -1356,7 +1359,8 @@
       ]
     },
     {
-      "name": "RWY23 2400-4K",
+      "id": "2324-CA",
+      "description": "RWY23 2400-4K CA SUPPRESSION",
       "type": "polygon",
       "floor": 2400,
       "ceiling": 4000,
@@ -1368,7 +1372,8 @@
       ]
     },
     {
-      "name": "RWY23 4K-5K",
+      "id": "2345-CA",
+      "description": "RWY23 4K-5K CA SUPPRESSION",
       "type": "polygon",
       "floor": 3750,
       "ceiling": 5000,
@@ -1380,7 +1385,8 @@
       ]
     },
     {
-      "name": "RWY23 5K-6K",
+      "id": "2356-CA",
+      "description": "RWY23 5K-6K CA SUPPRESSION",
       "type": "polygon",
       "floor": 5750,
       "ceiling": 6000,
@@ -1392,7 +1398,8 @@
       ]
     },
     {
-      "name": "RWY5 SFC-2100",
+      "id": "5-S2-CA",
+      "description": "RWY5 SFC-2100 CA SUPPRESSION",
       "type": "polygon",
       "floor": 0,
       "ceiling": 2100,
@@ -1404,7 +1411,8 @@
       ]
     },
     {
-      "name": "RWY5 2100-3K",
+      "id": "5-23-CA",
+      "description": "RWY5 2100-3K CA SUPPRESSION",
       "type": "polygon",
       "floor": 1850,
       "ceiling": 3000,
@@ -1416,7 +1424,8 @@
       ]
     },
     {
-      "name": "RWY5 3K-4K",
+      "id": "5-34-CA",
+      "description": "RWY5 3K-4K CA SUPPRESSION",
       "type": "polygon",
       "floor": 2750,
       "ceiling": 4000,
@@ -1428,7 +1437,8 @@
       ]
     },
     {
-      "name": "RWY5 4K-5K",
+      "id": "5-45-CA",
+      "description": "RWY5 4K-5K CA SUPPRESSION",
       "type": "polygon",
       "floor": 3750,
       "ceiling": 5000,
@@ -1440,7 +1450,8 @@
       ]
     },
     {
-      "name": "RWY5 5K-6K",
+      "id": "5-56-CA",
+      "description": "RWY5 5K-6K CA SUPPRESSION",
       "type": "polygon",
       "floor": 4750,
       "ceiling": 6000,
@@ -1451,7 +1462,8 @@
         "39.56687,-86.44149"
       ]
     }
-  ],
+  ]
+      },
   "radar_sites": {
     "INDA": {
       "char": "I",

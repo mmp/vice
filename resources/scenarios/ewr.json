@@ -10856,9 +10856,11 @@
       { "name": ".    TEB", "id": "A", "airports": [ "KTEB" ] },
       { "name": ".    MMU", "id": "B", "airports": [ "KMMU" ] }
     ],
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
       {
-        "name": "EWR NO CA",
+        "id": "EWRNOCA",
+        "description": "EWR CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 3000,
@@ -10866,7 +10868,8 @@
         "center": "KEWR"
       },
       {
-        "name": "LGA NO CA",
+        "id": "LGANOCA",
+        "description": "LGA CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
@@ -10874,14 +10877,16 @@
         "center": "KLGA"
       },
       {
-        "name": "TEB NO CA",
+        "id": "TEBNOCA",
+        "description": "TEB CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
         "radius": 2,
         "center": "KTEB"
       }
-  ],
+    ]
+      },
   "radar_sites": {
     "EWR": {
       "char": "E",

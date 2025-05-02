@@ -110,9 +110,10 @@ type Preferences struct {
 		Intrafacility bool
 	}
 
-	QuickLookAll       bool
-	QuickLookAllIsPlus bool
-	QuickLookPositions []QuickLookPosition
+	QuickLookAll             bool
+	QuickLookAllIsPlus       bool
+	QuickLookPositions       []QuickLookPosition
+	DisabledQuicklookRegions []string
 
 	DisplayEmptyCoordinationLists bool
 
@@ -288,6 +289,8 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	p.RangeRingsUserCenter = p.DefaultCenter
 	p.UseUserRangeRingsCenter = false
 	p.Range = ss.GetInitialRange()
+	p.QuickLookPositions = nil
+	p.DisabledQuicklookRegions = nil
 
 	p.ATIS = ""
 	for i := range p.GIText {

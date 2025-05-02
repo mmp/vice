@@ -509,11 +509,7 @@ func (ac *Aircraft) ATPAVolume() *ATPAVolume {
 }
 
 func (ac *Aircraft) MVAsApply() bool {
-	// Start issuing MVAs 5 miles from the departure airport but not if
-	// they're established on an approach.
-	// TODO: are there better criteria?
-	return math.NMDistance2LL(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation) > 5 &&
-		!ac.OnApproach(true)
+	return !ac.OnApproach(true)
 }
 
 func (ac *Aircraft) AircraftPerformance() AircraftPerformance {

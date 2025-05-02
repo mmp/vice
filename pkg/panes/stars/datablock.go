@@ -610,6 +610,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		copy(db.field0[:], alerts[:])
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
+		who := trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged
 
 		if len(alerts) == 0 && trk.Mode == av.TransponderModeOn && !extended {
 			return nil
@@ -623,7 +624,8 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 					mci.ADSBCallsigns[1] == trk.ADSBCallsign
 			})
 
-			if mci || beaconator || extended || trk.Ident || ps.DisplayLDBBeaconCodes || state.DisplayLDBBeaconCode || displayBeaconCode {
+			if mci || beaconator || who || extended || trk.Ident || ps.DisplayLDBBeaconCodes ||
+				state.DisplayLDBBeaconCode || displayBeaconCode {
 				// Field 1: reported beacon code
 				// TODO: Field 1: WHO if unassociated and no flight plan
 				var f1 int
@@ -632,8 +634,10 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 				} else {
 					f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
 				}
-				// Field 1: flashing ID after beacon code if ident.
-				if trk.Ident {
+				if who {
+					f1 = formatDBText(db.field1[f1:], "WHO", color, true)
+				} else if trk.Ident {
+					// Field 1: flashing ID after beacon code if ident.
 					formatDBText(db.field1[f1:], "ID", color, true)
 				}
 			}

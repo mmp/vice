@@ -817,32 +817,36 @@
             }
         ]
         },
-        "inhibit_ca_volumes": [
-          {
-            "name": "BHM NO CA",
-            "type": "polygon",
-            "floor": 0,
-            "ceiling": 3500,
-            "vertices": [
-                "-86.897208,33.532504",
-                "-86.641151,33.677967",
-                "-86.584176,33.611529",
-                "-86.839472,33.462847"
-            ]
-        },
-        {
-          "name": "BHM NO CA",
-          "type": "polygon",
-          "floor": 0,
-          "ceiling": 3500,
-          "vertices": [
-              "-86.695616,33.672883",
-              "-86.695274,33.453065",
-              "-86.79461,33.453311",
-              "-86.794879,33.672271"
-          ]
-        }
-      ],
+	"filters": {
+        "inhibit_ca": [
+            {
+		"id": "B NOCA1",
+		"description": "BHM CONFLICT SUPPRESS",
+		"type": "polygon",
+		"floor": 0,
+		"ceiling": 3500,
+		"vertices": [
+                    "-86.897208,33.532504",
+                    "-86.641151,33.677967",
+                    "-86.584176,33.611529",
+                    "-86.839472,33.462847"
+		]
+            },
+            {
+		"id": "B NOCA2",
+		"description": "BHM CONFLICT SUPPRESS",
+		"type": "polygon",
+		"floor": 0,
+		"ceiling": 3500,
+		"vertices": [
+		    "-86.695616,33.672883",
+		    "-86.695274,33.453065",
+		    "-86.79461,33.453311",
+		    "-86.794879,33.672271"
+		]
+            }
+	]
+      },
       "radar_sites": {
         "BHM": {
           "char": "B",

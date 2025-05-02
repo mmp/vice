@@ -6466,10 +6466,12 @@
                             }
                         ]
                     },
-                    "center": "KCLT",
-                    "inhibit_ca_volumes": [
+			"center": "KCLT",
+			"filters": {
+                    "inhibit_ca": [
                         {
-                            "name": "CLT NO CA",
+                            "id": "CLTNOCA",
+                            "description": "CLT CONFLICT SUPPRESS",
                             "type": "polygon",
                             "floor": 0,
                             "ceiling": 7000,
@@ -6480,7 +6482,8 @@
                                 "N034.42.46.598,W080.47.34.467"
                             ]
                         }
-                    ],
+                    ]
+			},
                     "radar_sites": {
                         "CLT": {
                             "char": "C",

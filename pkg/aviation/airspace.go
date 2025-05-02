@@ -18,10 +18,11 @@ import (
 )
 
 type AirspaceVolume struct {
-	Name    string             `json:"name"`
-	Type    AirspaceVolumeType `json:"type"`
-	Floor   int                `json:"floor"`
-	Ceiling int                `json:"ceiling"`
+	Id          string             `json:"id"`
+	Description string             `json:"description"`
+	Type        AirspaceVolumeType `json:"type"`
+	Floor       int                `json:"floor"`
+	Ceiling     int                `json:"ceiling"`
 	// Polygon
 	PolygonBounds *math.Extent2D               // not always set
 	VerticesStr   util.OneOf[string, []string] `json:"vertices"`
@@ -119,8 +120,14 @@ func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerL
 }
 
 func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
-	if a.Name == "" {
-		e.ErrorString("must provide \"name\" with airspace volume")
+	if a.Id == "" {
+		e.ErrorString("must provide \"id\" with airspace volume")
+	}
+	if len(a.Id) > 7 {
+		e.ErrorString("airspace volume id %q cannot be more than 7 characters", a.Id)
+	}
+	if a.Description == "" {
+		e.ErrorString("must provide \"description\" with airspace volume")
 	}
 	if a.Floor > a.Ceiling {
 		e.ErrorString("\"floor\" %d is above \"ceiling\" %d", a.Floor, a.Ceiling)

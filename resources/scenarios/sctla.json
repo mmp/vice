@@ -3742,17 +3742,20 @@
               }
           ]
 },
-  "inhibit_ca_volumes": [
+"filters": {
+  "inhibit_ca": [
     {
-        "name": "LAX NO CA",
+        "id": "LAXNOCA",
+        "description": "LAX CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 9500,
         "radius": 10,
         "center": "N033.56.33.635,W118.24.39.226"
     },
-    {
-        "name": "LAX FINAL NO CA",
+      {
+	  "id": "FINNOCA",
+        "description": "LAX FINAL CONFLICT SUPPRESS",
         "type": "polygon",
         "floor": 0,
         "ceiling": 7000,
@@ -3764,7 +3767,8 @@
             "N033.57.51.665,W118.27.37.122"
         ]
     }
-],
+]
+},
 	"range": 35,
   "scratchpads": {
     "LAS": "LAS",

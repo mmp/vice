@@ -857,16 +857,19 @@
   ]
   },
   "center": "KABE",
-  "inhibit_ca_volumes": [
-      {
-          "name": "ABE NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "40.65236,-75.4404"
-      }
-  ],
+  "filters": {
+      "inhibit_ca": [
+	  {
+              "id": "ABENOCA",
+              "description": "ABE CONFLICT SUPPRESS",
+              "type": "circle",
+              "floor": 0,
+              "ceiling": 1200,
+              "radius": 7,
+              "center": "40.65236,-75.4404"
+	  }
+      ]
+  },
   "radar_sites": {
     "ABE": {
       "char": "A",

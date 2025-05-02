@@ -1793,9 +1793,11 @@
         "receiving_controller": "FTW_51_CTR"
       }
     ],
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
       {
-        "name": "OKC NO CA",
+        "id": "OKCNOCA",
+        "description": "OKC CONFLICT SUPPRESS",
         "type": "polygon",
         "floor": 0,
         "ceiling": 5000,
@@ -1806,7 +1808,8 @@
           "N035.13.33.331,W097.38.58.934"
         ]
       }
-    ],
+    ]
+      },
     "scratchpads": {
       "PHARA": "FUN",
       "FUNNL": "FUN",

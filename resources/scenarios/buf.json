@@ -990,16 +990,19 @@
                         {"fixes": ["ALL"], "receiving_controller": "CLE_66_CTR"}
                     ],
   "center": "KBUF",
-  "inhibit_ca_volumes": [
+  "filters": {
+  "inhibit_ca": [
     {
-      "name": "BUF NO CA",
+      "id": "BUFNOCA",
+      "description": "BUF CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 2300,
       "center": "N042.56.25.162,W078.43.47.297",
       "radius": 6
   }
-  ],
+  ]
+  },
   "radar_sites": {
     "BUF": {
       "char": "A",

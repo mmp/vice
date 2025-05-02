@@ -6587,35 +6587,6 @@
         "vfr_codes": [ "1200-1202" ]
       }
     },
-    "flight_plan": {
-      "modify_after_display": true,
-      "acquisition_volumes": [
-        {
-          "name": "Circle",
-          "type": "circle",
-          "center": "KJFK",
-          "radius": 25,
-          "floor": 0,
-          "ceiling": 10000
-        },
-        {
-          "name": "camrn",
-          "type": "polygon",
-          "vertices": ["N039.53.37.153,W073.18.56.563", "N040.12.56.142,W073.26.12.335", "N040.04.25.003,W074.07.24.754", "N039.45.45.675,W074.01.09.323" ],
-          "floor": 0,
-          "ceiling": 13000
-        }
-      ],
-      "drop_volumes": [
-        {
-          "name": "center",
-          "type": "polygon",
-          "vertices": "N040.07.18.697,W073.27.22.071 N040.35.37.815,W072.57.40.720 N040.39.31.893,W072.33.51.921 N039.49.30.483,W073.24.08.684",
-          "floor": 10000,
-          "ceiling": 18000
-        }
-      ]
-    },
   "pdb": { "hide_gs": true },
     "coordination_fixes": {
       "MERIT": [
@@ -6820,40 +6791,84 @@
       "slope_angle": 0.175
     }
   },
-  "inhibit_ca_volumes": [
-      {
-          "name": "JFK NO CA",
-          "type": "circle",
+    "filters": {
+      "quicklook": [
+          {
+            "id": "QLCONEY",
+            "description": "CONEY QUICKLOOK",
+            "type": "polygon",
+            "floor": 0,
+            "ceiling": 15000,
+            "vertices": "N040.42.06.773,W073.47.11.726 N040.41.10.042,W073.53.10.814 N040.31.45.125,W074.00.45.620 N040.25.52.052,W074.04.46.441 N040.22.58.015,W074.00.21.505"
+          }
+      ],
+        "inhibit_ca": [
+          {
+            "id": "JFKNOCA",
+            "description": "JFK CONFLICT SUPPRESS",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 1500,
+            "radius": 3,
+            "center": "KJFK"
+          },
+          {
+            "id": "FRGNOCA",
+            "description": "FRG CONFLICT SUPPRESS",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 1200,
+            "radius": 2,
+            "center": "KFRG"
+          },
+          {
+            "id": "ISPNOCA",
+            "description": "ISP CONFLICT SUPPRESS",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 1200,
+            "radius": 2,
+            "center": "KISP"
+          },
+          {
+            "id": "HVNNOCA",
+            "description": "HVN CONFLICT SUPPRESS",
+            "type": "circle",
+            "floor": 0,
+            "ceiling": 1200,
+            "radius": 2,
+            "center": "KHVN"
+          }
+        ],
+      "arrival_acquisition": [
+        {
+          "id": "jfkacq",
+          "description": "jfk arrival acquisition all",
+          "type": "polygon",
+          "vertices": "N040.31.05.876,W074.10.30.780 N040.26.28.760,W074.06.50.449 N040.14.13.871,W074.22.45.682 N040.06.32.912,W073.55.32.482 N040.00.08.596,W073.44.08.583 N040.36.35.576,W072.56.28.238 N040.40.35.243,W072.43.47.709 N040.52.37.772,W072.42.40.418 N040.56.54.660,W072.55.46.902 N041.00.06.948,W073.20.50.546 N040.51.36.881,W073.42.54.645 N041.02.30.595,W074.09.19.094 N040.43.54.892,W074.18.04.790 N040.39.15.386,W074.07.47.303",
           "floor": 0,
-          "ceiling": 1500,
-          "radius": 3,
-          "center": "KJFK"
-      },
-      {
-          "name": "FRG NO CA",
-          "type": "circle",
+          "ceiling": 10000
+        },
+        {
+          "id": "acqcmrn",
+          "description": "camrn arrival acquisition",
+          "type": "polygon",
+          "vertices": ["N039.53.37.153,W073.18.56.563", "N040.12.56.142,W073.26.12.335", "N040.04.25.003,W074.07.24.754", "N039.45.45.675,W074.01.09.323" ],
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KFRG"
-      },
-      {
-          "name": "ISP NO CA",
-          "type": "circle",
+          "ceiling": 13000
+        }
+      ],
+      "secondary_drop": [
+        {
+          "id": "secdrop",
+          "description": "drop region all",
+          "type": "polygon",
+          "vertices": "N040.31.05.876,W074.10.30.780 N040.26.28.760,W074.06.50.449 N040.14.13.871,W074.22.45.682 N040.06.32.912,W073.55.32.482 N040.00.08.596,W073.44.08.583 N040.36.35.576,W072.56.28.238 N040.40.35.243,W072.43.47.709 N040.52.37.772,W072.42.40.418 N040.56.54.660,W072.55.46.902 N041.00.06.948,W073.20.50.546 N040.51.36.881,W073.42.54.645 N041.02.30.595,W074.09.19.094 N040.43.54.892,W074.18.04.790 N040.39.15.386,W074.07.47.303",
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KISP"
-      },
-      {
-          "name": "HVN NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KHVN"
-      }
-  ],
+          "ceiling": 40000
+        }
+      ]
+    },
     "force_ql_self": true,
     "airspace_awareness": [
       {

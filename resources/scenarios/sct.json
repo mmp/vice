@@ -10893,56 +10893,64 @@
                 }
             ]
   },
-  "inhibit_ca_volumes": [
-    {
-      "name": "LAX NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KLAX"
-    },
-    {
-      "name": "SNA NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KSNA"
-    },
-    {
-      "name": "SAN NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KSAN"
-    },
-    {
-      "name": "KPSP NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KPSP"
-    },
-    {
-      "name": "ONT NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KONT"
-    },
-    {
-      "name": "VNY NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 1200,
-      "radius": 7,
-      "center": "KVNY"
-    }
-  ],
+  "filters": {
+      "inhibit_ca": [
+      {
+	  "id": "LAXNOCA",
+	  "description": "LAX CONFLICT SUPPRESS",
+	  "type": "circle",
+	  "floor": 0,
+	  "ceiling": 1200,
+	  "radius": 7,
+	  "center": "KLAX"
+      },
+      {
+	  "id": "SNANOCA",
+	  "description": "SNA CONFLICT SUPPRESS",
+	  "type": "circle",
+	  "floor": 0,
+	  "ceiling": 1200,
+	  "radius": 7,
+	  "center": "KSNA"
+      },
+      {
+	  "id": "SANNOCA",
+	  "description": "SAN CONFLICT SUPPRESS",
+	  "type": "circle",
+	  "floor": 0,
+	  "ceiling": 1200,
+	  "radius": 7,
+	  "center": "KSAN"
+      },
+      {
+	  "id": "PSPNOCA",
+	  "description": "KPSP CONFLICT SUPPRESS",
+	  "type": "circle",
+	  "floor": 0,
+	  "ceiling": 1200,
+	  "radius": 7,
+	  "center": "KPSP"
+      },
+      {
+	  "id": "ONTNOCA",
+	  "description": "ONT CONFLICT SUPPRESS",
+	  "type": "circle",
+	  "floor": 0,
+	  "ceiling": 1200,
+	  "radius": 7,
+	  "center": "KONT"
+      },
+      {
+	  "id": "VNYNOCA",
+	  "description": "VNY CONFLICT SUPPRESS",
+	  "type": "circle",
+	  "floor": 0,
+	  "ceiling": 1200,
+	  "radius": 7,
+	  "center": "KVNY"
+      }
+      ]
+  },
   "coordination_lists": [
     {"name": "SMO", "id": "A", "airports": [ "KSMO" ]},
     {"name": "NZY", "id": "G", "airports": [ "KNZY" ]},

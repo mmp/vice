@@ -93,6 +93,8 @@ type TrackState struct {
 	SPCAcknowledged bool
 	SPCSoundEnd     time.Time
 
+	MissingFlightPlanAcknowledged bool
+
 	// record the code when it was ack'ed so that if it happens again with
 	// a different code, we get a flashing DB in the datablock.
 	DBAcknowledged av.Squawk
@@ -132,6 +134,8 @@ type TrackState struct {
 	// Draw the datablock in yellow (until cleared); currently only used for
 	// [MF]Y[SLEW] quick flight plans
 	DatablockAlert bool
+
+	QuicklookFilterApplies bool
 }
 
 type ATPAStatus int
@@ -402,6 +406,9 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	if _, ok := sp.ForceQLACIDs[trk.FlightPlan.ACID]; ok {
 		return true
 	}
+	if sp.TrackState[trk.ADSBCallsign].QuicklookFilterApplies {
+		return true
+	}
 
 	// Quick Look Positions.
 	for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
@@ -437,6 +444,14 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		}
 
 		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.Altitude))
+
+		// Check MSAW suppression filters
+		msawFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitMSAW
+		if msawFilter.Inside(trk.Location, int(trk.Altitude)) {
+			state.MSAW = false
+			continue
+		}
+
 		warn := slices.ContainsFunc(mvas, func(mva av.MVA) bool {
 			return alt < mva.MinimumLimit && mva.Inside(trk.Location)
 		})
@@ -458,7 +473,8 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.State.SimTime
-	if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
+	fa := ctx.Client.State.STARSFacilityAdaptation
+	if sp.radarMode(fa.RadarSites) == RadarModeFused {
 		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {
 			return
 		}
@@ -480,6 +496,9 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		sp.checkUnreasonableModeC(state)
 	}
 
+	// Check quicklook regions
+	sp.updateQuicklookRegionTracks(ctx, tracks)
+
 	// Update low altitude alerts now that we have updated tracks
 	sp.updateMSAWs(ctx)
 
@@ -498,6 +517,29 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 	sp.updateCAAircraft(ctx, tracks)
 	sp.updateInTrailDistance(ctx, tracks)
+}
+
+func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []sim.Track) {
+	ps := sp.currentPrefs()
+	fa := ctx.Client.State.STARSFacilityAdaptation
+
+	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
+		func(f sim.FilterRegion) bool {
+			return !slices.Contains(ps.DisabledQuicklookRegions, f.Id)
+		})
+	for _, trk := range tracks {
+		state := sp.TrackState[trk.ADSBCallsign]
+
+		if trk.IsUnassociated() {
+			// Don't bother checking if quicklook isn't possible
+			state.QuicklookFilterApplies = false
+		} else {
+			state.QuicklookFilterApplies = slices.ContainsFunc(qlfilt,
+				func(f sim.FilterRegion) bool {
+					return f.Inside(trk.Location, int(trk.Altitude))
+				})
+		}
+	}
 }
 
 func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
@@ -944,15 +986,6 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 }
 
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
-	inCAInhibitVolumes := func(trk *sim.Track) bool {
-		for _, vol := range ctx.Client.State.InhibitCAVolumes() {
-			if vol.Inside(trk.Location, int(trk.Altitude)) {
-				return true
-			}
-		}
-		return false
-	}
-
 	tracked, untracked := make(map[av.ADSBCallsign]sim.Track), make(map[av.ADSBCallsign]sim.Track)
 	for _, trk := range tracks {
 		if trk.IsAirborne {
@@ -963,6 +996,11 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 		} else {
 			untracked[trk.ADSBCallsign] = trk
 		}
+	}
+
+	inCAInhibitFilter := func(trk *sim.Track) bool {
+		nocaFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitCA
+		return nocaFilter.Inside(trk.Location, int(trk.Altitude))
 	}
 
 	nmPerLongitude := ctx.NmPerLongitude
@@ -1002,7 +1040,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 			return false
 		}
 
-		if inCAInhibitVolumes(trka) || inCAInhibitVolumes(trkb) {
+		if inCAInhibitFilter(trka) || inCAInhibitFilter(trkb) {
 			return false
 		}
 
@@ -1042,7 +1080,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 			return false
 		}
 
-		if inCAInhibitVolumes(trka) || inCAInhibitVolumes(trkb) {
+		if inCAInhibitFilter(trka) || inCAInhibitFilter(trkb) {
 			return false
 		}
 

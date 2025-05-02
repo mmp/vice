@@ -4323,9 +4323,11 @@
                         {"fixes": ["ALL"], "receiving_controller": "CLE_66_CTR"}
                     ],
                     "center": "KCLE",
-                    "inhibit_ca_volumes": [
+		    "filters": {
+                    "inhibit_ca": [
                         {
-                            "name": "CLE FINAL NO CA",
+                            "id": "CLENOCA",
+                            "description": "CLE FINAL CONFLICT SUPPRESS",
                             "type": "polygon",
                             "floor": 0,
                             "ceiling": 3000,
@@ -4336,7 +4338,8 @@
                                 "N041.13.37.657,W082.15.06.289"
                             ]
                         }
-                    ],
+                    ]
+		    },
                     "radar_sites": {
                         "KCLE": {
                           "char": "L",

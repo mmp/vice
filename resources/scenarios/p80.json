@@ -3755,9 +3755,11 @@
               "receiving_controller": "SEA_16_CTR"
           }
       ],
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
       {
-        "name": "P80",
+        "id": "P80NOCA",
+        "description": "P80 INHIBIT CA",
         "type": "polygon",
         "floor": 0,
         "ceiling": 6000,
@@ -3769,7 +3771,8 @@
             "N045.38.23.132,W122.51.08.289"
         ]
       }
-    ],
+    ]
+      },
     "radar_sites": {
       "PDX": {
         "char": "W",

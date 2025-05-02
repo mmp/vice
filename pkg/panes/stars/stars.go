@@ -514,23 +514,50 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 
 	// Make automatic built-in system maps
-	// CA suppression filters
-	csf := sim.VideoMap{
-		Label:    "ALLCASU",
-		Name:     "ALL CA SUPPRESSION FILTERS",
-		Id:       700,
-		Category: VideoMapProcessingAreas,
+	asIdx := 700
+	addAirspaceVolumes := func(label string, name string, filt sim.FilterRegions) {
+		if len(filt) == 0 {
+			return
+		}
+
+		// Add a map with all of them
+		vm := sim.VideoMap{
+			Label:    label,
+			Name:     name,
+			Id:       asIdx,
+			Category: VideoMapProcessingAreas,
+		}
+		asIdx++
+		for _, f := range filt {
+			f.GenerateDrawCommands(&vm.CommandBuffer, ss.NmPerLongitude)
+		}
+		addMap(vm)
+
+		for _, f := range filt {
+			vm := sim.VideoMap{
+				Label:    strings.ToUpper(f.Id),
+				Name:     strings.ToUpper(f.Description),
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			}
+			asIdx++
+			f.GenerateDrawCommands(&vm.CommandBuffer, ss.NmPerLongitude)
+			addMap(vm)
+		}
 	}
-	for _, vol := range ss.InhibitCAVolumes() {
-		vol.GenerateDrawCommands(&csf.CommandBuffer, ss.NmPerLongitude)
-	}
-	addMap(csf)
+	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.STARSFacilityAdaptation.Filters.InhibitCA)
+	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.STARSFacilityAdaptation.Filters.InhibitMSAW)
+	addAirspaceVolumes("ARRACQ", "ARRIVAL ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalAcquisition)
+	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalDrop)
+	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.DepartureAcquisition)
+	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.SecondaryDrop)
+	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.STARSFacilityAdaptation.Filters.Quicklook)
 
 	// MVAs
 	mvas := sim.VideoMap{
 		Label:    ss.TRACON + " MVA",
 		Name:     "ALL MINIMUM VECTORING ALTITUDES",
-		Id:       701,
+		Id:       asIdx,
 		Category: VideoMapProcessingAreas,
 	}
 	ld := renderer.GetLinesDrawBuilder()
@@ -541,10 +568,10 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 	ld.GenerateCommands(&mvas.CommandBuffer)
 	renderer.ReturnLinesDrawBuilder(ld)
+	asIdx++
 	addMap(mvas)
 
 	// Nearby airspace definitions
-	asId := 702
 	addAirspace := func(airspace map[string][]av.AirspaceVolume, class string) {
 		for name, airspace := range airspace {
 			if math.NMDistance2LL(airspace[0].PolygonBounds.ClosestPointInBox(ss.Center), ss.Center) > 75 {
@@ -553,8 +580,8 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 
 			amap := sim.VideoMap{
 				Label:    name,
-				Name:     name + "CLASS " + class,
-				Id:       asId,
+				Name:     name + " CLASS " + class,
+				Id:       asIdx,
 				Category: VideoMapProcessingAreas,
 			}
 			for _, asp := range airspace {
@@ -562,37 +589,11 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 			}
 
 			addMap(amap)
-			asId++
+			asIdx++
 		}
 	}
 	addAirspace(av.DB.BravoAirspace, "B")
 	addAirspace(av.DB.CharlieAirspace, "C")
-
-	// Flight plan acquisition areas
-	for _, vol := range ss.STARSFacilityAdaptation.AcquisitionVolumes {
-		acqmap := sim.VideoMap{
-			Label:    strings.ToUpper(vol.Name),
-			Name:     strings.ToUpper(vol.Name + " ACQUISITION AREA"),
-			Id:       asId,
-			Category: VideoMapProcessingAreas,
-		}
-		vol.GenerateDrawCommands(&acqmap.CommandBuffer, ss.NmPerLongitude)
-
-		addMap(acqmap)
-		asId++
-	}
-	for _, vol := range ss.STARSFacilityAdaptation.DropVolumes {
-		dropmap := sim.VideoMap{
-			Label:    strings.ToUpper(vol.Name),
-			Name:     strings.ToUpper(vol.Name + " DROP AREA"),
-			Id:       asId,
-			Category: VideoMapProcessingAreas,
-		}
-		vol.GenerateDrawCommands(&dropmap.CommandBuffer, ss.NmPerLongitude)
-
-		addMap(dropmap)
-		asId++
-	}
 
 	// Radar maps
 	radarIndex := 801
@@ -622,8 +623,12 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 		for _, rwy := range util.SortedMapKeys(ap.ATPAVolumes) {
 			vol := ap.ATPAVolumes[rwy]
 
+			label := "A" + name[1:] + rwy
+			if len(label) > 7 {
+				label = label[:7]
+			}
 			sm := sim.VideoMap{
-				Label:    name + rwy + " VOL",
+				Label:    label,
 				Name:     name + rwy + " ATPA APPROACH VOLUME",
 				Id:       atpaIndex,
 				Category: VideoMapProcessingAreas,

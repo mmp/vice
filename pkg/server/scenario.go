@@ -658,7 +658,17 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
-	sg.STARSFacilityAdaptation.PostDeserialize(sg, e)
+
+	// Airports that (may) have controlled controlled departures or
+	// arrivals; we determine this by checking if they're in B, C, or D
+	// airspace, which is probably sufficient?
+	activeAirports := slices.Collect(
+		util.Seq2Keys(
+			util.FilterSeq2(maps.All(sg.Airports), func(name string, ap *av.Airport) bool {
+				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
+			})))
+
+	sg.STARSFacilityAdaptation.PostDeserialize(sg, activeAirports, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))

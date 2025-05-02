@@ -2796,10 +2796,12 @@
               "silence_angle": 30,
               "slope_angle": 0.3
             }
-          },
-          "inhibit_ca_volumes": [
+        },
+	"filters": {
+          "inhibit_ca": [
             {
-                "name": "IAH EAST",
+                "id": "E NOCA",
+                "description": "IAH EAST CONFLICT SUPPRESSION",
                 "type": "polygon",
                 "floor": 0,
                 "ceiling": 7000,
@@ -2812,7 +2814,8 @@
                 ]
             },
             {
-                "name": "IAH WEST",
+                "id": "W NOCA",
+                "description": "IAH WEST CONFLICT SUPPRESSION",
                 "type": "polygon",
                 "floor": 0,
                 "ceiling": 7000,
@@ -2824,7 +2827,8 @@
                     "N029.50.28.000,W095.20.32.000"
                 ]
             }
-          ],
+          ]
+	},
           "scratchpads": {
             "CRP": "FRE",
             "CRGER": "PRA",

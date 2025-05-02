@@ -14,7 +14,6 @@ import (
 	"path/filepath"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -300,9 +299,15 @@ type STARSFacilityAdaptation struct {
 	Altimeters          []string                          `json:"altimeters"`
 
 	// Airpsace filters
-	InhibitCAVolumes   []av.AirspaceVolume `json:"inhibit_ca_volumes"`
-	AcquisitionVolumes []av.AirspaceVolume `json:"acquisition_volumes"`
-	DropVolumes        []av.AirspaceVolume `json:"drop_volumes"`
+	Filters struct {
+		ArrivalAcquisition   FilterRegions `json:"arrival_acquisition"`
+		ArrivalDrop          FilterRegions `json:"arrival_drop"`
+		DepartureAcquisition FilterRegions `json:"departure_acquisition"`
+		InhibitCA            FilterRegions `json:"inhibit_ca"`
+		InhibitMSAW          FilterRegions `json:"inhibit_msaw"`
+		Quicklook            FilterRegions `json:"quicklook"`
+		SecondaryDrop        FilterRegions `json:"secondary_drop"`
+	} `json:"filters"`
 
 	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
@@ -320,11 +325,9 @@ type STARSFacilityAdaptation struct {
 	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
 
 	FlightPlan struct {
-		AcquisitionVolumes []av.AirspaceVolume `json:"acquisition_volumes"`
-		DropVolumes        []av.AirspaceVolume `json:"drop_volumes"`
-		QuickACID          string              `json:"quick_acid"`
-		ACIDExpansions     map[string]string   `json:"acid_expansions"`
-		ModifyAfterDisplay bool                `json:"modify_after_display"`
+		QuickACID          string            `json:"quick_acid"`
+		ACIDExpansions     map[string]string `json:"acid_expansions"`
+		ModifyAfterDisplay bool              `json:"modify_after_display"`
 	} `json:"flight_plan"`
 
 	PDB struct {
@@ -352,6 +355,13 @@ type STARSFacilityAdaptation struct {
 	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas"`
 	UseLegacyFont     bool                 `json:"use_legacy_font"`
 }
+
+type FilterRegion struct {
+	av.AirspaceVolume
+	InvertTest bool
+}
+
+type FilterRegions []FilterRegion
 
 type STARSControllerConfig struct {
 	VideoMapNames                   []string      `json:"video_maps"`
@@ -737,7 +747,7 @@ const (
 	LocalNonEnroute
 )
 
-func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, e *util.ErrorLogger) {
+func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
@@ -748,27 +758,84 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, e *util.Error
 		fa.Center = pos
 	}
 
-	// Acquisition/Drop volumes
-	if len(fa.AcquisitionVolumes) == 0 {
-		fa.AcquisitionVolumes = append(fa.AcquisitionVolumes,
-			av.AirspaceVolume{
-				Name:    "Default",
-				Type:    av.AirspaceVolumeCircle,
-				Floor:   0,
-				Ceiling: 10000,
-				Center:  fa.Center,
-				Radius:  30,
+	// Acquisition/Drop filters
+	makeDefaultAirportFilters := func(id string, description string, radius float32,
+		floor int, ceiling int) FilterRegions {
+		var regions FilterRegions
+		for _, apname := range airports {
+			ap, ok := av.DB.Airports[apname]
+			if !ok {
+				e.ErrorString("Airport %q not found", apname)
+			}
+			if len(apname) == 4 {
+				apname = apname[1:]
+			}
+			regions = append(regions, FilterRegion{
+				AirspaceVolume: av.AirspaceVolume{
+					Id:          id + apname,
+					Description: description + " " + apname,
+					Type:        av.AirspaceVolumeCircle,
+					Floor:       ap.Elevation + floor,
+					Ceiling:     ap.Elevation + ceiling,
+					Center:      ap.Location,
+					Radius:      radius,
+				},
 			})
+		}
+		return regions
 	}
-	for i, vol := range fa.AcquisitionVolumes {
-		e.Push("Acquisition volume #" + strconv.Itoa(i+1) + " " + vol.Name)
-		fa.AcquisitionVolumes[i].PostDeserialize(loc, e)
-		e.Pop()
+
+	if len(fa.Filters.ArrivalAcquisition) == 0 {
+		fa.Filters.ArrivalAcquisition = []FilterRegion{
+			FilterRegion{
+				AirspaceVolume: av.AirspaceVolume{
+					Id:          "ACQ FP",
+					Description: "FLIGHT PLAN ACQUIRE ALL",
+					Type:        av.AirspaceVolumeCircle,
+					Floor:       0,
+					Ceiling:     10000,
+					Center:      fa.Center,
+					Radius:      35,
+				}}}
 	}
-	for i, vol := range fa.DropVolumes {
-		e.Push("Drop volume #" + strconv.Itoa(i+1) + " " + vol.Name)
-		fa.DropVolumes[i].PostDeserialize(loc, e)
-		e.Pop()
+	if len(fa.Filters.ArrivalDrop) == 0 {
+		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 2, 0, 500)
+	}
+	if len(fa.Filters.DepartureAcquisition) == 0 {
+		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 2, 100, 1000)
+	}
+	if len(fa.Filters.InhibitCA) == 0 {
+		fa.Filters.InhibitCA = makeDefaultAirportFilters("NOCA", "CONFLICT SUPPRESS", 3, 0, 1500)
+	}
+	if len(fa.Filters.InhibitMSAW) == 0 {
+		fa.Filters.InhibitMSAW = makeDefaultAirportFilters("NOSA", "MSAW SUPPRESS", 3, 0, 1500)
+	}
+
+	checkFilter := func(f FilterRegions, name string) {
+		ids := make(map[string]interface{})
+		for i, filt := range f {
+			e.Push(filt.Description)
+			f[i].PostDeserialize(loc, e)
+
+			if _, ok := ids[filt.Id]; ok {
+				e.ErrorString("Quicklook filter \"id\"s must be unique: %q was repeated", filt.Id)
+			}
+			ids[filt.Id] = nil
+
+			e.Pop()
+		}
+	}
+	checkFilter(fa.Filters.ArrivalAcquisition, "arrival_acquisition")
+	checkFilter(fa.Filters.ArrivalDrop, "arrival_drop")
+	checkFilter(fa.Filters.DepartureAcquisition, "departure_acquisition")
+	checkFilter(fa.Filters.InhibitCA, "inhibit_ca")
+	checkFilter(fa.Filters.InhibitMSAW, "inhibit_msaw")
+	checkFilter(fa.Filters.Quicklook, "quicklook")
+	checkFilter(fa.Filters.SecondaryDrop, "secondary_drop")
+
+	// This one kicks in when they exit the "inside" region defined by the volume.
+	for i := range fa.Filters.SecondaryDrop {
+		fa.Filters.SecondaryDrop[i].InvertTest = true
 	}
 
 	// Quick FP ACID
@@ -800,4 +867,16 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, e *util.Error
 		}
 	}
 	e.Pop()
+}
+
+func (r FilterRegion) Inside(p math.Point2LL, alt int) bool {
+	return r.AirspaceVolume.Inside(p, alt) != r.InvertTest
+}
+
+func (r FilterRegions) Inside(p math.Point2LL, alt int) bool {
+	return slices.ContainsFunc(r, func(r FilterRegion) bool { return r.Inside(p, alt) })
+}
+
+func (r FilterRegions) HaveId(s string) bool {
+	return slices.ContainsFunc(r, func(r FilterRegion) bool { return s == r.Id })
 }

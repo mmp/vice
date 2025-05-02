@@ -45385,16 +45385,19 @@
   "stars_config": {
    "center": "N042.20.55.421,W071.00.22.439",
    "altimeters":["KBOS","KFMH","KMHT"],
-   "inhibit_ca_volumes": [
+   "filters": {
+   "inhibit_ca": [
     {
-      "name": "BOS NO CA",
+      "id": "BOSNOCA",
+      "description": "BOS CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 2000,
       "radius": 7,
       "center": "N042.23.05.581,W071.00.43.615"
     }
-   ],
+   ]
+   },
     "allow_long_scratchpad":true,
     "pdb": {
         "hide_gs": true
