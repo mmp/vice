@@ -3449,17 +3449,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				ctx.Client.RejectPointOut(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
 				status.clear = true
 				return
-			} else if spec, err := parseOneFlightPlan("#/AC_TYPE4/EQ", cmd, nil); err == nil {
+			} else if spec, err := parseOneFlightPlan("#/AC_TYPE4/EQ", cmd, nil); err == nil && trk.IsAssociated() {
 				// 5-148 Add or modify aircraft type. Note that this has to
 				// be done before 5-150 Add or modify scratchpad or
 				// altitude, and aircraft type so that a 4-char entry is
 				// interpreted as setting the aircraft type.
-				if trk.IsUnassociated() {
-					status.err = ErrSTARSIllegalTrack
-				} else {
-					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
-					status.clear = true
-				}
+				sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display */)
+				status.clear = true
 				return
 			} else if cmd == "Y" && trk.IsUnassociated() {
 				// 5-145: create quick ACID flight plan
