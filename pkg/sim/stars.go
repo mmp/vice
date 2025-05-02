@@ -409,6 +409,7 @@ type STARSFlightPlan struct {
 	TrackingController     string // Who has the radar track
 	ControllingController  string // Who has control; not necessarily the same as TrackingController
 	HandoffTrackController string // Handoff offered but not yet accepted
+	LastLocalController    string // (May be the current controller.)
 
 	AircraftCount   int
 	AircraftType    string

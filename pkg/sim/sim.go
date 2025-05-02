@@ -84,8 +84,6 @@ type Aircraft struct {
 	WaitingForLaunch  bool // for departures
 	MissingFlightPlan bool
 
-	HasBeenLocallyOwned bool // has a local controller ever owned the track?
-
 	GoAroundDistance *float32
 
 	// Departure related state
@@ -773,6 +771,9 @@ func (s *Sim) updateState() {
 					slog.String("to", fp.HandoffTrackController))
 
 				fp.TrackingController = fp.HandoffTrackController
+				if s.State.IsLocalController(fp.TrackingController) {
+					fp.LastLocalController = fp.TrackingController
+				}
 				fp.HandoffTrackController = ""
 			}
 		}

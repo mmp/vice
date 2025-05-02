@@ -97,7 +97,7 @@ func (sc *STARSComputer) CheckAirspaceFilterVolumes(s *Sim) {
 				fp := ac.STARSFlightPlan
 				if fp.TypeOfFlight == av.FlightTypeArrival && inVolumes(filters.ArrivalDrop) {
 					return true
-				} else if ac.HasBeenLocallyOwned && s.State.IsExternalController(fp.TrackingController) &&
+				} else if fp.LastLocalController != "" && s.State.IsExternalController(fp.TrackingController) &&
 					inVolumes(filters.SecondaryDrop) {
 					return true
 				} else {
@@ -133,7 +133,9 @@ func (sc *STARSComputer) CheckAirspaceFilterVolumes(s *Sim) {
 					// For multi-controller, resolve to the one covering the
 					// departure position based on who is signed in now.
 					fp.TrackingController = s.State.ResolveController(fp.TrackingController)
-					ac.HasBeenLocallyOwned = ac.HasBeenLocallyOwned || s.State.IsLocalController(fp.TrackingController)
+					if s.State.IsLocalController(fp.TrackingController) {
+						fp.LastLocalController = fp.TrackingController
+					}
 
 					ac.AssociateFlightPlan(fp)
 
