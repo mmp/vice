@@ -1065,7 +1065,9 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 	if (drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active) || commandModeSelected {
 		sp.setCommandMode(ctx, commandMode)
 
-		sp.savedMousePosition = ctx.Mouse.Pos
+		if ctx.Mouse != nil {
+			sp.savedMousePosition = ctx.Mouse.Pos
+		}
 		sp.accumMouseDeltaY = 0
 		ctx.Platform.StartMouseDeltaMode()
 		sp.activeSpinner = spinner
