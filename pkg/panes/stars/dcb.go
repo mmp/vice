@@ -1061,7 +1061,13 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 // events to the spinner.
 func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
-	commandModeSelected := !active && sp.commandMode == commandMode
+	// Slightly tricky: if the user has selected a command mode via the
+	// keyboard and that command mode has a single associated spinner, then
+	// we want to automatically activate that one spinner.  However, two
+	// command modes have multiple associated spinners and so we don't want
+	// to do that trick then.
+	commandModeSelected := !active && sp.commandMode == commandMode &&
+		commandMode != CommandModeBriteSpinner && commandMode != CommandModeCharSizeSpinner
 	if (drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active) || commandModeSelected {
 		sp.setCommandMode(ctx, commandMode)
 
