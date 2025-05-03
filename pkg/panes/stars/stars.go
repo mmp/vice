@@ -466,11 +466,13 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
 
-	clear(sp.scopeDraw.arrivals)
-	clear(sp.scopeDraw.approaches)
-	clear(sp.scopeDraw.departures)
-	clear(sp.scopeDraw.overflights)
-	clear(sp.scopeDraw.airspace)
+	// nil these out rather than clearing them so that they are rebuilt
+	// from scratch.
+	sp.scopeDraw.arrivals = nil
+	sp.scopeDraw.approaches = nil
+	sp.scopeDraw.departures = nil
+	sp.scopeDraw.overflights = nil
+	sp.scopeDraw.airspace = nil
 }
 
 func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *log.Logger) {
