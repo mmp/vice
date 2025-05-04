@@ -473,7 +473,7 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 
 func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
 	n := -1
-	if pn, err := strconv.Atoi(s); err == nil && len(s) == 2 {
+	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
 		n = pn
 	}
 
