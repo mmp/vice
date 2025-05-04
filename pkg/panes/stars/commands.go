@@ -946,9 +946,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			} else if cmd == "I" { // inhibit
 				ps.DwellMode = DwellModeOff
 				status.clear = true
-			} else if len(cmd) == 1 {
-				// illegal value for dwell
-				status.err = ErrSTARSIllegalValue
 			} else if fp, trk := lookupFlightPlan(ctx, cmd); fp != nil {
 				// D(callsign) / D(beacon) / D(line #)
 				// Display flight plan: 5-186
@@ -963,6 +960,9 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				} else {
 					status.clear = true
 				}
+			} else if len(cmd) == 1 {
+				// illegal value for dwell
+				status.err = ErrSTARSIllegalValue
 			} else {
 				status.err = ErrSTARSNoFlight
 			}
