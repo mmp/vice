@@ -1050,6 +1050,10 @@ func IsValidACID(acid string) bool {
 	if len(acid) < 3 {
 		return false
 	}
+	if acid[0] < 'A' || acid[0] > 'Z' {
+		// Must start with a letter
+		return false
+	}
 	for _, ch := range acid {
 		if !((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9')) {
 			// ACID must be alphanumeric
