@@ -3395,7 +3395,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					// As with *P, don't return an error if it didn't parse, maybe set ACID below.
 				}
 
-				if sim.IsValidACID(cmd[1:]) {
+				if sim.IsValidACID(cmd[1:]) && trk.IsAssociated() {
 					var spec sim.STARSFlightPlanSpecifier
 					spec.ACID.Set(sim.ACID(cmd[1:]))
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
