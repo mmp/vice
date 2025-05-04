@@ -7,8 +7,10 @@ package server
 import (
 	"fmt"
 	"net/rpc"
+	"os"
 	"slices"
 	"sort"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -52,18 +54,27 @@ type RPCClient struct {
 	*rpc.Client
 }
 
+func debuggerIsRunning() bool {
+	dlv, ok := os.LookupEnv("_")
+	return ok && strings.HasSuffix(dlv, "/dlv")
+}
+
 func (c *RPCClient) CallWithTimeout(serviceMethod string, args any, reply any) error {
 	pc := &PendingCall{
 		Call:      c.Go(serviceMethod, args, reply, nil),
 		IssueTime: time.Now(),
 	}
 
-	select {
-	case <-pc.Call.Done:
-		return pc.Call.Error
+	for {
+		select {
+		case <-pc.Call.Done:
+			return pc.Call.Error
 
-	case <-time.After(5 * time.Second):
-		return ErrRPCTimeout
+		case <-time.After(5 * time.Second):
+			if !debuggerIsRunning() {
+				return ErrRPCTimeout
+			}
+		}
 	}
 }
 
