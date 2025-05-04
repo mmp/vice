@@ -1063,6 +1063,9 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 		if ctx.Now.Before(state.FullLDBEndTime) {
 			return true
 		}
+		if trk.MissingFlightPlan {
+			return true // WHO
+		}
 		if trk.Mode == av.TransponderModeStandby {
 			return false
 		}
