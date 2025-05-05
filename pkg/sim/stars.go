@@ -628,7 +628,9 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	if spec.CoordinationTime.IsSet {
 		fp.CoordinationTime = spec.CoordinationTime.Get()
 	}
-	if spec.SquawkAssignment.IsSet {
+	if spec.ImplicitSquawkAssignment.IsSet {
+		fp.AssignedSquawk = spec.ImplicitSquawkAssignment.Get()
+	} else if spec.SquawkAssignment.IsSet {
 		var rules av.FlightRules
 		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, localPool, nasPool)
 		if !spec.Rules.IsSet {
