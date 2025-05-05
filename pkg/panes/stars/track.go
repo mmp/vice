@@ -544,7 +544,8 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 }
 
 func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
-	if state.track.Mode != av.TransponderModeAltitude {
+	if state.track.Mode != av.TransponderModeAltitude || state.track.Altitude == 0 ||
+		state.previousTrack.Altitude == 0 {
 		state.UnreasonableModeC = false
 		state.ConsecutiveNormalTracks = 0
 		return
