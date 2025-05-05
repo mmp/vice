@@ -454,7 +454,7 @@ func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr fun
 }
 
 func checkTimeout(call *PendingCall, eventStream *sim.EventStream, onErr func(error)) bool {
-	if time.Since(call.IssueTime) > 5*time.Second {
+	if time.Since(call.IssueTime) > 5*time.Second && !debuggerIsRunning() {
 		eventStream.Post(sim.Event{
 			Type:    sim.StatusMessageEvent,
 			Message: "No response from server for over 5 seconds. Network connection may be lost.",
