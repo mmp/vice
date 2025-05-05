@@ -1467,7 +1467,7 @@ func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.
 		tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 			imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 		if imgui.BeginTableV("controllers", 4, tableFlags, imgui.Vec2{}, 0) {
-			imgui.TableSetupColumn("TCP")
+			imgui.TableSetupColumn("CID")
 			imgui.TableSetupColumn("Human")
 			imgui.TableSetupColumn("Frequency")
 			imgui.TableSetupColumn("Name")
