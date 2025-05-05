@@ -915,19 +915,7 @@ func removeInvalidCodes(codes *util.IntRangeSet) {
 
 	// Remove various reserved squawk codes, per 7110.66G
 	// https://www.faa.gov/documentLibrary/media/Order/FAA_Order_JO_7110.66G_NBCAP.pdf.
-	_ = codes.Take(0o1200)
-	_ = codes.Take(0o1201)
-	_ = codes.Take(0o1202)
-	_ = codes.Take(0o1205)
-	_ = codes.Take(0o1206)
-	takeRange(0o1207, 0o1233)
-	takeRange(0o1235, 0o1254)
-	takeRange(0o1256, 0o1272)
-	_ = codes.Take(0o1234)
-	_ = codes.Take(0o1255)
-	takeRange(0o1273, 0o1275)
-	_ = codes.Take(0o1276)
-	_ = codes.Take(0o1277)
+	takeBlock(0o1200)
 	_ = codes.Take(0o2000)
 	takeRange(0o4400, 0o4433)
 	takeRange(0o4434, 0o4437)
@@ -942,8 +930,6 @@ func removeInvalidCodes(codes *util.IntRangeSet) {
 	_ = codes.Take(0o7700)
 	takeRange(0o7701, 0o7707)
 	_ = codes.Take(0o7777)
-
-	// TODO? 0100, 0200, 0300, 0400 blocks?
 
 	// FIXME: these probably shouldn't be hardcoded like this but should be available to PCT.
 	takeBlock(0o5100) // PCT TRACON for DC SFRA/FRZ
