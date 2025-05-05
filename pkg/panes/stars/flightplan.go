@@ -199,6 +199,11 @@ func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.
 		// ACID must start with a letter
 		return false, ErrSTARSIllegalACID
 	}
+	if len(s) > 7 {
+		// No more than 7 characters
+		return false, ErrSTARSIllegalACID
+	}
+
 	spec.ACID.Set(sim.ACID(s))
 	return true, nil
 }
@@ -248,8 +253,8 @@ func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bo
 func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
 	actype, suffix, _ := strings.Cut(s, "/")
 
-	if len(actype) == 0 || actype[0] < 'A' || actype[0] > 'Z' {
-		// a/c types start with a letter
+	if len(actype) < 2 || actype[0] < 'A' || actype[0] > 'Z' {
+		// a/c types are at least 2 chars and start with a letter
 		return false, ErrSTARSCommandFormat
 	}
 
