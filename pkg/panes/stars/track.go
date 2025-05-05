@@ -544,6 +544,12 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 }
 
 func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
+	if state.track.Mode != av.TransponderModeAltitude {
+		state.UnreasonableModeC = false
+		state.ConsecutiveNormalTracks = 0
+		return
+	}
+
 	changeInAltitude := float64(state.previousTrack.Altitude - state.track.Altitude)
 	changeInTime := state.previousTrackTime.Sub(state.trackTime)
 	changeInTimeSeconds := changeInTime.Seconds()
