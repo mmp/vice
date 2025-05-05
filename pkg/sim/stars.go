@@ -515,6 +515,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
 		ExitFixIsIntermediate: s.ExitFixIsIntermediate.GetOr(false),
+		Rules:                 s.Rules.GetOr(av.FlightRulesVFR),
 		CoordinationTime:      s.CoordinationTime.GetOr(time.Time{}),
 		PlanType:              s.PlanType.GetOr(UnknownFlightPlanType),
 
