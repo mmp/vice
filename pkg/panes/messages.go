@@ -40,6 +40,8 @@ type MessagesPane struct {
 	ContactTransmissionsAlert  bool
 	ReadbackTransmissionsAlert bool
 	HideMessagePane            bool
+	prevContactAlerts          bool
+	prevReadbackAlerts         bool
 
 	font            *renderer.Font
 	scrollbar       *ScrollBar
@@ -58,7 +60,7 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 15},
 
 		HideMessagePane: false,
 	}
@@ -110,11 +112,22 @@ func (mp *MessagesPane) Upgrade(prev, current int) {
 
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 
-	imgui.Checkbox("Hide Messages Pane", &mp.HideMessagePane)
+	wasHidden := mp.HideMessagePane
+
+	imgui.Checkbox("Hide Message Pane", &mp.HideMessagePane)
+
+	// When hiding, save current states and uncheck
+	if mp.HideMessagePane && !wasHidden {
+		mp.prevContactAlerts = mp.ContactTransmissionsAlert
+		mp.prevReadbackAlerts = mp.ReadbackTransmissionsAlert
+		mp.ContactTransmissionsAlert = false
+		mp.ReadbackTransmissionsAlert = false
+	}
 
 	if mp.HideMessagePane {
 		imgui.BeginDisabled()
 	}
+
 	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
 		mp.font = newFont
 	}
@@ -129,6 +142,9 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 		}
 		imgui.EndCombo()
 	}
+
+	// Disable sound options when pane is hidden
+
 	imgui.Checkbox("Play audio alert after pilot initial contact transmissions", &mp.ContactTransmissionsAlert)
 	imgui.Checkbox("Play audio alert after pilot readback transmissions", &mp.ReadbackTransmissionsAlert)
 	if mp.HideMessagePane {
@@ -193,6 +209,7 @@ func (msg *Message) Color() renderer.RGB {
 }
 
 func (mp *MessagesPane) processEvents(ctx *Context) {
+
 	consolidateRadioTransmissions := func(events []sim.Event) []sim.Event {
 		canConsolidate := func(a, b sim.Event) bool {
 			return a.Type == sim.RadioTransmissionEvent && b.Type == sim.RadioTransmissionEvent &&
