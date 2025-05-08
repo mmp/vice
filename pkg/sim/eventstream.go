@@ -199,7 +199,6 @@ const (
 	RejectedPointOutEvent
 	HandoffControlEvent
 	SetGlobalLeaderLineEvent
-	TrackClickedEvent
 	ForceQLEvent
 	TransferAcceptedEvent
 	TransferRejectedEvent
@@ -213,7 +212,7 @@ func (t EventType) String() string {
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
 		"GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut", "HandoffControl",
-		"SetGlobalLeaderLine", "TrackClicked", "ForceQL", "TransferAccepted", "TransferRejected",
+		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"RecalledPointOut", "FlightPlanAssociated"}[t]
 }
 
@@ -233,8 +232,6 @@ func (e *Event) String() string {
 	case RadioTransmissionEvent:
 		return fmt.Sprintf("%s: ADSB callsign %s ACID %s controller %s->%s message %s type %v",
 			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.Message, e.RadioTransmissionType)
-	case TrackClickedEvent:
-		return fmt.Sprintf("%s: %s", e.Type, e.ADSBCallsign)
 	default:
 		return fmt.Sprintf("%s: ADSB callsign %s ACID %s controller %s->%s message %s",
 			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.Message)

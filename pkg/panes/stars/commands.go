@@ -4421,12 +4421,6 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 	ps := sp.currentPrefs()
 
 	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
-			sp.events.PostEvent(sim.Event{
-				Type:         sim.TrackClickedEvent,
-				ADSBCallsign: trk.ADSBCallsign,
-			})
-		}
 		ctx.KeyboardFocus.Take(sp)
 		return
 	}
