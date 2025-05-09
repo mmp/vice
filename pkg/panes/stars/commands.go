@@ -377,7 +377,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		return
 	}
 
-	lookupTrack := func(s string) *sim.Track {
+	lookupTrackACIDBeacon := func(s string) *sim.Track {
 		if trk, ok := ctx.GetTrackByACID(sim.ACID(s)); ok {
 			return trk
 		}
@@ -390,11 +390,36 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				}
 			}
 		}
+		return nil
+	}
+
+	lookupTrack := func(s string) *sim.Track {
+		if trk := lookupTrackACIDBeacon(s); trk != nil {
+			return trk
+		}
 
 		if idx, err := strconv.Atoi(s); err == nil {
 			if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
 				func(trk *sim.Track) bool {
 					return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx
+				}); ok {
+				return trk
+			}
+		}
+
+		return nil
+	}
+
+	lookupSuspendedTrack := func(s string) *sim.Track {
+		if trk := lookupTrackACIDBeacon(s); trk != nil {
+			return trk
+		}
+
+		if idx, err := strconv.Atoi(s); err == nil {
+			if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
+				func(trk *sim.Track) bool {
+					return trk.IsAssociated() && trk.FlightPlan.Suspended &&
+						trk.FlightPlan.CoastSuspendIndex == idx
 				}); ok {
 				return trk
 			}
@@ -724,8 +749,9 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			spec.PlanType.Set(sim.LocalNonEnroute)
 			sp.createFlightPlan(ctx, spec)
 			status.clear = true
-		} else if first, rest, ok := strings.Cut(cmd, " "); ok {
-			if trk := lookupTrack(first); trk == nil {
+		} else {
+			first, rest, _ := strings.Cut(cmd, " ")
+			if trk := lookupSuspendedTrack(first); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsAssociated() && trk.FlightPlan.Suspended {
 				// 5-77 unsuspend flight plan
@@ -3574,6 +3600,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 			if trk.IsAssociated() && trk.FlightPlan.Suspended {
 				// 5-77 unsuspend flight plan
+				// TODO(maybe): third variant of this, e.g. [INIT CNTL](Line #)[SLEW].
 				if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2", cmd, checkfp); err != nil {
 					status.err = err
 				} else {
