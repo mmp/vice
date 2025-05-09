@@ -546,6 +546,13 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
 		func(fp *sim.STARSFlightPlan) bool {
+			if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok {
+				// If it's a VFR still waiting for a NAS code, don't show it yet.
+				if ctx.Now.Sub(seen) < 2*time.Second {
+					return false
+				}
+			}
+
 			if !fp.Location.IsZero() {
 				// Unsupported DBs aren't included in the list.
 				return false
