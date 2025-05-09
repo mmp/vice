@@ -512,19 +512,23 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 
 	// Note: this is only for PDBs and FDBs. LDBs don't have pilot reported
 	// altitude or inhibit mode C.
-	altitude := fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-	if state.UnreasonableModeC {
-		altitude = "XXX"
-	} else if trk.IsUnsupportedDB() {
-		altitude = ""
-	} else if sfp != nil && sfp.PilotReportedAltitude != 0 {
-		altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
-	} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
-		altitude = "***"
-	} else if trk.Mode == av.TransponderModeStandby {
-		altitude = "RDR"
-	} else if trk.Mode == av.TransponderModeOn {
-		altitude = ""
+	var altitude string
+	var pilotReportedAltitude bool
+	if trk.Mode == av.TransponderModeAltitude && !trk.IsUnsupportedDB() {
+		if state.UnreasonableModeC {
+			altitude = "XXX"
+		} else {
+			altitude = fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
+		}
+	} else { // squawk standby or just mode-A
+		if sfp != nil && sfp.PilotReportedAltitude != 0 {
+			altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
+			pilotReportedAltitude = true
+		} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
+			altitude = "***"
+		} else if trk.Mode == av.TransponderModeStandby {
+			altitude = "RDR"
+		}
 	}
 
 	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode
@@ -692,7 +696,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 			}
 			return s
 		}
-		if sfp.PilotReportedAltitude != 0 {
+		if pilotReportedAltitude {
 			formatDBText(db.field12[0][:], fmt1(altitude+"*"), color, false)
 		} else {
 			formatDBText(db.field12[0][:], fmt1(altitude)+handoffId, color, false)
@@ -803,7 +807,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		}
 
 		idx34 := 0
-		if sfp.PilotReportedAltitude != 0 {
+		if pilotReportedAltitude {
 			formatDBText(db.field34[idx34][:], fmt3(altitude+"*"), color, false)
 			idx34++
 		} else {
