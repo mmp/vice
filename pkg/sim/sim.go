@@ -820,7 +820,10 @@ func (s *Sim) updateState() {
 				// when they're currently tracked by an external facility.
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
-					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					sfp := ac.STARSFlightPlan
+					if sfp == nil {
+						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					}
 					if sfp != nil {
 						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
 					}
