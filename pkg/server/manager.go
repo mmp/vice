@@ -312,10 +312,6 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 							sm.lg.Warnf("%s: signing off idle controller", tcp)
 							if err := sm.signOff(ctrl.token); err != nil {
 								sm.lg.Errorf("%s: error signing off idle controller: %v", tcp, err)
-								if _, ok := sm.controllersByToken[token]; ok {
-									delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
-									delete(sm.controllersByToken, token)
-								}
 							}
 						}
 					}
@@ -331,10 +327,6 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
 		delete(sm.activeSims, as.name)
-		// FIXME: these don't get cleaned up during Sim SignOff()
-		for _, ctrl := range as.controllersByTCP {
-			delete(sm.controllersByToken, ctrl.token)
-		}
 	}()
 
 	*result = NewSimResult{
@@ -394,13 +386,14 @@ func (sm *SimManager) SignOff(token string) error {
 func (sm *SimManager) signOff(token string) error {
 	if ctrl, s, ok := sm.lookupController(token); !ok {
 		return ErrNoSimForControllerToken
-	} else if err := s.SignOff(ctrl.tcp); err != nil {
-		return err
 	} else {
+		err := s.SignOff(ctrl.tcp)
+
+		// Do this cleanup regardless of an error return from SignOff
 		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
 		delete(sm.controllersByToken, token)
 
-		return nil
+		return err
 	}
 }
 
