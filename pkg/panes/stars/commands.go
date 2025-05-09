@@ -4420,11 +4420,8 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 	mouse := ctx.Mouse
 	ps := sp.currentPrefs()
 
-	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && !ctx.HaveFocus {
-		ctx.KeyboardFocus.Take(sp)
-		return
-	}
-	if (ctx.Mouse.Clicked[platform.MouseButtonSecondary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
+	if (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonSecondary] ||
+		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
 		ctx.KeyboardFocus.Take(sp)
 	}
 
@@ -4467,15 +4464,14 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		}
 	}
 
-	if ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
+	if ctx.Mouse.Released[platform.MouseButtonPrimary] {
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
 			// Shift-Control-click anywhere -> copy current mouse lat-long to the clipboard.
 			mouseLatLong := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 		}
 
-		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() && !ctx.Keyboard.KeyShift() { // There is a conflict between this and initating a track CRC-style,
-			// so making sure that shift isn't being pressed would be a good idea.
+		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() {
 			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 				if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 					state.IsSelected = !state.IsSelected
@@ -4484,13 +4480,11 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			}
 		}
 
-		// If a scope click handler has been registered, give it the click
-		// and then clear it out.
+		// If a scope click handler has been registered, give it the click.
 		var status CommandStatus
 		if sp.scopeClickHandler != nil {
 			status = sp.scopeClickHandler(ctx, sp, tracks, ctx.Mouse.Pos, transforms)
-		}
-		if sp.scopeClickHandler == nil {
+		} else {
 			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms, tracks)
 		}
 
@@ -4503,7 +4497,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.maybeAutoHomeCursor(ctx)
 			sp.previewAreaOutput = status.output
 		}
-	} else if ctx.Mouse.Clicked[platform.MouseButtonTertiary] {
+	} else if ctx.Mouse.Released[platform.MouseButtonTertiary] {
 		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 			if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 				state.IsSelected = !state.IsSelected
