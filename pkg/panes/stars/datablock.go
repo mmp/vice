@@ -514,20 +514,22 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	// altitude or inhibit mode C.
 	var altitude string
 	var pilotReportedAltitude bool
-	if trk.Mode == av.TransponderModeAltitude && !trk.IsUnsupportedDB() {
-		if state.UnreasonableModeC {
-			altitude = "XXX"
-		} else {
-			altitude = fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
-		}
-	} else { // squawk standby or just mode-A
-		if sfp != nil && sfp.PilotReportedAltitude != 0 {
-			altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
-			pilotReportedAltitude = true
-		} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
-			altitude = "***"
-		} else if trk.Mode == av.TransponderModeStandby {
-			altitude = "RDR"
+	if !trk.IsUnsupportedDB() {
+		if trk.Mode == av.TransponderModeAltitude {
+			if state.UnreasonableModeC {
+				altitude = "XXX"
+			} else {
+				altitude = fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
+			}
+		} else { // squawk standby or just mode-A
+			if sfp != nil && sfp.PilotReportedAltitude != 0 {
+				altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
+				pilotReportedAltitude = true
+			} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
+				altitude = "***"
+			} else if trk.Mode == av.TransponderModeStandby {
+				altitude = "RDR"
+			}
 		}
 	}
 
@@ -807,12 +809,14 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		}
 
 		idx34 := 0
-		if pilotReportedAltitude {
-			formatDBText(db.field34[idx34][:], fmt3(altitude+"*"), color, false)
-			idx34++
-		} else {
-			formatDBText(db.field34[idx34][:], fmt3(altitude)+handoffId, color, false)
-			idx34++
+		if altitude != "" || handoffId != " " {
+			if pilotReportedAltitude {
+				formatDBText(db.field34[idx34][:], fmt3(altitude+"*"), color, false)
+				idx34++
+			} else {
+				formatDBText(db.field34[idx34][:], fmt3(altitude)+handoffId, color, false)
+				idx34++
+			}
 		}
 		if sp1 != "" {
 			formatDBText(db.field34[idx34][:], fmt3(sp1)+handoffId, color, false)
