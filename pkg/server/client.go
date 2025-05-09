@@ -32,18 +32,43 @@ type ControlClient struct {
 
 	pendingCalls []*PendingCall
 
-	SessionStats struct {
-		Departures    int
-		Arrivals      int
-		IntraFacility int
-		Overflights   int
-
-		SignOnTime time.Time
-	}
+	SessionStats SessionStats
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	State sim.State
+}
+
+type SessionStats struct {
+	Departures    int
+	Arrivals      int
+	IntraFacility int
+	Overflights   int
+
+	SignOnTime time.Time
+
+	seenCallsigns map[av.ADSBCallsign]interface{}
+}
+
+func (s *SessionStats) Update(ss *sim.State) {
+	for _, trk := range ss.Tracks {
+		if fp := trk.FlightPlan; fp != nil {
+			if fp.TrackingController != ss.UserTCP {
+				continue // not ours
+			}
+			if _, ok := s.seenCallsigns[trk.ADSBCallsign]; ok {
+				continue // seen it already
+			}
+			s.seenCallsigns[trk.ADSBCallsign] = nil
+			if trk.IsDeparture() {
+				s.Departures++
+			} else if trk.IsArrival() {
+				s.Arrivals++
+			} else if trk.IsOverflight() {
+				s.Overflights++
+			}
+		}
+	}
 }
 
 func (c *ControlClient) RPCClient() *RPCClient {
@@ -136,6 +161,7 @@ func NewControlClient(ss sim.State, local bool, controllerToken string, client *
 		lastUpdateRequest: time.Now(),
 	}
 	cc.SessionStats.SignOnTime = ss.SimTime
+	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
 	return cc
 }
 
@@ -186,31 +212,11 @@ func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlan
 		makeStateUpdateRPCCall(c.proxy.ModifyFlightPlan(acid, spec, &update), &update, callback))
 }
 
-// Utility function that we shim around the user-supplied "success"
-// callback for control operations where we increment the controller's "#
-// airplanes worked" stats.
-func (c *ControlClient) updateControllerStats(callsign av.ADSBCallsign) func(any) {
-	return func(result any) {
-		if trk, ok := c.State.GetTrackByCallsign(callsign); ok {
-			if trk.IsDeparture() {
-				c.SessionStats.Departures++
-			} else if trk.IsArrival() {
-				c.SessionStats.Arrivals++
-			} else if trk.IsOverflight() {
-				c.SessionStats.Overflights++
-			}
-		}
-	}
-}
-
 func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
 	c.pendingCalls = append(c.pendingCalls,
 		makeStateUpdateRPCCall(c.proxy.AssociateFlightPlan(callsign, spec, &update), &update,
 			func(err error) {
-				if err == nil {
-					c.updateControllerStats(callsign)
-				}
 				if callback != nil {
 					callback(err)
 				}
@@ -223,9 +229,6 @@ func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.
 	c.pendingCalls = append(c.pendingCalls,
 		makeStateUpdateRPCCall(c.proxy.ActivateFlightPlan(callsign, fpACID, spec, &update), &update,
 			func(err error) {
-				if err == nil {
-					c.updateControllerStats(callsign)
-				}
 				if callback != nil {
 					callback(err)
 				}
@@ -255,9 +258,6 @@ func (c *ControlClient) AcceptHandoff(acid sim.ACID, callback func(error)) {
 	c.pendingCalls = append(c.pendingCalls,
 		makeStateUpdateRPCCall(c.proxy.AcceptHandoff(acid, &update), &update,
 			func(err error) {
-				if err == nil {
-					c.updateControllerStats(av.ADSBCallsign(acid))
-				}
 				if callback != nil {
 					callback(err)
 				}
@@ -275,9 +275,6 @@ func (c *ControlClient) AcceptRedirectedHandoff(acid sim.ACID, callback func(err
 	c.pendingCalls = append(c.pendingCalls,
 		makeStateUpdateRPCCall(c.proxy.AcceptRedirectedHandoff(acid, &update), &update,
 			func(err error) {
-				if err == nil {
-					c.updateControllerStats(av.ADSBCallsign(acid))
-				}
 				if callback != nil {
 					callback(err)
 				}
@@ -413,6 +410,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, onErr func(erro
 	if c.updateCall != nil {
 		if c.updateCall.CheckFinished(eventStream, &c.State) {
 			c.updateCall = nil
+			c.SessionStats.Update(&c.State)
 			return
 		}
 		checkTimeout(c.updateCall, eventStream, onErr)
