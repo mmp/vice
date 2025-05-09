@@ -3653,7 +3653,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != "" {
 					status.err = ErrSTARSIllegalTrack
 				} else {
-					status.output = "FORMAT" // informational
 					sp.scopeClickHandler = trackRepositionSecondClickHandler(trk.FlightPlan.ACID)
 				}
 			}
