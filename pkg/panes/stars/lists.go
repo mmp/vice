@@ -602,24 +602,27 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 			text.WriteByte(' ')
 		}
 		text.WriteString(fp.AssignedSquawk.String())
-		text.WriteByte(' ')
-		if fp.RequestedAltitude != 0 {
-			text.WriteString(fmt.Sprintf("%03d ", fp.RequestedAltitude/100))
-		} else {
-			text.WriteString("    ")
-		}
-		if fp.Rules == av.FlightRulesVFR {
-			text.WriteString("VFR")
-		} else {
-			if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
-				text.WriteByte(fp.EntryFix[0])
+		if false {
+			// Disable these for now, pending list customization
+			text.WriteByte(' ')
+			if fp.RequestedAltitude != 0 {
+				text.WriteString(fmt.Sprintf("%03d ", fp.RequestedAltitude/100))
 			} else {
-				text.WriteByte(' ')
+				text.WriteString("    ")
 			}
-			if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
-				text.WriteByte(fp.ExitFix[0])
+			if fp.Rules == av.FlightRulesVFR {
+				text.WriteString("VFR")
 			} else {
-				text.WriteByte(' ')
+				if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
+					text.WriteByte(fp.EntryFix[0])
+				} else {
+					text.WriteByte(' ')
+				}
+				if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
+					text.WriteByte(fp.ExitFix[0])
+				} else {
+					text.WriteByte(' ')
+				}
 			}
 		}
 		text.WriteByte('\n')
