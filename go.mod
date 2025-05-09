@@ -5,11 +5,12 @@ go 1.24.0
 toolchain go1.24.2
 
 require (
+	github.com/AllenDang/cimgui-go v1.3.1
 	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29
 	github.com/brunoga/deep v1.2.3
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
-	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b
+	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
 	github.com/iancoleman/orderedmap v0.3.0
@@ -26,7 +27,6 @@ require (
 )
 
 require (
-	github.com/AllenDang/cimgui-go v1.3.1 // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/antchfx/htmlquery v1.3.0 // indirect
