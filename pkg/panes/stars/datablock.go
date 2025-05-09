@@ -519,7 +519,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 			if state.UnreasonableModeC {
 				altitude = "XXX"
 			} else {
-				altitude = fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
+				altitude = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
 			}
 		} else { // squawk standby or just mode-A
 			if sfp != nil && sfp.PilotReportedAltitude != 0 {
@@ -651,7 +651,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		}
 
 		// Field 3: mode C altitude
-		altitude := fmt.Sprintf("%03d", int(trk.Altitude+50)/100)
+		altitude := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
 		if trk.Mode == av.TransponderModeStandby {
 			if extended {
 				altitude = "RDR"
@@ -1078,8 +1078,11 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 		if trk.Mode == av.TransponderModeStandby {
 			return false
 		}
-		// Check altitude filters
-		return int(trk.Altitude) >= af.Unassociated[0] && int(trk.Altitude) <= af.Unassociated[1]
+		if trk.Mode == av.TransponderModeAltitude {
+			// Check altitude filters
+			return int(trk.TransponderAltitude) >= af.Unassociated[0] && int(trk.TransponderAltitude) <= af.Unassociated[1]
+		}
+		return true
 	} else { // associated
 		state := sp.TrackState[trk.ADSBCallsign]
 		sfp := trk.FlightPlan
@@ -1115,10 +1118,11 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 			return true
 		} else if trk.IsUnsupportedDB() {
 			return true
+		} else if trk.Mode == av.TransponderModeAltitude {
+			// Check altitude filters
+			return int(trk.TransponderAltitude) >= af.Associated[0] && int(trk.TransponderAltitude) <= af.Associated[1]
 		}
-
-		// Check altitude filters
-		return int(trk.Altitude) >= af.Associated[0] && int(trk.Altitude) <= af.Associated[1]
+		return true
 	}
 }
 

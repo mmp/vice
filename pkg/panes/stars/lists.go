@@ -717,7 +717,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 				if trk.IsAssociated() && trk.FlightPlan.PilotReportedAltitude != 0 {
 					return strconv.Itoa(trk.FlightPlan.PilotReportedAltitude/100) + "*"
 				}
-				return strconv.Itoa(int((trk.Altitude + 50) / 100))
+				return strconv.Itoa(int((trk.TransponderAltitude + 50) / 100))
 			}
 
 			// FIXME: should be using ACIDs for the second two cases.
@@ -765,7 +765,7 @@ func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style rend
 
 		// For suspended, we always just show altitude (of one sort or another)
 		if trk.Mode == av.TransponderModeAltitude {
-			text.WriteString(fmt.Sprintf("%03d", int(trk.Altitude+50)/100))
+			text.WriteString(fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100))
 		} else if trk.FlightPlan.PilotReportedAltitude != 0 {
 			text.WriteString(fmt.Sprintf("%03d", trk.FlightPlan.PilotReportedAltitude))
 		} else {

@@ -105,7 +105,7 @@ func (ar *ApproachRegion) TryMakeGhost(trk RadarTrack, heading float32,
 	scratchpad string, forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection,
 	runwayIntersection [2]float32, nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostTrack {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
-	lat, vert := ar.Inside(trk.Location, float32(trk.Altitude), nmPerLongitude, magneticVariation)
+	lat, vert := ar.Inside(trk.Location, float32(trk.TrueAltitude), nmPerLongitude, magneticVariation)
 	if !lat {
 		return nil
 	}

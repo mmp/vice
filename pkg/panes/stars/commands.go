@@ -3793,7 +3793,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 									}
 									region := sp.ConvergingRunways[i].ApproachRegions[j]
 									state := sp.TrackState[trk.ADSBCallsign]
-									if lat, _ := region.Inside(state.track.Location, trk.Altitude,
+									if lat, _ := region.Inside(state.track.Location, trk.TrueAltitude,
 										ctx.NmPerLongitude, ctx.MagneticVariation); lat {
 										// All good. Whew
 										if state.Ghost.State == GhostStateForced {

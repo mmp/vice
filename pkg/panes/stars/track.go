@@ -164,7 +164,7 @@ func (ts *TrackState) TrackDeltaAltitude() int {
 		// No previous track
 		return 0
 	}
-	return int(ts.track.Altitude - ts.previousTrack.Altitude)
+	return int(ts.track.TransponderAltitude - ts.previousTrack.TransponderAltitude)
 }
 
 func (ts *TrackState) HaveHeading() bool {
@@ -443,11 +443,11 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			continue
 		}
 
-		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.Altitude))
+		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
 
 		// Check MSAW suppression filters
 		msawFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitMSAW
-		if msawFilter.Inside(state.track.Location, int(state.track.Altitude)) {
+		if msawFilter.Inside(state.track.Location, alt) {
 			state.MSAW = false
 			continue
 		}
@@ -537,21 +537,21 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 			state := sp.TrackState[trk.ADSBCallsign]
 			state.QuicklookFilterApplies = slices.ContainsFunc(qlfilt,
 				func(f sim.FilterRegion) bool {
-					return f.Inside(state.track.Location, int(state.track.Altitude))
+					return f.Inside(state.track.Location, int(state.track.TransponderAltitude))
 				})
 		}
 	}
 }
 
 func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
-	if state.track.Mode != av.TransponderModeAltitude || state.track.Altitude == 0 ||
-		state.previousTrack.Altitude == 0 {
+	if state.track.Mode != av.TransponderModeAltitude || state.track.TransponderAltitude == 0 ||
+		state.previousTrack.TransponderAltitude == 0 {
 		state.UnreasonableModeC = false
 		state.ConsecutiveNormalTracks = 0
 		return
 	}
 
-	changeInAltitude := float64(state.previousTrack.Altitude - state.track.Altitude)
+	changeInAltitude := float64(state.previousTrack.TransponderAltitude - state.track.TransponderAltitude)
 	changeInTime := state.previousTrackTime.Sub(state.trackTime)
 	changeInTimeSeconds := changeInTime.Seconds()
 
@@ -782,7 +782,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 	// TODO: orient based on radar center if just one radar
 
 	pos := state.track.Location
-	isUnsupported := state.track.Altitude == 0 && trk.FlightPlan != nil // FIXME: there's surely a better way to do this
+	isUnsupported := state.track.TrueAltitude == 0 && trk.FlightPlan != nil // FIXME: there's surely a better way to do this
 	pw := transforms.WindowFromLatLongP(pos)
 	// On high DPI windows displays we need to scale up the tracks
 
@@ -791,7 +791,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 		switch mode := sp.radarMode(ctx.FacilityAdaptation.RadarSites); mode {
 		case RadarModeSingle:
 			site := ctx.FacilityAdaptation.RadarSites[ps.RadarSiteSelected]
-			primary, secondary, dist := site.CheckVisibility(pos, int(trk.Altitude))
+			primary, secondary, dist := site.CheckVisibility(pos, int(trk.TrueAltitude))
 
 			// Orient the box toward the radar
 			h := math.Heading2LL(site.Position, pos, ctx.NmPerLongitude, ctx.MagneticVariation)
@@ -828,7 +828,7 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 
 		case RadarModeMulti:
 			primary, secondary, _ := sp.radarVisibility(ctx.FacilityAdaptation.RadarSites,
-				pos, int(trk.Altitude))
+				pos, int(trk.TrueAltitude))
 			// "cheat" by using trk.Heading if we don't yet have two radar tracks to compute the
 			// heading with; this makes things look better when we first see a track or when
 			// restarting a simulation...
@@ -984,7 +984,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	state := sp.TrackState[trk.ADSBCallsign]
 	vols := ctx.Client.ControllerAirspace(ctx.UserTCP)
 
-	inside, alts := av.InAirspace(state.track.Location, state.track.Altitude, vols)
+	inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
 	if state.EnteredOurAirspace && !inside {
 		return alts, true
 	} else if inside {
@@ -1009,7 +1009,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	inCAInhibitFilter := func(trk *sim.Track) bool {
 		nocaFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitCA
 		state := sp.TrackState[trk.ADSBCallsign]
-		return nocaFilter.Inside(state.track.Location, int(state.track.Altitude))
+		return nocaFilter.Inside(state.track.Location, int(state.track.TransponderAltitude))
 	}
 
 	nmPerLongitude := ctx.NmPerLongitude
@@ -1038,7 +1038,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 		// Quick outs before more expensive checks: using approximate
 		// distance; don't bother if they're >10nm apart or have >5000'
 		// vertical separation.
-		if math.Abs(trka.Altitude-trkb.Altitude) > 5000 ||
+		if math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) > 5000 ||
 			math.NMLength2LL(math.Sub2f(trka.Location, trkb.Location), nmPerLongitude) > 10 {
 			return false
 		}
@@ -1054,7 +1054,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 		}
 
 		return math.NMDistance2LL(trka.Location, trkb.Location) <= LateralMinimum &&
-			math.Abs(trka.Altitude-trkb.Altitude) <= VerticalMinimum-5 && /*small slop for fp error*/
+			math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) <= VerticalMinimum-5 && /*small slop for fp error*/
 			!sp.diverging(ctx, trka, trkb)
 	}
 
@@ -1084,7 +1084,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 		// Quick outs before more expensive checks: using approximate
 		// distance; don't bother if they're >10nm apart or have >5000'
 		// vertical separation.
-		if math.Abs(trka.Altitude-trkb.Altitude) > 5000 ||
+		if math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) > 5000 ||
 			math.NMLength2LL(math.Sub2f(trka.Location, trkb.Location), nmPerLongitude) > 10 {
 			return false
 		}
@@ -1094,7 +1094,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 		}
 
 		return math.NMDistance2LL(trka.Location, trkb.Location) <= 1.5 &&
-			math.Abs(trka.Altitude-trkb.Altitude) <= 500-5 && /*small slop for fp error*/
+			math.Abs(trka.TransponderAltitude-trkb.TransponderAltitude) <= 500-5 && /*small slop for fp error*/
 			!sp.diverging(ctx, trka, trkb)
 	}
 
@@ -1206,7 +1206,7 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Trac
 			}
 
 			state := sp.TrackState[trk.ADSBCallsign]
-			return vol.Inside(state.track.Location, state.track.Altitude,
+			return vol.Inside(state.track.Location, state.track.TransponderAltitude,
 				state.TrackHeading(nmPerLongitude)+magneticVariation,
 				nmPerLongitude, magneticVariation)
 		})
@@ -1254,7 +1254,7 @@ func MakeModeledAircraft(ctx *panes.Context, trk sim.Track, state *TrackState, t
 		callsign:  trk.ADSBCallsign,
 		p:         math.LL2NM(trk.Location, nmPerLongitude),
 		gs:        trk.Groundspeed,
-		alt:       trk.Altitude,
+		alt:       trk.TransponderAltitude,
 		dalt:      float32(state.TrackDeltaAltitude()),
 		threshold: math.LL2NM(threshold, nmPerLongitude),
 	}

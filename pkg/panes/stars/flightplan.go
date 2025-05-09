@@ -609,7 +609,7 @@ func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.STARSFlightPla
 		if trk == nil {
 			return ""
 		} else if trk.Mode == av.TransponderModeAltitude {
-			return fmt.Sprintf("%03d ", int(trk.Altitude+50)/100)
+			return fmt.Sprintf("%03d ", int(trk.TransponderAltitude+50)/100)
 		} else if fp.PilotReportedAltitude != 0 {
 			return fmt.Sprintf("%03d ", fp.PilotReportedAltitude/100)
 		} else {

@@ -18,26 +18,28 @@ import (
 )
 
 type RadarTrack struct {
-	ADSBCallsign ADSBCallsign
-	Squawk       Squawk
-	Mode         TransponderMode
-	Ident        bool
-	Altitude     float32
-	Location     math.Point2LL
-	Heading      float32
-	Groundspeed  float32
+	ADSBCallsign        ADSBCallsign
+	Squawk              Squawk
+	Mode                TransponderMode
+	Ident               bool
+	TrueAltitude        float32
+	TransponderAltitude float32
+	Location            math.Point2LL
+	Heading             float32
+	Groundspeed         float32
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) RadarTrack {
 	return RadarTrack{
-		ADSBCallsign: ac.ADSBCallsign,
-		Squawk:       util.Select(ac.Mode != TransponderModeStandby, ac.Squawk, Squawk(0)),
-		Mode:         ac.Mode,
-		Ident:        ac.Mode != TransponderModeStandby && now.After(ac.IdentStartTime) && now.Before(ac.IdentEndTime),
-		Altitude:     util.Select(ac.Mode == TransponderModeAltitude, ac.Altitude(), 0),
-		Location:     ac.Position(),
-		Heading:      ac.Heading(),
-		Groundspeed:  ac.GS(),
+		ADSBCallsign:        ac.ADSBCallsign,
+		Squawk:              util.Select(ac.Mode != TransponderModeStandby, ac.Squawk, Squawk(0)),
+		Mode:                ac.Mode,
+		Ident:               ac.Mode != TransponderModeStandby && now.After(ac.IdentStartTime) && now.Before(ac.IdentEndTime),
+		TrueAltitude:        ac.Altitude(),
+		TransponderAltitude: util.Select(ac.Mode == TransponderModeAltitude, ac.Altitude(), 0),
+		Location:            ac.Position(),
+		Heading:             ac.Heading(),
+		Groundspeed:         ac.GS(),
 	}
 }
 
