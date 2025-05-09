@@ -96,7 +96,11 @@ func (c CommandMode) PreviewString() string {
 	case CommandModeMin:
 		return "MIN"
 	case CommandModeTargetGen:
-		return "TG"
+		if !TargetGenLock {
+			return "TG"
+		} else {
+			return "TG LOCK"
+		}
 	case CommandModeReleaseDeparture:
 		return "RD"
 	case CommandModeRestrictionArea:
@@ -160,6 +164,8 @@ type CommandStatus struct {
 	err    error
 }
 
+var TargetGenLock bool
+
 func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
@@ -210,9 +216,11 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
-				if status.clear {
+				if status.clear && !TargetGenLock {
 					sp.setCommandMode(ctx, CommandModeNone)
 					sp.maybeAutoHomeCursor(ctx)
+				} else {
+					sp.setCommandMode(ctx, CommandModeTargetGen)
 				}
 				sp.previewAreaOutput = status.output
 			}
@@ -222,6 +230,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
 			} else {
 				sp.setCommandMode(ctx, CommandModeNone)
+				TargetGenLock = false // unlock target generation
 			}
 
 		case imgui.KeyF1:
@@ -308,7 +317,12 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			sp.setCommandMode(ctx, CommandModePref)
 
 		case imgui.KeyTab:
-			sp.setCommandMode(ctx, CommandModeTargetGen)
+			if imgui.IsKeyDown(imgui.KeyLeftShift) { // Check if LeftShift is pressed
+				TargetGenLock = true
+				sp.setCommandMode(ctx, CommandModeTargetGen)
+			} else {
+				sp.setCommandMode(ctx, CommandModeTargetGen)
+			}
 		}
 	}
 }
@@ -2313,11 +2327,14 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		if trk != nil {
 			sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds)
 			status.clear = true
+
 		} else {
 			status.err = ErrSTARSIllegalACID
 		}
+
 		return
 	}
+
 	status.err = ErrSTARSCommandFormat
 	return
 }
