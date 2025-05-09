@@ -4524,7 +4524,17 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.maybeAutoHomeCursor(ctx)
 			sp.previewAreaOutput = status.output
 		}
-	} else if ctx.Mouse.Released[platform.MouseButtonTertiary] {
+	}
+	if ctx.Mouse.Released[platform.MouseButtonSecondary] {
+		// vice-specific extension: print brief flight summary in preview
+		// area, even for unassociated tracks.
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
+			if fp, ok := ctx.Client.State.ACFlightPlans[trk.ADSBCallsign]; ok {
+				sp.previewAreaOutput = string(trk.ADSBCallsign) + " " + fp.AircraftType + " " + trk.Squawk.String()
+			}
+		}
+	}
+	if ctx.Mouse.Released[platform.MouseButtonTertiary] {
 		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
 			if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 				state.IsSelected = !state.IsSelected
