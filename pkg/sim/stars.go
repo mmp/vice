@@ -631,8 +631,9 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 		} else {
 			fp.Rules = spec.Rules.Get()
 		}
-		if fp.Rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
-			fp.DisableMSAW = true
+		if !spec.DisableMSAW.IsSet {
+			// If MSAW disable isn't set explicitly, it's set based on the updated flight rules.
+			fp.DisableMSAW = fp.Rules != av.FlightRulesIFR
 		}
 	}
 	if spec.CoordinationTime.IsSet {
