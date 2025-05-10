@@ -795,19 +795,6 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 		return regions
 	}
 
-	if len(fa.Filters.ArrivalAcquisition) == 0 {
-		fa.Filters.ArrivalAcquisition = []FilterRegion{
-			FilterRegion{
-				AirspaceVolume: av.AirspaceVolume{
-					Id:          "ACQ FP",
-					Description: "FLIGHT PLAN ACQUIRE ALL",
-					Type:        av.AirspaceVolumeCircle,
-					Floor:       0,
-					Ceiling:     10000,
-					Center:      fa.Center,
-					Radius:      35,
-				}}}
-	}
 	if len(fa.Filters.ArrivalDrop) == 0 {
 		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 2, 0, 500)
 	}
