@@ -307,6 +307,7 @@ type STARSFacilityAdaptation struct {
 		InhibitMSAW          FilterRegions `json:"inhibit_msaw"`
 		Quicklook            FilterRegions `json:"quicklook"`
 		SecondaryDrop        FilterRegions `json:"secondary_drop"`
+		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
 	} `json:"filters"`
 
 	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`

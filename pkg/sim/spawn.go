@@ -1352,7 +1352,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 			return ac, rwy.Id, nil
 		}
 		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
-			s.charlieAirspace.Inside(simac.Position(), int(simac.Altitude())) {
+			s.charlieAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
+			s.State.STARSFacilityAdaptation.Filters.VFRInhibit.Inside(simac.Position(), int(simac.Altitude())) {
 			return nil, "", ErrViolatedAirspace
 		}
 	}
