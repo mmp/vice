@@ -516,21 +516,20 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	var pilotReportedAltitude bool
 	if !trk.IsUnsupportedDB() {
 		haveTransponderAltitude := trk.Mode == av.TransponderModeAltitude && (sfp == nil || !sfp.InhibitModeCAltitudeDisplay)
-		if haveTransponderAltitude {
-			if state.UnreasonableModeC {
-				altitude = "XXX"
-			} else {
-				altitude = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-			}
+		if haveTransponderAltitude && state.UnreasonableModeC {
+			altitude = "XXX"
+		} else if haveTransponderAltitude {
+			altitude = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
+		} else if sfp != nil && sfp.PilotReportedAltitude != 0 {
+			altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
+			pilotReportedAltitude = true
+		} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
+			altitude = "***"
+		} else if trk.Mode == av.TransponderModeStandby {
+			altitude = "RDR"
 		} else {
-			if sfp != nil && sfp.PilotReportedAltitude != 0 {
-				altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
-				pilotReportedAltitude = true
-			} else if sfp != nil && sfp.InhibitModeCAltitudeDisplay {
-				altitude = "***"
-			} else if trk.Mode == av.TransponderModeStandby {
-				altitude = "RDR"
-			}
+			// Display an empty field
+			altitude = "   "
 		}
 	}
 
