@@ -197,26 +197,26 @@ func TestLocalSquawkCodePool(t *testing.T) {
 	spec := LocalSquawkCodePoolSpecifier{
 		Pools: map[string]PoolSpecifier{
 			"ifr": PoolSpecifier{
-				Range:   "0101-0177",
+				Ranges:  []string{"0101-0177"},
 				Backups: "1",
 			},
 			"vfr": PoolSpecifier{
-				Range:   "0201-0277",
+				Ranges:  []string{"0201-0277"},
 				Backups: "2",
 			},
 			"1": PoolSpecifier{
-				Range:   "0301-0377",
+				Ranges:  []string{"0301-0377"},
 				Backups: "234",
 			},
 			"2": PoolSpecifier{
-				Range:   "0401-0477",
+				Ranges:  []string{"0401-0477"},
 				Backups: "341",
 			},
 			"3": PoolSpecifier{
-				Range: "1602",
+				Ranges: []string{"1602"},
 			},
 			"4": PoolSpecifier{
-				Range:   "0501-0577",
+				Ranges:  []string{"0501-0577"},
 				Backups: "12",
 			},
 		},

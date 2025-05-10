@@ -7542,8 +7542,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       respectively, and "1", "2", "3", and "4", which specify beacon code banks that can be assigned
                       with syntax like <code>/1</code> when specifying a flight plan. Each of these objects has these members:
                       <ul>
-                        <li>"range": string specifying a single beacon code or a range of beacon codes (inclusive).
-                          Examples: "1200", "0301-0377".
+                        <li>"ranges": array of strings, each specifying a single beacon code or a range of beacon codes (inclusive).
+                          Example: ["1200", "0301-0377", "5501-5577"]. This allows specifying multiple non-contiguous ranges for a single pool.
                         </li>
                         <li>"flight_rules": string, either "v" or "i", indicating VFR or IFR, respectively. This may only
                           be specified for the numbered pools; it is predetermined for the "vfr" and "ifr" pools.

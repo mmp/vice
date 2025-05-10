@@ -956,8 +956,10 @@ func MakeEnrouteSquawkCodePool(loc *LocalSquawkCodePool) *EnrouteSquawkCodePool 
 	// Remove codes in the local pool as well
 	if loc != nil {
 		for _, pool := range loc.Pools {
-			for sq := pool.Range[0]; sq <= pool.Range[1]; sq++ {
-				_ = p.Initial.Take(int(sq))
+			for _, rng := range pool.Ranges {
+				for sq := rng[0]; sq <= rng[1]; sq++ {
+					_ = p.Initial.Take(int(sq))
+				}
 			}
 		}
 		for _, r := range loc.BeaconCodeTable.VFRCodes {
@@ -1020,14 +1022,14 @@ type LocalSquawkCodePoolSpecifier struct {
 }
 
 type PoolSpecifier struct {
-	Range   string `json:"range"`
-	Rules   string `json:"flight_rules"`
-	Backups string `json:"backup_pool_list"`
+	Ranges  []string `json:"ranges"`
+	Rules   string   `json:"flight_rules"`
+	Backups string   `json:"backup_pool_list"`
 	// TODO: no_flight_plan_exclusion: bool, if true, don't show WHO in DB if it exits the departure filter region.
 }
 
 type BeaconCodeTableSpecifier struct {
-	VFRCodes []string `json:"vfr_codes"`
+	VFRCodes []string `json:"vfr_codes"` // Array of squawk code ranges
 	// TODO: MSAW
 }
 
@@ -1058,6 +1060,18 @@ func parseCodeRange(s string, e *util.ErrorLogger) [2]Squawk {
 	}
 }
 
+// Helper function to parse ranges from an array of strings
+func parseCodeRanges(ranges []string, e *util.ErrorLogger) [][2]Squawk {
+	var result [][2]Squawk
+
+	// Parse ranges from the array
+	for _, r := range ranges {
+		result = append(result, parseCodeRange(r, e))
+	}
+
+	return result
+}
+
 func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -1077,7 +1091,9 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 		}
 		// Numbered ones optional(?)
 
-		var ranges [][2]Squawk
+		// Both check individual pools for valid ranges and internal overlaps and also
+		// check for overlaps with previous ranges.
+		var allRanges [][][2]Squawk
 		for name, spec := range s.Pools {
 			e.Push("Code pool " + name)
 			if name != "ifr" && name != "vfr" && name != "1" && name != "2" &&
@@ -1086,13 +1102,36 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 					"\"1\", \"2\", \"3\", or \"4\".", name)
 			}
 
-			r := parseCodeRange(spec.Range, e)
-			for _, pr := range ranges {
-				if (r[0] >= pr[0] && r[0] <= pr[1]) || (r[1] >= pr[0] && r[1] <= pr[1]) {
-					e.ErrorString("Range %s-%s overlaps with other range %s-%s", r[0], r[1], pr[0], pr[1])
+			// Validate input: must provide Ranges
+			if len(spec.Ranges) == 0 {
+				e.ErrorString("must specify \"ranges\" for pool %q", name)
+			}
+
+			// Parse all the ranges for this pool
+			poolRanges := parseCodeRanges(spec.Ranges, e)
+
+			// Check for overlaps within this pool
+			overlaps := func(a, b [2]Squawk) bool {
+				return (a[0] >= b[0] && a[0] <= b[1]) || (a[1] >= b[0] && a[1] <= b[1])
+			}
+			for i := range poolRanges {
+				for j := 0; j < i; j++ {
+					if overlaps(poolRanges[i], poolRanges[j]) {
+						e.ErrorString("Range %s-%s overlaps with range %s-%s in the same pool",
+							poolRanges[i][0], poolRanges[i][1], poolRanges[j][0], poolRanges[j][1])
+					}
+				}
+
+				for _, ranges := range allRanges {
+					for _, rng := range ranges {
+						if overlaps(poolRanges[i], rng) {
+							e.ErrorString("Range %s-%s overlaps with range %s-%s in other pool",
+								poolRanges[i][0], poolRanges[i][1], rng[0], rng[1])
+						}
+					}
 				}
 			}
-			ranges = append(ranges, r)
+			allRanges = append(allRanges, poolRanges)
 
 			if spec.Rules != "" && spec.Rules != "i" && spec.Rules != "v" {
 				e.ErrorString("\"rules\" must be \"i\" or \"v\"")
@@ -1113,9 +1152,8 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 	}
 
 	e.Push("\"beacon_code_table\"")
-	for _, cr := range s.BeaconCodeTable.VFRCodes {
-		_ = parseCodeRange(cr, e)
-	}
+	// Validate VFR codes using the same parser
+	_ = parseCodeRanges(s.BeaconCodeTable.VFRCodes, e)
 	e.Pop()
 }
 
@@ -1131,7 +1169,7 @@ type BeaconCodeTable struct {
 
 type LocalPool struct {
 	Available   *util.IntRangeSet
-	Range       [2]Squawk
+	Ranges      [][2]Squawk
 	Backups     string
 	FlightRules FlightRules
 }
@@ -1143,20 +1181,39 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 		// Return a reasonable default
 		p.Pools["vfr"] = LocalPool{
 			Available:   util.MakeIntRangeSet(0o201, 0o277),
-			Range:       [2]Squawk{0o0201, 0o0277},
+			Ranges:      [][2]Squawk{{0o0201, 0o0277}},
 			FlightRules: FlightRulesVFR,
 		}
 		p.Pools["ifr"] = LocalPool{
 			Available:   util.MakeIntRangeSet(0o301, 0o377),
-			Range:       [2]Squawk{0o0301, 0o0377},
+			Ranges:      [][2]Squawk{{0o0301, 0o0377}},
 			FlightRules: FlightRulesIFR,
 		}
 	} else {
 		for name, pspec := range spec.Pools {
-			r := parseCodeRange(pspec.Range, nil)
+			poolRanges := parseCodeRanges(pspec.Ranges, nil)
+
+			// Find the min and max values to create the IntRangeSet
+			r := [2]int{int(poolRanges[0][0]), int(poolRanges[0][1])}
+			for _, rng := range poolRanges {
+				r[0] = math.Min(r[0], int(rng[0]))
+				r[1] = math.Max(r[1], int(rng[1]))
+			}
+
+			// Create an IntRangeSet covering the full range
+			rs := util.MakeIntRangeSet(r[0], r[1])
+
+			// Remove values that are not in any of the specified ranges
+			for sq := r[0]; sq <= r[1]; sq++ {
+				if !slices.ContainsFunc(poolRanges, func(r [2]Squawk) bool { return sq >= int(r[0]) && sq <= int(r[1]) }) {
+					// sq not in any of the ranges.
+					_ = rs.Take(sq)
+				}
+			}
+
 			p.Pools[name] = LocalPool{
-				Available: util.MakeIntRangeSet(int(r[0]), int(r[1])),
-				Range:     r,
+				Available: rs,
+				Ranges:    poolRanges,
 				Backups:   pspec.Backups,
 				FlightRules: func() FlightRules {
 					if name == "vfr" || pspec.Rules == "v" {
@@ -1169,11 +1226,9 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 	}
 
 	if len(spec.BeaconCodeTable.VFRCodes) == 0 {
-		p.BeaconCodeTable.VFRCodes = [][2]Squawk{[2]Squawk{0o1200, 0o1277}}
+		p.BeaconCodeTable.VFRCodes = [][2]Squawk{{0o1200, 0o1277}}
 	} else {
-		for _, cr := range spec.BeaconCodeTable.VFRCodes {
-			p.BeaconCodeTable.VFRCodes = append(p.BeaconCodeTable.VFRCodes, parseCodeRange(cr, nil))
-		}
+		p.BeaconCodeTable.VFRCodes = parseCodeRanges(spec.BeaconCodeTable.VFRCodes, nil)
 	}
 
 	return p
@@ -1208,9 +1263,11 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 		// Remove it from the corresponding pool for auto-assignment. (But
 		// it's ok to assign the same code multiple times...)
 		for _, pool := range p.Pools {
-			if sq >= pool.Range[0] && sq <= pool.Range[1] {
-				_ = pool.Available.Take(int(sq))
-				return sq, pool.FlightRules, nil
+			for _, rng := range pool.Ranges {
+				if sq >= rng[0] && sq <= rng[1] {
+					_ = pool.Available.Take(int(sq))
+					return sq, pool.FlightRules, nil
+				}
 			}
 		}
 		// It's fine if it's not it any of the pools
