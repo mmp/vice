@@ -176,13 +176,7 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
 		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 
-	fp := ac.STARSFlightPlan // associated?
-	if fp == nil {
-		// Do we have a flight plan sitting around for an unassociated track?
-		fp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign))
-	}
-
-	if fp != nil {
+	if fp := ac.STARSFlightPlan; fp != nil {
 		delete(s.Handoffs, fp.ACID)
 		delete(s.PointOuts, fp.ACID)
 		s.deleteFlightPlan(fp)

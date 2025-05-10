@@ -458,6 +458,10 @@ type STARSFlightPlan struct {
 	ForceACTypeDisplayEndTime time.Time
 	CWTCategory               string
 
+	// After fps are dropped, we hold on to them for a bit before they're
+	// actually deleted.
+	DeleteTime time.Time
+
 	// Used so that such FPs can associate regardless of acquisition filters.
 	ManuallyCreated bool
 }

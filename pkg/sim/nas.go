@@ -6,9 +6,11 @@ package sim
 
 import (
 	"slices"
+	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type ERAMComputer struct {
@@ -80,7 +82,17 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 	sc.HoldForRelease = append(sc.HoldForRelease, ac)
 }
 
-func (sc *STARSComputer) CheckAirspaceFilterVolumes(s *Sim) {
+func (sc *STARSComputer) Update(s *Sim) {
+	// Delete any dropped flight plans after the few minute delay has passed.
+	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans, func(fp *STARSFlightPlan) bool {
+		if !fp.DeleteTime.IsZero() && s.State.SimTime.After(fp.DeleteTime) {
+			// Return beacon code, list index
+			s.deleteFlightPlan(fp)
+			return false
+		}
+		return true
+	})
+
 	for _, ac := range s.Aircraft {
 		if !ac.IsAirborne() || ac.Squawk == 0o1200 {
 			continue
@@ -105,8 +117,9 @@ func (sc *STARSComputer) CheckAirspaceFilterVolumes(s *Sim) {
 				}
 			}()
 			if drop {
-				// Return beacon code, list index
-				s.deleteFlightPlan(ac.STARSFlightPlan)
+				fp := ac.STARSFlightPlan
+				fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
+				sc.FlightPlans = append(sc.FlightPlans, fp)
 				ac.STARSFlightPlan = nil
 			}
 		} else { // unassociated--associate?

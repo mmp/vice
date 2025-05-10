@@ -960,7 +960,7 @@ func (s *Sim) updateState() {
 		s.spawnAircraft()
 
 		s.ERAMComputer.Update(s)
-		s.STARSComputer.CheckAirspaceFilterVolumes(s)
+		s.STARSComputer.Update(s)
 	}
 }
 
