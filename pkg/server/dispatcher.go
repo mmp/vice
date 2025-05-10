@@ -609,7 +609,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
-			} else if _, ok := s.State.Locate(string(command[1:])); ok {
+			} else if len(command) >= 4 && len(command) <= 6 {
 				if err := s.DirectFix(ctrl.tcp, callsign, command[1:]); err != nil {
 					rewriteError(err)
 					return nil

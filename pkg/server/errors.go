@@ -32,6 +32,7 @@ var errorStringToError = map[string]error{
 	av.ErrInvalidApproach.Error():              av.ErrInvalidApproach,
 	av.ErrInvalidController.Error():            av.ErrInvalidController,
 	av.ErrInvalidFacility.Error():              av.ErrInvalidFacility,
+	av.ErrInvalidFix.Error():                   av.ErrInvalidFix,
 	av.ErrInvalidHeading.Error():               av.ErrInvalidHeading,
 	av.ErrNoAircraftForCallsign.Error():        av.ErrNoAircraftForCallsign,
 	av.ErrNoController.Error():                 av.ErrNoController,

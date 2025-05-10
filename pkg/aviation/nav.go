@@ -1733,7 +1733,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) 
 			hdg := *nfa.Depart.Heading
 			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
-			if !nav.directFix(nfa.Depart.Fix.Fix) {
+			if nav.directFix(nfa.Depart.Fix.Fix) != nil {
 				lg.Errorf("unable direct %s after %s???", nfa.Depart.Fix.Fix, wp.Fix)
 			} else {
 				// Hacky: directFix updates the route but below we peel off
@@ -2214,7 +2214,7 @@ func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
 	return
 }
 
-func (nav *Nav) directFix(fix string) bool {
+func (nav *Nav) directFix(fix string) error {
 	// Check the approach (if any) first; this way if the current route
 	// ends with a fix that happens to be on the approach, we pick up the
 	// rest of the approach fixes rather than forgetting about them.
@@ -2238,7 +2238,7 @@ func (nav *Nav) directFix(fix string) bool {
 			}
 		}
 		if found {
-			return true
+			return nil
 		}
 	}
 
@@ -2246,22 +2246,52 @@ func (nav *Nav) directFix(fix string) bool {
 	for i, wp := range nav.Waypoints {
 		if fix == wp.Fix {
 			nav.Waypoints = nav.Waypoints[i:]
-			return true
+			return nil
 		}
 	}
 
-	return false
+	// See if it's a random fix not in the flight plan.
+	p, ok := func() (math.Point2LL, bool) {
+		if p, ok := DB.LookupWaypoint(fix); ok {
+			return p, true
+		} else if ap, ok := DB.Airports[fix]; ok {
+			return ap.Location, true
+		} else if ap, ok := DB.Airports["K"+fix]; len(fix) == 3 && ok {
+			return ap.Location, true
+		}
+		return math.Point2LL{}, false
+	}()
+	if ok {
+		// Ignore ones that are >150nm away under the assumption that it's
+		// a typo in that case.
+		if math.NMDistance2LL(p, nav.FlightState.Position) > 150 {
+			return ErrFixIsTooFarAway
+		}
+
+		nav.Waypoints = []Waypoint{
+			Waypoint{
+				Fix:      fix,
+				Location: p,
+			},
+			nav.FlightState.ArrivalAirport,
+		}
+		return nil
+	}
+
+	return ErrInvalidFix
 }
 
 func (nav *Nav) DirectFix(fix string) PilotResponse {
-	if nav.directFix(fix) {
+	if err := nav.directFix(fix); err == nil {
 		nav.EnqueueHeading(NavHeading{})
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
 
 		return PilotResponse{Message: "direct " + FixReadback(fix)}
+	} else if err == ErrFixIsTooFarAway {
+		return PilotResponse{Message: "unable. " + FixReadback(fix) + " is too far away to go direct", Unexpected: true}
 	} else {
-		return PilotResponse{Message: "unable. " + FixReadback(fix) + " isn't in our route", Unexpected: true}
+		return PilotResponse{Message: "unable. " + FixReadback(fix) + " isn't a valid fix", Unexpected: true}
 	}
 }
 
