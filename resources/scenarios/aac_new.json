@@ -1,0 +1,6199 @@
+{
+  "tracon": "AAC",
+  "airports": {
+    "KAAC": {
+      "name": "Academy",
+      "approaches": {
+        "I8R": {
+          "runway": "28R",
+          "type": "ILS",
+          "waypoints": [
+            "GRAYY/iaf/if/a4000+ ADCOK/a4000- RUSTY/a3000+ WOODY/faf/a2100+"
+          ]
+        },
+        "R8L": {
+          "runway": "28L",
+          "type": "RNAV",
+          "waypoints": [
+            "CHAPP/iaf/if/a5000+ LITTL/a4000+ RICKY/a3000+ ONETA/faf/a2100+"
+          ]
+        },
+        "R8R": {
+          "runway": "28R",
+          "type": "RNAV",
+          "waypoints": [
+            "GRAYY/iaf/if/a4000 ADCOK/a3000+ RUSTY/a3000+ WOODY/faf/a2100+"
+          ]
+        }
+      },
+      "departure_routes": {
+        "28L": {
+		      "NOBLE.RNAV": {
+            "cleared_altitude": 17000,
+            "sid": "NOBLE2",
+            "waypoints": "KAAC-10R 28L_MM LINDA/a+4000/s210 PATTI/a+6000 WHITT/a6000-9000 WARDD/a+10000"
+          },
+		      "SHAWN.RNAV": {
+            "cleared_altitude": 17000,
+            "sid": "SHAWN1",
+            "waypoints": "KAAC-10R 28L_MM LINDA/s210 POOLE/a5000-9000 LAURN/a+10000"
+          },
+          "COLIN.P,MAYES.P": {
+            "sid": "28L.NE.P",
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "KAAC-10R 28L_MM/h010"
+          },
+          "COLIN.J,MAYES.J": {
+            "sid": "28L.NE.J",
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "KAAC-10R 28L_MM/h310"
+          },
+          "NOBLE.P,SHAWN.P": {
+            "sid": "28L.SW.P",
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "KAAC-10R 28L_MM/h190"
+          },
+          "NOBLE.J,SHAWN.J": {
+            "sid": "28L.SW.J",
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "KAAC-10R 28L_MM/h260"
+          }
+        },
+        "28R": {
+		      "COLIN.RNAV": {
+            "cleared_altitude": 17000,
+            "sid": "COLIN1",
+            "waypoints": "KAAC-10L 28R_MM ROBIN/s210 KURDZ/a+6000 STONE/a7000-9000 ALETH/a+10000"
+          },
+		      "MAYES.RNAV": {
+            "cleared_altitude": 17000,
+            "sid": "MAYES3",
+            "waypoints": "KAAC-10L 28R_MM ROBIN/s210 KURDZ/a+6000 STONE/a7000-9000 BRITT/a+9000 WINDM/a+11000"
+          },
+          "COLIN.P,MAYES.P,SGF.P": {
+            "sid": "28R.NE.P",
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "KAAC-10L 28R_MM/h010"
+          },
+          "COLIN.J,MAYES.J": {
+            "sid": "28R.NE.J",
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "KAAC-10L 28R_MM/h310"
+          },
+          "NOBLE.P,SHAWN.P": {
+            "sid": "28R.SW.P",
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "KAAC-10L 28R_MM/h190"
+          },
+          "NOBLE.J,SHAWN.J": {
+            "sid": "28R.SW.J",
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "KAAC-10L 28R_MM/h260"
+          }
+        }
+      },
+      "departures": [
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KORD",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "long"
+            }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KORD",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "short"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KCLT",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "long"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KCLT",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "short"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KLIT",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "short"
+            }
+			]
+	  },
+		{
+          "airlines": [
+			{
+              "icao": "VIR"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KORD",
+          "exit": "COLIN.RNAV",
+          "route": "COLIN MKC"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "AAR",
+			  "fleet": "long"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KCLT",
+          "exit": "MAYES.RNAV",
+          "route": "MAYES FSM"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "AAR",
+			  "fleet": "long"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KORD",
+          "exit": "NOBLE.RNAV",
+          "route": "NOBLE MLC"
+        },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KLAX",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KOKC",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KDFW",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KMOB",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.P",
+          "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
+          "destination": "KMCI",
+          "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.P",
+          "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KMEM",
+          "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.P",
+		  "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KLIT",
+          "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000],
+          "destination": "KGCK",
+         "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KOKC",
+         "airlines": [
+			{
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KGGG",
+         "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KMLC",
+         "airlines": [
+            {
+              "icao": "N",
+			        "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+            }
+			]
+	  },
+	  {
+      "route": "MARCI SGF",
+      "exit": "SGF.P",
+      "altitude": [7000],
+      "destination": "KSGF",
+      "airlines": [
+        {
+          "icao": "N",
+          "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+        }
+  ]
+},
+{
+  "route": "TUL V4 SGF",
+  "exit": "SGF.P",
+  "altitude": [5000],
+  "destination": "KSGF",
+  "airlines": [
+    {
+      "icao": "N",
+      "types": ["AEST","BE36","BE55","BE58","BE60","BE76","C206","C208","C210","C310","C337","C402","M20T","PA46","PA32","PA44","PA34","AC50"]
+    }
+]
+}
+      ],
+      "exit_categories": {
+        "COLIN.RNAV": "RNAV_NE",
+        "MAYES.RNAV": "RNAV_NE",
+        "NOBLE.RNAV": "RNAV_SW",
+        "SHAWN.RNAV": "RNAV_SW",
+        "COLIN.P": "NE_PISTON",
+        "SGF.P": "NE_PISTON",
+        "COLIN.J": "NE",
+        "MAYES.P": "NE_PISTON",
+        "MAYES.J": "NE",
+        "NOBLE.P": "SW_PISTON",
+        "NOBLE.J": "SW",
+        "SHAWN.P": "SW.PISTON",
+        "SHAWN.J": "SW"
+      },
+      "tower_list": 1
+    },
+    "KBRT": {
+      "name": "Bartles",
+      "approaches": {
+        "I13": {
+          "runway": "13",
+          "type": "ILS",
+          "waypoints": [
+            "ADAMS/iaf/a3000+ BENIT/a3000 BERRY/faf/a2100"
+          ]
+        }
+      },
+      "departure_controller": "AAC_B_APP",
+      "departure_routes": {
+        "13": {
+          "COLIN.J": {
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "N036.26.33.127,W095.56.21.234/h030/ho",
+            "handoff_controller": "AAC_D_APP"
+          },
+          "MAYES.J": {
+            "cleared_altitude": 5000,
+            "description": "jets/turboprops",
+            "waypoints": "N036.25.55.554,W095.55.14.932/h100/ho",
+            "handoff_controller": "AAC_D_APP"
+          },
+          "SHAWN.J": {
+            "cleared_altitude": 9000,
+            "description": "jets/turboprops",
+            "waypoints": "N036.25.55.554,W095.55.14.932/h235/ho",
+            "handoff_controller": "AAC_K_APP"
+          },
+          "NOBLE.J": {
+            "cleared_altitude": 5000,
+            "description": "jets/turboprops",
+            "waypoints": "N036.25.55.554,W095.55.14.932/h110/ho",
+            "handoff_controller": "AAC_D_APP"
+          }
+        }
+        },
+      "departures": [
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KORD",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAjet"
+            },
+            {
+            "icao": "N",
+            "fleet": "GAturbine"
+            }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KORD",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [9000,11000,13000,15000,17000,19000,21000,23000,25000,27000,29000,31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,45000],
+          "destination": "KCLT",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [9000,11000,13000,15000,17000,19000,21000,23000,25000,27000,29000,31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,45000],
+          "destination": "KCLT",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.J",
+          "altitude": [9000,11000,13000,15000,17000,19000,21000,23000,25000,27000,29000,31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,45000],
+          "destination": "KLIT",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KLAX",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KAMA",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KOKC",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KDFW",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KMOB",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KDAL",
+         "airlines": [
+          {
+            "icao": "N",
+            "fleet": "GAjet"
+          },
+          {
+          "icao": "N",
+          "fleet": "GAturbine"
+          }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.P",
+          "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
+          "destination": "KMCI",
+          "airlines": [
+            {
+              "icao": "N",
+			    "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.P",
+          "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KMEM",
+          "airlines": [
+            {
+              "icao": "N",
+			    "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.P",
+		      "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KLIT",
+          "airlines": [
+            {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000],
+          "destination": "KGCK",
+         "airlines": [
+            {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KOKC",
+         "airlines": [
+			      {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KGGG",
+         "airlines": [
+            {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KMLC",
+          "airlines": [
+            {
+              "icao": "N",
+			        "fleet": "GAsinglepiston"
+            }
+			]
+	  }
+      ],
+      "exit_categories": {
+        "COLIN.J": "NE",
+        "MAYES.J": "NE",
+        "NOBLE.J": "S",
+        "SHAWN.J": "W"
+      },
+      "tower_list": 3
+    },
+    "KJKE": {
+      "name": "Jeske",
+      "approaches": {
+        "I27": {
+          "runway": "27",
+          "type": "ILS",
+          "waypoints": [
+            "BEJEO/iaf/a4000+ ARREL/if/a3000+ CHAPL/faf/a2400+"
+          ]
+        }
+      },
+      "departure_routes": {
+        "27": {
+          "COLIN.P,MAYES.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "09_MM/h270"
+          },
+          "COLIN.J,MAYES.J": {
+            "cleared_altitude": 4000,
+            "description": "jets/turboprops",
+            "waypoints": "09_MM/h270"
+          },
+          "NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 4000,
+            "description": "props",
+            "waypoints": "09_MM/h270"
+          },
+          "NOBLE.J,SHAWN.J": {
+            "cleared_altitude": 4000,
+            "description": "jets/turboprops",
+            "waypoints": "09_MM/h270"
+          }
+        },
+        "22": {
+          "COLIN.P,MAYES.P": {
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "N035.53.48.140,W095.37.24.149/h220"
+          },
+          "COLIN.J,MAYES.J": {
+            "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "N035.53.48.140,W095.37.24.149/h220"
+          },
+          "NOBLE.P,SHAWN.P": {
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "N035.53.48.140,W095.37.24.149/h220"
+          },
+          "NOBLE.J,SHAWN.J": {
+            "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "N035.53.48.140,W095.37.24.149/h220"
+          }
+        }
+      },
+      "departures": [
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KORD",
+         "airlines": [
+            {
+              "icao": "SOONR",
+			        "fleet": "default"
+            },
+            {
+              "icao": "IGLOO",
+			        "fleet": "default"
+            },
+            {
+              "icao": "KING",
+			        "fleet": "default"
+            },
+            {
+              "icao": "POLO",
+			        "fleet": "default"
+            },
+            {
+              "icao": "NASA",
+			        "fleet": "default"
+            },
+            {
+              "icao": "OKIE",
+			        "fleet": "default"
+            },
+            {
+              "icao": "VVBL",
+			        "fleet": "default"
+            },
+            {
+              "icao": "VV",
+			        "fleet": "default"
+            },
+            {
+              "icao": "VM",
+			        "fleet": "default"
+            },
+            {
+              "icao": "JOKER",
+			        "fleet": "default"
+            },
+            {
+              "icao": "LIFTR",
+			        "fleet": "default"
+            },
+            {
+              "icao": "HORSE",
+			        "fleet": "default"
+            },
+            {
+              "icao": "BALL",
+			        "fleet": "default"
+            },
+            {
+              "icao": "VANDY",
+			        "fleet": "default"
+            },
+            {
+              "icao": "CANON",
+			        "fleet": "default"
+            },
+            {
+              "icao": "OSAGE",
+			        "fleet": "default"
+            },
+            {
+              "icao": "RCH",
+			        "fleet": "default"
+            }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KORD",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KCLT",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KCLT",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KLIT",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KLAX",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KAMA",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KOKC",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KDFW",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KMOB",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KDAL",
+         "airlines": [
+          {
+            "icao": "SOONR",
+            "fleet": "default"
+          },
+          {
+            "icao": "IGLOO",
+            "fleet": "default"
+          },
+          {
+            "icao": "KING",
+            "fleet": "default"
+          },
+          {
+            "icao": "POLO",
+            "fleet": "default"
+          },
+          {
+            "icao": "NASA",
+            "fleet": "default"
+          },
+          {
+            "icao": "OKIE",
+            "fleet": "default"
+          },
+          {
+            "icao": "VVBL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VV",
+            "fleet": "default"
+          },
+          {
+            "icao": "VM",
+            "fleet": "default"
+          },
+          {
+            "icao": "JOKER",
+            "fleet": "default"
+          },
+          {
+            "icao": "LIFTR",
+            "fleet": "default"
+          },
+          {
+            "icao": "HORSE",
+            "fleet": "default"
+          },
+          {
+            "icao": "BALL",
+            "fleet": "default"
+          },
+          {
+            "icao": "VANDY",
+            "fleet": "default"
+          },
+          {
+            "icao": "CANON",
+            "fleet": "default"
+          },
+          {
+            "icao": "OSAGE",
+            "fleet": "default"
+          },
+          {
+            "icao": "RCH",
+            "fleet": "default"
+          }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.P",
+          "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
+          "destination": "KMCI",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.P",
+          "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KMEM",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.P",
+		  "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KLIT",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000],
+          "destination": "KGCK",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KOKC",
+         "airlines": [
+			{
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KGGG",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KMLC",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  }
+      ],
+      "exit_categories": {
+        "COLIN.P": "NE",
+        "COLIN.J": "NE",
+        "MAYES.P": "NE",
+        "MAYES.J": "NE",
+        "NOBLE.P": "SW",
+        "NOBLE.J": "SW",
+        "SHAWN.P": "SW",
+        "SHAWN.J": "SW"
+      },
+      "tower_list": 2
+    },
+   "4Y3": {
+      "name": "James",
+      "approaches": {
+        "I30": {
+          "runway": "30",
+          "type": "ILS",
+          "waypoints": [
+            "OLSIN/iaf/a3000+ CHAIN/if/a3000 HAMMR/faf/a2100"
+          ]
+        }
+      },
+      "departure_routes": {
+        "30": {
+          "MAYES.P": {
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "12_MM/h040"
+          },
+          "COLIN.P,NOBLE.P, SHAWN.P ": {
+            "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "12_MM/h300"
+          },
+          "COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
+            "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "12_MM/h300"
+          }
+        }
+        },
+      "departures": [
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KORD",
+          "airlines": [
+            {
+              "icao": "AAL",
+			    "fleet": "long"
+            }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KORD",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "short"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KCLT",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "long"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KCLT",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "short"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KLIT",
+         "airlines": [
+            {
+              "icao": "AAL",
+			  "fleet": "short"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KLAX",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KOKC",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KDFW",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KMOB",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "AAL"
+            }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.P",
+          "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
+          "destination": "KMCI",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.P",
+          "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KMEM",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.P",
+		  "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KLIT",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000],
+          "destination": "KGCK",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KOKC",
+         "airlines": [
+			{
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KGGG",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KMLC",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  }
+      ],
+      "exit_categories": {
+        "COLIN.P": "PISTON",
+        "COLIN.J": "NE",
+        "MAYES.P": "PISTON",
+        "MAYES.J": "NE",
+        "NOBLE.P": "PISTON",
+        "NOBLE.J": "SW",
+        "SHAWN.P": "PISTON",
+        "SHAWN.J": "SW"
+      },
+      "tower_list": 3
+    },
+    "4V4": {
+      "name": "Viney",
+      "approaches": {
+        "R34": {
+          "runway": "34",
+          "type": "RNAV",
+          "waypoints": [
+            "KELLY/iaf/a3000 RUDDY/faf/a2300"
+          ]
+        }
+      },
+      "departure_routes": {
+        "34": {
+          "MAYES.P": {
+            "cleared_altitude": 3000,
+            "description": "props",
+            "waypoints": "N035.58.53.161,W095.23.16.279/h100"
+          },
+          "COLIN.P,NOBLE.P, SHAWN.P ": {
+            "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "N035.58.53.161,W095.23.16.279/h100"
+          },
+          "COLIN.J,MAYES.J,NOBLE.J,SHAWN.J": {
+            "cleared_altitude": 3000,
+            "description": "jets/turboprops",
+            "waypoints": "N035.58.53.161,W095.23.16.279/h310"
+          }
+        }
+        },
+      "departures": [
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [13000,14000,15000,16000,17000,18000,19000,20000,21000,22000,23000,24000,25000,26000,27000,28000,29000,30000,31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KORD",
+          "airlines": [
+            {
+              "icao": "N",
+              "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+            }
+			    ]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KORD",
+          "airlines": [
+            {
+              "icao": "N",
+              "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+            }
+			    ]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000,45000, 47000],
+          "destination": "KCLT",
+          "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			    ] 
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KCLT",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.J",
+          "altitude": [9000, 10000, 11000, 12000, 13000,14000, 15000, 16000, 17000,18000, 19000, 20000, 21000,22000, 23000,24000, 25000,26000, 27000,28000, 29000,30000, 31000,32000,33000,34000,35000,36000,37000,38000,39000,40000,41000,43000],
+          "destination": "KLIT",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KLAX",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KAMA",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KOKC",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.J",
+          "altitude": [10000, 12000 ,14000, 16000, 18000, 20000, 22000, 24000 ,26000, 28000, 30000, 32000, 34000, 36000, 38000, 40000, 43000, 47000],
+          "destination": "KDFW",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KMOB",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.J",
+          "altitude": [9000, 11000 ,15000, 17000, 19000, 21000, 23000, 25000 ,27000, 29000, 31000, 33000, 35000, 37000, 39000, 41000, 45000, 49000],
+          "destination": "KDAL",
+         "airlines": [
+          {
+            "icao": "N",
+            "types": ["B190","BE20","B350","C441","DH8D","DH8C","PAY1","PAY2","PAY3","PAY4","PC12","BE40","CL60","C650","C750","F900","LJ31","LJ35","LJ45","GLF4","GLF5"]
+          }
+			]
+	  },
+	  {
+          "route": "COLIN MKC",
+          "exit": "COLIN.P",
+          "altitude": [4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000],
+          "destination": "KMCI",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES FSM",
+          "exit": "MAYES.P",
+          "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KMEM",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "MAYES LIT",
+          "exit": "MAYES.P",
+		  "altitude": [5000, 7000, 9000, 11000, 13000, 15000],
+          "destination": "KLIT",
+          "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN GCK",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000],
+          "destination": "KGCK",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN AMA",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KAMA",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "SHAWN OKC",
+          "exit": "SHAWN.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KOKC",
+         "airlines": [
+			{
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE DAL",
+          "exit": "NOBLE.P",
+          "altitude": [4000, 6000, 8000, 10000, 12000 ,14000, 16000],
+          "destination": "KDAL",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE PRX",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KGGG",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  },
+	  {
+          "route": "NOBLE MLC",
+          "exit": "NOBLE.P",
+          "altitude": [5000, 7000, 9000, 11000 ,15000],
+          "destination": "KMLC",
+         "airlines": [
+            {
+              "icao": "N",
+			  "fleet": "GAsinglepiston"
+            }
+			]
+	  }
+      ],
+      "exit_categories": {
+        "COLIN.P": "PISTON",
+        "COLIN.J": "NE",
+        "MAYES.P": "PISTON",
+        "MAYES.J": "NE",
+        "NOBLE.P": "PISTON",
+        "NOBLE.J": "SW",
+        "SHAWN.P": "PISTON",
+        "SHAWN.J": "SW"
+      },
+      "tower_list": 3
+    }
+  },
+"inbound_flows":{
+	"REELI":{
+		"arrivals":[
+      {
+        "star": "TULSA4",
+        "initial_altitude": 14000,
+        "initial_speed": 260,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.43.23.567,W094.54.10.415/ho REELI/a11000/s250/h190",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLGA",
+              "icao": "UPS"
+            }
+          ]
+        }
+      },
+      {
+		"description": "REELI Satellite",
+		"route": "DIRECT",
+        "initial_altitude": 9000,
+		"initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N037.02.28.109,W094.52.02.341 N036.55.58.493,W094.56.27.332/ho",
+		"runway_waypoints":{
+			"KJKE":{
+				"4": "N036.55.58.493,W094.56.27.332 KJKE",
+				"9": "N036.55.58.493,W094.56.27.332 KJKE",
+				"22": "N036.55.58.493,W094.56.27.332 KJKE",
+				"27": "N036.55.58.493,W094.56.27.332 KJKE"
+			},
+			"4Y3":{
+				"12": "N036.55.58.493,W094.56.27.332 4Y3",
+				"30": "N036.55.58.493,W094.56.27.332 4Y3"
+			}
+		},
+		
+        "airlines": {
+          "KJKE": [
+            {
+              "airport": "KJKE",
+              "icao": "MXY"
+            }
+			],
+          "4Y3": [
+            {
+              "airport": "4Y3",
+              "icao": "EJA"
+            }
+			]
+        }
+      }
+	  ]
+	},
+	"SGF.8":{
+		"arrivals":[
+      {
+		"description": "SGF V4",
+		"route": "V4 PRIOR",
+        "initial_altitude": 8000,
+		"initial_speed": 250,
+        "initial_controller": "SGF_APP",
+        "waypoints": "N036.51.48.293,W094.47.38.395 N036.45.38.410,W094.57.06.745/ho PRIOR",
+		"runway_waypoints":{
+			"KAAC":{
+				"28R":"PRIOR N036.45.38.410,W094.57.06.745 KAAC",
+				"28L": "PRIOR N036.45.38.410,W094.57.06.745 KAAC"
+			}
+		},
+		
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KAAC",
+              "icao": "WUP"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"SGF.6":{
+		"arrivals":[
+      {
+		"description": "SGF V4",
+		"route": "V4 PRIOR",
+        "initial_altitude": 6000,
+		"initial_speed": 250,
+        "initial_controller": "SGF_APP",
+        "waypoints": "N036.51.48.293,W094.47.38.395 N036.45.38.410,W094.57.06.745/ho PRIOR",
+		"runway_waypoints":{
+			"KAAC": {
+				"28L": "PRIOR KAAC",
+				"28R": "PRIOR KAAC"
+			},
+			"KJKE":{
+				"4": "PRIOR KJKE",
+				"9": "PRIOR KJKE",
+				"22": "PRIOR KJKE",
+				"27": "PRIOR KJKE"
+			},
+			"4Y3":{
+				"12": "PRIOR 4Y3",
+				"30": "PRIOR 4Y3"
+			}
+		},
+        "airlines": {
+			"KAAC":[
+            {
+              "airport": "KAAC",
+              "icao": "KAP"
+            }
+			],
+			"4Y3":[
+            {
+              "airport": "4Y3",
+              "icao": "KAP"
+            }
+			],
+			"KJKE":[
+			           {
+              "airport": "KJKE",
+              "icao": "KAP"
+            }
+			]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"SGF.4":{
+		"arrivals":[
+      {
+		"description": "SGF V4",
+		"route": "V4 PRIOR",
+        "initial_altitude": 4000,
+		"initial_speed": 250,
+        "initial_controller": "SGF_APP",
+        "waypoints": "N036.51.48.293,W094.47.38.395 N036.45.38.410,W094.57.06.745/ho PRIOR",
+		"runway_waypoints":{
+			"KJKE":{
+				"4": "PRIOR KJKE",
+				"9": "PRIOR KJKE",
+				"22": "PRIOR KJKE",
+				"27": "PRIOR KJKE"
+			},
+			"4Y3":{
+				"12": "PRIOR 4Y3",
+				"30": "PRIOR 4Y3"
+			}
+		},
+        "airlines": {
+			"4Y3":[
+            {
+              "airport": "4Y3",
+              "icao": "KAP"
+            }
+			],
+			"KJKE":[
+			           {
+              "airport": "KJKE",
+              "icao": "KAP"
+            }
+			]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"MAYES":{
+		"arrivals":[
+      {
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLAS",
+              "icao": "DAL"
+            }
+          ]
+        }
+      }
+	  ]
+	},
+	"KILLR":{
+		"arrivals":[
+      {
+        "star": "TUL4",
+        "initial_altitude": 13000,
+        "initial_speed": 260,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N035.26.29.859,W095.10.03.424/ho KILLR/a10000/s250/h010",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KBOI",
+              "icao": "UAL"
+            }
+          ]
+        }
+      },
+      {
+        "route": "DIRECT",
+		"description": "9k Arrivals KILLR",
+        "initial_altitude": 9000,
+        "initial_speed": 280,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N035.16.00.095,W095.08.48.826 N035.23.51.710,W095.10.04.165/ho 4Y3",
+        "airlines": {
+          "4Y3": [
+            {
+              "airport": "KBOI",
+              "icao": "EJA"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"KILLR_LO":{
+		"arrivals":[
+      {
+        "route": "DIRECT",
+		"description": "5k Arrivals KILLR",
+        "initial_altitude": 5000,
+        "initial_speed": 280,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N035.16.00.095,W095.08.48.826 N035.23.51.710,W095.10.04.165/ho 4Y3",
+        "airlines": {
+          "4Y3": [
+            {
+              "airport": "KOKC",
+              "icao": "N"
+            }
+          ],
+          "KAAC": [
+            {
+              "airport": "KOKC",
+              "icao": "N"
+            }
+          ],
+          "KJKE": [
+            {
+              "airport": "KOKC",
+              "icao": "NJE"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"ATOKA":{
+		"arrivals":[
+      {
+        "star": "TUL4",
+        "initial_altitude": 21000,
+        "initial_speed": 260,
+		    "speed_restriction": 260,
+        "initial_controller": "ZAE_OKC",
+        "waypoints": "N035.42.28.333,W096.31.55.850/ho N035.43.03.613,W096.30.50.234/a15000 ATOKA/h055",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLAS",
+              "icao": "JBU"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"ATOKA_LO":{
+		"arrivals":[
+      {
+        "route": "DIRECT",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_OKC",
+        "waypoints": "N035.34.00.270,W096.40.18.035 N035.42.16.029,W096.26.12.225/ho",
+        "runway_waypoints": {
+          "KAAC": {
+              "28L": "N035.42.16.029,W096.26.12.225 KAAC",
+              "28R": "N035.42.16.029,W096.26.12.225 KAAC"
+          },
+			"KJKE":{
+				"4": "N035.42.16.029,W096.26.12.225 KJKE",
+				"9": "N035.42.16.029,W096.26.12.225 KJKE",
+				"22": "N035.42.16.029,W096.26.12.225 KJKE",
+				"27": "N035.42.16.029,W096.26.12.225 KJKE"
+			},
+			"4Y3":{
+				"12": "N035.42.16.029,W096.26.12.225 4Y3",
+				"30": "N035.42.16.029,W096.26.12.225 4Y3"
+			}
+        },
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLAS",
+              "icao": "CNS"
+            }
+          ],
+          "KJKE": [
+            {
+              "airport": "KLAS",
+              "icao": "CNS"
+            }
+          ],
+          "4Y3": [
+            {
+              "airport": "KLAS",
+              "icao": "CNS"
+            }
+          ]
+        }
+      },
+      {
+        "route": "DIRECT",
+        "initial_altitude": 6000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_OKC",
+        "waypoints": "N035.34.00.270,W096.40.18.035 N035.42.16.029,W096.26.12.225/ho",
+        "runway_waypoints": {
+          "KAAC": {
+              "28L": "N035.42.16.029,W096.26.12.225 KAAC",
+              "28R": "N035.42.16.029,W096.26.12.225 KAAC"
+          },
+			"KJKE":{
+				"4": "N035.42.16.029,W096.26.12.225 KJKE",
+				"9": "N035.42.16.029,W096.26.12.225 KJKE",
+				"22": "N035.42.16.029,W096.26.12.225 KJKE",
+				"27": "N035.42.16.029,W096.26.12.225 KJKE"
+			},
+			"4Y3":{
+				"12": "N035.42.16.029,W096.26.12.225 4Y3",
+				"30": "N035.42.16.029,W096.26.12.225 4Y3"
+			}
+        },
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLAS",
+              "icao": "N"
+            }
+          ],
+          "KJKE": [
+            {
+              "airport": "KLAS",
+              "icao": "N"
+            }
+          ],
+          "4Y3": [
+            {
+              "airport": "KLAS",
+              "icao": "N"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"BARTS":{
+		"arrivals":[
+      {
+        "star": "TUL4",
+        "initial_altitude": 21000,
+        "initial_speed": 260,
+		    "speed_restriction": 260,
+        "initial_controller": "ZAE_OKC",
+        "waypoints": "N036.48.46.304,W096.19.46.578/ho N036.47.00.739,W096.18.09.816/a15000 BARTS/h140",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KBWI",
+              "icao": "SWA"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+	"BARTS_LO":{
+		"arrivals":[
+      {
+        "route": "DIRECT",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_OKC",
+        "waypoints": "N036.47.18.743,W096.30.53.723 N036.41.38.469,W096.20.41.317/ho",
+        "runway_waypoints": {
+          "KAAC": {
+              "28L": "N036.41.38.469,W096.20.41.317 KAAC",
+              "28R": "N036.41.38.469,W096.20.41.317 KAAC"
+          },
+			"KJKE":{
+				"4": "N036.41.38.469,W096.20.41.317 KJKE",
+				"9": "N036.41.38.469,W096.20.41.317 KJKE",
+				"22": "N036.41.38.469,W096.20.41.317 KJKE",
+				"27": "N036.41.38.469,W096.20.41.317 KJKE"
+			},
+			"4Y3":{
+				"12": "N036.41.38.469,W096.20.41.317 4Y3",
+				"30": "N036.41.38.469,W096.20.41.317 4Y3"
+			}
+        },
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLAS",
+              "icao": "N",
+			  "fleet": "fastGA"
+            }
+          ],
+          "KJKE": [
+            {
+              "airport": "KLAS",
+              "icao": "N",
+			  "fleet": "fastGA"
+            }
+          ],
+          "4Y3": [
+            {
+              "airport": "KLAS",
+              "icao": "N",
+			  "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+      {
+        "route": "DIRECT",
+        "initial_altitude": 6000,
+        "initial_speed": 150,
+        "initial_controller": "ZAE_OKC",
+        "waypoints": "N036.47.18.743,W096.30.53.723 N036.41.38.469,W096.20.41.317/ho",
+        "runway_waypoints": {
+          "KAAC": {
+              "28L": "N036.41.38.469,W096.20.41.317 KAAC",
+              "28R": "N036.41.38.469,W096.20.41.317 KAAC"
+          },
+			"KJKE":{
+				"4": "N036.41.38.469,W096.20.41.317 KJKE",
+				"9": "N036.41.38.469,W096.20.41.317 KJKE",
+				"22": "N036.41.38.469,W096.20.41.317 KJKE",
+				"27": "N036.41.38.469,W096.20.41.317 KJKE"
+			},
+			"4Y3":{
+				"12": "N036.41.38.469,W096.20.41.317 4Y3",
+				"30": "N036.41.38.469,W096.20.41.317 4Y3"
+			}
+        },
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLAS",
+              "icao": "N",
+			  "fleet": "lightGA"
+            }
+          ],
+          "KJKE": [
+            {
+              "airport": "KLAS",
+              "icao": "N",
+			  "fleet": "lightGA"
+            }
+          ],
+          "4Y3": [
+            {
+              "airport": "KLAS",
+              "icao": "N",
+			  "fleet": "lightGA"
+            }
+          ]
+        }
+      }
+		],
+		"overflights":[
+		]
+	},
+  "BARTS_FINAL":{
+		"arrivals":[
+      {
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                    {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+            
+              "fleet": "GAjet"
+          },
+          {
+            "airport": "KMCI",
+            "icao": "N",
+            "fleet": "GAturbine"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "EIN",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ELY",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "FIN",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "HAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "LEMD",
+              "icao": "IBE",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ICE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "JAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KLM",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SAS",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+            "airport": "KBWI",
+            "icao": "SWA"
+        },
+        {
+          "airport": "KMDW",
+          "icao": "SWA"
+        },
+        {
+         "airport": "KBOS",
+         "icao": "UAL"
+        },
+        {
+          "airport": "EGLL",
+          "icao": "UAE"
+        },
+        {
+          "airport": "KBOS",
+          "icao": "WJA"
+        }
+          ]
+        }
+      }
+	  ]
+	},
+  "ATOKA_FINAL":{
+		"arrivals":[
+      {
+        "description": "5NM South Downwind",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_S_APP",
+        "waypoints": "N036.06.23.628,W095.45.51.113/ho N036.05.20.800,W095.38.45.942/a10000 N036.05.16.419,W095.37.56.257/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                    {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+            
+              "fleet": "GAjet"
+          },
+          {
+            "airport": "KMCI",
+            "icao": "N",
+            "fleet": "GAturbine"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "EIN",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ELY",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "FIN",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "HAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "LEMD",
+              "icao": "IBE",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ICE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "JAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KLM",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SAS",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+            "airport": "KBWI",
+            "icao": "SWA"
+        },
+        {
+          "airport": "KMDW",
+          "icao": "SWA"
+        },
+        {
+         "airport": "KBOS",
+         "icao": "UAL"
+        },
+        {
+          "airport": "EGLL",
+          "icao": "UAE"
+        },
+        {
+          "airport": "KBOS",
+          "icao": "WJA"
+        }
+        ]
+        }
+      },
+      {
+        "description": "6NM South Downwind",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_S_APP",
+        "waypoints": "N036.05.27.529,W095.44.11.248/ho N036.04.40.934,W095.38.52.534/a10000 N036.04.34.960,W095.38.20.070/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                    {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+            
+              "fleet": "GAjet"
+          },
+          {
+            "airport": "KMCI",
+            "icao": "N",
+            "fleet": "GAturbine"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "EIN",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ELY",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "FIN",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "HAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "LEMD",
+              "icao": "IBE",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ICE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "JAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KLM",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "fleet": "long"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SAS",
+              "fleet": "long"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+            "airport": "KBWI",
+            "icao": "SWA"
+        },
+        {
+          "airport": "KMDW",
+          "icao": "SWA"
+        },
+        {
+         "airport": "KBOS",
+         "icao": "UAL"
+        },
+        {
+          "airport": "EGLL",
+          "icao": "UAE"
+        },
+        {
+          "airport": "KBOS",
+          "icao": "WJA"
+        }
+          ]
+        }
+      }
+	  ]
+	},
+  "ATOKA_FINAL_6NM":{
+		"arrivals":[
+      {
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_S_APP",
+        "waypoints": "N036.03.31.129,W095.56.16.538 N036.06.22.145,W095.51.22.379/ho N036.04.27.187,W095.38.55.803/a10000+ N036.04.21.927,W095.38.16.939/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+          {
+              "airport": "KTEB",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+            {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AFR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AUA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AVA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AZA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "BAW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EIN"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ELY"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ETD"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EVA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "FIN"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "HAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "IBE"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ICE"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "KAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "KLM"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "LAN"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "LOT"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "QTR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SAS"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "TAP"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "THA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "THY"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "UAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "UAE"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "VOI"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "WJA"
+          }
+          ]
+        }
+      }
+	  ]
+	},
+  "REELI_FINAL":{
+		"arrivals":[
+      {
+        "star": "TULSA4",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.36.09.483,W095.03.52.086/ho REELI/a11000+ N036.32.33.259,W095.06.55.118/a6000/h190",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KLGA",
+              "icao": "AAL"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "ENY"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "DAL"
+            },
+            {
+              "airport": "KLGA",
+              "icao": "LN"
+            }
+          ]
+        }
+      }
+	  ]
+	},
+  "MAYES_CWT_A":{
+		"arrivals":[
+      {
+        "description": "CWT A",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT C",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT D",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT E, F & G",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT H & I",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      }
+	  ]
+	},
+  "MAYES_CWT_B":{
+    "arrivals":[
+      {
+        "description": "CWT B",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A35K","B772","B77W","B788","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "EIN",
+              "types": ["A332"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["B77W","B789"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MAYES_CWT_C":{
+    "arrivals":[
+      {
+        "description": "CWT C",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "FDX",
+              "types": ["A310","A306","DC10","MD11","B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "CKS",
+              "types": ["B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UPS",
+              "types": ["A306","B763","MD11"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "AAL",
+              "types": ["B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DAL",
+              "types": ["B763","B764"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ABX"
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ACA",
+              "types": ["B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAL",
+              "types": ["B763","B764"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MAYES_CWT_D":{
+    "arrivals":[
+      {
+        "description": "CWT D",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KLM",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAL",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DAL",
+              "types": ["A339"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ITY",
+              "types": ["A339"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "MAYES_CWT_E_F_G":{
+      "arrivals":[
+        {
+          "description": "CWT E,F & G",
+          "route": "MAYES",
+          "initial_altitude": 8000,
+          "initial_speed": 250,
+          "initial_controller": "ZAE_TUL",
+          "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+          "expect_approach": {"KAAC": "I8R"},
+          "airlines": {
+            "KAAC": [
+            {
+                "airport": "KOKC",
+                "icao": "N",
+                "types": ["GLF4","GLF5","GA5C","GLEX","GL5T","F900"]
+            },
+            {
+                "airport": "KBOS",
+                "icao": "AAL",
+                "types":["B738","B38M","A320","A321","A319","A21N"]
+            },
+            {
+                "airport": "KBOS",
+                "icao": "ACA",
+                "fleet": "short"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "ASA"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "DAL",
+                "fleet": "short"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "EDV"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "GJS"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "JBU"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "PDT"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "RPA"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "SKW"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "SWA"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "UAL"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "WJA"
+            }
+            ]
+          }
+        }
+      ]
+  },
+  "MAYES_CWT_H_I":{
+      "arrivals":[
+        {
+          "description": "CWT D",
+          "route": "MAYES",
+          "initial_altitude": 8000,
+          "initial_speed": 250,
+          "initial_controller": "ZAE_TUL",
+          "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+          "expect_approach": {"KAAC": "I8R"},
+          "airlines": {
+            "KAAC": [
+              {
+                "airport": "KOKC",
+                "icao": "N",
+                "types": ["BE40","BE20","B350","C56X","C68A","C750","C700","CL30","CL35","F2TH","FA50","GALX","H25B","LJ31","LJ35","LJ45","LJ60","C25A","C25B","C525","C550","PAY2","PAY1","PAY3","PAY4","PC12"]
+              }
+            ]
+          }
+        }
+      ]
+  },
+  "BARTS_CWT_A":{
+		"arrivals":[
+      {
+        "description": "CWT A",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT C",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT D",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT E, F & G",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      },
+      {
+        "description": "CWT H & I",
+        "route": "MAYES",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "initial_controller": "ZAE_TUL",
+        "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
+        "expect_approach": {"KAAC": "I8R"},
+		    "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A388","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A388","A35K","B772","B77W","B788","B789","B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["A388","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A388","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A388","A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["A388","B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A388","A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["A388","B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["A388","B77W","B789","B78X"]
+            }
+          ]
+        }
+      }
+	  ]
+	},
+  "BARTS_CWT_B":{
+    "arrivals":[
+      {
+        "description": "CWT B",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "AFR",
+              "types": ["A332","A359","B77W","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["A35K","B772","B77W","B788","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "EIN",
+              "types": ["A332"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAE",
+              "types": ["B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "SIA",
+              "types": ["A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QTR",
+              "types": ["A35K","A359","B772","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DLH",
+              "types": ["B748","A346","A359"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "QFA",
+              "types": ["A333","B789"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KAL",
+              "types": ["B748","B77W"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["B77W","B789"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "BARTS_CWT_C":{
+    "arrivals":[
+      {
+        "description": "CWT C",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "FDX",
+              "types": ["A310","A306","DC10","MD11","B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "CKS",
+              "types": ["B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UPS",
+              "types": ["A306","B763","MD11"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "AAL",
+              "types": ["B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DAL",
+              "types": ["B763","B764"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ABX"
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ACA",
+              "types": ["B763"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAL",
+              "types": ["B763","B764"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "BARTS_CWT_D":{
+    "arrivals":[
+      {
+        "description": "CWT D",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "EGLL",
+              "icao": "BAW",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ETD",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "KLM",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "UAL",
+              "types": ["B78X"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "DAL",
+              "types": ["A339"]
+            },
+            {
+              "airport": "EGLL",
+              "icao": "ITY",
+              "types": ["A339"]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "BARTS_CWT_E_F_G":{
+      "arrivals":[
+        {
+          "description": "CWT E,F & G",
+          "star": "TULSA4",
+          "initial_altitude": 10000,
+          "initial_speed": 250,
+          "initial_controller": "AAC_N_APP",
+          "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+          "expect_approach": {"KAAC": "I8R"},
+          "airlines": {
+            "KAAC": [
+            {
+                "airport": "KOKC",
+                "icao": "N",
+                "types": ["GLF4","GLF5","GA5C","GLEX","GL5T","F900"]
+            },
+            {
+                "airport": "KBOS",
+                "icao": "AAL",
+                "types":["B738","B38M","A320","A321","A319","A21N"]
+            },
+            {
+                "airport": "KBOS",
+                "icao": "ACA",
+                "fleet": "short"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "ASA"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "DAL",
+                "fleet": "short"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "EDV"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "GJS"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "JBU"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "PDT"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "RPA"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "SKW"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "SWA"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "UAL"
+            },
+            {
+                "airport": "KBOS",
+                "icao": "WJA"
+            }
+            ]
+          }
+        }
+      ]
+  },
+  "BARTS_CWT_H_I":{
+      "arrivals":[
+        {
+          "description": "CWT D",
+          "star": "TULSA4",
+          "initial_altitude": 10000,
+          "initial_speed": 250,
+          "initial_controller": "AAC_N_APP",
+          "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
+          "expect_approach": {"KAAC": "I8R"},
+          "airlines": {
+            "KAAC": [
+              {
+                "airport": "KOKC",
+                "icao": "N",
+                "types": ["BE40","BE20","B350","C56X","C68A","C750","C700","CL30","CL35","F2TH","FA50","GALX","H25B","LJ31","LJ35","LJ45","LJ60","C25A","C25B","C525","C550","PAY2","PAY1","PAY3","PAY4","PC12"]
+              }
+            ]
+          }
+        }
+      ]
+  },
+  "ATOKA_STAGGER":{
+		"arrivals":[
+      {
+        "description": "RY28L Automatic Arrivals",
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 210,
+        "initial_controller": "AAC_S_APP",
+        "scratchpad": "28L",
+        "waypoints": "N036.06.23.628,W095.45.51.113/s210 N036.05.20.800,W095.38.45.942/a10000 N036.05.16.419,W095.37.56.257/a5000 N036.01.50.014,W095.13.32.411/s170 N036.03.55.739,W095.13.04.066/s170/h310/clearapp",
+        "expect_approach": {"KAAC": "R8L"},
+        "airlines": {
+          "KAAC": [
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                    {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+            
+              "fleet": "GAjet"
+          },
+          {
+            "airport": "KMCI",
+            "icao": "N",
+            "fleet": "GAturbine"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "AFR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "BAW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "EIN"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ELY"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ETD"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "FIN"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "HAL"
+          },
+          {
+              "airport": "LEMD",
+              "icao": "IBE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ICE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "JAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KAL"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KLM"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "QTR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SAS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+            "airport": "KBWI",
+            "icao": "SWA"
+        },
+        {
+          "airport": "KMDW",
+          "icao": "SWA"
+        },
+          {
+              "airport": "KBOS",
+              "icao": "UAL"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "UAE"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "WJA"
+          }
+          ]
+        }
+      }
+	  ]
+	},
+  "BARTS_STAGGER":{
+		"arrivals":[
+      {
+        "star": "TULSA4",
+        "initial_altitude": 10000,
+        "initial_speed": 210,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.17.08.320,W095.49.04.390/s210/ho N036.15.36.515,W095.38.11.912/a10000 N036.15.30.418,W095.37.44.254/a8000/h100",
+        "scratchpad": "28R",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                    {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+            
+              "fleet": "GAjet"
+          },
+          {
+            "airport": "KMCI",
+            "icao": "N",
+            "fleet": "GAturbine"
+        },
+          {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "AFR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "BAW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "EIN"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ELY"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ETD"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "FIN"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "HAL"
+          },
+          {
+              "airport": "LEMD",
+              "icao": "IBE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ICE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "JAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KAL"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KLM"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "QTR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SAS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+            "airport": "KBWI",
+            "icao": "SWA"
+        },
+        {
+          "airport": "KMDW",
+          "icao": "SWA"
+        },
+          {
+              "airport": "KBOS",
+              "icao": "UAL"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "UAE"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "WJA"
+          }
+          ]
+        }
+      }
+	  ]
+	},
+  "MAYES_STAGGER":{
+		"arrivals":[
+      {
+        "description": "RY28L Automatic Arrivals",
+        "star": "TULSA4",
+        "initial_altitude": 8000,
+        "assigned_altitude": 6000,
+        "initial_speed": 170,
+        "initial_controller": "AAC_S_APP",
+        "scratchpad": "28L",
+        "waypoints": "N036.02.22.602,W094.44.35.555/s170/clearapp CHAPP/a5000",
+        "expect_approach": {"KAAC": "R8L"},
+        "airlines": {
+          "KAAC": [
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                  {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+                    {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+              "fleet": "GAjet"
+          },
+          {
+              "airport": "KOKC",
+              "icao": "N",
+            
+              "fleet": "GAjet"
+          },
+          {
+            "airport": "KMCI",
+            "icao": "N",
+            "fleet": "GAturbine"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "AAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ACA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "AFR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "ASA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "BAW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "DAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "EDV"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "EIN"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ELY"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ETD"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "FIN"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "GJS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "HAL"
+          },
+          {
+              "airport": "LEMD",
+              "icao": "IBE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "ICE"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "JAL"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "JBU"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KAL"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "KLM"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "PDT"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "QTR"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "RPA"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SAS"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "SIA"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SKW"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "SWA"
+          },
+          {
+            "airport": "KBWI",
+            "icao": "SWA"
+        },
+        {
+          "airport": "KMDW",
+          "icao": "SWA"
+        },
+          {
+              "airport": "KBOS",
+              "icao": "UAL"
+          },
+          {
+              "airport": "EGLL",
+              "icao": "UAE"
+          },
+          {
+              "airport": "KBOS",
+              "icao": "WJA"
+          }
+          ]
+        }
+      }
+	  ]
+	},
+  "INTERNAL_FINAL":{
+		"arrivals":[
+      {
+        "description": "AAC Arrival from BRT",
+        "route": "WOODY",
+        "initial_altitude": 1000,
+        "initial_speed": 130,
+        "speed_restriction": 250,
+        "assigned_altitude": 5000,
+        "initial_controller": "AAC_B_APP",
+        "waypoints": "N036.26.34.198,W095.56.21.207 N036.25.41.697,W095.51.46.686/h100/ho",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "KBRT",
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ]
+        }
+      },
+      {
+        "description": "AAC Arrival from 4Y3",
+        "route": "WOODY",
+        "initial_altitude": 1000,
+        "initial_speed": 130,
+        "speed_restriction": 250,
+        "assigned_altitude": 5000,
+        "initial_controller": "AAC_B_APP",
+        "waypoints": "N036.23.43.841,W095.21.31.799 N036.25.30.258,W095.25.41.711/flyover N036.25.09.397,W095.26.21.179/h100/ho",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "4Y3",
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ]
+        }
+      },
+      {
+        "description": "AAC Arrival from JKE",
+        "route": "WOODY",
+        "initial_altitude": 1000,
+        "initial_speed": 130,
+        "speed_restriction": 250,
+        "assigned_altitude": 5000,
+        "initial_controller": "AAC_J_APP",
+        "waypoints": "N035.55.28.665,W095.37.58.344 N035.55.41.642,W095.42.37.699/flyover/h060/ho",
+        "expect_approach": {"KAAC": "I8R"},
+        "airlines": {
+          "KAAC": [
+            {
+              "airport": "4Y3",
+              "icao": "N",
+              "fleet": "GAjet"
+            }
+          ]
+        }
+      }
+	  ]
+	},
+  "SCAN":{
+		"arrivals":[
+      {
+      "description": "AAC North Downwind",
+      "route": "DIRECT",
+      "initial_altitude": 8000,
+      "initial_speed": 210,
+      "initial_controller": "AAC_N_APP",
+      "waypoints": "N036.15.35.156,W095.38.22.349 N036.15.21.382,W095.36.23.477/h100",
+      "expect_approach": {"KAAC":"I8R"},
+          "airlines": {
+            "KAAC": [
+              {
+                "airport": "KAAC",
+                "icao": "AAL"
+              }
+            ]
+          }
+      },
+      {
+        "description": "AAC South Downwind",
+        "route": "DIRECT",
+        "initial_altitude": 8000,
+        "initial_speed": 210,
+        "speed_restriction": 210,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.04.58.553,W095.40.47.561 N036.04.41.936,W095.38.52.095/h100",
+        "expect_approach": {"KAAC":"I8R"},
+            "airlines": {
+              "KAAC": [
+                {
+                  "airport": "KAAC",
+                  "icao": "AAL"
+                }
+              ]
+            }
+      },
+      {
+        "description": "JKE South Downwind",
+        "route": "DIRECT",
+        "initial_altitude": 5000,
+        "initial_speed": 210,
+        "speed_restriction":210,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N035.50.34.327,W095.43.06.840 N035.50.31.979,W095.42.12.128/h090",
+        "expect_approach": {"KJKE":"I27"},
+            "airlines": {
+              "KJKE": [
+                {
+                  "airport": "KJKE",
+                  "icao": "POLO"
+                }
+              ]
+            }
+      },
+      {
+          "description": "4Y3 Downwind",
+          "route": "DIRECT",
+          "initial_altitude": 4000,
+          "initial_speed": 210,
+          "speed_restriction": 210,
+          "initial_controller": "AAC_N_APP",
+          "waypoints": "N036.30.25.062,W095.19.53.746 N036.30.05.438,W095.19.24.605/h120",
+          "expect_approach": {"4Y3":"I30"},
+              "airlines": {
+                "4Y3": [
+                  {
+                    "airport": "4Y3",
+                    "icao": "EJA"
+                  }
+                ]
+              }
+      },
+      {
+        "description": "BRT South Downwind",
+        "route": "DIRECT",
+        "initial_altitude": 4000,
+        "initial_speed": 210,
+        "speed_restriction": 210,
+        "initial_controller": "AAC_N_APP",
+        "waypoints": "N036.18.52.992,W095.54.10.936 N036.19.19.675,W095.54.51.311/h310",
+        "expect_approach": {"KBRT":"I13"},
+            "airlines": {
+              "KBRT": [
+                {
+                  "airport": "KBRT",
+                  "icao": "EJA"
+                }
+              ]
+            }
+    },
+    {
+      "description": "BRT North Downwind",
+      "route": "DIRECT",
+      "initial_altitude": 4000,
+      "initial_speed": 210,
+      "speed_restriction": 210,
+      "initial_controller": "AAC_N_APP",
+      "waypoints": "N036.26.23.253,W095.46.02.402 N036.26.44.017,W095.46.24.402/h310",
+      "expect_approach": {"KBRT":"I13"},
+          "airlines": {
+            "KBRT": [
+              {
+                "airport": "KBRT",
+                "icao": "EJA"
+              }
+            ]
+          }
+  }
+		],
+		"overflights":[
+		]
+	}
+  },
+  "control_positions": {
+    "AAC_N_APP": {
+      "frequency": 120200,
+      "radio_name": "Academy Approach",
+      "sector_id": "1N"
+    },
+    "AAC_S_APP": {
+      "frequency": 119500,
+      "radio_name": "Academy Approach",
+      "sector_id": "1S"
+    },
+    "AAC_D_APP": {
+      "frequency": 126600,
+      "radio_name": "Academy Departure",
+      "sector_id": "1D"
+    },
+    "AAC_F_APP": {
+      "frequency": 128400,
+      "radio_name": "Academy Approach",
+      "sector_id": "1F"
+    },
+    "AAC_B_APP": {
+      "frequency": 123800,
+      "radio_name": "Academy Approach",
+      "sector_id": "1B"
+    },
+    "AAC_J_APP": {
+      "frequency": 125400,
+      "radio_name": "Academy Approach",
+      "sector_id": "1J"
+    },
+    "AAC_K_APP": {
+      "frequency": 127700,
+      "radio_name": "Academy Departure",
+      "sector_id": "1K"
+    },
+    "AAC_TWR": {
+      "frequency": 119200,
+      "radio_name": "Academy Tower",
+      "sector_id": "1T"
+    },
+    "JKE_TWR": {
+      "frequency": 126200,
+      "radio_name": "Jeske Tower",
+      "sector_id": "2T"
+    },
+    "BRT_TWR": {
+      "frequency": 122950,
+      "radio_name": "Bartles UNICOM",
+      "sector_id": "9T"
+    },
+    "4V4_TWR": {
+      "frequency": 122800,
+      "radio_name": "Viney UNICOM",
+      "sector_id": "8T"
+    },
+    "4Y3_TWR": {
+      "frequency": 118900,
+      "radio_name": "James Tower",
+      "sector_id": "3T"
+    },
+    "SGF_APP": {
+      "frequency": 120500,
+      "radio_name": "Springfield Approach",
+      "facility_id": "G",
+      "sector_id": "1A"
+    },
+    "ZAE_OKC": {
+      "frequency": 135000,
+      "radio_name": "Aero Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C35"
+    },
+    "ZAE_TUL": {
+      "frequency": 136000,
+      "radio_name": "Aero Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C36"
+    }
+  },
+  "default_scenario": "West",
+  "fixes": {
+    "JKE": "KJKE",
+    "BRS": "KBRT",
+    "JAM": "4Y3",
+    "Z91": "N036.05.21.336,W096.02.51.771",
+    "SKR": "N036.16.26.997,W095.47.54.517",
+    "COLIN": "TUL@005/33",
+    "PRYOR": "TUL@050/30",
+    "REELI": "N036.33.44.766,W095.06.58.084",
+    "MAYES": "N036.11.05.551,W094.56.29.913",
+    "KILLR": "TUL@143/39",
+    "NOBLE": "TUL@183/35",
+    "ATOKA": "TUL@230/31",
+    "SHAWN": "TUL@267/29",
+    "AVANT": "TUL@300/20",
+    "BARTS": "TUL@327/27",
+    "CHAPL": "KJKE-27@090/5.4",
+    "ARREL": "KJKE-27@090/7.9",
+    "BEJEO": "KJKE-27@090/10.9",
+    "WOODY": "KAAC-28R@100/4.3",
+    "RUSTY": "KAAC-28R@100/7.3",
+    "ADCOK": "KAAC-28R@100/10.6",
+    "GRAYY": "KAAC-28R@100/13.8",
+    "ONETA": "KAAC-28L@100/4.3",
+    "RICKY": "KAAC-28L@100/7.3",
+    "LITTL": "KAAC-28L@100/10.6",
+    "CHAPP": "KAAC-28L@100/13.8",
+    "ALETH": "N036.28.35.089,W095.43.21.205",
+    "STONE": "N036.20.15.087,W095.43.18.733",
+    "KURDZ": "N036.17.10.270,W095.43.58.668",
+    "ROBIN": "N036.13.02.652,W095.44.52.364",
+    "BRITT": "N036.20.58.580,W095.36.43.253",
+    "WINDM": "N036.19.31.691,W095.26.22.937",
+    "WARDD": "N035.53.15.346,W095.48.01.521",
+    "WHITT": "N036.01.39.659,W095.47.07.468",
+    "PATTI": "N036.04.43.392,W095.46.49.121",
+    "LINDA": "N036.10.11.389,W095.46.15.119",
+    "LAURN": "N036.10.08.258,W096.02.24.332",
+    "POOLE": "N036.10.09.274,W095.50.57.522",
+    "FRANK": "ATOKA@054/17",
+    "JIMMY": "FRANK@054/8",
+    "DDALE": "JIMMY@100/7",
+    "CECIL": "DDALE@100/3",
+    "RANDY": "CECIL@100/7",
+    "GANDD": "BARTS@143/13",
+    "TERRY": "GANDD@143/8",
+    "SNARE": "TERRY@100/7",
+    "TAILR": "SNARE@100/3",
+    "SIMPS": "TAILR@100/7",
+    "SHREM": "KILLR@010/10",
+    "COLEY": "SHREM@018/10",
+    "HULET": "COLEY@360/3",
+    "ZEEKK": "SHREM@010/10",
+    "CHIEF": "ZEEKK@010/4",
+    "RUBIN": "CHIEF@312/4",
+    "SHELP": "REELI@190/10",
+    "GERAT": "SHELP@190/6",
+    "DMANN": "GERAT@190/6",
+    "OSCAR": "N036.08.59.675,W095.11.59.522",
+    "HOWRD": "N036.07.20.744,W095.16.59.998",
+    "TRISH": "N036.07.51.505,W095.11.39.609",
+    "BERRY": "N036.29.58.159,W096.01.26.956",
+    "BENIT": "N036.31.51.552,W096.04.18.206",
+    "ADAMS": "N036.36.43.569,W096.11.34.033",
+	"28L_MM": "N036.10.07.296,W095.41.17.252",
+	"28R_MM": "N036.10.53.096,W095.41.16.702",
+	"09_MM": "N035.55.28.939,W095.38.16.609",
+	"12_MM": "N036.23.47.275,W095.21.37.375",
+	"HAMMR": "N036.21.03.056,W095.15.58.117",
+	"CHAIN": "N036.19.13.921,W095.12.15.699",
+	"OLSIN": "N036.17.10.078,W095.08.03.123",
+	"MARCI": "N036.41.03.203,W095.29.50.304",
+	"RAVEN": "N037.01.31.268,W095.17.04.887",
+	"PRIOR": "N036.30.55.535,W095.18.49.641"
+  },
+  "magnetic_adjustment": 2,
+  "name": "KAAC",
+  "primary_airport": "KAAC",
+  "reporting_points": [
+    "ATOKA",
+    "AVANT",
+    "BARTS",
+    "COLIN",
+    "KILLR",
+    "MAYES",
+    "NOBLE",
+    "PRYOR",
+    "REELI",
+    "SHAWN"
+  ],
+  "scenarios": {
+    "West": {
+      "center": "N036.10.18.750,W095.39.37.496",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28L"
+        },
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        },
+        {
+          "airport": "KJKE",
+          "runway": "27"
+        },
+		  { 
+			  "airport": "4Y3",
+			  "runway": "30"
+		  }
+      ],
+      "arrivals": {
+        "REELI": {
+          "KAAC": 10,
+		      "KJKE": 0,
+		      "4Y3": 0
+        },
+        "SGF.8":{
+          "KAAC": 0
+        },
+        "SGF.6": {
+          "KAAC": 0,
+          "4Y3": 0,
+          "KJKE": 0
+        },
+        "MAYES":{
+          "KAAC": 10
+        },
+        "KILLR":{
+          "KAAC": 10,
+          "4Y3": 0
+        },
+        "KILLR_LO":{
+          "KAAC": 0,
+          "KJKE": 0
+        },
+        "ATOKA":{
+          "KAAC": 20
+        },
+        "ATOKA_LO":{
+          "KAAC": 0,
+          "KJKE": 0,
+          "4Y3": 0
+        },
+        "BARTS": {
+          "KAAC": 25
+        },
+        "BARTS_LO":{
+          "KAAC": 0,
+          "KJKE": 0,
+          "4Y3": 0
+        },
+        "INTERNAL_FINAL":{
+          "KAAC": 2
+        }
+      },
+      "solo_controller": "AAC_N_APP",
+      "multi_controllers": {
+          "default" : {
+              "AAC_N_APP": {
+                  "primary": true,
+                  "inbound_flows": [
+                      "REELI", "SGF.8", "SGF.6", "BARTS"
+                  ]
+              },
+              "AAC_D_APP": {
+                "backup": "AAC_N_APP",
+                "departures": ["KAAC/28R.NE.J","KAAC/28R.SW.J"],
+                "inbound_flows": [
+                ]
+            },
+              "AAC_B_APP": {
+                  "backup": "AAC_N_APP",
+                  "arrivals": ["BARTS_LO","INTERNAL_FINAL"],
+                  "departures": ["4Y3","KAAC/28R.NE.P"]
+              },
+              "AAC_J_APP": {
+                  "backup": "AAC_S_APP",
+                  "arrivals":[
+                  "KILLR_LO", "ATOKA_LO"
+                  ],
+                  "departures": ["KJKE","KAAC/28R.SW.P","4V4"]
+              },
+              "AAC_S_APP": {
+                  "backup": "AAC_N_APP",
+                  "arrivals": [
+                  "KILLR", "ATOKA"
+                  ]
+              },
+              "AAC_F_APP": {
+                  "backup": "AAC_N_APP",
+                  "arrivals": ["MAYES"]
+              }
+          }
+      },
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE" ],
+      "departure_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R",
+          "rate": 30,
+		      "category": "SW"
+        },
+        {
+          "airport": "KAAC",
+          "runway": "28R",
+          "rate": 30,
+		      "category": "NE"
+        },
+        {
+          "airport": "KAAC",
+          "runway": "28R",
+          "rate": 30,
+		      "category": "SW_PISTON"
+        },
+        {
+          "airport": "KAAC",
+          "runway": "28R",
+          "rate": 30,
+		      "category": "NE_PISTON"
+        },			
+        {
+          "airport": "KJKE",
+          "rate": 0,
+          "runway": "27"
+        },
+        {
+          "airport": "KJKE",
+          "rate": 0,
+          "runway": "22"
+        },
+        {
+          "airport": "4Y3",
+          "runway": "30",
+          "rate": 0,
+          "category": "NE"
+        },
+        {
+          "airport": "4Y3",
+          "runway": "30",
+          "rate": 0,
+          "category": "SW"
+        },
+        {
+          "airport": "4Y3",
+          "runway": "30",
+          "rate": 0,
+          "category":"PISTON"
+        },
+        {
+          "airport": "4V4",
+          "runway": "34",
+          "rate": 0,
+          "category": "NE"
+        }
+      ]
+    },
+    "C to A (North)": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "BARTS_FINAL": {
+          "KAAC": 10
+        },
+        "REELI_FINAL": {
+          "KAAC": 10
+        },
+        "MAYES":{
+          "KAAC":10
+        }
+      },
+      "solo_controller": "AAC_F_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    },
+    "Feeder Final 3 Streams": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "ATOKA_FINAL": {
+          "KAAC": 12
+        },
+        "BARTS_FINAL": {
+          "KAAC": 12
+        },
+        "REELI_FINAL": {
+          "KAAC": 10
+        }
+      },
+      "solo_controller": "AAC_F_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    },
+    "Final 4 Streams + Internals": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "ATOKA_FINAL": {
+          "KAAC": 12
+        },
+        "BARTS_FINAL": {
+          "KAAC": 12
+        },
+        "REELI_FINAL": {
+          "KAAC": 7
+        },
+        "INTERNAL_FINAL": {
+          "KAAC": 3
+        }
+      },
+      "solo_controller": "AAC_F_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    },
+    "C to A (6NM South Downwind)": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "ATOKA_FINAL_6NM": {
+          "KAAC":20
+        },
+        "REELI_FINAL": {
+          "KAAC": 0
+        },
+        "MAYES":{
+          "KAAC":11
+        }
+      },
+      "solo_controller": "AAC_F_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    },
+    "CWT Practice": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "ATOKA_FINAL": {
+          "KAAC": 10
+        },
+        "BARTS_FINAL": {
+          "KAAC": 10
+        },
+        "REELI_FINAL": {
+          "KAAC": 10
+        },
+        "MAYES_CWT_A":{
+          "KAAC":0
+        },
+        "MAYES_CWT_B":{
+          "KAAC":0
+        },
+        "MAYES_CWT_C":{
+          "KAAC":0
+        },
+        "MAYES_CWT_D":{
+          "KAAC":0
+        },
+        "MAYES_CWT_E_F_G":{
+          "KAAC": 0
+        },
+        "MAYES_CWT_H_I":{
+          "KAAC":0
+        },
+        "BARTS_CWT_A":{
+          "KAAC":0
+        },
+        "BARTS_CWT_B":{
+          "KAAC":0
+        },
+        "BARTS_CWT_C":{
+          "KAAC":0
+        },
+        "BARTS_CWT_D":{
+          "KAAC":0
+        },
+        "BARTS_CWT_E_F_G":{
+          "KAAC": 0
+        },
+        "BARTS_CWT_H_I":{
+          "KAAC":0
+        }
+      },
+      "solo_controller": "AAC_F_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    },
+    "North Final Stagger": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        }
+      ],
+      "arrivals": {
+        "ATOKA_STAGGER": {
+          "KAAC": 0
+        },
+        "MAYES_STAGGER": {
+          "KAAC": 20
+        },
+        "BARTS_STAGGER": {
+          "KAAC": 15
+        },
+        "REELI_FINAL": {
+          "KAAC": 0
+        }
+      },
+      "solo_controller": "AAC_F_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    },
+    "Scan Practice": {
+      "center": "N036.10.21.070,W095.39.34.832",
+      "arrival_runways": [
+        {
+          "airport": "KAAC",
+          "runway": "28R"
+        },
+        {
+          "airport": "KBRT",
+          "runway": "13"
+        },
+        {
+          "airport": "KJKE",
+          "runway": "27"
+        },
+        {
+          "airport": "4Y3",
+          "runway": "30"
+        }
+      ],
+      "arrivals": {
+        "SCAN": {
+          "KAAC": 30,
+          "KBRT": 15,
+          "KJKE": 25,
+          "4Y3": 25
+        }
+      },
+    "solo_controller": "AAC_N_APP",
+    "controllers": [
+        "AAC_TWR",
+		    "4Y3_TWR",
+        "JKE_TWR",
+        "SGF_APP",
+        "ZAE_OKC",
+        "ZAE_TUL"
+      ],
+      "default_maps": [ "BASE","STARS" ],
+      "departure_runways": [
+      ],
+      "wind": {
+      }
+    }
+  },
+  "stars_config": {
+    "force_ql_self": true,
+    "center": "KAAC",
+    "display_handoff_facility_only": true,
+    "handoff_sector_display_duration": 5,
+    "coordination_fixes": {
+    "ATO": [
+      {
+          "type": "route",
+          "to": "AAC",
+          "from": "ZFW"
+      }
+  ],
+  "BAR": [
+      {
+          "type": "route",
+          "to":"AAC",
+          "from": "ZFW"
+      }
+  ],
+  "KIL": [
+      {
+          "type": "route",
+          "to": "AAC",
+          "from": "ZFW"
+      }
+  ],
+  "REE": [
+      {
+          "type": "route",
+          "to": "AAC",
+          "from": "ZFW"
+      }
+  ]
+    },
+    "filters": {
+    "inhibit_ca": [
+    {
+      "id": "AACNOCA",
+      "description": "KAAC NO CA",
+      "type": "circle",
+      "floor": 0,
+      "ceiling": 1200,
+      "radius": 4,
+      "center": "KAAC"
+    },
+    {
+      "id": "APPNOCA",
+      "description": "KAAC APPR NO CA",
+      "type": "polygon",
+      "floor": 0,
+      "ceiling": 2000,
+      "vertices": [
+        "N036.13.41.447,W095.57.41.462",
+        "N036.11.51.886,W095.58.16.096",
+        "N036.08.18.188,W095.33.24.647",
+        "N036.10.22.608,W095.32.50.755"
+      ]
+    }
+    ]
+    },
+    "airspace_awareness": [
+      {
+         "fixes": [
+          "COLIN",
+          "MAYES"
+        ],
+        "receiving_controller": "ZAE_TUL"
+      },
+      {
+         "fixes": [
+          "SHAWN",
+          "NOBLE"
+        ],
+        "receiving_controller": "ZAE_OKC"
+      }
+    ],
+    "radar_sites": {
+    "AAC": {
+      "char": "A",
+      "position": "KAAC",
+      "elevation": 820,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    },
+    "JKE": {
+      "char": "J",
+      "position": "KJKE",
+      "elevation": 658,
+      "primary_range": 60,
+      "secondary_range": 120,
+      "silence_angle": 30,
+      "slope_angle": 0.175
+    }
+  },
+    "scratchpads": {
+    "COLIN.RNAV": "RCO",
+    "MAYES.RNAV": "RMA",
+    "NOBLE.RNAV": "RNO",
+    "SHAWN.RNAV": "RSH"
+  },
+	  "scratchpad1":{
+			"display_exit_gate": true
+	},
+ 	"significant_points":{
+		"COLIN": {"short_name":"COL", "abbreviation": "C"},
+		"MAYES": {"short_name":"MAY", "abbreviation": "M"},
+		"NOBLE": {"short_name":"NOB", "abbreviation": "N"},
+		"SHAWN": {"short_name":"SHA", "abbreviation": "S"},
+    "SGF":  {"abbreviation": "G"}
+	},
+    "stars_maps": [
+    "MVA", "BASE" , "EAST", 
+	  "ARSPC", "STARS", "TAA", "SID"
+    ],
+  "video_map_file": "videomaps/aac-videomaps.gob.zst"
+  }
+}
