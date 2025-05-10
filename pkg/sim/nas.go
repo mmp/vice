@@ -111,6 +111,10 @@ func (sc *STARSComputer) CheckAirspaceFilterVolumes(s *Sim) {
 			}
 		} else { // unassociated--associate?
 			associate := func() bool {
+				if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil && fp.ManuallyCreated {
+					return true
+				}
+
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
 					if inVolumes(filters.DepartureAcquisition) {
 						return true

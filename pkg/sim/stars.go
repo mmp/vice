@@ -457,6 +457,9 @@ type STARSFlightPlan struct {
 	InhibitACTypeDisplay      bool
 	ForceACTypeDisplayEndTime time.Time
 	CWTCategory               string
+
+	// Used so that such FPs can associate regardless of acquisition filters.
+	ManuallyCreated bool
 }
 
 type ACID string
@@ -552,6 +555,8 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 
 		InhibitACTypeDisplay:      s.InhibitACTypeDisplay.GetOr(false),
 		ForceACTypeDisplayEndTime: s.ForceACTypeDisplayEndTime.GetOr(time.Time{}),
+
+		ManuallyCreated: true, // Always for ones created via a fp specifier
 	}
 
 	// Handle beacon code assignment
