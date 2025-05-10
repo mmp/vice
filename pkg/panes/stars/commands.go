@@ -3758,6 +3758,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "M":
 				if cmd == "" && trk.IsAssociated() {
+					// 5-167 toggle display of mode-c altitude
 					var spec sim.STARSFlightPlanSpecifier
 					inhibit := !trk.FlightPlan.InhibitModeCAltitudeDisplay
 					spec.InhibitModeCAltitudeDisplay.Set(inhibit)

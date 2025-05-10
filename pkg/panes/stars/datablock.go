@@ -515,13 +515,14 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	var altitude string
 	var pilotReportedAltitude bool
 	if !trk.IsUnsupportedDB() {
-		if trk.Mode == av.TransponderModeAltitude {
+		haveTransponderAltitude := trk.Mode == av.TransponderModeAltitude && (sfp == nil || !sfp.InhibitModeCAltitudeDisplay)
+		if haveTransponderAltitude {
 			if state.UnreasonableModeC {
 				altitude = "XXX"
 			} else {
 				altitude = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
 			}
-		} else { // squawk standby or just mode-A
+		} else {
 			if sfp != nil && sfp.PilotReportedAltitude != 0 {
 				altitude = fmt.Sprintf("%03d", sfp.PilotReportedAltitude/100)
 				pilotReportedAltitude = true
