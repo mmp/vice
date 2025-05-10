@@ -157,16 +157,6 @@ func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State,
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
 
-func clamp(x, min, max int) int {
-	if x < min {
-		return min
-	}
-	if x > max {
-		return max
-	}
-	return x
-}
-
 func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// First account for changes in world.Aircraft
 	// Added aircraft
@@ -572,7 +562,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 					// row within the 3 rows of that cell
 					innerRow := 2 - (int(my)%int(stripHeight))/(int(stripHeight)/3)
 					ai := innerRow*3 + col
-					fsp.selectedAnnotation = clamp(ai, 0, 8)
+					fsp.selectedAnnotation = math.Clamp(ai, 0, 8)
 					fsp.annotationCursorPos = len(fsp.annotations[fsp.strips[row]][fsp.selectedAnnotation])
 				}
 			}

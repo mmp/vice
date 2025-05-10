@@ -228,6 +228,10 @@ func (s *Sim) Activate(lg *log.Logger) {
 
 	now := time.Now()
 	s.lastUpdateTime = now
+
+	if s.Rand == nil {
+		s.Rand = rand.Make()
+	}
 }
 
 func (s *Sim) GetSerializeSim() Sim {
