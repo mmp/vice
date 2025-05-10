@@ -104,25 +104,23 @@ func (sc *STARSComputer) Update(s *Sim) {
 
 		filters := s.State.STARSFacilityAdaptation.Filters
 
-		if ac.IsAssociated() { // drop?
-			drop := func() bool {
-				fp := ac.STARSFlightPlan
-				if fp.TypeOfFlight == av.FlightTypeArrival && inVolumes(filters.ArrivalDrop) {
-					return true
-				} else if fp.LastLocalController != "" && s.State.IsExternalController(fp.TrackingController) &&
+		drop := func() bool {
+			if ac.TypeOfFlight == av.FlightTypeArrival && inVolumes(filters.ArrivalDrop) {
+				return true
+			} else if fp := ac.STARSFlightPlan; fp != nil {
+				if fp.LastLocalController != "" && s.State.IsExternalController(fp.TrackingController) &&
 					inVolumes(filters.SecondaryDrop) {
 					return true
-				} else {
-					return false
 				}
-			}()
-			if drop {
-				fp := ac.STARSFlightPlan
-				fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
-				sc.FlightPlans = append(sc.FlightPlans, fp)
-				ac.STARSFlightPlan = nil
 			}
-		} else { // unassociated--associate?
+			return false
+		}()
+		if ac.IsAssociated() && drop {
+			fp := ac.STARSFlightPlan
+			fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
+			sc.FlightPlans = append(sc.FlightPlans, fp)
+			ac.STARSFlightPlan = nil
+		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
 			associate := func() bool {
 				if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil && fp.ManuallyCreated {
 					return true
