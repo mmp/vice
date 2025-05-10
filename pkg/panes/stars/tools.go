@@ -413,8 +413,8 @@ func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [numWxLevels]*
 				}
 
 				// Corner points
-				p0 := rb.Lerp([2]float32{float32(x0) / float32(nbx), float32(y) / float32(nby)})
-				p1 := rb.Lerp([2]float32{float32(x) / float32(nbx), float32(y+1) / float32(nby)})
+				p0 := rb.Lerp([2]float32{float32(x0) / float32(nbx), float32(nby-1-y) / float32(nby)})
+				p1 := rb.Lerp([2]float32{float32(x) / float32(nbx), float32(nby-y) / float32(nby)})
 
 				// Draw a single quad
 				tb.AddQuad([2]float32{p0[0], p0[1]}, [2]float32{p1[0], p0[1]},
