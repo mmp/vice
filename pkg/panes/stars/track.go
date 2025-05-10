@@ -1293,7 +1293,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 }
 
 func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front sim.Track) {
-	if front.IsUnassociated() && back.IsUnassociated() {
+	if front.IsUnassociated() || back.IsUnassociated() {
 		return
 	}
 	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
