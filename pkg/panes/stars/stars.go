@@ -1323,13 +1323,11 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 			visible = true
 		} else if trk.IsAirborne {
 			if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
-				// visible unless if it's almost on the ground
-				if trk.IsDeparture() &&
-					trk.TrueAltitude < trk.DepartureAirportElevation+100 &&
+				// visible unless if it's almost on the ground at the arrival or departure airport.
+				if trk.TrueAltitude < trk.DepartureAirportElevation+100 &&
 					math.NMDistance2LL(trk.Location, trk.DepartureAirportLocation) < 3 {
 					continue
-				} else if trk.IsArrival() &&
-					trk.TrueAltitude < trk.ArrivalAirportElevation+100 &&
+				} else if trk.TrueAltitude < trk.ArrivalAirportElevation+100 &&
 					math.NMDistance2LL(trk.Location, trk.ArrivalAirportLocation) < 3 {
 					continue
 				}
