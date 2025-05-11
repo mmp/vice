@@ -375,6 +375,57 @@ func lookupFlightPlan(ctx *panes.Context, s string) (*sim.STARSFlightPlan, *sim.
 	return nil, nil
 }
 
+func lookupTrackACIDBeacon(ctx *panes.Context, tracks []sim.Track, s string) *sim.Track {
+	if trk, ok := ctx.GetTrackByACID(sim.ACID(s)); ok {
+		return trk
+	}
+
+	// try to match squawk code
+	if sq, err := av.ParseSquawk(s); err == nil {
+		for _, trk := range tracks {
+			if trk.Squawk == sq {
+				return &trk
+			}
+		}
+	}
+	return nil
+}
+
+func lookupTrack(ctx *panes.Context, tracks []sim.Track, s string) *sim.Track {
+	if trk := lookupTrackACIDBeacon(ctx, tracks, s); trk != nil {
+		return trk
+	}
+
+	if idx, err := strconv.Atoi(s); err == nil {
+		if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
+			func(trk *sim.Track) bool {
+				return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx
+			}); ok {
+			return trk
+		}
+	}
+
+	return nil
+}
+
+func lookupSuspendedTrack(ctx *panes.Context, tracks []sim.Track, s string) *sim.Track {
+	if trk := lookupTrackACIDBeacon(ctx, tracks, s); trk != nil {
+		return trk
+	}
+
+	if idx, err := strconv.Atoi(s); err == nil {
+		if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
+			func(trk *sim.Track) bool {
+				return trk.IsAssociated() && trk.FlightPlan.Suspended &&
+					trk.FlightPlan.CoastSuspendIndex == idx
+			}); ok {
+			return trk
+		}
+	}
+
+	return nil
+}
+
 func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks []sim.Track) (status CommandStatus) {
 	// If there's an active spinner, it gets keyboard input; we thus won't
 	// worry about the corresponding CommandModes in the following.
@@ -387,57 +438,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			sp.setCommandMode(ctx, mode)
 		}
 		return
-	}
-
-	lookupTrackACIDBeacon := func(s string) *sim.Track {
-		if trk, ok := ctx.GetTrackByACID(sim.ACID(s)); ok {
-			return trk
-		}
-
-		// try to match squawk code
-		if sq, err := av.ParseSquawk(s); err == nil {
-			for _, trk := range tracks {
-				if trk.Squawk == sq {
-					return &trk
-				}
-			}
-		}
-		return nil
-	}
-
-	lookupTrack := func(s string) *sim.Track {
-		if trk := lookupTrackACIDBeacon(s); trk != nil {
-			return trk
-		}
-
-		if idx, err := strconv.Atoi(s); err == nil {
-			if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
-				func(trk *sim.Track) bool {
-					return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx
-				}); ok {
-				return trk
-			}
-		}
-
-		return nil
-	}
-
-	lookupSuspendedTrack := func(s string) *sim.Track {
-		if trk := lookupTrackACIDBeacon(s); trk != nil {
-			return trk
-		}
-
-		if idx, err := strconv.Atoi(s); err == nil {
-			if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
-				func(trk *sim.Track) bool {
-					return trk.IsAssociated() && trk.FlightPlan.Suspended &&
-						trk.FlightPlan.CoastSuspendIndex == idx
-				}); ok {
-				return trk
-			}
-		}
-
-		return nil
 	}
 
 	ps := sp.currentPrefs()
@@ -591,7 +591,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmd = cmd[2:]
 
 			callsign, tcps, _ := strings.Cut(cmd, " ")
-			trk := lookupTrack(callsign)
+			trk := lookupTrack(ctx, tracks, callsign)
 			if trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsUnassociated() {
@@ -763,7 +763,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			status.clear = true
 		} else {
 			first, rest, _ := strings.Cut(cmd, " ")
-			if trk := lookupSuspendedTrack(first); trk == nil {
+			if trk := lookupSuspendedTrack(ctx, tracks, first); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsAssociated() && trk.FlightPlan.Suspended {
 				// 5-77 unsuspend flight plan
@@ -789,7 +789,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// 5-206 inhibit display of altitude for active suspended tracks
 			ps.DisplaySuspendedTrackAltitude = false
 			status.clear = true
-		} else if trk := lookupTrack(cmd); trk == nil {
+		} else if trk := lookupTrack(ctx, tracks, cmd); trk == nil {
 			status.err = ErrSTARSNoFlight
 		} else {
 			// 5-75 suspend flight plan
@@ -841,7 +841,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		case 1:
 			// Is it an ACID?
-			if trk := lookupTrack(f[0]); trk != nil {
+			if trk := lookupTrack(ctx, tracks, f[0]); trk != nil {
 				if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
 				} else {
@@ -878,7 +878,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 
 		case 2:
-			if trk := lookupTrack(f[1]); trk == nil {
+			if trk := lookupTrack(ctx, tracks, f[1]); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsUnassociated() {
 				status.err = ErrSTARSIllegalTrack
@@ -1079,7 +1079,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// 5-178: modify rnav symbol, a/c type, eq suffix, or flight rules
 			if id, mod, ok := strings.Cut(cmd, " "); !ok {
 				status.err = ErrSTARSCommandFormat
-			} else if trk := lookupTrack(id); trk == nil || trk.IsUnassociated() {
+			} else if trk := lookupTrack(ctx, tracks, id); trk == nil || trk.IsUnassociated() {
 				status.err = ErrSTARSIllegalTrack
 			} else if spec, err := parseOneFlightPlan("RNAV,#/AC_TYPE/EQ,RULES", mod, nil); err != nil {
 				status.err = err
@@ -1159,7 +1159,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					}
 				} else if num, acid, ok := strings.Cut(cmd, " "); ok {
 					// L(#) (ACID) or L(##) (ACID)
-					if trk := lookupTrack(acid); trk != nil {
+					if trk := lookupTrack(ctx, tracks, acid); trk != nil {
 						if err := sp.setLeaderLine(ctx, *trk, num); err != nil {
 							status.err = err
 						} else {
@@ -1461,7 +1461,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					cmd = cmd[1:]
 				}
 
-				trk := lookupTrack(cmd)
+				trk := lookupTrack(ctx, tracks, cmd)
 				if trk == nil {
 					status.err = ErrSTARSCommandFormat
 					return
@@ -1775,7 +1775,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			if len(f) == 1 {
 				// Y callsign -> clear scratchpad and reported altitude
 				// Y+ callsign -> secondary scratchpad..
-				if trk := lookupTrack(f[0]); trk == nil {
+				if trk := lookupTrack(ctx, tracks, f[0]); trk == nil {
 					status.err = ErrSTARSNoFlight
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
@@ -1797,7 +1797,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// as above, Y+ -> secondary scratchpad
 
 				// Either pilot alt or scratchpad entry
-				if trk := lookupTrack(f[0]); trk == nil {
+				if trk := lookupTrack(ctx, tracks, f[0]); trk == nil {
 					status.err = ErrSTARSNoFlight
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
@@ -1841,7 +1841,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// 5-81 Toggle hold state
 				if _, id, ok := strings.Cut(cmd, " "); !ok {
 					status.err = ErrSTARSCommandFormat
-				} else if trk := lookupTrack(id); trk == nil {
+				} else if trk := lookupTrack(ctx, tracks, id); trk == nil {
 					status.err = ErrSTARSCommandFormat
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSNoFlight
@@ -1874,7 +1874,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
-			if trk := lookupTrack(cmd[2:]); trk != nil && trk.IsAssociated() {
+			if trk := lookupTrack(ctx, tracks, cmd[2:]); trk != nil && trk.IsAssociated() {
 				var spec sim.STARSFlightPlanSpecifier
 				spec.DisableCA.Set(!trk.FlightPlan.DisableCA)
 				spec.MCISuppressedCode.Set(av.Squawk(0)) // 7-18: this clears the MCI inhibit code
@@ -1890,7 +1890,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			f := strings.Fields(cmd[2:])
 			if len(f) != 1 && len(f) != 2 {
 				status.err = ErrSTARSCommandFormat
-			} else if trk := lookupTrack(f[0]); trk == nil {
+			} else if trk := lookupTrack(ctx, tracks, f[0]); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if len(f) == 1 {
 				status = sp.updateMCISuppression(ctx, *trk, "")
@@ -2384,7 +2384,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				if _, err := strconv.Atoi(cmd); err == nil && len(cmd) < 4 /* else assume it's a beacon code */ {
 					// Given a line number that doesn't exist.
 					status.err = ErrSTARSIllegalLine
-				} else if trk := lookupTrack(cmd); trk != nil {
+				} else if trk := lookupTrack(ctx, tracks, cmd); trk != nil {
 					// There is such a flight but it's not in our release list.
 					if trk.HoldForRelease {
 						// It's in another controller's list
