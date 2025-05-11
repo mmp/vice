@@ -31,8 +31,6 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("ARTS", &sp.FontSelection, fontARTS)
 
-	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
-
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
 	imgui.Checkbox("Invert numeric keypad", &sp.FlipNumericKeypad)

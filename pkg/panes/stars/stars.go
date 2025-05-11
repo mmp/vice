@@ -112,11 +112,7 @@ type STARSPane struct {
 	// state for unassociated tracks, so... ?
 	TrackState map[av.ADSBCallsign]*TrackState
 
-	// explicit JSON name to avoid errors during config deserialization for
-	// backwards compatibility, since this used to be a
-	// map[string]interface{}.
-	AutoTrackDepartures bool `json:"autotrack_departures"`
-	LockDisplay         bool
+	LockDisplay bool
 
 	// a/c callsign -> controllers
 	PointOuts         map[sim.ACID]PointOutControllers
@@ -383,7 +379,7 @@ func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 // STARSPane proper
 
 func NewSTARSPane() *STARSPane {
-	return &STARSPane{AutoTrackDepartures: true}
+	return &STARSPane{}
 }
 
 func (sp *STARSPane) DisplayName() string { return "STARS" }
