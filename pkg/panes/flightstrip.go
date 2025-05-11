@@ -47,7 +47,7 @@ type FlightStripPane struct {
 	selectedStrip       int
 	selectedAnnotation  int
 	annotationCursorPos int
-	annotations         map[sim.ACID][9]string
+	Annotations         map[sim.ACID][9]string
 
 	events    *sim.EventsSubscription
 	scrollbar *ScrollBar
@@ -81,7 +81,7 @@ func NewFlightStripPane() *FlightStripPane {
 		selectedAnnotation: -1,
 		CIDs:               make(map[sim.ACID]int),
 		AllocatedCIDs:      make(map[int]interface{}),
-		annotations:        make(map[sim.ACID][9]string),
+		Annotations:        make(map[sim.ACID][9]string),
 	}
 }
 
@@ -104,8 +104,8 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.AllocatedCIDs == nil {
 		fsp.AllocatedCIDs = make(map[int]interface{})
 	}
-	if fsp.annotations == nil {
-		fsp.annotations = make(map[sim.ACID][9]string)
+	if fsp.Annotations == nil {
+		fsp.Annotations = make(map[sim.ACID][9]string)
 	}
 
 	fsp.events = eventStream.Subscribe()
@@ -140,7 +140,7 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 	if fp.TrackingController == tcp {
 		fsp.strips = append(fsp.strips, fp.ACID)
 		fsp.addedPlans[fp.ACID] = nil
-		fsp.annotations[fp.ACID] = [9]string{"", "", "", "", "", "", "", "", ""}
+		fsp.Annotations[fp.ACID] = [9]string{"", "", "", "", "", "", "", "", ""}
 	}
 }
 
@@ -152,7 +152,7 @@ func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State,
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)
 	fsp.AllocatedCIDs = make(map[int]interface{})
-	fsp.annotations = make(map[sim.ACID][9]string)
+	fsp.Annotations = make(map[sim.ACID][9]string)
 }
 
 func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
@@ -343,7 +343,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		}
 		fp := ctx.Client.State.ACFlightPlans[av.ADSBCallsign(fsp.strips[i])] // HAX: conflates callsign/ACID
 		acid := fsp.strips[i]
-		annots := fsp.annotations[acid]
+		annots := fsp.Annotations[acid]
 
 		x := float32(0)
 
@@ -489,7 +489,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 				}
 
 				// write back into the pane’s map
-				fsp.annotations[acid] = annots
+				fsp.Annotations[acid] = annots
 			} else {
 				td.AddText(ann, [2]float32{xp, yp}, style)
 			}
@@ -563,7 +563,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 					innerRow := 2 - (int(my)%int(stripHeight))/(int(stripHeight)/3)
 					ai := innerRow*3 + col
 					fsp.selectedAnnotation = math.Clamp(ai, 0, 8)
-					fsp.annotationCursorPos = len(fsp.annotations[fsp.strips[row]][fsp.selectedAnnotation])
+					fsp.annotationCursorPos = len(fsp.Annotations[fsp.strips[row]][fsp.selectedAnnotation])
 				}
 			}
 		}
