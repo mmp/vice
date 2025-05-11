@@ -3612,8 +3612,16 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 			if trk.IsAssociated() && trk.FlightPlan.Suspended {
 				// 5-77 unsuspend flight plan
-				// TODO(maybe): third variant of this, e.g. [INIT CNTL](Line #)[SLEW].
-				if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2", cmd, checkfp); err != nil {
+				if strk := lookupSuspendedTrack(ctx, tracks, cmd); strk != nil {
+					if trk.FlightPlan.AssignedSquawk != strk.Squawk {
+						status.err = ErrSTARSIllegalTrack
+					} else {
+						var spec sim.STARSFlightPlanSpecifier
+						spec.Suspended.Set(false)
+						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
+						status.clear = true
+					}
+				} else if spec, err := parseFlightPlan("?SP1,TRI_SP1,PLUS_SP2", cmd, checkfp); err != nil {
 					status.err = err
 				} else {
 					spec.Suspended.Set(false)
@@ -3630,7 +3638,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					sp.activateFlightPlan(ctx, trk.ADSBCallsign, fp.ACID, &spec)
 					status.clear = true
 				}
-				return
 			} else {
 				// 5-124: create active FP with discrete beacon code
 				if spec, err := parseFlightPlan("+ACID?BEACON,TRI_SP1,PLUS_SP2,ALT_A,#/AC_TYPE/EQ", cmd, checkfp); err != nil {
