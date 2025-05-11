@@ -52,6 +52,9 @@ func (s *Sim) dispatchControlledAircraftCommand(tcp string, callsign av.ADSBCall
 	return s.dispatchAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) error {
 			if ac.IsUnassociated() {
+				if ac.PreArrivalDropController == tcp {
+					return nil
+				}
 				return ErrTrackIsNotActive
 			}
 			if ac.STARSFlightPlan.ControllingController != tcp && !s.Instructors[tcp] {
@@ -473,8 +476,7 @@ func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.TrackingController == tcp && ac.STARSFlightPlan.ACID == acid {
-			s.deleteFlightPlan(ac.STARSFlightPlan)
-			ac.STARSFlightPlan = nil
+			s.deleteFlightPlan(ac.DisassociateFlightPlan())
 			return nil
 		}
 	}
@@ -507,8 +509,7 @@ func (s *Sim) RepositionTrack(tcp string, acid ACID, callsign av.ADSBCallsign, p
 			} else if ac.STARSFlightPlan.HandoffTrackController != "" {
 				return ErrTrackIsBeingHandedOff
 			} else {
-				fp = ac.STARSFlightPlan
-				ac.STARSFlightPlan = nil
+				fp = ac.DisassociateFlightPlan()
 				break
 			}
 		}

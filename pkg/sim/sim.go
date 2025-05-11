@@ -92,6 +92,9 @@ type Aircraft struct {
 	// The controller who gave approach clearance
 	ApproachController string
 
+	// Who had control when the fp disassociated due to an arrival filter.
+	PreArrivalDropController string
+
 	InDepartureFilter bool
 
 	FirstSeen time.Time
@@ -1135,6 +1138,9 @@ func (ac *Aircraft) transferTracks(from, to string) {
 	if ac.ApproachController == from {
 		ac.ApproachController = to
 	}
+	if ac.PreArrivalDropController == from {
+		ac.PreArrivalDropController = to
+	}
 
 	if ac.IsUnassociated() {
 		return
@@ -1197,4 +1203,11 @@ func (ac *Aircraft) IsAssociated() bool {
 func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
 	ac.STARSFlightPlan = fp
+	ac.PreArrivalDropController = ""
+}
+
+func (ac *Aircraft) DisassociateFlightPlan() *STARSFlightPlan {
+	fp := ac.STARSFlightPlan
+	ac.STARSFlightPlan = nil
+	return fp
 }

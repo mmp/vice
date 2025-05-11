@@ -120,10 +120,13 @@ func (sc *STARSComputer) Update(s *Sim) {
 			return false
 		}()
 		if ac.IsAssociated() && drop {
-			fp := ac.STARSFlightPlan
+			fp := ac.DisassociateFlightPlan()
 			fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
+			if ac.TypeOfFlight == av.FlightTypeArrival {
+				// Record who had the track so they can still issue control instructions.
+				ac.PreArrivalDropController = fp.TrackingController
+			}
 			sc.FlightPlans = append(sc.FlightPlans, fp)
-			ac.STARSFlightPlan = nil
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
 			associate := func() bool {
 				if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil && fp.ManuallyCreated {
