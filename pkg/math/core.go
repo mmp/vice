@@ -20,6 +20,10 @@ func Radians(d float32) float32 {
 	return d / 180 * gomath.Pi
 }
 
+func Pi() float32 {
+	return float32(gomath.Pi)
+}
+
 // A number of utility functions for evaluating transcendentals and the like follow;
 // since we mostly use float32, it's handy to be able to call these directly rather than
 // with all of the casts that are required when using the math package.
