@@ -801,10 +801,10 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 	}
 
 	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 2, 0, 500)
+		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 3, 0, 500)
 	}
 	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 2, 100, 1000)
+		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 3, 0, 500)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
 		fa.Filters.InhibitCA = makeDefaultAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000)

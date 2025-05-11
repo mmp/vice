@@ -127,9 +127,13 @@ func (sc *STARSComputer) Update(s *Sim) {
 				}
 
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					if inVolumes(filters.DepartureAcquisition) {
+					inFilter := inVolumes(filters.DepartureAcquisition)
+					if ac.InDepartureFilter && !inFilter {
+						// Left the departure filter-time to acquire
+						ac.InDepartureFilter = false
 						return true
 					}
+					ac.InDepartureFilter = inFilter
 				} else { // arrival or overflight
 					if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil &&
 						fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController) {

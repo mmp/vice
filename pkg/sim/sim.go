@@ -91,6 +91,8 @@ type Aircraft struct {
 
 	// The controller who gave approach clearance
 	ApproachController string
+
+	InDepartureFilter bool
 }
 
 type AircraftDisplayState struct {
