@@ -93,6 +93,8 @@ type Aircraft struct {
 	ApproachController string
 
 	InDepartureFilter bool
+
+	FirstSeen time.Time
 }
 
 type AircraftDisplayState struct {
@@ -120,6 +122,7 @@ type Track struct {
 	HoldForRelease            bool
 	MissingFlightPlan         bool
 	Route                     []math.Point2LL
+	IsTentative               bool // first 5 seconds after first contact
 }
 
 type DepartureRunway struct {
@@ -636,6 +639,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			HoldForRelease:            ac.HoldForRelease,
 			MissingFlightPlan:         ac.MissingFlightPlan,
 			ATPAVolume:                ac.ATPAVolume(),
+			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
 		}
 
 		for _, wp := range ac.Nav.Waypoints {
@@ -821,6 +825,11 @@ func (s *Sim) updateState() {
 			}
 
 			passedWaypoint := ac.Update(s.State, nil /* s.lg*/)
+
+			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
+				ac.FirstSeen = s.State.SimTime
+			}
+
 			if passedWaypoint != nil {
 				// Handoffs still happen for "unassociated" (to us) tracks
 				// when they're currently tracked by an external facility.
@@ -968,6 +977,21 @@ func (s *Sim) updateState() {
 		s.ERAMComputer.Update(s)
 		s.STARSComputer.Update(s)
 	}
+}
+
+func (s *Sim) isRadarVisible(ac *Aircraft) bool {
+	if !ac.IsAirborne() {
+		return false
+	}
+	if ac.Altitude() < ac.DepartureAirportElevation()+100 &&
+		math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 3 {
+		return false
+	}
+	if ac.Altitude() < ac.ArrivalAirportElevation()+100 &&
+		math.NMDistance2LL(ac.Position(), ac.ArrivalAirportLocation()) < 3 {
+		return false
+	}
+	return true
 }
 
 func (s *Sim) goAround(ac *Aircraft) {

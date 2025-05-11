@@ -488,6 +488,12 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
+		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
+			// Get the first track for tentative tracks but then don't
+			// update any further until it's no longer tentative.
+			continue
+		}
+
 		state.previousTrack = state.track
 		state.previousTrackTime = state.trackTime
 		state.track = trk.RadarTrack
@@ -779,15 +785,14 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
-	// TODO: orient based on radar center if just one radar
 
 	pos := state.track.Location
 	isUnsupported := state.track.TrueAltitude == 0 && trk.FlightPlan != nil // FIXME: there's surely a better way to do this
 	pw := transforms.WindowFromLatLongP(pos)
-	// On high DPI windows displays we need to scale up the tracks
-
 	primaryTargetBrightness := ps.Brightness.PrimarySymbols
-	if primaryTargetBrightness > 0 && !isUnsupported {
+
+	drawPrimarySymbol := !isUnsupported && primaryTargetBrightness > 0 && !trk.IsTentative
+	if drawPrimarySymbol {
 		switch mode := sp.radarMode(ctx.FacilityAdaptation.RadarSites); mode {
 		case RadarModeSingle:
 			site := ctx.FacilityAdaptation.RadarSites[ps.RadarSiteSelected]
@@ -875,8 +880,6 @@ func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Cont
 			posColor := posBrightness.ScaleRGB(color)
 			td.AddTextCentered(positionSymbol, pt, renderer.TextStyle{Font: font, Color: posColor})
 		} else {
-			// TODO: draw box if in range of squawks we have selected
-
 			// diagonals
 			dx := transforms.LatLongFromWindowV([2]float32{1, 0})
 			dy := transforms.LatLongFromWindowV([2]float32{0, 1})

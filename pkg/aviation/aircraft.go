@@ -27,6 +27,7 @@ type RadarTrack struct {
 	Location            math.Point2LL
 	Heading             float32
 	Groundspeed         float32
+	TypeOfFlight        TypeOfFlight
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) RadarTrack {
@@ -40,6 +41,7 @@ func (ac *Aircraft) GetRadarTrack(now time.Time) RadarTrack {
 		Location:            ac.Position(),
 		Heading:             ac.Heading(),
 		Groundspeed:         ac.GS(),
+		TypeOfFlight:        ac.TypeOfFlight,
 	}
 }
 

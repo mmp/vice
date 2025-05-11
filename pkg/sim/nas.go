@@ -98,6 +98,10 @@ func (sc *STARSComputer) Update(s *Sim) {
 			continue
 		}
 
+		if !s.isRadarVisible(ac) {
+			continue
+		}
+
 		inVolumes := func(f FilterRegions) bool {
 			return f.Inside(ac.Position(), int(ac.Altitude()))
 		}
