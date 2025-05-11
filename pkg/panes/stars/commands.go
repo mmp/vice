@@ -31,7 +31,7 @@ var pausedAircraftInfo *util.TransientMap[av.ADSBCallsign, string] = util.NewTra
 
 type CommandMode int
 
-var TargetGenLock bool
+var targetGenLock bool
 
 const (
 	// Keyboard command entry modes; can be main or DCB menu for these; sp.dcbShowAux decides.
@@ -104,7 +104,7 @@ func (c CommandMode) PreviewString() string {
 	case CommandModeMin:
 		return "MIN"
 	case CommandModeTargetGen:
-		if !TargetGenLock {
+		if !targetGenLock {
 			return "TG"
 		} else {
 			return "TG LOCK"
@@ -222,7 +222,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
-				if status.clear && !TargetGenLock {
+				if status.clear && !targetGenLock {
 					sp.setCommandMode(ctx, CommandModeNone)
 					sp.maybeAutoHomeCursor(ctx)
 				} else {
@@ -236,7 +236,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
 			} else {
 				sp.setCommandMode(ctx, CommandModeNone)
-				TargetGenLock = false // unlock target generation
+				targetGenLock = false // unlock target generation
 			}
 
 		case imgui.KeyF1:
@@ -342,7 +342,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 		case imgui.KeyTab:
 			if imgui.IsKeyDown(imgui.KeyLeftShift) { // Check if LeftShift is pressed
-				TargetGenLock = true
+				targetGenLock = true
 				sp.setCommandMode(ctx, CommandModeTargetGen)
 			} else {
 				sp.setCommandMode(ctx, CommandModeTargetGen)
