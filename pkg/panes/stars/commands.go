@@ -31,6 +31,8 @@ var pausedAircraftInfo *util.TransientMap[av.ADSBCallsign, string] = util.NewTra
 
 type CommandMode int
 
+var TargetGenLock bool
+
 const (
 	// Keyboard command entry modes; can be main or DCB menu for these; sp.dcbShowAux decides.
 	CommandModeNone CommandMode = iota
