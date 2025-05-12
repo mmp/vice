@@ -102,7 +102,7 @@ func (c CommandMode) PreviewString(sp *STARSPane) string {
 	case CommandModeMin:
 		return "MIN"
 	case CommandModeTargetGen:
-		if !sp.TargetGenLock {
+		if !sp.targetGenLock {
 			return "TG"
 		} else {
 			return "TG LOCK"
@@ -220,7 +220,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
-				if status.clear && !sp.TargetGenLock {
+				if status.clear && !sp.targetGenLock {
 					sp.setCommandMode(ctx, CommandModeNone)
 					sp.maybeAutoHomeCursor(ctx)
 				} else {
@@ -234,7 +234,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
 			} else {
 				sp.setCommandMode(ctx, CommandModeNone)
-				sp.TargetGenLock = false // unlock target generation
+				sp.targetGenLock = false // unlock target generation
 			}
 
 		case imgui.KeyF1:
@@ -340,7 +340,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 		case imgui.KeyTab:
 			if imgui.IsKeyDown(imgui.KeyLeftShift) { // Check if LeftShift is pressed
-				sp.TargetGenLock = true
+				sp.targetGenLock = true
 				sp.setCommandMode(ctx, CommandModeTargetGen)
 			} else {
 				sp.setCommandMode(ctx, CommandModeTargetGen)

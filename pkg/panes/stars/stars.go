@@ -233,7 +233,7 @@ type STARSPane struct {
 	ldbArena util.ObjectArena[limitedDatablock]
 	sdbArena util.ObjectArena[suspendedDatablock]
 
-	TargetGenLock bool
+	targetGenLock bool
 }
 
 type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, ScopeTransformations) CommandStatus
