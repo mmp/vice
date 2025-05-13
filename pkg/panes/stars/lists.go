@@ -74,7 +74,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	text.WriteByte('\n')
 
 	// Command mode indicator (possibly)
-	modestr := sp.commandMode.PreviewString()
+	modestr := sp.commandMode.PreviewString(sp)
 	text.WriteString(modestr)
 	if sp.commandMode == CommandModeMultiFunc {
 		text.WriteString(sp.multiFuncPrefix)
