@@ -233,6 +233,10 @@ func init() {
 
 	for icao, ap := range airports {
 		if _, ok := customAirports[icao]; !ok { // ignore ones defined in custom_airports.json
+			// We don't get these from the CIFP but have them from the other airports
+			// database, so port them over.
+			ap.Name = db.Airports[icao].Name
+			ap.Country = db.Airports[icao].Country
 			db.Airports[icao] = ap
 		}
 	}
