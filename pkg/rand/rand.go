@@ -178,6 +178,20 @@ func SampleWeighted[T any](r *Rand, slice []T, weight func(T) int) (T, bool) {
 	return SampleWeightedSeq(r, slices.Values(slice), weight)
 }
 
+func SampleSeq[T any](r *Rand, it iter.Seq[T]) (sample T, ok bool) {
+	// Weighted reservoir sampling...
+	n := 0
+	for v := range it {
+		n += 1
+		p := float32(1) / float32(n)
+		if r.Float32() < p {
+			sample = v
+			ok = true
+		}
+	}
+	return
+}
+
 func SampleWeightedSeq[T any](r *Rand, it iter.Seq[T], weight func(T) int) (sample T, ok bool) {
 	// Weighted reservoir sampling...
 	sumWt := 0
