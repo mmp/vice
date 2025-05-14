@@ -208,7 +208,7 @@ func init() {
 	wg.Add(1)
 	go func() { db.Airports, customAirports = parseAirports(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
+	go func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	var airports map[string]FAAAirport
@@ -370,7 +370,7 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	return airports, customAirports
 }
 
-func parseAircraftPerformance() map[string]AircraftPerformance {
+func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 	r := util.LoadResource("openscope-aircraft.json")
 	defer r.Close()
 
@@ -382,8 +382,11 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 		os.Exit(1)
 	}
 
+	aliases := make(map[string]string)
 	ap := make(map[string]AircraftPerformance)
 	for _, ac := range acStruct.Aircraft {
+		aliases[ac.ICAO] = ac.Name
+
 		// If we have mach but not TAS, do the conversion; the nav code
 		// works with TAS..
 		if ac.Speed.CruiseMach != 0 && ac.Speed.CruiseTAS == 0 {
@@ -429,7 +432,7 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 		}
 	}
 
-	return ap
+	return aliases, ap
 }
 
 func parseAirlines() (map[string]Airline, map[string]string) {
