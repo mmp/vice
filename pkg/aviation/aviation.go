@@ -413,7 +413,7 @@ func FormatAltitude(falt float32) string {
 	if alt >= 18000 {
 		return "FL" + strconv.Itoa(alt/100)
 	} else if alt < 1000 {
-		return strconv.Itoa(alt)
+		return strconv.Itoa(100 * (alt / 100))
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100 * 100
