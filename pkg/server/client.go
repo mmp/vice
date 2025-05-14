@@ -545,6 +545,12 @@ func (c *ControlClient) DeleteAllAircraft(callback func(err error)) {
 		makeStateUpdateRPCCall(c.proxy.DeleteAllAircraft(&update), &update, callback))
 }
 
+func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(err error)) {
+	var update sim.StateUpdate
+	c.pendingCalls = append(c.pendingCalls,
+		makeStateUpdateRPCCall(c.proxy.DeleteAircraft(aircraft, &update), &update, callback))
+}
+
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
 	var result AircraftCommandsResult
 	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.RunAircraftCommands(callsign, cmds, &result),

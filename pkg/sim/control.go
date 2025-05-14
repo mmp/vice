@@ -190,6 +190,17 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 	}
 }
 
+func (s *Sim) DeleteAircraftSlice(tcp string, aircraft []Aircraft) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	for _, ac := range aircraft {
+		s.deleteAircraft(&ac)
+	}
+
+	return nil
+}
+
 func (s *Sim) DeleteAllAircraft(tcp string) error {
 	for cs := range s.Aircraft {
 		// Only delete airborne aircraft; leave all of the ones at the

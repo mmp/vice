@@ -865,39 +865,33 @@ type LaunchControlWindow struct {
 	lg                  *log.Logger
 }
 
-type LaunchDeparture struct {
+type LaunchAircraft struct {
 	Aircraft           sim.Aircraft
-	Airport            string
-	Runway             string
-	Category           string
-	LastLaunchCallsign av.ADSBCallsign
-	LastLaunchTime     time.Time
-	TotalLaunches      int
-}
-
-func (ld *LaunchDeparture) Reset() {
-	ld.LastLaunchCallsign = ""
-	ld.LastLaunchTime = time.Time{}
-	ld.TotalLaunches = 0
-}
-
-type LaunchArrivalOverflight struct {
-	Aircraft           sim.Aircraft
-	Group              string
 	Airport            string
 	LastLaunchCallsign av.ADSBCallsign
 	LastLaunchTime     time.Time
 	TotalLaunches      int
 }
 
-func (la *LaunchArrivalOverflight) Reset() {
+func (la *LaunchAircraft) Reset() {
 	la.LastLaunchCallsign = ""
 	la.LastLaunchTime = time.Time{}
 	la.TotalLaunches = 0
 }
 
+type LaunchDeparture struct {
+	LaunchAircraft
+	Runway   string
+	Category string
+}
+
+type LaunchArrivalOverflight struct {
+	LaunchAircraft
+	Group string
+}
+
 func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *LaunchControlWindow {
-	lc := &LaunchControlWindow{client: client}
+	lc := &LaunchControlWindow{client: client, lg: lg}
 
 	config := &client.State.LaunchConfig
 	for _, airport := range util.SortedMapKeys(config.DepartureRates) {
@@ -905,36 +899,34 @@ func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *Laun
 		for _, rwy := range util.SortedMapKeys(runwayRates) {
 			for _, category := range util.SortedMapKeys(runwayRates[rwy]) {
 				lc.departures = append(lc.departures, &LaunchDeparture{
-					Airport:  airport,
-					Runway:   rwy,
-					Category: category,
+					LaunchAircraft: LaunchAircraft{Airport: airport},
+					Runway:         rwy,
+					Category:       category,
 				})
 			}
 		}
 	}
-	for i := range lc.departures {
-		lc.spawnIFRDeparture(lc.departures[i])
-	}
 
 	for _, airport := range util.SortedMapKeys(config.VFRAirports) {
 		rwy := client.State.VFRRunways[airport]
-		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{Airport: airport, Runway: rwy.Id})
-	}
-	for i := range lc.vfrDepartures {
-		lc.spawnVFRDeparture(lc.vfrDepartures[i])
+		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{
+			LaunchAircraft: LaunchAircraft{Airport: airport},
+			Runway:         rwy.Id,
+		})
 	}
 
 	for _, group := range util.SortedMapKeys(config.InboundFlowRates) {
 		for ap := range config.InboundFlowRates[group] {
 			lc.arrivalsOverflights = append(lc.arrivalsOverflights,
 				&LaunchArrivalOverflight{
-					Group:   group,
-					Airport: ap,
+					LaunchAircraft: LaunchAircraft{Airport: ap},
+					Group:          group,
 				})
 		}
 	}
-	for i := range lc.arrivalsOverflights {
-		lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
+
+	if config.Mode == sim.LaunchManual {
+		lc.spawnAllAircraft()
 	}
 
 	return lc
@@ -991,6 +983,54 @@ func (lc *LaunchControlWindow) getLastDeparture(airport, runway string) (callsig
 	return
 }
 
+func (lc *LaunchControlWindow) spawnAllAircraft() {
+	// Spawn all aircraft for automatic mode
+	for i := range lc.departures {
+		if lc.departures[i].Aircraft.ADSBCallsign == "" {
+			lc.spawnIFRDeparture(lc.departures[i])
+		}
+	}
+	for i := range lc.vfrDepartures {
+		if lc.vfrDepartures[i].Aircraft.ADSBCallsign == "" {
+			lc.spawnVFRDeparture(lc.vfrDepartures[i])
+		}
+	}
+	for i := range lc.arrivalsOverflights {
+		if lc.arrivalsOverflights[i].Aircraft.ADSBCallsign == "" {
+			lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
+		}
+	}
+}
+
+func (lc *LaunchControlWindow) cleanupAircraft() {
+	var toDelete []sim.Aircraft
+
+	add := func(la *LaunchAircraft) {
+		if la.Aircraft.ADSBCallsign != "" {
+			toDelete = append(toDelete, la.Aircraft)
+			la.Aircraft = sim.Aircraft{}
+		}
+	}
+
+	for i := range lc.departures {
+		add(&lc.departures[i].LaunchAircraft)
+	}
+	for i := range lc.vfrDepartures {
+		add(&lc.vfrDepartures[i].LaunchAircraft)
+	}
+	for i := range lc.arrivalsOverflights {
+		add(&lc.arrivalsOverflights[i].LaunchAircraft)
+	}
+
+	if len(toDelete) > 0 {
+		lc.client.DeleteAircraft(toDelete, func(err error) {
+			if err != nil {
+				lc.lg.Errorf("Error deleting aircraft: %v", err)
+			}
+		})
+	}
+}
+
 func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform) {
 	showLaunchControls := true
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, float32(p.WindowSize()[1]) * 19 / 20})
@@ -1017,10 +1057,12 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		imgui.SameLine()
 		if imgui.RadioButtonIntPtr("Manual", &lc.client.State.LaunchConfig.Mode, sim.LaunchManual) {
 			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+			lc.spawnAllAircraft()
 		}
 		imgui.SameLine()
 		if imgui.RadioButtonIntPtr("Automatic", &lc.client.State.LaunchConfig.Mode, sim.LaunchAutomatic) {
 			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+			lc.cleanupAircraft()
 		}
 
 		width, _ := ui.font.BoundText(renderer.FontAwesomeIconPlayCircle, 0)
@@ -1450,6 +1492,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 	if !showLaunchControls {
 		lc.client.TakeOrReturnLaunchControl(eventStream)
+		lc.cleanupAircraft()
 		ui.showLaunchControl = false
 	}
 }

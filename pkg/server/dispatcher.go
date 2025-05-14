@@ -450,6 +450,19 @@ func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.Stat
 	}
 }
 
+// DeleteAircraft deletes specific aircraft provided in the list
+func (sd *Dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		err := s.DeleteAircraftSlice(ctrl.tcp, da.Aircraft)
+		s.GetStateUpdate(ctrl.tcp, update)
+		return err
+	}
+}
+
 type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        av.ADSBCallsign

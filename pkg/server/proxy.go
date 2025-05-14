@@ -216,6 +216,18 @@ func (p *proxy) DeleteAllAircraft(update *sim.StateUpdate) *rpc.Call {
 	}, update, nil)
 }
 
+type DeleteAircraftListArgs struct {
+	ControllerToken string
+	Aircraft        []sim.Aircraft
+}
+
+func (p *proxy) DeleteAircraft(aircraft []sim.Aircraft, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.DeleteAircraft", &DeleteAircraftListArgs{
+		ControllerToken: p.ControllerToken,
+		Aircraft:        aircraft,
+	}, update, nil)
+}
+
 func (p *proxy) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, result *AircraftCommandsResult) *rpc.Call {
 	return p.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: p.ControllerToken,
