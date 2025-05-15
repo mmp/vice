@@ -655,7 +655,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
 		for _, trk := range tracks {
-			if sp.TrackState[trk.ADSBCallsign].MSAW {
+			if sp.TrackState[trk.ADSBCallsign].MSAW && trk.IsAssociated() && !trk.FlightPlan.DisableMSAW {
 				msaw = append(msaw, trk)
 			}
 		}
