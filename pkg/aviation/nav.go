@@ -2732,6 +2732,39 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 	}
 }
 
+func (nav *Nav) ResumeOwnNavigation() PilotResponse {
+	if nav.Altitude.Assigned == nil && nav.Speed.Assigned == nil && nav.Speed.AfterAltitude == nil &&
+		nav.Heading.Assigned == nil {
+	}
+
+	nav.Altitude = NavAltitude{}
+	nav.Speed = NavSpeed{}
+	nav.Heading = NavHeading{}
+	nav.DeferredHeading = nil
+
+	if len(nav.Waypoints) > 1 {
+		// Find the route segment we're closest to then go direct to the
+		// end of it.  In some cases for the first segment maybe it's
+		// preferable to go to the first fix but it's a little unclear what
+		// the criteria should be.
+		minDist := float32(1000000)
+		startIdx := 0
+		pac := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+		for i := 0; i < len(nav.Waypoints)-1; i++ {
+			wp0, wp1 := nav.Waypoints[i], nav.Waypoints[i+1]
+			p0 := math.LL2NM(wp0.Location, nav.FlightState.NmPerLongitude)
+			p1 := math.LL2NM(wp1.Location, nav.FlightState.NmPerLongitude)
+			if d := math.PointSegmentDistance(pac, p0, p1); d < minDist {
+				minDist = d
+				startIdx = i + 1
+			}
+		}
+		fmt.Printf("direct to idx %d\n", startIdx)
+		nav.Waypoints = nav.Waypoints[startIdx:]
+	}
+	return PilotResponse{Message: rand.Sample(nav.Rand, "own navigation", "resuming own navigation")}
+}
+
 func (nav *Nav) InterceptedButNotCleared() bool {
 	return nav.Approach.InterceptState == OnApproachCourse && !nav.Approach.Cleared
 }

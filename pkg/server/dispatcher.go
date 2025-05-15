@@ -460,7 +460,6 @@ func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.Stat
 	}
 }
 
-// DeleteAircraft deletes specific aircraft provided in the list
 func (sd *Dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -515,6 +514,11 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 				}
 			} else if command == "CVS" {
 				if err := s.ClimbViaSID(ctrl.tcp, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
+				if err := s.ContactController(ctrl.tcp, sim.ACID(callsign), command[2:]); err != nil {
 					rewriteError(err)
 					return nil
 				}
@@ -666,7 +670,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 		case 'F':
 			if command == "FC" {
-				if err := s.HandoffControl(ctrl.tcp, sim.ACID(callsign) /* HAX */); err != nil {
+				if err := s.ContactTrackingController(ctrl.tcp, sim.ACID(callsign) /* HAX */); err != nil {
 					rewriteError(err)
 					return nil
 				}
@@ -745,7 +749,12 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			}
 
 		case 'R':
-			if l := len(command); l > 2 && command[l-1] == 'D' {
+			if command == "RON" {
+				if err := s.ResumeOwnNavigation(ctrl.tcp, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			} else if l := len(command); l > 2 && command[l-1] == 'D' {
 				// turn right x degrees
 				if deg, err := strconv.Atoi(command[1 : l-1]); err != nil {
 					rewriteError(err)

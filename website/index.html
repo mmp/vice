@@ -79,7 +79,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Commands</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions</a></li>
 
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-installation"><span class="theme-icon-holder me-2"><i class="fas fa-arrow-down"></i></span>Installation</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#install-windows">Windows</a></li>
@@ -469,13 +469,15 @@ Y90.
           </section>
 
 	  <section class="docs-section" id="atc-commands">
-            <h2 class="section-heading">ATC Commands</h2>
+            <h2 class="section-heading">ATC Instructions</h2>
 
             <p>A variety of instructions can be issued to aircraft by an aircraft controller.
               To issue an instruction, first press the <code>[TAB]</code> key.
               This will place the STARS radar into "target generation" mode and the characters "TG"
               will appear above the text input area (which is by default on the left side of the STARS
-              window, towards the top.</p>
+              window, towards the top.  STARS reverts to normal command entry mode after a valid ATC
+              instruction is entered, though target generation can be locked by pressing <code>[SHIFT][TAB]</code>.
+            </p>
             <p>The commands below can then be entered to issue control commands to aircraft.
               As you enter commands, they will be shown in the STARS input area.
               You can correct errors with the backspace key or press the <code>[ESCAPE]</code> key
@@ -501,6 +503,7 @@ Y90.
               To open a window that shows the available ATC commands when using <i>vice</i>,
               click the <i class="fas fa-keyboard"></i> button in the top menubar.
             </p>
+            <p>The following commands relate to the aircraft's lateral route:</p>
 
               <table class="table table-bordered">
                 <thead>
@@ -551,16 +554,24 @@ Y90.
                     <td><code>DLENDY/H180</code></td>
                   </tr>
                   <tr>
-                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i></td>
-                    <td><p>Directs the aircraft to cross the specified fix at the given altitude and speed.
-                      Either one or both of <code>A</code>
-                        and <code>S</code> may be specified.</p>
-                      <p>Altitudes may be given as single altitudes (corresponding to
-                      "at"), an altitude and a plus sign ("at or above"),
-                      an altitude and a minus sign ("at or below"), or a
-                      range of altitudes separated by a minus sign ("between").</p></td>
-                    <td><code>CCAMRN/A110+</code></td>
+                    <td><code>SH</code></td>
+                    <td>Directs the aircraft to say its current heading.</td>
+                    <td><code>SH</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+            <p>And these commands are related to altitude:</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>C</code><i>alt</i></td>
                     <td>Directs the aircraft to climb to the specified
@@ -607,6 +618,46 @@ Y90.
                     <td><code>EC</code></td>
                   </tr>
                   <tr>
+                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i></td>
+                    <td><p>Directs the aircraft to cross the specified fix at the given altitude and speed.
+                      Either one or both of <code>A</code>
+                        and <code>S</code> may be specified.</p>
+                      <p>Altitudes may be given as single altitudes (corresponding to
+                      "at"), an altitude and a plus sign ("at or above"),
+                      an altitude and a minus sign ("at or below"), or a
+                      range of altitudes separated by a minus sign ("between").</p></td>
+                    <td><code>CCAMRN/A110+</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>CVS</code></td>
+                    <td>Directs a departure to "climb via the SID".</td>
+                    <td><code>CVS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>DVS</code></td>
+                    <td>Directs an arrival to "descend via the STAR".</td>
+                    <td><code>DVS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SA</code></td>
+                    <td>Directs the aircraft to say its current altitude.</td>
+                    <td><code>SA</code></td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <p>These commands are for aircraft speed:</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
                     <td><code>S</code><i>knots</i></td>
                     <td>Gives the aircraft a speed restriction.
                       If the restriction is given after an aircraft is cleared for an approach,
@@ -640,16 +691,20 @@ Y90.
                     <td>Directs the aircraft to say its indicated airspeed.</td>
                     <td><code>SS</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <p>The transponder is managed using these commands:</p>
+
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td><code>SH</code></td>
-                    <td>Directs the aircraft to say its current heading.</td>
-                    <td><code>SH</code></td>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
                   </tr>
-                  <tr>
-                    <td><code>SA</code></td>
-                    <td>Directs the aircraft to say its current altitude.</td>
-                    <td><code>SA</code></td>
-                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>SQ</code><i>code</i></td>
                     <td>Instructs the aircraft to squawk the given beacon code.</td>
@@ -670,6 +725,56 @@ Y90.
                     <td>Directs the aircraft to turn on their transponder and squawk mode-A.</td>
                     <td><code>SQON</code></td>
                   </tr>
+                  <tr>
+                    <td><code>ID</code></td>
+                    <td>Instructs the aircraft to "ident".</td>
+                    <td><code>ID</code></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p>And these commands are instructions related to changing radio frequencies and contacting different controllers:</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>FC</code></td>
+                    <td>"Frequency change": change radio frequency to the controller the aircraft was handed off to
+                      and contact them.</td>
+                    <td><code>FC</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>CT</code><i>TCP</i></td>
+                    <td>Contact the controller with the specified TCP. This is generally used for VFR aircraft that contact
+                      the wrong controller asking for flight following.</td>
+                    <td><code>CT2J</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>TO</code></td>
+                    <td>Directs an arrival to contact the tower.</td>
+                    <td><code>TO</code></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p>A variety of commands are available related to approaches&mdash;specifying them and clearing aircraft for them.</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>E</code><i>approach</i></td>
                     <td>Tells the aircraft to expect the specified
@@ -709,26 +814,39 @@ Y90.
                     but not descend until it is cleared for the approach.)</td>
                     <td><code>I</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <p>For VFR aircraft that have been given vectors or altitude constraints, an instruction is available to put them back on course.</p>
+
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td><code>CVS</code></td>
-                    <td>Directs a departure to "climb via the SID".</td>
-                    <td><code>CVS</code></td>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
                   </tr>
+                </thead>
+                <tbody>
                   <tr>
-                    <td><code>DVS</code></td>
-                    <td>Directs an arrival to "descend via the STAR".</td>
-                    <td><code>DVS</code></td>
+                    <td><code>RON</code></td>
+                    <td>"Resume own navigation".</td>
+                    <td><code>RON</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <p>Finally, a few miscellaneous commands are available to control the simulation.</p>
+
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td><code>TO</code></td>
-                    <td>Directs an arrival to contact the tower.</td>
-                    <td><code>TO</code></td>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
                   </tr>
-                  <tr>
-                    <td><code>ID</code></td>
-                    <td>Instructs the aircraft to "ident".</td>
-                    <td><code>ID</code></td>
-                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>X</code></td>
                     <td>Deletes the specified aircraft from the simulation. This command is useful when one starts going down the tubes.</td>

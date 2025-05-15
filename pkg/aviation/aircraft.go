@@ -270,6 +270,14 @@ func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
 	return ac.transmitResponse(ac.Nav.DescendViaSTAR())
 }
 
+func (ac *Aircraft) ResumeOwnNavigation() []RadioTransmission {
+	if ac.FlightPlan.Rules == FlightRulesIFR {
+		return ac.readbackUnexpected("unable. We're IFR")
+	} else {
+		return ac.transmitResponse(ac.Nav.ResumeOwnNavigation())
+	}
+}
+
 func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.

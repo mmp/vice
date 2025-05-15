@@ -998,6 +998,7 @@ altitude. (*TS* = 'then speed')`, "*TS210*"},
 	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
 	[3]string{"*TO*", `"Contact tower"`, "*TO*"},
 	[3]string{"*FC*", `"Contact _ctrl_ on _freq_, where _ctrl_ is the controller who has the track and _freq_ is their frequency."`, "*FC*"},
+	[3]string{"*CT_tcp*", `"Contact the controller identified by TCP _tcp_."`, "*CT2J*"},
 	[3]string{"*X*", "(Deletes the aircraft.)", "*X*"},
 }
 
@@ -1028,6 +1029,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
 	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
+	[3]string{"*RON*", `"Resume own navigation (VFR)"`, "*RON*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
 }
 

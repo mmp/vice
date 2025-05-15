@@ -634,7 +634,7 @@ func (s *Sim) handoffTrack(fp *STARSFlightPlan, toTCP string) {
 	}
 }
 
-func (s *Sim) HandoffControl(tcp string, acid ACID) error {
+func (s *Sim) ContactTrackingController(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -646,52 +646,72 @@ func (s *Sim) HandoffControl(tcp string, acid ACID) error {
 			return nil
 		},
 		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
-			var radioTransmissions []av.RadioTransmission
-			// Immediately respond to the current controller that we're
-			// changing frequency.
-			if octrl, ok := s.State.Controllers[sfp.TrackingController]; ok {
-				if sfp.TrackingController == tcp {
-					radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-						Controller: sfp.ControllingController,
-						Message:    "Unable, we are already on " + octrl.Frequency.String(),
-						Type:       av.RadioTransmissionReadback,
-					})
-					return radioTransmissions
-				}
-				bye := rand.Sample(s.Rand, "good day", "seeya")
-				contact := rand.Sample(s.Rand, "contact ", "over to ", "")
-				goodbye := contact + octrl.RadioName + " on " + octrl.Frequency.String() + ", " + bye
-				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-					Controller: sfp.ControllingController,
-					Message:    goodbye,
-					Type:       av.RadioTransmissionReadback,
-				})
-			} else {
-				radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-					Controller: sfp.ControllingController,
-					Message:    "goodbye",
-					Type:       av.RadioTransmissionReadback,
-				})
-			}
-
-			s.eventStream.Post(Event{
-				Type:           HandoffControlEvent,
-				FromController: sfp.ControllingController,
-				ToController:   sfp.TrackingController,
-				ACID:           acid,
-			})
-
-			// Take away the current controller's ability to issue control
-			// commands.
-			sfp.ControllingController = ""
-
-			// In 5-10 seconds, have the aircraft contact the new controller
-			// (and give them control only then).
-			wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
-			s.enqueueControllerContact(ac.ADSBCallsign, sfp.TrackingController, wait)
-
-			return radioTransmissions
+			return s.contactController(tcp, sfp, ac, sfp.TrackingController)
 		})
+}
+
+func (s *Sim) ContactController(tcp string, acid ACID, toTCP string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchFlightPlanCommand(tcp, acid,
+		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) error {
+			if sfp.ControllingController != tcp {
+				return av.ErrOtherControllerHasTrack
+			}
+			return nil
+		},
+		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
+			return s.contactController(tcp, sfp, ac, toTCP)
+		})
+}
+
+func (s *Sim) contactController(fromTCP string, sfp *STARSFlightPlan, ac *Aircraft, toTCP string) []av.RadioTransmission {
+	var radioTransmissions []av.RadioTransmission
+	// Immediately respond to the current controller that we're
+	// changing frequency.
+	if octrl, ok := s.State.Controllers[toTCP]; ok {
+		if toTCP == fromTCP {
+			radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+				Controller: sfp.ControllingController,
+				Message:    "Unable, we are already on " + octrl.Frequency.String(),
+				Type:       av.RadioTransmissionReadback,
+			})
+			return radioTransmissions
+		}
+		bye := rand.Sample(s.Rand, "good day", "seeya")
+		contact := rand.Sample(s.Rand, "contact ", "over to ", "")
+		goodbye := contact + octrl.RadioName + " on " + octrl.Frequency.String() + ", " + bye
+		radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+			Controller: sfp.ControllingController,
+			Message:    goodbye,
+			Type:       av.RadioTransmissionReadback,
+		})
+	} else {
+		radioTransmissions = append(radioTransmissions, av.RadioTransmission{
+			Controller: sfp.ControllingController,
+			Message:    "goodbye",
+			Type:       av.RadioTransmissionReadback,
+		})
+	}
+
+	s.eventStream.Post(Event{
+		Type:           HandoffControlEvent,
+		FromController: sfp.ControllingController,
+		ToController:   toTCP,
+		ACID:           sfp.ACID,
+	})
+
+	// Take away the current controller's ability to issue control
+	// commands.
+	sfp.ControllingController = ""
+
+	// In 5-10 seconds, have the aircraft contact the new controller
+	// (and give them control only then).
+	wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
+	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, wait)
+
+	return radioTransmissions
 }
 
 func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
@@ -1259,6 +1279,17 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 
 }
 
+func (s *Sim) ResumeOwnNavigation(tcp string, callsign av.ADSBCallsign) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+			return ac.ResumeOwnNavigation()
+		})
+
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
@@ -1300,8 +1331,12 @@ func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk,
 func (s *Sim) processEnqueued() {
 	s.FutureControllerContacts = util.FilterSliceInPlace(s.FutureControllerContacts,
 		func(c FutureControllerContact) bool {
-			if s.State.SimTime.After(c.Time) {
-				if ac, ok := s.Aircraft[c.ADSBCallsign]; ok && ac.IsAssociated() {
+			if !s.State.SimTime.After(c.Time) {
+				return true // keep it in the slice
+			}
+
+			if ac, ok := s.Aircraft[c.ADSBCallsign]; ok {
+				if ac.IsAssociated() {
 					ac.STARSFlightPlan.ControllingController = c.TCP
 					r := []av.RadioTransmission{av.RadioTransmission{
 						Controller: c.TCP,
@@ -1317,10 +1352,13 @@ func (s *Sim) processEnqueued() {
 					if ac.IsDeparture() && !human {
 						s.enqueueDepartOnCourse(ac.ADSBCallsign)
 					}
+				} else {
+					if ac.RequestedFlightFollowing {
+						s.requestFlightFollowing(ac, c.TCP)
+					}
 				}
-				return false // remove it from the slice
 			}
-			return true // keep it in the slice
+			return false // remove it from the slice
 		})
 
 	s.FutureOnCourse = util.FilterSliceInPlace(s.FutureOnCourse,
