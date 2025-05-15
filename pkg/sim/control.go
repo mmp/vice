@@ -165,9 +165,6 @@ func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 				Message: fmt.Sprintf("%s deleted %s", tcp, ac.ADSBCallsign),
 			})
 
-			s.lg.Info("deleted aircraft", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
-				slog.String("controller", tcp))
-
 			s.deleteAircraft(ac)
 
 			return nil
@@ -189,6 +186,8 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 		delete(s.PointOuts, fp.ACID)
 		s.deleteFlightPlan(fp)
 	}
+
+	s.lg.Info("deleted aircraft", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 }
 
 func (s *Sim) DeleteAircraftSlice(tcp string, aircraft []Aircraft) error {
@@ -203,14 +202,19 @@ func (s *Sim) DeleteAircraftSlice(tcp string, aircraft []Aircraft) error {
 }
 
 func (s *Sim) DeleteAllAircraft(tcp string) error {
-	for cs := range s.Aircraft {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcp {
+		return av.ErrOtherControllerHasTrack
+	}
+
+	for _, ac := range s.Aircraft {
 		// Only delete airborne aircraft; leave all of the ones at the
 		// gate, etc., so we don't have a bubble of no departures for a
 		// long time while the departure queues refill.
-		if s.Aircraft[cs].IsAirborne() {
-			if err := s.DeleteAircraft(tcp, cs); err != nil {
-				return err
-			}
+		if ac.IsAirborne() {
+			s.deleteAircraft(ac)
 		}
 	}
 
