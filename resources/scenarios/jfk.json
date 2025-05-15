@@ -5815,6 +5815,83 @@
       "SARDI",
       "ZIGGI"
   ],
+  "vfr_reporting_points": [
+    {
+      "description": "Captree Bridge",
+      "radius": 5,
+      "center": "N040.37.54.540,W073.15.45.126"
+    },
+    {
+      "description": "Kennedy",
+      "radius": 5,
+      "center": "KJFK"
+    },
+    {
+      "description": "Deer Park VOR",
+      "radius": 7.5,
+      "center": "DPK"
+    },
+    {
+      "description": "Jones Beach Monument",
+      "radius": 7.5,
+      "center": "N040.35.36.360,W073.30.27.465"
+    },
+    {
+      "description": "Macarthur",
+      "radius": 7.5,
+      "center": "KISP"
+    },
+    {
+      "description": "Republic",
+      "radius": 5,
+      "center": "KFRG"
+    },
+    {
+      "description": "Calverton VOR",
+      "radius": 7.5,
+      "center": "CCC"
+    },
+    {
+      "description": "Canarsie VOR",
+      "radius": 7.5,
+      "center": "CRI"
+    },
+    {
+      "description": "Sandy Hook",
+      "radius": 7.5,
+      "center": "N040.28.01.251,W074.00.10.574"
+    },
+    {
+      "description": "Colt's Neck VOR",
+      "radius": 7.5,
+      "center": "COL"
+    },
+    {
+      "description": "Port Jefferson",
+      "radius": 7.5,
+      "center": "N040.57.34.650,W073.05.16.983"
+    },
+    {
+      "description": "golf course West of Grabeski",
+      "radius": 4,
+      "center": "N040.49.46.166,W072.41.22.360"
+    },
+    {
+      "description": "Brookhaven",
+      "radius": 6,
+      "center": "KHWV"
+    },
+    {
+      "description": "Smith Point Park",
+      "radius": 5,
+      "center": "N040.44.31.833,W072.52.31.428"
+    },
+    {
+      "description": "Robert Moses Causeway",
+      "radius": 4,
+      "center": "N040.40.29.406,W073.16.16.437"
+    }
+  ],
   "scenarios": {
     "KJFK Depart 13L/R Land 13L": {
       "arrival_runways": [

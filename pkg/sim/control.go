@@ -53,6 +53,7 @@ func (s *Sim) dispatchControlledAircraftCommand(tcp string, callsign av.ADSBCall
 		func(tcp string, ac *Aircraft) error {
 			if ac.IsUnassociated() {
 				if ac.PreArrivalDropController == tcp {
+					// Still allow commands to arrivals on short final.
 					return nil
 				}
 				return ErrTrackIsNotActive

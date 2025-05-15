@@ -265,9 +265,7 @@ Y90.
               <p>There is a <i>discord</i> server for <i>vice</i>: the <a href="https://discord.gg/y993vgQxhY">Vice ATC Simulator</a> server,
                 for general discussion, bug reports and feature requests, and for discussing facility engineering.
               </p>
-              <p>
-                There is a short <a href="https://youtu.be/MNFpFaT1k7s">video overview</a> that gives a tour of <i>vice</i>. (Note: this video was recorded with an older version of <i>vice</i>, so some details are different in the latest version.)
-              </p>
+              <p>Documentation for the current beta build of vice (may be) found <a href="beta/index.html">here.</a></p>
 	    </section><!--//docs-intro-->
 	  </header>
 
@@ -6028,6 +6026,21 @@ how it simulates aircraft or the STARS interface.
                 <td>String</td>
                 <td>Name of the ATCT/TRACON that the scenario group is associated with. This is used to show all scenarios for a given ATCT/TRACON together in the UI.</td>
               </tr>
+              <tr>
+                <td>"vfr_reporting_points"</td>
+                <td>Array of objects</td>
+                <td>Each object specifies a VFR reporting point and a volume of airspace associated with it. VFR aircraft
+                  must be inside such a volume to be able to call and ask for flight following.
+                  VFR reporting point objects have the same members as <a href="#fe-stars-filters">Filter Regions</a>, with
+                  the following differences:
+                  <ul>
+                    <li>The "description" field is used as the location that they reference when they report their position.</li>
+                    <li>If not specified, the "type" is set to "circle".</li>
+                    <li>If the type of airspace volume is "circle" and no radius is specified, a default radius of 5nm is used.</li>
+                  </ul>
+                </td>
+              </tr>
+              
             </tbody>
               </table>
 
@@ -6865,18 +6878,18 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <p><i>vice</i> allows the specification of VFR "distractor" aircraft in scenarios;
               this provides realistic extra clutter in the scope and sometimes aircraft that need to be
               accounted for when vectoring IFR aircraft.
-              Currently there is no interaction with them&mdash;they won't call up for flight following or Bravo
-              clearances, but will fly around and do their thing.
-              (Flight following and such will come at some point in the future.)
+              If "vfr_reporting_points" are specified in the <a href="#fe-scenario-groups">Scenario Group</a>,
+              then VFR aircraft will periodically call asking for flight following.
               For now, <i>vice</i> ensures that VFR aircraft remain clear of B and C class airspace.
             </p>
 
-            <p>VFR distractors are specified using the "vfr" field in an airport's specification object in a scenario JSON file.
+            <p>VFR aircraft are specified using the "vfr" field in an airport's specification object in a scenario JSON file.
               They can either be specified with a specific route to fly, or it is possible to specify that they should
               fly a random route that ends up at one of the other airports that has VFR departures.
               In practice, it works well to have VFR departures both from class D and uncontrolled airports inside a TRACON but
               also from such airports up to 30-50 miles outside the TRACON; this gives good variety of both flights within
-              the TRACON but also overflights, departures that land outside the TRACON, and arrivals that land within it. 
+              the TRACON but also overflights, departures that land outside the TRACON, and arrivals that land within it.
+              The following values can be specified in an airport's "vfr" object:
             </p>
             
             <table class="table">

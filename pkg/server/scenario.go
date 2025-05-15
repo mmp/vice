@@ -25,16 +25,17 @@ import (
 )
 
 type ScenarioGroup struct {
-	TRACON           string                     `json:"tracon"`
-	Name             string                     `json:"name"`
-	Airports         map[string]*av.Airport     `json:"airports"`
-	Fixes            map[string]math.Point2LL   `json:"-"`
-	FixesStrings     util.OrderedMap            `json:"fixes"`
-	Scenarios        map[string]*Scenario       `json:"scenarios"`
-	DefaultScenario  string                     `json:"default_scenario"`
-	ControlPositions map[string]*av.Controller  `json:"control_positions"`
-	Airspace         av.Airspace                `json:"airspace"`
-	InboundFlows     map[string]*av.InboundFlow `json:"inbound_flows"`
+	TRACON             string                     `json:"tracon"`
+	Name               string                     `json:"name"`
+	Airports           map[string]*av.Airport     `json:"airports"`
+	Fixes              map[string]math.Point2LL   `json:"-"`
+	FixesStrings       util.OrderedMap            `json:"fixes"`
+	Scenarios          map[string]*Scenario       `json:"scenarios"`
+	DefaultScenario    string                     `json:"default_scenario"`
+	ControlPositions   map[string]*av.Controller  `json:"control_positions"`
+	Airspace           av.Airspace                `json:"airspace"`
+	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
+	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
@@ -858,6 +859,10 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		}
 	}
 
+	for i := range sg.VFRReportingPoints {
+		sg.VFRReportingPoints[i].PostDeserialize(sg, sg.ControlPositions, e)
+	}
+
 	// Do after airports!
 	if len(sg.Scenarios) == 0 {
 		e.ErrorString("No \"scenarios\" specified")
@@ -1413,7 +1418,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	}
 	for name, scenario := range sg.Scenarios {
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
-			scenario.InboundFlowDefaultRates)
+			scenario.InboundFlowDefaultRates, len(sg.VFRReportingPoints) > 0)
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
 			LaunchConfig:        lc,

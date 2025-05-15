@@ -159,6 +159,12 @@ func (sc *STARSComputer) Update(s *Sim) {
 					// For multi-controller, resolve to the one covering the
 					// departure position based on who is signed in now.
 					fp.TrackingController = s.State.ResolveController(fp.TrackingController)
+					if fp.ManuallyCreated {
+						// If an aircraft tagged up on a manually created
+						// FP, assume that they called and asked for flight
+						// following and so are already on frequency.
+						fp.ControllingController = fp.TrackingController
+					}
 					if s.State.IsLocalController(fp.TrackingController) {
 						fp.LastLocalController = fp.TrackingController
 					}

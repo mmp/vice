@@ -8,6 +8,8 @@ import (
 	"log/slog"
 	"maps"
 	"slices"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/brunoga/deep"
@@ -44,6 +46,7 @@ type Sim struct {
 	DepartureState map[string]map[string]*RunwayLaunchState
 	// Key is inbound flow group name
 	NextInboundSpawn map[string]time.Time
+	NextVFFRequest   time.Time
 
 	Handoffs  map[ACID]Handoff
 	PointOuts map[ACID]PointOut
@@ -98,6 +101,8 @@ type Aircraft struct {
 	InDepartureFilter bool
 
 	FirstSeen time.Time
+
+	RequestedFlightFollowing bool
 }
 
 type AircraftDisplayState struct {
@@ -158,13 +163,14 @@ type NewSimConfiguration struct {
 	TRACON      string
 	Description string
 
-	Airports         map[string]*av.Airport
-	PrimaryAirport   string
-	DepartureRunways []DepartureRunway
-	ArrivalRunways   []ArrivalRunway
-	InboundFlows     map[string]*av.InboundFlow
-	LaunchConfig     LaunchConfig
-	Fixes            map[string]math.Point2LL
+	Airports           map[string]*av.Airport
+	PrimaryAirport     string
+	DepartureRunways   []DepartureRunway
+	ArrivalRunways     []ArrivalRunway
+	InboundFlows       map[string]*av.InboundFlow
+	LaunchConfig       LaunchConfig
+	Fixes              map[string]math.Point2LL
+	VFRReportingPoints []av.VFRReportingPoint
 
 	ControlPositions   map[string]*av.Controller
 	PrimaryController  string
@@ -972,6 +978,8 @@ func (s *Sim) updateState() {
 			}
 		}
 
+		s.possiblyRequestFlightFollowing()
+
 		// Handle assorted deferred radio calls.
 		s.processEnqueued()
 
@@ -980,6 +988,149 @@ func (s *Sim) updateState() {
 		s.ERAMComputer.Update(s)
 		s.STARSComputer.Update(s)
 	}
+}
+
+func (s *Sim) RequestFlightFollowing(tcp string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.requestRandomFlightFollowing(tcp)
+}
+
+func (s *Sim) requestRandomFlightFollowing(tcp string) error {
+	isVFFCandidate := func(ac *Aircraft) bool {
+		if ac.IsAssociated() || ac.FlightPlan.Rules != av.FlightRulesVFR || ac.RequestedFlightFollowing || !ac.IsAirborne() {
+			return false
+		}
+		if ac.Altitude() < ac.DepartureAirportElevation()+500 &&
+			math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 1.5 {
+			// Barely off the ground at the departure airport.
+			return false
+		}
+		if math.NMDistance2LL(ac.Position(), ac.ArrivalAirportLocation()) < 15 {
+			// It's landing soon, so never mind.
+			return false
+		}
+		for _, rp := range s.State.VFRReportingPoints {
+			if rp.Inside(ac.Position(), int(ac.Altitude())) {
+				return true
+			}
+		}
+		return false
+	}
+
+	ac, ok := rand.SampleSeq(s.Rand, util.FilterSeq(maps.Values(s.Aircraft), isVFFCandidate))
+	if !ok {
+		return ErrNoVFRAircraftForFlightFollowing
+	}
+
+	s.requestFlightFollowing(ac, tcp)
+
+	return nil
+}
+
+func (s *Sim) possiblyRequestFlightFollowing() {
+	if s.prespawn || s.State.SimTime.Before(s.NextVFFRequest) {
+		return
+	}
+
+	// Take a random controller to make the request to
+	tcp, ok := rand.SampleSeq(s.Rand, maps.Keys(s.humanControllers))
+	if !ok {
+		s.lg.Errorf("no human controllers for flight following request?")
+		return
+	}
+
+	// Attempt to find an aircraft and make a request
+	if err := s.requestRandomFlightFollowing(tcp); err != nil {
+		// No candidates; back off a bit before trying again
+		s.NextVFFRequest = s.State.SimTime.Add(15 * time.Second)
+	} else {
+		s.NextVFFRequest = s.State.SimTime.Add(randomWait(float32(s.State.LaunchConfig.VFFRequestRate), false, s.Rand))
+	}
+}
+
+func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
+	ac.RequestedFlightFollowing = true
+
+	closestReportingPoint := func(ac *Aircraft) (string, string, float32) {
+		var closest *av.VFRReportingPoint
+		dist := float32(1000000)
+		var center math.Point2LL
+		for _, rp := range s.State.VFRReportingPoints {
+			if !rp.Inside(ac.Position(), int(ac.Altitude())) {
+				continue
+			}
+
+			var d float32
+			c := func() math.Point2LL {
+				if rp.PolygonBounds != nil {
+					return rp.PolygonBounds.Center()
+				} else {
+					return rp.Center
+				}
+			}()
+			d = math.NMDistance2LL(ac.Position(), c)
+			if d != 0 && d < dist {
+				dist = d
+				center = c
+				closest = &rp
+			}
+		}
+
+		if closest != nil {
+			// Possibly override with the departure airport, if we're still
+			// close to it.  Note that we don't automatically consider the
+			// departure airport as a candidate as it may be well outside
+			// the TRACON.
+			if d := math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()); d < dist {
+				hdg := math.Heading2LL(ac.DepartureAirportLocation(), ac.Position(), s.State.NmPerLongitude,
+					s.State.MagneticVariation)
+				return s.airportName(ac.FlightPlan.DepartureAirport), math.Compass(hdg), d
+			} else {
+				hdg := math.Heading2LL(center, ac.Position(), s.State.NmPerLongitude, s.State.MagneticVariation)
+				return closest.Description, math.Compass(hdg), dist
+			}
+		}
+		return "", "", 0
+	}
+
+	msg := "we're a " + av.DB.AircraftTypeAliases[ac.FlightPlan.AircraftType] + " (" + ac.FlightPlan.AircraftType + ")"
+
+	rpdesc, rpdir, dist := closestReportingPoint(ac)
+	if dist < 1 {
+		msg += ", overhead " + rpdesc
+	} else {
+		msg += ", " + strconv.Itoa(int(dist+0.5)) + " miles " + rpdir + " of " + rpdesc
+	}
+
+	msg += ", " + math.Compass(ac.Heading()) + "bound"
+
+	msg += " on our way to " + s.airportName(ac.FlightPlan.ArrivalAirport)
+
+	msg += ", at " + av.FormatAltitude(ac.Altitude())
+	msg += " looking for flight following"
+
+	s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
+		Controller: tcp,
+		Message:    msg,
+		Type:       av.RadioTransmissionContact,
+	}})
+}
+
+// Try to get a tidied up airport name for use in radio transmissions.
+func (s *Sim) airportName(icao string) string {
+	name := icao
+	if ap, ok := s.State.Airports[icao]; ok && ap.Name != "" {
+		name = ap.Name
+	} else if ap, ok := av.DB.Airports[icao]; ok && ap.Name != "" {
+		name = ap.Name
+	}
+
+	for _, extra := range []string{"Airport", "Field", "Strip", "Airstrip", "International"} {
+		name = strings.TrimRight(name, " "+extra)
+	}
+	return name
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {

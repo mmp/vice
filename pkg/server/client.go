@@ -482,6 +482,13 @@ func (c *ControlClient) ToggleSimPause() {
 	})
 }
 
+func (c *ControlClient) RequestFlightFollowing() {
+	c.pendingCalls = append(c.pendingCalls, &PendingCall{
+		Call:      c.proxy.RequestFlightFollowing(),
+		IssueTime: time.Now(),
+	})
+}
+
 func (c *ControlClient) FastForward() {
 	var update sim.StateUpdate
 	c.pendingCalls = append(c.pendingCalls,

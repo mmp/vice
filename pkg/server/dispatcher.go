@@ -100,6 +100,16 @@ func (sd *Dispatcher) TogglePause(token string, _ *struct{}) error {
 	}
 }
 
+func (sd *Dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return s.RequestFlightFollowing(ctrl.tcp)
+	}
+}
+
 func (sd *Dispatcher) FastForward(token string, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 

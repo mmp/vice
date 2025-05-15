@@ -595,6 +595,34 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	addAirspace(av.DB.BravoAirspace, "B")
 	addAirspace(av.DB.CharlieAirspace, "C")
 
+	// VFR reporting points
+	if len(ss.VFRReportingPoints) > 0 {
+		// Add a map with all of them
+		vm := sim.VideoMap{
+			Label:    "VFRREP",
+			Name:     "VFR REPORTING POINTS ALL",
+			Id:       asIdx,
+			Category: VideoMapProcessingAreas,
+		}
+		asIdx++
+		for _, f := range ss.VFRReportingPoints {
+			f.GenerateDrawCommands(&vm.CommandBuffer, ss.NmPerLongitude)
+		}
+		addMap(vm)
+
+		for _, f := range ss.VFRReportingPoints {
+			vm := sim.VideoMap{
+				Label:    strings.ToUpper(f.Id),
+				Name:     strings.ToUpper(f.Description) + fmt.Sprintf(" %d-%d", f.Floor, f.Ceiling),
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			}
+			asIdx++
+			f.GenerateDrawCommands(&vm.CommandBuffer, ss.NmPerLongitude)
+			addMap(vm)
+		}
+	}
+
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {

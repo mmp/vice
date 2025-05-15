@@ -93,8 +93,10 @@ type LaunchConfig struct {
 	DepartureRates     map[string]map[string]map[string]float32
 	DepartureRateScale float32
 
-	VFRDepartureRateScale float32
-	VFRAirports           map[string]*av.Airport
+	VFRDepartureRateScale  float32
+	VFRAirports            map[string]*av.Airport
+	VFFRequestRate         int32
+	HaveVFRReportingPoints bool
 
 	// inbound flow -> airport / "overflights" -> rate
 	InboundFlowRates            map[string]map[string]float32
@@ -105,12 +107,14 @@ type LaunchConfig struct {
 }
 
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports map[string]*av.Airport,
-	inbound map[string]map[string]int) LaunchConfig {
+	inbound map[string]map[string]int, haveVFRReportingPoints bool) LaunchConfig {
 	lc := LaunchConfig{
 		GoAroundRate:                0.05,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
 		VFRAirports:                 vfrAirports,
+		VFFRequestRate:              10,
+		HaveVFRReportingPoints:      haveVFRReportingPoints,
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
@@ -172,6 +176,10 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive, s.Rand))
 			}
 		}
+	}
+
+	if lc.VFFRequestRate != s.State.LaunchConfig.VFFRequestRate {
+		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 	}
 
 	s.State.LaunchConfig = lc
@@ -279,6 +287,8 @@ func (s *Sim) Prespawn() {
 	s.State.SimTime = time.Now()
 	s.lastUpdateTime = time.Now()
 
+	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
+
 	s.lg.Info("finished aircraft prespawn")
 }
 
@@ -379,6 +389,16 @@ func randomWait(rate float32, pushActive bool, r *rand.Rand) time.Duration {
 
 	avgSeconds := 3600 / rate
 	seconds := math.Lerp(r.Float32(), .85*avgSeconds, 1.15*avgSeconds)
+	return time.Duration(seconds * float32(time.Second))
+}
+
+// Wait from 0 up to the rate.
+func randomInitialWait(rate float32, r *rand.Rand) time.Duration {
+	if rate == 0 {
+		return 365 * 24 * time.Hour
+	}
+
+	seconds := r.Float32() * 3600 / rate
 	return time.Duration(seconds * float32(time.Second))
 }
 
@@ -834,7 +854,7 @@ func (d *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
 		return
 	}
 	d.IFRSpawnRate = r
-	d.NextIFRSpawn = s.State.SimTime.Add(randomWait(r*2, false, s.Rand))
+	d.NextIFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 	d.cullDepartures(s)
 }
 
@@ -843,7 +863,7 @@ func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 		return
 	}
 	d.VFRSpawnRate = r
-	d.NextVFRSpawn = s.State.SimTime.Add(randomWait(r*2, false, s.Rand))
+	d.NextVFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 	d.cullDepartures(s)
 }
 

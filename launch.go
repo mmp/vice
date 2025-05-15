@@ -700,6 +700,14 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 	// from being here initially.
 	changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
 
+	if !lc.HaveVFRReportingPoints {
+		imgui.BeginDisabled()
+	}
+	changed = imgui.InputIntV("Flight following request rate", &lc.VFFRequestRate, 0, 60, 0) || changed
+	if !lc.HaveVFRReportingPoints {
+		imgui.EndDisabled()
+	}
+
 	imgui.Separator()
 
 	return
@@ -1250,6 +1258,13 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}, 0)
 
 				imgui.Text(fmt.Sprintf("VFR Departures: %d total", ndep))
+
+				if imgui.Button("Request Flight Following") {
+					lc.client.RequestFlightFollowing()
+				}
+				if imgui.IsItemHovered() {
+					imgui.SetTooltip("Request VFR flight following from a random VFR aircraft")
+				}
 
 				nColumns := math.Min(2, len(lc.vfrDepartures))
 				if imgui.BeginTableV("vfrdep", int32(9*nColumns), flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {

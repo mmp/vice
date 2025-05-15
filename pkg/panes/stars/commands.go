@@ -4914,24 +4914,24 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string, instructor bool) []*sim.Track {
 	match := func(trk *sim.Track) bool {
 		if trk.IsUnassociated() {
+			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
+		} else {
+			fp := trk.FlightPlan
+			if !strings.HasSuffix(string(fp.ACID), suffix) {
+				return false
+			}
+
+			if instructor || fp.ControllingController == ctx.UserTCP {
+				return true
+			}
+
+			// Hold for release aircraft still in the list
+			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
+				trk.FlightPlan.ControllingController == "" {
+				return true
+			}
 			return false
 		}
-
-		fp := trk.FlightPlan
-		if !strings.HasSuffix(string(fp.ACID), suffix) {
-			return false
-		}
-
-		if instructor || fp.ControllingController == ctx.UserTCP {
-			return true
-		}
-
-		// Hold for release aircraft still in the list
-		if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
-			trk.FlightPlan.ControllingController == "" {
-			return true
-		}
-		return false
 	}
 	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
 }

@@ -21,6 +21,10 @@ func (p *proxy) TogglePause() *rpc.Call {
 	return p.Client.Go("Sim.TogglePause", p.ControllerToken, nil, nil)
 }
 
+func (p *proxy) RequestFlightFollowing() *rpc.Call {
+	return p.Client.Go("Sim.RequestFlightFollowing", p.ControllerToken, nil, nil)
+}
+
 func (p *proxy) FastForward(update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.FastForward", p.ControllerToken, update, nil)
 }

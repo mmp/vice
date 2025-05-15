@@ -181,6 +181,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		IsLocal:                 config.NewSimType == NewSimCreateLocal,
 		DepartureRunways:        sc.DepartureRunways,
 		ArrivalRunways:          sc.ArrivalRunways,
+		VFRReportingPoints:      sg.VFRReportingPoints,
 		ReportingPoints:         sg.ReportingPoints,
 		Description:             description,
 		MagneticVariation:       sg.MagneticVariation,

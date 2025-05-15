@@ -55,6 +55,8 @@ type State struct {
 	UserTCP           string
 	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
+	VFRReportingPoints []av.VFRReportingPoint
+
 	GenerationIndex int
 
 	DepartureRunways []DepartureRunway
@@ -122,6 +124,8 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		ArrivalRunways:   config.ArrivalRunways,
 		InboundFlows:     config.InboundFlows,
 		LaunchConfig:     config.LaunchConfig,
+
+		VFRReportingPoints: config.VFRReportingPoints,
 
 		Center:                   config.Center,
 		Range:                    config.Range,
