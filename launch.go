@@ -128,7 +128,14 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 	}
 
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+	var runningSims map[string]*server.RemoteSim
 	if c.mgr.RemoteServer != nil {
+		// Filter out full sims
+		runningSims = maps.Collect(util.FilterSeq2(maps.All(c.mgr.RemoteServer.GetRunningSims()),
+			func(name string, rs *server.RemoteSim) bool {
+				return len(rs.AvailablePositions) > 0
+			}))
+
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -158,15 +165,18 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
 
-			if len(c.mgr.RemoteServer.GetRunningSims()) == 0 {
+			if len(runningSims) == 0 {
 				imgui.BeginDisabled()
+				if c.NewSimType == server.NewSimJoinRemote {
+					c.NewSimType = server.NewSimCreateRemote
+				}
 			}
 			if imgui.RadioButtonIntPtr("Join multi-controller", &c.NewSimType, server.NewSimJoinRemote) &&
 				origType != server.NewSimJoinRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.displayError = nil
 			}
-			if len(c.mgr.RemoteServer.GetRunningSims()) == 0 {
+			if len(runningSims) == 0 {
 				imgui.EndDisabled()
 			}
 
@@ -373,8 +383,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		}
 	} else {
 		// Join remote
-		runningSims := c.mgr.RemoteServer.GetRunningSims()
-
 		rs, ok := runningSims[c.SelectedRemoteSim]
 		if !ok || c.SelectedRemoteSim == "" {
 			c.SelectedRemoteSim = util.SortedMapKeys(runningSims)[0]
