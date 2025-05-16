@@ -1538,6 +1538,10 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		if strings.ToLower(filepath.Base(path)) == "bdl.json" {
 			return nil
 		}
+		// And ditto for aac, which got split into two.
+		if strings.ToLower(filepath.Base(path)) == "aac.json" {
+			return nil
+		}
 
 		lg.Infof("%s: loading scenario", path)
 		s := loadScenarioGroup(fs, path, e)
