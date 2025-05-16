@@ -497,8 +497,8 @@ func parseMagneticGrid() MagneticGrid {
 	*/
 	mg := MagneticGrid{
 		MinLatitude:  17,
-		MaxLatitude:  50,
-		MinLongitude: -125,
+		MaxLatitude:  75,
+		MinLongitude: -180,
 		MaxLongitude: 150,
 		LatLongStep:  0.25,
 	}
