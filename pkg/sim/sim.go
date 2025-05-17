@@ -122,7 +122,6 @@ type Track struct {
 	ArrivalAirport            string
 	ArrivalAirportElevation   float32
 	ArrivalAirportLocation    math.Point2LL
-	IsAirborne                bool
 	OnExtendedCenterline      bool
 	OnApproach                bool
 	ATPAVolume                *av.ATPAVolume
@@ -632,6 +631,10 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 	update.Tracks = make(map[av.ADSBCallsign]*Track)
 	for _, callsign := range util.SortedMapKeys(s.Aircraft) {
 		ac := s.Aircraft[callsign]
+		if !s.isRadarVisible(ac) {
+			continue
+		}
+
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                ac.STARSFlightPlan,
@@ -641,7 +644,6 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
 			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
 			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
-			IsAirborne:                ac.IsAirborne(),
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
 			MVAsApply:                 ac.MVAsApply(),

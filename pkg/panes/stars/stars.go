@@ -1348,27 +1348,19 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 
 		if trk.IsUnsupportedDB() {
 			visible = true
-		} else if trk.IsAirborne {
-			if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
-				// visible unless if it's almost on the ground at the arrival or departure airport.
-				if trk.TrueAltitude < trk.DepartureAirportElevation+100 &&
-					math.NMDistance2LL(trk.Location, trk.DepartureAirportLocation) < 3 {
-					continue
-				} else if trk.TrueAltitude < trk.ArrivalAirportElevation+100 &&
-					math.NMDistance2LL(trk.Location, trk.ArrivalAirportLocation) < 3 {
+		} else if sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeFused {
+			// If it hasn't been culled server-side due to e.g. the surface tracking filters,
+			// we can see it.
+			visible = true
+		} else {
+			// Otherwise see if any of the radars can see it
+			for id, site := range ctx.FacilityAdaptation.RadarSites {
+				if single && ps.RadarSiteSelected != id {
 					continue
 				}
-				visible = true
-			} else {
-				// Otherwise see if any of the radars can see it
-				for id, site := range ctx.FacilityAdaptation.RadarSites {
-					if single && ps.RadarSiteSelected != id {
-						continue
-					}
 
-					if p, s, _ := site.CheckVisibility(trk.Location, int(trk.TrueAltitude)); p || s {
-						visible = true
-					}
+				if p, s, _ := site.CheckVisibility(trk.Location, int(trk.TrueAltitude)); p || s {
+					visible = true
 				}
 			}
 		}

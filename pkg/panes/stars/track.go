@@ -515,6 +515,15 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		sp.lastHistoryTrackUpdate = now
 		for _, trk := range tracks { // We only get radar tracks for visible aircraft
 			state := sp.TrackState[trk.ADSBCallsign]
+			if trk.IsTentative {
+				// No history tracks for tentative
+				continue
+			}
+			if trk.TypeOfFlight == av.FlightTypeDeparture && !trk.IsTentative && state.previousTrackTime.IsZero() {
+				// First tick after it's no longer tentative. Don't update history with the tentative track.
+				continue
+			}
+
 			idx := state.historyTracksIndex % len(state.historyTracks)
 			state.historyTracks[idx] = state.track
 			state.historyTracksIndex++
@@ -999,9 +1008,6 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	tracked, untracked := make(map[av.ADSBCallsign]sim.Track), make(map[av.ADSBCallsign]sim.Track)
 	for _, trk := range tracks {
-		if trk.IsAirborne {
-			continue
-		}
 		if trk.IsAssociated() {
 			tracked[trk.ADSBCallsign] = trk
 		} else {
