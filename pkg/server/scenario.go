@@ -663,13 +663,14 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	// Airports that (may) have controlled controlled departures or
 	// arrivals; we determine this by checking if they're in B, C, or D
 	// airspace, which is probably sufficient?
-	activeAirports := slices.Collect(
+	controlledAirports := slices.Collect(
 		util.Seq2Keys(
 			util.FilterSeq2(maps.All(sg.Airports), func(name string, ap *av.Airport) bool {
 				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
 			})))
+	allAirports := slices.Collect(maps.Keys(sg.Airports))
 
-	sg.STARSFacilityAdaptation.PostDeserialize(sg, activeAirports, e)
+	sg.STARSFacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))

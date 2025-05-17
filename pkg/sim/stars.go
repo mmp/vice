@@ -763,7 +763,7 @@ const (
 	LocalNonEnroute
 )
 
-func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []string, e *util.ErrorLogger) {
+func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
@@ -776,9 +776,9 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 
 	// Acquisition/Drop filters
 	makeDefaultAirportFilters := func(id string, description string, radius float32,
-		floor int, ceiling int) FilterRegions {
+		floor int, ceiling int, controlled bool) FilterRegions {
 		var regions FilterRegions
-		for _, apname := range airports {
+		for _, apname := range util.Select(controlled, controlledAirports, allAirports) {
 			ap, ok := av.DB.Airports[apname]
 			if !ok {
 				e.ErrorString("Airport %q not found", apname)
@@ -802,19 +802,19 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 	}
 
 	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 3, 0, 500)
+		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 3, 0, 500, true)
 	}
 	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 3, 0, 500)
+		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 3, 0, 500, true)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
-		fa.Filters.InhibitCA = makeDefaultAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000)
+		fa.Filters.InhibitCA = makeDefaultAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, true)
 	}
 	if len(fa.Filters.InhibitMSAW) == 0 {
-		fa.Filters.InhibitMSAW = makeDefaultAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000)
+		fa.Filters.InhibitMSAW = makeDefaultAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, true)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makeDefaultAirportFilters("SURF", "SURFACE TRACKING", 1.5, 0, 250)
+		fa.Filters.SurfaceTracking = makeDefaultAirportFilters("SURF", "SURFACE TRACKING", 1.5, 0, 250, false)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
