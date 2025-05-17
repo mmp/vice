@@ -1240,26 +1240,18 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
 
+	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	if !ok {
+		return nil, "", fmt.Errorf("invalid aircraft type: no performance data %q", ac.FlightPlan.AircraftType)
+	}
+
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 
 	base := math.Max(depap.Elevation, arrap.Elevation)
 	base = 1000 + 1000*(base/1000) // round to 1000s.
-	var alt int
-	randalt := func(n int) int { return base + (1+s.Rand.Intn(n))*1000 }
-	if dist == 0 {
-		// returning to same airport
-		alt = randalt(4)
-	} else if dist < 25 {
-		// short hop
-		alt = randalt(4)
-	} else if dist < 50 {
-		alt = randalt(8)
-	} else {
-		alt = randalt(16)
-	}
-	alt = math.Min(alt, 17000)
-	alt = math.Min(alt, int(av.DB.AircraftPerformance[acType].Ceiling))
-	alt += 500
+
+	ac.FlightPlan.Altitude = av.PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
+		s.State.MagneticVariation, s.Rand)
 
 	mid := math.Mid2f(depap.Location, arrap.Location)
 	if arrive == depart {
@@ -1329,13 +1321,20 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 				}
 			}()
 
-			// At or below so that they descend for the last one
-			ar := &av.AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}}
-			if i == nsteps-1 {
-				ar = &av.AltitudeRestriction{
-					Range: [2]float32{float32(arrap.Elevation) + 1500, float32(arrap.Elevation) + 2000}}
-			} else if i > nsteps/2 {
-				ar.Range[0] = 0 // at or below
+			// At for the first half, even if unattainable so that they climb
+			var ar *av.AltitudeRestriction
+			alt := float32(ac.FlightPlan.Altitude)
+			if i < nsteps/2 {
+				ar = &av.AltitudeRestriction{Range: [2]float32{alt, alt}}
+			} else {
+				if i < nsteps-1 {
+					// at or below to be able to start descending
+					ar = &av.AltitudeRestriction{Range: [2]float32{0, alt}}
+				} else {
+					// Last one--get down to the field
+					ar = &av.AltitudeRestriction{
+						Range: [2]float32{float32(arrap.Elevation) + 1500, float32(arrap.Elevation) + 2000}}
+				}
 			}
 
 			wps = append(wps, av.Waypoint{
@@ -1356,7 +1355,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	wps[len(wps)-1].Land = true
 
-	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, alt, randomizeAltitudeRange,
+	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.lg); err != nil {
 		return nil, "", err
 	}

@@ -389,7 +389,7 @@ func (ac *Aircraft) InitializeDeparture(ap *Airport, departureAirport string, de
 	return nil
 }
 
-func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt int,
+func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray,
 	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, wind WindModel,
 	lg *log.Logger) error {
 	wp := util.DuplicateSlice(wps)
@@ -400,7 +400,6 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *Airport, wps WaypointArray, alt i
 		return ErrUnknownAircraftType
 	}
 
-	ac.FlightPlan.Altitude = math.Min(alt, int(perf.Ceiling))
 	ac.TypeOfFlight = FlightTypeDeparture
 
 	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
@@ -556,26 +555,37 @@ func (ac *Aircraft) CWT() string {
 	return perf.Category.CWT
 }
 
-func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32, r *rand.Rand) (altitude int) {
+func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongitude float32, magneticVariation float32, r *rand.Rand) int {
 	// try to figure out direction of flight
 	dep, dok := DB.Airports[fp.DepartureAirport]
 	arr, aok := DB.Airports[fp.ArrivalAirport]
 	if !dok || !aok {
-		return 34000
+		if fp.Rules == FlightRulesIFR {
+			return 34000
+		} else {
+			return 12500
+		}
 	}
 
+	// Pick a base altitude in thousands and a sampling delta. Odd altitude
+	// for now; we deal with direction of flight later.
 	pDep, pArr := dep.Location, arr.Location
-	var alt, delta int
-	if math.NMDistance2LL(pDep, pArr) < 100 {
-		alt = 7
+	alt, delta := 0, 2
+	if math.NMDistance2LL(pDep, pArr) < 50 {
+		alt = 5
 		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			alt += 1
+			alt += 2
+		}
+	} else if math.NMDistance2LL(pDep, pArr) < 100 {
+		alt = 9
+		if dep.Elevation > 3000 || arr.Elevation > 3000 {
+			alt += 2
 		}
 	} else if math.NMDistance2LL(pDep, pArr) < 200 {
 		alt = 15
 		delta = 2
 		if dep.Elevation > 3000 || arr.Elevation > 3000 {
-			alt += 1
+			alt += 2
 		}
 	} else if math.NMDistance2LL(pDep, pArr) < 300 {
 		alt = 21
@@ -585,19 +595,32 @@ func PlausibleFinalAltitude(fp FlightPlan, perf AircraftPerformance, nmPerLongit
 		delta = 3
 
 	}
+
 	// Randomize the altitude a bit
 	alt = (alt - delta + r.Intn(2*delta+1))
 
-	altitude = alt * 1000
-	altitude = math.Min(altitude, int(perf.Ceiling))
+	// Round ceiling down to odd 1000s.
+	ceiling := int(perf.Ceiling) / 1000
+	if ceiling%2 == 0 {
+		ceiling--
+	}
+
+	// Enforce ceiling
+	alt = math.Min(alt, ceiling)
 
 	if math.Heading2LL(pDep, pArr, nmPerLongitude, magneticVariation) > 180 {
 		// Decrease rather than increasing so that we don't potentially go
 		// above the aircraft's ceiling.
-		altitude -= 1000
+		alt--
 	}
 
-	return
+	altitude := alt * 1000
+
+	if fp.Rules == FlightRulesVFR {
+		altitude += 500
+	}
+
+	return altitude
 }
 
 func (ac *Aircraft) IsDeparture() bool {
