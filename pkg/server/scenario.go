@@ -967,17 +967,11 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	for i := range fa.AirspaceAwareness {
 		rewrite(&fa.AirspaceAwareness[i].ReceivingController)
 	}
-	for cs, config := range fa.ControllerConfigs {
-		// Rewrite comma separated list of callsigns
-		tcps := strings.Split(cs, ",")
-		for i, cs := range tcps {
-			tcp := strings.TrimSpace(cs)
-			rewrite(&tcp)
-			tcps[i] = tcp
-		}
-
-		delete(fa.ControllerConfigs, cs)
-		fa.ControllerConfigs[strings.Join(tcps, ",")] = config
+	for position, config := range fa.ControllerConfigs {
+		// Rewrite controller
+		delete(fa.ControllerConfigs, position)
+		rewrite(&position)
+		fa.ControllerConfigs[position] = config
 	}
 
 	for _, flow := range sg.InboundFlows {

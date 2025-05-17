@@ -7253,7 +7253,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"default_maps"</td>
                 <td>Array of strings</td>
                 <td>The names of the initial video maps that should be displayed when this scenario is selected.
-                  Note that "default_maps" may not be used if "controller_configs" is specified in "stars_maps";
+                  Note that "default_maps" may not be used if "stars_maps" is specified in "controller_configs";
                   in that case controller-specific default maps can be specified there.
                 </td>
               </tr>
@@ -7417,8 +7417,8 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"controller_configs"</td>
                 <td>Object</td>
                 <td>Each entry specifies controller-specific configuration properties.
-                  The applicable control positions are specified via members given as a comma-separated string of TCP positions
-                  (e.g., "2G,2K"). The following properties may be specified for each one:
+                  The applicable control positions are specified via members given as a TCP position
+                  (e.g., "2G"). The following properties may be specified for each one:
                   <br>
                   <ul>
                     <li>"beacon_code_blocks": a string containing a comma-separated list of beacon code banks
