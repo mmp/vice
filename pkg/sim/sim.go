@@ -1097,25 +1097,45 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		return "", "", 0
 	}
 
-	msg := "we're a " + av.DB.AircraftTypeAliases[ac.FlightPlan.AircraftType] + " (" + ac.FlightPlan.AircraftType + ")"
+	var msgs []string
+	msgs = append(msgs, "we're a "+av.DB.AircraftTypeAliases[ac.FlightPlan.AircraftType]+" ("+ac.FlightPlan.AircraftType+")")
 
 	rpdesc, rpdir, dist := closestReportingPoint(ac)
 	if dist < 1 {
-		msg += ", overhead " + rpdesc
+		msgs = append(msgs, "overhead "+rpdesc)
 	} else {
-		msg += ", " + strconv.Itoa(int(dist+0.5)) + " miles " + rpdir + " of " + rpdesc
+		nm := int(dist + 0.5)
+		if nm == 1 {
+			msgs = append(msgs, "one mile "+rpdir+" of "+rpdesc)
+		} else {
+			msgs = append(msgs, strconv.Itoa(int(dist+0.5))+" miles "+rpdir+" of "+rpdesc)
+		}
 	}
 
-	msg += ", " + math.Compass(ac.Heading()) + "bound"
+	alt := "at " + av.FormatAltitude(ac.Altitude())
+	if ac.Altitude() < float32(ac.FlightPlan.Altitude) {
+		alt += " for " + av.FormatAltitude(float32(ac.FlightPlan.Altitude))
+	}
+	earlyAlt := s.Rand.Bool()
+	if earlyAlt {
+		msgs = append(msgs, alt)
+	}
 
-	msg += " on our way to " + s.airportName(ac.FlightPlan.ArrivalAirport)
+	if s.Rand.Bool() {
+		// Heading only sometimes
+		msgs = append(msgs, math.Compass(ac.Heading())+"bound")
+	}
 
-	msg += ", at " + av.FormatAltitude(ac.Altitude())
-	msg += " looking for flight following"
+	msgs = append(msgs, rand.Sample(s.Rand, "looking for flight following", "request flight following", "request radar advisories",
+		"request advisories")+" to "+s.airportName(ac.FlightPlan.ArrivalAirport))
+
+	if !earlyAlt {
+		msgs = append(msgs, alt)
+	}
 
 	s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
 		Controller: tcp,
-		Message:    msg,
+		Message:    strings.Join(msgs, ", "),
 		Type:       av.RadioTransmissionContact,
 	}})
 }

@@ -95,6 +95,10 @@ func (r *Rand) Uint32() uint32 {
 	return r.Random()
 }
 
+func (r *Rand) Bool() bool {
+	return r.Random()&1 == 0
+}
+
 // PermutationElement returns the ith element of a random permutation of the
 // set of integers [0...,n-1].
 // i/n, p is hash, via Andrew Kensler
