@@ -551,6 +551,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalDrop)
 	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.DepartureAcquisition)
 	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.SecondaryDrop)
+	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.STARSFacilityAdaptation.Filters.SurfaceTracking)
 	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.STARSFacilityAdaptation.Filters.Quicklook)
 
 	// MVAs

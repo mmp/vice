@@ -307,6 +307,7 @@ type STARSFacilityAdaptation struct {
 		InhibitMSAW          FilterRegions `json:"inhibit_msaw"`
 		Quicklook            FilterRegions `json:"quicklook"`
 		SecondaryDrop        FilterRegions `json:"secondary_drop"`
+		SurfaceTracking      FilterRegions `json:"surface_tracking"`
 		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
 	} `json:"filters"`
 
@@ -790,7 +791,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 					Id:          id + apname,
 					Description: description + " " + apname,
 					Type:        av.AirspaceVolumeCircle,
-					Floor:       ap.Elevation + floor,
+					Floor:       0,
 					Ceiling:     ap.Elevation + ceiling,
 					Center:      ap.Location,
 					Radius:      radius,
@@ -811,6 +812,9 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 	}
 	if len(fa.Filters.InhibitMSAW) == 0 {
 		fa.Filters.InhibitMSAW = makeDefaultAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000)
+	}
+	if len(fa.Filters.SurfaceTracking) == 0 {
+		fa.Filters.SurfaceTracking = makeDefaultAirportFilters("SURF", "SURFACE TRACKING", 1.5, 0, 250)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
@@ -834,6 +838,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, airports []st
 	checkFilter(fa.Filters.InhibitMSAW, "inhibit_msaw")
 	checkFilter(fa.Filters.Quicklook, "quicklook")
 	checkFilter(fa.Filters.SecondaryDrop, "secondary_drop")
+	checkFilter(fa.Filters.SurfaceTracking, "surface_tracking")
 
 	// This one kicks in when they exit the "inside" region defined by the volume.
 	for i := range fa.Filters.SecondaryDrop {

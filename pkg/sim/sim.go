@@ -1134,18 +1134,8 @@ func (s *Sim) airportName(icao string) string {
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
-	if !ac.IsAirborne() {
-		return false
-	}
-	if ac.Altitude() < ac.DepartureAirportElevation()+100 &&
-		math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 3 {
-		return false
-	}
-	if ac.Altitude() < ac.ArrivalAirportElevation()+100 &&
-		math.NMDistance2LL(ac.Position(), ac.ArrivalAirportLocation()) < 3 {
-		return false
-	}
-	return true
+	filters := s.State.STARSFacilityAdaptation.Filters
+	return !filters.SurfaceTracking.Inside(ac.Position(), int(ac.Altitude()))
 }
 
 func (s *Sim) goAround(ac *Aircraft) {
