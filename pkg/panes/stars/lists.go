@@ -691,9 +691,8 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 		}
 
 		next := func() (*sim.Track, *CAAircraft, *CAAircraft) {
-			state0 := sp.TrackState[msaw[0].ADSBCallsign]
-			if len(msaw) > 0 && (len(ca) == 0 || state0.MSAWStart.Before(ca[0].Start)) &&
-				(len(mci) == 0 || state0.MSAWStart.Before(mci[0].Start)) {
+			if len(msaw) > 0 && (len(ca) == 0 || sp.TrackState[msaw[0].ADSBCallsign].MSAWStart.Before(ca[0].Start)) &&
+				(len(mci) == 0 || sp.TrackState[msaw[0].ADSBCallsign].MSAWStart.Before(mci[0].Start)) {
 				trk := msaw[0]
 				msaw = msaw[1:]
 				return &trk, nil, nil
