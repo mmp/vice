@@ -3648,10 +3648,9 @@ how it simulates aircraft or the STARS interface.
               </table>
 
             <h3>Deleting Flight Plans</h3>
-            
-            [term ctrl](FLT ID) deletes the flight plan, even if not associated
 
-            TODO: [VP](FLT ID) delete VFR flight plan
+            <p>Two commands are available for deleting flight plans. If a flight plan is associated with a
+              track, the track becomes unassociated if it is deleted.</p>
 
             <table class="table table-bordered">
               <thead>
@@ -3661,6 +3660,14 @@ how it simulates aircraft or the STARS interface.
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td><code>[TERM CNTL](FLT ID)</code></td>
+                  <td>Deletes the flight plan identified by the flight identifier.</td>
+                </tr>
+                <tr>
+                  <td><code>[VP](FLT ID)</code></td>
+                  <td>Deletes the VFR flight plan identified by the flight identifier.</td>
+                </tr>
                 <tr>
                   <td><code></code></td>
                   <td></td>
