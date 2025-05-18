@@ -223,7 +223,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				if status.clear && !sp.targetGenLock {
 					sp.setCommandMode(ctx, CommandModeNone)
 					sp.maybeAutoHomeCursor(ctx)
-				} else {
+				} else if sp.targetGenLock {
 					sp.setCommandMode(ctx, CommandModeTargetGen)
 				}
 				sp.previewAreaOutput = status.output
