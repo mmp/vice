@@ -35,7 +35,7 @@ var (
 	ErrSTARSDuplicateBeacon   = NewSTARSError("DUP BCN")
 	ErrSTARSDuplicateCommand  = NewSTARSError("DUP CMD")
 	ErrSTARSIllegalACID       = NewSTARSError("ILL ACID")
-	ErrSTARSIllegalACType     = NewSTARSError("ACTYPE NOT\nADAPTED")
+	ErrSTARSIllegalACType     = NewSTARSError("ACTYPE NOT ADAPTED")
 	ErrSTARSIllegalATIS       = NewSTARSError("ILL ATIS")
 	ErrSTARSIllegalAirport    = NewSTARSError("ILL AIRPORT")
 	ErrSTARSIllegalCode       = NewSTARSError("ILL CODE")
