@@ -7,7 +7,6 @@ package aviation
 import (
 	"fmt"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/mmp/vice/pkg/math"
@@ -417,29 +416,17 @@ func (ra *RestrictionArea) MoveTo(p math.Point2LL) {
 // VFRReportingPoint
 
 type VFRReportingPoint struct {
-	AirspaceVolume
-
-	Controller string `json:"controller"`
+	Description string        `json:"description"`
+	Location    math.Point2LL `json:"location"`
 }
 
 var repIndex int
 
 func (rp *VFRReportingPoint) PostDeserialize(loc Locator, controllers map[string]*Controller, e *util.ErrorLogger) {
-	if rp.Id == "" {
-		repIndex++
-		rp.Id = "VFR" + strconv.Itoa(repIndex)
+	if rp.Description == "" {
+		e.ErrorString("must specify \"description\" with reporting point")
 	}
-	if rp.Type == AirspaceVolumeUnknown {
-		rp.Type = AirspaceVolumeCircle
+	if rp.Location.IsZero() {
+		e.ErrorString("must specify \"location\" with reporting point")
 	}
-	if rp.Type == AirspaceVolumeCircle && rp.Radius == 0 {
-		rp.Radius = 5
-	}
-	if rp.Ceiling == 0 {
-		rp.Ceiling = 10000
-	}
-
-	rp.AirspaceVolume.PostDeserialize(loc, e)
-
-	// TODO: check controller is valid (if set)
 }

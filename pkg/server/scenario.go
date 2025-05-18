@@ -559,50 +559,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	// STARSFacilityAdaptaion checks
-	fa := &sg.STARSFacilityAdaptation
-	if len(s.DefaultMaps) > 0 {
-		if len(fa.ControllerConfigs) > 0 {
-			e.ErrorString("\"default_maps\" is not allowed when \"controller_configs\" is set in \"stars_config\"")
-		}
-
-		for _, dm := range s.DefaultMaps {
-			if !manifest.HasMap(dm) {
-				e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
-					"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
-			}
-		}
-	} else if len(fa.ControllerConfigs) > 0 {
-		// Make sure that each controller in the scenario is represented in
-		// "controller_configs".
-		if _, ok := fa.ControllerConfigs[s.SoloController]; !ok {
-			e.ErrorString("control position %q is not included in \"controller_configs\"",
-				s.SoloController)
-		}
-		for _, conf := range s.SplitConfigurations {
-			for pos := range conf {
-				if _, ok := fa.ControllerConfigs[pos]; !ok {
-					e.ErrorString("control position %q is not included in \"controller_configs\"", pos)
-				}
-			}
-		}
-
-		// Handle beacon code blocks
-		for _, config := range fa.ControllerConfigs {
-			config.MonitoredBeaconCodeBlocks = nil // HACK: this is aliased if multiple controllers share a config.
-			if config.MonitoredBeaconCodeBlocksString == nil {
-				// None specified: 12xx block by default
-				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
-			} else {
-				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
-					s = strings.TrimSpace(s)
-					if code, err := av.ParseSquawkOrBlock(s); err != nil {
-						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
-					} else {
-						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
-					}
-				}
-			}
+	for _, dm := range s.DefaultMaps {
+		if !manifest.HasMap(dm) {
+			e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
+				"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
 		}
 	}
 
@@ -1007,12 +967,6 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 	}
 
 	if len(s.ControllerConfigs) > 0 {
-		var err error
-		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
-		if err != nil {
-			e.Error(err)
-		}
-
 		for ctrl, config := range s.ControllerConfigs {
 			if config.CenterString != "" {
 				if pos, ok := sg.Locate(config.CenterString); !ok {
@@ -1025,14 +979,10 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 		}
 
 		for ctrl, config := range s.ControllerConfigs {
-			if len(config.VideoMapNames) == 0 {
-				e.ErrorString("must provide \"video_maps\" for controller %q", ctrl)
-			}
-
 			for _, name := range config.DefaultMaps {
 				if !slices.Contains(config.VideoMapNames, name) {
 					e.ErrorString("default map %q for %q is not included in the controller's "+
-						"\"controller_maps\"", name, ctrl)
+						"\"video_maps\"", name, ctrl)
 				}
 
 				if !manifest.HasMap(name) {
@@ -1288,15 +1238,13 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 
 	if len(s.VideoMapNames) == 0 {
 		if len(s.ControllerConfigs) == 0 {
-			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
+			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" with \"video_maps\" in \"stars_config\"")
 		}
 		var err error
 		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
 		if err != nil {
 			e.Error(err)
 		}
-	} else if len(s.ControllerConfigs) > 0 {
-		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")
 	}
 
 	for _, aa := range s.AirspaceAwareness {

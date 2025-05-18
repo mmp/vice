@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -373,6 +374,7 @@ type STARSControllerConfig struct {
 	Range                           float32       `json:"range"`
 	MonitoredBeaconCodeBlocksString *string       `json:"beacon_code_blocks"`
 	MonitoredBeaconCodeBlocks       []av.Squawk
+	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace"`
 }
 
 type CoordinationList struct {
@@ -772,6 +774,37 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		e.ErrorString("unknown location %q specified for \"center\"", ctr)
 	} else {
 		fa.Center = pos
+	}
+
+	if len(fa.ControllerConfigs) > 0 {
+		// Handle beacon code blocks
+		for tcp, config := range fa.ControllerConfigs {
+			for i := range config.FlightFollowingAirspace {
+				if config.FlightFollowingAirspace[i].Id == "" {
+					config.FlightFollowingAirspace[i].Id = "FF" + tcp + strconv.Itoa(i+1)
+				}
+				if config.FlightFollowingAirspace[i].Description == "" {
+					config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + tcp + " " + strconv.Itoa(i+1)
+				}
+
+				config.FlightFollowingAirspace[i].PostDeserialize(loc, e)
+			}
+
+			config.MonitoredBeaconCodeBlocks = nil
+			if config.MonitoredBeaconCodeBlocksString == nil {
+				// None specified: 12xx block by default
+				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
+			} else {
+				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
+					s = strings.TrimSpace(s)
+					if code, err := av.ParseSquawkOrBlock(s); err != nil {
+						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+					} else {
+						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
+					}
+				}
+			}
+		}
 	}
 
 	// Acquisition/Drop filters

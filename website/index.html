@@ -6154,14 +6154,12 @@ how it simulates aircraft or the STARS interface.
               <tr>
                 <td>"vfr_reporting_points"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies a VFR reporting point and a volume of airspace associated with it. VFR aircraft
-                  must be inside such a volume to be able to call and ask for flight following.
-                  VFR reporting point objects have the same members as <a href="#fe-stars-filters">Filter Regions</a>, with
-                  the following differences:
+                <td>Each object specifies a VFR reporting point. VFR aicraft that call for flight following will
+                  report their position referencing one of these points, a nearby airport, or a nearby VOR.
+                  Each object has two members:
                   <ul>
-                    <li>The "description" field is used as the location that they reference when they report their position.</li>
-                    <li>If not specified, the "type" is set to "circle".</li>
-                    <li>If the type of airspace volume is "circle" and no radius is specified, a default radius of 5nm is used.</li>
+                    <li>"description": string giving the location aircraft reference when they report their position.</li>
+                    <li>"location": the location of the reference point.</li>
                   </ul>
                 </td>
               </tr>
@@ -7427,6 +7425,10 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       If specified, this overrides any center specified in the scenario or scenario group.</li>
                     <li>"default_maps": an array of strings that specifies which maps in "video_maps"
                       should be initially displayed.</li>
+                    <li>"flight_following_airspace": an array of regions of airspace (both lateral and vertical)
+                      following the form that is used for defining <a href="#fe-stars-filters">filter regions</a>.
+                      (In this case, "id" and "description" are optional.") Only VFR aircraft within the specified
+                      region will call the controller for flight following.</li> 
                     <li>"range": the initial range for the controller's scope in nautical miles.
                       If specified, this overrides any range specified in the scenario or scenario group.</li>
                     <li>"video_maps": an array of strings specifying which video maps should be displayed

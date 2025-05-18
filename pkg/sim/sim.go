@@ -39,6 +39,8 @@ type Sim struct {
 
 	GenerationIndex int // for sequencing StateUpdates
 
+	VFRReportingPoints []av.VFRReportingPoint
+
 	eventStream *EventStream
 	lg          *log.Logger
 
@@ -206,6 +208,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
+		VFRReportingPoints: config.VFRReportingPoints,
+
 		humanControllers: make(map[string]*EventsSubscription),
 
 		eventStream: NewEventStream(lg),
@@ -221,6 +225,35 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Instructors: make(map[string]bool),
 
 		Rand: rand.Make(),
+	}
+
+	// Automatically add nearby airports and VORs as candidate reporting points
+	for _, ap := range av.DB.Airports {
+		if ap.Name == "" {
+			continue
+		}
+
+		if slices.ContainsFunc([]string{"Airstrip", "Airpark", "Balloonport", "Base", "Field", "Heliport", "Helistop", "Helipad", "Strip"},
+			func(s string) bool { return strings.HasSuffix(ap.Name, s) }) {
+			continue
+		}
+
+		if math.NMDistance2LL(ap.Location, config.Center) < 75 {
+			s.VFRReportingPoints = append(s.VFRReportingPoints,
+				av.VFRReportingPoint{
+					Description: ap.Name,
+					Location:    ap.Location,
+				})
+		}
+	}
+	for _, na := range av.DB.Navaids {
+		if math.NMDistance2LL(na.Location, config.Center) < 75 {
+			s.VFRReportingPoints = append(s.VFRReportingPoints,
+				av.VFRReportingPoint{
+					Description: util.StopShouting(na.Name) + " VOR",
+					Location:    na.Location,
+				})
+		}
 	}
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
@@ -992,41 +1025,51 @@ func (s *Sim) updateState() {
 	}
 }
 
-func (s *Sim) RequestFlightFollowing(tcp string) error {
+func (s *Sim) RequestFlightFollowing() error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.requestRandomFlightFollowing(tcp)
+	return s.requestRandomFlightFollowing()
 }
 
-func (s *Sim) requestRandomFlightFollowing(tcp string) error {
-	isVFFCandidate := func(ac *Aircraft) bool {
+func (s *Sim) requestRandomFlightFollowing() error {
+	candidates := make(map[*Aircraft]string)
+
+	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() || ac.FlightPlan.Rules != av.FlightRulesVFR || ac.RequestedFlightFollowing || !ac.IsAirborne() {
-			return false
+			continue
 		}
 		if ac.Altitude() < ac.DepartureAirportElevation()+500 &&
-			math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 1.5 {
+			math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 1 {
 			// Barely off the ground at the departure airport.
-			return false
+			continue
 		}
 		if math.NMDistance2LL(ac.Position(), ac.ArrivalAirportLocation()) < 15 {
 			// It's landing soon, so never mind.
-			return false
+			continue
 		}
-		for _, rp := range s.State.VFRReportingPoints {
-			if rp.Inside(ac.Position(), int(ac.Altitude())) {
-				return true
+
+		for tcp, cc := range s.State.STARSFacilityAdaptation.ControllerConfigs {
+			tcp = s.State.ResolveController(tcp)
+			if !s.isActiveHumanController(tcp) {
+				continue
+			}
+			for _, vol := range cc.FlightFollowingAirspace {
+				if vol.Inside(ac.Position(), int(ac.Altitude())) {
+					candidates[ac] = tcp // first come, first served
+					break
+				}
 			}
 		}
-		return false
 	}
 
-	ac, ok := rand.SampleSeq(s.Rand, util.FilterSeq(maps.Values(s.Aircraft), isVFFCandidate))
-	if !ok {
+	if len(candidates) == 0 {
 		return ErrNoVFRAircraftForFlightFollowing
 	}
 
-	s.requestFlightFollowing(ac, tcp)
+	ac, _ := rand.SampleSeq(s.Rand, maps.Keys(candidates))
+
+	s.requestFlightFollowing(ac, candidates[ac])
 
 	return nil
 }
@@ -1036,15 +1079,8 @@ func (s *Sim) possiblyRequestFlightFollowing() {
 		return
 	}
 
-	// Take a random controller to make the request to
-	tcp, ok := rand.SampleSeq(s.Rand, maps.Keys(s.humanControllers))
-	if !ok {
-		s.lg.Errorf("no human controllers for flight following request?")
-		return
-	}
-
 	// Attempt to find an aircraft and make a request
-	if err := s.requestRandomFlightFollowing(tcp); err != nil {
+	if err := s.requestRandomFlightFollowing(); err != nil {
 		// No candidates; back off a bit before trying again
 		s.NextVFFRequest = s.State.SimTime.Add(15 * time.Second)
 	} else {
@@ -1059,23 +1095,11 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		var closest *av.VFRReportingPoint
 		dist := float32(1000000)
 		var center math.Point2LL
-		for _, rp := range s.State.VFRReportingPoints {
-			if !rp.Inside(ac.Position(), int(ac.Altitude())) {
-				continue
-			}
-
-			var d float32
-			c := func() math.Point2LL {
-				if rp.PolygonBounds != nil {
-					return rp.PolygonBounds.Center()
-				} else {
-					return rp.Center
-				}
-			}()
-			d = math.NMDistance2LL(ac.Position(), c)
+		for _, rp := range s.VFRReportingPoints {
+			d := math.NMDistance2LL(ac.Position(), rp.Location)
 			if d != 0 && d < dist {
 				dist = d
-				center = c
+				center = rp.Location
 				closest = &rp
 			}
 		}
@@ -1101,7 +1125,9 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 	msgs = append(msgs, "we're a "+av.DB.AircraftTypeAliases[ac.FlightPlan.AircraftType]+" ("+ac.FlightPlan.AircraftType+")")
 
 	rpdesc, rpdir, dist := closestReportingPoint(ac)
-	if dist < 1 {
+	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
+		msgs = append(msgs, "departing "+s.airportName(ac.FlightPlan.DepartureAirport))
+	} else if dist < 1 {
 		msgs = append(msgs, "overhead "+rpdesc)
 	} else {
 		nm := int(dist + 0.5)
