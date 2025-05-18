@@ -2311,7 +2311,10 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		// Filter out the ones that have been released and then deleted
 		// from the coordination list by the controller.
 		rel = slices.DeleteFunc(rel,
-			func(dep sim.ReleaseDeparture) bool { return sp.TrackState[dep.ADSBCallsign].ReleaseDeleted })
+			func(dep sim.ReleaseDeparture) bool {
+				state, ok := sp.TrackState[dep.ADSBCallsign]
+				return ok && state.ReleaseDeleted
+			})
 
 		if cmd == "" {
 			// If there is only one unacknowledged, then ack/release it.
