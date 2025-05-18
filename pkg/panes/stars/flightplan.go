@@ -481,12 +481,18 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	// For now just see if it's a valid airport, pending a better model of
 	// coordination fixes.
 	if dep, arr, ok := strings.Cut(s, "*"); ok {
+		if len(dep) != 3 || len(arr) != 3 {
+			return false, ErrSTARSIllegalAirport
+		}
 		// TODO: ILL FIX if entry fix is invalid
 		spec.EntryFix.Set(dep)
 		spec.ExitFixIsIntermediate.Set(strings.HasSuffix(arr, "*"))
 		spec.ExitFix.Set(arr)
 	} else {
 		// TODO: entry should be our default airport
+		if len(s) != 3 {
+			return false, ErrSTARSIllegalAirport
+		}
 		spec.ExitFix.Set(s)
 	}
 
