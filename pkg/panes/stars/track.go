@@ -196,12 +196,6 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude, 0)
 }
 
-func (ts *TrackState) LostTrack(now time.Time) bool {
-	// Only return true if we have at least one valid track from the past
-	// but haven't heard from the aircraft recently.
-	return !ts.track.Location.IsZero() && now.Sub(ts.trackTime) > 30*time.Second
-}
-
 func (sp *STARSPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
 	for _, trk := range ctx.Client.State.Tracks {
@@ -603,13 +597,8 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	now := ctx.Client.State.SimTime
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
-
-		if state.LostTrack(now) {
-			continue
-		}
 
 		positionSymbol := "*"
 
@@ -688,7 +677,6 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransforma
 func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
-	now := ctx.Client.State.SimTime
 
 	for i, pairState := range ps.CRDA.RunwayPairState {
 		if !pairState.Enabled {
@@ -719,9 +707,6 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 			magneticVariation := ctx.MagneticVariation
 			for _, trk := range tracks {
 				state := sp.TrackState[trk.ADSBCallsign]
-				if state.LostTrack(now) {
-					continue
-				}
 
 				// Create a ghost track if appropriate, add it to the
 				// ghosts slice, and draw its radar track.
@@ -956,13 +941,8 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 	const historyTrackDiameter = 8
 	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
 
-	now := ctx.Client.CurrentTime()
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
-
-		if state.LostTrack(now) {
-			continue
-		}
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {

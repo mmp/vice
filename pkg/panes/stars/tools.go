@@ -1594,10 +1594,9 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 	color := ps.Brightness.Lines.RGB()
 
-	now := ctx.Client.State.SimTime
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
-		if state.LostTrack(now) || !state.HaveHeading() {
+		if !state.HaveHeading() {
 			continue
 		}
 
@@ -1634,7 +1633,6 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	now := ctx.Client.State.SimTime
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -1648,9 +1646,6 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
-		if state.LostTrack(now) {
-			continue
-		}
 
 		// Format a radius/length for printing, ditching the ".0" if it's
 		// an integer value.

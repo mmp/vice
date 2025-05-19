@@ -452,10 +452,8 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) ma
 
 func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.STARSFlightPlan,
 	color renderer.RGB, brightness STARSBrightness) datablock {
-	now := ctx.Client.CurrentTime()
-
 	state := sp.TrackState[trk.ADSBCallsign]
-	if state != nil && (state.LostTrack(now) || !sp.datablockVisible(ctx, trk)) {
+	if state != nil && !sp.datablockVisible(ctx, trk) {
 		return nil
 	}
 
@@ -1134,7 +1132,6 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	now := ctx.Client.State.SimTime
 	realNow := ctx.Now // for flashing rate...
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
@@ -1143,8 +1140,7 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 	var ldbs, pdbs, sdbs, fdbs []sim.Track
 
 	for _, trk := range tracks {
-		state := sp.TrackState[trk.ADSBCallsign]
-		if state.LostTrack(now) || !sp.datablockVisible(ctx, trk) {
+		if !sp.datablockVisible(ctx, trk) {
 			continue
 		}
 
