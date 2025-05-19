@@ -1048,6 +1048,10 @@ func (s *Sim) requestRandomFlightFollowing() error {
 			// It's landing soon, so never mind.
 			continue
 		}
+		if slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.AirworkRadius > 0 }) {
+			// Aircraft doing airwork won't call in for flight following.
+			continue
+		}
 
 		for tcp, cc := range s.State.STARSFacilityAdaptation.ControllerConfigs {
 			tcp = s.State.ResolveController(tcp)
