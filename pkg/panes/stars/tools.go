@@ -1822,18 +1822,12 @@ type STARSRangeBearingLine struct {
 
 func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Track, sp *STARSPane) (math.Point2LL, math.Point2LL) {
 	// Each line endpoint may be specified either by a track's
-	// position or by a fixed position. We'll start with the fixed
-	// position and then override it if there's a valid *RadarTrack.
+	// position or by a fixed position.
 	getLoc := func(i int) math.Point2LL {
-		p := rbl.P[i].Loc
-		if trk, ok := ctx.GetTrackByCallsign(rbl.P[i].ADSBCallsign); ok {
-			state, ok := sp.TrackState[trk.ADSBCallsign]
-			if ok && !state.LostTrack(ctx.Client.State.SimTime) &&
-				slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
-				return trk.Location
-			}
+		if state, ok := sp.TrackState[rbl.P[i].ADSBCallsign]; ok {
+			return state.track.Location
 		}
-		return p
+		return rbl.P[i].Loc
 	}
 	return getLoc(0), getLoc(1)
 }
