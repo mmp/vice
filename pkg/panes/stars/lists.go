@@ -502,32 +502,17 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else if fp.DisableCA {
 			acid += STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", acid))
+		text.WriteString(fmt.Sprintf("%-8s", acid))
 		if _, ok := dupes[fp.AssignedSquawk]; ok {
 			text.WriteByte('/')
 		} else {
 			text.WriteByte(' ')
 		}
 		haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-		if haveCode {
-			text.WriteString(fp.AssignedSquawk.String())
-		} else {
-			text.WriteString("    ")
-		}
-		text.WriteByte(' ')
 		if !haveCode {
 			text.WriteString("VFR")
 		} else {
-			if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
-				text.WriteByte(fp.EntryFix[0])
-			} else {
-				text.WriteByte(' ')
-			}
-			if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
-				text.WriteByte(fp.ExitFix[0])
-			} else {
-				text.WriteByte(' ')
-			}
+			text.WriteString(fp.AssignedSquawk.String())
 		}
 		text.WriteByte('\n')
 	}
@@ -602,13 +587,30 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else if fp.DisableCA {
 			acid += STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", acid))
-		if _, ok := dupes[fp.AssignedSquawk]; ok {
+		text.WriteString(fmt.Sprintf("%-8s", acid))
+		haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+		if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
 			text.WriteByte('/')
 		} else {
 			text.WriteByte(' ')
 		}
-		text.WriteString(fp.AssignedSquawk.String())
+		if !haveCode {
+			text.WriteString("VFR ")
+		} else {
+			text.WriteString(fp.AssignedSquawk.String())
+		}
+		if fp.TypeOfFlight == av.FlightTypeDeparture {
+			exit := fp.ExitFix
+			if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
+				exit = spt.ShortName
+			}
+			if len(exit) > 3 {
+				exit = exit[:3]
+			}
+			text.WriteByte(' ')
+			text.WriteString(exit)
+		}
+
 		if false {
 			// Disable these for now, pending list customization
 			text.WriteByte(' ')
