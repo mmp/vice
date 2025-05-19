@@ -551,7 +551,7 @@ func (s *Sim) updateDepartureSequence() {
 					if s.prespawnUncontrolledOnly {
 						// We got to this point but don't want controlled aircraft yet.
 						s.deleteAircraft(s.Aircraft[held.ADSBCallsign])
-						depState.Held = append(depState.Held[:i], depState.Held[:i+1]...)
+						depState.Held = append(depState.Held[:i], depState.Held[i+1:]...)
 						changed()
 						break
 					}
