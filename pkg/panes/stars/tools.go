@@ -964,7 +964,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	color := ps.Brightness.Lines.RGB()
 
 	s0, ok0 := sp.TrackState[trk0.ADSBCallsign]
-	s1, ok1 := sp.TrackState[trk0.ADSBCallsign]
+	s1, ok1 := sp.TrackState[trk1.ADSBCallsign]
 	if !ok0 || !ok1 {
 		return
 	}
