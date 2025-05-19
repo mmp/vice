@@ -708,11 +708,11 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 	// from being here initially.
 	changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
 
-	if !lc.HaveVFRReportingPoints {
+	if !lc.HaveVFRReportingRegions {
 		imgui.BeginDisabled()
 	}
 	changed = imgui.InputIntV("Flight following request rate", &lc.VFFRequestRate, 0, 60, 0) || changed
-	if !lc.HaveVFRReportingPoints {
+	if !lc.HaveVFRReportingRegions {
 		imgui.EndDisabled()
 	}
 

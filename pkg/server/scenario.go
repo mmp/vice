@@ -1360,8 +1360,10 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 		}
 	}
 	for name, scenario := range sg.Scenarios {
+		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.STARSFacilityAdaptation.ControllerConfigs),
+			func(cc *sim.STARSControllerConfig) bool { return len(cc.FlightFollowingAirspace) > 0 })
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
-			scenario.InboundFlowDefaultRates, len(sg.VFRReportingPoints) > 0)
+			scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
 			LaunchConfig:        lc,
