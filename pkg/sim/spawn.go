@@ -38,15 +38,17 @@ type RunwayLaunchState struct {
 	NextVFRSpawn time.Time
 
 	// Aircraft follow the following flows:
-	// VFR, IFR no release: Gate -> Released -> Sequenced
-	// IFR release requires: Gate -> Held -> Released -> Sequenced
+	// VFR: ReleasedVFR -> Sequenced
+	// IFR no release: Gate -> ReleasedIFR -> Sequenced
+	// IFR release required: Gate -> Held -> ReleasedIFR -> Sequenced
 
 	// At the gate, flight plan filed (if IFR), not yet ready to go
 	Gate []DepartureAircraft
 	// Ready to go, in hold for release purgatory.
 	Held []DepartureAircraft
 	// Ready to go.
-	Released []DepartureAircraft
+	ReleasedIFR []DepartureAircraft
+	ReleasedVFR []DepartureAircraft
 	// Sequenced departures, pulled from Released. These are launched in-order.
 	Sequenced []DepartureAircraft
 
@@ -230,7 +232,14 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway string) {
 
 	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
-	depState.Gate = append(depState.Gate, depac)
+	if ac.FlightPlan.Rules == av.FlightRulesIFR {
+		// IFRs spend some time at the gate to give them a chance to appear
+		// in the FLIGHT PLAN list.
+		depState.Gate = append(depState.Gate, depac)
+	} else {
+		// VFRs can go straight to the queue.
+		depState.ReleasedVFR = append(depState.ReleasedVFR, depac)
+	}
 }
 
 // Assumes the lock is already held (as is the case e.g. for automatic spawning...)
@@ -498,16 +507,7 @@ func (s *Sim) updateDepartureSequence() {
 	for airport, runways := range s.DepartureState {
 		for depRunway, depState := range runways {
 			changed := func() { // Debugging...
-				if false {
-					callsign := func(dep DepartureAircraft) string {
-						return string(dep.ADSBCallsign) + "/" + depRunway + "/" + s.Aircraft[dep.ADSBCallsign].FlightPlan.Exit
-					}
-					fmt.Printf("%s: Gate %s Held %s Released %s Sequence %s\n", airport,
-						strings.Join(util.MapSlice(depState.Gate, callsign), ", "),
-						strings.Join(util.MapSlice(depState.Held, callsign), ", "),
-						strings.Join(util.MapSlice(depState.Released, callsign), ", "),
-						strings.Join(util.MapSlice(depState.Sequenced, callsign), ", "))
-				}
+				// depState.Dump(airport, depRunway, now)
 			}
 
 			// Clear out any aircraft that aren't in s.Aircraft any more
@@ -519,26 +519,33 @@ func (s *Sim) updateDepartureSequence() {
 			}
 			depState.Gate = util.FilterSliceInPlace(depState.Gate, haveAc)
 			depState.Held = util.FilterSliceInPlace(depState.Held, haveAc)
-			depState.Released = util.FilterSliceInPlace(depState.Released, haveAc)
+			depState.ReleasedIFR = util.FilterSliceInPlace(depState.ReleasedIFR, haveAc)
+			depState.ReleasedVFR = util.FilterSliceInPlace(depState.ReleasedVFR, haveAc)
 			depState.Sequenced = util.FilterSliceInPlace(depState.Sequenced, haveAc)
 
+			move := func(idx int, from *[]DepartureAircraft, to *[]DepartureAircraft) {
+				*to = append(*to, (*from)[idx])
+				*from = append((*from)[:idx], (*from)[idx+1:]...)
+				changed()
+			}
+
 			// See if anyone at the gate is ready to go
-			depState.Gate = util.FilterSliceInPlace(depState.Gate,
-				func(dep DepartureAircraft) bool {
-					if now.Before(dep.DepartGate) {
-						return true // keep it in Gate
-					}
-					ac := s.Aircraft[dep.ADSBCallsign]
-					if ac.HoldForRelease {
-						dep.RequestReleaseTime = now.Add(time.Duration(60+s.Rand.Intn(60)) * time.Second)
-						s.STARSComputer.AddHeldDeparture(ac)
-						depState.Held = append(depState.Held, dep)
-					} else {
-						depState.Released = append(depState.Released, dep)
-					}
-					changed()
-					return false // remove from Gate slice
-				})
+			for i, dep := range depState.Gate {
+				if now.Before(dep.DepartGate) {
+					continue
+				}
+
+				ac := s.Aircraft[dep.ADSBCallsign]
+				if ac.HoldForRelease {
+					dep.RequestReleaseTime = now.Add(time.Duration(60+s.Rand.Intn(60)) * time.Second)
+					s.STARSComputer.AddHeldDeparture(ac)
+					move(i, &depState.Gate, &depState.Held)
+				} else {
+					move(i, &depState.Gate, &depState.ReleasedIFR)
+				}
+				// Only do one since we've update with depState.Gate
+				break
+			}
 
 			// Handle hold for release aircraft
 			for i, held := range depState.Held {
@@ -559,72 +566,59 @@ func (s *Sim) updateDepartureSequence() {
 					depState.Held[i].ReleaseDelay = time.Duration(20+s.Rand.Intn(100)) * time.Second
 				}
 			}
-			if len(depState.Held) > 0 {
-				// Held go to Released in FIFO order so only consider the first one added.
-				if dep := depState.Held[0]; dep.ReleaseRequested {
-					ac := s.Aircraft[dep.ADSBCallsign]
-					if ac.Released && now.After(ac.ReleaseTime.Add(dep.ReleaseDelay)) {
-						depState.Released = append(depState.Released, dep)
-						depState.Held = depState.Held[1:]
-						changed()
-					}
+			if len(depState.Held) > 0 && depState.Held[0].ReleaseRequested {
+				// Held go to Released in FIFO order so only consider the first one added. Note that we
+				// keep them in Held even after the release has been given until ReleaseDelay has
+				// passed; this ensures that HFR are not resequenced out of their original order.
+				dep := depState.Held[0]
+				ac := s.Aircraft[dep.ADSBCallsign]
+				if ac.Released && now.After(ac.ReleaseTime.Add(dep.ReleaseDelay)) {
+					move(0, &depState.Held, &depState.ReleasedIFR)
 				}
 			}
 
-			// Try to keep about 10 minutes worth of departures in the Released pool.
-			minReleased := math.Max(1, int((depState.VFRSpawnRate+depState.IFRSpawnRate)/6))
-			if len(depState.Released) >= minReleased {
-				// Check for any released that have been hanging along a long time.
-				var maxWait time.Duration
-				maxWaitIdx := -1
-				for i, rel := range depState.Released {
-					ac := s.Aircraft[rel.ADSBCallsign]
-					if w := now.Sub(ac.ReleaseTime); w > 10*time.Minute && w > maxWait {
-						maxWait = w
-						maxWaitIdx = i
-					}
-				}
-				if maxWaitIdx != -1 {
-					depState.Sequenced = append(depState.Sequenced, depState.Released[maxWaitIdx])
-					depState.Released = append(depState.Released[:maxWaitIdx], depState.Released[maxWaitIdx+1:]...)
-					changed()
-				} else {
-					minWait := 24 * 60 * time.Minute
-					minWaitIdx := -1
-					for i, dep := range depState.Released {
-						// Sequence w.r.t. the aircraft in front; if none
-						// in sequence, then the last departure, otherwise
-						// the last one in the sequence.
-						prevDep := depState.LastDeparture
-						if prevDep == nil && len(depState.Sequenced) > 0 {
-							prevDep = &depState.Sequenced[len(depState.Sequenced)-1]
-						}
-
-						if prevDep == nil {
-							depState.Sequenced = append(depState.Sequenced, depState.Released[i])
-							depState.Released = append(depState.Released[:i], depState.Released[i+1:]...)
-							changed()
-							break
-						} else {
-							wait := s.launchInterval(*prevDep, dep, true)
-							if wait < minWait {
-								minWait = wait
-								minWaitIdx = i
+			// Check for any released IFRs that have been hanging along a long time.
+			wait := func(dep DepartureAircraft) time.Duration {
+				ac := s.Aircraft[dep.ADSBCallsign]
+				return now.Sub(ac.ReleaseTime)
+			}
+			longWait := util.FilterSeq2(slices.All(depState.ReleasedIFR),
+				func(idx int, dep DepartureAircraft) bool { return wait(dep) > 5*time.Minute })
+			if idx, ok := util.SeqMaxIndexFunc(longWait,
+				func(idx int, dep DepartureAircraft) time.Duration { return wait(dep) }); ok {
+				move(idx, &depState.ReleasedIFR, &depState.Sequenced)
+			} else if len(depState.Sequenced) == 0 || len(depState.ReleasedIFR) > 3 {
+				// Add someone to the sequence
+				if len(depState.ReleasedIFR) > 0 {
+					// Take the IFR that we can launch the soonest
+					if idx, ok := util.SeqMinIndexFunc(slices.All(depState.ReleasedIFR),
+						func(idx int, dep DepartureAircraft) time.Duration {
+							// Sequence w.r.t. the aircraft in front; if there are none in the sequence,
+							// then use the last departure, otherwise the last one in the sequence.
+							prevDep := depState.LastDeparture
+							if prevDep == nil && len(depState.Sequenced) > 0 {
+								prevDep = &depState.Sequenced[len(depState.Sequenced)-1]
 							}
-						}
+
+							if prevDep == nil {
+								return time.Duration(0)
+							}
+							return s.launchInterval(*prevDep, dep, true)
+						}); !ok {
+						s.lg.Errorf("No IFR found by SeqMinIndexFunc!")
+					} else {
+						move(idx, &depState.ReleasedIFR, &depState.Sequenced)
 					}
-					if minWaitIdx != -1 {
-						depState.Sequenced = append(depState.Sequenced, depState.Released[minWaitIdx])
-						depState.Released = append(depState.Released[:minWaitIdx], depState.Released[minWaitIdx+1:]...)
-						changed()
-					}
+				} else if len(depState.ReleasedVFR) > 0 {
+					// No IFRs, just take the oldest VFR
+					move(0, &depState.ReleasedVFR, &depState.Sequenced)
 				}
 			}
 
 			// See if we have anything to launch
 			considerExit := len(depState.Sequenced) == 1 // if it's just us waiting, don't rush it unnecessarily
 			if len(depState.Sequenced) > 0 && s.canLaunch(depState.LastDeparture, depState.Sequenced[0], considerExit) {
-				dep := &depState.Sequenced[0]
+				dep := depState.Sequenced[0]
 				ac := s.Aircraft[dep.ADSBCallsign]
 
 				if s.prespawnUncontrolledOnly && s.isHumanControlled(ac, true) {
@@ -638,7 +632,7 @@ func (s *Sim) updateDepartureSequence() {
 					// Record the launch so we have it when we consider
 					// launching the next one.
 					dep.LaunchTime = now
-					depState.LastDeparture = dep
+					depState.LastDeparture = &dep
 
 					// Remove it from the pool of waiting departures.
 					depState.Sequenced = depState.Sequenced[1:]
@@ -648,7 +642,7 @@ func (s *Sim) updateDepartureSequence() {
 					// another runway (e.g., closely spaced parallel runways).
 					for rwy, state := range s.sameGroupRunways(airport, depRunway) {
 						s.lg.Infof("%s: %q departure also holding up %q", ac.ADSBCallsign, depRunway, rwy)
-						state.LastDeparture = dep
+						state.LastDeparture = &dep
 					}
 				}
 
@@ -766,7 +760,7 @@ func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *Aircraft, err err
 
 func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err error) {
 	depState := s.DepartureState[depart][runway]
-	if len(depState.Held) >= 5 || len(depState.Released) >= 5 || len(depState.Sequenced) >= 5 {
+	if len(depState.ReleasedVFR) >= 5 || len(depState.Sequenced) >= 5 {
 		// There's a backup; hold off on more.
 		return
 	}
@@ -845,7 +839,8 @@ func (d *RunwayLaunchState) cullDepartures(s *Sim) {
 	keep := int(d.IFRSpawnRate+d.VFRSpawnRate) / 6
 	d.Gate = s.cullDepartures(keep, d.Gate)
 	d.Held = s.cullDepartures(keep, d.Held)
-	d.Released = s.cullDepartures(keep, d.Released)
+	d.ReleasedIFR = s.cullDepartures(keep, d.ReleasedIFR)
+	d.ReleasedVFR = s.cullDepartures(keep, d.ReleasedVFR)
 	d.Sequenced = s.cullDepartures(keep, d.Sequenced)
 }
 
@@ -865,6 +860,24 @@ func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
 	d.VFRSpawnRate = r
 	d.NextVFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
 	d.cullDepartures(s)
+}
+
+func (r RunwayLaunchState) Dump(airport string, runway string, now time.Time) {
+	callsign := func(dep DepartureAircraft) string {
+		return string(dep.ADSBCallsign)
+	}
+	fmt.Printf("%s/%s: Gate %s Held %s Released IFR %s Released VFR %s Sequence %s\n", airport, runway,
+		strings.Join(util.MapSlice(r.Gate, callsign), ", "),
+		strings.Join(util.MapSlice(r.Held, callsign), ", "),
+		strings.Join(util.MapSlice(r.ReleasedIFR, callsign), ", "),
+		strings.Join(util.MapSlice(r.ReleasedVFR, callsign), ", "),
+		strings.Join(util.MapSlice(r.Sequenced, callsign), ", "))
+	if r.IFRSpawnRate > 0 {
+		fmt.Printf("    next IFR in %s, rate %f\n", r.NextIFRSpawn.Sub(now), r.IFRSpawnRate)
+	}
+	if r.VFRSpawnRate > 0 {
+		fmt.Printf("    next VFR in %s, rate %f\n", r.NextVFRSpawn.Sub(now), r.VFRSpawnRate)
+	}
 }
 
 func (s *Sim) CreateArrival(arrivalGroup string, arrivalAirport string) (*Aircraft, error) {
