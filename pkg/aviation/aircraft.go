@@ -249,12 +249,12 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) []RadioTransmission {
 }
 
 func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) ([]RadioTransmission, error) {
-	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
+	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false, lg)
 	return ac.transmitResponse(resp), err
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string) ([]RadioTransmission, error) {
-	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
+func (ac *Aircraft) ClearedStraightInApproach(id string, lg *log.Logger) ([]RadioTransmission, error) {
+	resp, err := ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true, lg)
 	return ac.transmitResponse(resp), err
 }
 
@@ -295,8 +295,8 @@ func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 	}
 }
 
-func (ac *Aircraft) InterceptApproach() []RadioTransmission {
-	resp := ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport)
+func (ac *Aircraft) InterceptApproach(lg *log.Logger) []RadioTransmission {
+	resp := ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport, lg)
 	return ac.transmitResponse(resp)
 }
 

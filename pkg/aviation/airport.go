@@ -848,26 +848,33 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 	}
 }
 
-func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) ([2]math.Point2LL, bool) {
 	if ap.ApproachHeading != 0 {
 		for _, wps := range ap.Waypoints {
 			if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF }); idx != -1 {
 				// Found the FAF
 				return [2]math.Point2LL{wps[idx].Location,
-					math.Offset2LL(wps[idx].Location, ap.ApproachHeading, 1, nmPerLongitude, magneticVariation)}
+					math.Offset2LL(wps[idx].Location, ap.ApproachHeading, 1, nmPerLongitude, magneticVariation)}, true
 			}
 		}
 	}
 
-	wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation)
-	return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
+	if wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation); wps == nil {
+		// No FAF; this can happen with charted visual
+		return [2]math.Point2LL{}, false
+	} else {
+		return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}, true
+	}
 }
 
-func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
+func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) (float32, bool) {
 	if ap.ApproachHeading != 0 {
-		return ap.ApproachHeading
+		return ap.ApproachHeading, true
 	}
 
-	p := ap.Line(nmPerLongitude, magneticVariation)
-	return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation)
+	if p, ok := ap.Line(nmPerLongitude, magneticVariation); !ok {
+		return 0, false
+	} else {
+		return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation), true
+	}
 }

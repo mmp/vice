@@ -400,7 +400,11 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	if approach == nil {
 		return false
 	}
-	localizer := approach.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+	localizer, ok := approach.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+	if !ok {
+		// e.g. charted visual where we don't have a single approach orientation..
+		return false
+	}
 	distance := math.PointLineDistance(
 		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
 		math.LL2NM(localizer[0], nav.FlightState.NmPerLongitude),
@@ -1042,13 +1046,13 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 	case InitialHeading:
 		// On a heading. Is it time to turn?  Allow a lot of slop, but just
 		// fly through the localizer if it's too sharp an intercept
-		hdg := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		hdg, _ := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		if d := math.HeadingDifference(hdg, nav.FlightState.Heading); d > 45 {
 			lg.Infof("heading: difference %.0f too much to intercept", d)
 			return
 		}
 
-		loc := ap.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		loc, _ := ap.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wind, lg) {
 			lg.Debugf("heading: time to turn for approach heading %.1f", hdg)
@@ -1076,7 +1080,7 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 		// fixes in the approach are still ahead and then add them to
 		// the aircraft's waypoints.
 		lg.Debugf("heading: intercepted the approach!")
-		apHeading := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		apHeading, _ := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		for idx > 0 {
@@ -1699,7 +1703,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) 
 			if fp == nil {
 				lg.Warnf("nil *FlightPlan at waypoint /clearapp")
 			} else {
-				_, err := nav.clearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
+				_, err := nav.clearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false, lg)
 				if err != nil {
 					lg.Errorf("/clearapp: %s", err)
 				}
@@ -2443,7 +2447,7 @@ func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[
 	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
 }
 
-func (nav *Nav) InterceptApproach(airport string) PilotResponse {
+func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) PilotResponse {
 	if nav.Approach.AssignedId == "" {
 		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
 	}
@@ -2454,7 +2458,7 @@ func (nav *Nav) InterceptApproach(airport string) PilotResponse {
 		return PilotResponse{Message: "we have to be on a heading or direct to an approach fix to intercept", Unexpected: true}
 	}
 
-	resp, err := nav.prepareForApproach(false)
+	resp, err := nav.prepareForApproach(false, lg)
 	if err != nil {
 		return resp
 	} else {
@@ -2498,7 +2502,7 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		"cleared "+ap.FullName+" at "+fix)}
 }
 
-func (nav *Nav) prepareForApproach(straightIn bool) (PilotResponse, error) {
+func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (PilotResponse, error) {
 	if nav.Approach.AssignedId == "" {
 		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true},
 			ErrClearedForUnexpectedApproach
@@ -2509,6 +2513,12 @@ func (nav *Nav) prepareForApproach(straightIn bool) (PilotResponse, error) {
 	// Charted visual is special in all sorts of ways
 	if ap.Type == ChartedVisualApproach {
 		return nav.prepareForChartedVisual()
+	} else {
+		// Otherwise we expect it to be able to return a final approach heading (and also ap.Line);
+		// just check that once here so we don't spam the logs if this is an issue
+		if _, ok := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation); !ok {
+			lg.Warnf("%s (%s): no heading for approach?", ap.Id, ap.FullName)
+		}
 	}
 
 	directApproachFix := false
@@ -2640,7 +2650,7 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 		ErrUnableCommand
 }
 
-func (nav *Nav) clearedApproach(airport string, id string, straightIn bool) (PilotResponse, error) {
+func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *log.Logger) (PilotResponse, error) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return PilotResponse{Message: "unable. We haven't been told to expect an approach", Unexpected: true},
@@ -2651,7 +2661,7 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool) (Pil
 			ErrClearedForUnexpectedApproach
 	}
 
-	if resp, err := nav.prepareForApproach(straightIn); err != nil {
+	if resp, err := nav.prepareForApproach(straightIn, lg); err != nil {
 		return resp, err
 	} else {
 		nav.Approach.Cleared = true

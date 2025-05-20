@@ -1201,7 +1201,7 @@ func (s *Sim) ClearedApproach(tcp string, callsign av.ADSBCallsign, approach str
 		func(tcp string, ac *Aircraft) (resp []av.RadioTransmission) {
 			var err error
 			if straightIn {
-				resp, err = ac.ClearedStraightInApproach(approach)
+				resp, err = ac.ClearedStraightInApproach(approach, s.lg)
 			} else {
 				resp, err = ac.ClearedApproach(approach, s.lg)
 			}
@@ -1219,7 +1219,7 @@ func (s *Sim) InterceptLocalizer(tcp string, callsign av.ADSBCallsign) error {
 
 	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			return ac.InterceptApproach()
+			return ac.InterceptApproach(s.lg)
 		})
 }
 
