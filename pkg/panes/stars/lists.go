@@ -79,7 +79,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	if sp.commandMode == CommandModeMultiFunc {
 		text.WriteString(sp.multiFuncPrefix)
 	}
-	if sp.commandMode == CommandModeTargetGen {
+	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
 		text.WriteByte(' ')
 		text.WriteString(string(sp.targetGenLastCallsign))
 	}

@@ -45,6 +45,7 @@ const (
 	CommandModeCollisionAlert
 	CommandModeMin
 	CommandModeTargetGen
+	CommandModeTargetGenLock
 	CommandModeReleaseDeparture
 	CommandModeRestrictionArea
 	CommandModeDrawRoute
@@ -102,11 +103,9 @@ func (c CommandMode) PreviewString(sp *STARSPane) string {
 	case CommandModeMin:
 		return "MIN"
 	case CommandModeTargetGen:
-		if !sp.targetGenLock {
-			return "TG"
-		} else {
-			return "TG LOCK"
-		}
+		return "TG"
+	case CommandModeTargetGenLock:
+		return "TG LOCK"
 	case CommandModeReleaseDeparture:
 		return "RD"
 	case CommandModeRestrictionArea:
@@ -220,11 +219,13 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
-				if status.clear && !sp.targetGenLock {
-					sp.setCommandMode(ctx, CommandModeNone)
-					sp.maybeAutoHomeCursor(ctx)
-				} else if sp.targetGenLock {
-					sp.setCommandMode(ctx, CommandModeTargetGen)
+				if status.clear {
+					if sp.commandMode != CommandModeTargetGenLock {
+						sp.setCommandMode(ctx, CommandModeNone)
+						sp.maybeAutoHomeCursor(ctx)
+					} else {
+						sp.previewAreaInput = ""
+					}
 				}
 				sp.previewAreaOutput = status.output
 			}
@@ -234,7 +235,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
 			} else {
 				sp.setCommandMode(ctx, CommandModeNone)
-				sp.targetGenLock = false // unlock target generation
 			}
 
 		case imgui.KeyF1:
@@ -340,8 +340,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 		case imgui.KeyTab:
 			if imgui.IsKeyDown(imgui.KeyLeftShift) { // Check if LeftShift is pressed
-				sp.targetGenLock = true
-				sp.setCommandMode(ctx, CommandModeTargetGen)
+				sp.setCommandMode(ctx, CommandModeTargetGenLock)
 			} else {
 				sp.setCommandMode(ctx, CommandModeTargetGen)
 			}
@@ -2411,7 +2410,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		}
 
-	case CommandModeTargetGen:
+	case CommandModeTargetGen, CommandModeTargetGenLock:
 		// Special cases for non-control commands.
 		if cmd == "" {
 			return
@@ -2516,11 +2515,12 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 
 func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
 	sp.targetGenLastCallsign = callsign
+	prevMode := sp.commandMode
 
 	ctx.Client.RunAircraftCommands(callsign, cmds,
 		func(errStr string, remaining string) {
 			if errStr != "" {
-				sp.commandMode = CommandModeTargetGen
+				sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
 				sp.previewAreaInput = remaining
 				if err := server.TryDecodeErrorString(errStr); err != nil {
 					err = GetSTARSError(err, ctx.Lg)
@@ -4098,7 +4098,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 			return
 
-		case CommandModeTargetGen:
+		case CommandModeTargetGen, CommandModeTargetGenLock:
 			if len(cmd) > 0 {
 				sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 				status.clear = true
@@ -4541,7 +4541,11 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.displayError(status.err, ctx, "")
 		} else {
 			if status.clear {
-				sp.resetInputState(ctx)
+				if sp.commandMode != CommandModeTargetGenLock {
+					sp.resetInputState(ctx)
+				} else {
+					sp.previewAreaInput = ""
+				}
 			}
 			sp.maybeAutoHomeCursor(ctx)
 			sp.previewAreaOutput = status.output

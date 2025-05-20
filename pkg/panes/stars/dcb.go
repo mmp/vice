@@ -171,8 +171,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			m == CommandModeTrackSuspend || m == CommandModeTerminateControl ||
 			m == CommandModeHandOff || m == CommandModeVFRPlan || m == CommandModeMultiFunc ||
 			m == CommandModeFlightData || m == CommandModeCollisionAlert || m == CommandModeMin ||
-			m == CommandModeTargetGen || m == CommandModeReleaseDeparture || m == CommandModeRestrictionArea ||
-			m == CommandModeDrawRoute
+			m == CommandModeTargetGen || m == CommandModeTargetGenLock || m == CommandModeReleaseDeparture ||
+			m == CommandModeRestrictionArea || m == CommandModeDrawRoute
 	}
 	isMainMenuMode := func(m CommandMode) bool {
 		return m == CommandModeRange || m == CommandModePlaceCenter || m == CommandModeRangeRings ||
