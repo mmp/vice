@@ -311,7 +311,7 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	r := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
 	defer r.Close()
 	mungeCSV("airports", r,
-		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country"},
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country", "type"},
 		func(s []string) {
 			atof := func(s string) float64 {
 				v, err := util.Atof(s)
@@ -319,6 +319,10 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 					panic(err)
 				}
 				return v
+			}
+
+			if s[7] == "closed" { // type == closed
+				return
 			}
 
 			elevation := float64(0)
