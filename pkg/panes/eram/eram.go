@@ -8,6 +8,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/log"
 )
 var (
@@ -89,11 +90,11 @@ func (ep *ERAMPane) Hide() bool {
 	return false
 }
 
-func (ep *ERAMPane) LoadedSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *ERAMPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	// implement the LoadedSim method to satisfy panes.Pane interface
 }
 
-func (ep *ERAMPane) ResetSim(client *sim.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *ERAMPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	// implement the ResetSim method to satisfy panes.Pane interface
 }
 
