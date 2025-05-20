@@ -233,6 +233,13 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 			continue
 		}
 
+		if len(ap.Runways) == 0 {
+			// Only include airports from the FAA CIFP, not the mass of
+			// them from the our airports database (which don't have
+			// runways).
+			continue
+		}
+
 		if slices.ContainsFunc([]string{"Airstrip", "Airpark", "Balloonport", "Base", "Field", "Heliport", "Helistop", "Helipad", "Strip"},
 			func(s string) bool { return strings.HasSuffix(ap.Name, s) }) {
 			continue
