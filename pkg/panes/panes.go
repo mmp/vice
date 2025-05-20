@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
@@ -83,7 +84,13 @@ type Context struct {
 
 	KeyboardFocus *KeyboardFocus
 
-	ControlClient *server.ControlClient
+	Client *server.ControlClient
+
+	// from Client.State, here for convenience
+	UserTCP            string
+	NmPerLongitude     float32
+	MagneticVariation  float32
+	FacilityAdaptation *sim.STARSFacilityAdaptation
 
 	// Full display size, including the menu and status bar.
 	displaySize [2]float32
@@ -128,6 +135,23 @@ func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
 	h := float32(int(ctx.PaneExtent.Height() + 0.5))
 	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
 	cb.LoadModelViewMatrix(math.Identity3x3())
+}
+
+// Convenience methods since these are frequently used.
+func (ctx *Context) GetTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track, bool) {
+	return ctx.Client.State.GetTrackByCallsign(callsign)
+}
+
+func (ctx *Context) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track, bool) {
+	return ctx.Client.State.GetOurTrackByCallsign(callsign)
+}
+
+func (ctx *Context) GetTrackByACID(acid sim.ACID) (*sim.Track, bool) {
+	return ctx.Client.State.GetTrackByACID(acid)
+}
+
+func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
+	return ctx.Client.State.GetOurTrackByACID(acid)
 }
 
 var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))

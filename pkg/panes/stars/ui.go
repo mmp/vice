@@ -14,9 +14,10 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/server"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
@@ -24,13 +25,11 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Text("Font: ")
 	imgui.SameLine()
-	imgui.RadioButtonInt("Default", &sp.FontSelection, fontDefault)
+	imgui.RadioButtonIntPtr("Default", &sp.FontSelection, fontDefault)
 	imgui.SameLine()
-	imgui.RadioButtonInt("Legacy", &sp.FontSelection, fontLegacy)
+	imgui.RadioButtonIntPtr("Legacy", &sp.FontSelection, fontLegacy)
 	imgui.SameLine()
-	imgui.RadioButtonInt("ARTS", &sp.FontSelection, fontARTS)
-
-	imgui.Checkbox("Auto track departures", &sp.AutoTrackDepartures)
+	imgui.RadioButtonIntPtr("ARTS", &sp.FontSelection, fontARTS)
 
 	imgui.Checkbox("Lock display", &sp.LockDisplay)
 
@@ -38,7 +37,7 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	if imgui.BeginComboV("TGT GEN Key", string(sp.TgtGenKey), imgui.ComboFlagsHeightLarge) {
 		for _, key := range []byte{';', ','} {
-			if imgui.SelectableV(string(key), key == sp.TgtGenKey, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV(string(key), key == sp.TgtGenKey, 0, imgui.Vec2{}) {
 				sp.TgtGenKey = key
 			}
 		}
@@ -63,7 +62,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 
-	if imgui.CollapsingHeader("Arrivals") {
+	if imgui.CollapsingHeaderBoolPtr("Arrivals", nil) {
 		if imgui.BeginTableV("arr", 4, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.arrivals == nil {
 				sp.scopeDraw.arrivals = make(map[string]map[int]bool)
@@ -116,7 +115,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if imgui.CollapsingHeader("Approaches") {
+	if imgui.CollapsingHeaderBoolPtr("Approaches", nil) {
 		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.approaches == nil {
 				sp.scopeDraw.approaches = make(map[string]map[string]bool)
@@ -173,7 +172,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if imgui.CollapsingHeader("Departures") {
+	if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
 		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.departures == nil {
 				sp.scopeDraw.departures = make(map[string]map[string]map[string]bool)
@@ -248,7 +247,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if imgui.CollapsingHeader("Overflights") {
+	if imgui.CollapsingHeaderBoolPtr("Overflights", nil) {
 		if imgui.BeginTableV("over", 3, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.overflights == nil {
 				sp.scopeDraw.overflights = make(map[string]map[int]bool)
@@ -296,7 +295,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if len(c.State.Airspace) > 0 && imgui.CollapsingHeader("Airspace") {
+	if len(c.State.Airspace) > 0 && imgui.CollapsingHeaderBoolPtr("Airspace", nil) {
 		if sp.scopeDraw.airspace == nil {
 			sp.scopeDraw.airspace = make(map[string]map[string]bool)
 			for ctrl, sectors := range c.State.Airspace {
@@ -311,7 +310,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 			if ctrl, ok := c.State.Controllers[pos]; ok {
 				hdr += " (" + ctrl.Position + ")"
 			}
-			if imgui.TreeNode(hdr) {
+			if imgui.TreeNodeExStr(hdr) {
 				if imgui.BeginTableV("volumes", 2, tableFlags, imgui.Vec2{}, 0) {
 					for _, vol := range util.SortedMapKeys(sp.scopeDraw.airspace[pos]) {
 						imgui.TableNextRow()
@@ -331,7 +330,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if imgui.CollapsingHeader("Tower/Coordination Lists") {
+	if imgui.CollapsingHeaderBoolPtr("Tower/Coordination Lists", nil) {
 		if imgui.BeginTableV("tclists", 3, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Id")
 			imgui.TableSetupColumn("Type")
@@ -349,7 +348,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 			}
 
 			cl := util.DuplicateSlice(c.State.STARSFacilityAdaptation.CoordinationLists)
-			slices.SortFunc(cl, func(a, b av.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
+			slices.SortFunc(cl, func(a, b sim.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
 
 			for _, list := range cl {
 				imgui.TableNextRow()
@@ -365,7 +364,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	}
 
 	if aa := c.State.STARSFacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
-		if imgui.CollapsingHeader("Airspace Awareness") {
+		if imgui.CollapsingHeaderBoolPtr("Airspace Awareness", nil) {
 			if imgui.BeginTableV("awareness", 4, tableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Fix")
 				imgui.TableSetupColumn("Altitude")

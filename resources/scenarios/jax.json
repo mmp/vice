@@ -169,7 +169,7 @@
           "runway": "8",
           "type": "ILS",
           "waypoints": [
-            "LIBBY/if/iaf/a2000 DINNS/iaf/hilpt/lpt454.8nm/pta1900/a1900/faf"
+            "LIBBY/if/iaf/a2000 DINNS/iaf/a1900/faf"
           ]
         },
         "RZ8": {
@@ -1981,12 +1981,87 @@
   "ALLMA": {
     "arrivals": [
       {
-        "waypoints": "N031.16.42.172,W082.24.32.799 N031.06.25.908,W082.20.41.894/a11000/ho/h165 CRG",
+        "waypoints": "N031.16.42.172,W082.24.32.799 N031.06.25.908,W082.20.41.894/a10000/ho/h165 CRG",
         "route": "ALLMA",
         "initial_controller": "Jacksonville Center (Sector 79)",
         "initial_altitude": 12200,
         "initial_speed": 250,
         "expect_approach": null,
+        "description": "jets",
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KMLB"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "fastGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N031.16.42.172,W082.24.32.799 N031.06.25.908,W082.20.41.894/a8000/ho/h165 CRG",
+        "route": "ALLMA",
+        "initial_controller": "Jacksonville Center (Sector 79)",
+        "initial_altitude": 10000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "description": "props",
         "airlines": {
           "KSGJ": [
             {
@@ -2052,8 +2127,83 @@
         "waypoints": "LGC AYS/ho CRG SGJ",
         "route": "LGC AYS CRG",
         "initial_controller": "Jacksonville Center (Sector 57)",
-        "initial_altitude": 14000,
+        "initial_altitude": 9000,
         "initial_speed": 250,
+        "expect_approach": null,
+        "description": "jet",
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "fastGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "LGC AYS/ho CRG SGJ",
+        "route": "LGC AYS CRG",
+        "initial_controller": "Jacksonville Center (Sector 57)",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "description": "prop",
         "expect_approach": null,
         "airlines": {
           "KSGJ": [
@@ -2120,8 +2270,83 @@
         "waypoints": "N031.12.34.108,W081.11.12.692 N031.02.30.924,W081.14.51.842/a11000/ho CRG",
         "route": "WURFL ESENT",
         "initial_controller": "Jacksonville Center (Sector 54)",
-        "initial_altitude": 12000,
+        "initial_altitude": 11000,
         "initial_speed": 250,
+        "description": "jet",
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "fastGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N031.12.34.108,W081.11.12.692 N031.02.30.924,W081.14.51.842/a9000/ho CRG",
+        "route": "WURFL ESENT",
+        "initial_controller": "Jacksonville Center (Sector 54)",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "description": "prop",
         "expect_approach": null,
         "airlines": {
           "KSGJ": [
@@ -2202,19 +2427,11 @@
       }
     ]
   },
-  "LUNNI1": {
+  "LUNNI2": {
     "arrivals": [
       {
-        "waypoints": "N031.18.26.213,W081.11.25.327 N031.13.31.601,W081.13.02.638/ho GOTBE LUNNI/a8000-12000/s250",
-        "runway_waypoints": {
-          "KJAX": {
-            "14": "LUNNI/a8000-12000/s250 WADIG/a5000-6000/s230 DEDDA/a3000/s210",
-            "26": "LUNNI/a8000-12000/s250 LAYON/a3000/s210",
-            "32": "LUNNI/a8000-12000/s250 SSAWW/a6000-7000/s230 ZAXIT/a4000/s210 PALSY PEPIE/h137",
-            "8": "LUNNI/a8000-12000/s250 SAVAE/a6000-7000 PENSE/a4000/s210 RUMEE/h257"
-          }
-        },
-        "star": "LUNNI1",
+        "waypoints": "N031.18.26.213,W081.11.25.327 CATSU N031.13.31.601,W081.13.02.638/ho GOTBE/a10000 LUNNI/h240",
+        "star": "LUNNI2",
         "initial_controller": "Jacksonville Center (Sector 54)",
         "initial_altitude": 20400,
         "initial_speed": 250,
@@ -2257,19 +2474,11 @@
       }
     ]
   },
-  "MARQO2": {
+  "MARQO3": {
     "arrivals": [
       {
-        "waypoints": "CAMJO/a13000-16000 MARQO/ho COROE/a9000-12000/s250",
-        "runway_waypoints": {
-          "KJAX": {
-            "14": "COROE/a9000-12000/s250 TASCH/a5000-6000 DIPDE/a3000/s210",
-            "26": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 EGAGE/a4000/s210 NOMTE OLEKE/h77",
-            "32": "COROE/a9000-12000/s250 GWIIZ/a5000-6000 HITTS ACENE/a4000/s210 CALIM PEPIE/h137",
-            "8": "COROE/a9000-12000/s250 NATII/a5000-6000/s230 GUTTY/a3000/s210/h103"
-          }
-        },
-        "star": "MARQO2",
+        "waypoints": "CAMJO MARQO/ho COROE/a11000- GWIIZ EGAGE/a4000/s210/h77",
+        "star": "MARQO3",
         "initial_controller": "Jacksonville Center (Sector 77)",
         "initial_altitude": 16000,
         "initial_speed": 250,
@@ -2330,6 +2539,81 @@
         "initial_altitude": 5000,
         "initial_speed": 250,
         "expect_approach": null,
+        "description": "prop",
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "lightGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "KTPA N028.28.34.958,W082.27.07.597/ho OCF",
+        "route": "KTPA OCF",
+        "initial_controller": "Tampa East Approach",
+        "initial_altitude": 6000,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "description": "jet",
         "airlines": {
           "KSGJ": [
             {
@@ -2389,22 +2673,14 @@
       }
     ]
   },
-  "OHDEA1": {
+  "OHDEA2": {
     "arrivals": [
       {
-        "waypoints": "ILTAC/a19000-24000 N031.19.01.561,W082.30.40.649/ho FORMB/a10000-13000 OHDEA KIPLE/a7000-11000/s250",
-        "runway_waypoints": {
-          "KJAX": {
-            "14": "KIPLE/a7000-10000/s250 MAHKA/a5000-6000/s230 ORTAR/a3000/s210/h145",
-            "26": "KIPLE/a7000-10000/s250 MATLL/a6000-7000/s230 NANAA/a4000/s210 NOMTE OLEKE/h77",
-            "32": "KIPLE/a7000-10000/s250 NAMPE/a6000-7000/s230 ACENE/a4000/s230 CALIM PEPIE/h137",
-            "8": "KIPLE/a7000-10000/s250 KITZO/a5000-6000/s230 CEDOT/a3000/s210/h150"
-          }
-        },
-        "star": "OHDEA1",
+        "waypoints": "ILTAC/a23000- N031.19.01.561,W082.30.40.649/ho FORMB OHDEA/a12000/h150",
+        "star": "OHDEA2",
         "initial_controller": "Jacksonville Center (Sector 79)",
-        "initial_altitude": 24000,
-        "initial_speed": 250,
+        "initial_altitude": 23000,
+        "initial_speed": 280,
         "expect_approach": null,
         "airlines": {
           "KJAX": [
@@ -2460,61 +2736,144 @@
         "route": "KDAB BARBS ROYES CRG",
         "initial_controller": "Daytona North Approach",
         "initial_altitude": 8000,
+        "description": "jets",
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KSGJ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KGNV": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KOCF": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KCRG": [
             {
               "icao": "N",
-              "airport": "KLAL"
+              "airport": "KLAL",
+              "fleet": "fastGA"
             }
           ],
           "KVQQ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KFHB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KNRB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KNIP": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KHEG": [
             {
               "icao": "N",
               "airport": "KMLB"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "BARBS ROYES/ho CRG SGJ",
+        "route": "KDAB BARBS ROYES CRG",
+        "initial_controller": "Daytona North Approach",
+        "initial_altitude": 6000,
+        "description": "prop",
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "lightGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ]
         }
@@ -2527,62 +2886,145 @@
         "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF",
         "route": "KORL VIZTA CUSAB V159 OCF",
         "initial_controller": "Orlando East Approach",
-        "initial_altitude": 9000,
+        "initial_altitude": 10000,
+        "description": "jet",
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
           "KSGJ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KGNV": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KOCF": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KCRG": [
             {
               "icao": "N",
-              "airport": "KLAL"
+              "airport": "KLAL",
+              "fleet": "fastGA"
             }
           ],
           "KVQQ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KFHB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KNRB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KNIP": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KHEG": [
             {
               "icao": "N",
               "airport": "KMLB"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF",
+        "route": "KORL VIZTA CUSAB V159 OCF",
+        "initial_controller": "Orlando East Approach",
+        "initial_altitude": 8000,
+        "initial_speed": 250,
+        "description": "prop",
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "lightGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ]
         }
@@ -2657,53 +3099,13 @@
       }
     ]
   },
-  "QUBEN1": {
+  "QUBEN2": {
     "arrivals": [
       {
-        "waypoints": "HAINY/a24000- SHINR/a16000-19000/ho BASSS POGIE/a12000-14000 QUBEN/a9000-12000/s250 BETLE/a5000+/s230",
-        "runway_waypoints": {
-          "KJAX": {
-            "14": "BETLE/a5000+/s230 PLANK EYLND/a4000/s210 KRISO/a3000 DUNTE JAKRU/h317",
-            "26": "BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h84",
-            "32": "BETLE/a5000+/s230 GURDE/a3000/s210/h23",
-            "8": "BETLE/a5000+/s230 PLANK WADOR/a3000/s210/h346"
-          }
-        },
-        "star": "QUBEN1",
+        "waypoints": "HAINY/a24000+ MISCL MEAAT/ho BASSS POGIE/a13000 QUBEN/h360",
+        "star": "QUBEN2",
         "initial_controller": "Jacksonville Center (Sector 57)",
         "initial_altitude": 24000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KJAX": [
-            {
-              "icao": "AAL",
-              "airport": "KMIA"
-            },
-            {
-              "icao": "JBU",
-              "airport": "KFLL"
-            },
-            {
-              "icao": "NKS",
-              "airport": "KFLL"
-            }
-          ]
-        }
-      },
-      {
-        "waypoints": "ILBOC/a19000- POGIE/a12000-14000/ho QUBEN/a9000-12000/s250 BETLE/a5000+/s230",
-        "runway_waypoints": {
-          "KJAX": {
-            "14": "BETLE/a5000+/s230 PLANK EYLND/a4000/s210 KRISO/a3000 DUNTE JAKRU/h317",
-            "26": "BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h84",
-            "32": "BETLE/a5000+/s230 GURDE/a3000/s210/h23",
-            "8": "BETLE/a5000+/s230 PLANK WADOR/a3000/s210/h346"
-          }
-        },
-        "star": "QUBEN1",
-        "initial_controller": "Jacksonville Center (Sector 57)",
-        "initial_altitude": 19000,
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
@@ -2725,19 +3127,11 @@
       }
     ]
   },
-  "TEBOW1": {
+  "TEBOW2": {
     "arrivals": [
       {
-        "waypoints": "WILON/a22000 HILIS/a17000+/s280/ho FABES/a12000-15000 TEBOW/a9000-12000/s250",
-        "runway_waypoints": {
-          "KJAX": {
-            "14": "TEBOW/a9000-12000/s250 GRRAS/a5000+ KAYEM/a4000/s210 DUNTE JAKRU/h317",
-            "26": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GUTNE/a4000/s210 CLART/h84",
-            "32": "TEBOW/a9000-12000/s250 BETLE/a5000+/s230 GURDE/a3000/s210/h23",
-            "8": "TEBOW/a9000-12000/s250 JERZI/a5000+/s230 FAROT/a3000/s210/h38"
-          }
-        },
-        "star": "TEBOW1",
+        "waypoints": "HILIS/ho FABES MCFIE/a12000 TEBOW/h46",
+        "star": "TEBOW2",
         "initial_controller": "Jacksonville Center (Sector 15)",
         "initial_altitude": 22000,
         "initial_speed": 250,
@@ -2771,56 +3165,139 @@
         "waypoints": "N029.43.22.702,W082.17.48.255 N029.50.06.958,W082.09.14.617/a11000/ho KCRG",
         "route": "WILON",
         "initial_controller": "Jacksonville Center (Sector 15)",
-        "initial_altitude": 14000,
+        "initial_altitude": 11000,
         "initial_speed": 250,
+        "description": "prop",
         "expect_approach": null,
         "airlines": {
           "KSGJ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ],
           "KGNV": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ],
           "KOCF": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ],
           "KCRG": [
             {
               "icao": "N",
-              "airport": "KLAL"
+              "airport": "KLAL",
+              "fleet": "lightGA"
             }
           ],
           "KVQQ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ],
           "KFHB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ],
           "KNRB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ],
           "KNIP": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "N029.43.22.702,W082.17.48.255 N029.50.06.958,W082.09.14.617/a11000/ho KCRG",
+        "route": "WILON",
+        "initial_controller": "Jacksonville Center (Sector 15)",
+        "initial_altitude": 11000,
+        "initial_speed": 250,
+        "description": "jet",
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "fastGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KHEG": [
@@ -2832,65 +3309,148 @@
         }
       },
       {
-        "waypoints": "KTPA WILON SGJ",
+        "waypoints": "KTPA/ho WILON SGJ",
         "route": "WILON",
         "initial_controller": "Tampa East Approach",
-        "initial_altitude": 12000,
+        "initial_altitude": 9000,
         "initial_speed": 250,
         "expect_approach": null,
+        "description": "jet",
         "airlines": {
           "KSGJ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KGNV": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KOCF": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KCRG": [
             {
               "icao": "N",
-              "airport": "KLAL"
+              "airport": "KLAL",
+              "fleet": "fastGA"
             }
           ],
           "KVQQ": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KFHB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KNRB": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KNIP": [
             {
               "icao": "N",
-              "airport": "KMLB"
+              "airport": "KMLB",
+              "fleet": "fastGA"
             }
           ],
           "KHEG": [
             {
               "icao": "N",
               "airport": "KMLB"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "KTPA/ho WILON SGJ",
+        "route": "WILON",
+        "initial_controller": "Tampa East Approach",
+        "initial_altitude": 9000,
+        "initial_speed": 250,
+        "description": "prop",
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KCRG": [
+            {
+              "icao": "N",
+              "airport": "KLAL",
+              "fleet": "lightGA"
+            }
+          ],
+          "KVQQ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KFHB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNRB": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KNIP": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KHEG": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
             }
           ]
         }
@@ -3142,7 +3702,48 @@
   "default_scenario": "KJAX East, No VITTS",
   "name": "KJAX",
   "primary_airport": "KJAX",
-  "scenarios": {
+  "reporting_points": [
+    "BASSS",
+    "WILON",
+    "ESENT",
+    "CRG",
+    "KJAX",
+    "KFHB",
+    "KNIP",
+    "KVQQ",
+    "KCRG",
+    "OCF",
+    "GNV",
+    "OMN"
+],
+"vfr_reporting_points": [
+  {
+    "description": "Ormond VOR",
+    "location": "OMN"
+  },
+  {
+    "description": "Craig VOR",
+    "location": "CRG"
+  },
+  {
+    "description": "JAX",
+    "location": "KJAX"
+  },
+  {
+    "description": "Cecil",
+    "location": "KVQQ"
+  },
+  {
+    "description": "Gators VOR",
+    "location": "GNV"
+  },
+  {
+    "description": "Ocala VOR",
+    "location": "OCF"
+  }
+],
+
+"scenarios": {
     "KJAX East, No VITTS": {
       "arrival_runways": [
         {
@@ -3178,28 +3779,24 @@
           "runway": "5"
         },
         {
-          "airport": "KNRB",
-          "runway": "5"
-        },
-        {
           "airport": "KHEG",
           "runway": "25"
         }
       ],
       "arrivals": {
-        "LUNNI1": {
+        "LUNNI2": {
           "KJAX": 3
         },
-        "MARQO2": {
+        "MARQO3": {
           "KJAX": 3
         },
-        "OHDEA1": {
+        "OHDEA2": {
           "KJAX": 3
         },
-        "QUBEN1": {
+        "QUBEN2": {
           "KJAX": 3
         },
-        "TEBOW1": {
+        "TEBOW2": {
           "KJAX": 3
         },
         "OMN": {
@@ -3251,14 +3848,14 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI1",
+              "LUNNI2",
               "ESENT"
             ]
           },
           "Radar West": {
             "backup": "Radar Arrival",
             "arrivals": [
-              "TEBOW1",
+              "TEBOW2",
               "ORLNOV"
             ],
             "departures": ["KVQQ","KNIP","KHEG"]
@@ -3266,7 +3863,7 @@
           "Radar East": {
             "backup": "Radar West",
             "arrivals": [
-              "QUBEN1",
+              "QUBEN2",
               "OMN",
               "V51"
             ]
@@ -3274,8 +3871,8 @@
           "Radar Arrival": {
             "backup": "Radar North",
             "arrivals": [
-              "MARQO2",
-              "OHDEA1",
+              "MARQO3",
+              "OHDEA2",
               "ALLMA"
             ]
           },
@@ -3410,19 +4007,19 @@
         }
       ],
       "arrivals": {
-        "LUNNI1": {
+        "LUNNI2": {
           "KJAX": 3
         },
-        "MARQO2": {
+        "MARQO3": {
           "KJAX": 3
         },
-        "OHDEA1": {
+        "OHDEA2": {
           "KJAX": 3
         },
-        "QUBEN1": {
+        "QUBEN2": {
           "KJAX": 3
         },
-        "TEBOW1": {
+        "TEBOW2": {
           "KJAX": 3
         },
         "OMN": {
@@ -3474,14 +4071,14 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI1",
+              "LUNNI2",
               "ESENT"
             ]
           },
           "Radar West": {
             "backup": "Radar Arrival",
             "arrivals": [
-              "TEBOW1",
+              "TEBOW2",
               "ORLNOV"
             ],
             "departures": ["KVQQ","KNIP","KHEG",              "KJAX/SAWGY3",
@@ -3490,7 +4087,7 @@
           "Radar East": {
             "backup": "Radar West",
             "arrivals": [
-              "QUBEN1",
+              "QUBEN2",
               "OMN",
               "V51"
             ]
@@ -3498,8 +4095,8 @@
           "Radar Arrival": {
             "backup": "Radar North",
             "arrivals": [
-              "MARQO2",
-              "OHDEA1",
+              "MARQO3",
+              "OHDEA2",
               "ALLMA"
             ]
           },
@@ -3640,19 +4237,19 @@
         }
       ],
       "arrivals": {
-        "LUNNI1": {
+        "LUNNI2": {
           "KJAX": 3
         },
-        "MARQO2": {
+        "MARQO3": {
           "KJAX": 3
         },
-        "OHDEA1": {
+        "OHDEA2": {
           "KJAX": 3
         },
-        "QUBEN1": {
+        "QUBEN2": {
           "KJAX": 3
         },
-        "TEBOW1": {
+        "TEBOW2": {
           "KJAX": 3
         },
         "OMN": {
@@ -3714,7 +4311,7 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI1",
+              "LUNNI2",
               "ESENT",
               "V159",
               "V441"
@@ -3723,7 +4320,7 @@
           "Radar West": {
             "backup": "Radar Arrival",
             "arrivals": [
-              "TEBOW1"
+              "TEBOW2"
             ],
             "departures": ["KVQQ","KNIP","KHEG",              "KJAX/SAWGY3",
             "KJAX/EXBOX2"]
@@ -3731,7 +4328,7 @@
           "Radar East": {
             "backup": "Radar West",
             "arrivals": [
-              "QUBEN1",
+              "QUBEN2",
               "OMN",
               "V51"
             ]
@@ -3739,8 +4336,8 @@
           "Radar Arrival": {
             "backup": "Radar North",
             "arrivals": [
-              "MARQO2",
-              "OHDEA1",
+              "MARQO3",
+              "OHDEA2",
               "ALLMA"
             ]
           },
@@ -3882,19 +4479,19 @@
         }
       ],
       "arrivals": {
-        "LUNNI1": {
+        "LUNNI2": {
           "KJAX": 3
         },
-        "MARQO2": {
+        "MARQO3": {
           "KJAX": 3
         },
-        "OHDEA1": {
+        "OHDEA2": {
           "KJAX": 3
         },
-        "QUBEN1": {
+        "QUBEN2": {
           "KJAX": 3
         },
-        "TEBOW1": {
+        "TEBOW2": {
           "KJAX": 3
         },
         "OMN": {
@@ -3956,7 +4553,7 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI1",
+              "LUNNI2",
               "ESENT",
               "V159",
               "V441"
@@ -3965,14 +4562,14 @@
           "Radar West": {
             "backup": "Radar Arrival",
             "arrivals": [
-              "TEBOW1"
+              "TEBOW2"
             ],
             "departures": ["KVQQ","KNIP","KHEG"]
           },
           "Radar East": {
             "backup": "Radar West",
             "arrivals": [
-              "QUBEN1",
+              "QUBEN2",
               "OMN",
               "V51"
             ]
@@ -3980,8 +4577,8 @@
           "Radar Arrival": {
             "backup": "Radar North",
             "arrivals": [
-              "MARQO2",
-              "OHDEA1",
+              "MARQO3",
+              "OHDEA2",
               "ALLMA"
             ]
           },

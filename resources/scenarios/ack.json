@@ -370,12 +370,12 @@
         }
     },
     "inbound_flows": {
-  "DEEPO1": {
+  "DEEPO2": {
     "arrivals": [
       {
         "spawn": "DEEPO@0.6",
         "cruise_altitude": 15000,
-        "star": "DEEPO1",
+        "star": "DEEPO2",
         "initial_controller": "BOS_37_CTR",
         "initial_altitude": 13000,
         "initial_speed": 310,
@@ -590,7 +590,7 @@
                 }
             ],
             "arrivals": {
-                "DEEPO1": {
+                "DEEPO2": {
                     "KACK": 10
                 },
                 "NEWBE3": {
@@ -600,7 +600,7 @@
             "solo_controller": "ACK_N_APP",
             "multi_controllers": {
             "default" : {
-                "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "primary": true},
+                "ACK_N_APP": {"arrivals": ["DEEPO2","NEWBE3"], "primary": true},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
                 "ACK_O_APP": {"backup": "ACK_DEP"},
                 "ACK_Y_APP": {"backup": "ACK_O_APP"},
@@ -641,7 +641,7 @@
                 }
             ],
             "arrivals": {
-                "DEEPO1": {
+                "DEEPO2": {
                     "KACK": 10
                 },
                 "NEWBE3": {
@@ -651,7 +651,7 @@
             "solo_controller": "ACK_N_APP",
             "multi_controllers": {
             "default" : {
-                "ACK_N_APP": {"arrivals": ["DEEPO1","NEWBE3"], "primary": true},
+                "ACK_N_APP": {"arrivals": ["DEEPO2","NEWBE3"], "primary": true},
                 "ACK_DEP": {"departures": ["KACK","KMVY"], "backup": "ACK_N_APP"},
                 "ACK_O_APP": {"backup": "ACK_DEP"},
                 "ACK_Y_APP": {"backup": "ACK_O_APP"},
@@ -796,9 +796,11 @@
                 "receiving_controller": "BOS_37_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "KACK NO CA",
+                "id": "ACKNOCA",
+                "description": "ACK CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 2000,
@@ -806,14 +808,16 @@
                 "center": "KACK"
             },
             {
-                "name": "KMVY NO CA",
+                "id": "MVYNOCA",
+                "description": "MVY CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 2000,
                 "radius": 5,
                 "center": "KMVY"
             }
-        ],
+        ]
+	},
         "force_ql_self": true,
         "scratchpads": {
             "CCC": "PRT",

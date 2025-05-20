@@ -9,7 +9,7 @@
               "I6L": { "cifp_id": "I16L" },
               "I6R": { "cifp_id": "I16R" },
               "RY6R": { "cifp_id": "RY16R" },
-	      "RZ6R": { "cifp_id": "RZ16R" },
+			  "RZ6R": { "cifp_id": "RZ16R" },
               "I7L": { "cifp_id": "I17L" },
               "I7R": { "cifp_id": "I17R" },
               "R7R": { "cifp_id": "RZ17R" },
@@ -925,7 +925,8 @@
         },
         "KAPA": {
             "approaches": {
-              "R7L": { "cifp_id": "R17L" },
+              "RY7L": { "cifp_id": "RY17L" },
+			  "RZ7L": { "cifp_id": "RZ17L" },
               "I5R": { "cifp_id": "I35R" },
               "R5R": { "cifp_id": "R35R" }
             },
@@ -5069,7 +5070,7 @@
             }
 		  ]
 		},
-		"DUNNN5": {
+		"DUNNN6": {
           "arrivals": [
 			{
                 "airlines": {
@@ -5104,13 +5105,13 @@
                 "initial_altitude": 25000,
                 "initial_controller": "DEN_27_CTR",
                 "initial_speed": 290,
-                "star": "DUNNN5",
+                "star": "DUNNN6",
                 "speed_restriction": 250,
-                "waypoints": "XPAIN DUNNN/a22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000 XBGIN/a13000 XLENT/a12000 XPATH/a11000/s240",
+                "waypoints": "XPAIN DUNNN/a19000-22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000/s250 XBGIN/a13000-14000 XLENT/a12000+ XPATH/a10500",
                 "runway_waypoints": {
                     "KAPA": {
-                        "35R": "XPATH/a11000/s240 XBEEE/a9000/s240",
-                        "17L": "XPATH/a11000/s240 XWILL/a11000 XHOME/a10000 XMAAK/a9000 XYOUU/a9000/h353"
+                        "35R": "XPATH/a10500 XBEEE/a9000",
+                        "17L": "XPATH/a10500 XWILL/a10000 XHOME/a10000 NSYNC/a10000/s210/h350"
                     }
                 }
             },
@@ -5133,9 +5134,9 @@
                 "initial_altitude": 25000,
                 "initial_controller": "DEN_27_CTR",
                 "initial_speed": 290,
-                "star": "DUNNN5",
+                "star": "DUNNN6",
                 "speed_restriction": 250,
-                "waypoints": "XPAIN DUNNN/a22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000 XBGIN/a13000 XLENT/a12000 XPATH/a11000/s240 xWILL/a11000 XHOME/a10000 XMAAK/a9000 XYOUU/a9000"
+                "waypoints": "XPAIN DUNNN/a19000-22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000/s250 XBGIN/a13000-14000 GATME/a12000 OLLVR/a12000 HERLY/a11000 CROWZ/a10000/h327"
             },
 			{
                 "airlines": {
@@ -5156,14 +5157,14 @@
                 "initial_altitude": 14000,
                 "initial_controller": "COS_APP",
                 "initial_speed": 250,
-                "star": "DUNNN5",
+                "star": "DUNNN6",
                 "speed_restriction": 250,
-                "waypoints": "ADANE BYEBI/a14000/ho XBGIN/a13000 XLENT/a12000 XPATH/a11000/s240",
+                "waypoints": "ADANE BYEBI/a14000/s250/ho XBGIN/a13000-14000 XLENT/a12000+ XPATH/a10500",
 				"runway_waypoints": {
 					"KAPA": {
-						"35R": "XPATH/a11000/s240 XBEEE/a9000/s240",
-						"17L": "XPATH/a11000/s240 XWILL/a11000 XHOME/a10000 XMAAK/a9000 XYOUU/a9000/h353"
-					}
+                        "35R": "XPATH/a10500 XBEEE/a9000",
+                        "17L": "XPATH/a10500 XWILL/a10000 XHOME/a10000 NSYNC/a10000/s210/h350"
+                    }
 				}
             }
 		  ]
@@ -5224,7 +5225,7 @@
             }
 		  ]
 		},
-		"ZOMBZ5": {
+		"ZOMBZ6": {
           "arrivals": [
 			{
                 "airlines": {
@@ -5241,13 +5242,13 @@
                 "initial_altitude": 23000,
                 "initial_controller": "DEN_26_CTR",
                 "initial_speed": 290,
-                "star": "ZOMBZ5",
+                "star": "ZOMBZ6",
                 "speed_restriction": 250,
-                "waypoints": "LAMOE N038.55.01.831,W105.31.30.966/ho CRWLR/a16000 ZOMBZ XBOXX/a13000",
+                "waypoints": "LAMOE N038.55.01.831,W105.31.30.966/ho CRWLR/a16000+ ZOMBZ/a15000/s250 XBOXX/a13000-14000",
                 "runway_waypoints": {
                     "KAPA": {
-                        "35R": "XBOXX/a13000 XJOIN/a12000 XPATH/a11000/s240 XBEEE/a9000/s240",
-                        "17L": "XBOXX/a13000 XNICE/a12000 ZHORN/a11000/s210"
+                        "35R": "XBOXX/a13000-14000 XJOIN/a12000/s240 XPATH/a10500 XBEEE/a9000/s220",
+                        "17L": "XBOXX/a13000-14000 GOULD/a12000+ XNICE/a11000 XHOME/a11000 NSYNC/a10000/s210"
                     }
                 }
             }
@@ -8052,7 +8053,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -8064,7 +8065,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -8167,8 +8168,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -8401,7 +8402,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -8413,7 +8414,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -8505,8 +8506,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -8726,7 +8727,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -8738,7 +8739,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -8830,8 +8831,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -9051,7 +9052,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -9063,7 +9064,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -9155,8 +9156,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -9368,7 +9369,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -9380,7 +9381,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -9472,8 +9473,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -9685,7 +9686,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -9697,7 +9698,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -9789,8 +9790,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -10014,7 +10015,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -10026,7 +10027,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -10118,8 +10119,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -10343,7 +10344,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -10355,7 +10356,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -10447,8 +10448,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -10672,7 +10673,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -10684,7 +10685,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -10776,8 +10777,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -11001,7 +11002,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -11013,7 +11014,7 @@
                     "KFNL": 2,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 },
 				"COS Arrivals/Overflights": {
@@ -11105,8 +11106,8 @@
                     "DEN_S_DEP": {
                         "backup": "DEN_R_DEP",
 						"inbound_flows": [
-                            "DUNNN5",
-							"ZOMBZ5",
+                            "DUNNN6",
+							"ZOMBZ6",
 							"COS Arrivals/Overflights"
                         ],
                         "departures": [
@@ -11546,7 +11547,7 @@
                     "KAPA": 1,
                     "KBJC": 1
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 2,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -11558,7 +11559,7 @@
                     "KFNL": 1,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 }
             },
@@ -11682,7 +11683,7 @@
                     "KAPA": 2,
                     "KBJC": 2
                 },
-                "DUNNN5": {
+                "DUNNN6": {
                     "KAPA": 3,
                     "KBJC": 2,
                     "KFNL": 2,
@@ -11694,7 +11695,7 @@
                     "KFNL": 1,
                     "KGXY": 1
                 },
-                "ZOMBZ5": {
+                "ZOMBZ6": {
                     "KAPA": 2
                 }
             },
@@ -12493,9 +12494,11 @@
 				]
 			}
 		],
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "D01 NO CA",
+                "id": "D01NOCA",
+                "description": "D01 CONFLICT SUPPRESS",
                 "type": "polygon",
                 "floor": 5000,
                 "ceiling": 13000,
@@ -12506,7 +12509,8 @@
                     "N040.24.22.019,W104.31.03.253"
                 ]
             }
-        ],
+        ]
+	},
         "radar_sites": {
             "DEN": {
                 "char": "D",

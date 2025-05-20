@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/renderer"
 )
 
@@ -24,7 +23,7 @@ type Stats struct {
 
 var startupMallocs uint64
 
-func (stats Stats) LogValue(lg *log.Logger) slog.Value {
+func (stats Stats) LogValue() slog.Value {
 	var mem runtime.MemStats
 	runtime.ReadMemStats(&mem)
 
@@ -32,7 +31,7 @@ func (stats Stats) LogValue(lg *log.Logger) slog.Value {
 		startupMallocs = mem.Mallocs
 	}
 
-	elapsed := time.Since(lg.Start).Seconds()
+	elapsed := time.Since(stats.startTime).Seconds()
 	mallocsPerSecond := float64(mem.Mallocs-startupMallocs) / elapsed
 
 	return slog.GroupValue(

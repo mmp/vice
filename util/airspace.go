@@ -1,5 +1,5 @@
-// extract the B and C airspace from the FAA Class_Airspace.geojson file
-// geojson on stdin, vice json to stdout
+// extract the B, C, and D airspace from the FAA Class_Airspace.geojson file
+// geojson on stdin, files writeen
 
 package main
 
@@ -46,6 +46,7 @@ func main() {
 
 	bravo := make(map[string][]Airspace)
 	charlie := make(map[string][]Airspace)
+	delta := make(map[string][]Airspace)
 
 	fc, err := geojson.UnmarshalFeatureCollection(b)
 	if err != nil {
@@ -57,7 +58,8 @@ func main() {
 
 		isBravo := strings.HasSuffix(name, " CLASS B")
 		isCharlie := strings.HasSuffix(name, " CLASS C")
-		if !isBravo && !isCharlie {
+		isDelta := strings.HasSuffix(name, " CLASS D")
+		if !isBravo && !isCharlie && !isDelta {
 			continue
 		}
 
@@ -107,9 +109,12 @@ func main() {
 		if isBravo {
 			name = strings.TrimSuffix(name, " CLASS B")
 			bravo[name] = append(bravo[name], airspace)
-		} else {
+		} else if isCharlie {
 			name = strings.TrimSuffix(name, " CLASS C")
 			charlie[name] = append(charlie[name], airspace)
+		} else if isDelta {
+			name = strings.TrimSuffix(name, " CLASS D")
+			delta[name] = append(delta[name], airspace)
 		}
 	}
 
@@ -126,6 +131,14 @@ func main() {
 		panic(err)
 	}
 	if err := os.WriteFile("charlie-airspace.json", jc, 0o644); err != nil {
+		panic(err)
+	}
+
+	jd, err := json.Marshal(delta)
+	if err != nil {
+		panic(err)
+	}
+	if err := os.WriteFile("delta-airspace.json", jd, 0o644); err != nil {
 		panic(err)
 	}
 }

@@ -305,6 +305,62 @@ func TestFilterSeq(t *testing.T) {
 	}
 }
 
+func TestFilterSeq2(t *testing.T) {
+	m := map[string]int{
+		"one": 1, "two": 2, "ten": 10, "zero": 0, "six": 6,
+	}
+
+	type testcase struct {
+		pred   func(string, int) bool
+		expect map[string]int
+	}
+	for i, c := range []testcase{
+		testcase{
+			pred:   func(s string, v int) bool { return v > 6 },
+			expect: map[string]int{"ten": 10},
+		},
+		testcase{
+			pred:   func(s string, v int) bool { return len(s) == 3 },
+			expect: map[string]int{"one": 1, "two": 2, "ten": 10, "six": 6},
+		},
+		testcase{
+			pred:   func(s string, v int) bool { return true },
+			expect: m,
+		},
+		testcase{
+			pred:   func(s string, v int) bool { return false },
+			expect: nil,
+		},
+	} {
+		r := maps.Collect(FilterSeq2(maps.All(m), c.pred))
+		if !maps.Equal(r, c.expect) {
+			t.Errorf("case %d: got %+v expected %+v", i, r, c.expect)
+		}
+	}
+}
+
+func TestSeqKeyValues(t *testing.T) {
+	m := map[string]int{
+		"one": 1, "two": 2, "ten": 10, "zero": 0, "six": 6,
+	}
+
+	mv := slices.Collect(maps.Values(m))
+	slices.Sort(mv)
+	v := slices.Collect(Seq2Values(maps.All(m)))
+	slices.Sort(v)
+	if !slices.Equal(mv, v) {
+		t.Errorf("values mismatch: got %+v expected %+v", v, mv)
+	}
+
+	mk := slices.Collect(maps.Keys(m))
+	slices.Sort(mk)
+	k := slices.Collect(Seq2Keys(maps.All(m)))
+	slices.Sort(k)
+	if !slices.Equal(mk, k) {
+		t.Errorf("values mismatch: got %+v expected %+v", k, mk)
+	}
+}
+
 func TestSeqContains(t *testing.T) {
 	s := []int{1, 2, 3, 4, 5}
 	if !SeqContains(slices.Values(s), 3) {
@@ -437,5 +493,19 @@ func TestSliceReverseValues2(t *testing.T) {
 	}
 	if count != len(s) {
 		t.Errorf("SliceReverseValues2 should iterate %d times, got %d", len(s), count)
+	}
+}
+
+func TestSeqLookup(t *testing.T) {
+	s := []int{1, 2, 3, 4, 5}
+
+	if _, ok := SeqLookupFunc(slices.Values(s), func(a int) bool { return a == 0 }); ok {
+		t.Errorf("unexpectedly found 0 in %+v", s)
+	}
+
+	if v, ok := SeqLookupFunc(slices.Values(s), func(a int) bool { return a%2 == 0 }); !ok {
+		t.Errorf("didn't find even in %+v", s)
+	} else if v != 2 {
+		t.Errorf("didn't find 2 as first even in %+v: got %d", s, v)
 	}
 }

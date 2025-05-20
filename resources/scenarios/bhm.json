@@ -971,9 +971,11 @@
   ]
   },
   "center": "KBHM",
-  "inhibit_ca_volumes": [
+  "filters": {
+  "inhibit_ca": [
     {
-      "name": "BHM NO CA",
+      "id": "B NOCA1",
+      "description": "BHM CONFLICT SUPPRESS",
       "type": "polygon",
       "floor": 0,
       "ceiling": 3500,
@@ -985,7 +987,8 @@
       ]
   },
   {
-    "name": "BHM NO CA",
+      "id": "B NOCA2",
+    "description": "BHM CONFLICT SUPPRESS",
     "type": "polygon",
     "floor": 0,
     "ceiling": 3500,
@@ -996,7 +999,8 @@
         "-86.794879,33.672271"
     ]
 }
-  ],
+  ]
+  },
   "radar_sites": {
     "BHM": {
       "char": "B",

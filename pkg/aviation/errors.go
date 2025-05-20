@@ -8,11 +8,13 @@ import "errors"
 
 var (
 	ErrClearedForUnexpectedApproach = errors.New("Cleared for unexpected approach")
+	ErrFixIsTooFarAway              = errors.New("Fix is too far away")
 	ErrFixNotInRoute                = errors.New("Fix not in aircraft's route")
 	ErrInvalidAltitude              = errors.New("Altitude above aircraft's ceiling")
 	ErrInvalidApproach              = errors.New("Invalid approach")
 	ErrInvalidController            = errors.New("Invalid controller")
 	ErrInvalidFacility              = errors.New("Invalid facility")
+	ErrInvalidFix                   = errors.New("Invalid fix")
 	ErrInvalidHeading               = errors.New("Invalid heading")
 	ErrInvalidSquawkCode            = errors.New("Invalid squawk code")
 	ErrNoAircraftForCallsign        = errors.New("No aircraft exists with specified callsign")

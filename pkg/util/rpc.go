@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"net"
 	"net/rpc"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -212,6 +213,7 @@ type LoggingConn struct {
 	sent, received int64
 	start          time.Time
 	lastReport     time.Time
+	mu             sync.Mutex
 }
 
 func MakeLoggingConn(c net.Conn, lg *log.Logger) *LoggingConn {
@@ -248,6 +250,9 @@ func (c *LoggingConn) Write(b []byte) (n int, err error) {
 }
 
 func (c *LoggingConn) maybeReport() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if time.Since(c.lastReport) > 1*time.Minute {
 		min := time.Since(c.start).Minutes()
 		rec, sent := atomic.LoadInt64(&c.received), atomic.LoadInt64(&c.sent)
@@ -264,47 +269,4 @@ func (c *LoggingConn) maybeReport() {
 func IsRPCServerError(err error) bool {
 	_, ok := err.(rpc.ServerError)
 	return ok || errors.Is(err, rpc.ErrShutdown)
-}
-
-type RPCClient struct {
-	*rpc.Client
-}
-
-func (c *RPCClient) CallWithTimeout(serviceMethod string, args any, reply any) error {
-	pc := &PendingCall{
-		Call:      c.Go(serviceMethod, args, reply, nil),
-		IssueTime: time.Now(),
-	}
-
-	select {
-	case <-pc.Call.Done:
-		return pc.Call.Error
-
-	case <-time.After(5 * time.Second):
-		return ErrRPCTimeout
-	}
-}
-
-type PendingCall struct {
-	Call      *rpc.Call
-	IssueTime time.Time
-	OnSuccess func(any)
-	OnErr     func(error)
-}
-
-func (p *PendingCall) CheckFinished() bool {
-	select {
-	case c := <-p.Call.Done:
-		if c.Error != nil {
-			if p.OnErr != nil {
-				p.OnErr(c.Error)
-			}
-		} else if p.OnSuccess != nil {
-			p.OnSuccess(c.Reply)
-		}
-		return true
-
-	default:
-		return false
-	}
 }

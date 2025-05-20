@@ -79,7 +79,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Commands</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions</a></li>
 
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-installation"><span class="theme-icon-holder me-2"><i class="fas fa-arrow-down"></i></span>Installation</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#install-windows">Windows</a></li>
@@ -97,6 +97,8 @@
 	  href="#stars-track-ownership">Track Ownership</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto"
 	  href="#track-information">Track Information</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto"
+	  href="#flight-plans">Flight Plans</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-tools">Tools</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-configuration">STARS Configuration</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-display-elements">Display Elements</a></li>
@@ -112,7 +114,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-departures">Departures</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-arrivals">Arrivals and Overflights</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Airspace</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a></li>
 	</ul>
@@ -263,9 +265,7 @@ Y90.
               <p>There is a <i>discord</i> server for <i>vice</i>: the <a href="https://discord.gg/y993vgQxhY">Vice ATC Simulator</a> server,
                 for general discussion, bug reports and feature requests, and for discussing facility engineering.
               </p>
-              <p>
-                There is a short <a href="https://youtu.be/MNFpFaT1k7s">video overview</a> that gives a tour of <i>vice</i>. (Note: this video was recorded with an older version of <i>vice</i>, so some details are different in the latest version.)
-              </p>
+              <p>Documentation for the current beta build of vice (may be) found <a href="beta/index.html">here.</a></p>
 	    </section><!--//docs-intro-->
 	  </header>
 
@@ -469,13 +469,15 @@ Y90.
           </section>
 
 	  <section class="docs-section" id="atc-commands">
-            <h2 class="section-heading">ATC Commands</h2>
+            <h2 class="section-heading">ATC Instructions</h2>
 
             <p>A variety of instructions can be issued to aircraft by an aircraft controller.
               To issue an instruction, first press the <code>[TAB]</code> key.
               This will place the STARS radar into "target generation" mode and the characters "TG"
               will appear above the text input area (which is by default on the left side of the STARS
-              window, towards the top.</p>
+              window, towards the top.  STARS reverts to normal command entry mode after a valid ATC
+              instruction is entered, though target generation can be locked by pressing <code>[SHIFT][TAB]</code>.
+            </p>
             <p>The commands below can then be entered to issue control commands to aircraft.
               As you enter commands, they will be shown in the STARS input area.
               You can correct errors with the backspace key or press the <code>[ESCAPE]</code> key
@@ -501,6 +503,7 @@ Y90.
               To open a window that shows the available ATC commands when using <i>vice</i>,
               click the <i class="fas fa-keyboard"></i> button in the top menubar.
             </p>
+            <p>The following commands relate to the aircraft's lateral route:</p>
 
               <table class="table table-bordered">
                 <thead>
@@ -551,16 +554,24 @@ Y90.
                     <td><code>DLENDY/H180</code></td>
                   </tr>
                   <tr>
-                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i></td>
-                    <td><p>Directs the aircraft to cross the specified fix at the given altitude and speed.
-                      Either one or both of <code>A</code>
-                        and <code>S</code> may be specified.</p>
-                      <p>Altitudes may be given as single altitudes (corresponding to
-                      "at"), an altitude and a plus sign ("at or above"),
-                      an altitude and a minus sign ("at or below"), or a
-                      range of altitudes separated by a minus sign ("between").</p></td>
-                    <td><code>CCAMRN/A110+</code></td>
+                    <td><code>SH</code></td>
+                    <td>Directs the aircraft to say its current heading.</td>
+                    <td><code>SH</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+            <p>And these commands are related to altitude:</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>C</code><i>alt</i></td>
                     <td>Directs the aircraft to climb to the specified
@@ -607,6 +618,46 @@ Y90.
                     <td><code>EC</code></td>
                   </tr>
                   <tr>
+                    <td><code>C</code><i>fix</i><code>/A</code><i>altitude</i><code>/S</code><i>speed</i></td>
+                    <td><p>Directs the aircraft to cross the specified fix at the given altitude and speed.
+                      Either one or both of <code>A</code>
+                        and <code>S</code> may be specified.</p>
+                      <p>Altitudes may be given as single altitudes (corresponding to
+                      "at"), an altitude and a plus sign ("at or above"),
+                      an altitude and a minus sign ("at or below"), or a
+                      range of altitudes separated by a minus sign ("between").</p></td>
+                    <td><code>CCAMRN/A110+</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>CVS</code></td>
+                    <td>Directs a departure to "climb via the SID".</td>
+                    <td><code>CVS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>DVS</code></td>
+                    <td>Directs an arrival to "descend via the STAR".</td>
+                    <td><code>DVS</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>SA</code></td>
+                    <td>Directs the aircraft to say its current altitude.</td>
+                    <td><code>SA</code></td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <p>These commands are for aircraft speed:</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
                     <td><code>S</code><i>knots</i></td>
                     <td>Gives the aircraft a speed restriction.
                       If the restriction is given after an aircraft is cleared for an approach,
@@ -640,16 +691,20 @@ Y90.
                     <td>Directs the aircraft to say its indicated airspeed.</td>
                     <td><code>SS</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <p>The transponder is managed using these commands:</p>
+
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td><code>SH</code></td>
-                    <td>Directs the aircraft to say its current heading.</td>
-                    <td><code>SH</code></td>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
                   </tr>
-                  <tr>
-                    <td><code>SA</code></td>
-                    <td>Directs the aircraft to say its current altitude.</td>
-                    <td><code>SA</code></td>
-                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>SQ</code><i>code</i></td>
                     <td>Instructs the aircraft to squawk the given beacon code.</td>
@@ -670,6 +725,56 @@ Y90.
                     <td>Directs the aircraft to turn on their transponder and squawk mode-A.</td>
                     <td><code>SQON</code></td>
                   </tr>
+                  <tr>
+                    <td><code>ID</code></td>
+                    <td>Instructs the aircraft to "ident".</td>
+                    <td><code>ID</code></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p>And these commands are instructions related to changing radio frequencies and contacting different controllers:</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>FC</code></td>
+                    <td>"Frequency change": change radio frequency to the controller the aircraft was handed off to
+                      and contact them.</td>
+                    <td><code>FC</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>CT</code><i>TCP</i></td>
+                    <td>Contact the controller with the specified TCP. This is generally used for VFR aircraft that contact
+                      the wrong controller asking for flight following.</td>
+                    <td><code>CT2J</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>TO</code></td>
+                    <td>Directs an arrival to contact the tower.</td>
+                    <td><code>TO</code></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p>A variety of commands are available related to approaches&mdash;specifying them and clearing aircraft for them.</p>
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
+                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>E</code><i>approach</i></td>
                     <td>Tells the aircraft to expect the specified
@@ -709,26 +814,39 @@ Y90.
                     but not descend until it is cleared for the approach.)</td>
                     <td><code>I</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <p>For VFR aircraft that have been given vectors or altitude constraints, an instruction is available to put them back on course.</p>
+
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td><code>CVS</code></td>
-                    <td>Directs a departure to "climb via the SID".</td>
-                    <td><code>CVS</code></td>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
                   </tr>
+                </thead>
+                <tbody>
                   <tr>
-                    <td><code>DVS</code></td>
-                    <td>Directs an arrival to "descend via the STAR".</td>
-                    <td><code>DVS</code></td>
+                    <td><code>RON</code></td>
+                    <td>"Resume own navigation".</td>
+                    <td><code>RON</code></td>
                   </tr>
+                </tbody>
+              </table>
+
+              <p>Finally, a few miscellaneous commands are available to control the simulation.</p>
+
+              <table class="table table-bordered">
+                <thead>
                   <tr>
-                    <td><code>TO</code></td>
-                    <td>Directs an arrival to contact the tower.</td>
-                    <td><code>TO</code></td>
+                    <th>Command</th>
+                    <th>Function</th>
+                    <th>Example</th>
                   </tr>
-                  <tr>
-                    <td><code>ID</code></td>
-                    <td>Instructs the aircraft to "ident".</td>
-                    <td><code>ID</code></td>
-                  </tr>
+                </thead>
+                <tbody>
                   <tr>
                     <td><code>X</code></td>
                     <td>Deletes the specified aircraft from the simulation. This command is useful when one starts going down the tubes.</td>
@@ -738,6 +856,11 @@ Y90.
                     <td><code>P</code></td>
                     <td>Toggles Pause/Unpause</td>
                     <td><code>P</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>Left Shift</code> + <code>Tab</code></td>
+                    <td>Toggles TGT GEN Lock</td>
+                    <td><code>Left Shift</code> + <code>Tab</code></td>
                   </tr>
                 </tbody>
               </table>
@@ -806,6 +929,22 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3>0.12.0 (TBD)</h3>
+            <ul>D10 update (Jason Helkenberg)
+              <li>STARS:
+                <ul>
+                  <li>flight plans</li>
+                  <li>F-key mappings updated</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>inhibit_ca_volumes -> filters / inhibit_ca</li>
+                  <li>name -> label, added "description"
+                </ul>
+              </li>
+            </ul>
 
             <h3>0.11.10 (15 April 2025)</h3>
             <ul>
@@ -1794,17 +1933,34 @@ how it simulates aircraft or the STARS interface.
 	  <section class="docs-section" id="stars-key-concepts">
             <h2 class="section-heading">Key Concepts</h2>
 
-          <p>Aircraft are shown on the STARS scope as <i>radar tracks</i>;
-            a <i>datablock</i> next to them shows the aircraft's callsign
-            and additional information about it. A <i>leader line</i>
-            connects the radar track to the datablock. Here is an example:</p>
+            <p>STARS uses RADAR to determine the location of objects in the sky; if an aircraft has a functioning transponder,
+              it sends the radar additional information including its altitude, a beacon code it is squawking, and the aircraft's
+              callsign (assuming an ADS-B transponder.) For many aircraft, the STARS system doesn't know anything more
+              about them (e.g., the aircraft type, the planned route, etc.) Such <i>radar tracks</i> are rendered like this:
+            </p>
+            <div class="text-center">
+              <img src="ldb-basic.png" srcset="ldb-basic-2x.png 2x" width="108" height="62">
+            </div><br>
+            <p>There is a <i>position symbol</i> (here, an asterisk), and a green <i>leader line</i> connecting the
+              position symbol to the <i>datablock</i>, which here just shows the radar track's altitude, in hundreds of feet.
+              The purple dots to the left are the <i>history trail</i>, showing the aircraft's position 5, 10, 15, ...
+              seconds in the past.</p>
+            <p>Some radar tracks have flight plans associated with them; such tracks are called <i>associated tracks</i>
+              (and tracks without a flight plan, as the one above, are <i>unassociated</i>.)
+              Given a flight plan, STARS is able to provide more useful information in the aircraft's datablock, as shown here:
+              </p>
             <div class="text-center">
               <img src="example-track.gif" srcset="example-track-2x.gif 2x" width="148" height="77" class="img-fluid" alt="example aircraft track">
             </div>
             <br>
-            <p>Here we see the datablock showing the aircraft's callsign, LXJ137, its altitude in hundreds of feet (040) multiplexing with its destination airport (CDW), and its groundspeed in tens of knots (28) multiplexing with its aircraft type, CL30. The "H" after groundspeed is the aircraft's <a href="#cwt">consolidated wake turbulence (CWT)</a> category&mdash;upper small. (See the section on <a href="#stars-datablock-types">datablocks</a> for extensive documentation of datablocks and the information that they may show.)</p>
-          <p>The blue circle shows the aircraft's current position and the purple circles show its course over the past 25 seconds; we can see that it is flying to the Northeast. Finally, the "P" in the middle of the circle (the <i>position symbol</i>) indicates which controller has owner of the aircraft's track.
-            </p>
+
+            <p>Here we see the datablock showing the aircraft's callsign, LXJ137, its altitude in hundreds of feet (040)
+              multiplexing with its destination airport (CDW), and its groundspeed in tens of knots (28) multiplexing with
+              its aircraft type, CL30. The "H" after groundspeed is the aircraft's <a href="#cwt">consolidated wake turbulence (CWT)</a> category&mdash;upper small. (See the section on <a href="#stars-datablock-types">datablocks</a> for extensive documentation of datablocks and the information that they may show.) For this aircraft, the "P" in the middle of the circle (the <i>position symbol</i>) indicates which controller is the owner of the aircraft's track. (In contrast, unassociated tracks cannot be owned by a controller.)</p>
+
+            <p>Most IFR aircraft automatically have flight plans associated with them.
+              For VFR aircraft or for VFRs that request pop-up IFR clearance, a variety of commands are available to
+              create flight plans and associate them with aircraft; see the section on <a href="#flight-plans">Flight Plans</a> below.</p>
 
             <p>A single controller may own an aircraft's track and a single controller may own control of an aircraft.  The same controller may own both or two different controllers may the track and control.  A controller must have control of an aircraft in order to issue instructions to the pilot.  See the discussion of <a href="#stars-track-ownership">Track Ownership</a> below for more information about how control and track ownership are transferred between controllers.
             </p>
@@ -1851,29 +2007,54 @@ how it simulates aircraft or the STARS interface.
               left mouse button.  You will often enter a command with the
               keyboard and then slew an aircraft; if the documentation
               below, <code>[SLEW]</code> indicates that an aircraft should
-              be slewed to execute the command.
+              be slewed to execute the command. In the following, if a listed command
+              doesn't end with <code>[SLEW]</code>, then it should be understood
+              that <code>[ENTER]</code> must be pressed to execute the command.
             </p>
-            <p>Many STARS keyboard commands take additional parameters such as a number
-              or the name of an airport.  These will be shown in parenthesis with the number
-              and type of character expected. Thus <code>(#)</code>
-              indicates that a single digit should be entered, without any parenthesis.
-              Similarly, <code>(ABC)</code> indicates that three letters are expected.
+            <p>Many STARS keyboard commands take additional parameters such as an aircraft
+              callsign, a beacon code number, or a controller identifier. The following
+              notation is used for these entries in the documentation below:
             </p>
-            <p>For commands that take runways, <code>(RWY)</code> will be used.
-              Runways are specified with their number and then, if required, "L", "C", or "R"
-              to distinguish between parallel runways. Runways numbered 9 or less should not have a leading zero.
-              <code>(AIRPORT)</code> denotes an airport given to a command; airports should be specified using
-              three letters, dropping the leading "K".
-            </p>
-            <p>Many keyboard commands take an aircraft identifier, which will be denoted <code>(ACID)</code> in the following.
-              The aircraft identifier may be given as either the aircraft's complete callsign, e.g., "UAL650", or as the aircraft's beacon code.
-              Some commands also take a <i>tab list identifier</i>, which is a number from 0&ndash;99 that is associated with
-              aircraft that are displayed in system lists like <a href="#coordination-lists">coordination lists</a>.
-            </p>
-            <p>It is also common for commands to take identify a controller using the controller's ID (e.g., the TCP for a terminal position).
-              In the following documentation, <code>(CID)</code> indicates such a controller id.
-              There are a number of rules that define how these are specified; they are
-              <a href="#stars-specifying-controllers">discussed in more detail below</a>.</p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:15%">Identifier</th>
+                    <th>Format and Use</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>(##)</code></td>
+                    <td><i>Numeric digits</i>: the number of hash marks "#" indicates the number of
+                      expected digits. When used for beacon code values, only the digits 0-7 are valid.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(ABC)</code></td>
+                    <td><i>Arbitrary letters</i>: any three letters.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(CID)</code></td>
+                    <td><i>Control position identifier</i>: letters and digits identifying a control position,
+                      either inside the local facility or external.
+                      There are a number of rules that define how these are specified; they are
+                      <a href="#stars-specifying-controllers">discussed in more detail below.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(FLT ID)</code></td>
+                    <td><i>Flight identifier</i>: either a full aircraft callsign, the beacon code
+                      that an aircraft is squawking, or the tab list index for the aircraft. (Tab list
+                      indices can be found as two digits in the first column of some STARS system lists
+                      such as the VFR and FLIGHT PLAN lists as well as <a href="#coordination-lists">coordination lists</a>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(TCP)</code></td>
+                    <td><i>TCP identifier</i>: a numeric digit followed by a letter identifying a local terminal
+                      control position.</td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              
             <p>The STARS keyboard has a number of custom keys that are not present on standard keyboards.
               In the following documentation, when one of the STARS keys in square brackets below is shown, the corresponding
               regular keyboard key should be entered.
@@ -1886,29 +2067,32 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td><code>[BRITE]</code></td><td><code>[Ctrl-F3]</code></td></tr>
+                  <tr><td><code>[BRITE]</code></td><td><code>[Ctrl-F5]</code></td></tr>
                   <tr><td><code>[CA]</code></td><td><code>[F11]</code></td></tr>
-                  <tr><td><code>[CHARSIZE]</code></td><td><code>[Ctrl-F5]</code></td></tr>
-                  <tr><td><code>[CNTR]</code></td><td><code>[Ctrl-F1]</code></td></tr>
+                  <tr><td><code>[CHARSIZE]</code></td><td><code>[Ctrl-F7]</code></td></tr>
+                  <tr><td><code>[CNTR]</code></td><td><code>[Ctrl-F2]</code></td></tr>
                   <tr><td><code>[DCB-SHIFT]</code></td><td><code>[Ctrl-F7]</code></td></tr>
-                  <tr><td><code>[DCB]</code></td><td><code>[Ctrl-F8]</code></td></tr>
+                  <tr><td><code>[DCB]</code></td><td><code>[Ctrl-F9]</code></td></tr>
                   <tr><td><code>[F13]</code></td><td><code>[Shift-F1]</code></td></tr>
                   <tr><td><code>[FLT DATA]</code></td><td><code>[F6]</code></td></tr>
                   <tr><td><code>[HND OFF]</code></td><td><code>[F5]</code></td></tr>
-                  <tr><td><code>[INIT CNTL]</code></td><td><code>[F3]</code></td></tr>
-                  <tr><td><code>[LDR]</code></td><td><code>[Ctrl-F4]</code></td></tr>
-                  <tr><td><code>[MAPS]</code></td><td><code>[Ctrl-F2]</code></td></tr>
+                  <tr><td><code>[INIT CNTL]</code></td><td><code>[F1]</code></td></tr>
+                  <tr><td><code>[LDR]</code></td><td><code>[Ctrl-F6]</code></td></tr>
+                  <tr><td><code>[MAPS]</code></td><td><code>[Ctrl-F3]</code></td></tr>
                   <tr><td><code>[MIN]</code></td><td><code>[End]</code> or <code>\</code></td></tr>
                   <tr><td><code>[MULTIFUNC]</code></td><td><code>[F7]</code></td></tr>
-                  <tr><td><code>[PREF SET]</code></td><td><code>[Insert]</code></td></tr>
-                  <tr><td><code>[RANGE]</code></td><td><code>[Ctrl-F10]</code></td></tr>
-                  <tr><td><code>[RNGRING]</code></td><td><code>[Ctrl-F9]</code></td></tr>
-                  <tr><td><code>[SITE]</code></td><td><code>[Ctrl-F11]</code></td></tr>
-                  <tr><td><code>[TGT GEN]</code></td><td><code>[Tab]</code></td></tr>
+                  <tr><td><code>[PREF SET]</code></td><td><code>[Ctrl-F12]</code></td></tr>
+                  <tr><td><code>[RANGE]</code></td><td><code>[Ctrl-F11]</code></td></tr>
+                  <tr><td><code>[RNGRING]</code></td><td><code>[Ctrl-F10]</code></td></tr>
+                  <tr><td><code>[SHIFT]</code></td><td><code>[Ctrl-F8]</code></td></tr>
+                  <tr><td><code>[SITE]</code></td><td><code>[Ctrl-F14]</code></td></tr>
                   <tr><td><code>[TERM CNTL]</code></td><td><code>[F4]</code></td></tr>
+                  <tr><td><code>[TGT GEN]</code></td><td><code>[Tab]</code></td></tr>
                   <tr><td><code>[TRIANGLE] / ∆</code></td><td><code>`</code></td></tr>
+                  <tr><td><code>[TRK RPOS]</code></td><td><code>[F2]</code></td></tr>
+                  <tr><td><code>[TRK SUSP]</code></td><td><code>[F3]</code></td></tr>
                   <tr><td><code>[VP]</code></td><td><code>[F9]</code></td></tr>
-                  <tr><td><code>[WX]</code></td><td><code>[F8]</code></td></tr>
+                  <tr><td><code>[WX]</code></td><td><code>[Ctrl-F4]</code></td></tr>
                 </tbody>
               </table>
 
@@ -2163,21 +2347,19 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td><code>[SLEW]</code></td><td><p>Whichever of the
-                  following first applies:</p>
+                  <tr><td><code>[SLEW]</code></td><td><p>Any of the following that apply:</p>
                       <ul>
                         <li>Accepts the <a href="#stars-track-ownership">handoff of an aircraft's track</a> from another controller.</li>
-                        <li>Acknowledge an alert for an aircraft such as a <a href="#stars-collision-alerts">collision alert (CA)</a> or
-                          <a href="#stars-msaw">minimum safe altitude warning (MSAW)</a>.</li>
+                        <li>Acknowledge an alert for an aircraft such as a <a href="#stars-collision-alerts">collision alert (CA)</a>,
+                          <a href="#stars-msaw">minimum safe altitude warning (MSAW)</a>, or an alert due to the aircraft
+                          squawking a special purpose code (e.g., 7600 for loss of radio).</li>
                         <li>Acknowledges a <a href="#stars-pointouts">point-out</a> from another controller.</li>
                         <li>Cancels an outbound <a href="#stars-track-ownership">handoff</a> to another controller.</li>
                         <li>Clears a forced <a href="#stars-quicklook">quicklook</a> from another controller.</li>
-                        <li>Hands off control after track ownership is accepted by another controller after a <a href="#stars-track-ownership">handoff</a>.</li>
                         <li>Temporarily displays the aircraft's current groundspeed in the <a href="#stars-datablock-types">limited datablock</a>.</li>
                         <li>Toggles between the <a href="#stars-datablock-types">full and limited datablock</a> for an unowned track.</li>
                       </ul>
                   </td></tr>
-                  <tr><td><code>[INIT CNTL](ACID)[SLEW]</code></td><td>Initiate control of an aircraft that isn't being tracked by any controller.</td></tr>
                   <tr><td><code>(CID)[SLEW]</code></td><td>Offers to handoff the
                       track of the aircraft to the controller identified by (CID).</td></tr>
                   <tr><td><code>(scratchpad)[SLEW]</code></td><td>Sets
@@ -2185,7 +2367,7 @@ how it simulates aircraft or the STARS interface.
                   <tr><td><code>.[SLEW]</code></td><td>Clears the
                   aircraft's scratchpad.</td></tr>
                   <tr><td><code>+(###)[SLEW]</code></td><td>Sets the
-                      aircraft's assigned temporary altitude (which is shown in its datablock).</td></tr>
+                      aircraft's assigned assigned altitude (which is shown in its datablock).</td></tr>
                 </tbody>
               </table>
             
@@ -2244,7 +2426,7 @@ how it simulates aircraft or the STARS interface.
                 <li>TPA/ATPA: displays a submenu to configure <a href="#stars-tpa-atpa">terminal proximity alerts (TPAs) and automated TPAs</a>.</li>
                 <li>SHIFT: returns to the main DCB menu.</li>
               </ul>
-            <p>Press the <code>[DCB]</code> key (control-F8) to toggle whether the DCB is visible.</p>
+            <p>Press the <code>[DCB]</code> key (control-F9) to Toggle whether the DCB is visible.</p>
 
           </section>
           
@@ -2283,40 +2465,13 @@ how it simulates aircraft or the STARS interface.
               &nbsp;&nbsp;&nbsp;
               <img src="unassociated-mode-a.png" srcset="unassociated-mode-a-2x.png 2x" width="132" height="59">
             </div><br>
-            <p>After a controller has tracked a departure, departures will contact the controller on the radio;
+            <p>Departures contact the appropriate controller on the radio once they're a few hundred feet off the ground;
               look for a message in the input window below the STARS scope:
             </p>
             <div class="text-center">
-              <img src="departure-contact.png" srcset="departure-contact-2x.png 2x" width="552" height="42">
+              <img src="departure-contact.png" srcset="departure-contact-2x.png 2x" width="480" height="21">
             </div><br>
-            <p>A controller can initiate track of an uncontrolled aircraft track using the following commands:</p>
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th style="width:30%">Command</th>
-                    <th>Function</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>(ACID)[SLEW]</code> / <br><code>[INIT CNTL](ACID)[SLEW]</code></td>
-                    <td>Initiates track of the  the slewed track, which must have the given aircraft id.
-                      If the aircraft id does not match, the NO FLIGHT error is shown.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[INIT CNTL](ACID)</code></td>
-                    <td>Initiates track of the aircraft with given aircraft id. (Note: not a real-world STARS command).
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[CTRL SHIFT][SLEW]</code></td>
-                    <td>Initiates track of the slewed aircraft.
-                    </td>
-                  </tr>
-                </tbody>
-                </table>
-              <p>For departures, you may disable  the "Auto track departures" checkbox
+            <p>For departures, you may disable  the "Auto track departures" checkbox
               in the "Settings" window to not automatically initiate track on the departing aircraft that you are
               responsible for in the current scenario.
             </p>
@@ -2396,12 +2551,12 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(CID)[SLEW]</code> / <br><code>[HND OFF](CID)[SLEW]</code> /<br> <code>[HND OFF](CID) (ACID)</code></td>
+                    <td><code>(CID)[SLEW]</code> / <br><code>[HND OFF](CID)[SLEW]</code> /<br> <code>[HND OFF](CID) (FLT ID)</code></td>
                     <td>Initiates a handoff of the slewed aircraft to the specified controller.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[SLEW]</code>/<br><code>[HND OFF][SLEW]</code> /<br><code>[HND OFF](ACID)</code></td>
+                    <td><code>[SLEW]</code>/<br><code>[HND OFF][SLEW]</code> /<br><code>[HND OFF](FLT ID)</code></td>
                     <td>Cancels an initiated handoff to another controller.
                     </td>
                   </tr>
@@ -2468,7 +2623,7 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[TERM CTRL][SLEW]</code> /<br><code>[TERM CTRL](ACID)</code></td>
+                    <td><code>[TERM CTRL][SLEW]</code> /<br><code>[TERM CTRL](FLT ID)</code></td>
                     <td>Drops the track of the specified aircraft.
                     </td>
                   </tr>
@@ -2514,8 +2669,12 @@ how it simulates aircraft or the STARS interface.
                       track.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]O[SLEW]</code> /<br><code>[MULTIFUNC]O (ACID)</code></td>
+                    <td><code>[MULTIFUNC]O[SLEW]</code> /<br><code>[MULTIFUNC]O (FLT ID)</code></td>
                     <td>Prints the point out history&mdash;up to the last 20 TCPs to which the aircraft has been pointed out.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]O*[SLEW]</code> /<br><code>[MULTIFUNC]O* (FLT ID)</code></td>
+                    <td>Clears the point out history for the specified track.</td>
                   </tr>
                 </tbody>
               </table>
@@ -2667,7 +2826,7 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[MULTIFUNC]B##</code> / <br><code>[MULTIFUNC]B####</code></td>
+                    <td><code>[MULTIFUNC]B(##)</code> / <br><code>[MULTIFUNC]B(####)</code></td>
                     <td>Toggle the display of either a single beacon code (if four digits are entered)
                       or a beacon code bank (if two digits are entered). Beacon code banks are identified
                       by the first two digits; for example <code>B12</code> toggles the 12xx beacon code block.
@@ -2725,6 +2884,13 @@ how it simulates aircraft or the STARS interface.
               </table>
 
             <p>The brightness of LDBs is controlled using LDB in the DCB BRITE menu.</p>
+
+            <p>If a departing aircraft is squawking a non-1200 code but there is no flight plan for the
+              code they are squawking, a flashing "WHO" is displayed in their LDB next to the code they are squawking:</p>
+              <div class="text-center">
+                <img src="ldb-who-no-flightplan.gif" srcset="ldb-who-no-flightplan-2x.gif 2x" width="154" height="52" class="img-fluid">
+              </div><br>
+            <p>Clicking on the track clears the "WHO".</p>
 
             <p>If you're searching for an unassociated aircraft squawking a specific beacon code, the beacon code display command
               can be used to cause all aircraft squawking that code to flash it in yellow in their limited
@@ -2784,7 +2950,7 @@ how it simulates aircraft or the STARS interface.
             <br>
             <p>Various other information may be present in a FDB. Here we see the primary scratchpad "L30" and the secondary
               scratchpad "DEP" alternating with the altitude, where a "+" after "DEP" indicates that the secondary scratchpad
-              is shown. We also see a temporary, controller-assigned altitude of 12,000 feet indicated by "A120" in the third line.
+              is shown. We also see a temporary controller-assigned altitude of 12,000 feet indicated by "A120" in the third line.
               </p>
             <div class="text-center">
               <img src="fdb-complex.gif" srcset="fdb-complex-2x.gif 2x" width="161" height="74" class="img-fluid">
@@ -2803,7 +2969,24 @@ how it simulates aircraft or the STARS interface.
               <li>"Quick look all" has been enabled by the controller.</li>
               <li>The aircraft is squawking a special purpose code (e.g., 7700 for an emergency) or if it has an active safety alert (e.g., low altitude).</li>
             </ul>
-            <p>A command is also available to control whether the FDB is displayed for overflights that are not under the
+            <p>Other than the commands related to modifying <a href="#flight-plans">Flight Plans</a> that can lead to changes
+               in what entries are shown in the FDB, there is just one command to manage the FDB's contents:</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:30%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[FLT DATA][SLEW]</code></td>
+                  <td>Toggles display of the aircraft type in the FDB.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>A few commands are also available to control whether the FDB is displayed for overflights that are not under the
               user's control:</p>
               <table class="table table-bordered">
                 <thead>
@@ -2830,7 +3013,7 @@ how it simulates aircraft or the STARS interface.
 
             <h4>"Beaconator"</h4>
 
-            <p>The "beaconator" feature is enabled by holding the <code>F1</code> key on the keyboard. In full datablocks,
+            <p>The "beaconator" feature is enabled by holding the <code>Control</code> and <code>F1</code> keys on the keyboard. In full datablocks,
               it causes the aircraft id to be replaced with the code the aircraft is squawking. Partial datablocks show the sqwawk
               code in the first line, and limited datablocks show the squawk code and aircraft id. Here is an example of all
               three types of datablock, alternating with the beaconator enabled and disabled.</p>
@@ -2859,59 +3042,12 @@ how it simulates aircraft or the STARS interface.
 
             <h3>Additional Datablock Entries</h3>
 
-            <p>A number of additional useful pieces of information can be found in datablocks, depending on the circumstances.</p>
-            
-            <h4>Scratchpads</h4>
-            
-            <p>In STARS, scratchpads are used to convey information to controllers&mdash;for example, the departure exit gate, or an assigned approach.
-              Each aircraft has a <i>primary scratchpad</i> and a <i>secondary scratchpad</i>. Either may be set independently.
-              Scratchpads are three characters by default, but may be four at some facilities. 
-              They may contain letters, numbers, plus signs, periods, delta symbols, forward slashes, and asterisks, though
-              they may not contain three numbers.
-              The following commands can be used to manage scratchpads:</p>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th style="width:25%">Command</th>
-                  <th>Function</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(ACID) (SCR)</code></td>
-                  <td>Sets the primary scratchpad to <code>(SCR)</code> for the selected aircraft.
-                    When the first form of this command is used, <code>(SCR)</code> must not be a controller ID; if it is,
-                    a handoff to the controller will be initiated instead.
-                  </td>
-                </tr>
-                <tr>
-                  <td><code>+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(ACID) (SCR)</code></td>
-                  <td>Sets the secondary scratchpad to <code>(SCR)</code> for the selected aircraft.
-                    When the first form of this command is used, <code>(SCR)</code> must not be three digits; if it is, the
-                    aircraft's <a href="#temporary-altitude">temporary altitude</a> will be set instead.
-                  </td>
-                </tr>
-                <tr>
-                  <td><code>.[SLEW]</code> /<br> <code>[MULTIFUNC]Y[SLEW]</code> /<br> <code>[MULTIFUNC]Y(ACID)</code></td>
-                  <td>Clears the selected aircraft's primary scratchpad.</td>
-                </tr>
-                <tr>
-                  <td><code>+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(ACID)</code></td>
-                  <td>Clears the selected aircraft's secondary scratchpad.</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>In PDBs and FDBs, the primary scratchpad multiplexes with the aircraft's altitude.
-              The secondary scratchpad is only shown in FDBs, where it also multiplexes with the altitude and primary scratchpad, if set;
-              it also has a plus sign
-              displayed after it in the datablock. In the example below, the aircraft has "I2L" for its primary scratchpad and "SS"
-              for its second.
+            <p>A number of additional useful pieces of information can be found in datablocks, depending on the circumstances.
+              (See also the section on <a href="#flight-plans">STARS Flight Plans</a> for information
+              about a number of things such as scratchpads and altitude assignments that appear in datablocks
+              and are managed along with the aircraft's STARS flight plan.)
             </p>
-            <div class="text-center">
-              <img src="fdb-scratchpads.gif" srcset="fdb-scratchpads.gif 2x" width="184" height="99" class="img-fluid">
-            </div>
-            <br>
-
+            
             <h4>Ident</h4>
 
             <p>If a controller has instructed an aircraft to ident, a flashing "ID" will appear in its datablock.
@@ -2924,120 +3060,18 @@ how it simulates aircraft or the STARS interface.
             </div>
             <br>
 
+            <h4>Squawk Codes</h4>
 
-            <h4 id="temporary-altitude">Temporary Altitude</h4>
-
-            <p>In order to help remember the altitudes they have assigned aircraft, controllers may associate a
-              <i>temporary altitude</i> with each aircraft under their
-              control. Temporary altitudes given in hundreds of feet and
-              are shown on the right side of the bottom line of FDBs; here,
-              we can see that AAL929, currently at 3,700', has been
-              assigned a temporary altitude of 3,000'.</p>
-            <div class="text-center">
-              <img src="temporary-altitude.png" srcset="temporary-altitude-2x.png 2x" width="192" height="82">
-            </div><br>
-            <p>Two commands are available to manage the temporary altitudes associated with aircraft.</p>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th style="width:30%">Command</th>
-                  <th>Function</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>+(###)[SLEW]</code></td>
-                  <td>Specifies a temporary altitude for the selected aircraft.</td>
-                </tr>
-                <tr>
-                  <td><code>+000[SLEW]</code></td>
-                  <td>Clears the temporary altitude for the selected aircraft.</td>
-                </tr>
-              </tbody>
-            </table>
-
-
-            <h4>Requested Altitude</h4>
-
-            <p>The requested final cruising altitudes of departing aircraft may 
-              optionally be displayed in FDBs, multiplexed with the airspeed and aircraft type.
-              The following commands are available to control this:</p>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th style="width:30%">Command</th>
-                  <th>Function</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>++(###)[SLEW]</code></td>
-                  <td>Sets the requested altitude (given in hundreds of feet) for the slewed aircraft.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]RA[SLEW]</code></td>
-                  <td>Toggles display of requested altitude for the slewed aircraft.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]RAE[SLEW]</code></td>
-                  <td>Enables the display of requested altitude for the slewed aircraft.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]RAI[SLEW]</code></td>
-                  <td>Disables the display of requested altitude for the slewed aircraft.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]RA</code></td>
-                  <td>Toggles display of requested altitude for all aircraft that have not had requested altitude display specifically enabled or inhibited.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]RAE</code></td>
-                  <td>Enables the display of requested altitude for all aircraft that have not had requested altitude display inhibited.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]RAI</code></td>
-                  <td>Disables the display of requested altitude for all aircraft that have not had requested altitude display enabled.</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <h4>Pilot-Reported Altitude</h4>
-
-            <p>If an aircraft's transponder is not transmitting altitude, the altitude field in the full datablock is left blank.
-              Further, "ISR" is shown in yellow, indicating that there is an increased separation requirement for the aircraft
-              compared to regular IFR separation.
+            <p>If an aircraft is not squawking the beacon code assigned to it, the bottom line of the full datablock
+              shows both the code it is squawking (on the left) and the code it has been assigned (on the right).
+              The code that it should be squawking flashes to alert the controller.
+              Slewing the aircraft makes its assigned squawk code the same as the code it is currently squawking.
             </p>
-            <div class="text-center">
-              <img src="tracked-no-altitude.png" srcset="tracked-no-altitude-2x.png 2x" width="183" height="98">
-            </div><br>
 
-            <p>For such aircraft, the pilot may verbally report their current altitude to the controller.
-              A few commands are available to record pilot-reported altitude so that it can be displayed in the
-              datablock. Here, the aircraft has reported that they are at 9,000'. "ISR" is no longer displayed
-              and an asterisk after the altitude indicates that it is pilot-reported and not from the transponder.
-            </p>
             <div class="text-center">
-              <img src="pilot-reported-altitude.png" srcset="pilot-reported-altitude-2x.png 2x" width="183" height="98">
-            </div><br>
-
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th style="width:30%">Command</th>
-                  <th>Function</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>[MULTIFUNC]Y(ACID) ###</code> / <br><code>[MULTIFUNC]###[SLEW]</code> / <br> <code>###[SLEW]</code></td>
-                  <td>Sets the pilot-reported altitude for the aircraft.</td>
-                </tr>
-                <tr>
-                  <td><code>[MULTIFUNC]Y(ACID)</code> / <br><code>[MULTIFUNC]Y[SLEW]</code> </td>
-                  <td>Clears the pilot-reported altitude (and the scratchpad, if set) for the aircraft.</td>
-                </tr>
-              </tbody>
-            </table>
+              <img src="squawk-mismatch.gif" srcset="squawk-mismatch-2x.gif 2x" width="192" height="105" class="img-fluid">
+            </div>
+            
 
             <h4 id="cwt">Consolidated Wake Turbulence (CWT)</h4>
 
@@ -3104,44 +3138,6 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
 
-            <h4>Squawk Codes</h4>
-
-            <p>IFR aircraft have preassigned squawk codes and should already be squawking them,
-              though a few commands are available to issue new squawk codes to aircraft if needed:</p>
-              
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th style="width:30%">Command</th>
-                    <th>Function</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>[FLT DATA](ACID)</code> /<br><code>[FLT DATA][SLEW]</code></td>
-                    <td>Assign an automatically-generated available squawk code to the aircraft.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><code>[FLT DATA](ACID) (####)</code> /<br><code>[FLT DATA](####)[SLEW]</code></td>
-                    <td>Assign squawk the specified squawk code.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            <p>Note that when using these STARS commands, you will need to
-              use the <code>SQ</code> command in the aircraft control
-              window to inform aircraft of their new squawk code.</p>
-
-            <p>If an aircraft is not squawking the beacon code assigned to it, the bottom line of the full datablock
-              shows both the code it is squawking (on the left) and the code it has been assigned (on the right).
-              The code that it should be squawking flashes to alert the controller.
-            </p>
-
-            <div class="text-center">
-              <img src="squawk-mismatch.gif" srcset="squawk-mismatch-2x.gif 2x" width="192" height="105" class="img-fluid">
-            </div>
-            
             <h4>Special Purpose Codes (SPCs)</h4>
 
             <p>If an aircraft squawks a special purpose code (SPC) (e.g., 7600 for a radio failure, 7700 for an
@@ -3234,7 +3230,7 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(#)[SLEW]</code>/<br> <code>[MULTIFUNC]L(#)[SLEW]</code>/<br> <code>[MULTIFUNC]L(#) (ACID)</code></td>
+                    <td><code>(#)[SLEW]</code>/<br> <code>[MULTIFUNC]L(#)[SLEW]</code>/<br> <code>[MULTIFUNC]L(#) (FLT ID)</code></td>
                     <td>Sets the leader line direction for the aircraft, where <code>(#)</code> is a valid leader line direction specifier. 5 may be given to clear a previously-assigned direction.</td>
                   </tr>
                   <tr>
@@ -3250,7 +3246,7 @@ how it simulates aircraft or the STARS interface.
                     <td>Sets the leader line for aircraft controlled by the specified TCP. If a one-letter TCP is entered for a controller in the same area, a space should be entered after it. 5 may be entered to clear a previously-assigned direction</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]L(##)[SLEW]</code>/<br> <code>[MULTIFUNC]L(##) (ACID)</code></td>
+                    <td><code>[MULTIFUNC]L(##)[SLEW]</code>/<br> <code>[MULTIFUNC]L(##) (FLT ID)</code></td>
                     <td>Sets the default leader line for a single track system-wide, across all controllers' displays. 55 may be entered to clear a previously-specified direction.</td>
                   </tr>
                   <tr>
@@ -3266,8 +3262,9 @@ how it simulates aircraft or the STARS interface.
             <p>"Quicklook" makes it possible to specify that all tracks owned by another controller will be shown with a full datablock
               instead of a partial datablock. This can be useful when one controller is feeding aircraft to another; quicklook gives
               some more visibility into the flow of inbound aircraft. When "quicklook plus" is used, the datablocks of quicklooked aircraft
-              are also shown in white rather than green.
-              </p>
+              are also shown in white rather than green. Facility engineers may also specify regions of airspace where quicklook
+              automatically applies.
+            </p>
             <p>A number of commands are available to control quicklook:</p>
               <table class="table table-bordered">
                 <thead>
@@ -3278,11 +3275,13 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>(CID)</code>/<br> <code>[MULTIFUNC]Q(CID)</code></td>
-                    <td>Toggles quicklook for the specified control position. Multiple positions may be specified, separated by spaces.
+                    <td><code>(TCP)</code>/<br> <code>[MULTIFUNC]Q(TCP)</code></td>
+                    <td><p>Toggles quicklook for the specified control position. Multiple positions may be specified, separated by spaces.
                       If a "+" is included after the control position,
-                      quicklook plus is toggled.
-                      If the user's current TCP is entered, the currently-quicklooked positions are shown in the preview area.
+                      quicklook plus is toggled.</p>
+                      <p>If the user's current TCP is entered, the currently-quicklooked positions and enabled/disabled regions
+                      are shown in the preview area&mdash;here is an example:</p>
+                      <img src="quicklook-summary.png" srcset="quicklook-summary-2x.png 2x" width="261" height="56">
                     </td>
                   </tr>
                   <tr>
@@ -3295,11 +3294,34 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]Q</code></td>
-                    <td>Disables all active quicklooks.</td>
+                    <td>Disables all active control position quicklooks.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]Q(region) E</code></td>
+                    <td>Enable the named quicklook region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]Q(region) I</code></td>
+                    <td>Disable (inhibit) the named quicklook region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]Q(region)</code></td>
+                    <td>Toggle whether the named quicklook region is enabled.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]Q*</code></td>
+                    <td>Disables all quicklook regions.</td>
                   </tr>
                 </tbody>
               </table>
-              <p>The currently-active quicklook positions can be shown in the SSA list, after "QL:".</p>
+            <p>The currently-active quicklook positions can be shown in the SSA list, after "QL:".</p>
+            <p>To see which if any quicklook regions are available, select the "MAPS" menu from the DCB
+              and then select "SYS PROC" to see the Processing Areas maps list. Quicklook regions can 
+              then be found among those maps; here we see that "QLRGNS" represents all quicklook regions
+              and "QLCONEY" is an individual region:</p>
+              <div class="text-center">
+                <img src="quicklook-maps-list.png" srcset="quicklook-maps-list-2x.png 2x" width="359" height="27">
+              </div><br>              
 
               <h4 id="force-quicklook">Force Quicklook</h4>
 
@@ -3316,7 +3338,7 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>**(CID)[SLEW]</code></td>
+                    <td><code>**(TCP)[SLEW]</code></td>
                     <td>Force quicklook the slewed track to the identified controller. Multiple controller IDs may be specified,
                       separated by spaces. "ALL" forces quicklook to all controllers.
                     </td>
@@ -3403,7 +3425,7 @@ how it simulates aircraft or the STARS interface.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]F(###)(###) (###)(###)</code></td>
+                    <td><code>[MULTIFUNC]F(###)(###)&nbsp;(###)(###)</code></td>
                     <td>Specifies the altitude filter range for both unassociated and associated tracks.
                       The first three digits give the bottom of the filter range for unassociated tracks and the next
                       three give the top of the range for unassociated tracks, both in hundreds of feet.
@@ -3415,14 +3437,197 @@ how it simulates aircraft or the STARS interface.
 
           </section>
 
-	  <section class="docs-section" id="stars-tools">
-            <h2 class="section-heading">Tools</h2>
+	  <section class="docs-section" id="flight-plans">
+            <h2 class="section-heading">Flight Plans</h2>
 
-            <p>STARS offers a variety of tools to help with vectoring aircraft and ensuring they
-              remain separated. For most of the tools in this section, the font size is based on the TOOLS font
-              size in the CHAR SIZE menu of the DCB and the brightness is based on the TLS setting in the BRITE menu of the DCB.</p>
+            <p>In addition to the command components defined above in <a href="#stars-command-entry">Entering Commands</a>,
+              a few additional parameters are commonly-found in commands related to flight plans.
+              Here are their definitions and syntax:</p>
 
-            <h3>Flight Plan / Beacon Code Display</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Field</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>(ACID)</code></td>
+                    <td><i>Aircraft identifier</i>: an aircraft callsign starting with a letter and then
+                    followed by letters or digits, no more than 7 characters long.  Example: <code>UAL650</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(AC&nbsp;TYPE/EQ)</code></td>
+                    <td><i>Aircraft type</i>: aircraft type optionally followed by a slash and a single character equipment suffix.
+                      Example: <code>C172/G</code>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>(#/AC&nbsp;TYPE/EQ)</code></td>
+                    <td><i>Aircraft type</i>: aircraft type optionally preceded by a number and a slash and
+                      optionally followed by a slash and a single character equipment suffix; if specified,
+                      the number gives the number of aircraft flying in formation.
+                      Examples: <code>2/F16/G</code>, <code>B738</code>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>(ASSIGNED&nbsp;ALT)</code></td>
+                    <td><i>Assigned altitude</i>: three digits giving the aircraft's assigned altitude. An entry of <code>000</code>
+                      clears the assigned altitude.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>(BEACON)</code></td>
+                    <td><i>Beacon code assignment</i>: either four digits specifying a specific beacon code <code>(####)</code>,
+                      <code>+</code> to specify a system-generated IFR code, <code>/</code> for a system generated VFR code,
+                      or <code>/1</code>, <code>/2</code>, <code>/3</code>, or <code>/4</code> to signify a code from the
+                      associated beacon code bank.
+                  </tr>
+                  <tr>
+                    <td><code>(COORD&nbsp;TIME)</code></td>
+                    <td><i>Coordination time</i>: 4 digits giving a time in Zulu for the flight's expected coordination time,
+                      optionally followed by an "E".</td>
+                  </tr>
+                  <tr>
+                    <td><code>(FIX&nbsp;PAIR)</code></td>
+                    <td><i>VFR Fix Pair</i>: three character entry fix followed by <code>*</code> and then a three character exit fix.
+                      Optionally, a second <code>*</code> and the type of flight may follow.
+                      Example: <code>ISP*MVY</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(FLIGHT&nbsp;TYPE)</code></td>
+                    <td><i>Type of flight</i>: <code>A</code> for arrival, <code>P</code> for departure, or <code>E</code> for an overflight</td>
+                  </tr>
+                  <tr>
+                    <td><code>(PILOT&nbsp;ALT)</code></td>
+                    <td><i>Pilot-reported altitude</i>: three digits giving a pilot-reported altitude in hundreds of feet.
+                    <code>000</code> clears the pilot-reported altitude.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(REQ&nbsp;ALT)</code></td>
+                    <td><i>Requested altitude</i>: three digits giving the requested (final) altitude for the flight.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(RULES)</code></td>
+                    <td><i>Flight rules</i>: a period followed by zero or one additional characters: <code>V</code> for VFR, <code>P</code> for VFR on top,
+                      <code>E</code> for enroute (IFR), and no entry for none (IFR). Example: <code>.V</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>(SP1)</code></td>
+                    <td><i>Scratchpad 1</i>: three (or up to four, at some facilities) characters for the aircraft's primary scratchpad entry.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(SP2)</code></td>
+                    <td><i>Scratchpad 2</i>: three (or up to four, at some facilities) characters for the aircraft's secondary scratchpad entry.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(TCP&nbsp;OR&nbsp;FIX&nbsp;PAIR)</code></td>
+                    <td><i>TCP/Fix pair</i>: either a number and a letter corresponding to <code>(TCP)</code> or a <code>(FIX PAIR)</code>.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3>Creating Flight Plans</h3>
+
+            <p>STARS offers numerous commands for controllers to enter new flight plans; most start with
+              one or more required fields that are then followed by optional fields. Spaces separate all
+              fields, both required and optional. See the table above of common
+              components of flight plans for the rules for the format of the following entries.</p>
+            <p>The following create new flight plans that are not yet associated with an aircraft;
+              these flight plans are shown in the FLIGHT PLAN system list and/or the VFR LIST,
+              depending on their type.</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:35%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>(ACID)&nbsp;(FIX PAIR)&nbsp;(AC TYPE/EQ)</code></td>
+                    <td>Create a local VFR flight plan with
+                      an automatically-assigned squawk code. Optional additional fields: <code>(REQ ALT)</code> and
+                      <code>(TCP)</code>. The flight plan is assigned
+                      to the controller who created it if no other controller is specified via <code>(TCP)</code>.
+                      Example: <code>N123AB FRG*HPN C172/G 045</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>(ACID)</code></td>
+                    <td>Create a local abbreviated flight plan.
+                      Optional additional fields: <code>(BEACON)</code>, <code>(FLIGHT TYPE)</code>,
+                      <code>∆(SP1)</code>, <code>+(SP2)</code>, <code>(#/AC TYPE/EQ)</code>, <code>(REQ ALT)</code>,
+                      and <code>(RULES)</code>.
+                      Example: <code>N123AB 6502 ∆ARR +R22 280</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[INIT CTRL](ACID)&nbsp;(BEACON)</code></td>
+                    <td>Create a flight plan with a specified beacon code.
+                      Optional additional fields: <code>∆(SP1)</code> <code>+(SP2)</code> <code>(#/AC TYPE/EQ)</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[VP](ACID)&nbsp;(VFR&nbsp;FIX&nbsp;PAIR)&nbsp;(AC&nbsp;TYPE/EQ)</code></td>
+                    <td>Create a VFR flight plan.
+                      Optional additional fields: <code>(REQ ALT)</code> and <code>(TCP)</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[FLT DATA](ACID)[ENTER]</code></td>
+                    <td>Create a new flight plan.
+                      Optional additional fields: <code>(BEACON)</code>, <code>(TCP OR FIX PAIR)</code>,
+                      <code>(COORD TIME)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
+                      <code>(#/AC TYPE/EQ)</code>, <code>(REQ ALT)</code>, and <code>(RULES)</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><code>*(####)</code></td>
+                    <td>Create a "quick flight plan" with the specified beacon code.
+                      The flight plan's ACID is automatically set with a predefined prefix that is followed
+                      by the given beacon code. <code>(RULES)</code> may optionally be given immediately after
+                      the beacon code.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <p>It is also possible to create a new flight plan and immediately associate it with a track.
+              For both of the following commands, if the beacon code isn't specified, the code that the track
+                is currently squawking is used as the assigned code.</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>(ACID)[SLEW]</code></td>
+                  <td>Create a new flight plan and associate it with the slewed track. Optional additional parameters:
+                    <code>(BEACON)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
+                    <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>[INIT CTRL](ACID)[SLEW]</code></td>
+                  <td>Create a new flight plan and associate it with the track.
+                    Optional additional parameters:<code>(BEACON)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>,
+                    <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
+                </tr>
+                  <tr>
+                    <td><code>Y[slew]</td>
+                    <td>Creates a "quick ACID flight plan" with an automatically generated callsign and associates it
+                      with the slewed track. The track's datablock is drawn in yellow until the track is slewed
+                      a second time.</td>
+                  </tr>
+              </tbody>
+            </table>
+
+            TODO create and make unsupported DB
+
+            <h3>Activating Existing Flight Plans</h3>
+
+            <p>If an unassociated track is squawking the beacon code associated with a flight plan, the flight plan
+              will often automatically associate with the track. (This may not happen if the aircraft is outside
+              of the predefined regions in a TRACON where flight plans automatically associate, but it is generally
+              the case.) Alternatively, a command is available to associate an existing flight plan with a radar track.</p>
 
               <table class="table table-bordered">
                 <thead>
@@ -3433,7 +3638,67 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[MULTIFUNC]D[SLEW]</code> /<br><code>[MULTIFUNC]D(ACID)</code></td>
+                    <td><code>[INIT CTRL](FLT ID)[SLEW]</code></td>
+                    <td>Activate the identified flight plan and associate it with the slewed track.
+                    Takes the following optional parameters to modify the flight plan before it
+                    is associated: <code>(SP1)</code>,  <code>∆(SP1)</code>, <code>(+SP2)</code>,
+                      and <code>(ASSIGNED ALT)</code>.</td>
+                    </tr>
+                </tbody>
+              </table>
+
+            <h3>Deleting Flight Plans</h3>
+
+            <p>Two commands are available for deleting flight plans. If a flight plan is associated with a
+              track, the track becomes unassociated if it is deleted.</p>
+
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[TERM CNTL](FLT ID)</code></td>
+                  <td>Deletes the flight plan identified by the flight identifier.</td>
+                </tr>
+                <tr>
+                  <td><code>[VP](FLT ID)</code></td>
+                  <td>Deletes the VFR flight plan identified by the flight identifier.</td>
+                </tr>
+                <tr>
+                  <td><code></code></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+
+            <h3>Flight Plan / Beacon Code Display</h3>
+
+            <p>After a flight plan is created (and in some cases, after it is modified), an abbreviated version
+              of the flight plan is displayed in the preview area. Here is an example:
+              </p>
+              <div class="text-center">
+                <img src="flight-plan-display.png" srcset="flight-plan-display-2x.png 2x" width="259" height="47">
+              </div><br>
+            <p>We have an aircraft with callsign ANA203 that has aircraft type A388. The "/A" is its CWT weight class&mdash;super.
+              It has been assigned beacon code 1711 and controller 2G is responsible for it.
+              It is departing JFK airport and its exit fix is GAYEL, shortened here to "GAY".
+              Its expected departure time is 2230 zulu, and its requested altitude is 37,000'.</p>
+            <p>There are also commands to cause a selected flight plan to be displayed:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]D[SLEW]</code> /<br><code>[MULTIFUNC]D(FLT ID)</code></td>
                     <td>Display flight plan
                     </td>
                   </tr>
@@ -3445,6 +3710,380 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </tbody>
               </table>
+
+
+
+
+              <h3>Modifying Flight Plans</h3>
+
+            <p>For the following commands, if <code>(FLT ID)</code> is used to specify the flight plan,
+              the command can be used both for associated and unassociated flight plans. The variants
+              based on slewing a track can only be used on associated tracks, and apply to their associated
+              flight plans.</p>
+
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>*(ACID)[SLEW]</code></td>
+                  <td>Sets the ACID for the slewed track.</td>
+                </tr>
+                <tr>
+                  <td><code>*(#/AC&nbsp;TYPE/EQ)[SLEW]</code></td>
+                  <td>Sets the aircraft type and optionally the number of formation aircraft and the equipment
+                    suffix for the slewed track. If the aircraft type is less than four characters,
+                  it must be extended to 4 characters with asterisks: e.g,. "B2**".</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(#/AC&nbsp;TYPE/EQ)</code>/<br><code>[MULTIFUNC]H(#/AC&nbsp;TYPE/EQ)[SLEW]</td>
+                  <td>Specifies aircraft type (and optionally the number of formation aircraft and equipment suffix, if
+                    given) for the track.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;R</code>/<br><code>[MULTIFUNC]HR[SLEW]</td>
+                  <td>Toggles the RNAV specifier for the aircraft (shown as a caret, "^", in the full datablock.)</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(RULES)</code>/<br><code>[MULTIFUNC]H(RULES)[SLEW]</td>
+                  <td>Specifies the flight rules for the track.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(ACID)</code>/<br><code>[MULTIFUNC]M(ACID)[SLEW]</td>
+                  <td>Changes the track's ACID to the specified callsign.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(ASSIGNED ALT)[SLEW]</td>
+                  <td>Changes the track's assigned altitude to the given altitude.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(BEACON)</code>/<br><code>[MULTIFUNC]M(BEACON)[SLEW]</td>
+                  <td>Changes the track's assigned beacon code to the one specified.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(COORD&nbsp;TIME)</code>/<br><code>[MULTIFUNC]M(COORD&nbsp;TIME)[SLEW]</td>
+                  <td>Changes the track's coordination time to the specified time.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(FIX&nbsp;PAIR)</code>/<br><code>[MULTIFUNC]M(FIX&nbsp;PAIR)[SLEW]</td>
+                  <td>Changes the track's entry/exit fix pair to the fixes specified.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(REQ ALT)</code>/<br><code>[MULTIFUNC]M(REQ ALT)[SLEW]</td>
+                  <td>Changes the track's requested altitude to the altitude specified.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(SP1)[SLEW]</td>
+                  <td>Changes the track's primary scratchpad to the text specified.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;+(SP2)</code>/<br><code>[MULTIFUNC]M+(SP2)[SLEW]</td>
+                  <td>Changes the track's secondary scratchpad to the text specifie.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(TCP)</code>/<br><code>[MULTIFUNC]M(TCP)[SLEW]</td>
+                  <td>Changes the track's controller to the specified TCP.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Scratchpads</h3>
+            
+            <p>In STARS, scratchpads are used to convey information to controllers&mdash;for example, the departure exit gate, or an assigned approach.
+              Each aircraft has a <i>primary scratchpad</i> and a <i>secondary scratchpad</i>. Either may be set independently.
+              Scratchpads are three characters by default, but may be four at some facilities. 
+              They may contain letters, numbers, plus signs, periods, delta symbols, forward slashes, and asterisks, though
+              they may not contain three numbers.
+              The following commands can be used to manage scratchpads:</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:25%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(FLT ID) (SCR)</code></td>
+                  <td>Sets the primary scratchpad to <code>(SCR)</code> for the selected aircraft.
+                    When the first form of this command is used, <code>(SCR)</code> must not be a controller ID; if it is,
+                    a handoff to the controller will be initiated instead.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(FLT ID) (SCR)</code></td>
+                  <td>Sets the secondary scratchpad to <code>(SCR)</code> for the selected aircraft.
+                    When the first form of this command is used, <code>(SCR)</code> must not be three digits; if it is, the
+                    aircraft's <a href="#assigned-altitude">assigned altitude</a> will be set instead.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>.[SLEW]</code> /<br> <code>[MULTIFUNC]Y[SLEW]</code> /<br> <code>[MULTIFUNC]Y(FLT ID)</code></td>
+                  <td>Clears the selected aircraft's primary scratchpad.</td>
+                </tr>
+                <tr>
+                  <td><code>+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(FLT ID)</code></td>
+                  <td>Clears the selected aircraft's secondary scratchpad.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>In PDBs and FDBs, the primary scratchpad multiplexes with the aircraft's altitude.
+              The secondary scratchpad is only shown in FDBs, where it also multiplexes with the altitude and primary scratchpad, if set;
+              it also has a plus sign
+              displayed after it in the datablock. In the example below, the aircraft has "I2L" for its primary scratchpad and "SS"
+              for its second.
+            </p>
+            <div class="text-center">
+              <img src="fdb-scratchpads.gif" srcset="fdb-scratchpads.gif 2x" width="184" height="99" class="img-fluid">
+            </div>
+            <br>
+
+            <h3 id="assigned-altitude">Assigned (Temporary) Altitude</h3>
+            
+            <p>In order to help remember the altitudes they have assigned aircraft, controllers may associate an
+              <i>assigned altitude</i> with each aircraft under their
+              control. Assigned altitudes given in hundreds of feet and
+              are shown on the right side of the bottom line of FDBs; here,
+              we can see that AAL929, currently at 3,700', has been
+              assigned a assigned altitude of 3,000'.</p>
+            <div class="text-center">
+              <img src="temporary-altitude.png" srcset="temporary-altitude-2x.png 2x" width="192" height="82">
+            </div><br>
+            <p>Two commands are available to manage the temporary altitudes associated with aircraft.</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:30%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>+(###)[SLEW]</code></td>
+                  <td>Specifies an assigned altitude for the selected aircraft.</td>
+                </tr>
+                <tr>
+                  <td><code>+000[SLEW]</code></td>
+                  <td>Clears the assigned altitude for the selected aircraft.</td>
+                </tr>
+              </tbody>
+            </table>
+
+
+            <h3>Requested Altitude</h3>
+
+            <p>The requested final cruising altitudes of departing aircraft may 
+              optionally be displayed in FDBs, multiplexed with the airspeed and aircraft type.
+              The following commands are available to control this:</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:30%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>++(###)[SLEW]</code></td>
+                  <td>Sets the requested altitude (given in hundreds of feet) for the slewed aircraft.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]RA[SLEW]</code></td>
+                  <td>Toggles display of requested altitude for the slewed aircraft.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]RAE[SLEW]</code></td>
+                  <td>Enables the display of requested altitude for the slewed aircraft.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]RAI[SLEW]</code></td>
+                  <td>Disables the display of requested altitude for the slewed aircraft.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]RA</code></td>
+                  <td>Toggles display of requested altitude for all aircraft that have not had requested altitude display specifically enabled or inhibited.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]RAE</code></td>
+                  <td>Enables the display of requested altitude for all aircraft that have not had requested altitude display inhibited.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]RAI</code></td>
+                  <td>Disables the display of requested altitude for all aircraft that have not had requested altitude display enabled.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Pilot-Reported Altitude</h3>
+
+            <p>If an aircraft's transponder is not transmitting altitude, the altitude field in the full datablock is left blank.
+              Further, "ISR" is shown in yellow, indicating that there is an increased separation requirement for the aircraft
+              compared to regular IFR separation.
+            </p>
+            <div class="text-center">
+              <img src="tracked-no-altitude.png" srcset="tracked-no-altitude-2x.png 2x" width="183" height="98">
+            </div><br>
+
+            <p>For such aircraft, the pilot may verbally report their current altitude to the controller.
+              A few commands are available to record pilot-reported altitude so that it can be displayed in the
+              datablock. Here, the aircraft has reported that they are at 9,000'. "ISR" is no longer displayed
+              and an asterisk after the altitude indicates that it is pilot-reported and not from the transponder.
+            </p>
+            <div class="text-center">
+              <img src="pilot-reported-altitude.png" srcset="pilot-reported-altitude-2x.png 2x" width="183" height="98">
+            </div><br>
+
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:30%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[MULTIFUNC]Y(FLT ID) ###</code> / <br><code>[MULTIFUNC]###[SLEW]</code> / <br> <code>###[SLEW]</code></td>
+                  <td>Sets the pilot-reported altitude for the aircraft.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]Y(FLT ID)</code> / <br><code>[MULTIFUNC]Y[SLEW]</code> </td>
+                  <td>Clears the pilot-reported altitude (and the scratchpad, if set) for the aircraft.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <h3>Suspended Flight Plans</h3>
+
+            <p>It can be useful to <i>suspend</i> flight plans to reduce clutter on the radar scope,
+              for example when a number of aircraft are in the same holding pattern. These functions
+              are available:</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[TRK SUSP][SLEW]</code> /<br> <code>[TRK SUSP](FLT ID)</code></td>
+                  <td>Suspend the selected flight plan.</td>
+                </tr>
+                <tr>
+                  <td><code>[INIT CTRL][SLEW]</code> /<br><code>[INIT CTRL](FLT ID)</code></td>
+                  <td>Activates the selected suspended flight plan. The following optional parameters
+                    may also be specified to modify the flight plan as it is unsuspended:
+                    <code>(SP1)</code>, <code>∆(SP1)</code>, or <code>+(SP2)</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td><code>[TRK SUSP]E</code></td>
+                  <td>Enable display of altitude for active suspended tracks.</td>
+                </tr>
+                <tr>
+                  <td><code>[TRK SUSP]I</code></td>
+                  <td>Disable (inhibit) display of altitude for active suspended tracks.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p>When a track's flight plan is suspended, the flight plan appears in the COAST/SUSPEND list and
+              its datablock just shows the list index of the flight plan in the COAST/SUSPEND list. Clicking on the
+              datablock displays its altitude for a few seconds; alternatively the commands above can be used to enable
+              the display of altitudes for all tracks with suspended flight plans.</p>
+            <p>Here is an example of the result of suspending and then unsuspending a track's flight plan:</p>
+            <div class="text-center">
+              <img src="suspend-unsuspend-flight-plan.gif" srcset="suspend-unsuspend-flight-plan-2x.gif 2x" width="130" height="65" class="img-fluid">
+            </div><br>
+
+            <h3>Repositioning Tracks and Unsupported Datablocks</h3>
+
+            <p>STARS has commands that allow transferring an associated flight plan from one track to another one
+              or converting it to an <i>unsupported datablock</i>, which is effectively a flight plan temporarily
+              places at a position on the radar scope.</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[TRK RPOS][SLEW][SLEW]</code>/<br><code>[TRK RPOS](FLT ID)[SLEW]</code></td>
+                  <td>Take the flight plan from the first selected track, leaving it unassociated,
+                  and associate it with the second track (which must initially be unassociated.)</td>
+                </tr>
+                <tr>
+                  <td><code>[TRK RPOS][SLEW][SCOPE]</code>/<br><code>[TRK RPOS](FLT ID)[SCOPE]</code></td>
+                  <td>Take the flight plan from the first selected track, leaving it unassociated,
+                    and create an unsupported datablock at the clicked position on the radar
+                    scope, <code>[SCOPE]</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>Here is an example of an unsupported datablock. Note that the position symbol for the
+              owning controller is shown (here, "G") as well as a full datablock, though without altitude
+              and airspeed. There is no blue circle at the track position. 
+            </p>
+              <div class="text-center">
+                <img src="unsupported-datablock.png" srcset="unsupported-datablock-2x.png 2x" width="130" height="65">
+              </div><br>
+            <p>Unsupported datablocks may be repositioned back onto existing tracks or may be deleted
+              using <code>[TERM CTRL]</code> and slewing or entering its associated ACID.</p>
+
+            <p>An unsupported datablock can also be created from a preexisting flight plan:</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[INIT CTRL](FLT ID)[SCOPE]</code></td>
+                  <td>Create an unsupported datablock at the clicked position on the scope, <code>[SCOPE]</code>
+                    from an existing flight plan. The following additional arguments to modify the
+                    unsupported datablock's flight plan may also be specified,
+                    separated by spaces: <code>(SP1)</code>, <code>∆(SP1)</code>, <code>+(SP2)</code>, or
+                    <code>(ASSIGNED ALT)</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+           
+            
+            <h3>Held Flight Plans</h3>
+
+<p><i>vice</i> currently has incomplete support for held flight plans. (These will be useful for IFR
+  aircraft to controlled fields in the future.) That said, the following command is available.</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width:35%">Command</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[MULTIFUNC]ZZ[SLEW]</code> /<br><code>[MULTIFUNC]ZZ (FLT ID)</code></td>
+                  <td>Toggles the hold state for the specified flight plan.</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </section>
+
+	  <section class="docs-section" id="stars-tools">
+            <h2 class="section-heading">Tools</h2>
+
+            <p>STARS offers a variety of tools to help with vectoring aircraft and ensuring they
+              remain separated. For most of the tools in this section, the font size is based on the TOOLS font
+              size in the CHAR SIZE menu of the DCB and the brightness is based on the TLS setting in the BRITE menu of the DCB.</p>
 
             <h3>Position Reporting</h3>
 
@@ -3489,11 +4128,11 @@ how it simulates aircraft or the STARS interface.
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[CA]K[SLEW]</code>/<br> <code>[CA]K (ACID)</code></td>
+                    <td><code>[CA]K[SLEW]</code>/<br> <code>[CA]K (FLT ID)</code></td>
                     <td>Toggles whether CA warnings are enabled for the aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>[CA][SLEW]</code>/<br> <code>[CA]P (ACID)</code></td>
+                    <td><code>[CA][SLEW]</code>/<br> <code>[CA]P (FLT ID)</code></td>
                     <td>Toggles whether CA warnings are enabled for a pair of aircraft. The slewed aircraft must be in conflict with exactly one other aircraft or must have previously had collision alerts inhibited as part of a pair of aircraft.</td>
                   </tr>
                   <tr>
@@ -3505,7 +4144,7 @@ how it simulates aircraft or the STARS interface.
                     <td>Enable CA warnings, except for aircraft that have had them individually disabled.</td>
                   </tr>
                   <tr>
-                    <td><code>[CA]M(ACID) ####</code> /<br> <code>[CA]M####[SLEW]</code> </td>
+                    <td><code>[CA]M(FLT ID) ####</code> /<br> <code>[CA]M####[SLEW]</code> </td>
                     <td>Suppress MCI alerts between the specified aircraft and the given beacon code.</td>
                   </tr>
                   <tr>
@@ -3965,8 +4604,28 @@ how it simulates aircraft or the STARS interface.
               approach course and only if their heading is within a specified range of the approach heading.
               However, a number of commands below allow <i>forcing</i> a ghost track even if these criteria
               are not met.</p>
-            <p>A variety of commands are available to configure CRDA.  Some take an airport's identifier, which
-              should be given without the initial "K": i.e., "PHL" for Philadelphia, not "KPHL":</p>
+            <p>A variety of commands are available to configure CRDA. The following parameters are used with them:</p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Identifier</th>
+                    <th>Format and Use</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>(AIRPORT)</code></td>
+                    <td><i>Airport identifier</i>: three characters identifying an airport. Note that the
+                    leading "K" from ICAO airport identifiers should not be included: "BOS", not "KBOS".</td>
+                  </tr>
+                  <tr>
+                    <td><code>(RUNWAY)</code></td>
+                    <td><i>Runway identifier</i>: one or two digits followed optionally by "L", "C", or "R", as
+                    appropriate. Runways numbered 9 or less should not have a leading zero.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>And these are the CRDA-related commands:</p>
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -4306,7 +4965,7 @@ how it simulates aircraft or the STARS interface.
                 </tbody>
               </table>
 
-              <h3 id="airspace" class="section-heading">Airspace</h3>
+              <h3 id="airspace" class="section-heading">Controller Airspace</h3>
 
               <p><i>Note: this feature is not present in real-world STARS.</i></p>
             <p>
@@ -4324,7 +4983,7 @@ how it simulates aircraft or the STARS interface.
             </div>
             <br>
             <p>The airspace volumes associated with controllers can be displayed by clicking on the
-              <i class="fas fa-question-circle"></i> button in the menubar to display the information window
+              <i class="fas fa-question-circle"></i> button in the menu bar to display the information window
               and then opening the "Airspace" section.</p>
 
           </section>
@@ -4341,8 +5000,9 @@ how it simulates aircraft or the STARS interface.
               <img src="dcb-range-center.png" srcset="dcb-range-center-2x.png 2x" width="151" height="75">
             </div><br>
             <p>Clicking on RANGE activates the range spinner, which allows setting the scope range to be between
-              6 and 256 nautical miles. The center of the scope can be changed by clicking PLACE CNTR and clicking
-              in the scope. Finally, OFF CNTR is shown as depressed when the scope's center is
+              6 and 256 nautical miles. The center of the scope can be changed by clicking PLACE CNTR;
+              moving the mouse moves the scope accordingly. Click a second time when you're happy with the
+              scope's position. Finally, OFF CNTR is shown as depressed when the scope's center is
               different than the default center specified in the scenario configuration. Clicking on it
               restores the center to the default.
               </>
@@ -4627,13 +5287,19 @@ how it simulates aircraft or the STARS interface.
 
             <h4>Flight Plan List</h4>
 
-            <p>The flight plan list shows untracked aircraft that have departed an airport that you are responsible for.
-            Once they are tracked, they are automatically removed from the list. Here is an example:</p>
+            <p>The flight plan list shows flight plans that are not yet associated with aircraft and
+              that you will be responsible for when they do. (This includes both future arrivals and
+              departures.)
+              Once they are associated with aircraft, flight plans are automatically removed from the list. Here is an example:</p>
             <div class="text-center">
-              <img src="flight-plan-list.png" srcset="flight-plan-list-2x.png 2x" width="167" height="71">
+              <img src="flight-plan-list.png" srcset="flight-plan-list-2x.png 2x" width="289" height="184">
             </div><br>
-            <p>In addition to the aircraft's callsign (middle column) and assigned beacon code (right column), the
-              left column shows a <i>tab number</i> that is associated with the 
+            <p>Each line includes the flight's <i>tab list id</i>, a two-digit number that can be used to
+              refer to the flight plan with STARS commands, the aircraft's callsign,
+              the assigned beacon code (right column), the aircraft's final altitude in hundreds of feet,
+              and one letter indicating the arrival/departure fixes.
+            </p>
+            <p>The flight plan list can be managed with these commands:</p>
             <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -4770,7 +5436,7 @@ how it simulates aircraft or the STARS interface.
                     <td>If there is a single unreleased aircraft in the controller's coordination lists, release that aircraft.</td>
                   </tr>
                   <tr>
-                    <td><code>[F13](ACID)</code></td>
+                    <td><code>[F13](FLT ID)</code></td>
                     <td>For an unreleased aircraft, release the specified aircraft; if the aircraft has been released, then
                       remove it from the coordination list. Aircraft may be specified by their callsign, beacon code, or their list number (the first column).</td>
                   </tr>
@@ -4920,8 +5586,28 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                 </tbody>
                 </table>
-            
-                
+
+            <h3 id="stars-preview-area">Preview Area</h3>
+
+            <p>The preview area is a display element that shows various types of information when using different commands,
+              such as flight plan details, coordinates, or quicklook status.</p>
+
+            <p>The following command allows you to position the preview area:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]P[SLEW]</code></td>
+                    <td>Places the preview area at the selected location.</td>
+                  </tr>
+                </tbody>
+              </table>
+
             <h3 id="stars-weather">Weather</h3>
 
             <p>The current weather radar that shows precipitation can be
@@ -5465,6 +6151,19 @@ how it simulates aircraft or the STARS interface.
                 <td>String</td>
                 <td>Name of the ATCT/TRACON that the scenario group is associated with. This is used to show all scenarios for a given ATCT/TRACON together in the UI.</td>
               </tr>
+              <tr>
+                <td>"vfr_reporting_points"</td>
+                <td>Array of objects</td>
+                <td>Each object specifies a VFR reporting point. VFR aicraft that call for flight following will
+                  report their position referencing one of these points, a nearby airport, or a nearby VOR.
+                  Each object has two members:
+                  <ul>
+                    <li>"description": string giving the location aircraft reference when they report their position.</li>
+                    <li>"location": the location of the reference point.</li>
+                  </ul>
+                </td>
+              </tr>
+              
             </tbody>
               </table>
 
@@ -6302,18 +7001,18 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <p><i>vice</i> allows the specification of VFR "distractor" aircraft in scenarios;
               this provides realistic extra clutter in the scope and sometimes aircraft that need to be
               accounted for when vectoring IFR aircraft.
-              Currently there is no interaction with them&mdash;they won't call up for flight following or Bravo
-              clearances, but will fly around and do their thing.
-              (Flight following and such will come at some point in the future.)
+              If "vfr_reporting_points" are specified in the <a href="#fe-scenario-groups">Scenario Group</a>,
+              then VFR aircraft will periodically call asking for flight following.
               For now, <i>vice</i> ensures that VFR aircraft remain clear of B and C class airspace.
             </p>
 
-            <p>VFR distractors are specified using the "vfr" field in an airport's specification object in a scenario JSON file.
+            <p>VFR aircraft are specified using the "vfr" field in an airport's specification object in a scenario JSON file.
               They can either be specified with a specific route to fly, or it is possible to specify that they should
               fly a random route that ends up at one of the other airports that has VFR departures.
               In practice, it works well to have VFR departures both from class D and uncontrolled airports inside a TRACON but
               also from such airports up to 30-50 miles outside the TRACON; this gives good variety of both flights within
-              the TRACON but also overflights, departures that land outside the TRACON, and arrivals that land within it. 
+              the TRACON but also overflights, departures that land outside the TRACON, and arrivals that land within it.
+              The following values can be specified in an airport's "vfr" object:
             </p>
             
             <table class="table">
@@ -6398,11 +7097,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
 
           <section class="docs-section" id="fe-airspace">
-            <h2 class="section-heading">Airspace</h2>
+            <h2 class="section-heading">Controller Airspace</h2>
 
-            <p>Airspace volumes may optionally be specified using the "airspace" object in the scenario group.
-              These volumes may be assigned to controllers in scenarios, in which case <i>vice</i> will show an
-              alert when aircraft are outside of the controller's airspace.  The airspace object has two members: 
+            <p>Airspace volumes representing areas that particular controllers are responsible for may optionally be specified
+              using the "airspace" object in the scenario group. If specified, <i>vice</i> will show an
+              alert when aircraft owned by a controller are outside of their airspace.
+            </p>
+            <p>
+              The airspace object has two members:
             </p>
             <table class="table">
             <thead>
@@ -6549,7 +7251,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"default_maps"</td>
                 <td>Array of strings</td>
                 <td>The names of the initial video maps that should be displayed when this scenario is selected.
-                  Note that "default_maps" may not be used if "controller_configs" is specified in "stars_maps";
+                  Note that "default_maps" may not be used if "stars_maps" is specified in "controller_configs";
                   in that case controller-specific default maps can be specified there.
                 </td>
               </tr>
@@ -6630,6 +7332,11 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>The control position to use for single-user. (This must be present in "control_positions" in the scenario group.)</td>
               </tr>
               <tr>
+                <td>"vfr_rate_scale"</td>
+                <td>Number</td>
+                <td>Scale factor to adjust the rate of distractor VFR launches in the scenario. Set to 0 for none.</td>
+              </tr>
+              <tr>
                 <td>"wind"</td>
                 <td>Object</td>
                 <td>This specifies the current winds for the scenario.  Winds are included in the simulation and affect aircraft similarly to how they do in the real world.
@@ -6705,26 +7412,23 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
               </tr>
               <tr>
-                <td>"beacon_bank"</td>
-                <td>Number</td>
-                <td>This should be an integer between 1 and 7: it gives the range of beacon codes that should
-                  be assigned to aircraft: e.g. 1 means from 0101 to 0107.</td>
-              </tr>
-              <tr>
                 <td>"controller_configs"</td>
                 <td>Object</td>
                 <td>Each entry specifies controller-specific configuration properties.
-                  The applicable control positions are specified via members given as a comma-separated string of positions
-                  (e.g., "JFK_G_APP,JFK_K_APP"). The following properties may be specified for each one:
+                  The applicable control positions are specified via members given as a TCP position
+                  (e.g., "2G"). The following properties may be specified for each one:
                   <br>
                   <ul>
                     <li>"beacon_code_blocks": a string containing a comma-separated list of beacon code banks
                       (two digits) or discrete beacon codes (four digits) that should be monitored by default.</li>
-                      If specified, this overrides any range specified in the scenario or scenario group.</li>
                     <li>"center": the initial center of the controller's STARS scope.
                       If specified, this overrides any center specified in the scenario or scenario group.</li>
                     <li>"default_maps": an array of strings that specifies which maps in "video_maps"
                       should be initially displayed.</li>
+                    <li>"flight_following_airspace": an array of regions of airspace (both lateral and vertical)
+                      following the form that is used for defining <a href="#fe-stars-filters">filter regions</a>.
+                      (In this case, "id" and "description" are optional.") Only VFR aircraft within the specified
+                      region will call the controller for flight following.</li> 
                     <li>"range": the initial range for the controller's scope in nautical miles.
                       If specified, this overrides any range specified in the scenario or scenario group.</li>
                     <li>"video_maps": an array of strings specifying which video maps should be displayed
@@ -6756,6 +7460,72 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   for inbound and outbound handoffs.</td>
               </tr>
               <tr>
+                <td>"fdb"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations for full datablocks.
+                  The following member is available ("false" by default):
+                  <ul>
+                    <li>"display_requested_altitude": (Boolean value) if true, the requested altitudes of aircraft that
+                      have them in their flight plans are shown in the datablock (multiplexed with
+                      aircraft type and groundspeed).</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"filters"</td>
+                <td>Objects</td>
+                <td>Each member of this object defines a <a href="#fe-stars-filters">filter region</a> inside
+                  which STARS applies special rules to aircraft. The following types of filters may be specified:
+                  <ul>
+		    <li>"arrival_acquisition": when an arrival enters this filter region, its flight plan
+                      associates (if available), even if it is still controlled by an external controller
+                      and a handoff hasn't been initiated.</li>
+		    <li>"arrival_drop": when an arrival enters one of the specified filters, their flight
+                      plan disassociates from the aircraft and is deleted. A default volume 3f 2nm radius up to 500' AGL
+                      around each arrival airport is generated if no filters are specified.</li>
+		    <li>"departure_acquisition": when a departure exits one of the filter volumes, STARS attempts
+                      to find the flight plan corresponding to the beacon code the aircraft is squawking.
+                      The default volumes are 3nm circles from ground level to 500' AGL around the airport.</li>
+                    <li>"inhibit_ca": collision alerts are disabled for aircraft within the filter's volume.
+                      These are especially useful around airports so that alerts aren't issued for aircraft
+                      arriving/departing on parallel runways, for example.
+                      If not specified, a default volume of a circle with a 5nm radius going up to 3,000' AGL
+                      around each airport is used.</li>
+                    <li>"inhibit_msaw": minimum safe altitude warnings (MSAW) are disabled for aircraft
+                      within the filter's volume. Like "inhibit_ca", this is also useful around airports and
+                      a volume of a 5nm radius circle going up to 3,000' AGL around each airport is used
+                      if none are specified. </li>
+                    <li>"quicklook": the full datablock of any tracks owned by another controller is displayed
+                      rather than the partial datablock for tracks in the filter region.</li>
+		    <li>"secondary_drop": if an associated <b>exits</b> a secondary drop filter region, is controlled
+                      by a controller outside of the TRACON, and was previously controlled by a controller
+                      inside the current TRACON, its flight plan disassociates and is deleted.
+                      (Note that the test is that it exits the region, unlike the others that check for being
+                      inside the region. Secondary drop region are thus often specified along the boundary of
+                      a TRACON.)
+                      There are no default "secondary_drop" filters.</li>
+                    <li>"surface_tracking": defines a region of airspace off the ground at airports where
+                      radar tracks are not shown. By default, up to 250' AGL 1.5nm around each airport.</li>
+                    <li>"vfr_inhibit": random VFR routes will not be generated through this filter's airspace.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"flight_plan"</td>
+                <td>Object</td>
+                <td>Allows specifying various adapted configurations for STARS flight plans.
+                  The following members are available:
+                  <ul>
+                    <li>"modify_after_display": Boolean value; if set, then after a flight plan is
+                      displayed with the <code>[MULTIFUNC]D</code> command, an element in the flight
+                      plan can be immediately modified, as if <code>[MULTIFUNC]M</code> had been entered.</li>
+                    <li>"quick_acid": string that gives the up-to-3 character callsign that is used
+                      when a quick flight plan is generated for an aircraft by entering "Y" and slewing it.
+                      A unique integer identifier is added to this ACID. If unset, "VCE" is used by default.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
                 <td>"force_ql_self"</td>
                 <td>Boolean</td>
                 <td>Indicates whether controllers may
@@ -6773,35 +7543,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Number</td>
                 <td>If non-zero, gives the number of seconds that the sector id for a handoff to/from an
                   external facilities is shown in the datablock after the handoff has been accepted.</td>
-              </tr>
-              <tr>
-                <td>"inhibit_ca_volumes"</td>
-                <td>Array of objects</td>
-                <td>Each entry specifies a volume of space where collision
-                  alerts are inhibited. It can be useful to specify these
-                  around airports so that alerts aren't issued for aircraft
-                  arriving/departing on parallel runways. Each object has
-                  the following members:
-                  <ul>
-                    <li>"name": a string used to identify the volume in
-                      system lists.</li>
-                    <li>"type": either "circle" or "polygon"</li>
-                    <li>"floor": number giving the minimum altitude of the volume.</li>
-                    <li>"ceiling": number giving the maximum altitude of
-                      the volume.</li>
-                  </ul>
-                  For "circle" volumes, there are two additional members:
-                  <ul>
-                    <li>"center": the location of the center of the volume.</li>
-                    <li>"radius": the radius of the volume, in nautical miles.</li>
-                  </ul>
-                  For "polygon" volumes, an additional parameter specifies
-                  its extent:
-                  <ul>
-                    <li>"vertices": an array of locations specifying the
-                    outline of the volume.</li>
-                  </ul>
-                </td>
               </tr>
               <tr>
                 <td>"maps_labels"</td>
@@ -6937,6 +7678,37 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"ssr_codes"</td>
+                <td>Object</td>
+                <td>This defines Secondary Surveillance Radar (SSR) codes for the facility; these are
+                  various ranges of beacon codes that are assigned to local aircraft or have other
+                  special meanings. Its members are:
+                  <ul>
+                    <li>"auto_assignable_codes": object specifying beacon codes available for local VFR and IFR
+                      flight plans. It has the members "vfr" and "ifr", which are used for VFR and IFR flight plans,
+                      respectively, and "1", "2", "3", and "4", which specify beacon code banks that can be assigned
+                      with syntax like <code>/1</code> when specifying a flight plan. Each of these objects has these members:
+                      <ul>
+                        <li>"ranges": array of strings, each specifying a single beacon code or a range of beacon codes (inclusive).
+                          Example: ["1200", "0301-0377", "5501-5577"]. This allows specifying multiple non-contiguous ranges for a single pool.
+                        </li>
+                        <li>"flight_rules": string, either "v" or "i", indicating VFR or IFR, respectively. This may only
+                          be specified for the numbered pools; it is predetermined for the "vfr" and "ifr" pools.
+                        </li>
+                        <li>"backups": optional string specifying one or more backup pools to use if the initial
+                          pool tried has no more remaining codes. Only numbered pools may be given.
+                          Example: "234".
+                        </li>
+                      </ul>
+                    </li>
+                    <li>"beacon_code_table": object with a single member, "vfr_codes", which is an array of strings specifying
+                      beacon codes or beacon code ranges used for VFR aircraft without STARS flight plans.
+                      Codes in these ranges cannot be manually assigned to flight plans. Default: 1200-1277.
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
                 <td>"stars_maps"</td>
                 <td>Array of strings</td>
                 <td>These strings specify the available video maps shown in the STARS DCB;
@@ -6959,6 +7731,43 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
             </tbody>
             </table>
+
+            <h3 id="fe-stars-filters">Filter Regions</h3>
+
+            <p>STARS uses <emph>filter regions</emph> to manage a number of behaviors that are enabled or disabled
+              depending on whether an aircraft's track is within particular volumes of space.
+              These regions are defined under "filters" in the <a href="#fe-stars-videomaps">stars_config</a> object.
+              As an example, the "inhibit_ca" filter is used to disable collision alerts
+              close to airports so that spurious alerts aren't issued between departing and arriving aircraft.
+              The lateral extent of filter volumes volumes can be defined either with a polygon or a circle and their
+              vertical extent is given by a single range of altitudes.
+              The following volume object is used to specify them.
+            </p>
+            <p>Four members are used for both types of filters:
+            <ul>
+              <li>"id": a short string (no more than 7 characters) used to identify the volume.
+                "id"s must be provided for all filter regions and must be unique among the filter
+                regions of the same type.</li>
+              <li>"description": a longer string used to identify the volume in system lists.</li>
+              <li>"type": either "circle" or "polygon"</li>
+              <li>"floor": number giving the minimum altitude of the volume.</li>
+              <li>"ceiling": number giving the maximum altitude of the volume.</li>
+            </ul>
+            For "circle" volumes, there are two additional members:
+            <ul>
+              <li>"center": the location of the center of the volume.</li>
+              <li>"radius": the radius of the volume, in nautical miles.</li>
+            </ul>
+            For "polygon" volumes, an additional member specifies its lateral extent:
+            <ul>
+              <li>"vertices": an array of polygon vertex locations specifying the
+                outline of the volume.</li>
+            </ul>
+            <p>
+            For polygonal filter volumes, the last vertex and the first vertex will automatically be connected;
+            it's not necessary to close the polygon yourself.
+            </p>
+
 
             <h3>Video Maps</h3>
 

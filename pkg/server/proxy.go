@@ -10,16 +10,23 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
 )
 
 type proxy struct {
 	ControllerToken string
-	Client          *util.RPCClient
+	Client          *RPCClient
 }
 
 func (p *proxy) TogglePause() *rpc.Call {
 	return p.Client.Go("Sim.TogglePause", p.ControllerToken, nil, nil)
+}
+
+func (p *proxy) RequestFlightFollowing() *rpc.Call {
+	return p.Client.Go("Sim.RequestFlightFollowing", p.ControllerToken, nil, nil)
+}
+
+func (p *proxy) FastForward(update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.FastForward", p.ControllerToken, update, nil)
 }
 
 func (p *proxy) SignOff(_, _ *struct{}) error {
@@ -31,11 +38,11 @@ func (p *proxy) SignOff(_, _ *struct{}) error {
 	return nil
 }
 
-func (p *proxy) ChangeControlPosition(callsign string, keepTracks bool) error {
+func (p *proxy) ChangeControlPosition(tcp string, keepTracks bool) error {
 	return p.Client.CallWithTimeout("Sim.ChangeControlPosition",
 		&ChangeControlPositionArgs{
 			ControllerToken: p.ControllerToken,
-			Callsign:        callsign,
+			TCP:             tcp,
 			KeepTracks:      keepTracks,
 		}, nil)
 }
@@ -46,8 +53,8 @@ func (p *proxy) GetSerializeSim() (*sim.Sim, error) {
 	return &s, err
 }
 
-func (p *proxy) GetWorldUpdate(wu *sim.WorldUpdate) *rpc.Call {
-	return p.Client.Go("Sim.GetWorldUpdate", p.ControllerToken, wu, nil)
+func (p *proxy) GetStateUpdate(update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.GetStateUpdate", p.ControllerToken, update, nil)
 }
 
 func (p *proxy) SetSimRate(r float32) *rpc.Call {
@@ -70,93 +77,75 @@ func (p *proxy) TakeOrReturnLaunchControl() *rpc.Call {
 	return p.Client.Go("Sim.TakeOrReturnLaunchControl", p.ControllerToken, nil, nil)
 }
 
-func (p *proxy) SetGlobalLeaderLine(callsign string, direction *math.CardinalOrdinalDirection) *rpc.Call {
-	return p.Client.Go("Sim.SetGlobalLeaderLine", &SetGlobalLeaderLineArgs{
+func (p *proxy) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.CreateFlightPlan", &CreateFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		FlightPlanSpecifier: spec,
+	}, update, nil)
+}
+
+func (p *proxy) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlanSpecifier, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.ModifyFlightPlan", &ModifyFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		ACID:                acid,
+		FlightPlanSpecifier: spec,
+	}, update, nil)
+}
+
+func (p *proxy) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.AssociateFlightPlan", &AssociateFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		Callsign:            callsign,
+		FlightPlanSpecifier: spec,
+	}, update, nil)
+}
+
+func (p *proxy) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.STARSFlightPlanSpecifier,
+	update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.ActivateFlightPlan", &ActivateFlightPlanArgs{
+		ControllerToken:     p.ControllerToken,
+		TrackCallsign:       callsign,
+		FpACID:              fpACID,
+		FlightPlanSpecifier: spec,
+	}, update, nil)
+}
+
+func (p *proxy) DeleteFlightPlan(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.DeleteFlightPlan", &DeleteFlightPlanArgs{
 		ControllerToken: p.ControllerToken,
+		ACID:            acid,
+	}, update, nil)
+}
+
+func (p *proxy) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign, pos math.Point2LL, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.RepositionTrack", &RepositionTrackArgs{
+		ControllerToken: p.ControllerToken,
+		ACID:            acid,
 		Callsign:        callsign,
-		Direction:       direction,
-	}, nil, nil)
+		Position:        pos,
+	}, update, nil)
 }
 
-func (p *proxy) SetScratchpad(callsign string, scratchpad string) *rpc.Call {
-	return p.Client.Go("Sim.SetScratchpad", &SetScratchpadArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Scratchpad:      scratchpad,
-	}, nil, nil)
-}
-
-func (p *proxy) SetSecondaryScratchpad(callsign string, scratchpad string) *rpc.Call {
-	return p.Client.Go("Sim.SetSecondaryScratchpad", &SetScratchpadArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Scratchpad:      scratchpad,
-	}, nil, nil)
-}
-
-func (p *proxy) AutoAssociateFP(callsign string, fp *av.STARSFlightPlan) *rpc.Call {
-	return p.Client.Go("Sim.AutoAssociateFP", &InitiateTrackArgs{
-		AircraftSpecifier: AircraftSpecifier{
-			ControllerToken: p.ControllerToken,
-			Callsign:        callsign,
-		},
-		Plan: fp,
-	}, nil, nil)
-}
-
-func (p *proxy) CreateUnsupportedTrack(callsign string, ut *sim.UnsupportedTrack) *rpc.Call {
-	return p.Client.Go("Sim.CreateUnsupportedTrack", &CreateUnsupportedTrackArgs{
-		ControllerToken:  p.ControllerToken,
-		Callsign:         callsign,
-		UnsupportedTrack: ut,
-	}, nil, nil)
-}
-
-func (p *proxy) UploadFlightPlan(Type int, fp *av.STARSFlightPlan) *rpc.Call {
-	return p.Client.Go("Sim.UploadFlightPlan", &UploadPlanArgs{
-		ControllerToken: p.ControllerToken,
-		Type:            Type,
-		Plan:            fp,
-	}, nil, nil)
-}
-
-func (p *proxy) InitiateTrack(callsign string, fp *av.STARSFlightPlan) *rpc.Call {
-	return p.Client.Go("Sim.InitiateTrack", InitiateTrackArgs{
-		AircraftSpecifier: AircraftSpecifier{
-			ControllerToken: p.ControllerToken,
-			Callsign:        callsign,
-		},
-		Plan: fp,
-	}, nil, nil)
-}
-
-func (p *proxy) DropTrack(callsign string) *rpc.Call {
-	return p.Client.Go("Sim.DropTrack", &DropTrackArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (p *proxy) HandoffTrack(callsign string, controller string) *rpc.Call {
+func (p *proxy) HandoffTrack(acid sim.ACID, tcp string, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.HandoffTrack", &HandoffArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Controller:      controller,
-	}, nil, nil)
+		ACID:            acid,
+		ToTCP:           tcp,
+	}, update, nil)
 }
 
-func (p *proxy) AcceptHandoff(callsign string) *rpc.Call {
+func (p *proxy) AcceptHandoff(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.AcceptHandoff", &AcceptHandoffArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
+		ACID:            acid,
+	}, update, nil)
 }
 
-func (p *proxy) CancelHandoff(callsign string) *rpc.Call {
+func (p *proxy) CancelHandoff(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.CancelHandoff", &CancelHandoffArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
+		ACID:            acid,
+	}, update, nil)
 }
 
 func (p *proxy) GlobalMessage(global sim.GlobalMessage) *rpc.Call {
@@ -166,103 +155,84 @@ func (p *proxy) GlobalMessage(global sim.GlobalMessage) *rpc.Call {
 	}, nil, nil)
 }
 
-func (p *proxy) ForceQL(callsign, controller string) *rpc.Call {
+func (p *proxy) ForceQL(acid sim.ACID, controller string, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.ForceQL", &ForceQLArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
+		ACID:            acid,
 		Controller:      controller,
-	}, nil, nil)
+	}, update, nil)
 }
 
-func (p *proxy) RedirectHandoff(callsign, controller string) *rpc.Call {
+func (p *proxy) RedirectHandoff(acid sim.ACID, tcp string, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.RedirectHandoff", &HandoffArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Controller:      controller,
-	}, nil, nil)
+		ACID:            acid,
+		ToTCP:           tcp,
+	}, update, nil)
 }
 
-func (p *proxy) AcceptRedirectedHandoff(callsign string) *rpc.Call {
+func (p *proxy) AcceptRedirectedHandoff(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.AcceptRedirectedHandoff", &AcceptHandoffArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
+		ACID:            acid,
+	}, update, nil)
 }
 
-func (p *proxy) PointOut(callsign string, controller string) *rpc.Call {
+func (p *proxy) PointOut(acid sim.ACID, controller string, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.PointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
+		ACID:            acid,
 		Controller:      controller,
-	}, nil, nil)
+	}, update, nil)
 }
 
-func (p *proxy) AcknowledgePointOut(callsign string) *rpc.Call {
+func (p *proxy) AcknowledgePointOut(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.AcknowledgePointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
+		ACID:            acid,
+	}, update, nil)
 }
 
-func (p *proxy) RecallPointOut(callsign string) *rpc.Call {
+func (p *proxy) RecallPointOut(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.RecallPointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
+		ACID:            acid,
+	}, update, nil)
 }
 
-func (p *proxy) RejectPointOut(callsign string) *rpc.Call {
+func (p *proxy) RejectPointOut(acid sim.ACID, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.RejectPointOut", &PointOutArgs{
 		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
+		ACID:            acid,
+	}, update, nil)
 }
 
-func (p *proxy) ToggleSPCOverride(callsign string, spc string) *rpc.Call {
-	return p.Client.Go("Sim.ToggleSPCOverride", &ToggleSPCArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		SPC:             spc,
-	}, nil, nil)
-}
-
-func (p *proxy) ReleaseDeparture(callsign string) *rpc.Call {
+func (p *proxy) ReleaseDeparture(callsign av.ADSBCallsign, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.ReleaseDeparture", &HeldDepartureArgs{
 		ControllerToken: p.ControllerToken,
 		Callsign:        callsign,
-	}, nil, nil)
+	}, update, nil)
 }
 
-func (p *proxy) SetTemporaryAltitude(callsign string, alt int) *rpc.Call {
-	return p.Client.Go("Sim.SetTemporaryAltitude", &AssignAltitudeArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Altitude:        alt,
-	}, nil, nil)
-}
-
-func (p *proxy) SetPilotReportedAltitude(callsign string, alt int) *rpc.Call {
-	return p.Client.Go("Sim.SetPilotReportedAltitude", &AssignAltitudeArgs{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-		Altitude:        alt,
-	}, nil, nil)
-}
-
-func (p *proxy) ToggleDisplayModeCAltitude(callsign string) *rpc.Call {
-	return p.Client.Go("Sim.ToggleDisplayModeCAltitude", &AircraftSpecifier{
-		ControllerToken: p.ControllerToken,
-		Callsign:        callsign,
-	}, nil, nil)
-}
-
-func (p *proxy) DeleteAllAircraft() *rpc.Call {
+func (p *proxy) DeleteAllAircraft(update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.DeleteAllAircraft", &DeleteAircraftArgs{
 		ControllerToken: p.ControllerToken,
-	}, nil, nil)
+	}, update, nil)
 }
 
-func (p *proxy) RunAircraftCommands(callsign string, cmds string, result *AircraftCommandsResult) *rpc.Call {
+type DeleteAircraftListArgs struct {
+	ControllerToken string
+	Aircraft        []sim.Aircraft
+}
+
+func (p *proxy) DeleteAircraft(aircraft []sim.Aircraft, update *sim.StateUpdate) *rpc.Call {
+	return p.Client.Go("Sim.DeleteAircraft", &DeleteAircraftListArgs{
+		ControllerToken: p.ControllerToken,
+		Aircraft:        aircraft,
+	}, update, nil)
+}
+
+func (p *proxy) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, result *AircraftCommandsResult) *rpc.Call {
 	return p.Client.Go("Sim.RunAircraftCommands", &AircraftCommandsArgs{
 		ControllerToken: p.ControllerToken,
 		Callsign:        callsign,
@@ -270,7 +240,7 @@ func (p *proxy) RunAircraftCommands(callsign string, cmds string, result *Aircra
 	}, result, nil)
 }
 
-func (p *proxy) LaunchAircraft(ac av.Aircraft, departureRunway string) *rpc.Call {
+func (p *proxy) LaunchAircraft(ac sim.Aircraft, departureRunway string) *rpc.Call {
 	return p.Client.Go("Sim.LaunchAircraft", &LaunchAircraftArgs{
 		ControllerToken: p.ControllerToken,
 		Aircraft:        ac,
@@ -278,7 +248,7 @@ func (p *proxy) LaunchAircraft(ac av.Aircraft, departureRunway string) *rpc.Call
 	}, nil, nil)
 }
 
-func (p *proxy) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *av.Aircraft) *rpc.Call {
+func (p *proxy) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *sim.Aircraft) *rpc.Call {
 	return p.Client.Go("Sim.CreateDeparture", &CreateDepartureArgs{
 		ControllerToken: p.ControllerToken,
 		Airport:         airport,
@@ -288,7 +258,7 @@ func (p *proxy) CreateDeparture(airport, runway, category string, rules av.Fligh
 	}, ac, nil)
 }
 
-func (p *proxy) CreateArrival(group, airport string, ac *av.Aircraft) *rpc.Call {
+func (p *proxy) CreateArrival(group, airport string, ac *sim.Aircraft) *rpc.Call {
 	return p.Client.Go("Sim.CreateArrival", &CreateArrivalArgs{
 		ControllerToken: p.ControllerToken,
 		Group:           group,
@@ -296,39 +266,49 @@ func (p *proxy) CreateArrival(group, airport string, ac *av.Aircraft) *rpc.Call 
 	}, ac, nil)
 }
 
-func (p *proxy) CreateOverflight(group string, ac *av.Aircraft) *rpc.Call {
+func (p *proxy) CreateOverflight(group string, ac *sim.Aircraft) *rpc.Call {
 	return p.Client.Go("Sim.CreateOverflight", &CreateOverflightArgs{
 		ControllerToken: p.ControllerToken,
 		Group:           group,
 	}, ac, nil)
 }
 
-func (p *proxy) CreateRestrictionArea(ra av.RestrictionArea, idx *int) *rpc.Call {
+func (p *proxy) CreateRestrictionArea(ra av.RestrictionArea, result *CreateRestrictionAreaResultArgs) *rpc.Call {
 	return p.Client.Go("Sim.CreateRestrictionArea", &RestrictionAreaArgs{
 		ControllerToken: p.ControllerToken,
 		RestrictionArea: ra,
-	}, idx, nil)
+	}, result, nil)
 }
 
-func (p *proxy) UpdateRestrictionArea(idx int, ra av.RestrictionArea) *rpc.Call {
+func (p *proxy) UpdateRestrictionArea(idx int, ra av.RestrictionArea, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.UpdateRestrictionArea", &RestrictionAreaArgs{
 		ControllerToken: p.ControllerToken,
 		Index:           idx,
 		RestrictionArea: ra,
-	}, nil, nil)
+	}, update, nil)
 }
 
-func (p *proxy) DeleteRestrictionArea(idx int) *rpc.Call {
+func (p *proxy) DeleteRestrictionArea(idx int, update *sim.StateUpdate) *rpc.Call {
 	return p.Client.Go("Sim.DeleteRestrictionArea", &RestrictionAreaArgs{
 		ControllerToken: p.ControllerToken,
 		Index:           idx,
-	}, nil, nil)
+	}, update, nil)
 }
 
-func (p *proxy) GetVideoMapLibrary(filename string, vmf *av.VideoMapLibrary) error {
+func (p *proxy) GetVideoMapLibrary(filename string, vmf *sim.VideoMapLibrary) error {
 	// Synchronous call
 	return p.Client.Call("Sim.GetVideoMapLibrary", &VideoMapsArgs{
 		ControllerToken: p.ControllerToken,
 		Filename:        filename,
 	}, vmf)
+}
+
+func (p *proxy) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.AircraftDisplayState, error) {
+	// Synchronous call
+	var state sim.AircraftDisplayState
+	err := p.Client.Call("Sim.GetAircraftDisplayState", &AircraftSpecifier{
+		ControllerToken: p.ControllerToken,
+		Callsign:        callsign,
+	}, &state)
+	return state, err
 }

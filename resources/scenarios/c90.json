@@ -10788,9 +10788,11 @@
                     "receiving_controller": "Chicago Center (Sector 81)"
                 }
             ],
-            "inhibit_ca_volumes": [
+	    "filters": {
+            "inhibit_ca": [
                 {
-                    "name": "ORD FINAL NO CA",
+                    "id": "ORDNOCA",
+                    "description": "ORD FINAL CONFLICT SUPPRESS",
                     "type": "polygon",
                     "floor": 0,
                     "ceiling": 7000,
@@ -10801,7 +10803,8 @@
                         "N041.53.22.624,W088.44.03.640"
                     ]
                 }
-            ],
+            ]
+	    },
             "radar_sites": {
                 "KORD": {
                     "char": "O",

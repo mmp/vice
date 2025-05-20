@@ -10,7 +10,6 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/mmp/imgui-go/v4"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
@@ -19,6 +18,8 @@ import (
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 type Message struct {
@@ -110,9 +111,9 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 
 	imgui.Separator()
-	if imgui.BeginComboV("Audio alert", mp.AudioAlertSelection, 0 /* flags */) {
+	if imgui.BeginCombo("Audio alert", mp.AudioAlertSelection) {
 		for _, alert := range util.SortedMapKeys(audioAlerts) {
-			if imgui.SelectableV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
 				mp.AudioAlertSelection = alert
 				p.PlayAudioOnce(mp.alertAudioIndex[alert])
 			}
@@ -183,7 +184,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 	consolidateRadioTransmissions := func(events []sim.Event) []sim.Event {
 		canConsolidate := func(a, b sim.Event) bool {
 			return a.Type == sim.RadioTransmissionEvent && b.Type == sim.RadioTransmissionEvent &&
-				a.Callsign == b.Callsign && a.Type == b.Type && a.ToController == b.ToController
+				a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
 		}
 		var c []sim.Event
 		for _, e := range events {
@@ -205,8 +206,8 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Collect multiple successive transmissions from the same
 			// aircraft into a single transmission.
 
-			toUs := event.ToController == ctx.ControlClient.UserTCP
-			amInstructor := ctx.ControlClient.Instructors[ctx.ControlClient.UserTCP]
+			toUs := event.ToController == ctx.UserTCP
+			amInstructor := ctx.Client.State.Instructors[ctx.UserTCP]
 			if !toUs && !amInstructor {
 				break
 			}
@@ -215,17 +216,17 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Note: this is buggy if we process multiple senders in a
 			// single call here, but that shouldn't happen...
 
-			radioCallsign := event.Callsign
+			radioCallsign := string(event.ADSBCallsign)
 			if idx := strings.IndexAny(radioCallsign, "0123456789"); idx != -1 {
 				// Try to get the telephony.
 				icao, flight := radioCallsign[:idx], radioCallsign[idx:]
 				if telephony, ok := av.DB.Callsigns[icao]; ok {
 					radioCallsign = telephony + " " + flight
-					if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil {
-						if fp := ac.FlightPlan; fp != nil {
-							if strings.HasPrefix(fp.AircraftType, "H/") {
+					if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsAssociated() {
+						if perf, ok := av.DB.AircraftPerformance[trk.FlightPlan.AircraftType]; ok {
+							if perf.WeightClass == "H" {
 								radioCallsign += " heavy"
-							} else if strings.HasPrefix(fp.AircraftType, "J/") || strings.HasPrefix(fp.AircraftType, "S/") {
+							} else if perf.WeightClass == "J" {
 								radioCallsign += " super"
 							}
 						}
@@ -241,10 +242,10 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			var msg Message
 			if event.RadioTransmissionType == av.RadioTransmissionContact {
 				name := event.ToController
-				if ctrl, ok := ctx.ControlClient.Controllers[event.ToController]; ok {
+				if ctrl, ok := ctx.Client.State.Controllers[event.ToController]; ok {
 					name = ctrl.RadioName
 				}
-				if ac := ctx.ControlClient.Aircraft[event.Callsign]; ac != nil && ctx.ControlClient.State.IsDeparture(ac) {
+				if trk, ok := ctx.GetTrackByCallsign(event.ADSBCallsign); ok && trk.IsDeparture() {
 					// Always refer to the controller as "departure" for departing aircraft.
 					name = strings.ReplaceAll(name, "approach", "departure")
 				}
@@ -263,11 +264,12 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
 				}
 			}
-			ctx.Lg.Debug("radio_transmission", slog.String("callsign", event.Callsign), slog.Any("message", msg))
+			ctx.Lg.Debug("radio_transmission", slog.String("adsb_callsign", string(event.ADSBCallsign)),
+				slog.Any("message", msg))
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.ControlClient.UserTCP {
+			if event.FromController != ctx.UserTCP {
 				for _, line := range strings.Split(event.Message, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}

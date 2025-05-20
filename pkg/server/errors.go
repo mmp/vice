@@ -32,6 +32,7 @@ var errorStringToError = map[string]error{
 	av.ErrInvalidApproach.Error():              av.ErrInvalidApproach,
 	av.ErrInvalidController.Error():            av.ErrInvalidController,
 	av.ErrInvalidFacility.Error():              av.ErrInvalidFacility,
+	av.ErrInvalidFix.Error():                   av.ErrInvalidFix,
 	av.ErrInvalidHeading.Error():               av.ErrInvalidHeading,
 	av.ErrNoAircraftForCallsign.Error():        av.ErrNoAircraftForCallsign,
 	av.ErrNoController.Error():                 av.ErrNoController,
@@ -54,26 +55,34 @@ var errorStringToError = map[string]error{
 	sim.ErrAircraftAlreadyReleased.Error():     sim.ErrAircraftAlreadyReleased,
 	sim.ErrBeaconMismatch.Error():              sim.ErrBeaconMismatch,
 	sim.ErrControllerAlreadySignedIn.Error():   sim.ErrControllerAlreadySignedIn,
+	sim.ErrDuplicateACID.Error():               sim.ErrDuplicateACID,
+	sim.ErrDuplicateBeacon.Error():             sim.ErrDuplicateBeacon,
 	sim.ErrIllegalACID.Error():                 sim.ErrIllegalACID,
 	sim.ErrIllegalACType.Error():               sim.ErrIllegalACType,
+	sim.ErrIllegalBeaconCode.Error():           sim.ErrIllegalBeaconCode,
 	sim.ErrIllegalFunction.Error():             sim.ErrIllegalFunction,
 	sim.ErrIllegalScratchpad.Error():           sim.ErrIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP.Error():        sim.ErrInvalidAbbreviatedFP,
 	sim.ErrInvalidDepartureController.Error():  sim.ErrInvalidDepartureController,
 	sim.ErrInvalidRestrictionAreaIndex.Error(): sim.ErrInvalidRestrictionAreaIndex,
 	sim.ErrNoMatchingFlight.Error():            sim.ErrNoMatchingFlight,
+	sim.ErrNoMoreListIndices.Error():           sim.ErrNoMoreListIndices,
 	sim.ErrNotLaunchController.Error():         sim.ErrNotLaunchController,
 	sim.ErrTooManyRestrictionAreas.Error():     sim.ErrTooManyRestrictionAreas,
+	sim.ErrTrackIsActive.Error():               sim.ErrTrackIsActive,
+	sim.ErrTrackIsBeingHandedOff.Error():       sim.ErrTrackIsBeingHandedOff,
+	sim.ErrTrackIsNotActive.Error():            sim.ErrTrackIsNotActive,
 	sim.ErrUnknownController.Error():           sim.ErrUnknownController,
 	sim.ErrUnknownControllerFacility.Error():   sim.ErrUnknownControllerFacility,
-	sim.ErrViolatedAirspace.Error():            sim.ErrViolatedAirspace,
 	sim.ErrVFRSimTookTooLong.Error():           sim.ErrVFRSimTookTooLong,
+	sim.ErrViolatedAirspace.Error():            sim.ErrViolatedAirspace,
 
 	ErrControllerAlreadySignedIn.Error(): ErrControllerAlreadySignedIn,
 	ErrDuplicateSimName.Error():          ErrDuplicateSimName,
 	ErrInvalidCommandSyntax.Error():      ErrInvalidCommandSyntax,
 	ErrInvalidControllerToken.Error():    ErrInvalidControllerToken,
 	ErrInvalidPassword.Error():           ErrInvalidPassword,
+	ErrInvalidSSimConfiguration.Error():  ErrInvalidSSimConfiguration,
 	ErrNoNamedSim.Error():                ErrNoNamedSim,
 	ErrNoSimForControllerToken.Error():   ErrNoSimForControllerToken,
 	ErrRPCTimeout.Error():                ErrRPCTimeout,
@@ -82,6 +91,9 @@ var errorStringToError = map[string]error{
 }
 
 func TryDecodeError(e error) error {
+	if e == nil {
+		return e
+	}
 	if err, ok := errorStringToError[e.Error()]; ok {
 		return err
 	}

@@ -29,7 +29,7 @@ type SimManager struct {
 	activeSims         map[string]*ActiveSim
 	controllersByToken map[string]*HumanController
 	mu                 util.LoggingMutex
-	mapManifests       map[string]*av.VideoMapManifest
+	mapManifests       map[string]*sim.VideoMapManifest
 	startTime          time.Time
 	lg                 *log.Logger
 }
@@ -85,7 +85,7 @@ func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
-	simConfigurations map[string]map[string]*Configuration, manifests map[string]*av.VideoMapManifest,
+	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	return &SimManager{
 		scenarioGroups:     scenarioGroups,
@@ -181,6 +181,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		IsLocal:                 config.NewSimType == NewSimCreateLocal,
 		DepartureRunways:        sc.DepartureRunways,
 		ArrivalRunways:          sc.ArrivalRunways,
+		VFRReportingPoints:      sg.VFRReportingPoints,
 		ReportingPoints:         sg.ReportingPoints,
 		Description:             description,
 		MagneticVariation:       sg.MagneticVariation,
@@ -312,8 +313,6 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 							sm.lg.Warnf("%s: signing off idle controller", tcp)
 							if err := sm.signOff(ctrl.token); err != nil {
 								sm.lg.Errorf("%s: error signing off idle controller: %v", tcp, err)
-								delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
-								delete(sm.controllersByToken, token)
 							}
 						}
 					}
@@ -329,10 +328,6 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
 		delete(sm.activeSims, as.name)
-		// FIXME: these don't get cleaned up during Sim SignOff()
-		for _, ctrl := range as.controllersByTCP {
-			delete(sm.controllersByToken, ctrl.token)
-		}
 	}()
 
 	*result = NewSimResult{
@@ -392,13 +387,14 @@ func (sm *SimManager) SignOff(token string) error {
 func (sm *SimManager) signOff(token string) error {
 	if ctrl, s, ok := sm.lookupController(token); !ok {
 		return ErrNoSimForControllerToken
-	} else if err := s.SignOff(ctrl.tcp); err != nil {
-		return err
 	} else {
+		err := s.SignOff(ctrl.tcp)
+
+		// Do this cleanup regardless of an error return from SignOff
 		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
 		delete(sm.controllersByToken, token)
 
-		return nil
+		return err
 	}
 }
 
@@ -478,7 +474,7 @@ type simStatus struct {
 	TotalIFR, TotalVFR int
 }
 
-func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) error {
+func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) error {
 	sm.mu.Lock(sm.lg)
 
 	if ctrl, ok := sm.controllersByToken[token]; !ok {
@@ -496,12 +492,9 @@ func (sm *SimManager) GetWorldUpdate(token string, update *sim.WorldUpdate) erro
 			})
 		}
 
-		// Grab this before unlock.
-		local := ctrl.asim.local
-
 		sm.mu.Unlock(sm.lg)
 
-		s.GetWorldUpdate(ctrl.tcp, update, local)
+		s.GetStateUpdate(ctrl.tcp, update)
 
 		return nil
 	}

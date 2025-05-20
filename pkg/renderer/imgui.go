@@ -10,7 +10,7 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -19,12 +19,12 @@ import (
 // GenerateImguiCommandBuffer retrieves the imgui draw list for the current
 // frame and emits corresponding commands to the provided CommandBuffer.
 func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize [2]float32, lg *log.Logger) {
-	drawData := imgui.RenderedDrawData()
+	drawData := imgui.CurrentDrawData()
 
 	// Avoid rendering when minimized.
 	displayWidth, displayHeight := displaySize[0], displaySize[1]
 	fbWidth, fbHeight := framebufferSize[0], framebufferSize[1]
-	if (fbWidth <= 0) || (fbHeight <= 0) {
+	if fbWidth <= 0 || fbHeight <= 0 {
 		return
 	}
 
@@ -52,8 +52,8 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize 
 
 	// Handle each command list
 	for _, commandList := range drawData.CommandLists() {
-		vertexBufferPtr, vertexBufferSizeBytes := commandList.VertexBuffer()
-		indexBufferPtr, indexBufferSizeBytes := commandList.IndexBuffer()
+		vertexBufferPtr, vertexBufferSizeBytes := commandList.GetVertexBuffer()
+		indexBufferPtr, indexBufferSizeBytes := commandList.GetIndexBuffer()
 
 		// CommandBuffer only supports int32 for index buffers, so in the
 		// usual case that imgui has given uint16s, create a corresponding
@@ -83,13 +83,13 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize 
 				lg.Error("Unexpected user callback in imgui draw list")
 			} else {
 				clipRect := command.ClipRect()
-				cb.Scissor(int(clipRect.X), int(fbHeight)-int(clipRect.W),
+				clipRect.X = math.Max(clipRect.X, 0)
+				clipRect.Y = math.Max(clipRect.Y, 0)
+				cb.Scissor(int(clipRect.X), math.Max(int(fbHeight)-int(clipRect.W), 0),
 					int(clipRect.Z-clipRect.X), int(clipRect.W-clipRect.Y))
-				cb.EnableTexture(uint32(command.TextureID()))
-				cb.DrawTriangles(indexOffset, command.ElementCount())
+				cb.EnableTexture(uint32(command.TexID()))
+				cb.DrawTriangles(indexOffset+int(command.IdxOffset()*4), int(command.ElemCount()))
 			}
-
-			indexOffset += command.ElementCount() * 4
 		}
 	}
 

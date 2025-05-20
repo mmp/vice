@@ -1,0 +1,1601 @@
+{
+    "tracon": "SBN",
+    "airports": {
+        "KSBN": {
+            "approaches": {
+                "I9R": {
+                    "cifp_id": "I9R"
+                },
+                "I7L": {
+                    "cifp_id": "I27L"
+                },
+                "R18": {
+                    "cifp_id": "R18"
+                },
+                "R7L": {
+                    "cifp_id": "R27L"
+                },
+                "R7R": {
+                    "cifp_id": "R27R"
+                },
+                "R36": {
+                    "cifp_id": "R36"
+                },
+                "R9L": {
+                    "cifp_id": "R9L"
+                },
+                "R9R": {
+                    "cifp_id": "R9R"
+                }
+            },
+            "departure_routes": {
+                "27L": {
+                    "OXI": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "HYK": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "GSH": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "HOSSA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "STL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "IIU": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "PMM": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "VHP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "PRADY": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "NEWEL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "GIJ": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "KAMMA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "BDF": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "GOTNE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "REVSS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "PIA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "OTENS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "APE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "DAYVS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "MLP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    },
+                    "GLANC": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_27L/h270"
+                    }
+                },
+
+                "9R": {
+                    "OXI": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "HYK": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "GSH": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "HOSSA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "STL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "IIU": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "PMM": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "VHP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "PRADY": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "NEWEL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "GIJ": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "KAMMA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "BDF": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "GOTNE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "REVSS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "PIA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "OTENS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "APE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "DAYVS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "MLP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    },
+                    "GLANC": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_9R/h090"
+                    }
+                },
+
+                "18": {
+                    "OXI": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "HYK": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "GSH": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "HOSSA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "STL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "IIU": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "PMM": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "VHP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "PRADY": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "NEWEL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "GIJ": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "KAMMA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "BDF": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "GOTNE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "REVSS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "PIA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "OTENS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "APE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "DAYVS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "MLP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    },
+                    "GLANC": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_SBN_18/h180"
+                    }
+                },
+                "36": {
+                    "OXI": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "HYK": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "GSH": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "HOSSA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "STL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "IIU": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "PMM": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "VHP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "PRADY": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "NEWEL": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "GIJ": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "KAMMA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "BDF": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "GOTNE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "REVSS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "PIA": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "OTENS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "APE": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "DAYVS": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "MLP": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    },
+                    "GLANC": {
+                        "cleared_altitude": 3000,
+                        "waypoints": "_KSBN_36/h004"
+                    }
+                }
+
+            },
+            "departures":[
+                {
+                    "exit": "STL",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "STL FSM RRNET SEEVR4",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "IIU",
+                    "destination": "KATL",
+                    "altitude": 37000,
+                    "route": "IIU BNA NEWBB IHAVE MTHEW CHPPR1",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "STL",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "STL FSM RRNET SEEVR4",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GSH",
+                    "destination": "KCLT",
+                    "altitude": 29000,
+                    "route": "GSH FWA FLM LNDIZ PARQR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "VHP",
+                    "destination": "KIAD",
+                    "altitude": 37000,
+                    "route": "VHP JARLO GIBBZ5",
+                    "airlines": [
+                        {
+                            "icao": "RPA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "NEWEL",
+                    "destination": "KMDW",
+                    "altitude": 43000,
+                    "route": "NEWEL J60 DJB BAGEL PANGG5",
+                    "airlines": [
+                        {
+                            "icao": "LXJ",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GIJ",
+                    "destination": "KDTW",
+                    "altitude": 19000,
+                    "route": "GIJ KI60O SUBWY CRAKN2",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "KAMMA",
+                    "destination": "KMSP",
+                    "altitude": 34000,
+                    "route": "KAMMA KKILR3",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GSH",
+                    "destination": "KATL",
+                    "altitude": 35000,
+                    "route": "GSH EMPTY OHIOS KTRYN ONDRE1",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "VHP",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "VHP PXV FSM RRNET SEEVR4",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 6000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "VHP",
+                    "destination": "KMEM",
+                    "altitude": 38000,
+                    "route": "VHP PXV BLUZZ5",
+                    "airlines": [
+                        {
+                            "icao": "FDX",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GIJ",
+                    "destination": "KSDF",
+                    "altitude": 24000,
+                    "route": "GIJ BVT SHARE JMONY2",
+                    "airlines": [
+                        {
+                            "icao": "UPS",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "BDF",
+                    "destination": "KIWA",
+                    "altitude": 36000,
+                    "route": "BDF J26 IRK J96 CIM ZUN HUUTY1",
+                    "airlines": [
+                        {
+                            "icao": "AAY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GOTNE",
+                    "destination": "KPGD",
+                    "altitude": 37000,
+                    "route": "GOTNE IIU SWAPP GQO HONID Q81 NICKI PLYER PIKKR7",
+                    "airlines": [
+                        {
+                            "icao": "AAY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GSH",
+                    "destination": "KCLT",
+                    "altitude": 29000,
+                    "route": "GSH FWA FLM LNDIZ PARQR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "IIU",
+                    "destination": "KATL",
+                    "altitude": 37000,
+                    "route": "IIU BNA NEWBB IHAVE MTHEW CHPPR1",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "STL",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "STL FSM RRNET SEEVR4",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "REVSS",
+                    "destination": "KTEB",
+                    "altitude": 20000,
+                    "route": "REVSS BAF MOBBS T295 SAGES V489 COATE",
+                    "airlines": [
+                        {
+                            "icao": "WUP",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PIA",
+                    "destination": "KSRQ",
+                    "altitude": 39000,
+                    "route": "PIA SPI PXV J73 LGC HONID BANGZ1",
+                    "airlines": [
+                        {
+                            "icao": "AAY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "DVV",
+                    "destination": "KOAK",
+                    "altitude": 43000,
+                    "route": "DVV EKR J199 DTA TATOO MONOH OAKES2",
+                    "airlines": [
+                        {
+                            "icao": "EJA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "VHP",
+                    "destination": "KIAD",
+                    "altitude": 37000,
+                    "route": "VHP JARLO GIBBZ5",
+                    "airlines": [
+                        {
+                            "icao": "RPA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "OTENS",
+                    "destination": "KCLT",
+                    "altitude": 29000,
+                    "route": "OTENS RDBUV HVQ LNDIZ PARQR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GIJ",
+                    "destination": "KDTW",
+                    "altitude": 19000,
+                    "route": "GIJ KI60O SUBWY CRAKN2",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GSH",
+                    "destination": "KRDU",
+                    "altitude": 33000,
+                    "route": "GSH FWA J149 ROD HVQ MOL MELTN ALDAN4",
+                    "airlines": [
+                        {
+                            "icao": "AWI",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "KAMMA",
+                    "destination": "KMSP",
+                    "altitude": 34000,
+                    "route": "KAMMA KKILR3",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "VHP",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "VHP PXV FSM RRNET SEEVR4",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GSH",
+                    "destination": "KATL",
+                    "altitude": 35000,
+                    "route": "GSH EMPTY OHIOS KTRYN ONDRE1",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 6000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "STL",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "STL FSM RRNET BRDJE5",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "APE",
+                    "destination": "KPGD",
+                    "altitude": 35000,
+                    "route": "APE J83 SPA KYYUU LUBBR3",
+                    "airlines": [
+                        {
+                            "icao": "AAY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "OXI",
+                    "destination": "KLAS",
+                    "altitude": 34000,
+                    "route": "OXI BDF LMN PWE HBU DVC TYEGR CHOWW3",
+                    "airlines": [
+                        {
+                            "icao": "AAY",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "DAYVS",
+                    "destination": "KHDC",
+                    "altitude": 43000,
+                    "route": "DAYVS SOSOE ZYDCO",
+                    "airlines": [
+                        {
+                            "icao": "LXJ",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "MLP",
+                    "destination": "KDEN",
+                    "altitude": 33000,
+                    "route": "MLP DNW TOFUU FLATI4",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GLANC",
+                    "destination": "KMOB",
+                    "altitude": 43000,
+                    "route": "SCRAM6 GLANC COLZI Q52 CHOPZ MGM SJI",
+                    "airlines": [
+                        {
+                            "icao": "EJA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "GSH",
+                    "destination": "KCLT",
+                    "altitude": 29000,
+                    "route": "GSH FWA FLM LNDIZ PARQR4",
+                    "airlines": [
+                        {
+                            "icao": "JIA",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "PRADY",
+                    "destination": "KORD",
+                    "altitude": 8000,
+                    "route": "PRADY ERNNY8",
+                    "airlines": [
+                        {
+                            "icao": "SKW",
+                            "fleet": "default"
+                        }
+                    ]
+                }
+
+            ],
+            "exit_categories": {
+                "OXI": "South",
+                "HYK": "South",
+                "GSH": "EAST",
+                "HOSSA": "EAST",
+                "STL": "WEST",
+                "IIU": "South",
+                "PMM": "NORTH",
+                "VHP": "South",
+                "PRADY": "WEST",
+                "NEWEL": "EAST",
+                "GIJ": "NORTH",
+                "KAMMA": "WEST",
+                "BDF": "WEST",
+                "GOTNE": "South",
+                "REVSS": "EAST",
+                "PIA": "WEST",
+                "DVV": "WEST",
+                "OTENS": "EAST",
+                "APE": "EAST",
+                "DAYVS": "South",
+                "MLP": "WEST",
+                "GLANC": "EAST"
+            },
+            "tower_list": 1
+        },
+        "KEKM": { "vfr": { "random_routes": { "rate": 3 } } },
+        "C20": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KPPO": { "vfr": { "random_routes": { "rate": 3 } } },
+        "C65": { "vfr": { "random_routes": { "rate": 3 } } },
+        "C03": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KRCR": { "vfr": { "random_routes": { "rate": 3 } } },
+        "01A": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KRWN": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KGSH": { "vfr": { "random_routes": { "rate": 3 } } },
+        "C91": { "vfr": { "random_routes": { "rate": 3 } } },
+        "C62": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KIRS": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KOEB": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KRZL": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KVPZ": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KMGC": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KBEH": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KBIV": { "vfr": { "random_routes": { "rate": 3 } } },
+        "KFPK": { "vfr": { "random_routes": { "rate": 3 } } }
+
+    },
+    "airspace": {
+        "boundaries": {
+            "SBN_N_APP": [
+                "N042.23.20.427,W085.58.41.585",
+                "N042.15.58.996,W086.01.11.383",
+                "N042.09.49.169,W086.01.25.144",
+                "N041.56.05.744,W085.50.29.672",
+                "N041.57.58.106,W085.41.01.486",
+                "N041.44.33.001,W085.29.25.173",
+                "N041.40.15.536,W085.28.06.758",
+                "N041.42.04.438,W087.03.24.208",
+                "N042.14.06.730,W087.03.30.058",
+                "N042.21.27.322,W086.59.56.044",
+                "N042.23.20.427,W085.58.41.585"
+            ],
+            "SBN_S_APP": [
+                "N041.40.17.596,W085.28.10.768",
+                "N041.26.57.695,W085.28.16.453", 
+                "N041.22.40.258,W085.56.11.264", 
+                "N041.13.13.103,W086.07.02.396", 
+                "N040.57.55.689,W086.06.51.575" ,
+                "N041.01.55.466,W086.24.10.030" ,
+                "N041.03.55.464,W086.41.51.419" ,
+                "N041.13.13.322,W087.01.23.990" ,
+                "N041.20.50.257,W087.12.01.719" ,
+                "N041.25.56.735,W087.08.04.442" ,
+                "N041.42.06.484,W087.03.34.178",
+                "N041.40.17.596,W085.28.10.768"
+            ]
+        },
+        "volumes": {
+            "SBN_N_APP": [
+                {
+                    "boundaries": [
+                        "SBN_N_APP"
+                    ],
+                    "lower": 0,
+                    "upper": 10000
+                }
+            ],
+            "SBN_S_APP": [
+                {
+                    "boundaries": [
+                        "SBN_S_APP"
+                    ],
+                    "lower": 0,
+                    "upper": 10000
+                }
+            ]
+        }
+    },
+    "inbound_flows": {
+        "EAST": {
+                "arrivals": [
+                    {
+                        "airlines": {
+                            "KSBN": [
+                                {
+                                    "airport": "KCLT",
+                                    "icao": "JIA"
+                                },
+                                {
+                                    "airport": "KSRQ",
+                                    "icao": "AAY"
+                                },
+                                {
+                                    "airport": "KORD",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KBHM",
+                                    "icao": "GXA"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KDTW",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KORD",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KSRQ",
+                                    "icao": "AAY"
+                                },
+                                {
+                                    "airport": "KHPN",
+                                    "icao": "LXJ"
+                                }
+                            ]
+                        },
+                        "initial_altitude": 22000,
+                        "assigned_altitude": 11000,
+                        "description": "",
+                        "route": "FWA KSBN",
+                        "initial_controller": "CHI_35_CTR",
+                        "initial_speed": 270,
+                        "waypoints": "N040.34.46.853,W085.02.47.651 N040.59.40.746,W085.26.46.448/a20000 N041.17.21.036,W085.44.15.532/ho KSBN"
+                    }
+                ]
+            },
+            "WEST.ord": {
+                "arrivals": [
+                    {
+                        "airlines": {
+                            "KSBN": [
+                                {
+                                    "airport": "KORD",
+                                    "icao": "JIA"
+                                },
+                                {
+                                    "airport": "KORD",
+                                    "icao": "LXJ"
+                                }
+                            ]
+                        },
+                        "initial_altitude": 8000,
+                        "description": "ORD -> SBN",
+                        "route": "KORD MOBLE GIJ KSBN",
+                        "initial_controller": "CHI_Z_APP",
+                        "initial_speed": 210,
+                        "waypoints": "KORD N041.57.19.352,W087.18.01.356/ho MOBLE GIJ"
+                    }
+                ]
+            },
+            "WEST": {
+                "arrivals": [
+                    {
+                        "airlines": {
+                            "KSBN": [
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "JIA"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "AAY"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "GXA"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "AAY"
+                                },
+                                {
+                                    "airport": "KMSP",
+                                    "icao": "LXJ"
+                                }
+                            ]
+                        },
+                        "initial_altitude": 22000,
+                        "assigned_altitude": 11000,
+                        "description": "MSP -> SBN",
+                        "route": " DLL GIJ KSBN",
+                        "initial_controller": "CHI_81_CTR",
+                        "initial_speed": 270,
+                        "waypoints": "N042.35.46.769,W087.55.50.610 N042.15.41.500,W087.16.06.906/ho GIJ"
+                    }
+                ]
+            },
+            "SOUTH": {
+                "arrivals": [
+                    {
+                        "airlines": {
+                            "KSBN": [
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "JIA"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "AAL"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "GXA"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "EDV"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "SKW"
+                                },
+                                {
+                                    "airport": "KDFW",
+                                    "icao": "LXJ"
+                                }
+                            ]
+                        },
+                        "initial_altitude": 22000,
+                        "assigned_altitude": 11000,
+                        "description": "MSP -> SBN",
+                        "route": "ZACHH4 BSKAT LIT J131 PXV TTH KSBN",
+                        "initial_controller": "CHI_35_CTR",
+                        "initial_speed": 270,
+                        "waypoints": "N040.08.43.690,W087.35.23.052 N041.05.13.330,W087.03.49.751/ho KSBN"
+                    }
+                ]
+            }
+
+    },
+    "control_positions": {
+        "CHI_35_CTR": {
+            "frequency": 134875,
+            "radio_name": "Chicago Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "sector_id": "C35"
+        },
+        "CHI_81_CTR": {
+            "frequency": 120350,
+            "radio_name": "Chicago Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "sector_id": "C81"
+        },
+        "SBN_TWR": {
+            "frequency": 135675,
+            "radio_name": "South Bend Tower",
+            "sector_id": "1T"
+        },
+        "SBN_S_APP": {
+            "frequency": 132050,
+            "radio_name": "South Bend Approach",
+            "sector_id": "1S"
+        },
+        "SBN_N_APP": {
+            "frequency": 118550,
+            "radio_name": "South Bend Approach",
+            "sector_id": "1N"
+        },
+        "AZO_E_APP": {
+            "frequency": 119200,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1E",
+            "scope_char": "2"
+        },
+        "FWA_W_APP": {
+            "frequency": 127200,
+            "radio_name": "Fort Wayne Approach",
+            "sector_id": "1W",
+            "scope_char": "3"
+        },
+        "GUS_E_APP": {
+            "frequency": 121050,
+            "radio_name": "Grissom Approach",
+            "sector_id": "1G",
+            "scope_char": "4"
+        },
+        "CHI_Z_APP": {
+            "frequency": 119000,
+            "radio_name": "Chicago Approach",
+            "sector_id": "1Z",
+            "scope_char": "1"
+        }
+
+
+    },
+    "default_scenario": "SBN - North Flow",
+    "fixes": {
+        "_KSBN_36": "N041.42.00.538,W086.19.06.423",
+        "_SBN_18": "N041.43.06.442,W086.19.09.142",
+        "_SBN_27L": "N041.42.18.308,W086.17.55.012",
+        "_SBN_9R": "N041.42.15.754,W086.19.45.617"
+    },
+    "name": "KSBN",
+    "primary_airport": "KSBN",
+    "scenarios": {
+        "SBN - North Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KSBN",
+                    "runway": "36"
+                }
+            ],
+            "airspace": {
+                "SBN_N_APP": ["SBN_N_APP"],
+                "SBN_S_APP": ["SBN_S_APP"]
+            },
+            "inbound_rates": {
+                "EAST": {
+                    "KSBN": 10
+                },
+                "WEST": {
+                    "KSBN": 10
+                },
+                "WEST.ord": {
+                    "KSBN": 5
+                },
+                "SOUTH": {
+                    "KSBN": 10
+                }
+            },
+            "solo_controller": "SBN_N_APP",
+            "multi_controllers": {
+                "default" : {
+                "SBN_N_APP": {"primary": true, "arrivals": ["WEST.ord", "WEST"], "departures": ["KSBN"]},
+                "SBN_S_APP": {"backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"]}
+                }
+            },
+            "controllers": [
+                "CHI_35_CTR",
+                "CHI_81_CTR",
+                "SBN_TWR",
+                "SBN_S_APP",
+                "SBN_N_APP",
+                "AZO_E_APP",
+                "FWA_W_APP",
+                "GUS_E_APP",
+                "CHI_Z_APP"
+            ],
+            "default_maps": ["SBN RVM"],
+            "departure_runways": [
+                {
+                    "airport": "KSBN",
+                    "rate": 12,
+                    "runway": "36"
+                }
+            ],
+            "wind": {
+                "direction": 320,
+                "speed": 8
+            }
+        },
+        "SBN - South Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KSBN",
+                    "runway": "18"
+                }
+            ],
+            "airspace": {
+                "SBN_N_APP": ["SBN_N_APP"],
+                "SBN_S_APP": ["SBN_S_APP"]
+            },
+            "inbound_rates": {
+                "EAST": {
+                    "KSBN": 10
+                },
+                "WEST": {
+                    "KSBN": 10
+                },
+                "WEST.ord": {
+                    "KSBN": 5
+                },
+                "SOUTH": {
+                    "KSBN": 10
+                }
+            },
+            "solo_controller": "SBN_N_APP",
+            "multi_controllers": {
+                "default" : {
+                "SBN_N_APP": {"primary": true, "arrivals": ["WEST.ord", "WEST"]},
+                "SBN_S_APP": {"backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"], "departures": ["KSBN"]}
+                }
+            },
+            "controllers": [
+                "CHI_35_CTR",
+                "CHI_81_CTR",
+                "SBN_TWR",
+                "SBN_S_APP",
+                "SBN_N_APP",
+                "AZO_E_APP",
+                "FWA_W_APP",
+                "GUS_E_APP",
+                "CHI_Z_APP"
+            ],
+            "default_maps": ["SBN RVM"],
+            "departure_runways": [
+                {
+                    "airport": "KSBN",
+                    "rate": 14,
+                    "runway": "18"
+                }
+            ],
+            "wind": {
+                "direction": 120,
+                "speed": 8
+            }
+        },
+        "SBN - East Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KSBN",
+                    "runway": "9R"
+                }
+            ],
+            "airspace": {
+                "SBN_N_APP": ["SBN_N_APP"],
+                "SBN_S_APP": ["SBN_S_APP"]
+            },
+            "inbound_rates": {
+                "EAST": {
+                    "KSBN": 10
+                },
+                "WEST": {
+                    "KSBN": 10
+                },
+                "WEST.ord": {
+                    "KSBN": 5
+                },
+                "SOUTH": {
+                    "KSBN": 10
+                }
+            },
+            "solo_controller": "SBN_N_APP",
+            "multi_controllers": {
+                "default" : {
+                "SBN_N_APP": {"primary": true, "arrivals": ["WEST.ord", "WEST"], "departures": ["KSBN"]},
+                "SBN_S_APP": {"backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"]}
+                }
+            },
+            "controllers": [
+                "CHI_35_CTR",
+                "CHI_81_CTR",
+                "SBN_TWR",
+                "SBN_S_APP",
+                "SBN_N_APP",
+                "AZO_E_APP",
+                "FWA_W_APP",
+                "GUS_E_APP",
+                "CHI_Z_APP"
+            ],
+            "default_maps": ["SBN RVM"],
+            "departure_runways": [
+                {
+                    "airport": "KSBN",
+                    "rate": 12,
+                    "runway": "9R"
+                }
+            ],
+            "wind": {
+                "direction": 110,
+                "speed": 8
+            }
+        },
+        "SBN - West Flow": {
+            "arrival_runways": [
+                {
+                    "airport": "KSBN",
+                    "runway": "27L"
+                }
+            ],
+            "airspace": {
+                "SBN_N_APP": ["SBN_N_APP"],
+                "SBN_S_APP": ["SBN_S_APP"]
+            },
+            "inbound_rates": {
+                "EAST": {
+                    "KSBN": 10
+                },
+                "WEST": {
+                    "KSBN": 10
+                },
+                "WEST.ord": {
+                    "KSBN": 5
+                },
+                "SOUTH": {
+                    "KSBN": 10
+                }
+            },
+            "solo_controller": "SBN_N_APP",
+            "multi_controllers": {
+                "default" : {
+                "SBN_N_APP": {"primary": true, "arrivals": ["WEST.ord", "WEST"], "departures": ["KSBN"]},
+                "SBN_S_APP": {"backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"]}
+                }
+            },
+            "controllers": [
+                "CHI_35_CTR",
+                "CHI_81_CTR",
+                "SBN_TWR",
+                "SBN_S_APP",
+                "SBN_N_APP",
+                "AZO_E_APP",
+                "FWA_W_APP",
+                "GUS_E_APP",
+                "CHI_Z_APP"
+            ],
+            "default_maps": ["SBN RVM"],
+            "departure_runways": [
+                {
+                    "airport": "KSBN",
+                    "rate": 12,
+                    "runway": "27L"
+                }
+            ],
+            "wind": {
+                "direction": 290,
+                "speed": 8
+            }
+        }
+    },
+    "stars_config": {
+        "center": "KSBN",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "receiving_controller": "CHI_35_CTR"
+            }
+        ],
+	"filters": {
+            "inhibit_ca": [
+		{
+                    "id": "SBNNOCA",
+                    "description": "SBN CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "radius": 4,
+                    "ceiling": 3000,
+                    "center": "KSBN"
+		}
+            ]
+	},
+        "scratchpads": {
+            "OXI": "OXI",
+            "HYK": "HYK",
+            "GSH": "GSH",
+            "HOSSA": "HOS",
+            "STL": "STL",
+            "IIU": "IIU",
+            "PMM": "PMM",
+            "VHP": "VHP",
+            "PRADY": "PRA",
+            "NEWEL": "NEW",
+            "GIJ": "GIJ",
+            "KAMMA": "KAM",
+            "BDF": "BDF",
+            "GOTNE": "GOT",
+            "REVSS": "REV",
+            "PIA": "PIA",
+            "DVV": "DVV",
+            "OTENS": "OTE",
+            "APE": "APE",
+            "DAYVS": "DAY",
+            "MLP": "MLP",
+            "GLANC": "GLA"
+        },
+  "significant_points": {
+        "OXI": {},
+        "HYK": {},
+        "GSH": {},
+        "HOSSA": {},
+        "STL": {},
+        "IIU": {},
+        "PMM": {},
+        "VHP": {},
+        "PRADY": {},
+        "NEWEL": {},
+        "GIJ": {},
+        "KAMMA": {},
+        "BDF": {},
+        "GOTNE": {},
+        "REVSS": {},
+        "PIA": {},
+        "DVV": {},
+        "OTENS": {},
+        "APE": {},
+        "DAYVS": {},
+        "MLP": {},
+        "GLANC": {}
+  },
+        "stars_maps": [
+            "SBN MVA", 
+            "SBN RVM", 
+            "SBN AIRWAYS", 
+            "AZO SECTORS AND SBN AREA Y", 
+            "SBN CAB",
+            "C90 ZAU LOW SECTORS",
+            "C90 VFR"
+        ],
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
+    }
+}

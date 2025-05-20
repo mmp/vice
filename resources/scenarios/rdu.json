@@ -1943,20 +1943,23 @@
                 "receiving_controller": "DC_9_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
-            {
-                "name": "RDU NO CA",
-                "type": "polygon",
-                "floor": 0,
-                "ceiling": 5000,
-                "vertices": [
-                    "N035.42.46.007,W079.11.12.637",
-                    "N035.35.44.146,W079.02.38.999",
-                    "N036.05.24.893,W078.25.34.487",
-                    "N036.09.55.596,W078.31.03.363"
-                ]
-            }
-        ],
+	"filters": {
+            "inhibit_ca": [
+		{
+                    "id": "RDUNOCA",
+                    "description": "RDU CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+			"N035.42.46.007,W079.11.12.637",
+			"N035.35.44.146,W079.02.38.999",
+			"N036.05.24.893,W078.25.34.487",
+			"N036.09.55.596,W078.31.03.363"
+                    ]
+		}
+            ]
+	},
         "scratchpads": {
             "BOUSY": "BEX",
             "BEXGO": "BEX",

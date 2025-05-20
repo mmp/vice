@@ -239,8 +239,9 @@ func TestPointSegmentDistance(t *testing.T) {
 	}
 
 	// Do some randoms
+	r := rand.Make()
 	for i := 0; i < 32; i++ {
-		r := func() float32 { return -10 + 20*rand.Float32() }
+		r := func() float32 { return -10 + 20*r.Float32() }
 		p := [2]float32{r(), r()}
 		v := [2]float32{r(), r()}
 		w := [2]float32{r(), r()}

@@ -416,6 +416,18 @@ func FilterSeq[T any](seq iter.Seq[T], pred func(T) bool) iter.Seq[T] {
 	}
 }
 
+func FilterSeq2[K, V any](seq iter.Seq2[K, V], pred func(K, V) bool) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for k, v := range seq {
+			if pred(k, v) {
+				if !yield(k, v) {
+					return
+				}
+			}
+		}
+	}
+}
+
 func SeqContains[T comparable](seq iter.Seq[T], v T) bool {
 	for s := range seq {
 		if s == v {
@@ -432,6 +444,16 @@ func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
 		}
 	}
 	return false
+}
+
+func SeqLookupFunc[T comparable](seq iter.Seq[T], check func(T) bool) (T, bool) {
+	for s := range seq {
+		if check(s) {
+			return s, true
+		}
+	}
+	var t T
+	return t, false
 }
 
 func MapSeq[T, U any](seq iter.Seq[T], f func(T) U) iter.Seq[U] {
@@ -452,4 +474,50 @@ func MapSeq2[K, V, K2, V2 any](seq iter.Seq2[K, V], f func(K, V) (K2, V2)) iter.
 			}
 		}
 	}
+}
+
+func Seq2Keys[K, V any](seq iter.Seq2[K, V]) iter.Seq[K] {
+	return func(yield func(K) bool) {
+		for k := range seq {
+			if !yield(k) {
+				break
+			}
+		}
+	}
+}
+
+func Seq2Values[K, V any](seq iter.Seq2[K, V]) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		for _, v := range seq {
+			if !yield(v) {
+				break
+			}
+		}
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+type Optional[T any] struct {
+	Value T
+	IsSet bool
+}
+
+func (o Optional[T]) Get() T {
+	if !o.IsSet {
+		panic("optional not set")
+	}
+	return o.Value
+}
+
+func (o Optional[T]) GetOr(v T) T {
+	if o.IsSet {
+		return o.Value
+	}
+	return v
+}
+
+func (o *Optional[T]) Set(v T) {
+	o.IsSet = true
+	o.Value = v
 }

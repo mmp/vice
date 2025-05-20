@@ -49,6 +49,7 @@ type StaticDatabase struct {
 	MVAs                map[string][]MVA // TRACON -> MVAs
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
+	DeltaAirspace       map[string][]AirspaceVolume
 }
 
 type FAAAirport struct {
@@ -203,10 +204,11 @@ func init() {
 	db := &StaticDatabase{}
 
 	var wg sync.WaitGroup
+	var customAirports map[string]FAAAirport
 	wg.Add(1)
-	go func() { db.Airports = parseAirports(); wg.Done() }()
+	go func() { db.Airports, customAirports = parseAirports(); wg.Done() }()
 	wg.Add(1)
-	go func() { db.AircraftPerformance = parseAircraftPerformance(); wg.Done() }()
+	go func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	var airports map[string]FAAAirport
@@ -224,12 +226,17 @@ func init() {
 	go func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
 		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
+		db.DeltaAirspace = parseAirspace("delta-airspace.json.zst")
 		wg.Done()
 	}()
 	wg.Wait()
 
 	for icao, ap := range airports {
-		if icao != "4V4" { // Ignore the rw one for AAC.
+		if _, ok := customAirports[icao]; !ok { // ignore ones defined in custom_airports.json
+			// We don't get these from the CIFP but have them from the other airports
+			// database, so port them over.
+			ap.Name = db.Airports[icao].Name
+			ap.Country = db.Airports[icao].Country
 			db.Airports[icao] = ap
 		}
 	}
@@ -297,55 +304,8 @@ func mungeCSV(filename string, r io.Reader, fields []string, callback func([]str
 	}
 }
 
-func parseAirports() map[string]FAAAirport {
+func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	airports := make(map[string]FAAAirport)
-
-	parse := func(s string) math.Point2LL {
-		loc, err := math.ParseLatLong([]byte(s))
-		if err != nil {
-			panic(err)
-		}
-		return loc
-	}
-
-	// These aren't in the FAA database but we need to have them defined
-	// for the AAC scenario...
-	airports["4V4"] = FAAAirport{Id: "4V4", Name: "", Elevation: 623,
-		Location: parse("N035.58.42.052,W095.23.14.329"),
-		Runways: []Runway{
-			Runway{Id: "16", Heading: 160, Threshold: parse("N35.58.34.000,W095.23.03.000"), Elevation: 623},
-			Runway{Id: "34", Heading: 340, Threshold: parse("N35.58.43.000,W095.23.07.000"), Elevation: 623},
-		}}
-	airports["4Y3"] = FAAAirport{Id: "4Y3", Name: "", Elevation: 624,
-		Location: parse("N036.23.35.505,W095.21.13.590"),
-		Runways: []Runway{
-			Runway{Id: "30", Heading: 300, Threshold: parse("N036.23.20.482,W095.20.46.343"), Elevation: 624},
-			Runway{Id: "12", Heading: 120, Threshold: parse("N036.23.39.117,W095.21.26.911"), Elevation: 624},
-		}}
-	airports["KAAC"] = FAAAirport{Id: "KAAC", Name: "", Elevation: 677,
-		Location: parse("N036.10.01.611,W095.40.40.365"),
-		Runways: []Runway{
-			Runway{Id: "28L", Heading: 280, Threshold: parse("N036.09.45.000,W095.38.40.000"), Elevation: 677},
-			Runway{Id: "28R", Heading: 280, Threshold: parse("N036.10.28.308,W095.38.35.972"), Elevation: 677},
-			Runway{Id: "10L", Heading: 100, Threshold: parse("N036.10.44.801,W095.40.32.977"), Elevation: 677},
-			Runway{Id: "10R", Heading: 100, Threshold: parse("N036.10.01.611,W095.40.40.365"), Elevation: 677},
-		}}
-	airports["KBRT"] = FAAAirport{Id: "KBRT", Name: "", Elevation: 689,
-		Location: parse("N036.26.42.685,W095.56.39.032"),
-		Runways: []Runway{
-			Runway{Id: "13", Heading: 130, Threshold: parse("N36.27.16.000,W095.57.27.000"), Elevation: 689},
-			Runway{Id: "31", Heading: 310, Threshold: parse("N36.26.32.000,W095.56.25.000"), Elevation: 689},
-			Runway{Id: "4", Heading: 40, Threshold: parse("N36.27.02.000,W095.56.21.000"), Elevation: 689},
-			Runway{Id: "22", Heading: 220, Threshold: parse("N36.26.39.000,W095.56.45.000"), Elevation: 689},
-		}}
-	airports["KJKE"] = FAAAirport{Id: "KJKE", Name: "", Elevation: 608,
-		Location: parse("N035.54.58.809,W095.37.01.600"),
-		Runways: []Runway{
-			Runway{Id: "4", Heading: 39, Threshold: parse("N35.53.50.000,W095.37.24.000"), Elevation: 608},
-			Runway{Id: "22", Heading: 219, Threshold: parse("N35.55.17.000,W095.35.49.000"), Elevation: 608},
-			Runway{Id: "27", Heading: 270, Threshold: parse("N35.55.29.000,W95.35.55.000"), Elevation: 608},
-			Runway{Id: "9", Heading: 90, Threshold: parse("N35.55.29.000,W095.38.00.000"), Elevation: 608},
-		}}
 
 	// FAA database
 	r := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
@@ -382,63 +342,20 @@ func parseAirports() map[string]FAAAirport {
 			}
 		})
 
-	// Add runway information for some STARS facilities in Japan.
-	addRunways := func(name string, r []Runway) {
-		ap, ok := airports[name]
-		if !ok {
-			panic("Airport " + name + " not found in database")
-		}
-		ap.Runways = r
-		airports[name] = ap
+	// Custom airports/runways
+	custom := util.LoadResource("custom_airports.json")
+	defer custom.Close()
+	customAirports := make(map[string]FAAAirport)
+	if err := util.UnmarshalJSON(custom, &customAirports); err != nil {
+		fmt.Fprintf(os.Stderr, "custom_airports.json: %v\n", err)
+		os.Exit(1)
+	}
+	for icao, ap := range customAirports {
+		ap.Id = icao
+		airports[icao] = ap
 	}
 
-	addRunways("RJOI", []Runway{
-		Runway{Id: "2", Heading: 14, Threshold: parse("N34.08.03.58,E132.14.41.71"), Elevation: 10},
-		Runway{Id: "20", Threshold: parse("N34.09.19.79,E132.14.56.49"), Heading: 194, Elevation: 10},
-	})
-	addRunways("RJTY", []Runway{
-		Runway{Id: "18", Threshold: parse("N35.45.47.24,E139.20.43.55"), Heading: 177, Elevation: 462},
-		Runway{Id: "36", Threshold: parse("N35.44.01.61,E139.21.05.71"), Heading: 357, Elevation: 416},
-	})
-	addRunways("RJFF", []Runway{
-		Runway{Id: "16", Threshold: parse("N33.35.48.24,E130.26.35.90"), Heading: 158, Elevation: 15},
-		Runway{Id: "34", Threshold: parse("N33.34.30.45,E130.27.29.05"), Heading: 338, Elevation: 32},
-	})
-	addRunways("RJTT", []Runway{
-		Runway{Id: "04", Threshold: parse("N35.32.56.97,E139.45.41.02"), Heading: 42, Elevation: 19},
-		Runway{Id: "22", Threshold: parse("N35.34.02.26,E139.46.37.08"), Heading: 222, Elevation: 35},
-		Runway{Id: "05", Threshold: parse("N35.31.26.95,E139.48.13.09"), Heading: 52, Elevation: 55},
-		Runway{Id: "23", Threshold: parse("N35.32.25.63,E139.49.19.06"), Heading: 232, Elevation: 55},
-		Runway{Id: "34L", Threshold: parse("N35.32.12.34,E139.47.07.97"), Heading: 337, Elevation: 18},
-		Runway{Id: "16R", Threshold: parse("N35.33.21.88,E139.46.18.62"), Heading: 157, Elevation: 16},
-		Runway{Id: "34R", Threshold: parse("N35.32.33.60,E139.48.10.93"), Heading: 337, Elevation: 20},
-		Runway{Id: "16L", Threshold: parse("N35.33.45.69,E139.47.19.77"), Heading: 157, Elevation: 19},
-	})
-	addRunways("RJBB", []Runway{
-		Runway{Id: "06L", Threshold: parse("N34.25.43.25,E135.12.22.94"), Heading: 59, Elevation: 9},
-		Runway{Id: "24R", Threshold: parse("N34.27.04.12,E135.14.23.43"), Heading: 239, Elevation: 16},
-		Runway{Id: "06R", Threshold: parse("N34.25.02.95,E135.13.45.99"), Heading: 59, Elevation: 5},
-		Runway{Id: "24L", Threshold: parse("N34.26.13.59,E135.15.31.23"), Heading: 239, Elevation: 12},
-	})
-	addRunways("RJAA", []Runway{
-		Runway{Id: "34L", Threshold: parse("N35.44.36.49,E140.23.26.27"), Heading: 337, Elevation: 140},
-		Runway{Id: "16R", Threshold: parse("N35.46.27.17,E140.22.06.30"), Heading: 157, Elevation: 130},
-		Runway{Id: "34R", Threshold: parse("N35.47.09.37,E140.23.31.31"), Heading: 337, Elevation: 141},
-		Runway{Id: "16L", Threshold: parse("N35.48.18.11,E140.22.41.62"), Heading: 157, Elevation: 134},
-	})
-	addRunways("RJCC", []Runway{
-		Runway{Id: "01L", Threshold: parse("N42.45.42.50,E141.41.34.10"), Heading: 2, Elevation: 62},
-		Runway{Id: "19R", Threshold: parse("N42.47.17.56,E141.41.17.22"), Heading: 182, Elevation: 82},
-		Runway{Id: "01R", Threshold: parse("N42.45.43.78,E141.41.47.15"), Heading: 2, Elevation: 57},
-		Runway{Id: "19L", Threshold: parse("N42.47.18.86,E141.41.30.36"), Heading: 182, Elevation: 77},
-	})
-	addRunways("RJCJ", []Runway{
-		Runway{Id: "18R", Threshold: parse("N42.48.37.17,E141.39.43.38"), Heading: 182, Elevation: 66},
-		Runway{Id: "36L", Threshold: parse("N42.47.12.16,E141.39.58.39"), Heading: 2, Elevation: 87},
-		Runway{Id: "18L", Threshold: parse("N42.48.06.31,E141.40.02.14"), Heading: 182, Elevation: 70},
-		Runway{Id: "36R", Threshold: parse("N42.46.31.65,E141.40.18.87"), Heading: 2, Elevation: 87},
-	})
-
+	// ARTCCs
 	ar := util.LoadResource("airport_artccs.json")
 	defer ar.Close()
 	data := make(map[string]string) // Airport -> ARTCC
@@ -454,10 +371,10 @@ func parseAirports() map[string]FAAAirport {
 		}
 	}
 
-	return airports
+	return airports, customAirports
 }
 
-func parseAircraftPerformance() map[string]AircraftPerformance {
+func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 	r := util.LoadResource("openscope-aircraft.json")
 	defer r.Close()
 
@@ -469,8 +386,11 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 		os.Exit(1)
 	}
 
+	aliases := make(map[string]string)
 	ap := make(map[string]AircraftPerformance)
 	for _, ac := range acStruct.Aircraft {
+		aliases[ac.ICAO] = ac.Name
+
 		// If we have mach but not TAS, do the conversion; the nav code
 		// works with TAS..
 		if ac.Speed.CruiseMach != 0 && ac.Speed.CruiseTAS == 0 {
@@ -516,7 +436,7 @@ func parseAircraftPerformance() map[string]AircraftPerformance {
 		}
 	}
 
-	return ap
+	return aliases, ap
 }
 
 func parseAirlines() (map[string]Airline, map[string]string) {
@@ -577,8 +497,8 @@ func parseMagneticGrid() MagneticGrid {
 	*/
 	mg := MagneticGrid{
 		MinLatitude:  17,
-		MaxLatitude:  50,
-		MinLongitude: -125,
+		MaxLatitude:  75,
+		MinLongitude: -180,
 		MaxLongitude: 150,
 		LatLongStep:  0.25,
 	}
@@ -898,8 +818,13 @@ func parseAirspace(filename string) map[string][]AirspaceVolume {
 		for _, a := range as {
 			bounds := math.Extent2DFromPoints(a.Loops[0])
 
+			id := name
+			if len(id) > 7 {
+				id = id[:7]
+			}
 			vol := AirspaceVolume{
-				Name:          name,
+				Id:            id,
+				Description:   name,
 				Type:          AirspaceVolumePolygon,
 				Floor:         a.Bottom,
 				Ceiling:       a.Top,
@@ -1246,53 +1171,6 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ea ERAMAdaptation) FixForRouteAndAltitude(route string, altitude string) *AdaptationFix {
-	waypoints := strings.Fields(route)
-	for fix, adaptationFixes := range ea.CoordinationFixes {
-		if slices.Contains(waypoints, fix) {
-			adaptationFix, err := adaptationFixes.Fix(altitude)
-			if err == nil && adaptationFix.Type != ZoneBasedFix {
-				return &adaptationFix
-			}
-		}
-	}
-	return nil
-}
-
-func (ea ERAMAdaptation) AdaptationFixForAltitude(fix string, altitude string) *AdaptationFix {
-	if adaptationFixes, ok := ea.CoordinationFixes[fix]; !ok {
-		return nil
-	} else if af, err := adaptationFixes.Fix(altitude); err != nil {
-		return nil
-	} else {
-		return &af
-	}
-}
-
-func (fixes AdaptationFixes) Fix(altitude string) (AdaptationFix, error) {
-	switch len(fixes) {
-	case 0:
-		return AdaptationFix{}, ErrNoMatchingFix
-
-	case 1:
-		return fixes[0], nil
-
-	default:
-		// TODO: eventually make a function to parse a string that has a block altitude (for example)
-		// and return an int (figure out how STARS handles that). For now strconv.Atoi can be used
-		if alt, err := strconv.Atoi(altitude); err != nil {
-			return AdaptationFix{}, err
-		} else {
-			for _, fix := range fixes {
-				if alt >= fix.Altitude[0] && alt <= fix.Altitude[1] {
-					return fix, nil
-				}
-			}
-			return AdaptationFix{}, ErrNoMatchingFix
-		}
-	}
-}
-
 // CWTApproachSeparation returns the required separation between aircraft of the two
 // given CWT categories. If 0 is returned, minimum radar separation should be used.
 func CWTApproachSeparation(front, back string) float32 {
@@ -1346,6 +1224,29 @@ func CWTDirectlyBehindSeparation(front, back string) float32 {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
 	}
 	return cwtBehindLookup[f][b]
+}
+
+func inAirspace(airspace map[string][]AirspaceVolume, p math.Point2LL, alt int) bool {
+	for _, vols := range airspace {
+		if slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
+			return vol.Inside(p, alt)
+		}) {
+			return true
+		}
+	}
+	return false
+}
+
+func InBravoAirspace(p math.Point2LL, alt int) bool {
+	return inAirspace(DB.BravoAirspace, p, alt)
+}
+
+func InCharlieAirspace(p math.Point2LL, alt int) bool {
+	return inAirspace(DB.CharlieAirspace, p, alt)
+}
+
+func InDeltaAirspace(p math.Point2LL, alt int) bool {
+	return inAirspace(DB.DeltaAirspace, p, alt)
 }
 
 ///////////////////////////////////////////////////////////////////////////

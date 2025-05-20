@@ -25,16 +25,17 @@ import (
 )
 
 type ScenarioGroup struct {
-	TRACON           string                     `json:"tracon"`
-	Name             string                     `json:"name"`
-	Airports         map[string]*av.Airport     `json:"airports"`
-	Fixes            map[string]math.Point2LL   `json:"-"`
-	FixesStrings     util.OrderedMap            `json:"fixes"`
-	Scenarios        map[string]*Scenario       `json:"scenarios"`
-	DefaultScenario  string                     `json:"default_scenario"`
-	ControlPositions map[string]*av.Controller  `json:"control_positions"`
-	Airspace         av.Airspace                `json:"airspace"`
-	InboundFlows     map[string]*av.InboundFlow `json:"inbound_flows"`
+	TRACON             string                     `json:"tracon"`
+	Name               string                     `json:"name"`
+	Airports           map[string]*av.Airport     `json:"airports"`
+	Fixes              map[string]math.Point2LL   `json:"-"`
+	FixesStrings       util.OrderedMap            `json:"fixes"`
+	Scenarios          map[string]*Scenario       `json:"scenarios"`
+	DefaultScenario    string                     `json:"default_scenario"`
+	ControlPositions   map[string]*av.Controller  `json:"control_positions"`
+	Airspace           av.Airspace                `json:"airspace"`
+	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
+	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
 	PrimaryAirport string `json:"primary_airport"`
 
@@ -44,8 +45,8 @@ type ScenarioGroup struct {
 	NmPerLatitude           float32 // Always 60
 	NmPerLongitude          float32 // Derived from Center
 	MagneticVariation       float32
-	MagneticAdjustment      float32                    `json:"magnetic_adjustment"`
-	STARSFacilityAdaptation av.STARSFacilityAdaptation `json:"stars_config"`
+	MagneticAdjustment      float32                     `json:"magnetic_adjustment"`
+	STARSFacilityAdaptation sim.STARSFacilityAdaptation `json:"stars_config"`
 }
 
 type Scenario struct {
@@ -73,7 +74,7 @@ type Scenario struct {
 	VFRRateScale *float32      `json:"vfr_rate_scale"`
 }
 
-func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *av.VideoMapManifest) {
+func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Temporary backwards-compatibility for inbound flows
@@ -558,49 +559,10 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	fa := sg.STARSFacilityAdaptation
-	if len(s.DefaultMaps) > 0 {
-		if len(fa.ControllerConfigs) > 0 {
-			e.ErrorString("\"default_maps\" is not allowed when \"controller_configs\" is set in \"stars_config\"")
-		}
-
-		for _, dm := range s.DefaultMaps {
-			if !manifest.HasMap(dm) {
-				e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
-					"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
-			}
-		}
-	} else if len(fa.ControllerConfigs) > 0 {
-		// Make sure that each controller in the scenario is represented in
-		// "controller_configs".
-		if _, ok := fa.ControllerConfigs[s.SoloController]; !ok {
-			e.ErrorString("control position %q is not included in \"controller_configs\"",
-				s.SoloController)
-		}
-		for _, conf := range s.SplitConfigurations {
-			for pos := range conf {
-				if _, ok := fa.ControllerConfigs[pos]; !ok {
-					e.ErrorString("control position %q is not included in \"controller_configs\"", pos)
-				}
-			}
-		}
-
-		// Handle beacon code blocks
-		for _, config := range fa.ControllerConfigs {
-			config.MonitoredBeaconCodeBlocks = nil // HACK: this is aliased if multiple controllers share a config.
-			if config.MonitoredBeaconCodeBlocksString == nil {
-				// None specified: 12xx block by default
-				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
-			} else {
-				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
-					s = strings.TrimSpace(s)
-					if code, err := av.ParseSquawkOrBlock(s); err != nil {
-						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
-					} else {
-						config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, code)
-					}
-				}
-			}
+	for _, dm := range s.DefaultMaps {
+		if !manifest.HasMap(dm) {
+			e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
+				"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
 		}
 	}
 
@@ -649,7 +611,7 @@ var (
 )
 
 func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
-	manifest *av.VideoMapManifest) {
+	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	// Rewrite legacy files to be TCP-based.
@@ -657,13 +619,18 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 
 	// stars_config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
-	if ctr := sg.STARSFacilityAdaptation.CenterString; ctr == "" {
-		e.ErrorString("No \"center\" specified")
-	} else if pos, ok := sg.Locate(ctr); !ok {
-		e.ErrorString("unknown location %q specified for \"center\"", ctr)
-	} else {
-		sg.STARSFacilityAdaptation.Center = pos
-	}
+
+	// Airports that (may) have controlled controlled departures or
+	// arrivals; we determine this by checking if they're in B, C, or D
+	// airspace, which is probably sufficient?
+	controlledAirports := slices.Collect(
+		util.Seq2Keys(
+			util.FilterSeq2(maps.All(sg.Airports), func(name string, ap *av.Airport) bool {
+				return len(ap.Departures) > 0 || len(ap.Approaches) > 0
+			})))
+	allAirports := slices.Collect(maps.Keys(sg.Airports))
+
+	sg.STARSFacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))
@@ -694,7 +661,7 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			// "FIX@HDG/DIST"
 			//fmt.Printf("A loc %s -> strs %+v\n", location, strs)
 			if pll, ok := sg.Locate(strs[1]); !ok {
-				e.ErrorString("base fix \"" + strs[1] + "\" unknown")
+				e.ErrorString("base fix %q unknown", strs[1])
 			} else if hdg, err := strconv.Atoi(strs[2]); err != nil {
 				e.ErrorString("heading %q: %v", strs[2], err)
 			} else if dist, err := strconv.ParseFloat(strs[3], 32); err != nil {
@@ -853,6 +820,10 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		}
 	}
 
+	for i := range sg.VFRReportingPoints {
+		sg.VFRReportingPoints[i].PostDeserialize(sg, sg.ControlPositions, e)
+	}
+
 	// Do after airports!
 	if len(sg.Scenarios) == 0 {
 		e.ErrorString("No \"scenarios\" specified")
@@ -956,17 +927,11 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	for i := range fa.AirspaceAwareness {
 		rewrite(&fa.AirspaceAwareness[i].ReceivingController)
 	}
-	for cs, config := range fa.ControllerConfigs {
-		// Rewrite comma separated list of callsigns
-		tcps := strings.Split(cs, ",")
-		for i, cs := range tcps {
-			tcp := strings.TrimSpace(cs)
-			rewrite(&tcp)
-			tcps[i] = tcp
-		}
-
-		delete(fa.ControllerConfigs, cs)
-		fa.ControllerConfigs[strings.Join(tcps, ",")] = config
+	for position, config := range fa.ControllerConfigs {
+		// Rewrite controller
+		delete(fa.ControllerConfigs, position)
+		rewrite(&position)
+		fa.ControllerConfigs[position] = config
 	}
 
 	for _, flow := range sg.InboundFlows {
@@ -983,7 +948,8 @@ func (sg *ScenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	sg.ControlPositions = pos
 }
 
-func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *util.ErrorLogger, sg *ScenarioGroup, manifest *av.VideoMapManifest) {
+func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *util.ErrorLogger, sg *ScenarioGroup,
+	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("stars_config")
@@ -1001,12 +967,6 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 	}
 
 	if len(s.ControllerConfigs) > 0 {
-		var err error
-		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
-		if err != nil {
-			e.Error(err)
-		}
-
 		for ctrl, config := range s.ControllerConfigs {
 			if config.CenterString != "" {
 				if pos, ok := sg.Locate(config.CenterString); !ok {
@@ -1019,14 +979,10 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 		}
 
 		for ctrl, config := range s.ControllerConfigs {
-			if len(config.VideoMapNames) == 0 {
-				e.ErrorString("must provide \"video_maps\" for controller %q", ctrl)
-			}
-
 			for _, name := range config.DefaultMaps {
 				if !slices.Contains(config.VideoMapNames, name) {
 					e.ErrorString("default map %q for %q is not included in the controller's "+
-						"\"controller_maps\"", name, ctrl)
+						"\"video_maps\"", name, ctrl)
 				}
 
 				if !manifest.HasMap(name) {
@@ -1160,7 +1116,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 	if len(disp) > 1 {
 		d := util.SortedMapKeys(disp)
 		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
-		e.ErrorString("Cannot specify " + strings.Join(d, " and ") + "for \"scratchpad1\"")
+		e.ErrorString("Cannot specify %s for \"scratchpad1\"", strings.Join(d, " and "))
 	}
 
 	for _, spc := range s.CustomSPCs {
@@ -1282,21 +1238,19 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 
 	if len(s.VideoMapNames) == 0 {
 		if len(s.ControllerConfigs) == 0 {
-			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" in \"stars_config\"")
+			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" with \"video_maps\" in \"stars_config\"")
 		}
 		var err error
 		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
 		if err != nil {
 			e.Error(err)
 		}
-	} else if len(s.ControllerConfigs) > 0 {
-		e.ErrorString("cannot provide both \"stars_maps\" and \"controller_configs\" in \"stars_config\"")
 	}
 
 	for _, aa := range s.AirspaceAwareness {
 		for _, fix := range aa.Fix {
 			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
-				e.ErrorString(fix + ": fix unknown")
+				e.ErrorString("%s : fix unknown", fix)
 			}
 		}
 
@@ -1306,7 +1260,7 @@ func PostDeserializeSTARSFacilityAdaptation(s *av.STARSFacilityAdaptation, e *ut
 		}
 
 		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
-			e.ErrorString(aa.ReceivingController + ": controller unknown")
+			e.ErrorString("%s: controller unknown", aa.ReceivingController)
 		}
 
 		for _, t := range aa.AircraftType {
@@ -1407,7 +1361,7 @@ func initializeSimConfigurations(sg *ScenarioGroup,
 	}
 	for name, scenario := range sg.Scenarios {
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
-			scenario.InboundFlowDefaultRates)
+			scenario.InboundFlowDefaultRates, len(sg.VFRReportingPoints) > 0)
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
 			LaunchConfig:        lc,
@@ -1498,7 +1452,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*av.VideoMapManifest) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest) {
 	start := time.Now()
 
 	// First load the scenarios.
@@ -1525,6 +1479,10 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		// it got renamed to y90.json, having both gives errors about
 		// scenarios being redefined. So cull it here instead...
 		if strings.ToLower(filepath.Base(path)) == "bdl.json" {
+			return nil
+		}
+		// And ditto for aac, which got split into two.
+		if strings.ToLower(filepath.Base(path)) == "aac.json" {
 			return nil
 		}
 
@@ -1581,7 +1539,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 	}
 
 	// Next load the video map manifests so we can validate the map references in scenarios.
-	mapManifests := make(map[string]*av.VideoMapManifest)
+	mapManifests := make(map[string]*sim.VideoMapManifest)
 	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
 			lg.Errorf("error walking videomaps: %v", err)
@@ -1593,7 +1551,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 		}
 
 		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			mapManifests[path], err = av.LoadVideoMapManifest(path)
+			mapManifests[path], err = sim.LoadVideoMapManifest(path)
 		}
 
 		return err
@@ -1607,7 +1565,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 
 	// Load the video map specified on the command line, if any.
 	if extraVideoMapFilename != "" {
-		mapManifests[extraVideoMapFilename], err = av.LoadVideoMapManifest(extraVideoMapFilename)
+		mapManifests[extraVideoMapFilename], err = sim.LoadVideoMapManifest(extraVideoMapFilename)
 		if err != nil {
 			lg.Errorf("%s: %v", extraVideoMapFilename, err)
 			os.Exit(1)

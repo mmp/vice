@@ -2878,9 +2878,11 @@
       "TIFNI": { },
     "TNP": {  }
   },
-    "inhibit_ca_volumes": [
+	"filters": {
+    "inhibit_ca": [
         {
-            "name": "ONT CONFLICT COMPRESS",
+	    "id": "ONTNOCA",
+            "description": "ONT CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 4300,
@@ -2888,14 +2890,16 @@
             "center": "KONT"
         },
         {
-            "name": "PSP CONFLICT COMPRESS",
+	    "id": "PSPNOCA",
+            "description": "PSP CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 4000,
             "radius": 11,
             "center": "KPSP"
         }
-    ],
+    ]
+	},
     "stars_maps": [
         "701S FUS 3NM MVA SCT", "711S EOVM SCT", "721S FREEWAY SCT", "320S EMP FIX SCT", "321S EMP GPS SCT", "722S D-E A-S SCT",
 		"300S EMPB LW SCT", "302S EMPB LO SCT", "724S AIRWAY SCT", "740S EMERGENCY SCT", "450S ZLA ASW SCT", "362S SCBBY AND THRNE STAR SCT", "365S DSNEE AND SIZZLR STAR SCT", "367S GLRNO AND SCBBY STARS (RWY 08) SCT", "340S EMP WW SCT", "342S EMP EW SCT", "344S EMP OO SCT", "324S PSP SPECIAL RNAV 13R SCT", "322S SP GPS SCT", "325S RNAV VISUAL APPROACHES SCT", 

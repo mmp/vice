@@ -2378,9 +2378,11 @@
           "receiving_controller": "MEM_60_CTR"
         }
       ],
-      "inhibit_ca_volumes": [
+	"filters": {
+      "inhibit_ca": [
         {
-            "name": "BNA FINAL NO CA",
+            "id": "BNANOCA",
+            "description": "BNA FINAL CONFLICT SUPPRESS",
             "type": "polygon",
             "floor": 0,
             "ceiling": 5000,
@@ -2391,7 +2393,8 @@
                 "N036.30.24.060,W086.34.05.599"
             ]
         }
-    ],
+      ]
+	},
       "scratchpads": {
         "CHADM": "OZC",
         "SWAPP": "OZC",

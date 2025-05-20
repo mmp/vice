@@ -9959,8 +9959,45 @@
     }
   },
   {
-    "name": "Embraer 190/195-E2",
+    "name": "Embraer 190-E2",
     "icao": "E290",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "F"
+    },
+    "ceiling": 41000,
+    "rate": {
+      "climb": 2800,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.9,
+      "landing": 1.3
+    },
+    "speed": {
+      "min": 110,
+      "landing": 135,
+      "cruise": 475,
+      "cruiseM": 0.78,
+      "max": 481,
+      "maxM": 0.82
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    }
+  },
+  {
+    "name": "Embraer 195-E2",
+    "icao": "E295",
     "engines": {
       "number": 2,
       "type": "J"

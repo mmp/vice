@@ -73,8 +73,8 @@ type ConvergingRunways struct {
 	RunwayIntersection     math.Point2LL                    // not in JSON, set during deserialize
 }
 
-type GhostAircraft struct {
-	Callsign            string
+type GhostTrack struct {
+	ADSBCallsign        ADSBCallsign
 	Position            math.Point2LL
 	Groundspeed         int
 	LeaderLineDirection math.CardinalOrdinalDirection
@@ -101,11 +101,11 @@ func (ar *ApproachRegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, m
 	return
 }
 
-func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, heading float32, scratchpad string,
-	forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection, runwayIntersection [2]float32,
-	nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostAircraft {
+func (ar *ApproachRegion) TryMakeGhost(trk RadarTrack, heading float32,
+	scratchpad string, forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection,
+	runwayIntersection [2]float32, nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostTrack {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
-	lat, vert := ar.Inside(track.Position, float32(track.Altitude), nmPerLongitude, magneticVariation)
+	lat, vert := ar.Inside(trk.Location, float32(trk.TrueAltitude), nmPerLongitude, magneticVariation)
 	if !lat {
 		return nil
 	}
@@ -145,10 +145,10 @@ func (ar *ApproachRegion) TryMakeGhost(callsign string, track RadarTrack, headin
 		return math.NM2LL(p, nmPerLongitude)
 	}
 
-	ghost := &GhostAircraft{
-		Callsign:            callsign,
-		Position:            remap(track.Position),
-		Groundspeed:         track.Groundspeed,
+	ghost := &GhostTrack{
+		ADSBCallsign:        trk.ADSBCallsign,
+		Position:            remap(trk.Location),
+		Groundspeed:         int(trk.Groundspeed),
 		LeaderLineDirection: leaderDirection,
 	}
 
@@ -218,11 +218,27 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				e.Pop()
 				continue
 			} else {
-				// Copy the approach from the database
+				// Copy the approach from the database, doing checks to
+				// make sure bogus overrides haven't been specified.
+				if appr.Type != UnknownApproach {
+					e.ErrorString("\"type\" cannot be given with \"cifp_id\" approaches")
+				}
 				appr.Type = dbAppr.Type
-				if appr.Runway == "" {
+
+				if len(appr.Waypoints) > 0 {
+					e.ErrorString("\"waypoints\" cannot be given with \"cifp_id\" approaches")
+				}
+
+				if dbAppr.Runway == "" {
+					if appr.Runway == "" {
+						e.ErrorString("\"runway\" must be specified: the CIFP approach is not runway-specific")
+					}
+				} else if appr.Runway != "" && appr.Runway != dbAppr.Runway {
+					e.ErrorString("specified \"runway\" doesn't match the one %q in the CIFP approach", dbAppr.Runway)
+				} else {
 					appr.Runway = dbAppr.Runway
 				}
+
 				if appr.ApproachHeading == 0 {
 					appr.ApproachHeading = dbAppr.ApproachHeading
 				}
@@ -235,10 +251,16 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					appr.Waypoints = append(appr.Waypoints, util.DuplicateSlice(wps))
 				}
 			}
-		}
-
-		if appr.Runway == "" {
-			e.ErrorString("Must specify \"runway\"")
+		} else {
+			if appr.Type == UnknownApproach {
+				e.ErrorString("Must specify \"type\"")
+			}
+			if appr.Runway == "" {
+				e.ErrorString("Must specify \"runway\"")
+			}
+			if len(appr.Waypoints) == 0 {
+				e.ErrorString("Must specify \"waypoints\"")
+			}
 		}
 		rwy, ok := LookupRunway(icao, appr.Runway)
 		if !ok {
@@ -704,7 +726,8 @@ type DepartureAirline struct {
 type ApproachType int
 
 const (
-	ILSApproach ApproachType = iota
+	UnknownApproach ApproachType = iota
+	ILSApproach
 	RNAVApproach
 	ChartedVisualApproach
 	LocalizerApproach
@@ -712,11 +735,13 @@ const (
 )
 
 func (at ApproachType) String() string {
-	return []string{"ILS", "RNAV", "Charted Visual", "Localizer", "VOR"}[at]
+	return []string{"Unknown", "ILS", "RNAV", "Charted Visual", "Localizer", "VOR"}[at]
 }
 
 func (at ApproachType) MarshalJSON() ([]byte, error) {
 	switch at {
+	case UnknownApproach:
+		return []byte("\"Unknown\""), nil
 	case ILSApproach:
 		return []byte("\"ILS\""), nil
 	case RNAVApproach:
@@ -734,6 +759,10 @@ func (at ApproachType) MarshalJSON() ([]byte, error) {
 
 func (at *ApproachType) UnmarshalJSON(b []byte) error {
 	switch string(b) {
+	case "\"Unknown\"":
+		*at = UnknownApproach
+		return nil
+
 	case "\"ILS\"":
 		*at = ILSApproach
 		return nil

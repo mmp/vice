@@ -4425,8 +4425,6 @@
                 "fixes": ["DSM", "FOD", "JALAP", "KIDER", "LMN", "MCI", "OGECA", "ROKKK", "STJ", "STL"],
                 "receiving_controller": "MSP_27_CTR"
             }
-        ],
-          "inhibit_ca_volumes": [
           ],
           "radar_sites": {
             "OFF": {

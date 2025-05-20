@@ -1806,9 +1806,11 @@
                 "receiving_controller": "JAX_73_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "CHS NO CA",
+                "id": "CHSNOCA",
+                "description": "CHS CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "radius": 4,
@@ -1816,14 +1818,16 @@
                 "center": "KCHS"
             },
             {
-                "name": "JZI NO CA",
+                "id": "JZINOCA",
+                "description": "JZI CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "radius": 4,
                 "ceiling": 2000,
                 "center": "KJZI"
             }
-        ],
+        ]
+	},
         "coordination_lists": [
             { "name": ".    JZI", "id": "J", "airports": [ "KJZI" ] }
           ],

@@ -40,7 +40,7 @@ type Nav struct {
 	FinalAltitude float32
 	Waypoints     WaypointArray
 
-	Rand rand.Rand
+	Rand *rand.Rand
 }
 
 // DeferredHeading stores a heading assignment from the controller and the
@@ -173,9 +173,9 @@ const (
 	OnApproachCourse
 )
 
-func MakeArrivalNav(callsign string, arr *Arrival, fp FlightPlan, perf AircraftPerformance,
+func MakeArrivalNav(callsign ADSBCallsign, arr *Arrival, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == VFR
+	randomizeAltitudeRange := fp.Rules == FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
 		magneticVariation, wind, lg); nav != nil {
 		spd := arr.SpeedRestriction
@@ -200,7 +200,7 @@ func MakeArrivalNav(callsign string, arr *Arrival, fp FlightPlan, perf AircraftP
 	return nil
 }
 
-func MakeDepartureNav(callsign string, fp FlightPlan, perf AircraftPerformance,
+func MakeDepartureNav(callsign ADSBCallsign, fp FlightPlan, perf AircraftPerformance,
 	assignedAlt, clearedAlt, speedRestriction int, wp []Waypoint, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
@@ -223,9 +223,9 @@ func MakeDepartureNav(callsign string, fp FlightPlan, perf AircraftPerformance,
 	return nil
 }
 
-func MakeOverflightNav(callsign string, of *Overflight, fp FlightPlan, perf AircraftPerformance,
+func MakeOverflightNav(callsign ADSBCallsign, of *Overflight, fp FlightPlan, perf AircraftPerformance,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
-	randomizeAltitudeRange := fp.Rules == VFR
+	randomizeAltitudeRange := fp.Rules == FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
 		magneticVariation, wind, lg); nav != nil {
 		spd := of.SpeedRestriction
@@ -239,7 +239,7 @@ func MakeOverflightNav(callsign string, of *Overflight, fp FlightPlan, perf Airc
 			nav.Speed.Assigned = &spd
 		}
 
-		nav.FlightState.Altitude = float32(rand.SampleSlice(of.InitialAltitudes))
+		nav.FlightState.Altitude = float32(rand.SampleSlice(nav.Rand, of.InitialAltitudes))
 		nav.FlightState.IAS = of.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
 		// 0 for the first nav update tick which leads to various Inf and
@@ -251,21 +251,20 @@ func MakeOverflightNav(callsign string, of *Overflight, fp FlightPlan, perf Airc
 	return nil
 }
 
-func makeNav(callsign string, fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
+func makeNav(callsign ADSBCallsign, fp FlightPlan, perf AircraftPerformance, wp []Waypoint, randomizeAltitudeRange bool,
 	nmPerLongitude float32, magneticVariation float32, wind WindModel, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
 		Waypoints:      util.DuplicateSlice(wp),
 		FixAssignments: make(map[string]NavFixAssignment),
-		Rand:           rand.New(),
+		Rand:           rand.Make(),
 	}
-	nav.Rand.Seed(util.HashString64(callsign))
 
-	nav.Waypoints = RandomizeRoute(nav.Waypoints, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
+	nav.Waypoints = RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, wind, lg)
 
-	if fp.Rules == IFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
+	if fp.Rules == FlightRulesIFR && slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Land }) {
 		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
 			slog.Any("flightplan", fp))
 	}
@@ -398,6 +397,9 @@ func (nav *Nav) OnApproach(checkAltitude bool) bool {
 // from the infinite line defined by the assigned approach localizer
 func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	approach := nav.Approach.Assigned
+	if approach == nil {
+		return false
+	}
 	localizer := approach.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	distance := math.PointLineDistance(
 		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
@@ -1731,7 +1733,7 @@ func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) 
 			hdg := *nfa.Depart.Heading
 			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
-			if !nav.directFix(nfa.Depart.Fix.Fix) {
+			if nav.directFix(nfa.Depart.Fix.Fix) != nil {
 				lg.Errorf("unable direct %s after %s???", nfa.Depart.Fix.Fix, wp.Fix)
 			} else {
 				// Hacky: directFix updates the route but below we peel off
@@ -1918,7 +1920,7 @@ func (nav *Nav) GoAround() PilotResponse {
 	// Keep the destination airport at the end of the route.
 	nav.Waypoints = []Waypoint{nav.FlightState.ArrivalAirport}
 
-	s := rand.Sample("going around", "on the go")
+	s := rand.Sample(nav.Rand, "going around", "on the go")
 	return PilotResponse{Message: s}
 }
 
@@ -1929,11 +1931,11 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 
 	var response string
 	if alt > nav.FlightState.Altitude {
-		response = rand.Sample("climb and maintain ", "up to ") + FormatAltitude(alt)
+		response = rand.Sample(nav.Rand, "climb and maintain ", "up to ") + FormatAltitude(alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = rand.Sample("maintain ", "we'll keep it at ") + FormatAltitude(alt)
+		response = rand.Sample(nav.Rand, "maintain ", "we'll keep it at ") + FormatAltitude(alt)
 	} else {
-		response = rand.Sample("descend and maintain ", "down to ") + FormatAltitude(alt)
+		response = rand.Sample(nav.Rand, "descend and maintain ", "down to ") + FormatAltitude(alt)
 	}
 
 	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
@@ -1974,13 +1976,13 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
-			msg := rand.Sample("reduce speed to %.0f knots", "speed %.0f", "pulling it back to %.0f", "%.0f for the speed", "slow to %.0f")
+			msg := rand.Sample(nav.Rand, "reduce speed to %.0f knots", "speed %.0f", "pulling it back to %.0f", "%.0f for the speed", "slow to %.0f")
 			response = fmt.Sprintf(msg, speed)
 		} else if speed > nav.FlightState.IAS {
-			msg := rand.Sample("increase speed to %.0f knots", "speed %.0f", "%.0f for the speed", "maintain %.0f knots")
+			msg := rand.Sample(nav.Rand, "increase speed to %.0f knots", "speed %.0f", "%.0f for the speed", "maintain %.0f knots")
 			response = fmt.Sprintf(msg, speed)
 		} else {
-			msg := rand.Sample("maintain %.0f knots", "keep it at %.0f", "well stay at %.0f")
+			msg := rand.Sample(nav.Rand, "maintain %.0f knots", "keep it at %.0f", "well stay at %.0f")
 			response = fmt.Sprintf(msg, speed)
 		}
 	}
@@ -1989,13 +1991,13 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 
 func (nav *Nav) MaintainSlowestPractical() PilotResponse {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
-	r := rand.Sample("we'll maintain slowest practical speed", "slowing as much as we can")
+	r := rand.Sample(nav.Rand, "we'll maintain slowest practical speed", "slowing as much as we can")
 	return PilotResponse{Message: r}
 }
 
 func (nav *Nav) MaintainMaximumForward() PilotResponse {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
-	r := rand.Sample("we'll keep it at maximum forward speed", "maintaining maximum forward speed")
+	r := rand.Sample(nav.Rand, "we'll keep it at maximum forward speed", "maintaining maximum forward speed")
 	return PilotResponse{Message: r}
 }
 
@@ -2006,16 +2008,16 @@ func (nav *Nav) SaySpeed() PilotResponse {
 	if nav.Speed.Assigned != nil {
 		assignedSpeed := *nav.Speed.Assigned
 		if assignedSpeed < currentSpeed {
-			output = rand.Sample(fmt.Sprintf("at %.0f slowing to %.0f", currentSpeed, assignedSpeed),
+			output = rand.Sample(nav.Rand, fmt.Sprintf("at %.0f slowing to %.0f", currentSpeed, assignedSpeed),
 				fmt.Sprintf("at %.0f and slowing", currentSpeed))
 
 		} else if assignedSpeed > currentSpeed {
 			output = fmt.Sprintf("at %0.f speeding up to %.0f", currentSpeed, assignedSpeed)
 		} else {
-			output = rand.Sample(fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
+			output = rand.Sample(nav.Rand, fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
 		}
 	} else {
-		output = rand.Sample(fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
+		output = rand.Sample(nav.Rand, fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
 	}
 	return PilotResponse{Message: output}
 }
@@ -2045,16 +2047,17 @@ func (nav *Nav) SayAltitude() PilotResponse {
 	if nav.Altitude.Assigned != nil {
 		assignedAltitude := *nav.Altitude.Assigned
 		if assignedAltitude < currentAltitude {
-			output = rand.Sample(fmt.Sprintf("at %s descending to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude)),
+			output = rand.Sample(nav.Rand, fmt.Sprintf("at %s descending to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude)),
 				fmt.Sprintf("at %s and descending", FormatAltitude(currentAltitude)))
-
 		} else if assignedAltitude > currentAltitude {
 			output = fmt.Sprintf("at %s climbing to %s", FormatAltitude(currentAltitude), FormatAltitude(assignedAltitude))
 		} else {
-			output = rand.Sample(fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
+			output = rand.Sample(nav.Rand, fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s",
+				FormatAltitude(currentAltitude)))
 		}
 	} else {
-		output = rand.Sample(fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)), fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
+		output = rand.Sample(nav.Rand, fmt.Sprintf("maintaining %s", FormatAltitude(currentAltitude)),
+			fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
 	}
 
 	return PilotResponse{Message: output}
@@ -2065,7 +2068,7 @@ func (nav *Nav) ExpediteDescent() PilotResponse {
 	if alt >= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
-			resp := rand.Sample("expediting down to", "expedite to")
+			resp := rand.Sample(nav.Rand, "expediting down to", "expedite to")
 			return PilotResponse{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
 				fmt.Sprintf("%d", int(*nav.Altitude.AfterSpeedSpeed))}
 		} else {
@@ -2073,11 +2076,11 @@ func (nav *Nav) ExpediteDescent() PilotResponse {
 		}
 	}
 	if nav.Altitude.Expedite {
-		return PilotResponse{Message: rand.Sample("we're already expediting", "that's our best rate")}
+		return PilotResponse{Message: rand.Sample(nav.Rand, "we're already expediting", "that's our best rate")}
 	}
 
 	nav.Altitude.Expedite = true
-	resp := rand.Sample("expediting down to", "expedite to")
+	resp := rand.Sample(nav.Rand, "expediting down to", "expedite to")
 	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
 }
 
@@ -2086,7 +2089,7 @@ func (nav *Nav) ExpediteClimb() PilotResponse {
 	if alt <= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
-			resp := rand.Sample("expediting up to", "expedite to")
+			resp := rand.Sample(nav.Rand, "expediting up to", "expedite to")
 			return PilotResponse{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
 				fmt.Sprintf("%d", int(*nav.Altitude.AfterSpeedSpeed))}
 		} else {
@@ -2094,12 +2097,12 @@ func (nav *Nav) ExpediteClimb() PilotResponse {
 		}
 	}
 	if nav.Altitude.Expedite {
-		r := rand.Sample("we're already expediting", "that's our best rate")
+		r := rand.Sample(nav.Rand, "we're already expediting", "that's our best rate")
 		return PilotResponse{Message: r}
 	}
 
 	nav.Altitude.Expedite = true
-	resp := rand.Sample("expediting up to", "expedite to")
+	resp := rand.Sample(nav.Rand, "expediting up to", "expedite to")
 	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
 }
 
@@ -2211,7 +2214,7 @@ func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *Waypoint, fb *Waypoint) {
 	return
 }
 
-func (nav *Nav) directFix(fix string) bool {
+func (nav *Nav) directFix(fix string) error {
 	// Check the approach (if any) first; this way if the current route
 	// ends with a fix that happens to be on the approach, we pick up the
 	// rest of the approach fixes rather than forgetting about them.
@@ -2235,7 +2238,7 @@ func (nav *Nav) directFix(fix string) bool {
 			}
 		}
 		if found {
-			return true
+			return nil
 		}
 	}
 
@@ -2243,22 +2246,52 @@ func (nav *Nav) directFix(fix string) bool {
 	for i, wp := range nav.Waypoints {
 		if fix == wp.Fix {
 			nav.Waypoints = nav.Waypoints[i:]
-			return true
+			return nil
 		}
 	}
 
-	return false
+	// See if it's a random fix not in the flight plan.
+	p, ok := func() (math.Point2LL, bool) {
+		if p, ok := DB.LookupWaypoint(fix); ok {
+			return p, true
+		} else if ap, ok := DB.Airports[fix]; ok {
+			return ap.Location, true
+		} else if ap, ok := DB.Airports["K"+fix]; len(fix) == 3 && ok {
+			return ap.Location, true
+		}
+		return math.Point2LL{}, false
+	}()
+	if ok {
+		// Ignore ones that are >150nm away under the assumption that it's
+		// a typo in that case.
+		if math.NMDistance2LL(p, nav.FlightState.Position) > 150 {
+			return ErrFixIsTooFarAway
+		}
+
+		nav.Waypoints = []Waypoint{
+			Waypoint{
+				Fix:      fix,
+				Location: p,
+			},
+			nav.FlightState.ArrivalAirport,
+		}
+		return nil
+	}
+
+	return ErrInvalidFix
 }
 
 func (nav *Nav) DirectFix(fix string) PilotResponse {
-	if nav.directFix(fix) {
+	if err := nav.directFix(fix); err == nil {
 		nav.EnqueueHeading(NavHeading{})
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
 
 		return PilotResponse{Message: "direct " + FixReadback(fix)}
+	} else if err == ErrFixIsTooFarAway {
+		return PilotResponse{Message: "unable. " + FixReadback(fix) + " is too far away to go direct", Unexpected: true}
 	} else {
-		return PilotResponse{Message: "unable. " + FixReadback(fix) + " isn't in our route", Unexpected: true}
+		return PilotResponse{Message: "unable. " + FixReadback(fix) + " isn't a valid fix", Unexpected: true}
 	}
 }
 
@@ -2406,7 +2439,7 @@ func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[
 		}
 	}
 
-	opener := rand.Sample("we'll expect the", "expecting the", "we'll plan for the")
+	opener := rand.Sample(nav.Rand, "we'll expect the", "expecting the", "we'll plan for the")
 	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
 }
 
@@ -2428,9 +2461,9 @@ func (nav *Nav) InterceptApproach(airport string) PilotResponse {
 		ap := nav.Approach.Assigned
 		var r string
 		if ap.Type == ILSApproach || ap.Type == LocalizerApproach {
-			r = rand.Sample("intercepting the "+ap.FullName+" approach", "intercepting "+ap.FullName)
+			r = rand.Sample(nav.Rand, "intercepting the "+ap.FullName+" approach", "intercepting "+ap.FullName)
 		} else {
-			r = rand.Sample("joining the "+ap.FullName+" approach course", "joining "+ap.FullName)
+			r = rand.Sample(nav.Rand, "joining the "+ap.FullName+" approach course", "joining "+ap.FullName)
 		}
 		return PilotResponse{Message: r}
 	}
@@ -2461,7 +2494,7 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		}
 	}
 
-	return PilotResponse{Message: rand.Sample("at "+fix+", cleared "+ap.FullName,
+	return PilotResponse{Message: rand.Sample(nav.Rand, "at "+fix+", cleared "+ap.FullName,
 		"cleared "+ap.FullName+" at "+fix)}
 }
 
@@ -2697,6 +2730,39 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 		}
 		return distance, nil
 	}
+}
+
+func (nav *Nav) ResumeOwnNavigation() PilotResponse {
+	if nav.Altitude.Assigned == nil && nav.Speed.Assigned == nil && nav.Speed.AfterAltitude == nil &&
+		nav.Heading.Assigned == nil {
+	}
+
+	nav.Altitude = NavAltitude{}
+	nav.Speed = NavSpeed{}
+	nav.Heading = NavHeading{}
+	nav.DeferredHeading = nil
+
+	if len(nav.Waypoints) > 1 {
+		// Find the route segment we're closest to then go direct to the
+		// end of it.  In some cases for the first segment maybe it's
+		// preferable to go to the first fix but it's a little unclear what
+		// the criteria should be.
+		minDist := float32(1000000)
+		startIdx := 0
+		pac := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+		for i := 0; i < len(nav.Waypoints)-1; i++ {
+			wp0, wp1 := nav.Waypoints[i], nav.Waypoints[i+1]
+			p0 := math.LL2NM(wp0.Location, nav.FlightState.NmPerLongitude)
+			p1 := math.LL2NM(wp1.Location, nav.FlightState.NmPerLongitude)
+			if d := math.PointSegmentDistance(pac, p0, p1); d < minDist {
+				minDist = d
+				startIdx = i + 1
+			}
+		}
+		fmt.Printf("direct to idx %d\n", startIdx)
+		nav.Waypoints = nav.Waypoints[startIdx:]
+	}
+	return PilotResponse{Message: rand.Sample(nav.Rand, "own navigation", "resuming own navigation")}
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {

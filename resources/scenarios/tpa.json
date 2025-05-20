@@ -5,10 +5,12 @@
       "name": "Tampa",
       "approaches": {
         "I1L": { "cifp_id": "I1L" },
-        "R1L": { "cifp_id": "R1L" },
-        "R1R": { "cifp_id": "R1R" },
+        "RY1L": { "cifp_id": "RY1L" },
+		"RZ1L": { "cifp_id": "RZ1L" },
+        "RY1R": { "cifp_id": "RY1R" },
+		"RZ1R": { "cifp_id": "RZ1R" },
         "I9L": { "cifp_id": "I19L" },
-        "R9L": { "cifp_id": "RZ19L" },
+        "R9L": { "cifp_id": "R19L" },
         "I9R": { "cifp_id": "I19R" },
         "R9R": { "cifp_id": "R19R" }
       },
@@ -144,7 +146,7 @@
           "altitude": 24000,
           "destination": "KFLL",
           "exit": "SABEE",
-          "scratchpad": "G24",
+          "scratchpad": "GAN",
           "route": "SABEE TEEKY"
         },
         {
@@ -174,7 +176,7 @@
           "altitude": 24000,
           "destination": "KMIA",
           "exit": "SABEE",
-          "scratchpad": "G24",
+          "scratchpad": "GAN",
           "route": "SABEE FROGZ"
         },
         {
@@ -192,7 +194,7 @@
           "altitude": 35000,
           "destination": "MYNN",
           "exit": "SABEE",
-          "scratchpad": "G35",
+          "scratchpad": "GAN",
           "route": "SABEE RSW VKZ BR53V RAJAY"
         },
         {
@@ -222,7 +224,7 @@
           "altitude": 31000,
           "destination": "KCLT",
           "exit": "CAMJO",
-          "scratchpad": "BAR",
+          "scratchpad": "BAY",
           "route": "CAMJO TWINS PONZE"
         },
         {
@@ -249,7 +251,7 @@
           "altitude": 35000,
           "destination": "KPHL",
           "exit": "CAMJO",
-          "scratchpad": "BAR",
+          "scratchpad": "BAY",
           "route": "CAMJO Q99 PEETT BBDOL"
         },
         {
@@ -264,7 +266,7 @@
           "altitude": 34000,
           "destination": "KSEA",
           "exit": "FROOT",
-          "scratchpad": "BLR",
+          "scratchpad": "DOR",
           "route": "FROOT REMIS Q100 REDFN DELTE MCB"
         },
         {
@@ -288,7 +290,7 @@
           "altitude": 32000,
           "destination": "KATL",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN AMORY Q110 DAWWN BEORN"
         },
         {
@@ -312,7 +314,7 @@
           "altitude": 36000,
           "destination": "KMSY",
           "exit": "FROOT",
-          "scratchpad": "BLR",
+          "scratchpad": "DOR",
           "route": "FROOT ROZZI Q100 REDFN Q105 HRV"
         },
         {
@@ -324,7 +326,7 @@
           "altitude": 38000,
           "destination": "KMEM",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN PATOY Q116 GOOGY WASER VANZE3"
         },
         {
@@ -351,7 +353,7 @@
           "altitude": 39000,
           "destination": "KLGA",
           "exit": "HALLR",
-          "scratchpad": "C39",
+          "scratchpad": "CRO",
           "route": "HALLR MZULO HESTA LENDS GRUBR"
         },
         {
@@ -369,7 +371,7 @@
           "altitude": 36000,
           "destination": "KMDW",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN BRUTS Q118 THRSR Q79 IIU DROSE"
         },
         {
@@ -387,7 +389,7 @@
           "altitude": 35000,
           "destination": "KJFK",
           "exit": "CAMJO",
-          "scratchpad": "BAR",
+          "scratchpad": "BAY",
           "route": "CAMJO Q109 DFENC SAWED Q97 DLAAY RADDS SIE CAMRN4"
         },
         {
@@ -411,7 +413,7 @@
           "altitude": 34000,
           "destination": "KBNA",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN BRUTS Q118 JOHNN Q118 THRSR WESSN JAGIR"
         },
         {
@@ -441,7 +443,7 @@
           "altitude": 37000,
           "destination": "CYYZ",
           "exit": "CAMJO",
-          "scratchpad": "BAR",
+          "scratchpad": "BAY",
           "route": "CAMJO Q99 BLAAN Q69 RICCS OXMAN"
         },
         {
@@ -456,7 +458,7 @@
           "altitude": 32000,
           "destination": "KDFW",
           "exit": "FROOT",
-          "scratchpad": "BLR",
+          "scratchpad": "DOR",
           "route": "FROOT ROZZI Y280 REDFN Q105 HRV J58 AEX PNUTS"
         },
         {
@@ -477,7 +479,7 @@
           "altitude": 29000,
           "destination": "MUHA",
           "exit": "SABEE",
-          "scratchpad": "G29",
+          "scratchpad": "GAN",
           "route": "SABEE FIPES Q81 KARTR Q81 TUNSL Y262 LULLS Y196 CANOA"
         },
         {
@@ -498,7 +500,7 @@
           "altitude": 36000,
           "destination": "KHOU",
           "exit": "FROOT",
-          "scratchpad": "BLR",
+          "scratchpad": "DOR",
           "route": "FROOT ROZZI Y280 LEV"
         },
         {
@@ -525,7 +527,7 @@
           "altitude": 38000,
           "destination": "KAUS",
           "exit": "FROOT",
-          "scratchpad": "BLR",
+          "scratchpad": "DOR",
           "route": "FROOT ROZZI Y280 LEV DBOYS"
         },
         {
@@ -541,7 +543,7 @@
           "altitude": 15000,
           "destination": "KVRB",
           "exit": "HALLR",
-          "scratchpad": "C15",
+          "scratchpad": "CRO",
           "route": "HALLR YEHAW VALKA"
         }
       ],
@@ -620,7 +622,7 @@
           "altitude": 35000,
           "destination": "KABE",
           "exit": "CAMJO",
-          "scratchpad": "T35",
+          "scratchpad": "BAY",
           "route": "CAMJO HEPAR Q99 BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 DUMMR"
         },
         {
@@ -650,7 +652,7 @@
           "altitude": 33000,
           "destination": "KATL",
           "exit": "CAMJO",
-          "scratchpad": "T33",
+          "scratchpad": "TID",
           "route": "CAMJO LAIRI LARZZ"
         },
         {
@@ -683,7 +685,7 @@
           "altitude": 39000,
           "destination": "KBOS",
           "exit": "CAMJO",
-          "scratchpad": "T39",
+          "scratchpad": "TID",
           "route": "CAMJO HEPAR Q99 POLYY DADDS Q87 GEARS BBOBO Q22 RBV Q419 JFK"
         },
         {
@@ -713,7 +715,7 @@
           "altitude": 37000,
           "destination": "KCLT",
           "exit": "CAMJO",
-          "scratchpad": "T37",
+          "scratchpad": "TID",
           "route": "CAMJO TWINS PONZE"
         },
         {
@@ -740,7 +742,7 @@
           "altitude": 37000,
           "destination": "KLGA",
           "exit": "CAMJO",
-          "scratchpad": "T37",
+          "scratchpad": "TID",
           "route": "CAMJO HEPAR Q99 POLYY DADDS Q87 HURTS"
         },
         {
@@ -773,7 +775,7 @@
           "altitude": 36000,
           "destination": "KBNA",
           "exit": "MOMIE",
-          "scratchpad": "ENR",
+          "scratchpad": "TID",
           "route": "MOMIE BRUTS Q118 THRSR WESSN JAGIR"
         },
         {
@@ -803,7 +805,7 @@
           "altitude": 38000,
           "destination": "KORD",
           "exit": "MOMIE",
-          "scratchpad": "ENR",
+          "scratchpad": "TID",
           "route": "MOMIE BRUTS Q118 BONNT"
         },
         {
@@ -830,7 +832,7 @@
           "altitude": 34000,
           "destination": "KDEN",
           "exit": "MOMIE",
-          "scratchpad": "ENR",
+          "scratchpad": "TID",
           "route": "MOMIE PATOY Q116 JAWJA MGMRY MEMFS PER GCK KIISS"
         },
         {
@@ -860,7 +862,7 @@
           "altitude": 36000,
           "destination": "KATW",
           "exit": "MOMIE",
-          "scratchpad": "ENR",
+          "scratchpad": "TID",
           "route": "MOMIE BRUTS Q118 THRSR Q79 IIU J89 BAE"
         }
       ],
@@ -942,7 +944,7 @@
           "altitude": 36000,
           "destination": "KBNA",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN BRUTS Q118 THRSR WESSN JAGIR SWFFT2"
         },
         {
@@ -952,7 +954,7 @@
           "altitude": 34000,
           "destination": "KXNA",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN PATOY Q116 DEEDA Q116 VLKNN MEM RZC"
         },
         {
@@ -962,7 +964,7 @@
           "altitude": 37000,
           "destination": "KORF",
           "exit": "CAMJO.LLRGO1",
-          "scratchpad": "R33",
+          "scratchpad": "LLR",
           "route": "CAMJO Q99 HEPAR TWINS IRQ HRTWL BURGG GLOVR RDU DRONE2"
         },
         {
@@ -972,7 +974,7 @@
           "altitude": 34000,
           "destination": "KCHA",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN BRUTS Q118 KAILL GQO"
         },
         {
@@ -982,7 +984,7 @@
           "altitude": 34000,
           "destination": "KTYS",
           "exit": "CAMJO",
-          "scratchpad": "B34",
+          "scratchpad": "BAY",
           "route": "CAMJO Q99 HEPAR KERLY ODF"
         },
         {
@@ -992,7 +994,7 @@
           "altitude": 38000,
           "destination": "KGPT",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN PATOY Q116 JAWJA CABLO DEFUN J2 SJI"
         },
         {
@@ -1002,7 +1004,7 @@
           "altitude": 40000,
           "destination": "KMDW",
           "exit": "LACEN.LLRGO1",
-          "scratchpad": "L40",
+          "scratchpad": "LLR",
           "route": "LACEN PATOY Q116 JAWJA TERES CLRRK RADME OPROE DROSE FISSK6"
         },
         {
@@ -1012,7 +1014,7 @@
           "altitude": 36000,
           "destination": "KCVG",
           "exit": "LACEN",
-          "scratchpad": "ENR",
+          "scratchpad": "END",
           "route": "LACEN BRUTS Q118 THRSR VXV JAKIE6"
         }
       ],   
@@ -2706,34 +2708,38 @@
         }
       ]
     },
-    "inhibit_ca_volumes": [
-      {
-        "name": "TPA FINAL S OPS",
-        "type": "polygon",
-        "floor": 0,
-        "ceiling": 3500,
-        "vertices": [
-          "27.983951245628674, -82.54812222227956", 
-          "27.983951245628674, -82.52107947624592",
-          "28.124652499162792, -82.518646907564",
-          "28.12433203473867, -82.54735306378981",
-          "27.983951245628674, -82.54812222227956"
-        ]
-      },
-      {
-        "name": "TPA FINAL N OPS",
-        "type": "polygon",
-        "floor": 0,
-        "ceiling": 3500,
-        "vertices": [
-          "27.965545252565974, -82.55140404943857", 
-          "27.795795931807888, -82.55481810916585",
-          "27.79617344729067, -82.52195778428637",
-          "27.965545252565974, -82.52025075442216",
-          "27.965545252565974, -82.55140404943857"
-        ]
-      }
-    ],
+    "filters": {
+	"inhibit_ca": [
+	    {
+		"id": "TPA_S",
+		"description": "TPA FINAL S OPS CONFLICT SUPPRESS",
+		"type": "polygon",
+		"floor": 0,
+		"ceiling": 3500,
+		"vertices": [
+		    "27.983951245628674, -82.54812222227956", 
+		    "27.983951245628674, -82.52107947624592",
+		    "28.124652499162792, -82.518646907564",
+		    "28.12433203473867, -82.54735306378981",
+		    "27.983951245628674, -82.54812222227956"
+		]
+	    },
+	    {
+		"id": "TPA_N",
+		"description": "TPA FINAL N OPS CONFLICT SUPPRESS",
+		"type": "polygon",
+		"floor": 0,
+		"ceiling": 3500,
+		"vertices": [
+		    "27.965545252565974, -82.55140404943857", 
+		    "27.795795931807888, -82.55481810916585",
+		    "27.79617344729067, -82.52195778428637",
+		    "27.965545252565974, -82.52025075442216",
+		    "27.965545252565974, -82.55140404943857"
+		]
+	    }
+	]
+    },
     "radar_sites": {
       "TPA": {
         "char": "T",

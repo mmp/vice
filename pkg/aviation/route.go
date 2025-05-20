@@ -483,11 +483,11 @@ func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
 
 }
 
-func RandomizeRoute(w []Waypoint, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
+func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
 	magneticVariation float32, airport string, wind WindModel, lg *log.Logger) WaypointArray {
 	// Random values used for altitude and position randomization
-	rtheta, rrad := rand.Float32(), rand.Float32()
-	ralt := rand.Float32()
+	rtheta, rrad := r.Float32(), r.Float32()
+	ralt := r.Float32()
 
 	// We use this to some random variation to the random sample after each
 	// use. In this way, there's some correlation between adjacent
@@ -495,7 +495,7 @@ func RandomizeRoute(w []Waypoint, randomizeAltitudeRange bool, perf AircraftPerf
 	// relatively high at the next one, though the random choices still
 	// vary a bit.
 	jitter := func(v float32) float32 {
-		v += -0.1 + 0.2*rand.Float32()
+		v += -0.1 + 0.2*r.Float32()
 		if v < 0 {
 			v = -v
 		} else if v > 1 {
@@ -1003,7 +1003,7 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 						errstr += fmt.Sprintf("%s (%.1fnm) ", s, dist[s])
 					}
 				}
-				e.ErrorString(errstr)
+				e.ErrorString("%s", errstr)
 			}
 		} else {
 			waypoints[i].Location = pos
@@ -1102,7 +1102,7 @@ func (waypoints WaypointArray) InitializeLocations(loc Locator, nmPerLongitude f
 			var ok bool
 			if wp.Arc.Center, ok = loc.Locate(wp.Arc.Fix); !ok {
 				if e != nil {
-					e.ErrorString("unable to locate arc center \"" + wp.Arc.Fix + "\"")
+					e.ErrorString("unable to locate arc center %q", wp.Arc.Fix)
 					e.Pop()
 				}
 				continue

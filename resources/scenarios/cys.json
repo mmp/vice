@@ -498,16 +498,19 @@
                }
            ]
        },
-       "inhibit_ca_volumes": [
+	"filters": {
+       "inhibit_ca": [
             {
-                "name": "CYS NO CA",
+                "id": "CYSNOCA",
+                "description": "CYS CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 9500,
                 "radius": 10,
                 "center": "N041.09.19.519,W104.48.39.012"
             }
-        ],
+       ]
+	},
         "radar_sites": {
             "CYS": {
                 "char": "A",

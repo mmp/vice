@@ -2964,6 +2964,28 @@
   }
   },
   "stars_config": {
+    "filters": {
+      "arrival_acquisition": [
+        {
+          "id": "ispack",
+          "description": "isp arrival acquisition all",
+          "type": "polygon",
+          "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
+          "floor": 0,
+          "ceiling": 10000
+        }
+      ],
+      "secondary_drop": [
+        {
+          "id": "secdrop",
+          "description": "drop region all",
+          "type": "polygon",
+          "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
+          "floor": 0,
+          "ceiling": 40000
+        }
+      ]
+    },
     "center": "KISP",
     "coordination_fixes": {
         "SARDI": [
@@ -3041,9 +3063,11 @@
       { "name": "FOK.", "id": "C", "airports": [ "KFOK" ] },
       { "name": "OXC.", "id": "D", "airports": [ "KOXC" ] }
     ],
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
         {
-            "name": "ISP NO CA",
+            "id": "ISPNOCA",
+            "description": "ISP CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 1200,
@@ -3051,14 +3075,16 @@
             "center": "KISP"
         },
         {
-            "name": "HVN NO CA",
+            "id": "HVNNOCA",
+            "description": "HVN CONFLICT SUPPRESS",
             "type": "circle",
             "floor": 0,
             "ceiling": 1200,
             "radius": 2,
             "center": "KHVN"
         }
-    ],
+    ]
+      },
     "force_ql_self": true,
     "scratchpad1": { "display_exit_fix": true },
     "significant_points": {

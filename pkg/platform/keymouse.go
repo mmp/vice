@@ -7,7 +7,7 @@ package platform
 import (
 	"strings"
 
-	"github.com/mmp/imgui-go/v4"
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/vice/pkg/util"
 )
 
@@ -24,20 +24,20 @@ type MouseState struct {
 }
 
 const (
-	MouseButtonPrimary   = 0
-	MouseButtonSecondary = 1
-	MouseButtonTertiary  = 2
-	MouseButtonCount     = 3
+	MouseButtonPrimary   imgui.MouseButton = 0
+	MouseButtonSecondary                   = 1
+	MouseButtonTertiary                    = 2
+	MouseButtonCount                       = 3
 )
 
-func (ms *MouseState) SetCursor(id imgui.MouseCursorID) {
+func (ms *MouseState) SetCursor(id imgui.MouseCursor) {
 	imgui.SetMouseCursor(id)
 }
 
 func (g *glfwPlatform) GetMouse() *MouseState {
 	io := imgui.CurrentIO()
 	pos := imgui.MousePos()
-	wx, wy := io.MouseWheel()
+	wx, wy := io.MouseWheelH(), io.MouseWheel()
 
 	m := &MouseState{
 		Pos:      [2]float32{pos.X, pos.Y},
@@ -45,73 +45,33 @@ func (g *glfwPlatform) GetMouse() *MouseState {
 		Wheel:    [2]float32{wx, wy},
 	}
 
-	for b := 0; b < MouseButtonCount; b++ {
+	for b := MouseButtonPrimary; b < MouseButtonCount; b++ {
 		m.Down[b] = imgui.IsMouseDown(b)
 		m.Released[b] = imgui.IsMouseReleased(b)
-		m.Clicked[b] = imgui.IsMouseClicked(b)
+		m.Clicked[b] = imgui.IsMouseClickedBool(b)
 		m.DoubleClicked[b] = imgui.IsMouseDoubleClicked(b)
-		m.Dragging[b] = imgui.IsMouseDragging(b, 0)
+		m.Dragging[b] = imgui.IsMouseDraggingV(b, 0)
 		if m.Dragging[b] {
-			delta := imgui.MouseDragDelta(b, 0.)
+			delta := imgui.MouseDragDeltaV(b, 0.)
 			m.DragDelta = [2]float32{delta.X, delta.Y}
-			imgui.ResetMouseDragDelta(b)
+			imgui.ResetMouseDragDeltaV(b)
 		}
 	}
 
 	return m
 }
 
-type Key int
-
-const (
-	KeyEnter = iota
-	KeyUpArrow
-	KeyDownArrow
-	KeyLeftArrow
-	KeyRightArrow
-	KeyHome
-	KeyEnd
-	KeyBackspace
-	KeyDelete
-	KeyEscape
-	KeyTab
-	KeyPageUp
-	KeyPageDown
-	KeyShift
-	KeyControl
-	KeyAlt
-	KeySuper
-	KeyF1
-	KeyF2
-	KeyF3
-	KeyF4
-	KeyF5
-	KeyF6
-	KeyF7
-	KeyF8
-	KeyF9
-	KeyF10
-	KeyF11
-	KeyF12
-	KeyF13
-	KeyF14
-	KeyF15
-	KeyF16
-	KeyV
-	KeyInsert
-)
-
 type KeyboardState struct {
 	Input string
 	// A key shows up here once each time it is pressed (though repeatedly
 	// if key repeat kicks in.)
-	Pressed   map[Key]interface{}
-	HeldFKeys map[Key]interface{}
+	Pressed   map[imgui.Key]interface{}
+	HeldFKeys map[imgui.Key]interface{}
 }
 
 func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	keyboard := &KeyboardState{
-		Pressed:   make(map[Key]interface{}),
+		Pressed:   make(map[imgui.Key]interface{}),
 		HeldFKeys: g.heldFKeys,
 	}
 
@@ -120,84 +80,84 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	// Map \ to END for laptops (hacky...)
 	if strings.Contains(keyboard.Input, `\`) {
 		keyboard.Input = strings.ReplaceAll(keyboard.Input, `\`, "")
-		keyboard.Pressed[KeyEnd] = nil
+		keyboard.Pressed[imgui.KeyEnd] = nil
 	}
 
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnter)) ||
-		imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyKeyPadEnter)) {
-		keyboard.Pressed[KeyEnter] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyEnter) ||
+		imgui.IsKeyPressedBool(imgui.KeyKeypadEnter) {
+		keyboard.Pressed[imgui.KeyEnter] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDownArrow)) {
-		keyboard.Pressed[KeyDownArrow] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyDownArrow) {
+		keyboard.Pressed[imgui.KeyDownArrow] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyUpArrow)) {
-		keyboard.Pressed[KeyUpArrow] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyUpArrow) {
+		keyboard.Pressed[imgui.KeyUpArrow] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyLeftArrow)) {
-		keyboard.Pressed[KeyLeftArrow] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyLeftArrow) {
+		keyboard.Pressed[imgui.KeyLeftArrow] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyRightArrow)) {
-		keyboard.Pressed[KeyRightArrow] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyRightArrow) {
+		keyboard.Pressed[imgui.KeyRightArrow] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyHome)) {
-		keyboard.Pressed[KeyHome] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyHome) {
+		keyboard.Pressed[imgui.KeyHome] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEnd)) {
-		keyboard.Pressed[KeyEnd] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyEnd) {
+		keyboard.Pressed[imgui.KeyEnd] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyBackspace)) {
-		keyboard.Pressed[KeyBackspace] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyBackspace) {
+		keyboard.Pressed[imgui.KeyBackspace] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyDelete)) {
-		keyboard.Pressed[KeyDelete] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyDelete) {
+		keyboard.Pressed[imgui.KeyDelete] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyEscape)) {
-		keyboard.Pressed[KeyEscape] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyEscape) {
+		keyboard.Pressed[imgui.KeyEscape] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyTab)) {
-		keyboard.Pressed[KeyTab] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyTab) {
+		keyboard.Pressed[imgui.KeyTab] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageUp)) {
-		keyboard.Pressed[KeyPageUp] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyPageUp) {
+		keyboard.Pressed[imgui.KeyPageUp] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyPageDown)) {
-		keyboard.Pressed[KeyPageDown] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyPageDown) {
+		keyboard.Pressed[imgui.KeyPageDown] = nil
 	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyV)) {
-		keyboard.Pressed[KeyV] = nil
+	if imgui.IsKeyPressedBool(imgui.KeyV) {
+		keyboard.Pressed[imgui.KeyV] = nil
 	}
-	const ImguiF1 = 290
+	if imgui.IsKeyPressedBool(imgui.KeyInsert) {
+		keyboard.Pressed[imgui.KeyInsert] = nil
+	}
 	for i := 0; i < 16; i++ { // 16 f-keys on the STARS keyboard
-		if imgui.IsKeyPressed(ImguiF1 + i) {
-			keyboard.Pressed[Key(int(KeyF1)+i)] = nil
+		k := imgui.KeyF1 + imgui.Key(i)
+		if imgui.IsKeyPressedBool(k) {
+			keyboard.Pressed[k] = nil
 		}
-	}
-	io := imgui.CurrentIO()
-	if io.KeyShiftPressed() {
-		keyboard.Pressed[KeyShift] = nil
-	}
-	if io.KeyCtrlPressed() {
-		keyboard.Pressed[KeyControl] = nil
-	}
-	if io.KeyAltPressed() {
-		keyboard.Pressed[KeyAlt] = nil
-	}
-	if io.KeySuperPressed() {
-		keyboard.Pressed[KeySuper] = nil
-	}
-	if imgui.IsKeyPressed(imgui.GetKeyIndex(imgui.KeyInsert)) {
-		keyboard.Pressed[KeyInsert] = nil
 	}
 
 	return keyboard
 }
 
-func (k *KeyboardState) WasPressed(key Key) bool {
+func (k *KeyboardState) KeyShift() bool {
+	return imgui.CurrentIO().KeyShift()
+}
+func (k *KeyboardState) KeyControl() bool {
+	return imgui.CurrentIO().KeyCtrl()
+}
+func (k *KeyboardState) KeyAlt() bool {
+	return imgui.CurrentIO().KeyAlt()
+}
+func (k *KeyboardState) KeySuper() bool {
+	return imgui.CurrentIO().KeySuper()
+}
+
+func (k *KeyboardState) WasPressed(key imgui.Key) bool {
 	_, ok := k.Pressed[key]
 	return ok
 }
 
-func (k *KeyboardState) IsFKeyHeld(key Key) bool {
+func (k *KeyboardState) IsFKeyHeld(key imgui.Key) bool {
 	_, ok := k.HeldFKeys[key]
 	return ok
 }

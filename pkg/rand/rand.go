@@ -9,6 +9,7 @@ import (
 	"iter"
 	"slices"
 	"strings"
+	"time"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -68,8 +69,10 @@ type Rand struct {
 	PCG32
 }
 
-func New() Rand {
-	return Rand{PCG32: NewPCG32()}
+func Make() *Rand {
+	r := &Rand{PCG32: NewPCG32()}
+	r.Seed(uint64(time.Now().UnixNano()))
+	return r
 }
 
 func (r *Rand) Seed(s uint64) {
@@ -92,31 +95,8 @@ func (r *Rand) Uint32() uint32 {
 	return r.Random()
 }
 
-// Drop-in replacement for the subset of math/rand that we use...
-var r Rand
-
-func init() {
-	r = New()
-}
-
-func Seed(s int64) {
-	r.PCG32.Seed(uint64(s), pcg32Increment)
-}
-
-func Intn(n int) int {
-	return int(r.Bounded(uint32(n)))
-}
-
-func Int31n(n int32) int32 {
-	return int32(r.Bounded(uint32(n)))
-}
-
-func Float32() float32 {
-	return float32(r.Random()) / (1<<32 - 1)
-}
-
-func Uint32() uint32 {
-	return r.Uint32()
+func (r *Rand) Bool() bool {
+	return r.Random()&1 == 0
 }
 
 // PermutationElement returns the ith element of a random permutation of the
@@ -168,26 +148,26 @@ func PermuteSlice[Slice ~[]E, E any](s Slice, seed uint32) iter.Seq2[int, E] {
 }
 
 // SampleSlice uniformly randomly samples an element of a non-empty slice.
-func SampleSlice[T any](slice []T) T {
-	return slice[Intn(len(slice))]
+func SampleSlice[T any](r *Rand, slice []T) T {
+	return slice[r.Intn(len(slice))]
 }
 
-func Sample[T any](t ...T) T {
-	return t[Intn(len(t))]
+func Sample[T any](r *Rand, t ...T) T {
+	return t[r.Intn(len(t))]
 }
 
 // SampleFiltered uniformly randomly samples a slice, returning the index
 // of the sampled item, using provided predicate function to filter the
 // items that may be sampled.  An index of -1 is returned if the slice is
 // empty or the predicate returns false for all items.
-func SampleFiltered[T any](slice []T, pred func(T) bool) int {
+func SampleFiltered[T any](r *Rand, slice []T, pred func(T) bool) int {
 	idx := -1
 	candidates := 0
 	for i, v := range slice {
 		if pred(v) {
 			candidates++
 			p := float32(1) / float32(candidates)
-			if Float32() < p {
+			if r.Float32() < p {
 				idx = i
 			}
 		}
@@ -198,11 +178,25 @@ func SampleFiltered[T any](slice []T, pred func(T) bool) int {
 // SampleWeighted randomly samples an element from the given slice with the
 // probability of choosing each element proportional to the value returned
 // by the provided callback.
-func SampleWeighted[T any](slice []T, weight func(T) int) (T, bool) {
-	return SampleWeightedSeq(slices.Values(slice), weight)
+func SampleWeighted[T any](r *Rand, slice []T, weight func(T) int) (T, bool) {
+	return SampleWeightedSeq(r, slices.Values(slice), weight)
 }
 
-func SampleWeightedSeq[T any](it iter.Seq[T], weight func(T) int) (sample T, ok bool) {
+func SampleSeq[T any](r *Rand, it iter.Seq[T]) (sample T, ok bool) {
+	// Weighted reservoir sampling...
+	n := 0
+	for v := range it {
+		n += 1
+		p := float32(1) / float32(n)
+		if r.Float32() < p {
+			sample = v
+			ok = true
+		}
+	}
+	return
+}
+
+func SampleWeightedSeq[T any](r *Rand, it iter.Seq[T], weight func(T) int) (sample T, ok bool) {
 	// Weighted reservoir sampling...
 	sumWt := 0
 	for v := range it {
@@ -213,7 +207,7 @@ func SampleWeightedSeq[T any](it iter.Seq[T], weight func(T) int) (sample T, ok 
 
 		sumWt += w
 		p := float32(w) / float32(sumWt)
-		if Float32() < p {
+		if r.Float32() < p {
 			sample = v
 			ok = true
 		}
@@ -231,14 +225,12 @@ var (
 	adjectiveList  []string
 )
 
-func AdjectiveNoun() string {
-	if nounList == nil {
-		nounList = strings.Split(nounsFile, "\n")
-	}
-	if adjectiveList == nil {
-		adjectiveList = strings.Split(adjectivesFile, "\n")
-	}
+func init() {
+	nounList = strings.Split(nounsFile, "\n")
+	adjectiveList = strings.Split(adjectivesFile, "\n")
+}
 
-	return strings.TrimSpace(adjectiveList[Intn(len(adjectiveList))]) + "-" +
-		strings.TrimSpace(nounList[Intn(len(nounList))])
+func (r *Rand) AdjectiveNoun() string {
+	return strings.TrimSpace(adjectiveList[r.Intn(len(adjectiveList))]) + "-" +
+		strings.TrimSpace(nounList[r.Intn(len(nounList))])
 }

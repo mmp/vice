@@ -855,17 +855,20 @@
         }
     },
     "stars_config": {
-       "center": "KABQ",
-       "inhibit_ca_volumes": [
-            {
-                "name": "ABQ NO CA",
-                "type": "circle",
-                "floor": 0,
-                "ceiling": 9500,
-                "radius": 10,
-                "center": "KABQ"
-            }
-        ],
+	"center": "KABQ",
+	"filters": {
+	    "inhibit_ca": [
+		{
+                    "id": "ABQNOCA",
+                    "description": "ABQ CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "radius": 10,
+                    "center": "KABQ"
+		}
+	    ]
+	},
         "radar_sites": {
             "ABQ": {
                 "char": "A",

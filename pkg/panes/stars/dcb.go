@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
@@ -145,7 +146,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 
 			// Get the map label, either the default or user-specified.
 			label := m.Label
-			if l, ok := ctx.ControlClient.STARSFacilityAdaptation.VideoMapLabels[m.Name]; ok {
+			if l, ok := ctx.FacilityAdaptation.VideoMapLabels[m.Name]; ok {
 				label = l
 			}
 
@@ -166,7 +167,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	isKeyboardCommandMode := func(m CommandMode) bool {
-		return m == CommandModeNone || m == CommandModeInitiateControl || m == CommandModeTerminateControl ||
+		return m == CommandModeNone || m == CommandModeInitiateControl || m == CommandModeTrackReposition ||
+			m == CommandModeTrackSuspend || m == CommandModeTerminateControl ||
 			m == CommandModeHandOff || m == CommandModeVFRPlan || m == CommandModeMultiFunc ||
 			m == CommandModeFlightData || m == CommandModeCollisionAlert || m == CommandModeMin ||
 			m == CommandModeTargetGen || m == CommandModeReleaseDeparture || m == CommandModeRestrictionArea ||
@@ -223,7 +225,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 				sp.setCommandMode(ctx, CommandModeNone)
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
-				sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
+					pw [2]float32, transforms ScopeTransformations) CommandStatus {
 					ps.RangeRingsUserCenter = transforms.LatLongFromWindowP(pw)
 					ps.UseUserRangeRingsCenter = true
 					return CommandStatus{clear: true}
@@ -265,8 +268,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 		unsupportedButton(ctx, "MODE\nFSL", buttonFull, buttonScale)
 
-		site := sp.radarSiteId(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites)
-		if len(ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites) == 0 {
+		site := sp.radarSiteId(ctx.FacilityAdaptation.RadarSites)
+		if len(ctx.FacilityAdaptation.RadarSites) == 0 {
 			disabledButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale)
 		} else if selectButton(ctx, "SITE\n"+site, maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeSite)
@@ -454,7 +457,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 	}
 
 	if sp.commandMode == CommandModeSite {
-		radarSites := ctx.ControlClient.State.STARSFacilityAdaptation.RadarSites
+		radarSites := ctx.FacilityAdaptation.RadarSites
 		rewindDCBCursor(3+len(radarSites)+3, buttonScale)
 		dcbStartCaptureMouseRegion()
 
@@ -509,7 +512,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 		}
 
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
-			sp.prefSet.ResetDefault(ctx.ControlClient.State, ctx.Platform, sp)
+			sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 		}
 		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {
@@ -1036,7 +1039,8 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 		sp.savedMousePosition = ctx.Mouse.Pos
 		ctx.Platform.StartMouseDeltaMode()
 
-		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+			transforms ScopeTransformations) CommandStatus {
 			sp.resetInputState(ctx)
 			ctx.Platform.StopMouseDeltaMode()
 			ctx.SetMousePosition(sp.savedMousePosition)
@@ -1057,15 +1061,25 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 // events to the spinner.
 func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, commandMode CommandMode, flags dcbFlags, buttonScale float32) {
 	active := sp.activeSpinner != nil && sp.activeSpinner.Equals(spinner)
-	if drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active {
+	// Slightly tricky: if the user has selected a command mode via the
+	// keyboard and that command mode has a single associated spinner, then
+	// we want to automatically activate that one spinner.  However, two
+	// command modes have multiple associated spinners and so we don't want
+	// to do that trick then.
+	commandModeSelected := !active && sp.commandMode == commandMode &&
+		commandMode != CommandModeBriteSpinner && commandMode != CommandModeCharSizeSpinner
+	if (drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active) || commandModeSelected {
 		sp.setCommandMode(ctx, commandMode)
 
-		sp.savedMousePosition = ctx.Mouse.Pos
+		if ctx.Mouse != nil {
+			sp.savedMousePosition = ctx.Mouse.Pos
+		}
 		sp.accumMouseDeltaY = 0
 		ctx.Platform.StartMouseDeltaMode()
 		sp.activeSpinner = spinner
 
-		sp.scopeClickHandler = func(pw [2]float32, transforms ScopeTransformations) CommandStatus {
+		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
+			transforms ScopeTransformations) CommandStatus {
 			sp.resetInputState(ctx)
 			return CommandStatus{clear: true}
 		}

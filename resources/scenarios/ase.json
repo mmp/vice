@@ -418,9 +418,11 @@
     "stars_config": {
         "center": "N039.19.41.442,W106.53.21.361",
         "range": 25,
-        "inhibit_ca_volumes": [
+	"filters": {
+            "inhibit_ca": [
             {
-                "name": "ASE FNL CA",
+                "id": "ASENOCA",
+                "description": "ASE FINAL CONFLICT SUPPRESS",
                 "type": "polygon",
                 "floor": 6155,
                 "ceiling": 10000,
@@ -431,7 +433,8 @@
                     "N039.11.23.500,W106.46.07.620"
                 ]
             }
-        ],
+            ]
+	},
         "radar_sites": {
             "KASE": {
                 "char": "A",

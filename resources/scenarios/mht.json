@@ -1082,9 +1082,11 @@
                 "receiving_controller": "BOS_37_CTR"
             }
         ],
-        "inhibit_ca_volumes": [
+	"filters": {
+        "inhibit_ca": [
             {
-                "name": "MHT NO CA",
+                "id": "MHTNOCA",
+                "description": "MHT CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 2000,
@@ -1092,14 +1094,16 @@
                 "center": "KMHT"
             },
             {
-                "name": "PSM NO CA",
+                "id": "PSMNOCA",
+                "description": "PSM CONFLICT SUPPRESS",
                 "type": "circle",
                 "floor": 0,
                 "ceiling": 2000,
                 "radius": 5,
                 "center": "KPSM"
             }
-        ],
+        ]
+	},
         "scratchpads": {
             "CCC": "PRT",
             "NELIE": "PRT",

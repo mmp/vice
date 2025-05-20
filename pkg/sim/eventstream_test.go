@@ -49,11 +49,12 @@ func TestEventStreamCompact(t *testing.T) {
 	var idx [4]int
 
 	i, iter := 0, 0
+	r := rand.Make()
 	for i < 65536 {
 		// Add a bunch of consecutive numbers to the stream
-		n := rand.Intn(255)
+		n := r.Intn(255)
 		for j := 0; j < n; j++ {
-			es.Post(Event{Type: EventType((i + j) % NumEventTypes)})
+			es.Post(Event{Type: EventType((i + j) % int(NumEventTypes))})
 		}
 		i += n
 
@@ -62,7 +63,7 @@ func TestEventStreamCompact(t *testing.T) {
 		}
 
 		for c, prob := range p {
-			if rand.Float32() > prob || (iter > 0 && c == 1) /* unsubscribed */ {
+			if r.Float32() > prob || (iter > 0 && c == 1) /* unsubscribed */ {
 				continue
 			}
 			s := subs[c].Get()
@@ -70,7 +71,7 @@ func TestEventStreamCompact(t *testing.T) {
 				if idx[c] != int(sv.Type) {
 					t.Errorf("expected %d, got %d for consumer %d", idx[c], int(sv.Type), c)
 				}
-				idx[c] = (idx[c] + 1) % NumEventTypes
+				idx[c] = (idx[c] + 1) % int(NumEventTypes)
 			}
 		}
 

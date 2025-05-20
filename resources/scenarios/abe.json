@@ -805,6 +805,28 @@
     }
   },
   "stars_config": {
+    "filters": {
+      "arrival_acquisition": [
+        {
+          "id": "abearr",
+          "description": "abe arrival acquisition all",
+          "type": "polygon",
+          "vertices": "N040.24.00.843,W076.13.25.792 N040.50.29.905,W076.11.59.659 N041.01.35.278,W075.29.36.406 N041.00.54.450,W075.22.40.601 N041.20.05.035,W075.10.41.711 N041.14.15.038,W074.40.23.144 N040.57.45.856,W074.54.05.223 N040.28.34.636,W074.58.05.989 N040.24.11.513,W075.23.22.294 N040.17.36.582,W075.43.08.433",
+          "floor": 0,
+          "ceiling": 10000
+        }
+      ],
+      "secondary_drop": [
+        {
+          "id": "secdrop",
+          "description": "drop region all",
+          "type": "polygon",
+          "vertices": "N040.24.00.843,W076.13.25.792 N040.50.29.905,W076.11.59.659 N041.01.35.278,W075.29.36.406 N041.00.54.450,W075.22.40.601 N041.20.05.035,W075.10.41.711 N041.14.15.038,W074.40.23.144 N040.57.45.856,W074.54.05.223 N040.28.34.636,W074.58.05.989 N040.24.11.513,W075.23.22.294 N040.17.36.582,W075.43.08.433",
+          "floor": 0,
+          "ceiling": 40000
+        }
+      ]
+    },
     "coordination_fixes": {
     "FJC": [
       {
@@ -857,16 +879,19 @@
   ]
   },
   "center": "KABE",
-  "inhibit_ca_volumes": [
-      {
-          "name": "ABE NO CA",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "40.65236,-75.4404"
-      }
-  ],
+  "filters": {
+      "inhibit_ca": [
+	  {
+              "id": "ABENOCA",
+              "description": "ABE CONFLICT SUPPRESS",
+              "type": "circle",
+              "floor": 0,
+              "ceiling": 1200,
+              "radius": 7,
+              "center": "40.65236,-75.4404"
+	  }
+      ]
+  },
   "radar_sites": {
     "ABE": {
       "char": "A",

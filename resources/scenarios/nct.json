@@ -10548,50 +10548,58 @@
          }
      ]
   },
-  "inhibit_ca_volumes": [
+      "filters": {
+  "inhibit_ca": [
     {
-        "name": "SFO NO CA",
+        "id": "SFONOCA",
+        "description": "SFO CONFLICT SUPPRESS",
         "type": "polygon",
         "floor": 0,
         "ceiling": 9500,
         "vertices": ["N037.37.08.892,W122.33.08.745", "N037.22.39.887,W122.09.39.473", "N037.35.58.882,W122.02.09.364", "N037.46.00.246,W122.25.24.023"]
     },
     {
-      "name": "OAK NO CA",
+      "id": "OAKNOCA",
+      "description": "OAK CONFLICT SUPPRESS",
       "type": "polygon",
       "floor": 0,
       "ceiling": 9500,
       "vertices":  ["N037.52.49.775,W122.17.57.264","N037.40.51.887,W122.21.36.276","N037.32.51.112,W122.02.56.907","N037.42.43.769,W121.48.34.590","N037.53.55.281,W122.20.16.955"]
   },
   {
-    "name": "SJC NO CA",
+    "id": "SJCNOCA",
+    "description": "SJC CONFLICT SUPPRESS",
     "type": "polygon",
     "floor": 0,
     "ceiling": 9500,
     "vertices": ["N037.23.02.519,W122.01.52.362","N037.11.55.003,W121.46.33.273","N037.14.26.313,W121.43.03.242","N037.26.32.028,W121.52.57.493"]
 },
 {
-  "name": "SMF NO CA",
+  "id": "SMFNOCA",
+  "description": "SMF CONFLICT SUPPRESS",
   "type": "polygon",
   "floor": 0,
   "ceiling": 9500,
   "vertices": ["N038.48.53.569,W121.39.29.531","N038.38.04.043,W121.38.43.965","N038.37.10.375,W121.32.06.095","N038.47.13.071,W121.31.19.486"]
 },
 {
-  "name": "RNO NO CA",
+  "id": "RNONOCA",
+  "description": "RNO CONFLICT SUPPRESS",
   "type": "polygon",
   "floor": 0,
   "ceiling": 9500,
   "vertices": ["N039.32.56.316,W119.49.19.716","N039.27.04.534,W119.51.36.551","N039.27.06.512,W119.41.00.031","N039.33.44.780,W119.41.42.575"]
 },
 {
-  "name": "MRY NO CA",
+  "id": "MRYNOCA",
+  "description": "MRY CONFLICT SUPPRESS",
   "type": "polygon",
   "floor": 0,
   "ceiling": 9500,
   "vertices": ["N036.38.52.122,W121.54.18.929","N036.32.57.456,W121.58.21.425","N036.30.18.827,W121.44.01.442","N036.37.44.213,W121.43.51.170"]
 }
-],
+]
+      },
 "airspace_awareness": [
 	{
         "fixes": [

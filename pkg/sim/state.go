@@ -6,10 +6,10 @@ package sim
 
 import (
 	"fmt"
-	"log/slog"
 	"maps"
 	gomath "math"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -32,12 +32,19 @@ const serverCallsign = "__SERVER__"
 // assorted information they may need (the state of aircraft in the sim,
 // etc.)
 type State struct {
-	Aircraft          map[string]*av.Aircraft
+	Tracks map[av.ADSBCallsign]*Track
+
+	// Unassociated ones, including unsupported DBs
+	UnassociatedFlightPlans []*STARSFlightPlan
+
+	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
+
 	Airports          map[string]*av.Airport
 	DepartureAirports map[string]*av.Airport
 	ArrivalAirports   map[string]*av.Airport
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
+	ReleaseDepartures []ReleaseDeparture
 
 	// Signed in human controllers + virtual controllers
 	Controllers      map[string]*av.Controller
@@ -45,8 +52,10 @@ type State struct {
 
 	PrimaryController string
 	MultiControllers  av.SplitConfiguration
-	UserTCP        string
+	UserTCP           string
 	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
+
+	GenerationIndex int
 
 	DepartureRunways []DepartureRunway
 	ArrivalRunways   []ArrivalRunway
@@ -58,8 +67,7 @@ type State struct {
 	ScenarioDefaultVideoMaps []string
 	UserRestrictionAreas     []av.RestrictionArea
 
-	ERAMComputers           *ERAMComputers
-	STARSFacilityAdaptation av.STARSFacilityAdaptation
+	STARSFacilityAdaptation STARSFacilityAdaptation
 
 	TRACON            string
 	MagneticVariation float32
@@ -76,6 +84,8 @@ type State struct {
 	SimDescription string
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 
+	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
+
 	Instructors map[string]bool
 
 	VideoMapLibraryHash []byte
@@ -86,9 +96,19 @@ type State struct {
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 }
 
-func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log.Logger) *State {
+type ReleaseDeparture struct {
+	ADSBCallsign        av.ADSBCallsign
+	DepartureAirport    string
+	DepartureController string
+	Released            bool
+	Squawk              av.Squawk
+	ListIndex           int
+	AircraftType        string
+	Exit                string
+}
+
+func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *State {
 	ss := &State{
-		Aircraft:   make(map[string]*av.Aircraft),
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
@@ -96,7 +116,7 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 		Controllers:       make(map[string]*av.Controller),
 		PrimaryController: config.PrimaryController,
 		MultiControllers:  config.MultiControllers,
-		UserTCP:        serverCallsign,
+		UserTCP:           serverCallsign,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
@@ -107,7 +127,6 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 		Range:                    config.Range,
 		ScenarioDefaultVideoMaps: config.DefaultMaps,
 
-		ERAMComputers:           MakeERAMComputers(config.STARSFacilityAdaptation.BeaconBank, lg),
 		STARSFacilityAdaptation: deep.MustCopy(config.STARSFacilityAdaptation),
 
 		TRACON:            config.TRACON,
@@ -180,15 +199,16 @@ func newState(config NewSimConfiguration, manifest *av.VideoMapManifest, lg *log
 	}
 
 	// Make some fake METARs; slightly different for all airports.
-	alt := 2980 + rand.Intn(40)
+	r := rand.Make()
+	alt := 2980 + r.Intn(40)
 
 	fakeMETAR := func(icao []string) {
 		for _, ap := range icao {
 			ss.METAR[ap] = &av.METAR{
 				// Just provide the stuff that the STARS display shows
 				AirportICAO: ap,
-				Wind:        ss.Wind.Randomize(),
-				Altimeter:   fmt.Sprintf("A%d", alt-2+rand.Intn(4)),
+				Wind:        ss.Wind.Randomize(r),
+				Altimeter:   fmt.Sprintf("A%d", alt-2+r.Intn(4)),
 			}
 		}
 	}
@@ -269,11 +289,6 @@ func (s *State) GetStateForController(tcp string) *State {
 	return &state
 }
 
-func (s *State) Activate(lg *log.Logger) {
-	// Make the ERAMComputers aware of each other.
-	s.ERAMComputers.Activate()
-}
-
 func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
@@ -317,65 +332,48 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 	return cons
 }
 
-// Returns all aircraft that match the given suffix. If instructor is true,
-// returns all matching aircraft; otherwise only ones under the current
-// controller's control are considered for matching.
-func (ss *State) AircraftFromCallsignSuffix(suffix string, instructor bool) []*av.Aircraft {
-	match := func(ac *av.Aircraft) bool {
-		if !strings.HasSuffix(ac.Callsign, suffix) {
-			return false
-		}
-		if instructor || ac.ControllingController == ss.UserTCP {
-			return true
-		}
-		// Hold for release aircraft still in the list
-		if ac.DepartureContactController == ss.UserTCP && ac.ControllingController == "" {
-			return true
-		}
-		return false
+func (ss *State) ResolveController(tcp string) string {
+	if _, ok := ss.Controllers[tcp]; ok {
+		// The easy case: the controller is already signed in
+		return tcp
 	}
-	return slices.Collect(util.FilterSeq(maps.Values(ss.Aircraft), match))
-}
 
-func (ss *State) DepartureController(ac *av.Aircraft, lg *log.Logger) string {
 	if len(ss.MultiControllers) > 0 {
-		callsign, err := ss.MultiControllers.ResolveController(ac.DepartureContactController,
-			func(tcp string) bool {
-				return slices.Contains(ss.HumanControllers, tcp)
+		mtcp, err := ss.MultiControllers.ResolveController(tcp,
+			func(multiTCP string) bool {
+				return slices.Contains(ss.HumanControllers, multiTCP)
 			})
-		if err != nil {
-			lg.Warn("Unable to resolve departure controller", slog.Any("error", err),
-				slog.Any("aircraft", ac))
+		if err == nil {
+			return mtcp
 		}
-		return util.Select(callsign != "", callsign, ss.PrimaryController)
-	} else {
-		return ss.PrimaryController
 	}
+
+	return ss.PrimaryController
 }
 
-func (ss *State) GetAllReleaseDepartures() []*av.Aircraft {
-	return util.FilterSliceInPlace(ss.STARSComputer().GetReleaseDepartures(),
-		func(ac *av.Aircraft) bool {
+func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
+	return util.FilterSlice(ss.ReleaseDepartures,
+		func(dep ReleaseDeparture) bool {
 			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
 			// making the update locally pending the next update from the server. However, it
 			// doesn't clear out the ones in the STARSComputer; that happens server side only.
 			// So, here is a band-aid to not return aircraft that no longer exist.
-			if _, ok := ss.Aircraft[ac.Callsign]; !ok {
-				return false
-			}
-			return ss.DepartureController(ac, nil) == ss.UserTCP
+			//if _, ok := ss.Aircraft[ac.ADSBCallsign]; !ok {
+			//return false
+			//}
+			return ss.ResolveController(dep.DepartureController) == ss.UserTCP
 		})
 }
 
-func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
-	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
-		func(ac *av.Aircraft) bool {
-			if ac.Released {
+func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
+	return util.FilterSlice(ss.ReleaseDepartures,
+		func(dep ReleaseDeparture) bool {
+			if dep.Released {
 				return false
 			}
 
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
+				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					// It'll be in a STARS coordination list
 					return false
 				}
@@ -384,11 +382,11 @@ func (ss *State) GetRegularReleaseDepartures() []*av.Aircraft {
 		})
 }
 
-func (ss *State) GetSTARSReleaseDepartures() []*av.Aircraft {
-	return util.FilterSliceInPlace(ss.GetAllReleaseDepartures(),
-		func(ac *av.Aircraft) bool {
+func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
+	return util.FilterSlice(ss.ReleaseDepartures,
+		func(dep ReleaseDeparture) bool {
 			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, ac.FlightPlan.DepartureAirport) {
+				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return true
 				}
 			}
@@ -408,32 +406,6 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 		return config.Center
 	}
 	return ss.Center
-}
-
-func (s *State) IsDeparture(ac *av.Aircraft) bool {
-	if _, ok := s.DepartureAirports[ac.FlightPlan.DepartureAirport]; ok {
-		return true
-	}
-	return false
-}
-
-func (s *State) IsArrival(ac *av.Aircraft) bool {
-	if _, ok := s.ArrivalAirports[ac.FlightPlan.ArrivalAirport]; ok {
-		return true
-	}
-	return false
-}
-
-func (s *State) IsOverflight(ac *av.Aircraft) bool {
-	return !s.IsDeparture(ac) && !s.IsArrival(ac)
-}
-
-func (s *State) IsIntraFacility(ac *av.Aircraft) bool {
-	return s.IsDeparture(ac) && s.IsArrival(ac)
-}
-
-func (ss *State) InhibitCAVolumes() []av.AirspaceVolume {
-	return ss.STARSFacilityAdaptation.InhibitCAVolumes
 }
 
 func (ss *State) AverageWindVector() [2]float32 {
@@ -478,23 +450,112 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 	return "", false
 }
 
-func (ss *State) DeleteAircraft(ac *av.Aircraft) {
-	delete(ss.Aircraft, ac.Callsign)
-	ss.ERAMComputer().ReturnSquawk(ac.Squawk)
-	ss.ERAMComputers.CompletelyDeleteAircraft(ac)
-}
-
-func (ss *State) STARSComputer() *STARSComputer {
-	_, stars, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
-	return stars
-}
-
-func (ss *State) ERAMComputer() *ERAMComputer {
-	eram, _, _ := ss.ERAMComputers.FacilityComputers(ss.TRACON)
-	return eram
-}
-
 func (ss *State) AmInstructor() bool {
 	_, ok := ss.Instructors[ss.UserTCP]
 	return ok
+}
+
+func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
+	if util.SeqContainsFunc(maps.Values(ss.Tracks),
+		func(tr *Track) bool {
+			return tr.IsAssociated() && tr.Squawk == sq
+		}) {
+		return true
+	}
+
+	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
+		func(fp *STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		return true
+	}
+
+	return false
+}
+
+func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
+	n := -1
+	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
+		n = pn
+	}
+
+	sq := av.Squawk(0)
+	if ps, err := av.ParseSquawk(s); err == nil {
+		sq = ps
+	}
+
+	for _, fp := range ss.UnassociatedFlightPlans {
+		if fp.ACID == ACID(s) {
+			return fp
+		}
+		if n == fp.ListIndex {
+			return fp
+		}
+		if sq == fp.AssignedSquawk {
+			return fp
+		}
+	}
+	return nil
+}
+
+func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if trk.ADSBCallsign == callsign {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
+func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if trk.ADSBCallsign == callsign && trk.IsAssociated() &&
+			trk.FlightPlan.TrackingController == ss.UserTCP {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
+func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
+func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
+			trk.FlightPlan.TrackingController == ss.UserTCP {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
+// FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
+// FIXME FIXME FIXME
+func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
+	for _, trk := range ss.Tracks {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
+			return trk.FlightPlan
+		}
+	}
+	for i, fp := range ss.UnassociatedFlightPlans {
+		if fp.ACID == acid {
+			return ss.UnassociatedFlightPlans[i]
+		}
+	}
+	return nil
+}
+
+func (ss *State) IsExternalController(tcp string) bool {
+	ctrl, ok := ss.Controllers[tcp]
+	return ok && ctrl.FacilityIdentifier != ""
+}
+
+func (ss *State) IsLocalController(tcp string) bool {
+	ctrl, ok := ss.Controllers[tcp]
+	return ok && ctrl.FacilityIdentifier == ""
 }

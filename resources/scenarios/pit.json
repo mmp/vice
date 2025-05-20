@@ -1432,24 +1432,28 @@
     ]
     },
     "center": "KPIT",
-    "inhibit_ca_volumes": [
-    {
-      "name": "PIT NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 4000,
-      "center": "N040.29.37.491,W080.14.19.515",
-      "radius": 6
+    "filters": {
+	"inhibit_ca": [
+	    {
+		"id": "PITNOCA",
+		"description": "PIT CONFLICT SUPPRESS",
+		"type": "circle",
+		"floor": 0,
+		"ceiling": 4000,
+		"center": "N040.29.37.491,W080.14.19.515",
+		"radius": 6
+	    },
+	    {
+		"id": "AGCNOCA",
+		"description": "AGC CONFLICT SUPPRESS",
+		"type": "circle",
+		"floor": 0,
+		"ceiling": 4000,
+		"center": "N040.21.17.806,W079.55.36.575",
+		"radius": 3
+	    }
+	]
     },
-    {
-      "name": "AGC NO CA",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 4000,
-      "center": "N040.21.17.806,W079.55.36.575",
-      "radius": 3
-    }
-    ],
     "radar_sites": {
      "PIT": {
         "char": "A",

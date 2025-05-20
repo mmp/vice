@@ -25,26 +25,42 @@ type ErrorLogger struct {
 }
 
 func (e *ErrorLogger) Push(s string) {
+	if e == nil {
+		return
+	}
 	e.hierarchy = append(e.hierarchy, s)
 }
 
 func (e *ErrorLogger) Pop() {
+	if e == nil {
+		return
+	}
 	e.hierarchy = e.hierarchy[:len(e.hierarchy)-1]
 }
 
 func (e *ErrorLogger) ErrorString(s string, args ...interface{}) {
+	if e == nil {
+		return
+	}
 	e.errors = append(e.errors, strings.Join(e.hierarchy, " / ")+": "+fmt.Sprintf(s, args...))
 }
 
 func (e *ErrorLogger) Error(err error) {
+	if e == nil {
+		return
+	}
 	e.errors = append(e.errors, strings.Join(e.hierarchy, " / ")+": "+err.Error())
 }
 
 func (e *ErrorLogger) HaveErrors() bool {
-	return len(e.errors) > 0
+	return e != nil && len(e.errors) > 0
 }
 
 func (e *ErrorLogger) PrintErrors(lg *log.Logger) {
+	if e == nil {
+		return
+	}
+
 	// Two loops so they aren't interleaved with logging to stdout
 	if lg != nil {
 		for _, err := range e.errors {
@@ -57,6 +73,9 @@ func (e *ErrorLogger) PrintErrors(lg *log.Logger) {
 }
 
 func (e *ErrorLogger) String() string {
+	if e == nil {
+		return ""
+	}
 	return strings.Join(e.errors, "\n")
 }
 

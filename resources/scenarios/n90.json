@@ -9882,10 +9882,12 @@
   }
 ]
   },
-  "range": 80,
-  "inhibit_ca_volumes": [
+      "range": 80,
+      "filters": {
+  "inhibit_ca": [
     {
-      "name": "EWR NO CA",
+      "id": "EWRNOCA",
+      "description": "EWR CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1200,
@@ -9893,7 +9895,8 @@
       "center": "KEWR"
     },
     {
-      "name": "LGA NO CA",
+      "id": "LGANOCA",
+      "description": "LGA CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1200,
@@ -9901,7 +9904,8 @@
       "center": "KLGA"
     },
     {
-      "name": "JFK NO CA",
+      "id": "JFKNOCA",
+      "description": "JFK CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9909,14 +9913,17 @@
       "center": "KJFK"
     },
     {
-      "name": "HVN NO CA",
+      "id": "HVNNOCA",
+      "description": "HVN CONFLICT SUPPRESS",
+      "type": "circle",
       "floor": 0,
       "ceiling": 1500,
       "radius": 3,
       "center": "KHVN"
     },
     {
-      "name": "ISP NO CA",
+      "id": "ISPNOCA",
+      "description": "ISP CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9924,7 +9931,8 @@
       "center": "KISP"
     },
     {
-      "name": "HPN NO CA",
+      "id": "HPNNOCA",
+      "description": "HPN CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9932,7 +9940,8 @@
       "center": "KHPN"
     },
     {
-      "name": "TEB NO CA",
+      "id": "TEBNOCA",
+      "description": "TEB CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9940,7 +9949,8 @@
       "center": "KTEB"
     },
     {
-      "name": "MMU NO CA",
+      "id": "MMUNOCA",
+      "description": "MMU CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9948,7 +9958,8 @@
       "center": "KMMU"
     },
     {
-      "name": "DXR NO CA",
+      "id": "DXRNOCA",
+      "description": "DXR CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9956,7 +9967,8 @@
       "center": "KDXR"
     },
     {
-      "name": "CDW NO CA",
+      "id": "CDWNOCA",
+      "description": "CDW CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9964,7 +9976,8 @@
       "center": "KCDW"
     },
     {
-      "name": "SWF NO CA",
+      "id": "SWFNOCA",
+      "description": "SWF CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
@@ -9972,14 +9985,16 @@
       "center": "KSWF"
     },
     {
-      "name": "POU NO CA",
+      "id": "POUNOCA",
+      "description": "POU CONFLICT SUPPRESS",
       "type": "circle",
       "floor": 0,
       "ceiling": 1500,
       "radius": 3,
       "center": "KPOU"
     }
-  ],
+  ]
+      },
   "radar_sites": {
     "EWR": {
       "char": "E",
@@ -10418,7 +10433,7 @@
               "center": "KLGA",
               "range": 80
       },
-      "JFK_A_APP,JFK_K_APP,JFK_M_APP,JFK_DEP" : {
+      "JFK_A_APP" : {
          "video_maps": [   "JFK RNAV", "Coast", "NY Class B",
                            "JFK GPS", "", "MVA",
                            "JFK ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 22L/R", "JFK RNAV/RNP 22L", "JFK RNAV", "LGA LOC 31", "NE HELI RNAV ROUTES", "HELI GPS",
@@ -10429,7 +10444,40 @@
           "center": "KJFK",
           "range": 50
       },
-      "LGA_V_APP,LGA_D_APP,LGA_F_APP,LGA_DEP,LGA_X_APP,LGA_Y_DEP": {
+      "JFK_K_APP" : {
+         "video_maps": [   "JFK RNAV", "Coast", "NY Class B",
+                           "JFK GPS", "", "MVA",
+                           "JFK ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 22L/R", "JFK RNAV/RNP 22L", "JFK RNAV", "LGA LOC 31", "NE HELI RNAV ROUTES", "HELI GPS",
+                           "NY Class B", "EOVM", "", "", "ISP ARR/DEP", "EWR ARR/DEP", "", "",
+                           "JFK ARR/DEP RWY 31L/R", "JFK ARR/DEP RWY 13L/R", "JFK RWY22L/R ILS FINAL", "JFK RWY 31R/L NTZ BDRYS", "JFK GPS", "", "N90 TFR", "JFK PINS APPROACHES",
+                           "Coast", "MVA", "", "CATSKILL AREA", "R5001/HELI GPS", "LIBERTY DEP", "", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["JFK ARR/DEP RWY 22L/R"],
+          "center": "KJFK",
+          "range": 50
+      },
+      "JFK_M_APP" : {
+         "video_maps": [   "JFK RNAV", "Coast", "NY Class B",
+                           "JFK GPS", "", "MVA",
+                           "JFK ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 22L/R", "JFK RNAV/RNP 22L", "JFK RNAV", "LGA LOC 31", "NE HELI RNAV ROUTES", "HELI GPS",
+                           "NY Class B", "EOVM", "", "", "ISP ARR/DEP", "EWR ARR/DEP", "", "",
+                           "JFK ARR/DEP RWY 31L/R", "JFK ARR/DEP RWY 13L/R", "JFK RWY22L/R ILS FINAL", "JFK RWY 31R/L NTZ BDRYS", "JFK GPS", "", "N90 TFR", "JFK PINS APPROACHES",
+                           "Coast", "MVA", "", "CATSKILL AREA", "R5001/HELI GPS", "LIBERTY DEP", "", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["JFK ARR/DEP RWY 22L/R"],
+          "center": "KJFK",
+          "range": 50
+      },
+      "JFK_DEP" : {
+         "video_maps": [   "JFK RNAV", "Coast", "NY Class B",
+                           "JFK GPS", "", "MVA",
+                           "JFK ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 22L/R", "JFK RNAV/RNP 22L", "JFK RNAV", "LGA LOC 31", "NE HELI RNAV ROUTES", "HELI GPS",
+                           "NY Class B", "EOVM", "", "", "ISP ARR/DEP", "EWR ARR/DEP", "", "",
+                           "JFK ARR/DEP RWY 31L/R", "JFK ARR/DEP RWY 13L/R", "JFK RWY22L/R ILS FINAL", "JFK RWY 31R/L NTZ BDRYS", "JFK GPS", "", "N90 TFR", "JFK PINS APPROACHES",
+                           "Coast", "MVA", "", "CATSKILL AREA", "R5001/HELI GPS", "LIBERTY DEP", "", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["JFK ARR/DEP RWY 22L/R"],
+          "center": "KJFK",
+          "range": 50
+      },
+      "LGA_V_APP": {
           "video_maps": ["LGA-HPN ARR/DEP", "NY Class B", "",
                          "MVA", "Coast", "LGA LOC 31",
                          "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
@@ -10438,7 +10486,52 @@
           "center": "KLGA",
           "range": 68
       },
-      "EWR_P_APP,EWR_DEP,EWR_A_APP,EWR_H_APP,EWR_S_APP,EWR_M_APP,EWR_Q_APP,EWR_U_APP": {
+      "LGA_D_APP": {
+          "video_maps": ["LGA-HPN ARR/DEP", "NY Class B", "",
+                         "MVA", "Coast", "LGA LOC 31",
+                         "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
+                         "HPN 16/34 GPS FIXES", "NK78 GPS", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "", "" ],
+          "default_maps": ["LGA-HPN ARR/DEP"],
+          "center": "KLGA",
+          "range": 68
+      },
+      "LGA_F_APP": {
+          "video_maps": ["LGA-HPN ARR/DEP", "NY Class B", "",
+                         "MVA", "Coast", "LGA LOC 31",
+                         "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
+                         "HPN 16/34 GPS FIXES", "NK78 GPS", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "", "" ],
+          "default_maps": ["LGA-HPN ARR/DEP"],
+          "center": "KLGA",
+          "range": 68
+      },
+      "LGA_DEP": {
+          "video_maps": ["LGA-HPN ARR/DEP", "NY Class B", "",
+                         "MVA", "Coast", "LGA LOC 31",
+                         "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
+                         "HPN 16/34 GPS FIXES", "NK78 GPS", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "", "" ],
+          "default_maps": ["LGA-HPN ARR/DEP"],
+          "center": "KLGA",
+          "range": 68
+      },
+      "LGA_X_APP": {
+          "video_maps": ["LGA-HPN ARR/DEP", "NY Class B", "",
+                         "MVA", "Coast", "LGA LOC 31",
+                         "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
+                         "HPN 16/34 GPS FIXES", "NK78 GPS", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "", "" ],
+          "default_maps": ["LGA-HPN ARR/DEP"],
+          "center": "KLGA",
+          "range": 68
+      },
+      "LGA_Y_DEP": {
+          "video_maps": ["LGA-HPN ARR/DEP", "NY Class B", "",
+                         "MVA", "Coast", "LGA LOC 31",
+                         "LGA-HPN ARR/DEP", "LGA RNAV", "BGM-101", "", "NY Class B", "", "NE HELI RNAV ROUTES",
+                         "HPN 16/34 GPS FIXES", "NK78 GPS", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "", "" ],
+          "default_maps": ["LGA-HPN ARR/DEP"],
+          "center": "KLGA",
+          "range": 68
+      },
+      "EWR_P_APP": {
           "video_maps": 
           [ "EWR ARR/DEP", "MVA", "NY Class B",
             "EOVM", "MMU ILS 23", "CDW RNAV",
@@ -10453,13 +10546,178 @@
           "range": 60
 
       },
-      "NY_LE_DEP,NY_LW_DEP,NY_LN_DEP,NY_LS_DEP,SWF_APP": {
+      "EWR_DEP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "EWR_A_APP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "EWR_H_APP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "EWR_S_APP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "EWR_M_APP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "EWR_Q_APP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "EWR_U_APP": {
+          "video_maps": 
+          [ "EWR ARR/DEP", "MVA", "NY Class B",
+            "EOVM", "MMU ILS 23", "CDW RNAV",
+            "EWR CRDA", "EWR GLS", "TEB RNAV (GPS) RWY 6", "RNAVX 29", "TEB RNAV", "LGA & VAP", "EWR RNAV",
+            "STW/SAX RNAV", "N07 RNAV", "DEPARTURE RNAV", "SMQ/N51", "39N/47N", "JFK ARR/DEP RWY 4L/R",
+            "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP",
+            "N90 TFR", "Coast", "EOVM", "", "EWR GPS", "", "",
+            "NE HELI RNAV ROUTES", "CATSKILL AREA", "LIBERTY DEP", "ISP ARR/DEP", "LGA-HPN ARR/DEP",
+            "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R" ],
+          "default_maps": ["EWR ARR/DEP"],
+          "center": "N040.43.34.389,W074.28.54.713",
+          "range": 60
+
+      },
+      "NY_LE_DEP": {
           "video_maps": [ "LIBERTY DEP", "CATSKILL AREA", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP", "LGA-HPN ARR/DEP" ],
           "default_maps": ["LIBERTY DEP"],
           "center": "N040.50.43.899,W073.58.40.816",
           "range": 60
       },
-      "ISP_H_APP,ISP_N_APP,ISP_R_APP,ISP_O_APP,ISP_Z_APP,ISP_I_APP,ISP_B_APP" : {
+      "NY_LW_DEP": {
+          "video_maps": [ "LIBERTY DEP", "CATSKILL AREA", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["LIBERTY DEP"],
+          "center": "N040.50.43.899,W073.58.40.816",
+          "range": 60
+      },
+      "NY_LN_DEP": {
+          "video_maps": [ "LIBERTY DEP", "CATSKILL AREA", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["LIBERTY DEP"],
+          "center": "N040.50.43.899,W073.58.40.816",
+          "range": 60
+      },
+      "NY_LS_DEP": {
+          "video_maps": [ "LIBERTY DEP", "CATSKILL AREA", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["LIBERTY DEP"],
+          "center": "N040.50.43.899,W073.58.40.816",
+          "range": 60
+      },
+      "SWF_APP": {
+          "video_maps": [ "LIBERTY DEP", "CATSKILL AREA", "ISP ARR/DEP", "EWR ARR/DEP", "JFK ARR/DEP", "LGA-HPN ARR/DEP" ],
+          "default_maps": ["LIBERTY DEP"],
+          "center": "N040.50.43.899,W073.58.40.816",
+          "range": 60
+      },
+      "ISP_H_APP" : {
+        "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
+         "default_maps": ["ISP ARR/DEP"],
+         "center": "KISP",
+         "range": 50
+      },
+      "ISP_N_APP" : {
+        "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
+         "default_maps": ["ISP ARR/DEP"],
+         "center": "KISP",
+         "range": 50
+      },
+      "ISP_R_APP" : {
+        "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
+         "default_maps": ["ISP ARR/DEP"],
+         "center": "KISP",
+         "range": 50
+      },
+      "ISP_O_APP" : {
+        "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
+         "default_maps": ["ISP ARR/DEP"],
+         "center": "KISP",
+         "range": 50
+      },
+      "ISP_Z_APP" : {
+        "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
+         "default_maps": ["ISP ARR/DEP"],
+         "center": "KISP",
+         "range": 50
+      },
+      "ISP_I_APP" : {
+        "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
+         "default_maps": ["ISP ARR/DEP"],
+         "center": "KISP",
+         "range": 50
+      },
+      "ISP_B_APP" : {
         "video_maps": [   "GPS NORTH", "Coast", "GPS SOUTH", "MVA", "ISP ARR/DEP", "BEADS", "ISP/CCC", "LOVES", "ARR RTS", "FRG APD", "N90 TFR", "VIKKY", "SEALL", "CATSKILL AREA" ],
          "default_maps": ["ISP ARR/DEP"],
          "center": "KISP",

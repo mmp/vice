@@ -10785,10 +10785,31 @@
     }
   },
   "stars_config": {
+    "filters": {
+      "arrival_acquisition": [
+        {
+          "id": "ewrack",
+          "description": "ewr arrival acquisition all",
+          "type": "polygon",
+          "vertices": "N039.59.17.304,W074.40.40.722 N040.09.54.978,W074.50.55.105 N040.15.00.260,W074.45.57.925 N040.17.49.038,W075.01.17.975 N040.32.08.059,W075.11.53.699 N040.38.56.352,W075.01.32.092 N040.58.53.876,W075.02.23.893 N041.06.00.681,W074.54.30.629 N041.12.05.372,W075.03.20.061 N041.21.21.747,W074.51.45.697 N041.25.10.716,W074.26.12.637 N041.31.28.192,W074.24.36.205 N041.22.08.645,W073.59.31.105 N041.11.11.003,W074.05.24.975 N040.59.51.870,W073.46.26.709 N040.31.23.358,W074.08.52.644 N040.23.12.558,W074.05.56.149",
+          "floor": 0,
+          "ceiling": 10000
+        }
+      ],
+      "secondary_drop": [
+        {
+          "id": "secdrop",
+          "description": "drop region all",
+          "type": "polygon",
+          "vertices": "N041.00.07.800,W074.38.34.022 N040.29.30.378,W074.38.30.260 N040.30.40.773,W074.08.21.800 N040.53.20.962,W073.55.34.899 N040.59.55.317,W073.46.12.344 N041.10.31.521,W074.08.26.414",
+          "floor": 0,
+          "ceiling": 40000
+        }
+      ]
+    },
     "center": "N040.43.34.389,W074.28.54.713",
   "pdb": { "hide_gs": true },
     "range": 60,
-    "beacon_bank": 6,
     "coordination_fixes": {
       "FLOSI": [
         {
@@ -10857,9 +10878,11 @@
       { "name": ".    TEB", "id": "A", "airports": [ "KTEB" ] },
       { "name": ".    MMU", "id": "B", "airports": [ "KMMU" ] }
     ],
-    "inhibit_ca_volumes": [
+      "filters": {
+    "inhibit_ca": [
       {
-        "name": "EWR NO CA",
+        "id": "EWRNOCA",
+        "description": "EWR CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 3000,
@@ -10867,7 +10890,8 @@
         "center": "KEWR"
       },
       {
-        "name": "LGA NO CA",
+        "id": "LGANOCA",
+        "description": "LGA CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
@@ -10875,14 +10899,16 @@
         "center": "KLGA"
       },
       {
-        "name": "TEB NO CA",
+        "id": "TEBNOCA",
+        "description": "TEB CONFLICT SUPPRESS",
         "type": "circle",
         "floor": 0,
         "ceiling": 1200,
         "radius": 2,
         "center": "KTEB"
       }
-  ],
+    ]
+      },
   "radar_sites": {
     "EWR": {
       "char": "E",

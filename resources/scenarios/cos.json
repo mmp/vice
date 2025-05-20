@@ -878,25 +878,28 @@
     },
     "stars_config": {
         "center": "N038.47.36.733,W104.35.10.501",
-		"coordination_lists": [
-			{
-				"name": "Meadow Lake",
-				"id": "A",
-				"airports": [
-					"KFLY"
-				]
-			}
-		],
-        "inhibit_ca_volumes": [
+      "coordination_lists": [
+	{
+	  "name": "Meadow Lake",
+	  "id": "A",
+	  "airports": [
+	    "KFLY"
+	  ]
+	}
+      ],
+	"filters": {
+          "inhibit_ca": [
             {
-                "name": "COS NO CA",
-                "type": "circle",
-                "floor": 0,
-                "ceiling": 9500,
-                "radius": 10,
-                "center": "N038.47.52.142,W104.42.03.065"
+              "id": "COSNOCA",
+              "description": "COS CONFLICT SUPPRESS",
+              "type": "circle",
+              "floor": 0,
+              "ceiling": 9500,
+              "radius": 10,
+              "center": "N038.47.52.142,W104.42.03.065"
             }
-        ],
+          ]
+	},
         "radar_sites": {
             "COS": {
                 "char": "A",
