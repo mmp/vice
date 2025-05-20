@@ -232,7 +232,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 		case imgui.KeyEscape:
 			if sp.activeSpinner != nil {
-				sp.setCommandMode(ctx, sp.activeSpinner.EscapeMode())
+				sp.setCommandMode(ctx, sp.activeSpinner.ModeAfter())
 			} else {
 				sp.setCommandMode(ctx, CommandModeNone)
 			}
