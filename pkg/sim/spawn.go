@@ -715,21 +715,23 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 		return 0
 	}
 
+	// Start with 6,000' and airborne for the launch delay.
+	wait := prev.MinSeparation
+
 	// When sequencing, penalize same-exit repeats. But when we have a
 	// sequence and are launching, we'll let it roll.
 	if considerExit && cac.FlightPlan.Exit == pac.FlightPlan.Exit {
-		return 3 * time.Minute / 2
+		wait = math.Max(wait, 3*time.Minute/2)
 	}
 
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
 	if wtDist != 0 {
 		// Assume '1 gives you 3.5'
-		return time.Duration(wtDist / 3.5 * float32(time.Minute))
+		wait = math.Max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
 	}
 
-	// Assume this will be less than wake turbulence
-	return prev.MinSeparation
+	return wait
 }
 
 func (s *Sim) makeNewIFRDeparture(airport, runway string) (ac *Aircraft, err error) {
