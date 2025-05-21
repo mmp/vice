@@ -1101,9 +1101,6 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 		} else if sfp.HandoffTrackController == ctx.UserTCP {
 			// For receiving handoffs
 			return true
-		} else if sfp.ControllingController == ctx.UserTCP {
-			// For non-greened handoffs
-			return true
 		} else if state.PointOutAcknowledged {
 			// Pointouts: This is if its been accepted,
 			// for an incoming pointout, it falls to the FDB check
@@ -1112,6 +1109,7 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 			// Special purpose codes
 			return true
 		} else if state.DisplayFDB {
+			// For non-greened handoffs
 			return true
 		} else if trk.IsOverflight() && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
 			// Overflights
