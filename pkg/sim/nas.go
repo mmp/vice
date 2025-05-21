@@ -129,6 +129,10 @@ func (sc *STARSComputer) Update(s *Sim) {
 			sc.FlightPlans = append(sc.FlightPlans, fp)
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
 			associate := func() bool {
+				if ac.Mode == av.TransponderModeStandby {
+					return false
+				}
+
 				if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil && fp.ManuallyCreated {
 					return true
 				}
