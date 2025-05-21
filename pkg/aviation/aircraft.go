@@ -634,3 +634,8 @@ func (ac *Aircraft) IsArrival() bool {
 func (ac *Aircraft) IsOverflight() bool {
 	return ac.TypeOfFlight == FlightTypeOverflight
 }
+
+func (ac *Aircraft) WillDoAirwork() bool {
+	return ac.Nav.Airwork != nil ||
+		slices.ContainsFunc(ac.Nav.Waypoints, func(wp Waypoint) bool { return wp.AirworkRadius > 0 })
+}
