@@ -944,6 +944,13 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
+		// In general, if the datablock isn't being drawn (e.g. due to
+		// altitude filters), don't draw history. The one exception is
+		// unassociated tracks squawking standby (I think!).
+		if !sp.datablockVisible(ctx, trk) && !(trk.IsUnassociated() && trk.Mode == av.TransponderModeStandby) {
+			continue
+		}
+
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
 			trackColorNum := math.Min(i, len(STARSTrackHistoryColors)-1)
