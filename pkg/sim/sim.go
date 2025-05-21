@@ -313,9 +313,12 @@ func (s *Sim) LogValue() slog.Value {
 }
 
 func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
+	s.mu.Lock(s.lg)
 	if err := s.signOn(tcp, instructor); err != nil {
+		s.mu.Unlock(s.lg)
 		return nil, err
 	}
+	s.mu.Unlock(s.lg)
 
 	state := s.State.GetStateForController(tcp)
 	var update StateUpdate
@@ -325,9 +328,6 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 }
 
 func (s *Sim) signOn(tcp string, instructor bool) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
 	if _, ok := s.humanControllers[tcp]; ok {
 		return ErrControllerAlreadySignedIn
 	}
