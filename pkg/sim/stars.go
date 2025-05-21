@@ -566,6 +566,10 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 		ManuallyCreated: true, // Always for ones created via a fp specifier
 	}
 
+	if perf, ok := av.DB.AircraftPerformance[sfp.AircraftType]; ok {
+		sfp.CWTCategory = perf.Category.CWT
+	}
+
 	// Handle beacon code assignment
 	var err error
 	if s.ImplicitSquawkAssignment.IsSet {
