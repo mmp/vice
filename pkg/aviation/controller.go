@@ -24,6 +24,10 @@ type Controller struct {
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
 }
 
+func (c Controller) IsExternal() bool {
+	return c.ERAMFacility || c.FacilityIdentifier != ""
+}
+
 func (c Controller) Id() string {
 	if c.ERAMFacility {
 		return c.TCP

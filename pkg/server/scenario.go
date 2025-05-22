@@ -978,43 +978,29 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 			}
 		}
 
-		for ctrl, config := range s.ControllerConfigs {
+		for tcp, config := range s.ControllerConfigs {
 			for _, name := range config.DefaultMaps {
 				if !slices.Contains(config.VideoMapNames, name) {
 					e.ErrorString("default map %q for %q is not included in the controller's "+
-						"\"video_maps\"", name, ctrl)
+						"\"video_maps\"", name, tcp)
 				}
 
 				if !manifest.HasMap(name) {
 					e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
-						name, ctrl)
+						name, tcp)
 				}
 			}
 			for _, name := range config.VideoMapNames {
 				if name != "" && !manifest.HasMap(name) {
 					e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
-						name, ctrl)
+						name, tcp)
 				}
 			}
 
-			// Make sure all of the control positions are included in at least
-			// one of the scenarios.
-			if !func() bool {
-				for _, sc := range sg.Scenarios {
-					if ctrl == sc.SoloController {
-						return true
-					}
-					for _, config := range sc.SplitConfigurations {
-						for pos := range config {
-							if ctrl == pos {
-								return true
-							}
-						}
-					}
-				}
-				return false
-			}() {
-				e.ErrorString("Control position %q in \"controller_configs\" not found in any of the scenarios", ctrl)
+			if ctrl, ok := sg.ControlPositions[tcp]; !ok {
+				e.ErrorString("Control position %q in \"controller_configs\" not defined in \"control_positions\"", tcp)
+			} else if ctrl.IsExternal() {
+				e.ErrorString("Control position %q in \"controller_configs\" is external and not in this TRACON.", tcp)
 			}
 		}
 	} else if len(s.VideoMapNames) == 0 {
