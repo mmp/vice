@@ -481,8 +481,6 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
-	dupes := getDuplicateBeaconCodes(ctx)
-
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
 	if len(vfr) > ps.VFRList.Lines {
@@ -490,7 +488,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
 		fp := vfr[i]
-		text.WriteString(fmt.Sprintf("%2d ", vfr[i].ListIndex))
+		text.WriteString(fmt.Sprintf("%2d", vfr[i].ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
 		acid := string(vfr[i].ACID)
 		if fp.DisableMSAW {
@@ -503,11 +501,6 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 			acid += STARSTriangleCharacter
 		}
 		text.WriteString(fmt.Sprintf("%-8s", acid))
-		if _, ok := dupes[fp.AssignedSquawk]; ok {
-			text.WriteByte('/')
-		} else {
-			text.WriteByte(' ')
-		}
 		haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
 		if !haveCode {
 			text.WriteString("VFR")
