@@ -728,12 +728,12 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 				return nil
 			}
 			return av.ErrNotBeingHandedOffToMe
-
 		},
 		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
-				FromController: fp.ControllingController,
+				ACID:           fp.ACID,
+				FromController: fp.TrackingController,
 				ToController:   tcp,
 			})
 
@@ -747,7 +747,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 					func(wp av.Waypoint) bool { return wp.TransferComms })
-				if !haveTransferComms && !s.isActiveHumanController(fp.ControllingController) {
+				if !haveTransferComms && !s.isActiveHumanController(fp.TrackingController) {
 					// For a handoff from a virtual controller, cue up a delayed
 					// contact message unless there's a point later in the route when
 					// comms are to be transferred.
