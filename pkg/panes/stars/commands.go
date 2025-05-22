@@ -3179,7 +3179,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else if trk.IsAssociated() && trk.FlightPlan.HandoffTrackController != "" &&
 					trk.FlightPlan.HandoffTrackController != ctx.UserTCP &&
 					trk.FlightPlan.TrackingController == ctx.UserTCP {
-					// cancel offered handoff offered
+					// cancel offered handoff
 					status.clear = true
 					sp.cancelHandoff(ctx, acid)
 					return

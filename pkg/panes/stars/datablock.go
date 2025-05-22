@@ -1035,7 +1035,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 		} else if state.DatablockAlert {
 			color = STARSTrackAlertColor
 		} else if sfp.TrackingController == ctx.UserTCP { //change
-			// we own the track track
+			// we own the track
 			color = STARSTrackedAircraftColor
 		} else if sfp.RedirectedHandoff.OriginalOwner == ctx.UserTCP ||
 			sfp.RedirectedHandoff.RedirectedTo == ctx.UserTCP {
