@@ -111,7 +111,7 @@ type LaunchConfig struct {
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports map[string]*av.Airport,
 	inbound map[string]map[string]int, haveVFRReportingRegions bool) LaunchConfig {
 	lc := LaunchConfig{
-		GoAroundRate:                0.05,
+		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
 		VFRAirports:                 vfrAirports,
