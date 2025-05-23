@@ -894,7 +894,10 @@ func (s *Sim) updateState() {
 						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
 					}
 				} else if passedWaypoint.TCPHandoff != "" {
-					sfp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					sfp := ac.STARSFlightPlan
+					if sfp == nil {
+						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+					}
 					if sfp != nil {
 						s.handoffTrack(sfp, passedWaypoint.TCPHandoff)
 					}
