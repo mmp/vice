@@ -433,8 +433,6 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			// Either the flight plan was passed in or fp was initialized  in the validation function.
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
-			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
-			fp.LastLocalController = tcp
 
 			ac.AssociateFlightPlan(fp)
 
@@ -474,11 +472,6 @@ func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID
 			return nil
 		},
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
-			// TODO: needed?
-			fp.TrackingController = tcp
-			fp.ControllingController = tcp // HACK so we can give them instructions, pending VFR calling in
-			fp.LastLocalController = tcp
-
 			ac.AssociateFlightPlan(fp)
 
 			s.eventStream.Post(Event{
