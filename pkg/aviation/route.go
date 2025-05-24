@@ -314,10 +314,10 @@ func (w WaypointArray) RouteString() string {
 	return strings.Join(r, " ")
 }
 
-func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller) {
+func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller, checkScratchpads func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	w.checkBasics(e, controllers)
+	w.checkBasics(e, controllers, checkScratchpads)
 
 	var lastMin float32 // previous minimum altitude restriction
 	var minFix string
@@ -348,7 +348,7 @@ func (w WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[strin
 	}
 }
 
-func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller) {
+func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller, checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	haveHO := false
@@ -397,16 +397,24 @@ func (w WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*
 			e.ErrorString("Can't specify both /radius and /shift at the same fix")
 		}
 
+		if !checkScratchpad(wp.PrimaryScratchpad) {
+			e.ErrorString("%s: invalid primary_scratchpad", wp.PrimaryScratchpad)
+		}
+		if !checkScratchpad(wp.SecondaryScratchpad) {
+			e.ErrorString("%s: invalid secondary scratchpad", wp.SecondaryScratchpad)
+		}
+
 		e.Pop()
 	}
 }
 
-func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[string]*Controller) {
+func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[string]*Controller,
+	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	foundFAF := false
 	for _, w := range wps {
-		w.checkBasics(e, controllers)
+		w.checkBasics(e, controllers, checkScratchpad)
 		w.checkDescending(e)
 
 		if len(w) < 2 {
@@ -424,10 +432,11 @@ func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, 
 	}
 }
 
-func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller, approachAssigned bool) {
+func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller, approachAssigned bool,
+	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	w.checkBasics(e, ctrl)
+	w.checkBasics(e, ctrl, checkScratchpad)
 	w.checkDescending(e)
 
 	for _, wp := range w {
@@ -442,8 +451,8 @@ func (w WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Contro
 	}
 }
 
-func (w WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[string]*Controller) {
-	w.checkBasics(e, ctrl)
+func (w WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[string]*Controller, checkScratchpads func(string) bool) {
+	w.checkBasics(e, ctrl, checkScratchpads)
 }
 
 func (w WaypointArray) checkDescending(e *util.ErrorLogger) {
@@ -1521,7 +1530,8 @@ type OverflightAirline struct {
 }
 
 func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[string]*Controller, e *util.ErrorLogger) {
+	airports map[string]*Airport, controlPositions map[string]*Controller, checkScratchpad func(string) bool,
+	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {
 		e.ErrorString("must provide at least two \"waypoints\" for overflight")
@@ -1532,7 +1542,7 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	of.Waypoints[len(of.Waypoints)-1].Delete = true
 	of.Waypoints[len(of.Waypoints)-1].FlyOver = true
 
-	of.Waypoints.CheckOverflight(e, controlPositions)
+	of.Waypoints.CheckOverflight(e, controlPositions, checkScratchpad)
 
 	if len(of.Airlines) == 0 {
 		e.ErrorString("must specify at least one airline in \"airlines\"")
@@ -1553,6 +1563,13 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 		e.ErrorString("Must specify \"initial_controller\".")
 	} else if _, ok := controlPositions[of.InitialController]; !ok {
 		e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
+	}
+
+	if !checkScratchpad(of.Scratchpad) {
+		e.ErrorString("%s: invalid scratchpad", of.Scratchpad)
+	}
+	if !checkScratchpad(of.SecondaryScratchpad) {
+		e.ErrorString("%s: invalid secondary scratchpad", of.SecondaryScratchpad)
 	}
 }
 

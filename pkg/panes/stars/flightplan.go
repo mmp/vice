@@ -6,7 +6,6 @@ package stars
 
 import (
 	"fmt"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -522,29 +521,12 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 	lc := len([]rune(contents))
 	fac := ctx.FacilityAdaptation
 
-	// 5-148
-	if fac.AllowLongScratchpad && lc > 4 {
-		return ErrSTARSCommandFormat
-	} else if !fac.AllowLongScratchpad && lc > 3 {
+	if !fac.CheckScratchpad(contents) {
 		return ErrSTARSCommandFormat
 	}
+
 	if !isSecondary && isImplied && lc == 1 {
 		// One-character for primary is only allowed via [MF]Y
-		return ErrSTARSCommandFormat
-	}
-
-	// Make sure it's only allowed characters
-	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
-	for _, letter := range contents {
-		if !strings.ContainsRune(allowedCharacters, letter) {
-			return ErrSTARSCommandFormat
-		}
-	}
-
-	// It can't be three numerals
-	if lc == 3 && contents[0] >= '0' && contents[0] <= '9' &&
-		contents[1] >= '0' && contents[1] <= '9' &&
-		contents[2] >= '0' && contents[2] <= '9' {
 		return ErrSTARSCommandFormat
 	}
 
@@ -558,12 +540,6 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 				}
 			}
 		}
-	}
-
-	// Certain specific strings aren't allowed in the first 3 characters
-	illegalScratchpads := []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"}
-	if lc >= 3 && slices.Contains(illegalScratchpads, contents[:3]) {
-		return ErrSTARSIllegalScratchpad
 	}
 
 	return nil

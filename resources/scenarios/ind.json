@@ -1297,6 +1297,7 @@
   },
   "stars_config": {
   "center": "KIND",
+  "allow_long_scratchpad": true,
   "coordination_fixes": {
             "BABNE": [
                 {

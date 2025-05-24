@@ -811,6 +811,12 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		}
 	}
 
+	for _, sp := range fa.Scratchpads {
+		if !fa.CheckScratchpad(sp) {
+			e.ErrorString("%s: invalid scratchpad in \"scratchpads\"", sp)
+		}
+	}
+
 	// Acquisition/Drop filters
 	makeDefaultAirportFilters := func(id string, description string, radius float32,
 		floor int, ceiling int, controlled bool) FilterRegions {
@@ -911,6 +917,42 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		}
 	}
 	e.Pop()
+}
+
+func (fa STARSFacilityAdaptation) CheckScratchpad(sp string) bool {
+	lc := len([]rune(sp))
+
+	// 5-148
+	if fa.AllowLongScratchpad && lc > 4 {
+		return false
+	} else if !fa.AllowLongScratchpad && lc > 3 {
+		return false
+	}
+
+	// Make sure it's only allowed characters
+	const STARSTriangleCharacter = string(rune(0x80))
+	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
+	for _, letter := range sp {
+		if !strings.ContainsRune(allowedCharacters, letter) {
+			return false
+		}
+	}
+
+	// It can't be three numerals
+	if lc == 3 && sp[0] >= '0' && sp[0] <= '9' &&
+		sp[1] >= '0' && sp[1] <= '9' &&
+		sp[2] >= '0' && sp[2] <= '9' {
+		return false
+	}
+
+	// Certain specific strings aren't allowed in the first 3 characters
+	for _, ill := range []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"} {
+		if strings.HasPrefix(sp, ill) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (r FilterRegion) Inside(p math.Point2LL, alt int) bool {

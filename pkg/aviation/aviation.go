@@ -602,7 +602,8 @@ func TASToIAS(tas, altitude float32) float32 {
 // Arrival
 
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[string]*Controller, e *util.ErrorLogger) {
+	airports map[string]*Airport, controlPositions map[string]*Controller, checkScratchpad func(string) bool,
+	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ar.Route == "" && ar.STAR == "" {
@@ -774,7 +775,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				// compliance with restrictions at that fix...
 				ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
 				approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
-				WaypointArray(ewp).CheckArrival(e, controlPositions, approachAssigned)
+				WaypointArray(ewp).CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
 				e.Pop()
 			}
@@ -787,7 +788,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
-	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned)
+	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
 	for arrivalAirport, airlines := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
@@ -871,6 +872,13 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
 			e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
 		}
+	}
+
+	if !checkScratchpad(ar.Scratchpad) {
+		e.ErrorString("%s: invalid scratchpad", ar.Scratchpad)
+	}
+	if !checkScratchpad(ar.SecondaryScratchpad) {
+		e.ErrorString("%s: invalid secondary scratchpad", ar.SecondaryScratchpad)
 	}
 }
 

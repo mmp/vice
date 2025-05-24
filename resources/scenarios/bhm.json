@@ -1012,14 +1012,15 @@
       "slope_angle": 0.3
     }
   },
+    "allow_long_scratchpad": true,
     "scratchpads": {
-      "RHETT": "RHETT",
-      "MRICA": "MRICA",
-      "CHEHA": "CHEHA",
-      "GUMMP": "GUMMP",
-      "DAYVS": "DAYVS",
-      "JOEYE": "JOEYE",
-      "KELCC": "KELCC",
+      "RHETT": "RHET",
+      "MRICA": "MRCA",
+      "CHEHA": "CHEA",
+      "GUMMP": "GUMP",
+      "DAYVS": "DYVS",
+      "JOEYE": "JOEY",
+      "KELCC": "KELC",
       "BNA": "BNA",
       "GQO": "GQO",
       "GAD": "GAD",

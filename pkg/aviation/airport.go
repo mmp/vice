@@ -187,7 +187,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 
 func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
-	facilityAirports map[string]*Airport, e *util.ErrorLogger) {
+	facilityAirports map[string]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if info, ok := DB.Airports[icao]; !ok {
@@ -300,7 +300,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 		requireFAF := appr.Type != ChartedVisualApproach
-		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions)
+		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions, checkScratchpad)
 
 		if appr.FullName == "" {
 			if appr.Type == ChartedVisualApproach {
@@ -368,7 +368,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				route.Waypoints[i].OnSID = true
 			}
 
-			route.Waypoints.CheckDeparture(e, controlPositions)
+			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				exit = strings.TrimSpace(exit)
@@ -447,6 +447,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				depExit = depExit[:i]
 				break
 			}
+		}
+
+		if !checkScratchpad(dep.Scratchpad) {
+			e.ErrorString("%s: invalid scratchpad", dep.Scratchpad)
+		}
+		if !checkScratchpad(dep.SecondaryScratchpad) {
+			e.ErrorString("%s: invalid secondary scratchpad", dep.SecondaryScratchpad)
 		}
 
 		/*

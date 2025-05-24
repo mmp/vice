@@ -39844,6 +39844,7 @@
   "stars_config": {
       "center": "N33.38.24.846,W84.25.42.088",
       "force_ql_self": true,
+      "allow_long_scratchpad": true,
       "coordination_fixes": {
         "CHPPR": [
           {

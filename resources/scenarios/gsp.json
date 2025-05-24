@@ -632,11 +632,11 @@
       }
   },
     "scratchpads": {
-        "DRIVN": "DRIVN",
-        "ACERB": "ACERB",
-        "JLENA": "JLENA",
-        "DGESS": "DGESS",
-        "SOTHH": "SOTHH",
+        "DRIVN": "DRI",
+        "ACERB": "ACE",
+        "JLENA": "JLE",
+        "DGESS": "DGE",
+        "SOTHH": "SOT",
         "SPA": "SPA",
         "HRS": "HRS",
         "GQO": "GQO"

@@ -737,7 +737,8 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
-			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, sg.Airports, e)
+			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, sg.Airports,
+			sg.STARSFacilityAdaptation.CheckScratchpad, e)
 		e.Pop()
 	}
 
@@ -802,11 +803,11 @@ func (sg *ScenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 
 		for i := range flow.Arrivals {
 			flow.Arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
-				sg.Airports, sg.ControlPositions, e)
+				sg.Airports, sg.ControlPositions, sg.STARSFacilityAdaptation.CheckScratchpad, e)
 		}
 		for i := range flow.Overflights {
 			flow.Overflights[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
-				sg.Airports, sg.ControlPositions, e)
+				sg.Airports, sg.ControlPositions, sg.STARSFacilityAdaptation.CheckScratchpad, e)
 		}
 
 		e.Pop()
