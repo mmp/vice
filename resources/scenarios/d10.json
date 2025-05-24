@@ -10400,7 +10400,7 @@
         }
       ]
     },
-    "CRIKT1.DS_NF": {
+    "CRIKT1_DS_NF": {
       "arrivals": [
         {
           "waypoints": "KIDDD/a12000+/ho1N CUBAN FINGR/a9000/s250 SLANT/ho CRIKT/a4000/h193/tc",
@@ -10826,7 +10826,7 @@
         }
       ]
     },
-    "HERBZ1.DN_NF": {
+    "HERBZ1_DN_NF": {
       "arrivals": [
         {
           "waypoints": "JABEV/ho1D MASTY/a16000 GREGS/a10000-11000/s250 GUUCH/a6000-8000/ho HERBZ/a6000/s240/tc CROEW/a5000/s240/h113",
@@ -10892,7 +10892,7 @@
         }
       ]
     },
-    "HERBZ1.DS_NF": {
+    "HERBZ1_DS_NF": {
       "arrivals": [
         {
           "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a4000 HUDIL/h190/tc",
@@ -12947,7 +12947,7 @@
         }
       ]
     },
-    "SLANT3.DS_NF_PROP": {
+    "SLANT3_DS_NF_PROP": {
       "arrivals": [
         {
           "waypoints": "KIDDD/ho1N CUBAN FINGR SLANT/a3000/h180/ho",
@@ -13369,7 +13369,7 @@
         }
       ]
     },
-    "TRUUK2_M_NORTH_NF": {
+    "TRUUK2_MN_NF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a6000 BLECO TRUUK/h190",
@@ -13428,7 +13428,7 @@
         }
       ]
     },
-    "TRUUK2_M_NORTH_SF": {
+    "TRUUK2_MN_SF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
@@ -13495,7 +13495,7 @@
         }
       ]
     },
-    "TRUUK2_S_NORTH_NF": {
+    "TRUUK2_MS_NF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.14.17.482,W097.20.45.327 N033.05.56.986,W097.25.03.616/a4000/s210 N032.42.24.873,W097.20.54.666 N032.42.56.582,W097.17.21.860/s190/h010/clearapp",
@@ -15474,7 +15474,7 @@
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_M_NORTH_NF": {
+        "TRUUK2_MN_NF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
@@ -15491,6 +15491,36 @@
         }
       },
       "solo_controller": "D10_D_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_D_APP": {
+            "primary": true,
+            "arrivals": [
+              "HERBZ1",
+              "TRUUK2_MN_NF",
+              "WESAT2"
+            ],
+            "departures": [
+              "KDTO/36R",
+              "KAFW/34R",
+              "KFTW/34"
+            ]
+          },
+          "D10_M_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "LIKES3_M_NORTH_NF",
+              "REEKO3_MN_NF"
+            ]
+          },
+          "D10_W_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "JOVEM6.AUTO"
+            ]
+          }
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -15623,7 +15653,7 @@
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_M_NORTH_SF": {
+        "TRUUK2_MN_SF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
@@ -15664,6 +15694,39 @@
         "D10_H_APP",
         "D10_J_APP"
       ],
+      "multi_controllers": {
+        "default": {
+          "D10_D_APP": {
+            "primary": true,
+            "arrivals": [
+              "JFRYE5",
+              "TRUUK2_MN_SF",
+              "WESAT2"
+            ],
+            "departures": [
+              "KDTO/18L"
+            ]
+          },
+          "D10_M_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "LIKES3_M_NORTH_SF",
+              "REEKO3_MN_SF"
+            ],
+            "departures": [
+              "KFTW/16",
+              "KAFW/16L"
+            ]
+          },
+          "D10_W_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "BOOVE7.AUTO",
+              "VKTRY2.AUTO"
+            ]
+          }
+        }
+      },
       "default_maps": [
         "RVMD10123S"
       ],
@@ -15784,7 +15847,7 @@
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_S_NORTH_NF": {
+        "TRUUK2_MS_NF": {
           "KAFW": 4,
           "KFTW": 6
         },
@@ -15831,6 +15894,40 @@
         "D10_H_APP",
         "D10_J_APP"
       ],
+      "multi_controllers": {
+        "default": {
+          "D10_M_APP": {
+            "primary": true,
+            "arrivals": [
+              "DRYYE2",
+              "LIKES3_N",
+              "REEKO3_MS_NF",
+              "SWVAY4_MS_NF_PROP"
+            ],
+            "departures": [
+              "KGKY/34",
+              "KNFW/36",
+              "KGPM/36",
+              "KFTW/34",
+              "KFWS/36L"
+            ]
+          },
+          "D10_D_APP": {
+            "backup": "D10_M_APP",
+            "arrivals": [
+              "TRUUK2_MS_NF",
+              "WESAT2_MS_NF"
+            ]
+          },
+          "D10_W_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "JOVEM6.AUTO",
+              "SOCKK4.AUTO"
+            ]
+          }
+        }
+      },
       "default_maps": [
         "RVMD10122S"
       ],
@@ -16209,7 +16306,7 @@
         "GREGS1_DN_NF_JET": {
           "KDAL": 0
         },
-        "HERBZ1.DN_NF": {
+        "HERBZ1_DN_NF": {
           "KADS": 2,
           "KDAL": 8,
           "KTKI": 1
@@ -16287,7 +16384,7 @@
             "backup": "D10_N_APP",
             "arrivals": [
               "GREGS1_DN_NF_JET",
-              "HERBZ1.DN_NF"
+              "HERBZ1_DN_NF"
             ]
           },
           "D10_E_APP": {
@@ -16473,13 +16570,13 @@
         "BRDJE5.AUTO": {
           "KDFW": 15
         },
-        "CRIKT1.DS_NF": {
+        "CRIKT1_DS_NF": {
           "KDAL": 15
         },
         "DRYYE2_DS_NF": {
           "KDAL": 15
         },
-        "HERBZ1.DS_NF": {
+        "HERBZ1_DS_NF": {
           "KDAL": 15,
           "KRBD": 3,
           "KLNC": 3
@@ -16497,7 +16594,7 @@
         "SWVAY4_DS_NF_PROP": {
           "KADS": 1
         },
-        "SLANT3.DS_NF_PROP": {
+        "SLANT3_DS_NF_PROP": {
           "KRBD": 1,
           "KLNC": 1
         },
@@ -16506,6 +16603,51 @@
         }
       },
       "solo_controller": "D10_S_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_S_APP": {
+            "primary": true,
+            "arrivals": [
+              "MNNDO4",
+              "REEKO3",
+              "EESAT4_DS_NF"
+            ],
+            "departures": [
+              "KRBD/31",
+              "KLNC/31"
+            ]
+          },
+          "D10_N_APP": {
+            "backup": "D10_S_APP",
+            "arrivals": [
+              "CRIKT1_DS_NF",
+              "HERBZ1_DS_NF",
+              "SLANT3_DS_NF_PROP"
+            ]
+          },
+          "D10_D_APP": {
+            "backup": "D10_S_APP",
+            "arrivals": [
+              "DRYYE2_DS_NF",
+              "SWVAY4_DS_NF_PROP"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_S_APP",
+            "arrivals": [
+              "BRDJE5.AUTO",
+              "WHINY4.AUTO"
+            ]
+          },
+          "D10_L_DEP": {
+            "backup": "D10_E_APP",
+            "departures": [
+              "KDAL/31R_AUTO",
+              "KDAL/31L_AUTO"
+            ]
+          }
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
