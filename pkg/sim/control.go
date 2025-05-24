@@ -818,9 +818,8 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
 					ToController:   tcp,
 					ACID:           acid,
 				})
-				fp.ControllingController = tcp
 				fp.HandoffTrackController = ""
-				fp.TrackingController = rh.RedirectedTo
+				fp.TrackingController = tcp
 				fp.LastLocalController = tcp
 				*rh = RedirectedHandoff{}
 			} else if rh.GetLastRedirector() == tcp { // Recall (only the last redirector is able to recall)
