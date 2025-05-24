@@ -851,9 +851,10 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits:
 - Software Development: Xavier Caldwell,
-  Artem Dorofeev, Dennis Graiani, Neel P,
-  Makoto Sakaguchi, Michael Trokel,
-  Samuel Valencia, and Yi Zhang.
+  Artem Dorofeev, Dennis Graiani, Ethan
+  Malimon, Neel P, Makoto Sakaguchi,
+  Michael Trokel, Samuel Valencia, and
+  Yi Zhang.
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, anguse,
   Adam Bolek, Brody Carty, Lucas Chan,
