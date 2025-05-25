@@ -570,7 +570,14 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					return nil
 				}
 			} else {
-				if command[0] == 'A' {
+				if command == "A" {
+					if err := s.AltitudeOurDiscretion(ctrl.tcp, callsign); err != nil {
+						rewriteError(err)
+						return nil
+					} else {
+						continue
+					}
+				} else if command[0] == 'A' {
 					components := strings.Split(command, "/")
 					if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
 						rewriteError(ErrInvalidCommandSyntax)
@@ -751,6 +758,11 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		case 'R':
 			if command == "RON" {
 				if err := s.ResumeOwnNavigation(ctrl.tcp, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			} else if command == "RST" {
+				if err := s.RadarServicesTerminated(ctrl.tcp, callsign); err != nil {
 					rewriteError(err)
 					return nil
 				}

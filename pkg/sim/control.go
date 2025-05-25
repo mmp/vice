@@ -1279,7 +1279,35 @@ func (s *Sim) ResumeOwnNavigation(tcp string, callsign av.ADSBCallsign) error {
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			return ac.ResumeOwnNavigation()
 		})
+}
 
+func (s *Sim) AltitudeOurDiscretion(tcp string, callsign av.ADSBCallsign) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+			return ac.AltitudeOurDiscretion()
+		})
+}
+
+func (s *Sim) RadarServicesTerminated(tcp string, callsign av.ADSBCallsign) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) []av.RadioTransmission {
+			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
+
+			// Leave our frequency
+			ac.STARSFlightPlan.ControllingController = ""
+
+			return []av.RadioTransmission{av.RadioTransmission{
+				Controller: tcp,
+				Message:    rand.Sample(s.Rand, "radar services terminated, seeya", "radar services terminated, squawk VFR"),
+				Type:       av.RadioTransmissionReadback,
+			}}
+		})
 }
 
 ///////////////////////////////////////////////////////////////////////////

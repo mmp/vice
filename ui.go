@@ -1030,7 +1030,9 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
 	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
-	[3]string{"*RON*", `"Resume own navigation (VFR)"`, "*RON*"},
+	[3]string{"*RON*", `"Resume own navigation" (VFR)`, "*RON*"},
+	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
+	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
 }
 

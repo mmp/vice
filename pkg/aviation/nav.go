@@ -2743,12 +2743,10 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 }
 
 func (nav *Nav) ResumeOwnNavigation() PilotResponse {
-	if nav.Altitude.Assigned == nil && nav.Speed.Assigned == nil && nav.Speed.AfterAltitude == nil &&
-		nav.Heading.Assigned == nil {
+	if nav.Heading.Assigned == nil {
+		return PilotResponse{Message: "I don't think you ever put us on a heading..."}
 	}
 
-	nav.Altitude = NavAltitude{}
-	nav.Speed = NavSpeed{}
 	nav.Heading = NavHeading{}
 	nav.DeferredHeading = nil
 
@@ -2773,6 +2771,18 @@ func (nav *Nav) ResumeOwnNavigation() PilotResponse {
 		nav.Waypoints = nav.Waypoints[startIdx:]
 	}
 	return PilotResponse{Message: rand.Sample(nav.Rand, "own navigation", "resuming own navigation")}
+}
+
+func (nav *Nav) AltitudeOurDiscretion() PilotResponse {
+	if nav.Altitude.Assigned == nil {
+		return PilotResponse{Message: "You never assigned us an altitude..."}
+	}
+
+	nav.Altitude = NavAltitude{}
+	alt := nav.FinalAltitude
+	nav.Altitude.Cleared = &alt
+
+	return PilotResponse{Message: rand.Sample(nav.Rand, "altitude our discretion", "altitude our discretion, maintain VFR")}
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {
