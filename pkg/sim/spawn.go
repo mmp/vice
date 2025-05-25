@@ -67,7 +67,7 @@ type DepartureAircraft struct {
 	LaunchTime    time.Time     // when it was actually launched; used for wake turbulence separation, etc.
 
 	// When they're ready to leave the gate
-	DepartGate time.Time
+	ReadyDepartGateTime time.Time
 
 	// HFR-only.
 	ReleaseRequested   bool
@@ -218,13 +218,13 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway string) {
 	defer s.mu.Unlock(s.lg)
 
 	if departureRunway != "" && ac.HoldForRelease {
-		s.addDepartureToPool(&ac, departureRunway)
+		s.addDepartureToPool(&ac, departureRunway, true /* manual launch */)
 	} else {
 		s.addAircraftNoLock(ac)
 	}
 }
 
-func (s *Sim) addDepartureToPool(ac *Aircraft, runway string) {
+func (s *Sim) addDepartureToPool(ac *Aircraft, runway string, manualLaunch bool) {
 	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State /* wind */, s.Rand)
 
 	ac.WaitingForLaunch = true
@@ -233,6 +233,10 @@ func (s *Sim) addDepartureToPool(ac *Aircraft, runway string) {
 	// The journey begins...
 	depState := s.DepartureState[ac.FlightPlan.DepartureAirport][runway]
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
+		if manualLaunch {
+			// Keep them moving and for HFR, request the release immediately.
+			depac.ReadyDepartGateTime = depac.SpawnTime
+		}
 		// IFRs spend some time at the gate to give them a chance to appear
 		// in the FLIGHT PLAN list.
 		depState.Gate = append(depState.Gate, depac)
@@ -488,14 +492,14 @@ func (s *Sim) spawnDepartures() {
 			// passed since the last one.
 			if now.After(depState.NextIFRSpawn) {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
-					s.addDepartureToPool(ac, runway)
+					s.addDepartureToPool(ac, runway, false /* not manual launch */)
 					r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
 					depState.NextIFRSpawn = now.Add(randomWait(r, false, s.Rand))
 				}
 			}
 			if now.After(depState.NextVFRSpawn) {
 				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {
-					s.addDepartureToPool(ac, runway)
+					s.addDepartureToPool(ac, runway, false /* not manual launch */)
 					r := scaleRate(depState.VFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
 					depState.NextVFRSpawn = now.Add(randomWait(r, false, s.Rand))
 				}
@@ -534,7 +538,7 @@ func (s *Sim) updateDepartureSequence() {
 
 			// See if anyone at the gate is ready to go
 			for i, dep := range depState.Gate {
-				if now.Before(dep.DepartGate) {
+				if now.Before(dep.ReadyDepartGateTime) {
 					continue
 				}
 
@@ -1208,9 +1212,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 
 func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
-		ADSBCallsign: ac.ADSBCallsign,
-		SpawnTime:    now,
-		DepartGate:   now.Add(time.Duration(5+r.Intn(5)) * time.Minute),
+		ADSBCallsign:        ac.ADSBCallsign,
+		SpawnTime:           now,
+		ReadyDepartGateTime: now.Add(time.Duration(5+r.Intn(5)) * time.Minute),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
