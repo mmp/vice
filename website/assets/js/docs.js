@@ -65,7 +65,15 @@ sidebarLinks.forEach((sidebarLink) => {
 		
 		//console.log(target);
 		
-        document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
+        const targetElement = document.getElementById(target);
+        const headerOffset = 69; // Same offset as used in Gumshoe ScrollSpy
+        const elementPosition = targetElement.offsetTop;
+        const offsetPosition = elementPosition - headerOffset;
+        
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+        });
         
         
         //Collapse sidebar after clicking
@@ -88,7 +96,15 @@ submenuLinks.forEach((submenuLink) => {
 		
 		var target = submenuLink.getAttribute("href").replace('#', '');
 		
-		document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
+		const targetElement = document.getElementById(target);
+		const headerOffset = 69; // Same offset as used in Gumshoe ScrollSpy
+		const elementPosition = targetElement.offsetTop;
+		const offsetPosition = elementPosition - headerOffset;
+		
+		window.scrollTo({
+		    top: offsetPosition,
+		    behavior: 'smooth'
+		});
         
         //Collapse sidebar after clicking
 		if (sidebar.classList.contains('sidebar-visible') && window.innerWidth < 1200){
