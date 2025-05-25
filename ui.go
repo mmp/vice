@@ -858,8 +858,8 @@ func showAboutDialog() {
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, anguse,
   Adam Bolek, Brody Carty, Lucas Chan,
-  Aaron Flett, Thomas Halpin, Jason
-  Helkenberg, Austin Jenkins, Ketan K,
+  Aaron Flett, Ryan G, Thomas Halpin,
+  Jason Helkenberg, Austin Jenkins, Ketan K,
   Mike K, Allison L, Josh Lambert,
   Kayden Lambert, Mike LeGall, Jonah
   Lefkoff, Jud Lopez, Ethan Malimon, Jace
