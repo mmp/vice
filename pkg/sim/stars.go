@@ -817,11 +817,10 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		}
 	}
 
-	// Acquisition/Drop filters
-	makeDefaultAirportFilters := func(id string, description string, radius float32,
-		floor int, ceiling int, controlled bool) FilterRegions {
+	makeCircleAirportFilters := func(id string, description string, radius float32,
+		floor int, ceiling int, airports []string) FilterRegions {
 		var regions FilterRegions
-		for _, apname := range util.Select(controlled, controlledAirports, allAirports) {
+		for _, apname := range airports {
 			ap, ok := av.DB.Airports[apname]
 			if !ok {
 				e.ErrorString("Airport %q not found", apname)
@@ -844,20 +843,69 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		return regions
 	}
 
+	// (Re)compute this ourselves rather than taking it as an argument
+	// since the one in ScenarioGroup depends on our initializing Center
+	// which just happened above.
+	nmPerLongitude := 60 * math.Cos(math.Radians(fa.Center[1]))
+
+	makePolygonAirportFilters := func(id string, description string, delta float32,
+		floor int, ceiling int, airports []string) FilterRegions {
+		var regions FilterRegions
+		for _, apname := range airports {
+			ap, ok := av.DB.Airports[apname]
+			if !ok {
+				e.ErrorString("Airport %q not found", apname)
+			}
+			if len(apname) == 4 {
+				apname = apname[1:]
+			}
+
+			// Convex hull of the runway threshold points
+			p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Threshold, nmPerLongitude) })
+			hull := math.ConvexHull(p)
+
+			// Hacky polygon dilation: compute the average point as a center and then offset each away from it.
+			var c [2]float32
+			for _, p := range hull {
+				c = math.Add2f(c, p)
+			}
+			c = math.Scale2f(c, 1/float32(len(hull)))
+			for i := range hull {
+				v := math.Sub2f(hull[i], c)
+				hull[i] = math.Add2f(hull[i], math.Scale2f(v, delta))
+			}
+
+			// Back to lat-long for the AirspaceVolume
+			pll := util.MapSlice(hull, func(p [2]float32) math.Point2LL { return math.NM2LL(p, nmPerLongitude) })
+
+			regions = append(regions, FilterRegion{
+				AirspaceVolume: av.AirspaceVolume{
+					Id:          id + apname,
+					Description: description + " " + apname,
+					Type:        av.AirspaceVolumePolygon,
+					Floor:       0,
+					Ceiling:     ap.Elevation + ceiling,
+					Vertices:    pll,
+				},
+			})
+		}
+		return regions
+	}
+
 	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 3, 0, 500, true)
+		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.75, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 3, 0, 500, true)
+		fa.Filters.DepartureAcquisition = makePolygonAirportFilters("ACQ", "DEPARTURE ACQUISITION", 0.75, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
-		fa.Filters.InhibitCA = makeDefaultAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, true)
+		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.InhibitMSAW) == 0 {
-		fa.Filters.InhibitMSAW = makeDefaultAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, true)
+		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makeDefaultAirportFilters("SURF", "SURFACE TRACKING", 1.5, 0, 250, false)
+		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.5, 0, 250, allAirports)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
