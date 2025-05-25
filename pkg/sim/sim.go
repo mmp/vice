@@ -7,6 +7,7 @@ package sim
 import (
 	"log/slog"
 	"maps"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -1187,11 +1188,23 @@ func (s *Sim) airportName(icao string) string {
 		name = ap.Name
 	} else if ap, ok := av.DB.Airports[icao]; ok && ap.Name != "" {
 		name = ap.Name
+
+		// If it's multiple things separated by a slash, pick one at random.
+		f := strings.Split(name, "/")
+		name = strings.TrimSpace(f[s.Rand.Intn(len(f))])
+
+		// Strip any trailing parenthetical.
+		var trailingParenRe = regexp.MustCompile(`^(.*) \([^)]+\)$`)
+		if sm := trailingParenRe.FindStringSubmatch(name); sm != nil {
+			name = sm[1]
+		}
+
+		// Strip suffixes that likely wouldn't be said verbally.
+		for _, extra := range []string{"Airport", "Air Field", "Field", "Strip", "Airstrip", "International", "Regional"} {
+			name = strings.TrimSuffix(name, " "+extra)
+		}
 	}
 
-	for _, extra := range []string{"Airport", "Field", "Strip", "Airstrip", "International"} {
-		name = strings.TrimRight(name, " "+extra)
-	}
 	return name
 }
 
