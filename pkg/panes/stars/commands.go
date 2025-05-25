@@ -3895,8 +3895,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "Q":
 				if cmd == "" {
-					if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP &&
-						trk.FlightPlan.ControllingController != ctx.UserTCP) {
+					if trk.IsUnassociated() || trk.FlightPlan.TrackingController != ctx.UserTCP {
 						status.err = ErrSTARSIllegalTrack
 					} else {
 						status.clear = true
@@ -3952,9 +3951,6 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			case "V":
 				if cmd == "" {
 					if trk.IsUnassociated() {
-						status.err = ErrSTARSIllegalTrack
-					} else if trk.FlightPlan.TrackingController != ctx.UserTCP &&
-						trk.FlightPlan.ControllingController != ctx.UserTCP {
 						status.err = ErrSTARSIllegalTrack
 					} else {
 						var spec sim.STARSFlightPlanSpecifier
