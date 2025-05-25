@@ -893,10 +893,10 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 	}
 
 	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.75, 0, 500, controlledAirports)
+		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makePolygonAirportFilters("ACQ", "DEPARTURE ACQUISITION", 0.75, 0, 500, controlledAirports)
+		fa.Filters.DepartureAcquisition = makePolygonAirportFilters("ACQ", "DEPARTURE ACQUISITION", 0.35, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
 		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, controlledAirports)
@@ -905,7 +905,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.5, 0, 250, allAirports)
+		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 0, 250, allAirports)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
