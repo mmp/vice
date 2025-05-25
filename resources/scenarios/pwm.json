@@ -13,27 +13,27 @@
       },
       "departure_routes": {
         "29": {
-          "GORHM NUBLE RBELA NELIE": {
-            "assigned_altitude": 3000,
-            "sid": "NUBLE4",
-            "waypoints": "GORHM NUBLE RBELA NELIE"
-          },
-          "ALIEH HSKEL BAUER": {
+          "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,
             "sid": "HSKEL3",
             "waypoints": "ALIEH HSKEL BAUER"
+          },
+          "NELIE, CCC, BAF": {
+            "assigned_altitude": 3000,
+            "sid": "NUBLE4",
+            "waypoints": "GORHM NUBLE RBELA"
           }
         },
         "11": {
-          "AHRON PEAAK WHYOO ORCHD FOSCO NUBLE RBELA JJIMY NELIE": {
+          "NELIE, BAF, CCC": {
             "assigned_altitude": 3000,
             "sid": "NUBLE4",
-            "waypoints": "AHRON PEAAK WHYOO ORCHD/a10000 FOSCO NUBLE RBELA JJIMY NELIE"
+            "waypoints": "AHRON PEAAK WHYOO ORCHD/a10000 FOSCO NUBLE RBELA"
           },
-          "ALIEH HSKEL BAUER": {
+          "SYR, HANAA, CAM": {
             "assigned_altitude": 3000,
             "sid": "HSKEL3",
-            "waypoints": "AHRON LIZLU MRKEE ALIEH HSKEL BAUER CAM"
+            "waypoints": "AHRON LIZLU MRKEE ALIEH HSKEL BAUER"
           }
         }
       },
@@ -46,7 +46,7 @@
           ],
           "destination": "KBED",
           "exit": "NELIE",
-          "route": "GORHM NUBLE RBELA NELIE",
+          "route": "NUBLE4 NELIE",
           "scratchpad": "NEL"
         },
         {
@@ -57,8 +57,30 @@
           ],
           "destination": "KJFK",
           "exit": "NELIE",
-          "route": "GORHM NUBLE RBELA NELIE",
+          "route": "NUBLE4 NELIE",
           "scratchpad": "NEL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "CCC",
+          "route": "NUBLE4 CCC PARCH4",
+          "scratchpad": "CCC"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBNA",
+          "exit": "CAM",
+          "route": "HSKEL3 CAM ALB J49 PSB Q71 GEFFS HVQ YOCKY GROAT PASLY4",
+          "scratchpad": "CAM"
         }
       ],
       "tower_list": 1
@@ -82,6 +104,14 @@
                 "airport": "KHPN"
               },
               {
+                "icao": "SWA",
+                "airport": "KBNA"
+              },
+              {
+                "icao": "MXY",
+                "airport": "KPIT"
+              },
+              {
                 "icao": "JIA",
                 "airport": "KDCA"
               },
@@ -91,7 +121,7 @@
               },
               {
                 "icao": "RPA",
-                "airport": "KDTW"
+                "airport": "KIAD"
               }
             ]
           }
