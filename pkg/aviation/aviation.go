@@ -245,10 +245,12 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign fu
 }
 
 type Runway struct {
-	Id        string
-	Heading   float32
-	Threshold math.Point2LL
-	Elevation int
+	Id                         string
+	Heading                    float32
+	Threshold                  math.Point2LL
+	ThresholdCrossingHeight    int // delta from elevation
+	Elevation                  int
+	DisplacedThresholdDistance float32 // in nm
 }
 
 func TidyRunway(r string) string {

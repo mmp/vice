@@ -273,14 +273,16 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				appr.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			// Add the final fix at the runway threshold.
+			alt := rwy.Elevation + rwy.ThresholdCrossingHeight
+			threshold := math.Offset2LL(rwy.Threshold, rwy.Heading, rwy.DisplacedThresholdDistance,
+				nmPerLongitude, magneticVariation)
+
 			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
-				Fix:      "_" + appr.Runway + "_THRESHOLD",
-				Location: rwy.Threshold,
-				AltitudeRestriction: &AltitudeRestriction{
-					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
-				},
-				Land:    true,
-				FlyOver: true,
+				Fix:                 "_" + appr.Runway + "_THRESHOLD",
+				Location:            threshold,
+				AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
+				Land:                true,
+				FlyOver:             true,
 			})
 			n := len(appr.Waypoints[i])
 

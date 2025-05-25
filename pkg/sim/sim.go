@@ -962,8 +962,8 @@ func (s *Sim) updateState() {
 					// There should be an altitude restriction at the final approach waypoint, but
 					// be careful.
 					alt := passedWaypoint.AltitudeRestriction
-					// If we're more than 150 feet AGL, go around.
-					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+150
+					// If we're more than 200 feet AGL, go around.
+					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
 					if lowEnough {
 						s.lg.Info("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
 						s.deleteAircraft(ac)
