@@ -237,6 +237,7 @@ func init() {
 			// database, so port them over.
 			ap.Name = db.Airports[icao].Name
 			ap.Country = db.Airports[icao].Country
+			ap.ARTCC = db.Airports[icao].ARTCC
 			db.Airports[icao] = ap
 		}
 	}
