@@ -1,0 +1,303 @@
+{
+  "tracon": "PWM",
+  "airports": {
+    "KPWM": {
+      "name": "PWM",
+      "approaches": {
+        "I29": {
+          "cifp_id": "I29"
+        },
+        "I11": {
+          "cifp_id": "I11"
+        }
+      },
+      "departure_routes": {
+        "29": {
+          "GORHM NUBLE RBELA NELIE": {
+            "assigned_altitude": 3000,
+            "sid": "NUBLE4",
+            "waypoints": "GORHM NUBLE RBELA NELIE"
+          },
+          "ALIEH HSKEL BAUER": {
+            "assigned_altitude": 3000,
+            "sid": "HSKEL3",
+            "waypoints": "ALIEH HSKEL BAUER"
+          }
+        },
+        "11": {
+          "AHRON PEAAK WHYOO ORCHD FOSCO NUBLE RBELA JJIMY NELIE": {
+            "assigned_altitude": 3000,
+            "sid": "NUBLE4",
+            "waypoints": "AHRON PEAAK WHYOO ORCHD/a10000 FOSCO NUBLE RBELA JJIMY NELIE"
+          },
+          "ALIEH HSKEL BAUER": {
+            "assigned_altitude": 3000,
+            "sid": "HSKEL3",
+            "waypoints": "AHRON LIZLU MRKEE ALIEH HSKEL BAUER CAM"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "WUP"
+            }
+          ],
+          "destination": "KBED",
+          "exit": "NELIE",
+          "route": "GORHM NUBLE RBELA NELIE",
+          "scratchpad": "NEL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "NELIE",
+          "route": "GORHM NUBLE RBELA NELIE",
+          "scratchpad": "NEL"
+        }
+      ],
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "East": {
+      "arrivals": [
+        {
+          "spawn": "N42.06.33,W70.56.44",
+          "waypoints": "CCC FOSTY BILJE BUOYY/ho SHAUN CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
+          "route": "SCOGS3",
+          "initial_controller": "BOS_17_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KPWM": [
+              {
+                "icao": "EJA",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KACK"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KDTW"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "N42.59.39.440,W70.56.44",
+          "waypoints": "CAM CDOGG KAYCC ARARR BUXTO",
+          "route": "CDOGG4",
+          "initial_controller": "BOS_17_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KPWM": [
+              {
+                "icao": "EJA",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KASE"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "West": {
+      "arrivals": [
+        {
+          "spawn": "N42.06.33,W70.56.44",
+          "waypoints": "BUOYY SHAUN/ho CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
+          "route": "SCOGS3",
+          "initial_controller": "BOS_17_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KPWM": [
+              {
+                "icao": "EJA",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KACK"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KDTW"
+              }
+            ]
+          }
+        },
+        {
+          "spawn": "N42.59.39.440,W70.56.44",
+          "waypoints": "CAM CDOGG/ho KAYCC YOMON YAAKK SAPPE/a3000",
+          "route": "CDOGG4",
+          "initial_controller": "BOS_17_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KPWM": [
+              {
+                "icao": "EJA",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KASE"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "control_positions": {
+    "PWM_TWR": {
+      "frequency": 120900,
+      "radio_name": "Portland Tower",
+      "sector_id": "1T"
+    },
+    "PWM_S_APP": {
+      "frequency": 119750,
+      "radio_name": "Portland Approach",
+      "sector_id": "1S"
+    },
+    "PWM_L_APP": {
+      "frequency": 125500,
+      "radio_name": "Portland Approach",
+      "sector_id": "1L"
+    },
+    "BOS_17_CTR": {
+      "frequency": 133450,
+      "radio_name": "Boston Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C17"
+    }
+  },
+  "primary_airport": "KPWM",
+  "default_scenario": "Land West",
+  "name": "PWM",
+  "scenarios": {
+    "Land West": {
+      "arrival_runways": [
+        {
+          "airport": "KPWM",
+          "runway": "29"
+        }
+      ],
+      "arrivals": {
+        "West": {
+          "KPWM": 10
+        }
+      },
+      "solo_controller": "PWM_S_APP",
+      "controllers": [
+        "PWM_S_APP",
+        "PWM_L_APP",
+        "PWM_TWR",
+        "BOS_17_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KPWM",
+          "rate": 10,
+          "runway": "29"
+        }
+      ],
+      "wind": {
+        "direction": 280,
+        "speed": 12
+      },
+      "default_maps": [
+        "PWM MAIN",
+        "PWM EVENT RWY 29"
+      ]
+    },
+    "Land East": {
+      "arrival_runways": [
+        {
+          "airport": "KPWM",
+          "runway": "11"
+        }
+      ],
+      "arrivals": {
+        "East": {
+          "KPWM": 10
+        }
+      },
+      "solo_controller": "PWM_S_APP",
+      "controllers": [
+        "PWM_S_APP",
+        "PWM_L_APP",
+        "PWM_TWR",
+        "BOS_17_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KPWM",
+          "rate": 10,
+          "runway": "11"
+        }
+      ],
+      "wind": {
+        "direction": 110,
+        "speed": 12
+      },
+      "default_maps": [
+        "PWM MAIN",
+        "PWM EVENT RWY 11"
+      ]
+    }
+  },
+  "stars_config": {
+    "center": "KPWM",
+    "scratchpads": {},
+    "stars_maps": [
+      "PWM MAIN",
+      "PWM EVENT RWY 29",
+      "PWM EOVM",
+      "PWM EVENT RWY 11"
+    ],
+    "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+  }
+}
