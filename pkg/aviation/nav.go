@@ -133,6 +133,7 @@ type NavApproach struct {
 	Cleared           bool
 	InterceptState    InterceptState
 	PassedApproachFix bool // have we passed a fix on the approach yet?
+	PassedFAF         bool
 	NoPT              bool
 	AtFixClearedRoute []Waypoint
 }
@@ -1176,7 +1177,10 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 				}
 			}
 
-			if rate > descent/2 {
+			if nav.Approach.PassedFAF {
+				// After the FAF, try to go down linearly
+				return c.Altitude, rate
+			} else if rate > descent/2 {
 				// Don't start the descent until (more or less) it's
 				// necessary. (But then go a little faster than we think we
 				// need to, to be safe.)
@@ -1715,6 +1719,9 @@ func (nav *Nav) updateWaypoints(wind WindModel, fp *FlightPlan, lg *log.Logger) 
 			// were cleared to, so they can start to descend.
 			nav.Altitude = NavAltitude{}
 			nav.Approach.PassedApproachFix = true
+			if wp.FAF {
+				nav.Approach.PassedFAF = true
+			}
 		} else if wp.OnApproach {
 			// Overflew an approach fix but haven't been cleared yet.
 			nav.Approach.PassedApproachFix = true
