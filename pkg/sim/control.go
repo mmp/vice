@@ -730,6 +730,8 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 				ToController:   tcp,
 			})
 
+			previousTrackingController := fp.TrackingController
+
 			fp.HandoffTrackController = ""
 			fp.TrackingController = tcp
 			fp.LastLocalController = tcp
@@ -740,7 +742,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			if ac != nil {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 					func(wp av.Waypoint) bool { return wp.TransferComms })
-				if !haveTransferComms && !s.isActiveHumanController(fp.TrackingController) {
+				if !haveTransferComms && !s.isActiveHumanController(previousTrackingController) {
 					// For a handoff from a virtual controller, cue up a delayed
 					// contact message unless there's a point later in the route when
 					// comms are to be transferred.
