@@ -425,7 +425,10 @@ func (s *Sim) isHumanControlled(ac *Aircraft, departure bool) bool {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
 	} else {
-		fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+		fp := ac.STARSFlightPlan
+		if fp == nil {
+			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+		}
 		return fp != nil && fp.InboundHandoffController != ""
 	}
 }
@@ -910,26 +913,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.Airport, arrivalAirport)
 
-	// Figure out which controller will (for starters) get the arrival
-	// handoff. For single-user, it's easy.  Otherwise, figure out which
-	// control position is initially responsible for the arrival. Note that
-	// the actual handoff controller will be resolved later when the
-	// handoff happens, so that it can reflect which controllers are
-	// actually signed in at that point.
-	arrivalController := s.State.PrimaryController
-	if len(s.State.MultiControllers) > 0 {
-		var err error
-		arrivalController, err = s.State.MultiControllers.GetInboundController(group)
-		if err != nil {
-			s.lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
-				slog.Any("aircraft", ac))
-		}
-
-		if arrivalController == "" {
-			arrivalController = s.State.PrimaryController
-		}
-	}
-
 	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
 		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
@@ -945,7 +928,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 		TrackingController:       arr.InitialController,
 		ControllingController:    arr.InitialController,
-		InboundHandoffController: arrivalController,
+		InboundHandoffController: s.getInboundHandoffController(arr.InitialController, group, ac.Nav.Waypoints),
 
 		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeArrival,
@@ -980,6 +963,35 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	_, err = s.STARSComputer.CreateFlightPlan(starsFp)
 
 	return ac, err
+}
+
+func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps av.WaypointArray) string {
+	if tcp := s.State.ResolveController(initialTCP); initialTCP != "" && s.isActiveHumanController(tcp) {
+		return initialTCP
+	} else if slices.ContainsFunc(wps, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
+		// Figure out which controller will (for starters) get the arrival
+		// handoff. For single-user, it's easy.  Otherwise, figure out which
+		// control position is initially responsible for the arrival. Note that
+		// the actual handoff controller will be resolved later when the
+		// handoff happens, so that it can reflect which controllers are
+		// actually signed in at that point.
+		hoTCP := s.State.PrimaryController
+		if len(s.State.MultiControllers) > 0 {
+			var err error
+			hoTCP, err = s.State.MultiControllers.GetInboundController(group)
+			if err != nil {
+				s.lg.Error("Unable to resolve arrival controller", slog.Any("error", err),
+					slog.String("initialTCP", initialTCP), slog.String("group", group),
+					slog.Any("waypoints", wps))
+			}
+
+			if hoTCP == "" {
+				hoTCP = s.State.PrimaryController
+			}
+		}
+		return hoTCP
+	}
+	return "" // never goes to a human
 }
 
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
@@ -1155,25 +1167,6 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
 
-	// Figure out which controller will (for starters) get the handoff. For
-	// single-user, it's easy.  Otherwise, figure out which control
-	// position is initially responsible for the arrival. Note that the
-	// actual handoff controller will be resolved later when the handoff
-	// happens, so that it can reflect which controllers are actually
-	// signed in at that point.
-	handoffController := s.State.PrimaryController
-	if len(s.State.MultiControllers) > 0 {
-		var err error
-		handoffController, err = s.State.MultiControllers.GetInboundController(group)
-		if err != nil {
-			s.lg.Error("Unable to resolve overflight controller", slog.Any("error", err),
-				slog.Any("aircraft", ac))
-		}
-		if handoffController == "" {
-			handoffController = s.State.PrimaryController
-		}
-	}
-
 	if err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
 		s.State /* wind */, s.State.SimTime, s.lg); err != nil {
 		return nil, err
@@ -1188,7 +1181,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 
 		TrackingController:       of.InitialController,
 		ControllingController:    of.InitialController,
-		InboundHandoffController: handoffController,
+		InboundHandoffController: s.getInboundHandoffController(of.InitialController, group, ac.Nav.Waypoints),
 
 		Rules:               av.FlightRulesIFR,
 		TypeOfFlight:        av.FlightTypeOverflight,
