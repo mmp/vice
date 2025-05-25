@@ -5,7 +5,7 @@
 const sidebarToggler = document.getElementById('docs-sidebar-toggler');
 const sidebar = document.getElementById('docs-sidebar');
 const sidebarLinks = document.querySelectorAll('#docs-sidebar .scrollto');
-
+const submenuLinks = document.querySelectorAll('#docs-sidebar .submenu-link.scrollto');
 
 
 /* ===== Responsive Sidebar ====== */
@@ -67,6 +67,28 @@ sidebarLinks.forEach((sidebarLink) => {
 		
         document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
         
+        
+        //Collapse sidebar after clicking
+		if (sidebar.classList.contains('sidebar-visible') && window.innerWidth < 1200){
+			
+			sidebar.classList.remove('sidebar-visible');
+		    sidebar.classList.add('sidebar-hidden');
+		} 
+		
+    });
+	
+});
+
+// Add smooth scrolling for submenu links as well
+submenuLinks.forEach((submenuLink) => {
+	
+	submenuLink.addEventListener('click', (e) => {
+		
+		e.preventDefault();
+		
+		var target = submenuLink.getAttribute("href").replace('#', '');
+		
+		document.getElementById(target).scrollIntoView({ behavior: 'smooth' });
         
         //Collapse sidebar after clicking
 		if (sidebar.classList.contains('sidebar-visible') && window.innerWidth < 1200){
