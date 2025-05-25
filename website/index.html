@@ -3538,7 +3538,36 @@ how it simulates aircraft or the STARS interface.
 	  <section class="docs-section" id="flight-plans">
             <h2 class="section-heading">Flight Plans</h2>
 
-            <p>In addition to the command components defined above in <a href="#stars-command-entry">Entering Commands</a>,
+            <p><i>vice</i> offers a wide range of commands for creating flight plans on the fly for aircraft that didn't initially
+              file one; the main example of this currently is VFR aircraft that call asking for flight following.
+              A wide variety of are commands available to create flight plans in STARS&mdash;these are all documented in the
+              following. In practice, however, it's just necessary to understand two main flows, depending on which type
+              of flight plan is to be created:</p>
+            <ul><li>Local Flight Plans: these are intended for flights conducted wholly within delegated airspace of the current TRACON.
+                These flight plans are <emph>not</emph> sent to the host (overlying) ARTCC computer to be processed and forwarded
+                "downstream" to adjacent facilities. Examples include IFR/VFR pop up requests where the flight will not exit
+                the delegated airspace of the TRACON. However, <emph>local flight plans are not eligible for automated hand off to ARTCC</emph>.
+                If an adjacent TRACON is adapted to accept local flight plans, then they may be transferred via automated handoff.</li>
+              <li>NAS Flight Plans: these are for aircraft that will enter adjacent facility airspace, for example, VFR aircraft
+                requesting radar advisories/flight following from a point within delegated TRACON airspace to a location outside of it.
+                STARS users are only permitted to create VFR NAS flight plans; IFR NAS flight plans would be entered via FDIO,
+                which is a separate system from STARS and not yet simulated/not needed for <i>vice</i> (for now).
+                VFR aircraft on NAS flight plans are eligible for automated handoff to adjacent facilities.</li>
+            </ul>
+            <p>The most common way to enter a local flight plan is to type the aircraft's callsign, a space, the type of aircraft,
+              and press <code>[Enter]</code>. For example: <code>N123AB C172</code>. (Additional fields may be entered; see the
+              documentation below.) A summary of the flight plan will be printed in the preview area and the flight will appear
+              in the tab list ("FLIGHT PLAN"). The beacon code assigned to the aircraft can be found in either place.</p>
+            <p>The usual way to create a NAS flight plan is to enter the callsign, the entry and exit fix separated by an asterisk,
+              the aircraft type, and the requested altitude in hundreds of feet. Example: <code>N123AB FRG*POU C172 085</code>.
+              The entry fix is usually the departure point of the aircraft or a point (VOR) near where they call for flight following
+              and the exit fix is usually the VFR's destination; both must be three characters. 
+              When STARS sends the a VFR NAS flight plan to the ARTCC computer and it is accepted, "VFR" is displayed to the right
+              of the aircraft's callsign in the "VFR LIST". The beacon code is displayed when received from ARTCC computer a few
+              seconds later. The flight also appears in the "FLIGHT PLAN" list.</p>
+
+            <p>For the full documentation of the flight-plan related commands below, in addition to the command components defined
+              above in <a href="#stars-command-entry">Entering Commands</a>,
               a few additional parameters are commonly-found in commands related to flight plans.
               Here are their definitions and syntax:</p>
 
@@ -3645,7 +3674,7 @@ how it simulates aircraft or the STARS interface.
                 <tbody>
                   <tr>
                     <td><code>(ACID)&nbsp;(FIX PAIR)&nbsp;(AC TYPE/EQ)</code></td>
-                    <td>Create a local VFR flight plan with
+                    <td>Create a NAS VFR flight plan with
                       an automatically-assigned squawk code. Optional additional fields: <code>(REQ ALT)</code> and
                       <code>(TCP)</code>. The flight plan is assigned
                       to the controller who created it if no other controller is specified via <code>(TCP)</code>.
@@ -3653,7 +3682,7 @@ how it simulates aircraft or the STARS interface.
                   </tr>
                   <tr>
                     <td><code>(ACID)</code></td>
-                    <td>Create a local abbreviated flight plan.
+                    <td>Create a local flight plan.
                       Optional additional fields: <code>(BEACON)</code>, <code>(FLIGHT TYPE)</code>,
                       <code>∆(SP1)</code>, <code>+(SP2)</code>, <code>(#/AC TYPE/EQ)</code>, <code>(REQ ALT)</code>,
                       and <code>(RULES)</code>.
