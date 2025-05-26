@@ -216,7 +216,8 @@
           "altitude": 25000,
           "destination": "KTEB",
           "route": "WOOLY SWANN JAIKE4",
-          "exit": "WOOLY"
+          "exit": "WOOLY",
+		  "scratchpad": "WOL"
         },
 		{
           "airlines": [
@@ -1564,6 +1565,89 @@
 		{
           "airlines": [
             {
+              "icao": "RPA"
+            },
+			{
+              "icao": "ASH"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "short"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "AGARD.W",
+          "route": "AGARD SPEAK PROUD2",
+          "scratchpad": "WOL"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "EDV"
+            },
+			{
+              "icao": "EJA"
+            },
+			{
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KJFK",
+          "exit": "AGARD.W",
+          "route": "AGARD T287 DONIL T315 PANZE V44 CAMRN",
+          "scratchpad": "WOL"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "MXY",
+			  "fleet": "long"
+            }
+          ],
+          "destination": "KOGS",
+          "exit": "JERES",
+          "route": "JERES2 JERES Q227 STUBN SYR ART",
+          "scratchpad": "JS2"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "MXY",
+			  "fleet": "long"
+            }
+          ],
+          "destination": "KPVU",
+          "exit": "RAMAY",
+          "route": "RAMAY Q72 HACKS ROD RBS PIA OVR OBH BFF J94 OCS YMONT TAYTR1",
+          "scratchpad": "RAM"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "MXY",
+			  "fleet": "long"
+            }
+          ],
+          "destination": "KSBN",
+          "exit": "RAMAY",
+          "route": "RAMAY Q72 HACKS J149 FWA",
+          "scratchpad": "RAM"
+        },
+		{
+          "airlines": [
+            {
+              "icao": "MXY",
+			  "fleet": "long"
+            }
+          ],
+          "destination": "KVRB",
+          "exit": "SCOOB",
+          "route": "SCOOB PAACK Q97 KENLL OMN TRV",
+          "scratchpad": "AME"
+        },
+		{
+          "airlines": [
+            {
               "icao": "UAL",
               "fleet": "b772"
             },
@@ -1675,7 +1759,7 @@
           "destination": "LTFM",
           "exit": "AGARD.W",
           "route": "AGARD DONIL AJGON HEADI RIFLE ACK KANNI PORTI 4750N 4940N 5130N 5220N DINIM ELSOX GAPLI AYTEK",
-		  "scratchpad": "DCR"
+		  "scratchpad": "WOL"
         },
 		{
           "airlines": [
@@ -2070,7 +2154,7 @@
           }
         },
         "star": "CAVLR6",
-        "initial_controller": "ZDC_36_CTR",
+        "initial_controller": "ZDC_20_CTR",
         "initial_altitude": 17000,
         "initial_speed": 300,
         "expect_approach": null,
@@ -2120,7 +2204,7 @@
           }
         },
         "star": "CAVLR6",
-        "initial_controller": "ZDC_36_CTR",
+        "initial_controller": "ZDC_20_CTR",
         "initial_altitude": 18000,
         "initial_speed": 300,
         "expect_approach": null,
@@ -2263,6 +2347,11 @@
               "icao": "VOI",
 			  "fleet": "jfk",
               "airport": "MSLP"
+            },
+			{
+              "icao": "MXY",
+			  "fleet": "long",
+              "airport": "KVRB"
             }
           ]
         }
@@ -2447,6 +2536,11 @@
               "icao": "ASH",
 			  "fleet": "long",
               "airport": "KROC"
+            },
+			{
+              "icao": "MXY",
+			  "fleet": "long",
+              "airport": "KOGS"
             }
           ]
         }
@@ -2717,6 +2811,16 @@
               "icao": "N",
 			  "fleet": "fastGA",
               "airport": "KPWK"
+            },
+			{
+              "icao": "MXY",
+			  "fleet": "long",
+              "airport": "KSBN"
+            },
+			{
+              "icao": "MXY",
+			  "fleet": "long",
+              "airport": "KPVU"
             }
           ],
 		  "KHEF": [
@@ -2772,7 +2876,7 @@
           }
         },
         "star": "GIBBZ5",
-        "initial_controller": "ZDC_05_CTR",
+        "initial_controller": "ZDC_37_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -5803,7 +5907,7 @@
       "sector_id": "3M"
     },
 	"RIC_L_APP": {
-      "frequency": 126100,
+      "frequency": 126750,
       "radio_name": "Potomac Approach",
       "sector_id": "2L"
     },
@@ -5829,12 +5933,19 @@
       "eram_facility": true,
       "sector_id": "C05"
     },
-	"ZDC_36_CTR": {
-      "frequency": 118920,
+	"ZDC_20_CTR": {
+      "frequency": 127750,
       "radio_name": "Washington Center",
       "facility_id": "C",
       "eram_facility": true,
-      "sector_id": "C36"
+      "sector_id": "C20"
+    },
+	"ZDC_37_CTR": {
+      "frequency": 133025,
+      "radio_name": "Washington Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C37"
     },
 	"NY_A1_CTR": {
       "frequency": 120025,
@@ -5944,6 +6055,12 @@
           "airport": "KIAD",
 		  "category": "South/West",
           "rate": 20,
+          "runway": "30.N"
+        },
+		{
+          "airport": "KIAD",
+		  "category": "North/East",
+          "rate": 5,
           "runway": "30.N"
         },
         {
@@ -6856,6 +6973,67 @@
             }
         ]
     },
+	"airspace_awareness": [
+	{
+        "fixes": [
+          "RAMAY",
+          "OTTTO"
+        ],
+        "altitude_range": [
+          10000,
+          23000
+        ],
+        "receiving_controller": "DCA_L_DEP"
+      },
+	  {
+        "fixes": [
+          "SCOOB",
+		  "COLIN",
+          "SWANN",
+		  "AGARD"
+        ],
+        "altitude_range": [
+          10000,
+          17000
+        ],
+        "receiving_controller": "DCA_K_DEP"
+      },
+	  {
+        "fixes": [
+		  "MAULS",
+		  "FLASK",
+		  "MELTN",
+		  "RRSIN",
+		  "GLANC"
+        ],
+        "altitude_range": [
+          10000,
+          23000
+        ],
+        "receiving_controller": "DCA_F_DEP"
+      },
+	  {
+        "fixes": [
+          "JERES",
+          "MCRAY"
+        ],
+        "altitude_range": [
+          11000,
+          17000
+        ],
+        "receiving_controller": "BWI_H_APP"
+      },
+	  {
+        "fixes": [
+          "WOOLY"
+        ],
+        "altitude_range": [
+          10000,
+          17000
+        ],
+        "receiving_controller": "BWI_W_APP"
+      }
+],
       "filters": {
 	"inhibit_ca": [
         {
@@ -6879,7 +7057,17 @@
 				"N038.56.59.316,W077.28.51.829"
             ]
         }
-	]
+	],
+	"arrival_acquisition": [
+        {
+          "id": "ACQ",
+          "description": "SHD AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N038.34.42.980,W078.53.39.790 N039.00.21.011,W078.46.47.611 N039.20.19.482,W079.10.05.648 N039.48.21.296,W078.42.03.175 N040.03.25.114,W077.51.12.106 N040.09.23.502,W076.49.45.397 N040.04.14.690,W076.29.59.395 N039.47.52.059,W076.32.39.631 N039.33.44.176,W076.57.56.760 N039.20.12.135,W077.10.54.071 N038.20.48.692,W077.05.30.743 N037.48.29.523,W077.25.06.912 N037.44.27.425,W077.51.17.380 N038.34.42.980,W078.53.39.790",
+          "floor": 0,
+          "ceiling": 23000
+        }
+    ]
       },
 	"range": 63,
     "scratchpads": {
