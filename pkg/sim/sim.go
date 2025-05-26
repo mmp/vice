@@ -921,7 +921,10 @@ func (s *Sim) updateState() {
 						// may have already flashed the track to a virtual
 						// controller.
 						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
-						s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						// Make sure they've bought the handoff.
+						if ctrl != sfp.HandoffTrackController {
+							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						}
 					}
 
 					// Update scratchpads if the waypoint has scratchpad commands
