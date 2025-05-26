@@ -860,19 +860,38 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 				apname = apname[1:]
 			}
 
-			// Convex hull of the runway threshold points
 			p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Threshold, nmPerLongitude) })
-			hull := math.ConvexHull(p)
+			var hull [][2]float32
 
-			// Hacky polygon dilation: compute the average point as a center and then offset each away from it.
-			var c [2]float32
-			for _, p := range hull {
-				c = math.Add2f(c, p)
-			}
-			c = math.Scale2f(c, 1/float32(len(hull)))
-			for i := range hull {
-				v := math.Sub2f(hull[i], c)
-				hull[i] = math.Add2f(hull[i], math.Scale2f(v, delta))
+			if len(p) == 2 {
+				// Single runway so compute an OBB directly.
+				v := math.Normalize2f(math.Sub2f(p[1], p[0]))
+				v = math.Scale2f(v, delta)
+				nv := math.Scale2f(v, -1)
+				vp := [2]float32{v[1], -v[0]} // perp
+				nvp := math.Scale2f(vp, -1)
+
+				hull = [][2]float32{
+					math.Add2f(p[0], math.Add2f(nv, vp)),
+					math.Add2f(p[1], math.Add2f(v, vp)),
+					math.Add2f(p[1], math.Add2f(v, nvp)),
+					math.Add2f(p[0], math.Add2f(nv, nvp))}
+			} else {
+				// Convex hull of the runway threshold points
+				hull = math.ConvexHull(p)
+
+				// Expand the hull by delta: hacky polygon dilation--
+				// compute the average point as a center and then offset
+				// each away from it.
+				var c [2]float32
+				for _, p := range hull {
+					c = math.Add2f(c, p)
+				}
+				c = math.Scale2f(c, 1/float32(len(hull)))
+				for i := range hull {
+					v := math.Sub2f(hull[i], c)
+					hull[i] = math.Add2f(hull[i], math.Scale2f(v, delta))
+				}
 			}
 
 			// Back to lat-long for the AirspaceVolume
