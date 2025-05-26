@@ -1029,17 +1029,53 @@ how it simulates aircraft or the STARS interface.
             <h2 class="section-heading">Release History</h2>
 
             <h3 id="release-0.12.0">0.12.0 (TBD)</h3>
-            <ul>D10 update (Jason Helkenberg)
+            <ul>
+              <li>New scenarios: PWM (Ryan G), PCT JRV, ANC, BWI (Ketan K), SBN (Ethan Malimon).</li>
+              <li>Scenario updates: C90, JAX, F11 (Jud Lopez), D10 (aeronautaviation), CLT (agnuse), L30, P50, 
+SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS (radarcontacto), LGA (Tyler T).</li>
+              <li>Added support for VFR flight following:
+                <ul>
+                  <li>Added STARS flight plan creation commands.</li>
+                  <li>New instructions for VFRs: <code>A</code>: altitude your discretion, <code>RON</code>: resume own navigation,
+                    <code>RST</code>: radar services terminated, frequency change approved.</li>
+                </ul>
+              </li>
+              <li>TGT GEN lock functionality added (Ethan M).</li>
+              <li>Flight strips can now be annotated (Neel P).</li>
+              <li>Improved departure flow and sequencing.</li>
+              <li>Account for displaced thresholds in approach course calculations.</li>
+              <li>Fixed multiple bugs with aircraft association, handoffs, and altitude restrictions on approaches.</li>
+              <li>Added fast-forward button in menubar for simulation acceleration.</li>
               <li>STARS:
                 <ul>
-                  <li>flight plans</li>
-                  <li>F-key mappings updated</li>
+                  <li>Added tentative radar tracks for departures that don't yet have associated flight plans.</li>
+                  <li>Unsupported datablocks are now supported (so to speak).</li>
+                  <li>Added track repositioning commands.</li>
+                  <li>Fixed datablock bugs for various uncommon altitude and transponder scenarios.</li>
+                  <li>Fixed weather radar orientation.</li>
+                  <li>Updated a number of F-key command mappings.</li>
                 </ul>
               </li>
               <li>Facility engineering:
                 <ul>
-                  <li>inhibit_ca_volumes -> filters / inhibit_ca</li>
-                  <li>name -> label, added "description"
+                  <li>Added support for <a href="#fe-stars-filters">STARS filter regions</a>:
+                    <ul>
+		      <li>"arrival_acquisition": arrivals owned by external facilities that enter these tag up even before the handoff.</li>
+		      <li>"arrival_drop": arrivals drop their flight plans and become disassociated upon entering.</li>
+		      <li>"departure_acquisition": upon leaving, departures pick up their flight plan and become associated.</li>
+		      <li>"inhibit_ca": CA warnings are not issued in this region.</li>
+		      <li>"inhibit_msaw": MSAW alerts are not given in this region</li>
+		      <li>"quicklook": aircraft in this region are automatically "quicklooked".</li>
+		      <li>"secondary_drop": departures entering this region have their flight plans disassociated.</li>
+		      <li>"surface_tracking": aircraft in this region do not appear on the STARS scope </li>
+                      <li>"vfr_inhibit": an additional region (beyond B and C airspace) that VFRs will remain outside of.</li>
+                    </ul>
+                  </li>
+                  <li>"inhibit_ca_volumes" in "stars_config" has moved to "inhibit_ca" under the "filters".</li>
+                  <li>For airspace volumes, the "name" field was renamed to "labal" (and can be no more than 7 characters).
+                    Added a "description" field for a longer description of it.</li>
+                  <li>Added support "ssr_codes" to specify beacon code pool for local flight plans.</li>
+                  <li>Magnetic grid now includes Alaska.</li>
                 </ul>
               </li>
             </ul>
