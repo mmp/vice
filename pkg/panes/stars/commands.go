@@ -3917,7 +3917,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 					return
 				case "A": // toggle requested altitude: 6-108
-					if sp.datablockType(ctx, *trk) != FullDatablock {
+					if trk.IsUnassociated() || trk.FlightPlan.Suspended || sp.datablockType(ctx, *trk) != FullDatablock {
+						status.err = ErrSTARSIllegalTrack
+					} else if trk.FlightPlan.RequestedAltitude == 0 {
 						status.err = ErrSTARSIllegalFunction
 					} else {
 						if state.DisplayRequestedAltitude == nil {
@@ -3929,7 +3931,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 					return
 				case "AE": // enable requested altitude: 6-108
-					if sp.datablockType(ctx, *trk) != FullDatablock {
+					if trk.IsUnassociated() || trk.FlightPlan.Suspended || sp.datablockType(ctx, *trk) != FullDatablock {
+						status.err = ErrSTARSIllegalTrack
+					} else if trk.FlightPlan.RequestedAltitude == 0 {
 						status.err = ErrSTARSIllegalFunction
 					} else {
 						b := true
@@ -3938,7 +3942,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					}
 					return
 				case "AI": // inhibit requested altitude: 6-108
-					if sp.datablockType(ctx, *trk) != FullDatablock {
+					if trk.IsUnassociated() || trk.FlightPlan.Suspended || sp.datablockType(ctx, *trk) != FullDatablock {
+						status.err = ErrSTARSIllegalTrack
+					} else if trk.FlightPlan.RequestedAltitude == 0 {
 						status.err = ErrSTARSIllegalFunction
 					} else {
 						b := false
