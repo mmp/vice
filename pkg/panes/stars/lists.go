@@ -247,11 +247,10 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		// those.
 		codes := make(map[string]interface{})
 		for _, trk := range tracks {
-			if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
-				codes[trk.FlightPlan.SPCOverride] = nil
-			}
 			if ok, code := trk.Squawk.IsSPC(); ok {
 				codes[code] = nil
+			} else if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
+				codes[trk.FlightPlan.SPCOverride] = nil
 			}
 		}
 

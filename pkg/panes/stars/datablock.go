@@ -619,6 +619,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		copy(db.field0[:], alerts[:])
 
 		extended := state.FullLDBEndTime.After(ctx.Now)
+		sqspc, _ := trk.Squawk.IsSPC()
+		extended = extended || (trk.Mode != av.TransponderModeStandby && sqspc)
+
 		who := trk.MissingFlightPlan && !state.MissingFlightPlanAcknowledged
 
 		if len(alerts) == 0 && trk.Mode == av.TransponderModeOn && !extended {
@@ -1315,7 +1318,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 				addAlert("CA", !sp.MCIAircraft[idx].Acknowledged, true)
 			}
 		}
-		if ok, code := trk.Squawk.IsSPC(); ok {
+		if ok, code := trk.Squawk.IsSPC(); ok && trk.Mode != av.TransponderModeStandby {
 			addAlert(code, !state.SPCAcknowledged, true)
 		}
 	}
@@ -1330,8 +1333,11 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 			addAlert("LA", !state.MSAWAcknowledged, true)
 		}
 		if spc := sfp.SPCOverride; spc != "" {
-			red := av.StringIsSPC(spc) // std ones are red, adapted ones are yellow.
-			addAlert(sfp.SPCOverride, !state.SPCAcknowledged, red)
+			// squawked SPC takes priority
+			if sqspc, _ := trk.Squawk.IsSPC(); !sqspc || trk.Mode == av.TransponderModeStandby {
+				red := av.StringIsSPC(spc)            // std ones are red, adapted ones are yellow.
+				addAlert(sfp.SPCOverride, false, red) // controller-added SPC doesn't flash
+			}
 		}
 		if !ps.DisableCAWarnings && !sfp.DisableCA {
 			if idx := slices.IndexFunc(sp.CAAircraft,

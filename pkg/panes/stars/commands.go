@@ -3479,15 +3479,21 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				status.clear = true
 				return
 			} else if trk.IsAssociated() && ctx.Client.StringIsSPC(cmd) {
-				state.SPCAcknowledged = false
-				var spec sim.STARSFlightPlanSpecifier
-				if cmd == trk.FlightPlan.SPCOverride { // matches, so turn it off
-					spec.SPCOverride.Set("")
-				} else { // set it to something new
-					spec.SPCOverride.Set(cmd)
+				if sqspc, _ := trk.Squawk.IsSPC(); sqspc && trk.Mode != av.TransponderModeStandby {
+					// Can't override if they're already squawking a
+					// different one.
+					status.err = ErrSTARSIllegalFunctionAlertActive
+				} else {
+					state.SPCAcknowledged = false
+					var spec sim.STARSFlightPlanSpecifier
+					if cmd == trk.FlightPlan.SPCOverride { // matches, so turn it off
+						spec.SPCOverride.Set("")
+					} else { // set it to something new
+						spec.SPCOverride.Set(cmd)
+					}
+					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
+					status.clear = true
 				}
-				sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
-				status.clear = true
 				return
 			} else if cmd == "UN" && trk.IsAssociated() {
 				ctx.Client.RejectPointOut(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
