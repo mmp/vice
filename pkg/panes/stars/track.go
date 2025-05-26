@@ -134,8 +134,6 @@ type TrackState struct {
 	// Draw the datablock in yellow (until cleared); currently only used for
 	// [MF]Y[SLEW] quick flight plans
 	DatablockAlert bool
-
-	QuicklookFilterApplies bool
 }
 
 type ATPAStatus int
@@ -400,9 +398,6 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	if _, ok := sp.ForceQLACIDs[trk.FlightPlan.ACID]; ok {
 		return true
 	}
-	if sp.TrackState[trk.ADSBCallsign].QuicklookFilterApplies {
-		return true
-	}
 
 	// Quick Look Positions.
 	for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
@@ -539,14 +534,13 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
-		if trk.IsUnassociated() {
-			// Don't bother checking if quicklook isn't possible
-			state.QuicklookFilterApplies = false
+		if trk.IsUnassociated() || state.DisplayFDB {
+			continue
 		} else {
-			state := sp.TrackState[trk.ADSBCallsign]
-			state.QuicklookFilterApplies = slices.ContainsFunc(qlfilt,
+			state.DisplayFDB = slices.ContainsFunc(qlfilt,
 				func(f sim.FilterRegion) bool {
-					return f.Inside(state.track.Location, int(state.track.TransponderAltitude))
+					return f.Inside(state.track.Location, int(state.track.TransponderAltitude)) &&
+						!f.Inside(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude))
 				})
 		}
 	}
