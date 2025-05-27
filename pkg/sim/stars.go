@@ -428,6 +428,9 @@ type STARSFlightPlan struct {
 	Scratchpad          string
 	SecondaryScratchpad string
 
+	PriorScratchpad          string
+	PriorSecondaryScratchpad string
+
 	RNAV bool
 
 	Location math.Point2LL
@@ -688,10 +691,20 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
 	}
 	if spec.Scratchpad.IsSet {
-		fp.Scratchpad = spec.Scratchpad.Get()
+		if fp.Scratchpad == spec.Scratchpad.Get() {
+			fp.Scratchpad = fp.PriorScratchpad
+		} else {
+			fp.PriorScratchpad = fp.Scratchpad
+			fp.Scratchpad = spec.Scratchpad.Get()
+		}
 	}
 	if spec.SecondaryScratchpad.IsSet {
-		fp.SecondaryScratchpad = spec.SecondaryScratchpad.Get()
+		if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
+			fp.SecondaryScratchpad = fp.PriorSecondaryScratchpad
+		} else {
+			fp.PriorSecondaryScratchpad = fp.SecondaryScratchpad
+			fp.SecondaryScratchpad = spec.SecondaryScratchpad.Get()
+		}
 	}
 	if spec.RNAV.IsSet {
 		fp.RNAV = spec.RNAV.Get()

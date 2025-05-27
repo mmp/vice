@@ -3973,6 +3973,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <tr>
                   <td><code>(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y(FLT ID) (SCR)</code></td>
                   <td>Sets the primary scratchpad to <code>(SCR)</code> for the selected aircraft.
+                    If <code>(SCR)</code> matches the current scratchpad, the scratchpad reverts to its previous setting.
                     When the first form of this command is used, <code>(SCR)</code> must not be a controller ID; if it is,
                     a handoff to the controller will be initiated instead.
                   </td>
@@ -3980,6 +3981,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <tr>
                   <td><code>+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(SCR)[SLEW]</code> /<br> <code>[MULTIFUNC]Y+(FLT ID) (SCR)</code></td>
                   <td>Sets the secondary scratchpad to <code>(SCR)</code> for the selected aircraft.
+                    If <code>(SCR)</code> matches the current scratchpad, the scratchpad reverts to its previous setting.
                     When the first form of this command is used, <code>(SCR)</code> must not be three digits; if it is, the
                     aircraft's <a href="#assigned-altitude">assigned altitude</a> will be set instead.
                   </td>
