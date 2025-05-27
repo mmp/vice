@@ -1,6 +1,9 @@
 {
   "tracon": "PWM",
   "airports": {
+    "KAUG": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KLEW": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KRKD": { "vfr": { "random_routes": { "rate": 5 } } },
     "KPWM": {
       "name": "PWM",
       "approaches": {
@@ -9,6 +12,18 @@
         },
         "I11": {
           "cifp_id": "I11"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        },
+        "R29": {
+          "cifp_id": "R29"
+        },
+        "R11": {
+          "cifp_id": "R11"
         }
       },
       "departure_routes": {
@@ -46,7 +61,7 @@
           ],
           "destination": "KBED",
           "exit": "NELIE",
-          "route": "NUBLE4 NELIE",
+          "route": "GORHM NUBLE RBELA JJIMY NELIE",
           "scratchpad": "NEL"
         },
         {
@@ -57,7 +72,7 @@
           ],
           "destination": "KJFK",
           "exit": "NELIE",
-          "route": "NUBLE4 NELIE",
+          "route": "GORHM NUBLE RBELA JJIMY NELIE",
           "scratchpad": "NEL"
         },
         {
@@ -128,7 +143,7 @@
         },
         {
           "spawn": "N42.59.39.440,W70.56.44",
-          "waypoints": "CAM CDOGG KAYCC ARARR BUXTO",
+          "waypoints": "CAM CDOGG/ho KAYCC ARARR BUXTO",
           "route": "CDOGG4",
           "initial_controller": "BOS_17_CTR",
           "initial_altitude": 9000,
@@ -326,7 +341,13 @@
       "PWM MAIN",
       "PWM EVENT RWY 29",
       "PWM EOVM",
-      "PWM EVENT RWY 11"
+      "PWM EVENT RWY 11",
+      "PWM IAF",
+      "PWM MVA",
+      "PWM LOW AIRWAYS",
+      "ZBW_PWM SCOGS STAR (RNAV)",
+      "ZBW_PWM CDOGG STAR (RNAV)",
+      "PWM RVM"
     ],
     "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
   }
