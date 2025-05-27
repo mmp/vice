@@ -706,7 +706,7 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 	imgui.Text(fmt.Sprintf("Overall VFR departure rate: %d / hour", sumVFRRates))
 	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
 	// from being here initially.
-	changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
+	changed = imgui.SliderFloatV("VFR departure rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
 
 	if !lc.HaveVFRReportingRegions {
 		imgui.BeginDisabled()
