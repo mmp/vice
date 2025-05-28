@@ -69,10 +69,11 @@ type FlightState struct {
 	MagneticVariation float32
 	NmPerLongitude    float32
 
-	Position math.Point2LL
-	Heading  float32
-	Altitude float32
-	IAS, GS  float32 // speeds...
+	Position  math.Point2LL
+	Heading   float32
+	Altitude  float32
+	IAS, GS   float32 // speeds...
+	BankAngle float32 // degrees
 }
 
 func (fs *FlightState) Summary() string {
@@ -822,10 +823,16 @@ func (nav *Nav) updateHeading(wind WindModel, lg *log.Logger) {
 	targetHeading, turnDirection, turnRate := nav.TargetHeading(wind, lg)
 
 	if nav.FlightState.Heading == targetHeading {
+		// BankAngle should be zero(ish) at this point but just to be sure.
+		nav.FlightState.BankAngle = 0
 		return
 	}
 	if math.HeadingDifference(nav.FlightState.Heading, targetHeading) < 1 {
+		if nav.FlightState.BankAngle != 0 {
+			fmt.Printf("reached target but bank angle %f\n", nav.FlightState.BankAngle)
+		}
 		nav.FlightState.Heading = targetHeading
+		nav.FlightState.BankAngle = 0
 		return
 	}
 	//lg.Debugf("turning for heading %.0f", targetHeading)
@@ -941,28 +948,28 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 		nav.DeferredHeading = nil
 	}
 
-	heading, turn, rate = nav.FlightState.Heading, TurnClosest, 3 // baseline
+	heading, turn = nav.FlightState.Heading, TurnClosest
 
 	// nav.Heading.Assigned may still be nil pending a deferred turn
 	if (nav.Approach.InterceptState == InitialHeading ||
 		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
-		return nav.ApproachHeading(wind, lg)
-	}
-
-	if nav.Heading.RacetrackPT != nil {
+		heading, turn = nav.ApproachHeading(wind, lg)
+	} else if nav.Heading.RacetrackPT != nil {
+		nav.FlightState.BankAngle = 0
 		return nav.Heading.RacetrackPT.GetHeading(nav, wind, lg)
-	}
-	if nav.Heading.Standard45PT != nil {
+	} else if nav.Heading.Standard45PT != nil {
+		nav.FlightState.BankAngle = 0
 		return nav.Heading.Standard45PT.GetHeading(nav, wind, lg)
-	}
-
-	if nav.Heading.Assigned != nil {
+	} else if nav.Heading.Assigned != nil {
 		heading = *nav.Heading.Assigned
 		if nav.Heading.Turn != nil {
 			turn = *nav.Heading.Turn
 		}
-		//lg.Debugf("heading: assigned %.0f", heading)
-		return
+	} else if arc := nav.Heading.Arc; arc != nil && nav.Heading.JoiningArc {
+		heading = nav.Heading.Arc.InitialHeading
+		if math.HeadingDifference(nav.FlightState.Heading, heading) < 1 {
+			nav.Heading.JoiningArc = false
+		}
 	} else {
 		// Either on an arc or to a waypoint. Figure out the point we're
 		// heading to and then common code will handle wind correction,
@@ -970,14 +977,6 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 		var pTarget math.Point2LL
 
 		if arc := nav.Heading.Arc; arc != nil {
-			if nav.Heading.JoiningArc {
-				heading = nav.Heading.Arc.InitialHeading
-				if math.HeadingDifference(nav.FlightState.Heading, heading) < 1 {
-					nav.Heading.JoiningArc = false
-				}
-				return
-			}
-
 			// Work in nm coordinates
 			pc := math.LL2NM(arc.Center, nav.FlightState.NmPerLongitude)
 			pac := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
@@ -1033,13 +1032,98 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 		} else {
 			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
 		}
-		return
 	}
+
+	// We have a heading and a direction; now figure out if we need to
+	// adjust the bank and then how far we turn this tick.
+
+	// maximum turn rate: 3 degrees/sec at 180kts and below, down to 2 degrees/sec at >=250kts.
+	maxTurnRate := 3 - math.Clamp((nav.TAS()-180)/70, 0, 1)
+
+	// signed difference, negative is turn left
+	headingDelta := func() float32 {
+		switch turn {
+		case TurnLeft:
+			diff := heading - nav.FlightState.Heading
+			if diff > 0 {
+				return diff - 360 // force left turn
+			}
+			return diff // already left
+		case TurnRight:
+			diff := heading - nav.FlightState.Heading
+			if diff < 0 {
+				return diff + 360 // force right turn
+			}
+			return diff // already right
+		default:
+			diff := heading - nav.FlightState.Heading
+			if diff > 180 {
+				diff -= 360
+			} else if diff < -180 {
+				diff += 360
+			}
+			return diff
+		}
+	}()
+
+	const (
+		maxBankAngle = 25.0 // degrees
+		maxRollRate  = 5.0  // deg/sec
+	)
+
+	// In theory, turn rate is proportional to tan(bankAngle) but to make
+	// the turn in/turn out math easier, we model it linearly, which is not
+	// unreasonable since tan(theta) is linear-ish around 0.
+	// Note that this is signed.
+	turnRate := func(bankAngle float32) float32 { return bankAngle / maxBankAngle * maxTurnRate }
+
+	// If we started leveling out now, how many more degrees would we turn through?
+	var levelOutDelta float32
+	if nav.FlightState.BankAngle < 0 {
+		for a := nav.FlightState.BankAngle; a < 0; a += maxRollRate {
+			levelOutDelta += turnRate(a)
+		}
+	} else {
+		for a := nav.FlightState.BankAngle; a > 0; a -= maxRollRate {
+			levelOutDelta += turnRate(a)
+		}
+	}
+
+	//fmt.Printf("hdg %.1f for %.1f max rate %.1f cur bank %.1f levelout delta %.1f, heading delta %.1f\n",
+	//nav.FlightState.Heading, heading, maxTurnRate, nav.FlightState.BankAngle, levelOutDelta, headingDelta)
+
+	if headingDelta < 0 {
+		// Turning left
+		if levelOutDelta < headingDelta {
+			//fmt.Printf("  leveling\n")
+			nav.FlightState.BankAngle += maxRollRate
+		} else if nav.FlightState.BankAngle > -maxBankAngle &&
+			levelOutDelta+turnRate(nav.FlightState.BankAngle-maxRollRate) > headingDelta {
+			//fmt.Printf("  increasing left bank\n")
+			nav.FlightState.BankAngle -= maxRollRate
+		}
+	} else {
+		// Turning right
+		if levelOutDelta > headingDelta {
+			//fmt.Printf("  leveling\n")
+			nav.FlightState.BankAngle -= maxRollRate
+		} else if nav.FlightState.BankAngle < maxBankAngle &&
+			levelOutDelta+turnRate(nav.FlightState.BankAngle+maxRollRate) < headingDelta {
+			//fmt.Printf("  increasing right bank\n")
+			nav.FlightState.BankAngle += maxRollRate
+		}
+	}
+
+	turn = util.Select(nav.FlightState.BankAngle < 0, TurnLeft, TurnRight)
+
+	rate = math.Abs(turnRate(nav.FlightState.BankAngle))
+
+	return
 }
 
-func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
+func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32, turn TurnMethod) {
 	// Baseline
-	heading, turn, rate = *nav.Heading.Assigned, TurnClosest, 3
+	heading, turn = *nav.Heading.Assigned, TurnClosest
 
 	ap := nav.Approach.Assigned
 
