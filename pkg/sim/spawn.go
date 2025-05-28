@@ -547,7 +547,7 @@ func (s *Sim) updateDepartureSequence() {
 					dep.RequestReleaseTime = now.Add(time.Duration(60+s.Rand.Intn(60)) * time.Second)
 					s.STARSComputer.AddHeldDeparture(ac)
 					move(i, &depState.Gate, &depState.Held)
-				} else {
+				} else if s.State.LaunchConfig.Mode == LaunchAutomatic {
 					move(i, &depState.Gate, &depState.ReleasedIFR)
 				}
 				// Only do one since we've update with depState.Gate
