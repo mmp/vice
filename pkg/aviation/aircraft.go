@@ -76,7 +76,7 @@ type ADSBCallsign string
 
 func (c ADSBCallsign) String() string { return string(c) }
 
-type PilotResponse struct {
+type PilotTransmission struct {
 	Message    string
 	Unexpected bool // should it be highlighted in the UI
 }
@@ -117,7 +117,7 @@ func (ac *Aircraft) readbackUnexpected(f string, args ...interface{}) []RadioTra
 	}}
 }
 
-func (ac *Aircraft) transmitResponse(r PilotResponse) []RadioTransmission {
+func (ac *Aircraft) transmitResponse(r PilotTransmission) []RadioTransmission {
 	return []RadioTransmission{RadioTransmission{
 		Message: r.Message,
 		Type:    RadioTransmissionType(util.Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),

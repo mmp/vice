@@ -2001,7 +2001,7 @@ func TurnAngle(from, to float32, turn TurnMethod) float32 {
 	}
 }
 
-func (nav *Nav) GoAround() PilotResponse {
+func (nav *Nav) GoAround() PilotTransmission {
 	hdg := nav.FlightState.Heading
 	nav.Heading = NavHeading{Assigned: &hdg}
 	nav.DeferredHeading = nil
@@ -2016,12 +2016,12 @@ func (nav *Nav) GoAround() PilotResponse {
 	nav.Waypoints = []Waypoint{nav.FlightState.ArrivalAirport}
 
 	s := rand.Sample(nav.Rand, "going around", "on the go")
-	return PilotResponse{Message: s}
+	return PilotTransmission{Message: s}
 }
 
-func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
+func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotTransmission {
 	if alt > nav.Perf.Ceiling {
-		return PilotResponse{Message: "unable. That altitude is above our ceiling.", Unexpected: true}
+		return PilotTransmission{Message: "unable. That altitude is above our ceiling.", Unexpected: true}
 	}
 
 	var response string
@@ -2042,10 +2042,10 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotResponse {
 	} else {
 		nav.Altitude = NavAltitude{Assigned: &alt}
 	}
-	return PilotResponse{Message: response}
+	return PilotTransmission{Message: response}
 }
 
-func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
+func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotTransmission {
 	maxIAS := TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
 	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
 
@@ -2081,22 +2081,22 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotResponse {
 			response = fmt.Sprintf(msg, speed)
 		}
 	}
-	return PilotResponse{Message: response}
+	return PilotTransmission{Message: response}
 }
 
-func (nav *Nav) MaintainSlowestPractical() PilotResponse {
+func (nav *Nav) MaintainSlowestPractical() PilotTransmission {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
 	r := rand.Sample(nav.Rand, "we'll maintain slowest practical speed", "slowing as much as we can")
-	return PilotResponse{Message: r}
+	return PilotTransmission{Message: r}
 }
 
-func (nav *Nav) MaintainMaximumForward() PilotResponse {
+func (nav *Nav) MaintainMaximumForward() PilotTransmission {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
 	r := rand.Sample(nav.Rand, "we'll keep it at maximum forward speed", "maintaining maximum forward speed")
-	return PilotResponse{Message: r}
+	return PilotTransmission{Message: r}
 }
 
-func (nav *Nav) SaySpeed() PilotResponse {
+func (nav *Nav) SaySpeed() PilotTransmission {
 	currentSpeed := nav.FlightState.IAS
 	var output string
 
@@ -2114,10 +2114,10 @@ func (nav *Nav) SaySpeed() PilotResponse {
 	} else {
 		output = rand.Sample(nav.Rand, fmt.Sprintf("maintaining %.0f knots", currentSpeed), fmt.Sprintf("at %.0f knots", currentSpeed))
 	}
-	return PilotResponse{Message: output}
+	return PilotTransmission{Message: output}
 }
 
-func (nav *Nav) SayHeading() PilotResponse {
+func (nav *Nav) SayHeading() PilotTransmission {
 	currentHeading := nav.FlightState.Heading
 	var output string
 
@@ -2132,10 +2132,10 @@ func (nav *Nav) SayHeading() PilotResponse {
 		output = fmt.Sprintf("flying heading %.0f", currentHeading)
 	}
 
-	return PilotResponse{Message: output}
+	return PilotTransmission{Message: output}
 }
 
-func (nav *Nav) SayAltitude() PilotResponse {
+func (nav *Nav) SayAltitude() PilotTransmission {
 	currentAltitude := nav.FlightState.Altitude
 	var output string
 
@@ -2155,66 +2155,66 @@ func (nav *Nav) SayAltitude() PilotResponse {
 			fmt.Sprintf("at %s", FormatAltitude(currentAltitude)))
 	}
 
-	return PilotResponse{Message: output}
+	return PilotTransmission{Message: output}
 }
 
-func (nav *Nav) ExpediteDescent() PilotResponse {
+func (nav *Nav) ExpediteDescent() PilotTransmission {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt >= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
 			resp := rand.Sample(nav.Rand, "expediting down to", "expedite to")
-			return PilotResponse{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
+			return PilotTransmission{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
 				fmt.Sprintf("%d", int(*nav.Altitude.AfterSpeedSpeed))}
 		} else {
-			return PilotResponse{Message: "unable. We're not descending", Unexpected: true}
+			return PilotTransmission{Message: "unable. We're not descending", Unexpected: true}
 		}
 	}
 	if nav.Altitude.Expedite {
-		return PilotResponse{Message: rand.Sample(nav.Rand, "we're already expediting", "that's our best rate")}
+		return PilotTransmission{Message: rand.Sample(nav.Rand, "we're already expediting", "that's our best rate")}
 	}
 
 	nav.Altitude.Expedite = true
 	resp := rand.Sample(nav.Rand, "expediting down to", "expedite to")
-	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
+	return PilotTransmission{Message: resp + " " + FormatAltitude(alt)}
 }
 
-func (nav *Nav) ExpediteClimb() PilotResponse {
+func (nav *Nav) ExpediteClimb() PilotTransmission {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt <= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
 			resp := rand.Sample(nav.Rand, "expediting up to", "expedite to")
-			return PilotResponse{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
+			return PilotTransmission{Message: resp + " " + FormatAltitude(*nav.Altitude.AfterSpeed) + " once we're at " +
 				fmt.Sprintf("%d", int(*nav.Altitude.AfterSpeedSpeed))}
 		} else {
-			return PilotResponse{Message: "unable. We're not climbing", Unexpected: true}
+			return PilotTransmission{Message: "unable. We're not climbing", Unexpected: true}
 		}
 	}
 	if nav.Altitude.Expedite {
 		r := rand.Sample(nav.Rand, "we're already expediting", "that's our best rate")
-		return PilotResponse{Message: r}
+		return PilotTransmission{Message: r}
 	}
 
 	nav.Altitude.Expedite = true
 	resp := rand.Sample(nav.Rand, "expediting up to", "expedite to")
-	return PilotResponse{Message: resp + " " + FormatAltitude(alt)}
+	return PilotTransmission{Message: resp + " " + FormatAltitude(alt)}
 }
 
-func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotResponse {
+func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotTransmission {
 	if hdg <= 0 || hdg > 360 {
-		return PilotResponse{Message: fmt.Sprintf("unable. %.0f isn't a valid heading", hdg), Unexpected: true}
+		return PilotTransmission{Message: fmt.Sprintf("unable. %.0f isn't a valid heading", hdg), Unexpected: true}
 	}
 
 	nav.assignHeading(hdg, turn)
 
 	switch turn {
 	case TurnClosest:
-		return PilotResponse{Message: fmt.Sprintf("fly heading %03d", int(hdg))}
+		return PilotTransmission{Message: fmt.Sprintf("fly heading %03d", int(hdg))}
 	case TurnRight:
-		return PilotResponse{Message: fmt.Sprintf("turn right heading %03d", int(hdg))}
+		return PilotTransmission{Message: fmt.Sprintf("turn right heading %03d", int(hdg))}
 	case TurnLeft:
-		return PilotResponse{Message: fmt.Sprintf("turn left heading %03d", int(hdg))}
+		return PilotTransmission{Message: fmt.Sprintf("turn left heading %03d", int(hdg))}
 	default:
 		panic(fmt.Sprintf("%03d: unhandled turn type", turn))
 	}
@@ -2246,9 +2246,9 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 	nav.EnqueueHeading(NavHeading{Assigned: &hdg, Turn: &turn})
 }
 
-func (nav *Nav) FlyPresentHeading() PilotResponse {
+func (nav *Nav) FlyPresentHeading() PilotTransmission {
 	nav.assignHeading(nav.FlightState.Heading, TurnClosest)
-	return PilotResponse{Message: "fly present heading"}
+	return PilotTransmission{Message: "fly present heading"}
 }
 
 func (nav *Nav) fixInRoute(fix string) bool {
@@ -2376,42 +2376,42 @@ func (nav *Nav) directFix(fix string) error {
 	return ErrInvalidFix
 }
 
-func (nav *Nav) DirectFix(fix string) PilotResponse {
+func (nav *Nav) DirectFix(fix string) PilotTransmission {
 	if err := nav.directFix(fix); err == nil {
 		nav.EnqueueHeading(NavHeading{})
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
 
-		return PilotResponse{Message: "direct " + FixReadback(fix)}
+		return PilotTransmission{Message: "direct " + FixReadback(fix)}
 	} else if err == ErrFixIsTooFarAway {
-		return PilotResponse{Message: "unable. " + FixReadback(fix) + " is too far away to go direct", Unexpected: true}
+		return PilotTransmission{Message: "unable. " + FixReadback(fix) + " is too far away to go direct", Unexpected: true}
 	} else {
-		return PilotResponse{Message: "unable. " + FixReadback(fix) + " isn't a valid fix", Unexpected: true}
+		return PilotTransmission{Message: "unable. " + FixReadback(fix) + " isn't a valid fix", Unexpected: true}
 	}
 }
 
-func (nav *Nav) DepartFixDirect(fixa string, fixb string) PilotResponse {
+func (nav *Nav) DepartFixDirect(fixa string, fixb string) PilotTransmission {
 	fa, fb := nav.fixPairInRoute(fixa, fixb)
 	if fa == nil {
-		return PilotResponse{Message: "unable. " + fixa + " isn't in our route", Unexpected: true}
+		return PilotTransmission{Message: "unable. " + fixa + " isn't in our route", Unexpected: true}
 	}
 	if fb == nil {
-		return PilotResponse{Message: "unable. " + fixb + " isn't in our route after " + fixa, Unexpected: true}
+		return PilotTransmission{Message: "unable. " + fixb + " isn't in our route after " + fixa, Unexpected: true}
 	}
 
 	nfa := nav.FixAssignments[fixa]
 	nfa.Depart.Fix = fb
 	nav.FixAssignments[fixa] = nfa
 
-	return PilotResponse{Message: "depart " + FixReadback(fixa) + " direct " + FixReadback(fixb)}
+	return PilotTransmission{Message: "depart " + FixReadback(fixa) + " direct " + FixReadback(fixb)}
 }
 
-func (nav *Nav) DepartFixHeading(fix string, hdg float32) PilotResponse {
+func (nav *Nav) DepartFixHeading(fix string, hdg float32) PilotTransmission {
 	if hdg <= 0 || hdg > 360 {
-		return PilotResponse{Message: fmt.Sprintf("unable. Heading %.0f is invalid", hdg), Unexpected: true}
+		return PilotTransmission{Message: fmt.Sprintf("unable. Heading %.0f is invalid", hdg), Unexpected: true}
 	}
 	if !nav.fixInRoute(fix) {
-		return PilotResponse{Message: "unable. " + fix + " isn't in our route", Unexpected: true}
+		return PilotTransmission{Message: "unable. " + fix + " isn't in our route", Unexpected: true}
 	}
 
 	nfa := nav.FixAssignments[fix]
@@ -2420,12 +2420,12 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) PilotResponse {
 	nav.FixAssignments[fix] = nfa
 
 	response := "depart " + FixReadback(fix)
-	return PilotResponse{Message: fmt.Sprintf(response+" heading %03d", int(hdg))}
+	return PilotTransmission{Message: fmt.Sprintf(response+" heading %03d", int(hdg))}
 }
 
-func (nav *Nav) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) PilotResponse {
+func (nav *Nav) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) PilotTransmission {
 	if !nav.fixInRoute(fix) {
-		return PilotResponse{Message: "unable. " + fix + " isn't in our route", Unexpected: true}
+		return PilotTransmission{Message: "unable. " + fix + " isn't in our route", Unexpected: true}
 	}
 
 	response := "cross " + FixReadback(fix) + " "
@@ -2446,7 +2446,7 @@ func (nav *Nav) CrossFixAt(fix string, ar *AltitudeRestriction, speed int) Pilot
 	}
 	nav.FixAssignments[fix] = nfa
 
-	return PilotResponse{Message: response}
+	return PilotTransmission{Message: response}
 }
 
 func (nav *Nav) getApproach(airport *Airport, id string, lg *log.Logger) (*Approach, error) {
@@ -2463,14 +2463,14 @@ func (nav *Nav) getApproach(airport *Airport, id string, lg *log.Logger) (*Appro
 }
 
 func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[string]WaypointArray,
-	lg *log.Logger) PilotResponse {
+	lg *log.Logger) PilotTransmission {
 	ap, err := nav.getApproach(airport, id, lg)
 	if err != nil {
-		return PilotResponse{Message: "unable. We don't know the " + id + " approach.", Unexpected: true}
+		return PilotTransmission{Message: "unable. We don't know the " + id + " approach.", Unexpected: true}
 	}
 
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
-		return PilotResponse{Message: "you already told us to expect the " + ap.FullName + " approach."}
+		return PilotTransmission{Message: "you already told us to expect the " + ap.FullName + " approach."}
 	}
 
 	nav.Approach.Assigned = ap
@@ -2535,18 +2535,18 @@ func (nav *Nav) ExpectApproach(airport *Airport, id string, runwayWaypoints map[
 	}
 
 	opener := rand.Sample(nav.Rand, "we'll expect the", "expecting the", "we'll plan for the")
-	return PilotResponse{Message: opener + " " + ap.FullName + " approach"}
+	return PilotTransmission{Message: opener + " " + ap.FullName + " approach"}
 }
 
-func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) PilotResponse {
+func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) PilotTransmission {
 	if nav.Approach.AssignedId == "" {
-		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
+		return PilotTransmission{Message: "you never told us to expect an approach", Unexpected: true}
 	}
 
 	_, onHeading := nav.AssignedHeading()
 
 	if !(onHeading || (len(nav.Waypoints) > 0 && nav.Waypoints[0].OnApproach)) {
-		return PilotResponse{Message: "we have to be on a heading or direct to an approach fix to intercept", Unexpected: true}
+		return PilotTransmission{Message: "we have to be on a heading or direct to an approach fix to intercept", Unexpected: true}
 	}
 
 	resp, err := nav.prepareForApproach(false, lg)
@@ -2560,25 +2560,25 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) PilotResponse 
 		} else {
 			r = rand.Sample(nav.Rand, "joining the "+ap.FullName+" approach course", "joining "+ap.FullName)
 		}
-		return PilotResponse{Message: r}
+		return PilotTransmission{Message: r}
 	}
 }
 
-func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
+func (nav *Nav) AtFixCleared(fix, id string) PilotTransmission {
 	if nav.Approach.AssignedId == "" {
-		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true}
+		return PilotTransmission{Message: "you never told us to expect an approach", Unexpected: true}
 	}
 
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return PilotResponse{Message: "unable. We were never told to expect an approach", Unexpected: true}
+		return PilotTransmission{Message: "unable. We were never told to expect an approach", Unexpected: true}
 	}
 	if nav.Approach.AssignedId != id {
-		return PilotResponse{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true}
+		return PilotTransmission{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true}
 	}
 
 	if !slices.ContainsFunc(nav.Waypoints, func(wp Waypoint) bool { return wp.Fix == fix }) {
-		return PilotResponse{Message: "unable. " + fix + " is not in our route", Unexpected: true}
+		return PilotTransmission{Message: "unable. " + fix + " is not in our route", Unexpected: true}
 	}
 	nav.Approach.AtFixClearedRoute = nil
 	for _, route := range ap.Waypoints {
@@ -2589,13 +2589,13 @@ func (nav *Nav) AtFixCleared(fix, id string) PilotResponse {
 		}
 	}
 
-	return PilotResponse{Message: rand.Sample(nav.Rand, "at "+fix+", cleared "+ap.FullName,
+	return PilotTransmission{Message: rand.Sample(nav.Rand, "at "+fix+", cleared "+ap.FullName,
 		"cleared "+ap.FullName+" at "+fix)}
 }
 
-func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (PilotResponse, error) {
+func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (PilotTransmission, error) {
 	if nav.Approach.AssignedId == "" {
-		return PilotResponse{Message: "you never told us to expect an approach", Unexpected: true},
+		return PilotTransmission{Message: "you never told us to expect an approach", Unexpected: true},
 			ErrClearedForUnexpectedApproach
 	}
 
@@ -2635,7 +2635,7 @@ func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (PilotRespon
 	} else if assignedHeading {
 		nav.Approach.InterceptState = InitialHeading
 	} else {
-		return PilotResponse{Message: "unable. We need either direct or a heading to intercept", Unexpected: true},
+		return PilotTransmission{Message: "unable. We need either direct or a heading to intercept", Unexpected: true},
 			ErrUnableCommand
 	}
 	// If the aircraft is on a heading, there's nothing more to do for
@@ -2645,10 +2645,10 @@ func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (PilotRespon
 	// No procedure turn if it intercepts via a heading
 	nav.Approach.NoPT = straightIn || assignedHeading
 
-	return PilotResponse{}, nil
+	return PilotTransmission{}, nil
 }
 
-func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
+func (nav *Nav) prepareForChartedVisual() (PilotTransmission, error) {
 	// Airport PostDeserialize() checks that there is just a single set of
 	// waypoints for charted visual approaches.
 	wp := nav.Approach.Assigned.Waypoints[0]
@@ -2734,21 +2734,21 @@ func (nav *Nav) prepareForChartedVisual() (PilotResponse, error) {
 		nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
 		nav.Heading = NavHeading{}
 		nav.DeferredHeading = nil
-		return PilotResponse{}, nil
+		return PilotTransmission{}, nil
 	}
 
-	return PilotResponse{Message: "unable. We are not on course to intercept the approach", Unexpected: true},
+	return PilotTransmission{Message: "unable. We are not on course to intercept the approach", Unexpected: true},
 		ErrUnableCommand
 }
 
-func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *log.Logger) (PilotResponse, error) {
+func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *log.Logger) (PilotTransmission, error) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return PilotResponse{Message: "unable. We haven't been told to expect an approach", Unexpected: true},
+		return PilotTransmission{Message: "unable. We haven't been told to expect an approach", Unexpected: true},
 			ErrClearedForUnexpectedApproach
 	}
 	if nav.Approach.AssignedId != id {
-		return PilotResponse{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true},
+		return PilotTransmission{Message: "unable. We were told to expect the " + ap.FullName + " approach...", Unexpected: true},
 			ErrClearedForUnexpectedApproach
 	}
 
@@ -2772,45 +2772,45 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *
 		nav.flyProcedureTurnIfNecessary()
 
 		if straightIn {
-			return PilotResponse{Message: "cleared straight in " + ap.FullName + " approach"}, nil
+			return PilotTransmission{Message: "cleared straight in " + ap.FullName + " approach"}, nil
 		} else {
-			return PilotResponse{Message: "cleared " + ap.FullName + " approach"}, nil
+			return PilotTransmission{Message: "cleared " + ap.FullName + " approach"}, nil
 		}
 	}
 }
 
-func (nav *Nav) CancelApproachClearance() PilotResponse {
+func (nav *Nav) CancelApproachClearance() PilotTransmission {
 	if !nav.Approach.Cleared {
-		return PilotResponse{Message: "we're not currently cleared for an approach", Unexpected: true}
+		return PilotTransmission{Message: "we're not currently cleared for an approach", Unexpected: true}
 	}
 
 	nav.Approach.Cleared = false
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.NoPT = false
 
-	return PilotResponse{Message: "cancel approach clearance."}
+	return PilotTransmission{Message: "cancel approach clearance."}
 }
 
-func (nav *Nav) ClimbViaSID() PilotResponse {
+func (nav *Nav) ClimbViaSID() PilotTransmission {
 	if len(nav.Waypoints) == 0 || !nav.Waypoints[0].OnSID {
-		return PilotResponse{Message: "unable. We're not flying a departure procedure", Unexpected: true}
+		return PilotTransmission{Message: "unable. We're not flying a departure procedure", Unexpected: true}
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueHeading(NavHeading{})
-	return PilotResponse{Message: "climb via the SID"}
+	return PilotTransmission{Message: "climb via the SID"}
 }
 
-func (nav *Nav) DescendViaSTAR() PilotResponse {
+func (nav *Nav) DescendViaSTAR() PilotTransmission {
 	if len(nav.Waypoints) == 0 || !nav.Waypoints[0].OnSTAR {
-		return PilotResponse{Message: "unable. We're not on a STAR", Unexpected: true}
+		return PilotTransmission{Message: "unable. We're not on a STAR", Unexpected: true}
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueHeading(NavHeading{})
-	return PilotResponse{Message: "descend via the STAR"}
+	return PilotTransmission{Message: "descend via the STAR"}
 }
 
 func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
@@ -2833,9 +2833,9 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 	}
 }
 
-func (nav *Nav) ResumeOwnNavigation() PilotResponse {
+func (nav *Nav) ResumeOwnNavigation() PilotTransmission {
 	if nav.Heading.Assigned == nil {
-		return PilotResponse{Message: "I don't think you ever put us on a heading..."}
+		return PilotTransmission{Message: "I don't think you ever put us on a heading..."}
 	}
 
 	nav.Heading = NavHeading{}
@@ -2861,19 +2861,19 @@ func (nav *Nav) ResumeOwnNavigation() PilotResponse {
 		fmt.Printf("direct to idx %d\n", startIdx)
 		nav.Waypoints = nav.Waypoints[startIdx:]
 	}
-	return PilotResponse{Message: rand.Sample(nav.Rand, "own navigation", "resuming own navigation")}
+	return PilotTransmission{Message: rand.Sample(nav.Rand, "own navigation", "resuming own navigation")}
 }
 
-func (nav *Nav) AltitudeOurDiscretion() PilotResponse {
+func (nav *Nav) AltitudeOurDiscretion() PilotTransmission {
 	if nav.Altitude.Assigned == nil {
-		return PilotResponse{Message: "You never assigned us an altitude..."}
+		return PilotTransmission{Message: "You never assigned us an altitude..."}
 	}
 
 	nav.Altitude = NavAltitude{}
 	alt := nav.FinalAltitude
 	nav.Altitude.Cleared = &alt
 
-	return PilotResponse{Message: rand.Sample(nav.Rand, "altitude our discretion", "altitude our discretion, maintain VFR")}
+	return PilotTransmission{Message: rand.Sample(nav.Rand, "altitude our discretion", "altitude our discretion, maintain VFR")}
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {
