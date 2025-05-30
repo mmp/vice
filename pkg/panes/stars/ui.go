@@ -116,7 +116,15 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	}
 
 	if imgui.CollapsingHeaderBoolPtr("Approaches", nil) {
+	//	var value [4]float32 = [4]float32{.3, .2, .5, .1}
+		// var value [4]float32 = [4]float32{.3, .2, .5, .1}
+		// color := &value
+
+		imgui.Text("Color:")
+		imgui.ColorEdit4V("Draw Color", sp.IFPHelpers.ApproachesColor, imgui.ColorEditFlagsNoInputs | imgui.ColorEditFlagsNoLabel | imgui.ColorEditFlagsAlphaBar)
+
 		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
+
 			if sp.scopeDraw.approaches == nil {
 				sp.scopeDraw.approaches = make(map[string]map[string]bool)
 			}

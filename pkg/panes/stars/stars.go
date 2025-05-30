@@ -46,6 +46,7 @@ const TabListUnassignedIndex = -1
 var (
 	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor          = renderer.RGB{.1, .9, .1}
+	STARSTestColor          = renderer.RGB{.3, .2, .5}
 	STARSTextAlertColor     = renderer.RGB{1, 0, 0}
 	STARSTextWarningColor   = renderer.RGB{1, 1, 0}
 	STARSCompassColor       = renderer.RGB{.55, .55, .55}
@@ -220,6 +221,12 @@ type STARSPane struct {
 		departures  map[string]map[string]map[string]bool // airport->runway->exit
 		overflights map[string]map[int]bool               // group->index
 		airspace    map[string]map[string]bool            // ctrl -> volume name
+	}
+
+	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
+	IFPHelpers struct { 
+		ArrivalsColor *[4]float32
+		ApproachesColor *[4]float32
 	}
 
 	// We keep a pool of each type so that we don't need to allocate a new
@@ -417,6 +424,10 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 
 	if sp.TgtGenKey == 0 {
 		sp.TgtGenKey = ';'
+	}
+
+	if(sp.IFPHelpers.ApproachesColor == nil) { 
+		sp.IFPHelpers.ApproachesColor = &[4]float32{.3, .2, .5, .1}
 	}
 
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
@@ -728,7 +739,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawVideoMaps(ctx, transforms, cb)
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools),
-		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
+		ps.Brightness.Lists.ScaleRGB(STARSTestColor), cb)
 
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)
