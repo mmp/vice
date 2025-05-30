@@ -41,7 +41,3 @@ func RGBFromHex(c int) RGB {
 func RGBFromUInt8(r uint8, g uint8, b uint8) RGB {
 	return RGB{R: float32(r) / 255, G: float32(g) / 255, B: float32(b) / 255}
 }
-
-func RGBFromColorPickerRGB(input [4]float32) RGB { 
-	return RGB{input[0], input[1], input[2]}
-}

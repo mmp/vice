@@ -1082,7 +1082,7 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.ArrivalsColor)
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ArrivalsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
@@ -1137,7 +1137,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms S
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
@@ -1169,7 +1169,7 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.DeparturesColor)
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.DeparturesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
@@ -1205,7 +1205,7 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.OverflightsColor)
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.OverflightsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
@@ -1236,7 +1236,7 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
 
 	if sp.scopeDraw.airspace != nil {
 		ps := sp.currentPrefs()
@@ -1282,6 +1282,12 @@ func generate_commands(cb *renderer.CommandBuffer, transforms ScopeTransformatio
 	cb.LineWidth(1, ctx.DPIScale)
 	ldr.GenerateCommands(cb)
 }
+
+func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [4]float32) renderer.RGB { 
+	ps := sp.currentPrefs()
+	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
+}
+
 
 // pt should return nm-based coordinates
 func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
