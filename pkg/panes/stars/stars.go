@@ -46,7 +46,6 @@ const TabListUnassignedIndex = -1
 var (
 	STARSBackgroundColor    = renderer.RGB{.2, .2, .2} // at 100 contrast
 	STARSListColor          = renderer.RGB{.1, .9, .1}
-	STARSTestColor          = renderer.RGB{.3, .2, .5}
 	STARSTextAlertColor     = renderer.RGB{1, 0, 0}
 	STARSTextWarningColor   = renderer.RGB{1, 1, 0}
 	STARSCompassColor       = renderer.RGB{.55, .55, .55}
