@@ -1050,8 +1050,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
-	color renderer.RGB, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
 		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
 		return
@@ -1083,14 +1082,11 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	r := sp.IFPHelpers.ArrivalsColor[0]
-	g := sp.IFPHelpers.ArrivalsColor[1]
-	b := sp.IFPHelpers.ArrivalsColor[2]
-	color := renderer.RGB{r, g, b}
+	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.ArrivalsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
-		Color:          renderer.RGB{r, g, b},
+		Color:          color,
 		DrawBackground: true}
 
 	if sp.scopeDraw.arrivals != nil {
@@ -1141,14 +1137,11 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms S
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	r := sp.IFPHelpers.ApproachesColor[0]
-	g := sp.IFPHelpers.ApproachesColor[1]
-	b := sp.IFPHelpers.ApproachesColor[2]
-	color := renderer.RGB{r, g, b}
+	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
-		Color:          renderer.RGB{r, g, b},
+		Color:          color,
 		DrawBackground: true}
 
 
@@ -1176,14 +1169,11 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	r := sp.IFPHelpers.DeparturesColor[0]
-	g := sp.IFPHelpers.DeparturesColor[1]
-	b := sp.IFPHelpers.DeparturesColor[2]
-	color := renderer.RGB{r, g, b}
+	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.DeparturesColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
-		Color:          renderer.RGB{r, g, b},
+		Color:          color,
 		DrawBackground: true}
 
 	if sp.scopeDraw.departures != nil {
@@ -1215,14 +1205,11 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	r := sp.IFPHelpers.OverflightsColor[0]
-	g := sp.IFPHelpers.OverflightsColor[1]
-	b := sp.IFPHelpers.OverflightsColor[2]
-	color := renderer.RGB{r, g, b}
+	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.OverflightsColor)
 
 	style := renderer.TextStyle{
 		Font:           font,
-		Color:          renderer.RGB{r, g, b},
+		Color:          color,
 		DrawBackground: true}
 
 
@@ -1249,10 +1236,7 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
-	r := sp.IFPHelpers.AirspaceColor[0]
-	g := sp.IFPHelpers.AirspaceColor[1]
-	b := sp.IFPHelpers.AirspaceColor[2]
-	color := renderer.RGB{r, g, b}
+	color := renderer.RGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
 
 	if sp.scopeDraw.airspace != nil {
 		ps := sp.currentPrefs()
