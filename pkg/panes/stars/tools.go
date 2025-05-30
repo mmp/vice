@@ -1084,73 +1084,8 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 		Color:          color,
 		DrawBackground: true}
 
-	// STARS
-	if sp.scopeDraw.arrivals != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
-			if sp.scopeDraw.arrivals[name] == nil {
-				continue
-			}
-
-			arrivals := ctx.Client.State.InboundFlows[name].Arrivals
-			for i, arr := range arrivals {
-				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
-					continue
-				}
-
-				drawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
-
-				// Draw runway-specific waypoints
-				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
-					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
-						wp := arr.RunwayWaypoints[ap][rwy]
-						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
-
-						if len(wp) > 1 {
-							// Draw the runway number in the middle of the line
-							// between the first two waypoints.
-							pmid := math.Mid2LL(wp[0].Location, wp[1].Location)
-							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
-						} else if wp[0].Heading != 0 {
-							// This should be the only other case... The heading arrow is drawn
-							// up to 2nm out, so put the runway 1nm along its axis.
-							a := math.Radians(float32(wp[0].Heading) - ctx.MagneticVariation)
-							v := [2]float32{math.Sin(a), math.Cos(a)}
-							pend := math.LL2NM(wp[0].Location, ctx.NmPerLongitude)
-							pend = math.Add2f(pend, v)
-							pell := math.NM2LL(pend, ctx.NmPerLongitude)
-							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
-						}
-					}
-				}
-			}
-		}
-	}
-
+	sp.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 	sp.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-
-	// Approaches
-	// approach_style := renderer.TextStyle{
-	// 	Font:           font,
-	// 	Color:          renderer.RGB{r, g, b},
-	// 	DrawBackground: true}
-
-
-	// if sp.scopeDraw.approaches != nil {
-	// 	for _, rwy := range ctx.Client.State.ArrivalRunways {
-	// 		if sp.scopeDraw.approaches[rwy.Airport] == nil {
-	// 			continue
-	// 		}
-	// 		ap := ctx.Client.State.Airports[rwy.Airport]
-	// 		for _, name := range util.SortedMapKeys(ap.Approaches) {
-	// 			appr := ap.Approaches[name]
-	// 			if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
-	// 				for _, wp := range appr.Waypoints {
-	// 					drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, approach_style, ld, pd, ldr)
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
 
 	// Departure routes
 	if sp.scopeDraw.departures != nil {
@@ -1293,31 +1228,59 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 	a := sp.IFPHelpers.ArrivalsColor[3]
 	cb.SetRGBA(renderer.RGBA{r, g, b, a})
 
-
-	// Approaches
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          renderer.RGB{r, g, b},
 		DrawBackground: true}
 
 
-	if sp.scopeDraw.approaches != nil {
-		for _, rwy := range ctx.Client.State.ArrivalRunways {
-			if sp.scopeDraw.approaches[rwy.Airport] == nil {
+	// STARS
+	if sp.scopeDraw.arrivals != nil {
+		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+			if sp.scopeDraw.arrivals[name] == nil {
 				continue
 			}
-			ap := ctx.Client.State.Airports[rwy.Airport]
-			for _, name := range util.SortedMapKeys(ap.Approaches) {
-				appr := ap.Approaches[name]
-				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
-					for _, wp := range appr.Waypoints {
+
+			arrivals := ctx.Client.State.InboundFlows[name].Arrivals
+			for i, arr := range arrivals {
+				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
+					continue
+				}
+
+				drawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+
+				// Draw runway-specific waypoints
+				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
+					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
+						wp := arr.RunwayWaypoints[ap][rwy]
 						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+
+						if len(wp) > 1 {
+							// Draw the runway number in the middle of the line
+							// between the first two waypoints.
+							pmid := math.Mid2LL(wp[0].Location, wp[1].Location)
+							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pmid), style)
+						} else if wp[0].Heading != 0 {
+							// This should be the only other case... The heading arrow is drawn
+							// up to 2nm out, so put the runway 1nm along its axis.
+							a := math.Radians(float32(wp[0].Heading) - ctx.MagneticVariation)
+							v := [2]float32{math.Sin(a), math.Cos(a)}
+							pend := math.LL2NM(wp[0].Location, ctx.NmPerLongitude)
+							pend = math.Add2f(pend, v)
+							pell := math.NM2LL(pend, ctx.NmPerLongitude)
+							td.AddTextCentered(rwy, transforms.WindowFromLatLongP(pell), style)
+						}
 					}
 				}
 			}
 		}
 	}
 
+	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func generate_commands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context, 
+	ld *renderer.LinesDrawBuilder, pd *renderer.TrianglesDrawBuilder, td *renderer.TextDrawBuilder , ldr *renderer.LinesDrawBuilder) {
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
@@ -1328,8 +1291,6 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 	cb.LineWidth(1, ctx.DPIScale)
 	ldr.GenerateCommands(cb)
 }
-
-
 
 // pt should return nm-based coordinates
 func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
