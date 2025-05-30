@@ -1280,7 +1280,7 @@ func generate_commands(cb *renderer.CommandBuffer, transforms ScopeTransformatio
 	ldr.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [4]float32) renderer.RGB { 
+func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB { 
 	ps := sp.currentPrefs()
 	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
 }

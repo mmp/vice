@@ -224,11 +224,11 @@ type STARSPane struct {
 
 	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
 	IFPHelpers struct {
-		ArrivalsColor   *[4]float32
-		ApproachesColor *[4]float32
-		DeparturesColor *[4]float32
-		OverflightsColor *[4]float32
-		AirspaceColor *[4]float32
+		ArrivalsColor   *[3]float32
+		ApproachesColor *[3]float32
+		DeparturesColor *[3]float32
+		OverflightsColor *[3]float32
+		AirspaceColor *[3]float32
 	}
 
 	// We keep a pool of each type so that we don't need to allocate a new
@@ -429,23 +429,23 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	}
 
 	if sp.IFPHelpers.ApproachesColor == nil {
-		sp.IFPHelpers.ApproachesColor = &[4]float32{.1, .9, .1, 0}
+		sp.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
 	}
 
 	if sp.IFPHelpers.ArrivalsColor == nil {
-		sp.IFPHelpers.ArrivalsColor = &[4]float32{.1, .9, .1, 0}
+		sp.IFPHelpers.ArrivalsColor = &[3]float32{.1, .9, .1}
 	}
 
 	if sp.IFPHelpers.DeparturesColor == nil {
-		sp.IFPHelpers.DeparturesColor = &[4]float32{.1, .9, .1, 0}
+		sp.IFPHelpers.DeparturesColor = &[3]float32{.1, .9, .1}
 	}
 
 	if sp.IFPHelpers.OverflightsColor == nil {
-		sp.IFPHelpers.OverflightsColor = &[4]float32{.1, .9, .1, 0}
+		sp.IFPHelpers.OverflightsColor = &[3]float32{.1, .9, .1}
 	}
 
 	if sp.IFPHelpers.AirspaceColor == nil {
-		sp.IFPHelpers.AirspaceColor = &[4]float32{.1, .9, .1, 0}
+		sp.IFPHelpers.AirspaceColor = &[3]float32{.1, .9, .1}
 	}
 
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
