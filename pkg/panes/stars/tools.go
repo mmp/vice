@@ -1072,143 +1072,11 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	// which may be different for different uses of the waypoint...)
 	drawnWaypoints := make(map[string]interface{})
 
-	style := renderer.TextStyle{
-		Font:           font,
-		Color:          color,
-		DrawBackground: true}
-
 	sp.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 	sp.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
-
-	// Departure routes
-	if sp.scopeDraw.departures != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.Airports) {
-			if sp.scopeDraw.departures[name] == nil {
-				continue
-			}
-
-			ap := ctx.Client.State.Airports[name]
-			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
-				if sp.scopeDraw.departures[name][rwy] == nil {
-					continue
-				}
-
-				exitRoutes := ap.DepartureRoutes[rwy]
-				for _, exit := range util.SortedMapKeys(exitRoutes) {
-					if sp.scopeDraw.departures[name][rwy][exit] {
-						drawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
-							td, style, ld, pd, ldr, color)
-					}
-				}
-			}
-		}
-	}
-
-	// Overflights
-	if sp.scopeDraw.overflights != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
-			if sp.scopeDraw.overflights[name] == nil {
-				continue
-			}
-
-			overflights := ctx.Client.State.InboundFlows[name].Overflights
-			for i, of := range overflights {
-				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
-					continue
-				}
-
-				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
-			}
-		}
-	}
-
-	if sp.scopeDraw.airspace != nil {
-		ps := sp.currentPrefs()
-		rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
-
-		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
-			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
-				if !sp.scopeDraw.airspace[ctrl][volname] {
-					continue
-				}
-
-				for _, vol := range ctx.Client.State.Airspace[ctrl][volname] {
-					for _, pts := range vol.Boundaries {
-						for i := range pts[:len(pts)-1] {
-							ld.AddLine(pts[i], pts[i+1], color)
-						}
-					}
-
-					ps := sp.currentPrefs()
-					style := renderer.TextStyle{
-						Font:           sp.systemFont(ctx, ps.CharSize.Tools),
-						Color:          rgb,
-						DrawBackground: true, // default BackgroundColor is fine
-					}
-					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
-				}
-			}
-		}
-	}
-
-	// And now finally update the command buffer with everything we've
-	// drawn.
-	// cb.SetRGB(color)
-	// transforms.LoadLatLongViewingMatrices(cb)
-	// cb.LineWidth(1, ctx.DPIScale)
-	// ld.GenerateCommands(cb)
-
-	// transforms.LoadWindowViewingMatrices(cb)
-	// pd.GenerateCommands(cb)
-	// td.GenerateCommands(cb)
-	// cb.LineWidth(1, ctx.DPIScale)
-	// ldr.GenerateCommands(cb)
-}
-
-func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
-	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
-	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
-
-	r := sp.IFPHelpers.ApproachesColor[0]
-	g := sp.IFPHelpers.ApproachesColor[1]
-	b := sp.IFPHelpers.ApproachesColor[2]
-	// a := sp.IFPHelpers.ApproachesColor[3]
-	color := renderer.RGB{r, g, b}
-
-
-	// Approaches
-	style := renderer.TextStyle{
-		Font:           font,
-		Color:          renderer.RGB{r, g, b},
-		DrawBackground: true}
-
-
-	if sp.scopeDraw.approaches != nil {
-		for _, rwy := range ctx.Client.State.ArrivalRunways {
-			if sp.scopeDraw.approaches[rwy.Airport] == nil {
-				continue
-			}
-			ap := ctx.Client.State.Airports[rwy.Airport]
-			for _, name := range util.SortedMapKeys(ap.Approaches) {
-				appr := ap.Approaches[name]
-				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
-					for _, wp := range appr.Waypoints {
-						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
-					}
-				}
-			}
-		}
-	}
-
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
-	ld.GenerateCommands(cb)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	pd.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.DPIScale)
-	ldr.GenerateCommands(cb)
+	sp.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 }
 
 func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
@@ -1218,7 +1086,6 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 	r := sp.IFPHelpers.ArrivalsColor[0]
 	g := sp.IFPHelpers.ArrivalsColor[1]
 	b := sp.IFPHelpers.ArrivalsColor[2]
-	// a := sp.IFPHelpers.ArrivalsColor[3]
 	color := renderer.RGB{r, g, b}
 
 	style := renderer.TextStyle{
@@ -1226,8 +1093,6 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 		Color:          renderer.RGB{r, g, b},
 		DrawBackground: true}
 
-
-	// STARS
 	if sp.scopeDraw.arrivals != nil {
 		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.arrivals[name] == nil {
@@ -1271,6 +1136,155 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 
 	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
 }
+
+func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
+
+	r := sp.IFPHelpers.ApproachesColor[0]
+	g := sp.IFPHelpers.ApproachesColor[1]
+	b := sp.IFPHelpers.ApproachesColor[2]
+	color := renderer.RGB{r, g, b}
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          renderer.RGB{r, g, b},
+		DrawBackground: true}
+
+
+	if sp.scopeDraw.approaches != nil {
+		for _, rwy := range ctx.Client.State.ArrivalRunways {
+			if sp.scopeDraw.approaches[rwy.Airport] == nil {
+				continue
+			}
+			ap := ctx.Client.State.Airports[rwy.Airport]
+			for _, name := range util.SortedMapKeys(ap.Approaches) {
+				appr := ap.Approaches[name]
+				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
+					for _, wp := range appr.Waypoints {
+						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+					}
+				}
+			}
+		}
+	}
+
+	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
+
+	r := sp.IFPHelpers.DeparturesColor[0]
+	g := sp.IFPHelpers.DeparturesColor[1]
+	b := sp.IFPHelpers.DeparturesColor[2]
+	color := renderer.RGB{r, g, b}
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          renderer.RGB{r, g, b},
+		DrawBackground: true}
+
+	if sp.scopeDraw.departures != nil {
+		for _, name := range util.SortedMapKeys(ctx.Client.State.Airports) {
+			if sp.scopeDraw.departures[name] == nil {
+				continue
+			}
+
+			ap := ctx.Client.State.Airports[name]
+			for _, rwy := range util.SortedMapKeys(ap.DepartureRoutes) {
+				if sp.scopeDraw.departures[name][rwy] == nil {
+					continue
+				}
+
+				exitRoutes := ap.DepartureRoutes[rwy]
+				for _, exit := range util.SortedMapKeys(exitRoutes) {
+					if sp.scopeDraw.departures[name][rwy][exit] {
+						drawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
+							td, style, ld, pd, ldr, color)
+					}
+				}
+			}
+		}
+	}
+	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
+
+	r := sp.IFPHelpers.OverflightsColor[0]
+	g := sp.IFPHelpers.OverflightsColor[1]
+	b := sp.IFPHelpers.OverflightsColor[2]
+	color := renderer.RGB{r, g, b}
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          renderer.RGB{r, g, b},
+		DrawBackground: true}
+
+
+	if sp.scopeDraw.overflights != nil {
+		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+			if sp.scopeDraw.overflights[name] == nil {
+				continue
+			}
+
+			overflights := ctx.Client.State.InboundFlows[name].Overflights
+			for i, of := range overflights {
+				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
+					continue
+				}
+
+				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+			}
+		}
+	}
+	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder, 
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
+
+	r := sp.IFPHelpers.AirspaceColor[0]
+	g := sp.IFPHelpers.AirspaceColor[1]
+	b := sp.IFPHelpers.AirspaceColor[2]
+	color := renderer.RGB{r, g, b}
+
+	if sp.scopeDraw.airspace != nil {
+		ps := sp.currentPrefs()
+		rgb := ps.Brightness.Lists.ScaleRGB(color)
+
+		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
+			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
+				if !sp.scopeDraw.airspace[ctrl][volname] {
+					continue
+				}
+
+				for _, vol := range ctx.Client.State.Airspace[ctrl][volname] {
+					for _, pts := range vol.Boundaries {
+						for i := range pts[:len(pts)-1] {
+							ld.AddLine(pts[i], pts[i+1], color)
+						}
+					}
+
+					ps := sp.currentPrefs()
+					style := renderer.TextStyle{
+						Font:           sp.systemFont(ctx, ps.CharSize.Tools),
+						Color:          rgb,
+						DrawBackground: true, // default BackgroundColor is fine
+					}
+					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
+				}
+			}
+		}
+	}
+	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
 
 func generate_commands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder , ldr *renderer.ColoredLinesDrawBuilder) {

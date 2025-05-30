@@ -430,23 +430,23 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	}
 
 	if sp.IFPHelpers.ApproachesColor == nil {
-		sp.IFPHelpers.ApproachesColor = &[4]float32{.3, .2, .5, 0}
+		sp.IFPHelpers.ApproachesColor = &[4]float32{.3, .2, .5, 1}
 	}
 
 	if sp.IFPHelpers.ArrivalsColor == nil {
-		sp.IFPHelpers.ArrivalsColor = &[4]float32{.3, .2, .5, 0}
+		sp.IFPHelpers.ArrivalsColor = &[4]float32{.3, .2, .5, 1}
 	}
 
 	if sp.IFPHelpers.DeparturesColor == nil {
-		sp.IFPHelpers.DeparturesColor = &[4]float32{.3, .2, .5, 0}
+		sp.IFPHelpers.DeparturesColor = &[4]float32{.3, .2, .5, 1}
 	}
 
 	if sp.IFPHelpers.OverflightsColor == nil {
-		sp.IFPHelpers.OverflightsColor = &[4]float32{.3, .2, .5, 0}
+		sp.IFPHelpers.OverflightsColor = &[4]float32{.3, .2, .5, 1}
 	}
 
 	if sp.IFPHelpers.AirspaceColor == nil {
-		sp.IFPHelpers.AirspaceColor = &[4]float32{.3, .2, .5, 0}
+		sp.IFPHelpers.AirspaceColor = &[4]float32{.3, .2, .5, 1}
 	}
 
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
