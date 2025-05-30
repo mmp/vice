@@ -1237,11 +1237,14 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder)  {
 
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
+	ps := sp.currentPrefs()
+	style := renderer.TextStyle{
+		Font:           sp.systemFont(ctx, ps.CharSize.Tools),
+		Color:          color,
+		DrawBackground: true, // default BackgroundColor is fine
+	}
 
 	if sp.scopeDraw.airspace != nil {
-		ps := sp.currentPrefs()
-		rgb := ps.Brightness.Lists.ScaleRGB(color)
-
 		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
 			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
 				if !sp.scopeDraw.airspace[ctrl][volname] {
@@ -1255,12 +1258,6 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 						}
 					}
 
-					ps := sp.currentPrefs()
-					style := renderer.TextStyle{
-						Font:           sp.systemFont(ctx, ps.CharSize.Tools),
-						Color:          rgb,
-						DrawBackground: true, // default BackgroundColor is fine
-					}
 					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
 				}
 			}
