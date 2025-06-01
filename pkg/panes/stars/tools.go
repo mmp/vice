@@ -1130,7 +1130,7 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 		}
 	}
 
-	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
 func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
@@ -1162,7 +1162,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms S
 		}
 	}
 
-	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
 func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
@@ -1198,7 +1198,7 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 			}
 		}
 	}
-	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
 func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
@@ -1229,7 +1229,7 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 			}
 		}
 	}
-	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
 func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
@@ -1263,11 +1263,11 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 			}
 		}
 	}
-	generate_commands(cb, transforms, ctx, ld, pd, td, ldr)
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
 
-func generate_commands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context, 
+func generateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context, 
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder , ldr *renderer.ColoredLinesDrawBuilder) {
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
