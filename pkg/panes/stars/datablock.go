@@ -59,7 +59,7 @@ type fullDatablock struct {
 	field5  [3][7]dbChar
 	// line 3
 	field6 [2][5]dbChar
-	field7 [2][4]dbChar
+	field7 [2][8]dbChar
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
@@ -832,7 +832,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 		}
 		if handoffTCP != "" && !fa.DisplayHOFacilityOnly {
 			formatDBText(db.field34[idx34][:], fmt3(handoffTCP)+handoffId, color, false)
-		} else if sfp.SecondaryScratchpad != "" { // don't show secondary if we're showing a center
+		} else if sfp.SecondaryScratchpad != "" && !ctx.FacilityAdaptation.FDB.Scratchpad2OnLine3 { // don't show secondary if we're showing a center
 			// TODO: confirm no handoffId here
 			formatDBText(db.field34[idx34][:], fmt3(sfp.SecondaryScratchpad)+"+", color, false)
 		}
@@ -925,13 +925,57 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 			}
 		}
 
-		// Field 7: assigned altitude, assigned beacon if mismatch
-		if alt := sfp.AssignedAltitude; alt != 0 {
-			formatDBText(db.field7[0][:], fmt.Sprintf("A%03d", alt/100), color, false)
-		}
-		if beaconMismatch {
-			idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
-			formatDBText(db.field7[idx][:], sfp.AssignedSquawk.String(), color, true)
+		// Field 7: assigned altitude, assigned beacon if mismatch, secondary scratchpad on line 3 if enabled
+		if ctx.FacilityAdaptation.FDB.Scratchpad2OnLine3 {
+			altSet := sfp.AssignedAltitude != 0
+			sp2 := sfp.SecondaryScratchpad
+			sp2Set := sp2 != ""
+
+			if altSet {
+				leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
+				altText := fmt.Sprintf("A%03d", sfp.AssignedAltitude/100)
+				startAltIdx := 0
+				if leaderLineDirection < math.South {
+					startAltIdx = 1 // N–SE leader → indent one char
+				}
+				for i, ch := range altText {
+					if startAltIdx+i >= len(db.field7[0]) {
+						break
+					}
+					db.field7[0][startAltIdx+i] = dbChar{ch: ch, color: color, flashing: false}
+				}
+			}
+
+			if sp2Set {
+				leaderLineDirection := sp.getLeaderLineDirection(ctx, trk)
+				runes := []rune(sp2)
+				if len(runes) > 3 {
+					runes = runes[:4]
+				}
+				for len(runes) < 4 {
+					runes = append(runes, ' ')
+				}
+				text := string(runes) + "+"
+
+				startIdx := 0
+				if leaderLineDirection >= math.South {
+					startIdx = 5 - len([]rune(text)) // char 6
+				} else {
+					startIdx = 2
+				}
+
+				targetField := util.Select(altSet, 1, 0) // if no alt, show spad2 in slot 0
+				formatDBText(db.field7[targetField][startIdx:], text, color, false)
+			}
+		} else {
+			// === Default behavior: Assigned altitude + squawk mismatch ===
+			if alt := sfp.AssignedAltitude; alt != 0 {
+				formatDBText(db.field7[0][:], fmt.Sprintf("A%03d", alt/100), color, false)
+			}
+			if beaconMismatch {
+				idx := util.Select(fieldEmpty(db.field7[0][:]), 0, 1)
+				formatDBText(db.field7[idx][:], sfp.AssignedSquawk.String(), color, true)
+			}
 		}
 
 		return db
