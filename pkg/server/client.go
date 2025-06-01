@@ -5,7 +5,9 @@
 package server
 
 import (
+	"encoding/gob"
 	"fmt"
+	"net/http"
 	"net/rpc"
 	"os"
 	"slices"
@@ -16,12 +18,20 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/gorilla/websocket"
 )
 
 type ControlClient struct {
 	proxy *proxy
+
+	speechWs         *websocket.Conn
+	speechCh         chan sim.PilotSpeech
+	awaitingReadback bool
+	bufferedSpeech   []sim.PilotSpeech
 
 	lg *log.Logger
 
@@ -151,18 +161,58 @@ func (p *PendingCall) CheckFinished(es *sim.EventStream, state *sim.State) bool 
 
 func NewControlClient(ss sim.State, local bool, controllerToken string, client *RPCClient, lg *log.Logger) *ControlClient {
 	cc := &ControlClient{
-		State:     ss,
-		lg:        lg,
-		remoteSim: !local,
 		proxy: &proxy{
 			ControllerToken: controllerToken,
 			Client:          client,
 		},
+		lg:                lg,
+		remoteSim:         !local,
 		lastUpdateRequest: time.Now(),
+		State:             ss,
 	}
+	cc.speechWs, cc.speechCh = initializeSpeechWebsocket(controllerToken, lg)
+
 	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
 	return cc
+}
+
+func initializeSpeechWebsocket(controllerToken string, lg *log.Logger) (*websocket.Conn, chan sim.PilotSpeech) {
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+controllerToken)
+
+	//	conn, _, err := websocket.DefaultDialer.Dial("ws://"+ViceServerAddress+":"+strconv.Itoa(ViceServerPort)+"/speech", header)
+	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:6502/speech", header)
+	if err != nil {
+		lg.Errorf("speech websocket: %v", err)
+		return nil, nil
+	}
+
+	speechCh := make(chan sim.PilotSpeech)
+	go func() {
+		for {
+			ty, r, err := conn.NextReader()
+			if err != nil {
+				lg.Errorf("speech websocket read: %v", err)
+				return
+			}
+			if ty != websocket.BinaryMessage {
+				lg.Errorf("expected binary message, got %d", ty)
+				continue
+			}
+
+			gr := gob.NewDecoder(r)
+			var ps sim.PilotSpeech
+			if err := gr.Decode(&ps); err != nil {
+				lg.Errorf("PilotSpeech: %v", err)
+				continue
+			}
+
+			speechCh <- ps
+		}
+	}()
+
+	return conn, speechCh
 }
 
 func (c *ControlClient) Status() string {
@@ -181,8 +231,8 @@ func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) 
 		func(err error) {
 			if err != nil {
 				eventStream.Post(sim.Event{
-					Type:    sim.StatusMessageEvent,
-					Message: err.Error(),
+					Type:        sim.StatusMessageEvent,
+					WrittenText: err.Error(),
 				})
 			}
 		}))
@@ -349,6 +399,10 @@ func (c *ControlClient) Disconnect() {
 	if err := c.proxy.SignOff(nil, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
 	}
+	if c.speechWs != nil {
+		c.speechWs.Close()
+		c.speechWs = nil
+	}
 	c.State.Tracks = nil
 	c.State.UnassociatedFlightPlans = nil
 	c.State.Controllers = nil
@@ -402,7 +456,7 @@ func (c *ControlClient) GetAircraftDisplayState(callsign av.ADSBCallsign) (sim.A
 	return c.proxy.GetAircraftDisplayState(callsign)
 }
 
-func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, onErr func(error)) {
+func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Platform, onErr func(error)) {
 	if c.proxy == nil {
 		return
 	}
@@ -415,6 +469,8 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, onErr func(erro
 		}
 		checkTimeout(c.updateCall, eventStream, onErr)
 	}
+
+	c.updateSpeech(p)
 
 	c.checkPendingRPCs(eventStream, onErr)
 
@@ -440,6 +496,37 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, onErr func(erro
 	}
 }
 
+func (c *ControlClient) updateSpeech(p platform.Platform) {
+	// See if anything new has arrived from the server
+loop:
+	for {
+		select {
+		case ps, ok := <-c.speechCh:
+			if ok {
+				c.bufferedSpeech = append(c.bufferedSpeech, ps)
+			}
+		default:
+			break loop
+		}
+	}
+
+	if len(c.bufferedSpeech) == 0 {
+		return
+	}
+
+	isReadback := func(ps sim.PilotSpeech) bool { return ps.Type == av.RadioTransmissionReadback }
+	if idx := slices.IndexFunc(c.bufferedSpeech, isReadback); idx != -1 {
+		// Prefer playing readbacks
+		if err := p.TryEnqueueSpeechMP3(c.bufferedSpeech[idx].MP3, func() {
+			c.awaitingReadback = false
+		}); err == nil {
+			c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
+		}
+	} else if err := p.TryEnqueueSpeechMP3(c.bufferedSpeech[0].MP3, nil); err == nil {
+		c.bufferedSpeech = c.bufferedSpeech[1:]
+	}
+}
+
 func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr func(error)) {
 	c.pendingCalls = slices.DeleteFunc(c.pendingCalls,
 		func(call *PendingCall) bool { return call.CheckFinished(eventStream, &c.State) })
@@ -454,8 +541,8 @@ func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr fun
 func checkTimeout(call *PendingCall, eventStream *sim.EventStream, onErr func(error)) bool {
 	if time.Since(call.IssueTime) > 5*time.Second && !debuggerIsRunning() {
 		eventStream.Post(sim.Event{
-			Type:    sim.StatusMessageEvent,
-			Message: "No response from server for over 5 seconds. Network connection may be lost.",
+			Type:        sim.StatusMessageEvent,
+			WrittenText: "No response from server for over 5 seconds. Network connection may be lost.",
 		})
 		if onErr != nil {
 			onErr(ErrRPCTimeout)
@@ -559,9 +646,17 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 }
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
+	if c.awaitingReadback {
+		c.lg.Errorf("Already awaiting readback!")
+	}
+	c.awaitingReadback = true
+
 	var result AircraftCommandsResult
 	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.RunAircraftCommands(callsign, cmds, &result),
 		func(err error) {
+			if result.RemainingInput == cmds {
+				c.awaitingReadback = false
+			}
 			handleResult(result.ErrorMessage, result.RemainingInput)
 			if err != nil {
 				c.lg.Errorf("%s: %v", callsign, err)
@@ -597,4 +692,8 @@ func (c *ControlClient) TowerListAirports() []string {
 
 func (c *ControlClient) StringIsSPC(s string) bool {
 	return av.StringIsSPC(s) || slices.Contains(c.State.STARSFacilityAdaptation.CustomSPCs, s)
+}
+
+func (c *ControlClient) AwaitingReadback() bool {
+	return c.awaitingReadback
 }

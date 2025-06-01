@@ -267,49 +267,6 @@ type ATIS struct {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionContact    = iota // Messages initiated by the pilot
-	RadioTransmissionReadback          // Reading back an instruction
-	RadioTransmissionUnexpected        // Something urgent or unusual
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	default:
-		return "(unhandled type)"
-	}
-}
-
-type RadioTransmission struct {
-	Controller string
-	Message    string
-	Type       RadioTransmissionType
-}
-
-// Frequencies are scaled by 1000 and then stored in integers.
-type Frequency int
-
-func NewFrequency(f float32) Frequency {
-	// 0.5 is key for handling rounding!
-	return Frequency(f*1000 + 0.5)
-}
-
-func (f Frequency) String() string {
-	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
-	for len(s) < 7 {
-		s += "0"
-	}
-	return s
-}
-
 type FlightRules int
 
 const (
@@ -490,14 +447,6 @@ func (rs *RadarSite) CheckVisibility(p math.Point2LL, altitude int) (primary, se
 	primary = distance <= float32(rs.PrimaryRange)
 	secondary = !primary && distance <= float32(rs.SecondaryRange)
 	return
-}
-
-func FixReadback(fix string) string {
-	if aid, ok := DB.Navaids[fix]; ok {
-		return util.StopShouting(aid.Name)
-	} else {
-		return fix
-	}
 }
 
 func cleanRunway(rwy string) string {

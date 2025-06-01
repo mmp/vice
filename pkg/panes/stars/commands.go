@@ -184,6 +184,12 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 		input = input[1:]
 	}
 
+	// Discard TGT GEN text if we're awaiting a readback
+	if ctx.Client.AwaitingReadback() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
+		sp.previewAreaInput = ""
+		input = ""
+	}
+
 	// Enforce the 32-character-per-line limit
 	if lines := strings.Fields(sp.previewAreaInput); len(lines) > 0 {
 		if len(lines[len(lines)-1]) > 32 {

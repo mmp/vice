@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/speech"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -166,13 +167,23 @@ func main() {
 		var mgr *server.ConnectionManager
 		var err error
 		var simErrorLogger util.ErrorLogger
+
+		plat, err = platform.New(&config.Config, lg)
+		if err != nil {
+			panic(fmt.Sprintf("Unable to create application window: %v", err))
+		}
+
+		if err := speech.InitTTS(); err != nil {
+			lg.Errorf("TTS: %v", err)
+		}
+
 		mgr, err = server.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename,
 			&simErrorLogger, lg,
 			func(c *server.ControlClient) { // updated client
 				if c != nil {
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
-				uiResetControlClient(c)
+				uiResetControlClient(c, plat, lg)
 				controlClient = c
 			},
 			func(err error) {
@@ -199,10 +210,6 @@ func main() {
 			os.Exit(1)
 		}
 
-		plat, err = platform.New(&config.Config, lg)
-		if err != nil {
-			panic(fmt.Sprintf("Unable to create application window: %v", err))
-		}
 		if configErr != nil {
 			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
 		}
@@ -230,7 +237,7 @@ func main() {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
 				panes.LoadedSim(config.DisplayRoot, client, client.State, plat, lg)
-				uiResetControlClient(client)
+				uiResetControlClient(client, plat, lg)
 				controlClient = client
 			}
 		}
@@ -263,7 +270,7 @@ func main() {
 				}, config, lg)
 			}
 
-			mgr.Update(eventStream, lg)
+			mgr.Update(eventStream, plat, lg)
 
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()

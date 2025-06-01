@@ -7,17 +7,21 @@ package server
 import (
 	crand "crypto/rand"
 	"encoding/base64"
+	"encoding/gob"
 	"errors"
 	"log/slog"
+	"net/http"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
+	"github.com/gorilla/websocket"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -46,6 +50,7 @@ type HumanController struct {
 	token               string
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
+	speechWs            *websocket.Conn
 }
 
 type SimScenarioConfiguration struct {
@@ -304,8 +309,8 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 							ctrl.warnedNoUpdateCalls = true
 							sm.lg.Warnf("%s: no messages for 5 seconds", tcp)
 							as.sim.PostEvent(sim.Event{
-								Type:    sim.StatusMessageEvent,
-								Message: tcp + " has not been heard from for 5 seconds. Connection lost?",
+								Type:        sim.StatusMessageEvent,
+								WrittenText: tcp + " has not been heard from for 5 seconds. Connection lost?",
 							})
 						}
 
@@ -321,6 +326,28 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 			}
 
 			as.sim.Update()
+
+			for tcp, ctrl := range as.controllersByTCP {
+				for _, ps := range as.sim.GetControllerSpeech(tcp) {
+					w, err := ctrl.speechWs.NextWriter(websocket.BinaryMessage)
+					if err != nil {
+						sm.lg.Errorf("speechWs: %v", err)
+						continue
+					}
+
+					enc := gob.NewEncoder(w)
+					if err := enc.Encode(ps); err != nil {
+						sm.lg.Errorf("speechWs encode: %v", err)
+						continue
+					}
+
+					if err := w.Close(); err != nil {
+						sm.lg.Errorf("speechWs close: %v", err)
+						continue
+					}
+				}
+			}
+
 			time.Sleep(100 * time.Millisecond)
 		}
 
@@ -487,8 +514,8 @@ func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) erro
 			ctrl.warnedNoUpdateCalls = false
 			sm.lg.Warnf("%s: connection re-established", ctrl.tcp)
 			s.PostEvent(sim.Event{
-				Type:    sim.StatusMessageEvent,
-				Message: ctrl.tcp + " is back online.",
+				Type:        sim.StatusMessageEvent,
+				WrittenText: ctrl.tcp + " is back online.",
 			})
 		}
 
@@ -556,8 +583,8 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 
 	for _, as := range sm.activeSims {
 		as.sim.PostEvent(sim.Event{
-			Type:    sim.ServerBroadcastMessageEvent,
-			Message: m.Message,
+			Type:        sim.ServerBroadcastMessageEvent,
+			WrittenText: m.Message,
 		})
 	}
 	return nil
@@ -577,5 +604,32 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 
 	if err != nil {
 		lg.Errorf("broadcast error: %v", err)
+	}
+}
+
+func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+		return
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	ctrl, ok := sm.controllersByToken[token]
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
+		return
+	}
+	if ctrl.speechWs != nil {
+		ctrl.speechWs.Close()
+	}
+
+	var err error
+	upgrader := websocket.Upgrader{EnableCompression: false}
+	ctrl.speechWs, err = upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		sm.lg.Errorf("Unable to upgrade speech websocket: %v", err)
+		return
 	}
 }

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -163,7 +164,7 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 	return nil
 }
 
-func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
+func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg *log.Logger) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}
@@ -204,11 +205,11 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, lg *log.Logger) {
 	}
 
 	if cm.client != nil {
-		cm.client.GetUpdates(es,
+		cm.client.GetUpdates(es, p,
 			func(err error) {
 				es.Post(sim.Event{
-					Type:    sim.StatusMessageEvent,
-					Message: "Error getting update from server: " + err.Error(),
+					Type:        sim.StatusMessageEvent,
+					WrittenText: "Error getting update from server: " + err.Error(),
 				})
 				if err == ErrRPCTimeout || util.IsRPCServerError(err) {
 					cm.RemoteServer = nil

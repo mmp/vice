@@ -197,15 +197,15 @@ func (s *Sim) TakeOrReturnLaunchControl(tcp string) error {
 	} else if lctrl == "" {
 		s.State.LaunchConfig.Controller = tcp
 		s.eventStream.Post(Event{
-			Type:    StatusMessageEvent,
-			Message: tcp + " is now controlling aircraft launches.",
+			Type:        StatusMessageEvent,
+			WrittenText: tcp + " is now controlling aircraft launches.",
 		})
 		s.lg.Infof("%s: now controlling launches", tcp)
 		return nil
 	} else {
 		s.eventStream.Post(Event{
-			Type:    StatusMessageEvent,
-			Message: s.State.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
+			Type:        StatusMessageEvent,
+			WrittenText: s.State.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
 		s.lg.Infof("%s: no longer controlling launches", tcp)
 		s.State.LaunchConfig.Controller = ""

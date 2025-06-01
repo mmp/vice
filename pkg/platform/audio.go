@@ -16,6 +16,7 @@ import (
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
 
 	"github.com/tosone/minimp3"
 	"github.com/veandco/go-sdl2/sdl"
@@ -24,14 +25,16 @@ import (
 const AudioSampleRate = 44100
 
 type audioEngine struct {
-	pinner  runtime.Pinner
-	effects []audioEffect
-	mu      sync.Mutex
-	volume  int
+	pinner   runtime.Pinner
+	effects  []audioEffect
+	speechq  []int16
+	speechcb func()
+	mu       sync.Mutex
+	volume   int
 }
 
 type audioEffect struct {
-	pcm            []byte
+	pcm            []int16
 	playOnceCount  int
 	playContinuous bool
 	playOffset     int
@@ -69,8 +72,17 @@ func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 		return 0, fmt.Errorf("%d: sample rate doesn't match audio engine's %d",
 			rate, AudioSampleRate)
 	}
-	a.effects = append(a.effects, audioEffect{pcm: pcm})
+
+	a.effects = append(a.effects, audioEffect{pcm: pcm16FromBytes(pcm)})
 	return len(a.effects), nil
+}
+
+func pcm16FromBytes(pcm []byte) []int16 {
+	pcm16 := make([]int16, len(pcm)/2)
+	for i := range pcm16 {
+		pcm16[i] = int16(pcm[2*i]) | (int16(pcm[2*i+1]) << 8)
+	}
+	return pcm16
 }
 
 func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
@@ -80,6 +92,75 @@ func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
 		return -1, fmt.Errorf("expected 1 channel, got %d", dec.Channels)
 	} else {
 		return a.AddPCM(pcm, dec.SampleRate)
+	}
+}
+
+func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
+	if len(a.speechq) > 0 {
+		return ErrCurrentlyPlayingSpeech
+	}
+
+	if _, pcm, err := minimp3.DecodeFull(mp3); err != nil {
+		return err
+	} else {
+		// Poor man's resampling: repeat each sample rep times to get close
+		// to the standard rate.
+		pcm16 := pcm16FromBytes(pcm)
+		rep := 2
+		pcmr := make([]int16, rep*len(pcm16))
+		for i := range len(pcm16) {
+			for j := range rep {
+				pcmr[rep*i+j] = pcm16[i]
+			}
+		}
+
+		addNoise(pcmr)
+		for range AudioSampleRate / 2 { // 1/2 second
+			pcmr = append(pcmr, 0)
+		}
+		a.speechq = pcmr
+		a.speechcb = finished
+
+		return nil
+	}
+}
+
+func addNoise(pcm []int16) {
+	r := rand.Make()
+	amp := 256 + r.Intn(512)
+	freqs := []int{10 + r.Intn(5), 18 + r.Intn(5)}
+	noises := []int{0, 0}
+	for i, v := range pcm {
+		n := 0
+		for j := range freqs {
+			if i%freqs[j] == 0 {
+				noises[j] = -amp + r.Intn(2*amp)
+			}
+			n += noises[j]
+		}
+
+		pcm[i] = int16(math.Clamp(n+int(v), -32768, 32767))
+	}
+
+	// Random squelch
+	if false && r.Float32() < 0.1 {
+		length := AudioSampleRate/2 + r.Intn(AudioSampleRate/4)
+		freqs := []int{100 + r.Intn(50), 500 + r.Intn(250), 1500 + r.Intn(500), 4000 + r.Intn(1000)}
+		start := r.Intn(4 * len(pcm) / 5)
+		const amp = 20000
+
+		n := min(len(pcm), start+length)
+		for i := start; i < n; i++ {
+			sq := -amp + r.Intn(2*amp)
+			for _, fr := range freqs {
+				sq += int(amp * math.Sin(float32(fr*i)*2*3.14159/AudioSampleRate))
+			}
+			sq /= 1 + len(freqs) // normalize
+			pcm[i] = int16(math.Clamp(int(pcm[i]/4)+sq, -32768, 32767))
+		}
 	}
 }
 
@@ -133,12 +214,25 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	a := (*audioEngine)(user)
 
 	accum := make([]int, n/2)
+
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
+	as := 0 // accum index for speech
+	for len(a.speechq) > 0 && as < len(accum) {
+		accum[as] = int(a.speechq[0])
+		as++
+		a.speechq = a.speechq[1:]
+	}
+	if len(a.speechq) == 0 && as > 0 && a.speechcb != nil {
+		// We finished the speech; call the callback function
+		a.speechcb()
+		a.speechcb = nil
+	}
+
 	for i := range a.effects {
 		e := &a.effects[i]
-		buf := make([]byte, n)
+		buf := make([]int16, n/2)
 		bread := buf
 		for len(bread) > 0 && (e.playContinuous || e.playOnceCount > 0) {
 			nc := copy(bread, e.pcm[e.playOffset:])
@@ -153,13 +247,13 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 			}
 		}
 
-		for i := 0; i < len(buf)/2; i++ {
-			accum[i] += int(int16(buf[2*i])|int16(buf[2*i+1])<<8) / 2
+		for i := 0; i < len(buf); i++ {
+			accum[i] += int(buf[i])
 		}
 	}
 
 	for i := 0; i < n/2; i++ {
-		v := int16(math.Clamp(accum[i]*a.volume/10, -32768, 32767))
+		v := math.Clamp(accum[i]*a.volume/10, -32768, 32767)
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}

@@ -1,0 +1,21 @@
+{
+  "AA1": ["yankee", "grumman yankee"],
+  "BE36": ["bonanza", "beechcraft bonanza"],
+  "BE55": ["barron 55", "barron", "beechcraft barron"],
+  "BE58": ["barron 58", "barron", "beechcraft barron"],
+  "C172": ["skyhawk", "cessna 1-72"],
+  "C182": ["skylane", "cessna 1-82", "cessna skylane"],
+  "C25A": ["citation c.j. 2"],
+  "C25B": ["citation c.j. 3"],
+  "C25C": ["citation c.j. 4"],
+  "C550": ["citation 2"],
+  "DA40": ["diamond d.a. 40", "diamond star"],
+  "M20P": ["mooney m 20", "m 20"],
+  "M20T": ["mooney m 20 k", "m 20 k"],
+  "P28A": ["cherokee", "piper cherokee", "p.a. 28"],
+  "PA23": ["apache", "piper apache"],
+  "PC12": ["pilatus p.c. 12", "p.c. 12"],
+  "PC24": ["pilatus p.c. 24", "p.c. 24"],
+  "SR20": ["cirrus S.R. 20", "S. R. 20"],
+  "SR22": ["cirrus S.R. 22", "S. R. 22"]
+}

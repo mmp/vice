@@ -299,7 +299,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 
 	for _, event := range ui.eventsSubscription.Get() {
 		if event.Type == sim.ServerBroadcastMessageEvent {
-			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.Message}, p), false)
+			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.WrittenText}, p), false)
 		}
 	}
 
@@ -317,7 +317,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 	return r.RenderCommandBuffer(cb)
 }
 
-func uiResetControlClient(c *server.ControlClient) {
+func uiResetControlClient(c *server.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
 }
 

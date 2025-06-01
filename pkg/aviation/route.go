@@ -1405,21 +1405,19 @@ func (a AltitudeRestriction) ClampRange(r [2]float32) (c [2]float32, ok bool) {
 	return
 }
 
-// Summary returns a human-readable summary of the altitude
-// restriction.
-func (a AltitudeRestriction) Summary() string {
+func (a AltitudeRestriction) PilotTransmission() PilotTransmission {
 	if a.Range[0] != 0 {
 		if a.Range[1] == a.Range[0] {
-			return fmt.Sprintf("at %s", FormatAltitude(a.Range[0]))
+			return MakePilotTransmission("at {alt}", a.Range[0])
 		} else if a.Range[1] != 0 {
-			return fmt.Sprintf("between %s-%s", FormatAltitude(a.Range[0]), FormatAltitude(a.Range[1]))
+			return MakePilotTransmission("between {alt} and {alt}", a.Range[0], a.Range[1])
 		} else {
-			return fmt.Sprintf("at or above %s", FormatAltitude(a.Range[0]))
+			return MakePilotTransmission("at or above {alt}", a.Range[0])
 		}
 	} else if a.Range[1] != 0 {
-		return fmt.Sprintf("at or below %s", FormatAltitude(a.Range[1]))
+		return MakePilotTransmission("at or below {alt}", a.Range[1])
 	} else {
-		return ""
+		return PilotTransmission{}
 	}
 }
 

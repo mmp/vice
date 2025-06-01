@@ -7,7 +7,6 @@ package server
 import (
 	"fmt"
 	"html/template"
-	"io"
 	gomath "math"
 	"net"
 	"net/http"
@@ -62,6 +61,7 @@ const ViceSerializeVersion = 38
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
 const ViceRPCVersion = ViceSerializeVersion
+const ViceHTTPServerPort = 6502
 
 type Server struct {
 	*RPCClient
@@ -252,7 +252,7 @@ func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap
 			os.Exit(1)
 		}
 
-		go launchHTTPStats(sm)
+		go launchHTTPServer(sm)
 
 		ch <- simConfigurations
 
@@ -286,32 +286,15 @@ func runServer(l net.Listener, isLocal bool, extraScenario string, extraVideoMap
 
 var launchTime time.Time
 
-func launchHTTPStats(sm *SimManager) {
+func launchHTTPServer(sm *SimManager) {
 	launchTime = time.Now()
 	http.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		statsHandler(w, r, sm)
 		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
-	http.HandleFunc("/vice-logs/", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "text/plain")
-		if f, err := os.Open("." + r.URL.String()); err == nil {
-			if n, err := io.Copy(w, f); err != nil {
-				sm.lg.Errorf("%s: %v", r.URL.String(), err)
-			} else {
-				sm.lg.Infof("%s: served %d bytes", r.URL.String(), n)
-			}
-		}
-	})
+	http.HandleFunc("/speech", sm.HandleSpeechWSConnection)
 
-	port := 6502
-	var err error
-	for i := range 4 {
-		if err = http.ListenAndServe(":"+strconv.Itoa(port+i), nil); err == nil {
-			sm.lg.Infof("Started HTTP stats server on port %d", port)
-			break
-		}
-	}
-	if err != nil {
+	if err := http.ListenAndServe(":"+strconv.Itoa(ViceHTTPServerPort), nil); err != nil {
 		sm.lg.Warnf("Unable to start HTTP stats server")
 	}
 }

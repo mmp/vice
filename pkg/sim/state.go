@@ -94,6 +94,8 @@ type State struct {
 	ControllerVideoMaps                 []string
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+
+	RadioTransmissions [][]byte
 }
 
 type ReleaseDeparture struct {

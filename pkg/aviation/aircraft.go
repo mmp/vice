@@ -76,11 +76,6 @@ type ADSBCallsign string
 
 func (c ADSBCallsign) String() string { return string(c) }
 
-type PilotTransmission struct {
-	Message    string
-	Unexpected bool // should it be highlighted in the UI
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Aircraft
 
@@ -103,24 +98,11 @@ func (ac *Aircraft) TAS() float32 {
 
 // Helper function to make the code for the common case of a readback
 // response more compact.
-func (ac *Aircraft) readback(f string, args ...interface{}) []RadioTransmission {
-	return []RadioTransmission{RadioTransmission{
-		Message: fmt.Sprintf(f, args...),
-		Type:    RadioTransmissionReadback,
-	}}
-}
-
-func (ac *Aircraft) readbackUnexpected(f string, args ...interface{}) []RadioTransmission {
-	return []RadioTransmission{RadioTransmission{
-		Message: fmt.Sprintf(f, args...),
-		Type:    RadioTransmissionUnexpected,
-	}}
-}
-
 func (ac *Aircraft) transmitResponse(r PilotTransmission) []RadioTransmission {
 	return []RadioTransmission{RadioTransmission{
-		Message: r.Message,
-		Type:    RadioTransmissionType(util.Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
+		WrittenText: r.Written(ac.Nav.Rand),
+		SpokenText:  r.Spoken(ac.Nav.Rand),
+		Type:        RadioTransmissionType(util.Select(r.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
 	}}
 }
 
@@ -141,20 +123,13 @@ func (ac *Aircraft) GoAround() []RadioTransmission {
 	resp := ac.Nav.GoAround()
 	ac.GotContactTower = false
 
-	return []RadioTransmission{RadioTransmission{
-		Message: resp.Message,
-		Type:    RadioTransmissionType(util.Select(resp.Unexpected, RadioTransmissionUnexpected, RadioTransmissionContact)),
-	}}
+	return ac.transmitResponse(resp)
 }
 
 func (ac *Aircraft) Ident(now time.Time) []RadioTransmission {
 	ac.IdentStartTime = now.Add(time.Duration(2+ac.Nav.Rand.Intn(3)) * time.Second) // delay the start a bit
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
-
-	return []RadioTransmission{RadioTransmission{
-		Message: "ident",
-		Type:    RadioTransmissionReadback,
-	}}
+	return ac.transmitResponse(MakePilotTransmission("ident"))
 }
 
 func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) []RadioTransmission {
@@ -203,13 +178,13 @@ func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) []RadioTransmiss
 func (ac *Aircraft) TurnLeft(deg int) []RadioTransmission {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnLeft)
-	return ac.readback(rand.Sample(ac.Nav.Rand, "turn %d degrees left", "%d to the left"), deg)
+	return ac.transmitResponse(MakePilotTransmission("[turn {num} degrees left|{num} to the left]", deg))
 }
 
 func (ac *Aircraft) TurnRight(deg int) []RadioTransmission {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, TurnRight)
-	return ac.readback(rand.Sample(ac.Nav.Rand, "turn %d degrees right", "%d to the right"), deg)
+	return ac.transmitResponse(MakePilotTransmission("[turn {num} degrees right|{num} to the right]", deg))
 }
 
 func (ac *Aircraft) FlyPresentHeading() []RadioTransmission {
@@ -272,7 +247,7 @@ func (ac *Aircraft) DescendViaSTAR() []RadioTransmission {
 
 func (ac *Aircraft) ResumeOwnNavigation() []RadioTransmission {
 	if ac.FlightPlan.Rules == FlightRulesIFR {
-		return ac.readbackUnexpected("unable. We're IFR")
+		return ac.transmitResponse(MakeUnexpectedPilotTransmission("unable. We're IFR"))
 	} else {
 		return ac.transmitResponse(ac.Nav.ResumeOwnNavigation())
 	}
@@ -280,7 +255,7 @@ func (ac *Aircraft) ResumeOwnNavigation() []RadioTransmission {
 
 func (ac *Aircraft) AltitudeOurDiscretion() []RadioTransmission {
 	if ac.FlightPlan.Rules == FlightRulesIFR {
-		return ac.readbackUnexpected("unable. We're IFR")
+		return ac.transmitResponse(MakeUnexpectedPilotTransmission("unable. We're IFR"))
 	} else {
 		return ac.transmitResponse(ac.Nav.AltitudeOurDiscretion())
 	}
@@ -291,15 +266,12 @@ func (ac *Aircraft) ContactTower(lg *log.Logger) []RadioTransmission {
 		// No response; they're not on our frequency any more.
 		return nil
 	} else if ac.Nav.Approach.Assigned == nil {
-		return ac.readbackUnexpected("unable. We haven't been given an approach.")
+		return ac.transmitResponse(MakeUnexpectedPilotTransmission("unable. We haven't been given an approach."))
 	} else if !ac.Nav.Approach.Cleared {
-		return ac.readbackUnexpected("unable. We haven't been cleared for the approach.")
+		return ac.transmitResponse(MakeUnexpectedPilotTransmission("unable. We haven't been cleared for the approach."))
 	} else {
 		ac.GotContactTower = true
-		return []RadioTransmission{RadioTransmission{
-			Message: "contact tower",
-			Type:    RadioTransmissionReadback,
-		}}
+		return ac.transmitResponse(MakePilotTransmission("contact tower"))
 	}
 }
 
@@ -452,7 +424,7 @@ func (ac *Aircraft) NavSummary(lg *log.Logger) string {
 	return ac.Nav.Summary(ac.FlightPlan, lg)
 }
 
-func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) string {
+func (ac *Aircraft) ContactMessage(reportingPoints []ReportingPoint) PilotTransmission {
 	return ac.Nav.ContactMessage(reportingPoints, ac.STAR)
 }
 

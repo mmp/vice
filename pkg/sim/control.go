@@ -161,8 +161,8 @@ func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 		},
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.eventStream.Post(Event{
-				Type:    StatusMessageEvent,
-				Message: fmt.Sprintf("%s deleted %s", tcp, ac.ADSBCallsign),
+				Type:        StatusMessageEvent,
+				WrittenText: fmt.Sprintf("%s deleted %s", tcp, ac.ADSBCallsign),
 			})
 
 			s.deleteAircraft(ac)
@@ -229,10 +229,12 @@ func (s *Sim) ChangeSquawk(tcp string, callsign av.ADSBCallsign, sq av.Squawk) e
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
+			resp := av.MakePilotTransmission("squawk {beacon}", sq)
 			return []av.RadioTransmission{av.RadioTransmission{
-				Controller: tcp,
-				Message:    "squawk " + sq.String(),
-				Type:       av.RadioTransmissionReadback,
+				Controller:  tcp,
+				WrittenText: resp.Written(s.Rand),
+				SpokenText:  resp.Spoken(s.Rand),
+				Type:        av.RadioTransmissionReadback,
 			}}
 		})
 }
@@ -245,10 +247,13 @@ func (s *Sim) ChangeTransponderMode(tcp string, callsign av.ADSBCallsign, mode a
 		func(tcp string, ac *Aircraft) []av.RadioTransmission {
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
+			resp := av.MakePilotTransmission("squawk " + strings.ToLower(mode.String()))
+
 			return []av.RadioTransmission{av.RadioTransmission{
-				Controller: tcp,
-				Message:    "squawk " + strings.ToLower(mode.String()),
-				Type:       av.RadioTransmissionReadback,
+				Controller:  tcp,
+				WrittenText: resp.Written(s.Rand),
+				SpokenText:  resp.Spoken(s.Rand),
+				Type:        av.RadioTransmissionReadback,
 			}}
 		})
 }
@@ -665,26 +670,34 @@ func (s *Sim) contactController(fromTCP string, sfp *STARSFlightPlan, ac *Aircra
 	// changing frequency.
 	if octrl, ok := s.State.Controllers[toTCP]; ok {
 		if toTCP == fromTCP {
+			resp := av.MakePilotTransmission("Unable, we are already on {freq}", octrl.Frequency)
 			radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-				Controller: sfp.ControllingController,
-				Message:    "Unable, we are already on " + octrl.Frequency.String(),
-				Type:       av.RadioTransmissionReadback,
+				Controller:  sfp.ControllingController,
+				WrittenText: resp.Written(s.Rand),
+				SpokenText:  resp.Spoken(s.Rand),
+				Type:        av.RadioTransmissionReadback,
 			})
 			return radioTransmissions
 		}
-		bye := rand.Sample(s.Rand, "good day", "seeya")
-		contact := rand.Sample(s.Rand, "contact ", "over to ", "")
-		goodbye := contact + octrl.RadioName + " on " + octrl.Frequency.String() + ", " + bye
+
+		var resp av.PilotTransmission
+		if ac.TypeOfFlight == av.FlightTypeDeparture {
+			resp = av.MakePilotTransmission("[contact|over to|] {dctrl} on {freq}, [good day|seeya|]", octrl, octrl.Frequency)
+		} else {
+			resp = av.MakePilotTransmission("[contact|over to|] {actrl} on {freq}, [good day|seeya|]", octrl, octrl.Frequency)
+		}
 		radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-			Controller: sfp.ControllingController,
-			Message:    goodbye,
-			Type:       av.RadioTransmissionReadback,
+			Controller:  sfp.ControllingController,
+			WrittenText: resp.Written(s.Rand),
+			SpokenText:  resp.Spoken(s.Rand),
+			Type:        av.RadioTransmissionReadback,
 		})
 	} else {
 		radioTransmissions = append(radioTransmissions, av.RadioTransmission{
-			Controller: sfp.ControllingController,
-			Message:    "goodbye",
-			Type:       av.RadioTransmissionReadback,
+			Controller:  sfp.ControllingController,
+			WrittenText: "goodbye",
+			SpokenText:  "goodbye",
+			Type:        av.RadioTransmissionReadback,
 		})
 	}
 
@@ -1304,10 +1317,12 @@ func (s *Sim) RadarServicesTerminated(tcp string, callsign av.ADSBCallsign) erro
 			// Leave our frequency
 			ac.STARSFlightPlan.ControllingController = ""
 
+			msg := rand.Sample(s.Rand, "radar services terminated, seeya", "radar services terminated, squawk VFR")
 			return []av.RadioTransmission{av.RadioTransmission{
-				Controller: tcp,
-				Message:    rand.Sample(s.Rand, "radar services terminated, seeya", "radar services terminated, squawk VFR"),
-				Type:       av.RadioTransmissionReadback,
+				Controller:  tcp,
+				WrittenText: msg,
+				SpokenText:  msg,
+				Type:        av.RadioTransmissionReadback,
 			}}
 		})
 }
@@ -1360,10 +1375,12 @@ func (s *Sim) processEnqueued() {
 			if ac, ok := s.Aircraft[c.ADSBCallsign]; ok {
 				if ac.IsAssociated() {
 					ac.STARSFlightPlan.ControllingController = c.TCP
+					msg := ac.ContactMessage(s.ReportingPoints)
 					r := []av.RadioTransmission{av.RadioTransmission{
-						Controller: c.TCP,
-						Message:    ac.ContactMessage(s.ReportingPoints),
-						Type:       av.RadioTransmissionContact,
+						Controller:  c.TCP,
+						WrittenText: msg.Written(s.Rand),
+						SpokenText:  msg.Spoken(s.Rand),
+						Type:        av.RadioTransmissionContact,
 					}}
 					s.postRadioEvents(c.ADSBCallsign, c.TCP, r)
 

@@ -222,7 +222,8 @@ type Event struct {
 	ACID                  ACID
 	FromController        string
 	ToController          string // For radio transmissions, the controlling controller.
-	Message               string
+	WrittenText           string
+	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 }
@@ -230,11 +231,12 @@ type Event struct {
 func (e *Event) String() string {
 	switch e.Type {
 	case RadioTransmissionEvent:
-		return fmt.Sprintf("%s: ADSB callsign %s ACID %s controller %s->%s message %s type %v",
-			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.Message, e.RadioTransmissionType)
+		return fmt.Sprintf("%s: ADSB callsign %q ACID %q controller %q->%q written %q spoken %q type %v",
+			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.WrittenText, e.SpokenText,
+			e.RadioTransmissionType)
 	default:
-		return fmt.Sprintf("%s: ADSB callsign %s ACID %s controller %s->%s message %s",
-			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.Message)
+		return fmt.Sprintf("%s: ADSB callsign %q ACID %q controller %q->%q written %q spoken %q",
+			e.Type, e.ADSBCallsign, e.ACID, e.FromController, e.ToController, e.WrittenText, e.SpokenText)
 	}
 }
 
@@ -252,8 +254,11 @@ func (e Event) LogValue() slog.Value {
 	if e.ToController != "" {
 		attrs = append(attrs, slog.String("to_controller", e.ToController))
 	}
-	if e.Message != "" {
-		attrs = append(attrs, slog.String("message", e.Message))
+	if e.WrittenText != "" {
+		attrs = append(attrs, slog.String("written_text", e.WrittenText))
+	}
+	if e.SpokenText != "" {
+		attrs = append(attrs, slog.String("spoken_text", e.SpokenText))
 	}
 	return slog.GroupValue(attrs...)
 }
