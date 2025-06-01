@@ -7628,11 +7628,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"fdb"</td>
                 <td>Object</td>
                 <td>Allows specifying various adapted configurations for full datablocks.
-                  The following member is available ("false" by default):
+                  The following members are available (both are "false" by default):
                   <ul>
                     <li>"display_requested_altitude": (Boolean value) if true, the requested altitudes of aircraft that
                       have them in their flight plans are shown in the datablock (multiplexed with
                       aircraft type and groundspeed).</li>
+                    <li>"scratchpad2_on_line3": (Boolean value) if true, when scratchpad 2 is set, it is displayed
+                      in the third line of the datablock (and timeshares with assigned altitude, if set) rather than
+                      timesharing with altitude and the first scratchpad in the second line of the datablock.</p>
                   </ul>
                 </td>
               </tr>

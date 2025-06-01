@@ -343,6 +343,7 @@ type STARSFacilityAdaptation struct {
 
 	FDB struct {
 		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
+		Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
 	} `json:"fdb"`
 
 	Scratchpad1 struct {
