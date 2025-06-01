@@ -21,8 +21,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 65,
@@ -35,6 +35,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -58,8 +62,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 65,
@@ -72,6 +76,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -95,8 +103,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 65,
@@ -109,6 +117,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -132,8 +144,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 65,
@@ -146,6 +158,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -169,8 +185,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 65,
@@ -183,6 +199,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -206,8 +226,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 80,
@@ -220,6 +240,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -243,8 +267,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.200,
-      "landing": 1.200
+      "takeoff": 1.2,
+      "landing": 1.2
     },
     "speed": {
       "min": 80,
@@ -257,6 +281,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -280,8 +308,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.200,
-      "landing": 1.200
+      "takeoff": 1.2,
+      "landing": 1.2
     },
     "speed": {
       "min": 90,
@@ -294,6 +322,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -317,8 +349,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.300,
-      "landing": 1.300
+      "takeoff": 1.3,
+      "landing": 1.3
     },
     "speed": {
       "min": 90,
@@ -331,6 +363,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -354,8 +390,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 70,
@@ -368,6 +404,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -391,8 +431,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -405,6 +445,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -428,8 +472,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -442,6 +486,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -465,8 +513,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.200,
-      "landing": 1.200
+      "takeoff": 1.2,
+      "landing": 1.2
     },
     "speed": {
       "min": 90,
@@ -479,6 +527,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -502,8 +554,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 60,
@@ -516,6 +568,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -539,8 +595,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 60,
@@ -553,6 +609,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -576,8 +636,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 0.900,
-      "landing": 0.900
+      "takeoff": 0.9,
+      "landing": 0.9
     },
     "speed": {
       "min": 66,
@@ -590,6 +650,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -627,6 +691,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -664,6 +732,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -701,6 +773,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -738,6 +814,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -775,6 +855,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -812,6 +896,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -849,6 +937,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -886,6 +978,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -923,6 +1019,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -960,6 +1060,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -997,6 +1101,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1034,6 +1142,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1071,6 +1183,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1108,6 +1224,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1145,6 +1265,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1182,6 +1306,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1219,6 +1347,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1256,6 +1388,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1293,6 +1429,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1330,6 +1470,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1367,6 +1511,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1404,6 +1552,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1441,6 +1593,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1478,6 +1634,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1515,6 +1675,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1552,6 +1716,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1575,20 +1743,24 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
       "landing": 130,
       "cruise": 390,
-      "cruiseM": 0.70,
+      "cruiseM": 0.7,
       "max": 400,
       "maxM": 0.71
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1612,8 +1784,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -1626,6 +1798,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1649,8 +1825,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -1663,6 +1839,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1686,8 +1866,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -1700,6 +1880,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1737,6 +1921,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1774,6 +1962,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1811,6 +2003,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1848,6 +2044,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1885,6 +2085,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1922,6 +2126,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1959,6 +2167,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -1982,12 +2194,12 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 80,
-	  "v2": 105,
+      "v2": 105,
       "landing": 120,
       "cruise": 320,
       "cruiseM": 0.66,
@@ -1997,6 +2209,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2020,8 +2236,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -2029,11 +2245,15 @@
       "cruise": 340,
       "cruiseM": 0.68,
       "max": 350,
-      "maxM": 0.70
+      "maxM": 0.7
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2057,8 +2277,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -2066,11 +2286,15 @@
       "cruise": 350,
       "cruiseM": 0.68,
       "max": 370,
-      "maxM": 0.70
+      "maxM": 0.7
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2094,8 +2318,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -2108,6 +2332,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2131,8 +2359,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -2145,6 +2373,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2168,8 +2400,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -2182,6 +2414,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2205,8 +2441,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.50,
-      "landing": 1.50
+      "takeoff": 1.5,
+      "landing": 1.5
     },
     "speed": {
       "min": 95,
@@ -2219,6 +2455,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2256,6 +2496,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2293,6 +2537,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2330,6 +2578,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2367,6 +2619,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2404,6 +2660,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2441,6 +2701,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2478,6 +2742,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2515,6 +2783,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2552,6 +2824,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2589,6 +2865,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2626,6 +2906,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2663,6 +2947,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2700,6 +2988,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 60,
+      "maxBankRate": 15
     }
   },
   {
@@ -2737,6 +3029,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2774,6 +3070,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2811,6 +3111,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2848,6 +3152,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2885,6 +3193,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2922,6 +3234,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2952,13 +3268,17 @@
       "min": 100,
       "landing": 130,
       "cruise": 470,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 530,
       "maxM": 0.85
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -2991,11 +3311,15 @@
       "cruise": 450,
       "cruiseM": 0.78,
       "max": 480,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3033,6 +3357,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3070,6 +3398,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3107,6 +3439,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3144,6 +3480,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3181,6 +3521,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3218,6 +3562,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3255,6 +3603,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3292,6 +3644,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3329,6 +3685,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3366,6 +3726,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3403,6 +3767,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3440,6 +3808,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3477,6 +3849,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3514,6 +3890,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3546,11 +3926,15 @@
       "cruise": 437,
       "cruiseM": 0.78,
       "max": 455,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3588,6 +3972,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3625,6 +4013,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3657,11 +4049,15 @@
       "cruise": 447,
       "cruiseM": 0.77,
       "max": 455,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3694,11 +4090,15 @@
       "cruise": 447,
       "cruiseM": 0.77,
       "max": 455,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3731,11 +4131,15 @@
       "cruise": 447,
       "cruiseM": 0.78,
       "max": 455,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3773,6 +4177,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3805,11 +4213,15 @@
       "cruise": 447,
       "cruiseM": 0.77,
       "max": 455,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3842,11 +4254,15 @@
       "cruise": 450,
       "cruiseM": 0.78,
       "max": 455,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3884,6 +4300,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3921,6 +4341,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3958,6 +4382,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -3995,6 +4423,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4032,6 +4464,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4069,6 +4505,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4106,6 +4546,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4143,6 +4587,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4180,6 +4628,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4217,6 +4669,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4254,6 +4710,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4291,6 +4751,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4328,6 +4792,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4365,6 +4833,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4402,6 +4874,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4439,6 +4915,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4476,6 +4956,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4513,6 +4997,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4550,6 +5038,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4587,6 +5079,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4624,6 +5120,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4661,6 +5161,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4698,6 +5202,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4735,6 +5243,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4772,6 +5284,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4809,6 +5325,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4846,6 +5366,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4883,6 +5407,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4906,8 +5434,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -4920,6 +5448,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4943,8 +5475,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -4957,6 +5489,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -4980,8 +5516,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -4994,6 +5530,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5017,8 +5557,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -5031,6 +5571,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5054,8 +5598,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -5068,6 +5612,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5091,8 +5639,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -5105,6 +5653,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5128,8 +5680,8 @@
       "decelerate": 3
     },
     "runway": {
-      "takeoff": 1.000,
-      "landing": 1.000
+      "takeoff": 1.0,
+      "landing": 1.0
     },
     "speed": {
       "min": 75,
@@ -5142,6 +5694,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5179,6 +5735,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5216,6 +5776,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5253,6 +5817,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5290,6 +5858,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5327,6 +5899,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5365,6 +5941,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5402,6 +5982,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5439,6 +6023,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5476,6 +6064,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5513,6 +6105,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5550,6 +6146,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5580,13 +6180,17 @@
       "min": 110,
       "landing": 140,
       "cruise": 472,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 484,
       "maxM": 0.82
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5618,13 +6222,17 @@
       "v2": 160,
       "landing": 135,
       "cruise": 459,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 487,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5662,6 +6270,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5699,6 +6311,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5736,6 +6352,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5774,6 +6394,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5811,6 +6435,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5848,6 +6476,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5885,6 +6517,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5922,6 +6558,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5959,6 +6599,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -5996,6 +6640,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6033,6 +6681,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6070,6 +6722,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6107,6 +6763,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6144,6 +6804,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6181,6 +6845,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6218,6 +6886,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6255,6 +6927,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6292,6 +6968,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6329,6 +7009,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6366,6 +7050,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6403,6 +7091,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6440,6 +7132,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6477,6 +7173,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6514,6 +7214,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6551,6 +7255,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6588,6 +7296,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6625,6 +7337,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6662,6 +7378,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6699,6 +7419,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6736,6 +7460,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6773,6 +7501,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6810,6 +7542,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6847,6 +7583,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6884,6 +7624,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6916,11 +7660,15 @@
       "cruise": 437,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6951,13 +7699,17 @@
       "min": 120,
       "landing": 140,
       "cruise": 467,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 549,
       "maxM": 0.83
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -6995,6 +7747,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7032,6 +7788,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7069,6 +7829,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7106,6 +7870,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7143,6 +7911,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7180,6 +7952,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7217,6 +7993,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7254,6 +8034,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7284,13 +8068,17 @@
       "min": 130,
       "landing": 145,
       "cruise": 429,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 492,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7321,13 +8109,17 @@
       "min": 130,
       "landing": 145,
       "cruise": 429,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 492,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7358,13 +8150,17 @@
       "min": 130,
       "landing": 145,
       "cruise": 429,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 492,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7395,13 +8191,17 @@
       "min": 130,
       "landing": 145,
       "cruise": 429,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 492,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7432,13 +8232,17 @@
       "min": 130,
       "landing": 145,
       "cruise": 429,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 492,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7476,6 +8280,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7513,6 +8321,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7550,6 +8362,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7587,6 +8403,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7624,6 +8444,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7654,13 +8478,17 @@
       "min": 130,
       "landing": 140,
       "cruise": 469,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 490,
       "maxM": 0.85
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7691,13 +8519,17 @@
       "min": 130,
       "landing": 145,
       "cruise": 469,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 490,
       "maxM": 0.85
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7735,6 +8567,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7772,6 +8608,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7809,6 +8649,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7846,6 +8690,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7883,6 +8731,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7920,6 +8772,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7957,6 +8813,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -7994,6 +8854,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8031,6 +8895,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8063,11 +8931,15 @@
       "cruise": 430,
       "cruiseM": 0.77,
       "max": 460,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8105,6 +8977,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8142,6 +9018,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 60,
+      "maxBankRate": 15
     }
   },
   {
@@ -8179,6 +9059,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8216,6 +9100,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8253,6 +9141,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8290,6 +9182,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8327,6 +9223,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8364,6 +9264,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8401,6 +9305,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8438,6 +9346,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8475,6 +9387,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8512,6 +9428,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8549,6 +9469,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8586,6 +9510,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8623,6 +9551,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8660,6 +9592,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8697,6 +9633,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8725,7 +9665,7 @@
     },
     "speed": {
       "min": 90,
-	  "v2": 120,
+      "v2": 120,
       "landing": 125,
       "cruise": 384,
       "cruiseM": 0.7,
@@ -8735,6 +9675,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8772,6 +9716,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8809,6 +9757,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8846,6 +9798,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8878,11 +9834,15 @@
       "cruise": 460,
       "cruiseM": 0.77,
       "max": 478,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8915,11 +9875,15 @@
       "cruise": 460,
       "cruiseM": 0.77,
       "max": 478,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8957,6 +9921,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -8994,6 +9962,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9026,11 +9998,15 @@
       "cruise": 424,
       "cruiseM": 0.76,
       "max": 470,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9063,11 +10039,15 @@
       "cruise": 424,
       "cruiseM": 0.76,
       "max": 470,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9100,11 +10080,15 @@
       "cruise": 424,
       "cruiseM": 0.76,
       "max": 470,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9137,11 +10121,15 @@
       "cruise": 424,
       "cruiseM": 0.76,
       "max": 470,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9179,6 +10167,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9216,6 +10208,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9253,6 +10249,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9290,6 +10290,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9327,6 +10331,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9364,6 +10372,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9401,6 +10413,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9438,6 +10454,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9475,6 +10495,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9512,6 +10536,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9549,6 +10577,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9581,11 +10613,15 @@
       "cruise": 320,
       "cruiseM": 0.77,
       "max": 470,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9623,6 +10659,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9660,6 +10700,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9697,6 +10741,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9734,6 +10782,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9771,10 +10823,14 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
-    "name": "Embraer 120 Brasília",
+    "name": "Embraer 120 Bras\u00edlia",
     "icao": "E120",
     "engines": {
       "number": 2,
@@ -9808,6 +10864,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9845,6 +10905,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9882,6 +10946,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9919,6 +10987,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9956,6 +11028,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -9993,6 +11069,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10030,6 +11110,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10062,11 +11146,15 @@
       "cruise": 440,
       "cruiseM": 0.78,
       "max": 450,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10104,6 +11192,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10141,6 +11233,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10171,13 +11267,17 @@
       "min": 120,
       "landing": 135,
       "cruise": 470,
-      "cruiseM": 0.80,
+      "cruiseM": 0.8,
       "max": 530,
       "maxM": 0.84
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10215,6 +11315,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10252,6 +11356,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10289,6 +11397,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10327,6 +11439,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10364,6 +11480,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10401,6 +11521,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10438,6 +11562,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10475,6 +11603,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10512,6 +11644,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10549,6 +11685,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10581,11 +11721,15 @@
       "cruise": 445,
       "cruiseM": 0.77,
       "max": 468,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10623,6 +11767,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10660,6 +11808,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10697,6 +11849,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10734,6 +11890,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10771,6 +11931,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10808,6 +11972,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10845,6 +12013,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10882,6 +12054,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10919,6 +12095,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10956,6 +12136,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -10988,11 +12172,15 @@
       "cruise": 457,
       "cruiseM": 0.77,
       "max": 464,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11025,11 +12213,15 @@
       "cruise": 457,
       "cruiseM": 0.78,
       "max": 464,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11067,6 +12259,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11104,6 +12300,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11141,6 +12341,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11173,11 +12377,15 @@
       "cruise": 473,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11210,11 +12418,15 @@
       "cruise": 473,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11247,11 +12459,15 @@
       "cruise": 473,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11284,11 +12500,15 @@
       "cruise": 473,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11321,11 +12541,15 @@
       "cruise": 473,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11358,11 +12582,15 @@
       "cruise": 473,
       "cruiseM": 0.77,
       "max": 500,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11400,6 +12628,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11437,6 +12669,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11474,6 +12710,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11511,6 +12751,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11548,6 +12792,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11585,6 +12833,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11622,6 +12874,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11659,6 +12915,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11696,6 +12956,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11733,6 +12997,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11770,6 +13038,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11807,6 +13079,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11844,6 +13120,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11881,6 +13161,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11918,6 +13202,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11955,6 +13243,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -11992,6 +13284,10 @@
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   },
   {
@@ -12015,8 +13311,8 @@
       "decelerate": 5
     },
     "runway": {
-      "takeoff": 2.700,
-      "landing": 0.800
+      "takeoff": 2.7,
+      "landing": 0.8
     },
     "speed": {
       "min": 150,
@@ -12024,11 +13320,15 @@
       "cruise": 480,
       "cruiseM": 0.77,
       "max": 540,
-      "maxM": 0.80
+      "maxM": 0.8
     },
     "capability": {
       "ils": true,
       "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
     }
   }
   ]

@@ -828,8 +828,8 @@ func (nav *Nav) updateHeading(wind WindModel, lg *log.Logger) {
 		return
 	}
 	if math.HeadingDifference(nav.FlightState.Heading, targetHeading) < 1 {
-		if nav.FlightState.BankAngle != 0 {
-			fmt.Printf("reached target but bank angle %f\n", nav.FlightState.BankAngle)
+		if nav.FlightState.BankAngle > 10 {
+			lg.Warnf("reached target but bank angle %f\n", nav.FlightState.BankAngle)
 		}
 		nav.FlightState.Heading = targetHeading
 		nav.FlightState.BankAngle = 0
@@ -1066,15 +1066,12 @@ func (nav *Nav) TargetHeading(wind WindModel, lg *log.Logger) (heading float32, 
 		}
 	}()
 
-	const (
-		maxBankAngle = 25.0 // degrees
-		maxRollRate  = 5.0  // deg/sec
-	)
-
 	// In theory, turn rate is proportional to tan(bankAngle) but to make
 	// the turn in/turn out math easier, we model it linearly, which is not
 	// unreasonable since tan(theta) is linear-ish around 0.
 	// Note that this is signed.
+	maxBankAngle := nav.Perf.Turn.MaxBankAngle
+	maxRollRate := nav.Perf.Turn.MaxBankRate
 	turnRate := func(bankAngle float32) float32 { return bankAngle / maxBankAngle * maxTurnRate }
 
 	// If we started leveling out now, how many more degrees would we turn through?

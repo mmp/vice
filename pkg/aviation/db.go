@@ -182,6 +182,10 @@ type AircraftPerformance struct {
 		MaxTAS     float32 `json:"max"`
 		MaxMach    float32 `json:"maxM"`
 	} `json:"speed"`
+	Turn struct {
+		MaxBankAngle float32 `json:"maxBankAngle"`
+		MaxBankRate  float32 `json:"maxBankRate"`
+	}
 }
 
 type Airline struct {
@@ -438,6 +442,12 @@ func parseAircraft() (map[string]string, map[string]AircraftPerformance) {
 		}
 		if t := ac.Engine.AircraftType; t != "P" && t != "T" && t != "J" {
 			fmt.Fprintf(os.Stderr, "%s: aircraft type %q should be \"P\", \"T\", or \"J\".\n", ac.ICAO, t)
+		}
+		if ac.Turn.MaxBankAngle < 5 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft maximum bank angle %f is suspiciously low", ac.ICAO, ac.Turn.MaxBankAngle)
+		}
+		if ac.Turn.MaxBankRate < 1 {
+			fmt.Fprintf(os.Stderr, "%s: aircraft maximum bank rate %f is suspiciously low", ac.ICAO, ac.Turn.MaxBankRate)
 		}
 	}
 
