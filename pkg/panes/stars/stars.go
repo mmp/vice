@@ -224,11 +224,11 @@ type STARSPane struct {
 
 	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
 	IFPHelpers struct {
-		ArrivalsColor   *[3]float32
-		ApproachesColor *[3]float32
-		DeparturesColor *[3]float32
+		ArrivalsColor    *[3]float32
+		ApproachesColor  *[3]float32
+		DeparturesColor  *[3]float32
 		OverflightsColor *[3]float32
-		AirspaceColor *[3]float32
+		AirspaceColor    *[3]float32
 	}
 
 	// We keep a pool of each type so that we don't need to allocate a new

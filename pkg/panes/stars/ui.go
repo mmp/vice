@@ -65,7 +65,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	if imgui.CollapsingHeaderBoolPtr("Arrivals", nil) {
 		imgui.Text("Color:")
 		imgui.SameLine()
-		imgui.ColorEdit3V("Draw Color##1", sp.IFPHelpers.ArrivalsColor, imgui.ColorEditFlagsNoInputs | imgui.ColorEditFlagsNoLabel)
+		imgui.ColorEdit3V("Draw Color##1", sp.IFPHelpers.ArrivalsColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if imgui.BeginTableV("arr", 4, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.arrivals == nil {
@@ -122,7 +122,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	if imgui.CollapsingHeaderBoolPtr("Approaches", nil) {
 		imgui.Text("Color:")
 		imgui.SameLine()
-		imgui.ColorEdit3V("Draw Color##2", sp.IFPHelpers.ApproachesColor, imgui.ColorEditFlagsNoInputs | imgui.ColorEditFlagsNoLabel)
+		imgui.ColorEdit3V("Draw Color##2", sp.IFPHelpers.ApproachesColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if imgui.BeginTableV("appr", 6, tableFlags, imgui.Vec2{}, 0) {
 
@@ -184,7 +184,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
 		imgui.Text("Color:")
 		imgui.SameLine()
-		imgui.ColorEdit3V("Draw Color##3", sp.IFPHelpers.DeparturesColor, imgui.ColorEditFlagsNoInputs | imgui.ColorEditFlagsNoLabel)
+		imgui.ColorEdit3V("Draw Color##3", sp.IFPHelpers.DeparturesColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.departures == nil {
@@ -263,7 +263,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	if imgui.CollapsingHeaderBoolPtr("Overflights", nil) {
 		imgui.Text("Color:")
 		imgui.SameLine()
-		imgui.ColorEdit3V("Draw Color##4", sp.IFPHelpers.OverflightsColor, imgui.ColorEditFlagsNoInputs | imgui.ColorEditFlagsNoLabel)
+		imgui.ColorEdit3V("Draw Color##4", sp.IFPHelpers.OverflightsColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if imgui.BeginTableV("over", 3, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.overflights == nil {
@@ -315,7 +315,7 @@ func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *
 	if len(c.State.Airspace) > 0 && imgui.CollapsingHeaderBoolPtr("Airspace", nil) {
 		imgui.Text("Color:")
 		imgui.SameLine()
-		imgui.ColorEdit3V("Draw Color##5", sp.IFPHelpers.AirspaceColor, imgui.ColorEditFlagsNoInputs | imgui.ColorEditFlagsNoLabel)
+		imgui.ColorEdit3V("Draw Color##5", sp.IFPHelpers.AirspaceColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if sp.scopeDraw.airspace == nil {
 			sp.scopeDraw.airspace = make(map[string]map[string]bool)
