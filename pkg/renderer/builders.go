@@ -190,11 +190,6 @@ func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 	l.color = append(l.color, color, color)
 }
 
-func (l *ColoredLinesDrawBuilder) AddLineWithAlpha(p0, p1 [2]float32, color RGB) {
-	l.LinesDrawBuilder.AddLine(p0, p1)
-	l.color = append(l.color, color, color)
-}
-
 func (l *ColoredLinesDrawBuilder) AddLineLoop(color RGB, p [][2]float32) {
 	l.LinesDrawBuilder.AddLineLoop(p)
 	for range p {
