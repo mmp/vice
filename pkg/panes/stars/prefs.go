@@ -66,7 +66,7 @@ func (p *PreferenceSet) ResetDefault(ss sim.State, pl platform.Platform, sp *STA
 	p.Current.Activate(pl, sp)
 }
 
-// Preferences encapsulates the user-settable STARS preferences that
+// Preferences encapsulates the user-settable STARS preferences
 type Preferences struct {
 	CommonPreferences
 
