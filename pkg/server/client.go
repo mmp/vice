@@ -6,7 +6,9 @@ package server
 
 import (
 	"encoding/gob"
+	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/rpc"
 	"os"
@@ -193,7 +195,16 @@ func initializeSpeechWebsocket(controllerToken string, lg *log.Logger) (*websock
 		for {
 			ty, r, err := conn.NextReader()
 			if err != nil {
-				lg.Errorf("speech websocket read: %v", err)
+				if e, ok := err.(*net.OpError); ok {
+					fmt.Printf("%s : %T\n", e.Err, e.Err)
+				}
+				var cerr *websocket.CloseError
+				if errors.As(err, &cerr) {
+					// all good, we're shutting down
+					lg.Errorf("websocket closed; exiting client reader")
+				} else {
+					lg.Errorf("speech websocket read: %T, %v", err, err)
+				}
 				return
 			}
 			if ty != websocket.BinaryMessage {
