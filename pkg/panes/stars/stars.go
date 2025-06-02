@@ -222,6 +222,15 @@ type STARSPane struct {
 		airspace    map[string]map[string]bool            // ctrl -> volume name
 	}
 
+	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
+	IFPHelpers struct {
+		ArrivalsColor    *[3]float32
+		ApproachesColor  *[3]float32
+		DeparturesColor  *[3]float32
+		OverflightsColor *[3]float32
+		AirspaceColor    *[3]float32
+	}
+
 	// We keep a pool of each type so that we don't need to allocate a new
 	// object each time we generate a datablock.
 	fdbArena util.ObjectArena[fullDatablock]
@@ -417,6 +426,26 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 
 	if sp.TgtGenKey == 0 {
 		sp.TgtGenKey = ';'
+	}
+
+	if sp.IFPHelpers.ApproachesColor == nil {
+		sp.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.ArrivalsColor == nil {
+		sp.IFPHelpers.ArrivalsColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.DeparturesColor == nil {
+		sp.IFPHelpers.DeparturesColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.OverflightsColor == nil {
+		sp.IFPHelpers.OverflightsColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.AirspaceColor == nil {
+		sp.IFPHelpers.AirspaceColor = &[3]float32{.1, .9, .1}
 	}
 
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
@@ -727,8 +756,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawVideoMaps(ctx, transforms, cb)
 
-	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools),
-		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
+	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools), cb)
 
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)

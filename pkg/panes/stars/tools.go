@@ -1050,8 +1050,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
-	color renderer.RGB, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
 		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
 		return
@@ -1059,12 +1058,12 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	pd := renderer.GetTrianglesDrawBuilder() // for circles
-	defer renderer.ReturnTrianglesDrawBuilder(pd)
-	ldr := renderer.GetLinesDrawBuilder() // for restrictions--in window coords...
-	defer renderer.ReturnLinesDrawBuilder(ldr)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	pd := renderer.GetColoredTrianglesDrawBuilder() // for circles
+	defer renderer.ReturnColoredTrianglesDrawBuilder(pd)
+	ldr := renderer.GetColoredLinesDrawBuilder() // for restrictions--in window coords...
+	defer renderer.ReturnColoredLinesDrawBuilder(ldr)
 
 	// Track which waypoints have been drawn so that we don't repeatedly
 	// draw the same one.  (This is especially important since the
@@ -1072,12 +1071,24 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	// which may be different for different uses of the waypoint...)
 	drawnWaypoints := make(map[string]interface{})
 
+	sp.drawScenarioArrivalRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioApproachRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+}
+
+func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ArrivalsColor)
+
 	style := renderer.TextStyle{
 		Font:           font,
 		Color:          color,
 		DrawBackground: true}
 
-	// STARS
 	if sp.scopeDraw.arrivals != nil {
 		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.arrivals[name] == nil {
@@ -1090,13 +1101,13 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 					continue
 				}
 
-				drawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+				drawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 				// Draw runway-specific waypoints
 				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
 					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
 						wp := arr.RunwayWaypoints[ap][rwy]
-						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
 							// Draw the runway number in the middle of the line
@@ -1119,7 +1130,20 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 		}
 	}
 
-	// Approaches
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          color,
+		DrawBackground: true}
+
 	if sp.scopeDraw.approaches != nil {
 		for _, rwy := range ctx.Client.State.ArrivalRunways {
 			if sp.scopeDraw.approaches[rwy.Airport] == nil {
@@ -1130,14 +1154,27 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 				appr := ap.Approaches[name]
 				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
-						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 					}
 				}
 			}
 		}
 	}
 
-	// Departure routes
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.DeparturesColor)
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          color,
+		DrawBackground: true}
+
 	if sp.scopeDraw.departures != nil {
 		for _, name := range util.SortedMapKeys(ctx.Client.State.Airports) {
 			if sp.scopeDraw.departures[name] == nil {
@@ -1154,14 +1191,26 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 				for _, exit := range util.SortedMapKeys(exitRoutes) {
 					if sp.scopeDraw.departures[name][rwy][exit] {
 						drawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
-							td, style, ld, pd, ldr)
+							td, style, ld, pd, ldr, color)
 					}
 				}
 			}
 		}
 	}
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+}
 
-	// Overflights
+func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.OverflightsColor)
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          color,
+		DrawBackground: true}
+
 	if sp.scopeDraw.overflights != nil {
 		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.overflights[name] == nil {
@@ -1174,15 +1223,26 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 					continue
 				}
 
-				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr)
+				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 			}
 		}
 	}
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.AirspaceColor)
+	ps := sp.currentPrefs()
+	style := renderer.TextStyle{
+		Font:           sp.systemFont(ctx, ps.CharSize.Tools),
+		Color:          color,
+		DrawBackground: true, // default BackgroundColor is fine
+	}
 
 	if sp.scopeDraw.airspace != nil {
-		ps := sp.currentPrefs()
-		rgb := ps.Brightness.Lists.ScaleRGB(STARSListColor)
-
 		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
 			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
 				if !sp.scopeDraw.airspace[ctrl][volname] {
@@ -1192,25 +1252,20 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 				for _, vol := range ctx.Client.State.Airspace[ctrl][volname] {
 					for _, pts := range vol.Boundaries {
 						for i := range pts[:len(pts)-1] {
-							ld.AddLine(pts[i], pts[i+1])
+							ld.AddLine(pts[i], pts[i+1], color)
 						}
 					}
 
-					ps := sp.currentPrefs()
-					style := renderer.TextStyle{
-						Font:           sp.systemFont(ctx, ps.CharSize.Tools),
-						Color:          rgb,
-						DrawBackground: true, // default BackgroundColor is fine
-					}
 					td.AddTextCentered(vol.Label, transforms.WindowFromLatLongP(vol.LabelPosition), style)
 				}
 			}
 		}
 	}
+	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+}
 
-	// And now finally update the command buffer with everything we've
-	// drawn.
-	cb.SetRGB(color)
+func generateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
@@ -1220,6 +1275,11 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	td.GenerateCommands(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ldr.GenerateCommands(cb)
+}
+
+func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
+	ps := sp.currentPrefs()
+	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
 }
 
 // pt should return nm-based coordinates
@@ -1267,18 +1327,18 @@ func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]fl
 
 func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints map[string]interface{},
 	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
-	ld *renderer.LinesDrawBuilder, pd *renderer.TrianglesDrawBuilder, ldr *renderer.LinesDrawBuilder) {
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
 
 	// Draw an arrow at the point p (in nm coordinates) pointing in the
 	// direction given by the angle a.
 	drawArrow := func(p [2]float32, a float32) {
 		aa := a + math.Radians(180+30)
 		pa := math.Add2f(p, math.Scale2f([2]float32{math.Sin(aa), math.Cos(aa)}, 0.5))
-		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pa, ctx.NmPerLongitude))
+		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pa, ctx.NmPerLongitude), color)
 
 		ba := a - math.Radians(180+30)
 		pb := math.Add2f(p, math.Scale2f([2]float32{math.Sin(ba), math.Cos(ba)}, 0.5))
-		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pb, ctx.NmPerLongitude))
+		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pb, ctx.NmPerLongitude), color)
 	}
 
 	for i, wp := range waypoints {
@@ -1292,7 +1352,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			pend = math.Add2f(pend, v)
 
 			// center line
-			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, ctx.NmPerLongitude))
+			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, ctx.NmPerLongitude), color)
 
 			// arrowhead at the end
 			drawArrow(pend, a)
@@ -1331,7 +1391,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					r := math.Lerp(float32(i)/float32(n), r0, r1)
 					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
 					pnext := math.NM2LL(math.Add2f(pc, v), ctx.NmPerLongitude)
-					ld.AddLine(pprev, pnext)
+					ld.AddLine(pprev, pnext, color)
 					pprev = pnext
 
 					if i == n/2 {
@@ -1339,10 +1399,10 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
 					}
 				}
-				ld.AddLine(pprev, waypoints[i+1].Location)
+				ld.AddLine(pprev, waypoints[i+1].Location, color)
 			} else {
 				// Regular segment between waypoints: draw the line
-				ld.AddLine(waypoints[i].Location, waypoints[i+1].Location)
+				ld.AddLine(waypoints[i].Location, waypoints[i+1].Location, color)
 
 				if waypoints[i+1].ProcedureTurn == nil &&
 					!(waypoints[i].ProcedureTurn != nil && waypoints[i].ProcedureTurn.Type == av.PTStandard45) {
@@ -1448,7 +1508,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 
 				for _, l := range lines {
 					l0, l1 := math.NM2LL(l[0], ctx.NmPerLongitude), math.NM2LL(l[1], ctx.NmPerLongitude)
-					ld.AddLine(l0, l1)
+					ld.AddLine(l0, l1, color)
 				}
 			}
 		}
@@ -1473,7 +1533,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 		// Draw a circle at the waypoint's location
 		const pointRadius = 2.5
 		const nSegments = 8
-		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments)
+		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments, color)
 
 		// If /radius has been specified, draw a corresponding circle
 		if wp.Radius > 0 {
@@ -1491,13 +1551,13 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 
 			// extend the line
 			e0, e1 := math.Sub2f(wp.Location, v), math.Add2f(wp.Location, v)
-			ld.AddLine(wp.Location, e1)
+			ld.AddLine(wp.Location, e1, color)
 
 			perp := [2]float32{-v[1], v[0]}
 			perp = math.Scale2f(perp, 0.125) // shorter
 
-			ld.AddLine(math.Sub2f(e0, perp), math.Add2f(e0, perp))
-			ld.AddLine(math.Sub2f(e1, perp), math.Add2f(e1, perp))
+			ld.AddLine(math.Sub2f(e0, perp), math.Add2f(e0, perp), color)
+			ld.AddLine(math.Sub2f(e1, perp), math.Add2f(e1, perp), color)
 		}
 
 		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
@@ -1559,11 +1619,11 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				// restrictions.
 				if ar.Range[1] != 0 {
 					// At or below (or at)
-					ldr.AddLine([2]float32{p[0], p[1] + 2}, [2]float32{p[0] + w, p[1] + 2})
+					ldr.AddLine([2]float32{p[0], p[1] + 2}, [2]float32{p[0] + w, p[1] + 2}, color)
 				}
 				if ar.Range[0] != 0 {
 					// At or above (or at)
-					ldr.AddLine([2]float32{p[0], pt[1] - 2}, [2]float32{p[0] + w, pt[1] - 2})
+					ldr.AddLine([2]float32{p[0], pt[1] - 2}, [2]float32{p[0] + w, pt[1] - 2}, color)
 				}
 
 				// update text draw position so that speed restrictions are
@@ -1579,8 +1639,8 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				p1[1] -= float32(style.Font.Size)
 
 				// All speed restrictions are currently 'at'...
-				ldr.AddLine([2]float32{p0[0], p0[1] + 2}, [2]float32{p1[0], p0[1] + 2})
-				ldr.AddLine([2]float32{p0[0], p1[1] - 2}, [2]float32{p1[0], p1[1] - 2})
+				ldr.AddLine([2]float32{p0[0], p0[1] + 2}, [2]float32{p1[0], p0[1] + 2}, color)
+				ldr.AddLine([2]float32{p0[0], p1[1] - 2}, [2]float32{p1[0], p1[1] - 2}, color)
 			}
 		}
 	}
