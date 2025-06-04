@@ -22,7 +22,7 @@
         "runway": "1",
         "type": "Visual",
         "waypoints": [
-          "N038.30.10.560,W077.00.05.136 KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
+          "N038.36.37.183,W077.00.45.675 KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
         ]
       },
       "R15": { "cifp_id": "R15" },
@@ -730,6 +730,53 @@
       "exit": "JERES",
       "route": "JERES J220 SFK WOZEE LINNG3"
     },
+	{
+      "airlines": [
+        {
+          "icao": "JZA"
+        }
+      ],
+      "destination": "CYOW",
+      "exit": "JERES",
+      "route": "JERES Q221 VALLO Q227 STUBN SYR ART DEANS4"
+    },
+	{
+      "airlines": [
+        {
+          "icao": "JIA"
+        }
+      ],
+      "destination": "KROC",
+      "exit": "JERES",
+      "route": "JERES Q227 STUBN GIBBE"
+    },
+	{
+      "airlines": [
+        {
+          "icao": "JIA"
+        },
+		{
+          "icao": "AAL",
+		  "fleet": "short"
+        }
+      ],
+      "destination": "KSYR",
+      "exit": "JERES",
+      "route": "JERES Q221 MICAH CFB"
+    },
+	{
+      "airlines": [
+        {
+          "icao": "JIA"
+        },
+		{
+          "icao": "ENY"
+        }
+      ],
+      "destination": "KBUF",
+      "exit": "JERES",
+      "route": "JERES Q221 WUNDR Q221 DLMAR BENEE"
+    },
     {
       "airlines": [
         {
@@ -827,7 +874,7 @@
         },
         "cruise_altitude": 33000,
         "star": "CAPSS3",
-        "initial_controller": "ZDC_36_CTR",
+        "initial_controller": "ZDC_20_CTR",
         "initial_altitude": 18000,
         "initial_speed": 290,
         "expect_approach": null,
@@ -1152,7 +1199,7 @@
         "waypoints": "DEALE/a10000/s280 YUCKK/a10000/ho TIRZA/a8000- HITEK/a7000 MITEY/h187",
         "cruise_altitude": 24000,
         "star": "DEALE3",
-        "initial_controller": "DCA_D_APP",
+        "initial_controller": "DCA_E_APP",
         "initial_altitude": 10000,
         "initial_speed": 250,
         "speed_restriction": 250,
@@ -1645,7 +1692,7 @@
           }
         },
         "star": "FRDMM6",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1708,7 +1755,7 @@
       {
         "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/delete",
         "star": "FRDMM6",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1771,7 +1818,7 @@
       {
         "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
         "star": "FRDMM6",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": "RIV",
@@ -1834,7 +1881,7 @@
       {
         "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/delete",
         "star": "TRUPS5",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -1880,7 +1927,7 @@
       {
         "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
         "star": "TRUPS5",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": "RIV",
@@ -3486,7 +3533,7 @@
       {
         "waypoints": "DFORT/a18000+ WALKN/a16000/s280/ho JAYOH/a12000 CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
         "star": "RAVNN8",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": "I3L",
@@ -3524,7 +3571,7 @@
 	  {
         "waypoints": "ECHOZ/a20000+ DNKEY/a19000/ho FIMBO/a16000 UDUDE/a13000+ REXEE/a12000+ ELDEE/a11000- CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
         "star": "RAVNN8",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 20000,
         "initial_speed": 280,
         "expect_approach": "I3L",
@@ -3563,7 +3610,7 @@
           }
         },
         "star": "TRUPS5",
-        "initial_controller": "ZDC_01_CTR",
+        "initial_controller": "ZDC_05_CTR",
         "initial_altitude": 18000,
         "initial_speed": 280,
         "expect_approach": null,
@@ -3606,40 +3653,40 @@
   }
 },
 "control_positions": {
-  "ZDC_01_CTR": {
-  "frequency": 128600,
-  "radio_name": "Washington Center",
-  "sector_id": "C01",
-  "facility_id": "C",
-  "eram_facility": true
+  "ZDC_05_CTR": {
+    "frequency": 128600,
+    "radio_name": "Washington Center",
+    "sector_id": "C05",
+    "facility_id": "C",
+    "eram_facility": true
+  },
+  "ZDC_12_CTR": {
+    "frequency": 126875,
+    "radio_name": "Washington Center",
+    "sector_id": "C12",
+    "facility_id": "C",
+    "eram_facility": true
+  },
+  "ZDC_17_CTR": {
+    "frequency": 134500,
+    "radio_name": "Washington Center",
+    "sector_id": "C17",
+    "facility_id": "C",
+    "eram_facility": true
+  },
+  "ZDC_20_CTR": {
+    "frequency": 118925,
+    "radio_name": "Washington Center",
+    "sector_id": "C20",
+    "facility_id": "C",
+    "eram_facility": true
   },
   "ZDC_32_CTR": {
-  "frequency": 133725,
-  "radio_name": "Washington Center",
-  "sector_id": "C32",
-  "facility_id": "C",
-  "eram_facility": true
-  },
-  "ZDC_36_CTR": {
-  "frequency": 118925,
-  "radio_name": "Washington Center",
-  "sector_id": "C36",
-  "facility_id": "C",
-  "eram_facility": true
-  },
-  "ZDC_19_CTR": {
-  "frequency": 125450,
-  "radio_name": "Washington Center",
-  "sector_id": "C19",
-  "facility_id": "C",
-  "eram_facility": true
-  },
-  "ZDC_54_CTR": {
-  "frequency": 120975,
-  "radio_name": "Washington Center",
-  "sector_id": "C54",
-  "facility_id": "C",
-  "eram_facility": true
+    "frequency": 133725,
+    "radio_name": "Washington Center",
+    "sector_id": "C32",
+    "facility_id": "C",
+    "eram_facility": true
   },
   "BWI_S_APP": {
     "frequency": 119700,
@@ -3660,6 +3707,11 @@
     "frequency": 128700,
     "radio_name": "Potomac Approach",
     "sector_id": "1W"
+  },
+  "BWI_H_APP": {
+      "frequency": 133850,
+      "radio_name": "Potomac Approach",
+      "sector_id": "1H"
   },
   "IAD_M_APP": {
     "frequency": 126100,
@@ -3708,7 +3760,7 @@
     "frequency": 121050,
     "radio_name" : "Potomac Approach",
 	"default_airport": "KDCA",
-    "sector_id": "F"
+    "sector_id": "1F"
   },
   "DCA_Y_DEP": {
     "frequency": 118950,
@@ -3819,18 +3871,18 @@
         }
       },
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_M_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
@@ -3907,18 +3959,18 @@
         }
       },
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_M_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
@@ -3966,18 +4018,26 @@
       },
       "solo_controller": "DCA_L_APP",
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_A_DEP",
+		"IAD_M_APP",
+		"DCA_L_APP",
+		"DCA_F_APP",
+		"DCA_Y_DEP",
+		"DCA_K_DEP",
+		"DCA_J_APP",
+		"DCA_D_APP",
+		"DCA_A_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
@@ -4013,18 +4073,26 @@
       },
       "solo_controller": "DCA_L_APP",
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_A_DEP",
+		"IAD_M_APP",
+		"DCA_L_APP",
+		"DCA_F_APP",
+		"DCA_Y_DEP",
+		"DCA_K_DEP",
+		"DCA_J_APP",
+		"DCA_D_APP",
+		"DCA_A_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
@@ -4047,18 +4115,26 @@
       },
       "solo_controller": "DCA_F_APP",
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_A_DEP",
+		"IAD_M_APP",
+		"DCA_L_APP",
+		"DCA_F_APP",
+		"DCA_Y_DEP",
+		"DCA_K_DEP",
+		"DCA_J_APP",
+		"DCA_D_APP",
+		"DCA_A_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
@@ -4081,18 +4157,26 @@
       },
       "solo_controller": "DCA_F_APP",
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+       "IAD_A_DEP",
+		"IAD_M_APP",
+		"DCA_L_APP",
+		"DCA_F_APP",
+		"DCA_Y_DEP",
+		"DCA_K_DEP",
+		"DCA_J_APP",
+		"DCA_D_APP",
+		"DCA_A_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
@@ -4128,18 +4212,26 @@
         }
       },
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
-        "DCA_TWR",
         "DCA_TWR",
         "BWI_S_APP",
 		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_A_DEP",
+		"IAD_M_APP",
+		"DCA_L_APP",
+		"DCA_F_APP",
+		"DCA_Y_DEP",
+		"DCA_K_DEP",
+		"DCA_J_APP",
+		"DCA_D_APP",
+		"DCA_A_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
@@ -4187,18 +4279,26 @@
         }
       },
       "controllers": [
-        "ZDC_01_CTR",
-		"ZDC_19_CTR",
-		"ZDC_32_CTR",
-		"ZDC_36_CTR",
-		"ZDC_54_CTR",
         "DCA_TWR",
-        "DCA_TWR",
-		"BWI_G_DEP",
         "BWI_S_APP",
+		"BWI_G_DEP",
         "BWI_P_APP",
         "BWI_W_APP",
-        "IAD_M_APP"
+		"BWI_H_APP",
+        "IAD_A_DEP",
+		"IAD_M_APP",
+		"DCA_L_APP",
+		"DCA_F_APP",
+		"DCA_Y_DEP",
+		"DCA_K_DEP",
+		"DCA_J_APP",
+		"DCA_D_APP",
+		"DCA_A_APP",
+		"ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
@@ -4245,8 +4345,13 @@
       "BWI_S_APP",
 	  "BWI_G_DEP",
       "BWI_P_APP",
+	  "BWI_H_APP",
       "DCA_K_DEP",
-      "ZDC_01_CTR"
+      "ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
     ],
     "default_maps": [ "MTV North" ],
     "wind": {
@@ -4280,8 +4385,13 @@
     "BWI_S_APP",
 	"BWI_G_DEP",
     "BWI_P_APP",
+	"BWI_H_APP",
     "DCA_K_DEP",
-    "ZDC_01_CTR"
+    "ZDC_05_CTR",
+		"ZDC_12_CTR",
+		"ZDC_17_CTR",
+		"ZDC_20_CTR",
+		"ZDC_32_CTR"
   ],
   "default_maps": [ "MTV South" ],
   "wind": {
@@ -4361,6 +4471,67 @@
                 }
             ]
 },
+"airspace_awareness": [
+	{
+        "fixes": [
+          "RAMAY",
+          "OTTTO"
+        ],
+        "altitude_range": [
+          10000,
+          17000
+        ],
+        "receiving_controller": "ZDC_05_CTR"
+      },
+	  {
+        "fixes": [
+          "SCOOB",
+		  "COLIN"
+        ],
+        "altitude_range": [
+          10000,
+          19000
+        ],
+        "receiving_controller": "ZDC_12_CTR"
+      },
+	  {
+        "fixes": [
+		  "MAULS",
+		  "FLASK",
+		  "MELTN",
+		  "RRSIN",
+		  "GLANC"
+        ],
+        "altitude_range": [
+          10000,
+          23000
+        ],
+        "receiving_controller": "ZDC_32_CTR"
+      },
+	  {
+        "fixes": [
+          "JERES",
+          "MCRAY"
+        ],
+        "altitude_range": [
+          11000,
+          17000
+        ],
+        "receiving_controller": "BWI_H_APP"
+      },
+	  {
+        "fixes": [
+          "SWANN",
+		  "AGARD",
+		  "DQO"
+        ],
+        "altitude_range": [
+          10000,
+          19000
+        ],
+        "receiving_controller": "ZDC_17_CTR"
+      }
+],
     "filters": {
   "inhibit_ca": [
     {
@@ -4372,7 +4543,17 @@
       "radius": 5,
       "center": "N38.51.34.118,W77.02.10.979"
     }
-  ]
+  ],
+  "arrival_acquisition": [
+        {
+          "id": "ACQ",
+          "description": "MTV AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N039.13.03.311,W077.25.51.708 N039.19.37.528,W077.03.50.383 N039.15.26.916,W076.44.08.254 N039.11.46.036,W076.30.16.094 N038.57.59.479,W076.26.02.503 N038.55.55.114,W076.13.31.944 N038.53.44.803,W076.03.13.524 N038.40.37.234,W076.02.15.296 N038.38.53.770,W076.21.35.068 N038.27.32.206,W076.19.52.977 N038.14.02.939,W076.39.44.170 N038.03.21.557,W076.56.58.725 N037.56.43.962,W077.07.06.159 N037.48.32.036,W077.13.11.949 N037.39.12.612,W077.18.29.371 N037.43.45.567,W077.34.17.601 N038.32.33.602,W078.21.12.930 N039.08.17.103,W078.26.24.118 N039.18.48.419,W078.04.34.658 N039.12.38.592,W077.38.22.185 N039.13.03.311,W077.25.51.708",
+          "floor": 0,
+          "ceiling": 23000
+        }
+    ]
     },
   "radar_sites": {
     "DCA": {
@@ -4508,7 +4689,7 @@
     "FLASK": "CLH",
     "DQO": "DQO",
     "AGARD": "DCR",
-    "JERES": "J11",
+    "JERES": "JS2",
     "BUFFR": "BFR",
     "RRSIN": "JDB",
     "MELTN": "JDB",

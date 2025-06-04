@@ -853,8 +853,8 @@ func showAboutDialog() {
 - Software Development: Xavier Caldwell,
   Artem Dorofeev, Dennis Graiani, Ethan
   Malimon, Neel P, Makoto Sakaguchi,
-  Michael Trokel, Samuel Valencia, and
-  Yi Zhang.
+  Michael Trokel, radarcontacto, Rick R,
+  Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, anguse,
   Adam Bolek, Brody Carty, Lucas Chan,
