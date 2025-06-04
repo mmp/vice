@@ -2014,11 +2014,11 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) PilotTransmission {
 
 	var response PilotTransmission
 	if alt > nav.FlightState.Altitude {
-		response = MakePilotTransmission("[climb and maintain|up to] {alt}", alt)
+		response = MakePilotTransmission("[climb-and-maintain|up to|] {alt}", alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = MakePilotTransmission("[maintain|we'll keep it at] {alt}", alt)
+		response = MakePilotTransmission("[maintain|we'll keep it at|] {alt}", alt)
 	} else {
-		response = MakePilotTransmission("[descend and maintain|down to] {alt}", alt)
+		response = MakePilotTransmission("[descend-and-maintain|down to|] {alt}", alt)
 	}
 
 	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
@@ -2049,35 +2049,35 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) PilotTransmission
 	} else if nav.Approach.Cleared {
 		// TODO: make sure we're not within 5 miles...
 		nav.Speed = NavSpeed{Assigned: &speed}
-		return MakePilotTransmission("maintain {spd} until 5 mile final", speed)
+		return MakePilotTransmission("{spd} until 5 mile final", speed)
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		nav.Speed.AfterAltitude = &speed
 		alt := *nav.Altitude.Assigned
 		nav.Speed.AfterAltitudeAltitude = &alt
 
-		return MakePilotTransmission("at {alt} feet maintain {spd}", alt, speed)
+		return MakePilotTransmission("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", alt, speed)
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
-			return MakePilotTransmission("[reduce speed to {spd}|speed {spd}|pulling it back to {spd}|{spd} for the speed|slow to {spd}]",
+			return MakePilotTransmission("[reduce to {spd}|speed {spd}|slow to {spd}|{spd}]",
 				speed)
 		} else if speed > nav.FlightState.IAS {
-			return MakePilotTransmission("[increase speed to {spd}|speed {spd}|{spd} for the speed|maintain {spd}", speed)
+			return MakePilotTransmission("[increase to {spd}|speed {spd}|maintain {spd}|{spd}]", speed)
 		} else {
-			return MakePilotTransmission("[maintain {spd}|keep it at {spd}|we'll stay at {spd}]", speed)
+			return MakePilotTransmission("[maintain {spd}|keep it at {spd}|we'll stay at {spd}|{spd}]", speed)
 		}
 	}
 }
 
 func (nav *Nav) MaintainSlowestPractical() PilotTransmission {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
-	return MakePilotTransmission("[we'll maintain slowest practical speed|slowing as much as we can]")
+	return MakePilotTransmission("[slowest practical speed|slowing as much as we can]")
 }
 
 func (nav *Nav) MaintainMaximumForward() PilotTransmission {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
-	return MakePilotTransmission("[we'll keep it at maximum forward speed|maintaining maximum forward speed]")
+	return MakePilotTransmission("[maximum forward speed|maintaining maximum forward speed]")
 }
 
 func (nav *Nav) SaySpeed() PilotTransmission {
@@ -2103,12 +2103,12 @@ func (nav *Nav) SayHeading() PilotTransmission {
 	if nav.Heading.Assigned != nil {
 		assignedHeading := *nav.Heading.Assigned
 		if assignedHeading != currentHeading {
-			return MakePilotTransmission("[flying heading {hdg}|assigned heading {hdg}]", currentHeading, assignedHeading)
+			return MakePilotTransmission("[heading {hdg}|{hdg}]", currentHeading, assignedHeading)
 		} else {
-			return MakePilotTransmission("flying heading {hdg}", currentHeading)
+			return MakePilotTransmission("heading {hdg}", currentHeading)
 		}
 	} else {
-		return MakePilotTransmission("flying heading {hdg}", currentHeading)
+		return MakePilotTransmission("heading {hdg}", currentHeading)
 	}
 }
 
@@ -2144,7 +2144,7 @@ func (nav *Nav) ExpediteDescent() PilotTransmission {
 		return MakePilotTransmission("[we're already expediting|that's our best rate]")
 	} else {
 		nav.Altitude.Expedite = true
-		return MakePilotTransmission("[expediting down to|expedite to] {alt}", alt)
+		return MakePilotTransmission("[expediting down to|expedite] {alt}", alt)
 	}
 }
 
@@ -2162,7 +2162,7 @@ func (nav *Nav) ExpediteClimb() PilotTransmission {
 		return MakePilotTransmission("[we're already expediting|that's our best rate]")
 	} else {
 		nav.Altitude.Expedite = true
-		return MakePilotTransmission("[expediting up to|expedite to] {alt}", alt)
+		return MakePilotTransmission("[expediting up to|expedite] {alt}", alt)
 	}
 }
 
@@ -2177,9 +2177,9 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotTransmission {
 	case TurnClosest:
 		return MakePilotTransmission("[heading|fly heading] {hdg}", hdg)
 	case TurnRight:
-		return MakePilotTransmission("[right heading|turn right heading] {hdg}", hdg)
+		return MakePilotTransmission("[right heading|right] {hdg}", hdg)
 	case TurnLeft:
-		return MakePilotTransmission("[left heading|turn left heading] {hdg}", hdg)
+		return MakePilotTransmission("[left heading|left] {hdg}", hdg)
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
 	}
@@ -2731,7 +2731,7 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *
 		nav.flyProcedureTurnIfNecessary()
 
 		if straightIn {
-			return MakePilotTransmission("cleared straight in {appr} approach", ap.FullName), nil
+			return MakePilotTransmission("cleared straight in {appr} [approach|]", ap.FullName), nil
 		} else {
 			return MakePilotTransmission("cleared {appr} [approach|]", ap.FullName), nil
 		}

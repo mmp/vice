@@ -41,11 +41,11 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 	}
 
 	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor)
-	if ctx.Client.AwaitingReadback() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
+	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
 		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
 	}
 
-	sp.drawPreviewArea(normalizedToWindow(ps.PreviewAreaPosition), font, previewAreaColor, td)
+	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), font, previewAreaColor, td)
 
 	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, td, transforms, cb)
 	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), tracks, listStyle, td)
@@ -71,7 +71,7 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, color renderer.RGB, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *renderer.Font, color renderer.RGB, td *renderer.TextDrawBuilder) {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
@@ -84,7 +84,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, color r
 	}
 	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
 		text.WriteByte(' ')
-		text.WriteString(string(sp.targetGenLastCallsign))
+		text.WriteString(string(ctx.Client.LastTransmissionCallsign()))
 	}
 	if modestr != "" {
 		text.WriteString("\n")

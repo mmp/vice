@@ -118,9 +118,7 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		}
 
 		addNoise(pcmr)
-		for range AudioSampleRate / 2 { // 1/2 second
-			pcmr = append(pcmr, 0)
-		}
+
 		a.speechq = pcmr
 		a.speechcb = finished
 

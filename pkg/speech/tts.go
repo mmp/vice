@@ -95,7 +95,7 @@ func RequestTTS(voice, text string, lg *log.Logger) (<-chan []byte, error) {
 				Name:         voice,
 			},
 			AudioConfig: &texttospeechpb.AudioConfig{
-				SpeakingRate:    1.25,
+				SpeakingRate:    1.4,
 				SampleRateHertz: 24000,
 				AudioEncoding:   texttospeechpb.AudioEncoding_MP3,
 			},

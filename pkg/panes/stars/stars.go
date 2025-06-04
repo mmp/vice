@@ -86,8 +86,6 @@ type STARSPane struct {
 
 	weatherRadar WeatherRadar
 
-	targetGenLastCallsign av.ADSBCallsign
-
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
 	wxHistoryDraw int

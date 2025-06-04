@@ -435,7 +435,7 @@ func (ApproachPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 					result = append(result, "runway")
 				}
 			} else if strings.ToUpper(word) == "ILS" {
-				result = append(result, "I less")
+				result = append(result, "I-L-S")
 			} else if strings.ToUpper(word) == "RNAV" {
 				result = append(result, "r-nav")
 			} else if strings.ToUpper(word) == "VOR" {

@@ -8,13 +8,13 @@ import (
 	"encoding/gob"
 	"errors"
 	"fmt"
-	"net"
 	"net/http"
 	"net/rpc"
 	"os"
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -30,12 +30,17 @@ import (
 type ControlClient struct {
 	proxy *proxy
 
-	speechWs         *websocket.Conn
-	speechCh         chan sim.PilotSpeech
-	awaitingReadback bool
-	bufferedSpeech   []sim.PilotSpeech
+	speechWs                 *websocket.Conn
+	speechCh                 chan sim.PilotSpeech
+	bufferedSpeech           []sim.PilotSpeech
+	playingSpeech            bool
+	holdSpeech               bool
+	lastSpeechHoldTime       time.Time
+	awaitReadbackCallsign    av.ADSBCallsign
+	lastTransmissionCallsign av.ADSBCallsign
 
 	lg *log.Logger
+	mu sync.Mutex
 
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
@@ -195,9 +200,6 @@ func initializeSpeechWebsocket(controllerToken string, lg *log.Logger) (*websock
 		for {
 			ty, r, err := conn.NextReader()
 			if err != nil {
-				if e, ok := err.(*net.OpError); ok {
-					fmt.Printf("%s : %T\n", e.Err, e.Err)
-				}
 				var cerr *websocket.CloseError
 				if errors.As(err, &cerr) {
 					// all good, we're shutting down
@@ -227,7 +229,14 @@ func initializeSpeechWebsocket(controllerToken string, lg *log.Logger) (*websock
 }
 
 func (c *ControlClient) Status() string {
-	if c == nil || c.State.SimDescription == "" {
+	if c == nil {
+		return "[disconnected]"
+	}
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if c.State.SimDescription == "" {
 		return "[disconnected]"
 	} else {
 		stats := c.SessionStats
@@ -237,8 +246,14 @@ func (c *ControlClient) Status() string {
 	}
 }
 
+func (c *ControlClient) addCall(pc *PendingCall) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.pendingCalls = append(c.pendingCalls, pc)
+}
+
 func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.TakeOrReturnLaunchControl(),
+	c.addCall(makeRPCCall(c.proxy.TakeOrReturnLaunchControl(),
 		func(err error) {
 			if err != nil {
 				eventStream.Post(sim.Event{
@@ -250,32 +265,32 @@ func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) 
 }
 
 func (c *ControlClient) LaunchDeparture(ac sim.Aircraft, rwy string) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.LaunchAircraft(ac, rwy), nil))
+	c.addCall(makeRPCCall(c.proxy.LaunchAircraft(ac, rwy), nil))
 }
 
 func (c *ControlClient) LaunchArrivalOverflight(ac sim.Aircraft) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.LaunchAircraft(ac, ""), nil))
+	c.addCall(makeRPCCall(c.proxy.LaunchAircraft(ac, ""), nil))
 }
 
 func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.GlobalMessage(global), nil))
+	c.addCall(makeRPCCall(c.proxy.GlobalMessage(global), nil))
 }
 
 func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
+	c.addCall(
 		makeStateUpdateRPCCall(c.proxy.CreateFlightPlan(spec, &update), &update, callback))
 }
 
 func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
+	c.addCall(
 		makeStateUpdateRPCCall(c.proxy.ModifyFlightPlan(acid, spec, &update), &update, callback))
 }
 
 func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
+	c.addCall(
 		makeStateUpdateRPCCall(c.proxy.AssociateFlightPlan(callsign, spec, &update), &update,
 			func(err error) {
 				if callback != nil {
@@ -287,7 +302,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.S
 func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.STARSFlightPlanSpecifier,
 	callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
+	c.addCall(
 		makeStateUpdateRPCCall(c.proxy.ActivateFlightPlan(callsign, fpACID, spec, &update), &update,
 			func(err error) {
 				if callback != nil {
@@ -298,93 +313,83 @@ func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.
 
 func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.DeleteFlightPlan(acid, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.DeleteFlightPlan(acid, &update), &update, callback))
 }
 
 func (c *ControlClient) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign, p math.Point2LL, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.RepositionTrack(acid, callsign, p, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.RepositionTrack(acid, callsign, p, &update), &update, callback))
 }
 
 func (c *ControlClient) HandoffTrack(acid sim.ACID, controller string, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.HandoffTrack(acid, controller, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.HandoffTrack(acid, controller, &update), &update, callback))
 }
 
 func (c *ControlClient) AcceptHandoff(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.AcceptHandoff(acid, &update), &update,
-			func(err error) {
-				if callback != nil {
-					callback(err)
-				}
-			}))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.AcceptHandoff(acid, &update), &update,
+		func(err error) {
+			if callback != nil {
+				callback(err)
+			}
+		}))
 }
 
 func (c *ControlClient) RedirectHandoff(acid sim.ACID, tcp string, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.RedirectHandoff(acid, tcp, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.RedirectHandoff(acid, tcp, &update), &update, callback))
 }
 
 func (c *ControlClient) AcceptRedirectedHandoff(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.AcceptRedirectedHandoff(acid, &update), &update,
-			func(err error) {
-				if callback != nil {
-					callback(err)
-				}
-			}))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.AcceptRedirectedHandoff(acid, &update), &update,
+		func(err error) {
+			if callback != nil {
+				callback(err)
+			}
+		}))
 }
 
 func (c *ControlClient) CancelHandoff(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.CancelHandoff(acid, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.CancelHandoff(acid, &update), &update, callback))
 }
 
 func (c *ControlClient) ForceQL(acid sim.ACID, controller string, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.ForceQL(acid, controller, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.ForceQL(acid, controller, &update), &update, callback))
 }
 
 func (c *ControlClient) PointOut(acid sim.ACID, controller string, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.PointOut(acid, controller, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.PointOut(acid, controller, &update), &update, callback))
 }
 
 func (c *ControlClient) AcknowledgePointOut(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.AcknowledgePointOut(acid, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.AcknowledgePointOut(acid, &update), &update, callback))
 }
 
 func (c *ControlClient) RecallPointOut(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.RecallPointOut(acid, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.RecallPointOut(acid, &update), &update, callback))
 }
 
 func (c *ControlClient) RejectPointOut(acid sim.ACID, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.RejectPointOut(acid, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.RejectPointOut(acid, &update), &update, callback))
 }
 
 func (c *ControlClient) ReleaseDeparture(callsign av.ADSBCallsign, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.ReleaseDeparture(callsign, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.ReleaseDeparture(callsign, &update), &update, callback))
 }
 
 func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	err := c.proxy.ChangeControlPosition(tcp, keepTracks)
 	if err == nil {
 		c.State.UserTCP = tcp
@@ -394,19 +399,21 @@ func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error
 
 func (c *ControlClient) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *sim.Aircraft,
 	callback func(error)) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.CreateDeparture(airport, runway, category, rules, ac),
-		callback))
+	c.addCall(makeRPCCall(c.proxy.CreateDeparture(airport, runway, category, rules, ac), callback))
 }
 
 func (c *ControlClient) CreateArrival(group, airport string, ac *sim.Aircraft, callback func(error)) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.CreateArrival(group, airport, ac), callback))
+	c.addCall(makeRPCCall(c.proxy.CreateArrival(group, airport, ac), callback))
 }
 
 func (c *ControlClient) CreateOverflight(group string, ac *sim.Aircraft, callback func(error)) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.CreateOverflight(group, ac), callback))
+	c.addCall(makeRPCCall(c.proxy.CreateOverflight(group, ac), callback))
 }
 
 func (c *ControlClient) Disconnect() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if err := c.proxy.SignOff(nil, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
 	}
@@ -423,28 +430,25 @@ func (c *ControlClient) Disconnect() {
 // the newly-created restriction area.
 func (c *ControlClient) CreateRestrictionArea(ra av.RestrictionArea, callback func(int, error)) {
 	var result CreateRestrictionAreaResultArgs
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.CreateRestrictionArea(ra, &result), &result.StateUpdate,
-			func(err error) {
-				if callback != nil {
-					if err != nil {
-						callback(result.Index, err)
-					}
+	c.addCall(makeStateUpdateRPCCall(c.proxy.CreateRestrictionArea(ra, &result), &result.StateUpdate,
+		func(err error) {
+			if callback != nil {
+				if err != nil {
 					callback(result.Index, err)
 				}
-			}))
+				callback(result.Index, err)
+			}
+		}))
 }
 
 func (c *ControlClient) UpdateRestrictionArea(idx int, ra av.RestrictionArea, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.UpdateRestrictionArea(idx, ra, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.UpdateRestrictionArea(idx, ra, &update), &update, callback))
 }
 
 func (c *ControlClient) DeleteRestrictionArea(idx int, callback func(error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.DeleteRestrictionArea(idx, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.DeleteRestrictionArea(idx, &update), &update, callback))
 }
 
 func (c *ControlClient) GetVideoMapLibrary(filename string) (*sim.VideoMapLibrary, error) {
@@ -471,6 +475,9 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	if c.proxy == nil {
 		return
 	}
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
 	if c.updateCall != nil {
 		if c.updateCall.CheckFinished(eventStream, &c.State) {
@@ -514,6 +521,7 @@ loop:
 		select {
 		case ps, ok := <-c.speechCh:
 			if ok {
+				fmt.Printf("got speech %s\n", ps.Callsign)
 				c.bufferedSpeech = append(c.bufferedSpeech, ps)
 			}
 		default:
@@ -521,20 +529,51 @@ loop:
 		}
 	}
 
-	if len(c.bufferedSpeech) == 0 {
+	if c.holdSpeech && time.Now().After(c.lastSpeechHoldTime) {
+		// Time out user-requested holds after 5 seconds (if another
+		// request hasn't kept the request alive).
+		fmt.Printf("time out hold\n")
+		c.holdSpeech = false
+	}
+
+	if c.holdSpeech || c.playingSpeech || len(c.bufferedSpeech) == 0 || c.State.Paused {
+		// Don't/can't kick off additional speech playback
+		//fmt.Printf("Xh%sp%sl%d ", util.Select(c.holdSpeech, "+", "-"), util.Select(c.playingSpeech, "+", "-"), len(c.bufferedSpeech))
 		return
 	}
 
-	isReadback := func(ps sim.PilotSpeech) bool { return ps.Type == av.RadioTransmissionReadback }
-	if idx := slices.IndexFunc(c.bufferedSpeech, isReadback); idx != -1 {
-		// Prefer playing readbacks
-		if err := p.TryEnqueueSpeechMP3(c.bufferedSpeech[idx].MP3, func() {
-			c.awaitingReadback = false
-		}); err == nil {
-			c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
+	// Time to play speech
+	if c.awaitReadbackCallsign != "" {
+		// ; prioritize responses from issued aircraft instructions over cold calls.
+		isResponse := func(ps sim.PilotSpeech) bool { return ps.Callsign == c.awaitReadbackCallsign }
+		if idx := slices.IndexFunc(c.bufferedSpeech, isResponse); idx != -1 {
+			bs := c.bufferedSpeech[idx]
+			if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
+				c.awaitReadbackCallsign = ""
+				c.playingSpeech = false
+				c.holdSpeech = true
+				c.lastTransmissionCallsign = bs.Callsign
+				fmt.Printf("play completed %s @ %s\n", bs.Callsign, time.Now().String())
+				c.lastSpeechHoldTime = time.Now().Add(3 * time.Second / 2)
+			}); err == nil {
+				fmt.Printf("play awaited speech %s at %s\n", bs.Callsign, time.Now().String())
+				c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
+				c.playingSpeech = true
+			}
 		}
-	} else if err := p.TryEnqueueSpeechMP3(c.bufferedSpeech[0].MP3, nil); err == nil {
-		c.bufferedSpeech = c.bufferedSpeech[1:]
+	} else {
+		bs := c.bufferedSpeech[0]
+		if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
+			c.playingSpeech = false
+			c.holdSpeech = true
+			fmt.Printf("play completed %s at %s\n", bs.Callsign, time.Now().String())
+			c.lastTransmissionCallsign = bs.Callsign
+			c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
+		}); err == nil {
+			fmt.Printf("play random speech %s at %s\n", bs.Callsign, time.Now().String())
+			c.bufferedSpeech = c.bufferedSpeech[1:]
+			c.playingSpeech = true
+		}
 	}
 }
 
@@ -564,6 +603,9 @@ func checkTimeout(call *PendingCall, eventStream *sim.EventStream, onErr func(er
 }
 
 func (c *ControlClient) Connected() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	return c.proxy != nil
 }
 
@@ -572,28 +614,27 @@ func (c *ControlClient) GetSerializeSim() (*sim.Sim, error) {
 }
 
 func (c *ControlClient) ToggleSimPause() {
-	c.State.Paused = !c.State.Paused // improve local UI responsiveness
+	c.addCall(makeRPCCall(c.proxy.TogglePause(), nil))
 
-	c.pendingCalls = append(c.pendingCalls, &PendingCall{
-		Call:      c.proxy.TogglePause(),
-		IssueTime: time.Now(),
-	})
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.State.Paused = !c.State.Paused // improve local UI responsiveness
 }
 
 func (c *ControlClient) RequestFlightFollowing() {
-	c.pendingCalls = append(c.pendingCalls, &PendingCall{
-		Call:      c.proxy.RequestFlightFollowing(),
-		IssueTime: time.Now(),
-	})
+	c.addCall(makeRPCCall(c.proxy.RequestFlightFollowing(), nil))
 }
 
 func (c *ControlClient) FastForward() {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.FastForward(&update), &update, nil))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.FastForward(&update), &update, nil))
 }
 
 func (c *ControlClient) GetSimRate() float32 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.State.SimRate == 0 {
 		return 1
 	}
@@ -601,12 +642,20 @@ func (c *ControlClient) GetSimRate() float32 {
 }
 
 func (c *ControlClient) SetSimRate(r float32) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.SetSimRate(r), nil))
+	c.addCall(makeRPCCall(c.proxy.SetSimRate(r), nil))
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	c.State.SimRate = r // so the UI is well-behaved...
 }
 
 func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.SetLaunchConfig(lc), nil))
+	c.addCall(makeRPCCall(c.proxy.SetLaunchConfig(lc), nil))
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	c.State.LaunchConfig = lc // for the UI's benefit...
 }
 
@@ -615,6 +664,9 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 // though they shouldn't cause much trouble since we get an update from the Sim
 // at least once a second...)
 func (c *ControlClient) CurrentTime() time.Time {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	t := c.State.SimTime
 
 	if !c.State.Paused && !c.lastUpdateRequest.IsZero() {
@@ -646,27 +698,32 @@ func (c *ControlClient) CurrentTime() time.Time {
 
 func (c *ControlClient) DeleteAllAircraft(callback func(err error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.DeleteAllAircraft(&update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.DeleteAllAircraft(&update), &update, callback))
 }
 
 func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(err error)) {
 	var update sim.StateUpdate
-	c.pendingCalls = append(c.pendingCalls,
-		makeStateUpdateRPCCall(c.proxy.DeleteAircraft(aircraft, &update), &update, callback))
+	c.addCall(makeStateUpdateRPCCall(c.proxy.DeleteAircraft(aircraft, &update), &update, callback))
 }
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
-	if c.awaitingReadback {
-		c.lg.Errorf("Already awaiting readback!")
+
+	if cmds != "P" && cmds != "X" { // Hack: these don't lead to a readback, so otherwise leave us hung in awaiting-mode.
+		c.mu.Lock()
+
+		if c.awaitReadbackCallsign != "" {
+			c.lg.Errorf("Already awaiting readback for %q, just got %q!", c.awaitReadbackCallsign, callsign)
+		}
+		c.awaitReadbackCallsign = callsign
+
+		c.mu.Unlock()
 	}
-	c.awaitingReadback = true
 
 	var result AircraftCommandsResult
-	c.pendingCalls = append(c.pendingCalls, makeRPCCall(c.proxy.RunAircraftCommands(callsign, cmds, &result),
+	c.addCall(makeRPCCall(c.proxy.RunAircraftCommands(callsign, cmds, &result),
 		func(err error) {
 			if result.RemainingInput == cmds {
-				c.awaitingReadback = false
+				c.awaitReadbackCallsign = ""
 			}
 			handleResult(result.ErrorMessage, result.RemainingInput)
 			if err != nil {
@@ -676,6 +733,9 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 }
 
 func (c *ControlClient) TowerListAirports() []string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	// Figure out airport<-->tower list assignments. Sort the airports
 	// according to their TowerListIndex, putting zero (i.e., unassigned)
 	// indices at the end. Break ties alphabetically by airport name. The
@@ -702,9 +762,37 @@ func (c *ControlClient) TowerListAirports() []string {
 }
 
 func (c *ControlClient) StringIsSPC(s string) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	return av.StringIsSPC(s) || slices.Contains(c.State.STARSFacilityAdaptation.CustomSPCs, s)
 }
 
-func (c *ControlClient) AwaitingReadback() bool {
-	return c.awaitingReadback
+func (c *ControlClient) RadioIsActive() bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	return c.playingSpeech || c.awaitReadbackCallsign != ""
+}
+
+func (c *ControlClient) HoldRadioTransmissions() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.holdSpeech = true
+	c.lastSpeechHoldTime = time.Now().Add(5 * time.Second)
+}
+
+func (c *ControlClient) AllowRadioTransmissions() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.holdSpeech = false
+}
+
+func (c *ControlClient) LastTransmissionCallsign() av.ADSBCallsign {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	return c.lastTransmissionCallsign
 }

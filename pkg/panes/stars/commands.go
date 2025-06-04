@@ -181,13 +181,19 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	}
 	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
 		sp.setCommandMode(ctx, CommandModeTargetGen)
+		ctx.Client.HoldRadioTransmissions()
 		input = input[1:]
 	}
 
-	// Discard TGT GEN text if we're awaiting a readback
-	if ctx.Client.AwaitingReadback() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
-		sp.previewAreaInput = ""
-		input = ""
+	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+		if ctx.Client.RadioIsActive() {
+			// Discard entered TGT GEN text if we're awaiting a readback
+			input = ""
+		} else if input != "" {
+			// As long as text is being entered, hold radio transmissions
+			// for the coming few seconds.
+			ctx.Client.HoldRadioTransmissions()
+		}
 	}
 
 	// Enforce the 32-character-per-line limit
@@ -2430,7 +2436,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
-			suffix = string(sp.targetGenLastCallsign)
+			suffix = string(ctx.Client.LastTransmissionCallsign())
 			cmds = cmd
 		}
 
@@ -2444,9 +2450,9 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		var trk *sim.Track
 		if len(matching) == 1 {
 			trk = matching[0]
-		} else if len(matching) == 0 && sp.targetGenLastCallsign != "" {
+		} else if len(matching) == 0 && ctx.Client.LastTransmissionCallsign() != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
-			trk, _ = ctx.GetTrackByCallsign(sp.targetGenLastCallsign)
+			trk, _ = ctx.GetTrackByCallsign(ctx.Client.LastTransmissionCallsign())
 			// But now we're going to run all of the given input as commands.
 			cmds = cmd
 		}
@@ -2520,7 +2526,6 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 }
 
 func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
-	sp.targetGenLastCallsign = callsign
 	prevMode := sp.commandMode
 
 	ctx.Client.RunAircraftCommands(callsign, cmds,
@@ -4643,6 +4648,12 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
+
+	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+		ctx.Client.HoldRadioTransmissions()
+	} else {
+		ctx.Client.AllowRadioTransmissions()
+	}
 }
 
 func (sp *STARSPane) resetInputState(ctx *panes.Context) {
@@ -4659,6 +4670,8 @@ func (sp *STARSPane) resetInputState(ctx *panes.Context) {
 	sp.activeSpinner = nil
 
 	sp.drawRoutePoints = nil
+
+	ctx.Client.AllowRadioTransmissions()
 
 	ctx.Platform.EndCaptureMouse()
 	ctx.Platform.StopMouseDeltaMode()
