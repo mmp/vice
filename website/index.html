@@ -5345,11 +5345,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
 
             <h3 id="stars-system-lists">System Lists</h3>
             <p>The system lists show various types of useful information in the form of text.  Their font size can be adjusted using the "LISTS" control in the "CHAR SIZE" DCB menu and their brightness is set with "LST" in the "BRITE" DCB menu. 
-            </p>
-            <p><i>vice</i> currently doesn't support two STARS system
-              lists: the VFR List and the Coast/Suspend List; both will be added in the
-              future when the aircraft simulation supports VFR and lost radar
-              tracks. Otherwise, all of the system lists other than ones for CRDA and maps are
+              All of the system lists other than ones for CRDA and maps are
               documented in this section; see the <a href="#crda">CRDA documentation
                 above</a> for information about the CRDA system list and <a href="#stars-video-maps">Video Maps</a>
               for information about the maps system list.</p>
@@ -5489,15 +5485,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
 
-            <h4>Tower List</h4>
+            <h4>VFR List</h4>
 
-            <p>The tower list shows arrivals at an airport. Up to three tower lists can be displayed; each show arriving aircraft sorted by their distance to the airport.  The assignment of airports to tower lists is done by the facility engineer in the scenario specification and can't be changed while <i>vice</i> is running. Here is an example, showing a few arrivals to PHL:</p>
+            <p>The VFR list shows VFR flight plans that have NAS beacon codes assigned.
+              It shows the tab list index, the callsign, and the assigned beacon code.
+              </p>
             <div class="text-center">
-              <img src="tower-system-list.png" srcset="tower-system-list-2x.png 2x" width="136" height="92">
-            </div>
-            <br>
-            <p>The following commands can be used to configure the tower lists. For all of them the first number gives the tower list index and must be 1, 2, or 3.</p>
-              <table class="table table-bordered">
+              <img src="vfr-list.png" srcset="vfr-list-2x.png 2x" width="199" height="43">
+            </div><br>
+            <p>The VFR list is managed with these commands:</p>
+            <table class="table table-bordered">
                 <thead>
                   <tr>
                     <th style="width: 25%;">Command</th>
@@ -5506,19 +5503,51 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[MULTIFUNC]TP(#)</code></td>
-                    <td>Toggles whether the corresponding tower list is shown.</td>
+                    <td><code>[MULTIFUNC]TV</code></td>
+                    <td>Toggles whether the the VFR list is visible.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]TP(#)[SLEW]</code></td>
-                    <td>Places the upper left corner of the given tower list at the slewed point.</td>
+                    <td><code>[MULTIFUNC]TV[SLEW]</code></td>
+                    <td>Places the upper left corner of the VFR list at the slewed point.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]TP(#)(##)</code></td>
-                    <td>Sets how the maximum number of lines of text displayed in the specified tower list. The first number corresponds to the tower list index.</td>
+                    <td><code>[MULTIFUNC]TV(##)</code></td>
+                    <td>Sets how the maximum number of lines of text displayed in the VFR list.
+                      The VFR list is made visible if the number of visible lines is set when it is invisible.</td>
                   </tr>
                 </tbody>
               </table>
+            
+            <h4>Tower List</h4>
+
+            <p>The tower list shows arrivals at an airport. Up to three tower lists can be displayed; each show arriving aircraft sorted by their distance to the airport.  The assignment of airports to tower lists is done by the facility engineer in the scenario specification and can't be changed while <i>vice</i> is running. Here is an example, showing a few arrivals to PHL:</p>
+            <div class="text-center">
+              <img src="tower-system-list.png" srcset="tower-system-list-2x.png 2x" width="136" height="92">
+            </div>
+            <br>
+            <p>The following commands can be used to configure the tower lists. For all of them the first number gives the tower list index and must be 1, 2, or 3.</p>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Command</th>
+                  <th style="width: 75%;">Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>[MULTIFUNC]TP(#)</code></td>
+                  <td>Toggles whether the corresponding tower list is shown.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]TP(#)[SLEW]</code></td>
+                  <td>Places the upper left corner of the given tower list at the slewed point.</td>
+                </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]TP(#)(##)</code></td>
+                  <td>Sets how the maximum number of lines of text displayed in the specified tower list. The first number corresponds to the tower list index.</td>
+                </tr>
+              </tbody>
+            </table>
 
             <h4>Alert List</h4>
 
@@ -5572,7 +5601,35 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                 </tbody>
-                </table>
+              </table>
+              
+            <h4>Coast/Suspend List</h4>
+
+            <p>The coast/suspend list lists coasting tracks (not yet implemented in <i>vice</i>) and suspended flight plans.</p>
+            <div class="text-center">
+              <img src="vfr-list.png" srcset="vfr-list-2x.png 2x" width="199" height="43">
+            </div><br>
+            <p>This list is always visible, but its position and length can be set:</p>
+            <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]TC[SLEW]</code></td>
+                    <td>Places the upper left corner of the Coast/Suspend list at the slewed point.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]TV(##)</code></td>
+                    <td>Sets how the maximum number of lines of text displayed in the Coast/Suspend list.
+                      The list is made visible if the number of visible lines is set when it is invisible.</td>
+                  </tr>
+                </tbody>
+              </table>
+
 
             <h4 id="coordination-lists">Coordination Lists</h4>
 
