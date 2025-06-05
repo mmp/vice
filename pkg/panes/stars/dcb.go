@@ -1159,10 +1159,6 @@ type dcbIntegerRangeSpinner struct {
 	negate   bool
 }
 
-func makeIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
-	return &dcbIntegerRangeSpinner{text: t, value: v, min: min, max: max}
-}
-
 func makeNegatedIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
 	return &dcbIntegerRangeSpinner{text: t, value: v, min: min, max: max, negate: true}
 }

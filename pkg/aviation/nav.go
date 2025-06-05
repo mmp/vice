@@ -1446,14 +1446,13 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 		// Limit the possible range according to the restriction at the
 		// current waypoint.
-		var ok bool
-		altRange, ok = restr.ClampRange(possibleRange)
-		if !ok {
-			//lg.Infof("unable to fulfill altitude restriction at %s: possible %v required %v",
-			// nav.Waypoints[i].Fix, possibleRange, restr.Range)
-			// Keep using altRange, FWIW; it will be clamped to whichever of the
-			// low and high of the restriction's range it is closest to.
-		}
+		altRange, _ = restr.ClampRange(possibleRange)
+		//if !ok {
+		//lg.Infof("unable to fulfill altitude restriction at %s: possible %v required %v",
+		// nav.Waypoints[i].Fix, possibleRange, restr.Range)
+		// Keep using altRange, FWIW; it will be clamped to whichever of the
+		// low and high of the restriction's range it is closest to.
+		//}
 
 		// Reset this so we compute the right eta next time we have a
 		// waypoint with an altitude restriction.

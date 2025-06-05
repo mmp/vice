@@ -24,10 +24,10 @@ type MouseState struct {
 }
 
 const (
-	MouseButtonPrimary   imgui.MouseButton = 0
-	MouseButtonSecondary                   = 1
-	MouseButtonTertiary                    = 2
-	MouseButtonCount                       = 3
+	MouseButtonPrimary imgui.MouseButton = iota
+	MouseButtonSecondary
+	MouseButtonTertiary
+	MouseButtonCount
 )
 
 func (ms *MouseState) SetCursor(id imgui.MouseCursor) {

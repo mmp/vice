@@ -467,12 +467,12 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 					continue
 				}
 
-				if imgui.SelectableBoolV(fmtPosition(pos), pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+				if imgui.SelectableBoolV(fmtPosition(pos), c.SelectedRemoteSimPosition == pos, 0, imgui.Vec2{}) {
 					c.SelectedRemoteSimPosition = pos
 				}
 			}
 
-			if imgui.SelectableBoolV("Observer", "Observer" == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV("Observer", c.SelectedRemoteSimPosition == "Observer", 0, imgui.Vec2{}) {
 				c.SelectedRemoteSimPosition = "Observer"
 			}
 

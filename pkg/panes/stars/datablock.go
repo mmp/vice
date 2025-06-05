@@ -647,7 +647,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 					f1 = formatDBText(db.field1[:], trk.Squawk.String(), color, false)
 				}
 				if who {
-					f1 = formatDBText(db.field1[f1:], "WHO", color, true)
+					formatDBText(db.field1[f1:], "WHO", color, true)
 				} else if trk.Ident {
 					// Field 1: flashing ID after beacon code if ident.
 					formatDBText(db.field1[f1:], "ID", color, true)

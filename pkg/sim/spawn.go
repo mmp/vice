@@ -1259,9 +1259,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 
-	base := math.Max(depap.Elevation, arrap.Elevation)
-	base = 1000 + 1000*(base/1000) // round to 1000s.
-
 	ac.FlightPlan.Altitude = av.PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)
 
