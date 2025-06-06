@@ -78,10 +78,10 @@ func configFilePath(lg *log.Logger) string {
 	return filepath.Join(dir, "config.json")
 }
 
-func (gc *Config) Encode(w io.Writer) error {
+func (c *Config) Encode(w io.Writer) error {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "    ")
-	return enc.Encode(gc)
+	return enc.Encode(c)
 }
 
 func (c *Config) Save(lg *log.Logger) error {
@@ -95,24 +95,24 @@ func (c *Config) Save(lg *log.Logger) error {
 	return c.Encode(f)
 }
 
-func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
-	c *server.ControlClient, saveSim bool, lg *log.Logger) bool {
-	gc.Sim = nil
-	gc.UserTCP = ""
+func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
+	client *server.ControlClient, saveSim bool, lg *log.Logger) bool {
+	c.Sim = nil
+	c.UserTCP = ""
 	if saveSim {
-		if sim, err := c.GetSerializeSim(); err != nil {
+		if sim, err := client.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
-			gc.Sim = sim
-			gc.UserTCP = c.State.UserTCP
+			c.Sim = sim
+			c.UserTCP = client.State.UserTCP
 		}
 	}
 
 	// Grab assorted things that may have changed during this session.
-	gc.ImGuiSettings = imgui.SaveIniSettingsToMemory()
-	gc.InitialWindowSize = platform.WindowSize()
-	gc.InitialWindowPosition = platform.WindowPosition()
-	gc.TFRCache.Sync(100*time.Millisecond, lg)
+	c.ImGuiSettings = imgui.SaveIniSettingsToMemory()
+	c.InitialWindowSize = platform.WindowSize()
+	c.InitialWindowPosition = platform.WindowPosition()
+	c.TFRCache.Sync(100*time.Millisecond, lg)
 
 	fn := configFilePath(lg)
 	onDisk, err := os.ReadFile(fn)
@@ -121,7 +121,7 @@ func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pl
 	}
 
 	var b strings.Builder
-	if err = gc.Encode(&b); err != nil {
+	if err = c.Encode(&b); err != nil {
 		lg.Errorf("%s: unable to encode config: %v", fn, err)
 		return false
 	}
@@ -130,7 +130,7 @@ func (gc *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pl
 		return false
 	}
 
-	if err := gc.Save(lg); err != nil {
+	if err := c.Save(lg); err != nil {
 		ShowErrorDialog(platform, lg, "Error saving configuration file: %v", err)
 	}
 
@@ -209,11 +209,11 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	return
 }
 
-func (gc *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
-	if gc.DisplayRoot == nil {
-		gc.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
+func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+	if c.DisplayRoot == nil {
+		c.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
 			panes.NewFlightStripPane())
 	}
 
-	panes.Activate(gc.DisplayRoot, r, p, eventStream, lg)
+	panes.Activate(c.DisplayRoot, r, p, eventStream, lg)
 }

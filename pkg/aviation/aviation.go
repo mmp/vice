@@ -344,9 +344,12 @@ type FlightStrip struct {
 	Callsign string
 }
 
+/////////////////////////////////////////////////////////////////////////
+// Squawk Codes and SPCs
+
 type Squawk int
 
-func (s Squawk) String() string { return fmt.Sprintf("%04o", s) }
+func (sq Squawk) String() string { return fmt.Sprintf("%04o", sq) }
 
 func ParseSquawk(s string) (Squawk, error) {
 	if len(s) != 4 {
@@ -372,9 +375,6 @@ func ParseSquawkOrBlock(s string) (Squawk, error) {
 	return Squawk(sq), nil
 }
 
-/////////////////////////////////////////////////////////////////////////
-// SPC
-
 // SPC (Special Purpose Code) is a unique beacon code,
 // indicate an emergency or non-standard operation.
 type SPC struct {
@@ -396,8 +396,8 @@ func SquawkIsSPC(squawk Squawk) (ok bool, code string) {
 
 // IsSPC returns true if the given squawk code is an SPC.
 // The second return value is a string giving the two-letter abbreviated SPC it corresponds to.
-func (squawk Squawk) IsSPC() (ok bool, code string) {
-	code, ok = spcs[squawk]
+func (sq Squawk) IsSPC() (ok bool, code string) {
+	code, ok = spcs[sq]
 	return
 }
 
@@ -884,8 +884,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 }
 
-func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
-	if ap, ok := a.RunwayWaypoints[airport]; !ok {
+func (ar Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
+	if ap, ok := ar.RunwayWaypoints[airport]; !ok {
 		return nil
 	} else if wp, ok := ap[rwy]; !ok {
 		return nil

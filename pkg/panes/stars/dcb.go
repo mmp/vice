@@ -1204,9 +1204,9 @@ type dcbAudioVolumeSpinner struct {
 	sp *STARSPane
 }
 
-func (v *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
+func (s *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
 	vs, ok := other.(*dcbAudioVolumeSpinner)
-	return ok && vs.value == v.value
+	return ok && vs.value == s.value
 }
 
 func (s *dcbAudioVolumeSpinner) Delta(delta int) {
