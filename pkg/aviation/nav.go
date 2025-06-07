@@ -69,11 +69,12 @@ type FlightState struct {
 	MagneticVariation float32
 	NmPerLongitude    float32
 
-	Position  math.Point2LL
-	Heading   float32
-	Altitude  float32
-	IAS, GS   float32 // speeds...
-	BankAngle float32 // degrees
+	Position     math.Point2LL
+	Heading      float32
+	Altitude     float32
+	PrevAltitude float32
+	IAS, GS      float32 // speeds...
+	BankAngle    float32 // degrees
 }
 
 func (fs *FlightState) Summary() string {
@@ -469,6 +470,9 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 				" to "+FormatAltitude(tgt)+" from previous crossing restriction")
 		}
 	}
+	if nav.FlightState.Altitude != nav.FlightState.PrevAltitude {
+		lines = append(lines, fmt.Sprintf("Climb rate %.0f ft/minute", 60*(nav.FlightState.Altitude-nav.FlightState.PrevAltitude)))
+	}
 
 	// Heading
 	if nav.Heading.Assigned != nil {
@@ -476,8 +480,8 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 			lines = append(lines, fmt.Sprintf("On assigned %03d heading",
 				int(*nav.Heading.Assigned)))
 		} else {
-			lines = append(lines, fmt.Sprintf("Turning from %03d to assigned %03d heading",
-				int(nav.FlightState.Heading), int(*nav.Heading.Assigned)))
+			lines = append(lines, fmt.Sprintf("Turning from %03d to assigned %03d heading bank angle %d",
+				int(nav.FlightState.Heading), int(*nav.Heading.Assigned), int(nav.FlightState.BankAngle)))
 		}
 	}
 	if dh := nav.DeferredHeading; dh != nil {
@@ -490,6 +494,8 @@ func (nav *Nav) Summary(fp FlightPlan, lg *log.Logger) string {
 
 	// Speed; don't be as exhaustive as we are for altitude
 	targetAltitude, _ := nav.TargetAltitude(lg)
+	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
+		int(nav.FlightState.GS), int(nav.TAS())))
 	ias, _ := nav.TargetSpeed(targetAltitude, lg)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
@@ -729,6 +735,8 @@ func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
 }
 
 func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logger, deltaKts float32, slowingTo250 bool) {
+	nav.FlightState.PrevAltitude = nav.FlightState.Altitude
+
 	if targetAltitude == nav.FlightState.Altitude {
 		if nav.IsAirborne() && nav.FlightState.InitialDepartureClimb {
 			nav.FlightState.InitialDepartureClimb = false
