@@ -80,7 +80,9 @@ func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
 		lastUpdateCall: time.Now(),
 		token:          token,
 	}
+
 	as.controllersByTCP[tcp] = hc
+
 	return hc
 }
 
@@ -272,6 +274,7 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 	instuctor := as.sim.Instructors[as.sim.State.PrimaryController]
 	ss, token, err := sm.signOn(as, as.sim.State.PrimaryController, instuctor)
 	if err != nil {
+		sm.mu.Unlock(sm.lg)
 		return err
 	}
 
@@ -288,9 +291,8 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 	go func() {
 		defer sm.lg.CatchAndReportCrash()
 
-		// Terminate idle Sims after 4 hours, but not unnamed Sims, since
-		// they're local and not running on the server.
 		for !sm.SimShouldExit(as.sim) {
+			// Terminate idle Sims after 4 hours, but not local Sims.
 			if !as.local {
 				// Sign off controllers we haven't heard from in 15 seconds so that
 				// someone else can take their place. We only make this check for
@@ -325,9 +327,10 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 		}
 
 		sm.lg.Infof("%s: terminating sim after %s idle", as.name, as.sim.IdleTime())
+
 		sm.mu.Lock(sm.lg)
-		defer sm.mu.Unlock(sm.lg)
 		delete(sm.activeSims, as.name)
+		sm.mu.Unlock(sm.lg)
 	}()
 
 	*result = NewSimResult{
@@ -518,14 +521,13 @@ func (sm *SimManager) getSimStatus() []simStatus {
 	for _, name := range util.SortedMapKeys(sm.activeSims) {
 		as := sm.activeSims[name]
 		status := simStatus{
-			Name:     name,
-			Config:   as.scenario,
-			IdleTime: as.sim.IdleTime().Round(time.Second),
-			TotalIFR: as.sim.State.TotalIFR,
-			TotalVFR: as.sim.State.TotalVFR,
+			Name:        name,
+			Config:      as.scenario,
+			IdleTime:    as.sim.IdleTime().Round(time.Second),
+			TotalIFR:    as.sim.State.TotalIFR,
+			TotalVFR:    as.sim.State.TotalVFR,
+			Controllers: strings.Join(as.sim.ActiveControllers(), ", "),
 		}
-
-		status.Controllers = strings.Join(as.sim.ActiveControllers(), ", ")
 
 		ss = append(ss, status)
 	}
