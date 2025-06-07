@@ -422,8 +422,6 @@ type VFRReportingPoint struct {
 	Location    math.Point2LL `json:"location"`
 }
 
-var repIndex int
-
 func (rp *VFRReportingPoint) PostDeserialize(loc Locator, controllers map[string]*Controller, e *util.ErrorLogger) {
 	if rp.Description == "" {
 		e.ErrorString("must specify \"description\" with reporting point")

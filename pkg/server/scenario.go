@@ -206,14 +206,8 @@ func (s *Scenario) PostDeserialize(sg *ScenarioGroup, e *util.ErrorLogger, manif
 		} else {
 			activeAirports[ap] = nil
 
-			found := false
-			for _, appr := range ap.Approaches {
-				if appr.Runway == rwy.Runway {
-					found = true
-				}
-			}
-
-			if !found {
+			if !util.SeqContainsFunc(maps.Values(ap.Approaches),
+				func(appr *av.Approach) bool { return appr.Runway == rwy.Runway }) {
 				e.ErrorString("no approach found that reaches this runway")
 			}
 		}

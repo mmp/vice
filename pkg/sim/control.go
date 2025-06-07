@@ -66,22 +66,6 @@ func (s *Sim) dispatchControlledAircraftCommand(tcp string, callsign av.ADSBCall
 		cmd)
 }
 
-// Commands that are allowed by tracking controller only.
-func (s *Sim) dispatchTrackedAircraftCommand(tcp string, callsign av.ADSBCallsign,
-	cmd func(tcp string, ac *Aircraft) []av.RadioTransmission) error {
-	return s.dispatchAircraftCommand(tcp, callsign,
-		func(tcp string, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				return ErrTrackIsNotActive
-			}
-			if ac.STARSFlightPlan.TrackingController != tcp && !s.Instructors[tcp] {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
-		cmd)
-}
-
 // Can issue both to aircraft we track but also unassociated VFRs
 func (s *Sim) dispatchVFRAircraftCommand(tcp string, callsign av.ADSBCallsign,
 	cmd func(tcp string, ac *Aircraft) []av.RadioTransmission) error {

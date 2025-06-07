@@ -402,15 +402,12 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 	if approach == nil {
 		return false
 	}
-	localizer, ok := approach.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-	if !ok {
-		// e.g. charted visual where we don't have a single approach orientation..
-		return false
-	}
+
+	cl := approach.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 	distance := math.PointLineDistance(
 		math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude),
-		math.LL2NM(localizer[0], nav.FlightState.NmPerLongitude),
-		math.LL2NM(localizer[1], nav.FlightState.NmPerLongitude))
+		math.LL2NM(cl[0], nav.FlightState.NmPerLongitude),
+		math.LL2NM(cl[1], nav.FlightState.NmPerLongitude))
 
 	return distance < maxNmDeviation
 }
@@ -1120,13 +1117,13 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 	case InitialHeading:
 		// On a heading. Is it time to turn?  Allow a lot of slop, but just
 		// fly through the localizer if it's too sharp an intercept
-		hdg, _ := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		hdg := ap.RunwayHeading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		if d := math.HeadingDifference(hdg, nav.FlightState.Heading); d > 45 {
 			lg.Infof("heading: difference %.0f too much to intercept", d)
 			return
 		}
 
-		loc, _ := ap.Line(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		loc := ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wind, lg) {
 			lg.Debugf("heading: time to turn for approach heading %.1f", hdg)
@@ -1154,7 +1151,7 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 		// fixes in the approach are still ahead and then add them to
 		// the aircraft's waypoints.
 		lg.Debugf("heading: intercepted the approach!")
-		apHeading, _ := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		apHeading := ap.RunwayHeading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		wps, idx := ap.FAFSegment(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		for idx > 0 {
@@ -1162,7 +1159,7 @@ func (nav *Nav) ApproachHeading(wind WindModel, lg *log.Logger) (heading float32
 			hdg := math.Heading2LL(prev.Location, wps[idx].Location,
 				nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
-			if math.HeadingDifference(hdg, apHeading) > 1 { // not on the final approach course
+			if math.HeadingDifference(hdg, apHeading) > 5 { // not on the final approach course
 				break
 			}
 
@@ -1438,14 +1435,13 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 
 		// Limit the possible range according to the restriction at the
 		// current waypoint.
-		var ok bool
-		altRange, ok = restr.ClampRange(possibleRange)
-		if !ok {
-			//lg.Infof("unable to fulfill altitude restriction at %s: possible %v required %v",
-			// nav.Waypoints[i].Fix, possibleRange, restr.Range)
-			// Keep using altRange, FWIW; it will be clamped to whichever of the
-			// low and high of the restriction's range it is closest to.
-		}
+		altRange, _ = restr.ClampRange(possibleRange)
+		//if !ok {
+		//lg.Infof("unable to fulfill altitude restriction at %s: possible %v required %v",
+		// nav.Waypoints[i].Fix, possibleRange, restr.Range)
+		// Keep using altRange, FWIW; it will be clamped to whichever of the
+		// low and high of the restriction's range it is closest to.
+		//}
 
 		// Reset this so we compute the right eta next time we have a
 		// waypoint with an altitude restriction.
@@ -1930,6 +1926,8 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0, p1)
 	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
+	//fmt.Printf("initial dist %f eta %f ", initialDist, eta)
+	//defer fmt.Printf("\n")
 	if eta < 2 {
 		// Just in case, start the turn
 		return true
@@ -1937,7 +1935,8 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 
 	// As above, don't consider starting the turn if we're far away.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	if turnAngle/2 < eta {
+	//fmt.Printf("turn angle %f ", turnAngle)
+	if turnAngle < eta {
 		return false
 	}
 
@@ -1946,11 +1945,17 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 	nav2.DeferredHeading = nil
 	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
 
-	n := int(1 + turnAngle/3)
+	n := int(1 + turnAngle)
+	//fmt.Printf("n sim %d: ", n)
 	for i := 0; i < n; i++ {
 		nav2.Update(wind, nil, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
-		if math.Sign(initialDist) != math.Sign(curDist) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < 3.5 {
+		//fmt.Printf("%d: curDist %f ", i, curDist)
+		//if math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist) {
+		//fmt.Printf("heading diff %f -> %f = %f ", hdg, nav2.FlightState.Heading, math.HeadingDifference(hdg, nav2.FlightState.Heading))
+		//}
+		if (math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist)) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < 10 {
+			//fmt.Printf("turn!")
 			lg.Debugf("turning now to intercept radial in %d seconds", i)
 			return true
 		}
@@ -2563,12 +2568,6 @@ func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (PilotTransm
 	// Charted visual is special in all sorts of ways
 	if ap.Type == ChartedVisualApproach {
 		return nav.prepareForChartedVisual()
-	} else {
-		// Otherwise we expect it to be able to return a final approach heading (and also ap.Line);
-		// just check that once here so we don't spam the logs if this is an issue
-		if _, ok := ap.Heading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation); !ok {
-			lg.Warnf("%s (%s): no heading for approach?", ap.Id, ap.FullName)
-		}
 	}
 
 	directApproachFix := false

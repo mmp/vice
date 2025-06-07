@@ -600,7 +600,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
-		if assignment.IsSet == false || assignment.Get() == "" {
+		if !assignment.IsSet || assignment.Get() == "" {
 			sq, err := nasPool.Get(rand.Make())
 			return sq, rules, err
 		} else {

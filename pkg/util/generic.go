@@ -470,7 +470,7 @@ func SeqMaxIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weigh
 			}
 		}
 	}
-	return idx, first == false
+	return idx, !first
 }
 
 func SeqMinIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
@@ -487,7 +487,7 @@ func SeqMinIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weigh
 			}
 		}
 	}
-	return idx, first == false
+	return idx, !first
 }
 
 func MapSeq[T, U any](seq iter.Seq[T], f func(T) U) iter.Seq[U] {

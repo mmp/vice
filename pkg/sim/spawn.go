@@ -844,48 +844,48 @@ func (s *Sim) cullDepartures(keep int, d []DepartureAircraft) []DepartureAircraf
 	return d[:keep]
 }
 
-func (d *RunwayLaunchState) cullDepartures(s *Sim) {
-	keep := int(d.IFRSpawnRate+d.VFRSpawnRate) / 6
-	d.Gate = s.cullDepartures(keep, d.Gate)
-	d.Held = s.cullDepartures(keep, d.Held)
-	d.ReleasedIFR = s.cullDepartures(keep, d.ReleasedIFR)
-	d.ReleasedVFR = s.cullDepartures(keep, d.ReleasedVFR)
-	d.Sequenced = s.cullDepartures(keep, d.Sequenced)
+func (rls *RunwayLaunchState) cullDepartures(s *Sim) {
+	keep := int(rls.IFRSpawnRate+rls.VFRSpawnRate) / 6
+	rls.Gate = s.cullDepartures(keep, rls.Gate)
+	rls.Held = s.cullDepartures(keep, rls.Held)
+	rls.ReleasedIFR = s.cullDepartures(keep, rls.ReleasedIFR)
+	rls.ReleasedVFR = s.cullDepartures(keep, rls.ReleasedVFR)
+	rls.Sequenced = s.cullDepartures(keep, rls.Sequenced)
 }
 
-func (d *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
-	if r == d.IFRSpawnRate {
+func (rls *RunwayLaunchState) setIFRRate(s *Sim, r float32) {
+	if r == rls.IFRSpawnRate {
 		return
 	}
-	d.IFRSpawnRate = r
-	d.NextIFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
-	d.cullDepartures(s)
+	rls.IFRSpawnRate = r
+	rls.NextIFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
+	rls.cullDepartures(s)
 }
 
-func (d *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
-	if r == d.VFRSpawnRate {
+func (rls *RunwayLaunchState) setVFRRate(s *Sim, r float32) {
+	if r == rls.VFRSpawnRate {
 		return
 	}
-	d.VFRSpawnRate = r
-	d.NextVFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
-	d.cullDepartures(s)
+	rls.VFRSpawnRate = r
+	rls.NextVFRSpawn = s.State.SimTime.Add(randomInitialWait(r, s.Rand))
+	rls.cullDepartures(s)
 }
 
-func (r RunwayLaunchState) Dump(airport string, runway string, now time.Time) {
+func (rls RunwayLaunchState) Dump(airport string, runway string, now time.Time) {
 	callsign := func(dep DepartureAircraft) string {
 		return string(dep.ADSBCallsign)
 	}
 	fmt.Printf("%s/%s: Gate %s Held %s Released IFR %s Released VFR %s Sequence %s\n", airport, runway,
-		strings.Join(util.MapSlice(r.Gate, callsign), ", "),
-		strings.Join(util.MapSlice(r.Held, callsign), ", "),
-		strings.Join(util.MapSlice(r.ReleasedIFR, callsign), ", "),
-		strings.Join(util.MapSlice(r.ReleasedVFR, callsign), ", "),
-		strings.Join(util.MapSlice(r.Sequenced, callsign), ", "))
-	if r.IFRSpawnRate > 0 {
-		fmt.Printf("    next IFR in %s, rate %f\n", r.NextIFRSpawn.Sub(now), r.IFRSpawnRate)
+		strings.Join(util.MapSlice(rls.Gate, callsign), ", "),
+		strings.Join(util.MapSlice(rls.Held, callsign), ", "),
+		strings.Join(util.MapSlice(rls.ReleasedIFR, callsign), ", "),
+		strings.Join(util.MapSlice(rls.ReleasedVFR, callsign), ", "),
+		strings.Join(util.MapSlice(rls.Sequenced, callsign), ", "))
+	if rls.IFRSpawnRate > 0 {
+		fmt.Printf("    next IFR in %s, rate %f\n", rls.NextIFRSpawn.Sub(now), rls.IFRSpawnRate)
 	}
-	if r.VFRSpawnRate > 0 {
-		fmt.Printf("    next VFR in %s, rate %f\n", r.NextVFRSpawn.Sub(now), r.VFRSpawnRate)
+	if rls.VFRSpawnRate > 0 {
+		fmt.Printf("    next VFR in %s, rate %f\n", rls.NextVFRSpawn.Sub(now), rls.VFRSpawnRate)
 	}
 }
 
@@ -1258,9 +1258,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	}
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
-
-	base := math.Max(depap.Elevation, arrap.Elevation)
-	base = 1000 + 1000*(base/1000) // round to 1000s.
 
 	ac.FlightPlan.Altitude = av.PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)

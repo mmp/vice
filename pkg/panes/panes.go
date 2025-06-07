@@ -181,7 +181,7 @@ func UnmarshalPane(paneType string, data []byte) (Pane, error) {
 type EmptyPane struct {
 	// Empty struct types may all have the same address, which breaks
 	// assorted assumptions elsewhere in the system....
-	wtfgo int
+	Wtfgo int
 }
 
 func NewEmptyPane() *EmptyPane { return &EmptyPane{} }

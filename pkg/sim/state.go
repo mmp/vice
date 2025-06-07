@@ -268,24 +268,24 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 	return ss
 }
 
-func (s *State) GetStateForController(tcp string) *State {
+func (ss *State) GetStateForController(tcp string) *State {
 	// Make a deep copy so that if the server is running on the same
 	// system, that the client doesn't see updates until they're explicitly
 	// sent. (And similarly, that any speculative client changes to the
 	// World state to improve responsiveness don't actually affect the
 	// server.)
-	state := deep.MustCopy(*s)
+	state := deep.MustCopy(*ss)
 	state.UserTCP = tcp
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := s.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
+	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
 	} else {
-		state.ControllerVideoMaps = s.STARSFacilityAdaptation.VideoMapNames
-		state.ControllerDefaultVideoMaps = s.ScenarioDefaultVideoMaps
-		state.ControllerMonitoredBeaconCodeBlocks = s.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
+		state.ControllerVideoMaps = ss.STARSFacilityAdaptation.VideoMapNames
+		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
+		state.ControllerMonitoredBeaconCodeBlocks = ss.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
 	}
 
 	return &state
