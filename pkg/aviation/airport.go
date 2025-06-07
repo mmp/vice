@@ -9,7 +9,6 @@ import (
 	"iter"
 	"maps"
 	"slices"
-	"strconv"
 	"strings"
 	"unicode"
 
@@ -239,10 +238,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					appr.Runway = dbAppr.Runway
 				}
 
-				if appr.ApproachHeading == 0 {
-					appr.ApproachHeading = dbAppr.ApproachHeading
-				}
-
 				// This is a little hacky, but we'll duplicate the waypoint
 				// arrays since later we e.g., append a waypoint for the
 				// runway threshold.  This leads to errors if a CIFP
@@ -266,6 +261,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		if !ok {
 			e.ErrorString("\"runway\" %q is unknown. Options: %s", appr.Runway,
 				DB.Airports[icao].ValidRunways())
+		}
+		appr.Threshold = rwy.Threshold
+
+		if opp, ok := LookupOppositeRunway(icao, appr.Runway); ok {
+			appr.OppositeThreshold = opp.Threshold
+		} else {
+			e.ErrorString("no opposite runway found for %q\n", appr.Runway)
 		}
 
 		for i := range appr.Waypoints {
@@ -803,20 +805,17 @@ type Approach struct {
 	Type      ApproachType    `json:"type"`
 	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
-	// Note: this isn't currently documented; currently it's only set when
-	// we have a canonical value from the CIFP.
-	ApproachHeading float32 `json:"approach_heading"`
+
+	// Set in Airport PostDeserialize()
+	Threshold         math.Point2LL
+	OppositeThreshold math.Point2LL
 }
 
 // Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
 func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Waypoint, int) {
 	// For approaches with multiple segments, want the segment that is most
-	// closely aligned with the runway. For CIFP routes, we could grab
-	// 5.26, outbound magnetic course, but we don't have that for
-	// user-specified routes. So we'll work out the approximate runway
-	// heading from the runway string and match that one.
-	rwy, _ := strconv.Atoi(strings.TrimRight(ap.Runway, "LRC")) // Not sure what can be done for error handling here...
-	rwy *= 10
+	// closely aligned with the runway.
+	rwyHdg := ap.RunwayHeading(nmPerLongitude, magneticVariation)
 
 	bestWpsIdx, bestWpsFAFIdx := -1, -1
 	minDiff := float32(360)
@@ -841,7 +840,7 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 
 		hdg := math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude, magneticVariation)
 
-		diff := math.HeadingDifference(hdg, float32(rwy))
+		diff := math.HeadingDifference(hdg, rwyHdg)
 		if diff < minDiff {
 			minDiff = diff
 			bestWpsIdx = i
@@ -857,33 +856,10 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 	}
 }
 
-func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) ([2]math.Point2LL, bool) {
-	if ap.ApproachHeading != 0 {
-		for _, wps := range ap.Waypoints {
-			if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF }); idx != -1 {
-				// Found the FAF
-				return [2]math.Point2LL{wps[idx].Location,
-					math.Offset2LL(wps[idx].Location, ap.ApproachHeading, 1, nmPerLongitude, magneticVariation)}, true
-			}
-		}
-	}
-
-	if wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation); wps == nil {
-		// No FAF; this can happen with charted visual
-		return [2]math.Point2LL{}, false
-	} else {
-		return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}, true
-	}
+func (ap *Approach) ExtendedCenterline(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+	return [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
 }
 
-func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) (float32, bool) {
-	if ap.ApproachHeading != 0 {
-		return ap.ApproachHeading, true
-	}
-
-	if p, ok := ap.Line(nmPerLongitude, magneticVariation); !ok {
-		return 0, false
-	} else {
-		return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation), true
-	}
+func (ap *Approach) RunwayHeading(nmPerLongitude, magneticVariation float32) float32 {
+	return math.Heading2LL(ap.Threshold, ap.OppositeThreshold, nmPerLongitude, magneticVariation)
 }
