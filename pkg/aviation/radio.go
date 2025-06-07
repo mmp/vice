@@ -764,7 +764,11 @@ func (CallsignPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 		tel = tel2
 	}
 
-	cs := tel + " " + sayFlightNumber(fnum) + suffix + heavySuper(ac)
+	cs := tel + " " + sayFlightNumber(fnum) + suffix
+	if r.Bool() {
+		// Pilots don't always read back heavy/super
+		cs += heavySuper(ac)
+	}
 
 	return cs
 }
