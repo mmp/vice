@@ -19,6 +19,9 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+// These all store a mapping from written text to phonetic pronunciations that work better with
+// voice synthesis. For the ones with arrays as map values, one of the items is randomly
+// selected when one is needed.
 var (
 	sayAirportMap map[string][]string
 	sayACTypeMap  map[string][]string
@@ -105,28 +108,38 @@ func (f Frequency) String() string {
 ///////////////////////////////////////////////////////////////////////////
 // PilotTransmission
 
+// PilotTransmission holds components that together represent a single
+// radio transmission by a pilot; they may be built up from multiple
+// instructions provided in a single controller command.
 type PilotTransmission struct {
 	Strings    []PhraseFormatString
-	Args       [][]any
-	Unexpected bool // should it be highlighted in the UI
+	Args       [][]any // each slice contains values passed to the corresponding PhraseFormatString
+	Unexpected bool    // should it be highlighted in the UI
 }
 
+// MakePilotTransmission is a helper function to make a pilot transmission
+// from a single formatting string and set of arguments.
 func MakePilotTransmission(s string, args ...any) PilotTransmission {
 	pr := PilotTransmission{}
 	pr.Add(s, args...)
 	return pr
 }
 
+// MakeUnexpectedPilotTransmission similarly makes a single pilot
+// transmission from the provided format string and arguments, but also
+// marks the transmission as unexpected.
 func MakeUnexpectedPilotTransmission(s string, args ...any) PilotTransmission {
 	pr := PilotTransmission{Unexpected: true}
 	pr.Add(s, args...)
 	return pr
 }
 
-func (pr *PilotTransmission) Merge(p PilotTransmission) {
-	pr.Strings = append(pr.Strings, p.Strings...)
-	pr.Args = append(pr.Args, p.Args...)
-	pr.Unexpected = pr.Unexpected || p.Unexpected
+// Merge takes a separately-constructed PilotTransmission and merges its
+// contents with the current one.
+func (pt *PilotTransmission) Merge(p PilotTransmission) {
+	pt.Strings = append(pt.Strings, p.Strings...)
+	pt.Args = append(pt.Args, p.Args...)
+	pt.Unexpected = pt.Unexpected || p.Unexpected
 }
 
 // given a string of the form "hello [you|there] I'm [me|myself]", resolveStringOptions
@@ -158,31 +171,47 @@ func resolveStringOptions(s string, r *rand.Rand) string {
 	return result.String()
 }
 
-func (pr *PilotTransmission) Validate(lg *log.Logger) bool {
-	return true
+// Validate ensures that the types of arguments match with the formatting
+// directives in the PhraseFormatStrings; errors are logged to the provided
+// logger.
+func (pt *PilotTransmission) Validate(lg *log.Logger) {
+	if len(pt.Strings) != len(pt.Args) {
+		lg.Errorf("Mismatching len(Strings) %d and len(Args) %d", len(pt.Strings), len(pt.Args))
+		return
+	}
+	for i := range pt.Strings {
+		pt.Strings[i].Validate(pt.Args[i], lg)
+	}
 }
 
-func (pr *PilotTransmission) Add(s string, args ...any) {
-	pr.Strings = append(pr.Strings, PhraseFormatString(s))
-	pr.Args = append(pr.Args, args)
+// Add is a convenience function to add a transmission snippet to the PilotTransmission.
+// It's more or less equivalent to calling Merge(MakePilotTransmission(...)).
+func (pt *PilotTransmission) Add(s string, args ...any) {
+	pt.Strings = append(pt.Strings, PhraseFormatString(s))
+	pt.Args = append(pt.Args, args)
 }
 
-func (pr PilotTransmission) Spoken(r *rand.Rand) string {
+// Spoken returns a string corresponding to how the transmission should be
+// spoken, which appropriate phonetic substitutions made (e.g. "9" ->
+// "niner").
+func (pt PilotTransmission) Spoken(r *rand.Rand) string {
 	var result []string
 
-	for i := range pr.Strings {
-		s := pr.Strings[i].Spoken(r, pr.Args[i]...)
+	for i := range pt.Strings {
+		s := pt.Strings[i].Spoken(r, pt.Args[i]...)
 		result = append(result, s)
 	}
 
 	return strings.Join(result, " ")
 }
 
-func (pr PilotTransmission) Written(r *rand.Rand) string {
+// Written returns a string corresponding to how the transmission should be
+// displayed as text on the screen.
+func (pt PilotTransmission) Written(r *rand.Rand) string {
 	var result []string
 
-	for i := range pr.Strings {
-		s := pr.Strings[i].Written(r, pr.Args[i]...)
+	for i := range pt.Strings {
+		s := pt.Strings[i].Written(r, pt.Args[i]...)
 		result = append(result, s)
 	}
 
@@ -190,35 +219,45 @@ func (pr PilotTransmission) Written(r *rand.Rand) string {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// PhraseFormatter
+// TransmissionSnippetFormatter
 
-type PhraseFormatter interface {
+// TransmissionSnippetFormatter defines an interface for formatting short
+// text snippets corresponding to various aviation-related concepts into
+// both speech and text. Each is takes a single value specifying the value
+// of the corresponding thing (altitude, speed, etc.)
+type TransmissionSnippetFormatter interface {
+	// Written
 	Written(arg any) string
 	Spoken(r *rand.Rand, arg any) string
 	Validate(arg any) error
 }
 
 var (
+	// Snippets are provided by the user with formatting directives enclosed in braces;
+	// this regular expression is used for extracting them from strings.
 	fmtRE = regexp.MustCompile(`\{(.*?)\}`)
 
-	phraseFormats map[string]PhraseFormatter = map[string]PhraseFormatter{
-		"actrl":    &AppControllerPhraseFormatter{},
-		"actype":   &AircraftTypePhraseFormatter{},
-		"airport":  &AirportPhraseFormatter{},
-		"alt":      &AltPhraseFormatter{},
-		"appr":     &ApproachPhraseFormatter{},
-		"beacon":   &BeaconCodePhraseFormatter{},
-		"callsign": &CallsignPhraseFormatter{},
-		"ch":       &LetterPhraseFormatter{},
-		"dctrl":    &DepControllerPhraseFormatter{},
-		"fix":      &FixPhraseFormatter{},
-		"freq":     &FrequencyPhraseFormatter{},
-		"gf":       &GroupFormPhraseFormatter{},
-		"hdg":      &HeadingPhraseFormatter{},
-		"num":      &BasicNumberPhraseFormatter{},
-		"sid":      &SIDPhraseFormatter{},
-		"spd":      &SpeedPhraseFormatter{},
-		"star":     &STARPhraseFormatter{},
+	// phraseFormats stores associates all of the formatting strings with
+	// TransmissionSnippetFormatter implementations. The map keys specify
+	// the associated formatting strings.
+	phraseFormats map[string]TransmissionSnippetFormatter = map[string]TransmissionSnippetFormatter{
+		"actrl":    &AppControllerSnippetFormatter{},
+		"actype":   &AircraftTypeSnippetFormatter{},
+		"airport":  &AirportSnippetFormatter{},
+		"alt":      &AltSnippetFormatter{},
+		"appr":     &ApproachSnippetFormatter{},
+		"beacon":   &BeaconCodeSnippetFormatter{},
+		"callsign": &CallsignSnippetFormatter{},
+		"ch":       &LetterSnippetFormatter{},
+		"dctrl":    &DepControllerSnippetFormatter{},
+		"fix":      &FixSnippetFormatter{},
+		"freq":     &FrequencySnippetFormatter{},
+		"gf":       &GroupFormSnippetFormatter{},
+		"hdg":      &HeadingSnippetFormatter{},
+		"num":      &BasicNumberSnippetFormatter{},
+		"sid":      &SIDSnippetFormatter{},
+		"spd":      &SpeedSnippetFormatter{},
+		"star":     &STARSnippetFormatter{},
 	}
 )
 
@@ -234,7 +273,7 @@ func (s PhraseFormatString) Written(r *rand.Rand, args ...any) string {
 
 	i := 0
 	var result bytes.Buffer
-	s.resolveFormatting(func(fmt PhraseFormatter) {
+	s.resolveFormatting(func(fmt TransmissionSnippetFormatter) {
 		result.WriteString(fmt.Written(args[i]))
 		i++
 	}, func(ch rune) {
@@ -248,12 +287,8 @@ func (s PhraseFormatString) Spoken(r *rand.Rand, args ...any) string {
 
 	var result bytes.Buffer
 	arg := 0
-	s.resolveFormatting(func(f PhraseFormatter) {
-		if args[arg] == nil {
-			result.WriteRune('\x00') // will split on this in calling code (should only happen in GetAllSpeechSnippets()...)
-		} else {
-			result.WriteString(f.Spoken(r, args[arg]))
-		}
+	s.resolveFormatting(func(f TransmissionSnippetFormatter) {
+		result.WriteString(f.Spoken(r, args[arg]))
 		arg++
 	}, func(ch rune) {
 		result.WriteRune(ch)
@@ -262,7 +297,10 @@ func (s PhraseFormatString) Spoken(r *rand.Rand, args ...any) string {
 	return result.String()
 }
 
-func (s PhraseFormatString) resolveFormatting(fmt func(PhraseFormatter), c func(rune)) {
+func (s PhraseFormatString) Validate(args []any, lg *log.Logger) {
+}
+
+func (s PhraseFormatString) resolveFormatting(fmt func(TransmissionSnippetFormatter), c func(rune)) {
 	braceIndex := 0
 	foundBrace := false
 
@@ -302,6 +340,8 @@ func sayDigit(n int) string {
 		"seven", "eight", "niner"}[n]
 }
 
+// Returns a string that says the digits of v individually, with leading
+// "zero"s as needed to ensure that n digits are spoken.
 func sayDigits(v, n int) string {
 	var d []string
 	for v != 0 {
@@ -314,31 +354,32 @@ func sayDigits(v, n int) string {
 	return strings.Join(d, " ")
 }
 
+// Returns a string that corresponds to saying the given number in group form.
 func groupForm(v int) string {
-	var gf []string
-	if v == 100 {
-		return "one hundred"
-	}
-	if v > 100 {
-		gf = append(gf, fmt.Sprintf("%d", v/100))
-		v %= 100
-		if v >= 10 {
-			gf = append(gf, fmt.Sprintf("%d", v))
-		} else {
-			gf = append(gf, "zero", fmt.Sprintf("%d", v))
-		}
+	if v < 10 {
+		return sayDigit(v)
+	} else if v < 100 {
+		return strconv.Itoa(v)
+	} else if (v%100) == 0 && v < 1000 {
+		return sayDigit(v/100) + " hundred"
 	} else {
-		gf = append(gf, fmt.Sprintf("%d", v))
+		gf := groupForm(v / 100)
+		v = v % 100
+		if v < 10 {
+			return gf + " zero " + sayDigit(v)
+		} else {
+			return gf + " " + strconv.Itoa(v)
+		}
 	}
-	return strings.Join(gf, " ")
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// AltPhraseFormatter
+// AltSnippetFormatter
 
-type AltPhraseFormatter struct{}
+// AltSnippetFormatter formats altitudes, which may be given as ints or float32s.
+type AltSnippetFormatter struct{}
 
-func (a *AltPhraseFormatter) Written(arg any) string {
+func (a *AltSnippetFormatter) Written(arg any) string {
 	if alt, ok := arg.(float32); ok {
 		return FormatAltitude(alt)
 	} else if alt, ok := arg.(int); ok {
@@ -348,7 +389,7 @@ func (a *AltPhraseFormatter) Written(arg any) string {
 	}
 }
 
-func (a *AltPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (a *AltSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	alt, ok := arg.(int)
 	if !ok {
 		alt = int(arg.(float32))
@@ -358,15 +399,9 @@ func (a *AltPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	if alt >= 18000 {
 		// flight levels
 		fl := alt / 100
-		if r.Bool() {
-			return "flight level " + sayDigits(fl, 0)
-		} else {
-			// group form
-			hu, tens := fl/100, fl%100
-			return fmt.Sprintf("flight level %d %d", hu, tens)
-		}
+		return "flight level " + sayDigits(fl, 0)
 	} else if alt < 1000 {
-		return fmt.Sprintf("%d hundred", alt/100)
+		return sayDigit(alt/100) + " hundred"
 	} else {
 		th := alt / 1000
 		hu := (alt % 1000) / 100
@@ -388,7 +423,7 @@ func (a *AltPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (a *AltPhraseFormatter) Validate(arg any) error {
+func (a *AltSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(float32); !ok {
 		if _, ok := arg.(int); !ok {
 			return fmt.Errorf("expected int or float32 arg, got %T", arg)
@@ -398,15 +433,15 @@ func (a *AltPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// ApproachPhraseFormatter
+// ApproachSnippetFormatter
 
-type ApproachPhraseFormatter struct{}
+type ApproachSnippetFormatter struct{}
 
-func (ApproachPhraseFormatter) Written(arg any) string {
+func (ApproachSnippetFormatter) Written(arg any) string {
 	return arg.(string)
 }
 
-func (ApproachPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (ApproachSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	appr := arg.(string)
 
 	var result []string
@@ -451,7 +486,7 @@ func (ApproachPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	return strings.Join(result, " ")
 }
 
-func (ApproachPhraseFormatter) Validate(arg any) error {
+func (ApproachSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
@@ -459,17 +494,17 @@ func (ApproachPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// AirportPhraseFormatter
+// AirportSnippetFormatter
 
-type AirportPhraseFormatter struct{}
+type AirportSnippetFormatter struct{}
 
-func (AirportPhraseFormatter) Written(arg any) string {
+func (AirportSnippetFormatter) Written(arg any) string {
 	return arg.(string)
 }
 
 var trailingParenRe = regexp.MustCompile(`^(.*) \([^)]+\)$`)
 
-func (AirportPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	icao := arg.(string)
 	if opts, ok := sayAirportMap[icao]; ok && len(opts) > 0 {
 		ap, _ := rand.SampleSeq(r, slices.Values(opts))
@@ -497,7 +532,7 @@ func (AirportPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (AirportPhraseFormatter) Validate(arg any) error {
+func (AirportSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
@@ -505,9 +540,9 @@ func (AirportPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// DepControllerPhraseFormatter
+// DepControllerSnippetFormatter
 
-type DepControllerPhraseFormatter struct{}
+type DepControllerSnippetFormatter struct{}
 
 func shortenController(n string) string {
 	n = strings.ToLower(n)
@@ -519,14 +554,14 @@ func shortenController(n string) string {
 	return n
 }
 
-func (DepControllerPhraseFormatter) Written(arg any) string {
+func (DepControllerSnippetFormatter) Written(arg any) string {
 	n := arg.(*Controller).RadioName
 	n = strings.ReplaceAll(n, "Approach", "Departure")
 	n = strings.ReplaceAll(n, "approach", "departure")
 	return n
 }
 
-func (DepControllerPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (DepControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	n := arg.(*Controller).RadioName
 	n = strings.ReplaceAll(n, "Approach", "Departure")
 	n = strings.ReplaceAll(n, "approach", "departure")
@@ -537,7 +572,7 @@ func (DepControllerPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (DepControllerPhraseFormatter) Validate(arg any) error {
+func (DepControllerSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(*Controller); !ok {
 		return fmt.Errorf("expected *Controller arg, got %T", arg)
 	}
@@ -545,18 +580,18 @@ func (DepControllerPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// AppControllerPhraseFormatter
+// AppControllerSnippetFormatter
 
-type AppControllerPhraseFormatter struct{}
+type AppControllerSnippetFormatter struct{}
 
-func (AppControllerPhraseFormatter) Written(arg any) string {
+func (AppControllerSnippetFormatter) Written(arg any) string {
 	n := arg.(*Controller).RadioName
 	n = strings.ReplaceAll(n, "Departure", "Approach")
 	n = strings.ReplaceAll(n, "departure", "approach")
 	return n
 }
 
-func (AppControllerPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (AppControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	n := arg.(*Controller).RadioName
 	n = strings.ReplaceAll(n, "Departure", "Approach")
 	n = strings.ReplaceAll(n, "departure", "approach")
@@ -567,7 +602,7 @@ func (AppControllerPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (AppControllerPhraseFormatter) Validate(arg any) error {
+func (AppControllerSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(*Controller); !ok {
 		return fmt.Errorf("expected *Controller arg, got %T", arg)
 	}
@@ -575,11 +610,11 @@ func (AppControllerPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SpeedPhraseFormatter
+// SpeedSnippetFormatter
 
-type SpeedPhraseFormatter struct{}
+type SpeedSnippetFormatter struct{}
 
-func (SpeedPhraseFormatter) Written(arg any) string {
+func (SpeedSnippetFormatter) Written(arg any) string {
 	spd, ok := arg.(int)
 	if !ok {
 		spd = int(arg.(float32))
@@ -587,7 +622,7 @@ func (SpeedPhraseFormatter) Written(arg any) string {
 	return fmt.Sprintf("%d knots", spd)
 }
 
-func (SpeedPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (SpeedSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	spd, ok := arg.(int)
 	if !ok {
 		spd = int(arg.(float32))
@@ -601,7 +636,7 @@ func (SpeedPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (SpeedPhraseFormatter) Validate(arg any) error {
+func (SpeedSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(int); !ok {
 		if _, ok := arg.(float32); !ok {
 			return fmt.Errorf("expected int or float32 arg, got %T", arg)
@@ -611,11 +646,11 @@ func (SpeedPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// FixPhraseFormatter
+// FixSnippetFormatter
 
-type FixPhraseFormatter struct{}
+type FixSnippetFormatter struct{}
 
-func (FixPhraseFormatter) Written(arg any) string {
+func (FixSnippetFormatter) Written(arg any) string {
 	fix := arg.(string)
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
@@ -628,7 +663,7 @@ func (FixPhraseFormatter) Written(arg any) string {
 	return fix
 }
 
-func (f FixPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (f FixSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	fix := arg.(string)
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
@@ -642,7 +677,7 @@ func (f FixPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (FixPhraseFormatter) Validate(arg any) error {
+func (FixSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
@@ -650,11 +685,11 @@ func (FixPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// HeadingPhraseFormatter
+// HeadingSnippetFormatter
 
-type HeadingPhraseFormatter struct{}
+type HeadingSnippetFormatter struct{}
 
-func (HeadingPhraseFormatter) Written(arg any) string {
+func (HeadingSnippetFormatter) Written(arg any) string {
 	hdg, ok := arg.(int)
 	if !ok {
 		hdg = int(arg.(float32))
@@ -662,7 +697,7 @@ func (HeadingPhraseFormatter) Written(arg any) string {
 	return fmt.Sprintf("%03d", hdg)
 }
 
-func (HeadingPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (HeadingSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	hdg, ok := arg.(int)
 	if !ok {
 		hdg = int(arg.(float32))
@@ -675,7 +710,7 @@ func (HeadingPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (HeadingPhraseFormatter) Validate(arg any) error {
+func (HeadingSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(int); !ok {
 		if _, ok := arg.(float32); !ok {
 			return fmt.Errorf("expected int/float32 arg, got %T", arg)
@@ -685,11 +720,11 @@ func (HeadingPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// BasicNumberPhraseFormatter
+// BasicNumberSnippetFormatter
 
-type BasicNumberPhraseFormatter struct{}
+type BasicNumberSnippetFormatter struct{}
 
-func (BasicNumberPhraseFormatter) Written(arg any) string {
+func (BasicNumberSnippetFormatter) Written(arg any) string {
 	hdg, ok := arg.(int)
 	if !ok {
 		hdg = int(arg.(float32))
@@ -697,7 +732,7 @@ func (BasicNumberPhraseFormatter) Written(arg any) string {
 	return strconv.Itoa(hdg)
 }
 
-func (BasicNumberPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (BasicNumberSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	hdg, ok := arg.(int)
 	if !ok {
 		hdg = int(arg.(float32))
@@ -705,7 +740,7 @@ func (BasicNumberPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	return strconv.Itoa(hdg)
 }
 
-func (BasicNumberPhraseFormatter) Validate(arg any) error {
+func (BasicNumberSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(int); !ok {
 		if _, ok := arg.(float32); !ok {
 			return fmt.Errorf("expected int/float32 arg, got %T", arg)
@@ -715,11 +750,11 @@ func (BasicNumberPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// CallsignPhraseFormatter
+// CallsignSnippetFormatter
 
-type CallsignPhraseFormatter struct{}
+type CallsignSnippetFormatter struct{}
 
-func (CallsignPhraseFormatter) Written(arg any) string {
+func (CallsignSnippetFormatter) Written(arg any) string {
 	ac := arg.(Aircraft)
 	idx := strings.IndexAny(string(ac.ADSBCallsign), "0123456789")
 	icao, fnum := string(ac.ADSBCallsign[:idx]), string(ac.ADSBCallsign[idx:])
@@ -732,7 +767,7 @@ func (CallsignPhraseFormatter) Written(arg any) string {
 	return cs
 }
 
-func (CallsignPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	ac := arg.(Aircraft)
 	idx := strings.IndexAny(string(ac.ADSBCallsign), "0123456789")
 	icao, fnum := string(ac.ADSBCallsign[:idx]), string(ac.ADSBCallsign[idx:])
@@ -785,41 +820,21 @@ func heavySuper(ac Aircraft) string {
 }
 
 func sayFlightNumber(id string) string {
-	fnum, suffix := id, ""
-	idx := strings.IndexAny(id, "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	if idx != -1 {
-		fnum = id[:idx]
-		suffix = id[idx:]
-	}
-
-	do0 := func(s string) string {
-		if len(s) == 2 && s[0] == '0' {
-			return sayDigit(int(s[0]-'0')) + " " + sayDigit(int(s[1]-'0'))
+	if id[0] != '0' {
+		// No leading zeros, just do regular group form.
+		n, _ := strconv.Atoi(id)
+		return groupForm(n)
+	} else {
+		// Digits individually
+		s := ""
+		for _, d := range id {
+			s += sayDigit(int(d-'0')) + " "
 		}
 		return s
 	}
-
-	if len(fnum) == 2 {
-		fnum = do0(fnum)
-	} else if len(fnum) == 3 {
-		if fnum == "100" {
-			fnum = "1 hundred"
-		}
-		fnum = string(fnum[0]) + " " + do0(fnum[1:])
-	} else if len(fnum) == 4 {
-		fnum = do0(fnum[:2]) + " " + do0(fnum[2:])
-	}
-
-	if suffix != "" {
-		// add spaces if there are multiple characters
-		suffix = strings.Join(strings.Split(suffix, ""), " ")
-		fnum += " " + suffix
-	}
-
-	return fnum
 }
 
-func (CallsignPhraseFormatter) Validate(arg any) error {
+func (CallsignSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(Aircraft); !ok {
 		return fmt.Errorf("expected *Aircraft arg, got %T", arg)
 	}
@@ -827,11 +842,11 @@ func (CallsignPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// LetterPhraseFormatter
+// LetterSnippetFormatter
 
-type LetterPhraseFormatter struct{}
+type LetterSnippetFormatter struct{}
 
-func (LetterPhraseFormatter) Written(arg any) string {
+func (LetterSnippetFormatter) Written(arg any) string {
 	return arg.(string)
 }
 
@@ -844,11 +859,11 @@ var spokenLetters = map[string]string{
 	"Y": "yankee", "Z": "zulu",
 }
 
-func (LetterPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (LetterSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	return spokenLetters[arg.(string)]
 }
 
-func (LetterPhraseFormatter) Validate(arg any) error {
+func (LetterSnippetFormatter) Validate(arg any) error {
 	if s, ok := arg.(string); !ok || len(s) != 1 || (s[0] < 'A' || s[0] > 'Z') {
 		return fmt.Errorf("expected single-character string arg, got %T", arg)
 	}
@@ -856,15 +871,15 @@ func (LetterPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// SIDPhraseFormatter
+// SIDSnippetFormatter
 
-type SIDPhraseFormatter struct{}
+type SIDSnippetFormatter struct{}
 
-func (s SIDPhraseFormatter) Written(arg any) string {
+func (s SIDSnippetFormatter) Written(arg any) string {
 	return arg.(string)
 }
 
-func (SIDPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (SIDSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	sid, num := trimNumber(arg.(string))
 	if say, ok := saySIDMap[sid]; ok {
 		return say + " " + sayDigit(num)
@@ -872,7 +887,7 @@ func (SIDPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	return sid + " " + sayDigit(num)
 }
 
-func (SIDPhraseFormatter) Validate(arg any) error {
+func (SIDSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
@@ -887,15 +902,15 @@ func trimNumber(s string) (string, int) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// STARPhraseFormatter
+// STARSnippetFormatter
 
-type STARPhraseFormatter struct{}
+type STARSnippetFormatter struct{}
 
-func (s STARPhraseFormatter) Written(arg any) string {
+func (s STARSnippetFormatter) Written(arg any) string {
 	return arg.(string)
 }
 
-func (STARPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (STARSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	star, num := trimNumber(arg.(string))
 	if say, ok := saySTARMap[star]; ok {
 		return say + " " + sayDigit(num)
@@ -903,7 +918,7 @@ func (STARPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	return star + " " + sayDigit(num)
 }
 
-func (STARPhraseFormatter) Validate(arg any) error {
+func (STARSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
@@ -911,16 +926,16 @@ func (STARPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// FrequencyPhraseFormatter
+// FrequencySnippetFormatter
 
-type FrequencyPhraseFormatter struct{}
+type FrequencySnippetFormatter struct{}
 
-func (FrequencyPhraseFormatter) Written(arg any) string {
+func (FrequencySnippetFormatter) Written(arg any) string {
 	f := arg.(Frequency)
 	return fmt.Sprintf("%03d.%02d", f/1000, (f%1000)/10)
 }
 
-func (FrequencyPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (FrequencySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	f := arg.(Frequency)
 	whole := (f / 1000) % 100
 	frac := (f % 1000) / 10
@@ -936,7 +951,7 @@ func (FrequencyPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (FrequencyPhraseFormatter) Validate(arg any) error {
+func (FrequencySnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(Frequency); !ok {
 		return fmt.Errorf("expected Frequency arg, got %T", arg)
 	}
@@ -944,21 +959,21 @@ func (FrequencyPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// GroupFormPhraseFormatter
+// GroupFormSnippetFormatter
 
-type GroupFormPhraseFormatter struct{}
+type GroupFormSnippetFormatter struct{}
 
-func (GroupFormPhraseFormatter) Written(arg any) string {
+func (GroupFormSnippetFormatter) Written(arg any) string {
 	v := arg.(int)
 	return fmt.Sprintf("%d", v)
 }
 
-func (GroupFormPhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (GroupFormSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	v := arg.(int)
 	return groupForm(v)
 }
 
-func (GroupFormPhraseFormatter) Validate(arg any) error {
+func (GroupFormSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(int); !ok {
 		return fmt.Errorf("expected int arg, got %T", arg)
 	}
@@ -966,16 +981,16 @@ func (GroupFormPhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// BeaconCodePhraseFormatter
+// BeaconCodeSnippetFormatter
 
-type BeaconCodePhraseFormatter struct{}
+type BeaconCodeSnippetFormatter struct{}
 
-func (BeaconCodePhraseFormatter) Written(arg any) string {
+func (BeaconCodeSnippetFormatter) Written(arg any) string {
 	v := arg.(Squawk)
 	return v.String()
 }
 
-func (BeaconCodePhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (BeaconCodeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	v := arg.(Squawk)
 	s := v.String()
 	if r.Bool() {
@@ -985,7 +1000,7 @@ func (BeaconCodePhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 }
 
-func (BeaconCodePhraseFormatter) Validate(arg any) error {
+func (BeaconCodeSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(Squawk); !ok {
 		return fmt.Errorf("expected Squawk arg, got %T", arg)
 	}
@@ -993,15 +1008,15 @@ func (BeaconCodePhraseFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// AircraftTypePhraseFormatter
+// AircraftTypeSnippetFormatter
 
-type AircraftTypePhraseFormatter struct{}
+type AircraftTypeSnippetFormatter struct{}
 
-func (AircraftTypePhraseFormatter) Written(arg any) string {
+func (AircraftTypeSnippetFormatter) Written(arg any) string {
 	return DB.AircraftTypeAliases[arg.(string)] + "(" + arg.(string) + ")"
 }
 
-func (AircraftTypePhraseFormatter) Spoken(r *rand.Rand, arg any) string {
+func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	ac := arg.(string)
 	if say, ok := sayACTypeMap[ac]; ok && len(say) > 0 {
 		s, _ := rand.SampleSeq(r, slices.Values(say))
@@ -1010,7 +1025,7 @@ func (AircraftTypePhraseFormatter) Spoken(r *rand.Rand, arg any) string {
 	return DB.AircraftTypeAliases[ac]
 }
 
-func (AircraftTypePhraseFormatter) Validate(arg any) error {
+func (AircraftTypeSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
