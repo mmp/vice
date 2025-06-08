@@ -1405,19 +1405,19 @@ func (a AltitudeRestriction) ClampRange(r [2]float32) (c [2]float32, ok bool) {
 	return
 }
 
-func (a AltitudeRestriction) PilotTransmission() PilotTransmission {
+func (a AltitudeRestriction) RadioTransmission() *RadioTransmission {
 	if a.Range[0] != 0 {
 		if a.Range[1] == a.Range[0] {
-			return MakePilotTransmission("at {alt}", a.Range[0])
+			return MakeRadioTransmission("at {alt}", a.Range[0])
 		} else if a.Range[1] != 0 {
-			return MakePilotTransmission("between {alt} and {alt}", a.Range[0], a.Range[1])
+			return MakeRadioTransmission("between {alt} and {alt}", a.Range[0], a.Range[1])
 		} else {
-			return MakePilotTransmission("at or above {alt}", a.Range[0])
+			return MakeRadioTransmission("at or above {alt}", a.Range[0])
 		}
 	} else if a.Range[1] != 0 {
-		return MakePilotTransmission("at or below {alt}", a.Range[1])
+		return MakeRadioTransmission("at or below {alt}", a.Range[1])
 	} else {
-		return PilotTransmission{}
+		return nil
 	}
 }
 

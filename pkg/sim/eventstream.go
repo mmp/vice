@@ -224,7 +224,7 @@ type Event struct {
 	ToController          string // For radio transmissions, the controlling controller.
 	WrittenText           string
 	SpokenText            string
-	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
+	RadioTransmissionType RadioTransmissionType          // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 }
 

@@ -84,7 +84,7 @@ type Sim struct {
 
 type ttsRequest struct {
 	callsign av.ADSBCallsign
-	ty       av.RadioTransmissionType
+	ty       RadioTransmissionType
 	text     string
 	ch       <-chan []byte
 }
@@ -174,9 +174,49 @@ type PointOut struct {
 
 type PilotSpeech struct {
 	Callsign av.ADSBCallsign
-	Type     av.RadioTransmissionType
+	Type     RadioTransmissionType
 	Text     string
 	MP3      []byte
+}
+
+type RadioTransmissionType int
+
+const (
+	RadioTransmissionUnknown    = iota
+	RadioTransmissionContact    // Messages initiated by the pilot
+	RadioTransmissionReadback   // Reading back an instruction
+	RadioTransmissionUnexpected // Something urgent or unusual
+)
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
+	default:
+		return "(unhandled type)"
+	}
+}
+
+type RadioTransmission struct {
+	*av.RadioTransmission
+
+	Controller string
+	Type       RadioTransmissionType
+}
+
+func MakeRadioTransmission(tcp string, tr *av.RadioTransmission) *RadioTransmission {
+	if tr == nil {
+		return nil
+	}
+	return &RadioTransmission{
+		RadioTransmission: tr,
+		Controller:        tcp,
+		Type:              RadioTransmissionType(util.Select(tr.Unexpected, RadioTransmissionUnexpected, RadioTransmissionReadback)),
+	}
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim
@@ -652,8 +692,8 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				if lastRadio != -1 && canConsolidate(e, c[lastRadio]) {
 					c[lastRadio].WrittenText += ", " + e.WrittenText
 					c[lastRadio].SpokenText += ", " + e.SpokenText
-					if e.RadioTransmissionType == av.RadioTransmissionUnexpected {
-						c[lastRadio].RadioTransmissionType = av.RadioTransmissionUnexpected
+					if e.RadioTransmissionType == RadioTransmissionUnexpected {
+						c[lastRadio].RadioTransmissionType = RadioTransmissionUnexpected
 					}
 				} else {
 					if e.Type == RadioTransmissionEvent {
@@ -681,19 +721,19 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				continue
 			}
 
-			if e.RadioTransmissionType == av.RadioTransmissionContact {
-				var pt av.PilotTransmission
+			if e.RadioTransmissionType == RadioTransmissionContact {
+				var tr *av.RadioTransmission
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					pt = av.MakePilotTransmission("{dctrl}, {callsign}. ", ctrl, ac.Aircraft)
+					tr = av.MakeRadioTransmission("{dctrl}, {callsign}. ", ctrl, ac.Aircraft)
 				} else {
-					pt = av.MakePilotTransmission("{actrl}, {callsign}. ", ctrl, ac.Aircraft)
+					tr = av.MakeRadioTransmission("{actrl}, {callsign}. ", ctrl, ac.Aircraft)
 				}
-				events[i].WrittenText = pt.Written(s.Rand) + e.WrittenText
-				events[i].SpokenText = pt.Spoken(s.Rand) + e.SpokenText
+				events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
+				events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 			} else {
-				pt := av.MakePilotTransmission(", {callsign}.", ac.Aircraft)
-				events[i].WrittenText = e.WrittenText + pt.Written(s.Rand)
-				events[i].SpokenText = e.SpokenText + pt.Spoken(s.Rand)
+				tr := av.MakeRadioTransmission(", {callsign}.", ac.Aircraft)
+				events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
+				events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
 			}
 		}
 
@@ -1135,15 +1175,14 @@ func (s *Sim) updateState() {
 						airportName = ap.Name
 					}
 
-					msg := av.MakePilotTransmission("departing {airport}", airportName)
+					msg := av.MakeRadioTransmission("departing {airport}", airportName)
 					msg.Merge(ac.Nav.DepartureMessage())
-					msg.Validate(s.lg)
-					s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
-						Controller:  tcp,
-						WrittenText: msg.Written(s.Rand),
-						SpokenText:  msg.Spoken(s.Rand),
-						Type:        av.RadioTransmissionContact,
-					}})
+
+					s.postRadioEvent(ac.ADSBCallsign, tcp, RadioTransmission{
+						Controller:        tcp,
+						RadioTransmission: msg,
+						Type:              RadioTransmissionContact,
+					})
 
 					// Clear this out so we only send one contact message
 					ac.DepartureContactAltitude = 0
@@ -1275,7 +1314,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		return "", "", 0, false
 	}
 
-	var pt av.PilotTransmission
+	var pt av.RadioTransmission
 	pt.Add("[we're a|] {actype}", ac.FlightPlan.AircraftType)
 
 	rpdesc, rpdir, dist, isap := closestReportingPoint(ac)
@@ -1302,11 +1341,11 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		}
 	}
 
-	var alt av.PilotTransmission
+	var alt *av.RadioTransmission
 	if ac.Altitude()+100 < float32(ac.FlightPlan.Altitude) {
-		alt = av.MakePilotTransmission("[at|] {alt} for {alt}", ac.Altitude(), ac.FlightPlan.Altitude)
+		alt = av.MakeRadioTransmission("[at|] {alt} for {alt}", ac.Altitude(), ac.FlightPlan.Altitude)
 	} else {
-		alt = av.MakePilotTransmission("at {alt}", ac.Altitude())
+		alt = av.MakeRadioTransmission("at {alt}", ac.Altitude())
 	}
 	earlyAlt := s.Rand.Bool()
 	if earlyAlt {
@@ -1325,13 +1364,11 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		pt.Merge(alt)
 	}
 
-	pt.Validate(s.lg)
-	s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
-		Controller:  tcp,
-		WrittenText: pt.Written(s.Rand),
-		SpokenText:  pt.Spoken(s.Rand),
-		Type:        av.RadioTransmissionContact,
-	}})
+	s.postRadioEvent(ac.ADSBCallsign, tcp, RadioTransmission{
+		Controller:        tcp,
+		RadioTransmission: &pt,
+		Type:              RadioTransmissionContact,
+	})
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
@@ -1356,7 +1393,11 @@ func (s *Sim) goAround(ac *Aircraft) {
 	sfp.ControllingController = s.State.ResolveController(ac.ApproachController)
 
 	rt := ac.GoAround()
-	s.postRadioEvents(ac.ADSBCallsign, ac.ApproachController, rt)
+	s.postRadioEvent(ac.ADSBCallsign, ac.ApproachController, RadioTransmission{
+		Controller:        ac.ApproachController, // FIXME: issue #540
+		RadioTransmission: rt,
+		Type:              RadioTransmissionUnexpected,
+	})
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {
@@ -1371,21 +1412,28 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) postRadioEvents(from av.ADSBCallsign, defaultTCP string, transmissions []av.RadioTransmission) {
-	for _, rt := range transmissions {
-		if rt.Controller == "" {
-			rt.Controller = defaultTCP
-		}
-
-		s.eventStream.Post(Event{
-			Type:                  RadioTransmissionEvent,
-			ADSBCallsign:          from,
-			ToController:          rt.Controller,
-			WrittenText:           rt.WrittenText,
-			SpokenText:            rt.SpokenText,
-			RadioTransmissionType: rt.Type,
-		})
+func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr RadioTransmission) {
+	if tr.RadioTransmission == nil {
+		return
 	}
+
+	tr.RadioTransmission.Validate(s.lg)
+
+	if tr.Controller == "" {
+		tr.Controller = defaultTCP
+	}
+
+	ty := tr.Type
+	if ty == RadioTransmissionUnknown {
+	}
+	s.eventStream.Post(Event{
+		Type:                  RadioTransmissionEvent,
+		ADSBCallsign:          from,
+		ToController:          tr.Controller,
+		WrittenText:           tr.RadioTransmission.Written(s.Rand),
+		SpokenText:            tr.RadioTransmission.Spoken(s.Rand),
+		RadioTransmissionType: ty,
+	})
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {

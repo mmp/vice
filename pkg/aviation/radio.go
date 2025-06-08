@@ -61,34 +61,6 @@ func init() {
 
 ///////////////////////////////////////////////////////////////////////////
 
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionContact    = iota // Messages initiated by the pilot
-	RadioTransmissionReadback          // Reading back an instruction
-	RadioTransmissionUnexpected        // Something urgent or unusual
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	default:
-		return "(unhandled type)"
-	}
-}
-
-type RadioTransmission struct {
-	Controller  string
-	WrittenText string
-	SpokenText  string
-	Type        RadioTransmissionType
-}
-
 // Frequencies are scaled by 1000 and then stored in integers.
 type Frequency int
 
@@ -106,37 +78,37 @@ func (f Frequency) String() string {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// PilotTransmission
+// RadioTransmission
 
-// PilotTransmission holds components that together represent a single
+// RadioTransmission holds components that together represent a single
 // radio transmission by a pilot; they may be built up from multiple
 // instructions provided in a single controller command.
-type PilotTransmission struct {
+type RadioTransmission struct {
 	Strings    []PhraseFormatString
 	Args       [][]any // each slice contains values passed to the corresponding PhraseFormatString
 	Unexpected bool    // should it be highlighted in the UI
 }
 
-// MakePilotTransmission is a helper function to make a pilot transmission
+// MakeRadioTransmission is a helper function to make a pilot transmission
 // from a single formatting string and set of arguments.
-func MakePilotTransmission(s string, args ...any) PilotTransmission {
-	pr := PilotTransmission{}
+func MakeRadioTransmission(s string, args ...any) *RadioTransmission {
+	pr := &RadioTransmission{}
 	pr.Add(s, args...)
 	return pr
 }
 
-// MakeUnexpectedPilotTransmission similarly makes a single pilot
+// MakeUnexpectedRadioTransmission similarly makes a single pilot
 // transmission from the provided format string and arguments, but also
 // marks the transmission as unexpected.
-func MakeUnexpectedPilotTransmission(s string, args ...any) PilotTransmission {
-	pr := PilotTransmission{Unexpected: true}
+func MakeUnexpectedRadioTransmission(s string, args ...any) *RadioTransmission {
+	pr := &RadioTransmission{Unexpected: true}
 	pr.Add(s, args...)
 	return pr
 }
 
-// Merge takes a separately-constructed PilotTransmission and merges its
+// Merge takes a separately-constructed RadioTransmission and merges its
 // contents with the current one.
-func (pt *PilotTransmission) Merge(p PilotTransmission) {
+func (pt *RadioTransmission) Merge(p *RadioTransmission) {
 	pt.Strings = append(pt.Strings, p.Strings...)
 	pt.Args = append(pt.Args, p.Args...)
 	pt.Unexpected = pt.Unexpected || p.Unexpected
@@ -145,7 +117,7 @@ func (pt *PilotTransmission) Merge(p PilotTransmission) {
 // Validate ensures that the types of arguments match with the formatting
 // directives in the PhraseFormatStrings; errors are logged to the provided
 // logger.
-func (pt *PilotTransmission) Validate(lg *log.Logger) {
+func (pt *RadioTransmission) Validate(lg *log.Logger) {
 	if len(pt.Strings) != len(pt.Args) {
 		lg.Errorf("Mismatching len(Strings) %d and len(Args) %d", len(pt.Strings), len(pt.Args))
 		return
@@ -155,9 +127,9 @@ func (pt *PilotTransmission) Validate(lg *log.Logger) {
 	}
 }
 
-// Add is a convenience function to add a transmission snippet to the PilotTransmission.
-// It's more or less equivalent to calling Merge(MakePilotTransmission(...)).
-func (pt *PilotTransmission) Add(s string, args ...any) {
+// Add is a convenience function to add a transmission snippet to the RadioTransmission.
+// It's more or less equivalent to calling Merge(MakeRadioTransmission(...)).
+func (pt *RadioTransmission) Add(s string, args ...any) {
 	pt.Strings = append(pt.Strings, PhraseFormatString(s))
 	pt.Args = append(pt.Args, args)
 }
@@ -165,7 +137,7 @@ func (pt *PilotTransmission) Add(s string, args ...any) {
 // Spoken returns a string corresponding to how the transmission should be
 // spoken, which appropriate phonetic substitutions made (e.g. "9" ->
 // "niner").
-func (pt PilotTransmission) Spoken(r *rand.Rand) string {
+func (pt RadioTransmission) Spoken(r *rand.Rand) string {
 	var result []string
 
 	for i := range pt.Strings {
@@ -178,7 +150,7 @@ func (pt PilotTransmission) Spoken(r *rand.Rand) string {
 
 // Written returns a string corresponding to how the transmission should be
 // displayed as text on the screen.
-func (pt PilotTransmission) Written(r *rand.Rand) string {
+func (pt RadioTransmission) Written(r *rand.Rand) string {
 	var result []string
 
 	for i := range pt.Strings {
@@ -328,7 +300,7 @@ func allResolvedHelper(spre string, spost string, err func(string)) []PhraseForm
 			inBrackets = false
 			var resolved []PhraseFormatString
 			for _, opt := range strings.Split(options.String(), "|") {
-				resolved = append(resolved, allResolvedHelper(pre.String()+opt, spost[i:], err)...)
+				resolved = append(resolved, allResolvedHelper(pre.String()+opt, spost[i+1:], err)...)
 			}
 			return resolved
 		} else if inBrackets {
