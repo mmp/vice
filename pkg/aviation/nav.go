@@ -360,7 +360,7 @@ func (nav *Nav) AssignedHeading() (float32, bool) {
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment.
 func (nav *Nav) EnqueueHeading(h NavHeading) {
-	delay := 3 + 3*nav.Rand.Float32()
+	delay := 8 + 5*nav.Rand.Float32()
 	now := time.Now()
 	nav.DeferredHeading = &DeferredHeading{
 		Time:    now.Add(time.Duration(delay * float32(time.Second))),
@@ -2772,6 +2772,17 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *
 		}
 		// Cleared approach also cancels speed restrictions.
 		nav.Speed = NavSpeed{}
+
+		// Turn more quickly for assigned headings if they're included with
+		// an approach clearance; we're sort of determining that indirectly
+		// here since we break instructions into individual ones before
+		// they get here.
+		if dh := nav.DeferredHeading; dh != nil {
+			now := time.Now()
+			if dh.Time.Sub(now) > 6*time.Second {
+				dh.Time = now.Add(time.Duration((4 + 3*nav.Rand.Float32()) * float32(time.Second)))
+			}
+		}
 
 		nav.flyProcedureTurnIfNecessary()
 
