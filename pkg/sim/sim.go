@@ -687,8 +687,6 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				continue
 			}
 
-			fmt.Println(string(ac.ADSBCallsign) + ": " + e.SpokenText)
-
 			if ac.Voice == "" {
 				var err error
 				if ac.Voice, err = speech.GetRandomVoice(); err != nil {

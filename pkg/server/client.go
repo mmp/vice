@@ -13,6 +13,7 @@ import (
 	"os"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -177,19 +178,20 @@ func NewControlClient(ss sim.State, local bool, controllerToken string, client *
 		lastUpdateRequest: time.Now(),
 		State:             ss,
 	}
-	cc.speechWs, cc.speechCh = initializeSpeechWebsocket(controllerToken, lg)
+	cc.speechWs, cc.speechCh = initializeSpeechWebsocket(controllerToken, local, lg)
 
 	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
 	return cc
 }
 
-func initializeSpeechWebsocket(controllerToken string, lg *log.Logger) (*websocket.Conn, chan sim.PilotSpeech) {
+func initializeSpeechWebsocket(controllerToken string, local bool, lg *log.Logger) (*websocket.Conn, chan sim.PilotSpeech) {
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+controllerToken)
 
-	//	conn, _, err := websocket.DefaultDialer.Dial("ws://"+ViceServerAddress+":"+strconv.Itoa(ViceServerPort)+"/speech", header)
-	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:6502/speech", header)
+	host := util.Select(local, "localhost", ViceServerAddress)
+	conn, _, err := websocket.DefaultDialer.Dial("ws://"+host+":"+strconv.Itoa(ViceHTTPServerPort)+"/speech", header)
+
 	if err != nil {
 		lg.Errorf("speech websocket: %v", err)
 		return nil, nil
@@ -521,7 +523,7 @@ loop:
 		select {
 		case ps, ok := <-c.speechCh:
 			if ok {
-				fmt.Printf("got speech %s\n", ps.Callsign)
+				//fmt.Printf("got speech %s\n", ps.Callsign)
 				c.bufferedSpeech = append(c.bufferedSpeech, ps)
 			}
 		default:
@@ -532,13 +534,11 @@ loop:
 	if c.holdSpeech && time.Now().After(c.lastSpeechHoldTime) {
 		// Time out user-requested holds after 5 seconds (if another
 		// request hasn't kept the request alive).
-		fmt.Printf("time out hold\n")
 		c.holdSpeech = false
 	}
 
 	if c.holdSpeech || c.playingSpeech || len(c.bufferedSpeech) == 0 || c.State.Paused {
 		// Don't/can't kick off additional speech playback
-		//fmt.Printf("Xh%sp%sl%d ", util.Select(c.holdSpeech, "+", "-"), util.Select(c.playingSpeech, "+", "-"), len(c.bufferedSpeech))
 		return
 	}
 
@@ -553,10 +553,10 @@ loop:
 				c.playingSpeech = false
 				c.holdSpeech = true
 				c.lastTransmissionCallsign = bs.Callsign
-				fmt.Printf("play completed %s @ %s\n", bs.Callsign, time.Now().String())
+				//fmt.Printf("play completed %s @ %s\n", bs.Callsign, time.Now().String())
 				c.lastSpeechHoldTime = time.Now().Add(3 * time.Second / 2)
 			}); err == nil {
-				fmt.Printf("play awaited speech %s at %s\n", bs.Callsign, time.Now().String())
+				//fmt.Printf("play awaited speech %s at %s\n", bs.Callsign, time.Now().String())
 				c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
 				c.playingSpeech = true
 			}
@@ -566,11 +566,11 @@ loop:
 		if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
 			c.playingSpeech = false
 			c.holdSpeech = true
-			fmt.Printf("play completed %s at %s\n", bs.Callsign, time.Now().String())
+			//fmt.Printf("play completed %s at %s\n", bs.Callsign, time.Now().String())
 			c.lastTransmissionCallsign = bs.Callsign
 			c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
 		}); err == nil {
-			fmt.Printf("play random speech %s at %s\n", bs.Callsign, time.Now().String())
+			//fmt.Printf("play random speech %s at %s\n", bs.Callsign, time.Now().String())
 			c.bufferedSpeech = c.bufferedSpeech[1:]
 			c.playingSpeech = true
 		}

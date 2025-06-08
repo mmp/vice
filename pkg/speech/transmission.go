@@ -35,7 +35,7 @@ var (
 func init() {
 	n := 0
 	report := func(file string, err error) {
-		fmt.Printf("%s: %v\n", file, err)
+		fmt.Fprintf(os.Stderr, "%s: %v\n", file, err)
 		n++
 	}
 
