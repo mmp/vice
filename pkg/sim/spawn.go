@@ -1009,10 +1009,8 @@ func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft,
 	}
 
 	return &Aircraft{
-		Aircraft: av.Aircraft{
-			ADSBCallsign: av.ADSBCallsign(callsign),
-			Mode:         av.TransponderModeAltitude,
-		},
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
 	}, actype
 }
 
@@ -1259,7 +1257,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 
-	ac.FlightPlan.Altitude = av.PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
+	ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)
 
 	mid := math.Mid2f(depap.Location, arrap.Location)

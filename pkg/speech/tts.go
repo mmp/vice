@@ -7,7 +7,6 @@ package speech
 import (
 	"context"
 	"errors"
-	"fmt"
 	"slices"
 	"strings"
 	"time"
@@ -28,11 +27,12 @@ type TTSRequest struct {
 	Format string `json:"response_format"`
 }
 
-var ErrNoTTSKey = errors.New("VICE_TTS_KEY not set; unable TTS")
+var ErrTTSUnavailable = errors.New("TTS service unavailable")
+
+type Voice string
 
 var client *texttospeech.Client
 var voices []string
-var voicepool []string
 
 func InitTTS() error {
 	ctx := context.Background()
@@ -51,7 +51,6 @@ func InitTTS() error {
 	for _, voice := range resp.Voices {
 		for _, p := range []string{"en-US-Neural2", "en-US-Standard", "en-US-Wavenet"} {
 			if strings.HasPrefix(voice.Name, p) {
-				//fmt.Printf("%s: %v hz %d\n", voice.Name, voice.LanguageCodes, voice.NaturalSampleRateHertz)
 				voices = append(voices, voice.Name)
 				break
 			}
@@ -61,9 +60,14 @@ func InitTTS() error {
 	return nil
 }
 
-func GetRandomVoice() string {
+// Voices are assigned by repeatedly copying the slice of available voices and then randomly
+// selecting a voice from the copy and removing it. In this way we generally minimize reuse of
+// the same voice for multiple aircraft.
+var voicepool []string
+
+func GetRandomVoice() (Voice, error) {
 	if client == nil {
-		return "(NO TTS AVAILABLE)"
+		return "__unavailable__", ErrTTSUnavailable
 	}
 
 	if len(voicepool) == 0 {
@@ -71,14 +75,17 @@ func GetRandomVoice() string {
 	}
 	r := rand.Make()
 	i := r.Intn(len(voicepool))
-	v := voicepool[i]
+	v := Voice(voicepool[i])
 	voicepool = append(voicepool[:i], voicepool[i+1:]...)
-	return v
+	return v, nil
 }
 
-func RequestTTS(voice, text string, lg *log.Logger) (<-chan []byte, error) {
+// RequestTTS requests synthesis of the provided text using the given
+// voice. If successful, it returns a chan that provides the MP3 of the
+// synthesized voice when it is available.
+func RequestTTS(voice Voice, text string, lg *log.Logger) (<-chan []byte, error) {
 	if client == nil {
-		return nil, errors.New("Unable to initialize TTS")
+		return nil, ErrTTSUnavailable
 	}
 	ch := make(chan []byte)
 	start := time.Now()
@@ -92,7 +99,7 @@ func RequestTTS(voice, text string, lg *log.Logger) (<-chan []byte, error) {
 			},
 			Voice: &texttospeechpb.VoiceSelectionParams{
 				LanguageCode: "en-US",
-				Name:         voice,
+				Name:         string(voice),
 			},
 			AudioConfig: &texttospeechpb.AudioConfig{
 				SpeakingRate:    1.4,
@@ -101,21 +108,22 @@ func RequestTTS(voice, text string, lg *log.Logger) (<-chan []byte, error) {
 			},
 		}
 
-		ctx := context.Background()
-		resp, err := client.SynthesizeSpeech(ctx, &req)
+		resp, err := client.SynthesizeSpeech(context.Background(), &req)
 		if err != nil {
-			panic(err)
+			lg.Error("TTS: speech %q voice %s error %v", text, voice, err)
+		} else {
+			lg.Infof("Synthesized speech %q latency %s result size %d", text, time.Since(start), len(resp.AudioContent))
+
+			ch <- resp.AudioContent
 		}
-
-		fmt.Printf("speech request latency %s size %d; voice %s for %s\n", time.Since(start), len(resp.AudioContent), voice, text)
-
-		ch <- resp.AudioContent
 	}()
 
 	return ch, nil
 }
 
 /*
+var ErrNoTTSKey = errors.New("VICE_TTS_KEY not set; unable TTS")
+
 func RequestTTS(key, text string, lg *log.Logger) (<-chan []byte, error) {
 	apiKey := os.Getenv("VICE_TTS_KEY")
 	if apiKey == "" {

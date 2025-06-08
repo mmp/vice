@@ -703,7 +703,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 				TCP:          ctrl.tcp,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         av.TurnClosest,
+				Turn:         sim.TurnClosest,
 			}); err != nil {
 				rewriteError(err)
 				return nil
@@ -748,7 +748,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					TCP:          ctrl.tcp,
 					ADSBCallsign: callsign,
 					Heading:      hdg,
-					Turn:         av.TurnLeft,
+					Turn:         sim.TurnLeft,
 				}); err != nil {
 					rewriteError(err)
 					return nil
@@ -788,7 +788,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					TCP:          ctrl.tcp,
 					ADSBCallsign: callsign,
 					Heading:      hdg,
-					Turn:         av.TurnRight,
+					Turn:         sim.TurnRight,
 				}); err != nil {
 					rewriteError(err)
 					return nil

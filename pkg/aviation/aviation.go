@@ -18,6 +18,39 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+type RadarTrack struct {
+	ADSBCallsign        ADSBCallsign
+	Squawk              Squawk
+	Mode                TransponderMode
+	Ident               bool
+	TrueAltitude        float32
+	TransponderAltitude float32
+	Location            math.Point2LL
+	Heading             float32
+	Groundspeed         float32
+	TypeOfFlight        TypeOfFlight
+}
+
+type ADSBCallsign string
+
+func (c ADSBCallsign) String() string { return string(c) }
+
+// Frequencies are scaled by 1000 and then stored in integers.
+type Frequency int
+
+func NewFrequency(f float32) Frequency {
+	// 0.5 is key for handling rounding!
+	return Frequency(f*1000 + 0.5)
+}
+
+func (f Frequency) String() string {
+	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
+	for len(s) < 7 {
+		s += "0"
+	}
+	return s
+}
+
 type ReportingPoint struct {
 	Fix      string
 	Location math.Point2LL

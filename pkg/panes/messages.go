@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/speech"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -195,7 +196,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			}
 
 			var msg Message
-			if event.RadioTransmissionType == sim.RadioTransmissionContact {
+			if event.RadioTransmissionType == speech.RadioTransmissionContact {
 				msg = Message{contents: prefix + event.WrittenText}
 				if mp.ContactTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
@@ -205,7 +206,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					event.WrittenText = strings.ToUpper(event.WrittenText[:1]) + event.WrittenText[1:]
 				}
 				msg = Message{contents: prefix + event.WrittenText,
-					error: event.Type == sim.RadioTransmissionUnexpected,
+					error: event.Type == speech.RadioTransmissionUnexpected,
 				}
 				if mp.ReadbackTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])

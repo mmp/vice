@@ -1,8 +1,8 @@
-// pkg/speech/format.go
+// pkg/speech/transmission.go
 // Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package speech
 
 import (
 	"bytes"
@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
@@ -60,25 +61,29 @@ func init() {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-// Frequencies are scaled by 1000 and then stored in integers.
-type Frequency int
-
-func NewFrequency(f float32) Frequency {
-	// 0.5 is key for handling rounding!
-	return Frequency(f*1000 + 0.5)
-}
-
-func (f Frequency) String() string {
-	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
-	for len(s) < 7 {
-		s += "0"
-	}
-	return s
-}
-
-///////////////////////////////////////////////////////////////////////////
 // RadioTransmission
+
+type RadioTransmissionType int
+
+const (
+	RadioTransmissionUnknown    = iota
+	RadioTransmissionContact    // Messages initiated by the pilot
+	RadioTransmissionReadback   // Reading back an instruction
+	RadioTransmissionUnexpected // Something urgent or unusual
+)
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
+	default:
+		return "(unhandled type)"
+	}
+}
 
 // RadioTransmission holds components that together represent a single
 // radio transmission by a pilot; they may be built up from multiple
@@ -86,62 +91,75 @@ func (f Frequency) String() string {
 type RadioTransmission struct {
 	Strings    []PhraseFormatString
 	Args       [][]any // each slice contains values passed to the corresponding PhraseFormatString
-	Unexpected bool    // should it be highlighted in the UI
+	Controller string
+	Type       RadioTransmissionType
 }
 
-// MakeRadioTransmission is a helper function to make a pilot transmission
-// from a single formatting string and set of arguments.
-func MakeRadioTransmission(s string, args ...any) *RadioTransmission {
-	pr := &RadioTransmission{}
-	pr.Add(s, args...)
-	return pr
+// MakeContactRadioTransmission is a helper function to make a pilot
+// transmission for initial contact from a single formatting string and set
+// of arguments.
+func MakeContactTransmission(s string, args ...any) *RadioTransmission {
+	rt := &RadioTransmission{Type: RadioTransmissionContact}
+	rt.Add(s, args...)
+	return rt
 }
 
-// MakeUnexpectedRadioTransmission similarly makes a single pilot
+// MakeReadbackTransmission is a helper function to make a pilot
+// transmission of a readback from a single formatting string and set of
+// arguments.
+func MakeReadbackTransmission(s string, args ...any) *RadioTransmission {
+	rt := &RadioTransmission{Type: RadioTransmissionReadback}
+	rt.Add(s, args...)
+	return rt
+}
+
+// MakeUnexpectedTransmission similarly makes a single pilot
 // transmission from the provided format string and arguments, but also
 // marks the transmission as unexpected.
-func MakeUnexpectedRadioTransmission(s string, args ...any) *RadioTransmission {
-	pr := &RadioTransmission{Unexpected: true}
-	pr.Add(s, args...)
-	return pr
+func MakeUnexpectedTransmission(s string, args ...any) *RadioTransmission {
+	rt := &RadioTransmission{Type: RadioTransmissionUnexpected}
+	rt.Add(s, args...)
+	return rt
 }
 
 // Merge takes a separately-constructed RadioTransmission and merges its
 // contents with the current one.
-func (pt *RadioTransmission) Merge(p *RadioTransmission) {
-	pt.Strings = append(pt.Strings, p.Strings...)
-	pt.Args = append(pt.Args, p.Args...)
-	pt.Unexpected = pt.Unexpected || p.Unexpected
+func (rt *RadioTransmission) Merge(r *RadioTransmission) {
+	rt.Strings = append(rt.Strings, r.Strings...)
+	rt.Args = append(rt.Args, r.Args...)
+	if r.Type == RadioTransmissionUnexpected {
+		rt.Type = RadioTransmissionUnexpected
+	}
 }
 
 // Validate ensures that the types of arguments match with the formatting
 // directives in the PhraseFormatStrings; errors are logged to the provided
 // logger.
-func (pt *RadioTransmission) Validate(lg *log.Logger) {
-	if len(pt.Strings) != len(pt.Args) {
-		lg.Errorf("Mismatching len(Strings) %d and len(Args) %d", len(pt.Strings), len(pt.Args))
+func (rt *RadioTransmission) Validate(lg *log.Logger) {
+	if len(rt.Strings) != len(rt.Args) {
+		lg.Errorf("Mismatching len(Strings) %d and len(Args) %d", len(rt.Strings), len(rt.Args))
 		return
 	}
-	for i := range pt.Strings {
-		pt.Strings[i].Validate(pt.Args[i], lg)
+	for i := range rt.Strings {
+		rt.Strings[i].Validate(rt.Args[i], lg)
 	}
 }
 
 // Add is a convenience function to add a transmission snippet to the RadioTransmission.
 // It's more or less equivalent to calling Merge(MakeRadioTransmission(...)).
-func (pt *RadioTransmission) Add(s string, args ...any) {
-	pt.Strings = append(pt.Strings, PhraseFormatString(s))
-	pt.Args = append(pt.Args, args)
+func (rt *RadioTransmission) Add(s string, args ...any) {
+	rt.Strings = append(rt.Strings, PhraseFormatString(s))
+	rt.Args = append(rt.Args, args)
 }
 
 // Spoken returns a string corresponding to how the transmission should be
 // spoken, which appropriate phonetic substitutions made (e.g. "9" ->
 // "niner").
-func (pt RadioTransmission) Spoken(r *rand.Rand) string {
+func (rt RadioTransmission) Spoken(r *rand.Rand) string {
 	var result []string
 
-	for i := range pt.Strings {
-		s := pt.Strings[i].Spoken(r, pt.Args[i])
+	for i := range rt.Strings {
+		s := rt.Strings[i].Spoken(r, rt.Args[i])
 		result = append(result, s)
 	}
 
@@ -150,11 +168,11 @@ func (pt RadioTransmission) Spoken(r *rand.Rand) string {
 
 // Written returns a string corresponding to how the transmission should be
 // displayed as text on the screen.
-func (pt RadioTransmission) Written(r *rand.Rand) string {
+func (rt RadioTransmission) Written(r *rand.Rand) string {
 	var result []string
 
-	for i := range pt.Strings {
-		s := pt.Strings[i].Written(r, pt.Args[i])
+	for i := range rt.Strings {
+		s := rt.Strings[i].Written(r, rt.Args[i])
 		result = append(result, s)
 	}
 
@@ -162,13 +180,13 @@ func (pt RadioTransmission) Written(r *rand.Rand) string {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-// TransmissionSnippetFormatter
+// SnippetFormatter
 
-// TransmissionSnippetFormatter defines an interface for formatting short
+// SnippetFormatter defines an interface for formatting short
 // text snippets corresponding to various aviation-related concepts into
 // both speech and text. Each is takes a single value specifying the value
 // of the corresponding thing (altitude, speed, etc.)
-type TransmissionSnippetFormatter interface {
+type SnippetFormatter interface {
 	// Written
 	Written(arg any) string
 	Spoken(r *rand.Rand, arg any) string
@@ -181,13 +199,14 @@ var (
 	fmtRE = regexp.MustCompile(`\{(.*?)\}`)
 
 	// phraseFormats stores associates all of the formatting strings with
-	// TransmissionSnippetFormatter implementations. The map keys specify
+	// SnippetFormatter implementations. The map keys specify
 	// the associated formatting strings.
-	phraseFormats map[string]TransmissionSnippetFormatter = map[string]TransmissionSnippetFormatter{
+	phraseFormats map[string]SnippetFormatter = map[string]SnippetFormatter{
 		"actrl":    &AppControllerSnippetFormatter{},
 		"actype":   &AircraftTypeSnippetFormatter{},
 		"airport":  &AirportSnippetFormatter{},
 		"alt":      &AltSnippetFormatter{},
+		"altrest":  &AltRestrictionSnippetFormatter{},
 		"appr":     &ApproachSnippetFormatter{},
 		"beacon":   &BeaconCodeSnippetFormatter{},
 		"callsign": &CallsignSnippetFormatter{},
@@ -216,7 +235,7 @@ func (s PhraseFormatString) Written(r *rand.Rand, args []any) string {
 	sr := s.resolveOptions(r, nil)
 
 	var result bytes.Buffer
-	sr.applyFormatting(args, func(fmt TransmissionSnippetFormatter, arg any) {
+	sr.applyFormatting(args, func(fmt SnippetFormatter, arg any) {
 		result.WriteString(fmt.Written(arg))
 	}, func(ch rune) {
 		result.WriteRune(ch)
@@ -228,7 +247,7 @@ func (s PhraseFormatString) Spoken(r *rand.Rand, args []any) string {
 	sr := s.resolveOptions(r, nil)
 
 	var result bytes.Buffer
-	sr.applyFormatting(args, func(f TransmissionSnippetFormatter, arg any) {
+	sr.applyFormatting(args, func(f SnippetFormatter, arg any) {
 		result.WriteString(f.Spoken(r, arg))
 	}, func(ch rune) {
 		result.WriteRune(ch)
@@ -245,7 +264,7 @@ func (s PhraseFormatString) Validate(args []any, lg *log.Logger) bool {
 	}
 
 	for _, sr := range s.allResolved(logFunc) {
-		sr.applyFormatting(args, func(f TransmissionSnippetFormatter, arg any) {
+		sr.applyFormatting(args, func(f SnippetFormatter, arg any) {
 			if err := f.Validate(arg); err != nil {
 				logFunc(err.Error())
 			}
@@ -255,7 +274,7 @@ func (s PhraseFormatString) Validate(args []any, lg *log.Logger) bool {
 	return !anyErrors
 }
 
-func (s PhraseFormatString) applyFormatting(args []any, fmt func(TransmissionSnippetFormatter, any), c func(rune)) {
+func (s PhraseFormatString) applyFormatting(args []any, fmt func(SnippetFormatter, any), c func(rune)) {
 	braceIndex := 0
 	argIndex := 0
 	foundBrace := false
@@ -387,28 +406,7 @@ func groupForm(v int) string {
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////
-// AltSnippetFormatter
-
-// AltSnippetFormatter formats altitudes, which may be given as ints or float32s.
-type AltSnippetFormatter struct{}
-
-func (a *AltSnippetFormatter) Written(arg any) string {
-	if alt, ok := arg.(float32); ok {
-		return FormatAltitude(alt)
-	} else if alt, ok := arg.(int); ok {
-		return FormatAltitude(float32(alt))
-	} else {
-		return "???"
-	}
-}
-
-func (a *AltSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	alt, ok := arg.(int)
-	if !ok {
-		alt = int(arg.(float32))
-	}
-
+func sayAltitude(alt int, r *rand.Rand) string {
 	alt = 100 * (alt / 100) // round to 100s
 	if alt >= 18000 {
 		// flight levels
@@ -435,6 +433,31 @@ func (a *AltSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 			}
 		}
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AltSnippetFormatter
+
+// AltSnippetFormatter formats altitudes, which may be given as ints or float32s.
+type AltSnippetFormatter struct{}
+
+func (a *AltSnippetFormatter) Written(arg any) string {
+	if alt, ok := arg.(float32); ok {
+		return av.FormatAltitude(alt)
+	} else if alt, ok := arg.(int); ok {
+		return av.FormatAltitude(float32(alt))
+	} else {
+		return "???"
+	}
+}
+
+func (a *AltSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	alt, ok := arg.(int)
+	if !ok {
+		alt = int(arg.(float32))
+	}
+
+	return sayAltitude(alt, r)
 }
 
 func (a *AltSnippetFormatter) Validate(arg any) error {
@@ -523,7 +546,7 @@ func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	if opts, ok := sayAirportMap[icao]; ok && len(opts) > 0 {
 		ap, _ := rand.SampleSeq(r, slices.Values(opts))
 		return ap
-	} else if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+	} else if ap, ok := av.DB.Airports[icao]; ok && ap.Name != "" {
 		name := ap.Name
 
 		// If it's multiple things separated by a slash, pick one at random.
@@ -569,14 +592,14 @@ func shortenController(n string) string {
 }
 
 func (DepControllerSnippetFormatter) Written(arg any) string {
-	n := arg.(*Controller).RadioName
+	n := arg.(*av.Controller).RadioName
 	n = strings.ReplaceAll(n, "Approach", "Departure")
 	n = strings.ReplaceAll(n, "approach", "departure")
 	return n
 }
 
 func (DepControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	n := arg.(*Controller).RadioName
+	n := arg.(*av.Controller).RadioName
 	n = strings.ReplaceAll(n, "Approach", "Departure")
 	n = strings.ReplaceAll(n, "approach", "departure")
 	if r.Bool() {
@@ -587,8 +610,8 @@ func (DepControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func (DepControllerSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(*Controller); !ok {
-		return fmt.Errorf("expected *Controller arg, got %T", arg)
+	if _, ok := arg.(*av.Controller); !ok {
+		return fmt.Errorf("expected *av.Controller arg, got %T", arg)
 	}
 	return nil
 }
@@ -599,14 +622,14 @@ func (DepControllerSnippetFormatter) Validate(arg any) error {
 type AppControllerSnippetFormatter struct{}
 
 func (AppControllerSnippetFormatter) Written(arg any) string {
-	n := arg.(*Controller).RadioName
+	n := arg.(*av.Controller).RadioName
 	n = strings.ReplaceAll(n, "Departure", "Approach")
 	n = strings.ReplaceAll(n, "departure", "approach")
 	return n
 }
 
 func (AppControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	n := arg.(*Controller).RadioName
+	n := arg.(*av.Controller).RadioName
 	n = strings.ReplaceAll(n, "Departure", "Approach")
 	n = strings.ReplaceAll(n, "departure", "approach")
 	if r.Bool() {
@@ -617,8 +640,8 @@ func (AppControllerSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func (AppControllerSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(*Controller); !ok {
-		return fmt.Errorf("expected *Controller arg, got %T", arg)
+	if _, ok := arg.(*av.Controller); !ok {
+		return fmt.Errorf("expected *av.Controller arg, got %T", arg)
 	}
 	return nil
 }
@@ -669,9 +692,9 @@ func (FixSnippetFormatter) Written(arg any) string {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
-	if aid, ok := DB.Navaids[fix]; ok {
+	if aid, ok := av.DB.Navaids[fix]; ok {
 		return util.StopShouting(aid.Name)
-	} else if ap, ok := DB.Airports[fix]; ok {
+	} else if ap, ok := av.DB.Airports[fix]; ok {
 		return ap.Name
 	}
 	return fix
@@ -769,26 +792,28 @@ func (BasicNumberSnippetFormatter) Validate(arg any) error {
 type CallsignSnippetFormatter struct{}
 
 func (CallsignSnippetFormatter) Written(arg any) string {
-	ac := arg.(Aircraft)
-	idx := strings.IndexAny(string(ac.ADSBCallsign), "0123456789")
-	icao, fnum := string(ac.ADSBCallsign[:idx]), string(ac.ADSBCallsign[idx:])
+	callsign := string(arg.(av.ADSBCallsign))
+
+	idx := strings.IndexAny(callsign, "0123456789")
+	icao, fnum := callsign[:idx], callsign[idx:]
 	if icao == "N" {
-		return string(ac.ADSBCallsign)
+		return callsign
 	}
 
-	cs := DB.Callsigns[icao] + " " + fnum + heavySuper(ac)
+	cs := av.DB.Callsigns[icao] + " " + fnum
 
 	return cs
 }
 
 func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	ac := arg.(Aircraft)
-	idx := strings.IndexAny(string(ac.ADSBCallsign), "0123456789")
-	icao, fnum := string(ac.ADSBCallsign[:idx]), string(ac.ADSBCallsign[idx:])
+	callsign := string(arg.(av.ADSBCallsign))
+
+	idx := strings.IndexAny(callsign, "0123456789")
+	icao, fnum := callsign[:idx], callsign[idx:]
 
 	if icao == "N" {
 		var s []string
-		for _, ch := range ac.ADSBCallsign {
+		for _, ch := range callsign {
 			if ch >= '0' && ch <= '9' {
 				s = append(s, sayDigit(int(ch-'0')))
 			} else {
@@ -808,29 +833,12 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	}
 
 	// figure out the telephony
-	tel := DB.Callsigns[icao]
+	tel := av.DB.Callsigns[icao]
 	if tel2, ok := sayAirlineMap[tel]; ok { // overrides
 		tel = tel2
 	}
 
-	cs := tel + " " + sayFlightNumber(fnum) + suffix
-	if r.Bool() {
-		// Pilots don't always read back heavy/super
-		cs += heavySuper(ac)
-	}
-
-	return cs
-}
-
-func heavySuper(ac Aircraft) string {
-	if perf, ok := DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
-		if perf.WeightClass == "H" {
-			return " heavy"
-		} else if perf.WeightClass == "J" {
-			return " super"
-		}
-	}
-	return ""
+	return tel + " " + sayFlightNumber(fnum) + suffix
 }
 
 func sayFlightNumber(id string) string {
@@ -849,7 +857,7 @@ func sayFlightNumber(id string) string {
 }
 
 func (CallsignSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(Aircraft); !ok {
+	if _, ok := arg.(av.ADSBCallsign); !ok {
 		return fmt.Errorf("expected *Aircraft arg, got %T", arg)
 	}
 	return nil
@@ -945,12 +953,12 @@ func (STARSnippetFormatter) Validate(arg any) error {
 type FrequencySnippetFormatter struct{}
 
 func (FrequencySnippetFormatter) Written(arg any) string {
-	f := arg.(Frequency)
+	f := arg.(av.Frequency)
 	return fmt.Sprintf("%03d.%02d", f/1000, (f%1000)/10)
 }
 
 func (FrequencySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	f := arg.(Frequency)
+	f := arg.(av.Frequency)
 	whole := (f / 1000) % 100
 	frac := (f % 1000) / 10
 	point := ""
@@ -966,7 +974,7 @@ func (FrequencySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func (FrequencySnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(Frequency); !ok {
+	if _, ok := arg.(av.Frequency); !ok {
 		return fmt.Errorf("expected Frequency arg, got %T", arg)
 	}
 	return nil
@@ -1000,12 +1008,12 @@ func (GroupFormSnippetFormatter) Validate(arg any) error {
 type BeaconCodeSnippetFormatter struct{}
 
 func (BeaconCodeSnippetFormatter) Written(arg any) string {
-	v := arg.(Squawk)
+	v := arg.(av.Squawk)
 	return v.String()
 }
 
 func (BeaconCodeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	v := arg.(Squawk)
+	v := arg.(av.Squawk)
 	s := v.String()
 	if r.Bool() {
 		return s[:2] + " " + s[2:]
@@ -1015,7 +1023,7 @@ func (BeaconCodeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func (BeaconCodeSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(Squawk); !ok {
+	if _, ok := arg.(av.Squawk); !ok {
 		return fmt.Errorf("expected Squawk arg, got %T", arg)
 	}
 	return nil
@@ -1027,7 +1035,7 @@ func (BeaconCodeSnippetFormatter) Validate(arg any) error {
 type AircraftTypeSnippetFormatter struct{}
 
 func (AircraftTypeSnippetFormatter) Written(arg any) string {
-	return DB.AircraftTypeAliases[arg.(string)] + "(" + arg.(string) + ")"
+	return av.DB.AircraftTypeAliases[arg.(string)] + "(" + arg.(string) + ")"
 }
 
 func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
@@ -1036,12 +1044,68 @@ func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 		s, _ := rand.SampleSeq(r, slices.Values(say))
 		return s
 	}
-	return DB.AircraftTypeAliases[ac]
+	return av.DB.AircraftTypeAliases[ac]
 }
 
 func (AircraftTypeSnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// AltRestrictionSnippetFormatter
+
+type AltRestrictionSnippetFormatter struct{}
+
+func (AltRestrictionSnippetFormatter) Written(arg any) string {
+	ar, ok := arg.(av.AltitudeRestriction)
+	if !ok {
+		ar = *arg.(*av.AltitudeRestriction)
+	}
+
+	if ar.Range[0] != 0 {
+		if ar.Range[1] == ar.Range[0] {
+			return "at " + av.FormatAltitude(ar.Range[0])
+		} else if ar.Range[1] != 0 {
+			return "between " + av.FormatAltitude(ar.Range[0]) + " and " + av.FormatAltitude(ar.Range[1])
+		} else {
+			return "at or above " + av.FormatAltitude(ar.Range[0])
+		}
+	} else if ar.Range[1] != 0 {
+		return "at or below " + av.FormatAltitude(ar.Range[1])
+	} else {
+		return ""
+	}
+}
+
+func (AltRestrictionSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	ar, ok := arg.(av.AltitudeRestriction)
+	if !ok {
+		ar = *arg.(*av.AltitudeRestriction)
+	}
+
+	if ar.Range[0] != 0 {
+		if ar.Range[1] == ar.Range[0] {
+			return "at " + sayAltitude(int(ar.Range[0]), r)
+		} else if ar.Range[1] != 0 {
+			return "between " + sayAltitude(int(ar.Range[0]), r) + " and " + sayAltitude(int(ar.Range[1]), r)
+		} else {
+			return "at or above " + sayAltitude(int(ar.Range[0]), r)
+		}
+	} else if ar.Range[1] != 0 {
+		return "at or below " + sayAltitude(int(ar.Range[1]), r)
+	} else {
+		return ""
+	}
+}
+
+func (AltRestrictionSnippetFormatter) Validate(arg any) error {
+	if _, ok := arg.(*av.AltitudeRestriction); !ok {
+		if _, ok := arg.(av.AltitudeRestriction); !ok {
+			return fmt.Errorf("expected [*]AltitudeRestriction arg, got %T", arg)
+		}
 	}
 	return nil
 }
