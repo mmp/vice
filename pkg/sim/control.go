@@ -214,6 +214,8 @@ func (s *Sim) ChangeSquawk(tcp string, callsign av.ADSBCallsign, sq av.Squawk) e
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
 			resp := av.MakePilotTransmission("squawk {beacon}", sq)
+			resp.Validate(s.lg)
+
 			return []av.RadioTransmission{av.RadioTransmission{
 				Controller:  tcp,
 				WrittenText: resp.Written(s.Rand),
@@ -232,6 +234,7 @@ func (s *Sim) ChangeTransponderMode(tcp string, callsign av.ADSBCallsign, mode a
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
 			resp := av.MakePilotTransmission("squawk " + strings.ToLower(mode.String()))
+			resp.Validate(s.lg)
 
 			return []av.RadioTransmission{av.RadioTransmission{
 				Controller:  tcp,
@@ -655,6 +658,8 @@ func (s *Sim) contactController(fromTCP string, sfp *STARSFlightPlan, ac *Aircra
 	if octrl, ok := s.State.Controllers[toTCP]; ok {
 		if toTCP == fromTCP {
 			resp := av.MakePilotTransmission("Unable, we are already on {freq}", octrl.Frequency)
+			resp.Validate(s.lg)
+
 			radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 				Controller:  sfp.ControllingController,
 				WrittenText: resp.Written(s.Rand),
@@ -670,6 +675,8 @@ func (s *Sim) contactController(fromTCP string, sfp *STARSFlightPlan, ac *Aircra
 		} else {
 			resp = av.MakePilotTransmission("[contact|over to|] {actrl} on {freq}, [good day|seeya|]", octrl, octrl.Frequency)
 		}
+		resp.Validate(s.lg)
+
 		radioTransmissions = append(radioTransmissions, av.RadioTransmission{
 			Controller:  sfp.ControllingController,
 			WrittenText: resp.Written(s.Rand),
@@ -1360,6 +1367,8 @@ func (s *Sim) processEnqueued() {
 				if ac.IsAssociated() {
 					ac.STARSFlightPlan.ControllingController = c.TCP
 					msg := ac.ContactMessage(s.ReportingPoints)
+					msg.Validate(s.lg)
+
 					r := []av.RadioTransmission{av.RadioTransmission{
 						Controller:  c.TCP,
 						WrittenText: msg.Written(s.Rand),

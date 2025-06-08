@@ -2215,9 +2215,9 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) PilotTransmission {
 	case TurnClosest:
 		return MakePilotTransmission("[heading|fly heading] {hdg}", hdg)
 	case TurnRight:
-		return MakePilotTransmission("[right heading|right] {hdg}", hdg)
+		return MakePilotTransmission("[right heading|right|turn right] {hdg}", hdg)
 	case TurnLeft:
-		return MakePilotTransmission("[left heading|left] {hdg}", hdg)
+		return MakePilotTransmission("[left heading|left|turn left] {hdg}", hdg)
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
 	}

@@ -1137,6 +1137,7 @@ func (s *Sim) updateState() {
 
 					msg := av.MakePilotTransmission("departing {airport}", airportName)
 					msg.Merge(ac.Nav.DepartureMessage())
+					msg.Validate(s.lg)
 					s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
 						Controller:  tcp,
 						WrittenText: msg.Written(s.Rand),
@@ -1324,6 +1325,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		pt.Merge(alt)
 	}
 
+	pt.Validate(s.lg)
 	s.postRadioEvents(ac.ADSBCallsign, tcp, []av.RadioTransmission{av.RadioTransmission{
 		Controller:  tcp,
 		WrittenText: pt.Written(s.Rand),

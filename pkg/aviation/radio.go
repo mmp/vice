@@ -142,35 +142,6 @@ func (pt *PilotTransmission) Merge(p PilotTransmission) {
 	pt.Unexpected = pt.Unexpected || p.Unexpected
 }
 
-// given a string of the form "hello [you|there] I'm [me|myself]", resolveStringOptions
-// returns a randomly sampled variant of the string, e.g. "hello there, I'm me".
-func resolveStringOptions(s string, r *rand.Rand) string {
-	inBrackets := false
-	var result, options strings.Builder
-	for _, ch := range s {
-		if ch == '[' {
-			if inBrackets {
-				panic("unclosed [")
-			}
-			inBrackets = true
-		} else if ch == ']' {
-			inBrackets = false
-			opts := strings.Split(options.String(), "|")
-			result.WriteString(opts[r.Intn(len(opts))])
-			options.Reset()
-		} else if inBrackets {
-			options.WriteRune(ch)
-		} else {
-			result.WriteRune(ch)
-		}
-	}
-	if inBrackets {
-		panic("unclosed [")
-	}
-
-	return result.String()
-}
-
 // Validate ensures that the types of arguments match with the formatting
 // directives in the PhraseFormatStrings; errors are logged to the provided
 // logger.
@@ -198,7 +169,7 @@ func (pt PilotTransmission) Spoken(r *rand.Rand) string {
 	var result []string
 
 	for i := range pt.Strings {
-		s := pt.Strings[i].Spoken(r, pt.Args[i]...)
+		s := pt.Strings[i].Spoken(r, pt.Args[i])
 		result = append(result, s)
 	}
 
@@ -211,7 +182,7 @@ func (pt PilotTransmission) Written(r *rand.Rand) string {
 	var result []string
 
 	for i := range pt.Strings {
-		s := pt.Strings[i].Written(r, pt.Args[i]...)
+		s := pt.Strings[i].Written(r, pt.Args[i])
 		result = append(result, s)
 	}
 
@@ -264,32 +235,29 @@ var (
 ///////////////////////////////////////////////////////////////////////////
 // PhraseFormatString
 
+// PhraseFormatString is a string that potentially includes
 type PhraseFormatString string
 
 // NOTE: allow extra args for variants. But need 1:1 for ordering...
 
-func (s PhraseFormatString) Written(r *rand.Rand, args ...any) string {
-	s = s.resolveOptions(r)
+func (s PhraseFormatString) Written(r *rand.Rand, args []any) string {
+	sr := s.resolveOptions(r, nil)
 
-	i := 0
 	var result bytes.Buffer
-	s.resolveFormatting(func(fmt TransmissionSnippetFormatter) {
-		result.WriteString(fmt.Written(args[i]))
-		i++
+	sr.applyFormatting(args, func(fmt TransmissionSnippetFormatter, arg any) {
+		result.WriteString(fmt.Written(arg))
 	}, func(ch rune) {
 		result.WriteRune(ch)
 	})
 	return result.String()
 }
 
-func (s PhraseFormatString) Spoken(r *rand.Rand, args ...any) string {
-	s = s.resolveOptions(r)
+func (s PhraseFormatString) Spoken(r *rand.Rand, args []any) string {
+	sr := s.resolveOptions(r, nil)
 
 	var result bytes.Buffer
-	arg := 0
-	s.resolveFormatting(func(f TransmissionSnippetFormatter) {
-		result.WriteString(f.Spoken(r, args[arg]))
-		arg++
+	sr.applyFormatting(args, func(f TransmissionSnippetFormatter, arg any) {
+		result.WriteString(f.Spoken(r, arg))
 	}, func(ch rune) {
 		result.WriteRune(ch)
 	})
@@ -297,30 +265,42 @@ func (s PhraseFormatString) Spoken(r *rand.Rand, args ...any) string {
 	return result.String()
 }
 
-func (s PhraseFormatString) Validate(args []any, lg *log.Logger) {
+func (s PhraseFormatString) Validate(args []any, lg *log.Logger) bool {
+	anyErrors := false
+	logFunc := func(err string) {
+		anyErrors = true
+		lg.Errorf("%s: %s", s, err)
+	}
+
+	for _, sr := range s.allResolved(logFunc) {
+		sr.applyFormatting(args, func(f TransmissionSnippetFormatter, arg any) {
+			if err := f.Validate(arg); err != nil {
+				logFunc(err.Error())
+			}
+		},
+			func(ch rune) {})
+	}
+	return !anyErrors
 }
 
-func (s PhraseFormatString) resolveFormatting(fmt func(TransmissionSnippetFormatter), c func(rune)) {
+func (s PhraseFormatString) applyFormatting(args []any, fmt func(TransmissionSnippetFormatter, any), c func(rune)) {
 	braceIndex := 0
+	argIndex := 0
 	foundBrace := false
 
+	// No error checking here: assume that Validate() has been called to catch any issues.
 	for i, ch := range s {
 		if ch == '{' {
-			if foundBrace {
-				panic("unclosed {")
-			}
 			foundBrace = true
 			braceIndex = i
 		} else if ch == '}' {
-			if !foundBrace {
-				panic("mismatched }")
-			}
 			foundBrace = false
 			match := string(s[braceIndex+1 : i])
 			if f, ok := phraseFormats[match]; ok {
-				fmt(f)
-			} else {
-				panic("unhandled format: " + match)
+				if argIndex < len(args) {
+					fmt(f, args[argIndex])
+					argIndex++
+				}
 			}
 		} else if !foundBrace {
 			c(ch)
@@ -328,8 +308,70 @@ func (s PhraseFormatString) resolveFormatting(fmt func(TransmissionSnippetFormat
 	}
 }
 
-func (s PhraseFormatString) resolveOptions(r *rand.Rand) PhraseFormatString {
-	return PhraseFormatString(resolveStringOptions(string(s), r))
+func (s PhraseFormatString) allResolved(err func(string)) []PhraseFormatString {
+	return allResolvedHelper("", string(s), err)
+}
+
+func allResolvedHelper(spre string, spost string, err func(string)) []PhraseFormatString {
+	inBrackets := false
+	var pre, options strings.Builder
+
+	pre.WriteString(spre)
+
+	for i, ch := range spost {
+		if ch == '[' {
+			if inBrackets {
+				err("unclosed [")
+			}
+			inBrackets = true
+		} else if ch == ']' {
+			inBrackets = false
+			var resolved []PhraseFormatString
+			for _, opt := range strings.Split(options.String(), "|") {
+				resolved = append(resolved, allResolvedHelper(pre.String()+opt, spost[i:], err)...)
+			}
+			return resolved
+		} else if inBrackets {
+			options.WriteRune(ch)
+		} else {
+			pre.WriteRune(ch)
+		}
+	}
+	if inBrackets {
+		err("unclosed [")
+	}
+
+	return []PhraseFormatString{PhraseFormatString(pre.String())}
+}
+
+// given a string of the form "hello [you|there] I'm [me|myself]", returns
+// a randomly sampled variant of the string, e.g. "hello there, I'm me".
+func (s PhraseFormatString) resolveOptions(r *rand.Rand, err func(string)) PhraseFormatString {
+	inBrackets := false
+	var result, options strings.Builder
+
+	for _, ch := range s {
+		if ch == '[' {
+			if inBrackets && err != nil {
+				err("unclosed [")
+			}
+			inBrackets = true
+		} else if ch == ']' {
+			inBrackets = false
+			opts := strings.Split(options.String(), "|")
+			result.WriteString(opts[r.Intn(len(opts))])
+			options.Reset()
+		} else if inBrackets {
+			options.WriteRune(ch)
+		} else {
+			result.WriteRune(ch)
+		}
+	}
+	if inBrackets && err != nil {
+		err("unclosed [")
+	}
+
+	return PhraseFormatString(result.String())
 }
 
 ///////////////////////////////////////////////////////////////////////////
