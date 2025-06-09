@@ -19,6 +19,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/rand"
+	"github.com/mmp/vice/pkg/speech"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/shirou/gopsutil/cpu"
@@ -138,6 +139,10 @@ func (s *Server) GetRunningSims() map[string]*RemoteSim {
 }
 
 func RunServer(extraScenario string, extraVideoMap string, serverPort int, lg *log.Logger) {
+	if err := speech.InitTTS(); err != nil {
+		lg.Errorf("TTS: %v", err)
+	}
+
 	l, err := net.Listen("tcp", fmt.Sprintf(":%d", serverPort))
 	if err != nil {
 		lg.Errorf("tcp listen: %v", err)
