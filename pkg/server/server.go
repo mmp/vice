@@ -56,7 +56,8 @@ import (
 // 36: STARS center representation changes
 // 37: rework STARS flight plan (et al)
 // 38: rework STARS flight plan (et al) ongoing
-const ViceSerializeVersion = 38
+// 39: speech v0.1
+const ViceSerializeVersion = 39
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
