@@ -1587,25 +1587,47 @@
 		}
 	},
 	"stars_config": {
-	    "center": "KAUS",
-	    "filters": {
-		"inhibit_ca": [
-			{
-				"id": "AUSNOCA",
-				"description": "AUS CONFLICT SUPPRESS",
-				"type": "polygon",
-				"floor": 0,
-				"ceiling": 7000,
-				"vertices": [
-					"N30.32.34.436,W97.48.10.531",
-					"N29.50.29.042,W97.46.59.802",
-					"N29.50.48.312,W97.31.59.718",
-					"N30.32.53.861,W97.33.04.560",
-					"N30.32.34.436,W97.48.10.531"
+		"center": "KAUS",
+		"filters": {
+			"inhibit_ca": [
+				{
+					"id": "AUSNOCA",
+					"description": "AUS CONFLICT SUPPRESS",
+					"type": "polygon",
+					"floor": 0,
+					"ceiling": 7000,
+					"vertices": [
+						"N30.32.34.436,W97.48.10.531",
+						"N29.50.29.042,W97.46.59.802",
+						"N29.50.48.312,W97.31.59.718",
+						"N30.32.53.861,W97.33.04.560",
+						"N30.32.34.436,W97.48.10.531"
+					]
+				}
+			]
+		},
+		"controller_configs": {
+			"1W": {
+				"flight_following_airspace": [
+					{
+						"type": "polygon",
+						"floor": 0,
+						"ceiling": 12000,
+						"vertices": "N029.31.23.338,W097.32.32.050 N029.31.37.702,W097.49.19.936 N029.48.19.614,W097.48.21.406 N029.48.00.876,W097.51.49.735 N029.53.32.656,W098.04.36.498 N030.07.02.458,W098.14.58.571 N030.48.01.713,W098.04.50.863 N030.47.50.301,W097.41.08.572 N029.43.22.530,W097.39.32.937 N029.31.23.681,W097.32.38.752"
+					}
+				]
+			},
+			"1E": {
+				"flight_following_airspace": [
+					{
+						"type": "polygon",
+						"floor": 0,
+						"ceiling": 12000,
+						"vertices": "N029.31.33.253,W097.31.58.048 N029.43.20.917,W097.38.59.648 N030.48.05.620,W097.40.27.401 N030.48.03.732,W097.06.09.799 N030.39.25.342,W097.06.36.853 N030.20.22.036,W096.48.48.845 N029.44.11.522,W096.49.03.237 N029.30.33.700,W096.55.43.881 N029.31.32.573,W097.31.44.672"
+					}
 				]
 			}
-		]
-	    },
+		},
 		"radar_sites": {
 			"AUS": {
 				"char": "A",
@@ -1741,5 +1763,27 @@
 			"GTU FINALS"
 		],
 		"video_map_file": "videomaps/ZHU-videomaps.gob.zst"
-	}
+	},
+	"vfr_reporting_points": [
+		{
+			"description": "Georgetown",
+			"location": "KGTU"
+		},
+		{
+			"description": "San Marcos",
+			"location": "KHYI"
+		},
+		{
+			"description": "Liberty Hill",
+			"location": "N030.39.58.679,W097.55.11.306"
+		},
+		{
+			"description": "Camp Swift",
+			"location": "N030.09.33.012,W097.16.54.367"
+		},
+		{
+			"description": "Bergstrom",
+			"location": "KAUS"
+		}
+	]
 }
