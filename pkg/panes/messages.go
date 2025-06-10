@@ -10,11 +10,11 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/speech"
 	"github.com/mmp/vice/pkg/util"
@@ -93,10 +93,10 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	}
 }
 
-func (mp *MessagesPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (mp *MessagesPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
 }
 

@@ -460,6 +460,11 @@ func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.Stat
 	}
 }
 
+type DeleteAircraftListArgs struct {
+	ControllerToken string
+	Aircraft        []sim.Aircraft
+}
+
 func (sd *Dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 

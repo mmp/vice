@@ -18,12 +18,12 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -449,7 +449,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
@@ -460,7 +460,7 @@ func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl pl
 	sp.makeSignificantPoints(ss)
 }
 
-func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
 	for _, name := range util.SortedMapKeys(ss.Airports) {
 		ap := ss.Airports[name]
@@ -498,7 +498,7 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 	sp.scopeDraw.airspace = nil
 }
 
-func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *log.Logger) {
+func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
 	addMap := func(vm sim.VideoMap) {
@@ -684,7 +684,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 }
 
-func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *server.ControlClient) (*sim.VideoMapLibrary, error) {
+func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.STARSFacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil

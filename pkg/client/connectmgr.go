@@ -1,17 +1,19 @@
-// pkg/server/connectmgr.go
+// pkg/client/connectmgr.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package server
+package client
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/rpc"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -44,8 +46,8 @@ type Connection struct {
 	SimProxy *proxy
 }
 
-func MakeServerConnection(address, additionalScenario, additionalVideoMap string, e *util.ErrorLogger, lg *log.Logger,
-	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, error) {
+func MakeServerManager(address, additionalScenario, additionalVideoMap string, lg *log.Logger,
+	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
 	cm := &ConnectionManager{
 		serverAddress:           address,
 		lastRemoteServerAttempt: time.Now(),
@@ -55,9 +57,26 @@ func MakeServerConnection(address, additionalScenario, additionalVideoMap string
 		onError:                 onError,
 	}
 
-	var err error
-	cm.localServerChan, err = LaunchLocalServer(additionalScenario, additionalVideoMap, e, lg)
-	return cm, err
+	// Launch local server
+	port, configs, errorLogger := server.LaunchServerAsync(server.ServerLaunchConfig{
+		ExtraScenario: additionalScenario,
+		ExtraVideoMap: additionalVideoMap,
+	}, lg)
+
+	if !errorLogger.HaveErrors() {
+		client, err := getClient(fmt.Sprintf("localhost:%d", port), lg)
+		if err != nil {
+			errorLogger.Error(err)
+		} else {
+			cm.LocalServer = &Server{
+				RPCClient: client,
+				name:      "Local (Single controller)",
+				configs:   configs,
+			}
+		}
+	}
+
+	return cm, errorLogger
 }
 
 func (cm *ConnectionManager) NewConnection(state sim.State, controllerToken string, client *RPCClient) {
@@ -75,7 +94,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 		cm.LocalServer = <-cm.localServerChan
 	}
 
-	var result NewSimResult
+	var result server.NewSimResult
 	if err := cm.LocalServer.Call("SimManager.AddLocal", s, &result); err != nil {
 		return nil, err
 	}
@@ -86,11 +105,11 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config NewSimConfiguration, srv *Server) error {
-	var result NewSimResult
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server) error {
+	var result server.NewSimResult
 	if err := srv.CallWithTimeout("SimManager.New", config, &result); err != nil {
-		err = TryDecodeError(err)
-		if err == ErrRPCTimeout || err == ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
+		err = server.TryDecodeError(err)
+		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
 			// loop try to reconnect.
 			cm.RemoteServer = nil
@@ -142,7 +161,8 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 	} else if time.Since(cm.lastRemoteSimsUpdate) > 2*time.Second &&
 		cm.RemoteServer != nil && cm.updateRemoteSimsCall == nil {
 		cm.lastRemoteSimsUpdate = time.Now()
-		var rs map[string]*RemoteSim
+
+		var rs map[string]*server.RemoteSim
 		cm.updateRemoteSimsError = nil
 		cm.updateRemoteSimsCall = makeRPCCall(cm.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
 			func(err error) {
@@ -185,10 +205,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 		if err := remoteServerConn.Err; err != nil {
 			lg.Info("Unable to connect to remote server", slog.Any("error", err))
 
-			if err.Error() == ErrRPCVersionMismatch.Error() {
+			if err.Error() == server.ErrRPCVersionMismatch.Error() {
 				cm.serverRPCVersionMismatch = true
 				if cm.onError != nil {
-					cm.onError(ErrRPCVersionMismatch)
+					cm.onError(server.ErrRPCVersionMismatch)
 				}
 			}
 			cm.RemoteServer = nil
@@ -211,14 +231,14 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 					Type:        sim.StatusMessageEvent,
 					WrittenText: "Error getting update from server: " + err.Error(),
 				})
-				if err == ErrRPCTimeout || util.IsRPCServerError(err) {
+				if err == server.ErrRPCTimeout || util.IsRPCServerError(err) {
 					cm.RemoteServer = nil
 					cm.client = nil
 					if cm.onNewClient != nil {
 						cm.onNewClient(nil)
 					}
 					if cm.onError != nil {
-						cm.onError(ErrServerDisconnected)
+						cm.onError(server.ErrServerDisconnected)
 					}
 				} else if cm.onError != nil {
 					cm.onError(err)

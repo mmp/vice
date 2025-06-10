@@ -20,13 +20,13 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/speech"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -126,9 +126,14 @@ func main() {
 		}
 		os.Exit(0)
 	} else if *broadcastMessage != "" {
-		server.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
+		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
-		server.RunServer(*scenarioFilename, *videoMapFilename, *serverPort, lg)
+		server.LaunchServer(server.ServerLaunchConfig{
+			Port:                *serverPort,
+			MultiControllerOnly: true,
+			ExtraScenario:       *scenarioFilename,
+			ExtraVideoMap:       *videoMapFilename,
+		}, lg)
 	} else if *showRoutes != "" {
 		if err := av.PrintCIFPRoutes(*showRoutes); err != nil {
 			lg.Errorf("%s", err)
@@ -163,23 +168,18 @@ func main() {
 
 		config, configErr := LoadOrMakeDefaultConfig(lg)
 
-		var controlClient *server.ControlClient
-		var mgr *server.ConnectionManager
+		var controlClient *client.ControlClient
 		var err error
-		var simErrorLogger util.ErrorLogger
 
 		plat, err = platform.New(&config.Config, lg)
 		if err != nil {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
 
-		if err := speech.InitTTS(); err != nil {
-			lg.Errorf("TTS: %v", err)
-		}
-
-		mgr, err = server.MakeServerConnection(*serverAddress, *scenarioFilename, *videoMapFilename,
-			&simErrorLogger, lg,
-			func(c *server.ControlClient) { // updated client
+		var mgr *client.ConnectionManager
+		var errorLogger util.ErrorLogger
+		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
@@ -205,14 +205,7 @@ func main() {
 				}
 			},
 		)
-		if err != nil {
-			lg.Errorf("%v", err)
-			os.Exit(1)
-		}
 
-		if configErr != nil {
-			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
-		}
 		imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
 
 		render, err = renderer.NewOpenGL2Renderer(lg)
@@ -225,10 +218,15 @@ func main() {
 
 		uiInit(render, plat, config, eventStream, lg)
 
+		// After we have plat and render
+		if configErr != nil {
+			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
+		}
+
 		config.Activate(render, plat, eventStream, lg)
 
-		if simErrorLogger.HaveErrors() { // After we have plat and render
-			ShowFatalErrorDialog(render, plat, lg, "%s", simErrorLogger.String())
+		if errorLogger.HaveErrors() {
+			ShowFatalErrorDialog(render, plat, lg, "%s", errorLogger.String())
 		}
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.

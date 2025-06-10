@@ -9,16 +9,23 @@ import (
 	"encoding/base64"
 	"encoding/gob"
 	"errors"
+	"fmt"
 	"log/slog"
+	gomath "math"
+	"net"
 	"net/http"
 	"os"
+	"runtime"
 	"strings"
+	"text/template"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+	"github.com/shirou/gopsutil/cpu"
 
 	"github.com/brunoga/deep"
 	"github.com/gorilla/websocket"
@@ -35,6 +42,7 @@ type SimManager struct {
 	mu                 util.LoggingMutex
 	mapManifests       map[string]*sim.VideoMapManifest
 	startTime          time.Time
+	httpPort           int
 	lg                 *log.Logger
 }
 
@@ -76,6 +84,51 @@ type ActiveSim struct {
 	local           bool
 
 	controllersByTCP map[string]*HumanController
+}
+
+type NewSimConfiguration struct {
+	// FIXME: unify Password/RemoteSimPassword, SelectedRemoteSim / NewSimName, etc.
+	NewSimType   int32
+	NewSimName   string
+	GroupName    string
+	ScenarioName string
+
+	SelectedRemoteSim         string
+	SelectedRemoteSimPosition string
+
+	Scenario *SimScenarioConfiguration
+
+	TFRs []av.TFR
+
+	TRACONName        string
+	RequirePassword   bool
+	Password          string // for create remote only
+	RemoteSimPassword string // for join remote only
+
+	LiveWeather bool
+
+	InstructorAllowed bool
+	Instructor        bool
+}
+
+const (
+	NewSimCreateLocal = iota
+	NewSimCreateRemote
+	NewSimJoinRemote
+)
+
+func MakeNewSimConfiguration() NewSimConfiguration {
+	return NewSimConfiguration{NewSimName: rand.Make().AdjectiveNoun()}
+}
+
+type RemoteSim struct {
+	GroupName          string
+	ScenarioName       string
+	PrimaryController  string
+	RequirePassword    bool
+	InstructorAllowed  bool
+	AvailablePositions map[string]av.Controller
+	CoveredPositions   map[string]av.Controller
 }
 
 func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
@@ -371,6 +424,7 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 type ConnectResult struct {
 	Configurations map[string]map[string]*Configuration
 	RunningSims    map[string]*RemoteSim
+	HTTPPort       int
 }
 
 func (sm *SimManager) Connect(version int, result *ConnectResult) error {
@@ -387,6 +441,7 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
+	result.HTTPPort = sm.httpPort
 
 	return nil
 }
@@ -592,24 +647,159 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 	return nil
 }
 
-func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
-	client, err := getClient(hostname, lg)
-	if err != nil {
-		lg.Errorf("unable to get client for broadcast: %v", err)
-		return
+///////////////////////////////////////////////////////////////////////////
+// Status / statistics via HTTP...
+
+func (sm *SimManager) launchHTTPServer() {
+	handler := http.NewServeMux()
+	handler.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
+		sm.statsHandler(w, r)
+		sm.lg.Infof("%s: served stats request", r.URL.String())
+	})
+	handler.HandleFunc("/speech", sm.handleSpeechWSConnection)
+
+	var listener net.Listener
+	var err error
+	for i := range 10 {
+		port := ViceHTTPServerPort + i
+		if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", port)); err == nil {
+			sm.httpPort = port
+			fmt.Printf("Launching HTTP server on port %d\n", port)
+			break
+		}
 	}
 
-	err = client.CallWithTimeout("SimManager.Broadcast", &SimBroadcastMessage{
-		Password: password,
-		Message:  msg,
-	}, nil)
-
 	if err != nil {
-		lg.Errorf("broadcast error: %v", err)
+		sm.lg.Warnf("Unable to start HTTP server")
+	} else {
+		go func() {
+			http.Serve(listener, handler)
+		}()
 	}
 }
 
-func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
+type serverStats struct {
+	Uptime           time.Duration
+	AllocMemory      uint64
+	TotalAllocMemory uint64
+	SysMemory        uint64
+	RX, TX           int64
+	NumGC            uint32
+	NumGoRoutines    int
+	CPUUsage         int
+
+	SimStatus []simStatus
+}
+
+func formatBytes(v int64) string {
+	if v < 1024 {
+		return fmt.Sprintf("%d B", v)
+	} else if v < 1024*1024 {
+		return fmt.Sprintf("%d KiB", v/1024)
+	} else if v < 1024*1024*1024 {
+		return fmt.Sprintf("%d MiB", v/1024/1024)
+	} else {
+		return fmt.Sprintf("%d GiB", v/1024/1024/1024)
+	}
+}
+
+var templateFuncs = template.FuncMap{"bytes": formatBytes}
+
+var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
+<!DOCTYPE html>
+<html>
+<head>
+<title>vice vice baby</title>
+</head>
+<style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #dddddd;
+  padding: 8px;
+  text-align: left;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#log {
+    font-family: "Courier New", monospace;  /* use a monospace font */
+    width: 100%;
+    height: 500px;
+    font-size: 12px;
+    overflow: auto;  /* add scrollbars as necessary */
+    white-space: pre-wrap;  /* wrap text */
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+</style>
+<body>
+<h1>Server Status</h1>
+<ul>
+  <li>Uptime: {{.Uptime}}</li>
+  <li>CPU usage: {{.CPUUsage}}%</li>
+  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX</li>
+  <li>Allocated memory: {{.AllocMemory}} MB</li>
+  <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
+  <li>System memory: {{.SysMemory}} MB</li>
+  <li>Garbage collection passes: {{.NumGC}}</li>
+  <li>Running goroutines: {{.NumGoRoutines}}</li>
+</ul>
+
+<h1>Sim Status</h1>
+<table>
+  <tr>
+  <th>Name</th>
+  <th>Scenario</th>
+  <th>IFR</th>
+  <th>VFR</th>
+  <th>Idle Time</th>
+  <th>Active Controllers</th>
+
+{{range .SimStatus}}
+  </tr>
+  <td>{{.Name}}</td>
+  <td>{{.Config}}</td>
+  <td>{{.TotalIFR}}</td>
+  <td>{{.TotalVFR}}</td>
+  <td>{{.IdleTime}}</td>
+  <td><tt>{{.Controllers}}</tt></td>
+</tr>
+{{end}}
+</table>
+
+</body>
+</html>
+`))
+
+func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+
+	usage, _ := cpu.Percent(time.Second, false)
+	stats := serverStats{
+		Uptime:           time.Since(sm.startTime).Round(time.Second),
+		AllocMemory:      m.Alloc / (1024 * 1024),
+		TotalAllocMemory: m.TotalAlloc / (1024 * 1024),
+		SysMemory:        m.Sys / (1024 * 1024),
+		NumGC:            m.NumGC,
+		NumGoRoutines:    runtime.NumGoroutine(),
+		CPUUsage:         int(gomath.Round(usage[0])),
+
+		SimStatus: sm.getSimStatus(),
+	}
+
+	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()
+
+	statsTemplate.Execute(w, stats)
+}
+
+func (sm *SimManager) handleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if !strings.HasPrefix(authHeader, "Bearer ") {
 		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)

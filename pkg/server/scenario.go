@@ -1434,7 +1434,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *Scen
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMapFilename string,
+func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, extraVideoMapFilename string,
 	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*ScenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest) {
 	start := time.Now()
 
@@ -1582,8 +1582,7 @@ func LoadScenarioGroups(isLocal bool, extraScenarioFilename string, extraVideoMa
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
 			} else {
-				multiController := !isLocal
-				sgroup.PostDeserialize(multiController, e, simConfigurations, manifest)
+				sgroup.PostDeserialize(multiControllerOnly, e, simConfigurations, manifest)
 			}
 
 			e.Pop()

@@ -17,6 +17,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
@@ -42,14 +43,14 @@ type NewSimConfiguration struct {
 
 	displayError error
 
-	mgr            *server.ConnectionManager
-	selectedServer *server.Server
+	mgr            *client.ConnectionManager
+	selectedServer *client.Server
 	defaultTRACON  *string
 	tfrCache       *av.TFRCache
 	lg             *log.Logger
 }
 
-func MakeNewSimConfiguration(mgr *server.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
+func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
 	c := &NewSimConfiguration{
 		lg:                  lg,
 		mgr:                 mgr,
@@ -874,7 +875,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
-	client              *server.ControlClient
+	client              *client.ControlClient
 	departures          []*LaunchDeparture
 	vfrDepartures       []*LaunchDeparture
 	arrivalsOverflights []*LaunchArrivalOverflight
@@ -906,7 +907,7 @@ type LaunchArrivalOverflight struct {
 	Group string
 }
 
-func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *LaunchControlWindow {
+func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *LaunchControlWindow {
 	lc := &LaunchControlWindow{client: client, lg: lg}
 
 	config := &client.State.LaunchConfig
@@ -1520,7 +1521,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	}
 }
 
-func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})

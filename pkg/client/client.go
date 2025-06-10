@@ -1,13 +1,14 @@
-// pkg/server/client.go
+// pkg/client/client.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package server
+package client
 
 import (
 	"encoding/gob"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"net/rpc"
 	"os"
@@ -22,6 +23,7 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -55,6 +57,15 @@ type ControlClient struct {
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	State sim.State
+}
+
+// This is the client-side representation of a server (perhaps could be better-named...)
+type Server struct {
+	*RPCClient
+	name        string
+	configs     map[string]map[string]*server.Configuration
+	runningSims map[string]*server.RemoteSim
+	httpAddress string
 }
 
 type SessionStats struct {
@@ -115,7 +126,7 @@ func (c *RPCClient) CallWithTimeout(serviceMethod string, args any, reply any) e
 
 		case <-time.After(5 * time.Second):
 			if !debuggerIsRunning() {
-				return ErrRPCTimeout
+				return server.ErrRPCTimeout
 			}
 		}
 	}
@@ -189,8 +200,8 @@ func initializeSpeechWebsocket(controllerToken string, local bool, lg *log.Logge
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+controllerToken)
 
-	host := util.Select(local, "localhost", ViceServerAddress)
-	conn, _, err := websocket.DefaultDialer.Dial("ws://"+host+":"+strconv.Itoa(ViceHTTPServerPort)+"/speech", header)
+	host := util.Select(local, "localhost", server.ViceServerAddress)
+	conn, _, err := websocket.DefaultDialer.Dial("ws://"+host+":"+strconv.Itoa(server.ViceHTTPServerPort)+"/speech", header)
 
 	if err != nil {
 		lg.Errorf("speech websocket: %v", err)
@@ -431,7 +442,7 @@ func (c *ControlClient) Disconnect() {
 // Note that the success callback is passed an integer, giving the index of
 // the newly-created restriction area.
 func (c *ControlClient) CreateRestrictionArea(ra av.RestrictionArea, callback func(int, error)) {
-	var result CreateRestrictionAreaResultArgs
+	var result server.CreateRestrictionAreaResultArgs
 	c.addCall(makeStateUpdateRPCCall(c.proxy.CreateRestrictionArea(ra, &result), &result.StateUpdate,
 		func(err error) {
 			if callback != nil {
@@ -595,7 +606,7 @@ func checkTimeout(call *PendingCall, eventStream *sim.EventStream, onErr func(er
 			WrittenText: "No response from server for over 5 seconds. Network connection may be lost.",
 		})
 		if onErr != nil {
-			onErr(ErrRPCTimeout)
+			onErr(server.ErrRPCTimeout)
 		}
 		return true
 	}
@@ -719,7 +730,7 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 		c.mu.Unlock()
 	}
 
-	var result AircraftCommandsResult
+	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.proxy.RunAircraftCommands(callsign, cmds, &result),
 		func(err error) {
 			if result.RemainingInput == cmds {
@@ -795,4 +806,91 @@ func (c *ControlClient) LastTransmissionCallsign() av.ADSBCallsign {
 	defer c.mu.Unlock()
 
 	return c.lastTransmissionCallsign
+}
+
+type serverConnection struct {
+	Server *Server
+	Err    error
+}
+
+func (s *Server) Close() error {
+	return s.RPCClient.Close()
+}
+
+func (s *Server) GetConfigs() map[string]map[string]*server.Configuration {
+	return s.configs
+}
+
+func (s *Server) setRunningSims(rs map[string]*server.RemoteSim) {
+	s.runningSims = rs
+}
+
+func (s *Server) GetRunningSims() map[string]*server.RemoteSim {
+	return s.runningSims
+}
+
+func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
+	conn, err := net.Dial("tcp", hostname)
+	if err != nil {
+		return nil, err
+	}
+
+	cc, err := util.MakeCompressedConn(conn)
+	if err != nil {
+		return nil, err
+	}
+
+	codec := util.MakeGOBClientCodec(cc)
+	codec = util.MakeLoggingClientCodec(hostname, codec, lg)
+	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
+}
+
+func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnection {
+	ch := make(chan *serverConnection, 1)
+	go func() {
+		if client, err := getClient(hostname, lg); err != nil {
+			ch <- &serverConnection{Err: err}
+			return
+		} else {
+			var cr server.ConnectResult
+			start := time.Now()
+			if err := client.CallWithTimeout("SimManager.Connect", server.ViceRPCVersion, &cr); err != nil {
+				ch <- &serverConnection{Err: err}
+			} else {
+				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
+				httpAddress := ""
+				if cr.HTTPPort != 0 {
+					httpAddress = hostname + ":" + strconv.Itoa(cr.HTTPPort)
+				}
+				ch <- &serverConnection{
+					Server: &Server{
+						RPCClient:   client,
+						name:        "Network (Multi-controller)",
+						configs:     cr.Configurations,
+						runningSims: cr.RunningSims,
+						httpAddress: httpAddress,
+					},
+				}
+			}
+		}
+	}()
+
+	return ch
+}
+
+func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
+	client, err := getClient(hostname, lg)
+	if err != nil {
+		lg.Errorf("unable to get client for broadcast: %v", err)
+		return
+	}
+
+	err = client.CallWithTimeout("SimManager.Broadcast", &server.SimBroadcastMessage{
+		Password: password,
+		Message:  msg,
+	}, nil)
+
+	if err != nil {
+		lg.Errorf("broadcast error: %v", err)
+	}
 }
