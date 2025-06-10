@@ -1774,16 +1774,16 @@
 			"location": "KHYI"
 		},
 		{
-			"description": "Liberty Hill",
-			"location": "N030.39.58.679,W097.55.11.306"
-		},
-		{
-			"description": "Camp Swift",
-			"location": "N030.09.33.012,W097.16.54.367"
-		},
-		{
 			"description": "Bergstrom",
 			"location": "KAUS"
+		},
+		{
+			"description": "Austin Executive",
+			"location": "KEDC"
+		},
+		{
+			"description": "Centex VOR",
+			"location": "CWK"
 		}
 	]
 }
