@@ -72,27 +72,30 @@ func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
 }
 
 func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, map[string]map[string]*Configuration, util.ErrorLogger) {
-	port, server, configs, e := makeServer(config, lg)
+	rpcPort, server, configs, e := makeServer(config, lg)
 	if e.HaveErrors() {
 		return 0, nil, e
 	}
 
 	go server()
 
-	return port, configs, e
+	return rpcPort, configs, e
 }
 
 func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), map[string]map[string]*Configuration, util.ErrorLogger) {
 	var listener net.Listener
 	var err error
 	var errorLogger util.ErrorLogger
+	var rpcPort int
 	if config.Port == 0 {
 		if listener, err = net.Listen("tcp", ":0"); err != nil {
 			errorLogger.Error(err)
 			return 0, nil, nil, errorLogger
 		}
-		config.Port = listener.Addr().(*net.TCPAddr).Port
-	} else if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", config.Port)); err != nil {
+		rpcPort = listener.Addr().(*net.TCPAddr).Port
+	} else if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", config.Port)); err == nil {
+		rpcPort = config.Port
+	} else {
 		errorLogger.Error(err)
 		return 0, nil, nil, errorLogger
 	}
@@ -107,7 +110,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), map[str
 		lg.Warnf("TTS: %v", err)
 	}
 
-	server := func() {
+	serverFunc := func() {
 		server := rpc.NewServer()
 
 		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, lg)
@@ -137,5 +140,5 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), map[str
 		}
 	}
 
-	return config.Port, server, simConfigurations, errorLogger
+	return rpcPort, serverFunc, simConfigurations, errorLogger
 }

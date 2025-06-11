@@ -147,7 +147,7 @@ func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
 func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
 	lg *log.Logger) *SimManager {
-	return &SimManager{
+	sm := &SimManager{
 		scenarioGroups:     scenarioGroups,
 		configs:            simConfigurations,
 		activeSims:         make(map[string]*ActiveSim),
@@ -156,11 +156,16 @@ func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
 		startTime:          time.Now(),
 		lg:                 lg,
 	}
+
+	sm.launchHTTPServer()
+
+	return sm
 }
 
 type NewSimResult struct {
 	SimState        *sim.State
 	ControllerToken string
+	HTTPPort        int
 }
 
 func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
@@ -207,6 +212,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		*result = NewSimResult{
 			SimState:        ss,
 			ControllerToken: token,
+			HTTPPort:        sm.httpPort,
 		}
 		return nil
 	}
@@ -416,6 +422,7 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 	*result = NewSimResult{
 		SimState:        ss,
 		ControllerToken: token,
+		HTTPPort:        sm.httpPort,
 	}
 
 	return nil
@@ -424,7 +431,7 @@ func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) er
 type ConnectResult struct {
 	Configurations map[string]map[string]*Configuration
 	RunningSims    map[string]*RemoteSim
-	HTTPPort       int
+	SpeechWSPort   int
 }
 
 func (sm *SimManager) Connect(version int, result *ConnectResult) error {
@@ -441,7 +448,7 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
-	result.HTTPPort = sm.httpPort
+	result.SpeechWSPort = sm.httpPort
 
 	return nil
 }
@@ -480,6 +487,33 @@ func (sm *SimManager) signOff(token string) error {
 		delete(sm.controllersByToken, token)
 
 		return err
+	}
+}
+
+func (sm *SimManager) handleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+		return
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	ctrl, ok := sm.controllersByToken[token]
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
+		return
+	}
+	if ctrl.speechWs != nil {
+		ctrl.speechWs.Close()
+	}
+
+	var err error
+	upgrader := websocket.Upgrader{EnableCompression: false}
+	ctrl.speechWs, err = upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		sm.lg.Errorf("Unable to upgrade speech websocket: %v", err)
+		return
 	}
 }
 
@@ -551,14 +585,6 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 	return nil
 }
 
-type simStatus struct {
-	Name               string
-	Config             string
-	IdleTime           time.Duration
-	Controllers        string
-	TotalIFR, TotalVFR int
-}
-
 func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) error {
 	sm.mu.Lock(sm.lg)
 
@@ -583,38 +609,6 @@ func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) erro
 
 		return nil
 	}
-}
-
-func (ss simStatus) LogValue() slog.Value {
-	return slog.GroupValue(
-		slog.String("name", ss.Name),
-		slog.String("config", ss.Config),
-		slog.Duration("idle", ss.IdleTime),
-		slog.String("controllers", ss.Controllers),
-		slog.Int("total_ifr", ss.TotalIFR),
-		slog.Int("total_vfr", ss.TotalVFR))
-}
-
-func (sm *SimManager) getSimStatus() []simStatus {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	var ss []simStatus
-	for _, name := range util.SortedMapKeys(sm.activeSims) {
-		as := sm.activeSims[name]
-		status := simStatus{
-			Name:        name,
-			Config:      as.scenario,
-			IdleTime:    as.sim.IdleTime().Round(time.Second),
-			TotalIFR:    as.sim.State.TotalIFR,
-			TotalVFR:    as.sim.State.TotalVFR,
-			Controllers: strings.Join(as.sim.ActiveControllers(), ", "),
-		}
-
-		ss = append(ss, status)
-	}
-
-	return ss
 }
 
 type SimBroadcastMessage struct {
@@ -650,7 +644,7 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 ///////////////////////////////////////////////////////////////////////////
 // Status / statistics via HTTP...
 
-func (sm *SimManager) launchHTTPServer() {
+func (sm *SimManager) launchHTTPServer() int {
 	handler := http.NewServeMux()
 	handler.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		sm.statsHandler(w, r)
@@ -660,8 +654,9 @@ func (sm *SimManager) launchHTTPServer() {
 
 	var listener net.Listener
 	var err error
+	var port int
 	for i := range 10 {
-		port := ViceHTTPServerPort + i
+		port = ViceHTTPServerPort + i
 		if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", port)); err == nil {
 			sm.httpPort = port
 			fmt.Printf("Launching HTTP server on port %d\n", port)
@@ -671,10 +666,12 @@ func (sm *SimManager) launchHTTPServer() {
 
 	if err != nil {
 		sm.lg.Warnf("Unable to start HTTP server")
+		return 0
 	} else {
-		go func() {
-			http.Serve(listener, handler)
-		}()
+		go http.Serve(listener, handler)
+
+		sm.httpPort = port
+		return port
 	}
 }
 
@@ -701,6 +698,46 @@ func formatBytes(v int64) string {
 	} else {
 		return fmt.Sprintf("%d GiB", v/1024/1024/1024)
 	}
+}
+
+type simStatus struct {
+	Name               string
+	Config             string
+	IdleTime           time.Duration
+	Controllers        string
+	TotalIFR, TotalVFR int
+}
+
+func (ss simStatus) LogValue() slog.Value {
+	return slog.GroupValue(
+		slog.String("name", ss.Name),
+		slog.String("config", ss.Config),
+		slog.Duration("idle", ss.IdleTime),
+		slog.String("controllers", ss.Controllers),
+		slog.Int("total_ifr", ss.TotalIFR),
+		slog.Int("total_vfr", ss.TotalVFR))
+}
+
+func (sm *SimManager) getSimStatus() []simStatus {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	var ss []simStatus
+	for _, name := range util.SortedMapKeys(sm.activeSims) {
+		as := sm.activeSims[name]
+		status := simStatus{
+			Name:        name,
+			Config:      as.scenario,
+			IdleTime:    as.sim.IdleTime().Round(time.Second),
+			TotalIFR:    as.sim.State.TotalIFR,
+			TotalVFR:    as.sim.State.TotalVFR,
+			Controllers: strings.Join(as.sim.ActiveControllers(), ", "),
+		}
+
+		ss = append(ss, status)
+	}
+
+	return ss
 }
 
 var templateFuncs = template.FuncMap{"bytes": formatBytes}
@@ -797,31 +834,4 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()
 
 	statsTemplate.Execute(w, stats)
-}
-
-func (sm *SimManager) handleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-		return
-	}
-
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-	ctrl, ok := sm.controllersByToken[token]
-	if !ok {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
-		return
-	}
-	if ctrl.speechWs != nil {
-		ctrl.speechWs.Close()
-	}
-
-	var err error
-	upgrader := websocket.Upgrader{EnableCompression: false}
-	ctrl.speechWs, err = upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		sm.lg.Errorf("Unable to upgrade speech websocket: %v", err)
-		return
-	}
 }
