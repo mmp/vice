@@ -43,6 +43,7 @@ type SimManager struct {
 	mapManifests       map[string]*sim.VideoMapManifest
 	startTime          time.Time
 	httpPort           int
+	websocketTXBytes   int64
 	lg                 *log.Logger
 }
 
@@ -394,6 +395,8 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, prespawn bool) er
 				}
 
 				for _, ps := range as.sim.GetControllerSpeech(tcp) {
+					sm.websocketTXBytes += int64(len(ps.MP3))
+
 					w, err := ctrl.speechWs.NextWriter(websocket.BinaryMessage)
 					if err != nil {
 						sm.lg.Errorf("speechWs: %v", err)
@@ -685,6 +688,7 @@ type serverStats struct {
 	TotalAllocMemory uint64
 	SysMemory        uint64
 	RX, TX           int64
+	TXWebsocket      int64
 	NumGC            uint32
 	NumGoRoutines    int
 	CPUUsage         int
@@ -784,7 +788,7 @@ tr:nth-child(even) {
 <ul>
   <li>Uptime: {{.Uptime}}</li>
   <li>CPU usage: {{.CPUUsage}}%</li>
-  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX</li>
+  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX, {{bytes .TXWebsocket}} TX Websocket</li>
   <li>Allocated memory: {{.AllocMemory}} MB</li>
   <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
   <li>System memory: {{.SysMemory}} MB</li>
@@ -831,6 +835,7 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 		NumGC:            m.NumGC,
 		NumGoRoutines:    runtime.NumGoroutine(),
 		CPUUsage:         int(gomath.Round(usage[0])),
+		TXWebsocket:      sm.websocketTXBytes,
 
 		SimStatus: sm.getSimStatus(),
 	}
