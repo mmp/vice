@@ -1,5 +1,8 @@
 {
   "tracon": "D10",
+  "name": "D10",
+  "primary_airport": "KDFW",
+  "default_scenario": "D10 COMBINED NF",
   "airports": {
     "KDFW": {
       "hold_for_release": false,
@@ -5521,52 +5524,52 @@
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
             "sid": "DALL3",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL3",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
             "sid": "JPOOL7",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL7",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
             "sid": "KUSSO1",
-            "waypoints": "_RBD_31/h312"
+            "waypoints": "_RBD_31/h120"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
             "sid": "NANDR2",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "PGLET,TYGGR,ROOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "FERRA,PODDE": {
             "cleared_altitude": 3000,
             "sid": "WORTH1",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING4",
-            "waypoints": "_RBD_31/h309"
+            "waypoints": "_RBD_31/h120"
           }
         }
       }
@@ -7306,52 +7309,52 @@
           "NOBLY,TRISS,SOLDO,CLARE": {
             "cleared_altitude": 3000,
             "sid": "DALL3",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h030"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "DALL3",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h040"
           },
           "DARTZ,ARDIA,JASPA,NELYN": {
             "cleared_altitude": 3000,
             "sid": "JPOOL7",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h120"
           },
           "DARTZ.PROP,ARDIA.PROP,JASPA.PROP,NELYN.PROP": {
             "cleared_altitude": 3000,
             "sid": "JPOOL7",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h120"
           },
           "ZERLU,TRRCH,HANUH,JJANE": {
             "cleared_altitude": 3000,
             "sid": "KUSSO1",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h030"
           },
           "LOWGN,BLECO,GRABE,AKUNA": {
             "cleared_altitude": 3000,
             "sid": "NANDR2",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h030"
           },
           "LOWGN.PROP,BLECO.PROP,GRABE.PROP,AKUNA.PROP": {
             "cleared_altitude": 3000,
             "sid": "TEX5",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h030"
           },
           "PGLET,TYGGR,ROOO,RBBIT": {
             "cleared_altitude": 3000,
             "sid": "SWABR1",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h180"
           },
           "FERRA,PODDE": {
             "cleared_altitude": 3000,
             "sid": "WORTH1",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h180"
           },
           "FERRA.PROP,PODDE.PROP": {
             "cleared_altitude": 3000,
             "sid": "KING4",
-            "waypoints": "_LNC_31/h314"
+            "waypoints": "_LNC_31/h180"
           }
         }
       },
@@ -9374,12 +9377,6 @@
         "TYGGR": "WEST",
         "ROOOO": "WEST",
         "RBBIT": "WEST"
-      },
-      "vfr": {
-        "random_routes": {
-          "rate": 5,
-          "fleet": "lightGA"
-        }
       }
     },
     "KTRL": {
@@ -9431,6 +9428,42 @@
       }
     },
     "F41": {
+      "name": "Ennis Municipal Airport",
+      "approaches": {
+        "VF162": {
+          "full_name": "Visual Approach Runway 16",
+          "runway": "16",
+          "type": "Visual",
+          "waypoints": [
+            "VF162/a1800+ N032.20.05.043,W096.39.57.063/a800/delete"
+          ]
+        },
+        "VF342": {
+          "full_name": "Visual Approach Runway 34",
+          "runway": "34",
+          "type": "Visual",
+          "waypoints": [
+            "VF342/a1800+ N032.19.29.003,W096.39.43.002/a800/delete"
+          ]
+        }
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 6,
+          "fleet": "lightGA"
+        }
+      }
+    },
+    "F46": {
+      "name": "Rockwall Municipal Airport",
+      "approaches": {
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "R35": {
+          "cifp_id": "R35"
+        }
+      },
       "vfr": {
         "random_routes": {
           "rate": 6,
@@ -9528,6 +9561,46 @@
     }
   },
   "inbound_flows": {
+    "INSTRUCTOR": {
+      "arrivals": [
+        {
+          "waypoints": "TTT KDFW",
+          "star": "INSTRUCTOR",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 500,
+          "initial_speed": 100,
+          "expect_approach": null,
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "N",
+                "airport": "KLGB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RPO": {
+      "arrivals": [
+        {
+          "waypoints": "TTT KDFW",
+          "star": "RPO",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 500,
+          "initial_speed": 100,
+          "expect_approach": null,
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "N",
+                "airport": "KLGB"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "BACHR4": {
       "arrivals": [
         {
@@ -9537,6 +9610,39 @@
           "initial_altitude": 27000,
           "initial_speed": 280,
           "expect_approach": null,
+          "airlines": {
+            "KDAL": [
+              {
+                "icao": "SWA",
+                "airport": "KLGB"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KSAN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BACHR4_MS_SF": {
+      "arrivals": [
+        {
+          "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN/a4000 BACHR NOKME/clearapp",
+          "star": "BACHR4",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 27000,
+          "initial_speed": 280,
+          "expect_approach": "W3L",
           "airlines": {
             "KDAL": [
               {
@@ -9627,6 +9733,39 @@
         }
       ]
     },
+    "BACHR4_DS_SF": {
+      "arrivals": [
+        {
+          "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN BACHR/h315",
+          "star": "BACHR4",
+          "initial_controller": "D10_M_APP",
+          "initial_altitude": 27000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KDAL": [
+              {
+                "icao": "SWA",
+                "airport": "KLGB"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KSAN"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "BEREE3": {
       "arrivals": [
         {
@@ -9691,7 +9830,7 @@
     "BEREE3.AUTO": {
       "arrivals": [
         {
-          "waypoints": "MUZZY/a24000-30000/s290 BEREE/a20000-23000/s290/ho1E BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210 WHOOT/a8000 HEDMN/a7000-8000/s190 BOSSI PENNY/a5000/clearapp JIFFY/delete",
+          "waypoints": "MUZZY/a24000-30000/s290/ho1E BEREE/a20000-23000/s290 BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210 WHOOT/a8000 HEDMN/a7000-8000/s190 BOSSI PENNY/a5000/clearapp JIFFY/delete",
           "star": "BEREE3",
           "initial_controller": "FTW_29_CTR",
           "initial_altitude": 27000,
@@ -9750,7 +9889,7 @@
         }
       ]
     },
-    "BEREE3.SouthFinals": {
+    "BEREE3.SOUTHFINAL_17C": {
       "arrivals": [
         {
           "waypoints": "BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210/tc WHOOT/a8000 HEDMN/h356",
@@ -9760,6 +9899,68 @@
           "initial_speed": 290,
           "expect_approach": "I7C",
           "scratchpad": "17C",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KPNS"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMOB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BEREE3.SOUTHFINAL_17L": {
+      "arrivals": [
+        {
+          "waypoints": "BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210/tc WHOOT/a8000 HEDMN/h356",
+          "star": "BEREE3",
+          "initial_controller": "D10_E_APP",
+          "initial_altitude": 21000,
+          "initial_speed": 290,
+          "expect_approach": "I7L",
+          "scratchpad": "17L",
           "airlines": {
             "KDFW": [
               {
@@ -9907,7 +10108,7 @@
         }
       ]
     },
-    "BOOVE7.SouthFinals": {
+    "BOOVE7.SOUTHFINALS_18R": {
       "arrivals": [
         {
           "waypoints": "BOOVE/a17000-19000/s280/ho SHMPP/a15000-17000/s280 CURLE/a13000-15000/s270 MOWWW/a12000-13000/s240 DELMO/a12000/s210/tc LREEE/a6000/s210 BEONE/h357",
@@ -9963,8 +10164,8 @@
           "initial_controller": "FTW_37_CTR",
           "initial_altitude": 27000,
           "initial_speed": 290,
-          "expect_approach": "I5C",
-          "scratchpad": "I5C",
+          "expect_approach": null,
+          "scratchpad": null,
           "airlines": {
             "KDFW": [
               {
@@ -10053,7 +10254,7 @@
         }
       ]
     },
-    "BRDJE5.NorthFinals": {
+    "BRDJE5.NORTHFINALS_35C": {
       "arrivals": [
         {
           "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
@@ -10063,6 +10264,600 @@
           "initial_speed": 280,
           "expect_approach": "I5C",
           "scratchpad": "35C",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "NKS",
+                "types": [
+                  "A321",
+                  "A321",
+                  "A321"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A20N",
+                  "A21N"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "A321",
+                  "A320",
+                  "A320",
+                  "A320",
+                  "A320",
+                  "A321",
+                  "A321",
+                  "A321"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "UPS",
+                "types": [
+                  "A306"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "ENY",
+                "types": [
+                  "E170",
+                  "E170"
+                ],
+                "airport": "KAVL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "A21N"
+                ],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B772",
+                  "A321",
+                  "A321",
+                  "A21N",
+                  "A321",
+                  "A321",
+                  "A321",
+                  "A21N",
+                  "A321"
+                ],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A321"
+                ],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "B738",
+                  "A321"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A320"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UAL",
+                "types": [
+                  "B739",
+                  "A319",
+                  "B38M",
+                  "A319",
+                  "B38M",
+                  "B739"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UPS",
+                "types": [
+                  "MD11"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "BCS1",
+                  "BCS1"
+                ],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B38M",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "A21N",
+                  "B789"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A21N"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A320"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "A321",
+                  "B38M",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B77W",
+                  "B77W",
+                  "B77W"
+                ],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "BAW",
+                "types": [
+                  "A388"
+                ],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B788"
+                ],
+                "airport": "LFPG"
+              },
+              {
+                "icao": "AFR",
+                "types": [
+                  "A359"
+                ],
+                "airport": "LFPG"
+              },
+              {
+                "icao": "UAE",
+                "types": [
+                  "B77W"
+                ],
+                "airport": "OMDB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BRDJE5.NORTHWEST_FINALS_31R": {
+      "arrivals": [
+        {
+          "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/h125/s210/tc N032.45.02.925,W096.39.25.466/a7000/h125",
+          "star": "BRDJE5",
+          "initial_controller": "D10_E_APP",
+          "initial_altitude": 18000,
+          "initial_speed": 280,
+          "expect_approach": "I1R",
+          "scratchpad": "31R",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "NKS",
+                "types": [
+                  "A321",
+                  "A321",
+                  "A321"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A20N",
+                  "A21N"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "A321",
+                  "A320",
+                  "A320",
+                  "A320",
+                  "A320",
+                  "A321",
+                  "A321",
+                  "A321"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "UPS",
+                "types": [
+                  "A306"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "ENY",
+                "types": [
+                  "E170",
+                  "E170"
+                ],
+                "airport": "KAVL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "A21N"
+                ],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B772",
+                  "A321",
+                  "A321",
+                  "A21N",
+                  "A321",
+                  "A321",
+                  "A321",
+                  "A21N",
+                  "A321"
+                ],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A321"
+                ],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "B738",
+                  "A321"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A320"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UAL",
+                "types": [
+                  "B739",
+                  "A319",
+                  "B38M",
+                  "A319",
+                  "B38M",
+                  "B739"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UPS",
+                "types": [
+                  "MD11"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "BCS1",
+                  "BCS1"
+                ],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B38M",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1",
+                  "BCS1"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "A21N",
+                  "B789"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A21N"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A320"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "A321",
+                  "B38M",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B77W",
+                  "B77W",
+                  "B77W"
+                ],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "BAW",
+                "types": [
+                  "A388"
+                ],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B788"
+                ],
+                "airport": "LFPG"
+              },
+              {
+                "icao": "AFR",
+                "types": [
+                  "A359"
+                ],
+                "airport": "LFPG"
+              },
+              {
+                "icao": "UAE",
+                "types": [
+                  "B77W"
+                ],
+                "airport": "OMDB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "BRDJE5.NORTHFINALS_35R": {
+      "arrivals": [
+        {
+          "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
+          "star": "BRDJE5",
+          "initial_controller": "D10_E_APP",
+          "initial_altitude": 18000,
+          "initial_speed": 280,
+          "expect_approach": "I5R",
+          "scratchpad": "35R",
           "airlines": {
             "KDFW": [
               {
@@ -10400,7 +11195,7 @@
         }
       ]
     },
-    "CRIKT1_DS_NF": {
+    "CRIKT1.DS_NF": {
       "arrivals": [
         {
           "waypoints": "KIDDD/a12000+/ho1N CUBAN FINGR/a9000/s250 SLANT/ho CRIKT/a4000/h193/tc",
@@ -10826,7 +11621,7 @@
         }
       ]
     },
-    "HERBZ1_DN_NF": {
+    "HERBZ1.DN_NF": {
       "arrivals": [
         {
           "waypoints": "JABEV/ho1D MASTY/a16000 GREGS/a10000-11000/s250 GUUCH/a6000-8000/ho HERBZ/a6000/s240/tc CROEW/a5000/s240/h113",
@@ -10892,7 +11687,7 @@
         }
       ]
     },
-    "HERBZ1_DS_NF": {
+    "HERBZ1.DS_NF": {
       "arrivals": [
         {
           "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a4000 HUDIL/h190/tc",
@@ -11143,8 +11938,8 @@
           "initial_controller": "FTW_75_CTR",
           "initial_altitude": 27000,
           "initial_speed": 280,
-          "expect_approach": "I6L",
-          "scratchpad": "I6L",
+          "expect_approach": null,
+          "scratchpad": null,
           "airlines": {
             "KDFW": [
               {
@@ -11251,7 +12046,7 @@
         }
       ]
     },
-    "JOVEM6.NorthFinals": {
+    "JOVEM6.NORTHFINALS_36L": {
       "arrivals": [
         {
           "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210/tc KBOOM/a8000/s210 FUEWL/h176",
@@ -11261,6 +12056,62 @@
           "initial_speed": 280,
           "expect_approach": "I6L",
           "scratchpad": "36L",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "ASA",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KPDX"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "long",
+                "airport": "RJTT"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "long",
+                "airport": "RJAA"
+              },
+              {
+                "icao": "ACA",
+                "airport": "CYVR"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JOVEM6.NORTHWEST_FINALS_31L": {
+      "arrivals": [
+        {
+          "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210 KBOOM/a9000/s210/h135/tc",
+          "star": "JOVEM6",
+          "initial_controller": "D10_W_APP",
+          "initial_altitude": 17000,
+          "initial_speed": 280,
+          "expect_approach": "R1L",
+          "scratchpad": "31L",
           "airlines": {
             "KDFW": [
               {
@@ -11439,19 +12290,19 @@
           "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000/ho LIKES/h360/tc",
           "star": "LIKES3",
           "initial_controller": "FTW_62_CTR",
-          "initial_altitude": 12000,
+          "initial_altitude": 7000,
           "initial_speed": 270,
           "expect_approach": "I16",
           "airlines": {
             "KFTW": [
               {
                 "icao": "N",
-                "fleet": "GAjet",
+                "fleet": "GAmultipiston",
                 "airport": "KAUS"
               },
               {
                 "icao": "N",
-                "fleet": "GAjet",
+                "fleet": "GAmultipiston",
                 "airport": "KACT"
               }
             ]
@@ -11494,16 +12345,91 @@
           "airlines": {
             "KAFW": [
               {
-                "icao": "UPS",
-                "airport": "KONT"
-              },
-              {
                 "icao": "FDX",
                 "airport": "KONT"
+              }
+            ],
+            "KFTW": [
+              {
+                "icao": "N",
+                "airport": "KHSV",
+                "fleet": "GAjet"
+              }
+            ],
+            "KDTO": [
+              {
+                "icao": "N",
+                "airport": "KABQ",
+                "fleet": "GAjet"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "BRRUS/ho SLUGG/a5000 LIKES/h44",
+          "star": "LIKES3",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 7000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KAFW": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACT"
+              }
+            ],
+            "KTKI": [
+              {
+                "icao": "N",
+                "airport": "KACT",
+                "fleet": "GAmultipiston"
+              }
+            ],
+            "KFTW": [
+              {
+                "icao": "N",
+                "airport": "KACT",
+                "fleet": "GAmultipiston"
+              }
+            ],
+            "KDTO": [
+              {
+                "icao": "N",
+                "airport": "KABQ",
+                "fleet": "GAmultipiston"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LOADS4_DN_SF": {
+      "arrivals": [
+        {
+          "waypoints": "WUUKY/a16000/ho1S JAKCY KLLEY/a8000/s250 YEAGR/a6000/ho LOADS/h331",
+          "star": "LOADS4",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 16000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KADS": [
+              {
+                "icao": "EJA",
+                "airport": "KLIT"
               },
               {
-                "icao": "GTI",
-                "airport": "KLAX"
+                "icao": "LXJ",
+                "airport": "KSTL"
+              }
+            ],
+            "KTKI": [
+              {
+                "icao": "N",
+                "airport": "KHSV",
+                "fleet": "GAjet"
               }
             ]
           }
@@ -11513,7 +12439,7 @@
     "LOADS4": {
       "arrivals": [
         {
-          "waypoints": "WUUKY/a16000/ho1S JAKCY KLLEY/a8000/s250 YEAGR/a6000/ho LOADS/h331",
+          "waypoints": "KOBIE/ho KLLEY/a8000/s250 YEAGR LOADS/h331",
           "star": "LOADS4",
           "initial_controller": "FTW_62_CTR",
           "initial_altitude": 16000,
@@ -11650,7 +12576,7 @@
     "REDDN4": {
       "arrivals": [
         {
-          "waypoints": "HEERE JAKCY/ho ORVLL/a9000/s250 GBEAR REDDN BACHR/h315",
+          "waypoints": "HEERE/ho JAKCY ORVLL/a9000/s250 GBEAR REDDN BACHR/h315",
           "star": "MNNDO4",
           "initial_controller": "FTW_29_CTR",
           "initial_altitude": 18000,
@@ -11765,14 +12691,6 @@
           "expect_approach": null,
           "airlines": {
             "KAFW": [
-              {
-                "icao": "GTI",
-                "airport": "KLAL"
-              },
-              {
-                "icao": "UPS",
-                "airport": "KMCO"
-              },
               {
                 "icao": "FDX",
                 "airport": "KIAH"
@@ -11963,6 +12881,98 @@
         }
       ]
     },
+    "REEKO3_MS_SF": {
+      "arrivals": [
+        {
+          "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
+          "star": "REEKO3",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 12000,
+          "initial_speed": 240,
+          "expect_approach": "I6L",
+          "airlines": {
+            "KAFW": [
+              {
+                "icao": "VANDY",
+                "airport": "KOKC"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "long",
+                "airport": "KIAH"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
+          "star": "REEKO3",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 12000,
+          "initial_speed": 240,
+          "expect_approach": "I18",
+          "airlines": {
+            "KNFW": [
+              {
+                "icao": "NASA",
+                "airport": "KOKC"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
+          "star": "REEKO3",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 12000,
+          "initial_speed": 240,
+          "expect_approach": "I16",
+          "airlines": {
+            "KFTW": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KSAT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
+          "star": "REEKO3",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 12000,
+          "initial_speed": 240,
+          "expect_approach": "R8R",
+          "airlines": {
+            "KFWS": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KSAT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
+          "star": "REEKO3",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 12000,
+          "initial_speed": 240,
+          "expect_approach": "I8L",
+          "airlines": {
+            "KDTO": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KSAT"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "SEEVR4": {
       "arrivals": [
         {
@@ -11971,8 +12981,8 @@
           "initial_controller": "FTW_37_CTR",
           "initial_altitude": 23000,
           "initial_speed": 290,
-          "expect_approach": "I7L",
-          "scratchpad": "7L",
+          "expect_approach": null,
+          "scratchpad": null,
           "airlines": {
             "KDFW": [
               {
@@ -12609,7 +13619,7 @@
         }
       ]
     },
-    "SEEVR4.SouthFinals": {
+    "SEEVR4.SOUTHFINALS_17L": {
       "arrivals": [
         {
           "waypoints": "SEEVR/a13000-16000/s270/ho BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
@@ -12619,6 +13629,271 @@
           "initial_speed": 290,
           "expect_approach": "I7L",
           "scratchpad": "17L",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "NKS",
+                "types": [
+                  "A321",
+                  "A321",
+                  "A321"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A20N",
+                  "A21N"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "short",
+                "airport": "KMSP"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "A321",
+                  "A320",
+                  "A320",
+                  "A320",
+                  "A320",
+                  "A321",
+                  "A321",
+                  "A321"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "UPS",
+                "types": [
+                  "A306"
+                ],
+                "airport": "KATL"
+              },
+              {
+                "icao": "ENY",
+                "types": [
+                  "E170",
+                  "E170"
+                ],
+                "airport": "KAVL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "A21N"
+                ],
+                "airport": "KBOS"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KBOS"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "A321",
+                  "A321",
+                  "B772",
+                  "A321",
+                  "A321",
+                  "A21N",
+                  "A321",
+                  "A321",
+                  "A321",
+                  "A21N",
+                  "A321"
+                ],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A321"
+                ],
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "B738",
+                  "A321"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A320"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "UPS",
+                "types": [
+                  "MD11"
+                ],
+                "airport": "KEWR"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "DAL",
+                "types": [
+                  "BCS1",
+                  "BCS1"
+                ],
+                "airport": "KJFK"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B38M",
+                  "B738",
+                  "B738",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "FFT",
+                "types": [
+                  "A20N"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "A321",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "A321",
+                  "B738",
+                  "A21N",
+                  "B789"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A321"
+                ],
+                "airport": "KPHL"
+              },
+              {
+                "icao": "NKS",
+                "types": [
+                  "A320"
+                ],
+                "airport": "KLGA"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B738",
+                  "B738",
+                  "A321",
+                  "B38M",
+                  "B738",
+                  "B738"
+                ],
+                "airport": "KRDU"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B77W",
+                  "B77W",
+                  "B77W"
+                ],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "BAW",
+                "types": [
+                  "A388"
+                ],
+                "airport": "EGLL"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B788"
+                ],
+                "airport": "LFPG"
+              },
+              {
+                "icao": "UAE",
+                "types": [
+                  "B77W"
+                ],
+                "airport": "OMDB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SEEVR4.SOUTHFINALS_17C": {
+      "arrivals": [
+        {
+          "waypoints": "SEEVR/a13000-16000/s270/ho BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
+          "star": "SEEVR4",
+          "initial_controller": "D10_E_APP",
+          "initial_altitude": 14000,
+          "initial_speed": 290,
+          "expect_approach": "I7C",
+          "scratchpad": "17C",
           "airlines": {
             "KDFW": [
               {
@@ -12947,7 +14222,7 @@
         }
       ]
     },
-    "SLANT3_DS_NF_PROP": {
+    "SLANT3.DS_NF_PROP": {
       "arrivals": [
         {
           "waypoints": "KIDDD/ho1N CUBAN FINGR SLANT/a3000/h180/ho",
@@ -13068,6 +14343,61 @@
         }
       ]
     },
+    "SWVAY4_DS_SF_PROP": {
+      "arrivals": [
+        {
+          "waypoints": "PUNKY KNEAD/ho DRYYE SCOPS/a3000 SWVAY/h084",
+          "star": "SWVAY4",
+          "initial_controller": "D10_M_APP",
+          "initial_altitude": 5000,
+          "initial_speed": 180,
+          "expect_approach": "I16",
+          "airlines": {
+            "KADS": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "FRSTI KNEAD/ho DRYYE/ho SCOPS/a3000 SWVAY/h084",
+          "star": "SWVAY4",
+          "initial_controller": "D10_M_APP",
+          "initial_altitude": 5000,
+          "initial_speed": 150,
+          "expect_approach": "I18",
+          "airlines": {
+            "KTKI": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KABQ"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "FRSTI KNEAD/ho DRYYE/ho SCOPS/a3000 SWVAY/h084",
+          "star": "SWVAY4",
+          "initial_controller": "D10_M_APP",
+          "initial_altitude": 5000,
+          "initial_speed": 150,
+          "expect_approach": "R13",
+          "airlines": {
+            "KRBD": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACT"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "SWVAY4_DN_SF_PROP": {
       "arrivals": [
         {
@@ -13151,6 +14481,51 @@
         }
       ]
     },
+    "SWVAY4_MS_SF_PROP": {
+      "arrivals": [
+        {
+          "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
+          "star": "SWVAY4",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 10000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KGKY": [
+              {
+                "icao": "N",
+                "fleet": "GAjet",
+                "airport": "KABQ"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
+          "star": "SWVAY4",
+          "initial_controller": "FTW_62_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KRBD": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACT"
+              }
+            ],
+            "KGPM": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACT"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "SOCKK4": {
       "arrivals": [
         {
@@ -13159,8 +14534,8 @@
           "initial_controller": "FTW_62_CTR",
           "initial_altitude": 21000,
           "initial_speed": 290,
-          "expect_approach": "I6L",
-          "scratchpad": "I6L",
+          "expect_approach": null,
+          "scratchpad": null,
           "airlines": {
             "KDFW": [
               {
@@ -13275,7 +14650,7 @@
         }
       ]
     },
-    "SOCKK4.NorthFinals": {
+    "SOCKK4.NORTHFINALS_36L": {
       "arrivals": [
         {
           "waypoints": "BOOVE/a9000-11000/s250/ho ISABL/a7000-9000/s250 SOCKK/a5000/s230/h77",
@@ -13285,6 +14660,67 @@
           "initial_speed": 250,
           "expect_approach": "I6L",
           "scratchpad": "36L",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "ENY",
+                "airport": "KTUS"
+              },
+              {
+                "icao": "AAL",
+                "types": [
+                  "B789"
+                ],
+                "airport": "PHNL"
+              },
+              {
+                "icao": "QFA",
+                "types": [
+                  "B789"
+                ],
+                "airport": "YSSY"
+              },
+              {
+                "icao": "AMX",
+                "fleet": "short",
+                "airport": "MMMX"
+              },
+              {
+                "icao": "AAL",
+                "airport": "MMMX"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KSAN"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KLAX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SOCKK4.NORTHWEST_FINALS_31L": {
+      "arrivals": [
+        {
+          "waypoints": "BOOVE/a9000-11000/s250/ho ESIKE/a5000/s210/h075",
+          "star": "SOCKK4",
+          "initial_controller": "D10_W_APP",
+          "initial_altitude": 9000,
+          "initial_speed": 250,
+          "expect_approach": "R1L",
+          "scratchpad": "31L",
           "airlines": {
             "KDFW": [
               {
@@ -13364,12 +14800,26 @@
                 "icao": "SCX",
                 "airport": "KMSP"
               }
+            ],
+            "KNFW": [
+              {
+                "icao": "OKIE",
+                "airport": "KMCI"
+              },
+              {
+                "icao": "NASA",
+                "airport": "KSTL"
+              },
+              {
+                "icao": "VANDY",
+                "airport": "KOKC"
+              }
             ]
           }
         }
       ]
     },
-    "TRUUK2_MN_NF": {
+    "TRUUK2_M_NORTH_NF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a6000 BLECO TRUUK/h190",
@@ -13428,7 +14878,7 @@
         }
       ]
     },
-    "TRUUK2_MN_SF": {
+    "TRUUK2_M_NORTH_SF": {
       "arrivals": [
         {
           "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
@@ -13495,10 +14945,10 @@
         }
       ]
     },
-    "TRUUK2_MS_NF": {
+    "TRUUK2_S_NORTH_NF": {
       "arrivals": [
         {
-          "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.14.17.482,W097.20.45.327 N033.05.56.986,W097.25.03.616/a4000/s210 N032.42.24.873,W097.20.54.666 N032.42.56.582,W097.17.21.860/s190/h010/clearapp",
+          "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.14.17.482,W097.20.45.327 N033.05.56.986,W097.25.03.616/a4000/s210 N032.42.24.873,W097.20.54.666 N032.42.56.582,W097.17.21.860/s190 UCCOL/clearapp",
           "star": "TRUUK2",
           "initial_controller": "FTW_37_CTR",
           "initial_altitude": 10000,
@@ -13590,8 +15040,8 @@
           "initial_controller": "FTW_75_CTR",
           "initial_altitude": 18000,
           "initial_speed": 290,
-          "expect_approach": "I8R",
-          "scratchpad": "I8R",
+          "expect_approach": null,
+          "scratchpad": null,
           "airlines": {
             "KDFW": [
               {
@@ -13813,7 +15263,7 @@
         }
       ]
     },
-    "VKTRY2.SouthFinals": {
+    "VKTRY2.SOUTHFINALS_18R": {
       "arrivals": [
         {
           "waypoints": "JEYAR/a13000-16000/s270/ho VKTRY/a10000-11000/s250 VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h90",
@@ -13931,7 +15381,7 @@
           "star": "WESAT2",
           "initial_controller": "FTW_75_CTR",
           "initial_altitude": 15000,
-          "initial_speed": 270,
+          "initial_speed": 250,
           "expect_approach": null,
           "scratchpad": null,
           "airlines": {
@@ -13958,21 +15408,11 @@
                 "airport": "KCOS"
               },
               {
-                "icao": "N",
-                "fleet": "GAturbine",
-                "airport": "KCOS"
-              },
-              {
                 "icao": "EJA",
                 "airport": "KICT"
               }
             ],
             "KGKY": [
-              {
-                "icao": "N",
-                "fleet": "GAturbine",
-                "airport": "KCOS"
-              },
               {
                 "icao": "EJA",
                 "airport": "KICT"
@@ -13986,6 +15426,38 @@
               {
                 "icao": "NASA",
                 "airport": "KLAS"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "GREKE/ho MOTZA WESAT/h130",
+          "star": "WESAT2",
+          "initial_controller": "FTW_75_CTR",
+          "initial_altitude": 7000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "scratchpad": null,
+          "airlines": {
+            "KAFW": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KSMF"
+              }
+            ],
+            "KFTW": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KCOS"
+              }
+            ],
+            "KGKY": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KCOS"
               }
             ]
           }
@@ -14167,7 +15639,7 @@
         }
       ]
     },
-    "WHINY4.NorthFinals": {
+    "WHINY4.NORTHFINALS_35R": {
       "arrivals": [
         {
           "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
@@ -14229,6 +15701,192 @@
         }
       ]
     },
+    "WHINY4.NORTHWEST_FINALS_31R": {
+      "arrivals": [
+        {
+          "waypoints": "HOWDY/a11000-12000/s250/ho TULOY/a5000",
+          "star": "WHINY4",
+          "initial_controller": "D10_E_APP",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "expect_approach": "I1R",
+          "scratchpad": "31R",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KPNS"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMOB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "WHINY4.NORTHFINALS_35C": {
+      "arrivals": [
+        {
+          "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
+          "star": "WHINY4",
+          "initial_controller": "D10_E_APP",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "expect_approach": "I5C",
+          "scratchpad": "35C",
+          "airlines": {
+            "KDFW": [
+              {
+                "icao": "AAL",
+                "fleet": "short",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KMIA"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KPNS"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMSY"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KMOB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "YEAGR4_NF_JET": {
+      "arrivals": [
+        {
+          "waypoints": "SNOWE/ho AWOLF YEAGR/h315",
+          "star": "YEAGR4",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 8000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KTKI": [
+              {
+                "icao": "N",
+                "airport": "KFLL",
+                "fleet": "GAjet"
+              }
+            ],
+            "KADS": [
+              {
+                "icao": "N",
+                "airport": "KMSY",
+                "fleet": "GAjet"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "YEAGR4_NF_PROP": {
+      "arrivals": [
+        {
+          "waypoints": "CQY/ho YEAGR/h315",
+          "star": "YEAGR4",
+          "initial_controller": "FTW_29_CTR",
+          "initial_altitude": 6000,
+          "initial_speed": 180,
+          "expect_approach": null,
+          "airlines": {
+            "KTKI": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KMSY"
+              }
+            ],
+            "KADS": [
+              {
+                "icao": "N",
+                "fleet": "GAmultipiston",
+                "airport": "KACT"
+              }
+            ],
+            "KDFW": [
+              {
+                "icao": "BTQ",
+                "airport": "KIAH"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "YEAGR4_DN_NF_JET": {
       "arrivals": [
         {
@@ -14258,13 +15916,19 @@
           "initial_controller": "FTW_29_CTR",
           "initial_altitude": 6000,
           "initial_speed": 200,
-          "expect_approach": "R36",
+          "expect_approach": null,
           "airlines": {
             "KTKI": [
               {
                 "icao": "N",
                 "fleet": "GAsinglepiston",
                 "airport": "KMSY"
+              }
+            ],
+            "KDFW": [
+              {
+                "icao": "BTQ",
+                "airport": "KIAH"
               }
             ]
           }
@@ -14555,6 +16219,18 @@
     "video_map_file": "videomaps/ZFW-videomaps.gob.zst"
   },
   "control_positions": {
+    "INSTRUCTOR": {
+      "default_airport": "KDFW",
+      "frequency": 123456,
+      "radio_name": "INSTRUCTOR",
+      "sector_id": "IN"
+    },
+    "RPO": {
+      "default_airport": "KDFW",
+      "frequency": 123457,
+      "radio_name": "RPO",
+      "sector_id": "RPO"
+    },
     "FTW_29_CTR": {
       "frequency": 135250,
       "radio_name": "Forth Worth Center",
@@ -14815,7 +16491,7 @@
     "_RBD_31": "N032.40.81.833,W096.52.03.300",
     "_RBD_13": "N032.41.41.833,W096.53.16.300",
     "_LNC_31": "N032.34.24.833,W096.42.65.300",
-    "_LNC_13": "N032.35.18.833,W096.43.59.300",
+    "_LNC_13": "N032.34.03.043,W096.42.26.080",
     "_FTW_16": "N032.48.33.290,W097.21.32.003",
     "_FTW_34": "N032.49.50.370,W097.21.45.410",
     "_DTO_36R": "N033.12.40.009,W097.11.52.008",
@@ -14829,7 +16505,9 @@
     "_NFW_36": "N032.47.08.340,W097.26.28.360",
     "_NFW_18": "N032.45.10.150,W097.26.29.460",
     "VT182": "N033.14.04.833,W096.35.39.300",
-    "VA162": "N033.00.25.864,W096.51.08.300"
+    "VA162": "N033.00.25.864,W096.51.08.300",
+    "VF162": "N032.21.06.091,W096.40.18.034",
+    "VF342": "N032.18.38.010,W096.39.19.086"
   },
   "reporting_points": [
     "BEREE",
@@ -14901,9 +16579,6 @@
       "location": "N032.20.95.540,W096.48.09.126"
     }
   ],
-  "name": "D10",
-  "primary_airport": "KDFW",
-  "default_scenario": "D10 COMBINED NF",
   "scenarios": {
     "D10 COMBINED SF": {
       "arrival_runways": [
@@ -14976,6 +16651,12 @@
         },
         "VKTRY2": {
           "KDFW": 5
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_E_APP",
@@ -15094,6 +16775,18 @@
           },
           "D10_T_APP": {
             "backup": "D10_D_APP"
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_E_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_E_APP",
+            "arrivals": [
+              "RPO"
+            ]
           }
         }
       },
@@ -15228,6 +16921,12 @@
         },
         "WHINY4": {
           "KDFW": 5
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_E_APP",
@@ -15362,6 +17061,18 @@
           },
           "D10_T_APP": {
             "backup": "D10_D_APP"
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_E_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_E_APP",
+            "arrivals": [
+              "RPO"
+            ]
           }
         }
       },
@@ -15414,7 +17125,1074 @@
       },
       "vfr_rate_scale": 0
     },
-    "MN NF": {
+    "DFW TRIP FINAL SF ": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "13R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "18R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17C"
+        }
+      ],
+      "arrivals": {
+        "BEREE3.SOUTHFINAL_17C": {
+          "KDFW": 20
+        },
+        "BOOVE7.SOUTHFINALS_18R": {
+          "KDFW": 12
+        },
+        "VKTRY2.SOUTHFINALS_18R": {
+          "KDFW": 15
+        },
+        "SEEVR4.SOUTHFINALS_17L": {
+          "KDFW": 15
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "VKTRY2.SOUTHFINALS_18R",
+              "BOOVE7.SOUTHFINALS_18R"
+            ]
+          },
+          "D10_J_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BEREE3.SOUTHFINAL_17C"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_J_APP",
+            "arrivals": [
+              "SEEVR4.SOUTHFINALS_17L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10103S"
+      ],
+      "wind": {
+        "direction": 180,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DFW TRIP FINAL NF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "31R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35R"
+        }
+      ],
+      "arrivals": {
+        "BRDJE5.NORTHFINALS_35C": {
+          "KDFW": 30
+        },
+        "JOVEM6.NORTHFINALS_36L": {
+          "KDFW": 19
+        },
+        "SOCKK4.NORTHFINALS_36L": {
+          "KDFW": 17
+        },
+        "WHINY4.NORTHFINALS_35R": {
+          "KDFW": 18
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "WHINY4.NORTHFINALS_35R"
+            ]
+          },
+          "D10_J_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BRDJE5.NORTHFINALS_35C"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_J_APP",
+            "arrivals": [
+              "JOVEM6.NORTHFINALS_36L",
+              "SOCKK4.NORTHFINALS_36L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "default_maps": [
+        "RVMD10102S"
+      ],
+      "wind": {
+        "direction": 345,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DFW DUAL FINAL NF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35C"
+        }
+      ],
+      "arrivals": {
+        "BRDJE5.NORTHFINALS_35C": {
+          "KDFW": 30
+        },
+        "JOVEM6.NORTHFINALS_36L": {
+          "KDFW": 19
+        },
+        "SOCKK4.NORTHFINALS_36L": {
+          "KDFW": 17
+        },
+        "WHINY4.NORTHFINALS_35C": {
+          "KDFW": 18
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "WHINY4.NORTHFINALS_35C"
+            ]
+          },
+          "D10_J_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BRDJE5.NORTHFINALS_35C"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_J_APP",
+            "arrivals": [
+              "JOVEM6.NORTHFINALS_36L",
+              "SOCKK4.NORTHFINALS_36L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "default_maps": [
+        "RVMD10102S"
+      ],
+      "wind": {
+        "direction": 345,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DFW DUAL FINAL SF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "18R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17C"
+        }
+      ],
+      "arrivals": {
+        "BEREE3.SOUTHFINAL_17C": {
+          "KDFW": 20
+        },
+        "BOOVE7.SOUTHFINALS_18R": {
+          "KDFW": 12
+        },
+        "VKTRY2.SOUTHFINALS_18R": {
+          "KDFW": 15
+        },
+        "SEEVR4.SOUTHFINALS_17C": {
+          "KDFW": 15
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "VKTRY2.SOUTHFINALS_18R",
+              "BOOVE7.SOUTHFINALS_18R"
+            ]
+          },
+          "D10_J_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BEREE3.SOUTHFINAL_17C"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_J_APP",
+            "arrivals": [
+              "SEEVR4.SOUTHFINALS_17C"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10103S"
+      ],
+      "wind": {
+        "direction": 180,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DFW WIDESPACE FINAL NF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35L"
+        }
+      ],
+      "arrivals": {
+        "BRDJE5.NORTHFINALS_35R": {
+          "KDFW": 30
+        },
+        "JOVEM6.NORTHFINALS_36L": {
+          "KDFW": 19
+        },
+        "SOCKK4.NORTHFINALS_36L": {
+          "KDFW": 17
+        },
+        "WHINY4.NORTHFINALS_35R": {
+          "KDFW": 18
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "WHINY4.NORTHFINALS_35R"
+            ]
+          },
+          "D10_J_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BRDJE5.NORTHFINALS_35R"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_J_APP",
+            "arrivals": [
+              "JOVEM6.NORTHFINALS_36L",
+              "SOCKK4.NORTHFINALS_36L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "default_maps": [
+        "RVMD10102S"
+      ],
+      "wind": {
+        "direction": 345,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DFW WIDESPACE FINAL SF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "18R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17L"
+        }
+      ],
+      "arrivals": {
+        "BEREE3.SOUTHFINAL_17L": {
+          "KDFW": 20
+        },
+        "BOOVE7.SOUTHFINALS_18R": {
+          "KDFW": 12
+        },
+        "VKTRY2.SOUTHFINALS_18R": {
+          "KDFW": 15
+        },
+        "SEEVR4.SOUTHFINALS_17L": {
+          "KDFW": 15
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "VKTRY2.SOUTHFINALS_18R",
+              "BOOVE7.SOUTHFINALS_18R"
+            ]
+          },
+          "D10_J_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BEREE3.SOUTHFINAL_17L"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_J_APP",
+            "arrivals": [
+              "SEEVR4.SOUTHFINALS_17L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10103S"
+      ],
+      "wind": {
+        "direction": 180,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DFW NORTHWEST FLOW FINAL": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "31L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "31R"
+        }
+      ],
+      "arrivals": {
+        "BRDJE5.NORTHWEST_FINALS_31R": {
+          "KDFW": 13
+        },
+        "JOVEM6.NORTHWEST_FINALS_31L": {
+          "KDFW": 13
+        },
+        "SOCKK4.NORTHWEST_FINALS_31L": {
+          "KDFW": 8
+        },
+        "WHINY4.NORTHWEST_FINALS_31R": {
+          "KDFW": 8
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_G_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_G_APP": {
+            "primary": true,
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "BRDJE5.NORTHWEST_FINALS_31R",
+              "WHINY4.NORTHWEST_FINALS_31R"
+            ]
+          },
+          "D10_H_APP": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "SOCKK4.NORTHWEST_FINALS_31L",
+              "JOVEM6.NORTHWEST_FINALS_31L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_G_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP"
+      ],
+      "default_maps": [
+        "RVMD10102S",
+        "RVMD10011S"
+      ],
+      "wind": {
+        "direction": 328,
+        "gust": 39,
+        "speed": 29
+      },
+      "vfr_rate_scale": 0
+    },
+    "DEPARTURE SF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "13R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "18R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17C"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "13L"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "13R"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "16L"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "16R"
+        }
+      ],
+      "arrivals": {
+        "BEREE3.AUTO": {
+          "KDFW": 15
+        },
+        "BOOVE7.AUTO": {
+          "KDFW": 15
+        },
+        "VKTRY2.AUTO": {
+          "KDFW": 15
+        },
+        "SEEVR4.AUTO": {
+          "KDFW": 15
+        },
+        "BACHR4.AUTO": {
+          "KDAL": 10
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_L_DEP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP",
+        "D10_N_APP",
+        "D10_M_APP",
+        "D10_D_APP",
+        "D10_S_APP"
+      ],
+      "multi_controllers": {
+        "default": {
+          "D10_L_DEP": {
+            "primary": true,
+            "departures": [
+              "KDFW/17R",
+              "KDAL/13L",
+              "KADS/16",
+              "KTKI/18"
+            ]
+          },
+          "D10_Z_DEP": {
+            "backup": "D10_L_DEP",
+            "departures": [
+              "KDFW/18L",
+              "KDAL/13R",
+              "KAFW/16L"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_L_DEP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_L_DEP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10119S",
+        "RVMD10050S"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KDFW",
+          "rate": 25,
+          "runway": "18L",
+          "category": "West"
+        },
+        {
+          "airport": "KDFW",
+          "rate": 25,
+          "runway": "17R",
+          "category": "East"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 15,
+          "runway": "13R"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 15,
+          "runway": "13L"
+        },
+        {
+          "airport": "KAFW",
+          "rate": 3,
+          "runway": "16L"
+        },
+        {
+          "airport": "KADS",
+          "rate": 2,
+          "runway": "16",
+          "category": "NORTH"
+        },
+        {
+          "airport": "KADS",
+          "rate": 2,
+          "runway": "16",
+          "category": "EAST"
+        },
+        {
+          "airport": "KADS",
+          "rate": 2,
+          "runway": "16",
+          "category": "SOUTH"
+        },
+        {
+          "airport": "KADS",
+          "rate": 2,
+          "runway": "16",
+          "category": "WEST"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "18",
+          "category": "NORTH"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "18",
+          "category": "EAST"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "18",
+          "category": "SOUTH"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "18",
+          "category": "WEST"
+        }
+      ],
+      "wind": {
+        "direction": 180,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DEPARTURE NF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35C"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "31L"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "31R"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "34R"
+        }
+      ],
+      "arrivals": {
+        "BRDJE5.AUTO": {
+          "KDFW": 15
+        },
+        "JOVEM6.AUTO": {
+          "KDFW": 15
+        },
+        "SOCKK4.AUTO": {
+          "KDFW": 15
+        },
+        "WHINY4.AUTO": {
+          "KDFW": 15
+        },
+        "HERBZ1.AUTO": {
+          "KDAL": 10
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_L_DEP",
+      "multi_controllers": {
+        "default": {
+          "D10_L_DEP": {
+            "primary": true,
+            "departures": [
+              "KDFW/35L",
+              "KDAL/31R",
+              "KADS/34",
+              "KTKI/36"
+            ]
+          },
+          "D10_Z_DEP": {
+            "backup": "D10_L_DEP",
+            "departures": [
+              "KDFW/36R",
+              "KDAL/31L",
+              "KAFW/34R"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_E_APP",
+        "D10_W_APP",
+        "D10_N_APP",
+        "D10_M_APP",
+        "D10_D_APP",
+        "D10_S_APP"
+      ],
+      "default_maps": [
+        "RVMD10118S",
+        "RVMD10050S"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KDFW",
+          "rate": 25,
+          "runway": "36R",
+          "category": "West"
+        },
+        {
+          "airport": "KDFW",
+          "rate": 25,
+          "runway": "35L",
+          "category": "East"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 15,
+          "runway": "31L"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 15,
+          "runway": "31R"
+        },
+        {
+          "airport": "KAFW",
+          "rate": 2,
+          "runway": "34R"
+        },
+        {
+          "airport": "KADS",
+          "rate": 1,
+          "runway": "34",
+          "category": "NORTH"
+        },
+        {
+          "airport": "KADS",
+          "rate": 1,
+          "runway": "34",
+          "category": "EAST"
+        },
+        {
+          "airport": "KADS",
+          "rate": 1,
+          "runway": "34",
+          "category": "SOUTH"
+        },
+        {
+          "airport": "KADS",
+          "rate": 1,
+          "runway": "34",
+          "category": "WEST"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "36",
+          "category": "NORTH"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "36",
+          "category": "EAST"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "36",
+          "category": "SOUTH"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "36",
+          "category": "WEST"
+        }
+      ],
+      "wind": {
+        "direction": 355,
+        "gust": 19,
+        "speed": 13
+      },
+      "vfr_rate_scale": 0
+    },
+    "MEACHAM NORTH NF": {
       "arrival_runways": [
         {
           "airport": "KDFW",
@@ -15474,7 +18252,7 @@
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_MN_NF": {
+        "TRUUK2_M_NORTH_NF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
@@ -15488,6 +18266,12 @@
         "REEKO3_MN_NF": {
           "KAFW": 5,
           "KDTO": 3
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_D_APP",
@@ -15495,28 +18279,40 @@
         "default": {
           "D10_D_APP": {
             "primary": true,
+            "departures": [
+              "KAFW/34R",
+              "KFTW/34",
+              "KDTO/36R"
+            ],
             "arrivals": [
               "HERBZ1",
-              "TRUUK2_MN_NF",
+              "TRUUK2_M_NORTH_NF",
               "WESAT2"
-            ],
-            "departures": [
-              "KDTO/36R",
-              "KAFW/34R",
-              "KFTW/34"
             ]
           },
           "D10_M_APP": {
             "backup": "D10_D_APP",
             "arrivals": [
-              "LIKES3_M_NORTH_NF",
-              "REEKO3_MN_NF"
+              "REEKO3_MN_NF",
+              "LIKES3_M_NORTH_NF"
             ]
           },
-          "D10_W_APP": {
+          "D10_E_APP": {
             "backup": "D10_D_APP",
             "arrivals": [
               "JOVEM6.AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "RPO"
             ]
           }
         }
@@ -15591,7 +18387,7 @@
       },
       "vfr_rate_scale": 0
     },
-    "MN SF": {
+    "MEACHAM NORTH SF": {
       "arrival_runways": [
         {
           "airport": "KDFW",
@@ -15600,6 +18396,10 @@
         {
           "airport": "KDFW",
           "runway": "17C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "13R"
         },
         {
           "airport": "KDAL",
@@ -15653,7 +18453,7 @@
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_MN_SF": {
+        "TRUUK2_M_NORTH_SF": {
           "KAFW": 8,
           "KFTW": 4,
           "KDTO": 2
@@ -15667,9 +18467,60 @@
         "REEKO3_MN_SF": {
           "KAFW": 5,
           "KDTO": 3
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_D_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_D_APP": {
+            "primary": true,
+            "departures": [
+              "KDTO/18L"
+            ],
+            "arrivals": [
+              "TRUUK2_M_NORTH_SF",
+              "WESAT2",
+              "JFRYE5"
+            ]
+          },
+          "D10_M_APP": {
+            "backup": "D10_D_APP",
+            "departures": [
+              "KAFW/16L",
+              "KFTW/16"
+            ],
+            "arrivals": [
+              "REEKO3_MN_SF",
+              "LIKES3_M_NORTH_SF"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "BOOVE7.AUTO",
+              "VKTRY2.AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -15694,39 +18545,6 @@
         "D10_H_APP",
         "D10_J_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_D_APP": {
-            "primary": true,
-            "arrivals": [
-              "JFRYE5",
-              "TRUUK2_MN_SF",
-              "WESAT2"
-            ],
-            "departures": [
-              "KDTO/18L"
-            ]
-          },
-          "D10_M_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": [
-              "LIKES3_M_NORTH_SF",
-              "REEKO3_MN_SF"
-            ],
-            "departures": [
-              "KFTW/16",
-              "KAFW/16L"
-            ]
-          },
-          "D10_W_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": [
-              "BOOVE7.AUTO",
-              "VKTRY2.AUTO"
-            ]
-          }
-        }
-      },
       "default_maps": [
         "RVMD10123S"
       ],
@@ -15780,7 +18598,7 @@
       },
       "vfr_rate_scale": 0
     },
-    "MS NF": {
+    "MEACHAM SOUTH NF": {
       "arrival_runways": [
         {
           "airport": "KDFW",
@@ -15847,7 +18665,7 @@
           "KFTW": 8,
           "KDTO": 3
         },
-        "TRUUK2_MS_NF": {
+        "TRUUK2_S_NORTH_NF": {
           "KAFW": 4,
           "KFTW": 6
         },
@@ -15867,6 +18685,12 @@
           "KGKY": 3,
           "KRBD": 1,
           "KGPM": 2
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_M_APP",
@@ -15896,34 +18720,47 @@
       ],
       "multi_controllers": {
         "default": {
-          "D10_M_APP": {
-            "primary": true,
-            "arrivals": [
-              "DRYYE2",
-              "LIKES3_N",
-              "REEKO3_MS_NF",
-              "SWVAY4_MS_NF_PROP"
-            ],
-            "departures": [
-              "KGKY/34",
-              "KNFW/36",
-              "KGPM/36",
-              "KFTW/34",
-              "KFWS/36L"
-            ]
-          },
           "D10_D_APP": {
             "backup": "D10_M_APP",
             "arrivals": [
-              "TRUUK2_MS_NF",
+              "TRUUK2_S_NORTH_NF",
               "WESAT2_MS_NF"
             ]
           },
-          "D10_W_APP": {
+          "D10_M_APP": {
+            "primary": true,
             "backup": "D10_D_APP",
+            "departures": [
+              "KNFW/36",
+              "KGKY/34",
+              "KGPM/36",
+              "KFWS/36L",
+              "KFTW/34"
+            ],
             "arrivals": [
-              "JOVEM6.AUTO",
-              "SOCKK4.AUTO"
+              "REEKO3_MS_NF",
+              "LIKES3_N",
+              "DRYYE2",
+              "SWVAY4_MS_NF_PROP"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_M_APP",
+            "arrivals": [
+              "SOCKK4.AUTO",
+              "JOVEM6.AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_M_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_M_APP",
+            "arrivals": [
+              "RPO"
             ]
           }
         }
@@ -15990,7 +18827,464 @@
       },
       "vfr_rate_scale": 0
     },
-    "DN SF": {
+    "MEACHAM COMBINED NF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35C"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "31R"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "31L"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "34R"
+        },
+        {
+          "airport": "KDTO",
+          "runway": "36R"
+        },
+        {
+          "airport": "KFTW",
+          "runway": "34"
+        },
+        {
+          "airport": "KNFW",
+          "runway": "36"
+        },
+        {
+          "airport": "KADS",
+          "runway": "34"
+        },
+        {
+          "airport": "KTKI",
+          "runway": "36"
+        },
+        {
+          "airport": "KGKY",
+          "runway": "34"
+        },
+        {
+          "airport": "KGPM",
+          "runway": "36"
+        },
+        {
+          "airport": "KRBD",
+          "runway": "31"
+        }
+      ],
+      "arrivals": {
+        "HERBZ1": {
+          "KDAL": 5,
+          "KDTO": 2
+        },
+        "SOCKK4.AUTO": {
+          "KDFW": 15
+        },
+        "JOVEM6.AUTO": {
+          "KDFW": 15
+        },
+        "LIKES3_N": {
+          "KAFW": 10,
+          "KFTW": 8,
+          "KDTO": 3
+        },
+        "TRUUK2_M_NORTH_NF": {
+          "KAFW": 8,
+          "KFTW": 4,
+          "KDTO": 2
+        },
+        "WESAT2": {
+          "KAFW": 10,
+          "KFTW": 5,
+          "KNFW": 2,
+          "KGKY": 2
+        },
+        "REEKO3_MS_NF": {
+          "KAFW": 5,
+          "KDTO": 3
+        },
+        "DRYYE2": {
+          "KDAL": 7
+        },
+        "SWVAY4_MS_NF_PROP": {
+          "KGKY": 3,
+          "KRBD": 1,
+          "KGPM": 2
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_D_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_D_APP": {
+            "primary": true,
+            "departures": [
+              "KAFW/34R",
+              "KFTW/34",
+              "KDTO/36R"
+            ],
+            "arrivals": [
+              "HERBZ1",
+              "TRUUK2_M_NORTH_NF",
+              "WESAT2"
+            ]
+          },
+          "D10_M_APP": {
+            "backup": "D10_D_APP",
+            "departures": [
+              "KNFW/36",
+              "KGKY/34",
+              "KGPM/36",
+              "KFWS/36L"
+            ],
+            "arrivals": [
+              "REEKO3_MS_NF",
+              "LIKES3_N",
+              "DRYYE2",
+              "SWVAY4_MS_NF_PROP"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "SOCKK4.AUTO",
+              "JOVEM6.AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "ACT_H_APP",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_W_APP",
+        "D10_N_APP",
+        "D10_M_APP",
+        "D10_S_APP",
+        "D10_L_DEP",
+        "D10_G_APP",
+        "D10_H_APP",
+        "D10_J_APP"
+      ],
+      "default_maps": [
+        "RVMD10122S"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KAFW",
+          "rate": 5,
+          "runway": "34R"
+        },
+        {
+          "airport": "KFTW",
+          "rate": 3,
+          "runway": "34"
+        },
+        {
+          "airport": "KDTO",
+          "rate": 5,
+          "runway": "36R"
+        },
+        {
+          "airport": "KNFW",
+          "rate": 2,
+          "runway": "36"
+        },
+        {
+          "airport": "KGKY",
+          "rate": 2,
+          "runway": "34"
+        },
+        {
+          "airport": "KGPM",
+          "rate": 1,
+          "runway": "36"
+        },
+        {
+          "airport": "KFWS",
+          "rate": 1,
+          "runway": "36L"
+        }
+      ],
+      "wind": {
+        "direction": 340,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "MEACHAM COMBINED SF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "18R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "13R"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "13L"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "13R"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "16L"
+        },
+        {
+          "airport": "KDTO",
+          "runway": "18L"
+        },
+        {
+          "airport": "KFTW",
+          "runway": "16"
+        },
+        {
+          "airport": "KNFW",
+          "runway": "18"
+        },
+        {
+          "airport": "KADS",
+          "runway": "16"
+        },
+        {
+          "airport": "KTKI",
+          "runway": "18"
+        },
+        {
+          "airport": "KGKY",
+          "runway": "16"
+        },
+        {
+          "airport": "KGPM",
+          "runway": "36"
+        },
+        {
+          "airport": "KRBD",
+          "runway": "31"
+        },
+        {
+          "airport": "KFWS",
+          "runway": "18R"
+        }
+      ],
+      "arrivals": {
+        "JFRYE5": {
+          "KDAL": 5
+        },
+        "BOOVE7.AUTO": {
+          "KDFW": 15
+        },
+        "VKTRY2.AUTO": {
+          "KDFW": 15
+        },
+        "LIKES3_S": {
+          "KAFW": 5,
+          "KFTW": 4,
+          "KDTO": 3
+        },
+        "TRUUK2_M_NORTH_SF": {
+          "KAFW": 8,
+          "KFTW": 2,
+          "KDTO": 1
+        },
+        "WESAT2": {
+          "KAFW": 8,
+          "KFTW": 2,
+          "KNFW": 2,
+          "KGKY": 2
+        },
+        "REEKO3_MS_SF": {
+          "KAFW": 4,
+          "KDTO": 2,
+          "KFWS": 1,
+          "KNFW": 2
+        },
+        "SWVAY4_MS_SF_PROP": {
+          "KGKY": 1,
+          "KGPM": 1,
+          "KRBD": 1
+        },
+        "BACHR4_MS_SF": {
+          "KDAL": 8
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_D_APP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "ACT_H_APP",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_W_APP",
+        "D10_N_APP",
+        "D10_M_APP",
+        "D10_S_APP",
+        "D10_L_DEP",
+        "D10_G_APP",
+        "D10_H_APP",
+        "D10_J_APP"
+      ],
+      "multi_controllers": {
+        "default": {
+          "D10_D_APP": {
+            "primary": true,
+            "departures": [
+              "KDTO/18L"
+            ],
+            "arrivals": [
+              "TRUUK2_M_NORTH_SF",
+              "WESAT2",
+              "JFRYE5"
+            ]
+          },
+          "D10_M_APP": {
+            "backup": "D10_D_APP",
+            "departures": [
+              "KNFW/18",
+              "KAFW/16L",
+              "KFTW/16",
+              "KGKY/16",
+              "KGPM/18",
+              "KFWS/18R"
+            ],
+            "arrivals": [
+              "REEKO3_MS_SF",
+              "LIKES3_S",
+              "SWVAY4_MS_SF_PROP",
+              "BACHR4_MS_SF"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "BOOVE7.AUTO",
+              "VKTRY2.AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_D_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10123S"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KAFW",
+          "rate": 5,
+          "runway": "16L"
+        },
+        {
+          "airport": "KFTW",
+          "rate": 2,
+          "runway": "16"
+        },
+        {
+          "airport": "KDTO",
+          "rate": 3,
+          "runway": "18L"
+        },
+        {
+          "airport": "KGKY",
+          "rate": 3,
+          "runway": "16"
+        },
+        {
+          "airport": "KGPM",
+          "rate": 1,
+          "runway": "18"
+        },
+        {
+          "airport": "KFWS",
+          "rate": 5,
+          "runway": "18R"
+        },
+        {
+          "airport": "KNFW",
+          "rate": 2,
+          "runway": "18"
+        }
+      ],
+      "wind": {
+        "direction": 175,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "DALLAS NORTH SF": {
       "arrival_runways": [
         {
           "airport": "KDFW",
@@ -16049,7 +19343,7 @@
           "KADS": 2,
           "KTKI": 1
         },
-        "LOADS4": {
+        "LOADS4_DN_SF": {
           "KADS": 2,
           "KTKI": 1
         },
@@ -16065,6 +19359,12 @@
         },
         "GREGS1_DN_SF_JET": {
           "KDAL": 13
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_N_APP",
@@ -16074,7 +19374,7 @@
             "primary": true,
             "arrivals": [
               "HIBIL3",
-              "LOADS4",
+              "LOADS4_DN_SF",
               "SLANT3.JET",
               "SLANT3.PROP",
               "FINGR9.PROP",
@@ -16111,6 +19411,18 @@
             "departures": [
               "KDAL/13R_AUTO",
               "KDAL/13L_AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "RPO"
             ]
           }
         }
@@ -16256,7 +19568,7 @@
       },
       "vfr_rate_scale": 0
     },
-    "DN NF": {
+    "DALLAS NORTH NF": {
       "arrival_runways": [
         {
           "airport": "KDFW",
@@ -16265,6 +19577,10 @@
         {
           "airport": "KDFW",
           "runway": "35C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "31R"
         },
         {
           "airport": "KDAL",
@@ -16306,7 +19622,7 @@
         "GREGS1_DN_NF_JET": {
           "KDAL": 0
         },
-        "HERBZ1_DN_NF": {
+        "HERBZ1.DN_NF": {
           "KADS": 2,
           "KDAL": 8,
           "KTKI": 1
@@ -16329,6 +19645,12 @@
         },
         "YEAGR4_DN_NF_PROP": {
           "KTKI": 1
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_N_APP",
@@ -16384,7 +19706,7 @@
             "backup": "D10_N_APP",
             "arrivals": [
               "GREGS1_DN_NF_JET",
-              "HERBZ1_DN_NF"
+              "HERBZ1.DN_NF"
             ]
           },
           "D10_E_APP": {
@@ -16399,6 +19721,18 @@
             "departures": [
               "KDAL/31R_AUTO",
               "KDAL/31L_AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "RPO"
             ]
           }
         }
@@ -16523,7 +19857,7 @@
       },
       "vfr_rate_scale": 0
     },
-    "DS NF": {
+    "DALLAS SOUTH NF": {
       "arrival_runways": [
         {
           "airport": "KDFW",
@@ -16532,6 +19866,10 @@
         {
           "airport": "KDFW",
           "runway": "35C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "31R"
         },
         {
           "airport": "KDAL",
@@ -16570,13 +19908,13 @@
         "BRDJE5.AUTO": {
           "KDFW": 15
         },
-        "CRIKT1_DS_NF": {
+        "CRIKT1.DS_NF": {
           "KDAL": 15
         },
         "DRYYE2_DS_NF": {
           "KDAL": 15
         },
-        "HERBZ1_DS_NF": {
+        "HERBZ1.DS_NF": {
           "KDAL": 15,
           "KRBD": 3,
           "KLNC": 3
@@ -16594,23 +19932,54 @@
         "SWVAY4_DS_NF_PROP": {
           "KADS": 1
         },
-        "SLANT3_DS_NF_PROP": {
+        "SLANT3.DS_NF_PROP": {
           "KRBD": 1,
           "KLNC": 1
         },
         "WHINY4.AUTO": {
           "KDFW": 15
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
         }
       },
       "solo_controller": "D10_S_APP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_L_DEP",
+        "D10_E_APP",
+        "D10_G_APP",
+        "D10_J_APP",
+        "D10_H_APP",
+        "D10_D_APP",
+        "D10_S_APP",
+        "D10_M_APP"
+      ],
       "multi_controllers": {
         "default": {
           "D10_S_APP": {
             "primary": true,
             "arrivals": [
+              "DRYYE2_DS_NF",
+              "EESAT4_DS_NF",
               "MNNDO4",
               "REEKO3",
-              "EESAT4_DS_NF"
+              "SWVAY4_DS_NF_PROP"
             ],
             "departures": [
               "KRBD/31",
@@ -16620,30 +19989,457 @@
           "D10_N_APP": {
             "backup": "D10_S_APP",
             "arrivals": [
-              "CRIKT1_DS_NF",
-              "HERBZ1_DS_NF",
-              "SLANT3_DS_NF_PROP"
-            ]
-          },
-          "D10_D_APP": {
-            "backup": "D10_S_APP",
-            "arrivals": [
-              "DRYYE2_DS_NF",
-              "SWVAY4_DS_NF_PROP"
+              "CRIKT1.DS_NF",
+              "HERBZ1.DS_NF",
+              "SLANT3.DS_NF_PROP"
             ]
           },
           "D10_E_APP": {
-            "backup": "D10_S_APP",
+            "backup": "RPO",
             "arrivals": [
               "BRDJE5.AUTO",
               "WHINY4.AUTO"
             ]
           },
           "D10_L_DEP": {
-            "backup": "D10_E_APP",
+            "backup": "RPO",
             "departures": [
               "KDAL/31R_AUTO",
               "KDAL/31L_AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10122S"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KDAL",
+          "rate": 0,
+          "category": "ALL",
+          "runway": "31L_AUTO"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 0,
+          "category": "ALL",
+          "runway": "31R_AUTO"
+        },
+        {
+          "airport": "KRBD",
+          "rate": 3,
+          "runway": "31"
+        },
+        {
+          "airport": "KLNC",
+          "rate": 2,
+          "runway": "31"
+        }
+      ],
+      "wind": {
+        "direction": 340,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "EASTSAT COMBINED NF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "35R"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "35C"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "31R"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "31R"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "31L"
+        },
+        {
+          "airport": "KADS",
+          "runway": "34"
+        },
+        {
+          "airport": "KTKI",
+          "runway": "36"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "34R"
+        },
+        {
+          "airport": "KNFW",
+          "runway": "36"
+        }
+      ],
+      "arrivals": {
+        "BRDJE5.AUTO": {
+          "KDFW": 15
+        },
+        "CRIKT1": {
+          "KDAL": 15
+        },
+        "DRYYE2_DS_NF": {
+          "KDAL": 15
+        },
+        "EESAT4_DS_NF": {
+          "KADS": 1
+        },
+        "FINGR9.PROP": {
+          "KDFW": 0
+        },
+        "GREGS1_DN_NF_JET": {
+          "KDAL": 0
+        },
+        "HERBZ1.DN_NF": {
+          "KADS": 2,
+          "KDAL": 8,
+          "KTKI": 1
+        },
+        "MNNDO4": {
+          "KDAL": 2
+        },
+        "REEKO3": {
+          "KAFW": 2,
+          "KNFW": 2
+        },
+        "SWVAY4_DS_NF_PROP": {
+          "KADS": 1,
+          "KTKI": 1
+        },
+        "TRUUK2_NF": {
+          "KAFW": 3,
+          "KNFW": 1
+        },
+        "WHINY4.AUTO": {
+          "KDFW": 15
+        },
+        "YEAGR4_NF_JET": {
+          "KTKI": 1
+        },
+        "YEAGR4_NF_PROP": {
+          "KTKI": 1,
+          "KDFW": 0
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_N_APP",
+      "controllers": [
+        "FTW_29_CTR",
+        "FTW_32_CTR",
+        "FTW_37_CTR",
+        "FTW_53_CTR",
+        "FTW_62_CTR",
+        "FTW_75_CTR",
+        "FTW_83_CTR",
+        "FTW_96_CTR",
+        "AFW_TWR",
+        "DAL_TWR",
+        "DFW_E1_TWR",
+        "DFW_W1_TWR",
+        "DFW_E3_TWR",
+        "D10_L_DEP",
+        "D10_E_APP",
+        "D10_G_APP",
+        "D10_J_APP",
+        "D10_H_APP",
+        "D10_D_APP",
+        "D10_S_APP",
+        "D10_M_APP"
+      ],
+      "multi_controllers": {
+        "default": {
+          "D10_N_APP": {
+            "primary": true,
+            "arrivals": [
+              "CRIKT1",
+              "FINGR9.PROP",
+              "TRUUK2_NF"
+            ],
+            "departures": [
+              "KADS/34",
+              "KTKI/36"
+            ]
+          },
+          "D10_S_APP": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "SWVAY4_DS_NF_PROP",
+              "DRYYE2_DS_NF",
+              "EESAT4_DS_NF",
+              "MNNDO4",
+              "YEAGR4_NF_JET",
+              "YEAGR4_NF_PROP",
+              "REEKO3"
+            ],
+            "departures": [
+              "KRBD/31",
+              "KLNC/31"
+            ]
+          },
+          "D10_D_APP": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "GREGS1_DN_NF_JET",
+              "HERBZ1.DN_NF"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "BRDJE5.AUTO",
+              "WHINY4.AUTO"
+            ]
+          },
+          "D10_L_DEP": {
+            "backup": "D10_S_APP",
+            "departures": [
+              "KDAL/31R_AUTO",
+              "KDAL/31L_AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "RPO"
+            ]
+          }
+        }
+      },
+      "default_maps": [
+        "RVMD10122S"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KDAL",
+          "rate": 0,
+          "category": "ALL",
+          "runway": "31L_AUTO"
+        },
+        {
+          "airport": "KDAL",
+          "rate": 0,
+          "category": "ALL",
+          "runway": "31R_AUTO"
+        },
+        {
+          "airport": "KADS",
+          "rate": 1,
+          "runway": "34"
+        },
+        {
+          "airport": "KTKI",
+          "rate": 1,
+          "runway": "36"
+        },
+        {
+          "airport": "KRBD",
+          "rate": 2,
+          "runway": "31"
+        },
+        {
+          "airport": "KLNC",
+          "rate": 2,
+          "runway": "31"
+        }
+      ],
+      "wind": {
+        "direction": 355,
+        "gust": 12,
+        "speed": 7
+      },
+      "vfr_rate_scale": 0
+    },
+    "EASTSAT COMBINED SF": {
+      "arrival_runways": [
+        {
+          "airport": "KDFW",
+          "runway": "17L"
+        },
+        {
+          "airport": "KDFW",
+          "runway": "17C"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "13L"
+        },
+        {
+          "airport": "KDAL",
+          "runway": "13R"
+        },
+        {
+          "airport": "KADS",
+          "runway": "16"
+        },
+        {
+          "airport": "KTKI",
+          "runway": "18"
+        },
+        {
+          "airport": "KAFW",
+          "runway": "16R"
+        },
+        {
+          "airport": "KDTO",
+          "runway": "18L"
+        },
+        {
+          "airport": "KRBD",
+          "runway": "13"
+        },
+        {
+          "airport": "KLNC",
+          "runway": "31"
+        },
+        {
+          "airport": "KNFW",
+          "runway": "18"
+        }
+      ],
+      "arrivals": {
+        "BEREE3.AUTO": {
+          "KDFW": 15
+        },
+        "SEEVR4.AUTO": {
+          "KDFW": 15
+        },
+        "REDDN4": {
+          "KDAL": 6
+        },
+        "HIBIL3": {
+          "KDAL": 5
+        },
+        "BACHR4_DS_SF": {
+          "KDAL": 4
+        },
+        "SLANT3.JET": {
+          "KADS": 2,
+          "KTKI": 1
+        },
+        "SLANT3.PROP": {
+          "KADS": 2,
+          "KTKI": 1
+        },
+        "LOADS4": {
+          "KADS": 2,
+          "KTKI": 1
+        },
+        "FINGR9.PROP": {
+          "KDFW": 0
+        },
+        "SWVAY4_DS_SF_PROP": {
+          "KADS": 2,
+          "KTKI": 1,
+          "KRBD": 1
+        },
+        "TRUUK2_SF": {
+          "KAFW": 2
+        },
+        "REEKO3": {
+          "KAFW": 2,
+          "KNFW": 2
+        },
+        "GREGS1_DN_SF_JET": {
+          "KDAL": 13
+        },
+        "INSTRUCTOR": {
+          "KDFW": 0
+        },
+        "RPO": {
+          "KDFW": 0
+        }
+      },
+      "solo_controller": "D10_N_APP",
+      "multi_controllers": {
+        "default": {
+          "D10_N_APP": {
+            "primary": true,
+            "arrivals": [
+              "HIBIL3",
+              "LOADS4",
+              "SLANT3.JET",
+              "SLANT3.PROP",
+              "FINGR9.PROP",
+              "TRUUK2_SF",
+              "GREGS1_DN_SF_JET"
+            ],
+            "departures": [
+              "KADS/16",
+              "KTKI/18"
+            ]
+          },
+          "D10_S_APP": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "BACHR4_DS_SF",
+              "REDDN4",
+              "SWVAY4_DS_SF_PROP",
+              "REEKO3"
+            ],
+            "departures": [
+              "KRBD/13",
+              "KLNC/13"
+            ]
+          },
+          "D10_E_APP": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "BEREE3.AUTO",
+              "SEEVR4.AUTO"
+            ]
+          },
+          "D10_L_DEP": {
+            "backup": "D10_S_APP",
+            "departures": [
+              "KDAL/13R_AUTO",
+              "KDAL/13L_AUTO"
+            ]
+          },
+          "INSTRUCTOR": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "INSTRUCTOR"
+            ]
+          },
+          "RPO": {
+            "backup": "D10_N_APP",
+            "arrivals": [
+              "RPO"
             ]
           }
         }
@@ -16672,648 +20468,42 @@
         "D10_M_APP"
       ],
       "default_maps": [
-        "RVMD10122S"
+        "RVMD10123S"
       ],
       "departure_runways": [
         {
           "airport": "KDAL",
           "rate": 0,
-          "category": "ALL",
-          "runway": "31L_AUTO"
+          "runway": "13R_AUTO"
         },
         {
           "airport": "KDAL",
           "rate": 0,
-          "category": "ALL",
-          "runway": "31R_AUTO"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 3,
-          "runway": "31",
-          "category": "EAST.PROP"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 3,
-          "runway": "31",
-          "category": "EAST"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 5,
-          "runway": "31",
-          "category": "SOUTH"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 2,
-          "runway": "31",
-          "category": "SOUTH.PROP"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 3,
-          "runway": "31",
-          "category": "WEST.PROP"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 2,
-          "runway": "31",
-          "category": "WEST"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 3,
-          "runway": "31",
-          "category": "NORTH"
-        },
-        {
-          "airport": "KRBD",
-          "rate": 3,
-          "runway": "31",
-          "category": "NORTH.PROP"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "NORTH"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "NORTH.PROP"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "EAST"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "EAST.PROP"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "SOUTH"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "SOUTH.PROP"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "WEST"
-        },
-        {
-          "airport": "KLNC",
-          "rate": 0,
-          "runway": "31",
-          "category": "WEST.PROP"
-        }
-      ],
-      "wind": {
-        "direction": 340,
-        "gust": 12,
-        "speed": 7
-      },
-      "vfr_rate_scale": 0
-    },
-    "DR SF": {
-      "arrival_runways": [
-        {
-          "airport": "KDFW",
-          "runway": "13R"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "18R"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "17L"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "17C"
-        },
-        {
-          "airport": "KDAL",
-          "runway": "13L"
-        },
-        {
-          "airport": "KDAL",
-          "runway": "13R"
-        },
-        {
-          "airport": "KAFW",
-          "runway": "16L"
-        },
-        {
-          "airport": "KAFW",
-          "runway": "16R"
-        }
-      ],
-      "arrivals": {
-        "BEREE3.AUTO": {
-          "KDFW": 15
-        },
-        "BOOVE7.AUTO": {
-          "KDFW": 15
-        },
-        "VKTRY2.AUTO": {
-          "KDFW": 15
-        },
-        "SEEVR4.AUTO": {
-          "KDFW": 15
-        },
-        "BACHR4.AUTO": {
-          "KDAL": 10
-        }
-      },
-      "solo_controller": "D10_L_DEP",
-      "controllers": [
-        "FTW_29_CTR",
-        "FTW_32_CTR",
-        "FTW_37_CTR",
-        "FTW_53_CTR",
-        "FTW_62_CTR",
-        "FTW_75_CTR",
-        "FTW_83_CTR",
-        "FTW_96_CTR",
-        "AFW_TWR",
-        "DAL_TWR",
-        "DFW_E1_TWR",
-        "DFW_W1_TWR",
-        "DFW_E3_TWR",
-        "D10_E_APP",
-        "D10_W_APP",
-        "D10_N_APP",
-        "D10_M_APP",
-        "D10_D_APP",
-        "D10_S_APP"
-      ],
-      "multi_controllers": {
-        "default": {
-          "D10_L_DEP": {
-            "primary": true,
-            "departures": [
-              "KDFW/17R",
-              "KDAL/13L",
-              "KADS/16",
-              "KTKI/18"
-            ]
-          },
-          "D10_Z_DEP": {
-            "backup": "D10_L_DEP",
-            "departures": [
-              "KDFW/18L",
-              "KDAL/13R",
-              "KAFW/16L"
-            ]
-          }
-        }
-      },
-      "default_maps": [
-        "RVMD10119S",
-        "RVMD10050S"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KDFW",
-          "rate": 25,
-          "runway": "18L",
-          "category": "West"
-        },
-        {
-          "airport": "KDFW",
-          "rate": 25,
-          "runway": "17R",
-          "category": "East"
-        },
-        {
-          "airport": "KDAL",
-          "rate": 15,
-          "runway": "13R"
-        },
-        {
-          "airport": "KDAL",
-          "rate": 15,
-          "runway": "13L"
-        },
-        {
-          "airport": "KAFW",
-          "rate": 3,
-          "runway": "16L"
+          "runway": "13L_AUTO"
         },
         {
           "airport": "KADS",
           "rate": 2,
-          "runway": "16",
-          "category": "NORTH"
+          "runway": "16"
         },
         {
-          "airport": "KADS",
+          "airport": "KTKI",
           "rate": 2,
-          "runway": "16",
-          "category": "EAST"
+          "runway": "18"
         },
         {
-          "airport": "KADS",
+          "airport": "KRBD",
           "rate": 2,
-          "runway": "16",
-          "category": "SOUTH"
+          "runway": "13"
         },
         {
-          "airport": "KADS",
+          "airport": "KLNC",
           "rate": 2,
-          "runway": "16",
-          "category": "WEST"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "18",
-          "category": "NORTH"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "18",
-          "category": "EAST"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "18",
-          "category": "SOUTH"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "18",
-          "category": "WEST"
+          "runway": "13"
         }
       ],
       "wind": {
         "direction": 180,
-        "gust": 12,
-        "speed": 7
-      },
-      "vfr_rate_scale": 0
-    },
-    "DR NF": {
-      "arrival_runways": [
-        {
-          "airport": "KDFW",
-          "runway": "36L"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "35R"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "35C"
-        },
-        {
-          "airport": "KDAL",
-          "runway": "31L"
-        },
-        {
-          "airport": "KDAL",
-          "runway": "31R"
-        },
-        {
-          "airport": "KAFW",
-          "runway": "34R"
-        }
-      ],
-      "arrivals": {
-        "BRDJE5.AUTO": {
-          "KDFW": 15
-        },
-        "JOVEM6.AUTO": {
-          "KDFW": 15
-        },
-        "SOCKK4.AUTO": {
-          "KDFW": 15
-        },
-        "WHINY4.AUTO": {
-          "KDFW": 15
-        },
-        "HERBZ1.AUTO": {
-          "KDAL": 10
-        }
-      },
-      "solo_controller": "D10_L_DEP",
-      "multi_controllers": {
-        "default": {
-          "D10_L_DEP": {
-            "primary": true,
-            "departures": [
-              "KDFW/35L",
-              "KDAL/31R",
-              "KADS/34",
-              "KTKI/36"
-            ]
-          },
-          "D10_Z_DEP": {
-            "backup": "D10_L_DEP",
-            "departures": [
-              "KDFW/36R",
-              "KDAL/31L",
-              "KAFW/34R"
-            ]
-          }
-        }
-      },
-      "controllers": [
-        "FTW_29_CTR",
-        "FTW_32_CTR",
-        "FTW_37_CTR",
-        "FTW_53_CTR",
-        "FTW_62_CTR",
-        "FTW_75_CTR",
-        "FTW_83_CTR",
-        "FTW_96_CTR",
-        "AFW_TWR",
-        "DAL_TWR",
-        "DFW_E1_TWR",
-        "DFW_W1_TWR",
-        "DFW_E3_TWR",
-        "D10_E_APP",
-        "D10_W_APP",
-        "D10_N_APP",
-        "D10_M_APP",
-        "D10_D_APP",
-        "D10_S_APP"
-      ],
-      "default_maps": [
-        "RVMD10118S",
-        "RVMD10050S"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KDFW",
-          "rate": 25,
-          "runway": "36R",
-          "category": "West"
-        },
-        {
-          "airport": "KDFW",
-          "rate": 25,
-          "runway": "35L",
-          "category": "East"
-        },
-        {
-          "airport": "KDAL",
-          "rate": 15,
-          "runway": "31L"
-        },
-        {
-          "airport": "KDAL",
-          "rate": 15,
-          "runway": "31R"
-        },
-        {
-          "airport": "KAFW",
-          "rate": 2,
-          "runway": "34R"
-        },
-        {
-          "airport": "KADS",
-          "rate": 1,
-          "runway": "34",
-          "category": "NORTH"
-        },
-        {
-          "airport": "KADS",
-          "rate": 1,
-          "runway": "34",
-          "category": "EAST"
-        },
-        {
-          "airport": "KADS",
-          "rate": 1,
-          "runway": "34",
-          "category": "SOUTH"
-        },
-        {
-          "airport": "KADS",
-          "rate": 1,
-          "runway": "34",
-          "category": "WEST"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "36",
-          "category": "NORTH"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "36",
-          "category": "EAST"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "36",
-          "category": "SOUTH"
-        },
-        {
-          "airport": "KTKI",
-          "rate": 1,
-          "runway": "36",
-          "category": "WEST"
-        }
-      ],
-      "wind": {
-        "direction": 355,
-        "gust": 19,
-        "speed": 13
-      },
-      "vfr_rate_scale": 0
-    },
-    "DFW SF FINAL": {
-      "arrival_runways": [
-        {
-          "airport": "KDFW",
-          "runway": "13R"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "18R"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "17L"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "17C"
-        }
-      ],
-      "arrivals": {
-        "BEREE3.SouthFinals": {
-          "KDFW": 20
-        },
-        "BOOVE7.SouthFinals": {
-          "KDFW": 12
-        },
-        "VKTRY2.SouthFinals": {
-          "KDFW": 15
-        },
-        "SEEVR4.SouthFinals": {
-          "KDFW": 15
-        }
-      },
-      "solo_controller": "D10_G_APP",
-      "controllers": [
-        "FTW_29_CTR",
-        "FTW_32_CTR",
-        "FTW_37_CTR",
-        "FTW_53_CTR",
-        "FTW_62_CTR",
-        "FTW_75_CTR",
-        "FTW_83_CTR",
-        "FTW_96_CTR",
-        "AFW_TWR",
-        "DAL_TWR",
-        "DFW_E1_TWR",
-        "DFW_W1_TWR",
-        "DFW_E3_TWR",
-        "D10_E_APP",
-        "D10_W_APP"
-      ],
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": [
-              "VKTRY2.SouthFinals",
-              "BOOVE7.SouthFinals"
-            ]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": [
-              "BEREE3.SouthFinals"
-            ]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": [
-              "SEEVR4.SouthFinals"
-            ]
-          }
-        }
-      },
-      "default_maps": [
-        "RVMD10103S"
-      ],
-      "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
-      },
-      "vfr_rate_scale": 0
-    },
-    "DFW NF FINAL": {
-      "arrival_runways": [
-        {
-          "airport": "KDFW",
-          "runway": "31R"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "36L"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "35C"
-        },
-        {
-          "airport": "KDFW",
-          "runway": "35R"
-        }
-      ],
-      "arrivals": {
-        "BRDJE5.NorthFinals": {
-          "KDFW": 30
-        },
-        "JOVEM6.NorthFinals": {
-          "KDFW": 19
-        },
-        "SOCKK4.NorthFinals": {
-          "KDFW": 17
-        },
-        "WHINY4.NorthFinals": {
-          "KDFW": 18
-        }
-      },
-      "solo_controller": "D10_G_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": [
-              "WHINY4.NorthFinals"
-            ]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": [
-              "BRDJE5.NorthFinals"
-            ]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": [
-              "JOVEM6.NorthFinals",
-              "SOCKK4.NorthFinals"
-            ]
-          }
-        }
-      },
-      "controllers": [
-        "FTW_29_CTR",
-        "FTW_32_CTR",
-        "FTW_37_CTR",
-        "FTW_53_CTR",
-        "FTW_62_CTR",
-        "FTW_75_CTR",
-        "FTW_83_CTR",
-        "FTW_96_CTR",
-        "AFW_TWR",
-        "DAL_TWR",
-        "DFW_E1_TWR",
-        "DFW_W1_TWR",
-        "DFW_E3_TWR",
-        "D10_E_APP",
-        "D10_W_APP"
-      ],
-      "default_maps": [
-        "RVMD10102S"
-      ],
-      "wind": {
-        "direction": 345,
         "gust": 12,
         "speed": 7
       },
