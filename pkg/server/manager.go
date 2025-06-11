@@ -35,10 +35,10 @@ import (
 // SimManager
 
 type SimManager struct {
-	scenarioGroups     map[string]map[string]*ScenarioGroup
+	scenarioGroups     map[string]map[string]*scenarioGroup
 	configs            map[string]map[string]*Configuration
-	activeSims         map[string]*ActiveSim
-	controllersByToken map[string]*HumanController
+	activeSims         map[string]*activeSim
+	controllersByToken map[string]*humanController
 	mu                 util.LoggingMutex
 	mapManifests       map[string]*sim.VideoMapManifest
 	startTime          time.Time
@@ -52,8 +52,8 @@ type Configuration struct {
 	DefaultScenario  string
 }
 
-type HumanController struct {
-	asim                *ActiveSim
+type humanController struct {
+	asim                *activeSim
 	tcp                 string
 	token               string
 	lastUpdateCall      time.Time
@@ -74,7 +74,7 @@ type SimScenarioConfiguration struct {
 	ArrivalRunways   []sim.ArrivalRunway
 }
 
-type ActiveSim struct {
+type activeSim struct {
 	name            string
 	scenarioGroup   string
 	scenario        string
@@ -83,7 +83,7 @@ type ActiveSim struct {
 	password        string
 	local           bool
 
-	controllersByTCP map[string]*HumanController
+	controllersByTCP map[string]*humanController
 }
 
 type NewSimConfiguration struct {
@@ -131,8 +131,8 @@ type RemoteSim struct {
 	CoveredPositions   map[string]av.Controller
 }
 
-func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
-	hc := &HumanController{
+func (as *activeSim) AddHumanController(tcp, token string) *humanController {
+	hc := &humanController{
 		asim:           as,
 		tcp:            tcp,
 		lastUpdateCall: time.Now(),
@@ -144,14 +144,14 @@ func (as *ActiveSim) AddHumanController(tcp, token string) *HumanController {
 	return hc
 }
 
-func NewSimManager(scenarioGroups map[string]map[string]*ScenarioGroup,
+func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
 	lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:     scenarioGroups,
 		configs:            simConfigurations,
-		activeSims:         make(map[string]*ActiveSim),
-		controllersByToken: make(map[string]*HumanController),
+		activeSims:         make(map[string]*activeSim),
+		controllersByToken: make(map[string]*humanController),
 		mapManifests:       manifests,
 		startTime:          time.Now(),
 		lg:                 lg,
@@ -174,7 +174,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 		if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
 			manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
 			sim := sim.NewSim(*nsc, manifest, lg)
-			as := &ActiveSim{
+			as := &activeSim{
 				name:             config.NewSimName,
 				scenarioGroup:    config.GroupName,
 				scenario:         config.ScenarioName,
@@ -182,7 +182,7 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 				allowInstructor:  config.InstructorAllowed,
 				password:         config.Password,
 				local:            config.NewSimType == NewSimCreateLocal,
-				controllersByTCP: make(map[string]*HumanController),
+				controllersByTCP: make(map[string]*humanController),
 			}
 			return sm.Add(as, result, true)
 		} else {
@@ -305,15 +305,15 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 }
 
 func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
-	as := &ActiveSim{ // no password, etc.
+	as := &activeSim{ // no password, etc.
 		sim:              sim,
-		controllersByTCP: make(map[string]*HumanController),
+		controllersByTCP: make(map[string]*humanController),
 		local:            true,
 	}
 	return sm.Add(as, result, false)
 }
 
-func (sm *SimManager) Add(as *ActiveSim, result *NewSimResult, prespawn bool) error {
+func (sm *SimManager) Add(as *activeSim, result *NewSimResult, prespawn bool) error {
 	if as.sim.State == nil {
 		return errors.New("incomplete Sim; nil *State")
 	}
@@ -454,7 +454,7 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 // assume SimManager lock is held
-func (sm *SimManager) signOn(as *ActiveSim, tcp string, instructor bool) (*sim.State, string, error) {
+func (sm *SimManager) signOn(as *activeSim, tcp string, instructor bool) (*sim.State, string, error) {
 	ss, err := as.sim.SignOn(tcp, instructor)
 	if err != nil {
 		return nil, "", err
@@ -540,14 +540,14 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 	return nil
 }
 
-func (sm *SimManager) LookupController(token string) (*HumanController, *sim.Sim, bool) {
+func (sm *SimManager) LookupController(token string) (*humanController, *sim.Sim, bool) {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	return sm.lookupController(token)
 }
 
-func (sm *SimManager) lookupController(token string) (*HumanController, *sim.Sim, bool) {
+func (sm *SimManager) lookupController(token string) (*humanController, *sim.Sim, bool) {
 	if ctrl, ok := sm.controllersByToken[token]; ok {
 		return ctrl, ctrl.asim.sim, true
 	}

@@ -118,7 +118,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), map[str
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)
 		}
-		if err := server.RegisterName("Sim", &Dispatcher{sm: sm}); err != nil {
+		if err := server.RegisterName("Sim", &dispatcher{sm: sm}); err != nil {
 			lg.Errorf("unable to register dispatcher: %v", err)
 			os.Exit(1)
 		}
