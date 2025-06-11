@@ -9,6 +9,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/csv"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -954,8 +955,14 @@ func (t *TFRCache) TFRsForTRACON(tracon string, lg *log.Logger) []TFR {
 	}
 }
 
+type TFRListJSON struct {
+	Notam_id string `json:"notam_id"`
+}
+
 // Returns the URLs to all of the XML-formatted TFRs from the tfr.faa.gov website.
-func allTFRUrls() []string {
+func allTFRUrls(lg *log.Logger) []string {
+	lg.Infof("Fetching TFR URLs")
+
 	// Try to look legit.
 	c := colly.NewCollector(
 		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"))
@@ -972,23 +979,32 @@ func allTFRUrls() []string {
 		r.Headers.Set("Sec-Fetch-Dest", "empty")
 	})
 
-	// Find all links that match the pattern to a TFR.  Note that this is
-	// super brittle / tied to the current webpage layout, etc. It will
-	// surely break unexpectedly at some point in the future.
+	var tfr_url_list []TFRListJSON
 	var urls []string
-	c.OnHTML("a", func(e *colly.HTMLElement) {
-		if href := e.Attr("href"); strings.HasPrefix(href, "../save_pages") {
-			// Rewrite to an absolute URL to the XML file.
-			url := "https://tfr.faa.gov/" + strings.TrimPrefix(href, "../")
-			url = strings.TrimSuffix(url, "html") + "xml"
+
+	// This is still somewhat brittle. In a mind bending design choice the FAAs JSON link
+	// (https://tfr.faa.gov/tfr3/export/json) is assembled via javascript and not an actual
+	// exported json. The URL below is called by the javascript and gets the the list of current NOTAM IDs
+	// We then assume the same URL scheme for NOTAM details (https://tfr.faa.gov/download/detail_${NOTAM_ID}.xml)
+	// and fetch the data from there...which is actually XML...for now....
+
+	c.OnResponse(func(r *colly.Response) {
+		lg.Infof("TFR json: %s", string(r.Body))
+		json.Unmarshal([]byte(r.Body), &tfr_url_list)
+
+		for _, tfr_url := range tfr_url_list {
+			id := strings.Replace(tfr_url.Notam_id, "/", "_", -1)
+			url := "https://tfr.faa.gov/download/detail_" + id + ".xml"
 			urls = append(urls, url)
 		}
 	})
 
-	c.Visit("https://tfr.faa.gov/tfr2/list.html")
+	c.OnError(func(r *colly.Response, err error) {
+		lg.Errorf("Error fetching TFRs: %s", err)
+	})
 
-	// Each TFR has multiple links from the page, so uniquify them before returning them.
-	slices.Sort(urls)
+	c.Visit("https://tfr.faa.gov/tfrapi/exportTfrList")
+
 	return slices.Compact(urls)
 }
 
@@ -1027,7 +1043,7 @@ func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
 
 	// Launch a goroutine to fetch each one that we don't already have
 	// downloaded.
-	urls := allTFRUrls()
+	urls := allTFRUrls(lg)
 	launched := 0
 	for _, url := range urls {
 		if _, ok := tfrs[url]; !ok {
