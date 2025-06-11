@@ -17,7 +17,9 @@ type StackFrame struct {
 	Function string `json:"function"`
 }
 
-func Callstack(fr []StackFrame) []StackFrame {
+type StackFrames []StackFrame
+
+func Callstack(fr []StackFrame) StackFrames {
 	var callers [16]uintptr
 	n := runtime.Callers(3, callers[:]) // skip up to function that is doing logging
 	frames := runtime.CallersFrames(callers[:n])
@@ -49,4 +51,12 @@ func Callstack(fr []StackFrame) []StackFrame {
 
 func (f StackFrame) String() string {
 	return f.File + ":" + strconv.Itoa(f.Line) + ":" + f.Function
+}
+
+func (f StackFrames) String() string {
+	var s []string
+	for _, frame := range f {
+		s = append(s, frame.String())
+	}
+	return strings.Join(s, "\n")
 }

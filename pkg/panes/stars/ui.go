@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -57,7 +57,7 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 }
 
-func (sp *STARSPane) DrawInfo(c *server.ControlClient, p platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	// Make big(ish) tables somewhat more legible
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp

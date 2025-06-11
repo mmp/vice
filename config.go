@@ -14,6 +14,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/panes/stars"
@@ -96,7 +97,7 @@ func (c *Config) Save(lg *log.Logger) error {
 }
 
 func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
-	client *server.ControlClient, saveSim bool, lg *log.Logger) bool {
+	client *client.ControlClient, saveSim bool, lg *log.Logger) bool {
 	c.Sim = nil
 	c.UserTCP = ""
 	if saveSim {

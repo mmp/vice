@@ -1405,24 +1405,6 @@ func (a AltitudeRestriction) ClampRange(r [2]float32) (c [2]float32, ok bool) {
 	return
 }
 
-// Summary returns a human-readable summary of the altitude
-// restriction.
-func (a AltitudeRestriction) Summary() string {
-	if a.Range[0] != 0 {
-		if a.Range[1] == a.Range[0] {
-			return fmt.Sprintf("at %s", FormatAltitude(a.Range[0]))
-		} else if a.Range[1] != 0 {
-			return fmt.Sprintf("between %s-%s", FormatAltitude(a.Range[0]), FormatAltitude(a.Range[1]))
-		} else {
-			return fmt.Sprintf("at or above %s", FormatAltitude(a.Range[0]))
-		}
-	} else if a.Range[1] != 0 {
-		return fmt.Sprintf("at or below %s", FormatAltitude(a.Range[1]))
-	} else {
-		return ""
-	}
-}
-
 // Encoded returns the restriction in the encoded form in which it is
 // specified in scenario configuration files, e.g. "5000+" for "at or above
 // 5000".

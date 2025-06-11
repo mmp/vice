@@ -10,11 +10,11 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -28,10 +28,10 @@ type Pane interface {
 	Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger)
 
 	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
-	LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
 
 	// ResetSim is called when a brand new Sim is launched
-	ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
 	Hide() bool
@@ -44,7 +44,7 @@ type UIDrawer interface {
 }
 
 type InfoWindowDrawer interface {
-	DrawInfo(c *server.ControlClient, p platform.Platform, lg *log.Logger)
+	DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger)
 }
 
 type PaneUpgrader interface {
@@ -84,7 +84,7 @@ type Context struct {
 
 	KeyboardFocus *KeyboardFocus
 
-	Client *server.ControlClient
+	Client *client.ControlClient
 
 	// from Client.State, here for convenience
 	UserTCP            string
@@ -193,9 +193,9 @@ func init() {
 }
 
 func (ep *EmptyPane) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
-func (ep *EmptyPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
-func (ep *EmptyPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 func (ep *EmptyPane) Hide() bool                 { return false }

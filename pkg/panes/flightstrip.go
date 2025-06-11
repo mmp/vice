@@ -11,12 +11,12 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -149,10 +149,10 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)
