@@ -653,23 +653,23 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			var heavySuper string
 			if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
 				if perf.WeightClass == "H" {
-					heavySuper = "heavy"
+					heavySuper = " heavy"
 				} else if perf.WeightClass == "J" {
-					heavySuper = "super"
+					heavySuper = " super"
 				}
 			}
 
 			if e.RadioTransmissionType == speech.RadioTransmissionContact {
 				var tr *speech.RadioTransmission
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					tr = speech.MakeContactTransmission("{dctrl}, {callsign} "+heavySuper+".", ctrl, ac.ADSBCallsign)
+					tr = speech.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+".", ctrl, ac.ADSBCallsign)
 				} else {
-					tr = speech.MakeContactTransmission("{actrl}, {callsign} "+heavySuper+".", ctrl, ac.ADSBCallsign)
+					tr = speech.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+".", ctrl, ac.ADSBCallsign)
 				}
 				events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
 				events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 			} else {
-				tr := speech.MakeReadbackTransmission(", {callsign} "+heavySuper+".", ac.ADSBCallsign)
+				tr := speech.MakeReadbackTransmission(", {callsign}"+heavySuper+".", ac.ADSBCallsign)
 				events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
 				events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
 			}
