@@ -583,7 +583,7 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 func (c *NewSimConfiguration) Start() error {
 	c.TFRs = c.tfrCache.TFRsForTRACON(c.TRACONName, c.lg)
 
-	if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer); err != nil {
+	if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer, c.lg); err != nil {
 		c.lg.Errorf("CreateNewSim failed: %v", err)
 		return err
 	} else {

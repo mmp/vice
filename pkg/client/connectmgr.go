@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net/rpc"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
@@ -24,7 +25,6 @@ type ConnectionManager struct {
 	lastRemoteServerAttempt time.Time
 	remoteSimServerChan     chan *serverConnection
 
-	newSimConnectionChan     chan Connection
 	serverRPCVersionMismatch bool
 
 	lastRemoteSimsUpdate  time.Time
@@ -42,20 +42,12 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-type Connection struct {
-	SimState        sim.State
-	ControllerToken string
-	Client          *RPCClient
-	HTTPPort        int
-}
-
 func MakeServerManager(address, additionalScenario, additionalVideoMap string, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
 	cm := &ConnectionManager{
 		serverAddress:           address,
 		lastRemoteServerAttempt: time.Now(),
 		remoteSimServerChan:     TryConnectRemoteServer(address, lg),
-		newSimConnectionChan:    make(chan Connection, 2),
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
@@ -100,7 +92,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server) error {
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 	if err := srv.callWithTimeout("SimManager.New", config, &result); err != nil {
 		err = server.TryDecodeError(err)
@@ -111,12 +103,25 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv
 		}
 		return err
 	} else {
-		cm.newSimConnectionChan <- Connection{
-			SimState:        *result.SimState,
-			ControllerToken: result.ControllerToken,
-			Client:          srv.RPCClient,
-			HTTPPort:        result.HTTPPort,
+		if cm.client != nil {
+			cm.client.Disconnect()
 		}
+
+		var wsAddress string
+		if srv == cm.LocalServer {
+			wsAddress = "localhost:" + strconv.Itoa(result.HTTPPort)
+		} else {
+			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
+			wsAddress += ":" + strconv.Itoa(result.HTTPPort)
+		}
+		cm.client = NewControlClient(*result.SimState, false, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+
+		cm.connectionStartTime = time.Now()
+
+		if cm.onNewClient != nil {
+			cm.onNewClient(cm.client)
+		}
+
 		return nil
 	}
 }
@@ -189,21 +194,6 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 	}
 
 	select {
-	case ns := <-cm.newSimConnectionChan:
-		if cm.client != nil {
-			cm.client.Disconnect()
-		}
-
-		wsAddress := util.Select(ns.Client == cm.LocalServer.RPCClient, "localhost", cm.serverAddress) +
-			":" + strconv.Itoa(ns.HTTPPort)
-		cm.client = NewControlClient(ns.SimState, false, ns.ControllerToken, wsAddress, ns.Client, lg)
-
-		cm.connectionStartTime = time.Now()
-
-		if cm.onNewClient != nil {
-			cm.onNewClient(cm.client)
-		}
-
 	case remoteServerConn := <-cm.remoteSimServerChan:
 		if err := remoteServerConn.Err; err != nil {
 			lg.Info("Unable to connect to remote server", slog.Any("error", err))

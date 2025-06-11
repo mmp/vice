@@ -389,6 +389,10 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, prespawn bool) er
 			as.sim.Update()
 
 			for tcp, ctrl := range as.controllersByTCP {
+				if ctrl.speechWs == nil {
+					continue
+				}
+
 				for _, ps := range as.sim.GetControllerSpeech(tcp) {
 					w, err := ctrl.speechWs.NextWriter(websocket.BinaryMessage)
 					if err != nil {
