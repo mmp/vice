@@ -1065,9 +1065,6 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 	// We have a heading and a direction; now figure out if we need to
 	// adjust the bank and then how far we turn this tick.
 
-	// maximum turn rate: 3 degrees/sec at 180kts and below, down to 2 degrees/sec at >=250kts.
-	maxTurnRate := 3 - math.Clamp((nav.TAS()-180)/70, 0, 1)
-
 	// signed difference, negative is turn left
 	headingDelta := func() float32 {
 		switch turn {
@@ -1100,7 +1097,15 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 	// Note that this is signed.
 	maxBankAngle := nav.Perf.Turn.MaxBankAngle
 	maxRollRate := nav.Perf.Turn.MaxBankRate
-	turnRate := func(bankAngle float32) float32 { return bankAngle / maxBankAngle * maxTurnRate }
+	turnRate := func(bankAngle float32) float32 {
+		if bankAngle == 0 {
+			return 0
+		}
+		bankRad := math.Radians(bankAngle)
+		tasMS := nav.TAS() * 0.514444
+		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
+		return math.Min(rate, 3)
+	}
 
 	// If we started leveling out now, how many more degrees would we turn through?
 	var levelOutDelta float32
