@@ -509,8 +509,45 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			}
 		}
 
+		// A###, C###, and D### all equivalently assign an altitude
+		if (command[0] == 'A' || command[0] == 'C' || command[0] == 'D') && len(command) > 1 && util.IsAllNumbers(command[1:]) {
+			// Look for an altitude
+			if alt, err := strconv.Atoi(command[1:]); err != nil {
+				rewriteError(err)
+				return nil
+			} else if err := s.AssignAltitude(ctrl.tcp, callsign, 100*alt, false); err != nil {
+				rewriteError(err)
+				return nil
+			} else {
+				continue
+			}
+		}
+
 		switch command[0] {
-		case 'A', 'C':
+		case 'A':
+			if command == "A" {
+				if err := s.AltitudeOurDiscretion(ctrl.tcp, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				} else {
+					continue
+				}
+			} else {
+				components := strings.Split(command, "/")
+				if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+					rewriteError(ErrInvalidCommandSyntax)
+					return nil
+				}
+
+				fix := strings.ToUpper(components[0][1:])
+				approach := components[1][1:]
+				if err := s.AtFixCleared(ctrl.tcp, callsign, fix, approach); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			}
+
+		case 'C':
 			if command == "CAC" {
 				// Cancel approach clearance
 				if err := s.CancelApproachClearance(ctrl.tcp, callsign); err != nil {
@@ -533,80 +570,45 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
-			} else if command[0] == 'C' && len(command) > 2 && !util.IsAllNumbers(command[1:]) {
-				if components := strings.Split(command, "/"); len(components) > 1 {
-					// Cross fix [at altitude] [at speed]
-					fix := components[0][1:]
-					var ar *av.AltitudeRestriction
-					speed := 0
+			} else if components := strings.Split(command, "/"); len(components) > 1 {
+				// Cross fix [at altitude] [at speed]
+				fix := components[0][1:]
+				var ar *av.AltitudeRestriction
+				speed := 0
 
-					for _, cmd := range components[1:] {
-						if len(cmd) == 0 {
-							rewriteError(ErrInvalidCommandSyntax)
-							return nil
-						}
-
-						var err error
-						if cmd[0] == 'A' && len(cmd) > 1 {
-							if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
-								rewriteError(err)
-								return nil
-							}
-							// User input here is 100s of feet, while AltitudeRestriction is feet...
-							ar.Range[0] *= 100
-							ar.Range[1] *= 100
-						} else if cmd[0] == 'S' {
-							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-								rewriteError(err)
-								return nil
-							}
-						} else {
-							rewriteError(ErrInvalidCommandSyntax)
-							return nil
-						}
-					}
-
-					if err := s.CrossFixAt(ctrl.tcp, callsign, fix, ar, speed); err != nil {
-						rewriteError(err)
-						return nil
-					}
-				} else if err := s.ClearedApproach(ctrl.tcp, callsign, command[1:], false); err != nil {
-					rewriteError(err)
-					return nil
-				}
-			} else {
-				if command == "A" {
-					if err := s.AltitudeOurDiscretion(ctrl.tcp, callsign); err != nil {
-						rewriteError(err)
-						return nil
-					} else {
-						continue
-					}
-				} else if command[0] == 'A' {
-					components := strings.Split(command, "/")
-					if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+				for _, cmd := range components[1:] {
+					if len(cmd) == 0 {
 						rewriteError(ErrInvalidCommandSyntax)
 						return nil
 					}
 
-					fix := strings.ToUpper(components[0][1:])
-					approach := components[1][1:]
-					if err := s.AtFixCleared(ctrl.tcp, callsign, fix, approach); err != nil {
-						rewriteError(err)
-						return nil
+					var err error
+					if cmd[0] == 'A' && len(cmd) > 1 {
+						if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
+							rewriteError(err)
+							return nil
+						}
+						// User input here is 100s of feet, while AltitudeRestriction is feet...
+						ar.Range[0] *= 100
+						ar.Range[1] *= 100
+					} else if cmd[0] == 'S' {
+						if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+							rewriteError(err)
+							return nil
+						}
 					} else {
-						continue
+						rewriteError(ErrInvalidCommandSyntax)
+						return nil
 					}
 				}
 
-				// Otherwise look for an altitude
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					rewriteError(err)
-					return nil
-				} else if err := s.AssignAltitude(ctrl.tcp, callsign, 100*alt, false); err != nil {
+				if err := s.CrossFixAt(ctrl.tcp, callsign, fix, ar, speed); err != nil {
 					rewriteError(err)
 					return nil
 				}
+			} else if err := s.ClearedApproach(ctrl.tcp, callsign, command[1:], false); err != nil {
+				rewriteError(err)
+				return nil
 			}
 
 		case 'D':
@@ -637,15 +639,6 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 				default:
 					rewriteError(ErrInvalidCommandSyntax)
-					return nil
-				}
-			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-				// Looks like an altitude.
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					rewriteError(err)
-					return nil
-				} else if err := s.AssignAltitude(ctrl.tcp, callsign, 100*alt, false); err != nil {
-					rewriteError(err)
 					return nil
 				}
 			} else if len(command) >= 4 && len(command) <= 6 {
