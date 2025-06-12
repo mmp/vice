@@ -8,7 +8,6 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"encoding/gob"
-	"errors"
 	"fmt"
 	"log/slog"
 	gomath "math"
@@ -78,13 +77,12 @@ type SimScenarioConfiguration struct {
 }
 
 type activeSim struct {
-	name            string
-	scenarioGroup   string
-	scenario        string
-	sim             *sim.Sim
-	allowInstructor bool
-	password        string
-	local           bool
+	name          string
+	scenarioGroup string
+	scenario      string
+	sim           *sim.Sim
+	password      string
+	local         bool
 
 	controllersByTCP map[string]*humanController
 }
@@ -96,8 +94,8 @@ type NewSimConfiguration struct {
 	GroupName    string
 	ScenarioName string
 
-	SelectedRemoteSim         string
-	SelectedRemoteSimPosition string
+	SelectedRemoteSim string
+	SignOnPosition    string
 
 	Scenario *SimScenarioConfiguration
 
@@ -110,8 +108,7 @@ type NewSimConfiguration struct {
 
 	LiveWeather bool
 
-	InstructorAllowed bool
-	Instructor        bool
+	AllowInstructorRPO bool
 }
 
 const (
@@ -129,7 +126,6 @@ type RemoteSim struct {
 	ScenarioName       string
 	PrimaryController  string
 	RequirePassword    bool
-	InstructorAllowed  bool
 	AvailablePositions map[string]av.Controller
 	CoveredPositions   map[string]av.Controller
 }
@@ -188,12 +184,15 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 				scenarioGroup:    config.GroupName,
 				scenario:         config.ScenarioName,
 				sim:              sim,
-				allowInstructor:  config.InstructorAllowed,
 				password:         config.Password,
 				local:            config.NewSimType == NewSimCreateLocal,
 				controllersByTCP: make(map[string]*humanController),
 			}
-			return sm.Add(as, result, true)
+			pos := config.SignOnPosition
+			if pos == "" {
+				pos = sim.State.PrimaryController
+			}
+			return sm.Add(as, result, pos, true)
 		} else {
 			return ErrInvalidSSimConfiguration
 		}
@@ -210,12 +209,12 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrInvalidPassword
 		}
 
-		ss, token, err := sm.signOn(as, config.SelectedRemoteSimPosition, config.Instructor)
+		ss, token, err := sm.signOn(as, config.SignOnPosition)
 		if err != nil {
 			return err
 		}
 
-		hc := as.AddHumanController(config.SelectedRemoteSimPosition, token)
+		hc := as.AddHumanController(config.SignOnPosition, token)
 		sm.controllersByToken[token] = hc
 
 		*result = NewSimResult{
@@ -309,6 +308,16 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 	} else {
 		add(sc.SoloController)
 	}
+	if config.AllowInstructorRPO {
+		nsc.SignOnPositions["INS"] = &av.Controller{
+			Position:   "Instructor",
+			Instructor: true,
+		}
+		nsc.SignOnPositions["RPO"] = &av.Controller{
+			Position: "Remote Pilot Operator",
+			RPO:      true,
+		}
+	}
 
 	return &nsc
 }
@@ -319,14 +328,10 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 		controllersByTCP: make(map[string]*humanController),
 		local:            true,
 	}
-	return sm.Add(as, result, false)
+	return sm.Add(as, result, sim.State.PrimaryController, false)
 }
 
-func (sm *SimManager) Add(as *activeSim, result *NewSimResult, prespawn bool) error {
-	if as.sim.State == nil {
-		return errors.New("incomplete Sim; nil *State")
-	}
-
+func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, prespawn bool) error {
 	lg := sm.lg
 	if as.name != "" {
 		lg = lg.With(slog.String("sim_name", as.name))
@@ -344,14 +349,13 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, prespawn bool) er
 	sm.lg.Infof("%s: adding sim", as.name)
 	sm.activeSims[as.name] = as
 
-	instuctor := as.sim.Instructors[as.sim.State.PrimaryController]
-	ss, token, err := sm.signOn(as, as.sim.State.PrimaryController, instuctor)
+	ss, token, err := sm.signOn(as, initialTCP)
 	if err != nil {
 		sm.mu.Unlock(sm.lg)
 		return err
 	}
 
-	hc := as.AddHumanController(as.sim.State.PrimaryController, token)
+	hc := as.AddHumanController(initialTCP, token)
 	sm.controllersByToken[token] = hc
 
 	sm.mu.Unlock(sm.lg)
@@ -446,6 +450,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, prespawn bool) er
 type ConnectResult struct {
 	Configurations map[string]map[string]*Configuration
 	RunningSims    map[string]*RemoteSim
+	HaveTTS        bool
 }
 
 func (sm *SimManager) Connect(version int, result *ConnectResult) error {
@@ -462,13 +467,14 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
+	result.HaveTTS = sm.haveTTS
 
 	return nil
 }
 
 // assume SimManager lock is held
-func (sm *SimManager) signOn(as *activeSim, tcp string, instructor bool) (*sim.State, string, error) {
-	ss, err := as.sim.SignOn(tcp, instructor)
+func (sm *SimManager) signOn(as *activeSim, tcp string) (*sim.State, string, error) {
+	ss, err := as.sim.SignOn(tcp)
 	if err != nil {
 		return nil, "", err
 	}
@@ -541,7 +547,6 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 			ScenarioName:      as.scenario,
 			PrimaryController: as.sim.State.PrimaryController,
 			RequirePassword:   as.password != "",
-			InstructorAllowed: as.allowInstructor,
 		}
 
 		rs.AvailablePositions, rs.CoveredPositions = as.sim.GetAvailableCoveredPositions()

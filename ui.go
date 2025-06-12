@@ -1324,7 +1324,7 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 }
 
 func (mp *MissingPrimaryModalClient) Draw() int {
-	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", has disconnected from the server or is otherwise unreachable.\nThe simulation will be paused until a primary controller signs in.")
+	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", is not signed in.\nThe simulation will be paused until that position is covered.")
 	return -1
 }
 

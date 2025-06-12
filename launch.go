@@ -300,7 +300,28 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text(fmtPosition(c.Scenario.SelectedController))
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Allow Instructor Sign-ins", &c.InstructorAllowed)
+			imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
+			if c.AllowInstructorRPO {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Sign in as:")
+				imgui.TableNextColumn()
+				var curPos int32 // 0 -> primaryController
+				if c.SignOnPosition == "INS" {
+					curPos = 1
+				} else if c.SignOnPosition == "RPO" {
+					curPos = 2
+				}
+				if imgui.RadioButtonIntPtr(c.Scenario.SelectedController, &curPos, 0) {
+					c.SignOnPosition = "" // default: server will sort it out
+				}
+				if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
+					c.SignOnPosition = "INS"
+				}
+				if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
+					c.SignOnPosition = "RPO"
+				}
+			}
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -391,7 +412,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			rs = runningSims[c.SelectedRemoteSim]
 			if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
 				// If the primary position isn't currently covered, make that the default selection.
-				c.SelectedRemoteSimPosition = rs.PrimaryController
+				c.SignOnPosition = rs.PrimaryController
 			}
 		}
 
@@ -430,7 +451,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 					rs = runningSims[c.SelectedRemoteSim]
 					if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
 						// If the primary position isn't currently covered, make that the default selection.
-						c.SelectedRemoteSimPosition = rs.PrimaryController
+						c.SignOnPosition = rs.PrimaryController
 					}
 				}
 
@@ -451,8 +472,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		}
 
 		// Handle the case of someone else signing in to the position
-		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; c.SelectedRemoteSimPosition != "Observer" && !ok {
-			c.SelectedRemoteSimPosition = util.SortedMapKeys(rs.AvailablePositions)[0]
+		if _, ok := rs.AvailablePositions[c.SignOnPosition]; !ok {
+			c.SignOnPosition = util.SortedMapKeys(rs.AvailablePositions)[0]
 		}
 
 		fmtPosition := func(id string) string {
@@ -462,32 +483,21 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			return id
 		}
 
-		if imgui.BeginCombo("Position", fmtPosition(c.SelectedRemoteSimPosition)) {
+		if imgui.BeginCombo("Position", fmtPosition(c.SignOnPosition)) {
 			for _, pos := range util.SortedMapKeys(rs.AvailablePositions) {
 				if pos[0] == '_' {
 					continue
 				}
 
-				if imgui.SelectableBoolV(fmtPosition(pos), c.SelectedRemoteSimPosition == pos, 0, imgui.Vec2{}) {
-					c.SelectedRemoteSimPosition = pos
+				if imgui.SelectableBoolV(fmtPosition(pos), c.SignOnPosition == pos, 0, imgui.Vec2{}) {
+					c.SignOnPosition = pos
 				}
-			}
-
-			if imgui.SelectableBoolV("Observer", c.SelectedRemoteSimPosition == "Observer", 0, imgui.Vec2{}) {
-				c.SelectedRemoteSimPosition = "Observer"
 			}
 
 			imgui.EndCombo()
 		}
 		if rs.RequirePassword {
 			imgui.InputTextMultiline("Password", &c.RemoteSimPassword, imgui.Vec2{}, 0, nil)
-		}
-		if !rs.InstructorAllowed {
-			imgui.BeginDisabled()
-		}
-		imgui.Checkbox("Sign-in as Instructor", &c.Instructor)
-		if !rs.InstructorAllowed {
-			imgui.EndDisabled()
 		}
 	}
 
@@ -1068,7 +1078,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	}
 
 	canLaunch := ctrl == lc.client.State.UserTCP || (lc.client.State.MultiControllers == nil && ctrl == "") ||
-		lc.client.State.AmInstructor()
+		lc.client.State.AreInstructorOrRPO(lc.client.State.UserTCP)
 	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()

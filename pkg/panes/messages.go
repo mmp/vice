@@ -185,13 +185,13 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
 			toUs := event.ToController == ctx.UserTCP
-			amInstructor := ctx.Client.State.Instructors[ctx.UserTCP]
-			if !toUs && !amInstructor {
+
+			if !toUs && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
 				break
 			}
 
 			prefix := ""
-			if !toUs && amInstructor {
+			if ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
 				prefix = "[to " + event.ToController + "] "
 			}
 

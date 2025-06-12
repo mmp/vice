@@ -179,13 +179,17 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 		sp.multiFuncPrefix = string(input[0])
 		input = input[1:]
 	}
+
+	instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
 	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
 		sp.setCommandMode(ctx, CommandModeTargetGen)
-		ctx.Client.HoldRadioTransmissions()
+		if !instructorRPO {
+			ctx.Client.HoldRadioTransmissions()
+		}
 		input = input[1:]
 	}
 
-	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+	if !instructorRPO && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
 		if ctx.Client.RadioIsActive() {
 			// Discard entered TGT GEN text if we're awaiting a readback
 			input = ""
@@ -2440,8 +2444,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmds = cmd
 		}
 
-		instructor := ctx.Client.State.AmInstructor()
-		matching := sp.tracksFromACIDSuffix(ctx, suffix, instructor)
+		matching := sp.tracksFromACIDSuffix(ctx, suffix)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return
@@ -3049,7 +3052,7 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.Track, cod
 	ps := sp.currentPrefs()
 	if ps.DisableMCIWarnings {
 		status.err = ErrSTARSIllegalFunction
-	} else if trk.IsUnassociated() || trk.FlightPlan.TrackingController != ctx.UserTCP {
+	} else if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 		status.err = ErrSTARSIllegalTrack
 	} else {
 		sfp := trk.FlightPlan
@@ -3882,7 +3885,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "O": // 6-79 Pointout history
 				if cmd == "" {
-					if trk.IsUnassociated() || trk.FlightPlan.TrackingController != ctx.UserTCP {
+					if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 						status.err = ErrSTARSIllegalTrack
 						return
 					}
@@ -3896,7 +3899,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.clear = true
 				} else if cmd == "*" {
 					// 6-81 clear point out history
-					if trk.IsUnassociated() || trk.FlightPlan.TrackingController != ctx.UserTCP {
+					if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 						status.err = ErrSTARSIllegalTrack
 					} else {
 						var spec sim.STARSFlightPlanSpecifier
@@ -3912,7 +3915,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 			case "Q":
 				if cmd == "" {
-					if trk.IsUnassociated() || trk.FlightPlan.TrackingController != ctx.UserTCP {
+					if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 						status.err = ErrSTARSIllegalTrack
 					} else {
 						status.clear = true
@@ -4936,7 +4939,7 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 // Returns all aircraft that match the given suffix. If instructor is true,
 // returns all matching aircraft; otherwise only ones under the current
 // controller's control are considered for matching.
-func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string, instructor bool) []*sim.Track {
+func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string) []*sim.Track {
 	match := func(trk *sim.Track) bool {
 		if trk.IsUnassociated() {
 			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
@@ -4946,7 +4949,7 @@ func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string, ins
 				return false
 			}
 
-			if instructor || fp.ControllingController == ctx.UserTCP {
+			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
 				return true
 			}
 

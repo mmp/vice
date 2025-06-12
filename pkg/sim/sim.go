@@ -71,8 +71,6 @@ type Sim struct {
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
 
-	Instructors map[string]bool
-
 	Rand *rand.Rand
 
 	// No need to serialize these; they're caches anyway.
@@ -211,8 +209,6 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
 
-		Instructors: make(map[string]bool),
-
 		Rand: rand.Make(),
 	}
 
@@ -304,9 +300,9 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("push_end", s.PushEnd))
 }
 
-func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
+func (s *Sim) SignOn(tcp string) (*State, error) {
 	s.mu.Lock(s.lg)
-	if err := s.signOn(tcp, instructor); err != nil {
+	if err := s.signOn(tcp); err != nil {
 		s.mu.Unlock(s.lg)
 		return nil, err
 	}
@@ -319,7 +315,7 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 	return state, nil
 }
 
-func (s *Sim) signOn(tcp string, instructor bool) error {
+func (s *Sim) signOn(tcp string) error {
 	if _, ok := s.humanControllers[tcp]; ok {
 		return ErrControllerAlreadySignedIn
 	}
@@ -340,9 +336,6 @@ func (s *Sim) signOn(tcp string, instructor bool) error {
 		// Reset lastUpdateTime so that the next time Update() is
 		// called for the sim, we don't try to run a ton of steps.
 		s.lastUpdateTime = time.Now()
-	}
-	if instructor {
-		s.Instructors[tcp] = true
 	}
 
 	s.eventStream.Post(Event{
@@ -376,7 +369,6 @@ func (s *Sim) SignOff(tcp string) error {
 
 	delete(s.humanControllers, tcp)
 	delete(s.State.Controllers, tcp)
-	delete(s.Instructors, tcp)
 	s.State.HumanControllers =
 		slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == tcp })
 
@@ -397,7 +389,7 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position.
-	if err := s.signOn(toTCP, s.Instructors[fromTCP]); err != nil {
+	if err := s.signOn(toTCP); err != nil {
 		return err
 	}
 
@@ -408,7 +400,6 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 
 	delete(s.humanControllers, fromTCP)
 	delete(s.State.Controllers, fromTCP)
-	delete(s.Instructors, fromTCP)
 	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
 
 	s.eventStream.Post(Event{
@@ -561,15 +552,12 @@ func (s *Sim) GetAvailableCoveredPositions() (map[string]av.Controller, map[stri
 	available := make(map[string]av.Controller)
 	covered := make(map[string]av.Controller)
 
-	// Figure out which positions are available; start with all of the possible ones,
-	// then delete those that are active
-	available[s.State.PrimaryController] = *s.SignOnPositions[s.State.PrimaryController]
-	for id := range s.State.MultiControllers {
-		available[id] = *s.SignOnPositions[id]
-	}
-	for tcp := range s.humanControllers {
-		delete(available, tcp)
-		covered[tcp] = *s.SignOnPositions[tcp]
+	for tcp, ctrl := range s.SignOnPositions {
+		if _, ok := s.humanControllers[tcp]; ok {
+			covered[tcp] = *ctrl
+		} else {
+			available[tcp] = *ctrl
+		}
 	}
 
 	return available, covered
@@ -600,7 +588,6 @@ type StateUpdate struct {
 	SimRate              float32
 	TotalIFR, TotalVFR   int
 	Events               []Event
-	Instructors          map[string]bool
 	QuickFlightPlanIndex int
 }
 
@@ -724,7 +711,6 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		TotalIFR:             s.State.TotalIFR,
 		TotalVFR:             s.State.TotalVFR,
 		Events:               events,
-		Instructors:          s.Instructors,
 		QuickFlightPlanIndex: s.State.QuickFlightPlanIndex,
 	}
 
@@ -830,7 +816,6 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		state.SimRate = su.SimRate
 		state.TotalIFR = su.TotalIFR
 		state.TotalVFR = su.TotalVFR
-		state.Instructors = su.Instructors
 		state.QuickFlightPlanIndex = su.QuickFlightPlanIndex
 
 		state.GenerationIndex = su.GenerationIndex
