@@ -512,15 +512,17 @@ func (c *ControlClient) RadioIsActive() bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	return c.playingSpeech || c.awaitReadbackCallsign != ""
+	return c.speechWs != nil && (c.playingSpeech || c.awaitReadbackCallsign != "")
 }
 
 func (c *ControlClient) HoldRadioTransmissions() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	c.holdSpeech = true
-	c.lastSpeechHoldTime = time.Now().Add(5 * time.Second)
+	if c.speechWs != nil {
+		c.holdSpeech = true
+		c.lastSpeechHoldTime = time.Now().Add(5 * time.Second)
+	}
 }
 
 func (c *ControlClient) AllowRadioTransmissions() {
