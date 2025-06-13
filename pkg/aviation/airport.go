@@ -9,7 +9,6 @@ import (
 	"iter"
 	"maps"
 	"slices"
-	"strconv"
 	"strings"
 	"unicode"
 
@@ -187,7 +186,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 
 func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
 	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
-	facilityAirports map[string]*Airport, e *util.ErrorLogger) {
+	facilityAirports map[string]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if info, ok := DB.Airports[icao]; !ok {
@@ -239,10 +238,6 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 					appr.Runway = dbAppr.Runway
 				}
 
-				if appr.ApproachHeading == 0 {
-					appr.ApproachHeading = dbAppr.ApproachHeading
-				}
-
 				// This is a little hacky, but we'll duplicate the waypoint
 				// arrays since later we e.g., append a waypoint for the
 				// runway threshold.  This leads to errors if a CIFP
@@ -267,20 +262,29 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			e.ErrorString("\"runway\" %q is unknown. Options: %s", appr.Runway,
 				DB.Airports[icao].ValidRunways())
 		}
+		appr.Threshold = rwy.Threshold
+
+		if opp, ok := LookupOppositeRunway(icao, appr.Runway); ok {
+			appr.OppositeThreshold = opp.Threshold
+		} else {
+			e.ErrorString("no opposite runway found for %q\n", appr.Runway)
+		}
 
 		for i := range appr.Waypoints {
 			appr.Waypoints[i] =
 				appr.Waypoints[i].InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
 			// Add the final fix at the runway threshold.
+			alt := rwy.Elevation + rwy.ThresholdCrossingHeight
+			threshold := math.Offset2LL(rwy.Threshold, rwy.Heading, rwy.DisplacedThresholdDistance,
+				nmPerLongitude, magneticVariation)
+
 			appr.Waypoints[i] = append(appr.Waypoints[i], Waypoint{
-				Fix:      "_" + appr.Runway + "_THRESHOLD",
-				Location: rwy.Threshold,
-				AltitudeRestriction: &AltitudeRestriction{
-					Range: [2]float32{float32(rwy.Elevation), float32(rwy.Elevation)},
-				},
-				Land:    true,
-				FlyOver: true,
+				Fix:                 "_" + appr.Runway + "_THRESHOLD",
+				Location:            threshold,
+				AltitudeRestriction: &AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
+				Land:                true,
+				FlyOver:             true,
 			})
 			n := len(appr.Waypoints[i])
 
@@ -300,7 +304,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 		requireFAF := appr.Type != ChartedVisualApproach
-		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions)
+		CheckApproaches(e, appr.Waypoints, requireFAF, controlPositions, checkScratchpad)
 
 		if appr.FullName == "" {
 			if appr.Type == ChartedVisualApproach {
@@ -368,7 +372,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				route.Waypoints[i].OnSID = true
 			}
 
-			route.Waypoints.CheckDeparture(e, controlPositions)
+			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
 
 			for _, exit := range strings.Split(exitList, ",") {
 				exit = strings.TrimSpace(exit)
@@ -447,6 +451,13 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 				depExit = depExit[:i]
 				break
 			}
+		}
+
+		if !checkScratchpad(dep.Scratchpad) {
+			e.ErrorString("%s: invalid scratchpad", dep.Scratchpad)
+		}
+		if !checkScratchpad(dep.SecondaryScratchpad) {
+			e.ErrorString("%s: invalid secondary scratchpad", dep.SecondaryScratchpad)
 		}
 
 		/*
@@ -794,20 +805,17 @@ type Approach struct {
 	Type      ApproachType    `json:"type"`
 	Runway    string          `json:"runway"`
 	Waypoints []WaypointArray `json:"waypoints"`
-	// Note: this isn't currently documented; currently it's only set when
-	// we have a canonical value from the CIFP.
-	ApproachHeading float32 `json:"approach_heading"`
+
+	// Set in Airport PostDeserialize()
+	Threshold         math.Point2LL
+	OppositeThreshold math.Point2LL
 }
 
 // Find the FAF: return the corresponding waypoint array and the index of the FAF within it.
 func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Waypoint, int) {
 	// For approaches with multiple segments, want the segment that is most
-	// closely aligned with the runway. For CIFP routes, we could grab
-	// 5.26, outbound magnetic course, but we don't have that for
-	// user-specified routes. So we'll work out the approximate runway
-	// heading from the runway string and match that one.
-	rwy, _ := strconv.Atoi(strings.TrimRight(ap.Runway, "LRC")) // Not sure what can be done for error handling here...
-	rwy *= 10
+	// closely aligned with the runway.
+	rwyHdg := ap.RunwayHeading(nmPerLongitude, magneticVariation)
 
 	bestWpsIdx, bestWpsFAFIdx := -1, -1
 	minDiff := float32(360)
@@ -832,7 +840,7 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 
 		hdg := math.Heading2LL(wps[fafIdx-1].Location, wps[fafIdx].Location, nmPerLongitude, magneticVariation)
 
-		diff := math.HeadingDifference(hdg, float32(rwy))
+		diff := math.HeadingDifference(hdg, rwyHdg)
 		if diff < minDiff {
 			minDiff = diff
 			bestWpsIdx = i
@@ -848,26 +856,10 @@ func (ap *Approach) FAFSegment(nmPerLongitude, magneticVariation float32) ([]Way
 	}
 }
 
-func (ap *Approach) Line(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
-	if ap.ApproachHeading != 0 {
-		for _, wps := range ap.Waypoints {
-			if idx := slices.IndexFunc(wps, func(wp Waypoint) bool { return wp.FAF }); idx != -1 {
-				// Found the FAF
-				return [2]math.Point2LL{wps[idx].Location,
-					math.Offset2LL(wps[idx].Location, ap.ApproachHeading, 1, nmPerLongitude, magneticVariation)}
-			}
-		}
-	}
-
-	wps, idx := ap.FAFSegment(nmPerLongitude, magneticVariation)
-	return [2]math.Point2LL{wps[idx-1].Location, wps[idx].Location}
+func (ap *Approach) ExtendedCenterline(nmPerLongitude, magneticVariation float32) [2]math.Point2LL {
+	return [2]math.Point2LL{ap.Threshold, ap.OppositeThreshold}
 }
 
-func (ap *Approach) Heading(nmPerLongitude, magneticVariation float32) float32 {
-	if ap.ApproachHeading != 0 {
-		return ap.ApproachHeading
-	}
-
-	p := ap.Line(nmPerLongitude, magneticVariation)
-	return math.Heading2LL(p[0], p[1], nmPerLongitude, magneticVariation)
+func (ap *Approach) RunwayHeading(nmPerLongitude, magneticVariation float32) float32 {
+	return math.Heading2LL(ap.Threshold, ap.OppositeThreshold, nmPerLongitude, magneticVariation)
 }

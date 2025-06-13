@@ -394,7 +394,34 @@
                 "SNY": "East"
             },
             "tower_list": 1
-        }
+        },
+		"KAEG": { "vfr": { "random_routes": { "rate": 5 } } },
+		"KBRG": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KOMN": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KTCS": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KSVC": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KSJN": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KXNI": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KGUP": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KRQE": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KGNT": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KFMN": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KDRO": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KCEZ": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KPSO": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KLAM": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KSAF": { "vfr": { "random_routes": { "rate": 4 } } },
+		"KSKX": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KLVS": { "vfr": { "random_routes": { "rate": 1 } } },
+		"0E0": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KSXU": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KSRR": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KROW": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KCVN": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KFSU": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KPRZ": { "vfr": { "random_routes": { "rate": 1 } } },
+		"KTCC": { "vfr": { "random_routes": { "rate": 1 } } },
+		"E89": { "vfr": { "random_routes": { "rate": 1 } } }
     },
     "inbound_flows": {
         "BRRTO1": {
@@ -856,6 +883,26 @@
     },
     "stars_config": {
 	"center": "KABQ",
+	"controller_configs": {
+      "1N": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 17500,
+            "vertices": "N035.05.42.828,W107.27.17.841 N034.58.19.118,W107.26.27.442 N034.55.45.776,W107.19.16.201 N034.55.48.866,W107.05.36.840 N034.57.11.030,W106.44.03.145 N034.44.21.231,W106.00.57.321 N034.51.21.225,W105.59.09.078 N035.15.06.880,W106.07.19.453 N035.19.47.512,W106.15.41.638 N035.27.08.077,W106.22.32.554 N035.32.37.749,W106.37.46.012 N035.34.29.453,W106.56.38.016 N035.32.04.983,W107.11.23.486 N035.23.37.922,W107.19.26.638"
+          }
+        ]
+      },
+      "1S": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 17500,
+            "vertices": "N035.11.19.216,W107.31.10.916 N035.09.06.171,W105.52.05.225 N034.51.08.000,W105.55.59.866 N034.31.13.869,W106.11.47.739 N034.27.49.935,W106.24.00.774 N034.24.18.270,W106.39.08.767 N034.34.09.595,W107.06.19.110 N034.50.47.497,W107.21.15.979 N035.04.19.400,W107.29.50.661"
+          }
+        ]
+      }
+    },
 	"filters": {
 	    "inhibit_ca": [
 		{

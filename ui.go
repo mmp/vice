@@ -19,11 +19,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -132,7 +132,7 @@ func uiCloseModalDialog(d *ModalDialogBox) {
 		func(m *ModalDialogBox) bool { return m != d })
 }
 
-func uiShowConnectDialog(mgr *server.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
+func uiShowConnectDialog(mgr *client.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
 	client := &ConnectModalClient{
 		mgr:         mgr,
 		lg:          lg,
@@ -152,8 +152,8 @@ func uiShowTargetGenCommandModeDialog(p platform.Platform, config *Config) {
 	uiShowModalDialog(NewModalDialogBox(client, p), true)
 }
 
-func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *server.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
+	controlClient *client.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -299,7 +299,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 
 	for _, event := range ui.eventsSubscription.Get() {
 		if event.Type == sim.ServerBroadcastMessageEvent {
-			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.Message}, p), false)
+			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.WrittenText}, p), false)
 		}
 	}
 
@@ -317,7 +317,7 @@ func uiDraw(mgr *server.ConnectionManager, config *Config, p platform.Platform, 
 	return r.RenderCommandBuffer(cb)
 }
 
-func uiResetControlClient(c *server.ControlClient) {
+func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
 }
 
@@ -430,7 +430,7 @@ func (m *ModalDialogBox) Draw() {
 }
 
 type ConnectModalClient struct {
-	mgr         *server.ConnectionManager
+	mgr         *client.ConnectionManager
 	lg          *log.Logger
 	simConfig   *NewSimConfiguration
 	allowCancel bool
@@ -851,14 +851,15 @@ func showAboutDialog() {
 	credits :=
 		`Additional credits:
 - Software Development: Xavier Caldwell,
-  Artem Dorofeev, Dennis Graiani, Neel P,
-  Makoto Sakaguchi, Michael Trokel,
+  Artem Dorofeev, Dennis Graiani, Ethan
+  Malimon, Neel P, Makoto Sakaguchi,
+  Michael Trokel, radarcontacto, Rick R,
   Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
 - Facility engineering: Connor Allen, anguse,
   Adam Bolek, Brody Carty, Lucas Chan,
-  Aaron Flett, Thomas Halpin, Jason
-  Helkenberg, Austin Jenkins, Ketan K,
+  Aaron Flett, Ryan G, Thomas Halpin,
+  Jason Helkenberg, Austin Jenkins, Ketan K,
   Mike K, Allison L, Josh Lambert,
   Kayden Lambert, Mike LeGall, Jonah
   Lefkoff, Jud Lopez, Ethan Malimon, Jace
@@ -1029,7 +1030,10 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ID*", `"Ident."`, "*ID*"},
 	[3]string{"*CVS*", `"Climb via the SID"`, "*CVS*"},
 	[3]string{"*DVS*", `"Descend via the STAR"`, "*CVS*"},
-	[3]string{"*RON*", `"Resume own navigation (VFR)"`, "*RON*"},
+	[3]string{"*RON*", `"Resume own navigation" (VFR)`, "*RON*"},
+	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
+	[3]string{"*A_alt*", `"Maintain _alt_`, "*A120*"},
+	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
 }
 
@@ -1047,7 +1051,7 @@ which must be 3 digits (e.g., *040*).`},
 }
 
 // draw the windows that shows the available keyboard commands
-func uiDrawKeyboardWindow(c *server.ControlClient, config *Config, platform platform.Platform) {
+func uiDrawKeyboardWindow(c *client.ControlClient, config *Config, platform platform.Platform) {
 	if !keyboardWindowVisible {
 		return
 	}
@@ -1296,8 +1300,8 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 }
 
 type MissingPrimaryModalClient struct {
-	mgr    *server.ConnectionManager
-	client *server.ControlClient
+	mgr    *client.ConnectionManager
+	client *client.ControlClient
 }
 
 func (mp *MissingPrimaryModalClient) Title() string {
@@ -1321,11 +1325,11 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 }
 
 func (mp *MissingPrimaryModalClient) Draw() int {
-	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", has disconnected from the server or is otherwise unreachable.\nThe simulation will be paused until a primary controller signs in.")
+	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", is not signed in.\nThe simulation will be paused until that position is covered.")
 	return -1
 }
 
-func uiDrawMissingPrimaryDialog(mgr *server.ConnectionManager, c *server.ControlClient, p platform.Platform) {
+func uiDrawMissingPrimaryDialog(mgr *client.ConnectionManager, c *client.ControlClient, p platform.Platform) {
 	if _, ok := c.State.Controllers[c.State.PrimaryController]; ok {
 		if ui.missingPrimaryDialog != nil {
 			uiCloseModalDialog(ui.missingPrimaryDialog)
@@ -1342,7 +1346,7 @@ func uiDrawMissingPrimaryDialog(mgr *server.ConnectionManager, c *server.Control
 	}
 }
 
-func uiDrawSettingsWindow(c *server.ControlClient, config *Config, p platform.Platform) {
+func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform) {
 	if !ui.showSettings {
 		return
 	}

@@ -81,10 +81,10 @@ type dcbSpinner interface {
 	// mode becomes the current mode.
 	KeyboardInput(text string) (CommandMode, error)
 
-	// EscapeMode is called if the escape key is pressed when the spinner
-	// is active; it returns the command mode that should become active as
-	// a result.
-	EscapeMode() CommandMode
+	// ModeAfter is called after the mouse button is clicked to set the
+	// spinner's value or if the escape key is pressed when the spinner is
+	// active; it returns the command mode that should become active next.
+	ModeAfter() CommandMode
 }
 
 func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
@@ -171,8 +171,8 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			m == CommandModeTrackSuspend || m == CommandModeTerminateControl ||
 			m == CommandModeHandOff || m == CommandModeVFRPlan || m == CommandModeMultiFunc ||
 			m == CommandModeFlightData || m == CommandModeCollisionAlert || m == CommandModeMin ||
-			m == CommandModeTargetGen || m == CommandModeReleaseDeparture || m == CommandModeRestrictionArea ||
-			m == CommandModeDrawRoute
+			m == CommandModeTargetGen || m == CommandModeTargetGenLock || m == CommandModeReleaseDeparture ||
+			m == CommandModeRestrictionArea || m == CommandModeDrawRoute
 	}
 	isMainMenuMode := func(m CommandMode) bool {
 		return m == CommandModeRange || m == CommandModePlaceCenter || m == CommandModeRangeRings ||
@@ -1080,8 +1080,16 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 
 		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
 			transforms ScopeTransformations) CommandStatus {
-			sp.resetInputState(ctx)
-			return CommandStatus{clear: true}
+			if spinner.ModeAfter() == CommandModeNone {
+				sp.resetInputState(ctx)
+				return CommandStatus{clear: true}
+			} else {
+				sp.commandMode = spinner.ModeAfter()
+				sp.activeSpinner = nil
+				sp.previewAreaInput = ""
+				sp.scopeClickHandler = nil
+				return CommandStatus{}
+			}
 		}
 	}
 	if active && ctx.Mouse != nil {
@@ -1138,7 +1146,7 @@ func (s *dcbRadarRangeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbRadarRangeSpinner) EscapeMode() CommandMode {
+func (s *dcbRadarRangeSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1149,10 +1157,6 @@ type dcbIntegerRangeSpinner struct {
 	value    *int
 	min, max int
 	negate   bool
-}
-
-func makeIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
-	return &dcbIntegerRangeSpinner{text: t, value: v, min: min, max: max}
 }
 
 func makeNegatedIntegerRangeSpinner(t string, v *int, min, max int) *dcbIntegerRangeSpinner {
@@ -1190,7 +1194,7 @@ func (s *dcbIntegerRangeSpinner) KeyboardInput(text string) (CommandMode, error)
 	}
 }
 
-func (s *dcbIntegerRangeSpinner) EscapeMode() CommandMode {
+func (s *dcbIntegerRangeSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1200,9 +1204,9 @@ type dcbAudioVolumeSpinner struct {
 	sp *STARSPane
 }
 
-func (v *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
+func (s *dcbAudioVolumeSpinner) Equals(other dcbSpinner) bool {
 	vs, ok := other.(*dcbAudioVolumeSpinner)
-	return ok && vs.value == v.value
+	return ok && vs.value == s.value
 }
 
 func (s *dcbAudioVolumeSpinner) Delta(delta int) {
@@ -1287,7 +1291,7 @@ func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) (CommandMode,
 	}
 }
 
-func (s *dcbLeaderLineDirectionSpinner) EscapeMode() CommandMode {
+func (s *dcbLeaderLineDirectionSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1351,7 +1355,7 @@ func (s *dcbHistoryRateSpinner) KeyboardInput(text string) (CommandMode, error) 
 	}
 }
 
-func (s *dcbHistoryRateSpinner) EscapeMode() CommandMode {
+func (s *dcbHistoryRateSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1402,7 +1406,7 @@ func (s *dcbPTLLengthSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbPTLLengthSpinner) EscapeMode() CommandMode {
+func (s *dcbPTLLengthSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1458,7 +1462,7 @@ func (s *dcbDwellModeSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbDwellModeSpinner) EscapeMode() CommandMode {
+func (s *dcbDwellModeSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1517,7 +1521,7 @@ func (s *dcbRangeRingRadiusSpinner) KeyboardInput(text string) (CommandMode, err
 	}
 }
 
-func (s *dcbRangeRingRadiusSpinner) EscapeMode() CommandMode {
+func (s *dcbRangeRingRadiusSpinner) ModeAfter() CommandMode {
 	return CommandModeNone
 }
 
@@ -1566,7 +1570,7 @@ func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	}
 }
 
-func (s *dcbBrightnessSpinner) EscapeMode() CommandMode {
+func (s *dcbBrightnessSpinner) ModeAfter() CommandMode {
 	return CommandModeBrite
 }
 
@@ -1590,7 +1594,7 @@ func (s *dcbCharSizeSpinner) Equals(other dcbSpinner) bool {
 	return ok && cs.value == s.value
 }
 
-func (s *dcbCharSizeSpinner) EscapeMode() CommandMode {
+func (s *dcbCharSizeSpinner) ModeAfter() CommandMode {
 	return CommandModeCharSize
 }
 

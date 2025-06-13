@@ -509,3 +509,40 @@ func TestSeqLookup(t *testing.T) {
 		t.Errorf("didn't find 2 as first even in %+v: got %d", s, v)
 	}
 }
+
+func TestSeqMinMaxIndexFunc(t *testing.T) {
+	m := map[int]string{
+		1: "one",
+		2: "to",
+		3: "three",
+		4: "four",
+	}
+
+	if idx, ok := SeqMaxIndexFunc(maps.All(m), func(i int, s string) int { return i }); !ok {
+		t.Errorf("unexpected ok == false")
+	} else if idx != 4 {
+		t.Errorf("expected 4 for max key, got %d", idx)
+	}
+	if idx, ok := SeqMaxIndexFunc(maps.All(m), func(i int, s string) int { return len(s) }); !ok {
+		t.Errorf("unexpected ok == false")
+	} else if idx != 3 {
+		t.Errorf("expected 3 for max length key, got %d", idx)
+	}
+	if _, ok := SeqMaxIndexFunc(nil, func(i int, s string) int { return len(s) }); ok {
+		t.Errorf("unexpected ok == true for empty seq")
+	}
+
+	if idx, ok := SeqMinIndexFunc(maps.All(m), func(i int, s string) int { return i }); !ok {
+		t.Errorf("unexpected ok == false")
+	} else if idx != 1 {
+		t.Errorf("expected 1 for min key, got %d", idx)
+	}
+	if idx, ok := SeqMinIndexFunc(maps.All(m), func(i int, s string) int { return len(s) }); !ok {
+		t.Errorf("unexpected ok == false")
+	} else if idx != 2 {
+		t.Errorf("expected 2 for min length key, got %d", idx)
+	}
+	if _, ok := SeqMinIndexFunc(nil, func(i int, s string) int { return len(s) }); ok {
+		t.Errorf("unexpected ok == true for empty seq")
+	}
+}

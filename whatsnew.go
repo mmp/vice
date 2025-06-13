@@ -261,4 +261,13 @@ var whatsNew []string = []string{
 	`STARS: fixed a bug with handoffs between virtual controllers during aircraft prespawn`,
 	`STARS: Fixed a bug where the partial datablock would sometimes be switched to prematurely after a handoff`,
 	`STARS: Fixed drawing of PREF submenu and some bugs with keyboard entry of values after selecting DCB buttons`,
+	`New scenarios: PWM (Ryan G), PCT JRV, ANC, BWI (Ketan K), SBN (Ethan Malimon)`,
+	`Scenario updates: C90, JAX, F11 (Jud Lopez), D10 (aeronautaviation), CLT (agnuse), TPA (Nelson T), AAC, BOS (radarcontacto), LGA (Tyler T)`,
+	`More scenario updates: L30, P50,  SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K)`,
+	`Added VFR flight following support with STARS flight plan creation commands and new control instructions (A, RON, RST)`,
+	`Added fast-forward button in menubar for simulation acceleration`,
+	`STARS: Added tentative radar tracks for departures`,
+	`Improved departure flow and sequencing`,
+	`Account for displaced thresholds in approach course calculations`,
+	`Fixed multiple bugs with aircraft association, handoffs, and altitude restrictions on approaches`,
 }

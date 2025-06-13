@@ -343,6 +343,7 @@ type STARSFacilityAdaptation struct {
 
 	FDB struct {
 		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
+		Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
 	} `json:"fdb"`
 
 	Scratchpad1 struct {
@@ -427,6 +428,9 @@ type STARSFlightPlan struct {
 
 	Scratchpad          string
 	SecondaryScratchpad string
+
+	PriorScratchpad          string
+	PriorSecondaryScratchpad string
 
 	RNAV bool
 
@@ -566,6 +570,10 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 		ManuallyCreated: true, // Always for ones created via a fp specifier
 	}
 
+	if perf, ok := av.DB.AircraftPerformance[sfp.AircraftType]; ok {
+		sfp.CWTCategory = perf.Category.CWT
+	}
+
 	// Handle beacon code assignment
 	var err error
 	if s.ImplicitSquawkAssignment.IsSet {
@@ -592,7 +600,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
-		if assignment.IsSet == false || assignment.Get() == "" {
+		if !assignment.IsSet || assignment.Get() == "" {
 			sq, err := nasPool.Get(rand.Make())
 			return sq, rules, err
 		} else {
@@ -684,10 +692,20 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
 	}
 	if spec.Scratchpad.IsSet {
-		fp.Scratchpad = spec.Scratchpad.Get()
+		if fp.Scratchpad == spec.Scratchpad.Get() {
+			fp.Scratchpad = fp.PriorScratchpad
+		} else {
+			fp.PriorScratchpad = fp.Scratchpad
+			fp.Scratchpad = spec.Scratchpad.Get()
+		}
 	}
 	if spec.SecondaryScratchpad.IsSet {
-		fp.SecondaryScratchpad = spec.SecondaryScratchpad.Get()
+		if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
+			fp.SecondaryScratchpad = fp.PriorSecondaryScratchpad
+		} else {
+			fp.PriorSecondaryScratchpad = fp.SecondaryScratchpad
+			fp.SecondaryScratchpad = spec.SecondaryScratchpad.Get()
+		}
 	}
 	if spec.RNAV.IsSet {
 		fp.RNAV = spec.RNAV.Get()
@@ -807,11 +825,16 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		}
 	}
 
-	// Acquisition/Drop filters
-	makeDefaultAirportFilters := func(id string, description string, radius float32,
-		floor int, ceiling int, controlled bool) FilterRegions {
+	for _, sp := range fa.Scratchpads {
+		if !fa.CheckScratchpad(sp) {
+			e.ErrorString("%s: invalid scratchpad in \"scratchpads\"", sp)
+		}
+	}
+
+	makeCircleAirportFilters := func(id string, description string, radius float32,
+		floor int, ceiling int, airports []string) FilterRegions {
 		var regions FilterRegions
-		for _, apname := range util.Select(controlled, controlledAirports, allAirports) {
+		for _, apname := range airports {
 			ap, ok := av.DB.Airports[apname]
 			if !ok {
 				e.ErrorString("Airport %q not found", apname)
@@ -834,20 +857,88 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		return regions
 	}
 
+	// (Re)compute this ourselves rather than taking it as an argument
+	// since the one in ScenarioGroup depends on our initializing Center
+	// which just happened above.
+	nmPerLongitude := 60 * math.Cos(math.Radians(fa.Center[1]))
+
+	makePolygonAirportFilters := func(id string, description string, delta float32,
+		floor int, ceiling int, airports []string) FilterRegions {
+		var regions FilterRegions
+		for _, apname := range airports {
+			ap, ok := av.DB.Airports[apname]
+			if !ok {
+				e.ErrorString("Airport %q not found", apname)
+			}
+			if len(apname) == 4 {
+				apname = apname[1:]
+			}
+
+			p := util.MapSlice(ap.Runways, func(r av.Runway) [2]float32 { return math.LL2NM(r.Threshold, nmPerLongitude) })
+			var hull [][2]float32
+
+			if len(p) == 2 {
+				// Single runway so compute an OBB directly.
+				v := math.Normalize2f(math.Sub2f(p[1], p[0]))
+				v = math.Scale2f(v, delta)
+				nv := math.Scale2f(v, -1)
+				vp := [2]float32{v[1], -v[0]} // perp
+				nvp := math.Scale2f(vp, -1)
+
+				hull = [][2]float32{
+					math.Add2f(p[0], math.Add2f(nv, vp)),
+					math.Add2f(p[1], math.Add2f(v, vp)),
+					math.Add2f(p[1], math.Add2f(v, nvp)),
+					math.Add2f(p[0], math.Add2f(nv, nvp))}
+			} else {
+				// Convex hull of the runway threshold points
+				hull = math.ConvexHull(p)
+
+				// Expand the hull by delta: hacky polygon dilation--
+				// compute the average point as a center and then offset
+				// each away from it.
+				var c [2]float32
+				for _, p := range hull {
+					c = math.Add2f(c, p)
+				}
+				c = math.Scale2f(c, 1/float32(len(hull)))
+				for i := range hull {
+					v := math.Sub2f(hull[i], c)
+					hull[i] = math.Add2f(hull[i], math.Scale2f(v, delta))
+				}
+			}
+
+			// Back to lat-long for the AirspaceVolume
+			pll := util.MapSlice(hull, func(p [2]float32) math.Point2LL { return math.NM2LL(p, nmPerLongitude) })
+
+			regions = append(regions, FilterRegion{
+				AirspaceVolume: av.AirspaceVolume{
+					Id:          id + apname,
+					Description: description + " " + apname,
+					Type:        av.AirspaceVolumePolygon,
+					Floor:       0,
+					Ceiling:     ap.Elevation + ceiling,
+					Vertices:    pll,
+				},
+			})
+		}
+		return regions
+	}
+
 	if len(fa.Filters.ArrivalDrop) == 0 {
-		fa.Filters.ArrivalDrop = makeDefaultAirportFilters("DROP", "ARRIVAL DROP", 3, 0, 500, true)
+		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makeDefaultAirportFilters("ACQ", "DEPARTURE ACQUISITION", 3, 0, 500, true)
+		fa.Filters.DepartureAcquisition = makePolygonAirportFilters("ACQ", "DEPARTURE ACQUISITION", 0.35, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
-		fa.Filters.InhibitCA = makeDefaultAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, true)
+		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.InhibitMSAW) == 0 {
-		fa.Filters.InhibitMSAW = makeDefaultAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, true)
+		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makeDefaultAirportFilters("SURF", "SURFACE TRACKING", 1.5, 0, 250, false)
+		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 0, 250, allAirports)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
@@ -907,6 +998,42 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		}
 	}
 	e.Pop()
+}
+
+func (fa STARSFacilityAdaptation) CheckScratchpad(sp string) bool {
+	lc := len([]rune(sp))
+
+	// 5-148
+	if fa.AllowLongScratchpad && lc > 4 {
+		return false
+	} else if !fa.AllowLongScratchpad && lc > 3 {
+		return false
+	}
+
+	// Make sure it's only allowed characters
+	const STARSTriangleCharacter = string(rune(0x80))
+	allowedCharacters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./*" + STARSTriangleCharacter
+	for _, letter := range sp {
+		if !strings.ContainsRune(allowedCharacters, letter) {
+			return false
+		}
+	}
+
+	// It can't be three numerals
+	if lc == 3 && sp[0] >= '0' && sp[0] <= '9' &&
+		sp[1] >= '0' && sp[1] <= '9' &&
+		sp[2] >= '0' && sp[2] <= '9' {
+		return false
+	}
+
+	// Certain specific strings aren't allowed in the first 3 characters
+	for _, ill := range []string{"NAT", "CST", "AMB", "RDR", "ADB", "XXX"} {
+		if strings.HasPrefix(sp, ill) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func (r FilterRegion) Inside(p math.Point2LL, alt int) bool {

@@ -57943,9 +57943,9 @@
         }
       ],
       "wind": {
-        "direction": 70,
-        "speed": 8
-      }
+        "direction": 40,
+        "speed": 30
+	  }
     },
     "BOS 4R+15C/9": {
         "arrival_runways": [
@@ -59770,31 +59770,117 @@
     }
     },
   "stars_config": {
-   "center": "N042.20.55.421,W071.00.22.439",
-   "altimeters":["KBOS","KFMH","KMHT"],
-   "filters": {
-    "inhibit_ca": [
-     {
-      "id": "BOSNOCA",
-      "description": "BOS CONFLICT SUPPRESS",
-      "type": "circle",
-      "floor": 0,
-      "ceiling": 2000,
-      "radius": 7,
-      "center": "N042.23.05.581,W071.00.43.615"
-     }
-    ]
-   },
-    "allow_long_scratchpad":true,
-    "pdb": {
-        "hide_gs": true
-    },
-	"scratchpad1":{
-        "display_exit_gate": true
-	},
+	  "center": "N042.20.55.421,W071.00.22.439",
+	  "altimeters":["KBOS","KFMH","KMHT"],
+	  "ssr_codes": {
+		  "auto_assignable_codes": {
+			  "ifr": {
+				  "ranges": ["0101-0177"]
+				},
+				"vfr": {
+					"ranges": ["5120-5174"],
+					"backup_pool_list": "1"
+				},
+				"1": {
+					"ranges": ["0206-0437"],
+					"flight_rules": "v"
+				}
+			},
+		  "beacon_code_table": {
+			  "vfr_codes": [ "1200-1277" ]
+		   }
+		},
+	  "custom_spcs": ["ME"],
+	  "filters": {
+			"inhibit_ca": [
+				{
+				  "id": "BOSNOCA",
+				  "description": "BOS CONFLICT SUPPRESS",
+				  "type": "circle",
+				  "floor": 0,
+				  "ceiling": 2000,
+				  "radius": 7,
+				  "center": "N042.23.05.581,W071.00.43.615"
+				}
+			],
+			"arrival_drop": [
+				{
+				  "id": "ABOS",
+				  "description": "BOS ARRIVAL FILTER",
+				  "type": "polygon",
+				  "vertices": "N042.22.27.335,W071.00.54.354 N042.22.38.157,W071.01.08.417 N042.22.19.068,W071.01.39.014 N042.21.45.821,W071.01.17.124 N042.21.22.955,W071.01.30.362 N042.21.07.094,W071.01.21.683 N042.20.44.792,W071.00.35.375 N042.20.59.060,W070.59.38.384 N042.21.18.451,W070.58.59.273 N042.22.03.371,W070.59.21.630 N042.22.09.331,W070.59.54.424 N042.22.44.309,W070.59.37.148 N042.23.03.700,W071.00.25.680",
+				  "floor": 0,
+				  "ceiling": 200
+				},
+				{
+				  "id": "BEDA",
+				  "description": "BED ARRIVAL FILTER ",
+				  "type": "polygon",
+				  "vertices": "N042.28.37.176,W071.18.30.443 N042.28.31.038,W071.17.37.214 N042.28.48.273,W071.17.17.191 N042.28.33.565,W071.16.49.478 N042.28.24.075,W071.16.55.823 N042.28.22.084,W071.16.14.130 N042.28.02.185,W071.16.15.448 N042.28.00.661,W071.17.10.187 N042.27.35.653,W071.17.36.115 N042.27.47.024,W071.18.08.085 N042.28.05.673,W071.17.53.034 N042.28.10.795,W071.18.31.486",
+				  "floor": 0,
+				  "ceiling": 800
+				},
+				{
+				  "id": "BVYA",
+				  "description": "BVY ARRIVAL FILTER ",
+				  "type": "polygon",
+				  "vertices": "N042.35.06.120,W070.55.18.804 N042.35.38.763,W070.55.53.082 N042.35.55.133,W070.55.21.469 N042.35.11.682,W070.54.37.770 N042.35.17.573,W070.54.14.095 N042.34.58.443,W070.54.02.202 N042.34.53.843,W070.54.19.698 N042.34.46.990,W070.54.12.474 N042.34.37.143,W070.54.33.953 N042.34.46.990,W070.54.45.653 N042.34.33.229,W070.55.40.200 N042.34.56.260,W070.55.52.230",
+				  "floor": 0,
+				  "ceiling": 400
+				},
+				{
+				  "id": "LWMA",
+				  "description": "LWM ARRIVAL FILTER ",
+				  "type": "circle",
+				  "center": "N042.43.03.064,W071.07.16.898",
+				  "radius": 1,
+				  "floor": 0,
+				  "ceiling": 500
+				},
+				{
+				  "id": "OWDA",
+				  "description": "OWD ARRIVAL FILTER ",
+				  "type": "circle",
+				  "center": "N042.11.23.445,W071.10.16.030",
+				  "radius": 1,
+				  "floor": 0,
+				  "ceiling": 700
+				}
+			],
+			"departure_acquisition": [
+				{
+				  "id": "BOD",
+				  "description": "BOS DEPARTURE FILTER FOR WHO",
+				  "type": "polygon",
+				  "vertices": "N042.22.27.335,W071.00.54.354 N042.22.38.157,W071.01.08.417 N042.22.19.068,W071.01.39.014 N042.21.45.821,W071.01.17.124 N042.21.22.955,W071.01.30.362 N042.21.07.094,W071.01.21.683 N042.20.44.792,W071.00.35.375 N042.20.59.060,W070.59.38.384 N042.21.18.451,W070.58.59.273 N042.22.03.371,W070.59.21.630 N042.22.09.331,W070.59.54.424 N042.22.44.309,W070.59.37.148 N042.23.03.700,W071.00.25.680",
+				  "floor": 0,
+				  "ceiling": 600
+				}	
+			],
+			"secondary_drop": [
+				{
+				  "id": "Z01",
+				  "description": "BCT PRIMARY DEPARTURE DROP FILTER",
+				  "type": "polygon",
+				  "vertices": "N043.50.05.598,W072.28.12.663 N044.01.20.488,W071.04.13.125 N043.05.40.232,W069.48.23.192 N042.35.56.849,W069.53.31.605 N042.21.31.374,W069.26.24.420 N041.18.24.510,W068.54.08.437 N040.49.07.219,W069.35.22.091 N040.34.12.452,W070.30.22.467 N040.50.27.832,W071.27.41.270 N041.24.35.587,W071.31.49.890 N041.58.32.864,W071.58.01.979 N042.39.52.643,W072.25.07.708 N043.23.19.520,W072.27.34.403 N043.23.19.520,W072.27.34.403",
+				  "floor": 0,
+				  "ceiling": 99999
+				}
+			]
+		},
+	   "allow_long_scratchpad":true,
+	   "pdb": {
+			"hide_gs": true
+		},
+	   "scratchpad1":{
+			"display_exit_gate": true
+		},
     "display_handoff_facility_only": true,
-    "force_ql_self": true,
-	"significant_points":{
+    "fdb": {
+      "scratchpad2_on_line3": true
+    },
+       "force_ql_self": true,
+	   "significant_points":{
 		"BOSOX": {"short_name":"BOX", "abbreviation": "B"},
 		"BLZZR": {"short_name":"BLZ", "abbreviation": "X"},
 		"BURDY": {"short_name":"BUR", "abbreviation": "K"},
@@ -59810,13 +59896,13 @@
 		"PEASE": {"short_name":"PSM", "abbreviation": "P"},
 		"PUT": { "abbreviation": "Z"}
 	},
-	"coordination_lists":[ 
+	   "coordination_lists":[ 
 		{"name": ".     PBED -", "id": "BED", "airports": ["KBED"]},
 		{"name": ".     PBVY -", "id": "BVY", "airports": ["KBVY"]},
 		{"name": ".     PLWM -", "id": "LWM", "airports": ["KLWM"]},
 		{"name": ".     POWD -", "id": "OWD", "airports": ["KOWD"]}
 	],
-   "airspace_awareness": [
+       "airspace_awareness": [
       {
         "fixes": [
           "HYLND",
@@ -59930,12 +60016,12 @@
         "receiving_controller": "PVD_APP"
       }
     ],
-   "stars_maps": [
+       "stars_maps": [
     "A90 MASTER BASE MAP A", "A90 SAT FINALS 2", "A90 SAT FINALS 1", "RNAV APCHS 402", "FUSION 3NM MVA", "RVMA90012S",
 	"A90 MASTER BASE MAP A", "A90 SAT FINALS 2", "A90 SAT FINALS 1", "ZBW SECTOR BOUNDARIES","A90 CLASS D","RWY 22L","RWY 4R/L","RWY 27","RNAV APCHS 400","RNAV APCHS 403","A90 GEOGRAPHIC MAP","ODO BOS MHT PSM","","","","",
 	"RNAV APCHS 402", "FUSION 3NM MVA", "RVMA90012S", "A90 CLASS B AND C","A90 SHORLINE B","RWY 33L","RWY 15R","RWY 27/22L","RNAV APCHS 401","RNAV APCHS 404 & RNAV (GPS) 4L","FUSION 5NM MVA","ODO OTHER SATELLITES"
    ],
-    "video_map_file": "videomaps/A90-videomaps.gob.zst"
+       "video_map_file": "videomaps/A90-videomaps.gob.zst"
   }
 }
 

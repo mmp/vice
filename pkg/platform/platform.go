@@ -5,10 +5,14 @@
 package platform
 
 import (
+	"errors"
+
 	"github.com/mmp/vice/pkg/math"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
+
+var ErrCurrentlyPlayingSpeech = errors.New("Speech is currently playing")
 
 // Platform is the interface that abstracts platform-specific features like
 // creating windows, mouse and keyboard handling, etc.
@@ -107,6 +111,12 @@ type Platform interface {
 	// identifies the effect and can be passed to the audio playing
 	// entrypoints.
 	AddMP3(mp3 []byte) (int, error)
+
+	// Possibly MP3 audio from speech synthesis; it will be played once and
+	// discarded. If speech is currently being played,
+	// ErrCurrentlyPlayingSpeech is returned. If non-nil, the provided
+	// callback function is called after the speech has finished.
+	TryEnqueueSpeechMP3(mp3 []byte, finished func()) error
 
 	// SetAudioVolume sets the volume for audio playback; the value passed
 	// should be between 0 and 10.

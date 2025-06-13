@@ -8524,7 +8524,8 @@
         }
     },
     "stars_config": {
-        "center": "KBOS",
+      "center": "KBOS",
+      "allow_long_scratchpad": true,
         "airspace_awareness": [
             {
                 "fixes": ["ALL"],

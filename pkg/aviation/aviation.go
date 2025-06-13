@@ -18,6 +18,39 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+type RadarTrack struct {
+	ADSBCallsign        ADSBCallsign
+	Squawk              Squawk
+	Mode                TransponderMode
+	Ident               bool
+	TrueAltitude        float32
+	TransponderAltitude float32
+	Location            math.Point2LL
+	Heading             float32
+	Groundspeed         float32
+	TypeOfFlight        TypeOfFlight
+}
+
+type ADSBCallsign string
+
+func (c ADSBCallsign) String() string { return string(c) }
+
+// Frequencies are scaled by 1000 and then stored in integers.
+type Frequency int
+
+func NewFrequency(f float32) Frequency {
+	// 0.5 is key for handling rounding!
+	return Frequency(f*1000 + 0.5)
+}
+
+func (f Frequency) String() string {
+	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
+	for len(s) < 7 {
+		s += "0"
+	}
+	return s
+}
+
 type ReportingPoint struct {
 	Fix      string
 	Location math.Point2LL
@@ -245,10 +278,12 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign fu
 }
 
 type Runway struct {
-	Id        string
-	Heading   float32
-	Threshold math.Point2LL
-	Elevation int
+	Id                         string
+	Heading                    float32
+	Threshold                  math.Point2LL
+	ThresholdCrossingHeight    int // delta from elevation
+	Elevation                  int
+	DisplacedThresholdDistance float32 // in nm
 }
 
 func TidyRunway(r string) string {
@@ -264,49 +299,6 @@ type ATIS struct {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionContact    = iota // Messages initiated by the pilot
-	RadioTransmissionReadback          // Reading back an instruction
-	RadioTransmissionUnexpected        // Something urgent or unusual
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	default:
-		return "(unhandled type)"
-	}
-}
-
-type RadioTransmission struct {
-	Controller string
-	Message    string
-	Type       RadioTransmissionType
-}
-
-// Frequencies are scaled by 1000 and then stored in integers.
-type Frequency int
-
-func NewFrequency(f float32) Frequency {
-	// 0.5 is key for handling rounding!
-	return Frequency(f*1000 + 0.5)
-}
-
-func (f Frequency) String() string {
-	s := fmt.Sprintf("%03d.%03d", f/1000, f%1000)
-	for len(s) < 7 {
-		s += "0"
-	}
-	return s
-}
 
 type FlightRules int
 
@@ -342,9 +334,12 @@ type FlightStrip struct {
 	Callsign string
 }
 
+/////////////////////////////////////////////////////////////////////////
+// Squawk Codes and SPCs
+
 type Squawk int
 
-func (s Squawk) String() string { return fmt.Sprintf("%04o", s) }
+func (sq Squawk) String() string { return fmt.Sprintf("%04o", sq) }
 
 func ParseSquawk(s string) (Squawk, error) {
 	if len(s) != 4 {
@@ -370,9 +365,6 @@ func ParseSquawkOrBlock(s string) (Squawk, error) {
 	return Squawk(sq), nil
 }
 
-/////////////////////////////////////////////////////////////////////////
-// SPC
-
 // SPC (Special Purpose Code) is a unique beacon code,
 // indicate an emergency or non-standard operation.
 type SPC struct {
@@ -394,8 +386,8 @@ func SquawkIsSPC(squawk Squawk) (ok bool, code string) {
 
 // IsSPC returns true if the given squawk code is an SPC.
 // The second return value is a string giving the two-letter abbreviated SPC it corresponds to.
-func (squawk Squawk) IsSPC() (ok bool, code string) {
-	code, ok = spcs[squawk]
+func (sq Squawk) IsSPC() (ok bool, code string) {
+	code, ok = spcs[sq]
 	return
 }
 
@@ -488,14 +480,6 @@ func (rs *RadarSite) CheckVisibility(p math.Point2LL, altitude int) (primary, se
 	primary = distance <= float32(rs.PrimaryRange)
 	secondary = !primary && distance <= float32(rs.SecondaryRange)
 	return
-}
-
-func FixReadback(fix string) string {
-	if aid, ok := DB.Navaids[fix]; ok {
-		return util.StopShouting(aid.Name)
-	} else {
-		return fix
-	}
 }
 
 func cleanRunway(rwy string) string {
@@ -602,7 +586,8 @@ func TASToIAS(tas, altitude float32) float32 {
 // Arrival
 
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[string]*Controller, e *util.ErrorLogger) {
+	airports map[string]*Airport, controlPositions map[string]*Controller, checkScratchpad func(string) bool,
+	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ar.Route == "" && ar.STAR == "" {
@@ -774,7 +759,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				// compliance with restrictions at that fix...
 				ewp := append([]Waypoint{ar.Waypoints[len(ar.Waypoints)-1]}, wp...)
 				approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
-				WaypointArray(ewp).CheckArrival(e, controlPositions, approachAssigned)
+				WaypointArray(ewp).CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
 				e.Pop()
 			}
@@ -787,7 +772,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	}
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
-	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned)
+	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
 	for arrivalAirport, airlines := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
@@ -872,10 +857,17 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
 		}
 	}
+
+	if !checkScratchpad(ar.Scratchpad) {
+		e.ErrorString("%s: invalid scratchpad", ar.Scratchpad)
+	}
+	if !checkScratchpad(ar.SecondaryScratchpad) {
+		e.ErrorString("%s: invalid secondary scratchpad", ar.SecondaryScratchpad)
+	}
 }
 
-func (a Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
-	if ap, ok := a.RunwayWaypoints[airport]; !ok {
+func (ar Arrival) GetRunwayWaypoints(airport, rwy string) WaypointArray {
+	if ap, ok := ar.RunwayWaypoints[airport]; !ok {
 		return nil
 	} else if wp, ok := ap[rwy]; !ok {
 		return nil

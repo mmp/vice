@@ -17,6 +17,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
@@ -42,14 +43,14 @@ type NewSimConfiguration struct {
 
 	displayError error
 
-	mgr            *server.ConnectionManager
-	selectedServer *server.Server
+	mgr            *client.ConnectionManager
+	selectedServer *client.Server
 	defaultTRACON  *string
 	tfrCache       *av.TFRCache
 	lg             *log.Logger
 }
 
-func MakeNewSimConfiguration(mgr *server.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
+func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
 	c := &NewSimConfiguration{
 		lg:                  lg,
 		mgr:                 mgr,
@@ -299,7 +300,28 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			imgui.Text(fmtPosition(c.Scenario.SelectedController))
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Allow Instructor Sign-ins", &c.InstructorAllowed)
+			imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
+			if c.AllowInstructorRPO {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Sign in as:")
+				imgui.TableNextColumn()
+				var curPos int32 // 0 -> primaryController
+				if c.SignOnPosition == "INS" {
+					curPos = 1
+				} else if c.SignOnPosition == "RPO" {
+					curPos = 2
+				}
+				if imgui.RadioButtonIntPtr(c.Scenario.SelectedController, &curPos, 0) {
+					c.SignOnPosition = "" // default: server will sort it out
+				}
+				if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
+					c.SignOnPosition = "INS"
+				}
+				if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
+					c.SignOnPosition = "RPO"
+				}
+			}
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
 				imgui.TableNextRow()
@@ -390,7 +412,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			rs = runningSims[c.SelectedRemoteSim]
 			if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
 				// If the primary position isn't currently covered, make that the default selection.
-				c.SelectedRemoteSimPosition = rs.PrimaryController
+				c.SignOnPosition = rs.PrimaryController
 			}
 		}
 
@@ -429,7 +451,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 					rs = runningSims[c.SelectedRemoteSim]
 					if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
 						// If the primary position isn't currently covered, make that the default selection.
-						c.SelectedRemoteSimPosition = rs.PrimaryController
+						c.SignOnPosition = rs.PrimaryController
 					}
 				}
 
@@ -450,8 +472,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 		}
 
 		// Handle the case of someone else signing in to the position
-		if _, ok := rs.AvailablePositions[c.SelectedRemoteSimPosition]; c.SelectedRemoteSimPosition != "Observer" && !ok {
-			c.SelectedRemoteSimPosition = util.SortedMapKeys(rs.AvailablePositions)[0]
+		if _, ok := rs.AvailablePositions[c.SignOnPosition]; !ok {
+			c.SignOnPosition = util.SortedMapKeys(rs.AvailablePositions)[0]
 		}
 
 		fmtPosition := func(id string) string {
@@ -461,32 +483,21 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			return id
 		}
 
-		if imgui.BeginCombo("Position", fmtPosition(c.SelectedRemoteSimPosition)) {
+		if imgui.BeginCombo("Position", fmtPosition(c.SignOnPosition)) {
 			for _, pos := range util.SortedMapKeys(rs.AvailablePositions) {
 				if pos[0] == '_' {
 					continue
 				}
 
-				if imgui.SelectableBoolV(fmtPosition(pos), pos == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
-					c.SelectedRemoteSimPosition = pos
+				if imgui.SelectableBoolV(fmtPosition(pos), c.SignOnPosition == pos, 0, imgui.Vec2{}) {
+					c.SignOnPosition = pos
 				}
-			}
-
-			if imgui.SelectableBoolV("Observer", "Observer" == c.SelectedRemoteSimPosition, 0, imgui.Vec2{}) {
-				c.SelectedRemoteSimPosition = "Observer"
 			}
 
 			imgui.EndCombo()
 		}
 		if rs.RequirePassword {
 			imgui.InputTextMultiline("Password", &c.RemoteSimPassword, imgui.Vec2{}, 0, nil)
-		}
-		if !rs.InstructorAllowed {
-			imgui.BeginDisabled()
-		}
-		imgui.Checkbox("Sign-in as Instructor", &c.Instructor)
-		if !rs.InstructorAllowed {
-			imgui.EndDisabled()
 		}
 	}
 
@@ -582,7 +593,7 @@ func (c *NewSimConfiguration) OkDisabled() bool {
 func (c *NewSimConfiguration) Start() error {
 	c.TFRs = c.tfrCache.TFRsForTRACON(c.TRACONName, c.lg)
 
-	if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer); err != nil {
+	if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer, c.lg); err != nil {
 		c.lg.Errorf("CreateNewSim failed: %v", err)
 		return err
 	} else {
@@ -706,13 +717,13 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 	imgui.Text(fmt.Sprintf("Overall VFR departure rate: %d / hour", sumVFRRates))
 	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
 	// from being here initially.
-	changed = imgui.SliderFloatV("VFR reparture rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
+	changed = imgui.SliderFloatV("VFR departure rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
 
-	if !lc.HaveVFRReportingPoints {
+	if !lc.HaveVFRReportingRegions {
 		imgui.BeginDisabled()
 	}
 	changed = imgui.InputIntV("Flight following request rate", &lc.VFFRequestRate, 0, 60, 0) || changed
-	if !lc.HaveVFRReportingPoints {
+	if !lc.HaveVFRReportingRegions {
 		imgui.EndDisabled()
 	}
 
@@ -874,7 +885,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
-	client              *server.ControlClient
+	client              *client.ControlClient
 	departures          []*LaunchDeparture
 	vfrDepartures       []*LaunchDeparture
 	arrivalsOverflights []*LaunchArrivalOverflight
@@ -906,7 +917,7 @@ type LaunchArrivalOverflight struct {
 	Group string
 }
 
-func MakeLaunchControlWindow(client *server.ControlClient, lg *log.Logger) *LaunchControlWindow {
+func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *LaunchControlWindow {
 	lc := &LaunchControlWindow{client: client, lg: lg}
 
 	config := &client.State.LaunchConfig
@@ -1067,7 +1078,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	}
 
 	canLaunch := ctrl == lc.client.State.UserTCP || (lc.client.State.MultiControllers == nil && ctrl == "") ||
-		lc.client.State.AmInstructor()
+		lc.client.State.AreInstructorOrRPO(lc.client.State.UserTCP)
 	if canLaunch {
 		imgui.Text("Mode:")
 		imgui.SameLine()
@@ -1520,7 +1531,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	}
 }
 
-func drawScenarioInfoWindow(config *Config, c *server.ControlClient, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})

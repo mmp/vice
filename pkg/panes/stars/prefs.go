@@ -66,7 +66,7 @@ func (p *PreferenceSet) ResetDefault(ss sim.State, pl platform.Platform, sp *STA
 	p.Current.Activate(pl, sp)
 }
 
-// Preferences encapsulates the user-settable STARS preferences that
+// Preferences encapsulates the user-settable STARS preferences
 type Preferences struct {
 	CommonPreferences
 
@@ -455,70 +455,70 @@ func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
 	}
 }
 
-func (ps *Preferences) Upgrade(from, to int) {
+func (p *Preferences) Upgrade(from, to int) {
 	if from < 8 {
-		ps.Brightness.DCB = 60
-		ps.CharSize.DCB = 1
+		p.Brightness.DCB = 60
+		p.CharSize.DCB = 1
 	}
 	if from < 9 {
 		remap := func(b *STARSBrightness) {
 			*b = STARSBrightness(math.Min(*b*2, 100))
 		}
-		remap(&ps.Brightness.VideoGroupA)
-		remap(&ps.Brightness.VideoGroupB)
-		remap(&ps.Brightness.RangeRings)
-		remap(&ps.Brightness.Compass)
+		remap(&p.Brightness.VideoGroupA)
+		remap(&p.Brightness.VideoGroupB)
+		remap(&p.Brightness.RangeRings)
+		remap(&p.Brightness.Compass)
 	}
 	if from < 12 {
-		if ps.Brightness.DCB == 0 {
-			ps.Brightness.DCB = 60
+		if p.Brightness.DCB == 0 {
+			p.Brightness.DCB = 60
 		}
 	}
 	if from < 17 {
 		// Added DisplayWeatherLevel
-		for i := range ps.DisplayWeatherLevel {
-			ps.DisplayWeatherLevel[i] = true
+		for i := range p.DisplayWeatherLevel {
+			p.DisplayWeatherLevel[i] = true
 		}
 	}
 	if from < 18 {
 		// ATPA; set defaults
-		ps.DisplayATPAInTrailDist = true
-		ps.DisplayATPAWarningAlertCones = true
+		p.DisplayATPAInTrailDist = true
+		p.DisplayATPAWarningAlertCones = true
 	}
 	if from < 21 {
 		// System list offsets changed from updated handling of
 		// transformation matrices with and without the DCB visible.
-		ps.CharSize.DCB = math.Max(0, ps.CharSize.DCB-1)
-		ps.CharSize.Datablocks = math.Max(0, ps.CharSize.Datablocks-1)
-		ps.CharSize.Lists = math.Max(0, ps.CharSize.Lists-1)
-		ps.CharSize.Tools = math.Max(0, ps.CharSize.Tools-1)
-		ps.CharSize.PositionSymbols = math.Max(0, ps.CharSize.PositionSymbols-1)
+		p.CharSize.DCB = math.Max(0, p.CharSize.DCB-1)
+		p.CharSize.Datablocks = math.Max(0, p.CharSize.Datablocks-1)
+		p.CharSize.Lists = math.Max(0, p.CharSize.Lists-1)
+		p.CharSize.Tools = math.Max(0, p.CharSize.Tools-1)
+		p.CharSize.PositionSymbols = math.Max(0, p.CharSize.PositionSymbols-1)
 
-		if ps.DisplayDCB && ps.DCBPosition == dcbPositionTop {
+		if p.DisplayDCB && p.DCBPosition == dcbPositionTop {
 			shift := func(y *float32) {
 				*y = math.Max(0, *y-.05)
 			}
-			shift(&ps.SSAList.Position[1])
-			shift(&ps.VFRList.Position[1])
-			shift(&ps.TABList.Position[1])
-			shift(&ps.AlertList.Position[1])
-			shift(&ps.CoastList.Position[1])
-			shift(&ps.SignOnList.Position[1])
-			shift(&ps.VideoMapsList.Position[1])
-			shift(&ps.CRDAStatusList.Position[1])
-			for i := range ps.TowerLists {
-				shift(&ps.TowerLists[i].Position[1])
+			shift(&p.SSAList.Position[1])
+			shift(&p.VFRList.Position[1])
+			shift(&p.TABList.Position[1])
+			shift(&p.AlertList.Position[1])
+			shift(&p.CoastList.Position[1])
+			shift(&p.SignOnList.Position[1])
+			shift(&p.VideoMapsList.Position[1])
+			shift(&p.CRDAStatusList.Position[1])
+			for i := range p.TowerLists {
+				shift(&p.TowerLists[i].Position[1])
 			}
 		}
 	}
 	if from < 23 {
 		// This should have been in the from < 21 case...
-		if ps.PreviewAreaPosition[0] == .05 && ps.PreviewAreaPosition[1] == .8 {
-			ps.PreviewAreaPosition = [2]float32{.05, .75}
+		if p.PreviewAreaPosition[0] == .05 && p.PreviewAreaPosition[1] == .8 {
+			p.PreviewAreaPosition = [2]float32{.05, .75}
 		}
 	}
 	if from < 24 {
-		ps.AudioVolume = 10
+		p.AudioVolume = 10
 	}
 	if from < 26 {
 		// These are all from earlier releases but were previously done in
@@ -527,14 +527,14 @@ func (ps *Preferences) Upgrade(from, to int) {
 
 		// It should only take integer values but it's a float32 and we
 		// previously didn't enforce this...
-		ps.Range = float32(int(ps.Range))
+		p.Range = float32(int(p.Range))
 
-		if ps.PTLAll { // both can't be set; we didn't enforce this previously...
-			ps.PTLOwn = false
+		if p.PTLAll { // both can't be set; we didn't enforce this previously...
+			p.PTLOwn = false
 		}
 
-		if ps.RadarTrackHistoryRate == 0 {
-			ps.RadarTrackHistoryRate = 4.5 // upgrade from old
+		if p.RadarTrackHistoryRate == 0 {
+			p.RadarTrackHistoryRate = 4.5 // upgrade from old
 		}
 
 		// Brightness goes in steps of 5 (similarly not enforced previously...)
@@ -542,41 +542,41 @@ func (ps *Preferences) Upgrade(from, to int) {
 			*b = (*b + 2) / 5 * 5
 			*b = math.Clamp(*b, 0, 100)
 		}
-		remapBrightness(&ps.Brightness.DCB)
-		remapBrightness(&ps.Brightness.BackgroundContrast)
-		remapBrightness(&ps.Brightness.VideoGroupA)
-		remapBrightness(&ps.Brightness.VideoGroupB)
-		remapBrightness(&ps.Brightness.FullDatablocks)
-		remapBrightness(&ps.Brightness.Lists)
-		remapBrightness(&ps.Brightness.Positions)
-		remapBrightness(&ps.Brightness.LimitedDatablocks)
-		remapBrightness(&ps.Brightness.OtherTracks)
-		remapBrightness(&ps.Brightness.Lines)
-		remapBrightness(&ps.Brightness.RangeRings)
-		remapBrightness(&ps.Brightness.Compass)
-		remapBrightness(&ps.Brightness.BeaconSymbols)
-		remapBrightness(&ps.Brightness.PrimarySymbols)
-		remapBrightness(&ps.Brightness.History)
-		remapBrightness(&ps.Brightness.Weather)
-		remapBrightness(&ps.Brightness.WxContrast)
+		remapBrightness(&p.Brightness.DCB)
+		remapBrightness(&p.Brightness.BackgroundContrast)
+		remapBrightness(&p.Brightness.VideoGroupA)
+		remapBrightness(&p.Brightness.VideoGroupB)
+		remapBrightness(&p.Brightness.FullDatablocks)
+		remapBrightness(&p.Brightness.Lists)
+		remapBrightness(&p.Brightness.Positions)
+		remapBrightness(&p.Brightness.LimitedDatablocks)
+		remapBrightness(&p.Brightness.OtherTracks)
+		remapBrightness(&p.Brightness.Lines)
+		remapBrightness(&p.Brightness.RangeRings)
+		remapBrightness(&p.Brightness.Compass)
+		remapBrightness(&p.Brightness.BeaconSymbols)
+		remapBrightness(&p.Brightness.PrimarySymbols)
+		remapBrightness(&p.Brightness.History)
+		remapBrightness(&p.Brightness.Weather)
+		remapBrightness(&p.Brightness.WxContrast)
 
-		for len(ps.AudioEffectEnabled) < AudioNumTypes {
-			ps.AudioEffectEnabled = append(ps.AudioEffectEnabled, false)
+		for len(p.AudioEffectEnabled) < AudioNumTypes {
+			p.AudioEffectEnabled = append(p.AudioEffectEnabled, false)
 		}
 	}
 	if from < 27 {
-		ps.SSAList.Filter.Text.Main = true
-		for i := range ps.SSAList.Filter.Text.GI {
-			ps.SSAList.Filter.Text.GI[i] = true
+		p.SSAList.Filter.Text.Main = true
+		for i := range p.SSAList.Filter.Text.GI {
+			p.SSAList.Filter.Text.GI[i] = true
 		}
-		ps.CoordinationLists = make(map[string]*CoordinationList)
+		p.CoordinationLists = make(map[string]*CoordinationList)
 	}
 	if from < 29 {
-		ps.RestrictionAreaList.Position = [2]float32{.8, .575}
-		ps.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
+		p.RestrictionAreaList.Position = [2]float32{.8, .575}
+		p.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
 	}
 	if from < 32 {
-		ps.MCISuppressionList.Position = [2]float32{.8, .1}
+		p.MCISuppressionList.Position = [2]float32{.8, .1}
 	}
 }
 

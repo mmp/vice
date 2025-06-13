@@ -335,12 +335,16 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 				rwy = strings.TrimPrefix(rwy, "0")
 				rwy = strings.TrimSpace(rwy)
 
+				displacedDistance := parseInt(line[71:75])
+
 				ap := airports[icao]
 				ap.Runways = append(ap.Runways, Runway{
-					Id:        rwy,
-					Heading:   float32(parseInt(line[27:31])) / 10,
-					Threshold: parseLatLong(line[32:41], line[41:51]),
-					Elevation: parseInt(line[66:71]),
+					Id:                         rwy,
+					Heading:                    float32(parseInt(line[27:31])) / 10,
+					Threshold:                  parseLatLong(line[32:41], line[41:51]),
+					ThresholdCrossingHeight:    parseInt(line[75:77]),
+					Elevation:                  parseInt(line[66:71]),
+					DisplacedThresholdDistance: float32(displacedDistance) * math.FeetToNauticalMiles,
 				})
 				airports[icao] = ap
 			}
@@ -707,13 +711,16 @@ func parseApproach(recs []ssaRecord) *Approach {
 		}
 	}
 
-	for _, r := range recs {
-		if r.waypointDescription[3] == 'F' &&
-			strings.TrimSpace(string(r.outboundMagneticCourse)) != "" {
-			hdg := parseInt(r.outboundMagneticCourse)
-			appr.ApproachHeading = float32(hdg) / 10
+	/*
+		   Extract approach heading (now unused)
+		for _, r := range recs {
+			if r.waypointDescription[3] == 'F' &&
+				strings.TrimSpace(string(r.outboundMagneticCourse)) != "" {
+				hdg := parseInt(r.outboundMagneticCourse)
+				appr.ApproachHeading = float32(hdg) / 10
+			}
 		}
-	}
+	*/
 
 	if len(transitions) == 1 {
 		appr.Waypoints = []WaypointArray{transitions[""]}

@@ -6,6 +6,7 @@ package math
 
 import (
 	gomath "math"
+	"sort"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -293,4 +294,42 @@ func CirclePoints(nsegs int) [][2]float32 {
 
 	// One way or another, it's now available in the map.
 	return circlePoints[nsegs]
+}
+
+// https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain
+func ConvexHull(points [][2]float32) [][2]float32 {
+	n := len(points)
+	if n <= 1 {
+		return append([][2]float32{}, points...)
+	}
+
+	sort.Slice(points, func(i, j int) bool {
+		if points[i][0] == points[j][0] {
+			return points[i][1] < points[j][1]
+		}
+		return points[i][0] < points[j][0]
+	})
+
+	cross := func(o, a, b [2]float32) float32 {
+		return (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0])
+	}
+
+	lower := make([][2]float32, 0, n)
+	for _, p := range points {
+		for len(lower) >= 2 && cross(lower[len(lower)-2], lower[len(lower)-1], p) <= 0 {
+			lower = lower[:len(lower)-1]
+		}
+		lower = append(lower, p)
+	}
+
+	upper := make([][2]float32, 0, n)
+	for i := n - 1; i >= 0; i-- {
+		p := points[i]
+		for len(upper) >= 2 && cross(upper[len(upper)-2], upper[len(upper)-1], p) <= 0 {
+			upper = upper[:len(upper)-1]
+		}
+		upper = append(upper, p)
+	}
+
+	return append(lower[:len(lower)-1], upper[:len(upper)-1]...)
 }

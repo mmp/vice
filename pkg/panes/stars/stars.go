@@ -18,12 +18,12 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -85,8 +85,6 @@ type STARSPane struct {
 	dcbVideoMaps []*sim.VideoMap
 
 	weatherRadar WeatherRadar
-
-	targetGenLastCallsign av.ADSBCallsign
 
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
@@ -222,14 +220,21 @@ type STARSPane struct {
 		airspace    map[string]map[string]bool            // ctrl -> volume name
 	}
 
+	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
+	IFPHelpers struct {
+		ArrivalsColor    *[3]float32
+		ApproachesColor  *[3]float32
+		DeparturesColor  *[3]float32
+		OverflightsColor *[3]float32
+		AirspaceColor    *[3]float32
+	}
+
 	// We keep a pool of each type so that we don't need to allocate a new
 	// object each time we generate a datablock.
 	fdbArena util.ObjectArena[fullDatablock]
 	pdbArena util.ObjectArena[partialDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
 	sdbArena util.ObjectArena[suspendedDatablock]
-
-	targetGenLock bool
 }
 
 type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, ScopeTransformations) CommandStatus
@@ -421,10 +426,30 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 		sp.TgtGenKey = ';'
 	}
 
+	if sp.IFPHelpers.ApproachesColor == nil {
+		sp.IFPHelpers.ApproachesColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.ArrivalsColor == nil {
+		sp.IFPHelpers.ArrivalsColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.DeparturesColor == nil {
+		sp.IFPHelpers.DeparturesColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.OverflightsColor == nil {
+		sp.IFPHelpers.OverflightsColor = &[3]float32{.1, .9, .1}
+	}
+
+	if sp.IFPHelpers.AirspaceColor == nil {
+		sp.IFPHelpers.AirspaceColor = &[3]float32{.1, .9, .1}
+	}
+
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
@@ -435,7 +460,7 @@ func (sp *STARSPane) LoadedSim(client *server.ControlClient, ss sim.State, pl pl
 	sp.makeSignificantPoints(ss)
 }
 
-func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
 	for _, name := range util.SortedMapKeys(ss.Airports) {
 		ap := ss.Airports[name]
@@ -473,7 +498,7 @@ func (sp *STARSPane) ResetSim(client *server.ControlClient, ss sim.State, pl pla
 	sp.scopeDraw.airspace = nil
 }
 
-func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *log.Logger) {
+func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
 	addMap := func(vm sim.VideoMap) {
@@ -659,7 +684,7 @@ func (sp *STARSPane) makeMaps(client *server.ControlClient, ss sim.State, lg *lo
 	}
 }
 
-func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *server.ControlClient) (*sim.VideoMapLibrary, error) {
+func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.STARSFacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
@@ -729,8 +754,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawVideoMaps(ctx, transforms, cb)
 
-	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools),
-		ps.Brightness.Lists.ScaleRGB(STARSListColor), cb)
+	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools), cb)
 
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)

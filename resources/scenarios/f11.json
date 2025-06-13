@@ -16,7 +16,13 @@
         "R5R": { "cifp_id": "R35R" },
         "I6R": { "cifp_id": "I36R" },
         "R6R": { "cifp_id": "R36R" },
-        "R6L": { "cifp_id": "R36L" }
+        "R6L": {
+          "runway": "36L",
+          "type": "RNAV",
+          "waypoints": [
+            "LORRA/a4000 EXBAN/a4000 AMEBE/a3000 BERDY/a1600/faf RUTNE/a780"
+          ]
+        }
       },
       "departure_routes": {
         "17R": {
@@ -10865,7 +10871,17 @@
               "airport": "KILG",
               "icao": "FFT"
             }
-          ],
+          ]
+        },
+        "initial_altitude": 17000,
+        "initial_controller": "JAX_58_CTR",
+        "initial_speed": 280,
+        "star": "SNFLD3",
+        "speed_restriction": 250,
+        "waypoints": "N029.25.33.114,W081.11.10.495 FORYU/a13000+/s280/ho NICCK/a12000-14000 SNFLD/a12000+ GTOUT/a12000-16000/s280 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186"
+      },
+            {
+        "airlines": {
           "KISM": [
             {
               "airport": "KISP",
@@ -10887,19 +10903,7 @@
         "initial_speed": 280,
         "star": "SNFLD3",
         "speed_restriction": 250,
-        "runway_waypoints": {
-          "KMCO": {
-            "35L": "SNFLD/a12000+ GTOUT/a12000-16000/s280 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-             "35R": "SNFLD/a12000+ GTOUT/a12000-16000/s280 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-              "36L": "SNFLD/a12000+ GTOUT/a12000-16000/s280 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186",
-               "36R": "SNFLD/a12000+ GTOUT/a12000-16000/s280 TUGLE HIGGZ/a10000-12000/s250 VOSSS/a8000+/s230 SUNDE/a6000+ CUBAL/a5000/s210/h186"
-          },
-          "KISM": {
-            "15": "SNFLD/a12000+ JRRYY SECOY/a9000/h179",
-            "33": "SNFLD/a12000+ JRRYY SECOY/a9000/h179"
-          }
-        },
-        "waypoints": "N029.25.33.114,W081.11.10.495 FORYU/a13000+/s280/ho NICCK/a12000-14000 SNFLD/a12000+"
+        "waypoints": "N029.25.33.114,W081.11.10.495 FORYU/a13000+/s280/ho NICCK/a12000-14000 SNFLD/a12000+ JRRYY SECOY/a9000/h179"
       }
     ]
   },
@@ -11342,7 +11346,7 @@
         "sector_id": "C58"
       },
     "JAX_57_CTR": {
-        "frequency": 134005,
+        "frequency": 134000,
         "radio_name": "Jacksonville Center",
         "facility_id": "C",
         "eram_facility": true,
@@ -11411,12 +11415,6 @@
       "frequency": 121100,
       "radio_name": "Orlando Approach",
       "sector_id": "1N"
-    },
-    "MCO_S_APP": {
-      "frequency": 132650,
-      "radio_name": "Orlando Approach",
-      "default_airport": "KMCO",
-      "sector_id": "1S"
     },
     "MCO_V_APP": {
       "frequency": 119775,
@@ -11547,48 +11545,6 @@
     "MLB",
     "PIE",
     "GUURR"
-],
-"vfr_reporting_points": [
-  {
-    "description": "Melbourne VOR",
-    "location": "MLB"
-  },
-  {
-    "description": "Titusville",
-    "location": "KTIX"
-  },
-  {
-    "description": "Orlando VOR",
-    "location": "ORL"
-  },
-  {
-    "description": "Executive",
-    "location": "KORL"
-  },
-  {
-    "description": "Lake Monroe",
-    "location": "N028.54.52.279,W081.16.05.231"
-  },
-  {
-    "description": "Lake Gesip",
-    "location": "N028.37.34.270,W081.13.11.921"
-  },
-  {
-    "description": "Kissimmee",
-    "location": "KISM"
-  },
-  {
-    "description": "Winter Haven",
-    "location": "KGIF"
-  },
-  {
-    "description": "Patrick",
-    "location": "KCOF"
-  },
-  {
-    "description": "Cape Canaveral",
-    "location": "KXMR"
-  }
 ],
   "scenarios": {
     "MCO South + Sat West": {
@@ -12990,7 +12946,7 @@
             12000, 
             999000
         ],
-        "receiving_controller": "JAX_58_CTR"
+        "receiving_controller": "JAX_57_CTR"
     },
     {
         "fixes": [
@@ -13177,6 +13133,112 @@
       "slope_angle": 0.175
     }
   },
+      "controller_configs": {
+      "1E": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 16000,
+            "vertices": "N027.59.51.732,W081.17.55.726 N028.56.13.509,W081.16.06.275 N028.56.19.387,W081.05.05.776 N028.51.07.623,W080.55.47.589 N028.56.16.229,W080.32.27.518 N028.37.08.274,W080.25.45.529 N028.14.38.782,W080.27.42.643 N028.06.19.845,W080.30.33.810 N028.06.21.582,W080.47.34.605 N027.59.52.659,W081.02.39.411"
+          }
+        ]
+      },
+      "1W": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 16000,
+            "vertices": "N027.59.51.732,W081.17.55.726 N028.56.13.509,W081.16.06.27 N028.57.53.938,W081.28.23.814 N029.00.01.187,W081.29.59.340 N028.59.54.554,W081.42.33.442 N028.58.12.759,W081.55.41.381 N028.43.33.812,W081.56.22.388 N028.38.11.013,W082.02.29.496 N028.33.37.433,W081.57.16.056 N028.22.05.720,W081.58.01.869 N028.10.04.316,W081.54.49.306 N028.05.43.453,W081.53.21.498 N027.55.59.632,W081.50.06.958 N027.59.57.596,W081.21.19.605"
+          }
+        ]
+      },
+      "1B": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 16000 ,
+            "vertices": "N029.12.48.603,W081.12.59.809 N028.45.57.273,W081.09.19.039 N028.36.30.529,W081.16.21.271 N028.25.40.853,W081.18.25.746 N027.59.56.237,W081.17.56.330 N028.00.01.078,W081.12.08.118 N027.54.04.887,W081.10.32.455 N027.56.08.058,W081.01.58.212 N027.59.58.249,W081.02.29.771 N028.16.14.480,W081.03.04.570 N028.22.43.238,W081.08.54.622 N028.29.48.436,W081.09.00.829 N028.35.07.424,W080.56.17.444 N028.41.34.342,W080.56.39.197 N028.54.36.541,W081.01.49.451 N029.00.02.458,W081.01.42.035 N029.13.09.875,W081.07.29.450"
+          }
+        ]
+      },
+      "1L": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 16000 ,
+            "vertices": "N028.59.59.883,W081.42.36.216 N028.49.34.424,W081.29.21.520 N028.32.13.717,W081.18.11.821 N027.59.47.784,W081.17.47.788 N027.59.49.151,W081.21.27.213 N027.56.54.166,W081.39.56.722 N027.56.01.988,W081.50.05.310 N028.00.37.277,W081.50.01.052 N028.10.09.246,W081.54.53.975 N028.27.42.567,W081.27.17.759 N028.32.17.521,W081.27.55.415 N028.47.04.234,W081.52.20.304 N028.51.34.168,W081.46.39.453 N028.59.57.789,W081.42.17.265"
+          }
+        ]
+      },
+      "1N": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N028.49.34.884,W081.56.10.303 N028.40.38.724,W081.41.27.387 N028.40.38.394,W081.23.39.900 N028.42.32.989,W081.17.19.773 N028.46.29.181,W081.14.00.838 N028.49.00.236,W081.17.19.443 N028.52.13.376,W081.21.23.834 N028.52.35.809,W081.24.38.155 N029.00.06.461,W081.30.02.307 N028.59.53.504,W081.42.32.178 N028.57.55.662,W081.55.32.180 N028.49.31.032,W081.56.09.781"
+          },
+                    {
+            "type": "polygon",
+            "ceiling": 2000 ,
+            "vertices": "N028.46.19.149,W081.14.21.712 N028.51.56.374,W081.10.32.153 N028.55.04.769,W081.06.44.461 N028.56.25.780,W081.05.04.348 N028.57.52.174,W081.28.23.869 N028.52.22.385,W081.24.54.113 N028.51.55.489,W081.21.08.041 N028.48.57.311,W081.17.10.160 N028.46.16.691,W081.14.08.034"
+                    }
+        ]
+      },
+      "1D": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N028.49.34.884,W081.56.10.303 N028.40.38.724,W081.41.27.387 N028.40.38.394,W081.23.39.900 N028.42.32.989,W081.17.19.773 N028.40.35.002,W081.23.34.984 N028.32.39.363,W081.18.25.197 N028.30.29.209,W081.17.58.472 N028.30.43.608,W081.21.51.740 N028.22.54.005,W081.21.54.102 N028.23.15.002,W081.27.12.760 N028.21.47.860,W081.27.23.060 N028.17.27.608,W081.24.38.430 N028.07.30.775,W081.24.23.378 N028.07.57.232,W081.17.54.188 N028.00.03.776,W081.17.56.028 N027.59.51.513,W081.21.05.597 N027.57.12.650,W081.39.55.788 N027.56.01.308,W081.49.55.339 N028.00.42.606,W081.49.58.278 N028.10.17.417,W081.54.54.964 N028.22.24.026,W081.58.07.911 N028.33.58.822,W081.57.07.432 N028.37.55.570,W082.02.20.075 N028.44.04.148,W081.56.39.197 N028.49.13.688,W081.55.57.092"
+          }
+        ]
+      },
+      "1V": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N028.30.28.578,W081.18.33.491 N028.30.19.335,W081.14.53.627 N028.32.38.628,W081.12.31.300 N028.32.35.573,W081.08.48.936 N028.31.31.859,W081.05.48.706 N028.35.13.996,W080.56.27.277 N028.41.33.196,W080.56.48.975 N028.41.28.595,W080.54.17.006 N028.43.21.500,W080.52.48.237 N028.51.10.534,W080.55.46.820 N028.56.29.673,W081.05.35.330 N028.57.58.772,W081.28.19.392 N028.52.44.378,W081.24.44.829 N028.52.08.659,W081.21.31.607 N028.46.45.029,W081.14.17.180 N028.42.42.767,W081.17.02.387 N028.40.35.387,W081.23.35.203 N028.32.30.196,W081.18.29.976 N028.30.31.839,W081.18.30.580"
+          }
+        ]
+      },
+      "1K": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N028.54.22.685,W081.01.59.970 N028.41.24.503,W080.56.38.785 N028.17.50.397,W080.55.49.649 N028.13.21.047,W080.44.38.356 N028.24.56.070,W080.37.54.472 N028.25.09.713,W080.09.57.079 N028.50.35.769,W080.09.56.255 N028.59.57.452,W080.11.55.182 N028.50.57.735,W080.56.10.028 N028.54.19.128,W081.01.54.834"
+          }
+        ]
+      },
+      "1A": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N027.59.46.370,W081.02.26.887 N028.06.37.039,W081.02.22.520 N028.14.29.334,W080.55.50.088 N028.17.38.251,W080.55.47.973 N028.13.06.806,W080.44.17.757 N028.20.00.839,W080.39.10.634 N028.25.12.226,W080.37.56.669 N028.25.13.737,W080.09.57.628 N028.01.04.022,W080.10.13.586 N027.55.01.721,W080.22.41.590 N027.55.59.934,W080.55.28.692 N027.59.54.939,W081.02.23.399"
+          }
+        ]
+      },
+            "1M": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N028.45.58.055,W081.27.49.345 N028.04.04.734,W081.26.58.890 N028.04.00.010,W081.09.00.719 N028.22.48.505,W081.08.56.737 N028.45.22.302,W081.08.55.610 N028.46.58.418,W081.13.48.671 N028.46.58.851,W081.22.07.835 N028.45.57.080,W081.27.58.546"
+          }
+        ] 
+      },
+                  "1G": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000 ,
+            "vertices": "N028.45.58.055,W081.27.49.345 N028.04.04.734,W081.26.58.890 N028.04.00.010,W081.09.00.719 N028.22.48.505,W081.08.56.737 N028.45.22.302,W081.08.55.610 N028.46.58.418,W081.13.48.671 N028.46.58.851,W081.22.07.835 N028.45.57.080,W081.27.58.546"
+          }
+        ] 
+      }
+    },
   "scratchpads": {
     "BORRD": "DDA",
     "LENDS": "MZU",
@@ -13246,12 +13308,10 @@
       "ZALEN": { }
   },
   "stars_maps": [
-    "ARRIVAL SOUTH SOLID LINE", "ARRIVAL NORTH SOLID LINE", "DEPARTURE SOUTH SOLID", "DEPARTURE NORTH SOLID", "SATELLITE SOUTH DASHED",
-    "SATELLITE NORTH DASHED", "SOUTH FINAL BASE", "NORTH FINAL BASE", "MCO CLASS B", "F11 CLASS D", "F11 ILS FIXES WITH NAMES",
-    "MCO FINALS", "F11 MVA", "LEE RNAV", "ISM FINALS", "MCO SIDS SOUTH", "MCO SIDS NORTH", "MCO STARS SOUTH RESTRICTIONS", "MCO STARS NORTH RESTRICTIONS",
-    "ARRIVAL SOUTH ALTITUDES", "ARRIVAL NORTH ALTITUDES", "DEPARTURE SOUTH ALTITUDES", "DEPARTURE NORTH ALTITUDES", "DADES ARRIVAL",
-    "PACA NORTH OPS", "PACA SOUTH OPS", "MCO FINAL NO TRANSGRETION ZONE (NTZ)"
-],
-"video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+      "DEPARTURE NORTH SOLID", "ARB/ARL NORTH SOLID","MCO FINAL (NORTH) SOLID LINE", "DEPARTURE SOUTH SOLID","ARB/ARL SOUTH SOLID","MCO FINAL (SOUTH) SOLID LINE",
+      "DEPARTURE NORTH SOLID", "ARB/ARL NORTH SOLID","MCO FINAL (NORTH) SOLID LINE","SAT NORTH SFB EAST","SAT NORTH SFB WEST","RVMMCO113S","RVMMCO003S","","MCO FINAL AIRSPACE","HIGH NORTH DASHED","","RVMMLB001S","RVMMCO153S","","","",
+      "DEPARTURE SOUTH SOLID","ARB/ARL SOUTH SOLID","MCO FINAL (SOUTH) SOLID LINE","SAT SOUTH SFB EAST","SAT SOUTH SFB WEST","RVMMCO114S","RVMMCO110S","RVMMCO163S","","HIGH SOUTH DASHED","","RVMMLB002S","RVMMCO154S"
+  ],
+"video_map_file": "videomaps/F11-videomaps.gob.zst"
   }
 }

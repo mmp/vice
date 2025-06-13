@@ -134,8 +134,6 @@ type TrackState struct {
 	// Draw the datablock in yellow (until cleared); currently only used for
 	// [MF]Y[SLEW] quick flight plans
 	DatablockAlert bool
-
-	QuicklookFilterApplies bool
 }
 
 type ATPAStatus int
@@ -194,12 +192,6 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 		return 0
 	}
 	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude, 0)
-}
-
-func (ts *TrackState) LostTrack(now time.Time) bool {
-	// Only return true if we have at least one valid track from the past
-	// but haven't heard from the aircraft recently.
-	return !ts.track.Location.IsZero() && now.Sub(ts.trackTime) > 30*time.Second
 }
 
 func (sp *STARSPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
@@ -406,9 +398,6 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	if _, ok := sp.ForceQLACIDs[trk.FlightPlan.ACID]; ok {
 		return true
 	}
-	if sp.TrackState[trk.ADSBCallsign].QuicklookFilterApplies {
-		return true
-	}
 
 	// Quick Look Positions.
 	for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
@@ -545,14 +534,13 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
-		if trk.IsUnassociated() {
-			// Don't bother checking if quicklook isn't possible
-			state.QuicklookFilterApplies = false
+		if trk.IsUnassociated() || state.DisplayFDB {
+			continue
 		} else {
-			state := sp.TrackState[trk.ADSBCallsign]
-			state.QuicklookFilterApplies = slices.ContainsFunc(qlfilt,
+			state.DisplayFDB = slices.ContainsFunc(qlfilt,
 				func(f sim.FilterRegion) bool {
-					return f.Inside(state.track.Location, int(state.track.TransponderAltitude))
+					return f.Inside(state.track.Location, int(state.track.TransponderAltitude)) &&
+						!f.Inside(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude))
 				})
 		}
 	}
@@ -603,13 +591,8 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	now := ctx.Client.State.SimTime
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
-
-		if state.LostTrack(now) {
-			continue
-		}
 
 		positionSymbol := "*"
 
@@ -688,7 +671,6 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransforma
 func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
-	now := ctx.Client.State.SimTime
 
 	for i, pairState := range ps.CRDA.RunwayPairState {
 		if !pairState.Enabled {
@@ -719,9 +701,6 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 			magneticVariation := ctx.MagneticVariation
 			for _, trk := range tracks {
 				state := sp.TrackState[trk.ADSBCallsign]
-				if state.LostTrack(now) {
-					continue
-				}
 
 				// Create a ghost track if appropriate, add it to the
 				// ghosts slice, and draw its radar track.
@@ -956,11 +935,13 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 	const historyTrackDiameter = 8
 	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
 
-	now := ctx.Client.CurrentTime()
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
-		if state.LostTrack(now) {
+		// In general, if the datablock isn't being drawn (e.g. due to
+		// altitude filters), don't draw history. The one exception is
+		// unassociated tracks squawking standby (I think!).
+		if !sp.datablockVisible(ctx, trk) && !(trk.IsUnassociated() && trk.Mode == av.TransponderModeStandby) {
 			continue
 		}
 

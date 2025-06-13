@@ -40,7 +40,12 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 
-	sp.drawPreviewArea(normalizedToWindow(ps.PreviewAreaPosition), font, td)
+	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor)
+	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
+		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
+	}
+
+	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), font, previewAreaColor, td)
 
 	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, td, transforms, cb)
 	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), tracks, listStyle, td)
@@ -66,9 +71,7 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *renderer.TextDrawBuilder) {
-	ps := sp.currentPrefs()
-
+func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *renderer.Font, color renderer.RGB, td *renderer.TextDrawBuilder) {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
@@ -79,9 +82,9 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	if sp.commandMode == CommandModeMultiFunc {
 		text.WriteString(sp.multiFuncPrefix)
 	}
-	if sp.commandMode == CommandModeTargetGen {
+	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
 		text.WriteByte(' ')
-		text.WriteString(string(sp.targetGenLastCallsign))
+		text.WriteString(string(ctx.Client.LastTransmissionCallsign()))
 	}
 	if modestr != "" {
 		text.WriteString("\n")
@@ -91,7 +94,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	if text.Len() > 0 {
 		style := renderer.TextStyle{
 			Font:  font,
-			Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
+			Color: color,
 		}
 		td.AddText(rewriteDelta(text.String()), pw, style)
 	}
@@ -247,11 +250,10 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		// those.
 		codes := make(map[string]interface{})
 		for _, trk := range tracks {
-			if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
-				codes[trk.FlightPlan.SPCOverride] = nil
-			}
 			if ok, code := trk.Squawk.IsSPC(); ok {
 				codes[code] = nil
+			} else if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
+				codes[trk.FlightPlan.SPCOverride] = nil
 			}
 		}
 
@@ -481,8 +483,6 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
-	dupes := getDuplicateBeaconCodes(ctx)
-
 	var text strings.Builder
 	text.WriteString("VFR LIST\n")
 	if len(vfr) > ps.VFRList.Lines {
@@ -490,7 +490,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
 		fp := vfr[i]
-		text.WriteString(fmt.Sprintf("%2d ", vfr[i].ListIndex))
+		text.WriteString(fmt.Sprintf("%2d", vfr[i].ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
 		acid := string(vfr[i].ACID)
 		if fp.DisableMSAW {
@@ -502,32 +502,12 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else if fp.DisableCA {
 			acid += STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", acid))
-		if _, ok := dupes[fp.AssignedSquawk]; ok {
-			text.WriteByte('/')
-		} else {
-			text.WriteByte(' ')
-		}
+		text.WriteString(fmt.Sprintf("%-8s", acid))
 		haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-		if haveCode {
-			text.WriteString(fp.AssignedSquawk.String())
-		} else {
-			text.WriteString("    ")
-		}
-		text.WriteByte(' ')
 		if !haveCode {
 			text.WriteString("VFR")
 		} else {
-			if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
-				text.WriteByte(fp.EntryFix[0])
-			} else {
-				text.WriteByte(' ')
-			}
-			if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
-				text.WriteByte(fp.ExitFix[0])
-			} else {
-				text.WriteByte(' ')
-			}
+			text.WriteString(fp.AssignedSquawk.String())
 		}
 		text.WriteByte('\n')
 	}
@@ -602,13 +582,30 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		} else if fp.DisableCA {
 			acid += STARSTriangleCharacter
 		}
-		text.WriteString(fmt.Sprintf("%-8s ", acid))
-		if _, ok := dupes[fp.AssignedSquawk]; ok {
+		text.WriteString(fmt.Sprintf("%-8s", acid))
+		haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+		if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
 			text.WriteByte('/')
 		} else {
 			text.WriteByte(' ')
 		}
-		text.WriteString(fp.AssignedSquawk.String())
+		if !haveCode {
+			text.WriteString("VFR ")
+		} else {
+			text.WriteString(fp.AssignedSquawk.String())
+		}
+		if fp.TypeOfFlight == av.FlightTypeDeparture {
+			exit := fp.ExitFix
+			if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
+				exit = spt.ShortName
+			}
+			if len(exit) > 3 {
+				exit = exit[:3]
+			}
+			text.WriteByte(' ')
+			text.WriteString(exit)
+		}
+
 		if false {
 			// Disable these for now, pending list customization
 			text.WriteByte(' ')
@@ -1090,8 +1087,15 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
 				text.WriteString(fmt.Sprintf("%2d", fp.ListIndex))
 				text.WriteString(util.Select(dep.Released, "+", " "))
+				exit := fp.ExitFix
+				if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
+					exit = spt.ShortName
+				}
+				if len(exit) > 3 {
+					exit = exit[:3]
+				}
 				text.WriteString(fmt.Sprintf(" %-10s %5s %s %5s %03d\n", string(fp.ACID), fp.AircraftType,
-					fp.AssignedSquawk, fp.ExitFix, fp.RequestedAltitude/100))
+					fp.AssignedSquawk, exit, fp.RequestedAltitude/100))
 				if !dep.Released && blinkDim {
 					pw = td.AddText(rewriteDelta(text.String()), pw, dimStyle)
 				} else {

@@ -456,6 +456,40 @@ func SeqLookupFunc[T comparable](seq iter.Seq[T], check func(T) bool) (T, bool) 
 	return t, false
 }
 
+func SeqMaxIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
+	var idx K
+	first := true
+	if seq != nil {
+		var maxWeight W
+		for k, v := range seq {
+			w := weight(k, v)
+			if first || w > maxWeight {
+				maxWeight = w
+				idx = k
+				first = false
+			}
+		}
+	}
+	return idx, !first
+}
+
+func SeqMinIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
+	var idx K
+	first := true
+	if seq != nil {
+		var minWeight W
+		for k, v := range seq {
+			w := weight(k, v)
+			if first || w < minWeight {
+				minWeight = w
+				idx = k
+				first = false
+			}
+		}
+	}
+	return idx, !first
+}
+
 func MapSeq[T, U any](seq iter.Seq[T], f func(T) U) iter.Seq[U] {
 	return func(yield func(U) bool) {
 		for v := range seq {

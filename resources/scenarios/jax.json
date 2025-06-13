@@ -1366,6 +1366,17 @@
           "destination": "KSRQ",
           "exit": "OCF",
           "route": "OCF VARZE BREKR"
+        },
+                {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KGNV",
+          "exit": "GNV",
+          "route": "GNV",
+          "scratchpad": "GNV"
         }
       ],
       "exit_categories": {
@@ -1375,7 +1386,8 @@
         "SSI": "North",
         "HABLE": "North",
         "KENLL": "South",
-        "OCF": "South"
+        "OCF": "South",
+        "GNV" : "South"
       },
       "hold_for_release": true,
       "vfr": { "random_routes": { "rate": 1 } }
@@ -1821,6 +1833,17 @@
           "destination": "KSRQ",
           "exit": "OCF",
           "route": "OCF VARZE BREKR"
+        },
+                {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KOCF",
+          "exit": "OCF",
+          "route": "OCF",
+          "scratchpad": "OCF"
         }
       ],
       "exit_categories": {
@@ -2427,10 +2450,57 @@
       }
     ]
   },
-  "LUNNI2": {
+  "LUNNI2_E": {
     "arrivals": [
       {
-        "waypoints": "N031.18.26.213,W081.11.25.327 CATSU N031.13.31.601,W081.13.02.638/ho GOTBE/a10000 LUNNI/h240",
+        "waypoints": "N031.18.26.213,W081.11.25.327 CATSU/ho GOTBE/a10000 LUNNI/h240",
+        "star": "LUNNI2",
+        "initial_controller": "Jacksonville Center (Sector 54)",
+        "initial_altitude": 20400,
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KJAX": [
+            {
+              "icao": "SKW",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KPHL"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KJFK"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KBOS"
+            },
+            {
+              "icao": "JBU",
+              "airport": "KLGA"
+            }
+          ]
+        }
+      }
+    ]
+  },
+    "LUNNI2_W": {
+    "arrivals": [
+      {
+        "waypoints": "N031.18.26.213,W081.11.25.327 CATSU/ho GOTBE/a10000 LUNNI/h240",
         "star": "LUNNI2",
         "initial_controller": "Jacksonville Center (Sector 54)",
         "initial_altitude": 20400,
@@ -2740,27 +2810,6 @@
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
-          "KSGJ": [
-            {
-              "icao": "N",
-              "airport": "KMLB",
-              "fleet": "fastGA"
-            }
-          ],
-          "KGNV": [
-            {
-              "icao": "N",
-              "airport": "KMLB",
-              "fleet": "fastGA"
-            }
-          ],
-          "KOCF": [
-            {
-              "icao": "N",
-              "airport": "KMLB",
-              "fleet": "fastGA"
-            }
-          ],
           "KCRG": [
             {
               "icao": "N",
@@ -2813,27 +2862,6 @@
         "initial_speed": 250,
         "expect_approach": null,
         "airlines": {
-          "KSGJ": [
-            {
-              "icao": "N",
-              "airport": "KMLB",
-              "fleet": "lightGA"
-            }
-          ],
-          "KGNV": [
-            {
-              "icao": "N",
-              "airport": "KMLB",
-              "fleet": "lightGA"
-            }
-          ],
-          "KOCF": [
-            {
-              "icao": "N",
-              "airport": "KMLB",
-              "fleet": "lightGA"
-            }
-          ],
           "KCRG": [
             {
               "icao": "N",
@@ -2877,14 +2905,100 @@
             }
           ]
         }
+      },
+            {
+        "waypoints": "BARBS ROYES/ho SGJ",
+        "route": "KDAB BARBS ROYES SGJ",
+        "initial_controller": "Daytona North Approach",
+        "initial_altitude": 8000,
+        "description": "SGJ jets",
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "BARBS ROYES/ho SGJ",
+        "route": "KDAB BARBS ROYES SGJ",
+        "initial_controller": "Daytona North Approach",
+        "initial_altitude": 6000,
+        "description": "SGJ props",
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KSGJ": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+            {
+        "waypoints": "KEVB KDAB/ho OMN",
+        "route": "OMN",
+        "initial_controller": "Daytona North Approach",
+        "initial_altitude": 8000,
+        "description": "jets VITTS",
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      },
+      {
+        "waypoints": "KEVB KDAB/ho OMN",
+        "route": "OMN",
+        "initial_controller": "Daytona North Approach",
+        "initial_altitude": 6000,
+        "description": "prop VITTS",
+        "initial_speed": 250,
+        "expect_approach": null,
+        "airlines": {
+          "KGNV": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ],
+          "KOCF": [
+            {
+              "icao": "N",
+              "airport": "KMLB",
+              "fleet": "lightGA"
+            }
+          ]
+        }
       }
     ]
   },
   "ORL": {
     "arrivals": [
       {
-        "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF",
-        "route": "KORL VIZTA CUSAB V159 OCF",
+        "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF GNV",
+        "route": "KORL VIZTA CUSAB V159 OCF GNV",
         "initial_controller": "Orlando East Approach",
         "initial_altitude": 10000,
         "description": "jet",
@@ -2956,8 +3070,8 @@
         }
       },
       {
-        "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF",
-        "route": "KORL VIZTA CUSAB V159 OCF",
+        "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF GNV",
+        "route": "KORL VIZTA CUSAB V159 OCF GNV",
         "initial_controller": "Orlando East Approach",
         "initial_altitude": 8000,
         "initial_speed": 250,
@@ -3506,7 +3620,7 @@
         "initial_controller": "Orlando East Approach",
         "initial_speed": 150,
         "description": "V159 Northwest",
-        "waypoints": "ORL V159 OCF V441 GNV V537 GEF"
+        "waypoints": "ORL MAMBO/ho V159 OCF V441 GNV V537 GEF"
       },
       {
         "airlines": [
@@ -3520,12 +3634,31 @@
       "initial_altitude": 11000,
       "initial_controller": "Daytona North Approach",
       "initial_speed": 150,
-      "description": "V159 Northwest",
+      "description": "V159 Northeast",
       "waypoints": "ORL MAMBO/ho V159 OCF V441 GNV V441 MONIA V441 SSI V441 KELER"
     }
     ]
   },
-  "V441": {
+    "V159_S": {
+    "overflights": [
+      {
+        "airlines": [
+           {
+            "departure_airport": "KSAV",
+             "arrival_airport": "KLEE",
+             "icao": "N",
+             "fleet": "lightGA"
+           }
+        ],
+      "initial_altitude": 11000,
+      "initial_controller": "Jacksonville Center (Sector 57)",
+      "initial_speed": 150,
+      "description": "",
+      "waypoints": "KELER CATHY STARY/ho SSI V441 MONIA V441 GNV V441 OCF V159 MAMBO/delete"
+    }
+    ]
+  },
+  "V441 North": {
     "overflights": [
       {
           "airlines": [
@@ -3536,11 +3669,86 @@
                "fleet": "lightGA"
              }
           ],
-        "initial_altitude": 9000,
+        "initial_altitude": 8000,
         "initial_controller": "Tampa East Approach",
         "initial_speed": 150,
-        "description": "V159 Northwest",
+        "description": "V441 North",
         "waypoints": "PIE BAYPO/ho V441 OCF V157 TAY KVLD/delete"
+      }
+    ]
+  },
+    "V441 South": {
+    "overflights": [
+            {
+          "airlines": [
+             {
+              "departure_airport": "KVLD",
+               "arrival_airport": "KPIE",
+               "icao": "N",
+               "fleet": "lightGA"
+             }
+          ],
+        "initial_altitude": 9000,
+        "initial_controller": "Jacksonville Center (Sector 54)",
+        "initial_speed": 150,
+        "description": "V441 South",
+        "waypoints": "KVLD TAY/ho V157 OCF V441 BAYPO/delete"
+      }
+    ]
+  },
+  "SHREK2": {
+    "overflights": [
+      {
+          "airlines": [
+             {
+              "departure_airport": "KHOU",
+               "arrival_airport": "KSFB",
+               "icao": "AAY"
+             }
+          ],
+        "initial_altitude": 22000,
+        "initial_controller": "Jacksonville Center (Sector 79)",
+        "initial_speed": 150,
+        "description": "SHREK2 Overflight",
+        "waypoints": "BITTE/ho WAKOS WANDD/a11000 SHREK STNKY KSFB/delete"
+      }
+    ]
+  },
+   "V537 East": {
+    "overflights": [
+      {
+          "airlines": [
+             {
+              "departure_airport": "KPNS",
+               "arrival_airport": "KDAB",
+               "icao": "N",
+               "fleet": "lightGA"
+             }
+          ],
+        "initial_altitude": 9000,
+        "initial_controller": "Jacksonville Center (Sector 79)",
+        "initial_speed": 150,
+        "description": "V537 into DAB",
+        "waypoints": "ALVIN/ho V537 GNV WALEE T207 MMKAY FOXAM"
+      }
+    ]
+  },
+     "V537 West": {
+    "overflights": [
+      {
+          "airlines": [
+             {
+              "departure_airport": "KDAB",
+               "arrival_airport": "KPNS",
+               "icao": "N",
+               "fleet": "lightGA"
+             }
+          ],
+        "initial_altitude": 8000,
+        "initial_controller": "Daytona North Approach",
+        "initial_speed": 150,
+        "description": "V537 Out of DAB",
+        "waypoints": "FOXAM/ho MMKAY T207 WALEE GNV V537 ALVIN/delete"
       }
     ]
   }
@@ -3743,6 +3951,7 @@
   }
 ],
 
+
 "scenarios": {
     "KJAX East, No VITTS": {
       "arrival_runways": [
@@ -3784,7 +3993,7 @@
         }
       ],
       "arrivals": {
-        "LUNNI2": {
+        "LUNNI2_E": {
           "KJAX": 3
         },
         "MARQO3": {
@@ -3833,6 +4042,9 @@
         },
         "V51": {
           "overflights": 2
+        },
+        "V159_S": {
+          "overflights": 2
         }
       },
       "solo_controller": "Radar Satellite",
@@ -3848,8 +4060,9 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI2",
-              "ESENT"
+              "LUNNI2_E",
+              "ESENT",
+              "V159_S"
             ]
           },
           "Radar West": {
@@ -4007,7 +4220,7 @@
         }
       ],
       "arrivals": {
-        "LUNNI2": {
+        "LUNNI2_W": {
           "KJAX": 3
         },
         "MARQO3": {
@@ -4056,6 +4269,9 @@
         },
         "V51": {
           "overflights": 2
+        },
+        "V159_S": {
+          "overflights": 2
         }
       },
       "solo_controller": "Radar Satellite",
@@ -4071,7 +4287,7 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI2",
+              "LUNNI2_W",
               "ESENT"
             ]
           },
@@ -4097,7 +4313,8 @@
             "arrivals": [
               "MARQO3",
               "OHDEA2",
-              "ALLMA"
+              "ALLMA",
+              "V159_S"
             ]
           },
           "Radar Final": {
@@ -4237,7 +4454,7 @@
         }
       ],
       "arrivals": {
-        "LUNNI2": {
+        "LUNNI2_W": {
           "KJAX": 3
         },
         "MARQO3": {
@@ -4294,7 +4511,22 @@
         "V159": {
           "overflights": 2
         },
-        "V441": {
+        "V159_S": {
+          "overflights": 2
+        },
+        "V441 North": {
+          "overflights": 2
+        },
+        "V441 South": {
+          "overflights": 2
+        },
+        "V537 East": {
+          "overflights": 2
+        },
+        "V537 West": {
+          "overflights": 1
+        },
+        "SHREK2": {
           "overflights": 2
         }
       },
@@ -4311,10 +4543,8 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI2",
-              "ESENT",
-              "V159",
-              "V441"
+              "LUNNI2_W",
+              "ESENT"
             ]
           },
           "Radar West": {
@@ -4338,7 +4568,8 @@
             "arrivals": [
               "MARQO3",
               "OHDEA2",
-              "ALLMA"
+              "ALLMA",
+              "V159_S"
             ]
           },
           "Radar Final": {
@@ -4352,14 +4583,15 @@
             ]
           },
           "Radar Palatka": {
-            "backup": "Radar Gainsville"
+            "backup": "Radar Gainsville",
+            "arrivals": ["V537 East", "V537 West", "V441 South"]
           },
           "Radar Gainsville": {
             "backup": "Radar Vitts"
           },
           "Radar Dunnellon": {
             "backup": "Radar Vitts",
-            "arrivals": ["ORL"]
+            "arrivals": ["ORL", "V441 North", "V159", "SHREK2"]
           },
           "Radar Vitts": {
             "backup": "Radar Satellite"
@@ -4479,7 +4711,7 @@
         }
       ],
       "arrivals": {
-        "LUNNI2": {
+        "LUNNI2_E": {
           "KJAX": 3
         },
         "MARQO3": {
@@ -4536,7 +4768,22 @@
         "V159": {
           "overflights": 2
         },
-        "V441": {
+        "V159_S": {
+          "overflights": 2
+        },
+        "V441 North": {
+          "overflights": 2
+        },
+                "V441 South": {
+          "overflights": 2
+        },
+        "V537 East": {
+          "overflights": 2
+        },
+        "V537 West": {
+          "overflights": 1
+        },
+        "SHREK2": {
           "overflights": 2
         }
       },
@@ -4553,10 +4800,9 @@
               "KNRB"
             ],
             "arrivals": [
-              "LUNNI2",
+              "LUNNI2_E",
               "ESENT",
-              "V159",
-              "V441"
+              "V159_S"
             ]
           },
           "Radar West": {
@@ -4595,14 +4841,15 @@
             ]
           },
           "Radar Palatka": {
-            "backup": "Radar Gainsville"
+            "backup": "Radar Gainsville",
+            "arrivals": ["V537 East","V537 West", "V441 South"]
           },
           "Radar Gainsville": {
             "backup": "Radar Vitts"
           },
           "Radar Dunnellon": {
             "backup": "Radar Vitts",
-            "arrivals": ["ORL"]
+            "arrivals": ["ORL", "V159", "V441 North", "SHREK2"]
           },
           "Radar Vitts": {
             "backup": "Radar Satellite"
@@ -4750,6 +4997,98 @@
               }
           ]
       },
+            "controller_configs": {
+      "1S": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000,
+            "vertices": "N030.28.55.503,W081.40.56.872 N030.30.55.810,W081.22.17.805 N030.39.56.852,W081.13.05.137 N030.36.07.884,W080.57.36.765 N030.03.26.872,W081.01.33.081 N029.51.09.147,W081.01.44.425 N029.49.09.437,W081.33.38.600 N030.04.51.281,W081.32.55.781 N030.12.28.718,W081.33.05.366 N030.16.45.509,W081.41.33.182 N030.21.55.516,W081.43.03.956 N030.29.02.404,W081.40.39.898"
+          }
+        ]
+      },
+            "1N": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 15000,
+            "vertices": "N030.18.58.039,W082.19.19.140 N030.21.25.647,W081.42.53.876 N030.28.42.690,W081.40.31.192 N030.30.57.019,W081.22.06.022 N030.39.52.987,W081.12.52.668 N030.53.54.093,W081.19.18.206 N030.59.59.800,W081.35.59.335 N031.00.12.201,W082.10.41.244 N030.43.34.629,W082.22.55.735 N030.18.58.650,W082.19.13.234"
+          }
+        ]
+      },
+                  "1J": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 5000,
+            "vertices": "N030.19.16.922,W082.12.05.399 N030.21.13.672,W081.43.10.136 N030.28.41.482,W081.40.42.974 N030.30.57.856,W081.22.47.990 N030.39.44.040,W081.12.39.457 N030.53.42.722,W081.19.28.588 N030.47.57.923,W081.22.45.902 N030.46.57.581,W081.29.12.044 N030.46.59.304,W081.53.06.914 N030.41.46.716,W082.00.21.807 N030.30.41.219,W082.04.42.238 N030.19.23.211,W082.11.54.303"
+          }
+        ]
+      },
+      "1R": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 15000,
+            "vertices": "N030.18.49.703,W082.19.00.051 N030.21.09.806,W081.42.57.639 N030.29.44.468,W081.41.21.591 N030.30.44.439,W081.22.28.187 N030.39.11.142,W081.12.58.820 N030.53.29.916,W081.19.02.907 N030.59.55.935,W081.35.46.838 N030.30.05.994,W081.41.12.637 N031.00.16.067,W082.10.53.741 N030.43.49.866,W082.22.57.850 N030.18.45.837,W082.18.47.554"
+          }
+        ]
+      },
+      "1E": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 15000,
+            "vertices": "N030.29.41.206,W081.41.03.189 N030.21.18.753,W081.43.10.823 N030.12.42.128,W081.33.25.142 N029.56.44.821,W081.33.18.001 N029.49.12.088,W081.34.02.852 N029.51.07.327,W081.02.02.085 N030.03.15.501,W081.01.43.463 N030.36.13.569,W080.57.31.574 N030.39.49.121,W081.12.40.144 N030.30.50.729,W081.22.17.091 N030.29.51.973,W081.40.58.712"
+          }
+        ]
+      },
+         "1W": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 15000,
+            "vertices": "N029.36.15.100,W081.32.15.186 N029.49.28.533,W081.33.53.184 N030.12.03.326,W081.33.01.851 N030.16.41.644,W081.41.20.685 N030.21.26.862,W081.42.42.066 N030.19.03.120,W082.19.19.826 N030.03.10.207,W082.16.49.835 N029.55.35.675,W081.57.50.883 N029.36.33.351,W081.51.49.323 N029.36.23.436,W081.32.34.275"
+          }
+        ]
+      },
+               "1V": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 6000,
+            "vertices": "N029.48.01.535,W082.40.32.208 N029.48.05.387,W082.54.05.690 N029.12.15.115,W082.52.48.841 N028.44.30.858,W082.42.53.574 N028.38.10.848,W082.02.39.768 N028.51.30.666,W081.46.34.647 N029.00.07.683,W081.42.05.564 N028.59.49.652,W081.29.59.780 N029.22.21.094,W081.31.02.567 N029.24.23.214,W081.34.54.021 N029.22.48.003,W081.39.17.446 N029.22.50.111,W082.24.38.869 N029.41.10.941,W082.40.10.510 N029.48.04.920,W082.40.05.786"
+          }
+        ]
+      },
+      "1D": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 10000,
+            "vertices": "N029.48.01.535,W082.40.32.208 N029.48.05.387,W082.54.05.690 N029.12.15.115,W082.52.48.841 N028.44.30.858,W082.42.53.574 N028.38.10.848,W082.02.39.768 N028.51.30.666,W081.46.34.647 N029.00.07.683,W081.42.05.564 N028.59.49.652,W081.29.59.780 N029.22.21.094,W081.31.02.567 N029.24.23.214,W081.34.54.021 N029.22.48.003,W081.39.17.446 N029.22.50.111,W082.24.38.869 N029.41.10.941,W082.40.10.510 N029.48.04.920,W082.40.05.786"
+          }
+        ]
+      },
+      "1G": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 6000,
+            "vertices": "N029.55.57.689,W081.58.11.290 N030.02.57.593,W082.16.50.824 N029.48.04.899,W082.40.05.758 N029.41.11.491,W082.40.04.907 N029.22.45.868,W082.24.32.607 N029.22.59.869,W081.38.56.489 N029.24.29.139,W081.34.43.502 N029.22.16.850,W081.30.56.304 N029.36.14.256,W081.32.24.113 N029.49.17.759,W081.33.55.766 N029.56.33.786,W081.33.25.883 N029.52.35.039,W081.49.15.102 N029.56.06.705,W081.58.18.184"
+          }
+        ]
+      },
+      "1A": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 1000,
+            "vertices": "N029.55.57.689,W081.58.11.290 N030.02.57.593,W082.16.50.824 N029.48.04.899,W082.40.05.758 N029.41.11.491,W082.40.04.907 N029.22.45.868,W082.24.32.607 N029.22.59.869,W081.38.56.489 N029.24.29.139,W081.34.43.502 N029.22.16.850,W081.30.56.304 N029.36.14.256,W081.32.24.113 N029.49.17.759,W081.33.55.766 N029.56.33.786,W081.33.25.883 N029.52.35.039,W081.49.15.102 N029.56.06.705,W081.58.18.184"
+          }
+        ]
+      }
+    },
     "airspace_awareness": [
       {
         "fixes": [

@@ -11,12 +11,12 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -137,6 +137,11 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 		return
 	}
 
+	if fp.Rules == av.FlightRulesVFR && (fp.PlanType == sim.LocalNonEnroute || fp.TypeOfFlight != av.FlightTypeDeparture) {
+		// no strips for these
+		return
+	}
+
 	if fp.TrackingController == tcp {
 		fsp.strips = append(fsp.strips, fp.ACID)
 		fsp.addedPlans[fp.ACID] = nil
@@ -144,10 +149,10 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)
@@ -444,9 +449,9 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			arrivalTime := "A" + sfp.CoordinationTime.UTC().Format("1504")
 			drawColumn(arrivalTime, "", "", width2, false)
 
-			// Fourth column: IFR, destination airport
+			// Fourth column: flight rules, destination airport
 			x += width2
-			drawColumn("IFR", "", fp.ArrivalAirport, widthCenter, false)
+			drawColumn(util.Select(fp.Rules == av.FlightRulesIFR, "IFR", "VFR"), "", fp.ArrivalAirport, widthCenter, false)
 		} else {
 			// Overflight
 			// Second column; 3 entries: squawk, entry fix, exit fix

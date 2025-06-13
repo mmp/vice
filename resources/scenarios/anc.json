@@ -1,0 +1,1392 @@
+{
+    "tracon": "A11",
+    "airports": {
+		"PABV": { "vfr": { "random_routes": { "rate": 5 } } },
+		"PAAQ": { "vfr": { "random_routes": { "rate": 5 } } },
+		"PAGQ": { "vfr": { "random_routes": { "rate": 5 } } },
+		"PABG": { "vfr": { "random_routes": { "rate": 5 } } },
+		"PAMR": { "vfr": { "random_routes": { "rate": 5 } } },
+        "PANC": {
+			"departure_runways_as_one": [ "7L,15"],
+            "approaches": {
+              "I7L": { "cifp_id": "I7L" },
+			  "R7R": { "cifp_id": "RZ7R" },
+              "I7R": { "cifp_id": "I7R" },
+              "I15": { "cifp_id": "I15" },
+			  "R33": { "cifp_id": "R33" },
+			  "R25R": {
+                    "full_name": "RNAV M Runway 25R",
+                    "runway": "25R",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "OSPUF/iaf IFHIX ZUPIB EFYEZ/if/a2200 UHEPU/a1600/s150 HETEK/faf/a1300/arc2.2 JEMAG",
+						"JUKEP/iaf ZUPIB EFYEZ/if/a2200 UHEPU/a1600/s150 HETEK/faf/a1300/arc2.2 JEMAG",
+						"GAYLL/iaf SLOOW EFYEZ/if/a2200 UHEPU/a1600/s150 HETEK/faf/a1300/arc2.2 JEMAG"
+                    ]
+                },
+			  "R25L": {
+                    "full_name": "RNAV M Runway 25L",
+                    "runway": "25L",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "OSPUF/iaf IFHIX ZUPIB EFYEZ/if/a2200 UHEPU/a1600/s150 FELUL/faf/a1300/arc2.2 CUXEM",
+						"JUKEP/iaf ZUPIB EFYEZ/if/a2200 UHEPU/a1600/s150 FELUL/faf/a1300/arc2.2 CUXEM",
+						"GAYLL/iaf SLOOW EFYEZ/if/a2200 UHEPU/a1600/s150 FELUL/faf/a1300/arc2.2 CUXEM"
+                    ]
+                }
+            },
+			"approach_regions": {
+		"7R": {
+			"heading_tolerance": 90,
+			"near_distance": 5,
+			"near_half_width": 1.5,
+			"far_half_width": 5,
+			"region_length": 20,
+			"descent_distance": 6.7,
+			"descent_altitude": 1600,
+			"above_altitude_tolerance": 1000,
+			"below_altitude_tolerance": 500,
+			"reference_point": "N061.10.04.234,W150.02.32.984",
+			"reference_heading": 75,
+			"reference_length": 25,
+			"reference_altitude": 0
+        },
+		"15": {
+			"heading_tolerance":  90,
+			"near_distance": 5,
+			"near_half_width": 1.5,
+			"far_half_width": 5,
+			"region_length": 20,
+			"descent_distance": 6.2,
+			"descent_altitude": 1600,
+			"above_altitude_tolerance": 1000,
+			"below_altitude_tolerance": 500,
+			"reference_point": "N061.11.59.288,W150.00.51.361",
+			"reference_heading": 150,
+			"reference_length": 25,
+			"reference_altitude": 0
+		}
+		},
+		"converging_runways": [
+		{
+			"runways": ["7R", "15"],
+			"leader_directions": ["SW", "NE"],
+			"tie_symbol": "/",
+			"stagger_symbol": "0",
+			"tie_offset": 2.5
+		}
+		],
+            "departure_routes": {
+                "7L": {
+                    "TED": {
+                        "cleared_altitude": 4000,
+						"sid": "POTTR3",
+                        "waypoints": "N061.10.04.838,W149.57.33.881/a600+/h199"
+                    }
+                },
+				"7R": {
+                    "TED": {
+                        "cleared_altitude": 4000,
+						"sid": "POTTR3",
+                        "waypoints": "N061.10.04.838,W149.57.33.881/a600+/h199"
+                    }
+                },
+                "25L": {
+					"FFITZ": {
+                        "cleared_altitude": 4000,
+						"sid": "FFITZ4",
+                        "waypoints": "VUYWO OGOLY EVRTS/a5000+ DCSIX FRIDA/a9000+ FFITZ"
+                    },
+                    "TED": {
+                        "cleared_altitude": 4000,
+						"sid": "ANCH1",
+                        "waypoints": "N061.10.03.877,W150.03.14.128/a600+/h254"
+                    }
+				},
+				"25R": {
+					"FFITZ": {
+                        "cleared_altitude": 4000,
+						"sid": "FFITZ4",
+                        "waypoints": "VUYWO OGOLY EVRTS/a5000+ DCSIX FRIDA/a9000+ FFITZ"
+                    },
+                    "TED": {
+                        "cleared_altitude": 4000,
+						"sid": "ANCH1",
+                        "waypoints": "N061.10.03.877,W150.03.14.128/a600+/h254"
+                    }
+				},
+				"15": {
+                    "TED": {
+                        "cleared_altitude": 4000,
+						"sid": "ANCH1",
+                        "waypoints": "N061.09.51.751,W149.59.41.103/a600+/h201"
+                    }
+				},
+				"33": {
+                    "FFITZ": {
+                        "cleared_altitude": 4000,
+						"sid": "FFITZ4",
+                        "waypoints": "ISACC RRROB EVRTS/a5000+ DCSIX FRIDA/a9000+ FFITZ"
+                    },
+                    "NOEND": {
+                        "cleared_altitude": 4000,
+						"sid": "NOEND4",
+                        "waypoints": "N061.12.23.843,W150.01.02.841 EGKAJ/a3000+ LIFFE/s230 OUTER/a6000+ CRAFT/a8000+ RAMMA/a10000+ NOEND/a12800+"
+                    },
+                    "TED": {
+                        "cleared_altitude": 4000,
+						"sid": "ANCH1",
+                        "waypoints": "N061.12.23.843,W150.01.02.841/a600+/h301"
+                    }
+            }
+		},
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "cargo",
+                            "icao": "CPA"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "CPA"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "EVA"
+                        },
+						{
+                            "fleet": "b747",
+                            "icao": "UPS"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "SIA"
+                        },
+                        {
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "PAC"
+                        },
+						{
+                            "icao": "CKS"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "VHHH",
+                    "route": "TED NODLE R220 IXE Y88 NAKTU Y12 KOHWA Y54 TURFY Y24 KOSHI Y50 IGMON A1 BULAN A1 ELATO V522 ABBEY",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+						{
+                            "fleet": "b747",
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "CAO"
+                        },
+						{
+                            "icao": "CKS"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "ZSPD",
+                    "route": "TED NODLE R220 NODAN R217 GTC Y142 SAMON Y14 DGC Y28 ISAKY Y60 FUE A593 LAMEN A593 DUMET",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+						{
+                            "fleet": "b747",
+                            "icao": "UPS"
+                        },
+						{
+                            "fleet": "b77l",
+                            "icao": "FDX"
+                        },
+						{
+                            "fleet": "md11",
+                            "icao": "FDX"
+                        },
+                        {
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "PAC"
+                        },
+						{
+                            "icao": "NCA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "RJAA",
+                    "route": "TED NODLE R220 NIPPI R220 NANAC Y810 OLDIV Y809 SUPOK",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+						{
+                            "fleet": "cargo",
+                            "icao": "CAL"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "EVA"
+                        },
+						{
+                            "icao": "UAL",
+							"fleet": "b3xm"
+                        },
+						{
+                            "icao": "AAL",
+							"fleet": "a321"
+                        },
+						{
+                            "fleet": "b747",
+                            "icao": "UPS"
+                        },
+						{
+                            "fleet": "b77l",
+                            "icao": "FDX"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "CSN"
+                        },
+						{
+                            "icao": "CLX"
+                        },
+						{
+                            "icao": "CKK"
+                        },
+						{
+                            "icao": "CAO"
+                        },
+                        {
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "PAC"
+                        },
+						{
+                            "icao": "NCA"
+                        },
+						{
+                            "icao": "CKS"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KORD",
+                    "route": "TED YESKA NCA11 GOROV YXJ 52N110W MOT RWF HSTIN Q156 ZZIPR FYTTE7",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+						{
+                            "fleet": "cargo",
+                            "icao": "CAL"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "EVA"
+                        },
+						{
+                            "icao": "UAL",
+							"fleet": "b3xm"
+                        },
+						{
+                            "icao": "AAL",
+							"fleet": "a321"
+                        },
+						{
+                            "fleet": "b747",
+                            "icao": "UPS"
+                        },
+						{
+                            "fleet": "b77l",
+                            "icao": "FDX"
+                        },
+						{
+                            "fleet": "cargo",
+                            "icao": "CSN"
+                        },
+						{
+                            "icao": "CLX"
+                        },
+						{
+                            "icao": "CKK"
+                        },
+						{
+                            "icao": "CAO"
+                        },
+                        {
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "GTI"
+                        },
+						{
+                            "icao": "PAC"
+                        },
+						{
+                            "icao": "NCA"
+                        },
+						{
+                            "icao": "CKS"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KORD",
+                    "route": "TED JOH 59N140W RIBIT 54N120W BORIX 50N105W MOT HSTIN Q156 ZZIPR FYTTE7",
+                    "exit": "TED"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 37000,
+                    "destination": "PAJN",
+                    "route": "TED CUSHI",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 37000,
+                    "destination": "PAJN",
+                    "route": "NOEND4 NOEND CUSHI BARLO",
+                    "exit": "NOEND"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 27000,
+                    "destination": "PACV",
+                    "route": "TED JOH",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 27000,
+                    "destination": "PACV",
+                    "route": "NOEND4 NOEND JOH",
+                    "exit": "NOEND"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "PADQ",
+                    "route": "TED SHUYA V438 ODK ADQ",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "PADK",
+                    "route": "TED ENA DLG CAMBO SIYNY",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "QXE",
+							"fleet": "long"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 38000,
+                    "destination": "PAOT",
+                    "route": "TED J133 GAL BALIN OTZ",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "QXE",
+							"fleet": "long"
+                        },
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "PAFA",
+                    "route": "TED CAWIN LIBER5",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "PABR",
+                    "route": "TED KUTDE BRONX CHIPS LEDHO",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA",
+							"fleet": "short"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "PASC",
+                    "route": "TED CAWIN BIXER ARCON",
+                    "exit": "TED"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        },
+                        {
+                            "icao": "UAL",
+							"fleet": "b3xm"
+                        }
+                    ],
+                    "altitude": 37000,
+                    "destination": "KSFO",
+                    "route": "TED MDO B453 BOXER AMAKR BDEGA4",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        },
+                        {
+                            "icao": "DAL",
+							"fleet": "b73x"
+                        },
+						{
+                            "icao": "ATN"
+                        }
+                    ],
+                    "altitude": 35000,
+                    "destination": "KSFO",
+                    "route": "TED LAIRE BKA DUGGS Q902 VIXOR MARNR8",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 37000,
+                    "destination": "KPHX",
+                    "route": "TED JOH LAIRE BKA DUGGS ARRIE IMB Q35 CORKR TENTS BRUSR1",
+                    "exit": "TED"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+							"fleet": "a21N"
+                        }
+                    ],
+                    "altitude": 31000,
+                    "destination": "KMSP",
+                    "route": "TED JOH HOLIE SSR 5700N/13000W 5400N/12000W 5100N/11000W 5000N/10600W MOT TTAIL BAINY3",
+                    "exit": "TED"
+                }
+            ],
+            "exit_categories": {
+                "NOEND": "South",
+                "FFITZ": "North",
+                "TED": "East"
+            },
+            "tower_list": 1
+        }
+    },
+    "inbound_flows": {
+    "PTERS3": {
+        "arrivals": [
+      {
+		"waypoints": "PTERS/a16000+/ho SKENS/a13000-15000 MMMAT/a10000+ BBELL/a8000+ DDOUG/a8000 LMPEE/flyover/h329",
+		"star": "PTERS3",
+        "initial_controller": "ANC_7_CTR",
+		"initial_altitude": 20000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "PANC": [
+            {
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KDEN"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KIAH"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KEWR"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KSFO"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KIAD"
+            },
+			{
+              "icao": "DAL",
+			  "fleet": "a21N",
+              "airport": "KMSP"
+            },
+			{
+              "icao": "AAL",
+			  "fleet": "a321",
+              "airport": "KDFW"
+            },
+			{
+              "icao": "AAL",
+			  "fleet": "a321",
+              "airport": "KPHX"
+            },
+			{
+              "icao": "QXE",
+			  "fleet": "long",
+              "airport": "KPDX"
+            },
+			{
+              "icao": "QXE",
+			  "fleet": "long",
+              "airport": "KSEA"
+            },
+			{
+              "icao": "ASA",
+              "airport": "KPDX"
+            },
+			{
+              "icao": "ASA",
+              "airport": "KSEA"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "KMEM"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "KMEM"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "KIND"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "KIND"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "KOAK"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "KOAK"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "KSDF"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "KONT"
+            },
+			{
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+			{
+              "icao": "CAL",
+			  "fleet": "cargo",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CKS",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CAO",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CPA",
+			  "fleet": "cargo",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CKS",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CLX",
+              "airport": "KORD"
+            },
+			{
+              "icao": "GTI",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CSN",
+			  "fleet": "cargo",
+              "airport": "KORD"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "KROTO5.ROHHN": {
+        "arrivals": [
+      {
+        "waypoints": "ROHHN/ho KROTO/a9000+/s250",
+		"runway_waypoints": {
+          "PANC": {
+            "15": "KROTO/a9000+/s250 TOMMM/a5000+ CARDD/a3000",
+            "7L": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254",
+            "7R": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254"
+          }
+        },
+		"star": "KROTO5",
+        "initial_controller": "ANC_6_CTR",
+		"initial_altitude": 16000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "PANC": [
+            {
+              "icao": "ASA",
+              "airport": "PAOT"
+            },
+			{
+              "icao": "QXE",
+			  "fleet": "long",
+              "airport": "PAOT"
+            },
+			{
+              "icao": "ASA",
+              "airport": "PADG"
+            },
+			{
+              "icao": "ASA",
+              "airport": "PAOM"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "KROTO5.TKA": {
+        "arrivals": [
+      {
+        "waypoints": "TKA/a11000+/ho KROTO/a9000+/s250",
+		"runway_waypoints": {
+          "PANC": {
+            "15": "KROTO/a9000+/s250 TOMMM/a5000+ CARDD/a3000",
+            "7L": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254",
+            "7R": "KROTO/a9000+/s250 NHCOL/a5000 ASLEE/a5000/s230 CULEN/a4000/s210/h254"
+          }
+        },
+		"star": "KROTO5",
+        "initial_controller": "ANC_6_CTR",
+		"initial_altitude": 22000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "PANC": [
+            {
+              "icao": "ASA",
+              "airport": "PASC"
+            },
+			{
+              "icao": "QXE",
+			  "fleet": "long",
+              "airport": "PAFA"
+            },
+			{
+              "icao": "ASA",
+              "airport": "PABR"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "NEELL7": {
+        "arrivals": [
+      {
+        "waypoints": "SNAAG/a10000+/ho NEELL/a8000+/s250",
+		"runway_waypoints": {
+          "PANC": {
+            "15": "NEELL/a8000+/s250 WNTER/a8000-12000 DOGLG/a7000+ TURRN/a5000 MITNN/a5000/s210 GLDNN/a5000/h329",
+            "7R": "NEELL/a8000+/s250 SHNKN/a3000+ ELIAS/a2000",
+            "7L": "NEELL/a8000+/s250 SHNKN/a3000+ AINKK/a2000"
+          }
+        },
+        "star": "NEELL7",
+        "initial_controller": "ANC_5_CTR",
+		"initial_altitude": 12000,
+        "assigned_altitude": 9000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "PANC": [
+            {
+              "icao": "ASA",
+              "airport": "PADK"
+            },
+			{
+              "icao": "CPA",
+			  "fleet": "cargo",
+              "airport": "VHHH"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "VHHH"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "ZSPD"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "ZGSZ"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "RJBB"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "ZSPD"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "RJBB"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "ZSPD"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "WSSS"
+            },
+			{
+              "icao": "CSN",
+			  "fleet": "cargo",
+              "airport": "ZBAA"
+            },
+			{
+              "icao": "CAL",
+			  "fleet": "cargo",
+              "airport": "RCTP"
+            },
+			{
+              "icao": "CAO",
+              "airport": "ZSPD"
+            },
+			{
+              "icao": "GTI",
+              "airport": "ZSPD"
+            },
+			{
+              "icao": "GTI",
+              "airport": "VHHH"
+            },
+			{
+              "icao": "GTI",
+              "airport": "RJAA"
+            }
+          ]	
+        }
+      }
+    ]
+  },
+  "WITTI5": {
+        "arrivals": [
+      {
+        "waypoints": "WITTI/a16000+/ho GAYLL/a12000-15000 HOPER/a8000+ SILTY/a5700+ ANDDI/a5000/s210",	
+		"star": "WITTI5",
+        "initial_controller": "ANC_7_CTR",
+		"initial_altitude": 22000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "PANC": [
+            {
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KDEN"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KIAH"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KEWR"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KSFO"
+            },
+			{
+              "icao": "UAL",
+			  "fleet": "b3xm",
+              "airport": "KIAD"
+            },
+			{
+              "icao": "DAL",
+			  "fleet": "a21N",
+              "airport": "KMSP"
+            },
+			{
+              "icao": "AAL",
+			  "fleet": "a321",
+              "airport": "KDFW"
+            },
+			{
+              "icao": "AAL",
+			  "fleet": "a321",
+              "airport": "KPHX"
+            },
+			{
+              "icao": "QXE",
+			  "fleet": "long",
+              "airport": "KPDX"
+            },
+			{
+              "icao": "QXE",
+			  "fleet": "long",
+              "airport": "KSEA"
+            },
+			{
+              "icao": "ASA",
+              "airport": "KPDX"
+            },
+			{
+              "icao": "ASA",
+              "airport": "KSEA"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "KMEM"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "KMEM"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "KIND"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "KIND"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "b77l",
+              "airport": "KOAK"
+            },
+			{
+              "icao": "FDX",
+			  "fleet": "md11",
+              "airport": "KOAK"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "KSDF"
+            },
+			{
+              "icao": "UPS",
+			  "fleet": "b747",
+              "airport": "KONT"
+            },
+			{
+              "icao": "UPS",
+              "airport": "KSDF"
+            },
+			{
+              "icao": "CAL",
+			  "fleet": "cargo",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CKS",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CAO",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CPA",
+			  "fleet": "cargo",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CKS",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CLX",
+              "airport": "KORD"
+            },
+			{
+              "icao": "GTI",
+              "airport": "KORD"
+            },
+			{
+              "icao": "CSN",
+			  "fleet": "cargo",
+              "airport": "KORD"
+            }
+          ]	
+        }
+      }
+    ]
+  }
+},
+    "control_positions":{
+		"ANC_5_CTR": {
+            "frequency": 125700,
+            "radio_name": "Anchorage Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "sector_id": "C05"
+        },
+		"ANC_6_CTR": {
+            "frequency": 132300,
+            "radio_name": "Anchorage Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "sector_id": "C06"
+        },
+		"ANC_7_CTR": {
+            "frequency": 119500,
+            "radio_name": "Anchorage Center",
+            "facility_id": "C",
+            "eram_facility": true,
+            "sector_id": "C07"
+        },
+        "ANC_N_APP": {
+            "frequency": 118600,
+            "radio_name": "Anchorage Approach",
+			"default_airport": "PANC",
+            "sector_id": "1N"
+        },
+		"ANC_S_APP": {
+            "frequency": 126400,
+            "radio_name": "Anchorage Approach",
+			"default_airport": "PANC",
+            "sector_id": "1S"
+        },
+		"ANC_F_APP": {
+            "frequency": 135150,
+            "radio_name": "Anchorage Approach",
+			"default_airport": "PANC",
+            "sector_id": "1F"
+        },
+		"ANC_TWR": {
+            "frequency": 118300,
+            "radio_name": "Anchorage Tower",
+            "sector_id": "1T"
+		}
+    },
+    "default_scenario": "ANC 07/33",
+    "name": "A11",
+    "primary_airport": "PANC",
+    "scenarios": {
+        "ANC 07/33": {
+            "arrival_runways": [
+                {
+                    "airport": "PANC",
+                    "runway": "7L"
+                },
+				{
+                    "airport": "PANC",
+                    "runway": "7R"
+                }
+            ],
+            "inbound_rates": {
+				"KROTO5.ROHHN": {
+                    "PANC": 5
+                },
+				"KROTO5.TKA": {
+                    "PANC": 5
+                },
+				"NEELL7": {
+                    "PANC": 15
+                },
+				"WITTI5": {
+                    "PANC": 10
+                }
+            },
+            "solo_controller": "ANC_N_APP",
+			"multi_controllers":{
+                "default": {
+                    "ANC_N_APP":{"primary": true,
+					"departures": ["PANC/ANCH1", "PANC/NOEND4"],
+					"arrivals": ["KROTO5.TKA", "KROTO5.ROHHN"]
+                    },
+                    "ANC_S_APP":{"backup": "ANC_N_APP",
+					"departures": ["PANC/FFITZ4"],
+					"arrivals": ["NEELL7", "WITTI5"]
+                    },
+                    "ANC_F_APP":{"backup": "ANC_S_APP"
+                    }
+                }
+            },
+            "controllers": [
+                "ANC_TWR",
+                "ANC_N_APP",
+                "ANC_S_APP",
+				"ANC_F_APP",
+                "ANC_5_CTR",
+				"ANC_6_CTR",
+				"ANC_7_CTR"
+            ],
+            "default_maps": ["A11 RVM"],
+            "departure_runways": [
+                {
+                    "airport": "PANC",
+                    "rate": 25,
+                    "runway": "33"
+                }
+            ],
+            "wind": {
+                "direction": 120,
+                "speed": 14
+            }
+        },
+		"ANC 07/15": {
+            "arrival_runways": [
+                {
+                    "airport": "PANC",
+                    "runway": "7L"
+                },
+				{
+                    "airport": "PANC",
+                    "runway": "7R"
+                }
+            ],
+            "inbound_rates": {
+                "PTERS3": {
+                    "PANC": 10
+                },
+				"KROTO5.ROHHN": {
+                    "PANC": 5
+                },
+				"KROTO5.TKA": {
+                    "PANC": 5
+                },
+				"NEELL7": {
+                    "PANC": 15
+                },
+				"WITTI5": {
+                    "PANC": 10
+                }
+            },
+            "solo_controller": "ANC_N_APP",
+			"multi_controllers":{
+                "default": {
+                    "ANC_N_APP":{"primary": true,
+					"departures": ["PANC/ANCH1"],
+					"arrivals": ["PTERS3", "KROTO5.TKA", "KROTO5.ROHHN"]
+                    },
+                    "ANC_S_APP":{"backup": "ANC_N_APP",
+					"departures": ["PANC/POTTR3"],
+					"arrivals": ["NEELL7", "WITTI5"]
+                    },
+                    "ANC_F_APP":{"backup": "ANC_S_APP"
+                    }
+                }
+            },
+            "controllers": [
+                "ANC_TWR",
+                "ANC_N_APP",
+                "ANC_S_APP",
+				"ANC_F_APP",
+                "ANC_5_CTR",
+				"ANC_6_CTR",
+				"ANC_7_CTR"
+            ],
+            "default_maps": ["A11 RVM"],
+            "departure_runways": [
+                {
+                    "airport": "PANC",
+                    "rate": 10,
+                    "runway": "7L"
+                },
+				{
+                    "airport": "PANC",
+                    "rate": 25,
+                    "runway": "15"
+                }
+            ],
+            "wind": {
+                "direction": 120,
+                "speed": 14
+            }
+        },
+        "ANC 25/15": {
+            "arrival_runways": [
+                {
+                    "airport": "PANC",
+                    "runway": "15"
+                }
+            ],
+            "inbound_rates": {
+                "PTERS3": {
+                    "PANC": 20
+                },
+				"KROTO5.ROHHN": {
+                    "PANC": 5
+                },
+				"KROTO5.TKA": {
+                    "PANC": 5
+                },
+				"NEELL7": {
+                    "PANC": 15
+                }
+            },
+            "solo_controller": "ANC_N_APP",
+			"multi_controllers":{
+                "default": {
+                    "ANC_N_APP":{"primary": true,
+					"departures": ["PANC/ANCH1"],
+					"arrivals": ["PTERS3", "KROTO5.TKA", "KROTO5.ROHHN"]
+                    },
+                    "ANC_S_APP":{"backup": "ANC_N_APP",
+					"departures": ["PANC/FFITZ4"],
+					"arrivals": ["NEELL7"]
+                    },
+                    "ANC_F_APP":{"backup": "ANC_S_APP"
+                    }
+                }
+            },
+            "controllers": [
+                "ANC_TWR",
+                "ANC_N_APP",
+                "ANC_S_APP",
+				"ANC_F_APP",
+                "ANC_5_CTR",
+				"ANC_6_CTR",
+				"ANC_7_CTR"
+            ],
+            "default_maps": ["A11 RVM"],
+            "departure_runways": [
+                {
+                    "airport": "PANC",
+                    "rate": 25,
+                    "runway": "25R"
+                }
+            ],
+            "wind": {
+                "direction": 260,
+                "speed": 8
+            }
+        },
+		"ANC Straight 33": {
+            "arrival_runways": [
+                {
+                    "airport": "PANC",
+                    "runway": "33"
+                }
+            ],
+            "inbound_rates": {
+                "PTERS3": {
+                    "PANC": 10
+                },
+				"KROTO5.ROHHN": {
+                    "PANC": 5
+                },
+				"KROTO5.TKA": {
+                    "PANC": 5
+                },
+				"NEELL7": {
+                    "PANC": 15
+                },
+				"WITTI5": {
+                    "PANC": 10
+                }
+            },
+            "solo_controller": "ANC_N_APP",
+			"multi_controllers":{
+                "default": {
+                    "ANC_N_APP":{"primary": true,
+					"departures": ["PANC/ANCH1", "PANC/NOEND4"],
+					"arrivals": ["PTERS3", "KROTO5.TKA", "KROTO5.ROHHN"]
+                    },
+                    "ANC_S_APP":{"backup": "ANC_N_APP",
+					"departures": ["PANC/FFITZ4"],
+					"arrivals": ["NEELL7", "WITTI5"]
+                    },
+                    "ANC_F_APP":{"backup": "ANC_S_APP"
+                    }
+                }
+            },
+            "controllers": [
+                "ANC_TWR",
+                "ANC_N_APP",
+                "ANC_S_APP",
+				"ANC_F_APP",
+                "ANC_5_CTR",
+				"ANC_6_CTR",
+				"ANC_7_CTR"
+            ],
+            "default_maps": ["A11 RVM"],
+            "departure_runways": [
+                {
+                    "airport": "PANC",
+                    "rate": 25,
+                    "runway": "33"
+                }
+            ],
+            "wind": {
+                "direction": 320,
+                "speed": 20,
+				"gust": 5
+            }
+        }
+    },
+    "stars_config": {
+       "center": "PANC",
+        "radar_sites": {
+            "ANC": {
+                "char": "S",
+                "position": "35.394728, 120.354325",
+                "elevation": 3622,
+                "primary_range": 55,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 40,
+        "scratchpads": {
+            "NOEND": "NOE",
+            "FFITZ": "FTZ",
+			"TED": "TED"
+        },
+        "significant_points": {
+            "BGQ": { },
+            "MATTA": { "short_name": "MAT" },
+            "ELLAM": { "short_name": "ELM"},
+			"YESKA": { "short_name": "YSK" },
+			"SEWAR": { "short_name": "SEW" },
+            "NAPTO": { "short_name": "NAP"},
+            "ENA": { },
+            "GASTO": { "short_name": "GST" },
+			"IVANN": { "short_name": "IVN" },
+            "TAGER": { "short_name": "TAG" }
+        },
+        "stars_maps": [
+            "A11 RVM", "A11 ANC MVA", "A11 15 FIN", "A11 33 STRAIGHT", "A11 25 STRAIGHT", "A11 7 FEED",
+			"A11 RVM", "A11 ANC MVA", "A11 15 FIN", "A11 33 STRAIGHT", "A11 25 STRAIGHT", "A11 7 FEED", "A11 15 FEED", "A11 7 FINAL", "A11 ZAN SPLIT", "A11 GPS", "A11 EVOM", "A11 GEO", "A11 ARSP"
+        ],
+        "video_map_file": "videomaps/ZAN-videomaps.gob.zst"
+    }
+}

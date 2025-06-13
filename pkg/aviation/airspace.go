@@ -137,23 +137,25 @@ func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 		e.ErrorString("must provide \"type\" with airspace volume")
 
 	case AirspaceVolumePolygon:
-		var vstrs []string
-		if a.VerticesStr.A != nil { // single string provided
-			vstrs = strings.Fields(*a.VerticesStr.A)
-		} else {
-			vstrs = *a.VerticesStr.B
-		}
-		if len(vstrs) == 0 {
-			e.ErrorString("must provide \"vertices\" with \"polygon\" airspace volume")
-		} else if len(vstrs) < 3 {
-			e.ErrorString("must provide at least 3 \"vertices\" with \"polygon\" airspace volume")
-		}
-
-		for _, s := range vstrs {
-			if p, ok := loc.Locate(s); !ok {
-				e.ErrorString("unknown point %q in \"vertices\"", s)
+		if len(a.Vertices) == 0 {
+			var vstrs []string
+			if a.VerticesStr.A != nil { // single string provided
+				vstrs = strings.Fields(*a.VerticesStr.A)
 			} else {
-				a.Vertices = append(a.Vertices, p)
+				vstrs = *a.VerticesStr.B
+			}
+			if len(vstrs) == 0 {
+				e.ErrorString("must provide \"vertices\" with \"polygon\" airspace volume")
+			} else if len(vstrs) < 3 {
+				e.ErrorString("must provide at least 3 \"vertices\" with \"polygon\" airspace volume")
+			}
+
+			for _, s := range vstrs {
+				if p, ok := loc.Locate(s); !ok {
+					e.ErrorString("unknown point %q in \"vertices\"", s)
+				} else {
+					a.Vertices = append(a.Vertices, p)
+				}
 			}
 		}
 
@@ -419,8 +421,6 @@ type VFRReportingPoint struct {
 	Description string        `json:"description"`
 	Location    math.Point2LL `json:"location"`
 }
-
-var repIndex int
 
 func (rp *VFRReportingPoint) PostDeserialize(loc Locator, controllers map[string]*Controller, e *util.ErrorLogger) {
 	if rp.Description == "" {
