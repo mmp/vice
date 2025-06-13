@@ -51,6 +51,11 @@ On Ubuntu, `sudo apt install xorg-dev libsdl2-dev` will install the necessary li
 Then, from a command shell in the repositoiry directory `go build -o vice` to
 build a *vice* executable.
 
+## Docker
+
+Docker can be used to build a binary without installing build time dependencies. To build via docker run `make docker`.
+Vice will be compiled in a container and then the resulting binary will be copied to your local machine.
+
 ## Release Builds
 
 For *vice* releases, there are a few more steps in the build process so
