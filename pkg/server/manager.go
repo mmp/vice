@@ -109,6 +109,7 @@ type NewSimConfiguration struct {
 	LiveWeather bool
 
 	AllowInstructorRPO bool
+	Instructor         bool
 }
 
 const (
@@ -192,7 +193,9 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			if pos == "" {
 				pos = sim.State.PrimaryController
 			}
-			return sm.Add(as, result, pos, true)
+			// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
+			instructor := config.Instructor && config.SignOnPosition == ""
+			return sm.Add(as, result, pos, instructor, true)
 		} else {
 			return ErrInvalidSSimConfiguration
 		}
@@ -209,7 +212,9 @@ func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) err
 			return ErrInvalidPassword
 		}
 
-		ss, token, err := sm.signOn(as, config.SignOnPosition)
+		// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
+		instructor := config.Instructor && config.SignOnPosition == ""
+		ss, token, err := sm.signOn(as, config.SignOnPosition, instructor)
 		if err != nil {
 			return err
 		}
@@ -328,10 +333,10 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 		controllersByTCP: make(map[string]*humanController),
 		local:            true,
 	}
-	return sm.Add(as, result, sim.State.PrimaryController, false)
+	return sm.Add(as, result, sim.State.PrimaryController, false, false)
 }
 
-func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, prespawn bool) error {
+func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, instructor bool, prespawn bool) error {
 	lg := sm.lg
 	if as.name != "" {
 		lg = lg.With(slog.String("sim_name", as.name))
@@ -349,7 +354,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 	sm.lg.Infof("%s: adding sim", as.name)
 	sm.activeSims[as.name] = as
 
-	ss, token, err := sm.signOn(as, initialTCP)
+	ss, token, err := sm.signOn(as, initialTCP, instructor)
 	if err != nil {
 		sm.mu.Unlock(sm.lg)
 		return err
@@ -473,8 +478,8 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 // assume SimManager lock is held
-func (sm *SimManager) signOn(as *activeSim, tcp string) (*sim.State, string, error) {
-	ss, err := as.sim.SignOn(tcp)
+func (sm *SimManager) signOn(as *activeSim, tcp string, instructor bool) (*sim.State, string, error) {
+	ss, err := as.sim.SignOn(tcp, instructor)
 	if err != nil {
 		return nil, "", err
 	}

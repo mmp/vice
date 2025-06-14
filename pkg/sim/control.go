@@ -24,6 +24,11 @@ func setTransmissionController(tcp string, rt *speech.RadioTransmission) *speech
 }
 
 func (s *Sim) isInstructorOrRPO(tcp string) bool {
+	// Check if they're marked as an instructor in the Instructors map (for regular controllers with instructor privileges)
+	if s.Instructors[tcp] {
+		return true
+	}
+	// Also check if they're signed in as a dedicated instructor/RPO position
 	ctrl, ok := s.State.Controllers[tcp]
 	return ok && (ctrl.Instructor || ctrl.RPO)
 }

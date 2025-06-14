@@ -321,6 +321,14 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
 					c.SignOnPosition = "RPO"
 				}
+				
+				// Allow instructor mode for regular controllers when not signing in as dedicated instructor/RPO
+				if c.SignOnPosition == "" {
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.TableNextColumn()
+					imgui.Checkbox("Also sign in as Instructor", &c.Instructor)
+				}
 			}
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
