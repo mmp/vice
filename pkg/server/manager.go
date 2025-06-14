@@ -88,35 +88,31 @@ type activeSim struct {
 }
 
 type NewSimConfiguration struct {
-	// FIXME: unify Password/RemoteSimPassword, SelectedRemoteSim / NewSimName, etc.
-	NewSimType   int32
 	NewSimName   string
 	GroupName    string
 	ScenarioName string
-
-	SelectedRemoteSim string
-	SignOnPosition    string
 
 	Scenario *SimScenarioConfiguration
 
 	TFRs []av.TFR
 
-	TRACONName        string
-	RequirePassword   bool
-	Password          string // for create remote only
-	RemoteSimPassword string // for join remote only
+	TRACONName      string
+	RequirePassword bool
+	Password        string
 
 	LiveWeather bool
 
 	AllowInstructorRPO bool
 	Instructor         bool
+	IsLocal            bool
 }
 
-const (
-	NewSimCreateLocal = iota
-	NewSimCreateRemote
-	NewSimJoinRemote
-)
+type SimConnectionConfiguration struct {
+	RemoteSim  string
+	Position   string
+	Password   string
+	Instructor bool
+}
 
 func MakeNewSimConfiguration() NewSimConfiguration {
 	return NewSimConfiguration{NewSimName: rand.Make().AdjectiveNoun()}
@@ -174,61 +170,56 @@ type NewSimResult struct {
 	SpeechWSPort    int
 }
 
-func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
-	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
-		if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
-			manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
-			sim := sim.NewSim(*nsc, manifest, lg)
-			as := &activeSim{
-				name:             config.NewSimName,
-				scenarioGroup:    config.GroupName,
-				scenario:         config.ScenarioName,
-				sim:              sim,
-				password:         config.Password,
-				local:            config.NewSimType == NewSimCreateLocal,
-				controllersByTCP: make(map[string]*humanController),
-			}
-			pos := config.SignOnPosition
-			if pos == "" {
-				pos = sim.State.PrimaryController
-			}
-			// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
-			instructor := config.Instructor && config.SignOnPosition == ""
-			return sm.Add(as, result, pos, instructor, true)
-		} else {
-			return ErrInvalidSSimConfiguration
+func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) error {
+	lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
+	if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
+		manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
+		sim := sim.NewSim(*nsc, manifest, lg)
+		as := &activeSim{
+			name:             config.NewSimName,
+			scenarioGroup:    config.GroupName,
+			scenario:         config.ScenarioName,
+			sim:              sim,
+			password:         config.Password,
+			local:            config.IsLocal,
+			controllersByTCP: make(map[string]*humanController),
 		}
+		pos := sim.State.PrimaryController
+		return sm.Add(as, result, pos, config.Instructor, true)
 	} else {
-		sm.mu.Lock(sm.lg)
-		defer sm.mu.Unlock(sm.lg)
-
-		as, ok := sm.activeSims[config.SelectedRemoteSim]
-		if !ok {
-			return ErrNoNamedSim
-		}
-
-		if as.password != "" && config.RemoteSimPassword != as.password {
-			return ErrInvalidPassword
-		}
-
-		// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
-		instructor := config.Instructor && config.SignOnPosition == ""
-		ss, token, err := sm.signOn(as, config.SignOnPosition, instructor)
-		if err != nil {
-			return err
-		}
-
-		hc := as.AddHumanController(config.SignOnPosition, token)
-		sm.controllersByToken[token] = hc
-
-		*result = NewSimResult{
-			SimState:        ss,
-			ControllerToken: token,
-			SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
-		}
-		return nil
+		return ErrInvalidSSimConfiguration
 	}
+}
+
+func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *NewSimResult) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	as, ok := sm.activeSims[config.RemoteSim]
+	if !ok {
+		return ErrNoNamedSim
+	}
+
+	if as.password != "" && config.Password != as.password {
+		return ErrInvalidPassword
+	}
+
+	// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
+	instructor := config.Instructor && config.Position == ""
+	ss, token, err := sm.signOn(as, config.Position, instructor)
+	if err != nil {
+		return err
+	}
+
+	hc := as.AddHumanController(config.Position, token)
+	sm.controllersByToken[token] = hc
+
+	*result = NewSimResult{
+		SimState:        ss,
+		ControllerToken: token,
+		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
+	}
+	return nil
 }
 
 func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.Logger) *sim.NewSimConfiguration {
@@ -248,7 +239,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		return nil
 	}
 
-	description := util.Select(config.NewSimType == NewSimCreateLocal, " "+config.ScenarioName,
+	description := util.Select(config.IsLocal, " "+config.ScenarioName,
 		"@"+config.NewSimName+": "+config.ScenarioName)
 
 	nsc := sim.NewSimConfiguration{
@@ -257,7 +248,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		TRACON:                  config.TRACONName,
 		LaunchConfig:            config.Scenario.LaunchConfig,
 		STARSFacilityAdaptation: deep.MustCopy(sg.STARSFacilityAdaptation),
-		IsLocal:                 config.NewSimType == NewSimCreateLocal,
+		IsLocal:                 config.IsLocal,
 		DepartureRunways:        sc.DepartureRunways,
 		ArrivalRunways:          sc.ArrivalRunways,
 		VFRReportingPoints:      sg.VFRReportingPoints,
@@ -280,7 +271,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		SignOnPositions:         make(map[string]*av.Controller),
 	}
 
-	if !nsc.IsLocal {
+	if !config.IsLocal {
 		selectedSplit := config.Scenario.SelectedSplit
 		var err error
 		nsc.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
@@ -302,7 +293,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 			nsc.SignOnPositions[callsign] = ctrl
 		}
 	}
-	if !nsc.IsLocal {
+	if !config.IsLocal {
 		configs, err := sc.SplitConfigurations.GetConfiguration(config.Scenario.SelectedSplit)
 		if err != nil {
 			lg.Errorf("unable to get configurations for split: %v", err)
