@@ -40,7 +40,12 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 
-	sp.drawPreviewArea(normalizedToWindow(ps.PreviewAreaPosition), font, td)
+	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor)
+	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
+		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
+	}
+
+	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), font, previewAreaColor, td)
 
 	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, td, transforms, cb)
 	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), tracks, listStyle, td)
@@ -66,9 +71,7 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *renderer.TextDrawBuilder) {
-	ps := sp.currentPrefs()
-
+func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *renderer.Font, color renderer.RGB, td *renderer.TextDrawBuilder) {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
@@ -81,7 +84,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	}
 	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
 		text.WriteByte(' ')
-		text.WriteString(string(sp.targetGenLastCallsign))
+		text.WriteString(string(ctx.Client.LastTransmissionCallsign()))
 	}
 	if modestr != "" {
 		text.WriteString("\n")
@@ -91,7 +94,7 @@ func (sp *STARSPane) drawPreviewArea(pw [2]float32, font *renderer.Font, td *ren
 	if text.Len() > 0 {
 		style := renderer.TextStyle{
 			Font:  font,
-			Color: ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor),
+			Color: color,
 		}
 		td.AddText(rewriteDelta(text.String()), pw, style)
 	}
@@ -485,7 +488,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	if len(vfr) > ps.VFRList.Lines {
 		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 	}
-	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
+	for i := range min(len(vfr), ps.VFRList.Lines) {
 		fp := vfr[i]
 		text.WriteString(fmt.Sprintf("%2d", vfr[i].ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
@@ -565,7 +568,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	if len(plans) > ps.TABList.Lines {
 		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans)))
 	}
-	for i := range math.Min(len(plans), ps.TABList.Lines) {
+	for i := range min(len(plans), ps.TABList.Lines) {
 		fp := plans[i]
 		text.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
@@ -703,7 +706,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 			}
 		}
 
-		for range math.Min(n, alertListMaxLines) {
+		for range min(n, alertListMaxLines) {
 			msawtrk, capair, mcipair := next()
 
 			alt := func(trk *sim.Track) string {
@@ -1073,7 +1076,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			pw = td.AddText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(rel)), pw, listStyle)
 		}
 		var text strings.Builder
-		for i := range math.Min(len(rel), list.Lines) {
+		for i := range min(len(rel), list.Lines) {
 			dep := rel[i]
 			text.Reset()
 			text.WriteString("     ")

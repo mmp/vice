@@ -6067,7 +6067,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 1.9
     }
   },
   {
@@ -6438,7 +6438,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 2.1
     }
   },
   {
@@ -6479,7 +6479,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 2.5
     }
   },
   {
@@ -6561,7 +6561,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 2
     }
   },
   {
@@ -6766,7 +6766,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 2
     }
   },
   {
@@ -7422,7 +7422,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 2.1
     }
   },
   {
@@ -7463,7 +7463,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 3
     }
   },
   {
@@ -7954,8 +7954,8 @@
       "fix": true
     },
     "turn": {
-      "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankAngle": 30,
+      "maxBankRate": 3.5
     }
   },
   {
@@ -8200,8 +8200,8 @@
       "fix": true
     },
     "turn": {
-      "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankAngle": 30,
+      "maxBankRate": 3
     }
   },
   {
@@ -8570,7 +8570,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 3
     }
   },
   {
@@ -8611,7 +8611,7 @@
     },
     "turn": {
       "maxBankAngle": 25,
-      "maxBankRate": 5
+      "maxBankRate": 3
     }
   },
   {

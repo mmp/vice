@@ -11,12 +11,12 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
+	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -149,10 +149,10 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *server.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)
@@ -324,7 +324,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	qb := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
 	bgColor := darkmode(renderer.RGB{.9, .9, .85})
-	y0, y1 := float32(0), float32(math.Min(len(fsp.strips), visibleStrips))*stripHeight-1
+	y0, y1 := float32(0), float32(min(len(fsp.strips), visibleStrips))*stripHeight-1
 	qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
 
 	ctx.SetWindowCoordinateMatrices(cb)
@@ -341,7 +341,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	style := renderer.TextStyle{Font: fsp.font, Color: darkmode(renderer.RGB{.1, .1, .1})}
 	scrollOffset := fsp.scrollbar.Offset()
 	y := stripHeight - 1
-	for i := scrollOffset; i < math.Min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
+	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
 		sfp := ctx.Client.State.GetFlightPlanForACID(fsp.strips[i])
 		if sfp == nil {
 			continue
@@ -490,7 +490,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 				// truncate to 3 chars
 				if len(annots[ai]) > 3 {
 					annots[ai] = annots[ai][:3]
-					fsp.annotationCursorPos = math.Min(fsp.annotationCursorPos, len(annots[ai]))
+					fsp.annotationCursorPos = min(fsp.annotationCursorPos, len(annots[ai]))
 				}
 
 				// write back into the pane’s map
@@ -703,10 +703,10 @@ func drawTextEdit(s *string, cursor *int, keyboard *platform.KeyboardState, pos 
 			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
 		}
 		if keyboard.WasPressed(imgui.KeyLeftArrow) {
-			*cursor = math.Max(*cursor-1, 0)
+			*cursor = max(*cursor-1, 0)
 		}
 		if keyboard.WasPressed(imgui.KeyRightArrow) {
-			*cursor = math.Min(*cursor+1, len(*s))
+			*cursor = min(*cursor+1, len(*s))
 		}
 		if keyboard.WasPressed(imgui.KeyEscape) {
 			// clear out the string

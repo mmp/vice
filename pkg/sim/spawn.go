@@ -197,15 +197,15 @@ func (s *Sim) TakeOrReturnLaunchControl(tcp string) error {
 	} else if lctrl == "" {
 		s.State.LaunchConfig.Controller = tcp
 		s.eventStream.Post(Event{
-			Type:    StatusMessageEvent,
-			Message: tcp + " is now controlling aircraft launches.",
+			Type:        StatusMessageEvent,
+			WrittenText: tcp + " is now controlling aircraft launches.",
 		})
 		s.lg.Infof("%s: now controlling launches", tcp)
 		return nil
 	} else {
 		s.eventStream.Post(Event{
-			Type:    StatusMessageEvent,
-			Message: s.State.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
+			Type:        StatusMessageEvent,
+			WrittenText: s.State.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
 		s.lg.Infof("%s: no longer controlling launches", tcp)
 		s.State.LaunchConfig.Controller = ""
@@ -728,14 +728,14 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	// When sequencing, penalize same-exit repeats. But when we have a
 	// sequence and are launching, we'll let it roll.
 	if considerExit && cac.FlightPlan.Exit == pac.FlightPlan.Exit {
-		wait = math.Max(wait, 3*time.Minute/2)
+		wait = max(wait, 3*time.Minute/2)
 	}
 
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
 	if wtDist != 0 {
 		// Assume '1 gives you 3.5'
-		wait = math.Max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
+		wait = max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
 	}
 
 	return wait
@@ -1009,10 +1009,8 @@ func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft,
 	}
 
 	return &Aircraft{
-		Aircraft: av.Aircraft{
-			ADSBCallsign: av.ADSBCallsign(callsign),
-			Mode:         av.TransponderModeAltitude,
-		},
+		ADSBCallsign: av.ADSBCallsign(callsign),
+		Mode:         av.TransponderModeAltitude,
 	}, actype
 }
 
@@ -1131,7 +1129,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
-		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		starsFp.TrackingController = ctrl
 		starsFp.InboundHandoffController = ctrl
 	}
@@ -1259,7 +1257,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	dist := math.NMDistance2LL(depap.Location, arrap.Location)
 
-	ac.FlightPlan.Altitude = av.PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
+	ac.FlightPlan.Altitude = PlausibleFinalAltitude(ac.FlightPlan, perf, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.Rand)
 
 	mid := math.Mid2f(depap.Location, arrap.Location)

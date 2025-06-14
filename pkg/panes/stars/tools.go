@@ -902,7 +902,8 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 			if wp.ADSBCallsign != "" {
 				if trk, ok := ctx.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
 					slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
-					drawRBL(trk.Location, p1, len(sp.RangeBearingLines)+1, trk.Groundspeed)
+					state := sp.TrackState[wp.ADSBCallsign]
+					drawRBL(state.track.Location, p1, len(sp.RangeBearingLines)+1, state.track.Groundspeed)
 				}
 			} else {
 				drawRBL(wp.Loc, p1, len(sp.RangeBearingLines)+1, 0)
@@ -916,17 +917,13 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 			// If one but not both are tracks, get the groundspeed so we
 			// can display an ETA.
-			if rbl.P[0].ADSBCallsign != "" {
-				if rbl.P[1].ADSBCallsign == "" {
-					if trk, ok := ctx.GetTrackByCallsign(rbl.P[0].ADSBCallsign); ok {
-						gs = trk.Groundspeed
-					}
+			if rbl.P[0].ADSBCallsign != "" && rbl.P[1].ADSBCallsign == "" {
+				if state, ok := sp.TrackState[rbl.P[0].ADSBCallsign]; ok {
+					gs = state.track.Groundspeed
 				}
-			} else if rbl.P[1].ADSBCallsign != "" {
-				if rbl.P[0].ADSBCallsign == "" {
-					if trk, ok := ctx.GetTrackByCallsign(rbl.P[1].ADSBCallsign); ok {
-						gs = trk.Groundspeed
-					}
+			} else if rbl.P[1].ADSBCallsign != "" && rbl.P[0].ADSBCallsign == "" {
+				if state, ok := sp.TrackState[rbl.P[1].ADSBCallsign]; ok {
+					gs = state.track.Groundspeed
 				}
 			}
 
@@ -1611,7 +1608,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
 					// Lower altitude, if present and different than upper.
 					pp := td.AddText(av.FormatAltitude(ar.Range[0]), pt, style)
-					w = math.Max(w, pp[0]-pt[0])
+					w = max(w, pp[0]-pt[0])
 					pt[1] -= float32(style.Font.Size)
 				}
 
@@ -1676,15 +1673,15 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 		}
 
 		// convert PTL length (minutes) to estimated distance a/c will travel
-		dist := float32(trk.Groundspeed) / 60 * ps.PTLLength
+		dist := float32(state.track.Groundspeed) / 60 * ps.PTLLength
 
 		// h is a vector in nm coordinates with length l=dist
 		hdg := state.TrackHeading(ctx.NmPerLongitude)
 		h := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
 		h = math.Scale2f(h, dist)
-		end := math.Add2f(math.LL2NM(trk.Location, ctx.NmPerLongitude), h)
+		end := math.Add2f(math.LL2NM(state.track.Location, ctx.NmPerLongitude), h)
 
-		ld.AddLine(trk.Location, math.NM2LL(end, ctx.NmPerLongitude), color)
+		ld.AddLine(state.track.Location, math.NM2LL(end, ctx.NmPerLongitude), color)
 	}
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -1719,7 +1716,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 
 		if state.JRingRadius > 0 {
 			const nsegs = 360
-			pc := transforms.WindowFromLatLongP(trk.Location)
+			pc := transforms.WindowFromLatLongP(state.track.Location)
 			radius := state.JRingRadius / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 			ld.AddCircle(pc, radius, nsegs, color)
 
@@ -1754,7 +1751,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 
 		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
 			// Find the length of the cone in pixel coordinates)
-			lengthNM := math.Max(state.ConeLength, state.MinimumMIT)
+			lengthNM := max(state.ConeLength, state.MinimumMIT)
 			length := lengthNM / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 
 			// Form a triangle; the end of the cone is 10 pixels wide
@@ -1765,8 +1762,8 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 			var coneHeading float32
 			if drawATPACone {
 				// The cone is oriented to point toward the leading aircraft.
-				if tfront, ok := ctx.GetTrackByCallsign(state.ATPALeadAircraftCallsign); ok {
-					coneHeading = math.Heading2LL(trk.Location, tfront.Location,
+				if sfront, ok := sp.TrackState[state.ATPALeadAircraftCallsign]; ok {
+					coneHeading = math.Heading2LL(state.track.Location, sfront.track.Location,
 						ctx.NmPerLongitude, ctx.MagneticVariation)
 				}
 			} else {
@@ -1787,7 +1784,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 
 			// We've got what we need to draw a polyline with the
 			// aircraft's position as an anchor.
-			pw := transforms.WindowFromLatLongP(trk.Location)
+			pw := transforms.WindowFromLatLongP(state.track.Location)
 			for i := range pts {
 				pts[i] = math.Add2f(pts[i], pw)
 			}
@@ -1832,7 +1829,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
 
-	prev := trk.Location
+	prev := sp.TrackState[sp.drawRouteAircraft].track.Location
 	for _, p := range trk.Route {
 		ld.AddLine(prev, p)
 		prev = p

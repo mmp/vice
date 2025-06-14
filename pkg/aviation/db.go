@@ -583,8 +583,8 @@ func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {
 	nlong := int(1 + (mg.MaxLongitude-mg.MinLongitude)/mg.LatLongStep)
 
 	// Round to nearest
-	lat := math.Min(int((p[1]-mg.MinLatitude)/mg.LatLongStep+0.5), nlat-1)
-	long := math.Min(int((p[0]-mg.MinLongitude)/mg.LatLongStep+0.5), nlong-1)
+	lat := min(int((p[1]-mg.MinLatitude)/mg.LatLongStep+0.5), nlat-1)
+	long := min(int((p[0]-mg.MinLongitude)/mg.LatLongStep+0.5), nlong-1)
 
 	// Note: we flip the sign
 	return -mg.Samples[long+nlong*lat], nil

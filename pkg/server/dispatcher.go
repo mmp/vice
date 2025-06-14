@@ -14,11 +14,11 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-type Dispatcher struct {
+type dispatcher struct {
 	sm *SimManager
 }
 
-func (sd *Dispatcher) GetStateUpdate(token string, update *sim.StateUpdate) error {
+func (sd *dispatcher) GetStateUpdate(token string, update *sim.StateUpdate) error {
 	// Most of the methods in this file are called from the RPC dispatcher,
 	// which spawns up goroutines as needed to handle requests, so if we
 	// want to catch and report panics, all of the methods need to start
@@ -28,7 +28,7 @@ func (sd *Dispatcher) GetStateUpdate(token string, update *sim.StateUpdate) erro
 	return sd.sm.GetStateUpdate(token, update)
 }
 
-func (sd *Dispatcher) SignOff(token string, _ *struct{}) error {
+func (sd *dispatcher) SignOff(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	return sd.sm.SignOff(token)
@@ -40,7 +40,7 @@ type ChangeControlPositionArgs struct {
 	KeepTracks      bool
 }
 
-func (sd *Dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *struct{}) error {
+func (sd *dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(cs.ControllerToken); !ok {
@@ -50,7 +50,7 @@ func (sd *Dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *st
 	}
 }
 
-func (sd *Dispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
+func (sd *dispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
@@ -65,7 +65,7 @@ type SetSimRateArgs struct {
 	Rate            float32
 }
 
-func (sd *Dispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
+func (sd *dispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(r.ControllerToken); !ok {
@@ -80,7 +80,7 @@ type SetLaunchConfigArgs struct {
 	Config          sim.LaunchConfig
 }
 
-func (sd *Dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
+func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(lc.ControllerToken); !ok {
@@ -90,7 +90,7 @@ func (sd *Dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) erro
 	}
 }
 
-func (sd *Dispatcher) TogglePause(token string, _ *struct{}) error {
+func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
@@ -100,7 +100,7 @@ func (sd *Dispatcher) TogglePause(token string, _ *struct{}) error {
 	}
 }
 
-func (sd *Dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
+func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if _, s, ok := sd.sm.LookupController(token); !ok {
@@ -110,7 +110,7 @@ func (sd *Dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	}
 }
 
-func (sd *Dispatcher) FastForward(token string, update *sim.StateUpdate) error {
+func (sd *dispatcher) FastForward(token string, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
@@ -130,7 +130,7 @@ type AssociateFlightPlanArgs struct {
 	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
 }
 
-func (sd *Dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(it.ControllerToken); !ok {
@@ -151,7 +151,7 @@ type ActivateFlightPlanArgs struct {
 	FlightPlanSpecifier *sim.STARSFlightPlanSpecifier
 }
 
-func (sd *Dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(af.ControllerToken); !ok {
@@ -170,7 +170,7 @@ type CreateFlightPlanArgs struct {
 	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
 }
 
-func (sd *Dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(cfp.ControllerToken); !ok {
@@ -190,7 +190,7 @@ type ModifyFlightPlanArgs struct {
 	ACID                sim.ACID
 }
 
-func (sd *Dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(mfp.ControllerToken); !ok {
@@ -216,7 +216,7 @@ type ACIDSpecifier struct {
 
 type DeleteFlightPlanArgs ACIDSpecifier
 
-func (sd *Dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(dt.ControllerToken); !ok {
@@ -237,7 +237,7 @@ type RepositionTrackArgs struct {
 	Position        math.Point2LL   // to
 }
 
-func (sd *Dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(rt.ControllerToken); !ok {
@@ -257,7 +257,7 @@ type HandoffArgs struct {
 	ToTCP           string
 }
 
-func (sd *Dispatcher) HandoffTrack(h *HandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) HandoffTrack(h *HandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(h.ControllerToken); !ok {
@@ -271,7 +271,7 @@ func (sd *Dispatcher) HandoffTrack(h *HandoffArgs, update *sim.StateUpdate) erro
 	}
 }
 
-func (sd *Dispatcher) RedirectHandoff(h *HandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RedirectHandoff(h *HandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(h.ControllerToken); !ok {
@@ -285,7 +285,7 @@ func (sd *Dispatcher) RedirectHandoff(h *HandoffArgs, update *sim.StateUpdate) e
 	}
 }
 
-func (sd *Dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
@@ -301,7 +301,7 @@ func (sd *Dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *sim
 
 type AcceptHandoffArgs ACIDSpecifier
 
-func (sd *Dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(ah.ControllerToken); !ok {
@@ -317,7 +317,7 @@ func (sd *Dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *sim.StateUpda
 
 type CancelHandoffArgs ACIDSpecifier
 
-func (sd *Dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(ch.ControllerToken); !ok {
@@ -343,7 +343,7 @@ type ForceQLArgs struct {
 	Controller      string
 }
 
-func (sd *Dispatcher) ForceQL(ql *ForceQLArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ForceQL(ql *ForceQLArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(ql.ControllerToken); !ok {
@@ -362,7 +362,7 @@ type GlobalMessageArgs struct {
 	Message         string
 }
 
-func (sd *Dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
+func (sd *dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(gm.ControllerToken); !ok {
@@ -372,7 +372,7 @@ func (sd *Dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 	}
 }
 
-func (sd *Dispatcher) PointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) PointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
@@ -386,7 +386,7 @@ func (sd *Dispatcher) PointOut(po *PointOutArgs, update *sim.StateUpdate) error 
 	}
 }
 
-func (sd *Dispatcher) AcknowledgePointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
@@ -400,7 +400,7 @@ func (sd *Dispatcher) AcknowledgePointOut(po *PointOutArgs, update *sim.StateUpd
 	}
 }
 
-func (sd *Dispatcher) RecallPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RecallPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
@@ -414,7 +414,7 @@ func (sd *Dispatcher) RecallPointOut(po *PointOutArgs, update *sim.StateUpdate) 
 	}
 }
 
-func (sd *Dispatcher) RejectPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RejectPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
@@ -430,7 +430,7 @@ func (sd *Dispatcher) RejectPointOut(po *PointOutArgs, update *sim.StateUpdate) 
 
 type HeldDepartureArgs AircraftSpecifier
 
-func (sd *Dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(hd.ControllerToken); !ok {
@@ -446,7 +446,7 @@ func (sd *Dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *sim.StateU
 
 type DeleteAircraftArgs AircraftSpecifier
 
-func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
@@ -460,7 +460,12 @@ func (sd *Dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.Stat
 	}
 }
 
-func (sd *Dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
+type DeleteAircraftListArgs struct {
+	ControllerToken string
+	Aircraft        []sim.Aircraft
+}
+
+func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
@@ -485,7 +490,7 @@ type AircraftCommandsResult struct {
 	RemainingInput string
 }
 
-func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *AircraftCommandsResult) error {
+func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *AircraftCommandsResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	ctrl, s, ok := sd.sm.LookupController(cmds.ControllerToken)
@@ -504,8 +509,45 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			}
 		}
 
+		// A###, C###, and D### all equivalently assign an altitude
+		if (command[0] == 'A' || command[0] == 'C' || command[0] == 'D') && len(command) > 1 && util.IsAllNumbers(command[1:]) {
+			// Look for an altitude
+			if alt, err := strconv.Atoi(command[1:]); err != nil {
+				rewriteError(err)
+				return nil
+			} else if err := s.AssignAltitude(ctrl.tcp, callsign, 100*alt, false); err != nil {
+				rewriteError(err)
+				return nil
+			} else {
+				continue
+			}
+		}
+
 		switch command[0] {
-		case 'A', 'C':
+		case 'A':
+			if command == "A" {
+				if err := s.AltitudeOurDiscretion(ctrl.tcp, callsign); err != nil {
+					rewriteError(err)
+					return nil
+				} else {
+					continue
+				}
+			} else {
+				components := strings.Split(command, "/")
+				if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+					rewriteError(ErrInvalidCommandSyntax)
+					return nil
+				}
+
+				fix := strings.ToUpper(components[0][1:])
+				approach := components[1][1:]
+				if err := s.AtFixCleared(ctrl.tcp, callsign, fix, approach); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			}
+
+		case 'C':
 			if command == "CAC" {
 				// Cancel approach clearance
 				if err := s.CancelApproachClearance(ctrl.tcp, callsign); err != nil {
@@ -528,80 +570,45 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
-			} else if command[0] == 'C' && len(command) > 2 && !util.IsAllNumbers(command[1:]) {
-				if components := strings.Split(command, "/"); len(components) > 1 {
-					// Cross fix [at altitude] [at speed]
-					fix := components[0][1:]
-					var ar *av.AltitudeRestriction
-					speed := 0
+			} else if components := strings.Split(command, "/"); len(components) > 1 {
+				// Cross fix [at altitude] [at speed]
+				fix := components[0][1:]
+				var ar *av.AltitudeRestriction
+				speed := 0
 
-					for _, cmd := range components[1:] {
-						if len(cmd) == 0 {
-							rewriteError(ErrInvalidCommandSyntax)
-							return nil
-						}
-
-						var err error
-						if cmd[0] == 'A' && len(cmd) > 1 {
-							if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
-								rewriteError(err)
-								return nil
-							}
-							// User input here is 100s of feet, while AltitudeRestriction is feet...
-							ar.Range[0] *= 100
-							ar.Range[1] *= 100
-						} else if cmd[0] == 'S' {
-							if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-								rewriteError(err)
-								return nil
-							}
-						} else {
-							rewriteError(ErrInvalidCommandSyntax)
-							return nil
-						}
-					}
-
-					if err := s.CrossFixAt(ctrl.tcp, callsign, fix, ar, speed); err != nil {
-						rewriteError(err)
-						return nil
-					}
-				} else if err := s.ClearedApproach(ctrl.tcp, callsign, command[1:], false); err != nil {
-					rewriteError(err)
-					return nil
-				}
-			} else {
-				if command == "A" {
-					if err := s.AltitudeOurDiscretion(ctrl.tcp, callsign); err != nil {
-						rewriteError(err)
-						return nil
-					} else {
-						continue
-					}
-				} else if command[0] == 'A' {
-					components := strings.Split(command, "/")
-					if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+				for _, cmd := range components[1:] {
+					if len(cmd) == 0 {
 						rewriteError(ErrInvalidCommandSyntax)
 						return nil
 					}
 
-					fix := strings.ToUpper(components[0][1:])
-					approach := components[1][1:]
-					if err := s.AtFixCleared(ctrl.tcp, callsign, fix, approach); err != nil {
-						rewriteError(err)
-						return nil
+					var err error
+					if cmd[0] == 'A' && len(cmd) > 1 {
+						if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
+							rewriteError(err)
+							return nil
+						}
+						// User input here is 100s of feet, while AltitudeRestriction is feet...
+						ar.Range[0] *= 100
+						ar.Range[1] *= 100
+					} else if cmd[0] == 'S' {
+						if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+							rewriteError(err)
+							return nil
+						}
 					} else {
-						continue
+						rewriteError(ErrInvalidCommandSyntax)
+						return nil
 					}
 				}
 
-				// Otherwise look for an altitude
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					rewriteError(err)
-					return nil
-				} else if err := s.AssignAltitude(ctrl.tcp, callsign, 100*alt, false); err != nil {
+				if err := s.CrossFixAt(ctrl.tcp, callsign, fix, ar, speed); err != nil {
 					rewriteError(err)
 					return nil
 				}
+			} else if err := s.ClearedApproach(ctrl.tcp, callsign, command[1:], false); err != nil {
+				rewriteError(err)
+				return nil
 			}
 
 		case 'D':
@@ -632,15 +639,6 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 				default:
 					rewriteError(ErrInvalidCommandSyntax)
-					return nil
-				}
-			} else if len(command) > 1 && command[1] >= '0' && command[1] <= '9' {
-				// Looks like an altitude.
-				if alt, err := strconv.Atoi(command[1:]); err != nil {
-					rewriteError(err)
-					return nil
-				} else if err := s.AssignAltitude(ctrl.tcp, callsign, 100*alt, false); err != nil {
-					rewriteError(err)
 					return nil
 				}
 			} else if len(command) >= 4 && len(command) <= 6 {
@@ -703,7 +701,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 				TCP:          ctrl.tcp,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         av.TurnClosest,
+				Turn:         sim.TurnClosest,
 			}); err != nil {
 				rewriteError(err)
 				return nil
@@ -748,7 +746,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					TCP:          ctrl.tcp,
 					ADSBCallsign: callsign,
 					Heading:      hdg,
-					Turn:         av.TurnLeft,
+					Turn:         sim.TurnLeft,
 				}); err != nil {
 					rewriteError(err)
 					return nil
@@ -788,7 +786,7 @@ func (sd *Dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					TCP:          ctrl.tcp,
 					ADSBCallsign: callsign,
 					Heading:      hdg,
-					Turn:         av.TurnRight,
+					Turn:         sim.TurnRight,
 				}); err != nil {
 					rewriteError(err)
 					return nil
@@ -939,7 +937,7 @@ type LaunchAircraftArgs struct {
 	DepartureRunway string
 }
 
-func (sd *Dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
+func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(ls.ControllerToken)
@@ -958,7 +956,7 @@ type CreateDepartureArgs struct {
 	Rules           av.FlightRules
 }
 
-func (sd *Dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircraft) error {
+func (sd *dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(da.ControllerToken)
@@ -985,7 +983,7 @@ type CreateArrivalArgs struct {
 	Airport         string
 }
 
-func (sd *Dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *sim.Aircraft) error {
+func (sd *dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(aa.ControllerToken)
@@ -1004,7 +1002,7 @@ type CreateOverflightArgs struct {
 	Group           string
 }
 
-func (sd *Dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *sim.Aircraft) error {
+func (sd *dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	_, s, ok := sd.sm.LookupController(oa.ControllerToken)
@@ -1029,7 +1027,7 @@ type CreateRestrictionAreaResultArgs struct {
 	StateUpdate sim.StateUpdate
 }
 
-func (sd *Dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *CreateRestrictionAreaResultArgs) error {
+func (sd *dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *CreateRestrictionAreaResultArgs) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(ra.ControllerToken); !ok {
@@ -1043,7 +1041,7 @@ func (sd *Dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *Cre
 	}
 }
 
-func (sd *Dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	ctrl, s, ok := sd.sm.LookupController(ra.ControllerToken)
@@ -1058,7 +1056,7 @@ func (sd *Dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *sim
 	}
 }
 
-func (sd *Dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	ctrl, s, ok := sd.sm.LookupController(ra.ControllerToken)
@@ -1078,7 +1076,7 @@ type VideoMapsArgs struct {
 	Filename        string
 }
 
-func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLibrary) error {
+func (sd *dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLibrary) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if _, _, ok := sd.sm.LookupController(vm.ControllerToken); !ok {
@@ -1092,7 +1090,7 @@ func (sd *Dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLib
 	}
 }
 
-func (sd *Dispatcher) GetAircraftDisplayState(as *AircraftSpecifier, state *sim.AircraftDisplayState) error {
+func (sd *dispatcher) GetAircraftDisplayState(as *AircraftSpecifier, state *sim.AircraftDisplayState) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if _, s, ok := sd.sm.LookupController(as.ControllerToken); !ok {

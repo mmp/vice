@@ -93,9 +93,9 @@ func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
 	ds := ctx.DrawPixelScale
 	// Scale based on width or height available depending on DCB position
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		return math.Min(ds, (ds*ctx.PaneExtent.Width()-4)/(numDCBSlots*dcbButtonSize))
+		return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numDCBSlots*dcbButtonSize))
 	} else {
-		return math.Min(ds, (ds*ctx.PaneExtent.Height()-4)/(numDCBSlots*dcbButtonSize))
+		return min(ds, (ds*ctx.PaneExtent.Height()-4)/(numDCBSlots*dcbButtonSize))
 	}
 }
 
@@ -828,7 +828,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 		// Try to center the text, though if it's too big to fit in the
 		// button then draw it starting from the left edge of the button so
 		// that the trailing characters are the ones that are lost.
-		x0 := dcbDrawState.cursor[0] + math.Max(1, (buttonSize[0]-float32(lw))/2)
+		x0 := dcbDrawState.cursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
 		y0 -= float32(lh)
@@ -1380,9 +1380,9 @@ func (s *dcbPTLLengthSpinner) Delta(delta int) {
 	// 6-16: PTLs are between 0 and 5 minutes, specified in 0.5 minute
 	// increments.
 	if delta < 0 {
-		*s.l = math.Min(*s.l+0.5, 5)
+		*s.l = min(*s.l+0.5, 5)
 	} else if delta > 0 {
-		*s.l = math.Max(*s.l-0.5, 0)
+		*s.l = max(*s.l-0.5, 0)
 	}
 }
 

@@ -77,10 +77,10 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *
 	}
 
 	// Find the maximum number of field values that we are cycling through.
-	nc := math.Max(numVariants([][]dbChar{db.field34[0][:], db.field34[1][:], db.field34[2][:]}),
+	nc := max(numVariants([][]dbChar{db.field34[0][:], db.field34[1][:], db.field34[2][:]}),
 		numVariants([][]dbChar{db.field5[0][:], db.field5[1][:], db.field5[2][:]}))
-	nc = math.Max(nc, numVariants([][]dbChar{db.field6[0][:], db.field6[1][:]}))
-	nc = math.Max(nc, numVariants([][]dbChar{db.field7[0][:], db.field7[1][:]}))
+	nc = max(nc, numVariants([][]dbChar{db.field6[0][:], db.field6[1][:]}))
+	nc = max(nc, numVariants([][]dbChar{db.field7[0][:], db.field7[1][:]}))
 
 	// Cycle 1 is 2s, others are 1.5s. Then get that in half seconds.
 	fullCycleHalfSeconds := 4 + 3*(nc-1)
@@ -538,6 +538,9 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.ST
 	displayBeaconCode := ctx.Now.Before(sp.DisplayBeaconCodeEndTime) && trk.Squawk == sp.DisplayBeaconCode
 
 	groundspeed := fmt.Sprintf("%02d", int(trk.Groundspeed+5)/10)
+	if state != nil {
+		groundspeed = fmt.Sprintf("%02d", int(state.track.Groundspeed+5)/10)
+	}
 	beaconMismatch := trk.IsAssociated() && trk.Squawk != sfp.AssignedSquawk && !squawkingSPC && !trk.IsUnsupportedDB() &&
 		trk.Mode != av.TransponderModeStandby
 

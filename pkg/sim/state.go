@@ -86,14 +86,14 @@ type State struct {
 
 	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
 
-	Instructors map[string]bool
-
 	VideoMapLibraryHash []byte
 
 	// Set in State returned by GetStateForController
 	ControllerVideoMaps                 []string
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+
+	RadioTransmissions [][]byte
 }
 
 type ReleaseDeparture struct {
@@ -140,8 +140,6 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        time.Now(),
-
-		Instructors: make(map[string]bool),
 	}
 
 	if manifest != nil {
@@ -450,9 +448,9 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 	return "", false
 }
 
-func (ss *State) AmInstructor() bool {
-	_, ok := ss.Instructors[ss.UserTCP]
-	return ok
+func (ss *State) AreInstructorOrRPO(tcp string) bool {
+	ctrl, ok := ss.Controllers[tcp]
+	return ok && (ctrl.Instructor || ctrl.RPO)
 }
 
 func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
