@@ -28,6 +28,7 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+	"github.com/mmp/vice/pkg/radar"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -527,7 +528,7 @@ func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 // Draw draws the current weather radar image, if available. (If none is yet
 // available, it returns rather than stalling waiting for it).
 func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, contrast float32,
-	active [numWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	active [numWxLevels]bool, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	select {
 	case cb := <-w.cbChan:
 		// Got updated command buffers, yaay.  Note that we always drain
@@ -583,7 +584,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, transforms ScopeTransformations,
+func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.Compass == 0 {
@@ -672,7 +673,7 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.RangeRings == 0 {
 		return
@@ -699,108 +700,12 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransfor
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// ScopeTransformations
-
-// ScopeTransformations manages various transformation matrices that are
-// useful when drawing radar scopes and provides a number of useful methods
-// to transform among related coordinate spaces.
-type ScopeTransformations struct {
-	ndcFromLatLong                       math.Matrix3
-	ndcFromWindow                        math.Matrix3
-	latLongFromWindow, windowFromLatLong math.Matrix3
-}
-
-// GetScopeTransformations returns a ScopeTransformations object
-// corresponding to the specified radar scope center, range, and rotation
-// angle.
-func GetScopeTransformations(paneExtent math.Extent2D, magneticVariation float32, nmPerLongitude float32,
-	center math.Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
-	width, height := paneExtent.Width(), paneExtent.Height()
-	aspect := width / height
-	ndcFromLatLong := math.Identity3x3().
-		// Final orthographic projection including the effect of the
-		// window's aspect ratio.
-		Ortho(-aspect, aspect, -1, 1).
-		// Account for magnetic variation and any user-specified rotation
-		Rotate(-math.Radians(rotationAngle+magneticVariation)).
-		// Scale based on range and nm per latitude / longitude
-		Scale(nmPerLongitude/rangenm, math.NMPerLatitude/rangenm).
-		// Translate to center point
-		Translate(-center[0], -center[1])
-
-	ndcFromWindow := math.Identity3x3().
-		Translate(-1, -1).
-		Scale(2/width, 2/height)
-
-	latLongFromNDC := ndcFromLatLong.Inverse()
-	latLongFromWindow := latLongFromNDC.PostMultiply(ndcFromWindow)
-	windowFromLatLong := latLongFromWindow.Inverse()
-
-	return ScopeTransformations{
-		ndcFromLatLong:    ndcFromLatLong,
-		ndcFromWindow:     ndcFromWindow,
-		latLongFromWindow: latLongFromWindow,
-		windowFromLatLong: windowFromLatLong,
-	}
-}
-
-// LoadLatLongViewingMatrices adds commands to the provided command buffer
-// to load viewing matrices so that latitude-longiture positions can be
-// provided for subsequent vertices.
-func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *renderer.CommandBuffer) {
-	cb.LoadProjectionMatrix(st.ndcFromLatLong)
-	cb.LoadModelViewMatrix(math.Identity3x3())
-}
-
-// LoadWindowViewingMatrices adds commands to the provided command buffer
-// to load viewing matrices so that window-coordinate positions can be
-// provided for subsequent vertices.
-func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *renderer.CommandBuffer) {
-	cb.LoadProjectionMatrix(st.ndcFromWindow)
-	cb.LoadModelViewMatrix(math.Identity3x3())
-}
-
-// WindowFromLatLongP transforms a point given in latitude-longitude
-// coordinates to window coordinates, snapped to a pixel center.
-func (st *ScopeTransformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
-	pw := st.windowFromLatLong.TransformPoint(p)
-	pw[0], pw[1] = float32(int(pw[0]+0.5))+0.5, float32(int(pw[1]+0.5))+0.5
-	return pw
-}
-
-// LatLongFromWindowP transforms a point p in window coordinates to
-// latitude-longitude.
-func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) math.Point2LL {
-	return st.latLongFromWindow.TransformPoint(p)
-}
-
-// NormalizedFromWindowP transforms a point p in window coordinates to
-// normalized [0,1]^2 coordinates.
-func (st *ScopeTransformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
-	pn := st.ndcFromWindow.TransformPoint(p) // [-1,1]
-	return [2]float32{(pn[0] + 1) / 2, (pn[1] + 1) / 2}
-}
-
-// LatLongFromWindowV transforms a vector in window coordinates to a vector
-// in latitude-longitude coordinates.
-func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) math.Point2LL {
-	return st.latLongFromWindow.TransformVector(v)
-}
-
-// PixelDistanceNM returns the space between adjacent pixels expressed in
-// nautical miles.
-func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 {
-	ll := st.LatLongFromWindowV([2]float32{1, 0})
-	return math.NMLength2LL(ll, nmPerLongitude)
-}
-
-///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
 // If distance to a significant point is being displayed or if the user has
 // run the "find" command to highlight a point in the world, draw a blinking
 // square at that point for a few seconds.
-func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(sp.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
@@ -828,7 +733,7 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransfo
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if !sp.showVFRAirports {
 		return
 	}
@@ -862,7 +767,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransfo
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -944,7 +849,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 }
 
 // Draw the minimum separation line between two aircraft, if selected.
-func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	cs0, cs1 := sp.MinSepAircraft[0], sp.MinSepAircraft[1]
 	if cs0 == "" || cs1 == "" {
 		// Two aircraft haven't been specified.
@@ -1047,7 +952,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
 		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
 		return
@@ -1075,7 +980,7 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 }
 
-func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1130,7 +1035,7 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1161,7 +1066,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms S
 	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1197,7 +1102,7 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1227,7 +1132,7 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1261,7 +1166,7 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func generateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context,
+func generateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms radar.ScopeTransformations, ctx *panes.Context,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 	transforms.LoadLatLongViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
@@ -1323,7 +1228,7 @@ func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]fl
 }
 
 func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints map[string]interface{},
-	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
+	transforms radar.ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
 
 	// Draw an arrow at the point p (in nm coordinates) pointing in the
@@ -1643,7 +1548,7 @@ func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 	}
 }
 
-func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1688,7 +1593,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -1816,7 +1721,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if sp.drawRouteAircraft == "" {
 		return
 	}
@@ -1842,7 +1747,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if len(sp.drawRoutePoints) == 0 {
 		return
 	}
@@ -1885,7 +1790,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Trac
 }
 
 func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms ScopeTransformations) (status CommandStatus) {
+	transforms radar.ScopeTransformations) (status CommandStatus) {
 	if sp.wipRBL == nil {
 		// this shouldn't happen, but let's not crash if it does...
 		return
@@ -1966,7 +1871,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 }
 
 func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms ScopeTransformations) (status CommandStatus) {
+	transforms radar.ScopeTransformations) (status CommandStatus) {
 	if sp.wipSignificantPoint == nil {
 		status.clear = true
 		return

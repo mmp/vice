@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -576,7 +577,7 @@ func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 	}
 }
 
-func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
+func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -658,7 +659,7 @@ func (sp *STARSPane) beaconCodeSelected(code av.Squawk) bool {
 	return false
 }
 
-func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransformations) float32 {
+func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms radar.ScopeTransformations) float32 {
 	var size float32 = 13 // base track size
 	e := transforms.PixelDistanceNM(ctx.NmPerLongitude)
 	var distance float32 = 0.3623 // Around 2200 feet in nm
@@ -726,7 +727,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 	return ghosts
 }
 
-func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, transforms ScopeTransformations,
+func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -770,7 +771,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 }
 
 func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
-	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+	transforms radar.ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 
@@ -921,7 +922,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 	return pts
 }
 
-func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
+func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
@@ -1373,7 +1374,7 @@ func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.Track) bool {
 }
 
 func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
