@@ -605,56 +605,20 @@ func (nav *Nav) DepartureMessage() *speech.RadioTransmission {
 }
 
 func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string) *speech.RadioTransmission {
-	// We'll just handle a few cases here; this isn't supposed to be exhaustive..
 	var resp speech.RadioTransmission
 
-	var rp *av.ReportingPoint
-	rpDistance := float32(1000)
-	for _, wp := range nav.Waypoints {
-		if len(wp.Fix) <= 5 {
-			rp = &av.ReportingPoint{Fix: wp.Fix, Location: wp.Location}
-			rpDistance = math.NMDistance2LL(nav.FlightState.Position, wp.Location)
-			break
-		}
-	}
-	if rp == nil {
-		for i, pt := range reportingPoints {
-			if d := math.NMDistance2LL(nav.FlightState.Position, pt.Location); d < rpDistance {
-				rp = &reportingPoints[i]
-				rpDistance = d
-			}
-		}
-	}
-	if rp != nil {
-		direction := math.Compass(math.Heading2LL(rp.Location, nav.FlightState.Position,
-			nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation))
-
-		if dist := int(rpDistance + 0.5); dist <= 1 {
-			resp.Add("overhead {fix}", rp.Fix)
-		} else {
-			resp.Add("{gf} miles "+direction+" of {fix}", dist, rp.Fix)
-		}
-	}
-
 	if hdg, ok := nav.AssignedHeading(); ok {
-		resp.Add("on a {hdg} heading", hdg)
-	} else {
-		if star != "" {
-			if nav.Altitude.Assigned == nil {
-				resp.Add("descending on the {star}", star)
-			} else {
-				resp.Add("on the {star}", star)
-			}
-		} else if len(nav.Waypoints) > 0 {
-			wp := nav.Waypoints[0]
-			if len(wp.Fix) > 0 && len(wp.Fix) <= 5 && !strings.ContainsAny(wp.Fix, "-_0123456789") {
-				resp.Add("inbound {fix}", wp.Fix)
-			}
+		resp.Add("[heading {hdg}|on a {hdg} heading]", hdg)
+	} else if star != "" {
+		if nav.Altitude.Assigned == nil {
+			resp.Add("descending on the {star}", star)
+		} else {
+			resp.Add("on the {star}", star)
 		}
 	}
 
 	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude {
-		resp.Add("at {alt} for {alt} assigned", nav.FlightState.Altitude, *nav.Altitude.Assigned)
+		resp.Add("at {alt} for {alt} [assigned|]", nav.FlightState.Altitude, *nav.Altitude.Assigned)
 	} else {
 		resp.Add("at {alt}", nav.FlightState.Altitude)
 	}
