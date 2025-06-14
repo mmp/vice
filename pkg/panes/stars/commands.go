@@ -186,10 +186,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	}
 
 	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
-		if ctx.Client.RadioIsActive() {
-			// Discard entered TGT GEN text if we're awaiting a readback
-			input = ""
-		} else if input != "" {
+		if input != "" {
 			// As long as text is being entered, hold radio transmissions
 			// for the coming few seconds.
 			ctx.Client.HoldRadioTransmissions()
