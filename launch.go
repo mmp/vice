@@ -523,31 +523,26 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 }
 
 func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
+	// Check rate limits and clamp if necessary
+	const rateLimit = 100.0
+	rateClamped := false
+	if !c.Scenario.LaunchConfig.CheckRateLimits(rateLimit) {
+		c.Scenario.LaunchConfig.ClampRates(rateLimit)
+		rateClamped = true
+	}
+
+	// Display error message if rates were clamped
+	if rateClamped {
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(fmt.Sprintf("Launch rates will be reduced to stay within the %d aircraft/hour limit", int(rateLimit)))
+		imgui.PopStyleColor()
+	}
+
 	drawDepartureUI(&c.Scenario.LaunchConfig, p)
 	drawVFRDepartureUI(&c.Scenario.LaunchConfig, p)
 	drawArrivalUI(&c.Scenario.LaunchConfig, p)
 	drawOverflightUI(&c.Scenario.LaunchConfig, p)
 	return false
-}
-
-func scaleRate(rate, scale float32) float32 {
-	rate *= scale
-	if rate <= 0.5 {
-		// Since we round to the nearest int when displaying rates in the UI,
-		// we don't want to ever launch for ones that have rate 0.
-		return 0
-	}
-	return rate
-}
-
-func sumRateMap2(rates map[string]map[string]float32, scale float32) float32 {
-	var sum float32
-	for _, categoryRates := range rates {
-		for _, rate := range categoryRates {
-			sum += scaleRate(rate, scale)
-		}
-	}
-	return sum
 }
 
 func getWind(airport string, lg *log.Logger) (av.Wind, bool) {
@@ -638,11 +633,9 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 
 	imgui.Text("Departures")
 
-	var sumRates float32
+	sumRates := lc.TotalDepartureRate()
 	airportRunwayNumCategories := make(map[string]int) // key is e.g. JFK/22R, then count of active categories
 	for ap, runwayRates := range lc.DepartureRates {
-		sumRates += sumRateMap2(runwayRates, lc.DepartureRateScale)
-
 		for rwy, categories := range runwayRates {
 			airportRunwayNumCategories[ap+"/"+rwy] = airportRunwayNumCategories[ap+"/"+rwy] + len(categories)
 		}
@@ -765,14 +758,12 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	// Figure out the maximum number of inbound flows per airport to figure
 	// out the number of table columns and also sum up the overall arrival
 	// rate.
-	var sumRates float32
+	sumRates := lc.TotalArrivalRate()
 	numAirportFlows := make(map[string]int)
 	for _, agr := range lc.InboundFlowRates {
-		for ap, rate := range agr {
-			rate = scaleRate(rate, lc.InboundFlowRateScale)
+		for ap := range agr {
 			if ap != "overflights" {
 				numAirportFlows[ap] = numAirportFlows[ap] + 1
-				sumRates += rate
 			}
 		}
 	}
@@ -864,11 +855,9 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	// Sum up the overall overflight rate
 	overflightGroups := make(map[string]interface{})
-	var sumRates float32
+	sumRates := lc.TotalOverflightRate()
 	for group, rates := range lc.InboundFlowRates {
-		if rate, ok := rates["overflights"]; ok {
-			rate = scaleRate(rate, lc.InboundFlowRateScale)
-			sumRates += rate
+		if _, ok := rates["overflights"]; ok {
 			overflightGroups[group] = nil
 		}
 	}
