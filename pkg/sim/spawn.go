@@ -728,14 +728,14 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	// When sequencing, penalize same-exit repeats. But when we have a
 	// sequence and are launching, we'll let it roll.
 	if considerExit && cac.FlightPlan.Exit == pac.FlightPlan.Exit {
-		wait = math.Max(wait, 3*time.Minute/2)
+		wait = max(wait, 3*time.Minute/2)
 	}
 
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
 	if wtDist != 0 {
 		// Assume '1 gives you 3.5'
-		wait = math.Max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
+		wait = max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
 	}
 
 	return wait
@@ -1129,7 +1129,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
-		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		starsFp.TrackingController = ctrl
 		starsFp.InboundHandoffController = ctrl
 	}

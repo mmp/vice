@@ -947,7 +947,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
-			trackColorNum := math.Min(i, len(STARSTrackHistoryColors)-1)
+			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
 			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
@@ -1271,7 +1271,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	gs := ma.gs // current speed
 	td := math.Distance2f(p, ma.threshold)
 	if td < 2 {
-		gs = math.Min(gs, ma.landingSpeed)
+		gs = min(gs, ma.landingSpeed)
 	} else if td < 5 {
 		t := (td - 2) / 3 // [0,1]
 		// lerp from current speed down to landing speed
@@ -1470,7 +1470,7 @@ func (sp *STARSPane) radarVisibility(radarSites map[string]*av.RadarSite, pos ma
 		if p, s, dist := site.CheckVisibility(pos, alt); p || s {
 			primary = primary || p
 			secondary = secondary || s
-			distance = math.Min(distance, dist)
+			distance = min(distance, dist)
 		}
 	}
 

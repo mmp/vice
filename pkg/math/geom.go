@@ -89,10 +89,10 @@ func Overlaps(a Extent2D, b Extent2D) bool {
 }
 
 func Union(e Extent2D, p [2]float32) Extent2D {
-	e.P0[0] = Min(e.P0[0], p[0])
-	e.P0[1] = Min(e.P0[1], p[1])
-	e.P1[0] = Max(e.P1[0], p[0])
-	e.P1[1] = Max(e.P1[1], p[1])
+	e.P0[0] = min(e.P0[0], p[0])
+	e.P0[1] = min(e.P0[1], p[1])
+	e.P1[0] = max(e.P1[0], p[0])
+	e.P1[1] = max(e.P1[1], p[1])
 	return e
 }
 
@@ -111,15 +111,15 @@ func (e Extent2D) IntersectRay(org, dir [2]float32) (bool, float32, float32) {
 	t0, t1 := float32(0), float32(1e30)
 	tx0 := (e.P0[0] - org[0]) / dir[0]
 	tx1 := (e.P1[0] - org[0]) / dir[0]
-	tx0, tx1 = Min(tx0, tx1), Max(tx0, tx1)
-	t0 = Max(t0, tx0)
-	t1 = Min(t1, tx1)
+	tx0, tx1 = min(tx0, tx1), max(tx0, tx1)
+	t0 = max(t0, tx0)
+	t1 = min(t1, tx1)
 
 	ty0 := (e.P0[1] - org[1]) / dir[1]
 	ty1 := (e.P1[1] - org[1]) / dir[1]
-	ty0, ty1 = Min(ty0, ty1), Max(ty0, ty1)
-	t0 = Max(t0, ty0)
-	t1 = Min(t1, ty1)
+	ty0, ty1 = min(ty0, ty1), max(ty0, ty1)
+	t0 = max(t0, ty0)
+	t1 = min(t1, ty1)
 
 	return t0 < t1, t0, t1
 }

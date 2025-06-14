@@ -1187,8 +1187,8 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 			// Find the min and max values to create the IntRangeSet
 			r := [2]int{int(poolRanges[0][0]), int(poolRanges[0][1])}
 			for _, rng := range poolRanges {
-				r[0] = math.Min(r[0], int(rng[0]))
-				r[1] = math.Max(r[1], int(rng[1]))
+				r[0] = min(r[0], int(rng[0]))
+				r[1] = max(r[1], int(rng[1]))
 			}
 
 			// Create an IntRangeSet covering the full range

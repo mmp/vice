@@ -11,8 +11,6 @@ import (
 	"slices"
 	"time"
 
-	"github.com/mmp/vice/pkg/math"
-
 	"github.com/iancoleman/orderedmap"
 	"golang.org/x/exp/constraints"
 )
@@ -98,7 +96,7 @@ func (r *RingBuffer[V]) Add(values ...V) {
 
 // Size returns the total number of items stored in the ring buffer.
 func (r *RingBuffer[V]) Size() int {
-	return math.Min(len(r.entries), r.max)
+	return min(len(r.entries), r.max)
 }
 
 // Get returns the specified element of the ring buffer where the index i

@@ -196,7 +196,7 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 			nav.Altitude.Assigned = &alt
 		}
 
-		nav.FinalAltitude = math.Max(nav.FinalAltitude, arr.InitialAltitude)
+		nav.FinalAltitude = max(nav.FinalAltitude, arr.InitialAltitude)
 		nav.FlightState.Altitude = arr.InitialAltitude
 		nav.FlightState.IAS = arr.InitialSpeed
 		// This won't be quite right but it's better than leaving GS to be
@@ -215,14 +215,14 @@ func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.Aircra
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
 		wind, lg); nav != nil {
 		if assignedAlt != 0 {
-			alt := float32(math.Min(assignedAlt, fp.Altitude))
+			alt := float32(min(assignedAlt, fp.Altitude))
 			nav.Altitude.Assigned = &alt
 		} else {
-			alt := float32(math.Min(clearedAlt, fp.Altitude))
+			alt := float32(min(clearedAlt, fp.Altitude))
 			nav.Altitude.Cleared = &alt
 		}
 		if speedRestriction != 0 {
-			speed := float32(math.Max(speedRestriction, int(perf.Speed.Min)))
+			speed := float32(max(speedRestriction, int(perf.Speed.Min)))
 			nav.Speed.Restriction = &speed
 		}
 		nav.FlightState.InitialDepartureClimb = true
@@ -328,7 +328,7 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 
 func (nav *Nav) TAS() float32 {
 	tas := av.IASToTAS(nav.FlightState.IAS, nav.FlightState.Altitude)
-	tas = math.Min(tas, nav.Perf.Speed.CruiseTAS)
+	tas = min(tas, nav.Perf.Speed.CruiseTAS)
 	return tas
 }
 
@@ -467,7 +467,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 		dir := util.Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		alt := c.Altitude
 		if nav.Altitude.Cleared != nil {
-			alt = math.Min(alt, *nav.Altitude.Cleared)
+			alt = min(alt, *nav.Altitude.Cleared)
 		}
 		lines = append(lines, dir+" to "+av.FormatAltitude(alt)+" for alt. restriction at "+c.Fix)
 	} else if nav.Altitude.Cleared != nil {
@@ -484,7 +484,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 		}
 	} else if nav.Altitude.Restriction != nil {
 		tgt := nav.Altitude.Restriction.TargetAltitude(nav.FlightState.Altitude)
-		tgt = math.Min(tgt, nav.FinalAltitude)
+		tgt = min(tgt, nav.FinalAltitude)
 
 		if tgt < nav.FlightState.Altitude {
 			lines = append(lines, "Descending "+av.FormatAltitude(nav.FlightState.Altitude)+
@@ -671,7 +671,7 @@ func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
 		cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
 		limit := (nav.v2() + cruiseIAS) * 0.5
 		if nav.FlightState.IAS > limit {
-			spd := math.Max(nav.FlightState.IAS*.99, limit)
+			spd := max(nav.FlightState.IAS*.99, limit)
 			return setSpeed(spd)
 		}
 	}
@@ -684,7 +684,7 @@ func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
 
 	if nav.FlightState.IAS < targetSpeed {
 		accel := nav.Perf.Rate.Accelerate / 2 // Accel is given in "per 2 seconds..."
-		accel = math.Min(accel, targetRate/60)
+		accel = min(accel, targetRate/60)
 		if !nav.IsAirborne() {
 			// Rough approximation of it being easier to accelerate on the
 			// ground and when going slow than when going fast (and
@@ -703,15 +703,15 @@ func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
 				accel *= 0.6
 			}
 		}
-		return setSpeed(math.Min(targetSpeed, nav.FlightState.IAS+accel))
+		return setSpeed(min(targetSpeed, nav.FlightState.IAS+accel))
 	} else if nav.FlightState.IAS > targetSpeed {
 		decel := nav.Perf.Rate.Decelerate / 2 // Decel is given in "per 2 seconds..."
-		decel = math.Min(decel, targetRate/60)
+		decel = min(decel, targetRate/60)
 		if nav.Altitude.Assigned != nil && nav.FlightState.Altitude > *nav.Altitude.Assigned {
 			// Reduce deceleration since also descending
 			decel *= 0.6
 		}
-		return setSpeed(math.Max(targetSpeed, nav.FlightState.IAS-decel))
+		return setSpeed(max(targetSpeed, nav.FlightState.IAS-decel))
 	} else {
 		return 0, false
 	}
@@ -783,8 +783,8 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 		if climb >= 2500 && nav.FlightState.Altitude > 5000 {
 			climb -= 500
 		}
-		climb = math.Min(climb, targetRate)
-		descent = math.Min(descent, targetRate)
+		climb = min(climb, targetRate)
+		descent = min(descent, targetRate)
 	}
 
 	if nav.FlightState.Altitude < targetAltitude {
@@ -795,7 +795,7 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 			s := math.Clamp(max-deltaKts, .25, 1)
 			climb *= s
 		}
-		setAltitude(math.Min(targetAltitude, nav.FlightState.Altitude+climb/60))
+		setAltitude(min(targetAltitude, nav.FlightState.Altitude+climb/60))
 	} else if nav.FlightState.Altitude > targetAltitude {
 		if deltaKts < 0 {
 			// Reduce rate due to concurrent deceleration
@@ -803,7 +803,7 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 			s := math.Clamp(max - -deltaKts, .25, 1)
 			descent *= s
 		}
-		setAltitude(math.Max(targetAltitude, nav.FlightState.Altitude-descent/60))
+		setAltitude(max(targetAltitude, nav.FlightState.Altitude-descent/60))
 	}
 }
 
@@ -829,11 +829,11 @@ func (nav *Nav) updateHeading(wind av.WindModel, lg *log.Logger) {
 	switch turnDirection {
 	case TurnLeft:
 		angle := math.NormalizeHeading(nav.FlightState.Heading - targetHeading)
-		angle = math.Min(angle, turnRate)
+		angle = min(angle, turnRate)
 		turn = -angle
 	case TurnRight:
 		angle := math.NormalizeHeading(targetHeading - nav.FlightState.Heading)
-		angle = math.Min(angle, turnRate)
+		angle = min(angle, turnRate)
 		turn = angle
 	case TurnClosest:
 		turn = math.HeadingSignedTurn(nav.FlightState.Heading, targetHeading)
@@ -1068,7 +1068,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 		bankRad := math.Radians(bankAngle)
 		tasMS := nav.TAS() * 0.514444
 		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
-		return math.Min(rate, 3)
+		return min(rate, 3)
 	}
 
 	// If we started leveling out now, how many more degrees would we turn through?
@@ -1248,7 +1248,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 			descent := nav.Perf.Rate.Descent
 			if nav.FlightState.Altitude < 10000 && !nav.Altitude.Expedite {
 				// And reduce it based on airspeed as well
-				descent *= math.Min(nav.FlightState.IAS/250, 1)
+				descent *= min(nav.FlightState.IAS/250, 1)
 				if descent > 2000 {
 					// Reduce descent rate on approach
 					descent = 2000
@@ -1271,7 +1271,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 	}
 
 	if nav.Altitude.Cleared != nil {
-		return math.Min(*nav.Altitude.Cleared, nav.FinalAltitude), rate
+		return min(*nav.Altitude.Cleared, nav.FinalAltitude), rate
 	}
 
 	if ar := nav.Altitude.Restriction; ar != nil {
@@ -1370,8 +1370,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		// It would be nice to unify the nav modeling and the aircraft's
 		// flight modeling to eliminate this...
 		if nav.FlightState.Altitude < 10000 {
-			altRate = math.Min(altRate, 2000)
-			altRate *= math.Min(nav.FlightState.IAS/250, 1)
+			altRate = min(altRate, 2000)
+			altRate *= min(nav.FlightState.IAS/250, 1)
 		}
 		// Reduce the expected rate by a fudge factor to try to account for
 		// slowing down at lower altitudes, speed reductions on approach,
@@ -1510,7 +1510,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, fl
 			// on V2, also assuming some flaps are out, so we don't just
 			// want to return 250 knots here...
 			cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
-			return math.Min(nav.v2()*1.6, math.Min(250, cruiseIAS)), MaximumRate
+			return min(nav.v2()*1.6, min(250, cruiseIAS)), MaximumRate
 		}
 		return nav.targetAltitudeIAS()
 	}
@@ -1547,18 +1547,18 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, fl
 
 		// Make sure we're not trying to go faster than we're able to
 		cruiseIAS := av.TASToIAS(nav.Perf.Speed.CruiseTAS, nav.FlightState.Altitude)
-		targetSpeed = math.Min(targetSpeed, cruiseIAS)
+		targetSpeed = min(targetSpeed, cruiseIAS)
 
 		// And don't accelerate past any upcoming speed restrictions
 		if nav.Speed.Restriction != nil {
-			targetSpeed = math.Min(targetSpeed, *nav.Speed.Restriction)
+			targetSpeed = min(targetSpeed, *nav.Speed.Restriction)
 		}
 		if _, speed, _, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
-			targetSpeed = math.Min(targetSpeed, speed)
+			targetSpeed = min(targetSpeed, speed)
 		}
 
 		// However, don't let anything prevent us from taking off!
-		targetSpeed = math.Max(targetSpeed, nav.v2())
+		targetSpeed = max(targetSpeed, nav.v2())
 
 		return targetSpeed, 0.8 * maxAccel
 	}
@@ -1602,7 +1602,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, fl
 		x := math.Clamp((fd-1)/9, float32(0), float32(1))
 		ias := math.Lerp(x, spd.Landing, approachSpeed)
 		// Don't speed up after being been cleared to land.
-		ias = math.Min(ias, nav.FlightState.IAS)
+		ias = min(ias, nav.FlightState.IAS)
 
 		//lg.Debugf("speed: approach cleared, %.1f nm out, ias %.0f", fd, ias)
 		return ias, MaximumRate
@@ -1629,7 +1629,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, fl
 			// Otherwise reduce in general but in any case don't speed up
 			// again.
 			ias, rate := nav.targetAltitudeIAS()
-			return math.Min(ias, nav.FlightState.IAS), rate
+			return min(ias, nav.FlightState.IAS), rate
 		}
 	}
 
@@ -1651,11 +1651,11 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 		// departures when this kicks in at 1500' AGL given that VNav will
 		// slow the rate of climb at that point until we reach the target
 		// speed.
-		return math.Min(cruiseIAS, 250), 0.9 * maxAccel
+		return min(cruiseIAS, 250), 0.9 * maxAccel
 	}
 
 	x := math.Clamp((nav.FlightState.Altitude-10000)/(nav.Perf.Ceiling-10000), 0, 1)
-	return math.Lerp(x, math.Min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
+	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (av.Waypoint, float32, float32, bool) {

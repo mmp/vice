@@ -455,7 +455,7 @@ func (c *ControlClient) CurrentTime() time.Time {
 		} else {
 			d -= 50 * time.Millisecond
 		}
-		d = math.Max(0, d)
+		d = max(0, d)
 
 		// Account for sim rate
 		d = time.Duration(float64(d) * float64(c.State.SimRate))

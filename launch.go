@@ -620,7 +620,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	}
 	maxDepartureCategories := 0
 	for _, n := range airportRunwayNumCategories {
-		maxDepartureCategories = math.Max(n, maxDepartureCategories)
+		maxDepartureCategories = max(n, maxDepartureCategories)
 	}
 
 	imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", int(sumRates+0.5)))
@@ -634,7 +634,7 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	if lc.DepartureRateScale == 0 {
 		imgui.BeginDisabled()
 	}
-	adrColumns := math.Min(3, maxDepartureCategories)
+	adrColumns := min(3, maxDepartureCategories)
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if imgui.BeginTableV("departureRunways", int32(2+2*adrColumns), flags, imgui.Vec2{tableScale * float32(200+200*adrColumns), 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
@@ -752,7 +752,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	}
 	maxAirportFlows := 0
 	for _, n := range numAirportFlows {
-		maxAirportFlows = math.Max(n, maxAirportFlows)
+		maxAirportFlows = max(n, maxAirportFlows)
 	}
 
 	imgui.Text("Arrivals")
@@ -769,14 +769,14 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	freq := int32(lc.ArrivalPushFrequencyMinutes)
 	changed = imgui.SliderInt("Push frequency (minutes)", &freq, 3, 60) || changed
 	lc.ArrivalPushFrequencyMinutes = int(freq)
-	min := int32(lc.ArrivalPushLengthMinutes)
-	changed = imgui.SliderInt("Length of push (minutes)", &min, 5, 30) || changed
-	lc.ArrivalPushLengthMinutes = int(min)
+	mins := int32(lc.ArrivalPushLengthMinutes)
+	changed = imgui.SliderInt("Length of push (minutes)", &mins, 5, 30) || changed
+	lc.ArrivalPushLengthMinutes = int(mins)
 	if !lc.ArrivalPushes {
 		imgui.EndDisabled()
 	}
 
-	aarColumns := math.Min(3, maxAirportFlows)
+	aarColumns := min(3, maxAirportFlows)
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if lc.InboundFlowRateScale == 0 {
@@ -1179,7 +1179,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				lastAp := ""
 				for _, d := range sortedDeps {
 					if d.Airport != lastAp {
-						maxCategories = math.Max(maxCategories, curCategories)
+						maxCategories = max(maxCategories, curCategories)
 						curCategories = 1
 						lastAp = d.Airport
 					} else {
@@ -1187,7 +1187,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					}
 				}
 
-				nColumns := math.Min(3, maxCategories)
+				nColumns := min(3, maxCategories)
 				if imgui.BeginTableV("dep", int32(1+9*nColumns), flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
 					for range nColumns {
@@ -1285,7 +1285,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					imgui.SetTooltip("Request VFR flight following from a random VFR aircraft")
 				}
 
-				nColumns := math.Min(2, len(lc.vfrDepartures))
+				nColumns := min(2, len(lc.vfrDepartures))
 				if imgui.BeginTableV("vfrdep", int32(9*nColumns), flags, imgui.Vec2{tableScale * float32(100+450*nColumns), 0}, 0.0) {
 					for range nColumns {
 						imgui.TableSetupColumn("Airport")
@@ -1372,14 +1372,14 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				lastAirport := ""
 				for _, ao := range sortedInbound {
 					if ao.Airport != lastAirport {
-						maxGroups = math.Max(maxGroups, numGroups)
+						maxGroups = max(maxGroups, numGroups)
 						lastAirport = ao.Airport
 						numGroups = 1
 					} else {
 						numGroups++
 					}
 				}
-				numColumns := math.Min(maxGroups, 3)
+				numColumns := min(maxGroups, 3)
 
 				if imgui.BeginTableV("arrof", int32(1+7*numColumns), flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")

@@ -1526,10 +1526,10 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 		p1 := math.Add2f(sp.capture.region[1], ctx.PaneExtent.P0)
 		p0, p1 = math.Scale2f(p0, 2), math.Scale2f(p1, 2)
 
-		x := int(math.Min(p0[0], p1[0]))
-		y := int(math.Min(p0[1], p1[1]))
-		w := int(math.Max(p0[0], p1[0])) - x
-		h := int(math.Max(p0[1], p1[1])) - y
+		x := int(min(p0[0], p1[0]))
+		y := int(min(p0[1], p1[1]))
+		w := int(max(p0[0], p1[0])) - x
+		h := int(max(p0[1], p1[1])) - y
 		px := ctx.Renderer.ReadPixelRGBAs(x, y, w, h)
 
 		// Flip in y
@@ -1595,8 +1595,8 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 			p1 = ctx.Mouse.Pos
 		}
 		// Offset the outline so it isn't included in the capture
-		p0[0], p1[0] = math.Min(p0[0], p1[0])-1, math.Max(p0[0], p1[0])+1
-		p0[1], p1[1] = math.Min(p0[1], p1[1])-1, math.Max(p0[1], p1[1])+1
+		p0[0], p1[0] = min(p0[0], p1[0])-1, max(p0[0], p1[0])+1
+		p0[1], p1[1] = min(p0[1], p1[1])-1, max(p0[1], p1[1])+1
 
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)
