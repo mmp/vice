@@ -92,13 +92,13 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	}
 
 	wsAddress := "localhost:" + strconv.Itoa(result.SpeechWSPort)
-	cm.client = NewControlClient(*result.SimState, true, result.ControllerToken, wsAddress, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, isLocal bool, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 
 	if err := srv.callWithTimeout("SimManager.NewSim", config, &result); err != nil {
@@ -110,7 +110,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, isL
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.IsLocal, config.DisableTextToSpeech, lg)
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
 		return nil
 	}
 }
@@ -118,7 +118,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, isL
 // handleSuccessfulConnection handles the common logic for setting up a client
 // connection after a successful RPC call to create or join a sim
 func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResult, srv *Server,
-	isLocal bool, disableTextToSpeech bool, lg *log.Logger) {
+	disableTextToSpeech bool, lg *log.Logger) {
 	if cm.client != nil {
 		cm.client.Disconnect()
 	}
@@ -133,7 +133,7 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
 		}
 	}
-	cm.client = NewControlClient(*result.SimState, isLocal, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 
@@ -215,8 +215,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfigurati
 		}
 		return err
 	} else {
-		isLocal := srv == cm.LocalServer
-		cm.handleSuccessfulConnection(result, srv, isLocal, config.DisableTextToSpeech, lg)
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
 		return nil
 	}
 }

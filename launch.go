@@ -630,8 +630,7 @@ func (c *NewSimConfiguration) Start() error {
 		}
 	} else {
 		// Create sim configuration for new sim
-		isLocal := c.newSimType == NewSimCreateLocal
-		if err := c.mgr.CreateNewSim(c.NewSimConfiguration, isLocal, c.selectedServer, c.lg); err != nil {
+		if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer, c.lg); err != nil {
 			c.lg.Errorf("CreateNewSim failed: %v", err)
 			return err
 		}
