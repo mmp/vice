@@ -85,7 +85,7 @@ type STARSPane struct {
 	allVideoMaps []sim.VideoMap
 	dcbVideoMaps []*sim.VideoMap
 
-	weatherRadar WeatherRadar
+	weatherRadar radar.WeatherRadar
 
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
@@ -454,7 +454,6 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pl
 	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
-
 	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
 
 	sp.makeMaps(client, ss, lg)
