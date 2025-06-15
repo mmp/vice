@@ -229,7 +229,27 @@ func (s *Sim) DeleteAllAircraft(tcp string) error {
 		}
 	}
 
+	// Also clean up aircraft in HFR departure queues
+	s.clearDepartureQueues()
+
 	return nil
+}
+
+func (s *Sim) clearDepartureQueues() {
+	// Clear HFR (Hold For Release) departure queues to remove aircraft that are held for release
+	for _, runways := range s.DepartureState {
+		for _, depState := range runways {
+			// Delete aircraft from the Held queue (HFR)
+			for _, dep := range depState.Held {
+				if ac, ok := s.Aircraft[dep.ADSBCallsign]; ok {
+					s.deleteAircraft(ac)
+				}
+			}
+
+			// Clear the HFR queue
+			depState.Held = nil
+		}
+	}
 }
 
 func (s *Sim) ChangeSquawk(tcp string, callsign av.ADSBCallsign, sq av.Squawk) error {
