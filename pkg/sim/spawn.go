@@ -146,6 +146,86 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 	return lc
 }
 
+// TotalDepartureRate returns the total departure rate (aircraft per hour) for all airports and runways
+func (lc *LaunchConfig) TotalDepartureRate() float32 {
+	var sum float32
+	for _, runwayRates := range lc.DepartureRates {
+		sum += sumRateMap2(runwayRates, lc.DepartureRateScale)
+	}
+	return sum
+}
+
+// TotalInboundFlowRate returns the total inbound flow rate (aircraft per hour) for all flows
+func (lc *LaunchConfig) TotalInboundFlowRate() float32 {
+	var sum float32
+	for _, flowRates := range lc.InboundFlowRates {
+		for _, rate := range flowRates {
+			sum += scaleRate(rate, lc.InboundFlowRateScale)
+		}
+	}
+	return sum
+}
+
+// TotalArrivalRate returns the total arrival rate (aircraft per hour) excluding overflights
+func (lc *LaunchConfig) TotalArrivalRate() float32 {
+	var sum float32
+	for _, flowRates := range lc.InboundFlowRates {
+		for ap, rate := range flowRates {
+			if ap != "overflights" {
+				sum += scaleRate(rate, lc.InboundFlowRateScale)
+			}
+		}
+	}
+	return sum
+}
+
+// TotalOverflightRate returns the total overflight rate (aircraft per hour)
+func (lc *LaunchConfig) TotalOverflightRate() float32 {
+	var sum float32
+	for _, flowRates := range lc.InboundFlowRates {
+		if rate, ok := flowRates["overflights"]; ok {
+			sum += scaleRate(rate, lc.InboundFlowRateScale)
+		}
+	}
+	return sum
+}
+
+// CheckRateLimits returns true if both total departure rates and total inbound flow rates
+// sum to less than the provided limit (aircraft per hour)
+func (lc *LaunchConfig) CheckRateLimits(limit float32) bool {
+	totalDepartures := lc.TotalDepartureRate()
+	totalInbound := lc.TotalInboundFlowRate()
+	return totalDepartures < limit && totalInbound < limit
+}
+
+// ClampRates adjusts the rate scale variables to ensure the total launch rate
+// does not exceed the given limit (aircraft per hour)
+func (lc *LaunchConfig) ClampRates(limit float32) {
+	// Calculate current totals with scale = 1 to get base rates
+	baseDepartureRate := lc.TotalDepartureRate() / lc.DepartureRateScale
+	baseInboundRate := lc.TotalInboundFlowRate() / lc.InboundFlowRateScale
+
+	// If either rate would exceed the limit with current scale, adjust it
+	if baseDepartureRate*lc.DepartureRateScale > limit && baseDepartureRate > 0 {
+		lc.DepartureRateScale = limit / baseDepartureRate * 0.99
+	}
+
+	if baseInboundRate*lc.InboundFlowRateScale > limit && baseInboundRate > 0 {
+		lc.InboundFlowRateScale = limit / baseInboundRate * 0.99
+	}
+}
+
+// sumRateMap2 computes the total rate from a nested map structure
+func sumRateMap2(rates map[string]map[string]float32, scale float32) float32 {
+	var sum float32
+	for _, categoryRates := range rates {
+		for _, rate := range categoryRates {
+			sum += scaleRate(rate, scale)
+		}
+	}
+	return sum
+}
+
 func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -728,14 +808,14 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	// When sequencing, penalize same-exit repeats. But when we have a
 	// sequence and are launching, we'll let it roll.
 	if considerExit && cac.FlightPlan.Exit == pac.FlightPlan.Exit {
-		wait = math.Max(wait, 3*time.Minute/2)
+		wait = max(wait, 3*time.Minute/2)
 	}
 
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
 	if wtDist != 0 {
 		// Assume '1 gives you 3.5'
-		wait = math.Max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
+		wait = max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
 	}
 
 	return wait
@@ -1129,7 +1209,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
-		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		starsFp.TrackingController = ctrl
 		starsFp.InboundHandoffController = ctrl
 	}

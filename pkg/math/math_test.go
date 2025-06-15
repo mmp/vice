@@ -213,7 +213,7 @@ func TestPointSegmentDistance(t *testing.T) {
 		for i := 0; i < n; i++ {
 			t := float32(i) / float32(n-1)
 			pp := Lerp2f(t, v, w)
-			dmin = Min(dmin, Distance2f(pp, p))
+			dmin = min(dmin, Distance2f(pp, p))
 		}
 		return dmin
 	}

@@ -463,7 +463,7 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 	if from < 9 {
 		remap := func(b *STARSBrightness) {
-			*b = STARSBrightness(math.Min(*b*2, 100))
+			*b = STARSBrightness(min(*b*2, 100))
 		}
 		remap(&p.Brightness.VideoGroupA)
 		remap(&p.Brightness.VideoGroupB)
@@ -489,15 +489,15 @@ func (p *Preferences) Upgrade(from, to int) {
 	if from < 21 {
 		// System list offsets changed from updated handling of
 		// transformation matrices with and without the DCB visible.
-		p.CharSize.DCB = math.Max(0, p.CharSize.DCB-1)
-		p.CharSize.Datablocks = math.Max(0, p.CharSize.Datablocks-1)
-		p.CharSize.Lists = math.Max(0, p.CharSize.Lists-1)
-		p.CharSize.Tools = math.Max(0, p.CharSize.Tools-1)
-		p.CharSize.PositionSymbols = math.Max(0, p.CharSize.PositionSymbols-1)
+		p.CharSize.DCB = max(0, p.CharSize.DCB-1)
+		p.CharSize.Datablocks = max(0, p.CharSize.Datablocks-1)
+		p.CharSize.Lists = max(0, p.CharSize.Lists-1)
+		p.CharSize.Tools = max(0, p.CharSize.Tools-1)
+		p.CharSize.PositionSymbols = max(0, p.CharSize.PositionSymbols-1)
 
 		if p.DisplayDCB && p.DCBPosition == dcbPositionTop {
 			shift := func(y *float32) {
-				*y = math.Max(0, *y-.05)
+				*y = max(0, *y-.05)
 			}
 			shift(&p.SSAList.Position[1])
 			shift(&p.VFRList.Position[1])

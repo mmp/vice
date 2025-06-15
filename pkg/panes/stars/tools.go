@@ -725,7 +725,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 
 		if state.HaveHeading() && (state.ConeLength > 0 || drawATPACone) {
 			// Find the length of the cone in pixel coordinates)
-			lengthNM := math.Max(state.ConeLength, state.MinimumMIT)
+			lengthNM := max(state.ConeLength, state.MinimumMIT)
 			length := lengthNM / transforms.PixelDistanceNM(ctx.NmPerLongitude)
 
 			// Form a triangle; the end of the cone is 10 pixels wide

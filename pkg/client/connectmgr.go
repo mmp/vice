@@ -97,9 +97,10 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, isLocal bool, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
-	if err := srv.callWithTimeout("SimManager.New", config, &result); err != nil {
+
+	if err := srv.callWithTimeout("SimManager.NewSim", config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
@@ -119,7 +120,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv
 			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
 			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
 		}
-		cm.client = NewControlClient(*result.SimState, false, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+		cm.client = NewControlClient(*result.SimState, config.IsLocal, result.ControllerToken, wsAddress, srv.RPCClient, lg)
 
 		cm.connectionStartTime = time.Now()
 
@@ -191,6 +192,41 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 			})
 	}
 	return nil
+}
+
+func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfiguration, srv *Server, lg *log.Logger) error {
+	var result server.NewSimResult
+	if err := srv.callWithTimeout("SimManager.ConnectToSim", config, &result); err != nil {
+		err = server.TryDecodeError(err)
+		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
+			// Problem with the connection to the remote server? Let the main
+			// loop try to reconnect.
+			cm.RemoteServer = nil
+		}
+		return err
+	} else {
+		if cm.client != nil {
+			cm.client.Disconnect()
+		}
+
+		var wsAddress string
+		isLocal := srv == cm.LocalServer
+		if isLocal {
+			wsAddress = "localhost:" + strconv.Itoa(result.SpeechWSPort)
+		} else {
+			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
+			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
+		}
+		cm.client = NewControlClient(*result.SimState, isLocal, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+
+		cm.connectionStartTime = time.Now()
+
+		if cm.onNewClient != nil {
+			cm.onNewClient(cm.client)
+		}
+
+		return nil
+	}
 }
 
 func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg *log.Logger) {

@@ -84,20 +84,6 @@ func Abs[V constraints.Integer | constraints.Float](x V) V {
 	return x
 }
 
-func Min[T constraints.Ordered](a, b T) T {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func Max[T constraints.Ordered](a, b T) T {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func Pow(a, b float32) float32 {
 	return float32(gomath.Pow(float64(a), float64(b)))
 }

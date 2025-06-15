@@ -171,7 +171,7 @@ func (cb *CommandBuffer) Viewport(x, y, w, h int) {
 func (cb *CommandBuffer) SetDrawBounds(b math.Extent2D, scale float32) {
 	x0, y0 := int(scale*b.P0[0]), int(scale*b.P0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
-	w, h = math.Max(w, 0), math.Max(h, 0)
+	w, h = max(w, 0), max(h, 0)
 	cb.Scissor(x0, y0, w, h)
 	cb.Viewport(x0, y0, w, h)
 }
@@ -187,7 +187,7 @@ func (cb *CommandBuffer) SetDrawBounds(b math.Extent2D, scale float32) {
 func (cb *CommandBuffer) SetScissorBounds(b math.Extent2D, scale float32) {
 	x0, y0 := int(scale*b.P0[0]), int(scale*b.P0[1])
 	w, h := int(scale*b.Width()), int(scale*b.Height())
-	w, h = math.Max(w, 0), math.Max(h, 0)
+	w, h = max(w, 0), max(h, 0)
 	cb.Scissor(x0, y0, w, h)
 }
 

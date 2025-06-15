@@ -71,6 +71,8 @@ type Sim struct {
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
 
+	Instructors map[string]bool
+
 	Rand *rand.Rand
 
 	// No need to serialize these; they're caches anyway.
@@ -209,6 +211,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
 
+		Instructors: make(map[string]bool),
+
 		Rand: rand.Make(),
 	}
 
@@ -300,9 +304,9 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("push_end", s.PushEnd))
 }
 
-func (s *Sim) SignOn(tcp string) (*State, error) {
+func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 	s.mu.Lock(s.lg)
-	if err := s.signOn(tcp); err != nil {
+	if err := s.signOn(tcp, instructor); err != nil {
 		s.mu.Unlock(s.lg)
 		return nil, err
 	}
@@ -315,7 +319,7 @@ func (s *Sim) SignOn(tcp string) (*State, error) {
 	return state, nil
 }
 
-func (s *Sim) signOn(tcp string) error {
+func (s *Sim) signOn(tcp string, instructor bool) error {
 	if _, ok := s.humanControllers[tcp]; ok {
 		return ErrControllerAlreadySignedIn
 	}
@@ -369,6 +373,7 @@ func (s *Sim) SignOff(tcp string) error {
 
 	delete(s.humanControllers, tcp)
 	delete(s.State.Controllers, tcp)
+	delete(s.Instructors, tcp)
 	s.State.HumanControllers =
 		slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == tcp })
 
@@ -388,8 +393,9 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 	s.lg.Infof("%s: switching to %s", fromTCP, toTCP)
 
 	// Make sure we can successfully sign on before signing off from the
-	// current position.
-	if err := s.signOn(toTCP); err != nil {
+	// current position. Preserve instructor status from the original controller.
+	wasInstructor := s.State.Controllers[fromTCP].Instructor
+	if err := s.signOn(toTCP, wasInstructor); err != nil {
 		return err
 	}
 
@@ -400,6 +406,7 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 
 	delete(s.humanControllers, fromTCP)
 	delete(s.State.Controllers, fromTCP)
+	delete(s.Instructors, fromTCP)
 	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
 
 	s.eventStream.Post(Event{
