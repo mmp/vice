@@ -741,6 +741,54 @@ func (s *Sim) updateDepartureSequence() {
 	}
 }
 
+// intersectingRunways returns all runways that physically intersect the
+// given runway up to one nm past the opposite threshold.
+func (s *Sim) intersectingRunways(airport, depRwy string) []string {
+	depRwy = av.TidyRunway(depRwy)
+
+	// Get the departure runway info
+	rwySegment := func(rwy string) (seg [2][2]float32, ok bool) {
+		var r, opp av.Runway
+		if r, ok = av.LookupRunway(airport, rwy); !ok {
+			return
+		}
+
+		if opp, ok = av.LookupOppositeRunway(airport, rwy); !ok {
+			return
+		}
+
+		// Line segment from departure threshold to 1nm past opposing threshold
+		rp := math.LL2NM(r.Threshold, s.State.NmPerLongitude)
+		op := math.LL2NM(opp.Threshold, s.State.NmPerLongitude)
+		v := math.Normalize2f(math.Sub2f(op, rp))
+
+		return [2][2]float32{rp, math.Add2f(op, v)}, true
+	}
+
+	depSeg, ok := rwySegment(depRwy)
+	if !ok {
+		return nil
+	}
+
+	// Check all other runways for intersection
+	var intersecting []string
+	if _, ok := s.State.Airports[airport]; ok {
+		for _, otherRwy := range av.DB.Airports[airport].Runways {
+			if av.TidyRunway(otherRwy.Id) == depRwy {
+				continue // Skip the same runway
+			}
+
+			if othSeg, ok := rwySegment(otherRwy.Id); ok {
+				if _, ok := math.SegmentSegmentIntersect(depSeg[0], depSeg[1], othSeg[0], othSeg[1]); ok {
+					intersecting = append(intersecting, otherRwy.Id)
+				}
+			}
+		}
+	}
+
+	return intersecting
+}
+
 // sameGroupRunways returns an iterator over all of the runways in the
 // ~equivalence class with the given depRwy. Such equivalences can come
 // both from user-specified "departure_runways_as_one" but also from
@@ -766,7 +814,20 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 			}
 		}
 
-		// Now see look for departing both e.g. "4" and "4.AutoWest"
+		// Also include intersecting runways.
+		for _, intRwy := range s.intersectingRunways(airport, depRwy) {
+			// We can't directly look up in the runwayState map due to runways like 28L.1
+			// but instead have to check each one for a match.
+			for rwy, state := range runwayState {
+				if av.TidyRunway(intRwy) == av.TidyRunway(rwy) {
+					if !yield(intRwy, state) {
+						return
+					}
+				}
+			}
+		}
+
+		// Now look for departing both e.g. "4" and "4.AutoWest"
 		for rwy, state := range runwayState {
 			if depRwy == av.TidyRunway(rwy) {
 				if !yield(rwy, state) {
