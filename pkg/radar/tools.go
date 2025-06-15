@@ -465,7 +465,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
 					// Lower altitude, if present and different than upper.
 					pp := td.AddText(av.FormatAltitude(ar.Range[0]), pt, style)
-					w = math.Max(w, pp[0]-pt[0])
+					w = max(w, pp[0]-pt[0])
 					pt[1] -= float32(style.Font.Size)
 				}
 
