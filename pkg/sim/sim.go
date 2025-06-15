@@ -1087,6 +1087,27 @@ func (s *Sim) updateState() {
 					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
 					if lowEnough {
 						s.lg.Info("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
+
+						// Record the landing if necessary for scheduling departures.
+						if depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]; ok {
+							var runway string
+							if ac.Nav.Approach.Assigned != nil {
+								// IFR aircraft with assigned approach
+								runway = ac.Nav.Approach.Assigned.Runway
+							} else {
+								// VFR aircraft - select best runway based on wind
+								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
+								if rwy, _ := ap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation); rwy != nil {
+									runway = rwy.Id
+								}
+							}
+
+							if rwyState, ok := depState[runway]; ok {
+								rwyState.LastArrivalLandingTime = s.State.SimTime
+								rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+							}
+						}
+
 						s.deleteAircraft(ac)
 					} else {
 						s.goAround(ac)

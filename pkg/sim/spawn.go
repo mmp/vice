@@ -52,7 +52,9 @@ type RunwayLaunchState struct {
 	// Sequenced departures, pulled from Released. These are launched in-order.
 	Sequenced []DepartureAircraft
 
-	LastDeparture *DepartureAircraft
+	LastDeparture          *DepartureAircraft
+	LastArrivalLandingTime time.Time      // when the last arrival landed on this runway
+	LastArrivalFlightRules av.FlightRules // flight rules of the last arrival that landed
 
 	VFRAttempts  int
 	VFRSuccesses int
@@ -704,7 +706,7 @@ func (s *Sim) updateDepartureSequence() {
 
 			// See if we have anything to launch
 			considerExit := len(depState.Sequenced) == 1 // if it's just us waiting, don't rush it unnecessarily
-			if len(depState.Sequenced) > 0 && s.canLaunch(depState.LastDeparture, depState.Sequenced[0], considerExit) {
+			if len(depState.Sequenced) > 0 && s.canLaunch(depState, depState.Sequenced[0], considerExit, depRunway) {
 				dep := depState.Sequenced[0]
 				ac := s.Aircraft[dep.ADSBCallsign]
 
@@ -776,16 +778,44 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 }
 
 // canLaunch checks whether we can go ahead and launch dep.
-func (s *Sim) canLaunch(prevDep *DepartureAircraft, dep DepartureAircraft, considerExit bool) bool {
-	if prevDep == nil {
-		// No previous departure on this runway, so there's nothing
-		// stopping us.
-		return true
-	} else {
-		// Make sure enough time has passed since the last departure.
-		elapsed := s.State.SimTime.Sub(prevDep.LaunchTime)
-		return elapsed > s.launchInterval(*prevDep, dep, considerExit)
+func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, runway string) bool {
+	// Check if enough time has passed since the last departure
+	if depState.LastDeparture != nil {
+		elapsed := s.State.SimTime.Sub(depState.LastDeparture.LaunchTime)
+		if elapsed < s.launchInterval(*depState.LastDeparture, dep, considerExit) {
+			return false
+		}
 	}
+
+	// Check if we need to wait after a recent arrival's landing to
+	// simulate its deceleration and vacating the runway (though skip this
+	// check if both the last arrival and the departing aircraft are VFR.)
+	depAc := s.Aircraft[dep.ADSBCallsign]
+	if depAc.FlightPlan.Rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
+		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
+			fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
+			return false
+		}
+	}
+
+	// Check for imminent arrivals on this runway
+	// Skip this check if both arriving and departing aircraft are VFR
+	for _, ac := range s.Aircraft {
+		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == runway {
+			// Skip if both aircraft are VFR
+			if ac.FlightPlan.Rules == av.FlightRulesVFR && depAc.FlightPlan.Rules == av.FlightRulesVFR {
+				continue
+			}
+
+			if dist, err := ac.Nav.distanceToEndOfApproach(); err == nil && dist < 2.0 {
+				// Hold departure; the arrival's too close
+				fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 // launchInterval returns the amount of time we must wait before launching
