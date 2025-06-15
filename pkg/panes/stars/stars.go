@@ -1336,7 +1336,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 	var tracks []sim.Track
 	ps := sp.currentPrefs()
 	single := sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeSingle
-	now := ctx.Client.State.SimTime
+	now := ctx.Client.CurrentTime()
 
 	for _, trk := range ctx.Client.State.Tracks {
 		visible := false
