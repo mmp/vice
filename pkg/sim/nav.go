@@ -801,7 +801,9 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 			climb *= s
 		}
 
-		if !nav.FlightState.InitialDepartureClimb {
+		if nav.FlightState.InitialDepartureClimb {
+			nav.FlightState.AltitudeRate = climb
+		} else {
 			// Reduce climb rate as we approach target altitude
 			altitudeRemaining := targetAltitude - nav.FlightState.Altitude
 			if altitudeRemaining < rateFadeAltDifference {
