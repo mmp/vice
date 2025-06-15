@@ -62,6 +62,9 @@ type ControlClient struct {
 // This is the client-side representation of a server (perhaps could be better-named...)
 type Server struct {
 	*RPCClient
+
+	HaveTTS bool
+
 	name        string
 	configs     map[string]map[string]*server.Configuration
 	runningSims map[string]*server.RemoteSim
@@ -592,6 +595,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 				ch <- &serverConnection{
 					Server: &Server{
 						RPCClient:   client,
+						HaveTTS:     cr.HaveTTS,
 						name:        "Network (Multi-controller)",
 						configs:     cr.Configurations,
 						runningSims: cr.RunningSims,

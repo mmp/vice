@@ -475,7 +475,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 }
 
 func (c *ConnectModalClient) Draw() int {
-	if enter := c.simConfig.DrawUI(c.platform); enter {
+	if enter := c.simConfig.DrawUI(c.platform, c.config); enter {
 		return 1
 	} else {
 		return -1

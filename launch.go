@@ -372,6 +372,16 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				}
 			}
 
+			// Show TTS disable option if the server supports TTS
+			if c.selectedServer != nil && c.selectedServer.HaveTTS {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
+				// Also update configs for both joining remote sims and creating new sims
+				c.connectionConfig.DisableTextToSpeech = config.DisableTextToSpeech
+				c.NewSimConfiguration.DisableTextToSpeech = config.DisableTextToSpeech
+			}
+
 			validAirport := c.Scenario.PrimaryAirport != "KAAC"
 
 			imgui.TableNextRow()
