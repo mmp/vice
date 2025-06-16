@@ -113,7 +113,7 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 // gl.PixelStorei(gl.PACK_LSB_FIRST, gl.FALSE) and provide them as above,
 // though that doesn't seem to work.  Hence, we just reverse the bytes by
 // hand.
-func ReverseStippleBytes(stipple [32]uint32) [32]uint32 {
+func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 	var result [32]uint32
 	for i, line := range stipple {
 		a, b, c, d := uint8(line>>24), uint8(line>>16), uint8(line>>8), uint8(line)
@@ -124,7 +124,7 @@ func ReverseStippleBytes(stipple [32]uint32) [32]uint32 {
 }
 
 // pt should return nm-based coordinates
-func CalculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
+func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
 	prev, pok := pt(-1)
 	cur, _ := pt(0)
 	next, nok := pt(1)
@@ -414,7 +414,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			ld.AddLine(math.Sub2f(e1, perp), math.Add2f(e1, perp), color)
 		}
 
-		offset := CalculateOffset(style.Font, func(j int) ([2]float32, bool) {
+		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
 			idx := i + j
 			if idx < 0 || idx >= len(waypoints) {
 				return [2]float32{}, false

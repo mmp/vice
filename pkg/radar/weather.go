@@ -448,9 +448,9 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 
 			cb.EnablePolygonStipple()
 			if i == 1 || i == 4 {
-				cb.PolygonStipple(ReverseStippleBytes(wxStippleLight))
+				cb.PolygonStipple(reverseStippleBytes(wxStippleLight))
 			} else if i == 2 || i == 5 {
-				cb.PolygonStipple(ReverseStippleBytes(wxStippleDense))
+				cb.PolygonStipple(reverseStippleBytes(wxStippleDense))
 			}
 			// Draw the same quads again, just with a different color and stippled.
 			cb.SetRGB(renderer.RGB{contrast, contrast, contrast})
