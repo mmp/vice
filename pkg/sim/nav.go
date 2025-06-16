@@ -377,6 +377,8 @@ func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
+	nav.Heading = NavHeading{}
+	nav.DeferredNavHeading = nil
 	nav.Waypoints = wps
 	return
 
