@@ -462,7 +462,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
-	now := ctx.Client.State.SimTime
+	now := ctx.Client.CurrentTime()
 	fa := ctx.Client.State.STARSFacilityAdaptation
 	if sp.radarMode(fa.RadarSites) == RadarModeFused {
 		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {

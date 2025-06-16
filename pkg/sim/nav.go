@@ -81,6 +81,7 @@ type FlightState struct {
 	PrevAltitude float32
 	IAS, GS      float32 // speeds...
 	BankAngle    float32 // degrees
+	AltitudeRate float32 // + -> climb, - -> descent
 }
 
 func (fs *FlightState) Summary() string {
@@ -376,6 +377,9 @@ func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
+	nav.Waypoints = wps
+	return
+
 	delay := 8 + 5*nav.Rand.Float32()
 	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
@@ -724,6 +728,7 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 		if nav.IsAirborne() && nav.FlightState.InitialDepartureClimb {
 			nav.FlightState.InitialDepartureClimb = false
 		}
+		nav.FlightState.AltitudeRate = 0
 		nav.Altitude.Expedite = false
 		return
 	}
@@ -770,6 +775,7 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 
 	if math.Abs(targetAltitude-nav.FlightState.Altitude) < 3 {
 		setAltitude(targetAltitude)
+		nav.FlightState.AltitudeRate = 0
 		lg.Debug("reached target altitude")
 		return
 	}
@@ -787,6 +793,8 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 		descent = min(descent, targetRate)
 	}
 
+	const rateFadeAltDifference = 500
+	const rateMaxDeltaPercent = 0.075
 	if nav.FlightState.Altitude < targetAltitude {
 		if deltaKts > 0 {
 			// accelerating in the climb, so reduce climb rate; the scale
@@ -795,7 +803,32 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 			s := math.Clamp(max-deltaKts, .25, 1)
 			climb *= s
 		}
-		setAltitude(min(targetAltitude, nav.FlightState.Altitude+climb/60))
+
+		if nav.FlightState.InitialDepartureClimb {
+			nav.FlightState.AltitudeRate = climb
+		} else {
+			// Reduce climb rate as we approach target altitude
+			altitudeRemaining := targetAltitude - nav.FlightState.Altitude
+			if altitudeRemaining < rateFadeAltDifference {
+				climb *= max(altitudeRemaining/rateFadeAltDifference, 0.25)
+			}
+
+			// Gradually transition to the target climb rate
+			maxRateChange := nav.Perf.Rate.Climb * rateMaxDeltaPercent
+			if nav.Altitude.Expedite {
+				maxRateChange *= 2
+			}
+			rateDiff := climb - nav.FlightState.AltitudeRate
+			if math.Abs(rateDiff) <= maxRateChange {
+				nav.FlightState.AltitudeRate = climb
+			} else if rateDiff > 0 {
+				nav.FlightState.AltitudeRate += maxRateChange
+			} else {
+				nav.FlightState.AltitudeRate -= maxRateChange
+			}
+		}
+
+		setAltitude(min(targetAltitude, nav.FlightState.Altitude+nav.FlightState.AltitudeRate/60))
 	} else if nav.FlightState.Altitude > targetAltitude {
 		if deltaKts < 0 {
 			// Reduce rate due to concurrent deceleration
@@ -803,7 +836,29 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 			s := math.Clamp(max - -deltaKts, .25, 1)
 			descent *= s
 		}
-		setAltitude(max(targetAltitude, nav.FlightState.Altitude-descent/60))
+
+		// Reduce descent rate as we approach target altitude
+		altitudeRemaining := nav.FlightState.Altitude - targetAltitude
+		if altitudeRemaining < rateFadeAltDifference {
+			descent *= max(altitudeRemaining/rateFadeAltDifference, 0.25)
+		}
+
+		// Gradually transition to the target descent rate
+		maxRateChange := nav.Perf.Rate.Descent * rateMaxDeltaPercent
+		if nav.Altitude.Expedite {
+			maxRateChange *= 2
+		}
+
+		rateDiff := -descent - nav.FlightState.AltitudeRate
+		if math.Abs(rateDiff) <= maxRateChange {
+			nav.FlightState.AltitudeRate = -descent
+		} else if rateDiff > 0 {
+			nav.FlightState.AltitudeRate += maxRateChange
+		} else {
+			nav.FlightState.AltitudeRate -= maxRateChange
+		}
+
+		setAltitude(max(targetAltitude, nav.FlightState.Altitude+nav.FlightState.AltitudeRate/60))
 	}
 }
 

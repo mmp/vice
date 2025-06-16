@@ -24,6 +24,11 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
+type humanController struct {
+	events              *EventsSubscription
+	disableTextToSpeech bool
+}
+
 type Sim struct {
 	State *State
 
@@ -32,7 +37,7 @@ type Sim struct {
 	Aircraft map[av.ADSBCallsign]*Aircraft
 
 	SignOnPositions  map[string]*av.Controller
-	humanControllers map[string]*EventsSubscription
+	humanControllers map[string]*humanController
 
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
@@ -199,7 +204,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		VFRReportingPoints: config.VFRReportingPoints,
 
-		humanControllers: make(map[string]*EventsSubscription),
+		humanControllers: make(map[string]*humanController),
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
@@ -267,7 +272,7 @@ func (s *Sim) Activate(lg *log.Logger) {
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)
 	}
-	s.humanControllers = make(map[string]*EventsSubscription)
+	s.humanControllers = make(map[string]*humanController)
 	s.State.HumanControllers = nil
 
 	now := time.Now()
@@ -304,9 +309,9 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("push_end", s.PushEnd))
 }
 
-func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
+func (s *Sim) SignOn(tcp string, instructor bool, disableTextToSpeech bool) (*State, error) {
 	s.mu.Lock(s.lg)
-	if err := s.signOn(tcp, instructor); err != nil {
+	if err := s.signOn(tcp, instructor, disableTextToSpeech); err != nil {
 		s.mu.Unlock(s.lg)
 		return nil, err
 	}
@@ -319,7 +324,7 @@ func (s *Sim) SignOn(tcp string, instructor bool) (*State, error) {
 	return state, nil
 }
 
-func (s *Sim) signOn(tcp string, instructor bool) error {
+func (s *Sim) signOn(tcp string, instructor bool, disableTextToSpeech bool) error {
 	if _, ok := s.humanControllers[tcp]; ok {
 		return ErrControllerAlreadySignedIn
 	}
@@ -331,7 +336,10 @@ func (s *Sim) signOn(tcp string, instructor bool) error {
 		return av.ErrNoController
 	}
 
-	s.humanControllers[tcp] = s.eventStream.Subscribe()
+	s.humanControllers[tcp] = &humanController{
+		events:              s.eventStream.Subscribe(),
+		disableTextToSpeech: disableTextToSpeech,
+	}
 	s.State.Controllers[tcp] = s.SignOnPositions[tcp]
 	s.State.HumanControllers = append(s.State.HumanControllers, tcp)
 
@@ -369,7 +377,7 @@ func (s *Sim) SignOff(tcp string) error {
 		s.State.LaunchConfig.Controller = ""
 	}
 
-	s.humanControllers[tcp].Unsubscribe()
+	s.humanControllers[tcp].events.Unsubscribe()
 
 	delete(s.humanControllers, tcp)
 	delete(s.State.Controllers, tcp)
@@ -395,12 +403,13 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 	// Make sure we can successfully sign on before signing off from the
 	// current position. Preserve instructor status from the original controller.
 	wasInstructor := s.State.Controllers[fromTCP].Instructor
-	if err := s.signOn(toTCP, wasInstructor); err != nil {
+	wasDisableTTS := s.humanControllers[fromTCP].disableTextToSpeech
+	if err := s.signOn(toTCP, wasInstructor, wasDisableTTS); err != nil {
 		return err
 	}
 
 	// Swap the event subscriptions so we don't lose any events pending on the old one.
-	s.humanControllers[toTCP].Unsubscribe()
+	s.humanControllers[toTCP].events.Unsubscribe()
 	s.humanControllers[toTCP] = s.humanControllers[fromTCP]
 	s.State.HumanControllers = append(s.State.HumanControllers, toTCP)
 
@@ -603,7 +612,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 	defer s.mu.Unlock(s.lg)
 
 	var events []Event
-	if sub, ok := s.humanControllers[tcp]; ok {
+	if hc, ok := s.humanControllers[tcp]; ok {
 		consolidateRadioTransmissions := func(events []Event) []Event {
 			canConsolidate := func(a, b Event) bool {
 				return a.Type == RadioTransmissionEvent && b.Type == RadioTransmissionEvent &&
@@ -628,7 +637,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			return c
 		}
 
-		events = consolidateRadioTransmissions(sub.Get())
+		events = consolidateRadioTransmissions(hc.events.Get())
 
 		ctrl := s.State.Controllers[tcp]
 
@@ -672,6 +681,11 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		// Post TTS requests
 		for _, e := range events {
 			if e.Type != RadioTransmissionEvent || e.ToController != tcp {
+				continue
+			}
+
+			// Skip TTS generation if it's disabled for this controller
+			if hc, ok := s.humanControllers[tcp]; ok && hc.disableTextToSpeech {
 				continue
 			}
 
@@ -1073,6 +1087,27 @@ func (s *Sim) updateState() {
 					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
 					if lowEnough {
 						s.lg.Info("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
+
+						// Record the landing if necessary for scheduling departures.
+						if depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]; ok {
+							var runway string
+							if ac.Nav.Approach.Assigned != nil {
+								// IFR aircraft with assigned approach
+								runway = ac.Nav.Approach.Assigned.Runway
+							} else {
+								// VFR aircraft - select best runway based on wind
+								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
+								if rwy, _ := ap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation); rwy != nil {
+									runway = rwy.Id
+								}
+							}
+
+							if rwyState, ok := depState[runway]; ok {
+								rwyState.LastArrivalLandingTime = s.State.SimTime
+								rwyState.LastArrivalFlightRules = ac.FlightPlan.Rules
+							}
+						}
+
 						s.deleteAircraft(ac)
 					} else {
 						s.goAround(ac)

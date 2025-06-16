@@ -61,6 +61,7 @@ type humanController struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	speechWs            *websocket.Conn
+	disableTextToSpeech bool
 }
 
 type SimScenarioConfiguration struct {
@@ -102,16 +103,18 @@ type NewSimConfiguration struct {
 
 	LiveWeather bool
 
-	AllowInstructorRPO bool
-	Instructor         bool
-	IsLocal            bool
+	AllowInstructorRPO  bool
+	Instructor          bool
+	IsLocal             bool
+	DisableTextToSpeech bool
 }
 
 type SimConnectionConfiguration struct {
-	RemoteSim  string
-	Position   string
-	Password   string
-	Instructor bool
+	RemoteSim           string
+	Position            string
+	Password            string
+	Instructor          bool
+	DisableTextToSpeech bool
 }
 
 func MakeNewSimConfiguration() NewSimConfiguration {
@@ -127,12 +130,13 @@ type RemoteSim struct {
 	CoveredPositions   map[string]av.Controller
 }
 
-func (as *activeSim) AddHumanController(tcp, token string) *humanController {
+func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech bool) *humanController {
 	hc := &humanController{
-		asim:           as,
-		tcp:            tcp,
-		lastUpdateCall: time.Now(),
-		token:          token,
+		asim:                as,
+		tcp:                 tcp,
+		lastUpdateCall:      time.Now(),
+		token:               token,
+		disableTextToSpeech: disableTextToSpeech,
 	}
 
 	as.controllersByTCP[tcp] = hc
@@ -185,7 +189,7 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 			controllersByTCP: make(map[string]*humanController),
 		}
 		pos := sim.State.PrimaryController
-		return sm.Add(as, result, pos, config.Instructor, true)
+		return sm.Add(as, result, pos, config.Instructor, true, config.DisableTextToSpeech)
 	} else {
 		return ErrInvalidSSimConfiguration
 	}
@@ -205,13 +209,14 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 	}
 
 	// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
-	instructor := config.Instructor && config.Position == ""
-	ss, token, err := sm.signOn(as, config.Position, instructor)
+	signOnConfig := *config
+	signOnConfig.Instructor = config.Instructor && config.Position == ""
+	ss, token, err := sm.signOn(as, &signOnConfig)
 	if err != nil {
 		return err
 	}
 
-	hc := as.AddHumanController(config.Position, token)
+	hc := as.AddHumanController(config.Position, token, config.DisableTextToSpeech)
 	sm.controllersByToken[token] = hc
 
 	*result = NewSimResult{
@@ -324,10 +329,10 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 		controllersByTCP: make(map[string]*humanController),
 		local:            true,
 	}
-	return sm.Add(as, result, sim.State.PrimaryController, false, false)
+	return sm.Add(as, result, sim.State.PrimaryController, false, false, false)
 }
 
-func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, instructor bool, prespawn bool) error {
+func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, instructor bool, prespawn bool, disableTextToSpeech bool) error {
 	lg := sm.lg
 	if as.name != "" {
 		lg = lg.With(slog.String("sim_name", as.name))
@@ -345,13 +350,18 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 	sm.lg.Infof("%s: adding sim", as.name)
 	sm.activeSims[as.name] = as
 
-	ss, token, err := sm.signOn(as, initialTCP, instructor)
+	signOnConfig := &SimConnectionConfiguration{
+		Position:            initialTCP,
+		Instructor:          instructor,
+		DisableTextToSpeech: disableTextToSpeech,
+	}
+	ss, token, err := sm.signOn(as, signOnConfig)
 	if err != nil {
 		sm.mu.Unlock(sm.lg)
 		return err
 	}
 
-	hc := as.AddHumanController(initialTCP, token)
+	hc := as.AddHumanController(initialTCP, token, disableTextToSpeech)
 	sm.controllersByToken[token] = hc
 
 	sm.mu.Unlock(sm.lg)
@@ -469,8 +479,8 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 // assume SimManager lock is held
-func (sm *SimManager) signOn(as *activeSim, tcp string, instructor bool) (*sim.State, string, error) {
-	ss, err := as.sim.SignOn(tcp, instructor)
+func (sm *SimManager) signOn(as *activeSim, config *SimConnectionConfiguration) (*sim.State, string, error) {
+	ss, err := as.sim.SignOn(config.Position, config.Instructor, config.DisableTextToSpeech)
 	if err != nil {
 		return nil, "", err
 	}

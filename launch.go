@@ -120,7 +120,7 @@ func (c *NewSimConfiguration) ShowRatesWindow() bool {
 	return c.newSimType == NewSimCreateLocal || c.newSimType == NewSimCreateRemote
 }
 
-func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
+func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 	if err := c.mgr.UpdateRemoteSims(); err != nil {
 		c.lg.Warnf("UpdateRemoteSims: %v", err)
 	}
@@ -303,11 +303,26 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				return id
 			}
 
+			if len(c.Scenario.ArrivalRunways) > 0 {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Text("Landing:")
+				imgui.TableNextColumn()
+
+				var a []string
+				for _, rwy := range c.Scenario.ArrivalRunways {
+					a = append(a, rwy.Airport+"/"+rwy.Runway)
+				}
+				sort.Strings(a)
+				imgui.Text(strings.Join(a, ", "))
+			}
+
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
 			imgui.Text(fmtPosition(c.Scenario.SelectedController))
+
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
@@ -341,19 +356,32 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 				}
 			}
 
-			if len(c.Scenario.ArrivalRunways) > 0 {
+			if c.newSimType == NewSimCreateRemote {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text("Landing:")
-				imgui.TableNextColumn()
-
-				var a []string
-				for _, rwy := range c.Scenario.ArrivalRunways {
-					a = append(a, rwy.Airport+"/"+rwy.Runway)
+				imgui.Checkbox("Require Password", &c.RequirePassword)
+				if c.RequirePassword {
+					imgui.TableNextColumn()
+					imgui.InputTextMultiline("Password", &c.Password, imgui.Vec2{}, 0, nil)
+					if c.Password == "" {
+						imgui.SameLine()
+						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
+						imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
+						imgui.PopStyleColor()
+					}
 				}
-				sort.Strings(a)
-				imgui.Text(strings.Join(a, ", "))
 			}
+
+			// Show TTS disable option if the server supports TTS
+			if c.selectedServer != nil && c.selectedServer.HaveTTS {
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
+				// Also update configs for both joining remote sims and creating new sims
+				c.connectionConfig.DisableTextToSpeech = config.DisableTextToSpeech
+				c.NewSimConfiguration.DisableTextToSpeech = config.DisableTextToSpeech
+			}
+
 			validAirport := c.Scenario.PrimaryAirport != "KAAC"
 
 			imgui.TableNextRow()
@@ -368,19 +396,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			}
 			if !validAirport {
 				imgui.EndDisabled()
-			}
-
-			if c.newSimType == NewSimCreateRemote {
-				imgui.Checkbox("Require Password", &c.RequirePassword)
-				if c.RequirePassword {
-					imgui.InputTextMultiline("Password", &c.Password, imgui.Vec2{}, 0, nil)
-					if c.Password == "" {
-						imgui.SameLine()
-						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-						imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
-						imgui.PopStyleColor()
-					}
-				}
 			}
 
 			imgui.TableNextColumn()
@@ -412,13 +427,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform) bool {
 			if !c.LiveWeather {
 				imgui.BeginDisabled()
 			}
-			refresh := imgui.Button("Refresh Weather")
-			if refresh {
+			if imgui.Button("Refresh Weather") {
 				refreshWeather()
 			}
 			if !c.LiveWeather {
 				imgui.EndDisabled()
 			}
+
 			imgui.EndTable()
 		}
 	} else {
@@ -615,8 +630,7 @@ func (c *NewSimConfiguration) Start() error {
 		}
 	} else {
 		// Create sim configuration for new sim
-		isLocal := c.newSimType == NewSimCreateLocal
-		if err := c.mgr.CreateNewSim(c.NewSimConfiguration, isLocal, c.selectedServer, c.lg); err != nil {
+		if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer, c.lg); err != nil {
 			c.lg.Errorf("CreateNewSim failed: %v", err)
 			return err
 		}

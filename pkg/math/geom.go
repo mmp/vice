@@ -164,6 +164,23 @@ func LineLineIntersect(p1f, p2f, p3f, p4f [2]float32) ([2]float32, bool) {
 	return [2]float32{float32(numx / denom), float32(numy / denom)}, true
 }
 
+// SegmentSegmentIntersect returns the intersection point of the two line segments
+// specified by the vertices (p1, p2) and (p3, p4). An additional returned Boolean
+// value indicates whether a valid intersection was found within both segments.
+func SegmentSegmentIntersect(p1, p2, p3, p4 [2]float32) ([2]float32, bool) {
+	// First check if the infinite lines intersect
+	p, ok := LineLineIntersect(p1, p2, p3, p4)
+	if !ok {
+		return [2]float32{}, false
+	}
+
+	// See if the intersection point is within the bounding boxes of both segments.
+	b0 := Extent2DFromPoints([][2]float32{p1, p2})
+	b1 := Extent2DFromPoints([][2]float32{p3, p4})
+
+	return p, b0.Inside(p) && b1.Inside(p)
+}
+
 // RayRayMinimumDistance takes two rays p0+d0*t and p1+d1*t and returns the
 // value of t where their distance is minimized.
 func RayRayMinimumDistance(p0, d0, p1, d1 [2]float32) float32 {

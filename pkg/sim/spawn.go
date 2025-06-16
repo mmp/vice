@@ -52,7 +52,9 @@ type RunwayLaunchState struct {
 	// Sequenced departures, pulled from Released. These are launched in-order.
 	Sequenced []DepartureAircraft
 
-	LastDeparture *DepartureAircraft
+	LastDeparture          *DepartureAircraft
+	LastArrivalLandingTime time.Time      // when the last arrival landed on this runway
+	LastArrivalFlightRules av.FlightRules // flight rules of the last arrival that landed
 
 	VFRAttempts  int
 	VFRSuccesses int
@@ -704,7 +706,7 @@ func (s *Sim) updateDepartureSequence() {
 
 			// See if we have anything to launch
 			considerExit := len(depState.Sequenced) == 1 // if it's just us waiting, don't rush it unnecessarily
-			if len(depState.Sequenced) > 0 && s.canLaunch(depState.LastDeparture, depState.Sequenced[0], considerExit) {
+			if len(depState.Sequenced) > 0 && s.canLaunch(depState, depState.Sequenced[0], considerExit, depRunway) {
 				dep := depState.Sequenced[0]
 				ac := s.Aircraft[dep.ADSBCallsign]
 
@@ -739,6 +741,54 @@ func (s *Sim) updateDepartureSequence() {
 	}
 }
 
+// intersectingRunways returns all runways that physically intersect the
+// given runway up to one nm past the opposite threshold.
+func (s *Sim) intersectingRunways(airport, depRwy string) []string {
+	depRwy = av.TidyRunway(depRwy)
+
+	// Get the departure runway info
+	rwySegment := func(rwy string) (seg [2][2]float32, ok bool) {
+		var r, opp av.Runway
+		if r, ok = av.LookupRunway(airport, rwy); !ok {
+			return
+		}
+
+		if opp, ok = av.LookupOppositeRunway(airport, rwy); !ok {
+			return
+		}
+
+		// Line segment from departure threshold to 1nm past opposing threshold
+		rp := math.LL2NM(r.Threshold, s.State.NmPerLongitude)
+		op := math.LL2NM(opp.Threshold, s.State.NmPerLongitude)
+		v := math.Normalize2f(math.Sub2f(op, rp))
+
+		return [2][2]float32{rp, math.Add2f(op, v)}, true
+	}
+
+	depSeg, ok := rwySegment(depRwy)
+	if !ok {
+		return nil
+	}
+
+	// Check all other runways for intersection
+	var intersecting []string
+	if _, ok := s.State.Airports[airport]; ok {
+		for _, otherRwy := range av.DB.Airports[airport].Runways {
+			if av.TidyRunway(otherRwy.Id) == depRwy {
+				continue // Skip the same runway
+			}
+
+			if othSeg, ok := rwySegment(otherRwy.Id); ok {
+				if _, ok := math.SegmentSegmentIntersect(depSeg[0], depSeg[1], othSeg[0], othSeg[1]); ok {
+					intersecting = append(intersecting, otherRwy.Id)
+				}
+			}
+		}
+	}
+
+	return intersecting
+}
+
 // sameGroupRunways returns an iterator over all of the runways in the
 // ~equivalence class with the given depRwy. Such equivalences can come
 // both from user-specified "departure_runways_as_one" but also from
@@ -764,7 +814,20 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 			}
 		}
 
-		// Now see look for departing both e.g. "4" and "4.AutoWest"
+		// Also include intersecting runways.
+		for _, intRwy := range s.intersectingRunways(airport, depRwy) {
+			// We can't directly look up in the runwayState map due to runways like 28L.1
+			// but instead have to check each one for a match.
+			for rwy, state := range runwayState {
+				if av.TidyRunway(intRwy) == av.TidyRunway(rwy) {
+					if !yield(intRwy, state) {
+						return
+					}
+				}
+			}
+		}
+
+		// Now look for departing both e.g. "4" and "4.AutoWest"
 		for rwy, state := range runwayState {
 			if depRwy == av.TidyRunway(rwy) {
 				if !yield(rwy, state) {
@@ -776,16 +839,44 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 }
 
 // canLaunch checks whether we can go ahead and launch dep.
-func (s *Sim) canLaunch(prevDep *DepartureAircraft, dep DepartureAircraft, considerExit bool) bool {
-	if prevDep == nil {
-		// No previous departure on this runway, so there's nothing
-		// stopping us.
-		return true
-	} else {
-		// Make sure enough time has passed since the last departure.
-		elapsed := s.State.SimTime.Sub(prevDep.LaunchTime)
-		return elapsed > s.launchInterval(*prevDep, dep, considerExit)
+func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, runway string) bool {
+	// Check if enough time has passed since the last departure
+	if depState.LastDeparture != nil {
+		elapsed := s.State.SimTime.Sub(depState.LastDeparture.LaunchTime)
+		if elapsed < s.launchInterval(*depState.LastDeparture, dep, considerExit) {
+			return false
+		}
 	}
+
+	// Check if we need to wait after a recent arrival's landing to
+	// simulate its deceleration and vacating the runway (though skip this
+	// check if both the last arrival and the departing aircraft are VFR.)
+	depAc := s.Aircraft[dep.ADSBCallsign]
+	if depAc.FlightPlan.Rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
+		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
+			fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
+			return false
+		}
+	}
+
+	// Check for imminent arrivals on this runway
+	// Skip this check if both arriving and departing aircraft are VFR
+	for _, ac := range s.Aircraft {
+		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == runway {
+			// Skip if both aircraft are VFR
+			if ac.FlightPlan.Rules == av.FlightRulesVFR && depAc.FlightPlan.Rules == av.FlightRulesVFR {
+				continue
+			}
+
+			if dist, err := ac.Nav.distanceToEndOfApproach(); err == nil && dist < 2.0 {
+				// Hold departure; the arrival's too close
+				fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 // launchInterval returns the amount of time we must wait before launching

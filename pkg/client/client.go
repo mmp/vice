@@ -48,7 +48,7 @@ type ControlClient struct {
 	lastUpdateRequest time.Time
 	lastReturnedTime  time.Time
 	updateCall        *pendingCall
-	remoteSim         bool
+	lastUpdateLatency time.Duration
 
 	pendingCalls []*pendingCall
 
@@ -62,6 +62,9 @@ type ControlClient struct {
 // This is the client-side representation of a server (perhaps could be better-named...)
 type Server struct {
 	*RPCClient
+
+	HaveTTS bool
+
 	name        string
 	configs     map[string]map[string]*server.Configuration
 	runningSims map[string]*server.RemoteSim
@@ -177,12 +180,11 @@ func (p *pendingCall) CheckFinished(es *sim.EventStream, state *sim.State) bool 
 	}
 }
 
-func NewControlClient(ss sim.State, local bool, controllerToken string, wsURL string, client *RPCClient, lg *log.Logger) *ControlClient {
+func NewControlClient(ss sim.State, controllerToken string, wsURL string, client *RPCClient, lg *log.Logger) *ControlClient {
 	cc := &ControlClient{
 		controllerToken:   controllerToken,
 		client:            client,
 		lg:                lg,
-		remoteSim:         !local,
 		lastUpdateRequest: time.Now(),
 		State:             ss,
 	}
@@ -323,6 +325,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go("Sim.GetStateUpdate", c.controllerToken, &update, nil), &update,
 			func(err error) {
 				d := time.Since(c.updateCall.IssueTime)
+				c.lastUpdateLatency = d
 				if d > 250*time.Millisecond {
 					c.lg.Warnf("Slow world update response %s", d)
 				} else {
@@ -448,12 +451,9 @@ func (c *ControlClient) CurrentTime() time.Time {
 	if !c.State.Paused && !c.lastUpdateRequest.IsZero() {
 		d := time.Since(c.lastUpdateRequest)
 
-		// Roughly account for RPC overhead; more for a remote server (where
-		// SimName will be set.)
-		if !c.remoteSim {
-			d -= 10 * time.Millisecond
-		} else {
-			d -= 50 * time.Millisecond
+		// Account for RPC overhead using half of the observed latency
+		if c.lastUpdateLatency > 0 {
+			d -= c.lastUpdateLatency / 2
 		}
 		d = max(0, d)
 
@@ -592,6 +592,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 				ch <- &serverConnection{
 					Server: &Server{
 						RPCClient:   client,
+						HaveTTS:     cr.HaveTTS,
 						name:        "Network (Multi-controller)",
 						configs:     cr.Configurations,
 						runningSims: cr.RunningSims,

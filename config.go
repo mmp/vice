@@ -55,6 +55,7 @@ type ConfigNoSim struct {
 	AskedDiscordOptIn      bool
 	InhibitDiscordActivity util.AtomicBool
 	NotifiedTargetGenMode  bool
+	DisableTextToSpeech    bool
 
 	UserTCP string
 }

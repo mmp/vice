@@ -69,6 +69,7 @@ func MakeServerManager(address, additionalScenario, additionalVideoMap string, l
 			} else {
 				cm.LocalServer = &Server{
 					RPCClient:   client,
+					HaveTTS:     cr.HaveTTS,
 					name:        "Local (Single controller)",
 					configs:     cr.Configurations,
 					runningSims: cr.RunningSims,
@@ -91,13 +92,13 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	}
 
 	wsAddress := "localhost:" + strconv.Itoa(result.SpeechWSPort)
-	cm.client = NewControlClient(*result.SimState, true, result.ControllerToken, wsAddress, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, isLocal bool, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 
 	if err := srv.callWithTimeout("SimManager.NewSim", config, &result); err != nil {
@@ -109,26 +110,35 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, isL
 		}
 		return err
 	} else {
-		if cm.client != nil {
-			cm.client.Disconnect()
-		}
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
+		return nil
+	}
+}
 
-		var wsAddress string
+// handleSuccessfulConnection handles the common logic for setting up a client
+// connection after a successful RPC call to create or join a sim
+func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResult, srv *Server,
+	disableTextToSpeech bool, lg *log.Logger) {
+	if cm.client != nil {
+		cm.client.Disconnect()
+	}
+
+	var wsAddress string
+	// Only set websocket address if TTS is not disabled
+	if !disableTextToSpeech {
 		if srv == cm.LocalServer {
 			wsAddress = "localhost:" + strconv.Itoa(result.SpeechWSPort)
 		} else {
 			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
 			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
 		}
-		cm.client = NewControlClient(*result.SimState, config.IsLocal, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+	}
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, srv.RPCClient, lg)
 
-		cm.connectionStartTime = time.Now()
+	cm.connectionStartTime = time.Now()
 
-		if cm.onNewClient != nil {
-			cm.onNewClient(cm.client)
-		}
-
-		return nil
+	if cm.onNewClient != nil {
+		cm.onNewClient(cm.client)
 	}
 }
 
@@ -205,26 +215,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfigurati
 		}
 		return err
 	} else {
-		if cm.client != nil {
-			cm.client.Disconnect()
-		}
-
-		var wsAddress string
-		isLocal := srv == cm.LocalServer
-		if isLocal {
-			wsAddress = "localhost:" + strconv.Itoa(result.SpeechWSPort)
-		} else {
-			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
-			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
-		}
-		cm.client = NewControlClient(*result.SimState, isLocal, result.ControllerToken, wsAddress, srv.RPCClient, lg)
-
-		cm.connectionStartTime = time.Now()
-
-		if cm.onNewClient != nil {
-			cm.onNewClient(cm.client)
-		}
-
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
 		return nil
 	}
 }
