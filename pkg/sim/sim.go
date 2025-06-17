@@ -1136,14 +1136,7 @@ func (s *Sim) updateState() {
 					tcp := s.State.ResolveController(fp.InboundHandoffController)
 					s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
 
-					airportName := ac.FlightPlan.DepartureAirport
-					if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
-						airportName = ap.Name
-					}
-
-					rt := speech.MakeContactTransmission("departing {airport}", airportName)
-					rt.Merge(ac.Nav.DepartureMessage())
-
+					rt := ac.Nav.DepartureMessage()
 					s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
 
 					// Clear this out so we only send one contact message
