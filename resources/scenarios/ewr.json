@@ -190,37 +190,44 @@
           }
         },
         "22R.Background": {
+          "departure_controller": "4N",
           "BIGGY,LANNA,PARKE": {
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W SBJ/a11000+/hoC39"
           },
           "ELIOT,NEWEL,ZIMMZ": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W N040.41.28.842,W074.26.01.734/a10000/hoC39"
           },
           "COATE,GAYEL,HAAYS,NEION": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5T N040.51.50.929,W074.24.37.386/a10000/hoC56"
           },
           "BAYYS,BDR,GREKI,MERIT": {
+            "departure_controller": "4N",
             "cleared_altitude": 12000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho1L N040.40.45.886,W074.13.17.882/a6000 N040.46.11.122,W074.09.33.513/a6000/ho5E LGA/a10000/hoB19"
           },
           "DIXIE,WHITE": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra/ho5S ELVAE/a6000 N040.23.14.741,W074.11.53.836/a6000-/hoC68"
           },
           "SBJ": {
+            "departure_controller": "4N",
             "cleared_altitude": 8000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra/ho4P N040.36.39.710,W074.10.37.124/a2500"
           },
           "BREZY": {
+            "departure_controller": "4N",
             "cleared_altitude": 6000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho1V N040.40.45.886,W074.13.17.882/a6000"
@@ -1255,32 +1262,38 @@
         },
         "1.Background": {
           "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000 N040.51.27.034,W074.15.53.503/a8000-/ho5W"
           },
           "SBJ,ARD": {
+            "departure_controller": "4N",
             "cleared_altitude": 7000,
             "sid": "TEB4",
             "handoff_controller": "4P",
             "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho"
           },
           "COATE,GAYEL,HAAYS,NEION,": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000 N040.54.38.169,W074.15.37.985/a8000-/ho5T"
           },
           "DIXIE,WHITE": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho5S N040.46.09.351,W074.13.11.317/a8000-"
           },
           "BAYYS,BDR,GREKI,MERIT,SHIPP,WAVEY": {
+            "departure_controller": "4N",
             "cleared_altitude": 12000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho1V BREZY"
           },
           "BREZY": {
+            "departure_controller": "4N",
             "cleared_altitude": 6000,
             "sid": "TEB4",
             "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho1V BREZY"
@@ -1295,26 +1308,31 @@
         },
         "24.Background": {
           "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "RUUDY6",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5W RUUDY/a10000 "
           },
           "COATE,GAYEL,HAAYS,NEION": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "RUUDY6",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5T RUUDY/a10000 "
           },
           "DIXIE,WHITE": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "RUUDY6",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5S N040.41.54.921,W074.16.00.507/a6000"
           },
           "BREZY": {
+            "departure_controller": "4N",
             "cleared_altitude": 6000,
             "sid": "RUUDY6",
             "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho1V N040.50.03.936,W074.17.53.638/a6000"
           },
           "SBJ, ARD": {
+            "departure_controller": "4N",
             "cleared_altitude": 8000,
             "sid": "RUUDY6",
             "handoff_controller": "4P",
