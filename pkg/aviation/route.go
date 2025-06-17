@@ -591,7 +591,12 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 
 	rg := MakeRouteGenerator(rwy.Threshold, opp.Threshold, nmPerLongitude)
 
-	// TODO: does CIFP or something else have the closed traffic side for runways encoded?
+	// Calculate aircraft heading from current position to runway threshold
+	aircraftHeading := math.Heading2LL(wp.Location, rwy.Threshold, nmPerLongitude, magneticVariation)
+
+	// Check if aircraft is aligned with runway (within +/- 90 degrees)
+	headingDiff := math.HeadingDifference(aircraftHeading, rwy.Heading)
+
 	var wps []Waypoint
 	addpt := func(n string, dx, dy, dalt float32, fo bool, slow bool) {
 		wp := rg.Waypoint("_"+n, dx, dy)
@@ -603,36 +608,46 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 		wps = append(wps, wp)
 	}
 
-	// Scale the points according to min speed so that if they have to be
-	// fast, they're given more space to work with.
-	sc := perf.Speed.Min / 80
-	pdist := sc // pattern offset from runway
+	if headingDiff <= 90 {
+		// Aircraft is aligned with runway - create straight-in approach
 
-	// Slightly sketchy to do in lat-long but works in this case.
-	sd := math.SignedPointLineDistance(wp.Location, rwy.Threshold, opp.Threshold)
-	if sd < 0 {
-		// coming from the left side of the extended runway centerline; just
-		// add a point so that they enter the pattern at 45 degrees.
-		addpt("enter45", 1, 1+pdist, 1000, false, true)
+		// Waypoint 1 mile out at 300' AGL on extended centerline
+		addpt("lineup", -2, 0, 300, true, true)
+		addpt("threshold", -1, 0, 0, true, true)
+		addpt("end", 1, 0, 0, true, true)
 	} else {
-		// coming from the right side; cross perpendicularly midfield, make
-		// a descending right 270 and join the pattern.
-		addpt("crossmidfield1", 0, -pdist, 1500, false, false)
-		addpt("crossmidfield2", 0, pdist, 1500, true, false)
-		addpt("crossmidfield3", 0, 1.5*pdist, 1500, true, true) // make some space to turn
-		addpt("right270-1", sc, 2.5*pdist, 1250, false, true)
-		addpt("right270-2", sc*2, 2*pdist, 1150, false, true)
-		addpt("right270-2", sc*1.5, 1.5*pdist, 1000, false, true)
+		// Aircraft not aligned - use standard traffic pattern
+		// Scale the points according to min speed so that if they have to be
+		// fast, they're given more space to work with.
+		sc := perf.Speed.Min / 80
+		pdist := sc // pattern offset from runway
+
+		// Slightly sketchy to do in lat-long but works in this case.
+		sd := math.SignedPointLineDistance(wp.Location, rwy.Threshold, opp.Threshold)
+		if sd < 0 {
+			// coming from the left side of the extended runway centerline; just
+			// add a point so that they enter the pattern at 45 degrees.
+			addpt("enter45", 1, 1+pdist, 1000, false, true)
+		} else {
+			// coming from the right side; cross perpendicularly midfield, make
+			// a descending right 270 and join the pattern.
+			addpt("crossmidfield1", 0, -pdist, 1500, false, false)
+			addpt("crossmidfield2", 0, pdist, 1500, true, false)
+			addpt("crossmidfield3", 0, 1.5*pdist, 1500, true, true) // make some space to turn
+			addpt("right270-1", sc, 2.5*pdist, 1250, false, true)
+			addpt("right270-2", sc*2, 2*pdist, 1150, false, true)
+			addpt("right270-2", sc*1.5, 1.5*pdist, 1000, false, true)
+		}
+		// both sides are the same from here.
+		addpt("joindownwind", 0, pdist, 1000, false, true)
+		addpt("base1", -1.5, pdist, 500, false, true)
+		addpt("base2", -3, pdist/2, 250, false, true)
+		addpt("base2", -1.5, 0, 150, false, true)
+		addpt("threshold", -1, 0, 0, false, true)
+		// Last point is at the far end of the runway just to give plenty of
+		// slop to make sure we hit it so the aircraft is deleted.
+		addpt("fin", 1, 0, 0, false, true)
 	}
-	// both sides are the same from here.
-	addpt("joindownwind", 0, pdist, 1000, false, true)
-	addpt("base1", -1.5, pdist, 500, false, true)
-	addpt("base2", -3, pdist/2, 250, false, true)
-	addpt("base2", -1.5, 0, 150, false, true)
-	addpt("threshold", -1, 0, 0, false, true)
-	// Last point is at the far end of the runway just to give plenty of
-	// slop to make sure we hit it so the aircraft is deleted.
-	addpt("fin", 1, 0, 0, false, true)
 
 	wps[len(wps)-1].Delete = true
 
