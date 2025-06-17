@@ -190,8 +190,8 @@
           }
         },
         "22R.Background": {
-          "departure_controller": "4N",
           "BIGGY,LANNA,PARKE": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W SBJ/a11000+/hoC39"
