@@ -1283,7 +1283,11 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		starsFp.TrackingController = ap.DepartureController
 		starsFp.ControllingController = ap.DepartureController
 		starsFp.InboundHandoffController = exitRoute.HandoffController
-	} else {
+	} else if exitRoute.DepartureController != "" && exitRoute.DepartureController != s.State.PrimaryController {
+		starsFp.TrackingController = exitRoute.DepartureController
+		starsFp.ControllingController = exitRoute.DepartureController
+		starsFp.InboundHandoffController = exitRoute.HandoffController
+	}else {
 		// human controller will be first
 		ctrl := s.State.PrimaryController
 		if len(s.State.MultiControllers) > 0 {

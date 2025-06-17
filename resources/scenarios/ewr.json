@@ -240,31 +240,37 @@
         },
         "4L.Background": {
           "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho5W N040.44.12.772,W074.06.38.886/a3000+/ho5W N040.44.41.900,W074.15.20.050/a8000-"
           },
           "SBJ,ARD": {
+            "departure_controller": "4N",
             "cleared_altitude": 7000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho4P N040.44.12.772,W074.06.38.886/a3000+"
           },
           "COATE,GAYEL,HAAYS,NEION,": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho5T N040.44.12.772,W074.06.38.886/a3000+ N040.46.40.744,W074.12.31.190/a8000-"
           },
           "DIXIE,WHITE": {
+            "departure_controller": "4N",
             "cleared_altitude": 17000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho5S N040.44.12.772,W074.06.38.886/a3000+ N040.44.41.900,W074.15.20.050/a8000-"
           },
           "BAYYS,BDR,GREKI,MERIT,SHIPP,WAVEY": {
+            "departure_controller": "4N",
             "cleared_altitude": 12000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho1L N040.44.12.772,W074.06.38.886/a3000+ N040.47.44.465,W074.03.17.204/a5000-/ho5E LGA/a10000"
           },
           "BREZY": {
+            "departure_controller": "4N",
             "cleared_altitude": 6000,
             "sid": "EWR5",
             "waypoints": "_EWR4_4La/ho1V N040.44.12.772,W074.06.38.886/a3000+"
