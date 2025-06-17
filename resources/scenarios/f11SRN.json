@@ -23,7 +23,7 @@
           "PLUMR": {
             "cleared_altitude": 32000,
             "sid": "FSHUN3",
-            "waypoints": "_MCO_36R N028.07.47.255,W081.29.45.855/hoZ23 TUPPY"
+            "waypoints": "_MCO_36R N028.07.47.255,W081.29.45.855/hoZ23 FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 32000,
@@ -60,7 +60,7 @@
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN3",
-            "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN"
+            "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- DADTI FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 7000,
@@ -112,7 +112,7 @@
           "PLUMR": {
             "cleared_altitude": 32000,
             "sid": "FSHUN3",
-            "waypoints": "BAAIT/a1500+ TUPPY"
+            "waypoints": "BAAIT/a1500+ FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 32000,
@@ -154,7 +154,7 @@
           "PLUMR": {
             "cleared_altitude": 32000,
             "sid": "FSHUN3",
-            "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN PLUMR"
+            "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- DADTI FSHUN PLUMR"
           },
           "PAINN": {
             "cleared_altitude": 32000,

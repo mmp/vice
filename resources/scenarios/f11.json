@@ -49,7 +49,7 @@
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN3",
-            "waypoints": "BAAIT/a1500+/h185 TUPPY"
+            "waypoints": "BAAIT/a1500+/h185 FSHUN PLUMR"
           },
           "PAINN": {
             "cleared_altitude": 7000,
@@ -111,7 +111,7 @@
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN3",
-            "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN PLUMR"
+            "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- DADTI FSHUN PLUMR"
           },
           "PAINN": {
             "cleared_altitude": 7000,
@@ -153,7 +153,7 @@
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN3",
-            "waypoints": "_MCO_36R/h185 TUPPY"
+            "waypoints": "_MCO_36R/h185 FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 7000,
@@ -215,7 +215,7 @@
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN3",
-            "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN"
+            "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- DADTI FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 7000,
@@ -11536,7 +11536,6 @@
   "reporting_points": [
     "WORMS",
     "VIZTA",
-    "TUPPY",
     "ESRAQ",
     "MARYB",
     "RIDES",
