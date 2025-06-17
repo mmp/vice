@@ -715,7 +715,7 @@ type ExitRoute struct {
 	Description      string        `json:"description"`
 	// optional, control position to handoff to at a /ho
 	HandoffController string `json:"handoff_controller"`
-	// optional, the initial tracking controller for the departure. 
+	// optional, the initial tracking controller for the departure.
 	DepartureController string `json:"departure_controller"`
 }
 
