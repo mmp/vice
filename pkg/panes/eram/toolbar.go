@@ -16,17 +16,6 @@ import (
 const toolbarButtonSize = 84
 const numToolbarSlots = 17
 
-var toolbarDrawState struct {
-	cb           *renderer.CommandBuffer
-	mouse        *platform.MouseState
-	mouseDownPos []float32
-	cursor       [2]float32
-	drawStartPos [2]float32
-	style        renderer.TextStyle
-	brightness   radar.ScopeBrightness
-	position     int
-}
-
 const (
 	toolbarMain = iota
 	toolbarDraw
@@ -198,6 +187,17 @@ func buttonSize(flags toolbarFlags, scale float32) [2]float32 {
 	}
 }
 
+var toolbarDrawState struct {
+	cb           *renderer.CommandBuffer
+	mouse        *platform.MouseState
+	mouseDownPos []float32
+	cursor       [2]float32
+	drawStartPos [2]float32
+	style        renderer.TextStyle
+	brightness   radar.ScopeBrightness
+	position     int
+}
+
 func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	toolbarDrawState.cb = cb
@@ -205,14 +205,16 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 
 	ps := ep.currentPrefs()
 	toolbarDrawState.brightness = ps.Brightness.Toolbar
-	var drawEndPos [2]float32
-	// TODO: position (i think)
+	toolbarDrawState.position = 0 // Always start at the top left untill custom toolbar locations are implemented
+	buttonSize := float32(int(ep.toolbarButtonScale(ctx) * toolbarButtonSize + 0.5)) // Check all of these sizes
+	toolbarDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
+	drawEndPos := [2]float32{ctx.PaneExtent.Width(), toolbarDrawState.drawStartPos[1] - buttonSize}
 
 	toolbarDrawState.cursor = toolbarDrawState.drawStartPos
 
 	toolbarDrawState.style = renderer.TextStyle{
 		Font:        renderer.GetDefaultFont(), // TODO: get the right font
-		Color:       renderer.RGB{R: 1, G: 1, B: 1},
+		Color:       toolbarTextColor,
 		LineSpacing: 0,
 	}
 
@@ -222,7 +224,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
-		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{0, 0.05, 0})
+		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{.31, .31, .31})
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
