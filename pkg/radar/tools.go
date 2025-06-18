@@ -12,6 +12,19 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+// RGB
+
+type ScopeBrightness int 
+
+func (b ScopeBrightness) RGB() renderer.RGB {
+	v := float32(b) / 100
+	return renderer.RGB{v, v, v}
+}
+
+func (b ScopeBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
+	return r.Scale(float32(b) / 100)
+}
+
 // ScopeTransformations
 
 type ScopeTransformations struct {

@@ -35,7 +35,7 @@ const (
 type datablock interface {
 	// pt is end of leader line--attachment point
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-		brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64)
+		brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64)
 }
 
 // dbChar represents a single character in a datablock.
@@ -64,7 +64,7 @@ type fullDatablock struct {
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	// Figure out the maximum number of values any field is cycling through.
 	numVariants := func(fields [][]dbChar) int {
 		n := 0
@@ -124,7 +124,7 @@ type partialDatablock struct {
 }
 
 func (db partialDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	// How many cycles?
 	nc := util.Select(fieldEmpty(db.field3[1][:]), 1, 2)
 	// If all three of field12 are set, it's 4 cycles: 0, 1, 0, 2 for field12
@@ -185,7 +185,7 @@ type limitedDatablock struct {
 }
 
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	lines := []dbLine{
 		dbMakeLine(db.field0[:]),
 		dbMakeLine(db.field1[:], db.field2[:]),
@@ -205,7 +205,7 @@ type suspendedDatablock struct {
 }
 
 func (db suspendedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	lines := []dbLine{dbMakeLine(db.field0[:])}
 	dbDrawLines(lines, td, pt, font, strBuilder, brightness, leaderLineDirection, halfSeconds)
 }
@@ -222,7 +222,7 @@ type ghostDatablock struct {
 }
 
 func (db ghostDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	lines := []dbLine{
 		dbMakeLine(db.field0[:]),
 		dbMakeLine(db.field1[:]),
@@ -280,7 +280,7 @@ func dbChopTrailing(f []dbChar) []dbChar {
 }
 
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, strBuilder *strings.Builder,
-	brightness STARSBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
+	brightness radar.ScopeBrightness, leaderLineDirection math.CardinalOrdinalDirection, halfSeconds int64) {
 	rightJustify := leaderLineDirection >= math.South
 	glyph := font.LookupGlyph(' ')
 	fontWidth := glyph.AdvanceX
@@ -298,7 +298,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32, fo
 }
 
 func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font, str *strings.Builder,
-	brightness STARSBrightness, halfSeconds int64) {
+	brightness radar.ScopeBrightness, halfSeconds int64) {
 	// We will batch characters to be drawn up into str and flush them out
 	// in a call to TextDrawBuider AddText() only when the color
 	// changes. (This is some effort to minimize the number of AddText()
@@ -452,7 +452,7 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) ma
 }
 
 func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.STARSFlightPlan,
-	color renderer.RGB, brightness STARSBrightness) datablock {
+	color renderer.RGB, brightness radar.ScopeBrightness) datablock {
 	state := sp.TrackState[trk.ADSBCallsign]
 	if state != nil && !sp.datablockVisible(ctx, trk) {
 		return nil
@@ -1021,7 +1021,7 @@ func (sp *STARSPane) getGhostDatablock(ctx *panes.Context, ghost *av.GhostTrack,
 	return db
 }
 
-func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.Track) (color renderer.RGB, dbBrightness, posBrightness STARSBrightness) {
+func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.Track) (color renderer.RGB, dbBrightness, posBrightness radar.ScopeBrightness) {
 	ps := sp.currentPrefs()
 	dt := sp.datablockType(ctx, trk)
 	state := sp.TrackState[trk.ADSBCallsign]
@@ -1041,8 +1041,8 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 
 	// Figure out the datablock and position symbol brightness first
 	if trk.ADSBCallsign == sp.dwellAircraft { // dwell overrides everything as far as brightness
-		dbBrightness = STARSBrightness(100)
-		posBrightness = STARSBrightness(100)
+		dbBrightness = radar.ScopeBrightness(100)
+		posBrightness = radar.ScopeBrightness(100)
 	} else if forceFDB || state.OutboundHandoffAccepted {
 		dbBrightness = ps.Brightness.FullDatablocks
 		posBrightness = ps.Brightness.Positions

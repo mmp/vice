@@ -744,7 +744,7 @@ var dcbDrawState struct {
 	cursor       [2]float32
 	drawStartPos [2]float32
 	style        renderer.TextStyle
-	brightness   STARSBrightness
+	brightness   radar.ScopeBrightness
 	position     int
 }
 
@@ -1529,12 +1529,12 @@ func (s *dcbRangeRingRadiusSpinner) ModeAfter() CommandMode {
 // dcbBrightnessSpinner handles spinners in the BRITE menu
 type dcbBrightnessSpinner struct {
 	text     string
-	b        *STARSBrightness
-	min      STARSBrightness
+	b        *radar.ScopeBrightness
+	min      radar.ScopeBrightness
 	allowOff bool
 }
 
-func makeBrightnessSpinner(t string, b *STARSBrightness, min STARSBrightness, allowOff bool) dcbSpinner {
+func makeBrightnessSpinner(t string, b *radar.ScopeBrightness, min radar.ScopeBrightness, allowOff bool) dcbSpinner {
 	return &dcbBrightnessSpinner{text: t, b: b, min: min, allowOff: allowOff}
 }
 
@@ -1548,11 +1548,11 @@ func (s *dcbBrightnessSpinner) Equals(other dcbSpinner) bool {
 }
 
 func (s *dcbBrightnessSpinner) Delta(delta int) {
-	*s.b -= STARSBrightness(5 * delta)
+	*s.b -= radar.ScopeBrightness(5 * delta)
 	if *s.b < s.min && s.allowOff {
-		*s.b = STARSBrightness(0)
+		*s.b = radar.ScopeBrightness(0)
 	} else {
-		*s.b = STARSBrightness(math.Clamp(*s.b, s.min, 100))
+		*s.b = radar.ScopeBrightness(math.Clamp(*s.b, s.min, 100))
 	}
 }
 
@@ -1566,7 +1566,7 @@ func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	} else if v < int(s.min) || v > 100 || (v == 0 && !s.allowOff) {
 		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
-		*s.b = STARSBrightness(v)
+		*s.b = radar.ScopeBrightness(v)
 		return CommandModeBrite, nil
 	}
 }

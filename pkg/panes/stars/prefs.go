@@ -184,23 +184,23 @@ type CommonPreferences struct {
 	DisplaySuspendedTrackAltitude bool
 
 	Brightness struct {
-		DCB                STARSBrightness
-		BackgroundContrast STARSBrightness
-		VideoGroupA        STARSBrightness
-		VideoGroupB        STARSBrightness
-		FullDatablocks     STARSBrightness
-		Lists              STARSBrightness
-		Positions          STARSBrightness
-		LimitedDatablocks  STARSBrightness
-		OtherTracks        STARSBrightness
-		Lines              STARSBrightness
-		RangeRings         STARSBrightness
-		Compass            STARSBrightness
-		BeaconSymbols      STARSBrightness
-		PrimarySymbols     STARSBrightness
-		History            STARSBrightness
-		Weather            STARSBrightness
-		WxContrast         STARSBrightness
+		DCB                radar.ScopeBrightness
+		BackgroundContrast radar.ScopeBrightness
+		VideoGroupA        radar.ScopeBrightness
+		VideoGroupB        radar.ScopeBrightness
+		FullDatablocks     radar.ScopeBrightness
+		Lists              radar.ScopeBrightness
+		Positions          radar.ScopeBrightness
+		LimitedDatablocks  radar.ScopeBrightness
+		OtherTracks        radar.ScopeBrightness
+		Lines              radar.ScopeBrightness
+		RangeRings         radar.ScopeBrightness
+		Compass            radar.ScopeBrightness
+		BeaconSymbols      radar.ScopeBrightness
+		PrimarySymbols     radar.ScopeBrightness
+		History            radar.ScopeBrightness
+		Weather            radar.ScopeBrightness
+		WxContrast         radar.ScopeBrightness
 	}
 
 	CharSize struct {
@@ -462,8 +462,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.CharSize.DCB = 1
 	}
 	if from < 9 {
-		remap := func(b *STARSBrightness) {
-			*b = STARSBrightness(min(*b*2, 100))
+		remap := func(b *radar.ScopeBrightness) {
+			*b = radar.ScopeBrightness(min(*b*2, 100))
 		}
 		remap(&p.Brightness.VideoGroupA)
 		remap(&p.Brightness.VideoGroupB)
@@ -539,7 +539,7 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 
 		// Brightness goes in steps of 5 (similarly not enforced previously...)
-		remapBrightness := func(b *STARSBrightness) {
+		remapBrightness := func(b *radar.ScopeBrightness) {
 			*b = (*b + 2) / 5 * 5
 			*b = math.Clamp(*b, 0, 100)
 		}

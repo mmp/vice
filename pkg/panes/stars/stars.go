@@ -370,17 +370,6 @@ func (d DwellMode) String() string {
 	}
 }
 
-type STARSBrightness int
-
-func (b STARSBrightness) RGB() renderer.RGB {
-	v := float32(b) / 100
-	return renderer.RGB{v, v, v}
-}
-
-func (b STARSBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
-	return r.Scale(float32(b) / 100)
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // STARSPane proper
 
