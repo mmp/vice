@@ -7,572 +7,20 @@ package stars
 import (
 	_ "embed"
 	"fmt"
-	"image"
-	"image/draw"
-	"image/png"
-	"log/slog"
 	gomath "math"
-	"math/bits"
-	"net/http"
-	"net/url"
 	"slices"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
-	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
-
-///////////////////////////////////////////////////////////////////////////
-// WeatherRadar
-
-// WeatherRadar provides functionality for fetching radar images to display
-// in radar scopes. Only locations in the USA are currently supported, as
-// the only current data source is the US NOAA...
-type WeatherRadar struct {
-	active bool
-
-	// Radar images are fetched and processed in a separate goroutine;
-	// updated radar center locations are sent from the main thread via
-	// reqChan and command buffers to draw each of the 6 weather levels are
-	// returned by cbChan.
-	reqChan chan math.Point2LL
-	cbChan  chan [numWxLevels]*renderer.CommandBuffer
-	cb      [numWxHistory][numWxLevels]*renderer.CommandBuffer
-}
-
-const numWxHistory = 3
-
-const numWxLevels = 6
-
-const wxFetchResolution = 512
-
-// Fetch this many nm out from the center; should evenly divide wxFetchResolution
-const wxFetchDistance = 128
-
-// Pixels in the image that correspond to a WX block on the scope; we fetch
-// +/- wxFetchDistance an d blocks are 0.5nm so here we go.
-const wxBlockRes = wxFetchResolution / (2 * wxFetchDistance) * 0.5
-
-// Activate must be called to initialize the WeatherRadar before weather
-// radar images can be fetched.
-func (w *WeatherRadar) Activate(r renderer.Renderer, lg *log.Logger) {
-	if w.active {
-		return
-	}
-
-	w.active = true
-	if w.reqChan == nil {
-		w.reqChan = make(chan math.Point2LL, 32)
-	}
-	w.cbChan = make(chan [numWxLevels]*renderer.CommandBuffer, 8)
-
-	go fetchWeather(w.reqChan, w.cbChan, lg)
-}
-
-func (w *WeatherRadar) HaveWeather() [numWxLevels]bool {
-	var r [numWxLevels]bool
-	for i := range numWxLevels {
-		r[i] = w.cb[0][i] != nil
-	}
-	return r
-}
-
-// UpdateCenter provides a new center point for the radar image, causing a
-// new image to be fetched.
-func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
-	// UpdateCenter may be called before Activate, e.g. when we are loading
-	// a saved sim, so at least set up the chan so that we keep the center
-	// point.
-	if w.reqChan == nil {
-		w.reqChan = make(chan math.Point2LL, 32)
-	}
-	select {
-	case w.reqChan <- center:
-		// success
-	default:
-		// The channel is full..
-	}
-}
-
-// A single scanline of this color map, converted to RGB bytes:
-// https://opengeo.ncep.noaa.gov/geoserver/styles/reflectivity.png
-//
-//go:embed radar_reflectivity.rgb
-var radarReflectivity []byte
-
-type kdNode struct {
-	rgb [3]byte
-	dbz float32
-	c   [2]*kdNode
-}
-
-var radarReflectivityKdTree *kdNode
-
-func init() {
-	type rgbRefl struct {
-		rgb [3]byte
-		dbz float32
-	}
-
-	var r []rgbRefl
-
-	for i := 0; i < len(radarReflectivity); i += 3 {
-		r = append(r, rgbRefl{
-			rgb: [3]byte{radarReflectivity[i], radarReflectivity[i+1], radarReflectivity[i+2]},
-			// Approximate range of the reflectivity color ramp
-			dbz: math.Lerp(float32(i)/float32(len(radarReflectivity)), -25, 73),
-		})
-	}
-
-	// Build a kd-tree over the RGB points in the color map.
-	var buildTree func(r []rgbRefl, depth int) *kdNode
-	buildTree = func(r []rgbRefl, depth int) *kdNode {
-		if len(r) == 0 {
-			return nil
-		}
-		if len(r) == 1 {
-			return &kdNode{rgb: r[0].rgb, dbz: r[0].dbz}
-		}
-
-		// The split dimension cycles through RGB with tree depth.
-		dim := depth % 3
-
-		// Sort the points in the current dimension (we actually just need
-		// to partition around the midpoint, but...)
-		sort.Slice(r, func(i, j int) bool {
-			return r[i].rgb[dim] < r[j].rgb[dim]
-		})
-
-		// Split in the middle and recurse
-		mid := len(r) / 2
-		return &kdNode{
-			rgb: r[mid].rgb,
-			dbz: r[mid].dbz,
-			c:   [2]*kdNode{buildTree(r[:mid], depth+1), buildTree(r[mid+1:], depth+1)},
-		}
-	}
-
-	radarReflectivityKdTree = buildTree(r, 0)
-}
-
-// Returns estimated dBZ (https://en.wikipedia.org/wiki/DBZ_(meteorology)) for
-// an RGB by going backwards from the color ramp.
-func estimateDBZ(rgb [3]byte) float32 {
-	// All white -> ~nil
-	if rgb[0] == 255 && rgb[1] == 255 && rgb[2] == 255 {
-		return -100
-	}
-
-	// Returns the distnace between the specified RGB and the RGB passed to
-	// estimateDBZ.
-	dist := func(o []byte) float32 {
-		d2 := math.Sqr(int(o[0])-int(rgb[0])) + math.Sqr(int(o[1])-int(rgb[1])) + math.Sqr(int(o[2])-int(rgb[2]))
-		return math.Sqrt(float32(d2))
-	}
-
-	var searchTree func(n *kdNode, closestNode *kdNode, closestDist float32, depth int) (*kdNode, float32)
-	searchTree = func(n *kdNode, closestNode *kdNode, closestDist float32, depth int) (*kdNode, float32) {
-		if n == nil {
-			return closestNode, closestDist
-		}
-
-		// Check the current node
-		d := dist(n.rgb[:])
-		if d < closestDist {
-			closestDist = d
-			closestNode = n
-		}
-
-		// Split dimension as in buildTree above
-		dim := depth % 3
-
-		// Initially traverse the tree based on which side of the split
-		// plane the lookup point is on.
-		var first, second *kdNode
-		if rgb[dim] < n.rgb[dim] {
-			first, second = n.c[0], n.c[1]
-		} else {
-			first, second = n.c[1], n.c[0]
-		}
-
-		closestNode, closestDist = searchTree(first, closestNode, closestDist, depth+1)
-
-		// If the distance to the split plane is less than the distance to
-		// the closest point found so far, we need to check the other side
-		// of the split.
-		if float32(math.Abs(int(rgb[dim])-int(n.rgb[dim]))) < closestDist {
-			closestNode, closestDist = searchTree(second, closestNode, closestDist, depth+1)
-		}
-
-		return closestNode, closestDist
-	}
-
-	if true {
-		n, _ := searchTree(radarReflectivityKdTree, nil, 100000, 0)
-		return n.dbz
-	} else {
-		// Debugging: verify the point found is indeed the closest by
-		// exhaustively checking the distance to all of points in the color
-		// map.
-		n, nd := searchTree(radarReflectivityKdTree, nil, 100000, 0)
-
-		closest, closestDist := -1, float32(100000)
-		for i := 0; i < len(radarReflectivity); i += 3 {
-			d := dist(radarReflectivity[i : i+3])
-			if d < closestDist {
-				closestDist = d
-				closest = i
-			}
-		}
-
-		// Note that multiple points in the color map may have the same
-		// distance to the lookup point; thus we only check the distance
-		// here and not the reflectivity (which should be very close but is
-		// not necessarily the same.)
-		if nd != closestDist {
-			fmt.Printf("WAH %d,%d,%d -> %d,%d,%d: dist %f vs %d,%d,%d: dist %f\n",
-				int(rgb[0]), int(rgb[1]), int(rgb[2]),
-				int(n.rgb[0]), int(n.rgb[1]), int(n.rgb[2]), nd,
-				int(radarReflectivity[closest]), int(radarReflectivity[closest+1]), int(radarReflectivity[closest+2]),
-				closestDist)
-		}
-
-		return n.dbz
-	}
-}
-
-// fetchWeather runs asynchronously in a goroutine, receiving requests from
-// reqChan, fetching corresponding radar images from the NOAA, and sending
-// the results back on cbChan.  New images are also automatically
-// fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [numWxLevels]*renderer.CommandBuffer, lg *log.Logger) {
-	// STARS seems to get new radar roughly every 5 minutes
-	const fetchRate = 5 * time.Minute
-
-	// center stores the current center position of the radar image
-	var center math.Point2LL
-	fetchTimer := time.NewTimer(fetchRate)
-	for {
-		var ok bool
-		// Wait until we get an updated center or we've timed out on fetchRate.
-		select {
-		case center, ok = <-reqChan:
-			if ok {
-				// Drain any additional requests so that we get the most
-				// recent one.
-				for len(reqChan) > 0 {
-					center = <-reqChan
-				}
-			} else {
-				// The channel is closed; wrap up.
-				close(cbChan)
-				return
-			}
-		case <-fetchTimer.C:
-			// Periodically make a new request even if the center hasn't
-			// changed.
-		}
-
-		fetchTimer.Reset(fetchRate)
-		lg.Infof("Getting WX, center %v", center)
-
-		// Figure out how far out in degrees latitude / longitude to fetch.
-		// Latitude is easy: 60nm per degree
-		dlat := float32(wxFetchDistance) / 60
-		// Longitude: figure out nm per degree at center
-		nmPerLong := 60 * math.Cos(math.Radians(center[1]))
-		dlong := wxFetchDistance / nmPerLong
-
-		// Lat-long bounds of the region we're going to request weather for.
-		rb := math.Extent2D{P0: math.Sub2LL(center, math.Point2LL{dlong, dlat}),
-			P1: math.Add2LL(center, math.Point2LL{dlong, dlat})}
-
-		// The weather radar image comes via a WMS GetMap request from the NOAA.
-		//
-		// Relevant background:
-		// https://enterprise.arcgis.com/en/server/10.3/publish-services/windows/communicating-with-a-wms-service-in-a-web-browser.htm
-		// http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd
-		// NOAA weather: https://opengeo.ncep.noaa.gov/geoserver/www/index.html
-		// https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?service=wms&version=1.3.0&request=GetCapabilities
-		params := url.Values{}
-		params.Add("SERVICE", "WMS")
-		params.Add("REQUEST", "GetMap")
-		params.Add("FORMAT", "image/png")
-		params.Add("WIDTH", fmt.Sprintf("%d", wxFetchResolution))
-		params.Add("HEIGHT", fmt.Sprintf("%d", wxFetchResolution))
-		params.Add("LAYERS", "conus_bref_qcd")
-		params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", rb.P0[0], rb.P0[1], rb.P1[0], rb.P1[1]))
-
-		url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
-
-		// Request the image
-		lg.Info("Fetching weather", slog.String("url", url))
-		resp, err := http.Get(url)
-		if err != nil {
-			lg.Infof("Weather error: %s", err)
-			continue
-		}
-		defer resp.Body.Close()
-
-		img, err := png.Decode(resp.Body)
-		if err != nil {
-			lg.Infof("Weather error: %s", err)
-			continue
-		}
-
-		cbChan <- makeWeatherCommandBuffers(img, rb)
-
-		lg.Info("finish weather fetch")
-	}
-}
-
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [numWxLevels]*renderer.CommandBuffer {
-	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
-	rgba := image.NewRGBA(img.Bounds())
-	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
-
-	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
-	nby, nbx := ny/wxBlockRes, nx/wxBlockRes
-
-	// First determine the average dBZ for each wxBlockRes*wxBlockRes block
-	// of the image.
-	levels := make([]int, nbx*nby)
-	for y := 0; y < nby; y++ {
-		for x := 0; x < nbx; x++ {
-			dbz := float32(0)
-			for dy := 0; dy < wxBlockRes; dy++ {
-				for dx := 0; dx < wxBlockRes; dx++ {
-					px := rgba.RGBAAt(x*wxBlockRes+dx, y*wxBlockRes+dy)
-					dbz += estimateDBZ([3]byte{px.R, px.G, px.B})
-				}
-			}
-
-			dbz /= wxBlockRes * wxBlockRes
-
-			// Map the dBZ value to a STARS WX level.
-			level := 0
-			if dbz > 55 {
-				level = 6
-			} else if dbz > 50 {
-				level = 5
-			} else if dbz > 45 {
-				level = 4
-			} else if dbz > 40 {
-				level = 3
-			} else if dbz > 30 {
-				level = 2
-			} else if dbz > 20 {
-				level = 1
-			}
-
-			levels[x+y*nbx] = level
-		}
-	}
-
-	// Now generate the command buffer for each weather level.  We don't
-	// draw anything for level==0, so the indexing into cb is off by 1
-	// below.
-	var cb [numWxLevels]*renderer.CommandBuffer
-	tb := renderer.GetTrianglesDrawBuilder()
-	defer renderer.ReturnTrianglesDrawBuilder(tb)
-
-	for level := 1; level <= numWxLevels; level++ {
-		tb.Reset()
-		levelHasWeather := false
-
-		// We'd like to be somewhat efficient and not necessarily draw an
-		// individual quad for each block, but on the other hand don't want
-		// to make this too complicated... So we'll consider block
-		// scanlines and quads across neighbors that are the same level
-		// when we find them.
-		for y := 0; y < nby; y++ {
-			for x := 0; x < nbx; x++ {
-				// Skip ahead until we reach a block at the level we currently care about.
-				if levels[x+y*nbx] != level {
-					continue
-				}
-				levelHasWeather = true
-
-				// Now see how long a span of repeats we have.
-				// Each quad spans [0,0]->[1,1] in texture coordinates; the
-				// texture is created with repeat wrap mode, so we just pad
-				// out the u coordinate into u1 accordingly.
-				x0 := x
-				u1 := float32(0)
-				for x < nbx && levels[x+y*nbx] == level {
-					x++
-					u1++
-				}
-
-				// Corner points
-				p0 := rb.Lerp([2]float32{float32(x0) / float32(nbx), float32(nby-1-y) / float32(nby)})
-				p1 := rb.Lerp([2]float32{float32(x) / float32(nbx), float32(nby-y) / float32(nby)})
-
-				// Draw a single quad
-				tb.AddQuad([2]float32{p0[0], p0[1]}, [2]float32{p1[0], p0[1]},
-					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]})
-			}
-		}
-
-		// Subtract one so that level==1 is drawn by cb[0], etc, since we
-		// don't draw anything for level==0.
-		if levelHasWeather {
-			cb[level-1] = &renderer.CommandBuffer{}
-			tb.GenerateCommands(cb[level-1])
-		}
-	}
-
-	return cb
-}
-
-// Stipple patterns. We expect glPixelStore(GL_PACK_LSB_FIRST, GL_TRUE) to
-// be set for these.
-var wxStippleLight [32]uint32 = [32]uint32{
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000011000000000000000000,
-	0b00000000000011000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000001100000000,
-	0b00000000000000000000001100000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000001100000000000000000000000,
-	0b00000001100000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000110000000000000000,
-	0b00000000000000110000000000000000,
-	0b00000000000000000000000000001100,
-	0b00000000000000000000000000001100,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000110000000000000000000000,
-	0b00000000110000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000011000000000000,
-	0b00000000000000000011000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b11000000000000000000000000000000,
-	0b11000000000000000000000000000000,
-}
-
-// Note that the basis pattern in the lower 16x16 is repeated both
-// horizontally and vertically.
-var wxStippleDense [32]uint32 = [32]uint32{
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00001000000000000000100000000000,
-	0b00001000000000000000100000000000,
-	0b00000000000110000000000000011000,
-	0b01000000000000000100000000000000,
-	0b01000000000000000100000000000000,
-	0b00000001100000000000000110000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000110000000000000011,
-	0b00000000000000000000000000000000,
-	0b00011000000000000001100000000000,
-	0b00000000000000000000000000000000,
-	0b00000000001000000000000000100000,
-	0b00000000001000000000000000100000,
-	0b11000000000000001100000000000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000000000000000000000,
-	0b00001000000000000000100000000000,
-	0b00001000000000000000100000000000,
-	0b00000000000110000000000000011000,
-	0b01000000000000000100000000000000,
-	0b01000000000000000100000000000000,
-	0b00000001100000000000000110000000,
-	0b00000000000000000000000000000000,
-	0b00000000000000110000000000000011,
-	0b00000000000000000000000000000000,
-	0b00011000000000000001100000000000,
-	0b00000000000000000000000000000000,
-	0b00000000001000000000000000100000,
-	0b00000000001000000000000000100000,
-	0b11000000000000001100000000000000,
-}
-
-// The above stipple masks are ordered so that they match the orientation
-// of how we want them drawn on the screen, though that doesn't seem to be
-// how glPolygonStipple expects them, which is with the bits in each byte
-// reversed. I think that we should just be able to call
-// gl.PixelStorei(gl.PACK_LSB_FIRST, gl.FALSE) and provide them as above,
-// though that doesn't seem to work.  Hence, we just reverse the bytes by
-// hand.
-func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
-	var result [32]uint32
-	for i, line := range stipple {
-		a, b, c, d := uint8(line>>24), uint8(line>>16), uint8(line>>8), uint8(line)
-		a, b, c, d = bits.Reverse8(a), bits.Reverse8(b), bits.Reverse8(c), bits.Reverse8(d)
-		result[i] = uint32(a)<<24 + uint32(b)<<16 + uint32(c)<<8 + uint32(d)
-	}
-	return result
-}
-
-// Draw draws the current weather radar image, if available. (If none is yet
-// available, it returns rather than stalling waiting for it).
-func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, contrast float32,
-	active [numWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	select {
-	case cb := <-w.cbChan:
-		// Got updated command buffers, yaay.  Note that we always drain
-		// the cbChan, even if if the WeatherRadar is inactive.
-
-		// Shift history down before storing the latest
-		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
-		w.cb[0] = cb
-
-	default:
-		// no message
-	}
-
-	if !w.active {
-		return
-	}
-
-	hist = math.Clamp(hist, 0, len(w.cb)-1)
-	transforms.LoadLatLongViewingMatrices(cb)
-	for i := range w.cb[hist] {
-		if active[i] && w.cb[hist][i] != nil {
-			// RGBs from STARS Manual, B-5
-			baseColor := util.Select(i < 3,
-				renderer.RGBFromUInt8(37, 77, 77), renderer.RGBFromUInt8(100, 100, 51))
-			cb.SetRGB(baseColor.Scale(intensity))
-			cb.Call(*w.cb[hist][i])
-
-			if i == 0 || i == 3 {
-				// No stipple
-				continue
-			}
-
-			cb.EnablePolygonStipple()
-			if i == 1 || i == 4 {
-				cb.PolygonStipple(reverseStippleBytes(wxStippleLight))
-			} else if i == 2 || i == 5 {
-				cb.PolygonStipple(reverseStippleBytes(wxStippleDense))
-			}
-			// Draw the same quads again, just with a different color and stippled.
-			cb.SetRGB(renderer.RGB{contrast, contrast, contrast})
-			cb.Call(*w.cb[hist][i])
-			cb.DisablePolygonStipple()
-		}
-	}
-}
 
 ///////////////////////////////////////////////////////////////////////////
 // Additional useful things we may draw on radar scopes...
@@ -583,7 +31,7 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 // rotation angle, if any.  Drawing commands are added to the provided
 // command buffer, which is assumed to have projection matrices set up for
 // drawing using window coordinates.
-func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, transforms ScopeTransformations,
+func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.Compass == 0 {
@@ -672,7 +120,7 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 
 // DrawRangeRings draws ten circles around the specified lat-long point in
 // steps of the specified radius (in nm).
-func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.RangeRings == 0 {
 		return
@@ -699,108 +147,12 @@ func (sp *STARSPane) drawRangeRings(ctx *panes.Context, transforms ScopeTransfor
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// ScopeTransformations
-
-// ScopeTransformations manages various transformation matrices that are
-// useful when drawing radar scopes and provides a number of useful methods
-// to transform among related coordinate spaces.
-type ScopeTransformations struct {
-	ndcFromLatLong                       math.Matrix3
-	ndcFromWindow                        math.Matrix3
-	latLongFromWindow, windowFromLatLong math.Matrix3
-}
-
-// GetScopeTransformations returns a ScopeTransformations object
-// corresponding to the specified radar scope center, range, and rotation
-// angle.
-func GetScopeTransformations(paneExtent math.Extent2D, magneticVariation float32, nmPerLongitude float32,
-	center math.Point2LL, rangenm float32, rotationAngle float32) ScopeTransformations {
-	width, height := paneExtent.Width(), paneExtent.Height()
-	aspect := width / height
-	ndcFromLatLong := math.Identity3x3().
-		// Final orthographic projection including the effect of the
-		// window's aspect ratio.
-		Ortho(-aspect, aspect, -1, 1).
-		// Account for magnetic variation and any user-specified rotation
-		Rotate(-math.Radians(rotationAngle+magneticVariation)).
-		// Scale based on range and nm per latitude / longitude
-		Scale(nmPerLongitude/rangenm, math.NMPerLatitude/rangenm).
-		// Translate to center point
-		Translate(-center[0], -center[1])
-
-	ndcFromWindow := math.Identity3x3().
-		Translate(-1, -1).
-		Scale(2/width, 2/height)
-
-	latLongFromNDC := ndcFromLatLong.Inverse()
-	latLongFromWindow := latLongFromNDC.PostMultiply(ndcFromWindow)
-	windowFromLatLong := latLongFromWindow.Inverse()
-
-	return ScopeTransformations{
-		ndcFromLatLong:    ndcFromLatLong,
-		ndcFromWindow:     ndcFromWindow,
-		latLongFromWindow: latLongFromWindow,
-		windowFromLatLong: windowFromLatLong,
-	}
-}
-
-// LoadLatLongViewingMatrices adds commands to the provided command buffer
-// to load viewing matrices so that latitude-longiture positions can be
-// provided for subsequent vertices.
-func (st *ScopeTransformations) LoadLatLongViewingMatrices(cb *renderer.CommandBuffer) {
-	cb.LoadProjectionMatrix(st.ndcFromLatLong)
-	cb.LoadModelViewMatrix(math.Identity3x3())
-}
-
-// LoadWindowViewingMatrices adds commands to the provided command buffer
-// to load viewing matrices so that window-coordinate positions can be
-// provided for subsequent vertices.
-func (st *ScopeTransformations) LoadWindowViewingMatrices(cb *renderer.CommandBuffer) {
-	cb.LoadProjectionMatrix(st.ndcFromWindow)
-	cb.LoadModelViewMatrix(math.Identity3x3())
-}
-
-// WindowFromLatLongP transforms a point given in latitude-longitude
-// coordinates to window coordinates, snapped to a pixel center.
-func (st *ScopeTransformations) WindowFromLatLongP(p math.Point2LL) [2]float32 {
-	pw := st.windowFromLatLong.TransformPoint(p)
-	pw[0], pw[1] = float32(int(pw[0]+0.5))+0.5, float32(int(pw[1]+0.5))+0.5
-	return pw
-}
-
-// LatLongFromWindowP transforms a point p in window coordinates to
-// latitude-longitude.
-func (st *ScopeTransformations) LatLongFromWindowP(p [2]float32) math.Point2LL {
-	return st.latLongFromWindow.TransformPoint(p)
-}
-
-// NormalizedFromWindowP transforms a point p in window coordinates to
-// normalized [0,1]^2 coordinates.
-func (st *ScopeTransformations) NormalizedFromWindowP(p [2]float32) [2]float32 {
-	pn := st.ndcFromWindow.TransformPoint(p) // [-1,1]
-	return [2]float32{(pn[0] + 1) / 2, (pn[1] + 1) / 2}
-}
-
-// LatLongFromWindowV transforms a vector in window coordinates to a vector
-// in latitude-longitude coordinates.
-func (st *ScopeTransformations) LatLongFromWindowV(v [2]float32) math.Point2LL {
-	return st.latLongFromWindow.TransformVector(v)
-}
-
-// PixelDistanceNM returns the space between adjacent pixels expressed in
-// nautical miles.
-func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 {
-	ll := st.LatLongFromWindowV([2]float32{1, 0})
-	return math.NMLength2LL(ll, nmPerLongitude)
-}
-
-///////////////////////////////////////////////////////////////////////////
 // Other utilities
 
 // If distance to a significant point is being displayed or if the user has
 // run the "find" command to highlight a point in the world, draw a blinking
 // square at that point for a few seconds.
-func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	remaining := time.Until(sp.highlightedLocationEndTime)
 	if remaining < 0 {
 		return
@@ -828,7 +180,7 @@ func (sp *STARSPane) drawHighlighted(ctx *panes.Context, transforms ScopeTransfo
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if !sp.showVFRAirports {
 		return
 	}
@@ -862,7 +214,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms ScopeTransfo
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -944,7 +296,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 }
 
 // Draw the minimum separation line between two aircraft, if selected.
-func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	cs0, cs1 := sp.MinSepAircraft[0], sp.MinSepAircraft[1]
 	if cs0 == "" || cs1 == "" {
 		// Two aircraft haven't been specified.
@@ -1047,7 +399,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms ScopeTransformati
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
 		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
 		return
@@ -1075,7 +427,7 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms ScopeTran
 	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 }
 
-func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1098,13 +450,13 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 					continue
 				}
 
-				drawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 				// Draw runway-specific waypoints
 				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
 					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
 						wp := arr.RunwayWaypoints[ap][rwy]
-						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
 							// Draw the runway number in the middle of the line
@@ -1126,11 +478,10 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms Sc
 			}
 		}
 	}
-
-	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1151,17 +502,17 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms S
 				appr := ap.Approaches[name]
 				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
-						drawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 					}
 				}
 			}
 		}
 	}
 
-	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1187,17 +538,17 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 				exitRoutes := ap.DepartureRoutes[rwy]
 				for _, exit := range util.SortedMapKeys(exitRoutes) {
 					if sp.scopeDraw.departures[name][rwy][exit] {
-						drawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
+						radar.DrawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}
 				}
 			}
 		}
 	}
-	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1220,14 +571,14 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 					continue
 				}
 
-				drawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+				radar.DrawWaypoints(ctx, of.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 			}
 		}
 	}
-	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
-func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ScopeTransformations, font *renderer.Font,
+func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
 
@@ -1258,20 +609,7 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms S
 			}
 		}
 	}
-	generateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
-}
-
-func generateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTransformations, ctx *panes.Context,
-	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
-	transforms.LoadLatLongViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
-	ld.GenerateCommands(cb)
-
-	transforms.LoadWindowViewingMatrices(cb)
-	pd.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.DPIScale)
-	ldr.GenerateCommands(cb)
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
 func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB {
@@ -1279,371 +617,7 @@ func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB 
 	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
 }
 
-// pt should return nm-based coordinates
-func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
-	prev, pok := pt(-1)
-	cur, _ := pt(0)
-	next, nok := pt(1)
-
-	vecAngle := func(p0, p1 [2]float32) float32 {
-		v := math.Normalize2f(math.Sub2f(p1, p0))
-		return math.Atan2(v[0], v[1])
-	}
-
-	const Pi = 3.1415926535
-	angle := float32(0)
-	if !pok {
-		if !nok {
-			// wtf?
-		}
-		// first point
-		angle = vecAngle(cur, next)
-	} else if !nok {
-		// last point
-		angle = vecAngle(prev, cur)
-	} else {
-		// have both prev and next
-		angle = (vecAngle(prev, cur) + vecAngle(cur, next)) / 2 // ??
-	}
-
-	if angle < 0 {
-		angle -= Pi / 2
-	} else {
-		angle += Pi / 2
-	}
-
-	offset := math.Scale2f([2]float32{math.Sin(angle), math.Cos(angle)}, 8)
-
-	h := math.NormalizeHeading(math.Degrees(angle))
-	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
-		// Center(ish) the text if the line is more or less horizontal.
-		offset[0] -= 2.5 * float32(font.Size)
-	}
-	return offset
-}
-
-func drawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints map[string]interface{},
-	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
-	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
-
-	// Draw an arrow at the point p (in nm coordinates) pointing in the
-	// direction given by the angle a.
-	drawArrow := func(p [2]float32, a float32) {
-		aa := a + math.Radians(180+30)
-		pa := math.Add2f(p, math.Scale2f([2]float32{math.Sin(aa), math.Cos(aa)}, 0.5))
-		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pa, ctx.NmPerLongitude), color)
-
-		ba := a - math.Radians(180+30)
-		pb := math.Add2f(p, math.Scale2f([2]float32{math.Sin(ba), math.Cos(ba)}, 0.5))
-		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pb, ctx.NmPerLongitude), color)
-	}
-
-	for i, wp := range waypoints {
-		if wp.Heading != 0 {
-			// Don't draw a segment to the next waypoint (if there is one)
-			// but instead draw an arrow showing the heading.
-			a := math.Radians(float32(wp.Heading) - ctx.MagneticVariation)
-			v := [2]float32{math.Sin(a), math.Cos(a)}
-			v = math.Scale2f(v, 2)
-			pend := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
-			pend = math.Add2f(pend, v)
-
-			// center line
-			ld.AddLine(waypoints[i].Location, math.NM2LL(pend, ctx.NmPerLongitude), color)
-
-			// arrowhead at the end
-			drawArrow(pend, a)
-		} else if i+1 < len(waypoints) {
-			if wp.Arc != nil {
-				// Draw DME arc. One subtlety is that although the arc's
-				// radius should cause it to pass through the waypoint, it
-				// may be slightly off due to error from using nm
-				// coordinates and the approximation of a fixed nm per
-				// longitude value.  So, we'll compute the radius to the
-				// point in nm coordinates and store it in r0 and do the
-				// same for the end point. Then we will interpolate those
-				// radii along the arc.
-				pc := math.LL2NM(wp.Arc.Center, ctx.NmPerLongitude)
-				p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
-				r0 := math.Distance2f(p0, pc)
-				v0 := math.Normalize2f(math.Sub2f(p0, pc))
-				a0 := math.NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
-
-				p1 := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
-				r1 := math.Distance2f(p1, pc)
-				v1 := math.Normalize2f(math.Sub2f(p1, pc))
-				a1 := math.NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
-
-				// Draw a segment every degree
-				n := int(math.HeadingDifference(a0, a1))
-				a := a0
-				pprev := waypoints[i].Location
-				for i := 1; i < n-1; i++ {
-					if wp.Arc.Clockwise {
-						a += 1
-					} else {
-						a -= 1
-					}
-					a = math.NormalizeHeading(a)
-					r := math.Lerp(float32(i)/float32(n), r0, r1)
-					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
-					pnext := math.NM2LL(math.Add2f(pc, v), ctx.NmPerLongitude)
-					ld.AddLine(pprev, pnext, color)
-					pprev = pnext
-
-					if i == n/2 {
-						// Draw an arrow at the midpoint showing the arc's direction
-						drawArrow(math.Add2f(pc, v), util.Select(wp.Arc.Clockwise, math.Radians(a+90), math.Radians(a-90)))
-					}
-				}
-				ld.AddLine(pprev, waypoints[i+1].Location, color)
-			} else {
-				// Regular segment between waypoints: draw the line
-				ld.AddLine(waypoints[i].Location, waypoints[i+1].Location, color)
-
-				if waypoints[i+1].ProcedureTurn == nil &&
-					!(waypoints[i].ProcedureTurn != nil && waypoints[i].ProcedureTurn.Type == av.PTStandard45) {
-					// Draw an arrow indicating direction of flight along
-					// the segment, unless the next waypoint has a
-					// procedure turn. In that case, we'll let the PT draw
-					// the arrow..
-					p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
-					p1 := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
-					v := math.Sub2f(p1, p0)
-					drawArrow(math.Mid2f(p0, p1), math.Atan2(v[0], v[1]))
-				}
-			}
-		}
-
-		if pt := wp.ProcedureTurn; pt != nil {
-			if i+1 >= len(waypoints) {
-				ctx.Lg.Errorf("Expected another waypoint after the procedure turn?")
-			} else {
-				// In the following, we will draw a canonical procedure
-				// turn of the appropriate type. e.g., for a racetrack, we
-				// generate points for a canonical racetrack
-				// vertically-oriented, with width 2, and with the origin
-				// at the left side of the arc at the top.  The toNM
-				// transformation takes that to nm coordinates which we'll
-				// later transform to lat-long to draw on the scope.
-				toNM := math.Identity3x3()
-
-				pnm := math.LL2NM(wp.Location, ctx.NmPerLongitude)
-				toNM = toNM.Translate(pnm[0], pnm[1])
-
-				p1nm := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
-				v := math.Sub2f(p1nm, pnm)
-				hdg := math.Atan2(v[0], v[1])
-				toNM = toNM.Rotate(-hdg)
-				if !pt.RightTurns {
-					toNM = toNM.Scale(-1, 1)
-				}
-
-				// FIXME: reuse the logic in nav.go to compute the leg lengths.
-				len := float32(pt.NmLimit)
-				if len == 0 {
-					len = float32(pt.MinuteLimit * 3) // assume 180 GS...
-				}
-				if len == 0 {
-					len = 4
-				}
-
-				var lines [][2][2]float32
-				addseg := func(a, b [2]float32) {
-					lines = append(lines, [2][2]float32{toNM.TransformPoint(a), toNM.TransformPoint(b)})
-				}
-				drawarc := func(center [2]float32, a0, a1 int) [2]float32 {
-					var prev [2]float32
-					step := util.Select(a0 < a1, 1, -1)
-					for i := a0; i != a1; i += step {
-						v := [2]float32{math.Sin(math.Radians(float32(i))), math.Cos(math.Radians(float32(i)))}
-						pt := math.Add2f(center, v)
-						if i != a0 {
-							addseg(prev, pt)
-						}
-						prev = pt
-					}
-					return prev
-				}
-
-				if pt.Type == av.PTRacetrack {
-					// Lines for the two sides
-					addseg([2]float32{0, 0}, [2]float32{0, -len})
-					addseg([2]float32{2, 0}, [2]float32{2, -len})
-
-					// Arcs at each end; all of this is slightly simpler since
-					// the width of the racetrack is 2, so the radius of the
-					// arcs is 1...
-					drawarc([2]float32{1, 0}, -90, 90)
-					drawarc([2]float32{1, -len}, 90, 270)
-
-					drawArrow(toNM.TransformPoint([2]float32{0, -len / 2}), hdg)
-					drawArrow(toNM.TransformPoint([2]float32{2, -len / 2}), hdg+math.Radians(180))
-				} else if pt.Type == av.PTStandard45 {
-					// Line outbound to the next fix
-					addseg([2]float32{0, 0}, [2]float32{0, len / 2})
-
-					// 45 degrees off from that for 4nm
-					const sqrt2over2 = 0.70710678
-					pe := [2]float32{4 * sqrt2over2, len/2 + 4*sqrt2over2}
-					addseg([2]float32{0, len / 2}, pe)
-
-					// Draw an arc from the previous leg around to the inbound course.
-					pae := drawarc(math.Add2f(pe, [2]float32{-sqrt2over2, sqrt2over2}), 135, -45)
-					// Intercept of the 45 degree line from the end of the
-					// arc back to the y axis.
-					pint := [2]float32{0, pae[1] - pae[0]}
-					addseg(pae, pint)
-
-					// inbound course + arrow
-					pinb := math.Add2f(pint, [2]float32{0, -1})
-					addseg(pint, pinb)
-					drawArrow(toNM.TransformPoint(pinb), hdg+math.Radians(180))
-				} else {
-					ctx.Lg.Errorf("unhandled PT type in drawWaypoints")
-				}
-
-				for _, l := range lines {
-					l0, l1 := math.NM2LL(l[0], ctx.NmPerLongitude), math.NM2LL(l[1], ctx.NmPerLongitude)
-					ld.AddLine(l0, l1, color)
-				}
-			}
-		}
-
-		drawName := wp.Fix[0] != '_'
-		if _, err := math.ParseLatLong([]byte(wp.Fix)); err == nil {
-			// Also don't draw names that are directly specified as latlongs.
-			drawName = false
-		}
-
-		if _, ok := drawnWaypoints[wp.Fix]; ok {
-			// And if we're given the same fix more than once (as may
-			// happen with T-shaped RNAV arrivals for example), only draw
-			// it once. We'll assume/hope that we're not seeing it with
-			// different restrictions...
-			continue
-		}
-
-		// Record that we have drawn this waypoint
-		drawnWaypoints[wp.Fix] = nil
-
-		// Draw a circle at the waypoint's location
-		const pointRadius = 2.5
-		const nSegments = 8
-		pd.AddCircle(transforms.WindowFromLatLongP(wp.Location), pointRadius, nSegments, color)
-
-		// If /radius has been specified, draw a corresponding circle
-		if wp.Radius > 0 {
-			ld.AddLatLongCircle(wp.Location, ctx.NmPerLongitude,
-				wp.Radius, 32)
-		}
-
-		// For /shift, extend the line beyond the waypoint (just in case)
-		// and draw perpendicular bars at the ends.
-		if wp.Shift > 0 {
-			prev := waypoints[i-1]
-			v := math.Sub2f(wp.Location, prev.Location)
-			v = math.Scale2f(v, 1/math.NMDistance2LL(wp.Location, prev.Location)) // ~1nm length
-			v = math.Scale2f(v, wp.Shift/2)
-
-			// extend the line
-			e0, e1 := math.Sub2f(wp.Location, v), math.Add2f(wp.Location, v)
-			ld.AddLine(wp.Location, e1, color)
-
-			perp := [2]float32{-v[1], v[0]}
-			perp = math.Scale2f(perp, 0.125) // shorter
-
-			ld.AddLine(math.Sub2f(e0, perp), math.Add2f(e0, perp), color)
-			ld.AddLine(math.Sub2f(e1, perp), math.Add2f(e1, perp), color)
-		}
-
-		offset := calculateOffset(style.Font, func(j int) ([2]float32, bool) {
-			idx := i + j
-			if idx < 0 || idx >= len(waypoints) {
-				return [2]float32{}, false
-			}
-			return math.LL2NM(waypoints[idx].Location, ctx.NmPerLongitude), true
-		})
-
-		// Draw the text for the waypoint, including fix name, any
-		// properties, and altitude/speed restrictions.
-		p := transforms.WindowFromLatLongP(wp.Location)
-		p = math.Add2f(p, offset)
-		if drawName {
-			p = td.AddText(wp.Fix+"\n", p, style)
-		}
-
-		if wp.IAF || wp.IF || wp.FAF || wp.NoPT || wp.FlyOver {
-			var s []string
-			if wp.IAF {
-				s = append(s, "IAF")
-			}
-			if wp.IF {
-				s = append(s, "IF")
-			}
-			if wp.FAF {
-				s = append(s, "FAF")
-			}
-			if wp.NoPT {
-				s = append(s, "NoPT")
-			}
-			if wp.FlyOver {
-				s = append(s, "FlyOver")
-			}
-			p = td.AddText(strings.Join(s, "/")+"\n", p, style)
-		}
-
-		if wp.Speed != 0 || wp.AltitudeRestriction != nil {
-			p[1] -= 0.25 * float32(style.Font.Size) // extra space for lines above if needed
-
-			if ar := wp.AltitudeRestriction; ar != nil {
-				pt := p       // draw position for text
-				var w float32 // max width of altitudes drawn
-				if ar.Range[1] != 0 {
-					// Upper altitude
-					pp := td.AddText(av.FormatAltitude(ar.Range[1]), pt, style)
-					w = pp[0] - pt[0]
-					pt[1] -= float32(style.Font.Size)
-				}
-				if ar.Range[0] != 0 && ar.Range[0] != ar.Range[1] {
-					// Lower altitude, if present and different than upper.
-					pp := td.AddText(av.FormatAltitude(ar.Range[0]), pt, style)
-					w = max(w, pp[0]-pt[0])
-					pt[1] -= float32(style.Font.Size)
-				}
-
-				// Now that we have w, we can draw lines the specify the
-				// restrictions.
-				if ar.Range[1] != 0 {
-					// At or below (or at)
-					ldr.AddLine([2]float32{p[0], p[1] + 2}, [2]float32{p[0] + w, p[1] + 2}, color)
-				}
-				if ar.Range[0] != 0 {
-					// At or above (or at)
-					ldr.AddLine([2]float32{p[0], pt[1] - 2}, [2]float32{p[0] + w, pt[1] - 2}, color)
-				}
-
-				// update text draw position so that speed restrictions are
-				// drawn in a reasonable place; note that we maintain the
-				// original p[1] regardless of how many lines were drawn
-				// for altitude restrictions.
-				p[0] += w + 4
-			}
-
-			if wp.Speed != 0 {
-				p0 := p
-				p1 := td.AddText(fmt.Sprintf("%dK", wp.Speed), p, style)
-				p1[1] -= float32(style.Font.Size)
-
-				// All speed restrictions are currently 'at'...
-				ldr.AddLine([2]float32{p0[0], p0[1] + 2}, [2]float32{p1[0], p0[1] + 2}, color)
-				ldr.AddLine([2]float32{p0[0], p1[1] - 2}, [2]float32{p1[0], p1[1] - 2}, color)
-			}
-		}
-	}
-}
-
-func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -1688,7 +662,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -1816,7 +790,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if sp.drawRouteAircraft == "" {
 		return
 	}
@@ -1842,7 +816,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms ScopeTrans
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if len(sp.drawRoutePoints) == 0 {
 		return
 	}
@@ -1885,7 +859,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Trac
 }
 
 func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms ScopeTransformations) (status CommandStatus) {
+	transforms radar.ScopeTransformations) (status CommandStatus) {
 	if sp.wipRBL == nil {
 		// this shouldn't happen, but let's not crash if it does...
 		return
@@ -1966,7 +940,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 }
 
 func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms ScopeTransformations) (status CommandStatus) {
+	transforms radar.ScopeTransformations) (status CommandStatus) {
 	if sp.wipSignificantPoint == nil {
 		status.clear = true
 		return
