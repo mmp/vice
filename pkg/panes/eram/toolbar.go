@@ -14,8 +14,8 @@ import (
 )
 
 // Find out how to get these correctly
-const toolbarButtonSize = 70
-const numToolbarSlots = 17
+const toolbarButtonSize = 9
+
 
 const (
 	toolbarMain = iota
@@ -152,8 +152,8 @@ func resetButtonPosDefault(ctx *panes.Context, scale float32) {
 }
 
 func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
-	ds := ctx.DrawPixelScale
-	return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numToolbarSlots*toolbarButtonSize))
+	// Toolbar/ buttons should be the same size no matter the window size
+	return toolbarButtonSize
 }
 
 // Draws both the full button and tearoff. Only need the disabled flag. Only return the result of the full button. The tearoff will be handled here as it's all the same.
@@ -316,7 +316,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 
 	ps := ep.currentPrefs()
 	toolbarDrawState.position = 0                                                   // Always start at the top left untill custom toolbar locations are implemented
-	buttonSize1 := float32(int(ep.toolbarButtonScale(ctx)*toolbarButtonSize + 0.5)) // Check all of these sizes
+	buttonSize1 := float32(int(ep.toolbarButtonScale(ctx)*toolbarButtonSize + 1)) // Check all of these sizes
 	toolbarDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
 	drawEndPos := [2]float32{ctx.PaneExtent.Width(), toolbarDrawState.drawStartPos[1] - buttonSize1}
 
