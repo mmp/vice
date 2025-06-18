@@ -14,7 +14,7 @@ import (
 )
 
 // Find out how to get these correctly
-const toolbarButtonSize = 300
+const toolbarButtonSize = 70
 const numToolbarSlots = 17
 
 const (
@@ -219,10 +219,11 @@ func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 	// 22u distance from the top
 	// ratio = 94/22 = 4.27
 
+
 	if flag == buttonFull {
 		return [2]float32{bs(scale), bs(scale) / 2.52}
 	} else if flag == buttonTearoff {
-		return [2]float32{bs(scale) / 10.06, bs(scale) / 2.52}
+		return [2]float32{bs(scale) / 7.2, bs(scale) / 2.52}
 	} else {
 		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flag))
 	}
