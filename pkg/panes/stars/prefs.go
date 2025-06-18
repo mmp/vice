@@ -10,6 +10,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 
@@ -157,8 +158,8 @@ type CommonPreferences struct {
 
 	AudioEffectEnabled []bool
 
-	DisplayWeatherLevel     [numWxLevels]bool
-	LastDisplayWeatherLevel [numWxLevels]bool
+	DisplayWeatherLevel     [radar.NumWxLevels]bool
+	LastDisplayWeatherLevel [radar.NumWxLevels]bool
 
 	// For aircraft tracked by the user.
 	LeaderLineDirection math.CardinalOrdinalDirection

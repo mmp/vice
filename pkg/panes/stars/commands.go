@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
@@ -2778,7 +2779,7 @@ func parseRAText(f []string, closedShape bool, expectPosition bool) (parsed pars
 
 func trackRepositionSecondClickHandler(acid sim.ACID) scopeClickHandlerFunc {
 	return func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-		transforms ScopeTransformations) (status CommandStatus) {
+		transforms radar.ScopeTransformations) (status CommandStatus) {
 		// either associate with unassociated or make unsupported
 		// if clicked on associated:
 		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
@@ -3090,7 +3091,7 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.Track, cod
 }
 
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, mousePosition [2]float32,
-	ghosts []*av.GhostTrack, transforms ScopeTransformations, tracks []sim.Track) (status CommandStatus) {
+	ghosts []*av.GhostTrack, transforms radar.ScopeTransformations, tracks []sim.Track) (status CommandStatus) {
 	// See if an aircraft was clicked
 	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms, tracks)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
@@ -3279,7 +3280,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					nmPerLongitude := ctx.NmPerLongitude
 					magneticVariation := ctx.MagneticVariation
 					sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-						pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+						pw [2]float32, transforms radar.ScopeTransformations) (status CommandStatus) {
 						p := transforms.LatLongFromWindowP(pw)
 						hdg := math.Heading2LL(from, p, nmPerLongitude, magneticVariation)
 						dist := math.NMDistance2LL(from, p)
@@ -4106,7 +4107,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			if cmd == "" {
 				sp.MinSepAircraft[0] = trk.ADSBCallsign
 				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-					pw [2]float32, transforms ScopeTransformations) (status CommandStatus) {
+					pw [2]float32, transforms radar.ScopeTransformations) (status CommandStatus) {
 					if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
 						sp.MinSepAircraft[1] = trk.ADSBCallsign
 						status.clear = true
@@ -4483,7 +4484,7 @@ func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection
 }
 
 func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTrack,
-	transforms ScopeTransformations, tracks []sim.Track, cb *renderer.CommandBuffer) {
+	transforms radar.ScopeTransformations, tracks []sim.Track, cb *renderer.CommandBuffer) {
 	if ctx.Mouse == nil {
 		return
 	}
@@ -4854,7 +4855,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 	return nil
 }
 
-func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms ScopeTransformations,
+func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations,
 	tracks []sim.Track) (*sim.Track, float32) {
 	var trk *sim.Track
 	distance := float32(20) // in pixels; don't consider anything farther away
@@ -4871,7 +4872,7 @@ func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]flo
 	return trk, distance
 }
 
-func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [2]float32, transforms ScopeTransformations) (*av.GhostTrack, float32) {
+func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [2]float32, transforms radar.ScopeTransformations) (*av.GhostTrack, float32) {
 	var ghost *av.GhostTrack
 	distance := float32(20) // in pixels; don't consider anything farther away
 

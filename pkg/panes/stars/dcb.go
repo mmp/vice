@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -99,7 +100,7 @@ func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
 	}
 }
 
-func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
+func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
@@ -226,7 +227,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
 				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-					pw [2]float32, transforms ScopeTransformations) CommandStatus {
+					pw [2]float32, transforms radar.ScopeTransformations) CommandStatus {
 					ps.RangeRingsUserCenter = transforms.LatLongFromWindowP(pw)
 					ps.UseUserRangeRingsCenter = true
 					return CommandStatus{clear: true}
@@ -747,7 +748,7 @@ var dcbDrawState struct {
 	position     int
 }
 
-func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, transforms ScopeTransformations,
+func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
@@ -1040,7 +1041,7 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 		ctx.Platform.StartMouseDeltaMode()
 
 		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-			transforms ScopeTransformations) CommandStatus {
+			transforms radar.ScopeTransformations) CommandStatus {
 			sp.resetInputState(ctx)
 			ctx.Platform.StopMouseDeltaMode()
 			ctx.SetMousePosition(sp.savedMousePosition)
@@ -1079,7 +1080,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 		sp.activeSpinner = spinner
 
 		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-			transforms ScopeTransformations) CommandStatus {
+			transforms radar.ScopeTransformations) CommandStatus {
 			if spinner.ModeAfter() == CommandModeNone {
 				sp.resetInputState(ctx)
 				return CommandStatus{clear: true}
