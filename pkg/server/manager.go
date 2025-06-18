@@ -61,6 +61,7 @@ type humanController struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	speechWs            *websocket.Conn
+	disableTextToSpeech bool
 }
 
 type SimScenarioConfiguration struct {
@@ -88,34 +89,33 @@ type activeSim struct {
 }
 
 type NewSimConfiguration struct {
-	// FIXME: unify Password/RemoteSimPassword, SelectedRemoteSim / NewSimName, etc.
-	NewSimType   int32
 	NewSimName   string
 	GroupName    string
 	ScenarioName string
-
-	SelectedRemoteSim string
-	SignOnPosition    string
 
 	Scenario *SimScenarioConfiguration
 
 	TFRs []av.TFR
 
-	TRACONName        string
-	RequirePassword   bool
-	Password          string // for create remote only
-	RemoteSimPassword string // for join remote only
+	TRACONName      string
+	RequirePassword bool
+	Password        string
 
 	LiveWeather bool
 
-	AllowInstructorRPO bool
+	AllowInstructorRPO  bool
+	Instructor          bool
+	IsLocal             bool
+	DisableTextToSpeech bool
 }
 
-const (
-	NewSimCreateLocal = iota
-	NewSimCreateRemote
-	NewSimJoinRemote
-)
+type SimConnectionConfiguration struct {
+	RemoteSim           string
+	Position            string
+	Password            string
+	Instructor          bool
+	DisableTextToSpeech bool
+}
 
 func MakeNewSimConfiguration() NewSimConfiguration {
 	return NewSimConfiguration{NewSimName: rand.Make().AdjectiveNoun()}
@@ -130,12 +130,13 @@ type RemoteSim struct {
 	CoveredPositions   map[string]av.Controller
 }
 
-func (as *activeSim) AddHumanController(tcp, token string) *humanController {
+func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech bool) *humanController {
 	hc := &humanController{
-		asim:           as,
-		tcp:            tcp,
-		lastUpdateCall: time.Now(),
-		token:          token,
+		asim:                as,
+		tcp:                 tcp,
+		lastUpdateCall:      time.Now(),
+		token:               token,
+		disableTextToSpeech: disableTextToSpeech,
 	}
 
 	as.controllersByTCP[tcp] = hc
@@ -173,57 +174,57 @@ type NewSimResult struct {
 	SpeechWSPort    int
 }
 
-func (sm *SimManager) New(config *NewSimConfiguration, result *NewSimResult) error {
-	if config.NewSimType == NewSimCreateLocal || config.NewSimType == NewSimCreateRemote {
-		lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
-		if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
-			manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
-			sim := sim.NewSim(*nsc, manifest, lg)
-			as := &activeSim{
-				name:             config.NewSimName,
-				scenarioGroup:    config.GroupName,
-				scenario:         config.ScenarioName,
-				sim:              sim,
-				password:         config.Password,
-				local:            config.NewSimType == NewSimCreateLocal,
-				controllersByTCP: make(map[string]*humanController),
-			}
-			pos := config.SignOnPosition
-			if pos == "" {
-				pos = sim.State.PrimaryController
-			}
-			return sm.Add(as, result, pos, true)
-		} else {
-			return ErrInvalidSSimConfiguration
+func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) error {
+	lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
+	if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
+		manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
+		sim := sim.NewSim(*nsc, manifest, lg)
+		as := &activeSim{
+			name:             config.NewSimName,
+			scenarioGroup:    config.GroupName,
+			scenario:         config.ScenarioName,
+			sim:              sim,
+			password:         config.Password,
+			local:            config.IsLocal,
+			controllersByTCP: make(map[string]*humanController),
 		}
+		pos := sim.State.PrimaryController
+		return sm.Add(as, result, pos, config.Instructor, true, config.DisableTextToSpeech)
 	} else {
-		sm.mu.Lock(sm.lg)
-		defer sm.mu.Unlock(sm.lg)
-
-		as, ok := sm.activeSims[config.SelectedRemoteSim]
-		if !ok {
-			return ErrNoNamedSim
-		}
-
-		if as.password != "" && config.RemoteSimPassword != as.password {
-			return ErrInvalidPassword
-		}
-
-		ss, token, err := sm.signOn(as, config.SignOnPosition)
-		if err != nil {
-			return err
-		}
-
-		hc := as.AddHumanController(config.SignOnPosition, token)
-		sm.controllersByToken[token] = hc
-
-		*result = NewSimResult{
-			SimState:        ss,
-			ControllerToken: token,
-			SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
-		}
-		return nil
+		return ErrInvalidSSimConfiguration
 	}
+}
+
+func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *NewSimResult) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	as, ok := sm.activeSims[config.RemoteSim]
+	if !ok {
+		return ErrNoNamedSim
+	}
+
+	if as.password != "" && config.Password != as.password {
+		return ErrInvalidPassword
+	}
+
+	// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
+	signOnConfig := *config
+	signOnConfig.Instructor = config.Instructor && config.Position == ""
+	ss, token, err := sm.signOn(as, &signOnConfig)
+	if err != nil {
+		return err
+	}
+
+	hc := as.AddHumanController(config.Position, token, config.DisableTextToSpeech)
+	sm.controllersByToken[token] = hc
+
+	*result = NewSimResult{
+		SimState:        ss,
+		ControllerToken: token,
+		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
+	}
+	return nil
 }
 
 func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.Logger) *sim.NewSimConfiguration {
@@ -243,7 +244,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		return nil
 	}
 
-	description := util.Select(config.NewSimType == NewSimCreateLocal, " "+config.ScenarioName,
+	description := util.Select(config.IsLocal, " "+config.ScenarioName,
 		"@"+config.NewSimName+": "+config.ScenarioName)
 
 	nsc := sim.NewSimConfiguration{
@@ -252,7 +253,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		TRACON:                  config.TRACONName,
 		LaunchConfig:            config.Scenario.LaunchConfig,
 		STARSFacilityAdaptation: deep.MustCopy(sg.STARSFacilityAdaptation),
-		IsLocal:                 config.NewSimType == NewSimCreateLocal,
+		IsLocal:                 config.IsLocal,
 		DepartureRunways:        sc.DepartureRunways,
 		ArrivalRunways:          sc.ArrivalRunways,
 		VFRReportingPoints:      sg.VFRReportingPoints,
@@ -275,7 +276,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		SignOnPositions:         make(map[string]*av.Controller),
 	}
 
-	if !nsc.IsLocal {
+	if !config.IsLocal {
 		selectedSplit := config.Scenario.SelectedSplit
 		var err error
 		nsc.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
@@ -297,7 +298,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 			nsc.SignOnPositions[callsign] = ctrl
 		}
 	}
-	if !nsc.IsLocal {
+	if !config.IsLocal {
 		configs, err := sc.SplitConfigurations.GetConfiguration(config.Scenario.SelectedSplit)
 		if err != nil {
 			lg.Errorf("unable to get configurations for split: %v", err)
@@ -328,10 +329,10 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 		controllersByTCP: make(map[string]*humanController),
 		local:            true,
 	}
-	return sm.Add(as, result, sim.State.PrimaryController, false)
+	return sm.Add(as, result, sim.State.PrimaryController, false, false, false)
 }
 
-func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, prespawn bool) error {
+func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, instructor bool, prespawn bool, disableTextToSpeech bool) error {
 	lg := sm.lg
 	if as.name != "" {
 		lg = lg.With(slog.String("sim_name", as.name))
@@ -349,13 +350,18 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 	sm.lg.Infof("%s: adding sim", as.name)
 	sm.activeSims[as.name] = as
 
-	ss, token, err := sm.signOn(as, initialTCP)
+	signOnConfig := &SimConnectionConfiguration{
+		Position:            initialTCP,
+		Instructor:          instructor,
+		DisableTextToSpeech: disableTextToSpeech,
+	}
+	ss, token, err := sm.signOn(as, signOnConfig)
 	if err != nil {
 		sm.mu.Unlock(sm.lg)
 		return err
 	}
 
-	hc := as.AddHumanController(initialTCP, token)
+	hc := as.AddHumanController(initialTCP, token, disableTextToSpeech)
 	sm.controllersByToken[token] = hc
 
 	sm.mu.Unlock(sm.lg)
@@ -473,8 +479,8 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 // assume SimManager lock is held
-func (sm *SimManager) signOn(as *activeSim, tcp string) (*sim.State, string, error) {
-	ss, err := as.sim.SignOn(tcp)
+func (sm *SimManager) signOn(as *activeSim, config *SimConnectionConfiguration) (*sim.State, string, error) {
+	ss, err := as.sim.SignOn(config.Position, config.Instructor, config.DisableTextToSpeech)
 	if err != nil {
 		return nil, "", err
 	}

@@ -86,6 +86,8 @@ type State struct {
 
 	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
 
+	Instructors map[string]bool
+
 	VideoMapLibraryHash []byte
 
 	// Set in State returned by GetStateForController
@@ -140,6 +142,8 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        time.Now(),
+
+		Instructors: make(map[string]bool),
 	}
 
 	if manifest != nil {
@@ -449,6 +453,11 @@ func (ss *State) FacilityFromController(callsign string) (string, bool) {
 }
 
 func (ss *State) AreInstructorOrRPO(tcp string) bool {
+	// Check if they're marked as an instructor in the Instructors map (for regular controllers with instructor privileges)
+	if ss.Instructors[tcp] {
+		return true
+	}
+	// Also check if they're signed in as a dedicated instructor/RPO position
 	ctrl, ok := ss.Controllers[tcp]
 	return ok && (ctrl.Instructor || ctrl.RPO)
 }

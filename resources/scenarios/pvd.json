@@ -481,6 +481,391 @@
 				  }
 				 ]
 			 },
+			 "PQ_PVD_2316_COMBINED":{
+			  "arrivals":[
+				  {
+					"airlines": {
+					  "KPVD": [
+						{
+						  "airport": "KORD",
+						  "icao": "ENY"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "DAL"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KMCO",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "JBU"
+						},
+						{
+						  "airport": "KGSP",
+						  "icao": "MXY"
+						}
+					  ]
+					},
+					"initial_altitude": 8000,
+					"initial_controller": "1H",
+					"initial_speed": 250,
+					"route": "PVD",
+                    "expect_approach": "I23",
+					"waypoints": "SAUGY/ho WAWIK/a5000 NOSUH/h047"
+				  },
+				  {
+					"airlines": {
+					  "KPVD": [
+						{
+						  "airport": "KORD",
+						  "icao": "ENY"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "DAL"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KMCO",
+						  "icao": "SWA"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "JBU"
+						},
+						{
+						  "airport": "KGSP",
+						  "icao": "MXY"
+						}
+					  ]
+					},
+					"initial_altitude": 9000,
+					"initial_controller": "1J",
+					"initial_speed": 250,
+					"route": "PVD",
+                    "expect_approach": "I23",
+					"waypoints": "MINNK/ho N041.35.49.324,W071.24.10.360/a5000/h047"
+				  }
+			  ]
+		  },
+		  "PQ_OQU_2316_COMBINED":{
+			  "arrivals":[
+				  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 5000,
+					"initial_controller": "BDL_1W",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N042.07.32.471,W071.49.26.995/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 5000,
+					"initial_controller": "BDL_1W",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N042.01.29.346,W072.09.34.365/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 5000,
+					"initial_controller": "BDL_1B",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.44.02.102,W072.16.41.568/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 3000,
+					"initial_controller": "1H",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.28.53.642,W072.02.27.216/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 3000,
+					"initial_controller": "1H",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.21.14.592,W071.50.58.813/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 3000,
+					"initial_controller": "1J",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.15.58.763,W071.33.42.418/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 3000,
+					"initial_controller": "1J",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.17.58.775,W071.18.26.295/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 3000,
+					"initial_controller": "1N",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.40.56.488,W071.02.31.034/ho KOQU"
+				  },
+                  {
+					"airlines": {
+					  "KOQU": [
+						{
+						  "airport": "KORD",
+						  "icao": "EJA"
+						},
+						{
+						  "airport": "KATL",
+						  "icao": "JRE"
+						},
+						{
+						  "airport": "KDCA",
+						  "icao": "WUP"
+						},
+						{
+						  "airport": "KBWI",
+						  "icao": "LXJ"
+						},
+						{
+						  "airport": "KFLL",
+						  "icao": "n",
+                          "fleet": "GAjet"
+						}
+					  ]
+					},
+					"initial_altitude": 3000,
+					"initial_controller": "1N",
+					"initial_speed": 250,
+					"route": "OQU",
+                    "expect_approach": "I16",
+					"waypoints": "N041.33.10.887,W071.02.24.854/ho KOQU"
+				  }
+			  ]
+		  },
         "PQ_PVD_2316":{
 			  "arrivals":[
 				  {
@@ -1748,6 +2133,79 @@
             "speed": 4
           }
         },
+		"PVD RY23 HIGH WIND": {
+          "arrival_runways": [
+            {
+              "airport": "KPVD",
+              "runway": "23"
+            },
+            {
+              "airport": "KOQU",
+              "runway": "16"
+            }
+          ],
+		  "inbound_rates": {
+			  "WIPOR":{
+				  "KPVD": 10,
+				  "KOQU": 0,
+				  "overflights": 0
+			  },
+			  "JORDN": {
+				  "KPVD": 15,
+				  "KOQU": 0		  
+			  },
+			  "GON":{
+				  "KPVD": 3
+			  },
+			  "JUMPR":{
+				  "overflights": 0
+			  },
+			  "PEAKE": {
+				  "KPVD": 0,
+				  "KOQU": 0
+			  }
+			    
+		  },
+          "solo_controller": "1D",
+		  "multi_controllers": {
+			"default": {
+            "1D": {"primary": true, "arrivals": ["GON","JORDN","JUMPR","WIPOR","PEAKE"]},
+            "1A": {"backup": "1D", "departures": [ "KPVD","KOQU","KEWB" ], "arrivals": []}
+			}
+		  },
+          "controllers": [
+            "1A",
+			"C18",
+            "C32",
+			"C34",
+            "C42"
+          ],
+          "default_maps": [ "RVMPVD011S" ],
+          "departure_runways": [
+            {
+              "airport": "KPVD",
+              "rate": 0,
+              "runway": "23"
+            },
+
+            {
+              "airport": "KOQU",
+              "rate": 0,
+              "runway": "16"
+            },
+            {
+              "airport": "KEWB",
+              "rate": 0,
+              "runway": "32"
+            }
+
+          ],
+          "wind": {
+            "direction": 240,
+            "gust": 36,
+            "speed": 29
+          }
+        },
         "PVD RY05": {
           "arrival_runways": [
             {
@@ -1797,7 +2255,64 @@
             "speed": 5
           }
         },
-        "PVD/OQU PRACTICE (23+16)": {
+		"PVD/OQU PRACTICE (23+16) - AR & DR": {
+          "arrival_runways": [
+            {
+              "airport": "KPVD",
+              "runway": "23"
+            },
+            {
+              "airport": "KOQU",
+              "runway": "16"
+            }
+          ],
+		  "inbound_rates": {
+			  "PQ_PVD_2316_COMBINED":{
+				  "KPVD": 15
+			  },
+              "PQ_OQU_2316_COMBINED":{
+                "KOQU": 10
+            }
+			    
+		  },
+          "solo_controller": "1D",
+		  "multi_controllers": {
+			"default": {
+            "1D": {"primary": true, "arrivals": ["PQ_OQU_2316_COMBINED","PQ_PVD_2316_COMBINED"],"departures":["KOQU","KPVD"]}
+			}
+		  },
+          "controllers": [
+			"1H",
+			"1J",
+			"1N",
+			"C18",
+            "C32",
+			"C34",
+            "C42",
+            "BDL_1W",
+			"BDL_1B"
+          ],
+          "default_maps": [ "RVMPVD011S","RVMPVD019S" ],
+          "departure_runways": [
+            {
+              "airport": "KPVD",
+              "rate": 0,
+              "runway": "23"
+            },
+
+            {
+              "airport": "KOQU",
+              "rate": 0,
+              "runway": "16"
+            }
+          ],
+          "wind": {
+            "direction": 240,
+            "gust": 8,
+            "speed": 4
+          }
+        },
+        "PVD/OQU PRACTICE (23+16) - DR ONLY": {
           "arrival_runways": [
             {
               "airport": "KPVD",

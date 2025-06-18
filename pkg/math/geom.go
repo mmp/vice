@@ -89,10 +89,10 @@ func Overlaps(a Extent2D, b Extent2D) bool {
 }
 
 func Union(e Extent2D, p [2]float32) Extent2D {
-	e.P0[0] = Min(e.P0[0], p[0])
-	e.P0[1] = Min(e.P0[1], p[1])
-	e.P1[0] = Max(e.P1[0], p[0])
-	e.P1[1] = Max(e.P1[1], p[1])
+	e.P0[0] = min(e.P0[0], p[0])
+	e.P0[1] = min(e.P0[1], p[1])
+	e.P1[0] = max(e.P1[0], p[0])
+	e.P1[1] = max(e.P1[1], p[1])
 	return e
 }
 
@@ -111,15 +111,15 @@ func (e Extent2D) IntersectRay(org, dir [2]float32) (bool, float32, float32) {
 	t0, t1 := float32(0), float32(1e30)
 	tx0 := (e.P0[0] - org[0]) / dir[0]
 	tx1 := (e.P1[0] - org[0]) / dir[0]
-	tx0, tx1 = Min(tx0, tx1), Max(tx0, tx1)
-	t0 = Max(t0, tx0)
-	t1 = Min(t1, tx1)
+	tx0, tx1 = min(tx0, tx1), max(tx0, tx1)
+	t0 = max(t0, tx0)
+	t1 = min(t1, tx1)
 
 	ty0 := (e.P0[1] - org[1]) / dir[1]
 	ty1 := (e.P1[1] - org[1]) / dir[1]
-	ty0, ty1 = Min(ty0, ty1), Max(ty0, ty1)
-	t0 = Max(t0, ty0)
-	t1 = Min(t1, ty1)
+	ty0, ty1 = min(ty0, ty1), max(ty0, ty1)
+	t0 = max(t0, ty0)
+	t1 = min(t1, ty1)
 
 	return t0 < t1, t0, t1
 }
@@ -162,6 +162,23 @@ func LineLineIntersect(p1f, p2f, p3f, p4f [2]float32) ([2]float32, bool) {
 	numy := (p1[0]*p2[1]-p1[1]*p2[0])*(p3[1]-p4[1]) - (p1[1]-p2[1])*(p3[0]*p4[1]-p3[1]*p4[0])
 
 	return [2]float32{float32(numx / denom), float32(numy / denom)}, true
+}
+
+// SegmentSegmentIntersect returns the intersection point of the two line segments
+// specified by the vertices (p1, p2) and (p3, p4). An additional returned Boolean
+// value indicates whether a valid intersection was found within both segments.
+func SegmentSegmentIntersect(p1, p2, p3, p4 [2]float32) ([2]float32, bool) {
+	// First check if the infinite lines intersect
+	p, ok := LineLineIntersect(p1, p2, p3, p4)
+	if !ok {
+		return [2]float32{}, false
+	}
+
+	// See if the intersection point is within the bounding boxes of both segments.
+	b0 := Extent2DFromPoints([][2]float32{p1, p2})
+	b1 := Extent2DFromPoints([][2]float32{p3, p4})
+
+	return p, b0.Inside(p) && b1.Inside(p)
 }
 
 // RayRayMinimumDistance takes two rays p0+d0*t and p1+d1*t and returns the

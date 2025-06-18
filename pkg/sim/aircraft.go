@@ -574,7 +574,7 @@ func PlausibleFinalAltitude(fp av.FlightPlan, perf av.AircraftPerformance, nmPer
 	}
 
 	// Enforce ceiling
-	alt = math.Min(alt, ceiling)
+	alt = min(alt, ceiling)
 
 	if math.Heading2LL(pDep, pArr, nmPerLongitude, magneticVariation) > 180 {
 		// Decrease rather than increasing so that we don't potentially go

@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -84,7 +85,7 @@ type STARSPane struct {
 	allVideoMaps []sim.VideoMap
 	dcbVideoMaps []*sim.VideoMap
 
-	weatherRadar WeatherRadar
+	weatherRadar radar.WeatherRadar
 
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
@@ -237,7 +238,7 @@ type STARSPane struct {
 	sdbArena util.ObjectArena[suspendedDatablock]
 }
 
-type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, ScopeTransformations) CommandStatus
+type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, radar.ScopeTransformations) CommandStatus
 
 type PointOutControllers struct {
 	From, To string
@@ -453,7 +454,6 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pl
 	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
-
 	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
 
 	sp.makeMaps(client, ss, lg)
@@ -735,7 +735,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processKeyboardInput(ctx, tracks)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
-	transforms := GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
+	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ctr, float32(ps.Range), 0)
 
 	scopeExtent := ctx.PaneExtent
@@ -850,13 +850,13 @@ func (sp *STARSPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBu
 	})
 
 	// Apply transformations and draw
-	transforms := GetScopeTransformations(ctx.PaneExtent, 0, 0, [2]float32{}, 0, 0)
+	transforms := radar.GetScopeTransformations(ctx.PaneExtent, 0, 0, [2]float32{}, 0, 0)
 	transforms.LoadWindowViewingMatrices(cb)
 	quad.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawWX(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawWX(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	weatherBrightness := float32(ps.Brightness.Weather) / float32(100)
 	weatherContrast := float32(ps.Brightness.WxContrast) / float32(100)
@@ -902,7 +902,7 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 	},
 }
 
-func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadLatLongViewingMatrices(cb)
@@ -1010,7 +1010,7 @@ func raGeomColor(ra *av.RestrictionArea) renderer.RGB {
 	}[ra.Color]
 }
 
-func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ra := sp.wipRestrictionArea
 	if ra == nil {
 		return
@@ -1057,7 +1057,7 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms Scope
 	}
 }
 
-func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
 	ps := sp.currentPrefs()
@@ -1170,7 +1170,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms ScopeTr
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	ps := sp.currentPrefs()
@@ -1203,7 +1203,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms ScopeTransfo
 	}
 }
 
-func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, transforms ScopeTransformations,
+func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	td := renderer.GetTextDrawBuilder()
@@ -1336,7 +1336,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 	var tracks []sim.Track
 	ps := sp.currentPrefs()
 	single := sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeSingle
-	now := ctx.Client.State.SimTime
+	now := ctx.Client.CurrentTime()
 
 	for _, trk := range ctx.Client.State.Tracks {
 		visible := false
@@ -1515,7 +1515,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 	updateContinuous(playSPCSound, AudioSquawkSPC)
 }
 
-func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	if !sp.capture.enabled {
 		return
 	}
@@ -1526,10 +1526,10 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 		p1 := math.Add2f(sp.capture.region[1], ctx.PaneExtent.P0)
 		p0, p1 = math.Scale2f(p0, 2), math.Scale2f(p1, 2)
 
-		x := int(math.Min(p0[0], p1[0]))
-		y := int(math.Min(p0[1], p1[1]))
-		w := int(math.Max(p0[0], p1[0])) - x
-		h := int(math.Max(p0[1], p1[1])) - y
+		x := int(min(p0[0], p1[0]))
+		y := int(min(p0[1], p1[1]))
+		w := int(max(p0[0], p1[0])) - x
+		h := int(max(p0[1], p1[1])) - y
 		px := ctx.Renderer.ReadPixelRGBAs(x, y, w, h)
 
 		// Flip in y
@@ -1595,8 +1595,8 @@ func (sp *STARSPane) handleCapture(ctx *panes.Context, transforms ScopeTransform
 			p1 = ctx.Mouse.Pos
 		}
 		// Offset the outline so it isn't included in the capture
-		p0[0], p1[0] = math.Min(p0[0], p1[0])-1, math.Max(p0[0], p1[0])+1
-		p0[1], p1[1] = math.Min(p0[1], p1[1])-1, math.Max(p0[1], p1[1])+1
+		p0[0], p1[0] = min(p0[0], p1[0])-1, max(p0[0], p1[0])+1
+		p0[1], p1[1] = min(p0[1], p1[1])-1, max(p0[1], p1[1])+1
 
 		ld := renderer.GetLinesDrawBuilder()
 		defer renderer.ReturnLinesDrawBuilder(ld)

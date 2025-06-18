@@ -362,7 +362,7 @@ func (ra *RestrictionArea) AverageVertexPosition() math.Point2LL {
 			c = math.Add2f(c, v)
 		}
 	}
-	return math.Scale2f(c, math.Max(1, 1/n)) // avoid 1/0 and return (0,0) if there are no verts.
+	return math.Scale2f(c, max(1, 1/n)) // avoid 1/0 and return (0,0) if there are no verts.
 }
 
 func (ra *RestrictionArea) UpdateTriangles() {

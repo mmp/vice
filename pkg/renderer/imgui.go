@@ -83,9 +83,9 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize 
 				lg.Error("Unexpected user callback in imgui draw list")
 			} else {
 				clipRect := command.ClipRect()
-				clipRect.X = math.Max(clipRect.X, 0)
-				clipRect.Y = math.Max(clipRect.Y, 0)
-				cb.Scissor(int(clipRect.X), math.Max(int(fbHeight)-int(clipRect.W), 0),
+				clipRect.X = max(clipRect.X, 0)
+				clipRect.Y = max(clipRect.Y, 0)
+				cb.Scissor(int(clipRect.X), max(int(fbHeight)-int(clipRect.W), 0),
 					int(clipRect.Z-clipRect.X), int(clipRect.W-clipRect.Y))
 				cb.EnableTexture(uint32(command.TexID()))
 				cb.DrawTriangles(indexOffset+int(command.IdxOffset()*4), int(command.ElemCount()))
