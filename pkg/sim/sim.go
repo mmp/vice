@@ -38,6 +38,7 @@ type Sim struct {
 
 	SignOnPositions  map[string]*av.Controller
 	humanControllers map[string]*humanController
+	virtualControllers []string
 
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
@@ -217,6 +218,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		PointOuts: make(map[ACID]PointOut),
 
 		Instructors: make(map[string]bool),
+		virtualControllers: config.VirtualControllers,
 
 		Rand: rand.Make(),
 	}
