@@ -17,7 +17,7 @@ import (
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
-	// "github.com/mmp/vice/pkg/panes/eram
+	"github.com/mmp/vice/pkg/panes/eram"
 	// "github.com/mmp/vice/pkg/panes/stars"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
