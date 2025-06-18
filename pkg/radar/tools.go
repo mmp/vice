@@ -25,11 +25,6 @@ func (b ScopeBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 	return r.Scale(float32(b) / 100)
 }
 
-/* Notes for myself for tomorrow:
-1. Why do the buttons look so much darker compared to CRC, even though I got the colors from CRC when the buttons were at 100 brightness?
-2. How to space buttons away from one another?
-*/
-
 // ScopeTransformations
 
 type ScopeTransformations struct {
