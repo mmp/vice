@@ -2,6 +2,7 @@ package eram
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/mmp/vice/pkg/math"
@@ -13,7 +14,7 @@ import (
 )
 
 // Find out how to get these correctly
-const toolbarButtonSize = 84
+const toolbarButtonSize = 300
 const numToolbarSlots = 17
 
 const (
@@ -37,8 +38,9 @@ const (
 
 var ( // TODO: Change to actual colors, but these STARS ones will suffice for now. The colors do vary based on button so maybe
 	// a seperate field in each individual button is needed?
-	toolbarButtonColor            = renderer.RGB{0, .173, 0}
-	toolbarActiveButtonColor      = renderer.RGB{.431, .341, .302}
+	toolbarButtonColor            = renderer.RGB{0, 0, .831} // TODO: Make a map with the buttons that have custom colors (ie. vector, delete tearoff)
+	toolbarTearoffButtonColor     = renderer.RGB{.498, .498, .314}
+	toolbarActiveButtonColor      = renderer.RGB{.863, .627, .608}
 	toolbarTextColor              = renderer.RGB{1, 1, 1}
 	toolbarUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
 	toolbarUnsupportedTextColor   = renderer.RGB{.8, .8, .8}
@@ -52,10 +54,7 @@ type toolbarFlags int
 
 const (
 	buttonFull toolbarFlags = 1 << iota
-	buttonHalfVertical
-	buttonHalfHorizontal
-	buttonSelected
-	buttonWXAVL
+	buttonTearoff
 	buttonDisabled
 	buttonUnsupported
 )
@@ -85,17 +84,28 @@ type dcbSpinner interface {
 
 var activeSpinner dcbSpinner
 
-func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D){
 	// ps := ep.currentPrefs()
 
 	scale := ep.toolbarButtonScale(ctx)
 
 	ep.startDrawtoolbar(ctx, scale, transforms, cb)
+	defer func() {
+		ep.endDrawtoolbar()
+
+		sz := buttonSize(buttonFull, scale)
+
+		paneExtent.P1[1] -= sz[1]
+	}()
+
 	switch ep.activeToolbarMenu {
 	case toolbarMain:
-
+		
+		// ep.drawToolbarButton(ctx, "Draw", []toolbarFlags{buttonFull, 0}, scale, false)
+		ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, 0}, scale, false)
 	}
 
+	return paneExtent
 }
 
 func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
@@ -103,7 +113,7 @@ func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
 	return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numToolbarSlots*toolbarButtonSize))
 }
 
-func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flags toolbarFlags, buttonScale float32, pushedIn bool) bool {
+func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []toolbarFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -111,7 +121,7 @@ func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flags
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	defer renderer.ReturnTextDrawBuilder(td)
 
-	sz := buttonSize(flags, buttonScale)
+	sz := buttonSize(flags[0], buttonScale)
 
 	p0 := toolbarDrawState.cursor
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
@@ -123,21 +133,23 @@ func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flags
 	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
 	mouseDownInside := toolbarDrawState.mouseDownPos != nil &&
 		ext.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) &&
-		flags&buttonDisabled == 0
+		!hasFlag(flags, buttonDisabled)
 
 	var buttonColor, textColor renderer.RGB
 
 	textColor = toolbarTextColor
 
-	disabled := flags&buttonDisabled != 0
+	disabled := hasFlag(flags, buttonDisabled)
 	if disabled {
+		fmt.Println("disabled")
 		buttonColor = toolbarDisabledButtonColor
 	}
-	unsupported := flags&buttonUnsupported != 0
+	unsupported := hasFlag(flags, buttonUnsupported)
 	if unsupported {
+		fmt.Println("unsupported")
 		buttonColor = toolbarUnsupportedButtonColor
 	}
-	if !disabled && !unsupported {
+	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
 		if mouseInside && mouseDownInside {
 			pushedIn = !pushedIn
 		}
@@ -146,6 +158,8 @@ func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flags
 		  } else {
 			 buttonColor = toolbarButtonColor
 		  }   
+	} else if hasFlag(flags, buttonTearoff) {
+		buttonColor = toolbarTearoffButtonColor
 	}
 	buttonColor = toolbarDrawState.brightness.ScaleRGB(buttonColor)
 	//textColor = toolbarDrawState.brightness.ScaleRGB(textColor)
@@ -173,17 +187,23 @@ func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flags
 	return false
 }
 
-func buttonSize(flags toolbarFlags, scale float32) [2]float32 {
+func hasFlag(flags []toolbarFlags, flag toolbarFlags) bool {
+ return slices.Contains(flags, flag)
+}
+
+func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 	bs := func(s float32) float32 { return float32(int(s*toolbarButtonSize + 0.5)) }
 
-	if (flags & buttonFull) != 0 {
-		return [2]float32{bs(scale), bs(scale)}
-	} else if (flags & buttonHalfVertical) != 0 {
-		return [2]float32{bs(scale), bs(scale / 2)}
-	} else if (flags & buttonHalfHorizontal) != 0 {
-		return [2]float32{bs(scale / 2), bs(scale)}
+	// Main button size = 2u
+	// Tearoff button size = .3u
+	// Height = .75u
+
+	if flag == buttonFull{
+		return [2]float32{bs(scale), bs(scale) / 2.667}
+	} else if flag == buttonTearoff {
+		return [2]float32{bs(scale)/6.667, bs(scale) / 2.667}
 	} else {
-		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flags))
+		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flag))
 	}
 }
 
@@ -224,11 +244,21 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
-		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{.31, .31, .31})
+		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{.78, .78, .78})
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
+	}
+}
+
+func (ep *ERAMPane) endDrawtoolbar() {
+	toolbarDrawState.cb.ResetState()
+
+	if mouse := toolbarDrawState.mouse; mouse != nil { // Not sure if this is needed, but we'll find out eventually...
+		if mouse.Released[platform.MouseButtonPrimary] {
+			toolbarDrawState.mouseDownPos = nil
+		}
 	}
 }
 
