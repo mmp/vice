@@ -59,9 +59,16 @@ const (
 	buttonUnsupported
 )
 
+var menuButtons []string = []string{"DRAW", "ATC\nTOOLS", "AB\nSETTING",
+	"CURSOR", "BRIGHT", "MAP BRIGHT", "FONT", "DB\nFIELDS",
+	"VIEWS", "CHECK\nLISTS", "COMMAND\nMENUS", "VIDEOMAP",
+	"ALT LIM", "RADAR\nFILTER", "PREFSET"}
+
 var customButton map[string]renderer.RGB = map[string]renderer.RGB{
 	"RANGE":           renderer.RGB{0, 0, 0},
 	"ALT LIM":         renderer.RGB{0, 0, 0},
+	"POS\nCHECK":     renderer.RGB{0, 0, 0},
+	"EMERG\nCHECK":   renderer.RGB{0, 0, 0},
 	"VECTOR":          renderer.RGB{0, .82, 0},
 	"DELETE\nTEAROFF": renderer.RGB{0, .804, .843},
 }
@@ -117,13 +124,26 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			// ep.deleteTearoff = true
 		}
 	case toolbarChecklist:
+		drawButtonSamePosition("CHECK\nLISTS") // Draw the button in the same position as it was in the main toolbar
 		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale) // Reset the button position to the default
 		}
+		if ep.drawToolbarFullButton(ctx, "POS\nCHECK", 0, scale, false, false ) {
+			// display pos check...
+		}
+		if ep.drawToolbarFullButton(ctx, "EMERG\nCHECK", 0, scale, false, false) {
+			// display emerg check...
+		}
 	}
 
 	return paneExtent
+}
+
+func drawButtonSamePosition(text string) {
+	toolbarDrawState.buttonDrawStartPos = toolbarDrawState.buttonPositions[text] 
+		toolbarDrawState.buttonDrawStartPos[0] -= 10
+		toolbarDrawState.buttonCursor = toolbarDrawState.buttonDrawStartPos
 }
 
 func resetButtonPosDefault(ctx *panes.Context, scale float32) {
@@ -160,6 +180,13 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
+
+	if ep.activeToolbarMenu == toolbarMain || ep.activeToolbarMenu == toolbarVideomap {
+		if slices.Contains(menuButtons, text) {
+			toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
+		}
+	}
+	
 
 	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := toolbarDrawState.mouse
@@ -198,6 +225,9 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	}
 	if customColor, ok := customButton[cleanButtonName(text)]; ok {
 		buttonColor = customColor
+		if customColor == (renderer.RGB{}) && pushedIn{
+			buttonColor = renderer.RGB{.78, .78, .78} // The black buttons turn gray when pushed 
+		}
 	}
 	if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
 		toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
@@ -223,7 +253,8 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	ld.GenerateCommands(toolbarDrawState.cb)
 	td.GenerateCommands(toolbarDrawState.cb)
 
-	if mouse != nil && mouseInside && mouseDownInside {
+	if mouse != nil && mouseInside && mouseDownInside && toolbarDrawState.mouseYetReleased {
+		toolbarDrawState.mouseYetReleased = false
 		return true // Unlike STARS, ERAM doesn't wat for mouse release.
 	}
 	return false
@@ -260,6 +291,7 @@ var toolbarDrawState struct {
 	cb                 *renderer.CommandBuffer
 	mouse              *platform.MouseState
 	mouseDownPos       []float32
+	mouseYetReleased bool // Dont allow another click until the mouse is released
 	cursor             [2]float32
 	drawStartPos       [2]float32
 	buttonDrawStartPos [2]float32 // This is the position of the first button in the toolbar.
@@ -268,6 +300,10 @@ var toolbarDrawState struct {
 	style           renderer.TextStyle
 	position        int
 	buttonPositions map[string][2]float32 // This is the position of each main button in the toolbar.
+}
+
+func init() {
+	toolbarDrawState.mouseYetReleased = true
 }
 
 func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
@@ -305,7 +341,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(renderer.RGB{.78, .78, .78}))
 	trid.GenerateCommands(cb)
 
-	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
+	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary]  {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
 }
@@ -320,6 +356,7 @@ func (ep *ERAMPane) endDrawtoolbar() {
 	if mouse := toolbarDrawState.mouse; mouse != nil { // Not sure if this is needed, but we'll find out eventually...
 		if mouse.Released[platform.MouseButtonPrimary] {
 			toolbarDrawState.mouseDownPos = nil
+			toolbarDrawState.mouseYetReleased = true
 		}
 	}
 }
