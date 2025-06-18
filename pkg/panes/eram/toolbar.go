@@ -60,11 +60,13 @@ const (
 )
 
 var customButton map[string]renderer.RGB = map[string]renderer.RGB{
-	"RANGE": renderer.RGB{0, 0, 0}, 
-	"ALT LIM": renderer.RGB{0, 0, 0},
-	"VECTOR": renderer.RGB{0, .82, 0},
-	"DELETE\nTEAROFF": renderer.RGB{0, .804, .843}, 
+	"RANGE":           renderer.RGB{0, 0, 0},
+	"ALT LIM":         renderer.RGB{0, 0, 0},
+	"VECTOR":          renderer.RGB{0, .82, 0},
+	"DELETE\nTEAROFF": renderer.RGB{0, .804, .843},
 }
+
+var toolbarButtonPositions = make(map[string][2]float32)
 
 func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	// ps := ep.currentPrefs()
@@ -102,22 +104,31 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarViews
 		}
 		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, false, false) {
-			ep.activeToolbarMenu = toolbarChecklist 
+			ep.activeToolbarMenu = toolbarChecklist
 		}
 		ep.drawToolbarFullButton(ctx, "COMMAND\nMENUS", 0, scale, false, false)
-		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) { // Change to ERAM adapted name 
+		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) { // Change to ERAM adapted name
 			ep.activeToolbarMenu = toolbarVideomap
 		}
 		ep.drawToolbarFullButton(ctx, "ALT LIM\nXXXXX", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {
-			// ep.deleteTearoff = true 
+			// ep.deleteTearoff = true
 		}
-
+	case toolbarChecklist:
+		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale) // Reset the button position to the default
+		}
 	}
 
 	return paneExtent
+}
+
+func resetButtonPosDefault(ctx *panes.Context, scale float32) {
+	pos := mainButtonPosition(scale)
+	toolbarDrawState.buttonDrawStartPos = [2]float32{pos[0], ctx.PaneExtent.Height() - pos[1]}
 }
 
 func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
@@ -125,10 +136,10 @@ func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
 	return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numToolbarSlots*toolbarButtonSize))
 }
 
-// Draws both the full button and tearoff. Only need the disabled flag. Only return the result of the full button. The tearoff will be handled here as it's all the same. 
+// Draws both the full button and tearoff. Only need the disabled flag. Only return the result of the full button. The tearoff will be handled here as it's all the same.
 func (ep *ERAMPane) drawToolbarFullButton(ctx *panes.Context, text string, flag toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool { // Do I need to return a bool here?
-	ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, flag}, buttonScale, pushedIn, nextRow) // Draw tearoff button
-	return ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false)  // Draw full button. Only change row for the tearoff button 
+	ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, flag}, buttonScale, pushedIn, nextRow)     // Draw tearoff button
+	return ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false) // Draw full button. Only change row for the tearoff button
 }
 
 func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool {
@@ -143,14 +154,12 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	if nextRow {
 		toolbarDrawState.buttonCursor[0] = toolbarDrawState.buttonDrawStartPos[0] // Reset to the start of the row
-		toolbarDrawState.buttonCursor[1] -= sz[1] + 3                            // 1 pixel padding
+		toolbarDrawState.buttonCursor[1] -= sz[1] + 3                             // some space in between rows
 	}
-
 	p0 := toolbarDrawState.buttonCursor
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
-
 
 	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := toolbarDrawState.mouse
@@ -175,10 +184,12 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	}
 	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
 		if mouseInside && mouseDownInside {
-			pushedIn = !pushedIn
+			pushedIn = true // Maybe this needs to be toggled? TODO: Find this out.
 		}
 		if pushedIn {
 			buttonColor = toolbarActiveButtonColor
+			// If its a button that changes the toolbar, add it to the button position
+			// With the exception of MAP BRIGHT, which opens a submenu (TODO: figure out how to do that)
 		} else {
 			buttonColor = toolbarButtonColor
 		}
@@ -187,7 +198,10 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	}
 	if customColor, ok := customButton[cleanButtonName(text)]; ok {
 		buttonColor = customColor
-	} 
+	}
+	if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
+		toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
+	}
 	ps := ep.currentPrefs()
 	buttonColor = ps.Brightness.Button.ScaleRGB(buttonColor)
 	textColor = ps.Brightness.Text.ScaleRGB(textColor) // Text has brightness in ERAM
@@ -209,8 +223,8 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	ld.GenerateCommands(toolbarDrawState.cb)
 	td.GenerateCommands(toolbarDrawState.cb)
 
-	if mouse != nil && mouseInside && mouse.Released[platform.MouseButtonPrimary] && mouseDownInside {
-		return true /* clicked and released */
+	if mouse != nil && mouseInside && mouseDownInside {
+		return true // Unlike STARS, ERAM doesn't wat for mouse release.
 	}
 	return false
 }
@@ -233,7 +247,6 @@ func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 	// 22u distance from the top
 	// ratio = 94/22 = 4.27
 
-
 	if flag == buttonFull {
 		return [2]float32{bs(scale), bs(scale) / 2.52}
 	} else if flag == buttonTearoff {
@@ -251,15 +264,19 @@ var toolbarDrawState struct {
 	drawStartPos       [2]float32
 	buttonDrawStartPos [2]float32 // This is the position of the first button in the toolbar.
 	// Unlike STARS, ERAM buttons don't start from the top left corner; they are offset.
-	buttonCursor [2]float32 // This is the position of the cursor in the toolbar for buttons.
-	style        renderer.TextStyle
-	position     int
+	buttonCursor    [2]float32 // This is the position of the cursor in the toolbar for buttons.
+	style           renderer.TextStyle
+	position        int
+	buttonPositions map[string][2]float32 // This is the position of each main button in the toolbar.
 }
 
 func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	toolbarDrawState.cb = cb
 	toolbarDrawState.mouse = ctx.Mouse
+	if toolbarDrawState.buttonPositions == nil {
+		toolbarDrawState.buttonPositions = make(map[string][2]float32)
+	}
 
 	ps := ep.currentPrefs()
 	toolbarDrawState.position = 0                                                   // Always start at the top left untill custom toolbar locations are implemented
@@ -275,9 +292,8 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 		LineSpacing: 0,
 	}
 
-	buttonDrawStartX := buttonSize(buttonTearoff, buttonScale)[0] / 0.701
-	buttonDrawStartY := buttonSize(buttonTearoff, buttonScale)[1] / 4.27
-	toolbarDrawState.buttonDrawStartPos = [2]float32{buttonDrawStartX, ctx.PaneExtent.Height() - buttonDrawStartY}
+	buttonStart := mainButtonPosition(buttonScale)
+	toolbarDrawState.buttonDrawStartPos = [2]float32{buttonStart[0], ctx.PaneExtent.Height() - buttonStart[1]}
 	toolbarDrawState.buttonCursor = toolbarDrawState.buttonDrawStartPos
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -292,6 +308,10 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
+}
+
+func mainButtonPosition(buttonScale float32) [2]float32 {
+	return [2]float32{buttonSize(buttonTearoff, buttonScale)[0] / 0.701, buttonSize(buttonTearoff, buttonScale)[1] / 4.27}
 }
 
 func (ep *ERAMPane) endDrawtoolbar() {
@@ -335,9 +355,9 @@ func moveToolbarCursor(flag toolbarFlags, sz [2]float32, ctx *panes.Context, nex
 // Turns any button with dynamic fields into a main name. (eg. Range 300 -> Range)
 func cleanButtonName(name string) string {
 	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR"}
-	firstLine := strings.Split(name, "\n")[0] 
+	firstLine := strings.Split(name, "\n")[0]
 	if slices.Contains(weirdNames, firstLine) {
 		return firstLine
 	}
-	return name 
+	return name
 }
