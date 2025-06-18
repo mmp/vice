@@ -93,6 +93,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw weather
 	// Draw video maps
 	// Draw routes
+	ep.toolbarVisible = true // add this in eventually
 	if ep.toolbarVisible {
 		// draw dcb
 		ep.drawtoolbar(ctx, transforms, cb)
