@@ -171,12 +171,9 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	} else if hasFlag(flags, buttonTearoff) {
 		buttonColor = toolbarTearoffButtonColor
 	}
-	scanText := strings.Split(text, "\n")[0]
-	if customColor, ok := customButton[scanText]; ok {
+	if customColor, ok := customButton[cleanButtonName(text)]; ok {
 		buttonColor = customColor
-	} else if text == "DELETE\nTEAROFF" {
-		buttonColor = renderer.RGB{0, .804, .843} // Custom color for delete tearoff button
-	}
+	} 
 	ps := ep.currentPrefs()
 	buttonColor = ps.Brightness.Button.ScaleRGB(buttonColor)
 	textColor = ps.Brightness.Text.ScaleRGB(textColor) // Text has brightness in ERAM
@@ -320,3 +317,12 @@ func moveToolbarCursor(flag toolbarFlags, sz [2]float32, ctx *panes.Context, nex
 	toolbarDrawState.buttonCursor[0] += sz[0] + 1 // 1 pixel padding
 }
 
+// Turns any button with dynamic fields into a main name. (eg. Range 300 -> Range)
+func cleanButtonName(name string) string {
+	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR"}
+	firstLine := strings.Split(name, "\n")[0] 
+	if slices.Contains(weirdNames, firstLine) {
+		return firstLine
+	}
+	return name 
+}
