@@ -38,16 +38,16 @@ const (
 
 var ( // TODO: Change to actual colors, but these STARS ones will suffice for now. The colors do vary based on button so maybe
 	// a seperate field in each individual button is needed?
-	toolbarButtonColor            = renderer.RGB{0, 0, .831} // TODO: Make a map with the buttons that have custom colors (ie. vector, delete tearoff)
-	toolbarTearoffButtonColor     = renderer.RGB{.498, .498, .314}
-	toolbarActiveButtonColor      = renderer.RGB{.863, .627, .608}
-	toolbarTextColor              = renderer.RGB{1, 1, 1}
+	toolbarButtonColor            = renderer.RGB{0, 0, .867} // TODO: Make a map with the buttons that have custom colors (ie. vector, delete tearoff)
+	toolbarTearoffButtonColor     = renderer.RGB{1, 1, .576}
+	toolbarActiveButtonColor      = renderer.RGB{.906, .616, .6}
+	toolbarTextColor              = renderer.RGB{.953, .953, .953}
 	toolbarUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
-	toolbarUnsupportedTextColor   = renderer.RGB{.8, .8, .8}
+	toolbarUnsupportedTextColor   = renderer.RGB{.8, .8, .8} // Dont think I neeed this
 	toolbarDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
-	toolbarDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}
-	toolbarOutlineColor           = renderer.RGB{0, 0, 0}
-	toolbarHoveredOutlineColor    = renderer.RGB{.38, .38, .38}
+	toolbarDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}  // Dont think I need this either
+	toolbarOutlineColor           = renderer.RGB{.38, .38, .38} // I don't think MacOS ERAM buttons highlight when hovered yet, so I'll check later on windows.
+	toolbarHoveredOutlineColor    = renderer.RGB{.953, .953, .953}
 )
 
 type toolbarFlags int
@@ -59,32 +59,14 @@ const (
 	buttonUnsupported
 )
 
-type dcbSpinner interface {
-	// Label returns the text that should be shown in the DCB button.
-	Label() string
-
-	// Equal returns true if the provided spinner controls the same value
-	// as this spinner.
-	Equals(other dcbSpinner) bool
-
-	// MouseWheel is called when the spinner is active and there is mouse
-	// wheel input; implementations should update the underlying value
-	// accordingly.
-	MouseWheel(delta int)
-
-	// KeyboardInput is called if the spinner is active and the user enters
-	// text and presses enter; implementations should update the underlying
-	// value accordingly.
-	KeyboardInput(text string) error
-
-	// Disabled is called after a spinner has been disabled, e.g. due to a
-	// second click on its DCB button or pressing enter.
-	Disabled()
+var customButton map[string]renderer.RGB = map[string]renderer.RGB{
+	"RANGE": renderer.RGB{0, 0, 0}, 
+	"ALT LIM": renderer.RGB{0, 0, 0},
+	"VECTOR": renderer.RGB{0, .82, 0},
+	"DELETE\nTEAROFF": renderer.RGB{0, .804, .843}, 
 }
 
-var activeSpinner dcbSpinner
-
-func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D){
+func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	// ps := ep.currentPrefs()
 
 	scale := ep.toolbarButtonScale(ctx)
@@ -100,9 +82,25 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 
 	switch ep.activeToolbarMenu {
 	case toolbarMain:
-		
-		// ep.drawToolbarButton(ctx, "Draw", []toolbarFlags{buttonFull, 0}, scale, false)
-		ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, 0}, scale, false)
+
+		ep.drawToolbarFullButton(ctx, "DRAW", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "ATC\nTOOLS", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "AB\nSETTING", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, fmt.Sprintf("RANGE\n%v", ep.currentPrefs().Range), 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "CURSOR", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "FONT", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "DB\nFIELDS", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "VECTOR\n0", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true)
+		ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "COMMAND\nMENUS", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) // Change to ERAM adapted name 
+		ep.drawToolbarFullButton(ctx, "ALT LIM\nXXXXX", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false)
+
 	}
 
 	return paneExtent
@@ -113,7 +111,13 @@ func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
 	return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numToolbarSlots*toolbarButtonSize))
 }
 
-func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []toolbarFlags, buttonScale float32, pushedIn bool) bool {
+// Draws both the full button and tearoff. Only need the disabled flag.
+func (ep *ERAMPane) drawToolbarFullButton(ctx *panes.Context, text string, flag toolbarFlags, buttonScale float32, pushedIn, nextRow bool) { // Do I need to return a bool here?
+	ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, flag}, buttonScale, pushedIn, nextRow) // Draw tearoff button
+	ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false)  // Draw full button. Only change row for the tearoff button 
+}
+
+func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -123,10 +127,16 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	sz := buttonSize(flags[0], buttonScale)
 
-	p0 := toolbarDrawState.cursor
+	if nextRow {
+		toolbarDrawState.buttonCursor[0] = toolbarDrawState.buttonDrawStartPos[0] // Reset to the start of the row
+		toolbarDrawState.buttonCursor[1] -= sz[1] + 3                            // 1 pixel padding
+	}
+
+	p0 := toolbarDrawState.buttonCursor
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
+
 
 	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := toolbarDrawState.mouse
@@ -153,28 +163,35 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 		if mouseInside && mouseDownInside {
 			pushedIn = !pushedIn
 		}
-		  if pushedIn {
-			   buttonColor = toolbarActiveButtonColor
-		  } else {
-			 buttonColor = toolbarButtonColor
-		  }   
+		if pushedIn {
+			buttonColor = toolbarActiveButtonColor
+		} else {
+			buttonColor = toolbarButtonColor
+		}
 	} else if hasFlag(flags, buttonTearoff) {
 		buttonColor = toolbarTearoffButtonColor
 	}
-	buttonColor = toolbarDrawState.brightness.ScaleRGB(buttonColor)
-	//textColor = toolbarDrawState.brightness.ScaleRGB(textColor)
+	scanText := strings.Split(text, "\n")[0]
+	if customColor, ok := customButton[scanText]; ok {
+		buttonColor = customColor
+	} else if text == "DELETE\nTEAROFF" {
+		buttonColor = renderer.RGB{0, .804, .843} // Custom color for delete tearoff button
+	}
+	ps := ep.currentPrefs()
+	buttonColor = ps.Brightness.Button.ScaleRGB(buttonColor)
+	textColor = ps.Brightness.Text.ScaleRGB(textColor) // Text has brightness in ERAM
 
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
 	drawToolbarText(text, td, sz, textColor)
 
-
-	// Draw button outline 
+	// Draw button outline
 	outlineColor := util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor)
 
 	ld.AddLine(p0, p1, outlineColor)
 	ld.AddLine(p1, p2, outlineColor)
 	ld.AddLine(p2, p3, outlineColor)
 	ld.AddLine(p3, p0, outlineColor)
+	moveToolbarCursor(flags[0], sz, ctx, nextRow)
 
 	// Text last!
 	trid.GenerateCommands(toolbarDrawState.cb)
@@ -188,33 +205,42 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 }
 
 func hasFlag(flags []toolbarFlags, flag toolbarFlags) bool {
- return slices.Contains(flags, flag)
+	return slices.Contains(flags, flag)
 }
 
 func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 	bs := func(s float32) float32 { return float32(int(s*toolbarButtonSize + 0.5)) }
 
-	// Main button size = 2u
-	// Tearoff button size = .3u
-	// Height = .75u
+	// Main button length = 485u
+	// Tearoff button length = 78u
+	// Height = 192u
+	// bs(Scale) = main button length
 
-	if flag == buttonFull{
-		return [2]float32{bs(scale), bs(scale) / 2.667}
+	// new scale: 94u tearoff length
+	// newscale: 134u distance from left edge
+	// ratio = 94/134 = 0.7014
+	// 22u distance from the top
+	// ratio = 94/22 = 4.27
+
+	if flag == buttonFull {
+		return [2]float32{bs(scale), bs(scale) / 2.52}
 	} else if flag == buttonTearoff {
-		return [2]float32{bs(scale)/6.667, bs(scale) / 2.667}
+		return [2]float32{bs(scale) / 10.06, bs(scale) / 2.52}
 	} else {
 		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flag))
 	}
 }
 
 var toolbarDrawState struct {
-	cb           *renderer.CommandBuffer
-	mouse        *platform.MouseState
-	mouseDownPos []float32
-	cursor       [2]float32
-	drawStartPos [2]float32
+	cb                 *renderer.CommandBuffer
+	mouse              *platform.MouseState
+	mouseDownPos       []float32
+	cursor             [2]float32
+	drawStartPos       [2]float32
+	buttonDrawStartPos [2]float32 // This is the position of the first button in the toolbar.
+	// Unlike STARS, ERAM buttons don't start from the top left corner; they are offset.
+	buttonCursor [2]float32 // This is the position of the cursor in the toolbar for buttons.
 	style        renderer.TextStyle
-	brightness   radar.ScopeBrightness
 	position     int
 }
 
@@ -224,11 +250,10 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	toolbarDrawState.mouse = ctx.Mouse
 
 	ps := ep.currentPrefs()
-	toolbarDrawState.brightness = ps.Brightness.Toolbar
-	toolbarDrawState.position = 0 // Always start at the top left untill custom toolbar locations are implemented
-	buttonSize := float32(int(ep.toolbarButtonScale(ctx) * toolbarButtonSize + 0.5)) // Check all of these sizes
+	toolbarDrawState.position = 0                                                   // Always start at the top left untill custom toolbar locations are implemented
+	buttonSize1 := float32(int(ep.toolbarButtonScale(ctx)*toolbarButtonSize + 0.5)) // Check all of these sizes
 	toolbarDrawState.drawStartPos = [2]float32{0, ctx.PaneExtent.Height() - 1}
-	drawEndPos := [2]float32{ctx.PaneExtent.Width(), toolbarDrawState.drawStartPos[1] - buttonSize}
+	drawEndPos := [2]float32{ctx.PaneExtent.Width(), toolbarDrawState.drawStartPos[1] - buttonSize1}
 
 	toolbarDrawState.cursor = toolbarDrawState.drawStartPos
 
@@ -238,13 +263,18 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 		LineSpacing: 0,
 	}
 
+	buttonDrawStartX := buttonSize(buttonTearoff, buttonScale)[0] / 0.701
+	buttonDrawStartY := buttonSize(buttonTearoff, buttonScale)[1] / 4.27
+	toolbarDrawState.buttonDrawStartPos = [2]float32{buttonDrawStartX, ctx.PaneExtent.Height() - buttonDrawStartY}
+	toolbarDrawState.buttonCursor = toolbarDrawState.buttonDrawStartPos
+
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
-		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{.78, .78, .78})
+		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(renderer.RGB{.78, .78, .78}))
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
@@ -268,21 +298,25 @@ func drawToolbarText(text string, td *renderer.TextDrawBuilder, buttonSize [2]fl
 	for i := range lines {
 		lines[i] = strings.TrimSpace(lines[i])
 	}
-
 	style := toolbarDrawState.style
-	style.Color = renderer.LerpRGB(.5, color, toolbarDrawState.brightness.ScaleRGB(color))
+	style.Color = color // is Renderer.LerpRGB needed here? The color inputed in scaled from in DrawToolbarButton
 	_, h := style.Font.BoundText(strings.Join(lines, "\n"), toolbarDrawState.style.LineSpacing)
 
 	slop := buttonSize[1] - float32(h) // todo: what if negative...
-	y0 := toolbarDrawState.cursor[1] - 1 - slop/2
+	y0 := toolbarDrawState.buttonCursor[1] - 1 - slop/2
 	for _, line := range lines {
 		lw, lh := style.Font.BoundText(line, style.LineSpacing)
 		// Try to center the text, though if it's too big to fit in the
 		// button then draw it starting from the left edge of the button so
 		// that the trailing characters are the ones that are lost.
-		x0 := toolbarDrawState.cursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
+		x0 := toolbarDrawState.buttonCursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
 		y0 -= float32(lh)
 	}
 }
+
+func moveToolbarCursor(flag toolbarFlags, sz [2]float32, ctx *panes.Context, nextRow bool) {
+	toolbarDrawState.buttonCursor[0] += sz[0] + 1 // 1 pixel padding
+}
+
