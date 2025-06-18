@@ -88,18 +88,32 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		ep.drawToolbarFullButton(ctx, "AB\nSETTING", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, fmt.Sprintf("RANGE\n%v", ep.currentPrefs().Range), 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "CURSOR", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "FONT", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "DB\nFIELDS", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarBright
+		}
+		if ep.drawToolbarFullButton(ctx, "FONT", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarFont
+		}
+		if ep.drawToolbarFullButton(ctx, "DB\nFIELDS", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarDBFields
+		}
 		ep.drawToolbarFullButton(ctx, "VECTOR\n0", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true)
-		ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true) {
+			ep.activeToolbarMenu = toolbarViews
+		}
+		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarChecklist 
+		}
 		ep.drawToolbarFullButton(ctx, "COMMAND\nMENUS", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) // Change to ERAM adapted name 
+		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) { // Change to ERAM adapted name 
+			ep.activeToolbarMenu = toolbarVideomap
+		}
 		ep.drawToolbarFullButton(ctx, "ALT LIM\nXXXXX", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {
+			// ep.deleteTearoff = true 
+		}
 
 	}
 
