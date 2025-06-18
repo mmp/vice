@@ -1,6 +1,9 @@
 package eram
 
-import "github.com/mmp/vice/pkg/math"
+import (
+	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/radar"
+)
 
 type Preferences struct {
 	CommonPreferences
@@ -43,32 +46,32 @@ type CommonPreferences struct {
 		Portal int // Same here...
 	}
 	Brightness struct{
-		Background ERAMBrightness 
-		Cursor ERAMBrightness 
-		Text ERAMBrightness 
-		PRTGT ERAMBrightness 
-		UNPTGT ERAMBrightness 
-		PRHST ERAMBrightness 
-		UNPHST ERAMBrightness
-		LDB ERAMBrightness 
-		SLDB ERAMBrightness 
-		WX ERAMBrightness 
-		NEXRAD ERAMBrightness 
-		Backlight ERAMBrightness 
-		Button ERAMBrightness 
-		Border ERAMBrightness 
-		Toolbar ERAMBrightness
-		TBBRDR ERAMBrightness
-		ABBRDR ERAMBrightness
-		FDB ERAMBrightness
-		Portal ERAMBrightness 
-		Satcomm ERAMBrightness 
-		ONFREQ ERAMBrightness 
-		Line4 ERAMBrightness 
-		Dwell ERAMBrightness 
-		Fence ERAMBrightness 
-		DBFEL ERAMBrightness 
-		Outage ERAMBrightness
+		Background radar.ScopeBrightness 
+		Cursor radar.ScopeBrightness 
+		Text radar.ScopeBrightness 
+		PRTGT radar.ScopeBrightness 
+		UNPTGT radar.ScopeBrightness 
+		PRHST radar.ScopeBrightness 
+		UNPHST radar.ScopeBrightness
+		LDB radar.ScopeBrightness 
+		SLDB radar.ScopeBrightness 
+		WX radar.ScopeBrightness 
+		NEXRAD radar.ScopeBrightness 
+		Backlight radar.ScopeBrightness 
+		Button radar.ScopeBrightness 
+		Border radar.ScopeBrightness 
+		Toolbar radar.ScopeBrightness
+		TBBRDR radar.ScopeBrightness
+		ABBRDR radar.ScopeBrightness
+		FDB radar.ScopeBrightness
+		Portal radar.ScopeBrightness 
+		Satcomm radar.ScopeBrightness 
+		ONFREQ radar.ScopeBrightness 
+		Line4 radar.ScopeBrightness 
+		Dwell radar.ScopeBrightness 
+		Fence radar.ScopeBrightness 
+		DBFEL radar.ScopeBrightness 
+		Outage radar.ScopeBrightness
 	}
 }
 
