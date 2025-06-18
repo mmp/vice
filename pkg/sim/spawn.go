@@ -52,7 +52,9 @@ type RunwayLaunchState struct {
 	// Sequenced departures, pulled from Released. These are launched in-order.
 	Sequenced []DepartureAircraft
 
-	LastDeparture *DepartureAircraft
+	LastDeparture          *DepartureAircraft
+	LastArrivalLandingTime time.Time      // when the last arrival landed on this runway
+	LastArrivalFlightRules av.FlightRules // flight rules of the last arrival that landed
 
 	VFRAttempts  int
 	VFRSuccesses int
@@ -144,6 +146,86 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 	}
 
 	return lc
+}
+
+// TotalDepartureRate returns the total departure rate (aircraft per hour) for all airports and runways
+func (lc *LaunchConfig) TotalDepartureRate() float32 {
+	var sum float32
+	for _, runwayRates := range lc.DepartureRates {
+		sum += sumRateMap2(runwayRates, lc.DepartureRateScale)
+	}
+	return sum
+}
+
+// TotalInboundFlowRate returns the total inbound flow rate (aircraft per hour) for all flows
+func (lc *LaunchConfig) TotalInboundFlowRate() float32 {
+	var sum float32
+	for _, flowRates := range lc.InboundFlowRates {
+		for _, rate := range flowRates {
+			sum += scaleRate(rate, lc.InboundFlowRateScale)
+		}
+	}
+	return sum
+}
+
+// TotalArrivalRate returns the total arrival rate (aircraft per hour) excluding overflights
+func (lc *LaunchConfig) TotalArrivalRate() float32 {
+	var sum float32
+	for _, flowRates := range lc.InboundFlowRates {
+		for ap, rate := range flowRates {
+			if ap != "overflights" {
+				sum += scaleRate(rate, lc.InboundFlowRateScale)
+			}
+		}
+	}
+	return sum
+}
+
+// TotalOverflightRate returns the total overflight rate (aircraft per hour)
+func (lc *LaunchConfig) TotalOverflightRate() float32 {
+	var sum float32
+	for _, flowRates := range lc.InboundFlowRates {
+		if rate, ok := flowRates["overflights"]; ok {
+			sum += scaleRate(rate, lc.InboundFlowRateScale)
+		}
+	}
+	return sum
+}
+
+// CheckRateLimits returns true if both total departure rates and total inbound flow rates
+// sum to less than the provided limit (aircraft per hour)
+func (lc *LaunchConfig) CheckRateLimits(limit float32) bool {
+	totalDepartures := lc.TotalDepartureRate()
+	totalInbound := lc.TotalInboundFlowRate()
+	return totalDepartures < limit && totalInbound < limit
+}
+
+// ClampRates adjusts the rate scale variables to ensure the total launch rate
+// does not exceed the given limit (aircraft per hour)
+func (lc *LaunchConfig) ClampRates(limit float32) {
+	// Calculate current totals with scale = 1 to get base rates
+	baseDepartureRate := lc.TotalDepartureRate() / lc.DepartureRateScale
+	baseInboundRate := lc.TotalInboundFlowRate() / lc.InboundFlowRateScale
+
+	// If either rate would exceed the limit with current scale, adjust it
+	if baseDepartureRate*lc.DepartureRateScale > limit && baseDepartureRate > 0 {
+		lc.DepartureRateScale = limit / baseDepartureRate * 0.99
+	}
+
+	if baseInboundRate*lc.InboundFlowRateScale > limit && baseInboundRate > 0 {
+		lc.InboundFlowRateScale = limit / baseInboundRate * 0.99
+	}
+}
+
+// sumRateMap2 computes the total rate from a nested map structure
+func sumRateMap2(rates map[string]map[string]float32, scale float32) float32 {
+	var sum float32
+	for _, categoryRates := range rates {
+		for _, rate := range categoryRates {
+			sum += scaleRate(rate, scale)
+		}
+	}
+	return sum
 }
 
 func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
@@ -624,7 +706,7 @@ func (s *Sim) updateDepartureSequence() {
 
 			// See if we have anything to launch
 			considerExit := len(depState.Sequenced) == 1 // if it's just us waiting, don't rush it unnecessarily
-			if len(depState.Sequenced) > 0 && s.canLaunch(depState.LastDeparture, depState.Sequenced[0], considerExit) {
+			if len(depState.Sequenced) > 0 && s.canLaunch(depState, depState.Sequenced[0], considerExit, depRunway) {
 				dep := depState.Sequenced[0]
 				ac := s.Aircraft[dep.ADSBCallsign]
 
@@ -659,6 +741,54 @@ func (s *Sim) updateDepartureSequence() {
 	}
 }
 
+// intersectingRunways returns all runways that physically intersect the
+// given runway up to one nm past the opposite threshold.
+func (s *Sim) intersectingRunways(airport, depRwy string) []string {
+	depRwy = av.TidyRunway(depRwy)
+
+	// Get the departure runway info
+	rwySegment := func(rwy string) (seg [2][2]float32, ok bool) {
+		var r, opp av.Runway
+		if r, ok = av.LookupRunway(airport, rwy); !ok {
+			return
+		}
+
+		if opp, ok = av.LookupOppositeRunway(airport, rwy); !ok {
+			return
+		}
+
+		// Line segment from departure threshold to 1nm past opposing threshold
+		rp := math.LL2NM(r.Threshold, s.State.NmPerLongitude)
+		op := math.LL2NM(opp.Threshold, s.State.NmPerLongitude)
+		v := math.Normalize2f(math.Sub2f(op, rp))
+
+		return [2][2]float32{rp, math.Add2f(op, v)}, true
+	}
+
+	depSeg, ok := rwySegment(depRwy)
+	if !ok {
+		return nil
+	}
+
+	// Check all other runways for intersection
+	var intersecting []string
+	if _, ok := s.State.Airports[airport]; ok {
+		for _, otherRwy := range av.DB.Airports[airport].Runways {
+			if av.TidyRunway(otherRwy.Id) == depRwy {
+				continue // Skip the same runway
+			}
+
+			if othSeg, ok := rwySegment(otherRwy.Id); ok {
+				if _, ok := math.SegmentSegmentIntersect(depSeg[0], depSeg[1], othSeg[0], othSeg[1]); ok {
+					intersecting = append(intersecting, otherRwy.Id)
+				}
+			}
+		}
+	}
+
+	return intersecting
+}
+
 // sameGroupRunways returns an iterator over all of the runways in the
 // ~equivalence class with the given depRwy. Such equivalences can come
 // both from user-specified "departure_runways_as_one" but also from
@@ -684,7 +814,20 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 			}
 		}
 
-		// Now see look for departing both e.g. "4" and "4.AutoWest"
+		// Also include intersecting runways.
+		for _, intRwy := range s.intersectingRunways(airport, depRwy) {
+			// We can't directly look up in the runwayState map due to runways like 28L.1
+			// but instead have to check each one for a match.
+			for rwy, state := range runwayState {
+				if av.TidyRunway(intRwy) == av.TidyRunway(rwy) {
+					if !yield(intRwy, state) {
+						return
+					}
+				}
+			}
+		}
+
+		// Now look for departing both e.g. "4" and "4.AutoWest"
 		for rwy, state := range runwayState {
 			if depRwy == av.TidyRunway(rwy) {
 				if !yield(rwy, state) {
@@ -696,16 +839,44 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 }
 
 // canLaunch checks whether we can go ahead and launch dep.
-func (s *Sim) canLaunch(prevDep *DepartureAircraft, dep DepartureAircraft, considerExit bool) bool {
-	if prevDep == nil {
-		// No previous departure on this runway, so there's nothing
-		// stopping us.
-		return true
-	} else {
-		// Make sure enough time has passed since the last departure.
-		elapsed := s.State.SimTime.Sub(prevDep.LaunchTime)
-		return elapsed > s.launchInterval(*prevDep, dep, considerExit)
+func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, runway string) bool {
+	// Check if enough time has passed since the last departure
+	if depState.LastDeparture != nil {
+		elapsed := s.State.SimTime.Sub(depState.LastDeparture.LaunchTime)
+		if elapsed < s.launchInterval(*depState.LastDeparture, dep, considerExit) {
+			return false
+		}
 	}
+
+	// Check if we need to wait after a recent arrival's landing to
+	// simulate its deceleration and vacating the runway (though skip this
+	// check if both the last arrival and the departing aircraft are VFR.)
+	depAc := s.Aircraft[dep.ADSBCallsign]
+	if depAc.FlightPlan.Rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
+		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
+			fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
+			return false
+		}
+	}
+
+	// Check for imminent arrivals on this runway
+	// Skip this check if both arriving and departing aircraft are VFR
+	for _, ac := range s.Aircraft {
+		if ac.Nav.Approach.Assigned != nil && ac.Nav.Approach.Assigned.Runway == runway {
+			// Skip if both aircraft are VFR
+			if ac.FlightPlan.Rules == av.FlightRulesVFR && depAc.FlightPlan.Rules == av.FlightRulesVFR {
+				continue
+			}
+
+			if dist, err := ac.Nav.distanceToEndOfApproach(); err == nil && dist < 2.0 {
+				// Hold departure; the arrival's too close
+				fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 // launchInterval returns the amount of time we must wait before launching
@@ -728,14 +899,14 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	// When sequencing, penalize same-exit repeats. But when we have a
 	// sequence and are launching, we'll let it roll.
 	if considerExit && cac.FlightPlan.Exit == pac.FlightPlan.Exit {
-		wait = math.Max(wait, 3*time.Minute/2)
+		wait = max(wait, 3*time.Minute/2)
 	}
 
 	// Check for wake turbulence separation.
 	wtDist := av.CWTDirectlyBehindSeparation(pac.CWT(), cac.CWT())
 	if wtDist != 0 {
 		// Assume '1 gives you 3.5'
-		wait = math.Max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
+		wait = max(wait, time.Duration(wtDist/3.5*float32(time.Minute)))
 	}
 
 	return wait
@@ -1129,7 +1300,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 		ac.DepartureContactAltitude =
 			ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
-		ac.DepartureContactAltitude = math.Min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
 		starsFp.TrackingController = ctrl
 		starsFp.InboundHandoffController = ctrl
 	}

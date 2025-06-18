@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -461,7 +462,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
-	now := ctx.Client.State.SimTime
+	now := ctx.Client.CurrentTime()
 	fa := ctx.Client.State.STARSFacilityAdaptation
 	if sp.radarMode(fa.RadarSites) == RadarModeFused {
 		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {
@@ -576,7 +577,7 @@ func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 	}
 }
 
-func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
+func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -658,7 +659,7 @@ func (sp *STARSPane) beaconCodeSelected(code av.Squawk) bool {
 	return false
 }
 
-func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms ScopeTransformations) float32 {
+func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms radar.ScopeTransformations) float32 {
 	var size float32 = 13 // base track size
 	e := transforms.PixelDistanceNM(ctx.NmPerLongitude)
 	var distance float32 = 0.3623 // Around 2200 feet in nm
@@ -726,7 +727,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 	return ghosts
 }
 
-func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, transforms ScopeTransformations,
+func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -770,7 +771,7 @@ func (sp *STARSPane) drawGhosts(ctx *panes.Context, ghosts []*av.GhostTrack, tra
 }
 
 func (sp *STARSPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
-	transforms ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+	transforms radar.ScopeTransformations, positionSymbol string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 
@@ -921,7 +922,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 	return pts
 }
 
-func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms ScopeTransformations,
+func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
@@ -947,7 +948,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
-			trackColorNum := math.Min(i, len(STARSTrackHistoryColors)-1)
+			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)
 			trackColor := ps.Brightness.History.ScaleRGB(STARSTrackHistoryColors[trackColorNum])
 
 			if idx := (state.historyTracksIndex - 1 - i) % len(state.historyTracks); idx >= 0 {
@@ -1271,7 +1272,7 @@ func (ma *ModeledAircraft) NextPosition(p [2]float32) [2]float32 {
 	gs := ma.gs // current speed
 	td := math.Distance2f(p, ma.threshold)
 	if td < 2 {
-		gs = math.Min(gs, ma.landingSpeed)
+		gs = min(gs, ma.landingSpeed)
 	} else if td < 5 {
 		t := (td - 2) / 3 // [0,1]
 		// lerp from current speed down to landing speed
@@ -1373,7 +1374,7 @@ func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.Track) bool {
 }
 
 func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -1470,7 +1471,7 @@ func (sp *STARSPane) radarVisibility(radarSites map[string]*av.RadarSite, pos ma
 		if p, s, dist := site.CheckVisibility(pos, alt); p || s {
 			primary = primary || p
 			secondary = secondary || s
-			distance = math.Min(distance, dist)
+			distance = min(distance, dist)
 		}
 	}
 

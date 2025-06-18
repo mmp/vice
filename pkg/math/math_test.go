@@ -213,7 +213,7 @@ func TestPointSegmentDistance(t *testing.T) {
 		for i := 0; i < n; i++ {
 			t := float32(i) / float32(n-1)
 			pp := Lerp2f(t, v, w)
-			dmin = Min(dmin, Distance2f(pp, p))
+			dmin = min(dmin, Distance2f(pp, p))
 		}
 		return dmin
 	}
@@ -273,6 +273,78 @@ func TestGCD(t *testing.T) {
 			t.Errorf("bogus test case for (%d,%d): expected result %d is not a valid divisor",
 				test.a, test.b, test.result)
 		}
+	}
+}
+
+func TestSegmentSegmentIntersect(t *testing.T) {
+	type Test struct {
+		name     string
+		p1, p2   [2]float32
+		p3, p4   [2]float32
+		expected bool
+		point    [2]float32 // expected intersection point if intersects
+	}
+
+	tests := []Test{
+		{
+			name:     "intersecting segments",
+			p1:       [2]float32{0, 0},
+			p2:       [2]float32{4, 4},
+			p3:       [2]float32{0, 4},
+			p4:       [2]float32{4, 0},
+			expected: true,
+			point:    [2]float32{2, 2},
+		},
+		{
+			name:     "non-intersecting segments",
+			p1:       [2]float32{0, 0},
+			p2:       [2]float32{1, 1},
+			p3:       [2]float32{2, 2},
+			p4:       [2]float32{3, 3},
+			expected: false,
+		},
+		{
+			name:     "parallel segments",
+			p1:       [2]float32{0, 0},
+			p2:       [2]float32{2, 0},
+			p3:       [2]float32{0, 1},
+			p4:       [2]float32{2, 1},
+			expected: false,
+		},
+		{
+			name:     "segments that would intersect if extended",
+			p1:       [2]float32{0, 0},
+			p2:       [2]float32{1, 0},
+			p3:       [2]float32{2, -1},
+			p4:       [2]float32{2, 1},
+			expected: false,
+		},
+		{
+			name:     "runway intersection example",
+			p1:       [2]float32{0, 0},  // Runway 1 start
+			p2:       [2]float32{10, 0}, // Runway 1 end
+			p3:       [2]float32{5, -5}, // Runway 2 start
+			p4:       [2]float32{5, 5},  // Runway 2 end
+			expected: true,
+			point:    [2]float32{5, 0},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			point, intersects := SegmentSegmentIntersect(test.p1, test.p2, test.p3, test.p4)
+
+			if intersects != test.expected {
+				t.Errorf("Expected intersection %v, got %v", test.expected, intersects)
+			}
+
+			if test.expected && intersects {
+				const tolerance = 1e-5
+				if Abs(point[0]-test.point[0]) > tolerance || Abs(point[1]-test.point[1]) > tolerance {
+					t.Errorf("Expected intersection point %v, got %v", test.point, point)
+				}
+			}
+		})
 	}
 }
 

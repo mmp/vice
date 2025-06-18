@@ -16,13 +16,14 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
 )
 
 func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, paneExtent math.Extent2D,
-	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -101,7 +102,7 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *re
 }
 
 func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, td *renderer.TextDrawBuilder,
-	transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
@@ -488,7 +489,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	if len(vfr) > ps.VFRList.Lines {
 		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
 	}
-	for i := range math.Min(len(vfr), ps.VFRList.Lines) {
+	for i := range min(len(vfr), ps.VFRList.Lines) {
 		fp := vfr[i]
 		text.WriteString(fmt.Sprintf("%2d", vfr[i].ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
@@ -568,7 +569,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	if len(plans) > ps.TABList.Lines {
 		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans)))
 	}
-	for i := range math.Min(len(plans), ps.TABList.Lines) {
+	for i := range min(len(plans), ps.TABList.Lines) {
 		fp := plans[i]
 		text.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
 		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
@@ -706,7 +707,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 			}
 		}
 
-		for range math.Min(n, alertListMaxLines) {
+		for range min(n, alertListMaxLines) {
 			msawtrk, capair, mcipair := next()
 
 			alt := func(trk *sim.Track) string {
@@ -996,7 +997,7 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style ren
 	}
 }
 
-func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	titleStyle := renderer.TextStyle{
@@ -1076,7 +1077,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			pw = td.AddText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(rel)), pw, listStyle)
 		}
 		var text strings.Builder
-		for i := range math.Min(len(rel), list.Lines) {
+		for i := range min(len(rel), list.Lines) {
 			dep := rel[i]
 			text.Reset()
 			text.WriteString("     ")

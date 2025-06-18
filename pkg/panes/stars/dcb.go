@@ -13,6 +13,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
@@ -93,13 +94,13 @@ func (sp *STARSPane) dcbButtonScale(ctx *panes.Context) float32 {
 	ds := ctx.DrawPixelScale
 	// Scale based on width or height available depending on DCB position
 	if ps.DCBPosition == dcbPositionTop || ps.DCBPosition == dcbPositionBottom {
-		return math.Min(ds, (ds*ctx.PaneExtent.Width()-4)/(numDCBSlots*dcbButtonSize))
+		return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numDCBSlots*dcbButtonSize))
 	} else {
-		return math.Min(ds, (ds*ctx.PaneExtent.Height()-4)/(numDCBSlots*dcbButtonSize))
+		return min(ds, (ds*ctx.PaneExtent.Height()-4)/(numDCBSlots*dcbButtonSize))
 	}
 }
 
-func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
+func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
 	ps := sp.currentPrefs()
 
 	// Find a scale factor so that the buttons all fit in the window, if necessary
@@ -226,7 +227,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms ScopeTransformations
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
 				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-					pw [2]float32, transforms ScopeTransformations) CommandStatus {
+					pw [2]float32, transforms radar.ScopeTransformations) CommandStatus {
 					ps.RangeRingsUserCenter = transforms.LatLongFromWindowP(pw)
 					ps.UseUserRangeRingsCenter = true
 					return CommandStatus{clear: true}
@@ -747,7 +748,7 @@ var dcbDrawState struct {
 	position     int
 }
 
-func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, transforms ScopeTransformations,
+func (sp *STARSPane) startDrawDCB(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	dcbDrawState.cb = cb
 	dcbDrawState.mouse = ctx.Mouse
@@ -828,7 +829,7 @@ func drawDCBText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float3
 		// Try to center the text, though if it's too big to fit in the
 		// button then draw it starting from the left edge of the button so
 		// that the trailing characters are the ones that are lost.
-		x0 := dcbDrawState.cursor[0] + math.Max(1, (buttonSize[0]-float32(lw))/2)
+		x0 := dcbDrawState.cursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
 		y0 -= float32(lh)
@@ -1040,7 +1041,7 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 		ctx.Platform.StartMouseDeltaMode()
 
 		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-			transforms ScopeTransformations) CommandStatus {
+			transforms radar.ScopeTransformations) CommandStatus {
 			sp.resetInputState(ctx)
 			ctx.Platform.StopMouseDeltaMode()
 			ctx.SetMousePosition(sp.savedMousePosition)
@@ -1079,7 +1080,7 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 		sp.activeSpinner = spinner
 
 		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-			transforms ScopeTransformations) CommandStatus {
+			transforms radar.ScopeTransformations) CommandStatus {
 			if spinner.ModeAfter() == CommandModeNone {
 				sp.resetInputState(ctx)
 				return CommandStatus{clear: true}
@@ -1380,9 +1381,9 @@ func (s *dcbPTLLengthSpinner) Delta(delta int) {
 	// 6-16: PTLs are between 0 and 5 minutes, specified in 0.5 minute
 	// increments.
 	if delta < 0 {
-		*s.l = math.Min(*s.l+0.5, 5)
+		*s.l = min(*s.l+0.5, 5)
 	} else if delta > 0 {
-		*s.l = math.Max(*s.l-0.5, 0)
+		*s.l = max(*s.l-0.5, 0)
 	}
 }
 

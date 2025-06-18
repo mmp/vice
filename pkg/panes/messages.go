@@ -12,7 +12,6 @@ import (
 
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
-	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
@@ -145,7 +144,7 @@ func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 	scrollOffset := mp.scrollbar.Offset()
 	y := lineHeight
 
-	for i := scrollOffset; i < math.Min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
+	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
 		// TODO? wrap text
 		msg := mp.messages[len(mp.messages)-1-i]
 
@@ -226,7 +225,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
-			start := math.Max(0, n-5)
+			start := max(0, n-5)
 			if !slices.ContainsFunc(mp.messages[start:],
 				func(m Message) bool { return m.contents == event.WrittenText }) {
 				mp.messages = append(mp.messages,
