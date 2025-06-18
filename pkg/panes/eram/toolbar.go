@@ -2,10 +2,12 @@ package eram
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
+	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/util"
 )
@@ -21,39 +23,40 @@ var toolbarDrawState struct {
 	cursor       [2]float32
 	drawStartPos [2]float32
 	style        renderer.TextStyle
-	brightness   ERAMBrightness
+	brightness   radar.ScopeBrightness
 	position     int
 }
 
 const (
-	toolbarMain = iota 
+	toolbarMain = iota
 	toolbarDraw
 	toolbarViews
 	toolbarATCTools
-	toolbarChecklist 
+	toolbarWX
+	toolbarChecklist
 	toolbarABSettings
 	toolbarCommandMenu
 	toolbarVideomap
-	toolbarCursor 
+	toolbarCursor
 	toolbarBright
+	toolbarMapBright
 	toolbarRadarFilter
 	toolbarFont
 	toolbarPrefSet
 	toolbarDBFields
-	toolbarToolbar // This is a floating button; I'll put this here for now, 
-	//but we'll see later where it truly belongs.
 )
 
-var ( // TODO: Change to actual colors, but these STARS ones will suffice for now. The colors do vary based on button so maybe 
+var ( // TODO: Change to actual colors, but these STARS ones will suffice for now. The colors do vary based on button so maybe
 	// a seperate field in each individual button is needed?
 	toolbarButtonColor            = renderer.RGB{0, .173, 0}
-	toolbarActiveButtonColor      = renderer.RGB{0, .305, 0}
+	toolbarActiveButtonColor      = renderer.RGB{.431, .341, .302}
 	toolbarTextColor              = renderer.RGB{1, 1, 1}
-	toolbarTextSelectedColor      = renderer.RGB{1, 1, 0}
 	toolbarUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
 	toolbarUnsupportedTextColor   = renderer.RGB{.8, .8, .8}
 	toolbarDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
 	toolbarDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}
+	toolbarOutlineColor           = renderer.RGB{0, 0, 0}
+	toolbarHoveredOutlineColor    = renderer.RGB{.38, .38, .38}
 )
 
 type toolbarFlags int
@@ -93,25 +96,25 @@ type dcbSpinner interface {
 
 var activeSpinner dcbSpinner
 
-func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms ScopeTransformations, cb *renderer.CommandBuffer)  {
+func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	// ps := ep.currentPrefs()
 
 	scale := ep.toolbarButtonScale(ctx)
 
 	ep.startDrawtoolbar(ctx, scale, transforms, cb)
 	switch ep.activeToolbarMenu {
-		case toolbarMain:
-			
+	case toolbarMain:
+
 	}
 
 }
 
 func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
 	ds := ctx.DrawPixelScale
-	return math.Min(ds, (ds*ctx.PaneExtent.Width()-4)/(numToolbarSlots*toolbarButtonSize))
-	}
+	return min(ds, (ds*ctx.PaneExtent.Width()-4)/(numToolbarSlots*toolbarButtonSize))
+}
 
-func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags toolbarFlags, buttonScale float32, pushedIn bool) bool {
+func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flags toolbarFlags, buttonScale float32, pushedIn bool) bool {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	td := renderer.GetTextDrawBuilder()
@@ -133,75 +136,42 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags too
 		ext.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) &&
 		flags&buttonDisabled == 0
 
-		var buttonColor, textColor renderer.RGB
+	var buttonColor, textColor renderer.RGB
 
-		disabled := flags&buttonDisabled != 0
-		if disabled {
-			buttonColor = toolbarDisabledButtonColor
-			textColor = toolbarDisabledTextColor
+	textColor = toolbarTextColor
+
+	disabled := flags&buttonDisabled != 0
+	if disabled {
+		buttonColor = toolbarDisabledButtonColor
+	}
+	unsupported := flags&buttonUnsupported != 0
+	if unsupported {
+		buttonColor = toolbarUnsupportedButtonColor
+	}
+	if !disabled && !unsupported {
+		if mouseInside && mouseDownInside {
+			pushedIn = !pushedIn
 		}
-		unsupported := flags&buttonUnsupported != 0
-		if unsupported {
-			buttonColor = toolbarUnsupportedButtonColor
-			textColor = toolbarUnsupportedTextColor
-		}
-		if !disabled && !unsupported {
-			if mouseInside && mouseDownInside {
-				pushedIn = !pushedIn
-			}
-	
-			// Swap selected/regular color to indicate the tentative result
-			if flags&buttonWXAVL != 0 {
-				buttonColor = util.Select(pushedIn, renderer.RGBFromUInt8(116, 116, 162), // 70,70,100
-					renderer.RGBFromUInt8(83, 83, 162)) // 50,50,100
-			} else {
-				buttonColor = util.Select(pushedIn, toolbarActiveButtonColor, toolbarButtonColor)
-			}
-			textColor = util.Select(mouseInside, toolbarTextSelectedColor, toolbarTextColor)
-		}
-		buttonColor = toolbarDrawState.brightness.ScaleRGB(buttonColor)
-	//textColor = dcbDrawState.brightness.ScaleRGB(textColor)
+		  if pushedIn {
+			   buttonColor = toolbarActiveButtonColor
+		  } else {
+			 buttonColor = toolbarButtonColor
+		  }   
+	}
+	buttonColor = toolbarDrawState.brightness.ScaleRGB(buttonColor)
+	//textColor = toolbarDrawState.brightness.ScaleRGB(textColor)
 
 	trid.AddQuad(p0, p1, p2, p3, buttonColor)
-	drawDCBText(text, td, sz, textColor)
+	drawToolbarText(text, td, sz, textColor)
 
-	// Draw the bevel around the button
-	topLeftBevelColor := renderer.RGB{0.2, 0.2, 0.2}
-	bottomRightBevelColor := renderer.RGB{0, 0, 0}
-	shiftp := func(p [2]float32, dx, dy float32) [2]float32 {
-		return math.Add2f(p, [2]float32{dx, dy})
-	}
-	if !disabled && !unsupported && pushedIn { //((selected && !mouseInside) || (!selected && mouseInside && mouse.Down[MouseButtonPrimary])) {
-		// Depressed bevel scheme: darker top/left, highlight bottom/right
-		topLeftBevelColor, bottomRightBevelColor = bottomRightBevelColor, topLeftBevelColor
-	}
-	// Draw the bevel via individual 1-pixel lines (note that down is negative y...)
-	// Top, with the right end pulled left
-	ld.AddLine(p0, p1, topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 0, -1), shiftp(p1, -1, -1), topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 0, -2), shiftp(p1, -2, -2), topLeftBevelColor)
-	// Left side with bottom end pulled up
-	ld.AddLine(p0, p3, topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 1, 0), shiftp(p3, 1, 1), topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 2, 0), shiftp(p3, 2, 2), topLeftBevelColor)
-	// Right side with top pulled down
-	ld.AddLine(p1, p2, bottomRightBevelColor)
-	ld.AddLine(shiftp(p1, -1, -1), shiftp(p2, -1, 0), bottomRightBevelColor)
-	ld.AddLine(shiftp(p1, -2, -2), shiftp(p2, -2, 0), bottomRightBevelColor)
-	// Bottom with left end pulled right
-	ld.AddLine(p2, p3, bottomRightBevelColor)
-	ld.AddLine(shiftp(p2, 0, 1), shiftp(p3, 1, 1), bottomRightBevelColor)
-	ld.AddLine(shiftp(p2, 0, 2), shiftp(p3, 2, 2), bottomRightBevelColor)
 
-	// Scissor to just the extent of the button. Note that we need to give
-	// this in window coordinates, not our local pane coordinates, so
-	// translating by ctx.PaneExtent.p0 is needed...
-	winBase := math.Add2f(toolbarDrawState.cursor, ctx.PaneExtent.P0)
-	toolbarDrawState.cb.SetScissorBounds(math.Extent2D{
-		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
-		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
-	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	moveDCBCursor(flags, sz, ctx)
+	// Draw button outline 
+	outlineColor := util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor)
+
+	ld.AddLine(p0, p1, outlineColor)
+	ld.AddLine(p1, p2, outlineColor)
+	ld.AddLine(p2, p3, outlineColor)
+	ld.AddLine(p3, p0, outlineColor)
 
 	// Text last!
 	trid.GenerateCommands(toolbarDrawState.cb)
@@ -228,7 +198,7 @@ func buttonSize(flags toolbarFlags, scale float32) [2]float32 {
 	}
 }
 
-func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms ScopeTransformations,
+func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	toolbarDrawState.cb = cb
 	toolbarDrawState.mouse = ctx.Mouse
@@ -241,8 +211,8 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	toolbarDrawState.cursor = toolbarDrawState.drawStartPos
 
 	toolbarDrawState.style = renderer.TextStyle{
-		Font: renderer.GetDefaultFont(), // TODO: get the right font
-		Color: renderer.RGB{R: 1, G: 1, B: 1},
+		Font:        renderer.GetDefaultFont(), // TODO: get the right font
+		Color:       renderer.RGB{R: 1, G: 1, B: 1},
 		LineSpacing: 0,
 	}
 
@@ -252,10 +222,35 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
-	drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{0, 0.05, 0})
+		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, renderer.RGB{0, 0.05, 0})
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
+	}
+}
+
+func drawToolbarText(text string, td *renderer.TextDrawBuilder, buttonSize [2]float32, color renderer.RGB) {
+	// Clean up the text
+	lines := strings.Split(strings.TrimSpace(text), "\n")
+	for i := range lines {
+		lines[i] = strings.TrimSpace(lines[i])
+	}
+
+	style := toolbarDrawState.style
+	style.Color = renderer.LerpRGB(.5, color, toolbarDrawState.brightness.ScaleRGB(color))
+	_, h := style.Font.BoundText(strings.Join(lines, "\n"), toolbarDrawState.style.LineSpacing)
+
+	slop := buttonSize[1] - float32(h) // todo: what if negative...
+	y0 := toolbarDrawState.cursor[1] - 1 - slop/2
+	for _, line := range lines {
+		lw, lh := style.Font.BoundText(line, style.LineSpacing)
+		// Try to center the text, though if it's too big to fit in the
+		// button then draw it starting from the left edge of the button so
+		// that the trailing characters are the ones that are lost.
+		x0 := toolbarDrawState.cursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
+
+		td.AddText(line, [2]float32{x0, y0}, style)
+		y0 -= float32(lh)
 	}
 }
