@@ -74,8 +74,9 @@ type State struct {
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	METAR map[string]*av.METAR
-	Wind  av.Wind
+	METAR      map[string]*av.METAR
+	WindLayers []av.WindLayer
+	Wind       av.Wind
 
 	TotalIFR, TotalVFR int
 
@@ -136,14 +137,21 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 
-		METAR: make(map[string]*av.METAR),
-		Wind:  config.Wind,
+		METAR:      make(map[string]*av.METAR),
+		WindLayers: config.Winds,
+		Wind:       config.Wind,
 
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        time.Now(),
 
 		Instructors: make(map[string]bool),
+	}
+
+	if len(ss.WindLayers) > 1 {
+		slices.SortFunc(ss.WindLayers, func(a, b av.WindLayer) int {
+			return a.Altitude - b.Altitude
+		})
 	}
 
 	if manifest != nil {
@@ -411,24 +419,70 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 }
 
 func (ss *State) AverageWindVector() [2]float32 {
+	if len(ss.WindLayers) > 0 {
+		var sum [2]float32
+		for _, l := range ss.WindLayers {
+			d := math.OppositeHeading(float32(l.Wind.Direction))
+			v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
+			sum = math.Add2f(sum, math.Scale2f(v, float32(l.Wind.Speed)))
+		}
+		return math.Scale2f(sum, 1/float32(len(ss.WindLayers)))
+	}
 	d := math.OppositeHeading(float32(ss.Wind.Direction))
 	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
 	return math.Scale2f(v, float32(ss.Wind.Speed))
 }
 
 func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
+	// Determine the wind at the given altitude. If multiple layers are
+	// present, interpolate between the two layers that bound |alt| using the
+	// vector components of each layer.
+	w := ss.Wind
+	if n := len(ss.WindLayers); n > 0 {
+		if alt <= float32(ss.WindLayers[0].Altitude) {
+			w = ss.WindLayers[0].Wind
+		} else if alt >= float32(ss.WindLayers[n-1].Altitude) {
+			w = ss.WindLayers[n-1].Wind
+		} else {
+			// Find the layers surrounding the altitude.
+			lower := 0
+			for i := 1; i < n; i++ {
+				if alt < float32(ss.WindLayers[i].Altitude) {
+					lower = i - 1
+					break
+				}
+			}
+			upper := lower + 1
+			l := ss.WindLayers[lower]
+			u := ss.WindLayers[upper]
+			frac := (alt - float32(l.Altitude)) / float32(u.Altitude-l.Altitude)
+
+			ld := math.OppositeHeading(float32(l.Wind.Direction))
+			lv := [2]float32{math.Sin(math.Radians(ld)), math.Cos(math.Radians(ld))}
+			lv = math.Scale2f(lv, float32(l.Wind.Speed))
+
+			ud := math.OppositeHeading(float32(u.Wind.Direction))
+			uv := [2]float32{math.Sin(math.Radians(ud)), math.Cos(math.Radians(ud))}
+			uv = math.Scale2f(uv, float32(u.Wind.Speed))
+
+			v := math.Lerp2f(frac, lv, uv)
+			w.Speed = int(math.Length2f(v) + 0.5)
+			w.Direction = int(math.OppositeHeading(math.Degrees(math.Atan2(v[0], v[1]))) + 0.5)
+			w.Gust = int(math.Lerp(frac, float32(l.Wind.Gust), float32(u.Wind.Gust)) + 0.5)
+		}
+	}
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
-	windSpeed := float32(ss.Wind.Speed)
-	if ss.Wind.Gust > 0 {
+	windSpeed := float32(w.Speed)
+	if w.Gust > 0 {
 		base := time.UnixMicro(0)
 		sec := ss.SimTime.Sub(base).Seconds()
-		windSpeed += float32(ss.Wind.Gust-ss.Wind.Speed) * float32(1+gomath.Cos(sec/4)) / 2
+		windSpeed += float32(w.Gust-w.Speed) * float32(1+gomath.Cos(sec/4)) / 2
 	}
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
-	d := math.OppositeHeading(float32(ss.Wind.Direction))
+	d := math.OppositeHeading(float32(w.Direction))
 	vWind := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
 	vWind = math.Scale2f(vWind, windSpeed/3600)
 	return vWind

@@ -54,6 +54,7 @@ type scenario struct {
 	SplitConfigurations av.SplitConfigurationSet `json:"multi_controllers"`
 	DefaultSplit        string                   `json:"default_split"`
 	Wind                av.Wind                  `json:"wind"`
+	Winds               []av.WindLayer           `json:"winds,omitempty"`
 	VirtualControllers  []string                 `json:"controllers"`
 
 	// Map from inbound flow names to a map from airport name to default rate,

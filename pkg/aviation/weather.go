@@ -26,6 +26,13 @@ type Wind struct {
 	Gust      int `json:"gust"`
 }
 
+// WindLayer describes the wind at and above a base altitude. The layers are
+// ordered by altitude from lowest to highest when used in scenarios.
+type WindLayer struct {
+	Altitude int  `json:"altitude"`
+	Wind     Wind `json:"wind"`
+}
+
 func (w Wind) String() string {
 	if w.Speed <= 0 {
 		return "00000KT"
