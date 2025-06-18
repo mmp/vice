@@ -102,11 +102,14 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw history 
 	// Get datablocks 
 	// Draw leader lines
+	// Draw stingers (PTL lines)
 	// Draw tracks
 	// Draw datablocks
 	// Draw QU /M lines (not sure where this goes)
 	// Draw clock
 	// Draw views
+	// Draw long readout (output with no command line)
+	// Draw command line
 	// Draw TOOLBAR button/ menu.
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 
@@ -124,5 +127,3 @@ func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pla
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	// implement the ResetSim method to satisfy panes.Pane interface
 }
-
-type ERAMBrightness int // potential move to radar?
