@@ -20,6 +20,7 @@ func Radians(d float32) float32 {
 	return d / 180 * gomath.Pi
 }
 
+// Pi returns the value of π as a float32
 func Pi() float32 {
 	return float32(gomath.Pi)
 }
@@ -60,6 +61,7 @@ func Mod(a, b float32) float32 {
 	return float32(gomath.Mod(float64(a), float64(b)))
 }
 
+// Sign returns 1 if v > 0, -1 if v < 0, or 0 if v == 0
 func Sign(v float32) float32 {
 	if v > 0 {
 		return 1
@@ -77,6 +79,7 @@ func Ceil(v float32) float32 {
 	return float32(gomath.Ceil(float64(v)))
 }
 
+// Abs returns the absolute value of x
 func Abs[V constraints.Integer | constraints.Float](x V) V {
 	if x < 0 {
 		return -x
@@ -94,6 +97,7 @@ func Exp(x float32) float32 {
 
 func Sqr[V constraints.Integer | constraints.Float](v V) V { return v * v }
 
+// Clamp restricts x to the range [low, high]
 func Clamp[T constraints.Ordered](x T, low T, high T) T {
 	if x < low {
 		return low
@@ -103,11 +107,28 @@ func Clamp[T constraints.Ordered](x T, low T, high T) T {
 	return x
 }
 
+// Lerp performs linear interpolation between a and b using factor x in [0,1]
 func Lerp(x, a, b float32) float32 {
 	return (1-x)*a + x*b
 }
 
-// greatest common divisor
+// Min returns the smaller of two ordered values.
+func Min[T constraints.Ordered](a, b T) T {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+// Max returns the larger of two ordered values.
+func Max[T constraints.Ordered](a, b T) T {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// GCD calculates the greatest common divisor of a and b
 func GCD(a, b int) int {
 	for b != 0 {
 		t := b
@@ -117,7 +138,7 @@ func GCD(a, b int) int {
 	return a
 }
 
-// least common multiple
+// LCM calculates the least common multiple of a and b
 func LCM(a, b int) int {
 	return a / GCD(a, b) * b
 }

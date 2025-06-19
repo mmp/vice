@@ -534,7 +534,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 	targetAltitude, _ := nav.TargetAltitude(lg)
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
 		int(nav.FlightState.GS), int(nav.TAS())))
-	ias, _ := nav.TargetSpeed(targetAltitude, lg)
+	ias, _ := nav.TargetSpeed(targetAltitude, &fp, lg)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {
@@ -648,11 +648,11 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
-func (nav *Nav) updateAirspeed(alt float32, lg *log.Logger) (float32, bool) {
+func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, lg *log.Logger) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
-	targetSpeed, targetRate := nav.TargetSpeed(alt, lg)
+	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, lg)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
@@ -973,7 +973,7 @@ func (nav *Nav) Check(lg *log.Logger) {
 // returns passed waypoint if any
 func (nav *Nav) Update(wind av.WindModel, fp *av.FlightPlan, lg *log.Logger) *av.Waypoint {
 	targetAltitude, altitudeRate := nav.TargetAltitude(lg)
-	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, lg)
+	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, fp, lg)
 	nav.updateAltitude(targetAltitude, altitudeRate, lg, deltaKts, slowingTo250)
 	nav.updateHeading(wind, lg)
 	nav.updatePositionAndGS(wind, lg)
@@ -1550,7 +1550,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	}
 }
 
-func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, float32) {
+func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, lg *log.Logger) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
@@ -1704,6 +1704,10 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, lg *log.Logger) (float32, fl
 	// Nothing assigned by the controller or the route, so set a target
 	// based on the aircraft's altitude.
 	ias, rate := nav.targetAltitudeIAS()
+	if fp != nil && fp.Rules == av.FlightRulesVFR &&
+		av.UnderBravoShelf(nav.FlightState.Position, int(nav.FlightState.Altitude)) {
+		ias = math.Min(ias, 200)
+	}
 	//lg.Debugf("speed: %.0f based on altitude", ias)
 	return ias, rate
 }

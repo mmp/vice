@@ -1272,6 +1272,17 @@ func InBravoAirspace(p math.Point2LL, alt int) bool {
 	return inAirspace(DB.BravoAirspace, p, alt)
 }
 
+func UnderBravoShelf(p math.Point2LL, alt int) bool {
+	for _, vols := range DB.BravoAirspace {
+		for _, vol := range vols {
+			if alt < vol.Floor && vol.Inside(p, vol.Floor+1) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func InCharlieAirspace(p math.Point2LL, alt int) bool {
 	return inAirspace(DB.CharlieAirspace, p, alt)
 }
