@@ -99,6 +99,10 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 
 		paneExtent.P1[1] -= sz[1]
 	}()
+	ps := ep.currentPrefs()
+	if !ps.DisplayToolbar {
+		return paneExtent
+	}
 
 	switch ep.activeToolbarMenu {
 	case toolbarMain:
@@ -460,19 +464,19 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 		} else {
 			buttonColor = toolbarButtonColor
 		}
-	
-	if ep.activeToolbarMenu != toolbarMain {
-		buttonColor = ep.customButtonColor(text)
-	}
-	if customColor, ok := customButton[cleanButtonName(text)]; ok {
-		buttonColor = customColor
-		if customColor == (renderer.RGB{}) && pushedIn {
-			buttonColor = eramGray // The black buttons turn gray when pushed
+
+		if ep.activeToolbarMenu != toolbarMain {
+			buttonColor = ep.customButtonColor(text)
 		}
-	}
-	if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
-		toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
-	}
+		if customColor, ok := customButton[cleanButtonName(text)]; ok {
+			buttonColor = customColor
+			if customColor == (renderer.RGB{}) && pushedIn {
+				buttonColor = eramGray // The black buttons turn gray when pushed
+			}
+		}
+		if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
+			toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
+		}
 	} else if hasFlag(flags, buttonTearoff) {
 		buttonColor = toolbarTearoffButtonColor
 	}
@@ -571,6 +575,7 @@ var toolbarDrawState struct {
 	offsetBottom    bool
 	noTearoff       bool // For objects like "BUTTON" and "BCKGRD" in the brightness menu that don't have a tearoff button
 	lightToolbar    [4][2]float32
+	masterToolbar   bool
 
 	lastHold time.Time
 }
@@ -581,6 +586,7 @@ func init() {
 
 func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
+
 	toolbarDrawState.cb = cb
 	toolbarDrawState.mouse = ctx.Mouse
 	if toolbarDrawState.buttonPositions == nil {
@@ -612,6 +618,9 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
 		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(eramGray))
+	if !ps.DisplayToolbar {
+		return
+	}
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
@@ -763,4 +772,127 @@ func handleClick(pref *radar.ScopeBrightness, min, max, step int) {
 			// TODO: handle case when over max
 		}
 	}
+}
+
+// This is drawn before the toolbar is drawn so it is fine to use the fields that toolbarDraw will override.
+func (ep *ERAMPane) drawMasterMenu(ctx *panes.Context, cb *renderer.CommandBuffer) {
+	toolbarDrawState.cb = cb
+	toolbarDrawState.mouse = ctx.Mouse
+	if toolbarDrawState.buttonPositions == nil {
+		toolbarDrawState.buttonPositions = make(map[string][2]float32)
+	}
+	toolbarDrawState.buttonDrawStartPos = [2]float32{30, ctx.PaneExtent.Height() - 100}
+	toolbarDrawState.buttonCursor = toolbarDrawState.buttonDrawStartPos
+	scale := ep.toolbarButtonScale(ctx)
+	if ep.drawFullMasterButton(ctx, "TOOLBAR", toolbarDrawState.masterToolbar, scale, 0, false) {
+		toolbarDrawState.masterToolbar = !toolbarDrawState.masterToolbar
+	}
+	ps := ep.currentPrefs()
+	if toolbarDrawState.masterToolbar { // Draw the rest of the buttons
+		if ep.drawFullMasterButton(ctx, "MASTER\nTOOLBAR", ps.DisplayToolbar, scale, 0, false) {
+			ps.DisplayToolbar = !ps.DisplayToolbar
+		}
+		ep.drawFullMasterButton(ctx, "MCA\nTOOLBAR", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "HORIZ\nTOOLBAR", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "LEFT\nTOOLBAR", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "RIGHT\nTOOLBAR", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "MASTER\nRAISE", false, scale, 0, true)
+
+		ep.drawFullMasterButton(ctx, "MCA\nRAISE", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "HORIZ\nRAISE", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "LEFT\nRAISE", false, scale, 0, false)
+		ep.drawFullMasterButton(ctx, "RIGHT\nRAISE", false, scale, 0, false)
+	}
+}
+
+func (ep *ERAMPane) drawFullMasterButton(ctx *panes.Context, text string, pushedIn bool, scale float32, flag toolbarFlags, nextRow bool) bool {
+	ep.drawMasterButton(ctx, text, pushedIn, scale, []toolbarFlags{buttonTearoff, flag}, nextRow)
+	return ep.drawMasterButton(ctx, text, pushedIn, scale, []toolbarFlags{buttonFull, flag}, false)
+}
+
+func (ep *ERAMPane) drawMasterButton(ctx *panes.Context, text string, pushedIn bool, scale float32, flags []toolbarFlags, nextRow bool) bool {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	defer renderer.ReturnTextDrawBuilder(td)
+
+	sz := buttonSize(flags[0], scale)
+	if nextRow {
+		ep.checkNextRow(nextRow, sz, ctx) // Check if we need to move to the next row
+		ep.offsetFullButton(ctx)
+	}
+	p0 := toolbarDrawState.buttonCursor
+	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
+	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
+	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
+
+	ext := math.Extent2DFromPoints([][2]float32{p0, p2})
+	mouse := toolbarDrawState.mouse
+	mouseInside := mouse != nil && ext.Inside(mouse.Pos)
+	mouseDownInside := toolbarDrawState.mouseDownPos != nil &&
+		ext.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) &&
+		!hasFlag(flags, buttonDisabled)
+
+	var buttonColor, textColor renderer.RGB
+	textColor = toolbarTextColor
+
+	disabled := hasFlag(flags, buttonDisabled)
+	if disabled {
+		buttonColor = toolbarDisabledButtonColor
+	}
+	unsupported := hasFlag(flags, buttonUnsupported)
+	if unsupported {
+		buttonColor = toolbarUnsupportedButtonColor
+	}
+
+	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
+		if mouseInside && mouseDownInside {
+			pushedIn = true
+		}
+		if pushedIn {
+			if text != "TOOLBAR" {
+				buttonColor = eramGray
+			} else {
+				buttonColor = toolbarActiveButtonColor
+			}
+
+		} else {
+			if text != "TOOLBAR" {
+				buttonColor = renderer.RGB{0, 0, 0}
+			} else {
+				buttonColor = toolbarButtonColor
+			}
+		}
+
+	} else if hasFlag(flags, buttonTearoff) {
+		buttonColor = toolbarTearoffButtonColor
+	}
+	ps := ep.currentPrefs()
+
+	buttonColor = ps.Brightness.Button.ScaleRGB(buttonColor)
+	textColor = ps.Brightness.Text.ScaleRGB(textColor) // Text has brightness in ERAM
+
+	trid.AddQuad(p0, p1, p2, p3, buttonColor)
+	drawToolbarText(text, td, sz, textColor)
+
+	outlineColor := util.Select(mouseInside, toolbarHoveredOutlineColor, toolbarOutlineColor)
+	ld.AddLine(p0, p1, outlineColor)
+	ld.AddLine(p1, p2, outlineColor)
+	ld.AddLine(p2, p3, outlineColor)
+	ld.AddLine(p3, p0, outlineColor)
+
+	trid.GenerateCommands(toolbarDrawState.cb)
+	ld.GenerateCommands(toolbarDrawState.cb)
+	td.GenerateCommands(toolbarDrawState.cb)
+
+	moveToolbarCursor(flags[0], sz, ctx, nextRow)
+
+	if mouse != nil && mouseInside && mouseDownInside &&
+		toolbarDrawState.mouseYetReleased {
+		toolbarDrawState.mouseYetReleased = false
+		return true
+	}
+	return false
 }
