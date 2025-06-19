@@ -11,67 +11,67 @@ type Preferences struct {
 	Name string
 
 	Center math.Point2LL
-	Range float32
+	Range  float32
 
 	CurrentCenter math.Point2LL
 
 	AltitudeFilters []float32 // find out the different targets
 
-	// QuickLookPositions []QuickLookPositiosn // find out more about this 
+	// QuickLookPositions []QuickLookPositiosn // find out more about this
 
 	VideoMapVisible map[int]interface{}
 
-	DisplayToolbar bool 
+	DisplayToolbar bool
 }
 
 const numSavedPreferenceSets = 10
 
 type PrefrenceSet struct {
-	Current Preferences
-	Selected *int 
-	Saved [numSavedPreferenceSets]*Preferences
+	Current  Preferences
+	Selected *int
+	Saved    [numSavedPreferenceSets]*Preferences
 }
 
 type CommonPreferences struct {
-	ClockPosition []int 
-	InputPosition []int
+	ClockPosition  []int
+	InputPosition  []int
 	OutputPosition []int
-	CharSize struct{
-		Line4 int // Find out what this is
-		RDB int 
-		LDB int 
-		FDB int 
-		Toolbar int 
-		Outage int // Again, what is this?
-		Portal int // Same here...
+	CharSize       struct {
+		Line4   int // Find out what this is
+		RDB     int
+		LDB     int
+		FDB     int
+		Toolbar int
+		Outage  int // Again, what is this?
+		Portal  int // Same here...
 	}
-	Brightness struct{
-		Background radar.ScopeBrightness 
-		Cursor radar.ScopeBrightness 
-		Text radar.ScopeBrightness 
-		PRTGT radar.ScopeBrightness 
-		UNPTGT radar.ScopeBrightness 
-		PRHST radar.ScopeBrightness 
-		UNPHST radar.ScopeBrightness
-		LDB radar.ScopeBrightness 
-		SLDB radar.ScopeBrightness 
-		WX radar.ScopeBrightness 
-		NEXRAD radar.ScopeBrightness 
-		Backlight radar.ScopeBrightness 
-		Button radar.ScopeBrightness 
-		Border radar.ScopeBrightness 
-		Toolbar radar.ScopeBrightness
-		TBBRDR radar.ScopeBrightness
-		ABBRDR radar.ScopeBrightness
-		FDB radar.ScopeBrightness
-		Portal radar.ScopeBrightness 
-		Satcomm radar.ScopeBrightness 
-		ONFREQ radar.ScopeBrightness 
-		Line4 radar.ScopeBrightness 
-		Dwell radar.ScopeBrightness 
-		Fence radar.ScopeBrightness 
-		DBFEL radar.ScopeBrightness 
-		Outage radar.ScopeBrightness
+	Brightness struct {
+		Background radar.ScopeBrightness
+		Cursor     radar.ScopeBrightness
+		Text       radar.ScopeBrightness
+		PRTGT      radar.ScopeBrightness
+		UNPTGT     radar.ScopeBrightness
+		PRHST      radar.ScopeBrightness
+		UNPHST     radar.ScopeBrightness
+		LDB        radar.ScopeBrightness
+		SLDB       radar.ScopeBrightness
+		WX         radar.ScopeBrightness
+		NEXRAD     radar.ScopeBrightness
+		Backlight  radar.ScopeBrightness
+		Button     radar.ScopeBrightness
+		Border     radar.ScopeBrightness
+		Toolbar    radar.ScopeBrightness
+		TBBRDR     radar.ScopeBrightness
+		ABBRDR     radar.ScopeBrightness
+		FDB        radar.ScopeBrightness
+		Portal     radar.ScopeBrightness
+		Satcomm    radar.ScopeBrightness
+		ONFREQ     radar.ScopeBrightness
+		Line4      radar.ScopeBrightness
+		Dwell      radar.ScopeBrightness
+		Fence      radar.ScopeBrightness
+		DBFEL      radar.ScopeBrightness
+		Outage     radar.ScopeBrightness
 	}
 }
 
@@ -90,7 +90,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.CharSize.Outage = 1
 	prefs.CharSize.Portal = 0
 
-	prefs.Brightness.Background = 26 
+	prefs.Brightness.Background = 26
 	prefs.Brightness.Cursor = 100
 	prefs.Brightness.Text = 90
 	prefs.Brightness.PRTGT = 92
@@ -116,7 +116,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.Fence = 90
 	prefs.Brightness.DBFEL = 80
 	prefs.Brightness.Outage = 80
-	
+
 	return &prefs
 }
 
@@ -126,7 +126,6 @@ func (ep *ERAMPane) initPrefsForLoadedSim() *Preferences {
 }
 
 func (ep *ERAMPane) currentPrefs() *Preferences {
-	
+
 	return &ep.prefSet.Current
 }
-

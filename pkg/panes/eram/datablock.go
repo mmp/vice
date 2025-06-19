@@ -1,3 +1,3 @@
-package eram 
+package eram
 
-type DatablockType int 
+type DatablockType int

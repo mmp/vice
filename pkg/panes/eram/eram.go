@@ -100,8 +100,8 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 		cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	}
-	// Draw history 
-	// Get datablocks 
+	// Draw history
+	// Get datablocks
 	// Draw leader lines
 	// Draw stingers (PTL lines)
 	// Draw tracks

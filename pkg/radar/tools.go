@@ -14,7 +14,7 @@ import (
 
 // RGB
 
-type ScopeBrightness int 
+type ScopeBrightness int
 
 func (b ScopeBrightness) RGB() renderer.RGB {
 	v := float32(b) / 100
