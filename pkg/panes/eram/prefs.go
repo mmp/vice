@@ -22,6 +22,9 @@ type Preferences struct {
 	VideoMapVisible map[int]interface{}
 
 	DisplayToolbar bool
+
+	commandBigPosition	[2]float32 
+	commandSmallPosition	[2]float32
 }
 
 const numSavedPreferenceSets = 10
@@ -116,6 +119,9 @@ func makeDefaultPreferences() *Preferences {
 	prefs.Brightness.Fence = 90
 	prefs.Brightness.DBFEL = 80
 	prefs.Brightness.Outage = 80
+
+	prefs.commandBigPosition = [2]float32{2, 80}
+	prefs.commandSmallPosition = [2]float32{392, 80}
 
 	return &prefs
 }

@@ -101,7 +101,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw clock
 	// Draw views
 	// Draw long readout (output with no command line)
-	// Draw command line
+	ep.drawCommandInput(ctx, transforms, cb)
 	// Draw TOOLBAR button/ menu.
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 	ep.drawMasterMenu(ctx, cb)
