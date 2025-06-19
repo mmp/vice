@@ -157,7 +157,7 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 		lg:                 lg,
 	}
 
-	if err := speech.InitTTS(); err != nil {
+	if err := speech.InitTTS(lg); err != nil {
 		lg.Warnf("TTS: %v", err)
 	} else {
 		sm.haveTTS = true

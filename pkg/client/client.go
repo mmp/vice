@@ -204,7 +204,7 @@ func initializeSpeechWebsocket(controllerToken string, wsURL string, lg *log.Log
 
 	conn, _, err := websocket.DefaultDialer.Dial("ws://"+wsURL+"/speech", header)
 	if err != nil {
-		lg.Errorf("speech websocket: %v", err)
+		lg.Warnf("speech websocket: %v", err)
 		return nil, nil
 	}
 
