@@ -33,9 +33,10 @@ type Voice string
 
 var client *texttospeech.Client
 var voices []string
+var voicesCh chan []string
 
-func InitTTS() error {
-	ctx := context.Background()
+func InitTTS(lg *log.Logger) error {
+	ctx, _ := context.WithTimeout(context.TODO(), 3*time.Second)
 
 	var err error
 	client, err = texttospeech.NewClient(ctx)
@@ -43,19 +44,27 @@ func InitTTS() error {
 		return err
 	}
 
-	resp, err := client.ListVoices(ctx, &texttospeechpb.ListVoicesRequest{})
-	if err != nil {
-		return err
-	}
+	voicesCh := make(chan []string)
+	go func() {
+		defer close(voicesCh)
 
-	for _, voice := range resp.Voices {
-		for _, p := range []string{"en-US-Neural2", "en-US-Standard", "en-US-Wavenet"} {
-			if strings.HasPrefix(voice.Name, p) {
-				voices = append(voices, voice.Name)
-				break
+		resp, err := client.ListVoices(ctx, &texttospeechpb.ListVoicesRequest{})
+		if err != nil {
+			lg.Warnf("TTS ListVoices: %v\n", err)
+			return
+		}
+
+		var voices []string
+		for _, voice := range resp.Voices {
+			for _, p := range []string{"en-US-Neural2", "en-US-Standard", "en-US-Wavenet"} {
+				if strings.HasPrefix(voice.Name, p) {
+					voices = append(voices, voice.Name)
+					break
+				}
 			}
 		}
-	}
+		voicesCh <- voices
+	}()
 
 	return nil
 }
@@ -66,10 +75,25 @@ func InitTTS() error {
 var voicepool []string
 
 func GetRandomVoice() (Voice, error) {
-	if client == nil {
+	// If the request for the voices is still outstanding, try to harvest
+	// the result, but time out after a few seconds in case of network
+	// issues.
+	if voicesCh != nil && len(voices) == 0 {
+		select {
+		case voices = <-voicesCh:
+			break
+		case <-time.After(5 * time.Second):
+			voicesCh = nil
+			break
+		}
+	}
+
+	if client == nil || len(voices) == 0 {
 		return "__unavailable__", ErrTTSUnavailable
 	}
 
+	// We have voices; update the pool we're handing out voices from if
+	// it's empty.
 	if len(voicepool) == 0 {
 		voicepool = slices.Clone(voices)
 	}

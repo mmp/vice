@@ -376,12 +376,18 @@ func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
 	}
 }
 
-func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
-	nav.Heading = NavHeading{}
-	nav.DeferredNavHeading = nil
-	nav.Waypoints = wps
-	return
+// AssignedWaypoints returns the route that should be flown following a
+// controller instruction. If an instruction has been issued but the delay
+// hasn't passed, these are different than the waypoints currently being
+// used for navigation.
+func (nav *Nav) AssignedWaypoints() []av.Waypoint {
+	if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
+		return dh.Waypoints
+	}
+	return nav.Waypoints
+}
 
+func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
 	delay := 8 + 5*nav.Rand.Float32()
 	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
@@ -595,7 +601,10 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 		}
 	}
 
-	lines = append(lines, "Route: "+av.WaypointArray(nav.Waypoints).Encode())
+	lines = append(lines, "Route flying: "+av.WaypointArray(nav.Waypoints).Encode())
+	if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
+		lines = append(lines, "Route assigned: "+av.WaypointArray(dh.Waypoints).Encode())
+	}
 
 	return strings.Join(lines, "\n")
 }
@@ -931,6 +940,10 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 		return
 	}
 
+	// Go ahead and put any deferred route changes into effect immediately.
+	nav.Waypoints = nav.AssignedWaypoints()
+	nav.DeferredNavHeading = nil
+
 	// Make sure we are going direct to the exit.
 	if idx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == exit }); idx != -1 {
 		nav.Waypoints = nav.Waypoints[idx:]
@@ -985,13 +998,11 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 		return nav.Airwork.TargetHeading()
 	}
 
-	// Is it time to start following a heading given by the controller a
-	// few seconds ago?
+	// Is it time to start following a heading or direct to a fix recently issued by the controller?
 	if dh := nav.DeferredNavHeading; dh != nil && time.Now().After(dh.Time) {
 		lg.Debug("initiating deferred heading assignment", slog.Any("heading", dh.Heading))
 		nav.Heading = NavHeading{Assigned: dh.Heading, Turn: dh.Turn} // these may be nil
 		if len(dh.Waypoints) > 0 {
-			// Only update the waypoints now
 			nav.Waypoints = dh.Waypoints
 		}
 		nav.DeferredNavHeading = nil
@@ -1054,7 +1065,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 		if nav.IsAirborne() {
 			// model where we'll actually end up, given the wind
-			vp := math.Add2f(v, wind.AverageWindVector())
+			vp := math.Add2f(v, wind.GetWindVector(nav.FlightState.Position, nav.FlightState.Altitude))
 
 			// Find the deflection angle of how much the wind pushes us off course.
 			vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
@@ -1196,8 +1207,8 @@ func (nav *Nav) ApproachHeading(wind av.WindModel, lg *log.Logger) (heading floa
 			nav.Approach.InterceptState = TurningToJoin
 			// The autopilot is doing this, so start the turn immediately;
 			// don't use EnqueueHeading. However, leave any deferred
-			// heading in place, as it represents a controller command that
-			// should be followed.
+			// heading/direct fix in place, as it represents a controller
+			// command that should still be followed.
 			nav.Heading = NavHeading{Assigned: &hdg}
 			// Just in case.. Thus we will be ready to pick up the
 			// approach waypoints once we capture.
@@ -2284,10 +2295,8 @@ func (nav *Nav) FlyPresentHeading() *speech.RadioTransmission {
 }
 
 func (nav *Nav) fixInRoute(fix string) bool {
-	for i := range nav.Waypoints {
-		if fix == nav.Waypoints[i].Fix {
-			return true
-		}
+	if slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return fix == wp.Fix }) {
+		return true
 	}
 
 	if ap := nav.Approach.Assigned; ap != nil {
@@ -2312,12 +2321,13 @@ func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *av.Waypoint, fb *av.Waypo
 		apWaypoints = nav.Approach.Assigned.Waypoints
 	}
 
-	if ia := find(fixa, nav.Waypoints); ia != -1 {
+	wps := nav.AssignedWaypoints()
+	if ia := find(fixa, wps); ia != -1 {
 		// First fix is in the current route
-		fa = &nav.Waypoints[ia]
-		if ib := find(fixb, nav.Waypoints[ia:]); ib != -1 {
+		fa = &wps[ia]
+		if ib := find(fixb, wps[ia:]); ib != -1 {
 			// As is the second, and after the first
-			fb = &nav.Waypoints[ia+ib]
+			fb = &wps[ia+ib]
 			return
 		}
 		for _, wp := range apWaypoints {
@@ -2369,9 +2379,10 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 	}
 
 	// Look for the fix in the waypoints in the flight plan.
-	for i, wp := range nav.Waypoints {
+	wps := nav.AssignedWaypoints()
+	for i, wp := range wps {
 		if fix == wp.Fix {
-			return nav.Waypoints[i:], nil
+			return wps[i:], nil
 		}
 	}
 
@@ -2515,27 +2526,39 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 			// aircraft's current waypoints...
 			found := false
 			for i, wp := range waypoints {
-				if idx := slices.IndexFunc(nav.Waypoints, func(w av.Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
+				navwp := nav.AssignedWaypoints()
+				if idx := slices.IndexFunc(navwp, func(w av.Waypoint) bool { return w.Fix == wp.Fix }); idx != -1 {
 					// This is a little messy: there are a handful of
 					// modifiers we would like to carry over if they are
 					// set though in general the waypoint from the approach
 					// takes priority for things like altitude, speed, etc.
-					nopt := nav.Waypoints[idx].NoPT
-					humanHandoff := nav.Waypoints[idx].HumanHandoff
-					tcpHandoff := nav.Waypoints[idx].TCPHandoff
-					clearapp := nav.Waypoints[idx].ClearApproach
+					nopt := navwp[idx].NoPT
+					humanHandoff := navwp[idx].HumanHandoff
+					tcpHandoff := navwp[idx].TCPHandoff
+					clearapp := navwp[idx].ClearApproach
 
 					// Keep the waypoints up to but not including the match.
-					nav.Waypoints = nav.Waypoints[:idx]
+					navwp = navwp[:idx]
 					// Add the approach waypoints; take the matching one from there.
-					nav.Waypoints = append(nav.Waypoints, waypoints[i:]...)
+					navwp = append(navwp, waypoints[i:]...)
 					// And add the destination airport again at the end.
-					nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
+					navwp = append(navwp, nav.FlightState.ArrivalAirport)
 
-					nav.Waypoints[idx].NoPT = nopt
-					nav.Waypoints[idx].HumanHandoff = humanHandoff
-					nav.Waypoints[idx].TCPHandoff = tcpHandoff
-					nav.Waypoints[idx].ClearApproach = clearapp
+					navwp[idx].NoPT = nopt
+					navwp[idx].HumanHandoff = humanHandoff
+					navwp[idx].TCPHandoff = tcpHandoff
+					navwp[idx].ClearApproach = clearapp
+
+					// Update the deferred waypoints if present (as they're
+					// what we got from AssignedWaypoints() above) and
+					// otherwise the regular ones. Arguably we'd like to
+					// defer the route change but don't have a way to do
+					// that that preserves the current assigned heading, etc.
+					if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
+						dh.Waypoints = navwp
+					} else {
+						nav.Waypoints = navwp
+					}
 
 					found = true
 					break
@@ -2569,10 +2592,11 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) *speech.RadioT
 		return speech.MakeUnexpectedTransmission("you never told us to expect an approach")
 	}
 
-	_, onHeading := nav.AssignedHeading()
-
-	if !(onHeading || (len(nav.Waypoints) > 0 && nav.Waypoints[0].OnApproach)) {
-		return speech.MakeUnexpectedTransmission("we have to be on a heading or direct to an approach fix to intercept")
+	if _, onHeading := nav.AssignedHeading(); !onHeading {
+		wps := nav.AssignedWaypoints()
+		if len(wps) == 0 || !wps[0].OnApproach {
+			return speech.MakeUnexpectedTransmission("we have to be on a heading or direct to an approach fix to intercept")
+		}
 	}
 
 	resp, err := nav.prepareForApproach(false, lg)
@@ -2601,7 +2625,7 @@ func (nav *Nav) AtFixCleared(fix, id string) *speech.RadioTransmission {
 		return speech.MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
-	if !slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Fix == fix }) {
+	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
 		return speech.MakeUnexpectedTransmission("unable. {fix} is not in our route", fix)
 	}
 	nav.Approach.AtFixClearedRoute = nil
@@ -2633,14 +2657,21 @@ func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (*speech.Rad
 	_, assignedHeading := nav.AssignedHeading()
 	if !assignedHeading {
 		// See if any of the waypoints in our route connect to the approach
+		navwps := nav.AssignedWaypoints()
 	outer:
-		for i, wp := range nav.Waypoints {
+		for i, wp := range navwps {
 			for _, app := range ap.Waypoints {
 				if idx := slices.IndexFunc(app, func(awp av.Waypoint) bool { return wp.Fix == awp.Fix }); idx != -1 {
 					// Splice the routes
 					directApproachFix = true
-					nav.Waypoints = append(nav.Waypoints[:i], app[idx:]...)
-					nav.Waypoints = append(nav.Waypoints, nav.FlightState.ArrivalAirport)
+					navwps = append(navwps[:i], app[idx:]...)
+					navwps = append(navwps, nav.FlightState.ArrivalAirport)
+
+					if dh := nav.DeferredNavHeading; dh != nil && len(dh.Waypoints) > 0 {
+						dh.Waypoints = navwps
+					} else {
+						nav.Waypoints = navwps
+					}
 					break outer
 				}
 			}
@@ -2786,10 +2817,8 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *
 		// Cleared approach also cancels speed restrictions.
 		nav.Speed = NavSpeed{}
 
-		// Turn more quickly for assigned headings if they're included with
-		// an approach clearance; we're sort of determining that indirectly
-		// here since we break instructions into individual ones before
-		// they get here.
+		// Follow LNAV instructions more quickly given an approach clearance;
+		// assume that at this point they are expecting them and ready to dial things in.
 		if dh := nav.DeferredNavHeading; dh != nil {
 			now := time.Now()
 			if dh.Time.Sub(now) > 6*time.Second {
@@ -2820,7 +2849,7 @@ func (nav *Nav) CancelApproachClearance() *speech.RadioTransmission {
 }
 
 func (nav *Nav) ClimbViaSID() *speech.RadioTransmission {
-	if len(nav.Waypoints) == 0 || !nav.Waypoints[0].OnSID {
+	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID {
 		return speech.MakeUnexpectedTransmission("unable. We're not flying a departure procedure")
 	}
 
@@ -2831,7 +2860,7 @@ func (nav *Nav) ClimbViaSID() *speech.RadioTransmission {
 }
 
 func (nav *Nav) DescendViaSTAR() *speech.RadioTransmission {
-	if len(nav.Waypoints) == 0 || !nav.Waypoints[0].OnSTAR {
+	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR {
 		return speech.MakeUnexpectedTransmission("unable. We're not on a STAR")
 	}
 
@@ -2867,6 +2896,7 @@ func (nav *Nav) ResumeOwnNavigation() *speech.RadioTransmission {
 	}
 
 	nav.Heading = NavHeading{}
+	nav.Waypoints = nav.AssignedWaypoints() // just take any deferred ones immediately.
 	nav.DeferredNavHeading = nil
 
 	if len(nav.Waypoints) > 1 {

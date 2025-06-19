@@ -66,7 +66,6 @@ func (w Wind) Randomize(r *rand.Rand) Wind {
 
 type WindModel interface {
 	GetWindVector(p math.Point2LL, alt float32) [2]float32
-	AverageWindVector() [2]float32
 }
 
 ///////////////////////////////////////////////////////////////////////////
