@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
@@ -491,10 +492,20 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	trid.GenerateCommands(toolbarDrawState.cb)
 	ld.GenerateCommands(toolbarDrawState.cb)
 	td.GenerateCommands(toolbarDrawState.cb)
-	if mouse != nil && mouseInside && mouseDownInside && toolbarDrawState.mouseYetReleased {
-		toolbarDrawState.mouseYetReleased = false
-		return true // Unlike STARS, ERAM doesn't wat for mouse release.
-	}
+	if mouse != nil && mouseInside && mouseDownInside {
+    now := time.Now()
+    // initial press
+    if toolbarDrawState.mouseYetReleased {
+        toolbarDrawState.mouseYetReleased = false
+        toolbarDrawState.lastHold = now
+        return true
+    }
+    // repeat at configured interval
+    if now.Sub(toolbarDrawState.lastHold) >= holdDuration {
+        toolbarDrawState.lastHold = now
+        return true
+    }
+}
 	return false
 }
 
@@ -538,6 +549,8 @@ func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 	}
 }
 
+const holdDuration = 125 * time.Millisecond 
+
 var toolbarDrawState struct {
 	cb                 *renderer.CommandBuffer
 	mouse              *platform.MouseState
@@ -554,6 +567,8 @@ var toolbarDrawState struct {
 	offsetBottom    bool
 	noTearoff       bool // For objects like "BUTTON" and "BCKGRD" in the brightness menu that don't have a tearoff button
 	lightToolbar    [4][2]float32
+
+	lastHold time.Time 
 }
 
 func init() {
