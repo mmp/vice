@@ -6,7 +6,10 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/radar"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type TrackState struct {
@@ -81,9 +84,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		if state.track.TransponderAltitude > 230000 && now.Sub(state.lastTrackUpdate) < 15*time.Second {
-			return
-		} else if state.track.TransponderAltitude < 230000 && now.Sub(state.lastTrackUpdate) < 5*time.Second {
+		if now.Sub(state.lastTrackUpdate) < 12*time.Second {
 			return
 		}
 		state.lastTrackUpdate = now
@@ -105,3 +106,73 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 }
 
+func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	trackBuilder := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trackBuilder)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+
+	for _, trk := range tracks {
+		state := ep.TrackState[trk.ADSBCallsign]
+		var positionSymbol string
+		if trk.IsUnassociated() {
+			switch trk.Mode {
+			case av.TransponderModeStandby:
+				positionSymbol = util.Select(trk.IsAssociated(), "X", "+") // Find the actual character for the + (or the font makes it look better idk)
+			case av.TransponderModeAltitude:
+				switch {
+				case trk.Squawk == av.Squawk(1200): // Below CA floor
+					positionSymbol = "V"
+				case trk.Ident:
+					positionSymbol = string(0x2630) // Hopefully the correct font will make this a normal character
+				case trk.Squawk != av.Squawk(1200): // Below CA floor
+					positionSymbol = "/" // Hopefully the correct font will make this
+					// case trk.Squawk : // Above CA floor
+					// 	positionSymbol = "I"
+				}
+			}
+		} else {
+			if trk.TransponderAltitude > 23000 {
+				positionSymbol = "\\"
+			} else {
+				positionSymbol = string(0x00b7) // Reduced sep area
+			}
+		}
+		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)
+	}
+	transforms.LoadWindowViewingMatrices(cb)
+	trackBuilder.GenerateCommands(cb)
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	trid.GenerateCommands(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	ld.GenerateCommands(cb)
+
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
+}
+
+func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Context,
+	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
+	ps := ep.currentPrefs()
+
+	pos := state.track.Location
+	
+	// color, brightnesss := ep.trackColor(state, track)
+
+
+}
+
+func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
+	color := renderer.RGB{.855, .855, 0} // standard color for all
+
+	// Scale this color based on the type of tag it is.
+	// DB and Track brights/ color are the same, so call the DB color function TODO
+	return color
+}
