@@ -49,6 +49,7 @@ var ( // TODO: Change to actual colors, but these STARS ones will suffice for no
 	toolbarOutlineColor           = renderer.RGB{.38, .38, .38}
 	menuOutlineColor			 = renderer.RGB{1, .761, 0}
 	toolbarHoveredOutlineColor    = renderer.RGB{.953, .953, .953}
+	eramGray = renderer.RGB{.78, .78, .78}
 )
 
 type toolbarFlags int
@@ -125,12 +126,17 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 	case toolbarBright:
 		prefs := ep.currentPrefs()
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
 		drawButtonSamePosition("BRIGHT")
-		p0 := toolbarDrawState.buttonCursor // For outline
 		if ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false) {
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
+			toolbarDrawState.lightToolbar = [4][2]float32{}
 		}
+		p0 := toolbarDrawState.buttonCursor // For outline
 		if ep.drawToolbarFullButton(ctx, "MAP\nBRIGHT", 0, scale, false, false) {
 			// handle MAP BRIGHT
 		}
@@ -216,12 +222,15 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("DBFEL\n%d", prefs.Brightness.DBFEL), 0, scale, false, false) {
 			// handle DBFEL
 		}
+		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("OUTAGE\n%d", prefs.Brightness.Outage), 0, scale, false, false) {
 			// handle OUTAGE
 		}
-		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p1 := [2]float32{p2[0], p0[1]}
 		p3 := [2]float32{p0[0], p2[1]}
+		if toolbarDrawState.lightToolbar == [4][2]float32{} {
+			toolbarDrawState.lightToolbar = [4][2]float32{p0, p1,p2,p3}
+		}
 		ep.drawMenuOutline(p0, p1, p2, p3)
 
 	case toolbarViews:
@@ -416,7 +425,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	if customColor, ok := customButton[cleanButtonName(text)]; ok {
 		buttonColor = customColor
 		if customColor == (renderer.RGB{}) && pushedIn {
-			buttonColor = renderer.RGB{.78, .78, .78} // The black buttons turn gray when pushed
+			buttonColor = eramGray // The black buttons turn gray when pushed
 		}
 	}
 	if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
@@ -497,6 +506,7 @@ var toolbarDrawState struct {
 	buttonPositions map[string][2]float32 // This is the position of each main button in the toolbar.
 	offsetBottom    bool
 	noTearoff       bool // For objects like "BUTTON" and "BCKGRD" in the brightness menu that don't have a tearoff button
+	lightToolbar   [4][2]float32 
 }
 
 func init() {
@@ -535,7 +545,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
-		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(renderer.RGB{.78, .78, .78}))
+		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(eramGray))
 	trid.GenerateCommands(cb)
 
 	if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
@@ -650,11 +660,17 @@ func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context
 func (ep *ERAMPane) drawMenuOutline(p0,p1,p2,p3 [2]float32) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	// outline := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
-	outline := menuOutlineColor
-	ld.AddLine(p0, p1, outline)
-	ld.AddLine(p1, p2, outline)
-	ld.AddLine(p2, p3, outline)
-	ld.AddLine(p3, p0, outline)
+	color := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
+	ld.AddLine(p0, p1, color)
+	ld.AddLine(p1, p2, color)
+	ld.AddLine(p2, p3, color)
+	ld.AddLine(p3, p0, color)
+	ld.GenerateCommands(toolbarDrawState.cb)
+}
 
+func (ep *ERAMPane) drawLightToolbar(p0,p1,p2,p3 [2]float32) {
+	trid := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	trid.AddQuad(p0, p1, p2, p3, eramGray)
+	trid.GenerateCommands(toolbarDrawState.cb)
 }
