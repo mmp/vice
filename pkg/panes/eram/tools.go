@@ -6,6 +6,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/util"
 )
 
 var commandDrawState struct {
@@ -75,21 +76,20 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	}
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	out, _ := util.WrapText(ep.bigOutput, cols, 0, true)
+	out, _ := util.WrapTextNoSpace(ep.bigOutput, cols, 0, true)
 	winBase := math.Add2f(ps.commandBigPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
-	td.GenerateCommands(commandDrawState.cb)
 
 	// Draw the smaller top box now.  Size may change if the input text
 	// requires more room.
 	inputSize := float32(38)
 	bx, _ = style.Font.BoundText("X", 0)
 	cols = int(sz[0] / float32(bx))
-	inText, _ := util.WrapText(ep.Input, cols, 0, true)
+	inText, _ := util.WrapTextNoSpace(ep.Input, cols, 0, true)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
@@ -116,7 +116,6 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	td.AddText(inText, [2]float32{p0[0] + 2, p0[1] - 2}, style)
-	td.GenerateCommands(commandDrawState.cb)
 
 	// Restore the scissor to the pane extent
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
@@ -124,6 +123,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
+	td.GenerateCommands(commandDrawState.cb)
 
 }
 
@@ -158,19 +158,19 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	}
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	out, _ := util.WrapText(ep.smallOutput, cols, 0, true)
+	out, _ := util.WrapTextNoSpace(ep.smallOutput, cols, 0, true)
 	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
-	td.GenerateCommands(commandDrawState.cb)
-
+	
 	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
+	td.GenerateCommands(commandDrawState.cb)
 }
