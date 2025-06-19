@@ -248,7 +248,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if toolbarDrawState.lightToolbar == [4][2]float32{} {
 			toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		}
-		ep.drawMenuOutline(p0, p1, p2, p3)
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 
 	case toolbarViews:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -332,7 +332,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if toolbarDrawState.lightToolbar == [4][2]float32{} {
 			toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		}
-		ep.drawMenuOutline(p0, p1, p2, p3)
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	case toolbarChecklist:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
@@ -358,7 +358,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if toolbarDrawState.lightToolbar == [4][2]float32{} {
 			toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		}
-		ep.drawMenuOutline(p0, p1, p2, p3)
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	}
 
 	return paneExtent
@@ -723,15 +723,17 @@ func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context
 	}
 }
 
-func (ep *ERAMPane) drawMenuOutline(p0, p1, p2, p3 [2]float32) {
+func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float32) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	color := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
+	toolbarDrawState.cb.LineWidth(2, ctx.DPIScale)
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
 	ld.GenerateCommands(toolbarDrawState.cb)
+	toolbarDrawState.cb.LineWidth(1, ctx.DPIScale)
 }
 
 func (ep *ERAMPane) drawLightToolbar(p0, p1, p2, p3 [2]float32) {
