@@ -410,12 +410,6 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 	return ss.Center
 }
 
-func (ss *State) AverageWindVector() [2]float32 {
-	d := math.OppositeHeading(float32(ss.Wind.Direction))
-	v := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
-	return math.Scale2f(v, float32(ss.Wind.Speed))
-}
-
 func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
