@@ -3,7 +3,6 @@ package eram
 /*
 TODO LIST:
 	1. Fix the bug with the menus not moving after a window resize
-	2. Add holding the mouse down to change the brightness
 */
 
 import (
@@ -501,7 +500,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 		// initial press
 		if toolbarDrawState.mouseYetReleased {
 			toolbarDrawState.mouseYetReleased = false
-			toolbarDrawState.lastHold = now
+			toolbarDrawState.lastHold = now.Add(500 * time.Millisecond)
 			return true
 		}
 		// repeat at configured interval
