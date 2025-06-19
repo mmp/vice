@@ -157,86 +157,90 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("BCKGRD\n%d", ps.Brightness.Background), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Background, 0, 100, 1)
+			handleClick(&ps.Brightness.Background, 0, 60, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("CURSOR\n%d", ps.Brightness.Cursor), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Cursor, 0, 100, 1)
+			handleClick(&ps.Brightness.Cursor, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("TEXT\n%d", ps.Brightness.Text), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Text, 0, 100, 1)
+			handleClick(&ps.Brightness.Text, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("PR TGT\n%d", ps.Brightness.PRTGT), 0, scale, false, false) {
-			handleClick(&ps.Brightness.PRTGT, 0, 100, 1)
+			handleClick(&ps.Brightness.PRTGT, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("UNP TGT\n%d", ps.Brightness.UNPTGT), 0, scale, false, false) {
-			handleClick(&ps.Brightness.UNPTGT, 0, 100, 1)
+			handleClick(&ps.Brightness.UNPTGT, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("PR HST\n%d", ps.Brightness.PRHST), 0, scale, false, false) {
-			handleClick(&ps.Brightness.PRHST, 0, 100, 1)
+			handleClick(&ps.Brightness.PRHST, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("UNP HST\n%d", ps.Brightness.UNPHST), 0, scale, false, false) {
-			handleClick(&ps.Brightness.UNPHST, 0, 100, 1)
+			handleClick(&ps.Brightness.UNPHST, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("LDB\n%d", ps.Brightness.LDB), 0, scale, false, false) {
-			handleClick(&ps.Brightness.LDB, 0, 100, 1)
+			handleClick(&ps.Brightness.LDB, 0, 100, 2)
 		}
-		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("SLDB\n+%d", ps.Brightness.SLDB), 0, scale, false, false) {
-			handleClick(&ps.Brightness.SLDB, 0, 100, 1)
+		text := util.Select(ps.Brightness.SLDB > 0, fmt.Sprintf("SLDB\n+%d", ps.Brightness.SLDB), "SLDB\n=")
+		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
+			handleClick(&ps.Brightness.SLDB, 0, 20, 1)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("WX\n%d", ps.Brightness.WX), 0, scale, false, false) {
-			handleClick(&ps.Brightness.WX, 0, 100, 1)
+			handleClick(&ps.Brightness.WX, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("NEXRAD\n%d", ps.Brightness.NEXRAD), 0, scale, false, false) {
-			handleClick(&ps.Brightness.NEXRAD, 0, 100, 1)
+			handleClick(&ps.Brightness.NEXRAD, 0, 100, 2)
 		}
 		toolbarDrawState.offsetBottom = true
 		toolbarDrawState.noTearoff = true
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("BCKLGHT\n%d", ps.Brightness.Backlight), 0, scale, false, true) {
-			handleClick(&ps.Brightness.Backlight, 0, 100, 1)
+			handleClick(&ps.Brightness.Backlight, 0, 100, 2)
 		}
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("BUTTON\n%d", ps.Brightness.Button), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Button, 0, 100, 1)
+			handleClick(&ps.Brightness.Button, 0, 100, 2)
 		}
 		toolbarDrawState.noTearoff = false
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("BORDER\n%d", ps.Brightness.Border), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Border, 0, 100, 1)
+			handleClick(&ps.Brightness.Border, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("TOOLBAR\n%d", ps.Brightness.Toolbar), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Toolbar, 0, 100, 1)
+			handleClick(&ps.Brightness.Toolbar, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("TB BRDR\n%d", ps.Brightness.TBBRDR), 0, scale, false, false) {
-			handleClick(&ps.Brightness.TBBRDR, 0, 100, 1)
+			handleClick(&ps.Brightness.TBBRDR, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("AB BRDR\n%d", ps.Brightness.ABBRDR), 0, scale, false, false) {
-			handleClick(&ps.Brightness.ABBRDR, 0, 100, 1)
+			handleClick(&ps.Brightness.ABBRDR, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("FDB\n%d", ps.Brightness.FDB), 0, scale, false, false) {
-			handleClick(&ps.Brightness.FDB, 0, 100, 1)
+			handleClick(&ps.Brightness.FDB, 0, 100, 2)
 		}
-		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("PORTAL\n%d", ps.Brightness.Portal), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Portal, 0, 100, 1)
+		text = util.Select(ps.Brightness.Portal > 0, fmt.Sprintf("PORTAL\n%d", ps.Brightness.Portal-10), "PORTAL\n=")
+		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
+			handleClick(&ps.Brightness.Portal, 0, 10, 1)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("SATCOMM\n%d", ps.Brightness.Satcomm), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Satcomm, 0, 100, 1)
+			handleClick(&ps.Brightness.Satcomm, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("ON-FREQ\n%d", ps.Brightness.ONFREQ), 0, scale, false, false) {
-			handleClick(&ps.Brightness.ONFREQ, 0, 100, 1)
+			handleClick(&ps.Brightness.ONFREQ, 0, 100, 2)
 		}
+		text = util.Select(ps.Brightness.Line4 > 0, fmt.Sprintf("SATCOM\n%d", ps.Brightness.Line4-20), "SATCOM\n=")
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("LINE 4\n%d", ps.Brightness.Line4), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Line4, 0, 100, 1)
+			handleClick(&ps.Brightness.Line4, 0, 20, 1)
 		}
-		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("DWELL\n+%d", ps.Brightness.Dwell), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Dwell, 0, 100, 1)
+		text = util.Select(ps.Brightness.Dwell > 0, fmt.Sprintf("DWELL\n+%d", ps.Brightness.Dwell), "DWELL\n=")
+		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
+			handleClick(&ps.Brightness.Dwell, 0, 20, 1)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("FENCE\n%d", ps.Brightness.Fence), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Fence, 0, 100, 1)
+			handleClick(&ps.Brightness.Fence, 0, 100, 2)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("DBFEL\n%d", ps.Brightness.DBFEL), 0, scale, false, false) {
-			handleClick(&ps.Brightness.DBFEL, 0, 100, 1)
+			handleClick(&ps.Brightness.DBFEL, 0, 100, 2)
 		}
 		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("OUTAGE\n%d", ps.Brightness.Outage), 0, scale, false, false) {
-			handleClick(&ps.Brightness.Outage, 0, 100, 1)
+			handleClick(&ps.Brightness.Outage, 0, 100, 2)
 		}
 
 		p1 := [2]float32{p2[0], p0[1]}
@@ -493,19 +497,19 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	ld.GenerateCommands(toolbarDrawState.cb)
 	td.GenerateCommands(toolbarDrawState.cb)
 	if mouse != nil && mouseInside && mouseDownInside {
-    now := time.Now()
-    // initial press
-    if toolbarDrawState.mouseYetReleased {
-        toolbarDrawState.mouseYetReleased = false
-        toolbarDrawState.lastHold = now
-        return true
-    }
-    // repeat at configured interval
-    if now.Sub(toolbarDrawState.lastHold) >= holdDuration {
-        toolbarDrawState.lastHold = now
-        return true
-    }
-}
+		now := time.Now()
+		// initial press
+		if toolbarDrawState.mouseYetReleased {
+			toolbarDrawState.mouseYetReleased = false
+			toolbarDrawState.lastHold = now
+			return true
+		}
+		// repeat at configured interval
+		if now.Sub(toolbarDrawState.lastHold) >= holdDuration {
+			toolbarDrawState.lastHold = now
+			return true
+		}
+	}
 	return false
 }
 
@@ -549,7 +553,7 @@ func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 	}
 }
 
-const holdDuration = 125 * time.Millisecond 
+const holdDuration = 125 * time.Millisecond
 
 var toolbarDrawState struct {
 	cb                 *renderer.CommandBuffer
@@ -568,7 +572,7 @@ var toolbarDrawState struct {
 	noTearoff       bool // For objects like "BUTTON" and "BCKGRD" in the brightness menu that don't have a tearoff button
 	lightToolbar    [4][2]float32
 
-	lastHold time.Time 
+	lastHold time.Time
 }
 
 func init() {
@@ -744,13 +748,13 @@ func handleClick(pref *radar.ScopeBrightness, min, max, step int) {
 	}
 
 	value := int(*pref)
-	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary]{ // lower value
+	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary] { // lower value
 		if value-step >= min {
 			*pref = radar.ScopeBrightness(value - step)
 		} else {
 			// TODO: handle case when under min
 		}
-	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary]{ // raise value
+	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary] { // raise value
 		if value+step <= max {
 			*pref = radar.ScopeBrightness(value + step)
 		} else {
