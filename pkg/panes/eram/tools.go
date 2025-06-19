@@ -6,6 +6,7 @@ import (
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/util"
 )
 
 var commandDrawState struct {
@@ -55,8 +56,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 
 	ps := ep.currentPrefs()
 	sz := [2]float32{390, 77}
-
-	p0 := ps.commandBigPosition
+	p0 := ps.commandBigPosition // top-left of the output box
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
@@ -69,11 +69,34 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
+	// Draw wrapped output text in the big box
+	style := renderer.TextStyle{
+		Font:  renderer.GetDefaultFont(),
+		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
+	}
+	bx, _ := style.Font.BoundText("X", 0)
+	cols := int(sz[0] / float32(bx))
+	out, _ := util.WrapTextNoSpace(ep.bigOutput, cols, 0, true)
+	winBase := math.Add2f(ps.commandBigPosition, ctx.PaneExtent.P0)
+	commandDrawState.cb.SetScissorBounds(math.Extent2D{
+		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
+		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
+	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
 
+	// Draw the smaller top box now.  Size may change if the input text
+	// requires more room.
+	inputSize := float32(38)
+	bx, _ = style.Font.BoundText("X", 0)
+	cols = int(sz[0] / float32(bx))
+	inText, _ := util.WrapTextNoSpace(ep.Input, cols, 0, true)
+	_, h := style.Font.BoundText(inText, style.LineSpacing)
+	if float32(h)+4 > inputSize {
+		inputSize = float32(h) + 4
+	}
 
-	// Draw the smaller top box now
-	p0[1] += 38
-	sz[1] = 38
+	p0[1] = ps.commandBigPosition[1] + inputSize
+	sz[1] = inputSize
 	p1 = math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
@@ -86,8 +109,21 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
 
+	// Input text inside the small box.  Clip to its extent.
+	winBase = math.Add2f([2]float32{ps.commandBigPosition[0], ps.commandBigPosition[1] + inputSize}, ctx.PaneExtent.P0)
+	commandDrawState.cb.SetScissorBounds(math.Extent2D{
+		P0: [2]float32{winBase[0], winBase[1] - inputSize},
+		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
+	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	td.AddText(inText, [2]float32{p0[0] + 2, p0[1] - 2}, style)
+
+	// Restore the scissor to the pane extent
+	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
+		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
+	td.GenerateCommands(commandDrawState.cb)
 
 }
 
@@ -115,7 +151,26 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
+	// Draw wrapped text output in the box
+	style := renderer.TextStyle{
+		Font:  renderer.GetDefaultFont(),
+		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
+	}
+	bx, _ := style.Font.BoundText("X", 0)
+	cols := int(sz[0] / float32(bx))
+	out, _ := util.WrapTextNoSpace(ep.smallOutput, cols, 0, true)
+	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
+	commandDrawState.cb.SetScissorBounds(math.Extent2D{
+		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
+		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
+	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
+	
+	// Restore scissor
+	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
+		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
-	// TODO: Text output
+	td.GenerateCommands(commandDrawState.cb)
 }

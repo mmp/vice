@@ -2,7 +2,9 @@ package eram
 
 import (
 	"encoding/json"
+	"strings"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
@@ -31,6 +33,11 @@ type ERAMPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 
+	// Output and input text for the command line interface.
+	smallOutput string
+	bigOutput   string
+	Input       string
+
 	activeToolbarMenu int
 	toolbarVisible    bool
 }
@@ -51,6 +58,10 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 	if p.Aircraft == nil {
 		p.Aircraft = make(map[string]*AircraftState)
 	}
+
+	p.smallOutput = "hellooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+	p.bigOutput = "hi"
+	p.Input = "input"
 
 	// TODO: initialize fonts and audio
 
@@ -77,7 +88,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	// draw the ERAMPane
 	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0, 0, .506})) // Scale this eventually
-	// process keyboard input (ie. commands)
+	ep.processKeyboardInput(ctx)
 	// ctr := UserCenter
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
@@ -118,4 +129,24 @@ func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pla
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	// implement the ResetSim method to satisfy panes.Pane interface
+}
+
+func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
+	if !ctx.HaveFocus || ctx.Keyboard == nil {
+		return
+	}
+	input := strings.ToUpper(ctx.Keyboard.Input)
+	ep.Input += input
+	for key := range ctx.Keyboard.Pressed {
+		switch key {
+		case imgui.KeyBackspace:
+			if len(ep.Input) > 0 {
+				ep.Input = ep.Input[:len(ep.Input)-1]
+			}
+		case imgui.KeyEnter:
+			// Process the command
+			// ep.processCommandInput()
+			ep.Input = ""
+		}
+	}
 }
