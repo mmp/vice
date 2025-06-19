@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
@@ -25,8 +26,7 @@ var (
 type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet
 	prefSet            *PrefrenceSet
-
-	Aircraft map[string]*AircraftState
+	TrackState map[av.ADSBCallsign]*TrackState
 
 	allVideoMaps []sim.VideoMap
 
@@ -55,8 +55,8 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 		p.OutboundPointOuts = make(map[string]string)
 	}
 
-	if p.Aircraft == nil {
-		p.Aircraft = make(map[string]*AircraftState)
+	if p.TrackState == nil {
+		p.TrackState = make(map[av.ADSBCallsign]*TrackState)
 	}
 
 	// TODO: initialize fonts and audio
