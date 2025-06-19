@@ -31,8 +31,6 @@ type ERAMPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 
-	// These colors can be changed (in terms of brightness)
-	ERAMBackgroundColor renderer.RGB // 0,0,.48
 	activeToolbarMenu   int
 	toolbarVisible      bool
 }
@@ -53,9 +51,6 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 	if p.Aircraft == nil {
 		p.Aircraft = make(map[string]*AircraftState)
 	}
-
-	// Colors
-	p.ERAMBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0.48}
 
 	// TODO: initialize fonts and audio
 
@@ -79,9 +74,9 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Tracks: get visible tracks (500nm?) and update them.
 
 	ps := ep.currentPrefs()
+	
 	// draw the ERAMPane
-	cb.ClearRGB(ep.ERAMBackgroundColor) // Scale this eventually
-
+	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0,0,.506})) // Scale this eventually
 	// process keyboard input (ie. commands)
 	// ctr := UserCenter
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,

@@ -1,5 +1,11 @@
 package eram
 
+/*
+TODO LIST:
+	1. Fix the bug with the menus not moving after a window resize
+	2. Add holding the mouse down to change the brightness
+*/
+
 import (
 	"fmt"
 	"slices"
@@ -141,6 +147,13 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			toolbarDrawState.lightToolbar = [4][2]float32{}
 		}
 		p0 := toolbarDrawState.buttonCursor // For outline
+
+		if ep.drawToolbarFullButton(ctx, "MAP\nBRIGHT", 0, scale, false, false) {
+			// handle MAP BRIGHT
+		}
+		if ep.drawToolbarFullButton(ctx, "CPDLC", 0, scale, false, false) {
+			// handle CPDLC
+		}
 
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("BCKGRD\n%d", ps.Brightness.Background), 0, scale, false, false) {
 			handleClick(&ps.Brightness.Background, 0, 100, 1)
@@ -426,12 +439,10 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	disabled := hasFlag(flags, buttonDisabled)
 	if disabled {
-		fmt.Println("disabled")
 		buttonColor = toolbarDisabledButtonColor
 	}
 	unsupported := hasFlag(flags, buttonUnsupported)
 	if unsupported {
-		fmt.Println("unsupported")
 		buttonColor = toolbarUnsupportedButtonColor
 	}
 	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
@@ -718,13 +729,13 @@ func handleClick(pref *radar.ScopeBrightness, min, max, step int) {
 	}
 
 	value := int(*pref)
-	if mouse.Clicked[platform.MouseButtonPrimary] { // lower value
+	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary]{ // lower value
 		if value-step >= min {
 			*pref = radar.ScopeBrightness(value - step)
 		} else {
 			// TODO: handle case when under min
 		}
-	} else if mouse.Clicked[platform.MouseButtonTertiary] { // raise value
+	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary]{ // raise value
 		if value+step <= max {
 			*pref = radar.ScopeBrightness(value + step)
 		} else {
