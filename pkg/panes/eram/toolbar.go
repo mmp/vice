@@ -367,7 +367,7 @@ var toolbarDrawState struct {
 	style           renderer.TextStyle
 	position        int
 	buttonPositions map[string][2]float32 // This is the position of each main button in the toolbar.
-	offsetBottem    bool
+	offsetBottom    bool
 }
 
 func init() {
