@@ -31,6 +31,11 @@ type ERAMPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 
+	// Output and input text for the command line interface.
+	smallOutput string
+	bigOutput   string
+	Input       string
+
 	activeToolbarMenu int
 	toolbarVisible    bool
 }
