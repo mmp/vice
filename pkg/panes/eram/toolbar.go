@@ -37,15 +37,17 @@ const (
 
 var ( // TODO: Change to actual colors, but these STARS ones will suffice for now. The colors do vary based on button so maybe
 	// a seperate field in each individual button is needed?
-	toolbarButtonColor            = renderer.RGB{0, 0, .867} // TODO: Make a map with the buttons that have custom colors (ie. vector, delete tearoff)
+	toolbarButtonColor            = renderer.RGB{0, 0, .867}
 	toolbarTearoffButtonColor     = renderer.RGB{1, 1, .576}
 	toolbarActiveButtonColor      = renderer.RGB{.906, .616, .6}
 	toolbarTextColor              = renderer.RGB{.953, .953, .953}
 	toolbarUnsupportedButtonColor = renderer.RGB{.4, .4, .4}
 	toolbarUnsupportedTextColor   = renderer.RGB{.8, .8, .8} // Dont think I neeed this
 	toolbarDisabledButtonColor    = renderer.RGB{0, .173 / 2, 0}
-	toolbarDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5}  // Dont think I need this either
-	toolbarOutlineColor           = renderer.RGB{.38, .38, .38} // I don't think MacOS ERAM buttons highlight when hovered yet, so I'll check later on windows.
+	toolbarDisabledTextColor      = renderer.RGB{.5, 0.5, 0.5} // Dont think I need this either
+	toolbarButtonGreenColor       = renderer.RGB{0, .804, 0}
+	toolbarOutlineColor           = renderer.RGB{.38, .38, .38}
+	menuOutlineColor			 = renderer.RGB{1, .761, 0}
 	toolbarHoveredOutlineColor    = renderer.RGB{.953, .953, .953}
 )
 
@@ -68,6 +70,8 @@ var customButton map[string]renderer.RGB = map[string]renderer.RGB{
 	"ALT LIM":         renderer.RGB{0, 0, 0},
 	"VECTOR":          renderer.RGB{0, .82, 0},
 	"DELETE\nTEAROFF": renderer.RGB{0, .804, .843},
+	"MAP\nBRIGHT":     toolbarButtonColor,
+	"CPDLC":           toolbarButtonColor,
 }
 
 var toolbarButtonPositions = make(map[string][2]float32)
@@ -103,7 +107,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarDBFields
 		}
 		ep.drawToolbarFullButton(ctx, "VECTOR\n0", 0, scale, false, false)
-		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true) { // MANDATORY
+		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true) { // MANDATORY Done
 			ep.activeToolbarMenu = toolbarViews
 		}
 		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, false, false) {
@@ -119,6 +123,107 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {
 			// ep.deleteTearoff = true
 		}
+	case toolbarBright:
+		prefs := ep.currentPrefs()
+		drawButtonSamePosition("BRIGHT")
+		p0 := toolbarDrawState.buttonCursor // For outline
+		if ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+		}
+		if ep.drawToolbarFullButton(ctx, "MAP\nBRIGHT", 0, scale, false, false) {
+			// handle MAP BRIGHT
+		}
+		if ep.drawToolbarFullButton(ctx, "CPDLC", 0, scale, false, false) {
+			// handle CPDLC
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("BCKGRD\n%d", prefs.Brightness.Background), 0, scale, false, false) {
+			// handle BCKGRD
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("CURSOR\n%d", prefs.Brightness.Cursor), 0, scale, false, false) {
+			// handle CURSOR
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("TEXT\n%d", prefs.Brightness.Text), 0, scale, false, false) {
+			// handle TEXT
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("PR TGT\n%d", prefs.Brightness.PRTGT), 0, scale, false, false) {
+			// handle PR TGT
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("UNP TGT\n%d", prefs.Brightness.UNPTGT), 0, scale, false, false) {
+			// handle UNP TGT
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("PR HST\n%d", prefs.Brightness.PRHST), 0, scale, false, false) {
+			// handle PR HST
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("UNP HST\n%d", prefs.Brightness.UNPHST), 0, scale, false, false) {
+			// handle UNP HST
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("LDB\n%d", prefs.Brightness.LDB), 0, scale, false, false) {
+			// handle LDB
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("SLDB\n+%d", prefs.Brightness.SLDB), 0, scale, false, false) {
+			// handle SLDB
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("WX\n%d", prefs.Brightness.WX), 0, scale, false, false) {
+			// handle WX
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("NEXRAD\n%d", prefs.Brightness.NEXRAD), 0, scale, false, false) {
+			// handle NEXRAD
+		}
+		toolbarDrawState.offsetBottom = true
+		toolbarDrawState.noTearoff = true
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("BCKLGHT\n%d", prefs.Brightness.Backlight), 0, scale, false, true) {
+			// handle BCKLGHT
+		}
+
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("BUTTON\n%d", prefs.Brightness.Button), 0, scale, false, false) {
+			// handle BUTTON
+		}
+		toolbarDrawState.noTearoff = false
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("BORDER\n%d", prefs.Brightness.Border), 0, scale, false, false) {
+			// handle BORDER
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("TOOLBAR\n%d", prefs.Brightness.Toolbar), 0, scale, false, false) {
+			// handle TOOLBAR
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("TB BRDR\n%d", prefs.Brightness.TBBRDR), 0, scale, false, false) {
+			// handle TB BRDR
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("AB BRDR\n%d", prefs.Brightness.ABBRDR), 0, scale, false, false) {
+			// handle AB BRDR
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("FDB\n%d", prefs.Brightness.FDB), 0, scale, false, false) {
+			// handle FDB
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("PORTAL\n%d", prefs.Brightness.Portal), 0, scale, false, false) {
+			// handle PORTAL
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("SATCOMM\n%d", prefs.Brightness.Satcomm), 0, scale, false, false) {
+			// handle SATCOMM
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("ON-FREQ\n%d", prefs.Brightness.ONFREQ), 0, scale, false, false) {
+			// handle ON-FREQ
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("LINE 4\n%d", prefs.Brightness.Line4), 0, scale, false, false) {
+			// handle LINE 4
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("DWELL\n+%d", prefs.Brightness.Dwell), 0, scale, false, false) {
+			// handle DWELL
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("FENCE\n%d", prefs.Brightness.Fence), 0, scale, false, false) {
+			// handle FENCE
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("DBFEL\n%d", prefs.Brightness.DBFEL), 0, scale, false, false) {
+			// handle DBFEL
+		}
+		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("OUTAGE\n%d", prefs.Brightness.Outage), 0, scale, false, false) {
+			// handle OUTAGE
+		}
+		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+		ep.drawMenuOutline(p0, p1, p2, p3)
+
 	case toolbarViews:
 		drawButtonSamePosition("VIEWS")
 		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, true, false) {
@@ -186,7 +291,6 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "WX\nREPORT", 0, scale, false, false) {
 			// handle WX REPORT
 		}
-
 	case toolbarChecklist:
 		drawButtonSamePosition("CHECK\nLISTS")
 		if ep.drawToolbarFullButton(ctx, "CHECK\nLISTS", 0, scale, true, false) {
@@ -223,8 +327,26 @@ func (ep *ERAMPane) toolbarButtonScale(ctx *panes.Context) float32 {
 
 // Draws both the full button and tearoff. Only need the disabled flag. Only return the result of the full button. The tearoff will be handled here as it's all the same.
 func (ep *ERAMPane) drawToolbarFullButton(ctx *panes.Context, text string, flag toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool { // Do I need to return a bool here?
-	ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, flag}, buttonScale, pushedIn, nextRow)     // Draw tearoff button
-	return ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false) // Draw full button. Only change row for the tearoff button
+	sz := buttonSize(buttonTearoff, buttonScale)
+	ep.checkNextRow(nextRow, sz, ctx) // Check if we need to move to the next row
+	if !toolbarDrawState.noTearoff {
+		ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, flag}, buttonScale, pushedIn, nextRow) // Draw tearoff button
+		if nextRow {
+			nextRow = false
+		}
+	}
+	moveToolbarCursor(buttonTearoff, sz, ctx, nextRow)
+	sz = buttonSize(buttonFull, buttonScale)
+	pressed := ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false) // Draw full button. Only change row for the tearoff button
+	moveToolbarCursor(buttonFull, sz, ctx, nextRow)
+	return pressed
+}
+
+func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flag toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool {
+	sz := buttonSize(buttonFull, buttonScale)
+	ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, nextRow) // Draw full button. Only change row for the tearoff button
+	moveToolbarCursor(buttonFull, sz, ctx, nextRow)
+	return pushedIn
 }
 
 func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool {
@@ -237,13 +359,11 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	sz := buttonSize(flags[0], buttonScale)
 
-	if nextRow {
-		toolbarDrawState.buttonCursor[0] = toolbarDrawState.buttonDrawStartPos[0] // Reset to the start of the row
-		toolbarDrawState.buttonCursor[1] -= sz[1] + 3                             // some space in between rows
-	}
-	if nextRow && toolbarDrawState.offsetBottom && text == "" { // Only offset for the first button (the tearoff)
-		ep.offsetFullButton(ctx)
-	}
+	if toolbarDrawState.offsetBottom && (text == "" || toolbarDrawState.noTearoff){ // Only offset for the first button (the tearoff)
+			ep.offsetFullButton(ctx)
+			toolbarDrawState.offsetBottom = false
+		}
+
 	p0 := toolbarDrawState.buttonCursor
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
@@ -303,7 +423,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 		toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
 	}
 	ps := ep.currentPrefs()
-	
+
 	buttonColor = ps.Brightness.Button.ScaleRGB(buttonColor)
 	textColor = ps.Brightness.Text.ScaleRGB(textColor) // Text has brightness in ERAM
 
@@ -317,7 +437,6 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	ld.AddLine(p1, p2, outlineColor)
 	ld.AddLine(p2, p3, outlineColor)
 	ld.AddLine(p3, p0, outlineColor)
-	moveToolbarCursor(flags[0], sz, ctx, nextRow)
 
 	// Text last!
 	trid.GenerateCommands(toolbarDrawState.cb)
@@ -330,6 +449,11 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	}
 	return false
 }
+
+func oppositeSide(p0, sz [2]float32) [2]float32{
+	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
+	return math.Add2f(p1, [2]float32{0, -sz[1]})
+ }
 
 func hasFlag(flags []toolbarFlags, flag toolbarFlags) bool {
 	return slices.Contains(flags, flag)
@@ -372,6 +496,7 @@ var toolbarDrawState struct {
 	position        int
 	buttonPositions map[string][2]float32 // This is the position of each main button in the toolbar.
 	offsetBottom    bool
+	noTearoff       bool // For objects like "BUTTON" and "BCKGRD" in the brightness menu that don't have a tearoff button
 }
 
 func init() {
@@ -459,34 +584,34 @@ func drawToolbarText(text string, td *renderer.TextDrawBuilder, buttonSize [2]fl
 
 // TODO: Change these to constants
 var menuColor []renderer.RGB = []renderer.RGB{
-	{0, 0, 0}, // 1: ARTCC
-	{0, 0, 0}, // 2: ATC TOOLS
-	{0, 0, 0}, // 3: BRIGHT
-	{0, 0, 0}, // 4: CHECK LISTS
-	{0, 0, 0}, // 5: CURSOR
-	{0, 0, 0}, // 6: DB FIELDS
-	{0, 0, 0}, // 7: FONT
-	{0, 0, 0}, // 8: VIEWS
+	{0, 0, 0},               // 1: ARTCC
+	{0, 0, 0},               // 2: ATC TOOLS
+	toolbarButtonGreenColor, // 3: BRIGHT
+	{0, 0, 0},               // 4: CHECK LISTS
+	toolbarButtonGreenColor, // 5: CURSOR
+	{0, 0, 0},               // 6: DB FIELDS
+	toolbarButtonGreenColor, // 7: FONT
+	{0, 0, 0},               // 8: VIEWS
 }
 
 var toolbarLabel = map[int]string{
-	toolbarVideomap:   "ARTCC",
-	toolbarATCTools:   "ATC\nTOOLS",
-	toolbarBright:     "BRIGHT",
-	toolbarChecklist:  "CHECK\nLISTS",
-	toolbarCursor:     "CURSOR",
-	toolbarDBFields:   "DB FIELDS",
-	toolbarFont:       "FONT",
-	toolbarViews:      "VIEWS",
+	toolbarVideomap:  "ARTCC",
+	toolbarATCTools:  "ATC\nTOOLS",
+	toolbarBright:    "BRIGHT",
+	toolbarChecklist: "CHECK\nLISTS",
+	toolbarCursor:    "CURSOR",
+	toolbarDBFields:  "DB FIELDS",
+	toolbarFont:      "FONT",
+	toolbarViews:     "VIEWS",
 }
 
-func (ep *ERAMPane) customButtonColor(button string) renderer.RGB{
+func (ep *ERAMPane) customButtonColor(button string) renderer.RGB {
 	if button == "" {
 		return toolbarTearoffButtonColor // dont change tearoff button color
 	}
 	active := ep.activeToolbarMenu - 1 // offset for main
-	if main := toolbarLabel[ep.activeToolbarMenu]; main != button{ 
-	return menuColor[active]
+	if main := toolbarLabel[ep.activeToolbarMenu]; main != button {
+		return menuColor[active]
 	} else {
 		return toolbarActiveButtonColor
 	}
@@ -513,4 +638,23 @@ func cleanButtonName(name string) string {
 
 func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) float32 {
 	return ctx.PaneExtent.Height() - mainButtonPosition(ep.toolbarButtonScale(ctx))[1]
+}
+
+func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context) {
+	if nextRow {
+		toolbarDrawState.buttonCursor[0] = toolbarDrawState.buttonDrawStartPos[0] // Reset to the start of the row
+		toolbarDrawState.buttonCursor[1] -= sz[1] + 3                             // some space in between rows
+	}
+}
+
+func (ep *ERAMPane) drawMenuOutline(p0,p1,p2,p3 [2]float32) {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	// outline := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
+	outline := menuOutlineColor
+	ld.AddLine(p0, p1, outline)
+	ld.AddLine(p1, p2, outline)
+	ld.AddLine(p2, p3, outline)
+	ld.AddLine(p3, p0, outline)
+
 }
