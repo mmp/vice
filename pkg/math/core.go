@@ -112,16 +112,16 @@ func Lerp(x, a, b float32) float32 {
 	return (1-x)*a + x*b
 }
 
-// Min returns the smaller of two ordered values.
-func Min[T constraints.Ordered](a, b T) T {
+// Min returns the smaller of two float32 values.
+func Min(a, b float32) float32 {
 	if a < b {
 		return a
 	}
 	return b
 }
 
-// Max returns the larger of two ordered values.
-func Max[T constraints.Ordered](a, b T) T {
+// Max returns the larger of two float32 values.
+func Max(a, b float32) float32 {
 	if a > b {
 		return a
 	}
