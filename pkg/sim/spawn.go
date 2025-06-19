@@ -1489,8 +1489,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		}()
 
 		const nsteps = 10
-		for i := 1; i < nsteps; i++ { // skip first one
-			t := (float32(i) + 0.5) / nsteps
+		for i := 1; i < nsteps-1; i++ { // skip first one and last one
+			t := float32(i) / nsteps
+
 			pt := func() math.Point2LL {
 				if i <= nsteps/2 {
 					return math.Lerp2f(2*t, depEnd, mid)

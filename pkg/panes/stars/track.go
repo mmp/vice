@@ -946,6 +946,11 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 			continue
 		}
 
+		// Skip history updates for unsupported datablocks (fake tracks with "__" prefix)
+		if strings.HasPrefix(string(trk.ADSBCallsign), "__") {
+			continue
+		}
+
 		// Draw history from new to old
 		for i := range ps.RadarTrackHistory {
 			trackColorNum := min(i, len(STARSTrackHistoryColors)-1)

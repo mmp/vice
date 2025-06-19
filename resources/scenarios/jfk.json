@@ -631,8 +631,8 @@
             "ASALT/if/a3000/s210 NUCRI/faf/a2000 PEEBO/a921 MAYMA/a520"
           ]
         },
-        "R4L": { "cifp_id": "RZ4L" },
-        "R4R": { "cifp_id": "RZ4R" },
+        "R4L": { "cifp_id": "RY4L" },
+        "R4R": { "cifp_id": "RY4R" },
         "BVA": {
           "full_name": "Belmont Visual Runway 22 Left",
           "runway": "22L",
@@ -4474,7 +4474,7 @@
       {
         "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho/h40",
         "cruise_altitude": 39000,
-        "star": "CAMRN4",
+        "star": "CAMRN5",
         "initial_controller": "JFK_G_APP",
         "initial_altitude": 8000,
         "assigned_altitude": 4000,
@@ -4529,12 +4529,12 @@
       }
     ]
   },
-  "CAMRN4": {
+  "CAMRN5": {
     "arrivals": [
       {
         "spawn": "PANZE@0.5",
         "cruise_altitude": 39000,
-        "star": "CAMRN4",
+        "star": "CAMRN5",
         "initial_controller": "NY_F_CTR",
         "initial_altitude": 12000,
         "assigned_altitude": 11000,
@@ -4542,48 +4542,6 @@
         "speed_restriction": 250,
         "expect_approach": null,
         "airlines": {
-          "KFRG": [
-            {
-              "icao": "EJA",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "DPJ",
-              "airport": "KAUS"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KAUS"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KACY"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KACY"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KPHL"
-            },
-            {
-              "icao": "DPJ",
-              "airport": "KPHL"
-            }
-          ],
           "KJFK": [
             {
               "icao": "WJA",
@@ -5885,8 +5843,7 @@
         "JFK_DEP": [ "JFK_DEP_13RL" ]
       },
       "inbound_rates": {
-        "CAMRN4": {
-          "KFRG": 0,
+        "CAMRN5": {
           "KJFK": 12
         },
         "Intra-TRACON (JFK/FRG West)": {
@@ -5925,7 +5882,7 @@
             "default" : {
                 "JFK_G_APP": {
                     "primary": true,
-                    "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
+                    "arrivals": [ "CAMRN5", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
@@ -6031,8 +5988,7 @@
         "JFK_DEP": [ "JFK_DEP_13RL" ]
       },
       "inbound_rates": {
-        "CAMRN4": {
-          "KFRG": 0,
+        "CAMRN5": {
           "KJFK": 12
         },
         "Intra-TRACON (JFK/FRG West)": {
@@ -6071,7 +6027,7 @@
             "default" : {
                 "JFK_G_APP": {
                     "primary": true,
-                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                    "arrivals": [ "CAMRN5", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
@@ -6173,8 +6129,7 @@
         "JFK_DEP": [ "JFK_DEP_22RL" ]
       },
       "inbound_rates": {
-        "CAMRN4": {
-          "KFRG": 0,
+        "CAMRN5": {
           "KJFK": 12
         },
         "Intra-TRACON (JFK/FRG West)": {
@@ -6213,7 +6168,7 @@
             "default" : {
                 "JFK_G_APP": {
                     "primary": true,
-                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                    "arrivals": [ "CAMRN5", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
@@ -6315,8 +6270,7 @@
         "JFK_DEP": [ "JFK_DEP_31RL" ]
       },
       "inbound_rates": {
-        "CAMRN4": {
-          "KFRG": 0,
+        "CAMRN5": {
           "KJFK": 12
         },
         "Intra-TRACON (JFK/FRG West)": {
@@ -6355,7 +6309,7 @@
             "default" : {
                 "JFK_G_APP": {
                     "primary": true,
-                    "arrivals": [ "CAMRN4", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
+                    "arrivals": [ "CAMRN5", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)" ]
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
@@ -6456,8 +6410,7 @@
         "JFK_DEP": [ "JFK_DEP_4RL" ]
       },
       "inbound_rates": {
-        "CAMRN4": {
-          "KFRG": 0,
+        "CAMRN5": {
           "KJFK": 12
         },
         "Intra-TRACON (JFK/FRG West)": {
@@ -6496,7 +6449,7 @@
             "default" : {
                 "JFK_G_APP": {
                     "primary": true,
-                    "arrivals": [ "CAMRN4", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
+                    "arrivals": [ "CAMRN5", "OWENZ", "Intra-TRACON (JFK/FRG West)" ]
                 },
                 "ISP_APP": {
                     "backup": "JFK_G_APP",

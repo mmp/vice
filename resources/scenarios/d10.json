@@ -4925,8 +4925,11 @@
         "R17": {
           "cifp_id": "R17"
         },
-        "R13": {
-          "cifp_id": "R13"
+        "RZ13": {
+          "cifp_id": "RZ13"
+        },
+		"RY13": {
+          "cifp_id": "RY13"
         }
       },
       "departures": [
@@ -14385,7 +14388,7 @@
           "initial_controller": "D10_M_APP",
           "initial_altitude": 5000,
           "initial_speed": 150,
-          "expect_approach": "R13",
+          "expect_approach": "RZ13",
           "airlines": {
             "KRBD": [
               {

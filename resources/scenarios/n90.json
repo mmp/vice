@@ -7570,12 +7570,12 @@
       }
     ]
   },
-  "CAMRN4": {
+  "CAMRN5": {
     "arrivals": [
       {
         "spawn": "KARRS",
         "cruise_altitude": 39000,
-        "star": "CAMRN4",
+        "star": "CAMRN5",
         "initial_controller": "NY_36_CTR",
         "initial_altitude": 12000,
         "assigned_altitude": 11000,
@@ -7583,48 +7583,6 @@
         "speed_restriction": 250,
         "expect_approach": null,
         "airlines": {
-          "KFRG": [
-            {
-              "icao": "EJA",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "DPJ",
-              "airport": "KAUS"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KAUS"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KACY"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KACY"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KPHL"
-            },
-            {
-              "icao": "DPJ",
-              "airport": "KPHL"
-            }
-          ],
           "KJFK": [
             {
               "icao": "WJA",
@@ -11437,9 +11395,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -11521,7 +11478,7 @@
           },
         "JFK_G_APP": {
           "primary": true,
-          "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+          "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
       },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -12091,9 +12048,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -12175,7 +12131,7 @@
           },
           "JFK_G_APP": {
            "primary": true,
-           "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+           "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
           },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -12735,9 +12691,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -12819,7 +12774,7 @@
           },
         "JFK_G_APP": {
           "primary": true,
-          "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+          "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
       },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -13389,9 +13344,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -13473,7 +13427,7 @@
           },
         "JFK_G_APP": {
           "primary": true,
-          "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+          "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
       },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"

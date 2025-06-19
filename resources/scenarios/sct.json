@@ -10050,12 +10050,12 @@
       }
     ]
   },
-  "SIZLR3": {
+  "SIZLR4": {
     "arrivals": [
       {
-        "waypoints": "GLRNO/a24000+ SIZLR/a20000-23000 MXIMO/ho HITOP PZUKY/a16000 BITTY/a16000 MORON/a14000 FERNN/a11000 DEZZY/a9000/h124",
+        "waypoints": "GLRNO/a24000+ SIZLR/a20000-23000 MXIMO/a19000-/ho HITOP/a16000 CURKO/s280/a16000 GEBEE/a15000 MORON/a14000 FERNN/a11000/h124",
         "cruise_altitude": 32000,
-        "route": "SIZLR3",
+        "route": "SIZLR4",
         "initial_controller": "LAX_55_CTR",
         "initial_altitude": 24000,
         "initial_speed": 280,
@@ -11584,7 +11584,7 @@
         "SCBBY2": {
           "KONT": 10 
         },
-        "SIZLR3": {
+        "SIZLR4": {
           "KPSP": 10 
         },
         "COMIX2": {
@@ -11708,7 +11708,7 @@
           "ONT_S_APP": {
             "backup": "ONT_P_APP",
             "departures": ["KPSP"],
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR4","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_N_APP",
@@ -12156,7 +12156,7 @@
         "SCBBY2": {
           "KONT": 10 
         },
-        "SIZLR3": {
+        "SIZLR4": {
           "KPSP": 10 
         },
         "COMIX2": {
@@ -12278,7 +12278,7 @@
           },
           "ONT_S_APP": {
             "backup": "ONT_P_APP",
-            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR3","THRNE4","KAYOH8.PSP","SETER5"]
+            "arrivals": ["DSNEE5.MARUE","DSNEE5.HIMDU","SCBBY2","SIZLR4","THRNE4","KAYOH8.PSP","SETER5"]
           },
           "ONT_P_APP": {
             "backup": "ONT_N_APP",

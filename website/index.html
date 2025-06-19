@@ -5969,6 +5969,39 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   address supplied to <code>-server</code> should be of the
                   form <i>hostname:port</i>.</li>
                 </ul>
+                
+                <h4>Windows Example: Running a Local Multi-Controller Server</h4>
+                <p>Here's a step-by-step guide for testing multi-controller scenarios on Windows:</p>
+                <ol>
+                  <li><strong>Launch Command Prompt:</strong> Press the Windows key, type "cmd" in the search box, and press Enter.</li>
+                  
+                  <li><strong>Navigate to the vice directory:</strong> Enter <code>cd "c:\Program Files (x86)\Vice"</code><br>
+                    <em>Note: The quotes are essential if the path contains spaces.</em>
+                  </li>
+                  
+                  <li><strong>Start the multi-controller server:</strong> Enter enter <code>vice.exe -runserver</code><br>
+                    If there are errors in your scenario configuration, they will be displayed here. Otherwise, the server launches and will be
+                    running in the background.
+                  </li>
+                  
+                  <li><strong>Launch the first controller instance:</strong> Enter <code>vice.exe -server localhost</code><br>
+                    This launches <i>vice</i> connected to your local server. In the "New Simulation" window, you'll see the option to "Create multi-controller" simulation.
+                  </li>
+                  
+                  <li><strong>Launch additional controller instances:</strong> For each additional controller position, open another Command Prompt
+                    and enter: <code>vice.exe -server localhost</code><br>
+                    Each new instance can connect to the simulation created by the first controller. You'll be able to perform handoffs and coordinate between the different controller positions by switching between the <i>vice</i> windows.
+                  </li>
+                </ol>
+                
+                <p><strong>Restarting after scenario changes:</strong> If you modify your scenario files, you must restart the server to load the changes:</p>
+                <ol>
+                  <li>Close all <i>vice</i> client windows</li>
+                  <li>Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Esc</kbd> to open the Task Manager</li>
+                  <li>Click the "Details" tab and look for "vice.exe" in the list to find the server</li>
+                  <li>Select it and click "End task"</li>
+                  <li>Return to step 2 above to restart the server with your updated scenario</li>
+                </ol>
 
             </section><!--//docs-intro-->
           </header>

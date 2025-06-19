@@ -1136,14 +1136,7 @@ func (s *Sim) updateState() {
 					tcp := s.State.ResolveController(fp.InboundHandoffController)
 					s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
 
-					airportName := ac.FlightPlan.DepartureAirport
-					if ap, ok := s.State.Airports[airportName]; ok && ap.Name != "" {
-						airportName = ap.Name
-					}
-
-					rt := speech.MakeContactTransmission("departing {airport}", airportName)
-					rt.Merge(ac.Nav.DepartureMessage())
-
+					rt := ac.Nav.DepartureMessage()
 					s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
 
 					// Clear this out so we only send one contact message
@@ -1303,10 +1296,17 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 	}
 
 	var alt *speech.RadioTransmission
-	if ac.Altitude()+100 < float32(ac.FlightPlan.Altitude) {
-		alt = speech.MakeContactTransmission("[at|] {alt} for {alt}", ac.Altitude(), ac.FlightPlan.Altitude)
+	// Get the aircraft's target altitude from the navigation system
+	targetAlt, _ := ac.Nav.TargetAltitude(nil)
+	currentAlt := ac.Altitude()
+
+	// Check if we're in a climb or descent (more than 100 feet difference)
+	if currentAlt < targetAlt {
+		// Report current altitude and target altitude when climbing or descending
+		alt = speech.MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
 	} else {
-		alt = speech.MakeContactTransmission("at {alt}", ac.Altitude())
+		// Just report current altitude if we're level
+		alt = speech.MakeContactTransmission("at {alt}", currentAlt)
 	}
 	earlyAlt := s.Rand.Bool()
 	if earlyAlt {

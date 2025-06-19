@@ -5508,19 +5508,72 @@
       }
     ]
   },
-  "EMZOH3": {
+  "EMZOH4.OAKW": {
     "arrivals": [
       {
-        "waypoints": "RGOOD EMZOH/a28000+ MYJAW/a22000+/s280 SKIZM/a15000-19000/ho MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000 MYSHN/a6200+",
+        "waypoints": "RGOOD EMZOH/a28000+/s280 MYJAW/a22000+/s280 SKIZM/a15000-19000/ho",
 		"runway_waypoints": {
           "KOAK": {
-            "28L": "MYSHN/a6200+ CYMBL/a5300",
-            "28R": "MYSHN/a6200+ CYMBL/a5300",
-            "30": "MYSHN/a6200+ FIXME/a5200+ MYCAF/a5000+ BIGPD/a4500+ FRNNY/a4100+"
+            "28L": "SKIZM/a15000-19000 MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000/s200 MYSHN/a6200+",
+            "28R": "SKIZM/a15000-19000 MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000/s200 MYSHN/a6200+",
+            "30": "SKIZM/a15000-19000 MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000/s200 MYSHN/a6200+"
 		  }
 		  },
         "cruise_altitude": 31000,
-        "route": "RGOOD EMZOH/a28000+ MYJAW/a22000+/s280 SKIZM/a15000-19000/ho MYRIB/a9000-10000/s240 MYHIP MYNEE/a7000 MYSHN/a6200+",
+        "star": "EMZOH4",
+        "initial_controller": "SJC_M_APP",
+        "initial_altitude": 31000,
+        "initial_speed": 300,
+        "expect_approach": null,
+        "airlines": {
+          "KOAK": [
+            {
+              "icao": "SWA",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KSAN"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KLGB"
+            },
+            {
+              "icao": "NKS",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KLAX"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KSNA"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KCRQ"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "EMZOH4.OAKE": {
+    "arrivals": [
+      {
+        "waypoints": "RGOOD EMZOH/a28000+/s280 MYJAW/a22000+/s280 SKIZM/a15000-19000/ho",
+		"runway_waypoints": {
+          "KOAK": {
+            "28L": "SKIZM/a15000-19000 EMAAA/a11000-14000 WNDML/a9000/s240 FOOTO/a7000-8000 KEENR/a7000 LOHGN/a6000/s200 WHYEE/a5000+ HIRMO/a4000/h261",
+            "28R": "SKIZM/a15000-19000 EMAAA/a11000-14000 WNDML/a9000/s240 FOOTO/a7000-8000 KEENR/a7000 LOHGN/a6000/s200 WHYEE/a5000+ HIRMO/a4000/h261",
+            "30": "SKIZM/a15000-19000 EMAAA/a11000-14000 WNDML/a9000/s240 FOOTO/a7000-8000 KEENR/a7000 LOHGN/a6000/s200 WHYEE/a5000+ HIRMO/a4000/h261"
+		  }
+		  },
+        "cruise_altitude": 31000,
+        "star": "EMZOH4",
         "initial_controller": "SJC_M_APP",
         "initial_altitude": 31000,
         "initial_speed": 300,
@@ -5965,19 +6018,74 @@
       }
     ]
   },
-  "OAKES2": {
+  "OAKES3.OAKW": {
     "arrivals": [
       {
-        "waypoints": "OAKES/a24000-32000/s280/ho GRUDG/a20000-23000/s280 BANND/a19000-/s270 SULRR/a13000- TOOOL/a11000-17000/s280",
+        "waypoints": "OAKES/a24000-32000/s280/ho GRUDG/a20000-23000/s260 BANND/a17000-19000",
 		"runway_waypoints": {
           "KOAK": {
-            "28L": "TOOOL/a11000-17000/s280 EVOLV/a7000-9000 BBUBB/a5000",
-            "28R": "TOOOL/a11000-17000/s280 EVOLV/a7000-9000 BBUBB/a5000",
-            "30": "TOOOL/a11000-17000/s280 FFIST/a7000-9000 PRFCT/a5000+ PARBB/a4500/h243"
+            "28L": "BANND/a17000-19000 TOOOL FFIST/a7000-9000/s200",
+            "28R": "BANND/a17000-19000 TOOOL FFIST/a7000-9000/s200",
+            "30": "BANND/a17000-19000 TOOOL FFIST/a7000-9000/s200"
 		  }
 		  },
         "cruise_altitude": 30000,
-        "route": "OAKES/a24000-32000/s280/ho GRUDG/a20000 BANND/a18000-/s270 SULRR/a13000- TOOOL/a11000-17000/s280",
+        "star": "OAKES3",
+        "initial_controller": "OAK_34_CTR",
+        "initial_altitude": 27000,
+        "initial_speed": 280,
+        "expect_approach": null,
+        "airlines": {
+          "KOAK": [
+            {
+              "icao": "SWA",
+              "airport": "KDEN"
+            },
+            {
+              "icao": "DAL",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "SKW",
+              "airport": "KSLC"
+            },
+            {
+              "icao": "FDX",
+              "airport": "KMEM"
+            },
+            {
+              "icao": "FDX",
+              "airport": "KIND"
+            },
+            {
+              "icao": "SWA",
+              "airport": "KLAS"
+            },
+			{
+              "icao": "SWA",
+              "airport": "KPHX"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "airport": "KABQ"
+            }
+          ]
+        }
+      }
+	]
+   },
+   "OAKES3.OAKE": {
+    "arrivals": [
+      {
+        "waypoints": "OAKES/a24000-32000/s280/ho GRUDG/a20000-23000/s260 BANND/a17000-19000",
+		"runway_waypoints": {
+          "KOAK": {
+			"12": "BANND/a17000-19000 SULRR/a12000-13000/s250 KEENR/a7000 LOHGN/a6000/s200 WHYEE/a5000+ HIRMO/a4000/h261"
+		  }
+		  },
+        "cruise_altitude": 30000,
+        "star": "OAKES3",
         "initial_controller": "OAK_34_CTR",
         "initial_altitude": 27000,
         "initial_speed": 280,
@@ -7018,98 +7126,6 @@
               "icao": "N",
               "fleet": "fastGA",
               "airport": "KABQ"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "SHARR1": {
-    "arrivals": [
-      {
-        "waypoints": "BIFFY/a20000/s280/ho WRAPS MAMIE SHARR LOCKE CATTY/a8000/h280",
-        "cruise_altitude": 20000,
-        "route": "BIFFY/s280/a20000/ho WRAPS MAMIE SHARR LOCKE CATTY/a8000/h280",
-        "initial_controller": "OAK_15_CTR",
-        "initial_altitude": 20000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KOAK": [
-            {
-              "icao": "NKS",
-              "airport": "KLAS"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KLAS"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KSLC"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KDAL"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KSLC"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KMDW"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA",
-              "airport": "KPWK"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "SKIZM2": {
-    "arrivals": [
-      {
-        "waypoints": "EMZOH/a28000+/s280 MYJAW/a22000+/s280 SKIZM/a15000-19000/ho EMAAA/a11000-14000 WNDML/a9000-10000/s240 FOOTO/a7000-8000 BRRZI/a7000 LOHGN/a6000/s230 WHYEE/a5000+ HIRMO/a4000/h261",
-        "cruise_altitude": 31000,
-        "route": "EMZOH/a28000+/s280 MYJAW/a22000+/s280 SKIZM/a15000-19000/ho EMAAA/a11000-14000 WNDML/a9000-10000/s240 FOOTO/a7000-8000 BRRZI/a7000 LOHGN/a6000/s230 WHYEE/a5000+ HIRMO/a4000/h261",
-        "initial_controller": "SJC_M_APP",
-        "initial_altitude": 28000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KOAK": [
-            {
-              "icao": "SWA",
-              "airport": "KLAX"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KSAN"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KLGB"
-            },
-            {
-              "icao": "NKS",
-              "airport": "KLAX"
-            },
-            {
-              "icao": "SKW",
-              "airport": "KLAX"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KSNA"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA",
-              "airport": "KCRQ"
             }
           ]
         }
@@ -9170,10 +9186,10 @@
         }
       ],
       "arrivals": {
-        "OAKES2": {
+        "OAKES3.OAKW": {
           "KOAK": 5
         },
-        "EMZOH3": {
+        "EMZOH4.OAKW": {
           "KOAK": 5
         },
         "PXN6": {
@@ -9198,7 +9214,7 @@
             "OAK_Y_APP": {
               "primary": true,
               "departures": ["KSCK","KLVK","KMOD","KMER"],
-              "arrivals": ["OAKES2","EMZOH3","PXN6","PIRAT3","WNDSR2","SAT.EAST"]
+              "arrivals": ["OAKES3.OAKW","EMZOH4.OAKW","PXN6","PIRAT3","WNDSR2","SAT.EAST"]
             },
             "SFO_U_DEP": { "departures": ["KOAK" ], "backup": "OAK_Y_APP" },
             "OAK_S_APP": {
@@ -9312,7 +9328,7 @@
         "AANET1": {
           "KOAK": 3
         },
-        "BANND2": {
+        "OAKES3.OAKE": {
           "KOAK": 5
         },
         "PXN6": {
@@ -9321,11 +9337,8 @@
         "PIRAT3": {
           "KOAK": 5
         },
-        "SKIZM2": {
+        "EMZOH4.OAKE": {
           "KOAK": 5
-        },
-		"SHARR1": {
-          "KOAK": 0
         },
         "SAT.EAST": {
           "KSCK": 1,
@@ -9340,7 +9353,7 @@
             "OAK_Y_APP": {
               "primary": true,
               "departures": ["KSCK","KLVK","KMOD","KMER"],
-              "arrivals": ["AANET1","BANND2","PXN6","PIRAT3","SHARR1","SKIZM2","SAT.EAST"]
+              "arrivals": ["AANET1","OAKES3.OAKE","PXN6","PIRAT3","EMZOH4.OAKE","SAT.EAST"]
             },
             "SFO_U_DEP": { "departures": ["KOAK"], "backup": "OAK_Y_APP" },
             "OAK_S_APP": {
