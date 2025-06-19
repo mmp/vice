@@ -225,7 +225,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			handleClick(&ps.Brightness.ONFREQ, 0, 100, 2)
 		}
 		text = util.Select(ps.Brightness.Line4 > 0, fmt.Sprintf("SATCOM\n%d", ps.Brightness.Line4-20), "SATCOM\n=")
-		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("LINE 4\n%d", ps.Brightness.Line4), 0, scale, false, false) {
+		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
 			handleClick(&ps.Brightness.Line4, 0, 20, 1)
 		}
 		text = util.Select(ps.Brightness.Dwell > 0, fmt.Sprintf("DWELL\n+%d", ps.Brightness.Dwell), "DWELL\n=")
