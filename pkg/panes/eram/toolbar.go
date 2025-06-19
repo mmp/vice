@@ -460,9 +460,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 		} else {
 			buttonColor = toolbarButtonColor
 		}
-	} else if hasFlag(flags, buttonTearoff) {
-		buttonColor = toolbarTearoffButtonColor
-	}
+	
 	if ep.activeToolbarMenu != toolbarMain {
 		buttonColor = ep.customButtonColor(text)
 	}
@@ -474,6 +472,9 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	}
 	if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
 		toolbarDrawState.buttonPositions[cleanButtonName(text)] = p0 // Store the position of the button
+	}
+	} else if hasFlag(flags, buttonTearoff) {
+		buttonColor = toolbarTearoffButtonColor
 	}
 	ps := ep.currentPrefs()
 
