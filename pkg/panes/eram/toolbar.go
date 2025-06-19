@@ -82,6 +82,8 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 	scale := ep.toolbarButtonScale(ctx)
 
 	ep.startDrawtoolbar(ctx, scale, transforms, cb)
+	toolbarDrawState.lightToolbar = [4][2]float32{}
+
 	defer func() {
 		ep.endDrawtoolbar()
 
