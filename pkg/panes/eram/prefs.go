@@ -23,8 +23,8 @@ type Preferences struct {
 
 	DisplayToolbar bool
 
-	commandBigPosition	[2]float32 
-	commandSmallPosition	[2]float32
+	commandBigPosition   [2]float32
+	commandSmallPosition [2]float32
 }
 
 const numSavedPreferenceSets = 10

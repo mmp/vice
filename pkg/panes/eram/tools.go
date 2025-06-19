@@ -165,7 +165,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
-	
+
 	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
