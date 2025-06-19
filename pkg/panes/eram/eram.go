@@ -31,8 +31,8 @@ type ERAMPane struct {
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
 
-	activeToolbarMenu   int
-	toolbarVisible      bool
+	activeToolbarMenu int
+	toolbarVisible    bool
 }
 
 func NewERAMPane() *ERAMPane {
@@ -74,9 +74,9 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Tracks: get visible tracks (500nm?) and update them.
 
 	ps := ep.currentPrefs()
-	
+
 	// draw the ERAMPane
-	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0,0,.506})) // Scale this eventually
+	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0, 0, .506})) // Scale this eventually
 	// process keyboard input (ie. commands)
 	// ctr := UserCenter
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
@@ -88,11 +88,9 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw weather
 	// Draw video maps
 	// Draw routes
-	if ps.DisplayToolbar {
-		// draw dcb
-		ep.drawtoolbar(ctx, transforms, cb)
-		cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	}
+	// draw dcb
+	ep.drawtoolbar(ctx, transforms, cb)
+	cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	// Draw history
 	// Get datablocks
 	// Draw leader lines

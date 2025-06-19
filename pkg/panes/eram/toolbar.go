@@ -88,9 +88,6 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 	scale := ep.toolbarButtonScale(ctx)
 
 	ep.startDrawtoolbar(ctx, scale, transforms, cb)
-	if ep.activeToolbarMenu == toolbarMain {
-		toolbarDrawState.lightToolbar = [4][2]float32{}
-	}
 
 	defer func() {
 		ep.endDrawtoolbar()
@@ -106,6 +103,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 
 	switch ep.activeToolbarMenu {
 	case toolbarMain:
+		toolbarDrawState.lightToolbar = [4][2]float32{}
 
 		ep.drawToolbarFullButton(ctx, "DRAW", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "ATC\nTOOLS", 0, scale, false, false)
@@ -613,16 +611,13 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
-
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
+	if ps.DisplayToolbar {
 	trid.AddQuad(toolbarDrawState.drawStartPos, [2]float32{drawEndPos[0], toolbarDrawState.drawStartPos[1]},
 		drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(eramGray))
-	if !ps.DisplayToolbar {
-		return
-	}
 	trid.GenerateCommands(cb)
-
+	}
 	if ctx.Mouse != nil && (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
