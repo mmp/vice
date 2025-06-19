@@ -59,10 +59,6 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 		p.Aircraft = make(map[string]*AircraftState)
 	}
 
-	p.smallOutput = "hellooooooooooooooooooooooooooooooooooooooooooooooooooooo"
-	p.bigOutput = "hi"
-	p.Input = "input"
-
 	// TODO: initialize fonts and audio
 
 	// Activate weather radar, events
