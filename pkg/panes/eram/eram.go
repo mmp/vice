@@ -3,6 +3,7 @@ package eram
 import (
 	"encoding/json"
 	"strings"
+	"time"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	av "github.com/mmp/vice/pkg/aviation"
@@ -40,6 +41,8 @@ type ERAMPane struct {
 
 	activeToolbarMenu int
 	toolbarVisible    bool
+
+	lastTrackUpdate time.Time
 }
 
 func NewERAMPane() *ERAMPane {

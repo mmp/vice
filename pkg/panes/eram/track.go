@@ -16,7 +16,6 @@ type TrackState struct {
 	track             av.RadarTrack
 	previousTrack     av.RadarTrack
 	previousTrackTime time.Time
-	lastTrackUpdate   time.Time
 	trackTime         time.Time
 	CID               int
 
@@ -86,13 +85,13 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
 	now := ctx.Client.CurrentTime()
-
-	for _, trk := range tracks {
-		state := ep.TrackState[trk.ADSBCallsign]
-		if now.Sub(state.lastTrackUpdate) < 12*time.Second {
+	if now.Sub(ep.lastTrackUpdate) < 12*time.Second {
 			return
 		}
-		state.lastTrackUpdate = now
+		ep.lastTrackUpdate = now
+	for _, trk := range tracks {
+		state := ep.TrackState[trk.ADSBCallsign]
+		
 
 		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
 			// Get the first track for tentative tracks but then don't
@@ -145,7 +144,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 			if trk.TransponderAltitude > 23000 {
 				positionSymbol = "\\"
 			} else {
-				positionSymbol = string(0x00b7) // Reduced sep area
+				positionSymbol = "\u00b7" // Find a bigger symbol   
 			}
 		}
 		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)

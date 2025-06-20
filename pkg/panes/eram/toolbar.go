@@ -130,7 +130,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) { // Change to ERAM adapted name MANDATORY (This will probably be the hardest)
 			ep.activeToolbarMenu = toolbarVideomap
 		}
-		ep.drawToolbarFullButton(ctx, "ALT LIM\nXXXXX", 0, scale, false, false)
+		ep.drawToolbarFullButton(ctx, fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1]), 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {

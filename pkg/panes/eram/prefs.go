@@ -23,8 +23,7 @@ type Preferences struct {
 
 	DisplayToolbar bool
 
-	commandBigPosition   [2]float32
-	commandSmallPosition [2]float32
+	altitudeFilter [2]int
 }
 
 const numSavedPreferenceSets = 10
@@ -37,8 +36,8 @@ type PrefrenceSet struct {
 
 type CommonPreferences struct {
 	ClockPosition  []int
-	InputPosition  []int
-	OutputPosition []int
+	commandBigPosition   [2]float32
+	commandSmallPosition [2]float32
 	CharSize       struct {
 		Line4   int // Find out what this is
 		RDB     int
@@ -122,6 +121,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.commandBigPosition = [2]float32{2, 80}
 	prefs.commandSmallPosition = [2]float32{392, 80}
+	prefs.altitudeFilter = [2]int{0, 999}
 
 	return &prefs
 }
