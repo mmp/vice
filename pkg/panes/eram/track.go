@@ -1,6 +1,7 @@
 package eram
 
 import (
+	"fmt"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -75,7 +76,12 @@ func (ep *ERAMPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*Track
 }
 
 func (ep *ERAMPane) processEvents(ctx *panes.Context) {
-	// ...
+	for _, trk := range ctx.Client.State.Tracks {
+		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
+			sa := &TrackState{}
+			ep.TrackState[trk.ADSBCallsign] = sa
+		}
+	}
 }
 
 func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
@@ -126,11 +132,11 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 				positionSymbol = util.Select(trk.IsAssociated(), "X", "+") // Find the actual character for the + (or the font makes it look better idk)
 			case av.TransponderModeAltitude:
 				switch {
-				case trk.Squawk == av.Squawk(1200): // Below CA floor
+				case trk.Squawk == 0o1200: // Below CA floor
 					positionSymbol = "V"
 				case trk.Ident:
 					positionSymbol = string(0x2630) // Hopefully the correct font will make this a normal character
-				case trk.Squawk != av.Squawk(1200): // Below CA floor
+				case trk.Squawk != 0o1200: // Below CA floor
 					positionSymbol = "/" // Hopefully the correct font will make this
 					// case trk.Squawk : // Above CA floor
 					// 	positionSymbol = "I"
@@ -163,7 +169,12 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out 
-
+	if ctx.Mouse != nil {
+		mPos := ctx.Mouse.Pos
+		llpos := transforms.LatLongFromWindowP(mPos)
+		fmt.Println(track.ADSBCallsign, track.TransponderAltitude, position, pos, llpos)
+	}
+	
 	// Draw the position symbol 
 	color := ep.trackColor(state, track)
 	font := renderer.GetDefaultFont() // Change this to the actual font 

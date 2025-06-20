@@ -76,11 +76,14 @@ func init() {
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
-	// Process events
+	ep.processEvents(ctx)
 
 	// Tracks: get visible tracks (500nm?) and update them.
 
 	ps := ep.currentPrefs()
+
+	tracks := ep.visibleTracks(ctx)
+	ep.updateRadarTracks(ctx, tracks)
 
 	// draw the ERAMPane
 	cb.ClearRGB(ps.Brightness.Background.ScaleRGB(renderer.RGB{0, 0, .506})) // Scale this eventually
@@ -89,6 +92,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 	scopeExtend := ctx.PaneExtent
+	
 
 	// Following are the draw functions. They are listed in the best of my ability
 
@@ -102,7 +106,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Get datablocks
 	// Draw leader lines
 	// Draw stingers (PTL lines)
-	// Draw tracks
+	ep.drawTracks(ctx, tracks, transforms, cb)
 	// Draw datablocks
 	// Draw QU /M lines (not sure where this goes)
 	// Draw clock

@@ -128,10 +128,13 @@ func makeDefaultPreferences() *Preferences {
 
 func (ep *ERAMPane) initPrefsForLoadedSim() *Preferences {
 	// TODO: Add saving prefs with different ARTCCS/ sectors
-	return makeDefaultPreferences()
+
+	p := makeDefaultPreferences()
+	p.Center = math.Point2LL{-74.4818648,40.726219} // center for now
+	p.CurrentCenter = p.Center
+	return p
 }
 
 func (ep *ERAMPane) currentPrefs() *Preferences {
-
 	return &ep.prefSet.Current
 }
