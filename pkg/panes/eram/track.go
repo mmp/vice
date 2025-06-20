@@ -1,7 +1,6 @@
 package eram
 
 import (
-	"fmt"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -169,12 +168,6 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out 
-	if ctx.Mouse != nil {
-		mPos := ctx.Mouse.Pos
-		llpos := transforms.LatLongFromWindowP(mPos)
-		fmt.Println(track.ADSBCallsign, track.TransponderAltitude, position, pos, llpos)
-	}
-	
 	// Draw the position symbol 
 	color := ep.trackColor(state, track)
 	font := renderer.GetDefaultFont() // Change this to the actual font 
