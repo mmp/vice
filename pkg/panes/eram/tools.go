@@ -1,3 +1,7 @@
+/*TODO:
+1. Lock mouse while repositioning command boxes 
+2. Fix mouse to put top box not the bottom box
+*/
 package eram
 
 import (
@@ -153,6 +157,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
 			// get the mouse position and set the commandBigPosition to that
 			ps.commandBigPosition = mouse.Pos
+			ps.commandBigPosition[1] -= 38
 			ep.repositionLargeInput = false
 		}
 	}
