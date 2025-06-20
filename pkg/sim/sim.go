@@ -43,6 +43,7 @@ type Sim struct {
 	ERAMComputer  *ERAMComputer
 
 	LocalCodePool *av.LocalSquawkCodePool
+	CIDAllocator  *CIDAllocator
 
 	GenerationIndex int // for sequencing StateUpdates
 
@@ -199,6 +200,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SignOnPositions: config.SignOnPositions,
 
 		STARSComputer: makeSTARSComputer(config.TRACON),
+
+		CIDAllocator: NewCIDAllocator(),
 
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
@@ -1543,6 +1546,9 @@ func (ac *Aircraft) IsAssociated() bool {
 
 func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
+	if ac.CID != "" {
+		fp.CID = ac.CID
+	}
 	ac.STARSFlightPlan = fp
 	ac.PreArrivalDropController = ""
 }

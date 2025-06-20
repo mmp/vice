@@ -26,6 +26,9 @@ type Aircraft struct {
 	// callsigns; however, the ADS-B callsign is transmitted from the
 	// aircraft and would be the same to all facilities.
 	ADSBCallsign av.ADSBCallsign
+	// CID is a three character code assigned to the aircraft when it
+	// spawns in the simulation.
+	CID string
 
 	Squawk av.Squawk
 	Mode   av.TransponderMode

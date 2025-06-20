@@ -402,6 +402,7 @@ type AirspaceAwareness struct {
 
 type STARSFlightPlan struct {
 	ACID                  ACID
+	CID                   string
 	EntryFix              string
 	ExitFix               string
 	ExitFixIsIntermediate bool
@@ -423,11 +424,11 @@ type STARSFlightPlan struct {
 	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
-	InterimAlt int 
-	InterimType int 
-	AltitudeBlock [2]int
+	InterimAlt            int
+	InterimType           int
+	AltitudeBlock         [2]int
 	ControllerReportedAlt int
-	VFROTP bool 
+	VFROTP                bool
 
 	RequestedAltitude     int
 	PilotReportedAltitude int
