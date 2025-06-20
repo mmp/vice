@@ -503,13 +503,11 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	td.GenerateCommands(toolbarDrawState.cb)
 	if mouse != nil && mouseInside && mouseDownInside {
 		now := time.Now()
-		// initial press
 		if toolbarDrawState.mouseYetReleased {
 			toolbarDrawState.mouseYetReleased = false
 			toolbarDrawState.lastHold = now.Add(500 * time.Millisecond)
 			return true
 		}
-		// repeat at configured interval
 		if now.Sub(toolbarDrawState.lastHold) >= holdDuration {
 			toolbarDrawState.lastHold = now
 			return true

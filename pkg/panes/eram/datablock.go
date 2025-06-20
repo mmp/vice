@@ -282,6 +282,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 	switch dbType {
 	case FullDatablock:
 		return ep.fdbArena.AllocClear()
+		
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
 	case LimitedDatablock:

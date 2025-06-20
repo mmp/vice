@@ -48,6 +48,10 @@ type ERAMPane struct {
 
 	fdbArena util.ObjectArena[fullDatablock]
 	ldbArena util.ObjectArena[limitedDatablock]
+
+	repositionLargeInput bool
+	repositionSmallOutput bool
+	timeSinceRepo time.Time
 }
 
 func NewERAMPane() *ERAMPane {

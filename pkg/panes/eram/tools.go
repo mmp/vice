@@ -1,6 +1,8 @@
 package eram
 
 import (
+	"time"
+
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
@@ -54,11 +56,14 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
 	defer renderer.ReturnTextDrawBuilder(td)
 
+	// For extent2D, save the top left of the input and bottem right of the output
+
 	ps := ep.currentPrefs()
 	sz := [2]float32{390, 77}
 	p0 := ps.commandBigPosition // top-left of the output box
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
+	e2 := p2
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
 	color := renderer.RGB{0, 0, 0}
 	trid.AddQuad(p0, p1, p2, p3, color)
@@ -99,6 +104,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	sz[1] = inputSize
 	p1 = math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
+	e0 := p0
 	p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
 	color = renderer.RGB{0, 0, 0}
 	trid.AddQuad(p0, p1, p2, p3, color)
@@ -121,10 +127,38 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
+	extent := math.Extent2DFromPoints([][2]float32{e0, e2})
+	mouse := ctx.Mouse
+	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
+	if mouse != nil {
+		if (mouseInside && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary])) != ep.repositionLargeInput {
+			if !ep.repositionLargeInput {
+				ep.timeSinceRepo = time.Now() // only do it on first click
+			}
+			ep.repositionLargeInput = true
+			// Draw the outline of the box starting from the cursor as the top left corner.
+			sz = [2]float32{390, 115} // Size of the entire command input box
+			p0 = mouse.Pos
+			p1 = math.Add2f(p0, [2]float32{sz[0], 0})
+			p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
+			p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
+			color = renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
+			ld.AddLine(p0, p1, color)
+			ld.AddLine(p1, p2, color)
+			ld.AddLine(p2, p3, color)
+			ld.AddLine(p3, p0, color)
+
+		}
+		if (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && ep.repositionLargeInput &&
+			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
+			// get the mouse position and set the commandBigPosition to that
+			ps.commandBigPosition = mouse.Pos
+			ep.repositionLargeInput = false
+		}
+	}
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
 	td.GenerateCommands(commandDrawState.cb)
-
 }
 
 func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
@@ -176,6 +210,37 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+
+
+	extent := math.Extent2DFromPoints([][2]float32{p0, p2})
+	mouse := ctx.Mouse
+	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
+	if mouse != nil {
+		if (mouseInside && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary])) != ep.repositionSmallOutput {
+			if !ep.repositionSmallOutput {
+				ep.timeSinceRepo = time.Now() // only do it on first click
+			}
+			ep.repositionSmallOutput = true
+			// Draw the outline of the box starting from the cursor as the top left corner.
+			sz = [2]float32{325, 77} // Size of the entire command input box
+			p0 = mouse.Pos
+			p1 = math.Add2f(p0, [2]float32{sz[0], 0})
+			p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
+			p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
+			color = renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
+			ld.AddLine(p0, p1, color)
+			ld.AddLine(p1, p2, color)
+			ld.AddLine(p2, p3, color)
+			ld.AddLine(p3, p0, color)
+
+		}
+		if (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && ep.repositionSmallOutput &&
+			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
+			// get the mouse position and set the commandBigPosition to that
+			ps.commandSmallPosition = mouse.Pos
+			ep.repositionSmallOutput = false
+		}
+	}
 
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
