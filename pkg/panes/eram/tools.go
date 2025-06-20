@@ -1,7 +1,6 @@
 /*
 TODO:
-1. Lock mouse while repositioning command boxes
-2. Fix mouse to put top box not the bottom box
+1. Fix mouse to put top box not the bottom box
 */
 package eram
 
