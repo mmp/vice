@@ -137,7 +137,18 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 
 	ps := ep.currentPrefs()
 	sz := [2]float32{325, 77}
-	// p0 := [2]float32{ctx.PaneExtent.Width()/2,ctx.PaneExtent.Height()/2} // commandDrawState.commandSmallPosition
+	style := renderer.TextStyle{
+		Font:  renderer.GetDefaultFont(),
+		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
+	}
+	inputSize := float32(77)
+	bx, _ := style.Font.BoundText("X", 0)
+	cols := int(sz[0] / float32(bx))
+	inText, _ := util.WrapTextNoSpace(ep.smallOutput, cols, 0, true)
+	_, h := style.Font.BoundText(inText, style.LineSpacing)
+	if float32(h)+4 > inputSize {
+		inputSize = float32(h) + 4
+	}
 	p0 := ps.commandSmallPosition
 	p1 := math.Add2f(p0, [2]float32{sz[0], 0})
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
@@ -152,12 +163,8 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	ld.AddLine(p2, p3, color)
 	ld.AddLine(p3, p0, color)
 	// Draw wrapped text output in the box
-	style := renderer.TextStyle{
-		Font:  renderer.GetDefaultFont(),
-		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
-	}
-	bx, _ := style.Font.BoundText("X", 0)
-	cols := int(sz[0] / float32(bx))
+
+	cols = int(sz[0] / float32(bx))
 	out, _ := util.WrapTextNoSpace(ep.smallOutput, cols, 0, true)
 	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
