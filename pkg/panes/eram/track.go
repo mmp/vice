@@ -160,13 +160,14 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Context,
 	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
-	ps := ep.currentPrefs()
-
 	pos := state.track.Location
-	
-	// color, brightnesss := ep.trackColor(state, track)
+	pw := transforms.WindowFromLatLongP(pos)
+	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out 
 
-
+	// Draw the position symbol 
+	color := ep.trackColor(state, track)
+	font := renderer.GetDefaultFont() // Change this to the actual font 
+	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
 }
 
 func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
@@ -175,4 +176,14 @@ func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB 
 	// Scale this color based on the type of tag it is.
 	// DB and Track brights/ color are the same, so call the DB color function TODO
 	return color
+}
+
+func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When radar holes are added 
+	// Get the visible tracks based on the current range and center.
+	var tracks []sim.Track
+	for _, trk := range ctx.Client.State.Tracks {
+		// Radar wholes neeeded for this. For now, return true
+		tracks = append(tracks, *trk)
+	}
+	return tracks 
 }
