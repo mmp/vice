@@ -1546,9 +1546,6 @@ func (ac *Aircraft) IsAssociated() bool {
 
 func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
-	if ac.CID != "" {
-		fp.CID = ac.CID
-	}
 	ac.STARSFlightPlan = fp
 	ac.PreArrivalDropController = ""
 }

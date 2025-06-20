@@ -336,17 +336,18 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 		return
 	}
 
-	if ac.CID == "" && s.CIDAllocator != nil {
-		if cid, err := s.CIDAllocator.Allocate(); err == nil {
-			ac.CID = cid
-			if ac.STARSFlightPlan != nil {
-				ac.STARSFlightPlan.CID = cid
-			} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil {
+	if s.CIDAllocator != nil {
+		fp := ac.STARSFlightPlan
+		if fp == nil {
+			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+		}
+		if fp != nil && fp.CID == "" {
+			if cid, err := s.CIDAllocator.Allocate(); err == nil {
 				fp.CID = cid
 				ac.STARSFlightPlan = fp
+			} else {
+				s.lg.Warn("no CID available", slog.String("callsign", string(ac.ADSBCallsign)))
 			}
-		} else {
-			s.lg.Warn("no CID available", slog.String("callsign", string(ac.ADSBCallsign)))
 		}
 	}
 

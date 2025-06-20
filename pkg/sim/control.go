@@ -183,11 +183,12 @@ func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft) {
-	if ac.CID != "" && s.CIDAllocator != nil {
-		s.CIDAllocator.Release(ac.CID)
-		if ac.STARSFlightPlan != nil {
-			ac.STARSFlightPlan.CID = ""
-		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil {
+	if s.CIDAllocator != nil {
+		if fp := ac.STARSFlightPlan; fp != nil && fp.CID != "" {
+			s.CIDAllocator.Release(fp.CID)
+			fp.CID = ""
+		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
+			s.CIDAllocator.Release(fp.CID)
 			fp.CID = ""
 		}
 	}
