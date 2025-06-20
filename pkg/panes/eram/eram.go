@@ -9,6 +9,7 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
+	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/radar"
@@ -28,7 +29,7 @@ var (
 type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet
 	prefSet            *PrefrenceSet
-	TrackState map[av.ADSBCallsign]*TrackState
+	TrackState         map[av.ADSBCallsign]*TrackState
 
 	allVideoMaps []sim.VideoMap
 
@@ -86,7 +87,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
 
 	// Tracks: get visible tracks (500nm?) and update them.
-
+	scopeExtent := ctx.PaneExtent
 	ps := ep.currentPrefs()
 
 	tracks := ep.visibleTracks(ctx)
@@ -99,7 +100,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
 	scopeExtend := ctx.PaneExtent
-	
 
 	// Following are the draw functions. They are listed in the best of my ability
 
@@ -107,7 +107,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw video maps
 	// Draw routes
 	// draw dcb
-	ep.drawtoolbar(ctx, transforms, cb)
+	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	// Draw history
 	// Get datablocks
@@ -124,6 +124,13 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw TOOLBAR button/ menu.
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 	ep.drawMasterMenu(ctx, cb)
+	if ctx.Mouse != nil {
+		mouseOverToolbar := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
+		if !mouseOverToolbar || !ep.toolbarVisible {
+			ep.consumeMouseEvents(ctx, transforms)
+		}
+	}
+
 	// handleCapture
 	// updateAudio
 }

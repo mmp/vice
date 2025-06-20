@@ -9,7 +9,6 @@ import (
 	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
 )
 
 type TrackState struct {
@@ -25,6 +24,7 @@ type TrackState struct {
 	DatablockType DatablockType
 
 	JRingRadius float32
+	leaderLineDirection math.CardinalOrdinalDirection
 	// add more as we figure out what to do...
 
 }
@@ -86,12 +86,11 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
 	now := ctx.Client.CurrentTime()
 	if now.Sub(ep.lastTrackUpdate) < 12*time.Second {
-			return
-		}
-		ep.lastTrackUpdate = now
+		return
+	}
+	ep.lastTrackUpdate = now
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		
 
 		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
 			// Get the first track for tentative tracks but then don't
@@ -123,28 +122,32 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		var positionSymbol string
+		var positionSymbol string = "?"
 		if trk.IsUnassociated() {
 			switch trk.Mode {
 			case av.TransponderModeStandby:
-				positionSymbol = util.Select(trk.IsAssociated(), "X", "+") // Find the actual character for the + (or the font makes it look better idk)
+				positionSymbol = "+" // Find the actual character for this
 			case av.TransponderModeAltitude:
 				switch {
-				case trk.Squawk == 0o1200: // Below CA floor
-					positionSymbol = "V"
 				case trk.Ident:
 					positionSymbol = string(0x2630) // Hopefully the correct font will make this a normal character
-				case trk.Squawk != 0o1200: // Below CA floor
+				case trk.Squawk == 0o1200 && trk.TransponderAltitude < 100: // Below CA floor TODO: Find real CA floor
+					positionSymbol = "V"
+				case trk.Squawk != 0o1200 && trk.TransponderAltitude < 100: // Below CA floor
 					positionSymbol = "/" // Hopefully the correct font will make this
 					// case trk.Squawk : // Above CA floor
 					// 	positionSymbol = "I"
+				case trk.TransponderAltitude > 100:
+					positionSymbol = "I" 
 				}
 			}
 		} else {
-			if trk.TransponderAltitude > 23000 {
+			if trk.Mode == av.TransponderModeStandby {
+				positionSymbol = "X"
+			} else if trk.TransponderAltitude > 23000 {
 				positionSymbol = "\\"
 			} else {
-				positionSymbol = "\u00b7" // Find a bigger symbol   
+				positionSymbol = "\u00b7" // Find a bigger symbol
 			}
 		}
 		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)
@@ -166,10 +169,10 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
-	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out 
-	// Draw the position symbol 
+	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
+	// Draw the position symbol
 	color := ep.trackColor(state, track)
-	font := renderer.GetDefaultFont() // Change this to the actual font 
+	font := renderer.GetDefaultFont() // Change this to the actual font
 	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
 }
 
@@ -181,14 +184,14 @@ func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB 
 	return color
 }
 
-func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When radar holes are added 
+func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When radar holes are added
 	// Get the visible tracks based on the current range and center.
 	var tracks []sim.Track
 	for _, trk := range ctx.Client.State.Tracks {
 		// Radar wholes neeeded for this. For now, return true
 		tracks = append(tracks, *trk)
 	}
-	return tracks 
+	return tracks
 }
 
 // datablockBrightness returns the configured brightness for the given track's
@@ -204,7 +207,8 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 // leaderLineDirection returns the direction in which a datablock's leader line
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
-	return math.NorthEast
+	state := ep.TrackState[trk.ADSBCallsign]
+	return state.leaderLineDirection
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader

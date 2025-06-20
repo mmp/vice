@@ -108,7 +108,14 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		ep.drawToolbarFullButton(ctx, "DRAW", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "ATC\nTOOLS", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "AB\nSETTING", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, fmt.Sprintf("RANGE\n%v", ep.currentPrefs().Range), 0, scale, false, false)
+		var val = ep.currentPrefs().Range
+		var rangeStr string
+		if val >= 1 {
+			rangeStr = fmt.Sprintf("RANGE\n%d", int(val))
+		} else {
+			rangeStr = fmt.Sprintf("RANGE\n%.2f", val) // Show 2 decimals; change as you like
+		}
+		ep.drawToolbarFullButton(ctx, rangeStr, 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "CURSOR", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false) { // MANDATORY
 			ep.activeToolbarMenu = toolbarBright
