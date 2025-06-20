@@ -1129,6 +1129,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+
+		AssignedAltitude: int(arr.AssignedAltitude),
 	}
 
 	// VFRs don't go around since they aren't talking to us.
@@ -1291,6 +1293,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AssignedAltitude: ac.FlightPlan.Altitude,
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1379,6 +1382,8 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+
+		AssignedAltitude: int(of.AssignedAltitude),
 	}
 
 	// Like departures, these are already associated
@@ -1435,6 +1440,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		ac.Mode = av.TransponderModeStandby // flat out off
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
+	// This doesnt need an 11 altitude
 
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {

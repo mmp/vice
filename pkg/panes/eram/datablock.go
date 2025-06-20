@@ -264,14 +264,14 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 }
 
 func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
-
+	state := ep.TrackState[trk.ADSBCallsign]
 	switch dbType {
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
 		// DBLine 0 is point out
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color) // also * if satcom
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color)
-		dbWriteText(db.line3[:], fmt.Sprintf("%v %d", trk.FlightPlan.CID, int(trk.Groundspeed)), color)
+		dbWriteText(db.line3[:], fmt.Sprintf("%v %d", trk.FlightPlan.CID, int(state.track.Groundspeed)), color)
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
@@ -286,13 +286,16 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 }
 
 func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
-	currentAltitude := track.TransponderAltitude
+	state := ep.TrackState[track.ADSBCallsign]
+	currentAltitude := state.track.TransponderAltitude
 	assignedAltitude := track.FlightPlan.AssignedAltitude
+	// if assignedAltitude == 0 {
+	// 	fmt.Println(track.ADSBCallsign, "has no assigned altitude")
+	// }
 	interimAltitude := track.FlightPlan.InterimAlt
 	formatCurrent := radar.FormatAltitude(currentAltitude)
 	formatAssigned := radar.FormatAltitude(assignedAltitude)
 	// formatInterim := radar.FormatAltitude(interimAltitude) might need this in the future...
-	state := ep.TrackState[track.ADSBCallsign]
 	if interimAltitude < 0 { // Interim alt takes precedence (i think) TODO: check this
 		intType := getInterimAltitudeType(track)
 		return fmt.Sprintf("%03d%s%03d", interimAltitude, intType, currentAltitude)
@@ -300,10 +303,11 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 		switch {
 		case formatCurrent == formatAssigned:
 			return fmt.Sprintf("%vC", radar.FormatAltitude(currentAltitude))
-		case currentAltitude > float32(assignedAltitude): // TODO: Find actual font so that the up arrows draw 
+		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw 
 			return util.Select(state.Descending(), fmt.Sprintf("%v\u2193%v", formatAssigned, formatCurrent), fmt.Sprintf("%v+%v", formatAssigned, formatCurrent))
 		case currentAltitude < float32(assignedAltitude):
 			return util.Select(state.Climbing(), fmt.Sprintf("%v\u2191%v", formatAssigned, formatCurrent), fmt.Sprintf("%v-%v", formatAssigned, formatCurrent))
+		
 		}
 	} 
 	return "" // This shouldn't happen?

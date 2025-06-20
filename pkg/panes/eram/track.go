@@ -26,6 +26,9 @@ type TrackState struct {
 
 	JRingRadius float32
 	leaderLineDirection math.CardinalOrdinalDirection
+
+	eLDB bool 
+	eFDB bool 
 	// add more as we figure out what to do...
 
 }
@@ -244,7 +247,24 @@ func (ep *ERAMPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 
 // datablockType chooses which datablock format to display. Design.
 func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockType {
-	// design
+	if trk.IsUnassociated() {
+		return LimitedDatablock
+	} else {
+		state := ep.TrackState[trk.ADSBCallsign]
+		fp := trk.FlightPlan
+		if fp.TrackingController == ctx.UserTCP {
+			return FullDatablock
+		}
+		if trk.HandingOffTo(ctx.UserTCP) {
+			return FullDatablock
+		}
+		if state.eFDB {
+			return FullDatablock
+		}
+		if state.eLDB {
+			return LimitedDatablock
+		}
+	}
 	return LimitedDatablock
 }
 
