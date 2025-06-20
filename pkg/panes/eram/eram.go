@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 var (
@@ -43,6 +44,9 @@ type ERAMPane struct {
 	toolbarVisible    bool
 
 	lastTrackUpdate time.Time
+
+	fdbArena util.ObjectArena[fullDatablock]
+	ldbArena util.ObjectArena[limitedDatablock]
 }
 
 func NewERAMPane() *ERAMPane {
@@ -110,7 +114,8 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw leader lines
 	// Draw stingers (PTL lines)
 	ep.drawTracks(ctx, tracks, transforms, cb)
-	// Draw datablocks
+	dbs := ep.getAllDatablocks(ctx, tracks)
+	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	// Draw QU /M lines (not sure where this goes)
 	// Draw clock
 	// Draw views
