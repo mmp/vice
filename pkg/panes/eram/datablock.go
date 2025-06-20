@@ -270,14 +270,15 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		db := ep.fdbArena.AllocClear()
 		// DBLine 0 is point out
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color) // also * if satcom
-
+		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color)
+		dbWriteText(db.line3[:], fmt.Sprintf("%v %d", trk.FlightPlan.CID, int(trk.Groundspeed)), color)
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
 	case LimitedDatablock:
 		db := ep.ldbArena.AllocClear()
 		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color)
-		dbWriteText(db.line1[:], ep.getAltitudeFormat(trk), color)
+		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), color)
 		return db
 	default:
 		return nil // should not happen

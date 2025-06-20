@@ -217,8 +217,8 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 // leaderLineDirection returns the direction in which a datablock's leader line
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
-	state := ep.TrackState[trk.ADSBCallsign]
-	return state.leaderLineDirection
+	// state := ep.TrackState[trk.ADSBCallsign]
+	return math.East // change to state 
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -227,6 +227,13 @@ func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
 	return math.Scale2f(v, 32)
+}
+
+// For LDBs
+func (ep *ERAMPane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
+	angle := dir.Heading()
+	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
+	return math.Scale2f(v, 1)
 }
 
 // datablockVisible reports whether a datablock should be drawn. Design.

@@ -7,33 +7,33 @@ var nonPreferredAlphas = []rune{'M', 'X', 'L', 'J', 'U', 'B', 'G', 'Q', 'S', 'H'
 
 // CIDAllocator manages allocation of unique three-character CIDs.
 type CIDAllocator struct {
-	available []string
-	allocated map[string]struct{}
+	Available []string
+	Allocated map[string]struct{}
 }
 
 func NewCIDAllocator() *CIDAllocator {
 	return &CIDAllocator{
-		available: generateCIDList(),
-		allocated: make(map[string]struct{}),
+		Available: generateCIDList(),
+		Allocated: make(map[string]struct{}),
 	}
 }
 
-// Allocate returns the next available CID.
+// Allocate returns the next Available CID.
 func (c *CIDAllocator) Allocate() (string, error) {
-	if len(c.available) == 0 {
-		return "", fmt.Errorf("no more CIDs available")
+	if len(c.Available) == 0 {
+		return "", fmt.Errorf("no more CIDs Available")
 	}
-	cid := c.available[0]
-	c.available = c.available[1:]
-	c.allocated[cid] = struct{}{}
+	cid := c.Available[0]
+	c.Available = c.Available[1:]
+	c.Allocated[cid] = struct{}{}
 	return cid, nil
 }
 
 // Release frees a CID so it can be reused.
 func (c *CIDAllocator) Release(cid string) {
-	if _, ok := c.allocated[cid]; ok {
-		delete(c.allocated, cid)
-		c.available = append([]string{cid}, c.available...)
+	if _, ok := c.Allocated[cid]; ok {
+		delete(c.Allocated, cid)
+		c.Available = append([]string{cid}, c.Available...)
 	}
 }
 
