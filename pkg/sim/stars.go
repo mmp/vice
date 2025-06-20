@@ -423,6 +423,12 @@ type STARSFlightPlan struct {
 	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
+	InterimAlt int 
+	InterimType int 
+	AltitudeBlock [2]int
+	ControllerReportedAlt int
+	VFROTP bool 
+
 	RequestedAltitude     int
 	PilotReportedAltitude int
 

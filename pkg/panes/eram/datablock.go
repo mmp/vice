@@ -10,6 +10,7 @@ import (
 	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 // DatablockType enumerates the supported ERAM datablock formats. Only the
@@ -166,16 +167,8 @@ func dbWriteText(dst []dbChar, s string, c renderer.RGB) {
 	}
 }
 
-// rewriteDelta is a stub used by dbDrawLine.  ERAM uses standard fonts so no
-// rewriting is required.
 func rewriteDelta(s string) string { return s }
 
-///////////////////////////////////////////////////////////////////////////
-// Concrete datablock types
-
-// limitedDatablock holds the characters for a limited data block.  The exact
-// field layout is intentionally omitted; callers populate the character arrays
-// as appropriate.
 type limitedDatablock struct {
 	line0 [8]dbChar
 	line1 [8]dbChar
@@ -195,8 +188,7 @@ func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
 }
 
-// fullDatablock is used for the five line ERAM FDB.  As with limitedDatablock
-// the exact field definitions are not specified here.
+
 type fullDatablock struct {
 	line0 [16]dbChar
 	line1 [16]dbChar
@@ -252,12 +244,6 @@ func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
 	db.draw(td, end, font, sb, brightness, dir, halfSeconds)
 }
 
-///////////////////////////////////////////////////////////////////////////
-// High-level datablock helpers
-
-// getAllDatablocks creates datablocks for the given tracks using the pane's
-// object arenas. The caller is responsible for ensuring ep.TrackState has been
-// initialized for each track.
 func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
 	ep.fdbArena.Reset()
 	ep.ldbArena.Reset()
@@ -269,10 +255,10 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 			continue
 		}
 
-		color := ep.currentPrefs().Brightness.FDB.ScaleRGB(renderer.RGB{.855, .855, 0}) // add ldb 
+		color := ep.currentPrefs().Brightness.FDB.ScaleRGB(renderer.RGB{.855, .855, 0}) // add ldb
 		dbType := ep.datablockType(ctx, trk)
-			db := ep.getDatablock(ctx, trk, dbType, color)
-			dbs[trk.ADSBCallsign] = db
+		db := ep.getDatablock(ctx, trk, dbType, color)
+		dbs[trk.ADSBCallsign] = db
 	}
 	return dbs
 }
@@ -281,24 +267,63 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 
 	switch dbType {
 	case FullDatablock:
-		return ep.fdbArena.AllocClear()
-		
+		db := ep.fdbArena.AllocClear()
+		// DBLine 0 is point out
+		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color) // also * if satcom
+
+		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
 	case LimitedDatablock:
-		db := ep.ldbArena.AllocClear()	
+		db := ep.ldbArena.AllocClear()
 		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color)
-		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), color)
+		dbWriteText(db.line1[:], ep.getAltitudeFormat(trk), color)
 		return db
 	default:
 		return nil // should not happen
 	}
 }
 
+func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
+	currentAltitude := track.TransponderAltitude
+	assignedAltitude := track.FlightPlan.AssignedAltitude
+	interimAltitude := track.FlightPlan.InterimAlt
+	formatCurrent := radar.FormatAltitude(currentAltitude)
+	formatAssigned := radar.FormatAltitude(assignedAltitude)
+	// formatInterim := radar.FormatAltitude(interimAltitude) might need this in the future...
+	state := ep.TrackState[track.ADSBCallsign]
+	if interimAltitude < 0 { // Interim alt takes precedence (i think) TODO: check this
+		intType := getInterimAltitudeType(track)
+		return fmt.Sprintf("%03d%s%03d", interimAltitude, intType, currentAltitude)
+	} else /* if assignedAltitude != -1 */ {  // Eventually for block altitudes...
+		switch {
+		case formatCurrent == formatAssigned:
+			return fmt.Sprintf("%vC", radar.FormatAltitude(currentAltitude))
+		case currentAltitude > float32(assignedAltitude): // TODO: Find actual font so that the up arrows draw 
+			return util.Select(state.Descending(), fmt.Sprintf("%v\u2193%v", formatAssigned, formatCurrent), fmt.Sprintf("%v+%v", formatAssigned, formatCurrent))
+		case currentAltitude < float32(assignedAltitude):
+			return util.Select(state.Climbing(), fmt.Sprintf("%v\u2191%v", formatAssigned, formatCurrent), fmt.Sprintf("%v-%v", formatAssigned, formatCurrent))
+		}
+	} 
+	return "" // This shouldn't happen?
+}
 
-// drawDatablocks draws the given map of datablocks. The map should have been
-// created by getAllDatablocks. Leader lines and datablock characters are drawn
-// using default fonts and colours.
+func getInterimAltitudeType(track sim.Track) string {
+	if track.FlightPlan.InterimAlt == -1 {
+		return ""
+	}
+	interimType := track.FlightPlan.InterimType
+	switch interimType {
+	case radar.Normal:
+		return "T"
+	case radar.Procedure:
+		return "P"
+	case radar.Local:
+		return "L"
+	}
+	return ""
+}
+
 func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
 	ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()

@@ -14,6 +14,7 @@ import (
 type TrackState struct {
 	track             av.RadarTrack
 	previousTrack     av.RadarTrack
+	previousAltitude float32 // for seeing if the track is climbing or descending. This may need to be moved someplace else later
 	previousTrackTime time.Time
 	trackTime         time.Time
 	CID               int
@@ -35,6 +36,14 @@ func (ts *TrackState) TrackDeltaAltitude() int {
 		return 0
 	}
 	return int(ts.track.TransponderAltitude - ts.previousTrack.TransponderAltitude)
+}
+
+func (ts *TrackState) Descending() bool {
+	return ts.track.TransponderAltitude < ts.previousTrack.TransponderAltitude
+}
+
+func (ts *TrackState) Climbing() bool {
+	return ts.track.TransponderAltitude > ts.previousTrack.TransponderAltitude
 }
 
 func (ts *TrackState) HaveHeading() bool {
@@ -99,6 +108,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		}
 
 		state.previousTrack = state.track
+		state.previousAltitude = state.track.TransponderAltitude
 		state.previousTrackTime = state.trackTime
 		state.track = trk.RadarTrack
 		state.trackTime = now
