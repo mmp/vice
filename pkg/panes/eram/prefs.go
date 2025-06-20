@@ -35,10 +35,10 @@ type PrefrenceSet struct {
 }
 
 type CommonPreferences struct {
-	ClockPosition  []int
+	ClockPosition        []int
 	commandBigPosition   [2]float32
 	commandSmallPosition [2]float32
-	CharSize       struct {
+	CharSize             struct {
 		Line4   int // Find out what this is
 		RDB     int
 		LDB     int
@@ -130,7 +130,7 @@ func (ep *ERAMPane) initPrefsForLoadedSim() *Preferences {
 	// TODO: Add saving prefs with different ARTCCS/ sectors
 
 	p := makeDefaultPreferences()
-	p.Center = math.Point2LL{-74.4818648,40.726219} // center for now
+	p.Center = math.Point2LL{-74.4818648, 40.726219} // center for now
 	p.CurrentCenter = p.Center
 	return p
 }

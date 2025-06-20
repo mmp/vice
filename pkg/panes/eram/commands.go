@@ -28,43 +28,43 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		}
 	}
 	ps := ep.currentPrefs()
-	// try get closest track 
-	
-	// pan 
+	// try get closest track
+
+	// pan
 
 	if mouse.Dragging[platform.MouseButtonSecondary] {
-			delta := mouse.DragDelta
-			if delta[0] != 0 || delta[1] != 0 {
-				deltaLL := transforms.LatLongFromWindowV(delta)
-				ps.CurrentCenter = math.Sub2f(ps.CurrentCenter, deltaLL)
-			}
+		delta := mouse.DragDelta
+		if delta[0] != 0 || delta[1] != 0 {
+			deltaLL := transforms.LatLongFromWindowV(delta)
+			ps.CurrentCenter = math.Sub2f(ps.CurrentCenter, deltaLL)
 		}
+	}
 
-	// zoom 
+	// zoom
 	if mouse.Wheel[1] != 0 {
-		
-			r := ps.Range
-			ps.Range += func() float32 {
-				if ctx.Keyboard != nil {
-					if ctx.Keyboard.KeyControl() {
-						return 3 * mouse.Wheel[1]
-					}
+
+		r := ps.Range
+		ps.Range += func() float32 {
+			if ctx.Keyboard != nil {
+				if ctx.Keyboard.KeyControl() {
+					return 3 * mouse.Wheel[1]
 				}
-				return mouse.Wheel[1]
-			}()
-			ps.Range = math.Clamp(ps.Range, .25, 1300) // 4-33
+			}
+			return mouse.Wheel[1]
+		}()
+		ps.Range = math.Clamp(ps.Range, .25, 1300) // 4-33
 
-			// We want to zoom in centered at the mouse position; this affects
-			// the scope center after the zoom, so we'll find the
-			// transformation that gives the new center position.
-			mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
-			scale := ps.Range / r
-			centerTransform := math.Identity3x3().
-				Translate(mouseLL[0], mouseLL[1]).
-				Scale(scale, scale).
-				Translate(-mouseLL[0], -mouseLL[1])
+		// We want to zoom in centered at the mouse position; this affects
+		// the scope center after the zoom, so we'll find the
+		// transformation that gives the new center position.
+		mouseLL := transforms.LatLongFromWindowP(mouse.Pos)
+		scale := ps.Range / r
+		centerTransform := math.Identity3x3().
+			Translate(mouseLL[0], mouseLL[1]).
+			Scale(scale, scale).
+			Translate(-mouseLL[0], -mouseLL[1])
 
-			ps.CurrentCenter = centerTransform.TransformPoint(ps.CurrentCenter)	
-			
-		}
+		ps.CurrentCenter = centerTransform.TransformPoint(ps.CurrentCenter)
+
+	}
 }

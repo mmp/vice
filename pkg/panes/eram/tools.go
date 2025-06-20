@@ -1,5 +1,6 @@
-/*TODO:
-1. Lock mouse while repositioning command boxes 
+/*
+TODO:
+1. Lock mouse while repositioning command boxes
 2. Fix mouse to put top box not the bottom box
 */
 package eram
@@ -139,6 +140,9 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 			if !ep.repositionLargeInput {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
+			extent := ctx.PaneExtent
+			extent.P1[1] -= 115 // Adjust the extent to the top box
+			ctx.Platform.StartCaptureMouse(extent)
 			ep.repositionLargeInput = true
 			// Draw the outline of the box starting from the cursor as the top left corner.
 			sz = [2]float32{390, 115} // Size of the entire command input box
@@ -159,6 +163,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 			ps.commandBigPosition = mouse.Pos
 			ps.commandBigPosition[1] -= 38
 			ep.repositionLargeInput = false
+			ctx.Platform.EndCaptureMouse()
 		}
 	}
 	trid.GenerateCommands(commandDrawState.cb)
@@ -216,7 +221,6 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
-
 	extent := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
@@ -225,6 +229,9 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 			if !ep.repositionSmallOutput {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
+			extent := ctx.PaneExtent
+			extent.P1[1] -= 77 // Adjust the extent to the top box
+			ctx.Platform.StartCaptureMouse(extent)
 			ep.repositionSmallOutput = true
 			// Draw the outline of the box starting from the cursor as the top left corner.
 			sz = [2]float32{325, 77} // Size of the entire command input box
@@ -244,6 +251,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 			// get the mouse position and set the commandBigPosition to that
 			ps.commandSmallPosition = mouse.Pos
 			ep.repositionSmallOutput = false
+			ctx.Platform.EndCaptureMouse()
 		}
 	}
 

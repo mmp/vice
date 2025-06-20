@@ -14,7 +14,7 @@ import (
 type TrackState struct {
 	track             av.RadarTrack
 	previousTrack     av.RadarTrack
-	previousAltitude float32 // for seeing if the track is climbing or descending. This may need to be moved someplace else later
+	previousAltitude  float32 // for seeing if the track is climbing or descending. This may need to be moved someplace else later
 	previousTrackTime time.Time
 	trackTime         time.Time
 	CID               int
@@ -24,11 +24,11 @@ type TrackState struct {
 
 	DatablockType DatablockType
 
-	JRingRadius float32
+	JRingRadius         float32
 	leaderLineDirection math.CardinalOrdinalDirection
 
-	eLDB bool 
-	eFDB bool 
+	eLDB bool
+	eFDB bool
 	// add more as we figure out what to do...
 
 }
@@ -151,7 +151,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 					// case trk.Squawk : // Above CA floor
 					// 	positionSymbol = "I"
 				case trk.TransponderAltitude > 100:
-					positionSymbol = "I" 
+					positionSymbol = "I"
 				}
 			}
 		} else {
@@ -221,7 +221,7 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	// state := ep.TrackState[trk.ADSBCallsign]
-	return math.East // change to state 
+	return math.East // change to state
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader

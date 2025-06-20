@@ -1290,9 +1290,9 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		SecondaryScratchpad: dep.SecondaryScratchpad,
 		RequestedAltitude:   ac.FlightPlan.Altitude,
 
-		AircraftCount: 1,
-		AircraftType:  ac.FlightPlan.AircraftType,
-		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount:    1,
+		AircraftType:     ac.FlightPlan.AircraftType,
+		CWTCategory:      av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 		AssignedAltitude: ac.FlightPlan.Altitude,
 	}
 
