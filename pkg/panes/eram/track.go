@@ -341,6 +341,10 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 	cb.LineWidth(10, ctx.DPIScale) // tweak this
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	for _, trk := range tracks {
+		dbType := ep.datablockType(ctx, trk)
+		if dbType != FullDatablock {
+			continue // Only draw PTLs for full datablocks
+		}
 		speed := trk.Groundspeed
 		state := ep.TrackState[trk.ADSBCallsign]
 		dist := speed / 60 * float32(ep.velocityTime)
