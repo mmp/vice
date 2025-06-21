@@ -163,13 +163,13 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 		} else {
 			if trk.Mode == av.TransponderModeStandby {
 				positionSymbol = "X"
-			} else if trk.TransponderAltitude > 23000 {
-				positionSymbol = "\\"
-			} else {
-				positionSymbol = "\u00b7" // Find a bigger symbol
-			}
+			} else if ep.datablockType(ctx, trk) == FullDatablock {
+				positionSymbol = "diamond"
+			} else if state.track.TransponderAltitude < 23000 {
+				positionSymbol = "\u00b7" // Find a bigger symbol 00b7
+			} 
 		}
-		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td)
+		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td, cb)
 	}
 	transforms.LoadWindowViewingMatrices(cb)
 	trackBuilder.GenerateCommands(cb)
@@ -185,14 +185,33 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 
 func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Context,
 	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
-	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder) {
+	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
+	cb *renderer.CommandBuffer) {
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 	// Draw the position symbol
 	color := ep.trackColor(state, track)
 	font := renderer.GetDefaultFont() // Change this to the actual font
-	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	if position == "diamond" {
+		// Draw the diamond 
+		cb.LineWidth(2, ctx.DPIScale)
+		pt := transforms.WindowFromLatLongP(pos)
+		p0 := math.Add2f(pt, [2]float32{0, 5})
+		p1 := math.Add2f(pt, [2]float32{5, 0})
+		p2 := math.Add2f(pt, [2]float32{0, -5})
+		p3 := math.Add2f(pt, [2]float32{-5, 0})
+		ld.AddLine(p0, p1, color)
+		ld.AddLine(p1, p2, color)
+		ld.AddLine(p2, p3, color)
+		ld.AddLine(p3, p0, color)
+		td.AddTextCentered("\\", pt, renderer.TextStyle{Font: font, Color: color})
+	} else {
+		td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	}
+	ld.GenerateCommands(cb) // why does this need to be here?
+	cb.LineWidth(1, ctx.DPIScale)
+	
 }
 
 func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {

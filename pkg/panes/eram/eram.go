@@ -182,3 +182,26 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 		}
 	}
 }
+
+// func (sp *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+// 	ps := sp.currentPrefs()
+
+// 	transforms.LoadLatLongViewingMatrices(cb)
+
+// 	cb.LineWidth(1, ctx.DPIScale)
+// 	var draw []sim.VideoMap
+// 	for _, vm := range sp.allVideoMaps {
+// 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
+// 			draw = append(draw, vm)
+// 		}
+// 	}
+// 	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
+
+// 	for _, vm := range draw {
+// 		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1) // switch to 0-based indexing
+// 		color := brite.ScaleRGB(mapColors[vm.Group][cidx])
+
+// 		cb.SetRGB(color)
+// 		cb.Call(vm.CommandBuffer)
+// 	}
+// }
