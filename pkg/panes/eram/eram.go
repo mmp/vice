@@ -114,11 +114,10 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	// Draw history
-	// Get datablocks
-	// Draw leader lines
+	dbs := ep.getAllDatablocks(ctx, tracks)
+	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
 	// Draw stingers (PTL lines)
 	ep.drawTracks(ctx, tracks, transforms, cb)
-	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	// Draw QU /M lines (not sure where this goes)
 	// Draw clock

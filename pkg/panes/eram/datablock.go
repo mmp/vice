@@ -136,7 +136,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 			br /= 3
 		}
 
-		c := br.ScaleRGB(ch.color)
+		c := ch.color
 		if !c.Equals(style.Color) {
 			flush()
 			style.Color = c
@@ -253,9 +253,11 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 		if state == nil {
 			continue
 		}
-
-		color := ep.currentPrefs().Brightness.FDB.ScaleRGB(renderer.RGB{.855, .855, 0}) // add ldb
+		
 		dbType := ep.datablockType(ctx, trk)
+		ps := ep.currentPrefs()
+		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
+		color := brite.ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
 		db := ep.getDatablock(ctx, trk, dbType, color)
 		dbs[trk.ADSBCallsign] = db
 	}
@@ -365,7 +367,10 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 
 			start := transforms.WindowFromLatLongP(state.track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
-			end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(dir), ctx.DrawPixelScale))
+			offset := util.Select(ep.datablockType(ctx, trk) == FullDatablock, 40, 0)
+			vector := ep.leaderLineVector(dir)
+			vector[1] += float32(offset) * ctx.DrawPixelScale
+			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
 		}

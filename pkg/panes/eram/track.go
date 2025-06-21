@@ -9,6 +9,7 @@ import (
 	"github.com/mmp/vice/pkg/radar"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/pkg/util"
 )
 
 type TrackState struct {
@@ -225,7 +226,7 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	// state := ep.TrackState[trk.ADSBCallsign]
-	return math.East // change to state
+	return math.NorthEast // change to state
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -273,9 +274,11 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 }
 
 // trackDatablockColorBrightness returns the track color and datablock brightness. Design.
-func (ep *ERAMPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.Track) (renderer.RGB, radar.ScopeBrightness, radar.ScopeBrightness) {
-	// design
-	return renderer.RGB{}, 0, 0
+func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) (renderer.RGB) {
+	dType := ep.datablockType(ctx, trk)
+	ps := ep.currentPrefs()
+	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
+	return brite.ScaleRGB(renderer.RGB{.855, .855, 0})
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
@@ -283,26 +286,26 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-
+		cb.LineWidth(10, ctx.DPIScale)
 	for _, trk := range tracks {
-		if dbs[trk.ADSBCallsign] == nil {
+		db := dbs[trk.ADSBCallsign]
+		if db == nil {
 			continue
 		}
-
-		_, brightness, _ := ep.trackDatablockColorBrightness(ctx, trk)
-		if brightness == 0 {
-			continue
-		}
-
+		dbType := ep.datablockType(ctx, trk)
+		color := ep.trackDatablockColor(ctx, trk)
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
 			continue
 		}
 		p0 := transforms.WindowFromLatLongP(state.track.Location)
 		dir := ep.leaderLineDirection(ctx, trk)
-		v := ep.leaderLineVector(dir)
+		if dbType == LimitedDatablock || dbType == EnhancedLimitedDatablock {
+			dir = math.East
+		}
+		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(dir), ep.leaderLineVectorNoLength(dir))
 		p1 := math.Add2f(p0, math.Scale2f(v, ctx.DrawPixelScale))
-		ld.AddLine(p0, p1, brightness.ScaleRGB(renderer.RGB{R: 1, G: 1, B: 1}))
+		ld.AddLine(p0, p1, color)
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
