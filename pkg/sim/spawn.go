@@ -1392,7 +1392,7 @@ func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel, r *ra
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(wind, nil /* lg */)
+		simAc.Update(wind, nil, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second
@@ -1546,7 +1546,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	// Check airspace violations
 	simac := deep.MustCopy(*ac)
 	for range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
-		if wp := simac.Update(s.State /* wind */, nil); wp != nil && wp.Delete {
+		if wp := simac.Update(s.State /* wind */, s.bravoAirspace, nil); wp != nil && wp.Delete {
 			return ac, rwy.Id, nil
 		}
 		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||

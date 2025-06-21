@@ -105,12 +105,12 @@ func (ac *Aircraft) TAS() float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Navigation and simulation
 
-func (ac *Aircraft) Update(wind av.WindModel, lg *log.Logger) *av.Waypoint {
+func (ac *Aircraft) Update(wind av.WindModel, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
 	if lg != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 
-	passedWaypoint := ac.Nav.Update(wind, &ac.FlightPlan, lg)
+	passedWaypoint := ac.Nav.Update(wind, &ac.FlightPlan, bravo, lg)
 	if passedWaypoint != nil {
 		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
 	}
