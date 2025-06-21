@@ -79,6 +79,25 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			Translate(-mouseLL[0], -mouseLL[1])
 
 		ps.CurrentCenter = centerTransform.TransformPoint(ps.CurrentCenter)
-
 	}
+}
+
+type CommandStatus struct {
+	clear  bool
+	output string
+	err    error
+}
+
+func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status CommandStatus) {
+	// TG will be the prefix for radio commands. TODO: Tab and semicolo (or comma) adds TG
+	// Shift + tab locks TG
+	if len(cmd) < 2 {
+		status.err = ErrCommandFormat
+		return
+	}
+	prefix := cmd[:2]
+	switch prefix {
+		// first, ERAM commands
+	}
+	return status 
 }
