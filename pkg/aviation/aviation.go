@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"maps"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -765,6 +766,25 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			}
 			e.Pop()
 		}
+	}
+	if ar.AssignedAltitude == 0 {
+		// check the route to see altitude restrictions
+		var lowestAlt int
+		wps := []Waypoint(ar.Waypoints)
+		lowest := gomath.MaxInt
+		for _, wp := range wps {
+			if wp.AltitudeRestriction != nil {
+				if wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude) > float32(lowest) {
+					lowestAlt = int(wp.AltitudeRestriction.TargetAltitude(ar.InitialAltitude))
+				}
+			}
+		}
+		if lowestAlt == gomath.MaxInt {
+			e.ErrorString("must specify \"assigned_altitude\" or have altitude restrictions in the route")
+		} else {
+			ar.AssignedAltitude = float32(lowestAlt)
+		}
+
 	}
 
 	for i := range ar.Waypoints {
