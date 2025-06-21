@@ -226,7 +226,7 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	// state := ep.TrackState[trk.ADSBCallsign]
-	return math.NorthEast // change to state
+	return math.North // change to state
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -305,7 +305,9 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 		}
 		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(dir), ep.leaderLineVectorNoLength(dir))
 		p1 := math.Add2f(p0, math.Scale2f(v, ctx.DrawPixelScale))
-		ld.AddLine(p0, p1, color)
+		if dbType == FullDatablock {
+			ld.AddLine(p0, p1, color)
+		}
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)

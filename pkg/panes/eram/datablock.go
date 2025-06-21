@@ -364,12 +364,17 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			if state == nil {
 				continue
 			}
-
+			dbType := ep.datablockType(ctx, trk)
 			start := transforms.WindowFromLatLongP(state.track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
-			offset := util.Select(ep.datablockType(ctx, trk) == FullDatablock, 40, 0)
+			offset := datablockOffset(dir)
 			vector := ep.leaderLineVector(dir)
-			vector[1] += float32(offset) * ctx.DrawPixelScale
+			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
+			vector[1] += float32(offset[1]) * ctx.DrawPixelScale
+			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
+				dir = math.East // TODO: change to state eventually
+				vector = ep.leaderLineVectorNoLength(dir)
+			}
 			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
@@ -382,4 +387,23 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+}
+
+func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
+	var offset [2]float32
+	switch dir {
+		case math.North:
+			offset[0] = -30
+			offset[1] = 60
+		case math.NorthEast:
+			offset[1] = 40
+		case math.NorthWest:
+			offset[1] = 60
+		case math.East:
+			offset[1] = 30
+		case math.West:
+			offset[0] = -35
+			offset[1] = 30
+	}
+	return offset
 }
