@@ -163,11 +163,11 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 		} else {
 			if trk.Mode == av.TransponderModeStandby {
 				positionSymbol = "X"
-			} else if ep.datablockType(ctx, trk) == FullDatablock {
-				positionSymbol = "diamond"
 			} else if state.track.TransponderAltitude < 23000 {
 				positionSymbol = "\u00b7" // Find a bigger symbol 00b7
-			} 
+			} else {
+				positionSymbol = "\\"
+			}
 		}
 		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td, cb)
 	}
@@ -193,9 +193,20 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	// Draw the position symbol
 	color := ep.trackColor(state, track)
 	font := renderer.GetDefaultFont() // Change this to the actual font
-	if position == "diamond" {
-		// Draw the diamond 
-		cb.LineWidth(2, ctx.DPIScale)
+	if ep.datablockType(ctx, track) == FullDatablock {
+		// draw a diamond 
+		drawDiamond(ctx, transforms, color, pos, ld, cb)
+	}
+	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	
+	ld.GenerateCommands(cb) // why does this need to be here?
+	cb.LineWidth(1, ctx.DPIScale)
+	
+}
+
+func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, color renderer.RGB,
+	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
+	cb.LineWidth(2, ctx.DPIScale)
 		pt := transforms.WindowFromLatLongP(pos)
 		p0 := math.Add2f(pt, [2]float32{0, 5})
 		p1 := math.Add2f(pt, [2]float32{5, 0})
@@ -205,13 +216,6 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 		ld.AddLine(p1, p2, color)
 		ld.AddLine(p2, p3, color)
 		ld.AddLine(p3, p0, color)
-		td.AddTextCentered("\\", pt, renderer.TextStyle{Font: font, Color: color})
-	} else {
-		td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
-	}
-	ld.GenerateCommands(cb) // why does this need to be here?
-	cb.LineWidth(1, ctx.DPIScale)
-	
 }
 
 func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
