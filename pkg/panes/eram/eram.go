@@ -167,6 +167,9 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			// Process the command
 			// ep.processCommandInput()
 			ep.Input = ""
+		case imgui.KeyEscape:
+			// Clear the input
+			ep.Input = ""
 		case imgui.KeyPageUp: // velocity vector *2
 			if ep.velocityTime == 0 {
 				ep.velocityTime = 1 
