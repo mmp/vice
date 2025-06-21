@@ -769,13 +769,16 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	if ar.AssignedAltitude == 0 {
 		// check the route to see altitude restrictions
 		wps := []Waypoint(ar.Waypoints)
+		altitudeRestriction := false 
 		for _, wp := range wps {
 			if wp.AltitudeRestriction != nil {
+				altitudeRestriction = true
 				break
 			}
+		}
+		if !altitudeRestriction {
 			// If there are no altitude restrictions or an assigned altitude,
 			e.ErrorString("must specify \"assigned_altitude\" or have altitude restrictions in the route")
-			break
 		}
 	}
 
