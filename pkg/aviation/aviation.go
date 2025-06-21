@@ -773,7 +773,7 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 			if wp.AltitudeRestriction != nil {
 				break
 			}
-			// If there are no altitude restrictions or an assigned altitude, 
+			// If there are no altitude restrictions or an assigned altitude,
 			e.ErrorString("must specify \"assigned_altitude\" or have altitude restrictions in the route")
 			break
 		}
