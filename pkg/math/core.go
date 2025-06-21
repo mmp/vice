@@ -112,22 +112,6 @@ func Lerp(x, a, b float32) float32 {
 	return (1-x)*a + x*b
 }
 
-// Min returns the smaller of two float32 values.
-func Min(a, b float32) float32 {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-// Max returns the larger of two float32 values.
-func Max(a, b float32) float32 {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 // GCD calculates the greatest common divisor of a and b
 func GCD(a, b int) int {
 	for b != 0 {

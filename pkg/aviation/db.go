@@ -1272,15 +1272,11 @@ func InBravoAirspace(p math.Point2LL, alt int) bool {
 	return inAirspace(DB.BravoAirspace, p, alt)
 }
 
-func UnderBravoShelf(p math.Point2LL, alt int) bool {
-	for _, vols := range DB.BravoAirspace {
-		for _, vol := range vols {
-			if alt < vol.Floor && vol.Inside(p, vol.Floor+1) {
-				return true
-			}
-		}
+func UnderBravoShelf(grid *AirspaceGrid, p math.Point2LL, alt int) bool {
+	if grid == nil {
+		return false
 	}
-	return false
+	return grid.Below(p, alt)
 }
 
 func InCharlieAirspace(p math.Point2LL, alt int) bool {
@@ -1326,5 +1322,21 @@ func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
 
 	return slices.ContainsFunc(g.entries[pq], func(av *AirspaceVolume) bool {
 		return av.Inside(p, alt)
+	})
+}
+
+func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
+	// Quantize coordinates as in Inside.
+	xq, yq := int(10*p[0]), int(10*p[1])
+	pq := [2]int{xq, yq}
+
+	if _, ok := g.entries[pq]; !ok {
+		g.entries[pq] = util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
+			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(p), p) < 10
+		})
+	}
+
+	return slices.ContainsFunc(g.entries[pq], func(av *AirspaceVolume) bool {
+		return av.Below(p, alt)
 	})
 }
