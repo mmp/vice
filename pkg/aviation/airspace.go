@@ -91,6 +91,32 @@ func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 	}
 }
 
+func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
+	if alt >= a.Floor {
+		return false
+	}
+
+	switch a.Type {
+	case AirspaceVolumePolygon:
+		if a.PolygonBounds != nil && !a.PolygonBounds.Inside(p) {
+			return false
+		}
+		if !math.PointInPolygon2LL(p, a.Vertices) {
+			return false
+		}
+		for _, hole := range a.Holes {
+			if math.PointInPolygon2LL(p, hole) {
+				return false
+			}
+		}
+		return true
+	case AirspaceVolumeCircle:
+		return math.NMDistance2LL(p, a.Center) < a.Radius
+	default:
+		panic("unhandled AirspaceVolume type")
+	}
+}
+
 func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerLongitude float32) {
 	ld := renderer.GetLinesDrawBuilder()
 
