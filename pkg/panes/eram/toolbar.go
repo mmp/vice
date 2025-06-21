@@ -143,6 +143,34 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {
 			// ep.deleteTearoff = true
 		}
+	case toolbarVideomap:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		drawButtonSamePosition(ctx, "VIDEOMAP")
+		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+		}
+		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
+		p0 := toolbarDrawState.buttonCursor
+		for _, vm := range ep.allVideoMaps {
+			label := fmt.Sprintf("%d\n%s", vm.Id, vm.Label)
+			_, vis := ps.VideoMapVisible[vm.Id]
+			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, false) {
+				if vis {
+					delete(ps.VideoMapVisible, vm.Id)
+				} else {
+					ps.VideoMapVisible[vm.Id] = nil
+				}
+			}
+		}
+		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	case toolbarBright:
 		ps := ep.currentPrefs()
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
