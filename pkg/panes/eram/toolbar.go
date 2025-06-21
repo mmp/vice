@@ -802,7 +802,7 @@ func (ep *ERAMPane) drawMasterMenu(ctx *panes.Context, cb *renderer.CommandBuffe
 }
 
 func (ep *ERAMPane) drawFullMasterButton(ctx *panes.Context, text string, pushedIn bool, scale float32, flag toolbarFlags, nextRow bool) bool {
-	ep.drawMasterButton(ctx, text, pushedIn, scale, []toolbarFlags{buttonTearoff, flag}, nextRow)
+	ep.drawMasterButton(ctx, "", pushedIn, scale, []toolbarFlags{buttonTearoff, flag}, nextRow)
 	return ep.drawMasterButton(ctx, text, pushedIn, scale, []toolbarFlags{buttonFull, flag}, false)
 }
 
