@@ -98,10 +98,14 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	glyph := font.LookupGlyph(' ')
 	fontWidth := glyph.AdvanceX
 
-	for _, line := range lines {
+	for i, line := range lines {
 		xOffset := float32(4)
 		if rightJustify {
 			xOffset = -4 - float32(line.Len())*fontWidth
+		}
+		// no other DB has more than 2 lines, so we can be sure that this will only apply to FDBs
+		if i == 3 {
+			xOffset = -10
 		}
 		sb.Reset()
 		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, sb,
@@ -192,8 +196,11 @@ type fullDatablock struct {
 	line0 [16]dbChar
 	line1 [16]dbChar
 	line2 [16]dbChar
-	line3 [16]dbChar
-	line4 [16]dbChar
+	// line3
+	col1   [2]dbChar
+	fieldD [8]dbChar
+	fieldE [8]dbChar
+	line4  [16]dbChar
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
@@ -204,7 +211,7 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
 		dbMakeLine(dbChopTrailing(db.line2[:])),
-		dbMakeLine(dbChopTrailing(db.line3[:])),
+		dbMakeLine(db.col1[:],dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
 		dbMakeLine(dbChopTrailing(db.line4[:])),
 	}
 	pt[1] += float32(font.Size)
@@ -253,7 +260,7 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 		if state == nil {
 			continue
 		}
-		
+
 		dbType := ep.datablockType(ctx, trk)
 		ps := ep.currentPrefs()
 		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
@@ -272,7 +279,11 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		// DBLine 0 is point out
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color) // also * if satcom
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color)
-		dbWriteText(db.line3[:], fmt.Sprintf("%v %d", trk.FlightPlan.CID, int(state.track.Groundspeed)), color)
+		// format line 3.
+		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
+		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, " ", "R "), color)
+		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color)
+		dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color)
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
@@ -392,18 +403,18 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 	var offset [2]float32
 	switch dir {
-		case math.North:
-			offset[0] = -30
-			offset[1] = 60
-		case math.NorthEast:
-			offset[1] = 40
-		case math.NorthWest:
-			offset[1] = 60
-		case math.East:
-			offset[1] = 30
-		case math.West:
-			offset[0] = -35
-			offset[1] = 30
+	case math.North:
+		offset[0] = -30
+		offset[1] = 60
+	case math.NorthEast:
+		offset[1] = 40
+	case math.NorthWest:
+		offset[1] = 60
+	case math.East:
+		offset[1] = 30
+	case math.West:
+		offset[0] = -35
+		offset[1] = 30
 	}
 	return offset
 }
