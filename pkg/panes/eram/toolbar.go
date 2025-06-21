@@ -222,9 +222,9 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("FDB\n%d", ps.Brightness.FDB), 0, scale, false, false) {
 			handleClick(&ps.Brightness.FDB, 0, 100, 2)
 		}
-		text = util.Select(ps.Brightness.Portal > 0, fmt.Sprintf("PORTAL\n%d", ps.Brightness.Portal-10), "PORTAL\n=")
+		text = util.Select(ps.Brightness.Portal != 0, fmt.Sprintf("PORTAL\n%d", ps.Brightness.Portal), "PORTAL\n=")
 		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
-			handleClick(&ps.Brightness.Portal, 0, 10, 1)
+			handleClick(&ps.Brightness.Portal, -10, 10, 1)
 		}
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("SATCOMM\n%d", ps.Brightness.Satcomm), 0, scale, false, false) {
 			handleClick(&ps.Brightness.Satcomm, 0, 100, 2)
@@ -759,13 +759,13 @@ func handleClick(pref *radar.ScopeBrightness, min, max, step int) {
 		if value-step >= min {
 			*pref = radar.ScopeBrightness(value - step)
 		} else {
-			// TODO: handle case when under min
+			// play a sound or something
 		}
 	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary] { // raise value
 		if value+step <= max {
 			*pref = radar.ScopeBrightness(value + step)
 		} else {
-			// TODO: handle case when over max
+			// play a sound or something
 		}
 	}
 }
