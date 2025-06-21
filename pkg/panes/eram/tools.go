@@ -135,7 +135,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary])) != ep.repositionLargeInput {
+		if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionLargeInput {
 			if !ep.repositionLargeInput {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
@@ -224,7 +224,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary])) != ep.repositionSmallOutput {
+		if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionSmallOutput {
 			if !ep.repositionSmallOutput {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
