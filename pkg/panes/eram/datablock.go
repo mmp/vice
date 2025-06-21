@@ -273,6 +273,7 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 
 func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType DatablockType, color renderer.RGB) datablock {
 	state := ep.TrackState[trk.ADSBCallsign]
+	ps := ep.currentPrefs()
 	switch dbType {
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
@@ -281,7 +282,8 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color)
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
-		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, " ", "R "), color)
+		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0}) 
+		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, " ", "R "), colColor)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color)
 		dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color)
 		return db
