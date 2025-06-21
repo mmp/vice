@@ -30,6 +30,7 @@ type TrackState struct {
 
 	eLDB bool
 	eFDB bool
+
 	// add more as we figure out what to do...
 
 }
@@ -274,7 +275,7 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 }
 
 // trackDatablockColorBrightness returns the track color and datablock brightness. Design.
-func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) (renderer.RGB) {
+func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) renderer.RGB {
 	dType := ep.datablockType(ctx, trk)
 	ps := ep.currentPrefs()
 	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
@@ -286,7 +287,7 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-		cb.LineWidth(10, ctx.DPIScale)
+	cb.LineWidth(10, ctx.DPIScale)
 	for _, trk := range tracks {
 		db := dbs[trk.ADSBCallsign]
 		if db == nil {
@@ -313,4 +314,27 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
+}
+
+func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	cb.LineWidth(10, ctx.DPIScale) // tweak this
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	for _, trk := range tracks {
+		speed := trk.Groundspeed
+		state := ep.TrackState[trk.ADSBCallsign]
+		dist := speed / 60 * float32(ep.velocityTime)
+		pos := state.track.Location
+		heading := state.TrackHeading(ctx.NmPerLongitude)
+		ptlEnd := math.Offset2LL(pos, heading, dist, ctx.NmPerLongitude, ctx.MagneticVariation)
+		p0 := transforms.WindowFromLatLongP(pos)
+		p1 := transforms.WindowFromLatLongP(ptlEnd)
+		color := ep.trackDatablockColor(ctx, trk)
+		ld.AddLine(p0, p1, color)
+	}
+	transforms.LoadWindowViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	ld.GenerateCommands(cb)
+	
 }

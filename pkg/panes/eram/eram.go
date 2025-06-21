@@ -52,6 +52,8 @@ type ERAMPane struct {
 	repositionLargeInput  bool
 	repositionSmallOutput bool
 	timeSinceRepo         time.Time
+
+	velocityTime int // 0, 1, 4, or 8 minutes
 }
 
 func NewERAMPane() *ERAMPane {
@@ -116,7 +118,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw history
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
-	// Draw stingers (PTL lines)
+	ep.drawPTLs(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	// Draw QU /M lines (not sure where this goes)
@@ -165,6 +167,18 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			// Process the command
 			// ep.processCommandInput()
 			ep.Input = ""
+		case imgui.KeyPageUp: // velocity vector *2
+			if ep.velocityTime == 0 {
+				ep.velocityTime = 1 
+			} else if ep.velocityTime < 8 {
+				ep.velocityTime *= 2
+			}
+		case imgui.KeyPageDown: // velocity vector /2
+			if ep.velocityTime > 0 {
+				ep.velocityTime /= 2
+			} else {
+				ep.velocityTime = 0
+			}	
 		}
 	}
 }
