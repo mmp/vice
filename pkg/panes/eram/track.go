@@ -49,6 +49,10 @@ func (ts *TrackState) Climbing() bool {
 	return ts.track.TransponderAltitude > ts.previousTrack.TransponderAltitude
 }
 
+func (ts *TrackState) IsLevel() bool {
+	return ts.track.TransponderAltitude == ts.previousTrack.TransponderAltitude
+}
+
 func (ts *TrackState) HaveHeading() bool {
 	return !ts.previousTrack.Location.IsZero()
 }

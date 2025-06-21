@@ -303,9 +303,9 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 		case formatCurrent == formatAssigned:
 			return fmt.Sprintf("%vC", radar.FormatAltitude(currentAltitude))
 		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw
-			return util.Select(state.Descending(), fmt.Sprintf("%v\u2193%v", formatAssigned, formatCurrent), fmt.Sprintf("%v+%v", formatAssigned, formatCurrent))
+			return util.Select(state.Descending() || state.IsLevel(), fmt.Sprintf("%v\u2193%v", formatAssigned, formatCurrent), fmt.Sprintf("%v+%v", formatAssigned, formatCurrent))
 		case currentAltitude < float32(assignedAltitude):
-			return util.Select(state.Climbing(), fmt.Sprintf("%v\u2191%v", formatAssigned, formatCurrent), fmt.Sprintf("%v-%v", formatAssigned, formatCurrent))
+			return util.Select(state.Climbing() || state.IsLevel(), fmt.Sprintf("%v\u2191%v", formatAssigned, formatCurrent), fmt.Sprintf("%v-%v", formatAssigned, formatCurrent)) // or maintaining
 
 		}
 	}
