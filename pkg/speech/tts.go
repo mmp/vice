@@ -34,8 +34,10 @@ type Voice string
 var client *texttospeech.Client
 var voices []string
 var voicesCh chan []string
+var lg *log.Logger
 
-func InitTTS(lg *log.Logger) error {
+func InitTTS(l *log.Logger) error {
+	lg = l
 	ctx, _ := context.WithTimeout(context.TODO(), 3*time.Second)
 
 	var err error
@@ -44,7 +46,7 @@ func InitTTS(lg *log.Logger) error {
 		return err
 	}
 
-	voicesCh := make(chan []string)
+	voicesCh = make(chan []string)
 	go func() {
 		defer close(voicesCh)
 
@@ -83,6 +85,7 @@ func GetRandomVoice() (Voice, error) {
 		case voices = <-voicesCh:
 			break
 		case <-time.After(5 * time.Second):
+			lg.Errorf("Timed out waiting for list of available voices. TTS disabled.")
 			voicesCh = nil
 			break
 		}
@@ -134,7 +137,7 @@ func RequestTTS(voice Voice, text string, lg *log.Logger) (<-chan []byte, error)
 
 		resp, err := client.SynthesizeSpeech(context.Background(), &req)
 		if err != nil {
-			lg.Error("TTS: speech %q voice %s error %v", text, voice, err)
+			lg.Errorf("TTS: speech %q voice %s error %v", text, voice, err)
 		} else {
 			lg.Infof("Synthesized speech %q latency %s result size %d", text, time.Since(start), len(resp.AudioContent))
 
