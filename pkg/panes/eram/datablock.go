@@ -289,6 +289,10 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
 		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", "R"), colColor)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color)
+		if trk.FlightPlan.HandoffTrackController != "" {
+			a := util.Select(ep.dbAlternate, fmt.Sprintf("H-%v", trk.FlightPlan.HandoffTrackController), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
+			dbWriteText(db.fieldE[:], a, color)
+		}
 		dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color)
 		return db
 	case EnhancedLimitedDatablock:

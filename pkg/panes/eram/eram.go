@@ -80,6 +80,9 @@ type ERAMPane struct {
 	timeSinceRepo         time.Time
 
 	velocityTime int // 0, 1, 4, or 8 minutes
+
+	dbLastAlternateTime time.Time // Alternates every 6 seconds
+	dbAlternate bool
 }
 
 func NewERAMPane() *ERAMPane {

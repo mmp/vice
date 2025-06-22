@@ -103,6 +103,10 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// Update the track states based on the current radar tracks.
 	now := ctx.Client.CurrentTime()
+	if now.Sub(ep.dbLastAlternateTime) > 6*time.Second {
+		ep.dbAlternate = !ep.dbAlternate
+		ep.dbLastAlternateTime = now
+	}
 	if now.Sub(ep.lastTrackUpdate) < 12*time.Second {
 		return
 	}
