@@ -178,7 +178,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	case toolbarBright, toolbarMapBright:
-			toolbarDrawState.customButton = make(map[string]renderer.RGB)
+		toolbarDrawState.customButton = make(map[string]renderer.RGB)
 		if ep.activeToolbarMenu == toolbarBright {
 			toolbarDrawState.customButton["MAP\nBRIGHT"] = toolbarButtonColor
 			toolbarDrawState.customButton["CPDLC"] = toolbarButtonColor
@@ -296,7 +296,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		p3 := [2]float32{p0[0], p2[1]}
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		// if ep.activeToolbarMenu == toolbarMapBright {
-		// 	toolbarDrawState.buttonCursor = e0 
+		// 	toolbarDrawState.buttonCursor = e0
 		// 	for i, vm := range ep.allVideoMaps {
 		// 		label := vm.Label // unlike videomaps, dont include the id
 		// 		_, vis := ps.VideoMapVisible[vm.Id]
@@ -309,16 +309,16 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		// 			break
 		// 		}
 		// 		if ep.drawToolbarMainButton(ctx, label, 0, scale, vis, nextRow) {
-		// 			// TODO: add brightness prefs 
+		// 			// TODO: add brightness prefs
 		// 		}
 
 		// 	}
 		// 	e2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
-		// 	e1 := [2]float32{e2[0], e0[1]} 
-		// 	e3 := [2]float32{e0[0], e2[1]} 
+		// 	e1 := [2]float32{e2[0], e0[1]}
+		// 	e3 := [2]float32{e0[0], e2[1]}
 		// 	ep.drawMenuOutline(ctx, e0, e1, e2, e3)
 		// } else {
-			ep.drawMenuOutline(ctx, p0, p1, p2, p3)
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 		// }
 
 	case toolbarViews:

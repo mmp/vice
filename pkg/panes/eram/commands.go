@@ -50,24 +50,24 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		ps.Range += func() float32 {
 			var amt float32 = 10
 
-		if r < 2 {
-			amt = .25
-		} else if r == 2 {
-			if z > 0 {
-				amt = 1
-			} else {
+			if r < 2 {
 				amt = .25
-			}
-		} else if r < 10 {
-			amt = 1
-		} else if r == 10 {
-			if z > 0 {
-				amt = 10
-			} else {
+			} else if r == 2 {
+				if z > 0 {
+					amt = 1
+				} else {
+					amt = .25
+				}
+			} else if r < 10 {
 				amt = 1
+			} else if r == 10 {
+				if z > 0 {
+					amt = 10
+				} else {
+					amt = 1
+				}
 			}
-		}
-		return amt * z
+			return amt * z
 		}()
 		ps.Range = math.Clamp(ps.Range, .25, 1300) // 4-33
 
@@ -86,10 +86,10 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 }
 
 type CommandStatus struct {
-	clear  bool
-	output string
-	bigOutput string 
-	err    error
+	clear     bool
+	output    string
+	bigOutput string
+	err       error
 }
 
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status CommandStatus) {
@@ -102,8 +102,8 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	prefix := cmd[:3]
 	cmd = strings.TrimPrefix(cmd, prefix)
 	switch prefix {
-		// first, ERAM commands
-	case "TG ": 
+	// first, ERAM commands
+	case "TG ":
 		// Special cases for non-control commands.
 		if cmd == "" {
 			return
@@ -145,7 +145,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		}
 		return
 	}
-	return 
+	return
 }
 
 func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {

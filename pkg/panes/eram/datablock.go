@@ -211,7 +211,7 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
 		dbMakeLine(dbChopTrailing(db.line2[:])),
-		dbMakeLine(db.col1[:],dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
+		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
 		dbMakeLine(dbChopTrailing(db.line4[:])),
 	}
 	pt[1] += float32(font.Size)
@@ -282,7 +282,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color)
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
-		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0}) 
+		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
 		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, " ", "R "), colColor)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color)
 		dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color)

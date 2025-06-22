@@ -16,10 +16,10 @@ func NewERAMError(msg string) *ERAMError {
 	return &ERAMError{errors.New(msg)}
 }
 
-var ( // TODO: Get actual error messages for this 
-	ErrCommandFormat       = NewERAMError("Command format error")
-	ErrERAMAmbiguousACID   = NewERAMError("AMB ACID")
-	ErrERAMIllegalACID     = NewERAMError("ILLEGAL ACID")
+var ( // TODO: Get actual error messages for this
+	ErrCommandFormat     = NewERAMError("Command format error")
+	ErrERAMAmbiguousACID = NewERAMError("AMB ACID")
+	ErrERAMIllegalACID   = NewERAMError("ILLEGAL ACID")
 )
 
 var eramErrorRemap = map[error]*ERAMError{}

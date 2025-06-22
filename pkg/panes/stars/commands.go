@@ -4936,6 +4936,3 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 			}
 		})
 }
-
-
-
