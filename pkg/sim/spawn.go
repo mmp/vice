@@ -347,16 +347,16 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 	}
 
 	if ac.IsDeparture() {
-		s.lg.Info("launched departure", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
+		s.lg.Debug("launched departure", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("aircraft", ac))
 	} else if ac.IsArrival() {
-		s.lg.Info("launched arrival", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
+		s.lg.Debug("launched arrival", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("aircraft", ac))
 	} else if ac.IsOverflight() {
-		s.lg.Info("launched overflight", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
+		s.lg.Debug("launched overflight", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("aircraft", ac))
 	} else {
-		fmt.Printf("%s: launched unknown type?\n", ac.ADSBCallsign)
+		s.lg.Errorf("%s: launched unknown type?\n", ac.ADSBCallsign)
 	}
 }
 
@@ -729,8 +729,8 @@ func (s *Sim) updateDepartureSequence() {
 					// Sometimes a departure from one runway should be
 					// considered when deciding if it's ok to launch from
 					// another runway (e.g., closely spaced parallel runways).
-					for rwy, state := range s.sameGroupRunways(airport, depRunway) {
-						s.lg.Infof("%s: %q departure also holding up %q", ac.ADSBCallsign, depRunway, rwy)
+					for /*rwy*/ _, state := range s.sameGroupRunways(airport, depRunway) {
+						//s.lg.Infof("%s: %q departure also holding up %q", ac.ADSBCallsign, depRunway, rwy)
 						state.LastDeparture = &dep
 					}
 				}
