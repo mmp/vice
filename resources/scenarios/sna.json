@@ -473,6 +473,28 @@
 					"scratchpad": "FRT",
                     "route": "CNERY BLH HYDRR1"
                 },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KDEN",
+                    "exit": "AVRRY",
+					"scratchpad": "FRT",
+                    "route": "AVRRY EED J236 TBC SHNPS TBARR4"
+                },
+				{
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KABQ",
+                    "exit": "AVRRY",
+					"scratchpad": "FRT",
+                    "route": "AVRRY LANCY DRK KA27Q SJN BRRTO BRRTO1"
+                },
                 {
                     "airlines": [
                         {
@@ -879,13 +901,13 @@
   "OHSEA3.FINAL": {
     "arrivals": [
       {
-        "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s200/h16",
-        "cruise_altitude": 35000,
+        "waypoints": "KAYNN/a7000- LAXBB/a5000/s230/ho KLEVR/a5000/s200/clearapp",
         "star": "OHSEA3",
         "initial_controller": "SNA_R_APP",
         "initial_altitude": 7000,
         "initial_speed": 220,
         "expect_approach": "Z0R",
+		"secondary_scratchpad": "GZ",
         "airlines": {
           "KSNA": [
             {
@@ -959,7 +981,7 @@
             },
             {
               "icao": "JBU",
-              "airport": "MMSD"
+              "airport": "MRLB"
             },
             {
               "icao": "DAL",
@@ -1224,6 +1246,7 @@
             },
             {
               "icao": "AAL",
+			  "fleet": "short",
               "airport": "KRNO"
             },
             {
@@ -1509,7 +1532,7 @@
         "SNA_TWR": {
             "frequency": 126800,
             "radio_name": "John Wayne Tower",
-            "sector_id": "T4J"
+            "sector_id": "4J"
         },
 		"HHR_TWR": {
 			"frequency": 121100,
@@ -2263,7 +2286,17 @@
 		"radius": 11,
 		"center": "KLGB"
             }
-	]
+	],
+	"arrival_acquisition": [
+        {
+          "id": "ACQ",
+          "description": "SCT AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N035.12.54.426,W119.40.23.556 N035.06.12.985,W116.32.10.242 N034.20.04.650,W115.35.53.622 N034.01.19.458,W114.34.09.746 N033.07.48.209,W114.43.52.928 N033.02.32.009,W115.55.56.954 N032.17.44.355,W115.58.14.174 N032.13.07.156,W117.48.36.101 N032.52.08.274,W118.42.27.839 N032.55.25.135,W119.25.36.328 N034.53.19.424,W119.43.41.832 N035.12.54.426,W119.40.23.556",
+          "floor": 0,
+          "ceiling": 23000
+        }
+    ]
     },
     "range": 30,
     "scratchpads": {
@@ -2272,16 +2305,16 @@
        "EHF": "HRC",
        "IKAYE": "HRY",
        "OROSZ": "HRC",
-       "MTBAL": "PIG",
-       "CSTWY": "PIG",
-       "WIILD": "PIG",
-       "WAGAV": "PIG",
-       "AVRRY": "STY",
-       "CNERY": "STY",
-       "TCATE": "STY",
-       "OTAYY": "STY",
-       "PEELR": "FTR",
-       "BLCKD": "FTR",
+       "AVRRY": "PIG",
+       "CNERY": "PIG",
+       "TCATE": "PIG",
+       "OTAYY": "PIG",
+       "AVRRY.S": "STY",
+       "CNERY.S": "STY",
+       "TCATE.S": "STY",
+       "OTAYY.S": "STY",
+       "PEELR": "FRT",
+       "BLCKD": "FRT",
        "CSTRO": "TPO",
        "COREZ": "TPO",
        "ARRMY": "ZMM",
