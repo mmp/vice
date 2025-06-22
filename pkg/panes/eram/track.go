@@ -219,7 +219,9 @@ func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, colo
 }
 
 func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
-	color := renderer.RGB{.855, .855, 0} // standard color for all
+	ps := ep.currentPrefs()
+	bright := util.Select(state.DatablockType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
+	color := bright.ScaleRGB(renderer.RGB{.855, .855, 0})
 
 	// Scale this color based on the type of tag it is.
 	// DB and Track brights/ color are the same, so call the DB color function TODO
