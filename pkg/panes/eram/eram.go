@@ -16,6 +16,7 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+	"golang.org/x/exp/slices"
 )
 
 var (
@@ -25,6 +26,31 @@ var (
 	// ERAMToolbarColor			 = renderer.RGB
 
 )
+
+const numMapColors = 8
+
+var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
+	[numMapColors]renderer.RGB{ // Group A
+		renderer.RGBFromUInt8(140, 140, 140),
+		renderer.RGBFromUInt8(0, 255, 255),
+		renderer.RGBFromUInt8(255, 0, 255),
+		renderer.RGBFromUInt8(238, 201, 0),
+		renderer.RGBFromUInt8(238, 106, 80),
+		renderer.RGBFromUInt8(162, 205, 90),
+		renderer.RGBFromUInt8(218, 165, 32),
+		renderer.RGBFromUInt8(72, 118, 255),
+	},
+	[numMapColors]renderer.RGB{ // Group B
+		renderer.RGBFromUInt8(140, 140, 140),
+		renderer.RGBFromUInt8(132, 112, 255),
+		renderer.RGBFromUInt8(118, 238, 198),
+		renderer.RGBFromUInt8(237, 145, 33),
+		renderer.RGBFromUInt8(218, 112, 214),
+		renderer.RGBFromUInt8(238, 180, 180),
+		renderer.RGBFromUInt8(50, 205, 50),
+		renderer.RGBFromUInt8(255, 106, 106),
+	},
+}
 
 type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet
@@ -110,7 +136,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Following are the draw functions. They are listed in the best of my ability
 
 	// Draw weather
-	// Draw video maps
+	ep.drawVideoMaps(ctx, transforms, cb)
 	// Draw routes
 	// draw dcb
 	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
@@ -145,11 +171,11 @@ func (ep *ERAMPane) Hide() bool {
 }
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	// implement the LoadedSim method to satisfy panes.Pane interface
+	ep.makeMaps(client, ss, lg)
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	// implement the ResetSim method to satisfy panes.Pane interface
+	ep.makeMaps(client, ss, lg)
 }
 
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
@@ -173,7 +199,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			ep.Input = ""
 		case imgui.KeyPageUp: // velocity vector *2
 			if ep.velocityTime == 0 {
-				ep.velocityTime = 1 
+				ep.velocityTime = 1
 			} else if ep.velocityTime < 8 {
 				ep.velocityTime *= 2
 			}
@@ -182,7 +208,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.velocityTime /= 2
 			} else {
 				ep.velocityTime = 0
-			}	
+			}
 		}
 	}
 }
@@ -193,7 +219,7 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	}
 
 	text := "SIMULATION PAUSED"
-	font := renderer.GetDefaultFont()  // better font pls 
+	font := renderer.GetDefaultFont() // better font pls
 
 	// Get pane width
 	width := ctx.PaneExtent.Width()
@@ -230,25 +256,52 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	td.GenerateCommands(cb)
 }
 
-// func (sp *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-// 	ps := sp.currentPrefs()
+func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	ps := ep.currentPrefs()
 
-// 	transforms.LoadLatLongViewingMatrices(cb)
+	transforms.LoadLatLongViewingMatrices(cb)
 
-// 	cb.LineWidth(1, ctx.DPIScale)
-// 	var draw []sim.VideoMap
-// 	for _, vm := range sp.allVideoMaps {
-// 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
-// 			draw = append(draw, vm)
-// 		}
-// 	}
-// 	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
+	cb.LineWidth(1, ctx.DPIScale)
+	var draw []sim.VideoMap
+	for _, vm := range ep.allVideoMaps {
+		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
+			draw = append(draw, vm)
+		}
+	}
+	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
 
-// 	for _, vm := range draw {
-// 		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1) // switch to 0-based indexing
-// 		color := brite.ScaleRGB(mapColors[vm.Group][cidx])
+	for _, vm := range draw {
+		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1)
+		color := mapColors[vm.Group][cidx]
 
-// 		cb.SetRGB(color)
-// 		cb.Call(vm.CommandBuffer)
-// 	}
-// }
+		cb.SetRGB(color)
+		cb.Call(vm.CommandBuffer)
+	}
+}
+
+func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
+	vmf, err := ep.getVideoMapLibrary(ss, client)
+	if err != nil {
+		lg.Errorf("%v", err)
+		return
+	}
+	ep.allVideoMaps = vmf.Maps
+
+	ps := ep.currentPrefs()
+	for k := range ps.VideoMapVisible {
+		delete(ps.VideoMapVisible, k)
+	}
+	for _, name := range ss.ControllerDefaultVideoMaps {
+		if idx := slices.IndexFunc(ep.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 {
+			ps.VideoMapVisible[ep.allVideoMaps[idx].Id] = nil
+		}
+	}
+}
+
+func (ep *ERAMPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
+	filename := ss.STARSFacilityAdaptation.VideoMapFile
+	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
+		return ml, nil
+	}
+	return client.GetVideoMapLibrary(filename)
+}
