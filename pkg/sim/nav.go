@@ -1731,25 +1731,31 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 }
 
 func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (av.Waypoint, float32, float32, bool) {
-	var eta float32
-	for i, wp := range nav.Waypoints {
-		if i == 0 {
-			eta = float32(wp.ETA(nav.FlightState.Position, nav.FlightState.GS,
-				nav.FlightState.NmPerLongitude).Seconds())
-		} else {
-			d := math.NMDistance2LLFast(wp.Location, nav.Waypoints[i-1].Location,
-				nav.FlightState.NmPerLongitude)
-			etaHours := d / nav.FlightState.GS
-			eta += etaHours * 3600
-		}
+	haveWaypointSpeedRestriction :=
+		slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Speed > 0 })
 
-		spd := float32(wp.Speed)
-		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Speed != nil {
-			spd = *nfa.Arrive.Speed
-		}
+	// Skip all this work in the (common) case that it's unnecessary.
+	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {
+		var eta float32
+		for i, wp := range nav.Waypoints {
+			if i == 0 {
+				eta = float32(wp.ETA(nav.FlightState.Position, nav.FlightState.GS,
+					nav.FlightState.NmPerLongitude).Seconds())
+			} else {
+				d := math.NMDistance2LLFast(wp.Location, nav.Waypoints[i-1].Location,
+					nav.FlightState.NmPerLongitude)
+				etaHours := d / nav.FlightState.GS
+				eta += etaHours * 3600
+			}
 
-		if spd != 0 {
-			return wp, spd, eta, true
+			spd := float32(wp.Speed)
+			if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Speed != nil {
+				spd = *nfa.Arrive.Speed
+			}
+
+			if spd != 0 {
+				return wp, spd, eta, true
+			}
 		}
 	}
 	return av.Waypoint{}, 0, 0, false
