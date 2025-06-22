@@ -701,13 +701,14 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			if ac.Voice == "" {
 				var err error
 				if ac.Voice, err = speech.GetRandomVoice(); err != nil {
-					s.lg.Errorf("TTS GetRandomVoice: %v", err)
+					s.lg.Infof("TTS GetRandomVoice: %v", err)
+					continue
 				}
 			}
 
 			ch, err := speech.RequestTTS(ac.Voice, e.SpokenText, s.lg)
 			if err != nil {
-				s.lg.Errorf("TTS: %v", err)
+				s.lg.Infof("TTS: %v", err)
 			} else {
 				s.ttsRequests[tcp] = append(s.ttsRequests[tcp], ttsRequest{
 					callsign: ac.ADSBCallsign,
