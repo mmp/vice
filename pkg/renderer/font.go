@@ -238,11 +238,12 @@ func FontsInit(r Renderer, p platform.Platform) {
 	// is then used shortly when the fonts are loaded.
 	glyphRangeForIcons := func(icons map[string]string) imgui.GlyphRange {
 		builder := imgui.NewFontGlyphRangesBuilder()
+		builder.AddChar(imgui.Wchar(0x2191))
+		builder.AddChar(imgui.Wchar(0x2193))
 		for _, str := range icons {
 			unicode, _ := utf8.DecodeRuneInString(str)
-			builder.AddChar(imgui.Wchar(unicode))
+			builder.AddChar(imgui.Wchar(unicode))	
 		}
-
 		r := imgui.NewGlyphRange()
 		builder.BuildRanges(r)
 		return r
@@ -298,6 +299,8 @@ func FontsInit(r Renderer, p platform.Platform) {
 	add("Inconsolata-SemiBold.ttf.zst", true, "Inconsolata SemiBold")
 	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
 	add("Inconsolata_Condensed-Regular.ttf.zst", true, "Inconsolata Condensed Regular")
+	add("ERAM.ttf.zst", true, "ERAM")
+
 
 	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
 	lg.Infof("Fonts texture used %.1f MB", float32(w*h*bpp)/(1024*1024))

@@ -174,7 +174,7 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 	// Draw the position symbol
 	color := ep.trackColor(state, track)
-	font := renderer.GetDefaultFont() // Change this to the actual font
+	font := ep.ERAMFont() // Change this to the actual font
 	if ep.datablockType(ctx, track) == FullDatablock {
 		// draw a diamond
 		drawDiamond(ctx, transforms, color, pos, ld, cb)
@@ -430,7 +430,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		// 	}
 		// 	pw := transforms.WindowFromLatLongP(loc)
 		// 	pt := math.Add2f(pw, [2]float32{0.5, -.5})
-		// 	td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: renderer.GetDefaultFont(), Color: color})
+		// 	td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
 		// }
 		for _, trk := range state.historyTracks {
 			loc := trk.Location
@@ -439,7 +439,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			}
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
-			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: renderer.GetDefaultFont(), Color: color})
+			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
 
 		}
 	}

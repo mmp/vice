@@ -42,7 +42,7 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 	commandDrawState.commandSmallPosition = ps.commandSmallPosition
 
 	toolbarDrawState.style = renderer.TextStyle{
-		Font:        renderer.GetDefaultFont(), // TODO: get the right font
+		Font:        ep.ERAMFont(), // TODO: get the right font
 		Color:       toolbarTextColor,
 		LineSpacing: 0,
 	}
@@ -80,7 +80,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	ld.AddLine(p3, p0, color)
 	// Draw wrapped output text in the big box
 	style := renderer.TextStyle{
-		Font:  renderer.GetDefaultFont(),
+		Font:  ep.ERAMFont(),
 		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
 	}
 	bx, _ := style.Font.BoundText("X", 0)
@@ -182,7 +182,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	ps := ep.currentPrefs()
 	sz := [2]float32{325, 77}
 	style := renderer.TextStyle{
-		Font:  renderer.GetDefaultFont(),
+		Font:  ep.ERAMFont(),
 		Color: ps.Brightness.Text.ScaleRGB(toolbarTextColor),
 	}
 	inputSize := float32(77)

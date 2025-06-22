@@ -93,7 +93,7 @@ func dbChopTrailing(f []dbChar) []dbChar {
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-		scale := float32(1.5)
+		scale := float32(1.5) // 1.5 for default font
 		if len(lines) >= 5 {
 			if lines[3].ch[0].ch != rune('R') {
 				scale = .8
@@ -247,7 +247,7 @@ func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
 	start := transforms.WindowFromLatLongP(state.track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)
 	end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(*dir), ctx.DrawPixelScale))
-	font := renderer.GetDefaultFont()
+	font := ep.ERAMFont()
 	brightness := ep.datablockBrightness(state)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 
@@ -373,7 +373,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 		}
 	}
 
-	font := renderer.GetDefaultFont()
+	font := ep.ERAMFont()
 	var sb strings.Builder
 	halfSeconds := ctx.Now.UnixMilli() / 500
 
