@@ -98,7 +98,8 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	inputSize := float32(38)
 	bx, _ = style.Font.BoundText("X", 0)
 	cols = int(sz[0] / float32(bx))
-	inText, _ := util.WrapTextNoSpace(ep.Input, cols, 0, true)
+	input := ep.Input + "_"
+	inText, _ := util.WrapTextNoSpace(input, cols, 0, true)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
