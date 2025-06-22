@@ -1,7 +1,9 @@
 package eram
 
 import (
+	"fmt"
 	"strings"
+	"unicode"
 
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
@@ -95,12 +97,13 @@ type CommandStatus struct {
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status CommandStatus) {
 	// TG will be the prefix for radio commands. TODO: Tab and semicolo (or comma) adds TG
 	// Shift + tab locks TG
-	if len(cmd) < 3 {
-		status.err = ErrCommandFormat
-		return
+	var prefix string
+	var original string = cmd
+	if len(cmd) > 3 { //  trim a prefix
+		prefix = cmd[:3]
+		cmd = strings.TrimPrefix(cmd, prefix)
 	}
-	prefix := cmd[:3]
-	cmd = strings.TrimPrefix(cmd, prefix)
+
 	switch prefix {
 	// first, ERAM commands
 	case "QQ ":
@@ -110,15 +113,13 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			status.err = ErrCommandFormat
 			return
 		}
-			fp, err := parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
-			if err != nil {
-				status.err = err
-				return
-			}
-			ep.modifyFlightPlan(ctx, fields[1], fp)
-		
+		fp, err := parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
+		if err != nil {
+			status.err = err
+			return
+		}
+		ep.modifyFlightPlan(ctx, fields[1], fp)
 
-		
 	case "TG ":
 		// Special cases for non-control commands.
 		if cmd == "" {
@@ -160,12 +161,60 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			status.err = ErrERAMIllegalACID
 		}
 		return
+	default: // Leader lines, accepting/ recalling HOs and whatever else goes in here
+		fields := strings.Fields(original) // use the origional, uncut, command for this
+		fmt.Println(len(fields), len(fields[0]), unicode.IsDigit(rune(original[0])), original)
+		if len(fields) == 2 {
+			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line
+				dir := ep.numberToLLDirection(ctx, original[0])
+				// get callsign from fp
+				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
+				if !ok {
+					status.err = ErrERAMIllegalACID
+					return
+				}
+				callsign := trk.ADSBCallsign
+				dbType := ep.datablockType(ctx, *trk)
+				if dbType != FullDatablock {
+					if dir != math.CardinalOrdinalDirection(math.East) && dir != math.CardinalOrdinalDirection(math.West) {
+						status.err = ErrERAMIllegalValue // get actual error
+						return
+					}
+				}
+				ep.TrackState[callsign].leaderLineDirection = &dir
+			}
+		}
 	}
 	return
 }
 
 func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
 	ep.bigOutput = err.Error()
+}
+
+func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.CardinalOrdinalDirection {
+	var dir math.CardinalOrdinalDirection
+	switch cmd {
+	case '1':
+		dir = math.SouthWest
+	case '2':
+		dir = math.South
+	case '3':
+		dir = math.SouthEast
+	case '4':
+		dir = math.West
+	case '5':
+		dir = math.NorthEast
+	case '6':
+		dir = math.East
+	case '7':
+		dir = math.NorthWest
+	case '8':
+		dir = math.North
+	case '9':
+		dir = math.NorthEast
+	}
+	return dir
 }
 
 func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
@@ -183,7 +232,8 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 			}
 		})
 }
-// Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes. 
+
+// Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes.
 func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.STARSFlightPlanSpecifier) {
 	acid, err := ep.getACIDFromCID(ctx, cid)
 	if err != nil {
@@ -194,7 +244,7 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.ST
 		func(err error) {
 			if err != nil {
 				ep.displayError(err, ctx)
-			} 
+			}
 		})
 }
 

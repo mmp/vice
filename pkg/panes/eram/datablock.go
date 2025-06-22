@@ -246,12 +246,12 @@ func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
 
 	start := transforms.WindowFromLatLongP(state.track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)
-	end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(dir), ctx.DrawPixelScale))
+	end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(*dir), ctx.DrawPixelScale))
 	font := renderer.GetDefaultFont()
 	brightness := ep.datablockBrightness(state)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 
-	db.draw(td, end, font, sb, brightness, dir, halfSeconds)
+	db.draw(td, end, font, sb, brightness, *dir, halfSeconds)
 }
 
 func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
@@ -390,17 +390,17 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			dbType := ep.datablockType(ctx, trk)
 			start := transforms.WindowFromLatLongP(state.track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
-			offset := datablockOffset(dir) 
-			vector := ep.leaderLineVector(dir)
+			offset := datablockOffset(*dir) 
+			vector := ep.leaderLineVector(*dir)
 			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
 			vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
-				dir = math.East // TODO: change to state eventually
-				vector = ep.leaderLineVectorNoLength(dir)
+				*dir = math.East // TODO: change to state eventually
+				vector = ep.leaderLineVectorNoLength(*dir)
 			}
 			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
 			brightness := ep.datablockBrightness(state)
-			db.draw(td, end, font, &sb, brightness, dir, halfSeconds)
+			db.draw(td, end, font, &sb, brightness, *dir, halfSeconds)
 		}
 	}
 

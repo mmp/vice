@@ -26,7 +26,7 @@ type TrackState struct {
 	DatablockType DatablockType
 
 	JRingRadius         float32
-	leaderLineDirection math.CardinalOrdinalDirection
+	leaderLineDirection *math.CardinalOrdinalDirection
 
 	eLDB bool
 	eFDB bool
@@ -262,9 +262,22 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 
 // leaderLineDirection returns the direction in which a datablock's leader line
 // should be drawn. The initial implementation always points northeast.
-func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
-	// state := ep.TrackState[trk.ADSBCallsign]
-	return math.NorthWest // change to state
+func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math.CardinalOrdinalDirection {
+	state := ep.TrackState[trk.ADSBCallsign]
+	dir := state.leaderLineDirection
+	if dir == nil {
+		dbType := ep.datablockType(ctx, trk)
+		if dbType == FullDatablock {
+			direction := math.CardinalOrdinalDirection(math.NorthEast)
+			dir = &direction
+		} else {
+			direction := math.CardinalOrdinalDirection(math.East)
+			dir = &direction
+		}
+		state.leaderLineDirection = dir
+	}
+	// fmt.Println("leaderLineDirection:", *dir, "for track", trk.ADSBCallsign)
+	return state.leaderLineDirection
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -339,11 +352,11 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 		p0 := transforms.WindowFromLatLongP(state.track.Location)
 		dir := ep.leaderLineDirection(ctx, trk)
 		if dbType == LimitedDatablock || dbType == EnhancedLimitedDatablock {
-			dir = math.East
+			*dir = math.East
 		}
-		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(dir), ep.leaderLineVectorNoLength(dir))
+		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(*dir), ep.leaderLineVectorNoLength(*dir))
 					if dbType == FullDatablock {
-				if trk.FlightPlan.TrackingController != ctx.UserTCP && (dir == math.NorthEast || dir == math.East){
+				if trk.FlightPlan.TrackingController != ctx.UserTCP && (*dir == math.NorthEast || *dir == math.East){
 					v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
 				}
 			}
