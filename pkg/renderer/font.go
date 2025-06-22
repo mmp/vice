@@ -248,12 +248,22 @@ func FontsInit(r Renderer, p platform.Platform) {
 		builder.BuildRanges(r)
 		return r
 	}
+	glyphRangeForERAM := func() imgui.GlyphRange {
+		builder := imgui.NewFontGlyphRangesBuilder()
+		builder.AddChar(imgui.Wchar(0x2191))
+		builder.AddChar(imgui.Wchar(0x2193))
+		r := imgui.NewGlyphRange()
+		builder.BuildRanges(r)
+		return r
+	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
 	faTTF := util.LoadResourceBytes("fonts/Font Awesome 5 Free-Solid-900.otf.zst")
 	fabrTTF := util.LoadResourceBytes("fonts/Font Awesome 5 Brands-Regular-400.otf.zst")
+	eramTTF := util.LoadResourceBytes("fonts/ERAM.ttf.zst")
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
+	eramGlyphRange := glyphRangeForERAM()
 
 	add := func(filename string, mono bool, name string) {
 		ttf := util.LoadResourceBytes("fonts/" + filename)
@@ -285,6 +295,7 @@ func FontsInit(r Renderer, p platform.Platform) {
 			// make the icon sizes match the font's character sizes.
 			addTTF(faTTF, .8*sp, config, faGlyphRange)
 			addTTF(fabrTTF, .8*sp, config, faBrandsGlyphRange)
+			addTTF(eramTTF, 1*sp, config, eramGlyphRange)
 
 			id := FontIdentifier{Name: name, Size: size}
 			fonts[id] = MakeFont(int(sp), mono, id, ifont)
