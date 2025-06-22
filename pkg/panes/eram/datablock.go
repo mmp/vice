@@ -94,19 +94,18 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 
-	rightJustify := dir >= math.South
-	glyph := font.LookupGlyph(' ')
-	fontWidth := glyph.AdvanceX
+	glyph := font.LookupGlyph('R')
+	fontWidth := glyph.AdvanceX * 1.5
 
 	for i, line := range lines {
+		// All lines start at the same position
 		xOffset := float32(4)
-		if rightJustify {
-			xOffset = -4 - float32(line.Len())*fontWidth
-		}
-		// no other DB has more than 2 lines, so we can be sure that this will only apply to FDBs
+
+		// Special case: line 3 (index 3) starts 1 character to the left
 		if i == 3 {
-			xOffset = -10
+			xOffset -= fontWidth
 		}
+
 		sb.Reset()
 		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, sb,
 			brightness, halfSeconds)
@@ -283,7 +282,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
-		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, " ", "R "), colColor)
+		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", "R"), colColor)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color)
 		dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color)
 		return db
@@ -380,7 +379,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			dbType := ep.datablockType(ctx, trk)
 			start := transforms.WindowFromLatLongP(state.track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
-			offset := datablockOffset(dir)
+			offset := datablockOffset(dir) 
 			vector := ep.leaderLineVector(dir)
 			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
 			vector[1] += float32(offset[1]) * ctx.DrawPixelScale
@@ -406,17 +405,25 @@ func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 	var offset [2]float32
 	switch dir {
 	case math.North:
-		offset[0] = -30
 		offset[1] = 60
 	case math.NorthEast:
 		offset[1] = 40
 	case math.NorthWest:
-		offset[1] = 60
+		offset[0] = -65
+		offset[1] = 50
 	case math.East:
-		offset[1] = 30
+		offset[1] = 38
 	case math.West:
-		offset[0] = -35
-		offset[1] = 30
+		offset[0] = -70
+		offset[1] = 40
+	case math.SouthEast:
+		offset[1] = 20
+	case math.South:
+		offset[0] = 4
+		offset[1] = 16
+	case math.SouthWest:
+		offset[0] = -70
+		offset[1] = 25
 	}
 	return offset
 }

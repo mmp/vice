@@ -260,7 +260,7 @@ func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness
 // should be drawn. The initial implementation always points northeast.
 func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.CardinalOrdinalDirection {
 	// state := ep.TrackState[trk.ADSBCallsign]
-	return math.North // change to state
+	return math.NorthWest // change to state
 }
 
 // leaderLineVector returns a vector in window coordinates representing a leader
@@ -268,7 +268,7 @@ func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) math.
 func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-	return math.Scale2f(v, 32)
+	return math.Scale2f(v, 48)
 }
 
 // For LDBs
@@ -338,6 +338,12 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 			dir = math.East
 		}
 		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(dir), ep.leaderLineVectorNoLength(dir))
+					if dbType == FullDatablock {
+				if trk.FlightPlan.TrackingController != ctx.UserTCP && (dir == math.NorthEast || dir == math.East){
+					v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
+				}
+			}
+
 		p1 := math.Add2f(p0, math.Scale2f(v, ctx.DrawPixelScale))
 		if dbType == FullDatablock {
 			ld.AddLine(p0, p1, color)
