@@ -396,18 +396,28 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		}
 		color := bright.ScaleRGB(renderer.RGB{.855, .855, 0})
 
-		for i := 0; i < len(state.historyTracks); i++ {
-			idx := (state.historyTrackIndex - 1 - i) % len(state.historyTracks)
-			if idx < 0 {
-				idx += len(state.historyTracks)
-			}
-			loc := state.historyTracks[idx].Location
+		// for i := 0; i < len(state.historyTracks); i++ {
+		// 	idx := (state.historyTrackIndex - 1 - i) % len(state.historyTracks)
+		// 	if idx < 0 {
+		// 		idx += len(state.historyTracks)
+		// 	}
+		// 	loc := state.historyTracks[idx].Location
+		// 	if loc.IsZero() {
+		// 		continue
+		// 	}
+		// 	pw := transforms.WindowFromLatLongP(loc)
+		// 	pt := math.Add2f(pw, [2]float32{0.5, -.5})
+		// 	td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: renderer.GetDefaultFont(), Color: color})
+		// }
+		for _, trk := range state.historyTracks {
+			loc := trk.Location
 			if loc.IsZero() {
 				continue
 			}
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
 			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: renderer.GetDefaultFont(), Color: color})
+
 		}
 	}
 
