@@ -93,9 +93,14 @@ func dbChopTrailing(f []dbChar) []dbChar {
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-
+		scale := float32(1.5)
+		if len(lines) >= 5 {
+			if lines[3].ch[0].ch != rune('R') {
+				scale = .8
+			} 
+		}
 	glyph := font.LookupGlyph('R')
-	fontWidth := glyph.AdvanceX * 1.5
+	fontWidth := glyph.AdvanceX * scale
 
 	for i, line := range lines {
 		// All lines start at the same position
