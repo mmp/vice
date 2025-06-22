@@ -85,7 +85,7 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *re
 	}
 	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
 		text.WriteByte(' ')
-		text.WriteString(string(ctx.Client.LastTransmissionCallsign()))
+		text.WriteString(string(sp.tgtGenDefaultCallsign(ctx)))
 	}
 	if modestr != "" {
 		text.WriteString("\n")

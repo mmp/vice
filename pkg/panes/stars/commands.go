@@ -2441,7 +2441,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
-			suffix = string(ctx.Client.LastTransmissionCallsign())
+			suffix = string(sp.tgtGenDefaultCallsign(ctx))
 			cmds = cmd
 		}
 
@@ -2454,9 +2454,9 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		var trk *sim.Track
 		if len(matching) == 1 {
 			trk = matching[0]
-		} else if len(matching) == 0 && ctx.Client.LastTransmissionCallsign() != "" {
+		} else if len(matching) == 0 && sp.tgtGenDefaultCallsign(ctx) != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
-			trk, _ = ctx.GetTrackByCallsign(ctx.Client.LastTransmissionCallsign())
+			trk, _ = ctx.GetTrackByCallsign(sp.tgtGenDefaultCallsign(ctx))
 			// But now we're going to run all of the given input as commands.
 			cmds = cmd
 		}
@@ -2529,7 +2529,17 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 	}
 }
 
+func (sp *STARSPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
+	if cs := ctx.Client.LastTTSCallsign(); cs != "" {
+		// If TTS is active, return the last TTS transmitter.
+		return cs
+	}
+	// Otherwise the most recent one the user selected.
+	return sp.targetGenLastCallsign
+}
+
 func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
+	sp.targetGenLastCallsign = callsign
 	prevMode := sp.commandMode
 
 	ctx.Client.RunAircraftCommands(callsign, cmds,
