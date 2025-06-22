@@ -377,11 +377,11 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
 
-	if cmds != "P" && cmds != "X" {
+	if c.HaveTTS() && cmds != "P" && cmds != "X" {
 		c.mu.Lock()
 
 		if c.awaitReadbackCallsign != "" {
-			c.lg.Errorf("Already awaiting readback for %q, just got %q!", c.awaitReadbackCallsign, callsign)
+			c.lg.Warnf("Already awaiting readback for %q, just got %q!", c.awaitReadbackCallsign, callsign)
 		}
 		c.awaitReadbackCallsign = callsign
 

@@ -241,6 +241,10 @@ func initializeSpeechWebsocket(controllerToken string, wsURL string, lg *log.Log
 	return conn, speechCh
 }
 
+func (c *ControlClient) HaveTTS() bool {
+	return c.speechWs != nil
+}
+
 func (c *ControlClient) Status() string {
 	if c == nil {
 		return "[disconnected]"
@@ -512,14 +516,14 @@ func (c *ControlClient) RadioIsActive() bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	return c.speechWs != nil && (c.playingSpeech || c.awaitReadbackCallsign != "")
+	return c.HaveTTS() && (c.playingSpeech || c.awaitReadbackCallsign != "")
 }
 
 func (c *ControlClient) HoldRadioTransmissions() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	if c.speechWs != nil {
+	if c.HaveTTS() {
 		c.holdSpeech = true
 		c.lastSpeechHoldTime = time.Now().Add(5 * time.Second)
 	}
@@ -532,7 +536,7 @@ func (c *ControlClient) AllowRadioTransmissions() {
 	c.holdSpeech = false
 }
 
-func (c *ControlClient) LastTransmissionCallsign() av.ADSBCallsign {
+func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
