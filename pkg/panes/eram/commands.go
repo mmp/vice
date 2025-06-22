@@ -3,10 +3,13 @@ package eram
 import (
 	"strings"
 
+	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/radar"
+	"github.com/mmp/vice/pkg/server"
+	"github.com/mmp/vice/pkg/sim"
 )
 
 type CommandMode int
@@ -85,6 +88,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 type CommandStatus struct {
 	clear  bool
 	output string
+	bigOutput string 
 	err    error
 }
 
@@ -98,6 +102,67 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	prefix := cmd[:2]
 	switch prefix {
 		// first, ERAM commands
+	case "TG": 
+		// Special cases for non-control commands.
+		if cmd == "" {
+			return
+		}
+		if cmd == "P" {
+			ctx.Client.ToggleSimPause()
+			status.clear = true
+			return
+		}
+
+		// Otherwise looks like an actual control instruction .
+		suffix, cmds, ok := strings.Cut(cmd, " ")
+		if !ok {
+			suffix = string(ctx.Client.LastTransmissionCallsign())
+			cmds = cmd
+		}
+
+		matching := radar.TracksFromACIDSuffix(ctx, suffix)
+		if len(matching) > 1 {
+			status.err = ErrERAMAmbiguousACID
+			return
+		}
+
+		var trk *sim.Track
+		if len(matching) == 1 {
+			trk = matching[0]
+		} else if len(matching) == 0 && ctx.Client.LastTransmissionCallsign() != "" {
+			// If a valid callsign wasn't given, try the last callsign used.
+			trk, _ = ctx.GetTrackByCallsign(ctx.Client.LastTransmissionCallsign())
+			// But now we're going to run all of the given input as commands.
+			cmds = cmd
+		}
+
+		if trk != nil {
+			ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmds)
+			status.clear = true
+		} else {
+			status.err = ErrERAMIllegalACID
+		}
+		return
 	}
-	return status 
+	return 
+}
+
+func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
+	ep.bigOutput = err.Error()
+}
+
+func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
+
+	ctx.Client.RunAircraftCommands(callsign, cmds,
+		func(errStr string, remaining string) {
+			if errStr != "" {
+
+				if err := server.TryDecodeErrorString(errStr); err != nil {
+					err = GetERAMError(err, ctx.Lg)
+					ep.displayError(err, ctx)
+				} else {
+					ep.displayError(ErrCommandFormat, ctx)
+				}
+			}
+		})
 }

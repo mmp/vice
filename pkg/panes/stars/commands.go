@@ -2445,7 +2445,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmds = cmd
 		}
 
-		matching := sp.tracksFromACIDSuffix(ctx, suffix)
+		matching := radar.TracksFromACIDSuffix(ctx, suffix)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return
@@ -4937,30 +4937,5 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 		})
 }
 
-// Returns all aircraft that match the given suffix. If instructor is true,
-// returns all matching aircraft; otherwise only ones under the current
-// controller's control are considered for matching.
-func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string) []*sim.Track {
-	match := func(trk *sim.Track) bool {
-		if trk.IsUnassociated() {
-			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
-		} else {
-			fp := trk.FlightPlan
-			if !strings.HasSuffix(string(fp.ACID), suffix) {
-				return false
-			}
 
-			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
-				return true
-			}
 
-			// Hold for release aircraft still in the list
-			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
-				trk.FlightPlan.ControllingController == "" {
-				return true
-			}
-			return false
-		}
-	}
-	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
-}
