@@ -105,15 +105,27 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	}
 
 	switch prefix {
-	// first, ERAM commands
-	case "QQ ":
-		// Interim altitude: first field is the altitude, second is the CID.
+
+	case "QQ ": // interim altitude
+		// first field is the altitude, second is the CID.
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
 			status.err = ErrCommandFormat
 			return
 		}
 		fp, err := parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
+		if err != nil {
+			status.err = err
+			return
+		}
+		ep.modifyFlightPlan(ctx, fields[1], fp)
+	case "QZ ": // Assigned, OTP, and block altitudes
+		fields := strings.Split(cmd, " ")
+		if len(fields) != 2 {
+			status.err = ErrCommandFormat
+			return
+		}
+		fp, err := parseOneFlightPlan("ALT_A", fields[0], nil) // should anything go in place of the nil?
 		if err != nil {
 			status.err = err
 			return
