@@ -155,10 +155,15 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
-		for _, vm := range ep.allVideoMaps {
+		for i, vm := range ep.allVideoMaps {
 			label := fmt.Sprintf("%d\n%s", vm.Id, vm.Label)
 			_, vis := ps.VideoMapVisible[vm.Id]
-			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, false) {
+			nextRow := false 
+			if i == 11 {
+				nextRow = true 
+				toolbarDrawState.offsetBottom = true // Offset the next row
+			}
+			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, nextRow) {
 				if vis {
 					delete(ps.VideoMapVisible, vm.Id)
 				} else {
@@ -457,7 +462,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	p2 := math.Add2f(p1, [2]float32{0, -sz[1]})
 	p3 := math.Add2f(p2, [2]float32{-sz[0], 0})
 
-	if ep.activeToolbarMenu == toolbarMain || ep.activeToolbarMenu == toolbarVideomap {
+	if ep.activeToolbarMenu == toolbarMain {
 		if slices.Contains(menuButtons, text) {
 			toolbarDrawState.buttonPositions[cleanButtonName(text)] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
 		}
