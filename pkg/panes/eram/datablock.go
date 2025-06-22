@@ -140,11 +140,11 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		}
 
 		br := brightness
-		if ch.flashing && halfSeconds&1 == 1 {
+		if ch.flashing && (halfSeconds/8)&1 == 1 {
 			br /= 3
 		}
 
-		c := ch.color
+		c := br.ScaleRGB(ch.color)
 		if !c.Equals(style.Color) {
 			flush()
 			style.Color = c
@@ -166,12 +166,12 @@ func fieldEmpty(f []dbChar) bool {
 
 // dbWriteText writes the provided text into the datablock field using the given
 // colour. Any unused characters remain unset.
-func dbWriteText(dst []dbChar, s string, c renderer.RGB) {
+func dbWriteText(dst []dbChar, s string, c renderer.RGB, flashing bool) {
 	for i, ch := range s {
 		if i >= len(dst) {
 			break
 		}
-		dst[i] = dbChar{ch: ch, color: c}
+		dst[i] = dbChar{ch: ch, color: c, flashing: flashing}
 	}
 }
 
@@ -238,10 +238,10 @@ func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
 	c := renderer.RGB{R: .855, G: .855, B: 0}
 
 	// TODO: design the exact fields for ERAM limited datablocks.
-	dbWriteText(db.line0[:], trk.ADSBCallsign.String(), c)
+	dbWriteText(db.line0[:], trk.ADSBCallsign.String(), c, false)
 	if trk.TransponderAltitude != 0 {
 		alt := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-		dbWriteText(db.line1[:], alt, c)
+		dbWriteText(db.line1[:], alt, c, false)
 	}
 
 	start := transforms.WindowFromLatLongP(state.track.Location)
@@ -282,25 +282,27 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 	case FullDatablock:
 		db := ep.fdbArena.AllocClear()
 		// DBLine 0 is point out
-		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color) // also * if satcom
-		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color)
+		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
+		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
-		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", "R"), colColor)
-		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color)
+		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", "R"), colColor, false)
+		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffTrackController != "" {
 			a := util.Select(ep.dbAlternate, fmt.Sprintf("H-%v", trk.FlightPlan.HandoffTrackController), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-			dbWriteText(db.fieldE[:], a, color)
+			dbWriteText(db.fieldE[:], a, color, true)
+		} else {
+			dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color, false)
 		}
-		dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color)
+		
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
 	case LimitedDatablock:
 		db := ep.ldbArena.AllocClear()
-		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color)
-		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), color)
+		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color, false)
+		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), color, false)
 		return db
 	default:
 		return nil // should not happen
