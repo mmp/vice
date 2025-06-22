@@ -121,7 +121,9 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "DB\nFIELDS", 0, scale, false, false) {
 			ep.activeToolbarMenu = toolbarDBFields
 		}
-		ep.drawToolbarFullButton(ctx, "VECTOR\n0", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("VECTOR\n%d", ep.velocityTime), 0, scale, false, false) {
+			handleMultiplicativeClick(&ep.velocityTime, 0, 8, 2)
+		}
 		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true) { // MANDATORY Done
 			ep.activeToolbarMenu = toolbarViews
 		}
@@ -839,6 +841,33 @@ func handleClick(pref *radar.ScopeBrightness, min, max, step int) {
 			*pref = radar.ScopeBrightness(value + step)
 		} else {
 			// play a sound or something
+		}
+	}
+}
+
+// Just for leader lines AFAIK
+func handleMultiplicativeClick(pref *int, min, max, step int) {
+	mouse := toolbarDrawState.mouse
+	if mouse == nil {
+		return
+	}
+
+	value := *pref
+	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary] { // lower value
+		if value/step >= min {
+			if value == 1 {
+				*pref = 0
+			} else {
+				*pref = value / step
+			}
+		}
+	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary] { // raise value
+		if value*step <= max {
+			if value == 0 {
+				*pref = 1
+			} else {
+				*pref = value * step
+			}
 		}
 	}
 }
