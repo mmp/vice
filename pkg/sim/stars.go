@@ -503,6 +503,11 @@ type STARSFlightPlanSpecifier struct {
 	TypeOfFlight util.Optional[av.TypeOfFlight]
 
 	AssignedAltitude      util.Optional[int]
+	InterimAlt            util.Optional[int]
+	InterimType           util.Optional[string]
+	AltitudeBlock         util.Optional[[2]int]
+	ControllerReportedAlt util.Optional[int]
+	VFROTP                util.Optional[bool]
 	RequestedAltitude     util.Optional[int]
 	PilotReportedAltitude util.Optional[int]
 
@@ -669,6 +674,20 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 			if rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
 				fp.DisableMSAW = true
 			}
+		}
+	}
+	if spec.InterimAlt.IsSet {
+		fp.InterimAlt = spec.InterimAlt.Get()
+		fmt.Println("Interim altitude:", fp.InterimAlt)
+	}
+	if spec.InterimType.IsSet {
+		interimType := spec.InterimType.Get()
+		fmt.Println("Interim type:", interimType)
+		switch interimType {
+		case "L":
+			fp.InterimType = 2
+		case "P":
+			fp.InterimType = 1
 		}
 	}
 

@@ -525,6 +525,15 @@ func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
 	return nil, false
 }
 
+func (ss *State) GetTrackByCID(cid string) (*Track, bool) {
+	for i, trk := range ss.Tracks {	
+		if trk.IsAssociated() && trk.FlightPlan.CID == cid {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
 func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 	for i, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&

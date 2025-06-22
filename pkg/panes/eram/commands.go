@@ -103,6 +103,22 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	cmd = strings.TrimPrefix(cmd, prefix)
 	switch prefix {
 	// first, ERAM commands
+	case "QQ ":
+		// Interim altitude: first field is the altitude, second is the CID.
+		fields := strings.Split(cmd, " ")
+		if len(fields) != 2 {
+			status.err = ErrCommandFormat
+			return
+		}
+			fp, err := parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
+			if err != nil {
+				status.err = err
+				return
+			}
+			ep.modifyFlightPlan(ctx, fields[1], fp)
+		
+
+		
 	case "TG ":
 		// Special cases for non-control commands.
 		if cmd == "" {
@@ -166,4 +182,26 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 				}
 			}
 		})
+}
+// Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes. 
+func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.STARSFlightPlanSpecifier) {
+	acid, err := ep.getACIDFromCID(ctx, cid)
+	if err != nil {
+		ep.displayError(err, ctx)
+		return
+	}
+	ctx.Client.ModifyFlightPlan(acid, spec,
+		func(err error) {
+			if err != nil {
+				ep.displayError(err, ctx)
+			} 
+		})
+}
+
+func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, error) {
+	trk, ok := ctx.Client.State.GetTrackByCID(cid)
+	if !ok {
+		return "", ErrERAMIllegalACID
+	}
+	return sim.ACID(trk.ADSBCallsign.String()), nil
 }

@@ -140,7 +140,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		}
 
 		br := brightness
-		if ch.flashing && (halfSeconds/8)&1 == 1 {
+		if ch.flashing && (halfSeconds/8)&1 == 1 { // TODO: adjust this value
 			br /= 3
 		}
 
@@ -319,10 +319,10 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	interimAltitude := track.FlightPlan.InterimAlt
 	formatCurrent := radar.FormatAltitude(currentAltitude)
 	formatAssigned := radar.FormatAltitude(assignedAltitude)
-	// formatInterim := radar.FormatAltitude(interimAltitude) might need this in the future...
-	if interimAltitude < 0 { // Interim alt takes precedence (i think) TODO: check this
+	formatInterim := radar.FormatAltitude(interimAltitude) 
+	if interimAltitude > 0 { // Interim alt takes precedence (i think) TODO: check this
 		intType := getInterimAltitudeType(track)
-		return fmt.Sprintf("%03d%s%03d", interimAltitude, intType, currentAltitude)
+		return fmt.Sprintf("%03v%s%03v", formatInterim, intType, formatCurrent)
 	} else /* if assignedAltitude != -1 */ { // Eventually for block altitudes...
 		switch {
 		case formatCurrent == formatAssigned:

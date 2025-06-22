@@ -20,6 +20,9 @@ var ( // TODO: Get actual error messages for this
 	ErrCommandFormat     = NewERAMError("Command format error")
 	ErrERAMAmbiguousACID = NewERAMError("AMB ACID")
 	ErrERAMIllegalACID   = NewERAMError("ILLEGAL ACID")
+	ErrERAMIllegalPosition = NewERAMError("ILLEGAL POSITION")
+	ErrERAMIllegalValue   = NewERAMError("ILLEGAL VALUE")
+	ErrERAMIllegalAirport = NewERAMError("ILLEGAL AIRPORT")
 )
 
 var eramErrorRemap = map[error]*ERAMError{}
