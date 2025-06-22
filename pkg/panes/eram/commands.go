@@ -95,14 +95,15 @@ type CommandStatus struct {
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status CommandStatus) {
 	// TG will be the prefix for radio commands. TODO: Tab and semicolo (or comma) adds TG
 	// Shift + tab locks TG
-	if len(cmd) < 2 {
+	if len(cmd) < 3 {
 		status.err = ErrCommandFormat
 		return
 	}
-	prefix := cmd[:2]
+	prefix := cmd[:3]
+	cmd = strings.TrimPrefix(cmd, prefix)
 	switch prefix {
 		// first, ERAM commands
-	case "TG": 
+	case "TG ": 
 		// Special cases for non-control commands.
 		if cmd == "" {
 			return

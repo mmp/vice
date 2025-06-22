@@ -192,11 +192,15 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case imgui.KeyEnter:
 			// Process the command
-			// ep.processCommandInput()
+			status := ep.executeERAMCommand(ctx, ep.Input)
 			ep.Input = ""
+			if status.err != nil {
+				ep.bigOutput = status.err.Error()
+			}
 		case imgui.KeyEscape:
 			// Clear the input
 			ep.Input = ""
+			ep.bigOutput = ""
 		case imgui.KeyTab:
 			ep.Input = "TG "
 		case imgui.KeyPageUp: // velocity vector *2
