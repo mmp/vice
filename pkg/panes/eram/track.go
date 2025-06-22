@@ -122,6 +122,11 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		state.track = trk.RadarTrack
 		state.trackTime = now
 
+		// Update history tracks
+		idx := state.historyTrackIndex % len(state.historyTracks)
+		state.historyTracks[idx] = state.track
+		state.historyTrackIndex++
+
 		// TODO: check unreasonable C
 		// CA processing
 		// etc
@@ -141,34 +146,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		var positionSymbol string = "?"
-		if trk.IsUnassociated() {
-			switch trk.Mode {
-			case av.TransponderModeStandby:
-				positionSymbol = "+" // Find the actual character for this
-			case av.TransponderModeAltitude:
-				switch {
-				case trk.Ident:
-					positionSymbol = string(0x2630) // Hopefully the correct font will make this a normal character
-				case trk.Squawk == 0o1200 && trk.TransponderAltitude < 100: // Below CA floor TODO: Find real CA floor
-					positionSymbol = "V"
-				case trk.Squawk != 0o1200 && trk.TransponderAltitude < 100: // Below CA floor
-					positionSymbol = "/" // Hopefully the correct font will make this
-					// case trk.Squawk : // Above CA floor
-					// 	positionSymbol = "I"
-				case trk.TransponderAltitude > 100:
-					positionSymbol = "I"
-				}
-			}
-		} else {
-			if trk.Mode == av.TransponderModeStandby {
-				positionSymbol = "X"
-			} else if state.track.TransponderAltitude < 23000 {
-				positionSymbol = "\u00b7" // Find a bigger symbol 00b7
-			} else {
-				positionSymbol = "\\"
-			}
-		}
+		positionSymbol := ep.positionSymbol(trk, state)
 		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td, cb)
 	}
 	transforms.LoadWindowViewingMatrices(cb)
@@ -194,28 +172,58 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	color := ep.trackColor(state, track)
 	font := renderer.GetDefaultFont() // Change this to the actual font
 	if ep.datablockType(ctx, track) == FullDatablock {
-		// draw a diamond 
+		// draw a diamond
 		drawDiamond(ctx, transforms, color, pos, ld, cb)
 	}
 	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
-	
+
 	ld.GenerateCommands(cb) // why does this need to be here?
 	cb.LineWidth(1, ctx.DPIScale)
-	
+
+}
+
+func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
+	symbol := "?"
+	if trk.IsUnassociated() {
+		switch trk.Mode {
+		case av.TransponderModeStandby:
+			symbol = "+"
+		case av.TransponderModeAltitude:
+			switch {
+			case trk.Ident:
+				symbol = string(0x2630)
+			case trk.Squawk == 0o1200 && trk.TransponderAltitude < 100:
+				symbol = "V"
+			case trk.Squawk != 0o1200 && trk.TransponderAltitude < 100:
+				symbol = "/"
+			case trk.TransponderAltitude > 100:
+				symbol = "I"
+			}
+		}
+	} else {
+		if trk.Mode == av.TransponderModeStandby {
+			symbol = "X"
+		} else if state.track.TransponderAltitude < 23000 {
+			symbol = "\u00b7"
+		} else {
+			symbol = "\\"
+		}
+	}
+	return symbol
 }
 
 func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, color renderer.RGB,
 	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
 	cb.LineWidth(2, ctx.DPIScale)
-		pt := transforms.WindowFromLatLongP(pos)
-		p0 := math.Add2f(pt, [2]float32{0, 5})
-		p1 := math.Add2f(pt, [2]float32{5, 0})
-		p2 := math.Add2f(pt, [2]float32{0, -5})
-		p3 := math.Add2f(pt, [2]float32{-5, 0})
-		ld.AddLine(p0, p1, color)
-		ld.AddLine(p1, p2, color)
-		ld.AddLine(p2, p3, color)
-		ld.AddLine(p3, p0, color)
+	pt := transforms.WindowFromLatLongP(pos)
+	p0 := math.Add2f(pt, [2]float32{0, 5})
+	p1 := math.Add2f(pt, [2]float32{5, 0})
+	p2 := math.Add2f(pt, [2]float32{0, -5})
+	p3 := math.Add2f(pt, [2]float32{-5, 0})
+	ld.AddLine(p0, p1, color)
+	ld.AddLine(p1, p2, color)
+	ld.AddLine(p2, p3, color)
+	ld.AddLine(p3, p0, color)
 }
 
 func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
@@ -365,5 +373,44 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
-	
+
+}
+
+// drawHistoryTracks draws small position symbols representing the last few
+// positions of each track.
+func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+
+	ps := ep.currentPrefs()
+	for _, trk := range tracks {
+		state := ep.TrackState[trk.ADSBCallsign]
+		symbol := ep.positionSymbol(trk, state)
+
+		var bright radar.ScopeBrightness
+		if trk.IsAssociated() {
+			bright = ps.Brightness.PRHST
+		} else {
+			bright = ps.Brightness.UNPHST
+		}
+		color := bright.ScaleRGB(renderer.RGB{.855, .855, 0})
+
+		for i := 0; i < len(state.historyTracks); i++ {
+			idx := (state.historyTrackIndex - 1 - i) % len(state.historyTracks)
+			if idx < 0 {
+				idx += len(state.historyTracks)
+			}
+			loc := state.historyTracks[idx].Location
+			if loc.IsZero() {
+				continue
+			}
+			pw := transforms.WindowFromLatLongP(loc)
+			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: renderer.GetDefaultFont(), Color: color})
+		}
+	}
+
+	transforms.LoadWindowViewingMatrices(cb)
+	td.GenerateCommands(cb)
 }
