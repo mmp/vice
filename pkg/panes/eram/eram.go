@@ -148,6 +148,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawPTLs(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
+	ep.drawJRings(ctx, tracks, transforms, cb)
 	// Draw QU /M lines (not sure where this goes)
 	// Draw clock
 	// Draw views

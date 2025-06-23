@@ -25,11 +25,13 @@ type TrackState struct {
 
 	DatablockType DatablockType
 
-	JRingRadius         float32
 	leaderLineDirection *math.CardinalOrdinalDirection
 
 	eLDB bool
 	eFDB bool
+
+	DisplayJRing bool 
+	DisplayReducedJRing bool 
 
 	// add more as we figure out what to do...
 
@@ -449,3 +451,29 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	td.GenerateCommands(cb)
 	ctd.GenerateCommands(cb)
 }
+
+func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	// Draw J-Rings for tracks that have them enabled.
+	jr := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(jr)
+
+	for _, trk := range tracks {
+		state := ep.TrackState[trk.ADSBCallsign]
+		pos := state.track.Location
+		if pos.IsZero() {
+			continue
+		}
+		if state.DisplayJRing {
+			pw := transforms.WindowFromLatLongP(pos)
+			radius := 5 / transforms.PixelDistanceNM(ctx.NmPerLongitude)
+			jr.AddCircle(pw, radius, 50, ERAMYellow)
+		}
+		if state.DisplayReducedJRing {
+			pw := transforms.WindowFromLatLongP(pos)
+			reducedRadius := 3 / transforms.PixelDistanceNM(ctx.NmPerLongitude) 
+			jr.AddCircle(pw, reducedRadius, 50, ERAMYellow)
+		}
+	}
+	jr.GenerateCommands(cb)
+}  

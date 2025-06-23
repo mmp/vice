@@ -104,6 +104,39 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	}
 
 	switch prefix {
+	case "QP ": // J rings, point out
+		fields := strings.Fields(cmd)
+		if len(fields) == 1 { // ack fdb after po
+
+		} else if len(fields) == 2 { // J ring or accept a pointout
+			switch fields[0] {
+			case "A": // Accept a point out
+			case "J": // J ring
+				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
+				if !ok {
+					status.err = ErrERAMIllegalACID
+					return
+				}
+				state := ep.TrackState[trk.ADSBCallsign]
+				state.DisplayJRing = !state.DisplayJRing 
+				state.DisplayReducedJRing = false // clear reduced J ring
+			case "T": // reduced J ring
+				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
+				if !ok {
+					status.err = ErrERAMIllegalACID
+					return
+				}
+				state := ep.TrackState[trk.ADSBCallsign]
+				if state.track.TransponderAltitude > 23000 {
+					status.err = ErrERAMIllegalValue // maybe change this error to "not eligible?"
+					return
+				}
+				state.DisplayJRing = false // clear J ring
+				state.DisplayReducedJRing = !state.DisplayReducedJRing 
+			}
+		} else if len(fields) == 3 { // initiate a po
+
+		}
 
 	case "QQ ": // interim altitude
 		// first field is the altitude, second is the CID.
