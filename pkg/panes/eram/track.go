@@ -37,6 +37,8 @@ type TrackState struct {
 
 	DisplayVCI bool 
 
+	OSectorEndTime time.Time
+
 	// add more as we figure out what to do...
 
 }
@@ -111,12 +113,16 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	}
 	for _, event := range ep.events.Get() {
 		switch event.Type {
+		case sim.AcceptedHandoffEvent:
+			state := ep.TrackState[av.ADSBCallsign(event.ACID)]
+			state.eFDB = true 
+			state.OSectorEndTime = ctx.Client.CurrentTime().Add(30 * time.Second) // check this pls
 		case sim.FixCoordinatesEvent:
 			ac := event.ACID
 			coords := event.WaypointInfo
 			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
 				coords:     coords,
-				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second),
+				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second), // check this time also 
 			}
 		}
 	}

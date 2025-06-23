@@ -255,8 +255,8 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB // toggle FDB
 			}
-		case 2:
-			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line & handoffs
+		case 2: // leader line & handoffs
+			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line 
 				dir := ep.numberToLLDirection(ctx, original[0])
 				// get callsign from fp
 				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
@@ -273,7 +273,16 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 					}
 				}
 				ep.TrackState[callsign].leaderLineDirection = &dir
-			} 
+			} else { // handoffs
+				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
+				if !ok {
+					status.err = ErrERAMIllegalACID
+					return
+				}
+				acid := sim.ACID(trk.ADSBCallsign)
+				sector := fields[0]
+				ep.handoffTrack(ctx, acid, sector)
+			}
 		}
 	}
 	return
@@ -370,4 +379,35 @@ func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
 			ep.displayError(err, ctx)
 		}
 	})
+}
+
+func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
+	control, err := ep.lookupControllerForID(ctx, controller, acid)
+	if err != nil {
+		ep.displayError(err, ctx)
+		return err
+	}
+	if control == nil {
+		return ErrERAMIllegalPosition
+	}
+
+	ctx.Client.HandoffTrack(acid, control.Id(),
+		func(err error) { ep.displayError(err, ctx,) })
+
+	return nil
+}
+
+func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
+	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to. 
+	// That is not here yet, so return an error. 
+	if len(controller) == 1 {
+		return nil, ErrERAMIllegalPosition
+	}
+
+	for _, control := range ctx.Client.State.Controllers {
+		if control.Id() == controller {
+			return control, nil 
+		}
+	}
+	return nil, ErrERAMIllegalPosition
 }
