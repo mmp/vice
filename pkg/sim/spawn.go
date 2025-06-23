@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"iter"
 	"log/slog"
+	gomath "math"
 	"maps"
 	"slices"
 	"strconv"
@@ -1108,6 +1109,25 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	if err != nil {
 		return nil, err
 	}
+	assignedAlt := int(arr.AssignedAltitude)
+	if arr.AssignedAltitude == 0 {
+		// Get the altitude from the route and waypoints if possible
+		wps := arr.Waypoints
+		lowestAlt := gomath.MaxInt
+		for _, wp := range wps {
+			if wp.AltitudeRestriction == nil {
+				continue
+			}
+			if int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude)) < lowestAlt {
+				lowestAlt = int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude))
+			}
+		}
+		if lowestAlt != gomath.MaxInt {
+			assignedAlt = lowestAlt
+		} else {
+			assignedAlt = int(arr.InitialAltitude)
+		}
+	}
 
 	starsFp := STARSFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
@@ -1130,7 +1150,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 
-		AssignedAltitude: int(arr.AssignedAltitude),
+		AssignedAltitude: assignedAlt,
 	}
 
 	// VFRs don't go around since they aren't talking to us.
