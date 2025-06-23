@@ -139,9 +139,9 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 			continue
 		}
 
-		br := brightness
-		if ch.flashing && (halfSeconds/8)&1 == 1 { // TODO: adjust this value
-			br /= 3
+		br := radar.ScopeBrightness(100)
+		if ch.flashing && halfSeconds&1 == 1 { // TODO: adjust this value
+			br = 0
 		}
 
 		c := br.ScaleRGB(ch.color)

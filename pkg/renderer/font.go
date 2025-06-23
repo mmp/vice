@@ -310,7 +310,7 @@ func FontsInit(r Renderer, p platform.Platform) {
 	add("Inconsolata-SemiBold.ttf.zst", true, "Inconsolata SemiBold")
 	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
 	add("Inconsolata_Condensed-Regular.ttf.zst", true, "Inconsolata Condensed Regular")
-	add("ERAM.ttf.zst", true, "ERAM")
+	add("ERAM.ttf.zst", true, "ERAMv102")
 
 
 	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
