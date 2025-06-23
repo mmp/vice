@@ -186,7 +186,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				status.err = ErrERAMIllegalACID
 			}
 		case 2:
-			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line
+			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line & handoffs 
 				dir := ep.numberToLLDirection(ctx, original[0])
 				// get callsign from fp
 				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])

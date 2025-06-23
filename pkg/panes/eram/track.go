@@ -234,7 +234,7 @@ func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, colo
 func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
 	ps := ep.currentPrefs()
 	bright := util.Select(state.DatablockType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-	color := bright.ScaleRGB(renderer.RGB{.855, .855, 0})
+	color := bright.ScaleRGB(ERAMYellow)
 
 	// Scale this color based on the type of tag it is.
 	// DB and Track brights/ color are the same, so call the DB color function TODO
@@ -330,7 +330,7 @@ func (ep *ERAMPane) trackDatablockColor(ctx *panes.Context, trk sim.Track) rende
 	dType := ep.datablockType(ctx, trk)
 	ps := ep.currentPrefs()
 	brite := util.Select(dType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-	return brite.ScaleRGB(renderer.RGB{.855, .855, 0})
+	return brite.ScaleRGB(ERAMYellow)
 }
 
 // drawLeaderLines draws leader lines for visible datablocks.
@@ -423,7 +423,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		} else {
 			bright = ps.Brightness.UNPHST
 		}
-		color := bright.ScaleRGB(renderer.RGB{.855, .855, 0})
+		color := bright.ScaleRGB(ERAMYellow)
 
 		for _, trk := range state.historyTracks {
 			loc := trk.Location

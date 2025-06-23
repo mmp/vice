@@ -21,9 +21,7 @@ import (
 
 var (
 	ERAMPopupPaneBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0}
-	// ERAMBorderColor			 = renderer.RGB
-	// ERAMButtonColor			 = renderer.RGB
-	// ERAMToolbarColor			 = renderer.RGB
+	ERAMYellow = renderer.RGB{R: .894, G: .894, B: .894}
 
 )
 

@@ -235,7 +235,7 @@ func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
 	}
 
 	var db limitedDatablock
-	c := renderer.RGB{R: .855, G: .855, B: 0}
+	c := ERAMYellow
 
 	// TODO: design the exact fields for ERAM limited datablocks.
 	dbWriteText(db.line0[:], trk.ADSBCallsign.String(), c, false)
@@ -268,7 +268,7 @@ func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map
 		dbType := ep.datablockType(ctx, trk)
 		ps := ep.currentPrefs()
 		brite := util.Select(dbType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-		color := brite.ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
+		color := brite.ScaleRGB(ERAMYellow)
 		db := ep.getDatablock(ctx, trk, dbType, color)
 		dbs[trk.ADSBCallsign] = db
 	}
@@ -286,7 +286,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
-		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
+		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)
 		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffTrackController != "" {
