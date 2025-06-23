@@ -85,9 +85,13 @@ type FontIdentifier struct {
 // copy over the necessary information into our Glyph structure.
 func (f *Font) createGlyph(ch rune) *Glyph {
 	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
-	return &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
+	g := &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
 		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}
+	if ch == '\u2191' || ch == '\u2193' {
+		g.AdvanceX = g.Width()-17
+	}
+	return g
 }
 
 func (f *Font) AddGlyph(ch int, g *Glyph) {
@@ -242,7 +246,7 @@ func FontsInit(r Renderer, p platform.Platform) {
 		builder.AddChar(imgui.Wchar(0x2193))
 		for _, str := range icons {
 			unicode, _ := utf8.DecodeRuneInString(str)
-			builder.AddChar(imgui.Wchar(unicode))	
+			builder.AddChar(imgui.Wchar(unicode))
 		}
 		r := imgui.NewGlyphRange()
 		builder.BuildRanges(r)
@@ -295,7 +299,7 @@ func FontsInit(r Renderer, p platform.Platform) {
 			// make the icon sizes match the font's character sizes.
 			addTTF(faTTF, .8*sp, config, faGlyphRange)
 			addTTF(fabrTTF, .8*sp, config, faBrandsGlyphRange)
-			addTTF(eramTTF, 1*sp, config, eramGlyphRange)
+			addTTF(eramTTF, sp, config, eramGlyphRange)
 
 			id := FontIdentifier{Name: name, Size: size}
 			fonts[id] = MakeFont(int(sp), mono, id, ifont)
@@ -311,7 +315,6 @@ func FontsInit(r Renderer, p platform.Platform) {
 	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
 	add("Inconsolata_Condensed-Regular.ttf.zst", true, "Inconsolata Condensed Regular")
 	add("ERAM.ttf.zst", true, "ERAMv102")
-
 
 	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
 	lg.Infof("Fonts texture used %.1f MB", float32(w*h*bpp)/(1024*1024))

@@ -93,10 +93,10 @@ func dbChopTrailing(f []dbChar) []dbChar {
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-		scale := float32(1.5) // 1.5 for default font
+		scale := float32(2) // 1.5 for default font
 		if len(lines) >= 5 {
 			if lines[3].ch[0].ch != rune('R') {
-				scale = .8
+				scale = 2
 			} 
 		}
 	glyph := font.LookupGlyph('R')
@@ -108,7 +108,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 
 		// Special case: line 3 (index 3) starts 1 character to the left
 		if i == 3 {
-			xOffset -= fontWidth
+			xOffset -= fontWidth 
 		}
 
 		sb.Reset()
@@ -287,7 +287,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(renderer.RGB{R: .855, G: .855, B: 0})
-		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", "R"), colColor, false)
+		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffTrackController != "" {
 			a := util.Select(ep.dbAlternate, fmt.Sprintf("H-%v", trk.FlightPlan.HandoffTrackController), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
@@ -416,24 +416,24 @@ func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 	var offset [2]float32
 	switch dir {
 	case math.North:
-		offset[1] = 60
+		offset[1] = 40
 	case math.NorthEast:
-		offset[1] = 40
+		offset[1] = 30
 	case math.NorthWest:
-		offset[0] = -65
-		offset[1] = 50
+		offset[0] = -80
+		offset[1] = 25
 	case math.East:
-		offset[1] = 38
+		offset[1] = 25
 	case math.West:
-		offset[0] = -70
-		offset[1] = 40
+		offset[0] = -80
+		offset[1] = 25
 	case math.SouthEast:
 		offset[1] = 20
 	case math.South:
 		offset[0] = 4
 		offset[1] = 16
 	case math.SouthWest:
-		offset[0] = -70
+		offset[0] = -80
 		offset[1] = 25
 	}
 	return offset
