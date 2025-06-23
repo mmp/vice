@@ -133,10 +133,14 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				}
 				state.DisplayJRing = false // clear J ring
 				state.DisplayReducedJRing = !state.DisplayReducedJRing
+			default: // init a pointout
+				// <sector ID><FLID>
+				if len(fields) != 2 {
+					status.err = ErrCommandFormat
+					return
+				}
 			}
-		} else if len(fields) == 3 { // initiate a po
-
-		}
+		} 
 	case "QU": // direct, qu lines
 		fields := strings.Fields(cmd)
 		if len(fields) == 0 {
@@ -226,18 +230,30 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			status.err = ErrERAMIllegalACID
 		}
 		return
-	default: // Leader lines, accepting/ recalling HOs and whatever else goes in here
+	default: // Leader lines,  HOs and whatever else goes in here
 		fields := strings.Fields(original) // use the origional, uncut, command for this
 		switch len(fields) {
 		case 1:
 			cmd := fields[0]
-			if trk, ok := ctx.Client.State.GetTrackByCID(cmd); ok {
+			if trk, ok := ctx.Client.State.GetTrackByCID(cmd); ok && trk.HandingOffTo(ctx.UserTCP){
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				ep.acceptHandoff(ctx, acid)
 				status.clear = true
-			} else {
-				status.err = ErrERAMIllegalACID
+			} else { // Change to LDB or FDB
+				trk, ok := ctx.Client.State.GetTrackByCID(cmd)
+				if !ok {
+					status.err = ErrERAMIllegalACID
+					return
+				}
+				if !trk.IsAssociated() {
+					return // What error should be returned here?
+				}
+				if trk.FlightPlan.TrackingController != ctx.UserTCP {
+					return // What error should be returned here?
+				}
+				state := ep.TrackState[trk.ADSBCallsign]
+				state.eFDB = !state.eFDB // toggle FDB
 			}
 		case 2:
 			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line & handoffs
@@ -257,7 +273,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 					}
 				}
 				ep.TrackState[callsign].leaderLineDirection = &dir
-			}
+			} 
 		}
 	}
 	return

@@ -525,9 +525,18 @@ func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
 	return nil, false
 }
 
-func (ss *State) GetTrackByCID(cid string) (*Track, bool) {
+func (ss *State) GetTrackByCID(flid string) (*Track, bool) {
 	for i, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.CID == cid {
+		if !trk.IsAssociated() {
+			continue
+		}
+		if trk.FlightPlan.CID == flid {
+			return ss.Tracks[i], true
+		}
+		if trk.ADSBCallsign == av.ADSBCallsign(flid) {
+			return ss.Tracks[i], true
+		}
+		if sq, err := av.ParseSquawk(flid); err != nil && trk.FlightPlan.AssignedSquawk == sq {
 			return ss.Tracks[i], true
 		}
 	}
