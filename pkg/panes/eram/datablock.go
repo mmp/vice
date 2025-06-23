@@ -104,7 +104,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 
 	for i, line := range lines {
 		// All lines start at the same position
-		xOffset := float32(4)
+		xOffset := float32(0)
 
 		// Special case: line 3 (index 3) starts 1 character to the left
 		if i == 3 {
@@ -328,9 +328,11 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 		case formatCurrent == formatAssigned:
 			return fmt.Sprintf("%vC", radar.FormatAltitude(currentAltitude))
 		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw
-			return util.Select(state.Descending() || state.IsLevel(), fmt.Sprintf("%v\u2193%v", formatAssigned, formatCurrent), fmt.Sprintf("%v+%v", formatAssigned, formatCurrent))
+			middle := util.Select(state.Descending() || state.IsLevel(), downArrow, "+")
+			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent)
 		case currentAltitude < float32(assignedAltitude):
-			return util.Select(state.Climbing() || state.IsLevel(), fmt.Sprintf("%v\u2191%v", formatAssigned, formatCurrent), fmt.Sprintf("%v-%v", formatAssigned, formatCurrent)) // or maintaining
+			middle := util.Select(state.Climbing() || state.IsLevel(), upArrow, "+")
+			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent) // or maintaining
 
 		}
 	}

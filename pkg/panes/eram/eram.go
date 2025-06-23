@@ -192,6 +192,10 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl plat
 	ep.makeMaps(client, ss, lg)
 }
 
+var upArrow string = "z"
+var downArrow string = "y"
+var scratchpadArrow string = "x"
+
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
