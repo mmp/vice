@@ -9,9 +9,14 @@ import (
 	"net"
 	"net/rpc"
 	"os"
+	"runtime/pprof"
+	"slices"
+	"time"
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
 // Version history 0-7 not explicitly recorded
@@ -62,6 +67,46 @@ type ServerLaunchConfig struct {
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
+	const nhist = 10
+	const limit = 95
+	var history []float64
+	go func() {
+		t := time.Tick(1 * time.Second)
+		for {
+			<-t
+
+			if usage, err := cpu.Percent(0, false); err != nil {
+				lg.Errorf("cpu.Percent: %v", err)
+			} else {
+				history = append(history, usage[0])
+				if n := len(history); n > nhist {
+					history = history[:nhist]
+
+					if slices.Min(history) > limit {
+						fmt.Printf("Warning: last %d ticks over %d utilization: %#v\n", nhist, limit, history)
+
+						f, err := os.CreateTemp(".", "threaddump-*.txt")
+						if err != nil {
+							panic(err)
+						}
+						fmt.Println("Dumping to ", f.Name())
+
+						fmt.Fprint(f, util.DumpHeldMutexes(lg))
+						fmt.Fprint(f, "\n")
+
+						pprof.Lookup("goroutine").WriteTo(f, 2)
+
+						f.Close()
+
+						panic("bye")
+					} else if slices.Min(history[:n-3]) > limit {
+						fmt.Printf("Warning: last 3 ticks over %d utilization: %#v\n", limit, history)
+					}
+				}
+			}
+		}
+	}()
+
 	_, server, e := makeServer(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
