@@ -122,6 +122,11 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 			continue
 		}
 
+		// check if tracks with a reduced DRI are above FL230
+		if state.DisplayReducedJRing && state.track.TransponderAltitude > 23000 {
+			state.DisplayReducedJRing = false
+		}
+
 		state.previousTrack = state.track
 		state.previousAltitude = state.track.TransponderAltitude
 		state.previousTrackTime = state.trackTime
