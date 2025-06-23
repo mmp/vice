@@ -539,7 +539,14 @@ func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransf
 
 		for i, coordinate := range info.coords {
 			if i+1 >= len(info.coords) {
-				// TODO: draw X
+				window := transforms.WindowFromLatLongP(coordinate)
+				// get coordinates of an X shape 
+				p1 := math.Add2f(window, [2]float32{5, 8})
+				p2 := math.Add2f(window, [2]float32{-5, -8})
+				p3 := math.Add2f(window, [2]float32{5, -8})
+				p4 := math.Add2f(window, [2]float32{-5, 8})
+				ld.AddLine(p1, p2, color) 
+				ld.AddLine(p3, p4, color)
 			} else {
 				windowCoords := transforms.WindowFromLatLongP(coordinate)
 				ld.AddLine(windowCoords, transforms.WindowFromLatLongP(info.coords[i+1]), color)
