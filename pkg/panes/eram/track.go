@@ -430,7 +430,12 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
 			if symbol == "p" {
-				ctd.AddCircle(pt, 2, 100, color)
+				vertices := radar.GetTrackVertices(ctx, 5)
+				for i := range vertices {
+					v0, v1 := vertices[i], vertices[(i+1)%len(vertices)]
+					ctd.AddTriangle(pt, math.Add2f(pt, v0), math.Add2f(pt, v1), color)
+				}
+				
 			} else {
 				td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
 			}
