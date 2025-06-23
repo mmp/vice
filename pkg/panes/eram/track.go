@@ -158,9 +158,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 
 	transforms.LoadLatLongViewingMatrices(cb)
 	trid.GenerateCommands(cb)
-	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
-
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
 }
@@ -168,7 +166,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Context,
 	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
-	cb *renderer.CommandBuffer) {
+ cb *renderer.CommandBuffer) {
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
@@ -179,11 +177,14 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 		// draw a diamond
 		drawDiamond(ctx, transforms, color, pos, ld, cb)
 	}
-	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	if position == "p" {
+		trackBuilder.AddCircle(pt, 2, 100, color)	
+	} else {
+		td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	}
 
+	// trackBuilder.GenerateCommands(cb)
 	ld.GenerateCommands(cb) // why does this need to be here?
-	cb.LineWidth(1, ctx.DPIScale)
-
 }
 
 func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
@@ -208,7 +209,7 @@ func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
 		if trk.Mode == av.TransponderModeStandby {
 			symbol = "X"
 		} else if state.track.TransponderAltitude < 23000 {
-			symbol = "\u00b7"
+			symbol = "p"
 		} else {
 			symbol = "\\"
 		}
@@ -405,6 +406,8 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+	ctd := renderer.GetColoredTrianglesDrawBuilder()
+	defer renderer.ReturnColoredTrianglesDrawBuilder(ctd)
 
 	ps := ep.currentPrefs()
 	for _, trk := range tracks {
@@ -419,19 +422,6 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		}
 		color := bright.ScaleRGB(renderer.RGB{.855, .855, 0})
 
-		// for i := 0; i < len(state.historyTracks); i++ {
-		// 	idx := (state.historyTrackIndex - 1 - i) % len(state.historyTracks)
-		// 	if idx < 0 {
-		// 		idx += len(state.historyTracks)
-		// 	}
-		// 	loc := state.historyTracks[idx].Location
-		// 	if loc.IsZero() {
-		// 		continue
-		// 	}
-		// 	pw := transforms.WindowFromLatLongP(loc)
-		// 	pt := math.Add2f(pw, [2]float32{0.5, -.5})
-		// 	td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
-		// }
 		for _, trk := range state.historyTracks {
 			loc := trk.Location
 			if loc.IsZero() {
@@ -439,11 +429,15 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			}
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
-			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
-
+			if symbol == "p" {
+				ctd.AddCircle(pt, 2, 100, color)
+			} else {
+				td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
+			}
 		}
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
 	td.GenerateCommands(cb)
+	ctd.GenerateCommands(cb)
 }

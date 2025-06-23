@@ -590,7 +590,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	// TODO: square icon if it's squawking a beacon code we're monitoring
 
 	// Update cached command buffers for tracks
-	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
+	sp.fusedTrackVertices = radar.GetTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -898,30 +898,6 @@ func drawTrack(ctd *renderer.ColoredTrianglesDrawBuilder, p [2]float32, vertices
 	}
 }
 
-func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
-	// Figure out how many points to use to approximate the circle; use
-	// more the bigger it is on the screen, but, sadly, not enough to get a
-	// nice clean circle (matching real-world..)
-	np := 8
-	if diameter > 20 {
-		np = util.Select(diameter <= 40, 16, 32)
-	}
-
-	// Prepare the points around the unit circle; rotate them by 1/2 their
-	// angular spacing so that we have vertical and horizontal edges at the
-	// sides (e.g., a octagon like a stop-sign with 8 points, rather than
-	// having a vertex at the top of the circle.)
-	rot := math.Rotator2f(360 / (2 * float32(np)))
-	pts := util.MapSlice(math.CirclePoints(np), func(p [2]float32) [2]float32 { return rot(p) })
-
-	// Scale the points based on the circle radius (and deal with the usual
-	// Windows high-DPI borkage...)
-	radius := ctx.DrawPixelScale * float32(int(diameter/2+0.5)) // round to integer
-	pts = util.MapSlice(pts, func(p [2]float32) [2]float32 { return math.Scale2f(p, radius) })
-
-	return pts
-}
-
 func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
@@ -934,7 +910,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 	defer renderer.ReturnColoredTrianglesDrawBuilder(historyBuilder)
 
 	const historyTrackDiameter = 8
-	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
+	historyTrackVertices := radar.GetTrackVertices(ctx, historyTrackDiameter)
 
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]

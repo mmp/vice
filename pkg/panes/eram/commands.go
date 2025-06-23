@@ -144,11 +144,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		}
 
 		// Otherwise looks like an actual control instruction .
-		suffix, cmds, ok := strings.Cut(cmd, " ")
-		if !ok {
-			suffix = string(ctx.Client.LastTransmissionCallsign())
-			cmds = cmd
-		}
+		suffix, cmds, _ := strings.Cut(cmd, " ")
+		// if !ok {
+		// 	suffix = string(ctx.Client.LastTransmissionCallsign())
+		// 	cmds = cmd
+		// }
 
 		matching := radar.TracksFromACIDSuffix(ctx, suffix)
 		if len(matching) > 1 {
@@ -157,14 +157,14 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		}
 
 		var trk *sim.Track
-		if len(matching) == 1 {
-			trk = matching[0]
-		} else if len(matching) == 0 && ctx.Client.LastTransmissionCallsign() != "" {
-			// If a valid callsign wasn't given, try the last callsign used.
-			trk, _ = ctx.GetTrackByCallsign(ctx.Client.LastTransmissionCallsign())
-			// But now we're going to run all of the given input as commands.
-			cmds = cmd
-		}
+		// if len(matching) == 1 {
+		// 	trk = matching[0]
+		// } else if len(matching) == 0 && ctx.Client.LastTransmissionCallsign() != "" {
+		// 	// If a valid callsign wasn't given, try the last callsign used.
+		// 	trk, _ = ctx.GetTrackByCallsign(ctx.Client.LastTransmissionCallsign())
+		// 	// But now we're going to run all of the given input as commands.
+		// 	cmds = cmd
+		// }
 
 		if trk != nil {
 			ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmds)
