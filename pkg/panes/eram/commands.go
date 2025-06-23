@@ -175,7 +175,16 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			return
 		}
 		ep.modifyFlightPlan(ctx, fields[1], fp)
-
+	case "//":
+		cmd = strings.TrimPrefix(cmd, "//") // In case user types //FLID. The space is also acceptable
+		trk, err := ep.getACIDFromCID(ctx, cmd)
+		if err != nil {
+			status.err = err
+			return
+		}
+		state := ep.TrackState[av.ADSBCallsign(trk)]
+		state.DisplayVCI = !state.DisplayVCI
+		return
 	case "TG":
 		// Special cases for non-control commands.
 		if cmd == "" {

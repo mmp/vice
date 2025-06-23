@@ -99,7 +99,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 			scale = 2
 		}
 	}
-	glyph := font.LookupGlyph('R')
+	glyph := font.LookupGlyph(' ')
 	fontWidth := glyph.AdvanceX * scale
 
 	for i, line := range lines {
@@ -107,7 +107,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		xOffset := float32(0)
 
 		// Special case: line 3 (index 3) starts 1 character to the left
-		if i == 3 {
+		if i == 2 || i == 3 {
 			xOffset -= fontWidth
 		}
 
@@ -199,6 +199,8 @@ func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 type fullDatablock struct {
 	line0 [16]dbChar
 	line1 [16]dbChar
+	// line 2
+	vci [2]dbChar
 	line2 [16]dbChar
 	// line3
 	col1   [2]dbChar
@@ -214,7 +216,7 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
-		dbMakeLine(dbChopTrailing(db.line2[:])),
+		dbMakeLine(db.vci[:], dbChopTrailing(db.line2[:])),
 		dbMakeLine(db.col1[:], dbChopTrailing(db.fieldD[:]), dbChopTrailing(db.fieldE[:])),
 		dbMakeLine(dbChopTrailing(db.line4[:])),
 	}
@@ -283,6 +285,9 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		db := ep.fdbArena.AllocClear()
 		// DBLine 0 is point out
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
+		vciBright := radar.ScopeBrightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
+		vciColor := vciBright.ScaleRGB(renderer.RGB{0.01, 1, 0.05})
+		dbWriteText(db.vci[:], util.Select(state.DisplayVCI, vci, ""), vciColor, false)
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff

@@ -194,6 +194,7 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl plat
 var upArrow string = "z"
 var downArrow string = "y"
 var scratchpadArrow string = "x"
+var vci string = " w"
 
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
@@ -295,7 +296,7 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 
 	for _, vm := range draw {
 		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1)
-		color := mapColors[vm.Group][cidx]
+		color := mapColors[vm.Group][cidx] // TODO: change this out for custom brightnesses.
 
 		cb.SetRGB(color)
 		cb.Call(vm.CommandBuffer)

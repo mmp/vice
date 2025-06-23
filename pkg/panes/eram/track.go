@@ -35,6 +35,8 @@ type TrackState struct {
 	DisplayJRing        bool
 	DisplayReducedJRing bool
 
+	DisplayVCI bool 
+
 	// add more as we figure out what to do...
 
 }
