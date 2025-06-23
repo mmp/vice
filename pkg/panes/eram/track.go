@@ -398,7 +398,7 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 		if heading == -1{
 			continue // dont draw PTLs for tracks that don't have a calculated heading
 		}
-		ptlEnd := math.Offset2LL(pos, heading, dist, ctx.NmPerLongitude, ctx.MagneticVariation)
+		ptlEnd := math.Offset2LL(pos, heading, dist, ctx.NmPerLongitude, 0)
 		p0 := transforms.WindowFromLatLongP(pos)
 		p1 := transforms.WindowFromLatLongP(ptlEnd)
 		color := ep.trackDatablockColor(ctx, trk)
