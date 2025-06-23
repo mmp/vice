@@ -112,7 +112,7 @@ func (ac *Aircraft) Update(wind av.WindModel, bravo *av.AirspaceGrid, lg *log.Lo
 
 	passedWaypoint := ac.Nav.Update(wind, &ac.FlightPlan, bravo, lg)
 	if passedWaypoint != nil {
-		lg.Info("passed", slog.Any("waypoint", passedWaypoint))
+		lg.Debug("passed", slog.Any("waypoint", passedWaypoint))
 	}
 
 	return passedWaypoint

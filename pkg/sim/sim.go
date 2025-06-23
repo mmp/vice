@@ -442,7 +442,7 @@ func (s *Sim) TogglePause(tcp string) error {
 	defer s.mu.Unlock(s.lg)
 
 	s.State.Paused = !s.State.Paused
-	s.lg.Infof("paused: %v", s.State.Paused)
+	s.lg.Debugf("paused: %v", s.State.Paused)
 	s.lastUpdateTime = time.Now() // ignore time passage...
 
 	s.eventStream.Post(Event{
@@ -481,6 +481,7 @@ func (s *Sim) SetSimRate(tcp string, rate float32) error {
 	defer s.mu.Unlock(s.lg)
 
 	s.State.SimRate = rate
+	fmt.Printf("sim rate set to %f\n", s.State.SimRate)
 	s.lg.Infof("sim rate set to %f", s.State.SimRate)
 	return nil
 }
@@ -701,7 +702,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			if ac.Voice == "" {
 				var err error
 				if ac.Voice, err = speech.GetRandomVoice(); err != nil {
-					s.lg.Infof("TTS GetRandomVoice: %v", err)
+					s.lg.Debugf("TTS GetRandomVoice: %v", err)
 					continue
 				}
 			}
@@ -950,7 +951,7 @@ func (s *Sim) updateState() {
 					ToController:   fp.HandoffTrackController,
 					ACID:           fp.ACID,
 				})
-				s.lg.Info("automatic handoff accept", slog.String("acid", string(fp.ACID)),
+				s.lg.Debug("automatic handoff accept", slog.String("acid", string(fp.ACID)),
 					slog.String("from", fp.TrackingController),
 					slog.String("to", fp.HandoffTrackController))
 
@@ -979,7 +980,7 @@ func (s *Sim) updateState() {
 				ToController:   po.FromController,
 				ACID:           acid,
 			})
-			s.lg.Info("automatic pointout accept", slog.String("acid", string(acid)),
+			s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
 				slog.String("by", po.ToController), slog.String("to", po.FromController))
 
 			delete(s.PointOuts, acid)
@@ -1079,7 +1080,7 @@ func (s *Sim) updateState() {
 				}
 
 				if passedWaypoint.Delete {
-					s.lg.Info("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
+					s.lg.Debug("deleting aircraft at waypoint", slog.Any("waypoint", passedWaypoint))
 					s.deleteAircraft(ac)
 				}
 
@@ -1090,7 +1091,7 @@ func (s *Sim) updateState() {
 					// If we're more than 200 feet AGL, go around.
 					lowEnough := alt == nil || ac.Altitude() <= alt.TargetAltitude(ac.Altitude())+200
 					if lowEnough {
-						s.lg.Info("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
+						s.lg.Debug("deleting landing at waypoint", slog.Any("waypoint", passedWaypoint))
 
 						// Record the landing if necessary for scheduling departures.
 						if depState, ok := s.DepartureState[ac.FlightPlan.ArrivalAirport]; ok {
@@ -1122,7 +1123,7 @@ func (s *Sim) updateState() {
 			// Possibly go around
 			if ac.GoAroundDistance != nil {
 				if d, err := ac.DistanceToEndOfApproach(); err == nil && d < *ac.GoAroundDistance {
-					s.lg.Info("randomly going around")
+					s.lg.Debug("randomly going around")
 					ac.GoAroundDistance = nil // only go around once
 					s.goAround(ac)
 				}
@@ -1138,7 +1139,7 @@ func (s *Sim) updateState() {
 				}
 				if fp != nil {
 					tcp := s.State.ResolveController(fp.InboundHandoffController)
-					s.lg.Info("contacting departure controller", slog.String("tcp", tcp))
+					s.lg.Debug("contacting departure controller", slog.String("tcp", tcp))
 
 					rt := ac.Nav.DepartureMessage()
 					s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
@@ -1156,7 +1157,7 @@ func (s *Sim) updateState() {
 
 			// Cull far-away aircraft
 			if math.NMDistance2LL(ac.Position(), s.State.Center) > 125 {
-				s.lg.Info("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
+				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}
 		}

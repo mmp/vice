@@ -257,7 +257,6 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 
 			if newSum != oldSum {
 				pushActive := s.State.SimTime.Before(s.PushEnd)
-				s.lg.Infof("%s: inbound flow rate changed %f -> %f", group, oldSum, newSum)
 				s.NextInboundSpawn[group] = s.State.SimTime.Add(randomWait(newSum, pushActive, s.Rand))
 			}
 		}
@@ -266,6 +265,8 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 	if lc.VFFRequestRate != s.State.LaunchConfig.VFFRequestRate {
 		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 	}
+
+	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
 
 	s.State.LaunchConfig = lc
 	return nil
@@ -283,14 +284,14 @@ func (s *Sim) TakeOrReturnLaunchControl(tcp string) error {
 			Type:        StatusMessageEvent,
 			WrittenText: tcp + " is now controlling aircraft launches.",
 		})
-		s.lg.Infof("%s: now controlling launches", tcp)
+		s.lg.Debugf("%s: now controlling launches", tcp)
 		return nil
 	} else {
 		s.eventStream.Post(Event{
 			Type:        StatusMessageEvent,
 			WrittenText: s.State.LaunchConfig.Controller + " is no longer controlling aircraft launches.",
 		})
-		s.lg.Infof("%s: no longer controlling launches", tcp)
+		s.lg.Debugf("%s: no longer controlling launches", tcp)
 		s.State.LaunchConfig.Controller = ""
 		return nil
 	}
@@ -377,6 +378,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 }
 
 func (s *Sim) Prespawn() {
+	start := time.Now()
 	s.lg.Info("starting aircraft prespawn")
 
 	// Prime the pump before the user gets involved
@@ -401,6 +403,9 @@ func (s *Sim) Prespawn() {
 	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 
 	s.lg.Info("finished aircraft prespawn")
+	fmt.Printf("Prespawn in %s, rates: dep %f arrival %f overflight %f LaunchConfig %#v\n", time.Since(start),
+		s.State.LaunchConfig.TotalDepartureRate(), s.State.LaunchConfig.TotalArrivalRate(),
+		s.State.LaunchConfig.TotalOverflightRate(), s.State.LaunchConfig)
 }
 
 func (s *Sim) setInitialSpawnTimes(now time.Time) {
@@ -541,14 +546,14 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 	if !s.NextPushStart.IsZero() && now.After(s.NextPushStart) {
 		// party time
 		s.PushEnd = now.Add(time.Duration(s.State.LaunchConfig.ArrivalPushLengthMinutes) * time.Minute)
-		s.lg.Info("arrival push starting", slog.Time("end_time", s.PushEnd))
+		s.lg.Debug("arrival push starting", slog.Time("end_time", s.PushEnd))
 		s.NextPushStart = time.Time{}
 	}
 	if !s.PushEnd.IsZero() && now.After(s.PushEnd) {
 		// end push
 		m := -2 + s.Rand.Intn(4) + s.State.LaunchConfig.ArrivalPushFrequencyMinutes
 		s.NextPushStart = now.Add(time.Duration(m) * time.Minute)
-		s.lg.Info("arrival push ending", slog.Time("next_start", s.NextPushStart))
+		s.lg.Debug("arrival push ending", slog.Time("next_start", s.NextPushStart))
 		s.PushEnd = time.Time{}
 	}
 
@@ -570,7 +575,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 				s.lg.Errorf("create inbound error: %v", err)
 			} else if ac != nil {
 				if s.prespawnUncontrolledOnly && s.isHumanControlled(ac, false) {
-					s.lg.Infof("%s: discarding arrival/overflight\n", ac.ADSBCallsign)
+					s.lg.Debugf("%s: discarding arrival/overflight\n", ac.ADSBCallsign)
 					s.deleteAircraft(ac)
 				} else {
 					s.addAircraftNoLock(*ac)
@@ -746,7 +751,7 @@ func (s *Sim) updateDepartureSequence() {
 					// considered when deciding if it's ok to launch from
 					// another runway (e.g., closely spaced parallel runways).
 					for /*rwy*/ _, state := range s.sameGroupRunways(airport, depRunway) {
-						//s.lg.Infof("%s: %q departure also holding up %q", ac.ADSBCallsign, depRunway, rwy)
+						//s.lg.Debugf("%s: %q departure also holding up %q", ac.ADSBCallsign, depRunway, rwy)
 						state.LastDeparture = &dep
 					}
 				}
@@ -904,7 +909,7 @@ func (s *Sim) launchInterval(prev, cur DepartureAircraft, considerExit bool) tim
 	if !cok || !pok {
 		// Presumably the last launch has already landed or otherwise been
 		// deleted.
-		s.lg.Infof("Sim launchInterval missing an aircraft %q: %v / %q: %v", cur.ADSBCallsign, cok,
+		s.lg.Debugf("Sim launchInterval missing an aircraft %q: %v / %q: %v", cur.ADSBCallsign, cok,
 			prev.ADSBCallsign, pok)
 		return 0
 	}

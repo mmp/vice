@@ -1469,7 +1469,6 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 			return nil
 		}
 
-		lg.Infof("%s: loading scenario", path)
 		s := loadScenarioGroup(fs, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {

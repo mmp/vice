@@ -22,15 +22,53 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+// Most system lists are drawn via drawSystemList / ListFormatter, which
+// allows a mostly-declarative style for specifying list contents where
+// drawSystemList handles the formatting details in a single place.
+type ListFormatter struct {
+	Title      string
+	Lines      int
+	Entries    int
+	FormatLine func(idx int, sb *strings.Builder)
+}
+
+// drawSystemList is a helper function that handles the common pattern of drawing lists
+// with title, optional "MORE" indicator, and formatted lines.
+func drawSystemList(pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder, formatter ListFormatter) {
+	// To avoid allocations when it's just the title, do it directly,
+	// without the strings.Builder.
+	if formatter.Title != "" {
+		pw = td.AddText(formatter.Title, pw, style)
+		pw = td.AddText("\n", pw, style)
+	}
+
+	var text strings.Builder
+	if formatter.Entries > formatter.Lines && formatter.Lines > 0 {
+		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", formatter.Lines, formatter.Entries))
+	}
+
+	for i := 0; i < min(formatter.Entries, formatter.Lines); i++ {
+		l := text.Len()
+		formatter.FormatLine(i, &text)
+		// Only add newline if something was written
+		if text.Len() > l {
+			text.WriteByte('\n')
+		}
+	}
+
+	if text.Len() > 0 {
+		td.AddText(rewriteDelta(text.String()), pw, style)
+	}
+}
+
 func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, paneExtent math.Extent2D,
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadWindowViewingMatrices(cb)
 
-	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	listStyle := renderer.TextStyle{
-		Font:  font,
+		Font:  sp.systemFont(ctx, ps.CharSize.Lists),
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
 	}
 
@@ -46,9 +84,9 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
 	}
 
-	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), font, previewAreaColor, td)
+	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), previewAreaColor, td)
 
-	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, td, transforms, cb)
+	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, listStyle, td, transforms, cb)
 	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), tracks, listStyle, td)
 	sp.drawTABList(ctx, normalizedToWindow(ps.TABList.Position), tracks, listStyle, td)
 	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), tracks, listStyle, td)
@@ -72,7 +110,7 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *renderer.Font, color renderer.RGB, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, color renderer.RGB, td *renderer.TextDrawBuilder) {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
@@ -92,24 +130,22 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, font *re
 	}
 
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
+
 	if text.Len() > 0 {
+		ps := sp.currentPrefs()
 		style := renderer.TextStyle{
-			Font:  font,
+			Font:  sp.systemFont(ctx, ps.CharSize.Lists),
 			Color: color,
 		}
 		td.AddText(rewriteDelta(text.String()), pw, style)
 	}
 }
 
-func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, td *renderer.TextDrawBuilder,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, listStyle renderer.TextStyle,
+	td *renderer.TextDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
-	listStyle := renderer.TextStyle{
-		Font:  font,
-		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
-	}
 	alertStyle := renderer.TextStyle{
 		Font:  font,
 		Color: ps.Brightness.Lists.ScaleRGB(STARSTextAlertColor),
@@ -311,9 +347,10 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		}
 		if len(vols) > 0 {
 			v := strings.Join(vols, " ")
-			if len(v) > 16 { // 32 - "INTRAIL 2.5 ON: "
-				[]byte(v)[15] = '+'
-				v = v[:16]
+			if len(v) > 16 { // 32 - "INTRAIL 2.5 ON: " == 16
+				b := []byte(v)
+				b[15] = '+'
+				v = string(b)
 			}
 			pw = td.AddText("INTRAIL 2.5 ON: "+v, pw, listStyle)
 			newline()
@@ -484,38 +521,34 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
-	var text strings.Builder
-	text.WriteString("VFR LIST\n")
-	if len(vfr) > ps.VFRList.Lines {
-		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.VFRList.Lines, len(vfr)))
-	}
-	for i := range min(len(vfr), ps.VFRList.Lines) {
-		fp := vfr[i]
-		text.WriteString(fmt.Sprintf("%2d", vfr[i].ListIndex))
-		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-		acid := string(vfr[i].ACID)
-		if fp.DisableMSAW {
-			if fp.DisableCA {
-				acid += "+"
-			} else {
-				acid += "*"
-			}
-		} else if fp.DisableCA {
-			acid += STARSTriangleCharacter
-		}
-		text.WriteString(fmt.Sprintf("%-8s", acid))
-		haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-		if !haveCode {
-			text.WriteString("VFR")
-		} else {
-			text.WriteString(fp.AssignedSquawk.String())
-		}
-		text.WriteByte('\n')
-	}
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   "VFR LIST",
+		Lines:   ps.VFRList.Lines,
+		Entries: len(vfr),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			fp := vfr[idx]
+			sb.WriteString(fmt.Sprintf("%2d ", fp.ListIndex)) // TODO: + in-out-in flight, / dupe acid, * DM message on departure
 
-	if text.Len() > 0 {
-		td.AddText(text.String(), pw, style)
-	}
+			acid := string(fp.ACID)
+			if fp.DisableMSAW {
+				if fp.DisableCA {
+					acid += "+"
+				} else {
+					acid += "*"
+				}
+			} else if fp.DisableCA {
+				acid += STARSTriangleCharacter
+			}
+			sb.WriteString(fmt.Sprintf("%-8s", acid))
+
+			haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+			if !haveCode {
+				sb.WriteString("VFR")
+			} else {
+				sb.WriteString(fp.AssignedSquawk.String())
+			}
+		},
+	})
 }
 
 func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
@@ -563,79 +596,53 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	dupes := getDuplicateBeaconCodes(ctx)
 
-	var text strings.Builder
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   "FLIGHT PLAN",
+		Lines:   ps.TABList.Lines,
+		Entries: len(plans),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			fp := plans[idx]
+			sb.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
+			sb.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
 
-	text.WriteString("FLIGHT PLAN\n")
-	if len(plans) > ps.TABList.Lines {
-		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", ps.TABList.Lines, len(plans)))
-	}
-	for i := range min(len(plans), ps.TABList.Lines) {
-		fp := plans[i]
-		text.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
-		text.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-		acid := string(fp.ACID)
-		if fp.DisableMSAW {
-			if fp.DisableCA {
-				acid += "+"
-			} else {
-				acid += "*"
-			}
-		} else if fp.DisableCA {
-			acid += STARSTriangleCharacter
-		}
-		text.WriteString(fmt.Sprintf("%-8s", acid))
-		haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-		if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
-			text.WriteByte('/')
-		} else {
-			text.WriteByte(' ')
-		}
-		if !haveCode {
-			text.WriteString("VFR ")
-		} else {
-			text.WriteString(fp.AssignedSquawk.String())
-		}
-		if fp.TypeOfFlight == av.FlightTypeDeparture {
-			exit := fp.ExitFix
-			if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
-				exit = spt.ShortName
-			}
-			if len(exit) > 3 {
-				exit = exit[:3]
-			}
-			text.WriteByte(' ')
-			text.WriteString(exit)
-		}
-
-		if false {
-			// Disable these for now, pending list customization
-			text.WriteByte(' ')
-			if fp.RequestedAltitude != 0 {
-				text.WriteString(fmt.Sprintf("%03d ", fp.RequestedAltitude/100))
-			} else {
-				text.WriteString("    ")
-			}
-			if fp.Rules == av.FlightRulesVFR {
-				text.WriteString("VFR")
-			} else {
-				if fp.EntryFix != "" && fp.TypeOfFlight != av.FlightTypeDeparture {
-					text.WriteByte(fp.EntryFix[0])
+			acid := string(fp.ACID)
+			if fp.DisableMSAW {
+				if fp.DisableCA {
+					acid += "+"
 				} else {
-					text.WriteByte(' ')
+					acid += "*"
 				}
-				if fp.ExitFix != "" && fp.TypeOfFlight != av.FlightTypeArrival {
-					text.WriteByte(fp.ExitFix[0])
-				} else {
-					text.WriteByte(' ')
-				}
+			} else if fp.DisableCA {
+				acid += STARSTriangleCharacter
 			}
-		}
-		text.WriteByte('\n')
-	}
+			sb.WriteString(fmt.Sprintf("%-8s", acid))
 
-	if text.Len() > 0 {
-		td.AddText(text.String(), pw, style)
-	}
+			haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+			if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
+				sb.WriteByte('/')
+			} else {
+				sb.WriteByte(' ')
+			}
+
+			if !haveCode {
+				sb.WriteString("VFR ")
+			} else {
+				sb.WriteString(fp.AssignedSquawk.String())
+			}
+
+			if fp.TypeOfFlight == av.FlightTypeDeparture {
+				exit := fp.ExitFix
+				if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
+					exit = spt.ShortName
+				}
+				if len(exit) > 3 {
+					exit = exit[:3]
+				}
+				sb.WriteByte(' ')
+				sb.WriteString(exit)
+			}
+		},
+	})
 }
 
 func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
@@ -743,10 +750,6 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 }
 
 func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
-	var text strings.Builder
-
-	text.WriteString("COAST/SUSPEND\n")
-
 	// Get suspended tracks (coast not yet supported)
 	tracks := slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks),
 		func(t *sim.Track) bool { return t.IsAssociated() && t.FlightPlan.Suspended }))
@@ -754,24 +757,26 @@ func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style rend
 	slices.SortFunc(tracks,
 		func(a, b *sim.Track) int { return a.FlightPlan.CoastSuspendIndex - b.FlightPlan.CoastSuspendIndex })
 
-	for _, trk := range tracks {
-		text.WriteString(fmt.Sprintf("%2d ", trk.FlightPlan.CoastSuspendIndex))
-		text.WriteString(fmt.Sprintf("%-8s ", trk.ADSBCallsign))
-		text.WriteString("S ") // suspend only for now
-		text.WriteString(trk.Squawk.String() + " ")
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   "COAST/SUSPEND",
+		Lines:   len(tracks), // Show all suspended tracks
+		Entries: len(tracks),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			trk := tracks[idx]
+			var alt string
+			// For suspended, we always just show altitude (of one sort or another)
+			if trk.Mode == av.TransponderModeAltitude {
+				alt = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
+			} else if trk.FlightPlan.PilotReportedAltitude != 0 {
+				alt = fmt.Sprintf("%03d", trk.FlightPlan.PilotReportedAltitude)
+			} else {
+				alt = "RDR"
+			}
 
-		// For suspended, we always just show altitude (of one sort or another)
-		if trk.Mode == av.TransponderModeAltitude {
-			text.WriteString(fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100))
-		} else if trk.FlightPlan.PilotReportedAltitude != 0 {
-			text.WriteString(fmt.Sprintf("%03d", trk.FlightPlan.PilotReportedAltitude))
-		} else {
-			text.WriteString("RDR")
-		}
-		text.WriteByte('\n')
-	}
-
-	td.AddText(text.String(), pw, style)
+			sb.WriteString(fmt.Sprintf("%2d %-8s S %s %s", trk.FlightPlan.CoastSuspendIndex,
+				trk.ADSBCallsign, trk.Squawk.String(), alt))
+		},
+	})
 }
 
 func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
@@ -852,35 +857,42 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 		return
 	}
 
-	var text strings.Builder
-	text.WriteString("GEO RESTRICTIONS\n")
-
-	add := func(ra av.RestrictionArea, idx int) {
-		if ra.Deleted {
-			return
-		}
-		if settings, ok := ps.RestrictionAreaSettings[idx]; ok && settings.Visible {
-			text.WriteByte('>')
-		} else {
-			text.WriteByte(' ')
-		}
-		text.WriteString(fmt.Sprintf("%-3d ", idx))
-		if ra.Title != "" {
-			text.WriteString(strings.ToUpper(ra.Title))
-		} else {
-			text.WriteString(strings.ToUpper(ra.Text[0]))
-		}
-		text.WriteByte('\n')
+	// Collect all restriction areas with their indices
+	type indexedRA struct {
+		ra  av.RestrictionArea
+		idx int
 	}
-
+	var areas []indexedRA
 	for i, ra := range ctx.Client.State.UserRestrictionAreas {
-		add(ra, i+1)
+		if !ra.Deleted {
+			areas = append(areas, indexedRA{ra, i + 1})
+		}
 	}
 	for i, ra := range ctx.FacilityAdaptation.RestrictionAreas {
-		add(ra, i+101)
+		if !ra.Deleted {
+			areas = append(areas, indexedRA{ra, i + 101})
+		}
 	}
 
-	td.AddText(rewriteDelta(text.String()), pw, style)
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   "GEO RESTRICTIONS",
+		Lines:   len(areas), // Show all restriction areas
+		Entries: len(areas),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			area := areas[idx]
+			if settings, ok := ps.RestrictionAreaSettings[area.idx]; ok && settings.Visible {
+				sb.WriteByte('>')
+			} else {
+				sb.WriteByte(' ')
+			}
+			sb.WriteString(fmt.Sprintf("%-3d ", area.idx))
+			if area.ra.Title != "" {
+				sb.WriteString(strings.ToUpper(area.ra.Title))
+			} else {
+				sb.WriteString(strings.ToUpper(area.ra.Text[0]))
+			}
+		},
+	})
 }
 
 func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
@@ -890,15 +902,16 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, track
 		return
 	}
 
-	var text strings.Builder
-	text.WriteString("CRDA STATUS\n")
+	// Pre-compute the line data since it needs stateful processing
+	var lines []string
 	pairIndex := 0 // reset for each new airport
 	currentAirport := ""
 	for i, crda := range ps.CRDA.RunwayPairState {
+		var line strings.Builder
 		if !crda.Enabled {
-			text.WriteString(" ")
+			line.WriteString(" ")
 		} else {
-			text.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
+			line.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
 		}
 
 		pair := sp.ConvergingRunways[i]
@@ -908,23 +921,28 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, track
 			pairIndex = 1
 		}
 
-		text.WriteString(strconv.Itoa(pairIndex))
-		text.WriteByte(' ')
+		line.WriteString(strconv.Itoa(pairIndex))
+		line.WriteByte(' ')
 		pairIndex++
-		text.WriteString(ap + " ")
-		text.WriteString(pair.getRunwaysString())
+		line.WriteString(ap + " ")
+		line.WriteString(pair.getRunwaysString())
 		if crda.Enabled {
-			for text.Len() < 16 {
-				text.WriteByte(' ')
+			for line.Len() < 16 {
+				line.WriteByte(' ')
 			}
-			text.WriteString(ctx.UserTCP)
+			line.WriteString(ctx.UserTCP)
 		}
-		text.WriteByte('\n')
+		lines = append(lines, line.String())
 	}
 
-	if text.Len() > 0 {
-		td.AddText(text.String(), pw, style)
-	}
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   "CRDA STATUS",
+		Lines:   len(lines), // Show all CRDA pairs
+		Entries: len(lines),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			sb.WriteString(lines[idx])
+		},
+	})
 }
 
 func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
@@ -934,16 +952,21 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, t
 		return
 	}
 
-	var text strings.Builder
-	text.WriteString("MCI SUPPRESSION\n")
-	for _, trk := range tracks {
-		if trk.IsAssociated() && trk.FlightPlan.MCISuppressedCode != av.Squawk(0) {
-			text.WriteString(fmt.Sprintf("%7s %s  %s\n", trk.FlightPlan.ACID, trk.Squawk.String(),
-				trk.FlightPlan.MCISuppressedCode.String()))
-		}
-	}
+	// Filter tracks with MCI suppression
+	mciTracks := util.FilterSlice(tracks, func(trk sim.Track) bool {
+		return trk.IsAssociated() && trk.FlightPlan.MCISuppressedCode != av.Squawk(0)
+	})
 
-	td.AddText(text.String(), pw, style)
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   "MCI SUPPRESSION",
+		Lines:   len(mciTracks), // Show all MCI tracks
+		Entries: len(mciTracks),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			trk := mciTracks[idx]
+			sb.WriteString(fmt.Sprintf("%7s %s  %s", trk.FlightPlan.ACID, trk.Squawk.String(),
+				trk.FlightPlan.MCISuppressedCode.String()))
+		},
+	})
 }
 
 func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, tracks []sim.Track,
@@ -956,9 +979,7 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 		}
 	}
 
-	var text strings.Builder
 	loc := ctx.Client.State.ArrivalAirports[airport].Location
-	text.WriteString(stripK(airport) + " TOWER\n")
 	m := make(map[float32]string)
 	for _, trk := range tracks {
 		if trk.IsAssociated() && trk.ArrivalAirport == airport {
@@ -970,17 +991,15 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 	}
 
 	k := util.SortedMapKeys(m)
-	if len(k) > lines {
-		k = k[:lines]
-	}
 
-	for _, key := range k {
-		text.WriteString(m[key] + "\n")
-	}
-
-	if text.Len() > 0 {
-		td.AddText(text.String(), pw, style)
-	}
+	drawSystemList(pw, style, td, ListFormatter{
+		Title:   stripK(airport) + " TOWER",
+		Lines:   lines,
+		Entries: len(k),
+		FormatLine: func(idx int, sb *strings.Builder) {
+			sb.WriteString(m[k[idx]])
+		},
+	})
 }
 
 func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {

@@ -6,6 +6,7 @@ package util
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	gomath "math"
 	"os"
@@ -53,6 +54,19 @@ type LoggingMutex struct {
 	sync.Mutex
 	acq      time.Time
 	acqStack []log.StackFrame
+}
+
+func DumpHeldMutexes(lg *log.Logger) string {
+	heldMutexesMutex.Lock()
+	defer heldMutexesMutex.Unlock()
+
+	s := fmt.Sprintf("%d mutexes held\n\n", len(heldMutexes))
+	for m := range heldMutexes {
+		s += fmt.Sprintf("Mutex %p\n", m)
+		s += m.String(lg)
+		s += "\n"
+	}
+	return s
 }
 
 func debuggerIsRunning() bool {
@@ -139,4 +153,17 @@ func (l *LoggingMutex) LogValue() slog.Value {
 		slog.Time("acq", l.acq),
 		slog.Duration("held", time.Since(l.acq)),
 		slog.Any("acq_stack", l.acqStack))
+}
+
+func (l *LoggingMutex) String(lg *log.Logger) string {
+	unlocked := l.TryLock()
+	var s string
+	if unlocked {
+		s = "Unlocked\n"
+		defer l.Unlock(lg)
+	} else {
+		s = "Locked, acquired " + time.Since(l.acq).String() + "\n"
+	}
+
+	return s + log.StackFrames(l.acqStack).String()
 }

@@ -175,6 +175,10 @@ type NewSimResult struct {
 }
 
 func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) error {
+	c2 := config
+	c2.TFRs = nil
+	fmt.Printf("NewSim %#v\n", c2)
+
 	lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
 	if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
 		manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
