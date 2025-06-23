@@ -998,13 +998,13 @@ func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
 		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
 			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
 		}
-		
+
 	}
 	ctrl := s.State.ResolveController(tcp)
 	s.eventStream.Post(Event{
-		Type: FixCoordinatesEvent,
-		ACID:       acid,
-		WaypointInfo:  waypointPairs,
+		Type:         FixCoordinatesEvent,
+		ACID:         acid,
+		WaypointInfo: waypointPairs,
 		ToController: ctrl,
 	})
 	return nil

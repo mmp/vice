@@ -87,7 +87,7 @@ func (f *Font) createGlyph(ch rune) *Glyph {
 	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
 	g := &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
-		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}	
+		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}
 	return g
 }
 

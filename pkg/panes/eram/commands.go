@@ -118,7 +118,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 					return
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
-				state.DisplayJRing = !state.DisplayJRing 
+				state.DisplayJRing = !state.DisplayJRing
 				state.DisplayReducedJRing = false // clear reduced J ring
 			case "T": // reduced J ring
 				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
@@ -132,7 +132,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 					return
 				}
 				state.DisplayJRing = false // clear J ring
-				state.DisplayReducedJRing = !state.DisplayReducedJRing 
+				state.DisplayReducedJRing = !state.DisplayReducedJRing
 			}
 		} else if len(fields) == 3 { // initiate a po
 
@@ -231,7 +231,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				status.err = ErrERAMIllegalACID
 			}
 		case 2:
-			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line & handoffs 
+			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line & handoffs
 				dir := ep.numberToLLDirection(ctx, original[0])
 				// get callsign from fp
 				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
@@ -286,7 +286,7 @@ func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.Cardi
 }
 
 func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
-	ep.targetGenLastCallsign = callsign 
+	ep.targetGenLastCallsign = callsign
 
 	ctx.Client.RunAircraftCommands(callsign, cmds,
 		func(errStr string, remaining string) {
@@ -328,8 +328,7 @@ func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, er
 func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.AcceptHandoff(acid,
 		func(err error) { ep.displayError(err, ctx) })
-	}
-
+}
 
 func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	if cs := ctx.Client.LastTTSCallsign(); cs != "" {

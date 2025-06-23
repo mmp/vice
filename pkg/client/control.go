@@ -379,7 +379,7 @@ func (c *ControlClient) GetQULines(aircraft sim.ACID, callback func(err error)) 
 	var update sim.StateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.SendCoordinateInfo", &server.QULineArgs{
 		ControllerToken: c.controllerToken,
-		ACID:           aircraft,
+		ACID:            aircraft,
 	}, &update, nil), &update, callback))
 }
 

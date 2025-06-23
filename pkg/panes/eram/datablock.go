@@ -93,12 +93,12 @@ func dbChopTrailing(f []dbChar) []dbChar {
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-		scale := float32(2) // 1.5 for default font
-		if len(lines) >= 5 {
-			if lines[3].ch[0].ch != rune('R') {
-				scale = 2
-			} 
+	scale := float32(2) // 1.5 for default font
+	if len(lines) >= 5 {
+		if lines[3].ch[0].ch != rune('R') {
+			scale = 2
 		}
+	}
 	glyph := font.LookupGlyph('R')
 	fontWidth := glyph.AdvanceX * scale
 
@@ -108,7 +108,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 
 		// Special case: line 3 (index 3) starts 1 character to the left
 		if i == 3 {
-			xOffset -= fontWidth 
+			xOffset -= fontWidth
 		}
 
 		sb.Reset()
@@ -295,7 +295,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		} else {
 			dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color, false)
 		}
-		
+
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
@@ -319,7 +319,7 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	interimAltitude := track.FlightPlan.InterimAlt
 	formatCurrent := radar.FormatAltitude(currentAltitude)
 	formatAssigned := radar.FormatAltitude(assignedAltitude)
-	formatInterim := radar.FormatAltitude(interimAltitude) 
+	formatInterim := radar.FormatAltitude(interimAltitude)
 	if interimAltitude > 0 { // Interim alt takes precedence (i think) TODO: check this
 		intType := getInterimAltitudeType(track)
 		return fmt.Sprintf("%03v%s%03v", formatInterim, intType, formatCurrent)
@@ -392,7 +392,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			dbType := ep.datablockType(ctx, trk)
 			start := transforms.WindowFromLatLongP(state.track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
-			offset := datablockOffset(*dir) 
+			offset := datablockOffset(*dir)
 			vector := ep.leaderLineVector(*dir)
 			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
 			vector[1] += float32(offset[1]) * ctx.DrawPixelScale

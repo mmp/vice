@@ -21,8 +21,7 @@ import (
 
 var (
 	ERAMPopupPaneBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0}
-	ERAMYellow = renderer.RGB{R: .894, G: .894}
-
+	ERAMYellow                   = renderer.RGB{R: .894, G: .894}
 )
 
 const numMapColors = 8
@@ -82,7 +81,7 @@ type ERAMPane struct {
 	velocityTime int // 0, 1, 4, or 8 minutes
 
 	dbLastAlternateTime time.Time // Alternates every 6 seconds
-	dbAlternate bool
+	dbAlternate         bool
 
 	targetGenLastCallsign av.ADSBCallsign
 

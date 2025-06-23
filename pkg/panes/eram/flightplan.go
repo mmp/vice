@@ -54,14 +54,14 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 	"PLUS_ALT_A":      parseFpPlusAssignedAltitude,
 	"PLUS_PLUS_ALT_R": parseFpPlus2RequestedAltitude,
 	// "PLUS_SP2":        parseFpPlusSp2,
-	"RNAV":            parseFpRNAVToggle,
-	"RULES":           parseFpFlightRules,
+	"RNAV":  parseFpRNAVToggle,
+	"RULES": parseFpFlightRules,
 	// "SP1":             parseFpSp1,
-	"TCP":             parseFpTCP,
-	"TCP/FIX_PAIR":    parseFpTCPOrFixPair,
+	"TCP":          parseFpTCP,
+	"TCP/FIX_PAIR": parseFpTCPOrFixPair,
 	// "TRI_ALT_A":       parseFpTriAssignedAltitude,
 	// "TRI_SP1":         parseFpTriSp1,
-	"VFR_ARR_FIXES":   parseFpVFRArrivalFixes,
+	"VFR_ARR_FIXES": parseFpVFRArrivalFixes,
 }
 
 // parseOneFlightPlan takes a format string that of one or more of the
@@ -397,34 +397,34 @@ func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) boo
 	return parseFpAltitude(s, &spec.RequestedAltitude)
 }
 
-	// func parseFpSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
-	// 	if !checkSp(s, true) {
-	// 		return false, ErrSTARSIllegalScratchpad
-	// 	}
-	// 	spec.Scratchpad.Set(s)
-	// 	return true, nil
-	// }
+// func parseFpSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+// 	if !checkSp(s, true) {
+// 		return false, ErrSTARSIllegalScratchpad
+// 	}
+// 	spec.Scratchpad.Set(s)
+// 	return true, nil
+// }
 
-	// func parseFpTriSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
-	// 	if !strings.HasPrefix(s, STARSTriangleCharacter) {
-	// 		return false, ErrCommandFormat
-	// 	}
-	// 	sp := strings.TrimPrefix(s, STARSTriangleCharacter)
-	// 	return parseFpSp1(sp, checkSp, spec)
-	// }
+// func parseFpTriSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+// 	if !strings.HasPrefix(s, STARSTriangleCharacter) {
+// 		return false, ErrCommandFormat
+// 	}
+// 	sp := strings.TrimPrefix(s, STARSTriangleCharacter)
+// 	return parseFpSp1(sp, checkSp, spec)
+// }
 
-	// func parseFpPlusSp2(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
-	// 	// Scratchpad 2
-	// 	if !strings.HasPrefix(s, "+") {
-	// 		return false, ErrCommandFormat
-	// 	}
-	// 	sp := strings.TrimPrefix(s, "+")
-	// 	if !checkSp(sp, false) {
-	// 		return false, ErrSTARSIllegalScratchpad
-	// 	}
-	// 	spec.SecondaryScratchpad.Set(sp)
-	// 	return true, nil
-	// }
+// func parseFpPlusSp2(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+// 	// Scratchpad 2
+// 	if !strings.HasPrefix(s, "+") {
+// 		return false, ErrCommandFormat
+// 	}
+// 	sp := strings.TrimPrefix(s, "+")
+// 	if !checkSp(sp, false) {
+// 		return false, ErrSTARSIllegalScratchpad
+// 	}
+// 	spec.SecondaryScratchpad.Set(sp)
+// 	return true, nil
+// }
 
 func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
 	if len(s) != 2 || s[0] < '1' || s[0] > '9' || s[1] < 'A' || s[1] > 'Z' { // must be two char TCP
@@ -550,7 +550,6 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 
 	return nil
 }
-
 
 // trk may be nil
 

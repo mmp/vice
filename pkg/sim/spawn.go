@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"iter"
 	"log/slog"
-	gomath "math"
 	"maps"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -1130,7 +1130,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		if lowestAlt != gomath.MaxInt {
 			assignedAlt = lowestAlt
 		} else {
-			fmt.Println("Warning: no altitude restriction found for arrival", ac.ADSBCallsign,)
+			fmt.Println("Warning: no altitude restriction found for arrival", ac.ADSBCallsign)
 		}
 	}
 
