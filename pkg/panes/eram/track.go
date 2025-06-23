@@ -398,8 +398,8 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 		if dbType != FullDatablock {
 			continue // Only draw PTLs for full datablocks
 		}
-		speed := trk.Groundspeed
 		state := ep.TrackState[trk.ADSBCallsign]
+		speed := state.track.Groundspeed
 		dist := speed / 60 * float32(ep.velocityTime)
 		pos := state.track.Location
 		heading := state.TrackHeading(ctx.NmPerLongitude)
