@@ -13,12 +13,6 @@ import (
 )
 
 // Gap ranges (in degrees) where reduced separation J rings should not be drawn.
-var reducedJRingGaps = [][2]float32{
-	{350, 10},
-	{80, 100},
-	{170, 190},
-	{260, 280},
-}
 
 type TrackState struct {
 	track             av.RadarTrack
@@ -46,7 +40,7 @@ type TrackState struct {
 }
 
 type aircraftFixCoordinates struct {
-	coords    [][2]float32
+	coords     [][2]float32
 	deleteTime time.Time
 }
 
@@ -119,11 +113,11 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			ac := event.ACID
 			coords := event.WaypointInfo
 			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
-				coords:    coords,
-				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second), 
+				coords:     coords,
+				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second),
+			}
 		}
 	}
-}
 }
 
 func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
@@ -512,6 +506,13 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 		if state.DisplayReducedJRing {
 			pw := transforms.WindowFromLatLongP(pos)
 			reducedRadius := 3 / transforms.PixelDistanceNM(ctx.NmPerLongitude)
+			reducedJRingGaps := [][2]float32{
+				{350, 10},
+				{80, 100},
+				{170, 190},
+				{260, 280},
+			}
+
 			jr.AddGappedCircle(pw, reducedRadius, 50, reducedJRingGaps, ERAMYellow)
 		}
 	}
@@ -530,12 +531,12 @@ func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 		state := ep.TrackState[trk.ADSBCallsign]
 		color := ep.trackDatablockColor(ctx, *trk)
-		
+
 		// Convert aircraft position to window coordinates
 		acWindowPos := transforms.WindowFromLatLongP(state.track.Location)
 		firstFixWindowPos := transforms.WindowFromLatLongP(info.coords[0])
 		ld.AddLine(acWindowPos, firstFixWindowPos, color) // draw a line from the AC to the first fix
-		
+
 		for i, coordinate := range info.coords {
 			if i+1 >= len(info.coords) {
 				// TODO: draw X
