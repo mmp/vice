@@ -1,7 +1,6 @@
 package eram
 
 import (
-	"fmt"
 	"strings"
 	"unicode"
 
@@ -175,8 +174,18 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		return
 	default: // Leader lines, accepting/ recalling HOs and whatever else goes in here
 		fields := strings.Fields(original) // use the origional, uncut, command for this
-		fmt.Println(len(fields), len(fields[0]), unicode.IsDigit(rune(original[0])), original)
-		if len(fields) == 2 {
+		switch len(fields) {
+		case 1:
+			cmd := fields[0]
+			if trk, ok := ctx.Client.State.GetTrackByCID(cmd); ok {
+				// Accept handoff
+				acid := sim.ACID(trk.ADSBCallsign.String())
+				ep.acceptHandoff(ctx, acid)
+				status.clear = true
+			} else {
+				status.err = ErrERAMIllegalACID
+			}
+		case 2:
 			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line
 				dir := ep.numberToLLDirection(ctx, original[0])
 				// get callsign from fp
@@ -201,7 +210,9 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 }
 
 func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
-	ep.bigOutput = err.Error()
+	if err != nil {
+		ep.bigOutput = err.Error()
+	}
 }
 
 func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.CardinalOrdinalDirection {
@@ -267,3 +278,8 @@ func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, er
 	}
 	return sim.ACID(trk.ADSBCallsign.String()), nil
 }
+
+func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
+	ctx.Client.AcceptHandoff(acid,
+		func(err error) { ep.displayError(err, ctx) })
+	}
