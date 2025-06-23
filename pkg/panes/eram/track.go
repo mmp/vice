@@ -20,7 +20,7 @@ type TrackState struct {
 	trackTime         time.Time
 	CID               int
 
-	historyTracks     [6]av.RadarTrack // I think it's six?
+	historyTracks     [6]historyTrack // I think it's six?
 	historyTrackIndex int
 
 	DatablockType DatablockType
@@ -135,7 +135,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 		// Update history tracks
 		idx := state.historyTrackIndex % len(state.historyTracks)
-		state.historyTracks[idx] = state.track
+		state.historyTracks[idx] = historyTrack{state.track, ep.positionSymbol(trk, state)}
 		state.historyTrackIndex++
 
 		// TODO: check unreasonable C
@@ -410,6 +410,11 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 
 }
 
+type historyTrack struct {
+	av.RadarTrack
+	PositionSymbol string
+}
+
 // drawHistoryTracks draws small position symbols representing the last few
 // positions of each track.
 func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
@@ -422,7 +427,6 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	ps := ep.currentPrefs()
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
-		symbol := ep.positionSymbol(trk, state)
 
 		var bright radar.ScopeBrightness
 		if trk.IsAssociated() {
@@ -437,6 +441,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			if loc.IsZero() {
 				continue
 			}
+			symbol := trk.PositionSymbol
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
 			if symbol == "p" {
