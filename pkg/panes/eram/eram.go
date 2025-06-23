@@ -21,7 +21,7 @@ import (
 
 var (
 	ERAMPopupPaneBackgroundColor = renderer.RGB{R: 0, G: 0, B: 0}
-	ERAMYellow = renderer.RGB{R: .894, G: .894, B: .894}
+	ERAMYellow = renderer.RGB{R: .894, G: .894}
 
 )
 
