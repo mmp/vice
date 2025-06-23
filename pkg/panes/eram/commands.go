@@ -176,11 +176,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		}
 
 		// Otherwise looks like an actual control instruction .
-		suffix, cmds, _ := strings.Cut(cmd, " ")
-		// if !ok {
-		// 	suffix = string(ctx.Client.LastTransmissionCallsign())
-		// 	cmds = cmd
-		// }
+		suffix, cmds, ok := strings.Cut(cmd, " ")
+		if !ok {
+			suffix = string(ep.tgtGenDefaultCallsign(ctx))
+			cmds = cmd
+		}
 
 		matching := radar.TracksFromACIDSuffix(ctx, suffix)
 		if len(matching) > 1 {
@@ -189,14 +189,14 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		}
 
 		var trk *sim.Track
-		// if len(matching) == 1 {
-		// 	trk = matching[0]
-		// } else if len(matching) == 0 && ctx.Client.LastTransmissionCallsign() != "" {
-		// 	// If a valid callsign wasn't given, try the last callsign used.
-		// 	trk, _ = ctx.GetTrackByCallsign(ctx.Client.LastTransmissionCallsign())
-		// 	// But now we're going to run all of the given input as commands.
-		// 	cmds = cmd
-		// }
+		if len(matching) == 1 {
+			trk = matching[0]
+		} else if len(matching) == 0 && ep.tgtGenDefaultCallsign(ctx) != "" {
+			// If a valid callsign wasn't given, try the last callsign used.
+			trk, _ = ctx.GetTrackByCallsign(ep.tgtGenDefaultCallsign(ctx))
+			// But now we're going to run all of the given input as commands.
+			cmds = cmd
+		}
 
 		if trk != nil {
 			ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmds)
@@ -274,6 +274,7 @@ func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.Cardi
 }
 
 func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
+	ep.targetGenLastCallsign = callsign 
 
 	ctx.Client.RunAircraftCommands(callsign, cmds,
 		func(errStr string, remaining string) {
@@ -316,3 +317,13 @@ func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.AcceptHandoff(acid,
 		func(err error) { ep.displayError(err, ctx) })
 	}
+
+
+func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
+	if cs := ctx.Client.LastTTSCallsign(); cs != "" {
+		// If TTS is active, return the last TTS transmitter.
+		return cs
+	}
+	// Otherwise the most recent one the user selected.
+	return ep.targetGenLastCallsign
+}

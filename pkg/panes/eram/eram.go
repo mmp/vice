@@ -81,6 +81,8 @@ type ERAMPane struct {
 
 	dbLastAlternateTime time.Time // Alternates every 6 seconds
 	dbAlternate bool
+
+	targetGenLastCallsign av.ADSBCallsign
 }
 
 func NewERAMPane() *ERAMPane {
