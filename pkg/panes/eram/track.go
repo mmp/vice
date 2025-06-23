@@ -228,11 +228,11 @@ func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
 			switch {
 			case trk.Ident:
 				symbol = string(0x2630)
-			case trk.Squawk == 0o1200 && trk.TransponderAltitude < 100:
+			case trk.Squawk == 0o1200 && trk.TransponderAltitude < 1000:
 				symbol = "V"
-			case trk.Squawk != 0o1200 && trk.TransponderAltitude < 100:
+			case trk.Squawk != 0o1200 && trk.TransponderAltitude < 1000:
 				symbol = "/"
-			case trk.TransponderAltitude > 100:
+			case trk.TransponderAltitude > 1000:
 				symbol = "I"
 			}
 		}
