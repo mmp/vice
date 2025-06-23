@@ -326,7 +326,7 @@ func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float
 func (ep *ERAMPane) leaderLineVectorNoLength(dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-	return math.Scale2f(v, 1)
+	return math.Scale2f(v, 8)
 }
 
 // datablockVisible reports whether a datablock should be drawn. Design.

@@ -525,7 +525,7 @@ func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
 	return nil, false
 }
 
-func (ss *State) GetTrackByCID(flid string) (*Track, bool) {
+func (ss *State) GetTrackByFLID(flid string) (*Track, bool) {
 	for i, trk := range ss.Tracks {
 		if !trk.IsAssociated() {
 			continue

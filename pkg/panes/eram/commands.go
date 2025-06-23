@@ -112,7 +112,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			switch fields[0] {
 			case "A": // Accept a point out
 			case "J": // J ring
-				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
+				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
 					status.err = ErrERAMIllegalACID
 					return
@@ -121,7 +121,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				state.DisplayJRing = !state.DisplayJRing
 				state.DisplayReducedJRing = false // clear reduced J ring
 			case "T": // reduced J ring
-				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
+				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
 					status.err = ErrERAMIllegalACID
 					return
@@ -235,13 +235,13 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		switch len(fields) {
 		case 1:
 			cmd := fields[0]
-			if trk, ok := ctx.Client.State.GetTrackByCID(cmd); ok && trk.HandingOffTo(ctx.UserTCP){
+			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(ctx.UserTCP){
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				ep.acceptHandoff(ctx, acid)
 				status.clear = true
 			} else { // Change to LDB or FDB
-				trk, ok := ctx.Client.State.GetTrackByCID(cmd)
+				trk, ok := ctx.Client.State.GetTrackByFLID(cmd)
 				if !ok {
 					status.err = ErrERAMIllegalACID
 					return
@@ -249,7 +249,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				if !trk.IsAssociated() {
 					return // What error should be returned here?
 				}
-				if trk.FlightPlan.TrackingController != ctx.UserTCP {
+				if trk.FlightPlan.TrackingController == ctx.UserTCP {
 					return // What error should be returned here?
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
@@ -259,7 +259,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line & handoffs
 				dir := ep.numberToLLDirection(ctx, original[0])
 				// get callsign from fp
-				trk, ok := ctx.Client.State.GetTrackByCID(fields[1])
+				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
 					status.err = ErrERAMIllegalACID
 					return
@@ -343,7 +343,7 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.ST
 }
 
 func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, error) {
-	trk, ok := ctx.Client.State.GetTrackByCID(cid)
+	trk, ok := ctx.Client.State.GetTrackByFLID(cid)
 	if !ok {
 		return "", ErrERAMIllegalACID
 	}
