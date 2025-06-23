@@ -137,7 +137,19 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		} else if len(fields) == 3 { // initiate a po
 
 		}
-
+	case "QU ": // direct, qu lines
+		fields := strings.Fields(cmd)
+		if len(fields) == 0 {
+			clear(ep.aircraftFixCoordinates)
+		} else if len(fields) == 2 && fields[0] == "/M" { // minutes will come later
+			cid := fields[1]
+			acid, err := ep.getACIDFromCID(ctx, cid)
+			if err != nil {
+				status.err = err
+				return
+			}
+			ep.getQULines(ctx, acid)
+		}
 	case "QQ ": // interim altitude
 		// first field is the altitude, second is the CID.
 		fields := strings.Split(cmd, " ")
@@ -326,4 +338,12 @@ func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	}
 	// Otherwise the most recent one the user selected.
 	return ep.targetGenLastCallsign
+}
+
+func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
+	ctx.Client.GetQULines(acid, func(err error) {
+		if err != nil {
+			ep.displayError(err, ctx)
+		}
+	})
 }

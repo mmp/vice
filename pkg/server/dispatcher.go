@@ -477,6 +477,23 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.Sta
 	}
 }
 
+type QULineArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+}
+
+func (sd *dispatcher) SendCoordinateInfo(da *QULineArgs, update *sim.StateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		err := s.SendCoordinateInfo(ctrl.tcp, da.ACID)
+		s.GetStateUpdate(ctrl.tcp, update)
+		return err
+	}
+}
+
 type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        av.ADSBCallsign

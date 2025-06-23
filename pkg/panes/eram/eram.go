@@ -55,6 +55,8 @@ type ERAMPane struct {
 	prefSet            *PrefrenceSet
 	TrackState         map[av.ADSBCallsign]*TrackState
 
+	events *sim.EventsSubscription
+
 	allVideoMaps []sim.VideoMap
 
 	InboundPointOuts  map[string]string
@@ -83,6 +85,8 @@ type ERAMPane struct {
 	dbAlternate bool
 
 	targetGenLastCallsign av.ADSBCallsign
+
+	aircraftFixCoordinates map[string]aircraftFixCoordinates
 }
 
 func NewERAMPane() *ERAMPane {
@@ -101,6 +105,12 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 	if p.TrackState == nil {
 		p.TrackState = make(map[av.ADSBCallsign]*TrackState)
 	}
+
+	if p.aircraftFixCoordinates == nil {
+		p.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
+	}
+
+	p.events = es.Subscribe()
 
 	// TODO: initialize fonts and audio
 
@@ -151,7 +161,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
-	// Draw QU /M lines (not sure where this goes)
+	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
 	// Draw views
 	// Draw long readout (output with no command line)

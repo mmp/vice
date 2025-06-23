@@ -1,6 +1,7 @@
 package eram
 
 import (
+	"fmt"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -43,6 +44,11 @@ type TrackState struct {
 
 	// add more as we figure out what to do...
 
+}
+
+type aircraftFixCoordinates struct {
+	coords    [][2]float32
+	deleteTime time.Time
 }
 
 func (ts *TrackState) TrackDeltaAltitude() int {
@@ -108,6 +114,18 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			ep.TrackState[trk.ADSBCallsign] = sa
 		}
 	}
+	for _, event := range ep.events.Get() {
+		switch event.Type {
+		case sim.FixCoordinatesEvent:
+			ac := event.ACID
+			coords := event.WaypointInfo
+			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
+				coords:    coords,
+				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second), 
+		}
+		fmt.Println("ERAMPane: FixCoordinatesEvent for ACID", ac, "with coordinates", coords)
+	}
+}
 }
 
 func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
@@ -149,6 +167,12 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		// TODO: check unreasonable C
 		// CA processing
 		// etc
+	}
+	// check QU lines; see if they need to be cleared. TODO: add QU to delete all lines
+	for ac, coords := range ep.aircraftFixCoordinates {
+		if coords.deleteTime.Before(ctx.Client.CurrentTime()) {
+			delete(ep.aircraftFixCoordinates, ac)
+		}
 	}
 }
 
@@ -494,4 +518,34 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 		}
 	}
 	jr.GenerateCommands(cb)
+}
+
+func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+
+	for acid, info := range ep.aircraftFixCoordinates {
+		trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(acid))
+		if !ok {
+			continue
+		}
+		state := ep.TrackState[trk.ADSBCallsign]
+		color := ep.trackDatablockColor(ctx, *trk)
+		
+		// Convert aircraft position to window coordinates
+		acWindowPos := transforms.WindowFromLatLongP(state.track.Location)
+		firstFixWindowPos := transforms.WindowFromLatLongP(info.coords[0])
+		ld.AddLine(acWindowPos, firstFixWindowPos, color) // draw a line from the AC to the first fix
+		
+		for i, coordinate := range info.coords {
+			if i+1 >= len(info.coords) {
+				// TODO: draw X
+			} else {
+				windowCoords := transforms.WindowFromLatLongP(coordinate)
+				ld.AddLine(windowCoords, transforms.WindowFromLatLongP(info.coords[i+1]), color)
+			}
+		}
+	}
+	ld.GenerateCommands(cb)
 }

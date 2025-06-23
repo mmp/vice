@@ -987,6 +987,26 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 		})
 }
 
+func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
+	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	if ac == nil {
+		return av.ErrNoAircraftForCallsign
+	}
+	waypoints := []av.Waypoint(ac.Nav.Waypoints)
+	waypointPairs := [][2]float32{}
+	for _, wyp := range waypoints {
+		waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
+	}
+	ctrl := s.State.ResolveController(tcp)
+	s.eventStream.Post(Event{
+		Type: FixCoordinatesEvent,
+		ACID:       acid,
+		WaypointInfo:  waypointPairs,
+		ToController: ctrl,
+	})
+	return nil
+}
+
 func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
