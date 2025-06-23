@@ -1,7 +1,6 @@
 package eram
 
 import (
-	"fmt"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -123,7 +122,6 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 				coords:    coords,
 				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second), 
 		}
-		fmt.Println("ERAMPane: FixCoordinatesEvent for ACID", ac, "with coordinates", coords)
 	}
 }
 }

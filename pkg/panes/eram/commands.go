@@ -99,12 +99,12 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	var prefix string
 	var original string = cmd
 	if len(cmd) > 3 { //  trim a prefix
-		prefix = cmd[:3]
-		cmd = strings.TrimPrefix(cmd, prefix)
+		prefix = cmd[:2]
+		cmd = strings.TrimPrefix(cmd, prefix+" ")
 	}
 
 	switch prefix {
-	case "QP ": // J rings, point out
+	case "QP": // J rings, point out
 		fields := strings.Fields(cmd)
 		if len(fields) == 1 { // ack fdb after po
 
@@ -137,7 +137,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		} else if len(fields) == 3 { // initiate a po
 
 		}
-	case "QU ": // direct, qu lines
+	case "QU": // direct, qu lines
 		fields := strings.Fields(cmd)
 		if len(fields) == 0 {
 			clear(ep.aircraftFixCoordinates)
@@ -150,7 +150,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			}
 			ep.getQULines(ctx, acid)
 		}
-	case "QQ ": // interim altitude
+	case "QQ": // interim altitude
 		// first field is the altitude, second is the CID.
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
@@ -163,7 +163,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			return
 		}
 		ep.modifyFlightPlan(ctx, fields[1], fp)
-	case "QZ ": // Assigned, OTP, and block altitudes
+	case "QZ": // Assigned, OTP, and block altitudes
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
 			status.err = ErrCommandFormat
@@ -176,7 +176,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		}
 		ep.modifyFlightPlan(ctx, fields[1], fp)
 
-	case "TG ":
+	case "TG":
 		// Special cases for non-control commands.
 		if cmd == "" {
 			return
