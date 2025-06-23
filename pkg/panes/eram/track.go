@@ -12,6 +12,14 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+// Gap ranges (in degrees) where reduced separation J rings should not be drawn.
+var reducedJRingGaps = [][2]float32{
+	{350, 10},
+	{80, 100},
+	{170, 190},
+	{260, 280},
+}
+
 type TrackState struct {
 	track             av.RadarTrack
 	previousTrack     av.RadarTrack
@@ -30,8 +38,8 @@ type TrackState struct {
 	eLDB bool
 	eFDB bool
 
-	DisplayJRing bool 
-	DisplayReducedJRing bool 
+	DisplayJRing        bool
+	DisplayReducedJRing bool
 
 	// add more as we figure out what to do...
 
@@ -77,7 +85,7 @@ func (ts *TrackState) HeadingVector(nmPerLongitude, magneticVariation float32) m
 
 func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 	if !ts.HaveHeading() {
-		return -1 
+		return -1
 	}
 	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude, 0)
 }
@@ -173,7 +181,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Context,
 	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
- cb *renderer.CommandBuffer) {
+	cb *renderer.CommandBuffer) {
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
@@ -185,7 +193,7 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 		drawDiamond(ctx, transforms, color, pos, ld, cb)
 	}
 	if position == "p" {
-		trackBuilder.AddCircle(pt, 2, 100, color)	
+		trackBuilder.AddCircle(pt, 2, 100, color)
 	} else {
 		td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
 	}
@@ -363,11 +371,11 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 			*dir = math.East
 		}
 		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(*dir), ep.leaderLineVectorNoLength(*dir))
-					if dbType == FullDatablock {
-				if trk.FlightPlan.TrackingController != ctx.UserTCP && (*dir == math.NorthEast || *dir == math.East){
-					v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
-				}
+		if dbType == FullDatablock {
+			if trk.FlightPlan.TrackingController != ctx.UserTCP && (*dir == math.NorthEast || *dir == math.East) {
+				v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
 			}
+		}
 
 		p1 := math.Add2f(p0, math.Scale2f(v, ctx.DrawPixelScale))
 		if dbType == FullDatablock {
@@ -395,7 +403,7 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 		dist := speed / 60 * float32(ep.velocityTime)
 		pos := state.track.Location
 		heading := state.TrackHeading(ctx.NmPerLongitude)
-		if heading == -1{
+		if heading == -1 {
 			continue // dont draw PTLs for tracks that don't have a calculated heading
 		}
 		ptlEnd := math.Offset2LL(pos, heading, dist, ctx.NmPerLongitude, 0)
@@ -450,7 +458,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 					v0, v1 := vertices[i], vertices[(i+1)%len(vertices)]
 					ctd.AddTriangle(pt, math.Add2f(pt, v0), math.Add2f(pt, v1), color)
 				}
-				
+
 			} else {
 				td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
 			}
@@ -481,9 +489,9 @@ func (ep *ERAMPane) drawJRings(ctx *panes.Context, tracks []sim.Track,
 		}
 		if state.DisplayReducedJRing {
 			pw := transforms.WindowFromLatLongP(pos)
-			reducedRadius := 3 / transforms.PixelDistanceNM(ctx.NmPerLongitude) 
-			jr.AddCircle(pw, reducedRadius, 50, ERAMYellow)
+			reducedRadius := 3 / transforms.PixelDistanceNM(ctx.NmPerLongitude)
+			jr.AddGappedCircle(pw, reducedRadius, 50, reducedJRingGaps, ERAMYellow)
 		}
 	}
 	jr.GenerateCommands(cb)
-}  
+}
