@@ -75,7 +75,7 @@ func (ts *TrackState) HeadingVector(nmPerLongitude, magneticVariation float32) m
 
 func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 	if !ts.HaveHeading() {
-		return 0
+		return -1 
 	}
 	return math.Heading2LL(ts.previousTrack.Location, ts.track.Location, nmPerLongitude, 0)
 }
@@ -388,6 +388,9 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 		dist := speed / 60 * float32(ep.velocityTime)
 		pos := state.track.Location
 		heading := state.TrackHeading(ctx.NmPerLongitude)
+		if heading == -1{
+			continue // dont draw PTLs for tracks that don't have a calculated heading
+		}
 		ptlEnd := math.Offset2LL(pos, heading, dist, ctx.NmPerLongitude, ctx.MagneticVariation)
 		p0 := transforms.WindowFromLatLongP(pos)
 		p1 := transforms.WindowFromLatLongP(ptlEnd)
