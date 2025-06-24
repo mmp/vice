@@ -56,6 +56,8 @@ type ERAMPane struct {
 
 	events *sim.EventsSubscription
 
+	systemFont        [3]*renderer.Font
+
 	allVideoMaps []sim.VideoMap
 
 	InboundPointOuts  map[string]string
@@ -112,6 +114,7 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 	p.events = es.Subscribe()
 
 	// TODO: initialize fonts and audio
+	p.initializeFonts(r, pl)
 
 	// Activate weather radar, events
 	p.prefSet = &PrefrenceSet{}

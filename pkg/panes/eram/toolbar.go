@@ -670,7 +670,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 	toolbarDrawState.cursor = toolbarDrawState.drawStartPos
 
 	toolbarDrawState.style = renderer.TextStyle{
-		Font:        ep.ERAMFont(),
+		Font:        ep.ERAMToolbarFont(),
 		Color:       toolbarTextColor,
 		LineSpacing: 0,
 	}
