@@ -14,7 +14,7 @@ import (
 
 func (ep *ERAMPane) ERAMFont() *renderer.Font {
 	if runtime.GOOS == "darwin" {
-		return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 12}) // use regular fonts rather than bitmap to avoid quality and size issues. 
+		return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 12}) // use regular fonts rather than bitmap to avoid quality and size issues.
 	}
 	return ep.systemFont[1]
 	// return renderer.GetDefaultFont()
