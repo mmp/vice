@@ -98,11 +98,10 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	// Shift + tab locks TG
 	var prefix string
 	var original string = cmd
-	if len(cmd) > 3 { //  trim a prefix
+	if len(cmd) >= 2 { //  trim a prefix
 		prefix = cmd[:2]
 		cmd = strings.TrimPrefix(cmd, prefix+" ")
 	}
-
 	switch prefix {
 	case "QP": // J rings, point out
 		fields := strings.Fields(cmd)
