@@ -260,10 +260,11 @@ func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, colo
 	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
 	cb.LineWidth(2, ctx.DPIScale)
 	pt := transforms.WindowFromLatLongP(pos)
-	p0 := math.Add2f(pt, [2]float32{0, 5})
-	p1 := math.Add2f(pt, [2]float32{5, 0})
-	p2 := math.Add2f(pt, [2]float32{0, -5})
-	p3 := math.Add2f(pt, [2]float32{-5, 0})
+	scale := float32(3) * ctx.DPIScale
+	p0 := math.Add2f(pt, [2]float32{0, scale})
+	p1 := math.Add2f(pt, [2]float32{scale, 0})
+	p2 := math.Add2f(pt, [2]float32{0, -scale})
+	p3 := math.Add2f(pt, [2]float32{-scale, 0})
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)

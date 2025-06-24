@@ -166,6 +166,22 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			return
 		}
 		ep.modifyFlightPlan(ctx, fields[1], fp)
+	case "QX": // drop track 
+		fields := strings.Fields(cmd)
+		if len(fields) != 1 {
+			status.err = ErrCommandFormat
+			return
+		}
+		trk, ok := ctx.Client.State.GetTrackByFLID(fields[0])
+		if !ok {
+			status.err = ErrERAMIllegalACID
+			return
+		}
+		if trk.FlightPlan.TrackingController != ctx.UserTCP {
+			status.err = ErrERAMIllegalACID // change error to NO CONTROL
+			return
+		}
+		ep.deleteFLightplan(ctx, *trk)
 	case "QZ": // Assigned, OTP, and block altitudes
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
@@ -316,6 +332,17 @@ func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.Cardi
 		dir = math.NorthEast
 	}
 	return dir
+}
+
+func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
+	ctx.Client.DeleteFlightPlan(sim.ACID(trk.ADSBCallsign.String()), func(err error) {
+			if err != nil {
+				ep.displayError(err, ctx)
+				return
+			}
+			// Clear the track state for this callsign.
+			delete(ep.TrackState, trk.ADSBCallsign)
+		})
 }
 
 func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
