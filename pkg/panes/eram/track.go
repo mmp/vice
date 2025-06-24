@@ -377,7 +377,7 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
-	cb.LineWidth(10, ctx.DPIScale)
+	cb.LineWidth(2, ctx.DPIScale)
 	for _, trk := range tracks {
 		db := dbs[trk.ADSBCallsign]
 		if db == nil {
@@ -408,14 +408,14 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 	}
 
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
+	cb.LineWidth(1, ctx.DPIScale)
 }
 
 func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
-	cb.LineWidth(10, ctx.DPIScale) // tweak this
+	cb.LineWidth(2, ctx.DPIScale) // tweak this
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	for _, trk := range tracks {
 		dbType := ep.datablockType(ctx, trk)
@@ -437,8 +437,8 @@ func (ep *ERAMPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms 
 		ld.AddLine(p0, p1, color)
 	}
 	transforms.LoadWindowViewingMatrices(cb)
-	cb.LineWidth(1, ctx.DPIScale)
 	ld.GenerateCommands(cb)
+	cb.LineWidth(1, ctx.DPIScale)
 
 }
 
