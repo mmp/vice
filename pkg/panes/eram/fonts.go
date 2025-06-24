@@ -14,6 +14,7 @@ import (
 
 func (ep *ERAMPane) ERAMFont() *renderer.Font {
 	return ep.systemFont[2]
+	// return renderer.GetDefaultFont()
 }
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
 	return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 10})
@@ -68,7 +69,6 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 				x = 0
 				y += sf.Height + 1
 			}
-
 			glyph.rasterize(atlas, x, y)
 			glyph.addToFont(ch, x, y, xres, yres, sf, f, scale)
 
@@ -82,8 +82,8 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 
 	// Iterate over the fonts, create Font/Glyph objects for them, and copy
 	// their bitmaps into the atlas image.
-	for _, fontName := range util.SortedMapKeys(ERAMFonts) { // consistent order
-		addFontToAtlas(fontName, ERAMFonts[fontName])
+	for _, fontName := range util.SortedMapKeys(eramFonts) { // consistent order
+		addFontToAtlas(fontName, eramFonts[fontName])
 	}
 
 	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)
@@ -95,7 +95,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 }
 
 func (glyph ERAMGlyph) rasterize(img *image.RGBA, x0, y0 int) {
-	// ERAMGlyphs store their bitmaps as an array of uint32s, where each
+	// STARSGlyphs store their bitmaps as an array of uint32s, where each
 	// uint32 encodes a scanline and bits are set in it to indicate that
 	// the corresponding pixel should be drawn; thus, there are no
 	// intermediate values for anti-aliasing.
@@ -113,14 +113,15 @@ func (glyph ERAMGlyph) rasterize(img *image.RGBA, x0, y0 int) {
 }
 
 func (glyph ERAMGlyph) addToFont(ch, x, y, xres, yres int, sf ERAMFont, f *renderer.Font, scale float32) {
+	minHeight := float32(1.1) / scale // just enough to guarantee a draw
 	g := &renderer.Glyph{
 		// Vertex coordinates for the quad: shift based on the offset
 		// associated with the glyph.  Also, count up from the bottom in y
 		// rather than drawing from the top.
 		X0: scale * float32(glyph.Offset[0]),
 		X1: scale * float32(glyph.Offset[0]+glyph.Bounds[0]),
-		Y0: scale * float32(sf.Height-glyph.Offset[1]-glyph.Bounds[1]),
-		Y1: scale * float32(sf.Height-glyph.Offset[1]),
+		Y0: scale * float32(sf.Height - glyph.Offset[1] - glyph.Bounds[1]),
+		Y1: scale * float32(sf.Height - glyph.Offset[1]),
 
 		// Texture coordinates: just the extent of where we rasterized the
 		// glyph in the atlas, rescaled to [0,1].
@@ -131,6 +132,9 @@ func (glyph ERAMGlyph) addToFont(ch, x, y, xres, yres int, sf ERAMFont, f *rende
 
 		AdvanceX: scale * float32(glyph.StepX),
 		Visible:  true,
+	}
+	if g.Y1-g.Y0 < minHeight {
+		g.Y1 = g.Y0 + minHeight // ensure that the glyph is visible
 	}
 	f.AddGlyph(ch, g)
 }
