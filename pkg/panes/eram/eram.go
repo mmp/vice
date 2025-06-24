@@ -220,8 +220,13 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case imgui.KeyEscape:
 			// Clear the input
-			ep.Input = ""
-			ep.bigOutput = ""
+			if ep.repositionLargeInput || ep.repositionSmallOutput {
+				ep.repositionLargeInput = false
+				ep.repositionSmallOutput = false
+			} else {
+				ep.Input = ""
+				ep.bigOutput = ""
+			}
 		case imgui.KeyTab:
 			ep.Input = "TG "
 		case imgui.KeyPageUp: // velocity vector *2
