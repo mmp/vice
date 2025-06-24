@@ -140,7 +140,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 					return
 				}
 			}
-		} 
+		}
 	case "QU": // direct, qu lines
 		fields := strings.Fields(cmd)
 		if len(fields) == 0 {
@@ -235,7 +235,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 		switch len(fields) {
 		case 1:
 			cmd := fields[0]
-			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(ctx.UserTCP){
+			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(ctx.UserTCP) {
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				ep.acceptHandoff(ctx, acid)
@@ -256,7 +256,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				state.eFDB = !state.eFDB // toggle FDB
 			}
 		case 2: // leader line & handoffs
-			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line 
+			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line
 				dir := ep.numberToLLDirection(ctx, original[0])
 				// get callsign from fp
 				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
@@ -392,21 +392,21 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 	}
 
 	ctx.Client.HandoffTrack(acid, control.Id(),
-		func(err error) { ep.displayError(err, ctx,) })
+		func(err error) { ep.displayError(err, ctx) })
 
 	return nil
 }
 
 func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
-	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to. 
-	// That is not here yet, so return an error. 
+	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
+	// That is not here yet, so return an error.
 	if len(controller) == 1 {
 		return nil, ErrERAMIllegalPosition
 	}
 
 	for _, control := range ctx.Client.State.Controllers {
 		if control.Id() == controller {
-			return control, nil 
+			return control, nil
 		}
 	}
 	return nil, ErrERAMIllegalPosition

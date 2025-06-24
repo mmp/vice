@@ -200,7 +200,7 @@ type fullDatablock struct {
 	line0 [16]dbChar
 	line1 [16]dbChar
 	// line 2
-	vci [2]dbChar
+	vci   [2]dbChar
 	line2 [16]dbChar
 	// line3
 	col1   [2]dbChar
@@ -303,7 +303,6 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		} else {
 			dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color, false)
 		}
-		
 
 		return db
 	case EnhancedLimitedDatablock:

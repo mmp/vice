@@ -20,7 +20,6 @@ func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
 	return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 10})
 }
 
-
 func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	fonts := createFontAtlas(r, p)
 	get := func(name string, size int) *renderer.Font {
@@ -120,8 +119,8 @@ func (glyph ERAMGlyph) addToFont(ch, x, y, xres, yres int, sf ERAMFont, f *rende
 		// rather than drawing from the top.
 		X0: scale * float32(glyph.Offset[0]),
 		X1: scale * float32(glyph.Offset[0]+glyph.Bounds[0]),
-		Y0: scale * float32(sf.Height - glyph.Offset[1] - glyph.Bounds[1]),
-		Y1: scale * float32(sf.Height - glyph.Offset[1]),
+		Y0: scale * float32(sf.Height-glyph.Offset[1]-glyph.Bounds[1]),
+		Y1: scale * float32(sf.Height-glyph.Offset[1]),
 
 		// Texture coordinates: just the extent of where we rasterized the
 		// glyph in the atlas, rescaled to [0,1].
