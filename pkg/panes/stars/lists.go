@@ -38,8 +38,7 @@ func drawSystemList(pw [2]float32, style renderer.TextStyle, td *renderer.TextDr
 	// To avoid allocations when it's just the title, do it directly,
 	// without the strings.Builder.
 	if formatter.Title != "" {
-		pw = td.AddText(formatter.Title, pw, style)
-		pw = td.AddText("\n", pw, style)
+		pw = td.AddText(formatter.Title+"\n", pw, style)
 	}
 
 	var text strings.Builder
