@@ -25,7 +25,8 @@ import (
 )
 
 type scenarioGroup struct {
-	TRACON             string                     `json:"tracon"`
+	ARTCC              string                     `json:"artcc" scope:"eram"`
+	TRACON             string                     `json:"tracon" scope:"stars"`
 	Name               string                     `json:"name"`
 	Airports           map[string]*av.Airport     `json:"airports"`
 	Fixes              map[string]math.Point2LL   `json:"-"`
@@ -37,7 +38,7 @@ type scenarioGroup struct {
 	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
 	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
-	PrimaryAirport string `json:"primary_airport"`
+	PrimaryAirport string `json:"primary_airport" scope:"stars"`
 
 	ReportingPointStrings []string            `json:"reporting_points"`
 	ReportingPoints       []av.ReportingPoint // not in JSON
@@ -1580,7 +1581,7 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 			} else if manifest, ok := mapManifests[vf]; !ok {
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
-			} else {
+			} else { // if tracon
 				sgroup.PostDeserialize(multiControllerOnly, e, simConfigurations, manifest)
 			}
 
