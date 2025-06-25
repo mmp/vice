@@ -110,11 +110,11 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		if i == 2 || i == 3 {
 			xOffset -= fontWidth
 		}
-
+		lineSpacing := 1.4
 		sb.Reset()
 		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, sb,
 			brightness, halfSeconds)
-		pt[1] -= float32(font.Size)
+		pt[1] -= float32(font.Size) * float32(lineSpacing)
 	}
 }
 
