@@ -201,6 +201,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-coordination-list-format">Coordination List Format Strings</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-filters">Filter Regions</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-video-maps">Video Maps</a></li>
 	    </ul>
@@ -7714,6 +7715,9 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     set to "true" must be in exactly one coordination
                       list.</li>
                     <li>"yellow_entries": (<i>Optional</i>) if true, entries in the list are drawn in yellow rather than green.
+                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the coordination list. 
+                      See <a href="#fe-stars-coordination-list-format">Coordination List Format Strings</a> for details.
+                      If not specified, a default format is used.
                   </ul>
                 </td>
               </tr>
@@ -7998,6 +8002,34 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               </tr>
             </tbody>
             </table>
+
+            <h3 id="fe-stars-coordination-list-format">Coordination List Format Strings</h3>
+
+            <p>Coordination lists in STARS display information about aircraft pending release. 
+              The format of each entry can be customized using the "format" field in the coordination list definition.
+              The format string consists of literal text and format specifiers enclosed in square brackets.</p>
+
+            <p>For example, the default format string is:<br>
+              <code>[INDEX][ACKED]    [ACID] [ACTYPE] [BEACON]   [EXIT_FIX] [REQ_ALT]</code></p>
+
+            <p>The following format specifiers are available:</p>
+            <ul>
+              <li><code>[ACKED]</code>: Shows "+" if the departure has been acknowledged/released, or a space otherwise</li>
+              <li><code>[ACID]</code>: The aircraft identifier (7 characters, left-justified)</li>
+              <li><code>[ACTYPE]</code>: The aircraft type (4 characters)</li>
+              <li><code>[BEACON]</code>: The assigned transponder squawk code</li>
+              <li><code>[CWT]</code>: The consolidated wake turbulence category</li>
+              <li><code>[ENTRY_FIX]</code>: The entry fix (3 characters, using short names if available)</li>
+              <li><code>[EXIT_FIX]</code>: The exit fix (3 characters, using short names if available)</li>
+              <li><code>[EXIT_GATE]</code>: The exit fix followed by the requested altitude 
+                (formatted as either 2 or 3 digits in thousands or hundreds of feet, respectively, depending on the "allow_long_scratchpad" setting)</li>
+              <li><code>[INDEX]</code>: The flight plan list index (2 digits)</li>
+              <li><code>[NUMAC]</code>: The number of aircraft (typically 1, more for formation flights)</li>
+              <li><code>[OWNER]</code>: The tracking controller (3 characters)</li>
+              <li><code>[REQ_ALT]</code>: The requested altitude in hundreds of feet (3 digits)</li>
+            </ul>
+
+            <p>Characters outside of square brackets are copied literally to the output.</p>
 
             <h3 id="fe-stars-filters">Filter Regions</h3>
 

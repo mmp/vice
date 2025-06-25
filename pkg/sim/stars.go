@@ -383,6 +383,136 @@ type CoordinationList struct {
 	Id            string   `json:"id"`
 	Airports      []string `json:"airports"`
 	YellowEntries bool     `json:"yellow_entries"`
+	Format        string   `json:"format"`
+}
+
+func rewriteFixForList(sp map[string]SignificantPoint, fix string) string {
+	if spt, ok := sp[fix]; ok && spt.ShortName != "" {
+		fix = spt.ShortName
+	}
+	if len(fix) > 3 {
+		fix = fix[:3]
+	}
+	return fmt.Sprintf("%3s", fix)
+}
+
+// coordinationListFormatters contains all available format specifiers for coordination lists
+var coordinationListFormatters = map[string]func(*STARSFlightPlan, ReleaseDeparture, map[string]SignificantPoint, STARSFacilityAdaptation) string{
+	"ACKED": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return util.Select(dep.Released, "+", " ")
+	},
+	"ACID": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return fmt.Sprintf("%-7s", string(fp.ACID))
+	},
+	"ACTYPE": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return fmt.Sprintf("%4s", fp.AircraftType)
+	},
+	"BEACON": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return fp.AssignedSquawk.String()
+	},
+	"CWT": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " ")
+	},
+	"ENTRY_FIX": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return rewriteFixForList(sp, fp.EntryFix)
+	},
+	"EXIT_FIX": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return rewriteFixForList(sp, fp.ExitFix)
+	},
+	"EXIT_GATE": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		exit := rewriteFixForList(sp, fp.ExitFix)
+		if fa.AllowLongScratchpad {
+			return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
+		} else {
+			return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
+		}
+	},
+	"INDEX": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return fmt.Sprintf("%2d", fp.ListIndex)
+	},
+	"NUMAC": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return strconv.Itoa(fp.AircraftCount)
+	},
+	"OWNER": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return fmt.Sprintf("%3s", fp.TrackingController)
+	},
+	"REQ_ALT": func(fp *STARSFlightPlan, dep ReleaseDeparture, sp map[string]SignificantPoint,
+		fa STARSFacilityAdaptation) string {
+		return fmt.Sprintf("%03d", fp.RequestedAltitude/100)
+	},
+}
+
+// FormatCoordinationListEntry formats a coordination list entry based on the provided format string.
+// If the format string is empty, it uses the default format.
+func FormatCoordinationListEntry(format string, fp *STARSFlightPlan, dep ReleaseDeparture,
+	adaptation STARSFacilityAdaptation, significantPoints map[string]SignificantPoint) string {
+	var result strings.Builder
+	i := 0
+	for i < len(format) {
+		if format[i] == '[' {
+			// Find the end of the specifier
+			endIdx := strings.IndexByte(format[i:], ']')
+			if endIdx == -1 {
+				// Invalid format, just append the rest
+				result.WriteString(format[i:])
+				break
+			}
+
+			specifier := format[i+1 : i+endIdx]
+			if formatter, ok := coordinationListFormatters[specifier]; ok {
+				result.WriteString(formatter(fp, dep, significantPoints, adaptation))
+			} else {
+				// Unknown specifier, keep it as is. (This should be caught at start up time...)
+				result.WriteString("[" + specifier + "]")
+			}
+			i += endIdx + 1
+		} else {
+			// Regular character, just append
+			result.WriteByte(format[i])
+			i++
+		}
+	}
+
+	return result.String()
+}
+
+// ValidateCoordinationListFormat validates a coordination list format string.
+// Valid format strings contain text and specifiers in square brackets.
+func ValidateCoordinationListFormat(format string) error {
+	i := 0
+	for i < len(format) {
+		if format[i] == '[' {
+			// Find the end of the specifier
+			endIdx := strings.IndexByte(format[i:], ']')
+			if endIdx == -1 {
+				return fmt.Errorf("unclosed \"[\" at offset %d", i)
+			}
+
+			specifier := format[i+1 : i+endIdx]
+			if specifier == "" {
+				return fmt.Errorf("empty specifier at offset %d", i)
+			} else if _, ok := coordinationListFormatters[specifier]; !ok {
+				return fmt.Errorf("unknown specifier %q at offset %d", specifier, i)
+			}
+
+			i += endIdx + 1
+		} else {
+			i++
+		}
+	}
+
+	return nil
 }
 
 type SignificantPoint struct {
@@ -995,6 +1125,20 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 			e.ErrorString("Must specify an expansion for %q", abbrev)
 		} else if exp[0] < 'A' || exp[0] > 'Z' {
 			e.ErrorString("Expansion %q for %q must start with a letter", exp, abbrev)
+		}
+	}
+	e.Pop()
+
+	// Validate coordination lists
+	e.Push("\"coordination_lists\"")
+	for i, cl := range fa.CoordinationLists {
+		if cl.Format == "" {
+			// Default format
+			fa.CoordinationLists[i].Format = "[INDEX][ACKED]    [ACID] [ACTYPE] [BEACON]   [EXIT_FIX] [REQ_ALT]"
+		}
+
+		if err := ValidateCoordinationListFormat(cl.Format); err != nil {
+			e.ErrorString("Invalid format string for coordination list %d (%s): %v", i, cl.Name, err)
 		}
 	}
 	e.Pop()
