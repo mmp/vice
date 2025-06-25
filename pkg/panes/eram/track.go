@@ -335,7 +335,6 @@ func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math
 		}
 		state.leaderLineDirection = dir
 	}
-	// fmt.Println("leaderLineDirection:", *dir, "for track", trk.ADSBCallsign)
 	return state.leaderLineDirection
 }
 
