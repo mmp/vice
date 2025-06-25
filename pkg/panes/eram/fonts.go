@@ -22,6 +22,9 @@ func (ep *ERAMPane) ERAMFont() *renderer.Font {
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
 	return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 10})
 }
+func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
+	return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 13})
+}
 
 func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	fonts := createFontAtlas(r, p)
