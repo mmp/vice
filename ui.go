@@ -254,14 +254,16 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Control spawning new aircraft and grant departure releases")
 		}
 
-		if imgui.Button(renderer.FontAwesomeIconUsers) {
-			ui.showMultiControllers = !ui.showMultiControllers
-			if ui.showMultiControllers {
-				ui.mcEntries = nil
+		if !mgr.ClientIsLocal() {
+			if imgui.Button(renderer.FontAwesomeIconUsers) {
+				ui.showMultiControllers = !ui.showMultiControllers
+				if ui.showMultiControllers {
+					ui.mcEntries = nil
+				}
 			}
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Edit multi-controller settings")
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Edit multi-controller settings")
+			}
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconBook) {
@@ -1318,6 +1320,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 
 type multiControllerEntry struct {
 	Flow       string
+	Type       string
 	Controller string
 	inbound    bool
 }
@@ -1440,10 +1443,22 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 	if ui.mcEntries == nil {
 		for ctrl, mc := range c.State.MultiControllers {
 			for _, f := range mc.InboundFlows {
-				ui.mcEntries = append(ui.mcEntries, multiControllerEntry{Flow: f, Controller: ctrl, inbound: true})
+				typ := "Arrival"
+				if flow, ok := c.State.InboundFlows[f]; ok {
+					hasArr := len(flow.Arrivals) > 0
+					hasOf := len(flow.Overflights) > 0
+					if hasArr && hasOf {
+						typ = "Arrival/Overflight"
+					} else if hasOf {
+						typ = "Overflight"
+					}
+				}
+				ui.mcEntries = append(ui.mcEntries,
+					multiControllerEntry{Flow: f, Type: typ, Controller: ctrl, inbound: true})
 			}
 			for _, f := range mc.Departures {
-				ui.mcEntries = append(ui.mcEntries, multiControllerEntry{Flow: f, Controller: ctrl, inbound: false})
+				ui.mcEntries = append(ui.mcEntries,
+					multiControllerEntry{Flow: f, Type: "Departure", Controller: ctrl, inbound: false})
 			}
 		}
 		slices.SortFunc(ui.mcEntries, func(a, b multiControllerEntry) int { return strings.Compare(a.Flow, b.Flow) })
@@ -1451,8 +1466,9 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 
 	imgui.BeginV("Multi-Controller", &ui.showMultiControllers, imgui.WindowFlagsAlwaysAutoResize)
 
-	if imgui.BeginTableV("mc", 2, imgui.TableFlagsBordersV|imgui.TableFlagsBordersOuterH|imgui.TableFlagsRowBg|imgui.TableFlagsSizingStretchProp, imgui.Vec2{}, 0) {
+	if imgui.BeginTableV("mc", 3, imgui.TableFlagsBordersV|imgui.TableFlagsBordersOuterH|imgui.TableFlagsRowBg|imgui.TableFlagsSizingStretchProp, imgui.Vec2{}, 0) {
 		imgui.TableSetupColumn("Flow")
+		imgui.TableSetupColumn("Type")
 		imgui.TableSetupColumn("Controller")
 		imgui.TableHeadersRow()
 
@@ -1461,6 +1477,8 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(e.Flow)
+			imgui.TableNextColumn()
+			imgui.Text(e.Type)
 			imgui.TableNextColumn()
 			imgui.InputTextWithHint("##"+e.Flow, "", &e.Controller, 0, nil)
 		}
