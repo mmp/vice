@@ -90,6 +90,31 @@ func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) erro
 	}
 }
 
+type SetMultiControllersArgs struct {
+	ControllerToken string
+	Config          av.SplitConfiguration
+}
+
+func (sd *dispatcher) SetMultiControllers(mc *SetMultiControllersArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(mc.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return s.SetMultiControllers(ctrl.tcp, mc.Config)
+	}
+}
+
+func (sd *dispatcher) TakeOrReturnFlowControl(token string, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return s.TakeOrReturnFlowControl(ctrl.tcp)
+	}
+}
+
 func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 

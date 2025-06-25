@@ -34,6 +34,7 @@ var (
 	ErrNotClearedForApproach           = errors.New("Aircraft has not been cleared for an approach")
 	ErrNotFlyingRoute                  = errors.New("Aircraft is not currently flying its assigned route")
 	ErrNotLaunchController             = errors.New("Not signed in as the launch controller")
+	ErrNotFlowController               = errors.New("Not signed in as the flow controller")
 	ErrTooManyRestrictionAreas         = errors.New("Too many restriction areas specified")
 	ErrTrackIsActive                   = errors.New("Track is already active")
 	ErrTrackIsBeingHandedOff           = errors.New("Track is currently being handed off")
