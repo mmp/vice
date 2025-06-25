@@ -50,10 +50,11 @@ type State struct {
 	Controllers      map[string]*av.Controller
 	HumanControllers []string
 
-	PrimaryController string
-	MultiControllers  av.SplitConfiguration
-	UserTCP           string
-	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
+	PrimaryController          string
+	MultiControllers           av.SplitConfiguration
+	MultiControllersController string
+	UserTCP                    string
+	Airspace                   map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
 	GenerationIndex int
 
@@ -115,10 +116,11 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
 
-		Controllers:       make(map[string]*av.Controller),
-		PrimaryController: config.PrimaryController,
-		MultiControllers:  config.MultiControllers,
-		UserTCP:           serverCallsign,
+		Controllers:                make(map[string]*av.Controller),
+		PrimaryController:          config.PrimaryController,
+		MultiControllers:           config.MultiControllers,
+		MultiControllersController: "",
+		UserTCP:                    serverCallsign,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,

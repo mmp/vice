@@ -313,7 +313,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			}
 			ui.launchControlWindow.Draw(eventStream, p)
 		}
-		uiDrawMultiControllersWindow(controlClient, p)
+		uiDrawMultiControllersWindow(controlClient, eventStream, p)
 	}
 
 	for _, event := range ui.eventsSubscription.Get() {
@@ -1435,7 +1435,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.End()
 }
 
-func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) {
+func uiDrawMultiControllersWindow(c *client.ControlClient, eventStream *sim.EventStream, p platform.Platform) {
 	if !ui.showMultiControllers {
 		return
 	}
@@ -1466,6 +1466,23 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 
 	imgui.BeginV("Multi-Controller", &ui.showMultiControllers, imgui.WindowFlagsAlwaysAutoResize)
 
+	ctrl := c.State.MultiControllersController
+	imgui.Text("Controlling controller: " + util.Select(ctrl == "", "(none)", ctrl))
+	if ctrl == c.State.UserTCP {
+		if imgui.Button("Release flow control") {
+			c.TakeOrReturnFlowControl(eventStream)
+		}
+	} else {
+		if imgui.Button("Take flow control") {
+			c.TakeOrReturnFlowControl(eventStream)
+		}
+	}
+
+	canEdit := ctrl == c.State.UserTCP || ctrl == "" || c.State.AreInstructorOrRPO(c.State.UserTCP)
+	if !canEdit {
+		imgui.BeginDisabled()
+	}
+
 	if imgui.BeginTableV("mc", 3, imgui.TableFlagsBordersV|imgui.TableFlagsBordersOuterH|imgui.TableFlagsRowBg|imgui.TableFlagsSizingStretchProp, imgui.Vec2{}, 0) {
 		imgui.TableSetupColumn("Flow")
 		imgui.TableSetupColumn("Type")
@@ -1486,7 +1503,7 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 		imgui.EndTable()
 	}
 
-	if imgui.Button("Apply") {
+	if imgui.Button("Apply") && canEdit {
 		newMap := make(av.SplitConfiguration)
 		for _, e := range ui.mcEntries {
 			mc, ok := newMap[e.Controller]
@@ -1512,6 +1529,10 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 	if imgui.Button("Cancel") {
 		ui.showMultiControllers = false
 		ui.mcEntries = nil
+	}
+
+	if !canEdit {
+		imgui.EndDisabled()
 	}
 
 	imgui.End()

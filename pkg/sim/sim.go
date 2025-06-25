@@ -491,6 +491,29 @@ func (s *Sim) SetMultiControllers(tcp string, mc av.SplitConfiguration) error {
 	return nil
 }
 
+func (s *Sim) TakeOrReturnFlowControl(tcp string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if fc := s.State.MultiControllersController; fc != "" && fc != tcp {
+		return ErrNotFlowController
+	} else if fc == "" {
+		s.State.MultiControllersController = tcp
+		s.eventStream.Post(Event{
+			Type:        StatusMessageEvent,
+			WrittenText: tcp + " is now controlling flow assignments.",
+		})
+		return nil
+	} else {
+		s.eventStream.Post(Event{
+			Type:        StatusMessageEvent,
+			WrittenText: s.State.MultiControllersController + " is no longer controlling flow assignments.",
+		})
+		s.State.MultiControllersController = ""
+		return nil
+	}
+}
+
 func (s *Sim) GlobalMessage(tcp, message string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -605,7 +628,9 @@ type StateUpdate struct {
 
 	Time time.Time
 
-	LaunchConfig LaunchConfig
+	LaunchConfig               LaunchConfig
+	MultiControllers           av.SplitConfiguration
+	MultiControllersController string
 
 	UserRestrictionAreas []av.RestrictionArea
 
@@ -734,7 +759,9 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		Time: s.State.SimTime,
 
-		LaunchConfig: s.State.LaunchConfig,
+		LaunchConfig:               s.State.LaunchConfig,
+		MultiControllers:           s.State.MultiControllers,
+		MultiControllersController: s.State.MultiControllersController,
 
 		UserRestrictionAreas: s.State.UserRestrictionAreas,
 		SimIsPaused:          s.State.Paused,
@@ -839,6 +866,8 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		state.UnassociatedFlightPlans = su.UnassociatedFlightPlans
 		state.ReleaseDepartures = su.ReleaseDepartures
 		state.LaunchConfig = su.LaunchConfig
+		state.MultiControllers = su.MultiControllers
+		state.MultiControllersController = su.MultiControllersController
 
 		state.UserRestrictionAreas = su.UserRestrictionAreas
 

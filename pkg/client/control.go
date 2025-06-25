@@ -23,6 +23,18 @@ func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) 
 		}))
 }
 
+func (c *ControlClient) TakeOrReturnFlowControl(eventStream *sim.EventStream) {
+	c.addCall(makeRPCCall(c.client.Go("Sim.TakeOrReturnFlowControl", c.controllerToken, nil, nil),
+		func(err error) {
+			if err != nil {
+				eventStream.Post(sim.Event{
+					Type:        sim.StatusMessageEvent,
+					WrittenText: err.Error(),
+				})
+			}
+		}))
+}
+
 func (c *ControlClient) LaunchDeparture(ac sim.Aircraft, rwy string) {
 	c.addCall(makeRPCCall(c.client.Go("Sim.LaunchAircraft", &server.LaunchAircraftArgs{
 		ControllerToken: c.controllerToken,

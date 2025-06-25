@@ -105,6 +105,16 @@ func (sd *dispatcher) SetMultiControllers(mc *SetMultiControllersArgs, _ *struct
 	}
 }
 
+func (sd *dispatcher) TakeOrReturnFlowControl(token string, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(token); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		return s.TakeOrReturnFlowControl(ctrl.tcp)
+	}
+}
+
 func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
