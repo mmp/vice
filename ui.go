@@ -15,6 +15,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -53,10 +54,13 @@ var (
 		launchControlWindow  *LaunchControlWindow
 		missingPrimaryDialog *ModalDialogBox
 
+		mcEntries []multiControllerEntry
+
 		// Scenario routes to draw on the scope
-		showSettings      bool
-		showScenarioInfo  bool
-		showLaunchControl bool
+		showSettings         bool
+		showScenarioInfo     bool
+		showLaunchControl    bool
+		showMultiControllers bool
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -248,6 +252,16 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Control spawning new aircraft and grant departure releases")
 		}
 
+		if imgui.Button(renderer.FontAwesomeIconUsers) {
+			ui.showMultiControllers = !ui.showMultiControllers
+			if ui.showMultiControllers {
+				ui.mcEntries = nil
+			}
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Edit multi-controller settings")
+		}
+
 		if imgui.Button(renderer.FontAwesomeIconBook) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
@@ -295,6 +309,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			}
 			ui.launchControlWindow.Draw(eventStream, p)
 		}
+		uiDrawMultiControllersWindow(controlClient, p)
 	}
 
 	for _, event := range ui.eventsSubscription.Get() {
@@ -1299,6 +1314,12 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	imgui.PopFont() // regular font
 }
 
+type multiControllerEntry struct {
+	Flow       string
+	Controller string
+	inbound    bool
+}
+
 type MissingPrimaryModalClient struct {
 	mgr    *client.ConnectionManager
 	client *client.ControlClient
@@ -1405,6 +1426,73 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			}
 		}
 	})
+
+	imgui.End()
+}
+
+func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) {
+	if !ui.showMultiControllers {
+		return
+	}
+
+	if ui.mcEntries == nil {
+		for ctrl, mc := range c.State.MultiControllers {
+			for _, f := range mc.InboundFlows {
+				ui.mcEntries = append(ui.mcEntries, multiControllerEntry{Flow: f, Controller: ctrl, inbound: true})
+			}
+			for _, f := range mc.Departures {
+				ui.mcEntries = append(ui.mcEntries, multiControllerEntry{Flow: f, Controller: ctrl, inbound: false})
+			}
+		}
+		slices.SortFunc(ui.mcEntries, func(a, b multiControllerEntry) int { return strings.Compare(a.Flow, b.Flow) })
+	}
+
+	imgui.BeginV("Multi-Controller", &ui.showMultiControllers, imgui.WindowFlagsAlwaysAutoResize)
+
+	if imgui.BeginTableV("mc", 2, imgui.TableFlagsBordersV|imgui.TableFlagsBordersOuterH|imgui.TableFlagsRowBg|imgui.TableFlagsSizingStretchProp, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumn("Flow")
+		imgui.TableSetupColumn("Controller")
+		imgui.TableHeadersRow()
+
+		for i := range ui.mcEntries {
+			e := &ui.mcEntries[i]
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(e.Flow)
+			imgui.TableNextColumn()
+			imgui.InputText("##"+e.Flow, &e.Controller)
+		}
+
+		imgui.EndTable()
+	}
+
+	if imgui.Button("Apply") {
+		newMap := make(av.SplitConfiguration)
+		for _, e := range ui.mcEntries {
+			mc, ok := newMap[e.Controller]
+			if !ok {
+				mc = &av.MultiUserController{}
+				if old, ok := c.State.MultiControllers[e.Controller]; ok {
+					mc.Primary = old.Primary
+					mc.BackupController = old.BackupController
+				}
+				newMap[e.Controller] = mc
+			}
+			if e.inbound {
+				mc.InboundFlows = append(mc.InboundFlows, e.Flow)
+			} else {
+				mc.Departures = append(mc.Departures, e.Flow)
+			}
+		}
+		c.SetMultiControllers(newMap)
+		ui.showMultiControllers = false
+		ui.mcEntries = nil
+	}
+	imgui.SameLine()
+	if imgui.Button("Cancel") {
+		ui.showMultiControllers = false
+		ui.mcEntries = nil
+	}
 
 	imgui.End()
 }

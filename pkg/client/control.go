@@ -360,6 +360,19 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 	c.State.LaunchConfig = lc
 }
 
+func (c *ControlClient) SetMultiControllers(mc av.SplitConfiguration) {
+	c.addCall(makeRPCCall(c.client.Go("Sim.SetMultiControllers",
+		&server.SetMultiControllersArgs{
+			ControllerToken: c.controllerToken,
+			Config:          mc,
+		}, nil, nil), nil))
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.State.MultiControllers = mc
+}
+
 func (c *ControlClient) DeleteAllAircraft(callback func(err error)) {
 	var update sim.StateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.DeleteAllAircraft", &server.DeleteAircraftArgs{

@@ -483,6 +483,14 @@ func (s *Sim) SetSimRate(tcp string, rate float32) error {
 	return nil
 }
 
+func (s *Sim) SetMultiControllers(tcp string, mc av.SplitConfiguration) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	s.State.MultiControllers = mc
+	return nil
+}
+
 func (s *Sim) GlobalMessage(tcp, message string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
