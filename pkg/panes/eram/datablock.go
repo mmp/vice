@@ -299,7 +299,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 			dbWriteText(db.fieldE[:], a, color, true)
 		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
 			a := util.Select(ep.dbAlternate, fmt.Sprintf("O-%v", trk.FlightPlan.TrackingController), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-			dbWriteText(db.fieldE[:], a, color, true)
+			dbWriteText(db.fieldE[:], a, color, false)
 		} else {
 			dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color, false)
 		}
