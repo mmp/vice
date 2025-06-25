@@ -20,6 +20,8 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/pkg/aviation"
+
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
@@ -1460,7 +1462,7 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, p platform.Platform) 
 			imgui.TableNextColumn()
 			imgui.Text(e.Flow)
 			imgui.TableNextColumn()
-			imgui.InputText("##"+e.Flow, &e.Controller)
+			imgui.InputTextWithHint("##"+e.Flow, "", &e.Controller, 0, nil)
 		}
 
 		imgui.EndTable()
