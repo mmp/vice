@@ -344,7 +344,7 @@ func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math
 func (ep *ERAMPane) leaderLineVector(dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
 	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
-	return math.Scale2f(v, 48)
+	return math.Scale2f(v, 60)
 }
 
 // For LDBs
