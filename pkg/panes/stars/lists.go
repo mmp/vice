@@ -1104,17 +1104,10 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
-				text.WriteString(fmt.Sprintf("%2d", fp.ListIndex))
-				text.WriteString(util.Select(dep.Released, "+", " "))
-				exit := fp.ExitFix
-				if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
-					exit = spt.ShortName
-				}
-				if len(exit) > 3 {
-					exit = exit[:3]
-				}
-				text.WriteString(fmt.Sprintf(" %-10s %5s %s %5s %03d\n", string(fp.ACID), fp.AircraftType,
-					fp.AssignedSquawk, exit, fp.RequestedAltitude/100))
+				formattedEntry := sim.FormatCoordinationListEntry(cl.Format, fp, dep, *ctx.FacilityAdaptation,
+					sp.significantPoints)
+				text.WriteString(formattedEntry)
+				text.WriteString("\n")
 				if !dep.Released && blinkDim {
 					pw = td.AddText(rewriteDelta(text.String()), pw, dimStyle)
 				} else {
