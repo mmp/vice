@@ -176,7 +176,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 }
 
-func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+func (ep *ERAMPane) drawTargets(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -190,7 +190,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 		positionSymbol := ep.positionSymbol(trk, state)
-		ep.drawTrack(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td, cb)
+		ep.drawTarget(trk, state, ctx, transforms, positionSymbol, trackBuilder, ld, trid, td, cb)
 	}
 	transforms.LoadWindowViewingMatrices(cb)
 	trackBuilder.GenerateCommands(cb)
@@ -202,7 +202,7 @@ func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transform
 	td.GenerateCommands(cb)
 }
 
-func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Context,
+func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Context,
 	transforms radar.ScopeTransformations, position string, trackBuilder *renderer.ColoredTrianglesDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, trid *renderer.ColoredTrianglesDrawBuilder, td *renderer.TextDrawBuilder,
 	cb *renderer.CommandBuffer) {
@@ -212,18 +212,36 @@ func (ep *ERAMPane) drawTrack(track sim.Track, state *TrackState, ctx *panes.Con
 	// Draw the position symbol
 	color := ep.trackColor(state, track)
 	font := ep.ERAMFont() // Change this to the actual font
-	if ep.datablockType(ctx, track) == FullDatablock {
-		// draw a diamond
-		drawDiamond(ctx, transforms, color, pos, ld, cb)
-	}
 	if position == "p" {
-		trackBuilder.AddCircle(pt, 2, 100, color)
+		trackBuilder.AddCircle(pt, 3, 100, color)
 	} else {
 		td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
 	}
 
 	// trackBuilder.GenerateCommands(cb)
 	ld.GenerateCommands(cb) // why does this need to be here?
+}
+
+func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	for _, trk := range tracks {
+		if ep.datablockType(ctx, trk) != FullDatablock {
+			continue // Only draw tracks for full datablocks
+		}
+		state := ep.TrackState[trk.ADSBCallsign]
+		ep.drawTrack(trk, state, ctx, ld, transforms, cb)
+	}
+	ld.GenerateCommands(cb)
+}
+
+// TODO: Store tracks in ERAMComputer and have them associate to targets
+func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
+	ld *renderer.ColoredLinesDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	pos := state.track.Location
+	// TODO: free tracks, frozen tracks, and coast tracks
+	drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
 }
 
 func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
@@ -260,7 +278,7 @@ func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, colo
 	pos [2]float32, ld *renderer.ColoredLinesDrawBuilder, cb *renderer.CommandBuffer) {
 	cb.LineWidth(2, ctx.DPIScale)
 	pt := transforms.WindowFromLatLongP(pos)
-	scale := float32(3) * ctx.DPIScale
+	scale := float32(5) * ctx.DPIScale
 	p0 := math.Add2f(pt, [2]float32{0, scale})
 	p1 := math.Add2f(pt, [2]float32{scale, 0})
 	p2 := math.Add2f(pt, [2]float32{0, -scale})

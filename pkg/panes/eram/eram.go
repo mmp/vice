@@ -160,6 +160,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
 	ep.drawPTLs(ctx, tracks, transforms, cb)
+	ep.drawTargets(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
