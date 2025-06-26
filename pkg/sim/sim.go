@@ -366,7 +366,7 @@ func (s *Sim) SignOff(tcp string) error {
 	if _, ok := s.humanControllers[tcp]; !ok {
 		return av.ErrNoController
 	}
-	 
+
 	if s.State.MultiControllersController == tcp {
 		s.State.MultiControllersController = ""
 	}

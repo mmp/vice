@@ -1506,17 +1506,17 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, eventStream *sim.Even
 	if imgui.Button("Apply") && canEdit {
 		newMap := make(av.SplitConfiguration)
 		for _, e := range ui.mcEntries {
-				if _, err := c.State.MultiControllers.ResolveController(e.Controller, func(id string) bool {
-					_, ok := c.State.Controllers[id]
-					return ok 
-				}); err != nil {
-					uiShowModalDialog(NewModalDialogBox(&MessageModalClient{
-						title:   "Invalid Controller",
-						message: "The controller '" + e.Controller + "' does not exist.",
-					}, p), true)
-					imgui.End()
-					return
-				}
+			if _, err := c.State.MultiControllers.ResolveController(e.Controller, func(id string) bool {
+				_, ok := c.State.Controllers[id]
+				return ok
+			}); err != nil {
+				uiShowModalDialog(NewModalDialogBox(&MessageModalClient{
+					title:   "Invalid Controller",
+					message: "The controller '" + e.Controller + "' does not exist.",
+				}, p), true)
+				imgui.End()
+				return
+			}
 			mc, ok := newMap[e.Controller]
 			if !ok {
 				mc = &av.MultiUserController{}
