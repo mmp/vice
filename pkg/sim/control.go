@@ -987,6 +987,7 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 		})
 }
 
+// TODO: Migrate to ERAM computer.
 func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
 	ac := s.Aircraft[av.ADSBCallsign(acid)]
 	if ac == nil {
@@ -1009,6 +1010,37 @@ func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
 	})
 	return nil
 }
+
+// TODO: Migrate to ERAM computer.
+func (s *Sim) FlightPlanDirect(tcp, fix string, acid ACID) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	fp := ac.FlightPlan
+	idx := strings.Index(fp.Route, fix)
+	if idx < 0 {
+		return av.ErrNoMatchingFix
+	}
+	rte := fp.Route[idx:]
+	fp.Route = rte
+	// Update sim Track as well
+	trk := s.State.Tracks[ac.ADSBCallsign]
+	pos, ok := av.DB.LookupWaypoint(fix)
+	if !ok {
+		return av.ErrNoMatchingFix // Check this pls
+	}
+	for i, wpPos := range trk.Route {
+		if wpPos == pos {
+			// Remove all waypoints before the fix
+			trk.Route = trk.Route[i:]
+			break
+		}
+	}
+	// TODO: Post an event that will update the controller's output.
+	return nil 
+}
+
 
 func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)

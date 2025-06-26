@@ -489,6 +489,7 @@ type STARSFlightPlan struct {
 	RNAV bool
 
 	Location math.Point2LL
+	Route string 
 
 	PointOutHistory             []string
 	InhibitModeCAltitudeDisplay bool

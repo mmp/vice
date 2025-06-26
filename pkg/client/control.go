@@ -383,6 +383,15 @@ func (c *ControlClient) GetQULines(aircraft sim.ACID, callback func(err error)) 
 	}, &update, nil), &update, callback))
 }
 
+func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback func(err error)) {
+	var update sim.StateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.FlightPlanDirect", &server.QUDirectArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            aircraft,
+		Fix:             fix,
+	}, &update, nil), &update, callback))
+}
+
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
 
 	if c.HaveTTS() && cmds != "P" && cmds != "X" {

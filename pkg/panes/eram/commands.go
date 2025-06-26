@@ -152,6 +152,21 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 				return
 			}
 			ep.getQULines(ctx, acid)
+		} else if unicode.IsDigit(rune(fields[0][0])) && len(fields) == 2 {
+
+		} else if len(fields) == 2 { // Direct a fix
+			// <fix> <FLID>
+			fix := fields[0]
+			flid := fields[1]
+
+			trk, ok := ctx.Client.State.GetTrackByFLID(flid)
+			if !ok {
+				status.err = ErrERAMIllegalACID
+				return
+			}
+
+			ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
+
 		}
 	case "QQ": // interim altitude
 		// first field is the altitude, second is the CID.
@@ -181,7 +196,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			status.err = ErrERAMIllegalACID // change error to NO CONTROL
 			return
 		}
-		ep.deleteFLightplan(ctx, *trk)
+		ep.deleteFLightplan(ctx, *trk)//
 	case "QZ": // Assigned, OTP, and block altitudes
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
@@ -401,6 +416,14 @@ func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 
 func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.GetQULines(acid, func(err error) {
+		if err != nil {
+			ep.displayError(err, ctx)
+		}
+	})
+}
+
+func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix string) {
+	ctx.Client.FlightPlanDirect(acid, fix, func(err error) {
 		if err != nil {
 			ep.displayError(err, ctx)
 		}
