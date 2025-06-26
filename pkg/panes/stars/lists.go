@@ -60,6 +60,98 @@ func drawSystemList(pw [2]float32, style renderer.TextStyle, td *renderer.TextDr
 	}
 }
 
+// formatListEntry formats a single entry of a STARS system list based on
+// the provided format string, which uses []-delimited specifiers to
+// specify entries in a line; characters outside of brackets are passed
+// through unchanged. A number of built-in specifiers are available to show
+// values from the STARSFlightPlan; additional custom specifiers can be
+// provided in custom for items that are not in the flight plan and are
+// limited to specific list types.
+func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.STARSFlightPlan,
+	custom map[string]func() string) string {
+	rewriteFixForList := func(fix string) string {
+		if spt, ok := sp.significantPoints[fix]; ok && spt.ShortName != "" {
+			fix = spt.ShortName
+		}
+		if len(fix) > 3 {
+			fix = fix[:3]
+		}
+		return fmt.Sprintf("%3s", fix)
+	}
+
+	formatters := map[string]func(*sim.STARSFlightPlan) string{
+		"ACID": func(fp *sim.STARSFlightPlan) string {
+			return fmt.Sprintf("%-7s", string(fp.ACID))
+		},
+		"ACTYPE": func(fp *sim.STARSFlightPlan) string {
+			return fmt.Sprintf("%4s", fp.AircraftType)
+		},
+		"BEACON": func(fp *sim.STARSFlightPlan) string {
+			return fp.AssignedSquawk.String()
+		},
+		"CWT": func(fp *sim.STARSFlightPlan) string {
+			return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " ")
+		},
+		"ENTRY_FIX": func(fp *sim.STARSFlightPlan) string {
+			return rewriteFixForList(fp.EntryFix)
+		},
+		"EXIT_FIX": func(fp *sim.STARSFlightPlan) string {
+			return rewriteFixForList(fp.ExitFix)
+		},
+		"EXIT_GATE": func(fp *sim.STARSFlightPlan) string {
+			exit := rewriteFixForList(fp.ExitFix)
+			if ctx.FacilityAdaptation.AllowLongScratchpad {
+				return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
+			} else {
+				return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
+			}
+		},
+		"INDEX": func(fp *sim.STARSFlightPlan) string {
+			return fmt.Sprintf("%2d", fp.ListIndex)
+		},
+		"NUMAC": func(fp *sim.STARSFlightPlan) string {
+			return strconv.Itoa(fp.AircraftCount)
+		},
+		"OWNER": func(fp *sim.STARSFlightPlan) string {
+			return fmt.Sprintf("%3s", fp.TrackingController)
+		},
+		"REQ_ALT": func(fp *sim.STARSFlightPlan) string {
+			return fmt.Sprintf("%03d", fp.RequestedAltitude/100)
+		},
+	}
+
+	var result strings.Builder
+	i := 0
+	for i < len(format) {
+		if format[i] == '[' {
+			// Find the end of the specifier
+			endIdx := strings.IndexByte(format[i:], ']')
+			if endIdx == -1 {
+				// Invalid format, just append the rest
+				result.WriteString(format[i:])
+				break
+			}
+
+			specifier := format[i+1 : i+endIdx]
+			if formatter, ok := custom[specifier]; ok {
+				result.WriteString(formatter())
+			} else if formatter, ok := formatters[specifier]; ok {
+				result.WriteString(formatter(fp))
+			} else {
+				// Unknown specifier, keep it as is. (This should be caught at start up time...)
+				result.WriteString("[" + specifier + "]")
+			}
+			i += endIdx + 1
+		} else {
+			// Regular character, just append
+			result.WriteByte(format[i])
+			i++
+		}
+	}
+
+	return result.String()
+}
+
 func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, paneExtent math.Extent2D,
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
@@ -1104,8 +1196,9 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
-				formattedEntry := sim.FormatCoordinationListEntry(cl.Format, fp, dep, *ctx.FacilityAdaptation,
-					sp.significantPoints)
+				formattedEntry := sp.formatListEntry(ctx, cl.Format, fp, map[string]func() string{
+					"ACKED": func() string { return util.Select(dep.Released, "+", " ") },
+				})
 				text.WriteString(formattedEntry)
 				text.WriteString("\n")
 				if !dep.Released && blinkDim {
