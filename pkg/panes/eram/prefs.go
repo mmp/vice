@@ -25,13 +25,13 @@ type Preferences struct {
 
 	altitudeFilter [2]int
 
-	Line4Size int 
-	FDBSize  int
-	PoralSize int
-	ToolbarSize int 
-	RDBSize int // CRR datablocks 
-	LDBSize int 
-	OutageSize int 
+	Line4Size   int
+	FDBSize     int
+	PoralSize   int
+	ToolbarSize int
+	RDBSize     int // CRR datablocks
+	LDBSize     int
+	OutageSize  int
 }
 
 const numSavedPreferenceSets = 10

@@ -397,7 +397,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 				continue
 			}
 			dbType := ep.datablockType(ctx, trk)
-			var sz int 
+			var sz int
 			if dbType == FullDatablock {
 				sz = ps.FDBSize
 			} else {

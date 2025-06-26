@@ -46,7 +46,7 @@ func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	ep.systemFont[2] = get("EramText-14.pcf", 17)
 	ep.systemFont[3] = get("EramText-16.pcf", 18)
 	ep.systemFont[4] = get("EramText-16.pcf", 18)
-	
+
 	ep.systemFont[5] = get("EramTargets-16.pcf", 15)
 	// ep.systemFont[6] = get("EramGeomap-16.pcf", 15)
 	// ep.systemFont[7] = get("EramGeomap-18.pcf", 17)
