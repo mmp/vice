@@ -12,11 +12,11 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
-func (ep *ERAMPane) ERAMFont() *renderer.Font {
-	// if runtime.GOOS == "darwin" {
-	// 	return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 12}) // use regular fonts rather than bitmap to avoid quality and size issues.
-	// }
-	return ep.systemFont[3]
+func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
+	if runtime.GOOS == "darwin" {
+		return ep.systemFont[0]
+	}
+	return ep.systemFont[size]
 
 }
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {

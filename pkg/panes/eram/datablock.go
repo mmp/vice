@@ -248,7 +248,7 @@ func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
 	start := transforms.WindowFromLatLongP(state.track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)
 	end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(*dir), ctx.DrawPixelScale))
-	font := ep.ERAMFont()
+	font := ep.ERAMFont(3)
 	brightness := ep.datablockBrightness(state)
 	halfSeconds := ctx.Now.UnixMilli() / 500
 
@@ -382,7 +382,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 		}
 	}
 
-	font := ep.ERAMFont()
+	font := ep.ERAMFont(3)
 	var sb strings.Builder
 	halfSeconds := ctx.Now.UnixMilli() / 500
 

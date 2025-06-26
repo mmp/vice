@@ -260,7 +260,7 @@ func (ep *ERAMPane) drawPauseOverlay(ctx *panes.Context, cb *renderer.CommandBuf
 	}
 
 	text := "SIMULATION PAUSED"
-	font := ep.ERAMFont() // better font pls
+	font := ep.systemFont[3] // better font pls
 
 	// Get pane width
 	width := ctx.PaneExtent.Width()
