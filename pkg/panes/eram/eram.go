@@ -56,7 +56,7 @@ type ERAMPane struct {
 
 	events *sim.EventsSubscription
 
-	systemFont [10]*renderer.Font
+	systemFont [11]*renderer.Font
 
 	allVideoMaps []sim.VideoMap
 
