@@ -355,9 +355,24 @@ type STARSFacilityAdaptation struct {
 
 	CustomSPCs []string `json:"custom_spcs"`
 
-	CoordinationLists []CoordinationList   `json:"coordination_lists"`
-	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas"`
-	UseLegacyFont     bool                 `json:"use_legacy_font"`
+	CoordinationLists []CoordinationList `json:"coordination_lists"`
+	VFRList           struct {
+		Format string `json:"format"`
+	} `json:"vfr_list"`
+	TABList struct {
+		Format string `json:"format"`
+	} `json:"tab_list"`
+	CoastSuspendList struct {
+		Format string `json:"format"`
+	} `json:"coast_suspend_list"`
+	MCISuppressionList struct {
+		Format string `json:"format"`
+	} `json:"mci_suppression_list"`
+	TowerList struct {
+		Format string `json:"format"`
+	} `json:"tower_list"`
+	RestrictionAreas []av.RestrictionArea `json:"restriction_areas"`
+	UseLegacyFont    bool                 `json:"use_legacy_font"`
 }
 
 type FilterRegion struct {
@@ -389,8 +404,8 @@ type CoordinationList struct {
 // Validates a format string for a STARS system list. Extra specifiers that are specific to
 // particular list types may be provided via extra.
 func validateListFormat(format string, extra ...string) error {
-	fpSpecifiers := []string{"ACID", "ACTYPE", "BEACON", "CWT", "ENTRY_FIX", "EXIT_FIX", "EXIT_GATE", "INDEX",
-		"NUMAC", "OWNER", "REQ_ALT"}
+	fpSpecifiers := []string{"ACID", "ACID_MSAWCA", "ACTYPE", "BEACON", "CWT", "DEP_EXIT_FIX", "ENTRY_FIX",
+		"EXIT_FIX", "EXIT_GATE", "INDEX", "NUMAC", "OWNER", "REQ_ALT"}
 
 	i := 0
 	for i < len(format) {
@@ -1031,7 +1046,51 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 	}
 	e.Pop()
 
-	// Validate coordination lists
+	e.Push("\"tab_list\"")
+	if fa.TABList.Format == "" {
+		fa.TABList.Format = "[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"
+	}
+	if err := validateListFormat(fa.TABList.Format, "DUPE_BEACON"); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.TABList.Format, err)
+	}
+	e.Pop()
+
+	e.Push("\"vfr_list\"")
+	if fa.VFRList.Format == "" {
+		fa.VFRList.Format = "[INDEX] [ACID_MSAWCA][BEACON]"
+	}
+	if err := validateListFormat(fa.VFRList.Format); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.VFRList.Format, err)
+	}
+	e.Pop()
+
+	e.Push("\"coast_suspend_list\"")
+	if fa.CoastSuspendList.Format == "" {
+		fa.CoastSuspendList.Format = "[INDEX] [ACID] S [BEACON] [ALT]"
+	}
+	if err := validateListFormat(fa.CoastSuspendList.Format, "ALT"); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.CoastSuspendList.Format, err)
+	}
+	e.Pop()
+
+	e.Push("\"mci_suppression_list\"")
+	if fa.MCISuppressionList.Format == "" {
+		fa.MCISuppressionList.Format = "[ACID] [BEACON]  [SUPP_BEACON]"
+	}
+	if err := validateListFormat(fa.MCISuppressionList.Format, "SUPP_BEACON"); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.MCISuppressionList.Format, err)
+	}
+	e.Pop()
+
+	e.Push("\"tower_list\"")
+	if fa.TowerList.Format == "" {
+		fa.TowerList.Format = "[ACID] [ACTYPE]"
+	}
+	if err := validateListFormat(fa.TowerList.Format); err != nil {
+		e.ErrorString("Invalid format string %q: %v", fa.TowerList.Format, err)
+	}
+	e.Pop()
+
 	e.Push("\"coordination_lists\"")
 	for i, cl := range fa.CoordinationLists {
 		if cl.Format == "" {

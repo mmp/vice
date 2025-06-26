@@ -83,14 +83,38 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 		"ACID": func(fp *sim.STARSFlightPlan) string {
 			return fmt.Sprintf("%-7s", string(fp.ACID))
 		},
+		"ACID_MSAWCA": func(fp *sim.STARSFlightPlan) string {
+			s := string(fp.ACID)
+			if fp.DisableMSAW {
+				if fp.DisableCA {
+					s += "+"
+				} else {
+					s += "*"
+				}
+			} else if fp.DisableCA {
+				s += STARSTriangleCharacter
+			}
+			return fmt.Sprintf("%-8s", s)
+		},
 		"ACTYPE": func(fp *sim.STARSFlightPlan) string {
 			return fmt.Sprintf("%4s", fp.AircraftType)
 		},
 		"BEACON": func(fp *sim.STARSFlightPlan) string {
-			return fp.AssignedSquawk.String()
+			haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
+			if haveCode {
+				return fp.AssignedSquawk.String()
+			} else {
+				return "VFR "
+			}
 		},
 		"CWT": func(fp *sim.STARSFlightPlan) string {
 			return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " ")
+		},
+		"DEP_EXIT_FIX": func(fp *sim.STARSFlightPlan) string {
+			if fp.TypeOfFlight == av.FlightTypeDeparture {
+				return rewriteFixForList(fp.ExitFix)
+			}
+			return "   "
 		},
 		"ENTRY_FIX": func(fp *sim.STARSFlightPlan) string {
 			return rewriteFixForList(fp.EntryFix)
@@ -618,26 +642,9 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 		Entries: len(vfr),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			fp := vfr[idx]
-			sb.WriteString(fmt.Sprintf("%2d ", fp.ListIndex)) // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-
-			acid := string(fp.ACID)
-			if fp.DisableMSAW {
-				if fp.DisableCA {
-					acid += "+"
-				} else {
-					acid += "*"
-				}
-			} else if fp.DisableCA {
-				acid += STARSTriangleCharacter
-			}
-			sb.WriteString(fmt.Sprintf("%-8s", acid))
-
-			haveCode := ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-			if !haveCode {
-				sb.WriteString("VFR")
-			} else {
-				sb.WriteString(fp.AssignedSquawk.String())
-			}
+			format := ctx.FacilityAdaptation.VFRList.Format
+			// TODO: default after INDEX: + in-out-in flight, / dupe acid, * DM message on departure
+			sb.WriteString(sp.formatListEntry(ctx, format, fp, nil))
 		},
 	})
 }
@@ -693,45 +700,16 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		Entries: len(plans),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			fp := plans[idx]
-			sb.WriteString(fmt.Sprintf("%2d ", fp.ListIndex))
-			sb.WriteByte(' ') // TODO: + in-out-in flight, / dupe acid, * DM message on departure
-
-			acid := string(fp.ACID)
-			if fp.DisableMSAW {
-				if fp.DisableCA {
-					acid += "+"
-				} else {
-					acid += "*"
-				}
-			} else if fp.DisableCA {
-				acid += STARSTriangleCharacter
-			}
-			sb.WriteString(fmt.Sprintf("%-8s", acid))
-
+			// TODO: after INDEX, + in-out-in flight, / dupe acid, * DM message on departure
 			haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
-			if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
-				sb.WriteByte('/')
-			} else {
-				sb.WriteByte(' ')
-			}
-
-			if !haveCode {
-				sb.WriteString("VFR ")
-			} else {
-				sb.WriteString(fp.AssignedSquawk.String())
-			}
-
-			if fp.TypeOfFlight == av.FlightTypeDeparture {
-				exit := fp.ExitFix
-				if spt, ok := sp.significantPoints[exit]; ok && spt.ShortName != "" {
-					exit = spt.ShortName
-				}
-				if len(exit) > 3 {
-					exit = exit[:3]
-				}
-				sb.WriteByte(' ')
-				sb.WriteString(exit)
-			}
+			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.TABList.Format, fp, map[string]func() string{
+				"DUPE_BEACON": func() string {
+					if _, ok := dupes[fp.AssignedSquawk]; ok && haveCode {
+						return "/"
+					}
+					return " "
+				},
+			}))
 		},
 	})
 }
@@ -854,18 +832,23 @@ func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style rend
 		Entries: len(tracks),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := tracks[idx]
-			var alt string
-			// For suspended, we always just show altitude (of one sort or another)
-			if trk.Mode == av.TransponderModeAltitude {
-				alt = fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-			} else if trk.FlightPlan.PilotReportedAltitude != 0 {
-				alt = fmt.Sprintf("%03d", trk.FlightPlan.PilotReportedAltitude)
-			} else {
-				alt = "RDR"
-			}
-
-			sb.WriteString(fmt.Sprintf("%2d %-8s S %s %s", trk.FlightPlan.CoastSuspendIndex,
-				trk.ADSBCallsign, trk.Squawk.String(), alt))
+			fp := trk.FlightPlan
+			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.CoastSuspendList.Format, fp,
+				map[string]func() string{
+					"ALT": func() string {
+						// For suspended, we always just show altitude (of one sort or another)
+						if trk.Mode == av.TransponderModeAltitude {
+							return fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
+						} else if fp.PilotReportedAltitude != 0 {
+							return fmt.Sprintf("%03d", fp.PilotReportedAltitude)
+						} else {
+							return "RDR"
+						}
+					},
+					"INDEX": func() string {
+						return fmt.Sprintf("%2d", fp.CoastSuspendIndex)
+					},
+				}))
 		},
 	})
 }
@@ -1054,8 +1037,11 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, t
 		Entries: len(mciTracks),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := mciTracks[idx]
-			sb.WriteString(fmt.Sprintf("%7s %s  %s", trk.FlightPlan.ACID, trk.Squawk.String(),
-				trk.FlightPlan.MCISuppressedCode.String()))
+			fp := trk.FlightPlan
+			sb.WriteString(sp.formatListEntry(ctx, ctx.FacilityAdaptation.MCISuppressionList.Format, fp,
+				map[string]func() string{
+					"SUPP_BEACON": func() string { return trk.FlightPlan.MCISuppressedCode.String() },
+				}))
 		},
 	})
 }
@@ -1077,7 +1063,7 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 			dist := math.NMDistance2LL(loc, trk.Location)
 			// We'll punt on the chance that two aircraft have the
 			// exact same distance to the airport...
-			m[dist] = fmt.Sprintf("%-7s %s", trk.FlightPlan.ACID, trk.FlightPlan.AircraftType)
+			m[dist] = sp.formatListEntry(ctx, ctx.FacilityAdaptation.TowerList.Format, trk.FlightPlan, nil)
 		}
 	}
 

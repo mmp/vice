@@ -201,7 +201,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a>
 	    <ul class="submenu">
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-coordination-list-format">Coordination List Format Strings</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-list-format">List Formatting</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-filters">Filter Regions</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-video-maps">Video Maps</a></li>
 	    </ul>
@@ -7677,6 +7677,18 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
               </tr>
               <tr>
+                <td>"coast_suspend_list"</td>
+                <td>Object</td>
+                <td>Configures the coast/suspend list display format. The following property may be specified:
+                  <ul>
+                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the list. 
+                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
+                      If not specified, the default format <code>"[INDEX] [ACID] S [BEACON] [ALT]"</code> is used.
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
                 <td>"controller_configs"</td>
                 <td>Object</td>
                 <td>Each entry specifies controller-specific configuration properties.
@@ -7716,7 +7728,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       list.</li>
                     <li>"yellow_entries": (<i>Optional</i>) if true, entries in the list are drawn in yellow rather than green.
                     <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the coordination list. 
-                      See <a href="#fe-stars-coordination-list-format">Coordination List Format Strings</a> for details.
+                      See <a href="#fe-stars-list-format">List Formatting</a> for details.
                       If not specified, a default format is used.
                   </ul>
                 </td>
@@ -7822,6 +7834,18 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   STARS DCB. Each entry is the name of a video map (as would
                   be specified in "stars_maps") and its value is the label
                   that should be assigned to it.
+                </td>
+              </tr>
+              <tr>
+                <td>"mci_suppression_list"</td>
+                <td>Object</td>
+                <td>Configures the MCI suppression list display format. The following property may be specified:
+                  <ul>
+                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the list. 
+                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
+                      If not specified, the default format <code>"[ACID] [BEACON]  [SUPP_BEACON]"</code> is used.
+                    </li>
+                  </ul>
                 </td>
               </tr>
               <tr>
@@ -7991,9 +8015,45 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
+                <td>"tower_list"</td>
+                <td>Object</td>
+                <td>Configures the tower list display format. The following property may be specified:
+                  <ul>
+                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the list. 
+                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
+                      If not specified, the default format <code>"[ACID] [ACTYPE]"</code> is used.
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
                 <td>"use_legacy_font"</td>
                 <td>Boolean</td>
                 <td>If "true", causes the legacy STARS font to be used in the STARS display.</td>
+              </tr>
+              <tr>
+                <td>"vfr_list"</td>
+                <td>Object</td>
+                <td>Configures the VFR list display format. The following property may be specified:
+                  <ul>
+                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the VFR list. 
+                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
+                      If not specified, the default format <code>"[INDEX] [ACID_MSAWCA][BEACON]"</code> is used.
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"tab_list"</td>
+                <td>Object</td>
+                <td>Configures the TAB (flight plan) list display format. The following property may be specified:
+                  <ul>
+                    <li>"format": (<i>Optional</i>) a string specifying the format of each entry in the TAB list. 
+                      See <a href="#fe-stars-list-format">List Formatting</a> for available format specifiers.
+                      If not specified, the default format <code>"[INDEX] [ACID_MSAWCA][DUPE_BEACON] [BEACON] [DEP_EXIT_FIX]"</code> is used.
+                    </li>
+                  </ul>
+                </td>
               </tr>
               <tr>
                 <td>"video_map_file"</td>
@@ -8003,22 +8063,26 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </tbody>
             </table>
 
-            <h3 id="fe-stars-coordination-list-format">Coordination List Format Strings</h3>
+            <h3 id="fe-stars-list-format">List Formatting</h3>
 
-            <p>Coordination lists in STARS display information about aircraft pending release. 
-              The format of each entry can be customized using the "format" field in the coordination list definition.
+            <p>STARS system lists display information about aircraft in various contexts. 
+              The format of entries in these lists can be customized using the "format" field for the corresponding list in "stars_config".
               The format string consists of literal text and format specifiers enclosed in square brackets.</p>
 
-            <p>For example, the default format string is:<br>
-              <code>[INDEX][ACKED]    [ACID] [ACTYPE] [BEACON]   [EXIT_FIX] [REQ_ALT]</code></p>
-
-            <p>The following format specifiers are available:</p>
+            <p>The following format specifiers are available for all system lists:</p>
             <ul>
-              <li><code>[ACKED]</code>: Shows "+" if the departure has been acknowledged/released, or a space otherwise</li>
               <li><code>[ACID]</code>: The aircraft identifier (7 characters, left-justified)</li>
+              <li><code>[ACID_MSAWCA]</code>: The aircraft identifier followed by one of the following MSAW/CA status indicators or a space if none applies (8 characters, left-justified):
+                <ul>
+                  <li>"+" suffix: both minimum safe altitude and collision alerts are disabled</li>
+                  <li>"*" suffix: only minimum safe altitude alerts are disabled</li>
+                  <li>"∆" suffix: only collision alerts are disabled</li>
+                </ul>
+              </li>
               <li><code>[ACTYPE]</code>: The aircraft type (4 characters)</li>
-              <li><code>[BEACON]</code>: The assigned transponder squawk code</li>
+              <li><code>[BEACON]</code>: The assigned transponder squawk code. For VFR flights, initially shows "VFR " for  a few seconds until a beacon code is returned from ERAM.</li>
               <li><code>[CWT]</code>: The consolidated wake turbulence category</li>
+              <li><code>[DEP_EXIT_FIX]</code>: The exit fix, if the aircraft is a departure (3 characters, using short names if available)</li>
               <li><code>[ENTRY_FIX]</code>: The entry fix (3 characters, using short names if available)</li>
               <li><code>[EXIT_FIX]</code>: The exit fix (3 characters, using short names if available)</li>
               <li><code>[EXIT_GATE]</code>: The exit fix followed by the requested altitude 
@@ -8030,6 +8094,32 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </ul>
 
             <p>Characters outside of square brackets are copied literally to the output.</p>
+
+            <p>Some types of lists support additional format specifiers or have slightly different behavior for the above specifiers:</p>
+            <ul>
+              <li>Coast/suspend list:
+                <ul>
+                  <li><code>[ALT]</code>: Shows the current mode-C altitude (in hundreds of feet) if available; otherwise the pilot-reported altitude is shown. If neither of those is available, "RDR" is shown.</li>
+                  <li><code>[INDEX]</code>: The coast/suspend list index is shown.</li>
+                </ul>
+              </li>
+              <li>Coordination list:
+                <ul>
+                  <li><code>[ACKED]</code>: Shows "+" if the departure has been acknowledged/released, or a space otherwise</li>
+                </ul>
+              </li>
+              <li>MCI suppression list:
+                <ul>
+                  <li><code>[SUPP_BEACON]</code>: The suppressed beacon code associated with the aircraft</li>
+                </ul>
+              </li>
+              <li>Flight plan (TAB) list:
+                <ul>
+              <li><code>[DUPE_BEACON]</code>: Shows "/" when if the aircraft's beacon code is also being used by another aircraft and a single space otherwise</li>
+                </ul>
+              </li>
+            </ul>
+            
 
             <h3 id="fe-stars-filters">Filter Regions</h3>
 
