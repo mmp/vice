@@ -382,9 +382,9 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 		}
 	}
 
-	font := ep.ERAMFont(3)
 	var sb strings.Builder
 	halfSeconds := ctx.Now.UnixMilli() / 500
+	ps := ep.currentPrefs()
 
 	draw := func(tracks []sim.Track) {
 		for _, trk := range tracks {
@@ -397,6 +397,13 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 				continue
 			}
 			dbType := ep.datablockType(ctx, trk)
+			var sz int 
+			if dbType == FullDatablock {
+				sz = ps.FDBSize
+			} else {
+				sz = ps.LDBSize
+			}
+			font := ep.ERAMFont(sz)
 			start := transforms.WindowFromLatLongP(state.track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
 			offset := datablockOffset(*dir)

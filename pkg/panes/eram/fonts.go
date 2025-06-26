@@ -16,6 +16,10 @@ func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 	if runtime.GOOS == "darwin" {
 		return ep.systemFont[0]
 	}
+	if size == 4 {
+		size = 3 // Missing one font, so skip it for now
+	}
+	size -= 1
 	return ep.systemFont[size]
 
 }
@@ -23,7 +27,7 @@ func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
 	return ep.systemFont[0]
 }
 func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
-	return renderer.GetFont(renderer.FontIdentifier{Name: "ERAMv102", Size: 13})
+	return ep.systemFont[1]
 }
 
 func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
@@ -41,12 +45,13 @@ func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	ep.systemFont[1] = get("EramText-11.pcf", 13)
 	ep.systemFont[2] = get("EramText-14.pcf", 17)
 	ep.systemFont[3] = get("EramText-16.pcf", 18)
-	ep.systemFont[4] = get("EramTargets-16.pcf", 15)
-	// TODO: Change these to alphabetical characters
-	// ep.systemFont[5] = get("EramGeomap-16.pcf", 15)
-	// ep.systemFont[6] = get("EramGeomap-18.pcf", 17)
-	// ep.systemFont[7] = get("EramGeomap-20.pcf", 19)
-	ep.systemFont[8] = get("EramTracks-16.pcf", 15)
+	ep.systemFont[4] = get("EramText-16.pcf", 18)
+	
+	ep.systemFont[5] = get("EramTargets-16.pcf", 15)
+	// ep.systemFont[6] = get("EramGeomap-16.pcf", 15)
+	// ep.systemFont[7] = get("EramGeomap-18.pcf", 17)
+	// ep.systemFont[8] = get("EramGeomap-20.pcf", 19)
+	ep.systemFont[9] = get("EramTracks-16.pcf", 15)
 
 }
 func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font {

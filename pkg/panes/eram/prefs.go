@@ -24,6 +24,14 @@ type Preferences struct {
 	DisplayToolbar bool
 
 	altitudeFilter [2]int
+
+	Line4Size int 
+	FDBSize  int
+	PoralSize int
+	ToolbarSize int 
+	RDBSize int // CRR datablocks 
+	LDBSize int 
+	OutageSize int 
 }
 
 const numSavedPreferenceSets = 10
@@ -122,6 +130,14 @@ func makeDefaultPreferences() *Preferences {
 	prefs.commandBigPosition = [2]float32{2, 80}
 	prefs.commandSmallPosition = [2]float32{392, 80}
 	prefs.altitudeFilter = [2]int{0, 999}
+
+	prefs.Line4Size = 0
+	prefs.FDBSize = 1
+	prefs.PoralSize = 0
+	prefs.ToolbarSize = 1
+	prefs.RDBSize = 1
+	prefs.LDBSize = 1
+	prefs.OutageSize = 1
 
 	return &prefs
 }

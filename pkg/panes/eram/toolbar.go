@@ -65,6 +65,7 @@ const (
 	buttonTearoff
 	buttonDisabled
 	buttonUnsupported
+	buttonBoth
 )
 
 var menuButtons []string = []string{"DRAW", "ATC\nTOOLS", "AB\nSETTING",
@@ -153,6 +154,40 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			resetButtonPosDefault(ctx, scale)
 			delete(toolbarDrawState.customButton, main)
 		}
+		
+		p0 := toolbarDrawState.buttonCursor
+		sz := util.Select(ps.Line4Size > 0, fmt.Sprint(ps.Line4Size), "=")
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LINE4\n%v", sz), 0, scale, false, false){
+			handleClick(&ps.Line4Size, -2, 0, 1) // Handle click for Line4 size
+		}
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("FDB\n%v", ps.FDBSize), 0, scale, false, false) {
+			handleClick(&ps.FDBSize, 1, 5, 1) // Handle click for FDB size
+		}
+		sz2 := util.Select(ps.PoralSize > 0, fmt.Sprint(ps.PoralSize), "=")
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("PORTAL\n%v", sz2), 0, scale, false, false) {
+			handleClick(&ps.PoralSize, -2, 0, 1) // Handle click for Portal size
+		}
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("TOOLBAR\n%v", ps.ToolbarSize), 0, scale, false, false) {
+			handleClick(&ps.ToolbarSize, 1, 2, 1) // Handle click for Toolbar size
+		}
+		toolbarDrawState.offsetBottom = true // Offset the next row
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("RDB\n%v", ps.RDBSize), 0, scale, false, true) {
+			handleClick(&ps.RDBSize, 1, 5, 1) // Handle click for RDB size
+		}
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LDB\n%v", ps.LDBSize), 0, scale, false, false) {
+			handleClick(&ps.LDBSize, 1, 5, 1) // Handle click for LDB size
+		}
+		
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("OUTAGE\n%v", ps.OutageSize), 0, scale, false, false) {
+			handleClick(&ps.OutageSize, 1, 3, 1) // Handle click for Outage size
+		}
+		p2 := [2]float32{toolbarDrawState.buttonCursor[0], oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))[1]}
+		p2[0] += buttonSize(buttonBoth, scale)[0] // Move to the right side of the button
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
+
 	case toolbarVideomap:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
@@ -479,6 +514,8 @@ func (ep *ERAMPane) drawToolbarFullButton(ctx *panes.Context, text string, flag 
 	sz = buttonSize(buttonFull, buttonScale)
 	pressed := ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false) // Draw full button. Only change row for the tearoff button
 	moveToolbarCursor(buttonFull, sz, ctx, nextRow)
+	// Button spacing
+	toolbarDrawState.buttonCursor[0] += 2 // Add some space between buttons
 	return pressed
 }
 
@@ -631,6 +668,8 @@ func buttonSize(flag toolbarFlags, scale float32) [2]float32 {
 		return [2]float32{bs(scale), bs(scale) / 2.52}
 	} else if flag == buttonTearoff {
 		return [2]float32{bs(scale) / 7.2, bs(scale) / 2.52}
+	} else if flag == buttonBoth {
+		return [2]float32{bs(scale) + (bs(scale) / 7.2), bs(scale) / 2.52}
 	} else {
 		panic(fmt.Sprintf("unhandled starsButtonFlags %d", flag))
 	}
@@ -836,26 +875,29 @@ func (ep *ERAMPane) drawLightToolbar(p0, p1, p2, p3 [2]float32) {
 	trid.GenerateCommands(toolbarDrawState.cb)
 }
 
-func handleClick(pref *radar.ScopeBrightness, min, max, step int) {
+// Take both ScopeBrightness and ints for font size
+func handleClick[T ~int](pref *T, min, max, step int) {
+	v := int(*pref)
+
 	mouse := toolbarDrawState.mouse
 	if mouse == nil {
 		return
 	}
 
-	value := int(*pref)
 	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary] { // lower value
-		if value-step >= min {
-			*pref = radar.ScopeBrightness(value - step)
+		if v-step >= min {
+			v -= step
 		} else {
 			// play a sound or something
 		}
 	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary] { // raise value
-		if value+step <= max {
-			*pref = radar.ScopeBrightness(value + step)
+		if v+step <= max {
+			v += step
 		} else {
 			// play a sound or something
 		}
 	}
+	*pref = T(v)
 }
 
 // Just for leader lines AFAIK
@@ -895,6 +937,11 @@ func (ep *ERAMPane) drawMasterMenu(ctx *panes.Context, cb *renderer.CommandBuffe
 	toolbarDrawState.buttonDrawStartPos = [2]float32{30, ctx.PaneExtent.Height() - 100}
 	toolbarDrawState.buttonCursor = toolbarDrawState.buttonDrawStartPos
 	scale := ep.toolbarButtonScale(ctx)
+	toolbarDrawState.style = renderer.TextStyle{
+		Font:        ep.ERAMToolbarFont(),
+		Color:       toolbarTextColor,
+		LineSpacing: 0,
+	}
 	if ep.drawFullMasterButton(ctx, "TOOLBAR", toolbarDrawState.masterToolbar, scale, 0, false) {
 		toolbarDrawState.masterToolbar = !toolbarDrawState.masterToolbar
 	}

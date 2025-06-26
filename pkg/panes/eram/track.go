@@ -212,9 +212,9 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 
 	color := ep.trackColor(state, track)
-	font := ep.systemFont[4]
+	font := ep.systemFont[5]
 	if font == nil {
-		fmt.Println("ERAMPane: systemFont[4] is nil, cannot draw targets")
+		fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw targets")
 		return
 	}
 	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
@@ -243,7 +243,7 @@ func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Conte
 	pos := state.track.Location
 	// TODO: free tracks, frozen tracks, and coast tracks
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
-	font := ep.systemFont[8]
+	font := ep.systemFont[9]
 	td.AddTextCentered("\u0000", transforms.WindowFromLatLongP(pos),
 		renderer.TextStyle{Font: font, Color: ep.trackColor(state, trk)})
 }
@@ -498,15 +498,15 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			symbol := trk.PositionSymbol
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
-			if ep.systemFont[4] == nil {
-				fmt.Println("ERAMPane: systemFont[4] is nil, cannot draw history tracks")
+			if ep.systemFont[5] == nil {
+				fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw history tracks")
 				continue
 			}
 			if td == nil {
 				fmt.Println("ERAMPane: TextDrawBuilder is nil, cannot draw history tracks")
 				continue
 			}
-			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[4], Color: color})
+			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[5], Color: color})
 		}
 	}
 
