@@ -1038,9 +1038,8 @@ func (s *Sim) FlightPlanDirect(tcp, fix string, acid ACID) error {
 		}
 	}
 	// TODO: Post an event that will update the controller's output.
-	return nil 
+	return nil
 }
-
 
 func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)

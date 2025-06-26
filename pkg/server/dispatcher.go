@@ -497,7 +497,7 @@ func (sd *dispatcher) SendCoordinateInfo(da *QULineArgs, update *sim.StateUpdate
 type QUDirectArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	Fix 		  string
+	Fix             string
 }
 
 func (sd *dispatcher) FlightPlanDirect(da *QUDirectArgs, update *sim.StateUpdate) error {

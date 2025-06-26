@@ -196,7 +196,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 			status.err = ErrERAMIllegalACID // change error to NO CONTROL
 			return
 		}
-		ep.deleteFLightplan(ctx, *trk)//
+		ep.deleteFLightplan(ctx, *trk) //
 	case "QZ": // Assigned, OTP, and block altitudes
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
