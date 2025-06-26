@@ -1,6 +1,7 @@
 package eram
 
 import (
+	"fmt"
 	"time"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -209,14 +210,14 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 	pos := state.track.Location
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
-	// Draw the position symbol
+
 	color := ep.trackColor(state, track)
-	font := ep.ERAMFont() // Change this to the actual font
-	if position == "p" {
-		trackBuilder.AddCircle(pt, 3, 100, color)
-	} else {
-		td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
+	font := ep.systemFont[4]
+	if font == nil {
+		fmt.Println("ERAMPane: systemFont[4] is nil, cannot draw targets")
+		return
 	}
+	td.AddTextCentered(position, pt, renderer.TextStyle{Font: font, Color: color})
 
 	// trackBuilder.GenerateCommands(cb)
 	ld.GenerateCommands(cb) // why does this need to be here?
@@ -224,51 +225,54 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 
 func (ep *ERAMPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
 	cb *renderer.CommandBuffer) {
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
 	for _, trk := range tracks {
 		if ep.datablockType(ctx, trk) != FullDatablock {
 			continue // Only draw tracks for full datablocks
 		}
 		state := ep.TrackState[trk.ADSBCallsign]
-		ep.drawTrack(trk, state, ctx, ld, transforms, cb)
+		ep.drawTrack(trk, state, ctx, td, transforms, cb)
 	}
-	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
 }
 
 // TODO: Store tracks in ERAMComputer and have them associate to targets
 func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Context,
-	ld *renderer.ColoredLinesDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	td *renderer.TextDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	pos := state.track.Location
 	// TODO: free tracks, frozen tracks, and coast tracks
-	drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
+	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
+	font := ep.systemFont[8]
+	td.AddTextCentered("\u0000", transforms.WindowFromLatLongP(pos),
+		renderer.TextStyle{Font: font, Color: ep.trackColor(state, trk)})
 }
 
 func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
-	symbol := "?"
+	symbol := "\u0001"
 	if trk.IsUnassociated() {
 		switch trk.Mode {
 		case av.TransponderModeStandby:
-			symbol = "+"
+			symbol = "\u0000"
 		case av.TransponderModeAltitude:
 			switch {
 			case trk.Ident:
-				symbol = string(0x2630)
+				symbol = "\u0006"
 			case trk.Squawk == 0o1200 && trk.TransponderAltitude < 1000:
-				symbol = "V"
+				symbol = "\u0008"
 			case trk.Squawk != 0o1200 && trk.TransponderAltitude < 1000:
-				symbol = "/"
-			case trk.TransponderAltitude > 1000:
-				symbol = "I"
+				symbol = "\u0003"
+			case trk.TransponderAltitude >= 1000:
+				symbol = "\u0007"
 			}
 		}
 	} else {
 		if trk.Mode == av.TransponderModeStandby {
-			symbol = "X"
+			symbol = "\u0002"
 		} else if state.track.TransponderAltitude < 23000 {
-			symbol = "p"
+			symbol = "\u0005"
 		} else {
-			symbol = "\\"
+			symbol = "\u0004"
 		}
 	}
 	return symbol
@@ -494,16 +498,15 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 			symbol := trk.PositionSymbol
 			pw := transforms.WindowFromLatLongP(loc)
 			pt := math.Add2f(pw, [2]float32{0.5, -.5})
-			if symbol == "p" {
-				vertices := radar.GetTrackVertices(ctx, 5)
-				for i := range vertices {
-					v0, v1 := vertices[i], vertices[(i+1)%len(vertices)]
-					ctd.AddTriangle(pt, math.Add2f(pt, v0), math.Add2f(pt, v1), color)
-				}
-
-			} else {
-				td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.ERAMFont(), Color: color})
+			if ep.systemFont[4] == nil {
+				fmt.Println("ERAMPane: systemFont[4] is nil, cannot draw history tracks")
+				continue
 			}
+			if td == nil {
+				fmt.Println("ERAMPane: TextDrawBuilder is nil, cannot draw history tracks")
+				continue
+			}
+				td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[4], Color: color})
 		}
 	}
 
