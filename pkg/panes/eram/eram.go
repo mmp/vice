@@ -56,7 +56,7 @@ type ERAMPane struct {
 
 	events *sim.EventsSubscription
 
-	systemFont [3]*renderer.Font
+	systemFont [10]*renderer.Font
 
 	allVideoMaps []sim.VideoMap
 
@@ -195,10 +195,18 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl plat
 	ep.makeMaps(client, ss, lg)
 }
 
-var upArrow string = "z"
-var downArrow string = "y"
-var scratchpadArrow string = "x"
-var vci string = " w"
+// Custom text characters. Some of these are not for all fonts. Size 11 has everything. 
+const upArrow string = "t"
+const downArrow string = "u"
+const scratchpadArrow string = "v"
+const vci string = " x"
+const circleClear string = "y"
+const circleFilled string = "z"
+const insertCursor string = "o" 
+const checkMark string = "r"
+const xMark string = "s"
+const thickUpArrow string = "p"
+const thickDownArrow string = "q"
 
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
