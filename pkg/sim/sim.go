@@ -366,6 +366,10 @@ func (s *Sim) SignOff(tcp string) error {
 	if _, ok := s.humanControllers[tcp]; !ok {
 		return av.ErrNoController
 	}
+	 
+	if s.State.MultiControllersController == tcp {
+		s.State.MultiControllersController = ""
+	}
 
 	// Drop track on controlled aircraft
 	for _, ac := range s.Aircraft {
@@ -412,6 +416,10 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 	s.humanControllers[toTCP].events.Unsubscribe()
 	s.humanControllers[toTCP] = s.humanControllers[fromTCP]
 	s.State.HumanControllers = append(s.State.HumanControllers, toTCP)
+
+	if s.State.MultiControllersController == fromTCP {
+		s.State.MultiControllersController = ""
+	}
 
 	delete(s.humanControllers, fromTCP)
 	delete(s.State.Controllers, fromTCP)
