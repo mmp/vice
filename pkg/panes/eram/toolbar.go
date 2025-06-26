@@ -140,6 +140,19 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {
 			// ep.deleteTearoff = true
 		}
+	case toolbarFont:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		main := "FONT"
+		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom
+		drawButtonSamePosition(ctx, main)
+		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+			delete(toolbarDrawState.customButton, main)
+		}
 	case toolbarVideomap:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
