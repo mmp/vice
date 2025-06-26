@@ -24,7 +24,7 @@ func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 
 }
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
-	return ep.systemFont[0]
+	return ep.systemFont[1]
 }
 func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
 	return ep.systemFont[1]
