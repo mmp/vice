@@ -1478,7 +1478,7 @@ func uiDrawMultiControllersWindow(c *client.ControlClient, eventStream *sim.Even
 		}
 	}
 
-	canEdit := ctrl == c.State.UserTCP || ctrl == "" || c.State.AreInstructorOrRPO(c.State.UserTCP)
+	canEdit := ctrl == c.State.UserTCP || c.State.AreInstructorOrRPO(c.State.UserTCP)
 	if !canEdit {
 		imgui.BeginDisabled()
 	}
