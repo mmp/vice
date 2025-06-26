@@ -36,7 +36,7 @@ func (ep *ERAMPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 		return fonts[idx]
 	}
 
-	// TODO: Find the fifth ERAM text size. 
+	// TODO: Find the fifth ERAM text size.
 	ep.systemFont[0] = get("EramText-8.pcf", 11)
 	ep.systemFont[1] = get("EramText-11.pcf", 13)
 	ep.systemFont[2] = get("EramText-14.pcf", 17)

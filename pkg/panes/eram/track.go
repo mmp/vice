@@ -506,7 +506,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 				fmt.Println("ERAMPane: TextDrawBuilder is nil, cannot draw history tracks")
 				continue
 			}
-				td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[4], Color: color})
+			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[4], Color: color})
 		}
 	}
 
