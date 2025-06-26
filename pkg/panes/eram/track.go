@@ -308,6 +308,9 @@ func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When rada
 	var tracks []sim.Track
 	for _, trk := range ctx.Client.State.Tracks {
 		// Radar wholes neeeded for this. For now, return true
+		if trk.TransponderAltitude <= 49 {
+			continue
+		}
 		tracks = append(tracks, *trk)
 	}
 	return tracks
