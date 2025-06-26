@@ -194,10 +194,6 @@ type SnippetFormatter interface {
 }
 
 var (
-	// Snippets are provided by the user with formatting directives enclosed in braces;
-	// this regular expression is used for extracting them from strings.
-	fmtRE = regexp.MustCompile(`\{(.*?)\}`)
-
 	// phraseFormats stores associates all of the formatting strings with
 	// SnippetFormatter implementations. The map keys specify
 	// the associated formatting strings.
