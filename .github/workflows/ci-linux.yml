@@ -38,6 +38,8 @@ jobs:
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
     - name: Bundle resources
+      env:
+         GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
         go run util/bundleresources.go
 
