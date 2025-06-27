@@ -85,20 +85,21 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	}
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	out, _ := util.WrapTextNoSpace(ep.bigOutput, cols, 0, true)
+	out, _ := util.WrapTextNoSpace(ep.bigOutput.String(), cols, 0, true)
+	ep.bigOutput.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandBigPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
+	ep.writeText(td, ep.bigOutput, [2]float32{p0[0] + 2, p0[1] - 2})
 
 	// Draw the smaller top box now.  Size may change if the input text
 	// requires more room.
 	inputSize := float32(38)
 	bx, _ = style.Font.BoundText("X", 0)
 	cols = int(sz[0] / float32(bx))
-	input := ep.Input + "_"
+	input := ep.Input.String() + "_"
 	inText, _ := util.WrapTextNoSpace(input, cols, 0, true)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
@@ -188,7 +189,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	inputSize := float32(77)
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	inText, _ := util.WrapTextNoSpace(ep.smallOutput, cols, 0, true)
+	inText, _ := util.WrapTextNoSpace(ep.smallOutput.String(), cols, 0, true)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
@@ -209,13 +210,14 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	// Draw wrapped text output in the box
 
 	cols = int(sz[0] / float32(bx))
-	out, _ := util.WrapTextNoSpace(ep.smallOutput, cols, 0, true)
+	out, _ := util.WrapTextNoSpace(ep.smallOutput.String(), cols, 0, true)
+	ep.smallOutput.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
 		P0: [2]float32{winBase[0], winBase[1] - sz[1]},
 		P1: [2]float32{winBase[0] + sz[0], winBase[1]},
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
-	td.AddText(out, [2]float32{p0[0] + 2, p0[1] - 2}, style)
+	ep.writeText(td, ep.smallOutput, [2]float32{p0[0] + 2, p0[1] - 2})
 
 	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
@@ -258,4 +260,19 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	trid.GenerateCommands(commandDrawState.cb)
 	ld.GenerateCommands(commandDrawState.cb)
 	td.GenerateCommands(commandDrawState.cb)
+}
+
+func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc [2]float32) {
+	font := ep.ERAMInputFont()
+	style := renderer.TextStyle{Font: font}
+	for _, char := range text {
+		ch := char.char
+		if ch != '\n' {
+			style.Color = char.color
+			loc = td.AddText(string(ch), loc, style)
+		} else {
+			loc[1] -= float32(font.Size) * float32(1.4) // edit this value
+		}
+
+	}
 }

@@ -2,6 +2,7 @@ package eram
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -64,9 +65,9 @@ type ERAMPane struct {
 	OutboundPointOuts map[string]string
 
 	// Output and input text for the command line interface.
-	smallOutput string
-	bigOutput   string
-	Input       string
+	smallOutput inputText
+	bigOutput   inputText
+	Input       inputText
 
 	activeToolbarMenu int
 	toolbarVisible    bool
@@ -196,24 +197,100 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl plat
 }
 
 // Custom text characters. Some of these are not for all fonts. Size 11 has everything.
+const insertCursor string = "o"
+const thickUpArrow string = "p"
+const thickDownArrow string = "q"
+const checkMark string = "r"
+const xMark string = "s"
 const upArrow string = "t"
 const downArrow string = "u"
 const scratchpadArrow string = "v"
+const locationSymbol string = "w"
 const vci string = " x"
 const circleClear string = "y"
 const circleFilled string = "z"
-const insertCursor string = "o"
-const checkMark string = "r"
-const xMark string = "s"
-const thickUpArrow string = "p"
-const thickDownArrow string = "q"
 
+type inputChar struct {
+	char  rune
+	color renderer.RGB
+	location [2]float32 // long lat 
+}
+
+type inputText []inputChar
+
+func (inp *inputText) Set(ps *Preferences, str string) {
+	inp.Clear()
+	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
+	location := [2]float32{0, 0} // Default location
+	for _, char := range str {
+		*inp = append(*inp, inputChar{char: char, color: color, location: location})
+	}
+}
+
+func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
+	for _, char := range str {
+	*inp = append(*inp, inputChar{char: char, color: color, location: location})
+	}
+}
+
+func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
+	inp.Add(locationSymbol, ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
+}
+
+// No formatting needed 
+func (inp *inputText) AddBasic(ps *Preferences, str string) {
+	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
+	location := [2]float32{0, 0} 
+	for _, char := range str {
+	*inp = append(*inp, inputChar{char: char, color: color, location: location})
+	}
+}
+
+// When formatting the text for the wraparound in tools.go, some newline characters are added in. inputText.formatWrap handles these newline
+// characters without messing up colors or locations
+func (inp *inputText) formatWrap(ps *Preferences, str string) {
+	newText := inputText{}
+	var i int // only goes up if not newline 
+	for _, char := range str {
+		if char != '\n' {
+			newText.Add(string(char), (*inp)[i].color, (*inp)[i].location)
+			i++ 
+		} else {
+			newText.AddBasic(ps, "\n")
+		}
+	}
+	*inp = newText
+}
+
+// TODO: Add Success and Error methods to format success and error messages
+
+func (inp *inputText) DeleteOne() {
+	if len(*inp) > 0 {
+		*inp = (*inp)[:len(*inp)-1]
+	}
+}
+
+func (inp *inputText) Clear() {
+	*inp = (*inp)[:0]
+}
+
+func (inp inputText) String() string {
+	var sb strings.Builder
+	for _, ic := range inp {
+		sb.WriteString(string(ic.char))
+	}
+	return sb.String()
+}
+
+// AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
-	input := strings.ToUpper(ctx.Keyboard.Input)
-	ep.Input += input
+	ps := ep.currentPrefs()
+	keyboardInput := strings.ToUpper(ctx.Keyboard.Input)
+	ep.Input.AddBasic(ps, keyboardInput)
+	input := ep.Input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
 		case imgui.KeyBackspace:
@@ -223,9 +300,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 		case imgui.KeyEnter:
 			// Process the command
 			status := ep.executeERAMCommand(ctx, ep.Input)
-			ep.Input = ""
+			ep.Input.Clear()
 			if status.err != nil {
-				ep.bigOutput = status.err.Error()
+				ep.bigOutput.displayError(ps, status.err)
+				fmt.Println("ERAM command error:", status.err, ep.bigOutput.String())
 			}
 		case imgui.KeyEscape:
 			// Clear the input
@@ -233,11 +311,13 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.repositionLargeInput = false
 				ep.repositionSmallOutput = false
 			} else {
-				ep.Input = ""
-				ep.bigOutput = ""
+				ep.Input.Clear()
+				ep.bigOutput.Clear()
 			}
 		case imgui.KeyTab:
-			ep.Input = "TG "
+			if input == "" {
+			ep.Input.Set(ps, "TG ")
+			}
 		case imgui.KeyPageUp: // velocity vector *2
 			if ep.velocityTime == 0 {
 				ep.velocityTime = 1

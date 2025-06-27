@@ -9,6 +9,7 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/radar"
+	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 )
@@ -42,6 +43,11 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			deltaLL := transforms.LatLongFromWindowV(delta)
 			ps.CurrentCenter = math.Sub2f(ps.CurrentCenter, deltaLL)
 		}
+	}
+
+	if mouse.Clicked[platform.MouseButtonPrimary] && ep.Input.String() != "" {
+		pos := transforms.LatLongFromWindowP(mouse.Pos)
+		ep.Input.AddLocation(ps, pos)
 	}
 
 	// zoom
@@ -93,10 +99,11 @@ type CommandStatus struct {
 	err       error
 }
 
-func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status CommandStatus) {
+func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
 	// TG will be the prefix for radio commands. TODO: Tab and semicolo (or comma) adds TG
 	// Shift + tab locks TG
 	var prefix string
+	cmd := cmdLine.String()
 	var original string = cmd
 	if len(cmd) >= 2 { //  trim a prefix
 		prefix = cmd[:2]
@@ -318,9 +325,12 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmd string) (status C
 	return
 }
 
-func (ep *ERAMPane) displayError(err error, ctx *panes.Context) {
+func (inp *inputText) displayError(ps *Preferences, err error) {
 	if err != nil {
-		ep.bigOutput = err.Error()
+		errMsg := inputText{}
+		errMsg.Add(xMark, renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+		errMsg.AddBasic(ps, err.Error())
+		*inp = errMsg
 	}
 }
 
@@ -352,7 +362,7 @@ func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.Cardi
 func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
 	ctx.Client.DeleteFlightPlan(sim.ACID(trk.ADSBCallsign.String()), func(err error) {
 		if err != nil {
-			ep.displayError(err, ctx)
+			ep.bigOutput.displayError(ep.currentPrefs(), err)
 			return
 		}
 		// Clear the track state for this callsign.
@@ -369,9 +379,9 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 
 				if err := server.TryDecodeErrorString(errStr); err != nil {
 					err = GetERAMError(err, ctx.Lg)
-					ep.displayError(err, ctx)
+					ep.bigOutput.displayError(ep.currentPrefs(), err)
 				} else {
-					ep.displayError(ErrCommandFormat, ctx)
+					ep.bigOutput.displayError(ep.currentPrefs(), ErrCommandFormat)
 				}
 			}
 		})
@@ -381,13 +391,13 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.STARSFlightPlanSpecifier) {
 	acid, err := ep.getACIDFromCID(ctx, cid)
 	if err != nil {
-		ep.displayError(err, ctx)
+		ep.bigOutput.displayError(ep.currentPrefs(), err)
 		return
 	}
 	ctx.Client.ModifyFlightPlan(acid, spec,
 		func(err error) {
 			if err != nil {
-				ep.displayError(err, ctx)
+				ep.bigOutput.displayError(ep.currentPrefs(), err)
 			}
 		})
 }
@@ -402,7 +412,15 @@ func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, er
 
 func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.AcceptHandoff(acid,
-		func(err error) { ep.displayError(err, ctx) })
+		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
+}
+
+func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
+	ctx.Client.GetQULines(acid, func(err error) {
+		if err != nil {
+			ep.bigOutput.displayError(ep.currentPrefs(), err)
+		}
+	})
 }
 
 func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
@@ -414,18 +432,10 @@ func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	return ep.targetGenLastCallsign
 }
 
-func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.GetQULines(acid, func(err error) {
-		if err != nil {
-			ep.displayError(err, ctx)
-		}
-	})
-}
-
 func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix string) {
 	ctx.Client.FlightPlanDirect(acid, fix, func(err error) {
 		if err != nil {
-			ep.displayError(err, ctx)
+			ep.bigOutput.displayError(ep.currentPrefs(), err)
 		}
 	})
 }
@@ -433,7 +443,7 @@ func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix stri
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
 	control, err := ep.lookupControllerForID(ctx, controller, acid)
 	if err != nil {
-		ep.displayError(err, ctx)
+		ep.bigOutput.displayError(ep.currentPrefs(), err)
 		return err
 	}
 	if control == nil {
@@ -441,7 +451,7 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 	}
 
 	ctx.Client.HandoffTrack(acid, control.Id(),
-		func(err error) { ep.displayError(err, ctx) })
+		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 
 	return nil
 }
