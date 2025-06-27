@@ -9,6 +9,7 @@
 package main
 
 import (
+	"context"
 	"crypto/sha256"
 	_ "embed"
 	"encoding/hex"
@@ -19,12 +20,12 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
-	"sync/atomic"
-	"time"
 
+	"cloud.google.com/go/storage"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"google.golang.org/api/iterator"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -33,13 +34,11 @@ import (
 var resourcesManifest string
 
 type ResourcesDownloadModalClient struct {
-	totalBytes      int64
-	downloadedBytes atomic.Int64
+	currentFile     int
 	totalFiles      int
-	currentFile     atomic.Int32
-	done            atomic.Bool
-	errorMsg        string
-	mu              sync.Mutex
+	downloadedBytes int64
+	totalBytes      int64
+	errors          []string
 }
 
 func (r *ResourcesDownloadModalClient) Title() string {
@@ -49,37 +48,29 @@ func (r *ResourcesDownloadModalClient) Title() string {
 func (r *ResourcesDownloadModalClient) Opening() {}
 
 func (r *ResourcesDownloadModalClient) Buttons() []ModalDialogButton {
-	if r.done.Load() {
-		return []ModalDialogButton{ModalDialogButton{text: "Ok", action: func() bool { return true }}}
-	} else {
-		return []ModalDialogButton{ModalDialogButton{text: "Cancel",
-			action: func() bool {
-				os.Exit(1)
-				return true
-			}}}
-	}
+	return []ModalDialogButton{ModalDialogButton{text: "Cancel",
+		action: func() bool {
+			os.Exit(1)
+			return true
+		}}}
 }
 
 func (r *ResourcesDownloadModalClient) Draw() int {
-	if r.errorMsg != "" {
-		imgui.Text("Error: " + r.errorMsg)
-		return -1
+	for _, e := range r.errors {
+		imgui.Text("Error: " + e)
 	}
 
-	current := int(r.currentFile.Load())
-	downloaded := r.downloadedBytes.Load()
-
-	imgui.Text(fmt.Sprintf("Downloading resource file %d of %d", current, r.totalFiles))
+	imgui.Text(fmt.Sprintf("Downloaded file %d of %d", r.currentFile, r.totalFiles))
 
 	// Add some spacing
 	imgui.Spacing()
 
 	if r.totalBytes > 0 {
-		progress := float32(downloaded) / float32(r.totalBytes)
+		progress := float32(r.downloadedBytes) / float32(r.totalBytes)
 
 		// Use a fixed width progress bar to ensure minimum dialog width
 		imgui.ProgressBarV(progress, imgui.Vec2{350, 0}, fmt.Sprintf("%.1f MB / %.1f MB",
-			float64(downloaded)/(1024*1024), float64(r.totalBytes)/(1024*1024)))
+			float64(r.downloadedBytes)/(1024*1024), float64(r.totalBytes)/(1024*1024)))
 	}
 
 	imgui.Spacing()
@@ -136,12 +127,6 @@ func calculateSHA256(path string) (string, error) {
 	return hex.EncodeToString(hasher.Sum(nil)), nil
 }
 
-type downloadTask struct {
-	hash     string
-	filename string
-	size     int64
-}
-
 func migrateResourcesIfNeeded(resourcesDir string) {
 	if _, err := os.Stat("./resources"); err == nil {
 		if _, err := os.Stat(resourcesDir); os.IsNotExist(err) {
@@ -162,145 +147,7 @@ func checkManifestUpToDate(manifestPath string) bool {
 	return false
 }
 
-func collectDownloadTasks(manifest map[string]string, resourcesDir string, taskChan chan<- downloadTask,
-	doneChan <-chan struct{}) {
-	defer close(taskChan)
-
-	type checkJob struct {
-		filename string
-		hash     string
-	}
-
-	checkChan := make(chan checkJob, len(manifest))
-	var wg sync.WaitGroup
-
-	// Start workers to check files concurrently
-	for range 8 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for job := range checkChan {
-				fullPath := filepath.Join(resourcesDir, job.filename)
-
-				if existingHash, err := calculateSHA256(fullPath); err != nil || existingHash != job.hash {
-					if _, err := os.Stat(fullPath); err == nil {
-						os.Remove(fullPath)
-					}
-
-					resp, err := http.Head("https://storage.googleapis.com/vice-resources/" + job.hash)
-					if err == nil && resp.StatusCode == http.StatusOK {
-						size := resp.ContentLength
-						resp.Body.Close()
-
-						task := downloadTask{
-							hash:     job.hash,
-							filename: job.filename,
-							size:     size,
-						}
-
-						select {
-						case taskChan <- task:
-						case <-doneChan:
-							return
-						}
-					}
-				}
-			}
-		}()
-	}
-
-	// Send all check jobs
-	for filename, hash := range manifest {
-		checkChan <- checkJob{filename: filename, hash: hash}
-	}
-	close(checkChan)
-
-	wg.Wait()
-}
-
-func downloadResources(taskChan <-chan downloadTask, doneChan <-chan struct{}, resourcesDir string,
-	client *ResourcesDownloadModalClient) {
-	var wg sync.WaitGroup
-
-	var fileCounter atomic.Int32
-
-	// Start download workers
-	for range 4 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-
-			// Helper function to report errors to client
-			reportError := func(task downloadTask, format string, args ...interface{}) {
-				if client != nil {
-					client.mu.Lock()
-					client.errorMsg = fmt.Sprintf("Failed to "+format, append([]interface{}{task.filename}, args...)...)
-					client.mu.Unlock()
-				}
-			}
-
-			for {
-				select {
-				case task, ok := <-taskChan:
-					if !ok {
-						return
-					}
-
-					if client != nil {
-						client.currentFile.Store(fileCounter.Add(1))
-					}
-
-					url := fmt.Sprintf("https://storage.googleapis.com/vice-resources/%s", task.hash)
-					resp, err := http.Get(url)
-					if err != nil {
-						reportError(task, "download %s: %v", err)
-						return
-					}
-					defer resp.Body.Close()
-
-					if resp.StatusCode != http.StatusOK {
-						reportError(task, "download %s: status %d", resp.StatusCode)
-						return
-					}
-
-					fullPath := filepath.Join(resourcesDir, task.filename)
-					if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
-						reportError(task, "create directory for %s: %v", err)
-						return
-					}
-
-					file, err := os.Create(fullPath)
-					if err != nil {
-						reportError(task, "create %s: %v", err)
-						return
-					}
-					defer file.Close()
-
-					written, err := io.Copy(file, resp.Body)
-					if err != nil {
-						reportError(task, "write %s: %v", err)
-						return
-					}
-
-					if client != nil {
-						client.downloadedBytes.Add(written)
-					}
-
-				case <-doneChan:
-					return
-				}
-			}
-		}()
-	}
-
-	wg.Wait()
-
-	if client != nil {
-		client.done.Store(true)
-	}
-}
-
-func cleanupOldFiles(resourcesDir string, manifest map[string]string) {
+func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) {
 	manifestFiles := make(map[string]bool)
 	for filename := range manifest {
 		manifestFiles[filename] = true
@@ -340,6 +187,128 @@ func writeManifestFile(manifestPath string) {
 	}
 }
 
+type workerStatus struct {
+	doneChan     chan struct{}
+	finishedChan chan int64 // bytes
+	errorsChan   chan string
+}
+
+func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatus, int64) {
+	status := workerStatus{
+		doneChan:     make(chan struct{}),
+		finishedChan: make(chan int64),
+		errorsChan:   make(chan string),
+	}
+
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx)
+	sizes := make(map[string]int64)
+	if err != nil {
+		// If for some reason we can't list the bucket contents, at least
+		// populate sizes with bogus sizes for the items in the manifest so
+		// that the dialog box drawing code behaves. (This may not be worth
+		// bothering with since presumably the downloads will fail in this
+		// case as well.)
+		for _, hash := range manifest {
+			sizes[hash] = 1
+		}
+	} else {
+		defer client.Close()
+		bucket := client.Bucket("vice-resources")
+
+		// Get the sizes of all of the objects in the bucket; note that the key is the hash.
+		query := storage.Query{Projection: storage.ProjectionNoACL}
+		it := bucket.Objects(ctx, &query)
+		for {
+			if obj, err := it.Next(); err == iterator.Done {
+				break
+			} else if err == nil {
+				sizes[obj.Name] = obj.Size
+			}
+		}
+	}
+
+	var totalSize int64
+	for _, hash := range manifest {
+		totalSize += sizes[hash]
+	}
+
+	type fileTask struct {
+		filename string
+		hash     string
+	}
+	fileChan := make(chan fileTask, len(manifest))
+
+	var wg sync.WaitGroup
+	const numWorkers = 8
+	for range numWorkers {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			for task := range fileChan {
+				func() {
+					fullPath := filepath.Join(resourcesDir, task.filename)
+
+					defer func() { status.finishedChan <- sizes[task.hash] }()
+
+					// Check if file exists and has correct hash
+					if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == task.hash {
+						return
+					}
+
+					os.Remove(fullPath) // ignore errors; it may not exist
+
+					// Download the file
+					url := fmt.Sprintf("https://storage.googleapis.com/vice-resources/%s", task.hash)
+					resp, err := http.Get(url)
+					if err != nil {
+						status.errorsChan <- err.Error()
+						return
+					}
+					defer resp.Body.Close()
+
+					if resp.StatusCode != http.StatusOK {
+						status.errorsChan <- fmt.Sprintf("Failed to download %s: status %d", task.filename, resp.StatusCode)
+						return
+					}
+
+					// Create directory if needed
+					if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+						status.errorsChan <- fmt.Sprintf("Failed to create directory for %s: %v", task.filename, err)
+						return
+					}
+
+					// Write file
+					f, err := os.Create(fullPath)
+					if err != nil {
+						status.errorsChan <- fmt.Sprintf("Failed to create %s: %v", task.filename, err)
+						return
+					}
+					defer f.Close()
+
+					_, err = io.Copy(f, resp.Body)
+					if err != nil {
+						status.errorsChan <- fmt.Sprintf("Failed to write %s: %v", task.filename, err)
+						return
+					}
+				}()
+			}
+		}()
+	}
+
+	go func() {
+		for filename, hash := range manifest {
+			fileChan <- fileTask{filename: filename, hash: hash}
+		}
+		close(fileChan)
+		wg.Wait()
+		close(status.doneChan)
+	}()
+
+	return status, totalSize
+}
+
 func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) {
 	if resourcesManifest == "" {
 		panic("manifest.json was not present during build")
@@ -369,132 +338,42 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 		os.Remove(manifestPath)
 	}
 
-	// Start concurrent collection and downloading pipeline
-	taskChan := make(chan downloadTask, 10)
-	doneChan := make(chan struct{})
+	// Launch worker goroutines
+	ws, totalBytes := launchWorkers(resourcesDir, manifest)
 
-	var client *ResourcesDownloadModalClient
-	var dialog *ModalDialogBox
-	var totalBytes atomic.Int64
-	var taskCount atomic.Int32
-	var downloadStarted atomic.Bool
+	client := &ResourcesDownloadModalClient{totalFiles: len(manifest), totalBytes: totalBytes}
+	dialog := NewModalDialogBox(client, plat)
 
-	// Start collecting download tasks concurrently
-	go collectDownloadTasks(manifest, resourcesDir, taskChan, doneChan)
-
-	// Prepare download channels
-	downloadTaskChan := make(chan downloadTask, 10)
-	downloadDoneChan := make(chan struct{})
-	var downloadWg sync.WaitGroup
-	var downloadStartedOnce atomic.Bool
-
+loop:
 	for {
-		if dialog != nil && !client.done.Load() {
-			plat.ProcessEvents()
-			plat.NewFrame()
-			imgui.NewFrame()
-			imgui.PushFont(&ui.font.Ifont)
-			dialog.Draw()
-			imgui.PopFont()
+		// Draw download progress dialog box
+		plat.ProcessEvents()
+		plat.NewFrame()
+		imgui.NewFrame()
+		imgui.PushFont(&ui.font.Ifont)
+		dialog.Draw()
+		imgui.PopFont()
 
-			imgui.Render()
-			var cb renderer.CommandBuffer
-			renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
-			r.RenderCommandBuffer(&cb)
-
-			plat.PostRender()
-			lastUIUpdate = time.Now()
-		}
-
-		// Process tasks with a short timeout
-		select {
-		case task, ok := <-taskChan:
-			if !ok {
-				// No more tasks, close download channel and break
-				close(downloadTaskChan)
-				goto waitForDownloads
-			}
-
-			// First task - initialize UI and download workers if needed
-			if !downloadStarted.Load() {
-				totalFiles := int(taskCount.Add(1))
-				totalBytes.Add(task.size)
-
-				if plat != nil && r != nil && lg != nil {
-					client = &ResourcesDownloadModalClient{
-						totalBytes: totalBytes.Load(),
-						totalFiles: totalFiles,
-					}
-					dialog = NewModalDialogBox(client, plat)
-				}
-
-				// Start download workers now that we have the client
-				if !downloadStartedOnce.Load() {
-					downloadWg.Add(1)
-					go func() {
-						defer downloadWg.Done()
-						downloadResources(downloadTaskChan, downloadDoneChan, resourcesDir, client)
-					}()
-					downloadStartedOnce.Store(true)
-				}
-
-				downloadStarted.Store(true)
-			} else {
-				taskCount.Add(1)
-				totalBytes.Add(task.size)
-
-				// Update client totals if we have one
-				if client != nil {
-					client.totalFiles = int(taskCount.Load())
-					client.totalBytes = totalBytes.Load()
-				}
-			}
-
-			// Send task to download workers
-			downloadTaskChan <- task
-
-		case <-time.After(time.Millisecond):
-			// Short timeout to ensure UI stays responsive
-		}
-	}
-
-waitForDownloads:
-	// Continue UI updates while downloads finish
-	done := make(chan struct{})
-	go func() {
-		downloadWg.Wait()
-		close(done)
-	}()
-
-	for {
-		// Update UI at regular intervals
-		if dialog != nil && !client.done.Load() {
-			plat.ProcessEvents()
-			plat.NewFrame()
-			imgui.NewFrame()
-			imgui.PushFont(&ui.font.Ifont)
-			dialog.Draw()
-			imgui.PopFont()
-
-			imgui.Render()
-			var cb renderer.CommandBuffer
-			renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
-			r.RenderCommandBuffer(&cb)
-
-			plat.PostRender()
-			lastUIUpdate = time.Now()
-		}
+		imgui.Render()
+		var cb renderer.CommandBuffer
+		renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
+		r.RenderCommandBuffer(&cb)
+		plat.PostRender()
 
 		select {
-		case <-done:
-			goto downloadsComplete
+		case <-ws.doneChan:
+			break loop
+		case nb := <-ws.finishedChan:
+			client.currentFile++
+			client.downloadedBytes += nb
+		case e := <-ws.errorsChan:
+			client.errors = append(client.errors, e)
 		default:
 			break
 		}
 	}
 
-downloadsComplete:
+	removeStaleResourcesFiles(resourcesDir, manifest)
 
-	cleanupOldFiles(resourcesDir, manifest)
 	writeManifestFile(manifestPath)
 }
