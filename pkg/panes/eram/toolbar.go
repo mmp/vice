@@ -154,10 +154,10 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			resetButtonPosDefault(ctx, scale)
 			delete(toolbarDrawState.customButton, main)
 		}
-		
+
 		p0 := toolbarDrawState.buttonCursor
 		sz := util.Select(ps.Line4Size > 0, fmt.Sprint(ps.Line4Size), "=")
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LINE4\n%v", sz), 0, scale, false, false){
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LINE4\n%v", sz), 0, scale, false, false) {
 			handleClick(&ps.Line4Size, -2, 0, 1) // Handle click for Line4 size
 		}
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("FDB\n%v", ps.FDBSize), 0, scale, false, false) {
@@ -177,7 +177,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LDB\n%v", ps.LDBSize), 0, scale, false, false) {
 			handleClick(&ps.LDBSize, 1, 5, 1) // Handle click for LDB size
 		}
-		
+
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("OUTAGE\n%v", ps.OutageSize), 0, scale, false, false) {
 			handleClick(&ps.OutageSize, 1, 3, 1) // Handle click for Outage size
 		}

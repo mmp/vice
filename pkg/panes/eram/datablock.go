@@ -397,7 +397,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 				continue
 			}
 			dbType := ep.datablockType(ctx, trk)
-			var sz int 
+			var sz int
 			if dbType == FullDatablock {
 				sz = ps.FDBSize
 			} else {
@@ -413,6 +413,8 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
 				*dir = math.East // TODO: change to state eventually
 				vector = ep.leaderLineVectorNoLength(*dir)
+				offset[1] = -10
+				vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 			}
 			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
 			brightness := ep.datablockBrightness(state)
