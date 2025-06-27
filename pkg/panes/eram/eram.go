@@ -152,8 +152,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
-	// Draw routes
-	// draw dcb
 	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
@@ -167,9 +165,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
 	// Draw views
-	// Draw long readout (output with no command line)
 	ep.drawCommandInput(ctx, transforms, cb)
-	// Draw TOOLBAR button/ menu.
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 	ep.drawMasterMenu(ctx, cb)
 	if ctx.Mouse != nil {
