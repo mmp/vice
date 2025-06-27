@@ -27,3 +27,4 @@ vice.slog
 resources/speech/
 SDL2.dll
 __debug_*
+manifest.json

@@ -37,6 +37,8 @@ var voicesCh chan []string
 var lg *log.Logger
 
 func InitTTS(l *log.Logger) error {
+	loadPronunciations()
+
 	lg = l
 	ctx, _ := context.WithTimeout(context.TODO(), 3*time.Second)
 

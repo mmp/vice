@@ -6,6 +6,7 @@ package renderer
 
 import (
 	"C"
+	_ "embed"
 	"fmt"
 	"image"
 	gomath "math"
@@ -20,6 +21,14 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/mmp/IconFontCppHeaders"
+)
+import (
+	"bytes"
+	"io"
+	"io/fs"
+	"path/filepath"
+
+	"github.com/klauspost/compress/zstd"
 )
 
 var ttfPinner runtime.Pinner
@@ -249,13 +258,13 @@ func FontsInit(r Renderer, p platform.Platform) {
 	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
-	faTTF := util.LoadResourceBytes("fonts/Font Awesome 5 Free-Solid-900.otf.zst")
-	fabrTTF := util.LoadResourceBytes("fonts/Font Awesome 5 Brands-Regular-400.otf.zst")
+	faTTF := loadFontBytes("fonts/Font Awesome 5 Free-Solid-900.otf.zst")
+	fabrTTF := loadFontBytes("fonts/Font Awesome 5 Brands-Regular-400.otf.zst")
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
 	add := func(filename string, mono bool, name string) {
-		ttf := util.LoadResourceBytes("fonts/" + filename)
+		ttf := loadFontBytes("fonts/" + filename)
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
@@ -419,4 +428,28 @@ func AvailableFontSizes(name string) []int {
 		}
 	}
 	return util.SortedMapKeys(sizes)
+}
+
+func loadFontBytes(path string) []byte {
+	b, err := fs.ReadFile(*util.ExecutableResourcesFS(), path)
+	if err != nil {
+		panic(err)
+	}
+
+	if filepath.Ext(path) == ".zst" {
+		zr, err := zstd.NewReader(bytes.NewReader(b))
+		if err != nil {
+			panic(err)
+		}
+		defer zr.Close()
+
+		b, err := io.ReadAll(zr)
+		if err != nil {
+			panic(err)
+		}
+		return b
+	} else {
+		return b
+	}
+
 }

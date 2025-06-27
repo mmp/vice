@@ -37,10 +37,14 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
+    - name: Bundle resources
+      run: |
+        go run util/bundleresources.go
+
     - name: Build
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags imguifreetype -o ./ .
+        go build -tags imguifreetype,downloadresources -o ./ .
         ls
 
     - name: Run tests

@@ -32,7 +32,7 @@ var (
 	saySTARMap    map[string]string
 )
 
-func init() {
+func loadPronunciations() {
 	n := 0
 	report := func(file string, err error) {
 		fmt.Fprintf(os.Stderr, "%s: %v\n", file, err)

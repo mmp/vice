@@ -205,7 +205,7 @@ type FleetAircraft struct {
 	Count int
 }
 
-func init() {
+func InitDB() {
 	db := &StaticDatabase{}
 
 	var wg sync.WaitGroup

@@ -35,11 +35,15 @@ jobs:
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
 
+    - name: Bundle resources
+      run: |
+        go run util/bundleresources.go
+
     - name: Build universal binary
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -tags static -o vice_amd64 .
-        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -tags static -o vice_arm64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -tags static,downloadresources -o vice_amd64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -tags static,downloadresources -o vice_arm64 .
         lipo -create -output vice vice_amd64 vice_arm64
 
     - name: Run tests
@@ -72,14 +76,8 @@ jobs:
         cp osx/Info.plist Vice.App/Contents/
         mkdir Vice.app/Contents/Resources
         cp icon.icns Vice.app/Contents/Resources
-        cp resources/*.zst resources/*.json Vice.app/Contents/Resources
-        mkdir -p Vice.app/Contents/Resources/{audio,fonts,scenarios,videomaps}
-        cp resources/audio/*mp3 Vice.app/Contents/Resources/audio/
+        mkdir -p Vice.app/Contents/Resources/fonts
         cp resources/fonts/*zst Vice.app/Contents/Resources/fonts/
-        cp resources/scenarios/*json Vice.app/Contents/Resources/scenarios/
-        cp resources/videomaps/*zst Vice.app/Contents/Resources/videomaps/
-        cp resources/videomaps/*gob Vice.app/Contents/Resources/videomaps/
-        cp resources/mva-fus3.zip Vice.app/Contents/Resources/
 
     - name: Check Secrets
     # The secrets aren't available for PRs but we don't want the build to fail just because of that...
