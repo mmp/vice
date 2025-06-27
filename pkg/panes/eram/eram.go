@@ -210,9 +210,9 @@ const circleClear string = "y"
 const circleFilled string = "z"
 
 type inputChar struct {
-	char  rune
-	color renderer.RGB
-	location [2]float32 // long lat 
+	char     rune
+	color    renderer.RGB
+	location [2]float32 // long lat
 }
 
 type inputText []inputChar
@@ -220,7 +220,7 @@ type inputText []inputChar
 func (inp *inputText) Set(ps *Preferences, str string) {
 	inp.Clear()
 	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
-	location := [2]float32{0, 0} // Default location
+	location := [2]float32{0, 0}                           // Default location
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
@@ -228,7 +228,7 @@ func (inp *inputText) Set(ps *Preferences, str string) {
 
 func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
 	for _, char := range str {
-	*inp = append(*inp, inputChar{char: char, color: color, location: location})
+		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
 }
 
@@ -236,12 +236,12 @@ func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
 	inp.Add(locationSymbol, ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
 }
 
-// No formatting needed 
+// No formatting needed
 func (inp *inputText) AddBasic(ps *Preferences, str string) {
 	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
-	location := [2]float32{0, 0} 
+	location := [2]float32{0, 0}
 	for _, char := range str {
-	*inp = append(*inp, inputChar{char: char, color: color, location: location})
+		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
 }
 
@@ -249,11 +249,11 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 // characters without messing up colors or locations
 func (inp *inputText) formatWrap(ps *Preferences, str string) {
 	newText := inputText{}
-	var i int // only goes up if not newline 
+	var i int // only goes up if not newline
 	for _, char := range str {
 		if char != '\n' {
 			newText.Add(string(char), (*inp)[i].color, (*inp)[i].location)
-			i++ 
+			i++
 		} else {
 			newText.AddBasic(ps, "\n")
 		}
@@ -291,13 +291,12 @@ func (inp *inputText) displayError(ps *Preferences, err error) {
 }
 
 func (inp *inputText) displaySuccess(ps *Preferences, str string) {
-		sucMsg := inputText{}
-		sucMsg.Add(xMark, renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
-		sucMsg.AddBasic(ps, str)
-		*inp = sucMsg
+	sucMsg := inputText{}
+	sucMsg.Add(xMark, renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+	sucMsg.AddBasic(ps, str)
+	*inp = sucMsg
 
 }
-
 
 // AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
@@ -335,7 +334,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			}
 		case imgui.KeyTab:
 			if input == "" {
-			ep.Input.Set(ps, "TG ")
+				ep.Input.Set(ps, "TG ")
 			}
 		case imgui.KeyPageUp: // velocity vector *2
 			if ep.velocityTime == 0 {
