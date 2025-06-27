@@ -2,7 +2,6 @@ package eram
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -282,6 +281,24 @@ func (inp inputText) String() string {
 	return sb.String()
 }
 
+func (inp *inputText) displayError(ps *Preferences, err error) {
+	if err != nil {
+		errMsg := inputText{}
+		errMsg.Add(xMark, renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+		errMsg.AddBasic(ps, err.Error())
+		*inp = errMsg
+	}
+}
+
+func (inp *inputText) displaySuccess(ps *Preferences, str string) {
+		sucMsg := inputText{}
+		sucMsg.Add(xMark, renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+		sucMsg.AddBasic(ps, str)
+		*inp = sucMsg
+
+}
+
+
 // AFAIK, you can only type white, regular characters in the input (apart from the location symbols)
 func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
@@ -303,7 +320,9 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 			ep.Input.Clear()
 			if status.err != nil {
 				ep.bigOutput.displayError(ps, status.err)
-				fmt.Println("ERAM command error:", status.err, ep.bigOutput.String())
+			} else if status.bigOutput != "" {
+				ep.bigOutput.displaySuccess(ps, status.bigOutput)
+
 			}
 		case imgui.KeyEscape:
 			// Clear the input

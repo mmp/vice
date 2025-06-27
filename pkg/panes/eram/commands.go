@@ -9,7 +9,6 @@ import (
 	"github.com/mmp/vice/pkg/panes"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/radar"
-	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
 	"github.com/mmp/vice/pkg/sim"
 )
@@ -323,15 +322,6 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		}
 	}
 	return
-}
-
-func (inp *inputText) displayError(ps *Preferences, err error) {
-	if err != nil {
-		errMsg := inputText{}
-		errMsg.Add(xMark, renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
-		errMsg.AddBasic(ps, err.Error())
-		*inp = errMsg
-	}
 }
 
 func (ep *ERAMPane) numberToLLDirection(ctx *panes.Context, cmd byte) math.CardinalOrdinalDirection {
