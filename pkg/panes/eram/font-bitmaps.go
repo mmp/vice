@@ -1,4 +1,4 @@
-// Automatically generated from STARS PCF font files using util/pcg2go.cc
+// Automatically generated from ERAM PCF font files using util/pcg2go.cc
 
 package eram
 
