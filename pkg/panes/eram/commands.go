@@ -404,8 +404,8 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.ST
 			}
 		})
 	// Send aircraft commands if an ERAM command is entered
-	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set 
-		var cmd string 
+	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set
+		var cmd string
 		state := ep.TrackState[trk.ADSBCallsign]
 		if alt > int(state.track.TransponderAltitude) {
 			cmd = "C" + fmt.Sprint(alt/100)
