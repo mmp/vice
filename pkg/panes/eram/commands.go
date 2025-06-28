@@ -1,6 +1,7 @@
 package eram
 
 import (
+	"fmt"
 	"strings"
 	"unicode"
 
@@ -390,17 +391,29 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 
 // Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes.
 func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.STARSFlightPlanSpecifier) {
-	acid, err := ep.getACIDFromCID(ctx, cid)
-	if err != nil {
-		ep.bigOutput.displayError(ep.currentPrefs(), err)
+	trk, ok := ctx.Client.State.GetTrackByFLID(cid)
+	if !ok {
+		ep.bigOutput.displayError(ep.currentPrefs(), ErrERAMIllegalACID)
 		return
 	}
+	acid := sim.ACID(trk.ADSBCallsign)
 	ctx.Client.ModifyFlightPlan(acid, spec,
 		func(err error) {
 			if err != nil {
 				ep.bigOutput.displayError(ep.currentPrefs(), err)
 			}
 		})
+	// Send aircraft commands if an ERAM command is entered
+	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set 
+		var cmd string 
+		state := ep.TrackState[trk.ADSBCallsign]
+		if alt > int(state.track.TransponderAltitude) {
+			cmd = "C" + fmt.Sprint(alt/100)
+		} else {
+			cmd = "D" + fmt.Sprint(alt/100)
+		}
+		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+	}
 }
 
 func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, error) {
@@ -439,6 +452,11 @@ func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix stri
 			ep.bigOutput.displayError(ep.currentPrefs(), err)
 		}
 	})
+	trk, _ := ctx.Client.State.GetTrackByACID(acid)
+	if trk != nil {
+		cmd := "D" + fix
+		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+	}
 }
 
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
