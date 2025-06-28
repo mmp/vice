@@ -194,20 +194,33 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	case "QQ": // interim altitude
 		// first field is the altitude, second is the CID.
 		fields := strings.Split(cmd, " ")
-		if len(fields) != 2 {
-			status.err = ErrCommandFormat
-			return
+		var trk *sim.Track
+		var fp sim.STARSFlightPlanSpecifier
+		if len(fields) == 1 {
+			var ok bool
+			trk, ok = ctx.Client.State.GetTrackByFLID(fields[0])
+			if !ok {
+				status.err = ErrERAMIllegalACID
+				return
+			}
+			fp = sim.STARSFlightPlanSpecifier{}
+			fp.InterimAlt.Set(0)
+
+		} else if len(fields) == 2 {
+			var err error
+			var ok bool
+			fp, err = parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
+			if err != nil {
+				status.err = err
+				return
+			}
+			trk, ok = ctx.Client.State.GetTrackByFLID(fields[1])
+			if !ok {
+				status.err = ErrERAMIllegalACID
+				return
+			}
 		}
-		fp, err := parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
-		if err != nil {
-			status.err = err
-			return
-		}
-		trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
-		if !ok {
-			status.err = ErrERAMIllegalACID
-			return
-		}
+
 		ep.modifyFlightPlan(ctx, string(trk.ADSBCallsign), fp)
 		status.bigOutput = fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	case "QX": // drop track
@@ -402,10 +415,6 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 			if errStr != "" {
 
 				if err := server.TryDecodeErrorString(errStr); err != nil {
-					err = GetERAMError(err, ctx.Lg)
-					ep.bigOutput.displayError(ep.currentPrefs(), err)
-				} else {
-					ep.bigOutput.displayError(ep.currentPrefs(), ErrCommandFormat)
 				}
 			}
 		})
