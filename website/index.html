@@ -9,6 +9,31 @@
        vertical-align: middle; /* Vertically align with the text */
     }
   </style>
+  <style>
+    .submenu {
+      display: block;
+      list-style: none;
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .submenu-item {
+      font-size: 0.85em;
+      padding: 2px 0;
+    }
+    
+    .submenu-link {
+      color: #666;
+      text-decoration: none;
+      display: block;
+      padding: 3px 15px;
+    }
+    
+    .submenu-link:hover {
+      color: #5d6778;
+      text-decoration: underline;
+    }
+  </style>
   
   <!-- Meta -->
   <meta charset="utf-8">
@@ -2181,7 +2206,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td><i>Control position identifier</i>: letters and digits identifying a control position,
                       either inside the local facility or external.
                       There are a number of rules that define how these are specified; they are
-                      <a href="#stars-specifying-controllers">discussed in more detail below.</td>
+                      <a href="#stars-specifying-controllers">discussed in more detail below</a>.</td>
                   </tr>
                   <tr>
                     <td><code>(FLT ID)</code></td>
@@ -2588,10 +2613,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <h3 id="untracked-aircraft">Untracked Aircraft</h3>
             <p>When an aircraft departs an airport, its track and control may not be owned by any controller.
               VFR aircraft may also enter a controller's airspace without being tracked; these are known as
-              <emph>unassociated</emph> tracks since there is no flight plan associated with them.
+              <em>unassociated</em> tracks since there is no flight plan associated with them.
               These aircraft have a <a href="#ldb">limited datablock</a>, which only shows the aircraft's altitude in hundreds of feet.
               The datablock is drawn in green indicating that the current controller does not own it,
-              and the asterisk shown in the <emph>position symbol</emph> at the center of its track (the blue dot) also indicates that its track is
+              and the asterisk shown in the <em>position symbol</em> at the center of its track (the blue dot) also indicates that its track is
               unowned.
             </p>
             <div class="text-center">
@@ -2599,7 +2624,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div><br>
             <p>
               If an unassociated track's transponder is turned off, it appears with a plus sign
-              in its position symbol and no altitude is shown; such a track is also referred to as a <emph>primary-only</emph> or
+              in its position symbol and no altitude is shown; such a track is also referred to as a <em>primary-only</em> or
               primary track, since no secondary information is returned by its transponder.
               If its transponder is on but it is not squawking altitude, a diamond is used for its position symbol. 
               Here are some examples.
@@ -2943,7 +2968,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Inhibits the display of the position symbol for unassociated primary tracks.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]2PE</td>
+                    <td><code>[MULTIFUNC]2PE</code></td>
                     <td>Enables the display of the position symbol for unassociated primary tracks.</td>
                   </tr>
                 </tbody>
@@ -3590,9 +3615,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               following. In practice, however, it's just necessary to understand two main flows, depending on which type
               of flight plan is to be created:</p>
             <ul><li>Local Flight Plans: these are intended for flights conducted wholly within delegated airspace of the current TRACON.
-                These flight plans are <emph>not</emph> sent to the host (overlying) ARTCC computer to be processed and forwarded
+                These flight plans are <em>not</em> sent to the host (overlying) ARTCC computer to be processed and forwarded
                 "downstream" to adjacent facilities. Examples include IFR/VFR pop up requests where the flight will not exit
-                the delegated airspace of the TRACON. However, <emph>local flight plans are not eligible for automated hand off to ARTCC</emph>.
+                the delegated airspace of the TRACON. However, <em>local flight plans are not eligible for automated hand off to ARTCC</em>.
                 If an adjacent TRACON is adapted to accept local flight plans, then they may be transferred via automated handoff.</li>
               <li>NAS Flight Plans: these are for aircraft that will enter adjacent facility airspace, for example, VFR aircraft
                 requesting radar advisories/flight following from a point within delegated TRACON airspace to a location outside of it.
@@ -3785,7 +3810,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
                 </tr>
                   <tr>
-                    <td><code>Y[slew]</td>
+                    <td><code>Y[slew]</code></td>
                     <td>Creates a "quick ACID flight plan" with an automatically generated callsign and associates it
                       with the slewed track. The track's datablock is drawn in yellow until the track is slewed
                       a second time.</td>
@@ -3913,52 +3938,52 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   it must be extended to 4 characters with asterisks: e.g,. "B2**".</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(#/AC&nbsp;TYPE/EQ)</code>/<br><code>[MULTIFUNC]H(#/AC&nbsp;TYPE/EQ)[SLEW]</td>
+                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(#/AC&nbsp;TYPE/EQ)</code>/<br><code>[MULTIFUNC]H(#/AC&nbsp;TYPE/EQ)[SLEW]</code></td>
                   <td>Specifies aircraft type (and optionally the number of formation aircraft and equipment suffix, if
                     given) for the track.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;R</code>/<br><code>[MULTIFUNC]HR[SLEW]</td>
+                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;R</code>/<br><code>[MULTIFUNC]HR[SLEW]</code></td>
                   <td>Toggles the RNAV specifier for the aircraft (shown as a caret, "^", in the full datablock.)</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(RULES)</code>/<br><code>[MULTIFUNC]H(RULES)[SLEW]</td>
+                  <td><code>[MULTIFUNC]H(FLT ID)&nbsp;(RULES)</code>/<br><code>[MULTIFUNC]H(RULES)[SLEW]</code></td>
                   <td>Specifies the flight rules for the track.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(ACID)</code>/<br><code>[MULTIFUNC]M(ACID)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(ACID)</code>/<br><code>[MULTIFUNC]M(ACID)[SLEW]</code></td>
                   <td>Changes the track's ACID to the specified callsign.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(ASSIGNED ALT)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(ASSIGNED ALT)[SLEW]</code></td>
                   <td>Changes the track's assigned altitude to the given altitude.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(BEACON)</code>/<br><code>[MULTIFUNC]M(BEACON)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(BEACON)</code>/<br><code>[MULTIFUNC]M(BEACON)[SLEW]</code></td>
                   <td>Changes the track's assigned beacon code to the one specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(COORD&nbsp;TIME)</code>/<br><code>[MULTIFUNC]M(COORD&nbsp;TIME)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(COORD&nbsp;TIME)</code>/<br><code>[MULTIFUNC]M(COORD&nbsp;TIME)[SLEW]</code></td>
                   <td>Changes the track's coordination time to the specified time.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(FIX&nbsp;PAIR)</code>/<br><code>[MULTIFUNC]M(FIX&nbsp;PAIR)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(FIX&nbsp;PAIR)</code>/<br><code>[MULTIFUNC]M(FIX&nbsp;PAIR)[SLEW]</code></td>
                   <td>Changes the track's entry/exit fix pair to the fixes specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(REQ ALT)</code>/<br><code>[MULTIFUNC]M(REQ ALT)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(REQ ALT)</code>/<br><code>[MULTIFUNC]M(REQ ALT)[SLEW]</code></td>
                   <td>Changes the track's requested altitude to the altitude specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(SP1)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;∆(SP1)</code>/<br><code>[MULTIFUNC]M∆(SP1)[SLEW]</code></td>
                   <td>Changes the track's primary scratchpad to the text specified.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;+(SP2)</code>/<br><code>[MULTIFUNC]M+(SP2)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;+(SP2)</code>/<br><code>[MULTIFUNC]M+(SP2)[SLEW]</code></td>
                   <td>Changes the track's secondary scratchpad to the text specifie.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(TCP)</code>/<br><code>[MULTIFUNC]M(TCP)[SLEW]</td>
+                  <td><code>[MULTIFUNC]M(FLT ID)&nbsp;(TCP)</code>/<br><code>[MULTIFUNC]M(TCP)[SLEW]</code></td>
                   <td>Changes the track's controller to the specified TCP.</td>
                 </tr>
               </tbody>
@@ -4290,7 +4315,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>An alert is also issued if an unassociated track loses separation with an associated track; in this case, the
-              unassociated track is called a <emph>mode C intruder</emph> (MCI). No alerts are issued for pairs of unassociated tracks. 
+              unassociated track is called a <em>mode C intruder</em> (MCI). No alerts are issued for pairs of unassociated tracks. 
             </p>
 
             <p>A few commands are available to enable and disable collision alerts and MCI alerts:</p>
@@ -5180,7 +5205,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               scope's position. Finally, OFF CNTR is shown as depressed when the scope's center is
               different than the default center specified in the scenario configuration. Clicking on it
               restores the center to the default.
-              </>
+            </p>
 
             <p>Alternatively, center of the radar scope can be moved by
             clicking the right mouse button and dragging.  Zoom in and out
@@ -7259,6 +7284,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </tbody>
             </table>
 
+          </section>
 
           <section class="docs-section" id="fe-vfr">
             <h2 class="section-heading">VFR Aircraft</h2>
@@ -7750,7 +7776,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       aircraft type and groundspeed).</li>
                     <li>"scratchpad2_on_line3": (Boolean value) if true, when scratchpad 2 is set, it is displayed
                       in the third line of the datablock (and timeshares with assigned altitude, if set) rather than
-                      timesharing with altitude and the first scratchpad in the second line of the datablock.</p>
+                      timesharing with altitude and the first scratchpad in the second line of the datablock.</li>
                   </ul>
                 </td>
               </tr>
@@ -8123,7 +8149,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
             <h3 id="fe-stars-filters">Filter Regions</h3>
 
-            <p>STARS uses <emph>filter regions</emph> to manage a number of behaviors that are enabled or disabled
+            <p>STARS uses <em>filter regions</em> to manage a number of behaviors that are enabled or disabled
               depending on whether an aircraft's track is within particular volumes of space.
               These regions are defined under "filters" in the <a href="#fe-stars-videomaps">stars_config</a> object.
               As an example, the "inhibit_ca" filter is used to disable collision alerts
@@ -8202,32 +8228,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
   <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script> 
   <script src="assets/js/docs.js"></script>
   
-  <style>
-    .submenu {
-      display: block;
-      list-style: none;
-      padding-left: 20px;
-      margin-bottom: 10px;
-    }
-    
-    .submenu-item {
-      font-size: 0.85em;
-      padding: 2px 0;
-    }
-    
-    .submenu-link {
-      color: #666;
-      text-decoration: none;
-      display: block;
-      padding: 3px 15px;
-    }
-    
-    .submenu-link:hover {
-      color: #5d6778;
-      text-decoration: underline;
-    }
-  </style>
-
   <script>
 document.getElementById('toggleButton').addEventListener('click', function() {
   var text = document.getElementById('hiddenText');
