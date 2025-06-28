@@ -263,6 +263,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 }
 
 func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc [2]float32) {
+	start0 := loc[0]
 	font := ep.ERAMInputFont()
 	style := renderer.TextStyle{Font: font}
 	for _, char := range text {
@@ -271,6 +272,7 @@ func (ep *ERAMPane) writeText(td *renderer.TextDrawBuilder, text inputText, loc 
 			style.Color = char.color
 			loc = td.AddText(string(ch), loc, style)
 		} else {
+			loc[0] = start0 // reset the x position
 			loc[1] -= float32(font.Size) * float32(1.4) // edit this value
 		}
 

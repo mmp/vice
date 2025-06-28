@@ -288,7 +288,7 @@ func (inp *inputText) displayError(ps *Preferences, err error) {
 
 func (inp *inputText) displaySuccess(ps *Preferences, str string) {
 	sucMsg := inputText{}
-	sucMsg.Add(xMark, renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+	sucMsg.Add(checkMark+" ", renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
 	sucMsg.AddBasic(ps, str)
 	*inp = sucMsg
 
