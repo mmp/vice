@@ -118,8 +118,9 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 
 	// Activate weather radar, events
 	p.prefSet = &PrefrenceSet{}
-	p.prefSet.Current = *p.initPrefsForLoadedSim()
 }
+
+
 
 func init() {
 	panes.RegisterUnmarshalPane("ERAMPane", func(d []byte) (panes.Pane, error) {
@@ -185,6 +186,7 @@ func (ep *ERAMPane) Hide() bool {
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.makeMaps(client, ss, lg)
+	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
@@ -423,6 +425,9 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 	ep.allVideoMaps = vmf.Maps
 
 	ps := ep.currentPrefs()
+	if ps.VideoMapVisible == nil {
+		ps.VideoMapVisible = make(map[int]interface{})
+	}
 	for k := range ps.VideoMapVisible {
 		delete(ps.VideoMapVisible, k)
 	}
