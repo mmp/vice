@@ -3,6 +3,11 @@ name: staticcheck
 on:
   pull_request:
     paths-ignore:
+      - 'website/**'
+      - '**.md'
+  push:
+    paths-ignore:
+      - 'website/**'
       - '**.md'
 
 jobs:

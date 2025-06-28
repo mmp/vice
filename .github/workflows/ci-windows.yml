@@ -3,9 +3,11 @@ name: build-windows
 on:
   push:
     paths-ignore:
+      - 'website/**'
       - '**.md'
   pull_request:
     paths-ignore:
+      - 'website/**'
       - '**.md'
 
 jobs:
