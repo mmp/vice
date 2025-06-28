@@ -31,6 +31,17 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 
 		}
 	}
+	if mouse.Released[platform.MouseButtonTertiary] {
+		// Try execute a clicked command on the closest track.
+		trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms)
+		if trk != nil {
+			status := ep.executeERAMClickedCommand(ctx, ep.Input.String(), trk)
+			ep.Input.Clear()
+			if status.err != nil {
+				ep.bigOutput.displayError(ep.currentPrefs(), status.err)
+			}
+		}
+	}
 	ps := ep.currentPrefs()
 	// try get closest track
 
@@ -444,6 +455,145 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 
 	return nil
+}
+
+func (ep *ERAMPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {
+	var trk *sim.Track
+	distance := float32(20)
+
+	for _, t := range ctx.Client.State.Tracks {
+		pw := transforms.WindowFromLatLongP(t.Location)
+		dist := math.Distance2f(pw, mousePosition)
+		if dist < distance {
+			trk = t
+			distance = dist
+		}
+	}
+
+	return trk, distance
+}
+
+func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, trk *sim.Track) (status CommandStatus) {
+	if trk == nil {
+		status.err = ErrERAMIllegalACID
+		return
+	}
+
+	var prefix string
+	original := cmd
+	if len(cmd) >= 2 {
+		prefix = cmd[:2]
+		cmd = strings.TrimPrefix(cmd, prefix+" ")
+	}
+
+	switch prefix {
+	case "QP":
+		fields := strings.Fields(cmd)
+		if len(fields) == 1 {
+			switch fields[0] {
+			case "J":
+				state := ep.TrackState[trk.ADSBCallsign]
+				state.DisplayJRing = !state.DisplayJRing
+				state.DisplayReducedJRing = false
+				status.clear = true
+			case "T":
+				state := ep.TrackState[trk.ADSBCallsign]
+				if state.track.TransponderAltitude > 23000 {
+					status.err = ErrERAMIllegalValue
+					return
+				}
+				state.DisplayJRing = false
+				state.DisplayReducedJRing = !state.DisplayReducedJRing
+				status.clear = true
+			}
+		}
+	case "QU":
+		fields := strings.Fields(cmd)
+		if len(fields) == 1 {
+			if fields[0] == "/M" {
+				ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
+			} else {
+				ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fields[0])
+			}
+		}
+	case "QQ":
+		fields := strings.Fields(cmd)
+		if len(fields) == 1 {
+			fp, err := parseOneFlightPlan("ALT_I", fields[0], nil)
+			if err != nil {
+				status.err = err
+				return
+			}
+			ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+		} else {
+			status.err = ErrCommandFormat
+		}
+	case "QX":
+		if trk.FlightPlan.TrackingController != ctx.UserTCP {
+			status.err = ErrERAMIllegalACID
+			return
+		}
+		ep.deleteFLightplan(ctx, *trk)
+	case "QZ":
+		fields := strings.Fields(cmd)
+		if len(fields) == 1 {
+			fp, err := parseOneFlightPlan("ALT_A", fields[0], nil)
+			if err != nil {
+				status.err = err
+				return
+			}
+			ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+		} else {
+			status.err = ErrCommandFormat
+		}
+	case "//":
+		state := ep.TrackState[trk.ADSBCallsign]
+		state.DisplayVCI = !state.DisplayVCI
+	case "TG":
+		if cmd == "" {
+			return
+		}
+		if cmd == "P" {
+			ctx.Client.ToggleSimPause()
+			status.clear = true
+			return
+		}
+		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+		status.clear = true
+	default:
+		fields := strings.Fields(original)
+		switch len(fields) {
+		case 0:
+			if trk.HandingOffTo(ctx.UserTCP) {
+				acid := sim.ACID(trk.ADSBCallsign.String())
+				ep.acceptHandoff(ctx, acid)
+				status.clear = true
+			} else {
+				if !trk.IsAssociated() || trk.FlightPlan.TrackingController == ctx.UserTCP {
+					return
+				}
+				state := ep.TrackState[trk.ADSBCallsign]
+				state.eFDB = !state.eFDB
+			}
+		case 1:
+			if len(fields[0]) == 1 && unicode.IsDigit(rune(fields[0][0])) {
+				dir := ep.numberToLLDirection(ctx, fields[0][0])
+				callsign := trk.ADSBCallsign
+				dbType := ep.datablockType(ctx, *trk)
+				if dbType != FullDatablock {
+					if dir != math.CardinalOrdinalDirection(math.East) && dir != math.CardinalOrdinalDirection(math.West) {
+						status.err = ErrERAMIllegalValue
+						return
+					}
+				}
+				ep.TrackState[callsign].leaderLineDirection = &dir
+			} else {
+				acid := sim.ACID(trk.ADSBCallsign)
+				ep.handoffTrack(ctx, acid, fields[0])
+			}
+		}
+	}
+	return
 }
 
 func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string, acid sim.ACID) (*av.Controller, error) {
