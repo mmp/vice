@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -685,7 +686,7 @@ func (sm *SimManager) launchHTTPServer() int {
 	var port int
 	for i := range 10 {
 		port = ViceHTTPServerPort + i
-		if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", port)); err == nil {
+		if listener, err = net.Listen("tcp", ":"+strconv.Itoa(port)); err == nil {
 			sm.httpPort = port
 			fmt.Printf("Launching HTTP server on port %d\n", port)
 			break
