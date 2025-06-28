@@ -306,7 +306,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				ep.acceptHandoff(ctx, acid)
-				fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			} else { // Change to LDB or FDB
 				trk, ok := ctx.Client.State.GetTrackByFLID(cmd)
 				if !ok {
@@ -655,6 +655,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 			} else {
 				acid := sim.ACID(trk.ADSBCallsign)
 				ep.handoffTrack(ctx, acid, fields[0])
+				status.bigOutput = fmt.Sprintf("ACCEPT\nINITIATE HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
 	}
