@@ -225,7 +225,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.err = ErrERAMIllegalACID // change error to NO CONTROL
 			return
 		}
-		ep.deleteFLightplan(ctx, *trk) 
+		ep.deleteFLightplan(ctx, *trk)
 		status.bigOutput = fmt.Sprintf("ACCEPT\nDROP TRACK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	case "QZ": // Assigned, OTP, and block altitudes
 		fields := strings.Split(cmd, " ")
