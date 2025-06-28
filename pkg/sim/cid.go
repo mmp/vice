@@ -16,9 +16,10 @@ func NewCIDAllocator() *CIDAllocator {
 
 // Allocate returns the next Available CID.
 func (c *CIDAllocator) Allocate() (string, error) {
-	var cid string 
-	Top: for i, m := range c.List {
-		var allValues []string 
+	var cid string
+Top:
+	for i, m := range c.List {
+		var allValues []string
 		for k := range m {
 			allValues = append(allValues, k)
 		}
@@ -40,7 +41,7 @@ func (c *CIDAllocator) Release(cid string) {
 		if _, ok := m[cid]; ok {
 			c.List[i][cid] = nil // Set to nil to mark as available
 			return
-		} 
+		}
 	}
 }
 
@@ -50,7 +51,7 @@ func generateCIDList() [7]map[string]interface{} {
 	for i := range codes {
 		codes[i] = make(map[string]interface{})
 	}
-	add := func(r1, r2, r3 rune, i int) { codes[i][string([]rune{r1,r2,r3})] = nil }
+	add := func(r1, r2, r3 rune, i int) { codes[i][string([]rune{r1, r2, r3})] = nil }
 	// 1. ddd
 	for _, a := range digits {
 		for _, b := range digits {
@@ -63,7 +64,7 @@ func generateCIDList() [7]map[string]interface{} {
 	for _, a := range digits {
 		for _, b := range digits {
 			for _, l := range preferredAlphas {
-				add(a, b, l ,1)
+				add(a, b, l, 1)
 			}
 		}
 	}
