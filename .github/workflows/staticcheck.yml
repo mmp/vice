@@ -40,4 +40,5 @@ jobs:
       with:
         version: "latest"
         install-go: false
+        working-directory: "pkg/"
 
