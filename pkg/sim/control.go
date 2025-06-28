@@ -647,17 +647,8 @@ func (s *Sim) handoffTrack(fp *STARSFlightPlan, toTCP string) {
 	s.Handoffs[fp.ACID] = Handoff{
 		AutoAcceptTime: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
-	callsign := func() av.ADSBCallsign {
-		// ugly way to do this but using s.CallsignForACID here causes vice to crash
-		for _, aircraft := range s.Aircraft {
-			if aircraft.STARSFlightPlan.ACID == fp.ACID {
-				return aircraft.ADSBCallsign
-			}
-		}
-		return av.ADSBCallsign("")
-	}()
 	if fp.TypeOfFlight == av.FlightTypeDeparture && !s.isActiveHumanController(fp.TrackingController) && !s.isActiveHumanController(toTCP) {
-		if callsign != "" {
+		if callsign, ok := s.callsignForACID(fp.ACID); ok {
 			// aircraft is a departure that will likely never talk to a human, send it on course (mainly so it climbs up to cruise)
 			s.enqueueDepartOnCourse(callsign)
 		}
