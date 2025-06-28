@@ -30,7 +30,8 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 
 		}
-
+	}
+	if mouse.Released[platform.MouseButtonTertiary] {
 		// Try execute a clicked command on the closest track.
 		trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms)
 		if trk != nil {
