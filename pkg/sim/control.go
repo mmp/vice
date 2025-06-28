@@ -1268,8 +1268,11 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 
 	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) *speech.RadioTransmission {
-			ac.STARSFlightPlan.ControllingController = "_TOWER"
-			return setTransmissionController(tcp, ac.ContactTower(s.lg))
+			result := ac.ContactTower(s.lg)
+			if result.Type != speech.RadioTransmissionUnexpected {
+				ac.STARSFlightPlan.ControllingController = "_TOWER"
+			}
+			return setTransmissionController(tcp, result)
 		})
 
 }
