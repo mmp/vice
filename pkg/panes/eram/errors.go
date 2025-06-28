@@ -17,7 +17,7 @@ func NewERAMError(msg string) *ERAMError {
 }
 
 var ( // TODO: Get actual error messages for this
-	ErrCommandFormat       = NewERAMError("Command format error")
+	ErrCommandFormat       = NewERAMError("FORMAT")
 	ErrERAMAmbiguousACID   = NewERAMError("AMB ACID")
 	ErrERAMIllegalACID     = NewERAMError("ILLEGAL ACID")
 	ErrERAMIllegalPosition = NewERAMError("ILLEGAL POSITION")
