@@ -1088,9 +1088,9 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 		heading = math.NormalizeHeading(hdg)
 		if nav.Heading.Arc != nil {
-			lg.Debugf("heading: flying %.0f for %.1fnm radius arc", heading, nav.Heading.Arc.Radius)
+			//lg.Debugf("heading: flying %.0f for %.1fnm radius arc", heading, nav.Heading.Arc.Radius)
 		} else {
-			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
+			//lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
 		}
 	}
 
@@ -1993,7 +1993,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 		if math.Sign(initialDist) != math.Sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
-			lg.Debugf("turning now to intercept outbound in %d seconds", i)
+			//lg.Debugf("turning now to intercept outbound in %d seconds", i)
 			return true
 		}
 	}

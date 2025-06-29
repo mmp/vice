@@ -1561,8 +1561,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		}
 	}
 
-	s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",
-		ac.ADSBCallsign, depart, arrive)
+	//s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",		ac.ADSBCallsign, depart, arrive)
+
 	return nil, "", ErrVFRSimTookTooLong
 }
 
