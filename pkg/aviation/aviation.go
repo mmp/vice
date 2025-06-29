@@ -571,7 +571,7 @@ func DensityRatioAtAltitude(alt float32) float32 {
 	const R = 8.314463    // universal gas constant J/(mol K)
 	const T_b = 288.15    // reference temperature at sea level, degrees K
 
-	return math.Exp(-g0 * M_air * altm / (R * T_b))
+	return math.FastExp(-g0 * M_air * altm / (R * T_b))
 }
 
 func IASToTAS(ias, altitude float32) float32 {

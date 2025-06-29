@@ -93,10 +93,6 @@ func Pow(a, b float32) float32 {
 	return float32(gomath.Pow(float64(a), float64(b)))
 }
 
-func Exp(x float32) float32 {
-	return float32(gomath.Exp(float64(x)))
-}
-
 func Sqr[V constraints.Integer | constraints.Float](v V) V { return v * v }
 
 // Clamp restricts x to the range [low, high]
