@@ -1796,7 +1796,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 		return nil
 	}
 
-	wp := nav.Waypoints[0]
+	wp := &nav.Waypoints[0]
 
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
 	// First, figure out the outbound heading.
@@ -1899,7 +1899,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 			if wps, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
 				// Hacky: below we peel off the current waypoint, so re-add
 				// it here so everything works out.
-				nav.Waypoints = append([]av.Waypoint{wp}, wps...)
+				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
 			}
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
@@ -1920,7 +1920,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 		}
 
 		if wp.AirworkMinutes > 0 {
-			nav.Airwork = StartAirwork(wp, *nav)
+			nav.Airwork = StartAirwork(*wp, *nav)
 		}
 
 		// Remove the waypoint from the route unless it's the destination
@@ -1940,7 +1940,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 
 		nav.Check(lg)
 
-		return &wp
+		return wp
 	}
 	return nil
 }
