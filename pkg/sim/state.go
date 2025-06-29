@@ -423,7 +423,7 @@ func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// Wind.Direction is where it's coming from, so +180 to get the vector
 	// that affects the aircraft's course.
 	d := math.OppositeHeading(float32(ss.Wind.Direction))
-	vWind := [2]float32{math.Sin(math.Radians(d)), math.Cos(math.Radians(d))}
+	vWind := math.SinCos(math.Radians(d))
 	vWind = math.Scale2f(vWind, windSpeed/3600)
 	return vWind
 }

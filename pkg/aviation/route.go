@@ -524,7 +524,7 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 			const Pi = 3.1415926535
 			t := 2 * Pi * rtheta
 
-			pp := math.Add2f(p, math.Scale2f([2]float32{math.Sin(t), math.Cos(t)}, r))
+			pp := math.Add2f(p, math.Scale2f(math.SinCos(t), r))
 			wp.Location = math.NM2LL(pp, nmPerLongitude)
 			wp.Radius = 0 // clean up
 

@@ -1457,7 +1457,7 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 
 func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
-	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
+	v := math.SinCos(math.Radians(angle))
 	ps := sp.currentPrefs()
 	pxLengths := []float32{0, 17, 32, 47, 62, 77, 114, 152}
 	idx := min(ps.LeaderLineLength, len(pxLengths)-1)

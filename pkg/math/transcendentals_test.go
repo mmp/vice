@@ -43,7 +43,9 @@ func TestSinCos(t *testing.T) {
 			// Test at regular intervals
 			step := (tr.max - tr.min) / 10000
 			for x := tr.min; x <= tr.max; x += step {
-				sin, cos := SinCos(x)
+				sincos := SinCos(x)
+				sin, cos := sincos[0], sincos[1]
+
 				expectedSin := float32(math.Sin(float64(x)))
 				expectedCos := float32(math.Cos(float64(x)))
 
@@ -443,11 +445,11 @@ func TestAtan2(t *testing.T) {
 
 		// Test some specific challenging cases
 		challengingCases := [][2]float32{
-			{1, 0},      // y-axis positive
-			{-1, 0},     // y-axis negative
-			{0, -1},     // x-axis negative
-			{1, 1e-10},  // near y-axis
-			{1e-10, -1}, // near negative x-axis
+			{1, 0},       // y-axis positive
+			{-1, 0},      // y-axis negative
+			{0, -1},      // x-axis negative
+			{1, 1e-10},   // near y-axis
+			{1e-10, -1},  // near negative x-axis
 			{-1, -1e-10}, // near negative y-axis
 		}
 

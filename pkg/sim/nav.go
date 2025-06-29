@@ -914,7 +914,7 @@ func (nav *Nav) updatePositionAndGS(wind av.WindModel, lg *log.Logger) {
 	// Calculate offset vector based on heading and current TAS.
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
 	TAS := nav.TAS() / 3600
-	flightVector := math.Scale2f([2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}, TAS)
+	flightVector := math.Scale2f(math.SinCos(math.Radians(hdg)), TAS)
 
 	// Further offset based on the wind
 	var windVector [2]float32
@@ -1047,7 +1047,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 			// Choose a point a bit farther ahead on the arc
 			angle += float32(util.Select(arc.Clockwise, 10, -10))
-			p := math.Add2f(pc, math.Scale2f([2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}, arc.Radius))
+			p := math.Add2f(pc, math.Scale2f(math.SinCos(math.Radians(angle)), arc.Radius))
 			pTarget = math.NM2LL(p, nav.FlightState.NmPerLongitude)
 		} else {
 			if len(nav.Waypoints) == 0 {
@@ -1060,7 +1060,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 		// No magnetic correction yet, just the raw geometric heading vector
 		hdg := math.Heading2LL(nav.FlightState.Position, pTarget, nav.FlightState.NmPerLongitude, 0)
-		v := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+		v := math.SinCos(math.Radians(hdg))
 		v = math.Scale2f(v, nav.FlightState.GS)
 
 		if nav.IsAirborne() {
@@ -1971,7 +1971,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 	// Get two points that give the line of the outbound course.
 	p0 := math.LL2NM(p, nav.FlightState.NmPerLongitude)
 	hm := hdg - nav.FlightState.MagneticVariation
-	p1 := math.Add2f(p0, [2]float32{math.Sin(math.Radians(hm)), math.Cos(math.Radians(hm))})
+	p1 := math.Add2f(p0, math.SinCos(math.Radians(hm)))
 
 	// Make a ghost aircraft to use to simulate the turn.
 	nav2 := *nav
@@ -2004,8 +2004,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 // start turning to intercept the radial.
 func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wind av.WindModel, lg *log.Logger) bool {
 	p0 = math.LL2NM(p0, nav.FlightState.NmPerLongitude)
-	p1 := math.Add2f(p0, [2]float32{math.Sin(math.Radians(hdg - nav.FlightState.MagneticVariation)),
-		math.Cos(math.Radians(hdg - nav.FlightState.MagneticVariation))})
+	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdg-nav.FlightState.MagneticVariation)))
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0, p1)
 	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
@@ -2740,7 +2739,7 @@ func (nav *Nav) prepareForChartedVisual() (*speech.RadioTransmission, error) {
 	pac0 := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
 	// Find a second point along its current course (note: ignoring wind)
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
-	dir := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+	dir := math.SinCos(math.Radians(hdg))
 	pac1 := math.Add2f(pac0, dir)
 
 	checkSegment := func(i int) *av.Waypoint {

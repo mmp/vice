@@ -20,18 +20,16 @@ import (
 )
 
 func Sin(x float32) float32 {
-	s, _ := SinCos(x)
-	return s
+	return SinCos(x)[0]
 }
 
 func Cos(x float32) float32 {
-	_, c := SinCos(x)
-	return c
+	return SinCos(x)[1]
 }
 
 // SinCos computes sin(x) and cos(x) simultaneously for a single float32 value
 // Ported from syrah/FixedVectorMath.h:152, which is via Abramowitz and Stegun.
-func SinCos(xFull float32) (sin, cos float32) {
+func SinCos(xFull float32) [2]float32 {
 	const piOverTwo = float32(1.57079637050628662109375)
 	const twoOverPi = float32(0.636619746685028076171875)
 
@@ -77,6 +75,7 @@ func SinCos(xFull float32) (sin, cos float32) {
 	cosFormula = x2*cosFormula + 1
 
 	// Select appropriate formula for sin and cos
+	var sin, cos float32
 	if sinUsecos {
 		sin = cosFormula
 	} else {
@@ -98,7 +97,7 @@ func SinCos(xFull float32) (sin, cos float32) {
 		cos = -cos
 	}
 
-	return sin, cos
+	return [2]float32{sin, cos}
 }
 
 // EvaluatePolynomial evaluates a polynomial using Horner's method
