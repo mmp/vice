@@ -475,7 +475,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 		exped := util.Select(nav.Altitude.ExpediteAfterSpeed, ", expediting", "")
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s"+exped,
 			*nav.Altitude.AfterSpeedSpeed, dir, av.FormatAltitude(*nav.Altitude.AfterSpeed)))
-	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
+	} else if c, ok := nav.getWaypointAltitudeConstraint(); ok && !nav.flyingPT() {
 		dir := util.Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		alt := c.Altitude
 		if nav.Altitude.Cleared != nil {
@@ -1303,7 +1303,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		return *nav.Altitude.Assigned, rate
 	}
 
-	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
+	if c, ok := nav.getWaypointAltitudeConstraint(); ok && !nav.flyingPT() {
 		//lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
 			// Always climb as soon as we can
@@ -1369,17 +1369,17 @@ type WaypointCrossingConstraint struct {
 // subsequent altitude restrictions--e.g., sometimes it needs to be lower
 // than it would otherwise at one waypoint in order to make a restriction
 // at a subsequent waypoint.
-func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
+func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, bool) {
 	if nav.Heading.Assigned != nil {
 		// ignore what's going on with the fixes
-		return nil
+		return WaypointCrossingConstraint{}, false
 	}
 
 	if nav.InterceptedButNotCleared() {
 		// Assuming this must be an altitude constraint on the approach,
 		// we'll ignore it until the aircraft has been cleared for the
 		// approach.
-		return nil
+		return WaypointCrossingConstraint{}, false
 	}
 
 	getRestriction := func(i int) *av.AltitudeRestriction {
@@ -1425,7 +1425,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	}
 	if lastWp == -1 {
 		// No applicable altitude restrictions found, so nothing to do here.
-		return nil
+		return WaypointCrossingConstraint{}, false
 	}
 
 	// Figure out what climb/descent rate we will use for modeling the
@@ -1543,11 +1543,11 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		}
 	}
 
-	return &WaypointCrossingConstraint{
+	return WaypointCrossingConstraint{
 		Altitude: alt,
 		ETA:      eta,
 		Fix:      fix,
-	}
+	}, true
 }
 
 func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) (float32, float32) {
@@ -2285,7 +2285,7 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 		// constraints, set its cleared altitude to its current altitude
 		// for now.
 		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR || nav.Waypoints[0].OnApproach) && nav.Altitude.Assigned == nil {
-			if c := nav.getWaypointAltitudeConstraint(); c != nil {
+			if _, ok := nav.getWaypointAltitudeConstraint(); ok {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
 				nav.Altitude.Cleared = &alt
