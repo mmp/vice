@@ -1628,7 +1628,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av
 		return targetSpeed, 0.8 * maxAccel
 	}
 
-	if wp, speed, eta, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
+	if wpOnSID, speed, eta, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
 		//lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
 			return speed, MaximumRate
@@ -1637,7 +1637,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av
 		if speed > nav.FlightState.IAS {
 			// accelerate immediately
 			return speed, MaximumRate
-		} else if wp.OnSID {
+		} else if wpOnSID {
 			// don't accelerate past speed constraints on SIDs
 			return speed, MaximumRate
 		} else {
@@ -1727,7 +1727,7 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
-func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (av.Waypoint, float32, float32, bool) {
+func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32, eta float32, ok bool) {
 	haveWaypointSpeedRestriction :=
 		slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Speed > 0 })
 
@@ -1751,11 +1751,11 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (av.Waypoint, float32, flo
 			}
 
 			if spd != 0 {
-				return wp, spd, eta, true
+				return wp.OnSID, spd, eta, true
 			}
 		}
 	}
-	return av.Waypoint{}, 0, 0, false
+	return false, 0, 0, false
 }
 
 // distanceToEndOfApproach returns the remaining distance to the last
