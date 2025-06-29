@@ -1123,18 +1123,15 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 		}
 	}()
 
-	// In theory, turn rate is proportional to tan(bankAngle) but to make
-	// the turn in/turn out math easier, we model it linearly, which is not
-	// unreasonable since tan(theta) is linear-ish around 0.
-	// Note that this is signed.
+	// Note that turnRate is signed.
 	maxBankAngle := nav.Perf.Turn.MaxBankAngle
 	maxRollRate := nav.Perf.Turn.MaxBankRate
+	tasMS := nav.TAS() * 0.514444
 	turnRate := func(bankAngle float32) float32 {
 		if bankAngle == 0 {
 			return 0
 		}
 		bankRad := math.Radians(bankAngle)
-		tasMS := nav.TAS() * 0.514444
 		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
 		return min(rate, 3)
 	}
