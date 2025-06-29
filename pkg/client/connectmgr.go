@@ -6,8 +6,8 @@ package client
 
 import (
 	"errors"
-	"fmt"
 	"log/slog"
+	"net"
 	"net/rpc"
 	"strconv"
 	"strings"
@@ -59,7 +59,7 @@ func MakeServerManager(address, additionalScenario, additionalVideoMap string, l
 	}, lg)
 
 	if !errorLogger.HaveErrors() {
-		client, err := getClient(fmt.Sprintf("localhost:%d", rpcPort), lg)
+		client, err := getClient(net.JoinHostPort("localhost", strconv.Itoa(rpcPort)), lg)
 		if err != nil {
 			errorLogger.Error(err)
 		} else {

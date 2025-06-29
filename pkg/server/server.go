@@ -11,6 +11,7 @@ import (
 	"os"
 	"runtime/pprof"
 	"slices"
+	"strconv"
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
@@ -137,7 +138,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 			return 0, nil, errorLogger
 		}
 		rpcPort = listener.Addr().(*net.TCPAddr).Port
-	} else if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", config.Port)); err == nil {
+	} else if listener, err = net.Listen("tcp", ":"+strconv.Itoa(config.Port)); err == nil {
 		rpcPort = config.Port
 	} else {
 		errorLogger.Error(err)

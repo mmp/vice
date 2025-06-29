@@ -1,0 +1,435 @@
+{
+  "tracon": "BTV",
+  "airports": {
+"KPBG": {
+  "vfr": {
+    "random_routes": {
+      "rate": 5
+    }
+  },
+  "approaches": {
+    "R17": {
+      "cifp_id": "R17"
+    },
+    "I35": {
+      "cifp_id": "I35"
+    },
+    "R35": {
+      "cifp_id": "R35"
+    }
+  },
+  "departure_routes": {
+    "35": {
+      "BUGSY, DANZI, ALB": {
+        "assigned_altitude": 10000,
+        "sid": null,
+        "waypoints": "KPBG/h350"
+      }
+    },
+    "17": {
+      "BUGSY, DANZI, ALB": {
+        "assigned_altitude": 10000,
+        "sid": null,
+        "waypoints": "KPBG/h170"
+      }
+    }
+  },
+  "departures": [
+    {
+      "airlines": [
+        {
+          "icao": "N",
+          "fleet": "cessna"
+        }
+      ],
+      "destination": "KEWN",
+      "exit": "DANZI",
+      "scratchpad": "DAN",
+      "route": "DANZI LAAYK T295 RAYAA BAABS LOUIE SHLBK COLIN"
+    }
+  ]
+},
+    "KBTV": {
+      "name": "BTV",
+      "approaches": {
+        "I15": {
+          "cifp_id": "I15"
+        },
+        "I33": {
+          "cifp_id": "I33"
+        },
+        "R15": {
+          "cifp_id": "R15"
+        },
+        "R33": {
+          "cifp_id": "RY33"
+        },
+        "S1": {
+          "cifp_id": "S1"
+        }
+      },
+      "departure_routes": {
+        "15": {
+          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "KBTV/h150"
+          }
+        },
+        "33": {
+          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "BTV/h330"
+          }
+        },
+        "1": {
+          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "BTV/h010"
+          }
+        },
+        "19": {
+          "SYR, BTV, CAM, ALB, BGR, MPV, ART, BIZEX": {
+            "assigned_altitude": 10000,
+            "sid": "BTV1",
+            "waypoints": "BTV/h190"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "BTV",
+          "route": "BTV PONCT BIZEX Q75 MXE CLIPR3",
+          "scratchpad": "BTV"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "ALB",
+          "route": "ALB DNY SPUDS7",
+          "scratchpad": "ALB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "MXY"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "BIZEX",
+          "route": "BIZEX MXE Q75 FISHO Q93 GIPPL Q85 LPERD SNFLD3",
+          "scratchpad": "BIZ"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KIAD",
+          "exit": "ALB",
+          "route": "ALB HYPER9",
+          "scratchpad": "ALB"
+        }
+      ],
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "LBNON Arrival Land 15": {
+      "arrivals": [
+        {
+          "waypoints": "LBNON CEVIB/ho BTV",
+          "route": "LBNON CEVIB/ho BTV",
+          "initial_controller": "BOS_37_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "EJA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LBNON Arrival Land 33": {
+      "arrivals": [
+        {
+          "waypoints": "LBNON CEVIB/ho BTV",
+          "route": "LBNON CEVIB/ho BTV",
+          "initial_controller": "BOS_37_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "EJA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RUT Arrival Land 15": {
+      "arrivals": [
+        {
+          "waypoints": "RUT ENSON/ho WEIGH WINLA BTV",
+          "route": "RUT ENSON/ho WEIGH WINLA BTV",
+          "initial_controller": "BOS_37_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "EDV",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMVY"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RUT Arrival Land 33": {
+      "arrivals": [
+        {
+          "waypoints": "RUT ENSON/ho WEIGH WINLA BTV",
+          "route": "RUT ENSON/ho WEIGH WINLA BTV",
+          "initial_controller": "BOS_37_CTR",
+          "initial_altitude": 9000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBTV": [
+              {
+                "icao": "LXJ",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KMKE"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "control_positions": {
+    "BTV_TWR": {
+      "frequency": 118300,
+      "radio_name": "Burlington Tower",
+      "sector_id": "1T"
+    },
+    "BTV_W_APP": {
+      "frequency": 124550,
+      "radio_name": "Burlington Approach",
+      "sector_id": "1W"
+    },
+    "BTV_E_APP": {
+      "frequency": 121100,
+      "radio_name": "Burlington Approach",
+      "sector_id": "1E"
+    },
+    "BTV_F_APP": {
+      "frequency": 120350,
+      "radio_name": "Burlington Approach",
+      "sector_id": "1F"
+    },
+    "BOS_37_CTR": {
+      "frequency": 134700,
+      "radio_name": "Boston Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C37"
+    }
+  },
+  "primary_airport": "KBTV",
+  "default_scenario": "BTV Land 15",
+  "name": "BTV",
+  "scenarios": {
+    "BTV Land 15": {
+      "arrival_runways": [
+        {
+          "airport": "KBTV",
+          "runway": "15"
+        }
+      ],
+      "arrivals": {
+        "LBNON Arrival Land 15": {
+          "KBTV": 10
+        },
+        "RUT Arrival Land 33": {
+          "KBTV": 0
+        },
+        "LBNON Arrival Land 33": {
+          "KBTV": 0
+        },
+        "RUT Arrival Land 15": {
+          "KBTV": 10
+        }
+      },
+      "solo_controller": "BTV_W_APP",
+      "controllers": [
+        "BTV_W_APP",
+        "BTV_E_APP",
+        "BTV_TWR",
+        "BTV_F_APP",
+        "BOS_37_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBTV",
+          "rate": 10,
+          "runway": "15"
+        },
+        {
+          "airport": "KPBG",
+          "rate": 10,
+          "runway": "17"
+        }
+      ],
+      "wind": {
+        "direction": 170,
+        "speed": 12
+      },
+      "default_maps": [
+        "BTV MAIN"
+      ]
+    },
+    "BTV Land 33": {
+      "arrival_runways": [
+        {
+          "airport": "KBTV",
+          "runway": "33"
+        },
+        {
+          "airport": "KPBG",
+          "runway": "35"
+        }
+      ],
+      "arrivals": {
+        "LBNON Arrival Land 15": {
+          "KBTV": 0
+        },
+        "RUT Arrival Land 33": {
+          "KBTV": 10
+        },
+        "LBNON Arrival Land 33": {
+          "KBTV": 10
+        },
+        "RUT Arrival Land 15": {
+          "KBTV": 0
+        }
+      },
+      "solo_controller": "BTV_E_APP",
+      "multi_controllers": {
+        "default": {
+          "BTV_E_APP": {
+            "primary": true,
+            "departures": [
+              "KBTV"
+            ],
+            "arrivals": [
+              "LBNON Arrival Land 33",
+              "LBNON Arrival Land 15"
+            ]
+          },
+          "BTV_F_APP": {
+            "backup": "BTV_E_APP"
+          },
+          "BTV_W_APP": {
+            "backup": "BTV_E_APP",
+            "arrivals": [
+              "RUT Arrival Land 15",
+              "RUT Arrival Land 33"
+            ],
+          "departures": [
+              "KPBG"
+            ]
+          }
+        }
+      },
+      "controllers": [
+        "BTV_W_APP",
+        "BTV_E_APP",
+        "BTV_F_APP",
+        "BTV_TWR",
+        "BOS_37_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBTV",
+          "rate": 10,
+          "runway": "33"
+        },
+        {
+          "airport": "KPBG",
+          "rate": 10,
+          "runway": "35"
+        }
+      ],
+      "wind": {
+        "direction": 350,
+        "speed": 21
+      },
+      "default_maps": [
+        "BTV MAIN"
+      ]
+    }
+  },
+  "stars_config": {
+    "center": "KBTV",
+    "scratchpads": {},
+    "stars_maps": [
+      "BTV RVM",
+      "BTV MAIN",
+      "BTV MVA",
+      "BTV VFR",
+      "BTV SATS"
+    ],
+    "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+  }
+}
