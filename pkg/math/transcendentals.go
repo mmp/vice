@@ -15,7 +15,6 @@
 package math
 
 import (
-	"math"
 	gomath "math"
 )
 
@@ -309,7 +308,7 @@ func Atan2(y, x float32) float32 {
 	// Handle special cases for y = 0
 	if y == 0 {
 		if x < 0 {
-			if math.Signbit(float64(y)) {
+			if SignBit(y) {
 				return -Pi
 			}
 			return Pi

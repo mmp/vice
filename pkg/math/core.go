@@ -5,7 +5,6 @@
 package math
 
 import (
-	"math"
 	gomath "math"
 
 	"golang.org/x/exp/constraints"
@@ -23,16 +22,16 @@ const (
 	Sqrt2      = 1.41421356237309504880
 )
 
-var Infinity float32 = float32(math.Inf(1))
+var Infinity float32 = float32(gomath.Inf(1))
 
 // FloatToBits converts a float32 to its bit representation
 func FloatToBits(f float32) uint32 {
-	return math.Float32bits(f)
+	return gomath.Float32bits(f)
 }
 
 // BitsToFloat converts a bit representation to float32
 func BitsToFloat(ui uint32) float32 {
-	return math.Float32frombits(ui)
+	return gomath.Float32frombits(ui)
 }
 
 // Exponent returns the exponent of a float32
@@ -43,6 +42,11 @@ func Exponent(v float32) int {
 // Significand returns the significand of a float32
 func Significand(v float32) int {
 	return int(FloatToBits(v) & ((1 << 23) - 1))
+}
+
+// SignBit returns true if the given float32's sign bit is set. (i.e., it's non-negative)
+func SignBit(v float32) bool {
+	return int(FloatToBits(v)>>31) != 0
 }
 
 // Degrees converts an angle expressed in degrees to radians
