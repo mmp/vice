@@ -722,6 +722,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 					"(even if \"runway_waypoints\" are provided)",
 			)
 		}
+		if ar.SpawnWaypoint != "" {
+			e.ErrorString("\"spawn\" cannot be specified if \"waypoints\" are provided")
+			return
+		}
 
 		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
 
