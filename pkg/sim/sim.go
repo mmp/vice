@@ -1391,6 +1391,10 @@ func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	return s.callsignForACID(acid)
+}
+
+func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	for cs, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
 			return cs, true
