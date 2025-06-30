@@ -182,6 +182,7 @@ func main() {
 
 		var mgr *client.ConnectionManager
 		var errorLogger util.ErrorLogger
+		var eventStream *sim.EventStream
 		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
@@ -219,7 +220,7 @@ func main() {
 		}
 		renderer.FontsInit(render, plat)
 
-		eventStream := sim.NewEventStream(lg)
+		eventStream = sim.NewEventStream(lg)
 
 		uiInit(render, plat, config, eventStream, lg)
 
