@@ -120,8 +120,6 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 	p.prefSet = &PrefrenceSet{}
 }
 
-
-
 func init() {
 	panes.RegisterUnmarshalPane("ERAMPane", func(d []byte) (panes.Pane, error) {
 		var p ERAMPane
@@ -424,7 +422,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 		return
 	}
 	usedIds := make(map[int]interface{})
-	
+
 	ep.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
 		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
