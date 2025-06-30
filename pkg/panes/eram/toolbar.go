@@ -204,8 +204,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
 		for i, vm := range ep.allVideoMaps {
-			label := fmt.Sprintf("%d\n%s", vm.Id, vm.Label)
-			_, vis := ps.VideoMapVisible[vm.Id]
+			_, vis := ps.VideoMapVisible[vm.Name]
 			nextRow := false
 			if i == 11 {
 				nextRow = true
@@ -214,11 +213,14 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			if i == 22 {
 				break
 			}
-			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, nextRow) {
-				if vis {
-					delete(ps.VideoMapVisible, vm.Id)
-				} else {
-					ps.VideoMapVisible[vm.Id] = nil
+
+			if ep.drawToolbarFullButton(ctx, vm.Label, 0, scale, vis, nextRow) {
+				if vm.Label != "" {
+					if vis {
+						delete(ps.VideoMapVisible, vm.Name)
+					} else {
+						ps.VideoMapVisible[vm.Name] = nil
+					}
 				}
 			}
 		}
@@ -585,6 +587,9 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 		if ep.activeToolbarMenu != toolbarMain {
 			buttonColor = ep.customButtonColor(text)
+			if buttonColor == (renderer.RGB{}) && pushedIn {
+				buttonColor = eramGray // The black buttons turn gray when pushed
+			}
 		}
 		if customColor, ok := toolbarDrawState.customButton[cleanButtonName(text)]; ok {
 			buttonColor = customColor
@@ -592,6 +597,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 				buttonColor = eramGray // The black buttons turn gray when pushed
 			}
 		}
+		
 		if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
 			toolbarDrawState.buttonPositions[cleanButtonName(text)] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
 		}

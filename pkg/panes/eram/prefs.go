@@ -19,7 +19,7 @@ type Preferences struct {
 
 	// QuickLookPositions []QuickLookPositiosn // find out more about this
 
-	VideoMapVisible map[int]interface{}
+	VideoMapVisible map[string]interface{}
 
 	DisplayToolbar bool
 
@@ -90,7 +90,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.DisplayToolbar = true
 	prefs.Range = 150
-	prefs.VideoMapVisible = make(map[int]interface{})
+	prefs.VideoMapVisible = make(map[string]interface{})
 
 	prefs.CharSize.Line4 = 0
 	prefs.CharSize.RDB = 1

@@ -399,7 +399,8 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	cb.LineWidth(1, ctx.DPIScale)
 	var draw []sim.VideoMap
 	for _, vm := range ep.allVideoMaps {
-		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
+		if _, ok := ps.VideoMapVisible[vm.Name]; ok {
+
 			draw = append(draw, vm)
 		}
 	}
@@ -420,15 +421,20 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 		lg.Errorf("%v", err)
 		return
 	}
-	ep.allVideoMaps = vmf.Maps
+	usedIds := make(map[int]interface{})
+	
+	ep.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
+		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
+	})
+	for _, vm := range ep.allVideoMaps {
+		usedIds[vm.Id] = nil
+	}
 
 	ps := ep.currentPrefs()
-	for k := range ps.VideoMapVisible {
-		delete(ps.VideoMapVisible, k)
-	}
+	clear(ps.VideoMapVisible)
 	for _, name := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(ep.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 {
-			ps.VideoMapVisible[ep.allVideoMaps[idx].Id] = nil
+			ps.VideoMapVisible[ep.allVideoMaps[idx].Name] = nil
 		}
 	}
 }

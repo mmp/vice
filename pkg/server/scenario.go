@@ -630,13 +630,23 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))
 
-	if sg.TRACON == "" {
-		e.ErrorString("\"tracon\" must be specified")
-	} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
-		e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
-			"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
-			sg.TRACON)
-	}
+	if sg.ARTCC == "" {
+		if sg.TRACON == "" {
+			e.ErrorString("\"tracon\" or must be specified")
+		} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
+			e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
+				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
+				sg.TRACON)
+		}
+	} else if sg.TRACON == "" {
+		if sg.ARTCC == "" {
+			e.ErrorString("\"artcc\" must be specified")
+		}
+		if _, ok := av.DB.ARTCCs[sg.ARTCC]; !ok {
+			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
+				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc")
+		}
+	} 
 
 	sg.Fixes = make(map[string]math.Point2LL)
 	for _, fix := range sg.FixesStrings.Keys() {
@@ -715,13 +725,18 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			e.Pop()
 		}
 	}
-
-	if sg.PrimaryAirport == "" {
-		e.ErrorString("\"primary_airport\" not specified")
-	} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
-		e.ErrorString("\"primary_airport\" %q unknown", sg.PrimaryAirport)
-	} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
-		e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+	if sg.ARTCC == "" {
+		if sg.PrimaryAirport == "" {
+			e.ErrorString("\"primary_airport\" not specified")
+		} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
+			e.ErrorString("\"primary_airport\" %q unknown", sg.PrimaryAirport)
+		} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
+			e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+		} else {
+			sg.MagneticVariation = mvar + sg.MagneticAdjustment
+		}
+	} else if mvar, err := av.DB.MagneticGrid.Lookup(sg.STARSFacilityAdaptation.Center); err != nil {
+		e.ErrorString("%s: unable to find magnetic declination: %v", sg.ARTCC, err)
 	} else {
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
@@ -757,7 +772,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
 			e.ErrorString("missing \"eram_facility\" for center controller")
 		}
-		if ctrl.ERAMFacility {
+		if ctrl.ERAMFacility && sg.ARTCC == "" {
 			if ctrl.FacilityIdentifier == "" {
 				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
 			}
@@ -1421,8 +1436,8 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		e.ErrorString("scenario group is missing \"name\"")
 		return nil
 	}
-	if s.TRACON == "" {
-		e.ErrorString("scenario group is missing \"tracon\"")
+	if s.TRACON == "" && s.ARTCC == "" {
+		e.ErrorString("scenario group is missing \"tracon\" or \"artcc\"")
 		return nil
 	}
 	return &s

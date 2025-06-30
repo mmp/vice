@@ -1,24 +1,24 @@
 {
     "artcc": "ZNY",
+    "name": "ZNY",
     "airports": {
         "KPHL": {
+            "departure_controller": "Philadelphia North Departure",
             "name": "Philadelphia",
             "departure_routes": {
                 "27L": {
-                    "ARD,FJC,MAZIE,MXE,PTW": {
-                        "cleared_altitude": 5000,
+                    "MXE": {
+                        "handoff_controller": "ZNY 25 Modena",
+                        "cleared_altitude": 10000,
                         "sid": "PHL2",
-                        "waypoints": "KPHL-9R/h265"
+                        "waypoints": "KPHL-9R/ho MXE"
                     },
-                    "DITCH,OOD,RUUTH": {
-                        "cleared_altitude": 5000,
+
+                    "STOEN": {
+                        "handoff_controller": "ZNY 25 Modena",
+                        "cleared_altitude": 10000,
                         "sid": "PHL2",
-                        "waypoints": "KPHL-9R/h230"
-                    },
-                    "DQO,STOEN": {
-                        "cleared_altitude": 5000,
-                        "sid": "PHL2",
-                        "waypoints": "KPHL-9R/h245"
+                        "waypoints": "KPHL-9R/ho STOEN"
                     }
                 }
             },
@@ -1570,7 +1570,7 @@
             "sector_id": "10"
         },
         "ZNY 25 Modena": {
-            "frequency": 13545,
+            "frequency": 135450,
             "eram_facility": true,
             "radio_name": "New York center",
             "sector_id": "25"
@@ -1630,7 +1630,7 @@
             "sector_id": "35"
         },
         "ZNY 36 Sparta": {
-            "frequency": 13315,
+            "frequency": 133150,
             "eram_facility": true,
             "radio_name": "New York center",
             "sector_id": "36"
@@ -1711,6 +1711,7 @@
             "facility": "ZDC"
         }
     },
+    "default_scenario": "ZNY Sector 25",
     "scenarios": {
         "ZNY Sector 25": {
             "solo_controller": "ZNY 25 Modena",
@@ -1722,9 +1723,9 @@
                 "Philadelphia North Departure"
             ],
             "default_maps": [
-                "BASE MAP",
-                "LOW SECTOR" 
-            ],
+                "ZNY BASE MAP",
+                "ZNY LOW SECTOR"
+            ], 
             "departure_runways": [
                 {
                     "airport": "KPHL",
@@ -1738,5 +1739,29 @@
                 "speed": 16
             }
         }
+    },
+    "stars_config": {
+        "center": "N039.47.39.800,W076.10.50.300",
+        "range": 150,
+        "stars_maps": [
+            "ZNY BASE MAP",
+            "ZNY HIGH SECTOR",
+            "ZNY LOW SECTOR",
+            "ZNY HIGH AIRWAY",
+            "ZNY LOW AIRWAY",
+            "3NM RADAR BOUNDARY",
+            "MIA",
+            "ZNY MOA",
+            "ZNY STARS",
+            "ZNY CLASS B",
+            "ZNY MVA",
+            "N90 RVM",
+            "N90 LIB RVM",
+            "PHL-W RVM",
+            "PHL-E RVM",
+            "ZNY MINOR RVM"
+        ],
+
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
     }
 }
