@@ -1,8 +1,13 @@
 name: check-gofmt
 
 on:
+  push:
+    paths-ignore:
+      - 'website/**'
+      - '**.md'
   pull_request:
     paths-ignore:
+      - 'website/**'
       - '**.md'
 
 jobs:
@@ -17,6 +22,11 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Install Linux dependencies
+      run: |
+        sudo apt update
+        sudo apt install xorg-dev libsdl2-dev libsystemd-dev
+
     - name: Checkout source
       uses: actions/checkout@v4
 

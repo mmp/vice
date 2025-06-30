@@ -3,6 +3,7 @@ package eram
 import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/radar"
+	"github.com/mmp/vice/pkg/sim"
 )
 
 type Preferences struct {
@@ -139,14 +140,16 @@ func makeDefaultPreferences() *Preferences {
 	prefs.LDBSize = 1
 	prefs.OutageSize = 1
 
+	prefs.VideoMapVisible = make(map[int]interface{})
+
 	return &prefs
 }
 
-func (ep *ERAMPane) initPrefsForLoadedSim() *Preferences {
+func (ep *ERAMPane) initPrefsForLoadedSim(ss sim.State) *Preferences {
 	// TODO: Add saving prefs with different ARTCCS/ sectors
 
 	p := makeDefaultPreferences()
-	p.Center = math.Point2LL{-74.4818648, 40.726219} // center for now
+	p.Center = ss.GetInitialCenter()
 	p.CurrentCenter = p.Center
 	return p
 }

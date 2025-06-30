@@ -40,6 +40,8 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 			ep.Input.Clear()
 			if status.err != nil {
 				ep.bigOutput.displayError(ep.currentPrefs(), status.err)
+			} else if status.bigOutput != "" {
+				ep.bigOutput.displaySuccess(ep.currentPrefs(), status.bigOutput)
 			}
 		}
 	}
@@ -137,6 +139,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.DisplayJRing = !state.DisplayJRing
 				state.DisplayReducedJRing = false // clear reduced J ring
+				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			case "T": // reduced J ring
 				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
@@ -150,6 +153,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				}
 				state.DisplayJRing = false // clear J ring
 				state.DisplayReducedJRing = !state.DisplayReducedJRing
+				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			default: // init a pointout
 				// <sector ID><FLID>
 				if len(fields) != 2 {
@@ -164,12 +168,13 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			clear(ep.aircraftFixCoordinates)
 		} else if len(fields) == 2 && fields[0] == "/M" { // minutes will come later
 			cid := fields[1]
-			acid, err := ep.getACIDFromCID(ctx, cid)
-			if err != nil {
-				status.err = err
+			trk, ok := ctx.Client.State.GetTrackByFLID(cid)
+			if !ok {
+				status.err = ErrERAMIllegalACID
 				return
 			}
-			ep.getQULines(ctx, acid)
+			ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
+			status.bigOutput = fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		} else if unicode.IsDigit(rune(fields[0][0])) && len(fields) == 2 {
 
 		} else if len(fields) == 2 { // Direct a fix
@@ -184,21 +189,40 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			}
 
 			ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
-
+			status.bigOutput = fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		}
 	case "QQ": // interim altitude
 		// first field is the altitude, second is the CID.
 		fields := strings.Split(cmd, " ")
-		if len(fields) != 2 {
-			status.err = ErrCommandFormat
-			return
+		var trk *sim.Track
+		var fp sim.STARSFlightPlanSpecifier
+		if len(fields) == 1 {
+			var ok bool
+			trk, ok = ctx.Client.State.GetTrackByFLID(fields[0])
+			if !ok {
+				status.err = ErrERAMIllegalACID
+				return
+			}
+			fp = sim.STARSFlightPlanSpecifier{}
+			fp.InterimAlt.Set(0)
+
+		} else if len(fields) == 2 {
+			var err error
+			var ok bool
+			fp, err = parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
+			if err != nil {
+				status.err = err
+				return
+			}
+			trk, ok = ctx.Client.State.GetTrackByFLID(fields[1])
+			if !ok {
+				status.err = ErrERAMIllegalACID
+				return
+			}
 		}
-		fp, err := parseOneFlightPlan("ALT_I", fields[0], nil) // should anything go in place of the nil?
-		if err != nil {
-			status.err = err
-			return
-		}
-		ep.modifyFlightPlan(ctx, fields[1], fp)
+
+		ep.modifyFlightPlan(ctx, string(trk.ADSBCallsign), fp)
+		status.bigOutput = fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	case "QX": // drop track
 		fields := strings.Fields(cmd)
 		if len(fields) != 1 {
@@ -214,11 +238,17 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.err = ErrERAMIllegalACID // change error to NO CONTROL
 			return
 		}
-		ep.deleteFLightplan(ctx, *trk) //
+		ep.deleteFLightplan(ctx, *trk)
+		status.bigOutput = fmt.Sprintf("ACCEPT\nDROP TRACK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	case "QZ": // Assigned, OTP, and block altitudes
 		fields := strings.Split(cmd, " ")
 		if len(fields) != 2 {
 			status.err = ErrCommandFormat
+			return
+		}
+		trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
+		if !ok {
+			status.err = ErrERAMIllegalACID
 			return
 		}
 		fp, err := parseOneFlightPlan("ALT_A", fields[0], nil) // should anything go in place of the nil?
@@ -226,16 +256,18 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.err = err
 			return
 		}
+		status.bigOutput = fmt.Sprintf("ACCEPT\nASSIGNED ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		ep.modifyFlightPlan(ctx, fields[1], fp)
 	case "//":
 		cmd = strings.TrimPrefix(cmd, "//") // In case user types //FLID. The space is also acceptable
-		trk, err := ep.getACIDFromCID(ctx, cmd)
-		if err != nil {
-			status.err = err
+		trk, ok := ctx.Client.State.GetTrackByFLID(cmd)
+		if !ok {
+			status.err = ErrERAMIllegalACID
 			return
 		}
-		state := ep.TrackState[av.ADSBCallsign(trk)]
+		state := ep.TrackState[trk.ADSBCallsign]
 		state.DisplayVCI = !state.DisplayVCI
+		status.bigOutput = fmt.Sprintf("ACCEPT\nTOGGLE ON-FREQUENCY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		return
 	case "TG":
 		// Special cases for non-control commands.
@@ -287,7 +319,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				ep.acceptHandoff(ctx, acid)
-				status.clear = true
+				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			} else { // Change to LDB or FDB
 				trk, ok := ctx.Client.State.GetTrackByFLID(cmd)
 				if !ok {
@@ -302,6 +334,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB // toggle FDB
+				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		case 2: // leader line & handoffs
 			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line
@@ -321,6 +354,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 					}
 				}
 				ep.TrackState[callsign].leaderLineDirection = &dir
+				status.output = fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID)
 			} else { // handoffs
 				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
@@ -330,6 +364,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				acid := sim.ACID(trk.ADSBCallsign)
 				sector := fields[0]
 				ep.handoffTrack(ctx, acid, sector)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nINITIATE HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
 	}
@@ -380,10 +415,6 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 			if errStr != "" {
 
 				if err := server.TryDecodeErrorString(errStr); err != nil {
-					err = GetERAMError(err, ctx.Lg)
-					ep.bigOutput.displayError(ep.currentPrefs(), err)
-				} else {
-					ep.bigOutput.displayError(ep.currentPrefs(), ErrCommandFormat)
 				}
 			}
 		})
@@ -501,7 +532,8 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 	original := cmd
 	if len(cmd) >= 2 {
 		prefix = cmd[:2]
-		cmd = strings.TrimPrefix(cmd, prefix+" ")
+		cmd = strings.TrimPrefix(cmd, prefix)
+		cmd = strings.TrimSpace(cmd) // TODO: Do to ERAMCommand
 	}
 
 	switch prefix {
@@ -513,7 +545,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.DisplayJRing = !state.DisplayJRing
 				state.DisplayReducedJRing = false
-				status.clear = true
+				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			case "T":
 				state := ep.TrackState[trk.ADSBCallsign]
 				if state.track.TransponderAltitude > 23000 {
@@ -522,7 +554,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				}
 				state.DisplayJRing = false
 				state.DisplayReducedJRing = !state.DisplayReducedJRing
-				status.clear = true
+				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
 	case "QU":
@@ -530,11 +562,14 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 		if len(fields) == 1 {
 			if fields[0] == "/M" {
 				ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
+				status.bigOutput = fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			} else {
 				ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fields[0])
+				status.bigOutput = fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				// TODO: Draw QU lunes after this CMD
 			}
 		}
-	case "QQ":
+	case "QQ": // TODO: Check for proper controller. Same format as the other dont have control error
 		fields := strings.Fields(cmd)
 		if len(fields) == 1 {
 			fp, err := parseOneFlightPlan("ALT_I", fields[0], nil)
@@ -543,15 +578,25 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				return
 			}
 			ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+			status.bigOutput = fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		} else {
 			status.err = ErrCommandFormat
 		}
 	case "QX":
 		if trk.FlightPlan.TrackingController != ctx.UserTCP {
 			status.err = ErrERAMIllegalACID
+			// REJECT - NOT YOUR CONTROL \n DROP TRACK \n <cmd>
+			// There is also a seperate one if the tracking controller is a center:
+			// REJECT - SECTOR <##> HAS \n CONTROL \n DROP TRACK \n <cmd>
 			return
 		}
+		if cmd != "" {
+			status.err = ErrCommandFormat
+			return
+			// REJECT - <cid> FORMAT \n DROP TRACK \n <cmd>
+		}
 		ep.deleteFLightplan(ctx, *trk)
+		status.bigOutput = fmt.Sprintf("ACCEPT\nDROP TRACK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	case "QZ":
 		fields := strings.Fields(cmd)
 		if len(fields) == 1 {
@@ -561,12 +606,14 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				return
 			}
 			ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+			status.bigOutput = fmt.Sprintf("ACCEPT\nASSIGNED ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		} else {
 			status.err = ErrCommandFormat
 		}
 	case "//":
 		state := ep.TrackState[trk.ADSBCallsign]
 		state.DisplayVCI = !state.DisplayVCI
+		status.bigOutput = fmt.Sprintf("ACCEPT\nTOGGLE ON-FREQUENCY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 	case "TG":
 		if cmd == "" {
 			return
@@ -585,13 +632,22 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 			if trk.HandingOffTo(ctx.UserTCP) {
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				ep.acceptHandoff(ctx, acid)
-				status.clear = true
+				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				return
 			} else {
-				if !trk.IsAssociated() || trk.FlightPlan.TrackingController == ctx.UserTCP {
+				if !trk.IsAssociated() {
+					status.err = ErrCommandFormat
+					return
+				}
+				if trk.FlightPlan.TrackingController == ctx.UserTCP {
+					// USER ACTION NOT ALLOWED ON A \nCONTROLLED FLIGHT FORCED DATA BLK <callsign>
+					status.err = ErrIllegalUserAction
 					return
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB
+				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				return
 			}
 		case 1:
 			if len(fields[0]) == 1 && unicode.IsDigit(rune(fields[0][0])) {
@@ -608,6 +664,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 			} else {
 				acid := sim.ACID(trk.ADSBCallsign)
 				ep.handoffTrack(ctx, acid, fields[0])
+				status.bigOutput = fmt.Sprintf("ACCEPT\nINITIATE HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
 	}

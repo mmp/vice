@@ -12,10 +12,12 @@ import (
 	_ "embed"
 	"flag"
 	"fmt"
+	"net"
 	_ "net/http/pprof"
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"time"
 
@@ -45,7 +47,7 @@ var (
 	lintScenarios     = flag.Bool("lint", false, "check the validity of the built-in scenarios")
 	runServer         = flag.Bool("runserver", false, "run vice scenario server")
 	serverPort        = flag.Int("port", server.ViceServerPort, "port to listen on when running server")
-	serverAddress     = flag.String("server", server.ViceServerAddress+fmt.Sprintf(":%d", server.ViceServerPort), "IP address of vice multi-controller server")
+	serverAddress     = flag.String("server", net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort)), "IP address of vice multi-controller server")
 	scenarioFilename  = flag.String("scenario", "", "filename of JSON file with a scenario definition")
 	videoMapFilename  = flag.String("videomap", "", "filename of JSON file with video map definitions")
 	broadcastMessage  = flag.String("broadcast", "", "message to broadcast to all active clients on the server")
@@ -83,7 +85,7 @@ func main() {
 	defer profiler.Cleanup()
 
 	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
-		*serverAddress += fmt.Sprintf(":%d", server.ViceServerPort)
+		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))
 	}
 
 	if *lintScenarios {

@@ -118,8 +118,9 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 
 	// Activate weather radar, events
 	p.prefSet = &PrefrenceSet{}
-	p.prefSet.Current = *p.initPrefsForLoadedSim()
 }
+
+
 
 func init() {
 	panes.RegisterUnmarshalPane("ERAMPane", func(d []byte) (panes.Pane, error) {
@@ -185,6 +186,7 @@ func (ep *ERAMPane) Hide() bool {
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.makeMaps(client, ss, lg)
+	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
@@ -288,7 +290,7 @@ func (inp *inputText) displayError(ps *Preferences, err error) {
 
 func (inp *inputText) displaySuccess(ps *Preferences, str string) {
 	sucMsg := inputText{}
-	sucMsg.Add(xMark, renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+	sucMsg.Add(checkMark+" ", renderer.RGB{0, 1, 0}, [2]float32{0, 0}) // TODO: Find actual red color
 	sucMsg.AddBasic(ps, str)
 	*inp = sucMsg
 
@@ -431,7 +433,12 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 	}
 
 	ps := ep.currentPrefs()
-	clear(ps.VideoMapVisible)
+	if ps.VideoMapVisible == nil {
+		ps.VideoMapVisible = make(map[string]interface{})
+	}
+	for k := range ps.VideoMapVisible {
+		delete(ps.VideoMapVisible, k)
+	}
 	for _, name := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(ep.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 {
 			ps.VideoMapVisible[ep.allVideoMaps[idx].Name] = nil
