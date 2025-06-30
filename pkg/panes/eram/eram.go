@@ -120,8 +120,6 @@ func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.E
 	p.prefSet = &PrefrenceSet{}
 }
 
-
-
 func init() {
 	panes.RegisterUnmarshalPane("ERAMPane", func(d []byte) (panes.Pane, error) {
 		var p ERAMPane
@@ -191,6 +189,10 @@ func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pla
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.makeMaps(client, ss, lg)
+	if ep.prefSet == nil {
+		ep.prefSet = &PrefrenceSet{}
+	}
+	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
 }
 
 // Custom text characters. Some of these are not for all fonts. Size 11 has everything.
@@ -424,7 +426,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 		return
 	}
 	usedIds := make(map[int]interface{})
-	
+
 	ep.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
 		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
