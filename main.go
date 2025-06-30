@@ -25,6 +25,8 @@ import (
 	"github.com/mmp/vice/pkg/client"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/panes"
+	"github.com/mmp/vice/pkg/panes/eram"
+	"github.com/mmp/vice/pkg/panes/stars"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
 	"github.com/mmp/vice/pkg/server"
@@ -183,6 +185,7 @@ func main() {
 		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
+					updateRadarPane(config.DisplayRoot, c.State.TRACON, render, plat, eventStream, lg)
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
 				uiResetControlClient(c, plat, lg)
@@ -302,6 +305,46 @@ func main() {
 				mgr.Disconnect()
 				break
 			}
+		}
+	}
+}
+
+func updateRadarPane(root *panes.DisplayNode, tracon string, r renderer.Renderer,
+	p platform.Platform, es *sim.EventStream, lg *log.Logger) {
+	if root == nil {
+		return
+	}
+
+	var radarPane panes.Pane
+	root.VisitPanes(func(p panes.Pane) {
+		switch p.(type) {
+		case *eram.ERAMPane, *stars.STARSPane:
+			if radarPane == nil {
+				radarPane = p
+			}
+		}
+	})
+
+	if radarPane == nil {
+		return
+	}
+
+	node := root.NodeForPane(radarPane)
+	if node == nil {
+		return
+	}
+
+	if tracon == "" {
+		if _, ok := radarPane.(*eram.ERAMPane); !ok {
+			np := eram.NewERAMPane()
+			node.Pane = np
+			np.Activate(r, p, es, lg)
+		}
+	} else {
+		if _, ok := radarPane.(*stars.STARSPane); !ok {
+			np := stars.NewSTARSPane()
+			node.Pane = np
+			np.Activate(r, p, es, lg)
 		}
 	}
 }

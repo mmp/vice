@@ -214,13 +214,18 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 
 func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 
-		if /*c.Sim.State.TRACON == ""*/ true { // to test ERAM
-			c.DisplayRoot = panes.NewDisplayPanes(eram.NewERAMPane(), panes.NewMessagesPane(),
+	tracon := ""
+	if c.Sim != nil {
+		tracon = c.Sim.State.TRACON
+	}
+
+	if tracon == "" {
+		c.DisplayRoot = panes.NewDisplayPanes(eram.NewERAMPane(), panes.NewMessagesPane(),
 			panes.NewFlightStripPane())
-		} else {
-			c.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
+	} else {
+		c.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
 			panes.NewFlightStripPane())
-		}
-	
+	}
+
 	panes.Activate(c.DisplayRoot, r, p, eventStream, lg)
 }
