@@ -140,7 +140,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.LDBSize = 1
 	prefs.OutageSize = 1
 
-	prefs.VideoMapVisible = make(map[int]interface{})
+	prefs.VideoMapVisible = make(map[string]interface{})
 
 	return &prefs
 }
