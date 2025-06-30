@@ -189,6 +189,10 @@ func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pla
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.makeMaps(client, ss, lg)
+	if ep.prefSet == nil {
+		ep.prefSet = &PrefrenceSet{}
+	}
+	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
 }
 
 // Custom text characters. Some of these are not for all fonts. Size 11 has everything.
