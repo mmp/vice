@@ -597,7 +597,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 				buttonColor = eramGray // The black buttons turn gray when pushed
 			}
 		}
-		
+
 		if _, ok := toolbarDrawState.buttonPositions[cleanButtonName(text)]; !ok {
 			toolbarDrawState.buttonPositions[cleanButtonName(text)] = [2]float32{p0[0], ctx.PaneExtent.Height() - p0[1]}
 		}

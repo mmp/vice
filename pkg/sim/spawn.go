@@ -1114,8 +1114,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	if err != nil {
 		return nil, err
 	}
-	assignedAlt := int(arr.AssignedAltitude)
-	if arr.AssignedAltitude == 0 {
+	var assigned int
+	if s.State.TRACON == "" && arr.AssignedAltitude == 0 {
 		// Get the altitude from the route and waypoints if possible
 		wps := arr.Waypoints
 		lowestAlt := gomath.MaxInt
@@ -1128,7 +1128,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 			}
 		}
 		if lowestAlt != gomath.MaxInt {
-			assignedAlt = lowestAlt
+			assigned = lowestAlt
 		} else {
 			fmt.Println("Warning: no altitude restriction found for arrival", ac.ADSBCallsign)
 		}
@@ -1155,7 +1155,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 
-		AssignedAltitude: assignedAlt,
+		AssignedAltitude: assigned,
 	}
 
 	// VFRs don't go around since they aren't talking to us.
@@ -1318,7 +1318,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		AircraftCount:    1,
 		AircraftType:     ac.FlightPlan.AircraftType,
 		CWTCategory:      av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
-		AssignedAltitude: ac.FlightPlan.Altitude,
+		AssignedAltitude: util.Select(s.State.TRACON == "", ac.FlightPlan.Altitude, 0),
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1408,7 +1408,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 
-		AssignedAltitude: int(of.AssignedAltitude),
+		AssignedAltitude: util.Select(s.State.TRACON == "", int(of.AssignedAltitude), 0),
 	}
 
 	// Like departures, these are already associated
