@@ -266,17 +266,29 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
-		Waypoints:      util.DuplicateSlice(wp),
 		FixAssignments: make(map[string]NavFixAssignment),
 		Rand:           rand.Make(),
 	}
 
-	nav.Waypoints = av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
+	// Copy the provided waypoints so that any local modifications we make don't pollute the
+	// waypoints stored for the scenario. Try to size the allocation so that reallocation
+	// isn't necessary: for IFR we just have the destination airport to add but for VFR we may
+	// need a number of extra ones to join the pattern and land.
+	nav.Waypoints = make([]av.Waypoint, len(wp)+util.Select(fp.Rules == av.FlightRulesIFR, 1, 12))
+	copy(nav.Waypoints, wp)
+
+	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, wind, lg)
 
-	if fp.Rules == av.FlightRulesIFR && slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land }) {
-		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
-			slog.Any("flightplan", fp))
+	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land })
+	if landIdx != -1 {
+		if fp.Rules == av.FlightRulesIFR {
+			lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
+				slog.Any("flightplan", fp))
+		} else {
+			nav.Waypoints = av.AppendVFRLanding(nav.Waypoints[:landIdx+1], nav.Perf, fp.ArrivalAirport,
+				wind, nmPerLongitude, magneticVariation, lg)
+		}
 	}
 
 	nav.FlightState = FlightState{

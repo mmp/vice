@@ -1446,7 +1446,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		mid = math.NM2LL(midnm, s.State.NmPerLongitude)
 	}
 
-	var wps []av.Waypoint
+	// This should be sufficient capacity to avoid reallocations / recopying in the following.
+	wps := make([]av.Waypoint, 0, 20)
+
 	wps = append(wps, av.Waypoint{Fix: "_dep_threshold", Location: rwy.Threshold})
 	opp := math.Offset2LL(rwy.Threshold, rwy.Heading, 1 /* nm */, s.State.NmPerLongitude,
 		s.State.MagneticVariation)
