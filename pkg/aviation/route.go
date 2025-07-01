@@ -603,11 +603,11 @@ func AppendVFRLanding(wps []Waypoint, perf AircraftPerformance, airport string, 
 		wps = append(wps, wp)
 	}
 
-	if headingDiff <= 90 {
+	if headingDiff <= 60 {
 		// Aircraft is aligned with runway - create straight-in approach
 
 		// Waypoint 1 mile out at 300' AGL on extended centerline
-		addpt("lineup", -2, 0, 300, true, true)
+		addpt("lineup", -2, 0, 300, false, true)
 		addpt("threshold", -1, 0, 0, true, true)
 		addpt("end", 1, 0, 0, true, true)
 	} else {
