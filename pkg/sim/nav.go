@@ -1392,7 +1392,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 	}
 
 	getRestriction := func(i int) *av.AltitudeRestriction {
-		wp := nav.Waypoints[i]
+		wp := &nav.Waypoints[i]
 		// Return any controller-assigned constraint in preference to a
 		// charted one.
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
@@ -1746,7 +1746,8 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32
 	// Skip all this work in the (common) case that it's unnecessary.
 	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {
 		var eta float32
-		for i, wp := range nav.Waypoints {
+		for i := range nav.Waypoints {
+			wp := &nav.Waypoints[i]
 			if i == 0 {
 				eta = float32(wp.ETA(nav.FlightState.Position, nav.FlightState.GS,
 					nav.FlightState.NmPerLongitude).Seconds())
@@ -1844,7 +1845,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 
 	passedWaypoint := false
 	if wp.FlyOver {
-		dist := math.NMDistance2LL(nav.FlightState.Position, wp.Location)
+		dist := math.NMDistance2LLFast(nav.FlightState.Position, wp.Location, nav.FlightState.NmPerLongitude)
 		eta := dist / nav.FlightState.GS * 3600 // in seconds
 		passedWaypoint = eta < 2
 	} else {
