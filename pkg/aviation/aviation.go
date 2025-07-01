@@ -571,7 +571,7 @@ func DensityRatioAtAltitude(alt float32) float32 {
 	const R = 8.314463    // universal gas constant J/(mol K)
 	const T_b = 288.15    // reference temperature at sea level, degrees K
 
-	return math.Exp(-g0 * M_air * altm / (R * T_b))
+	return math.FastExp(-g0 * M_air * altm / (R * T_b))
 }
 
 func IASToTAS(ias, altitude float32) float32 {
@@ -721,6 +721,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				"must provide at least two \"waypoints\" for arrival " +
 					"(even if \"runway_waypoints\" are provided)",
 			)
+		}
+		if ar.SpawnWaypoint != "" {
+			e.ErrorString("\"spawn\" cannot be specified if \"waypoints\" are provided")
+			return
 		}
 
 		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)

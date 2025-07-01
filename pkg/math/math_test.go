@@ -5,6 +5,7 @@
 package math
 
 import (
+	gomath "math"
 	"testing"
 
 	"github.com/mmp/vice/pkg/rand"
@@ -367,6 +368,14 @@ func TestLCM(t *testing.T) {
 		if test.result%test.a != 0 || test.result%test.b != 0 {
 			t.Errorf("bogus test case for (%d,%d): expected result %d is not a valid multiple",
 				test.a, test.b, test.result)
+		}
+	}
+}
+
+func TestSignBit(t *testing.T) {
+	for _, v := range []float32{-1, 0, -0, 1, 55, -125.2} {
+		if SignBit(v) != gomath.Signbit(float64(v)) {
+			t.Errorf("%f: got %v for sign bit; expected %v", v, SignBit(v), gomath.Signbit(float64(v)))
 		}
 	}
 }

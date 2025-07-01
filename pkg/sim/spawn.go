@@ -1487,7 +1487,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		mid = math.NM2LL(midnm, s.State.NmPerLongitude)
 	}
 
-	var wps []av.Waypoint
+	// This should be sufficient capacity to avoid reallocations / recopying in the following.
+	wps := make([]av.Waypoint, 0, 20)
+
 	wps = append(wps, av.Waypoint{Fix: "_dep_threshold", Location: rwy.Threshold})
 	opp := math.Offset2LL(rwy.Threshold, rwy.Heading, 1 /* nm */, s.State.NmPerLongitude,
 		s.State.MagneticVariation)
@@ -1495,7 +1497,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	rg := av.MakeRouteGenerator(rwy.Threshold, opp, s.State.NmPerLongitude)
 	wp0 := rg.Waypoint("_dep_climb", 3, 0)
-	wp0.FlyOver = true
 	wps = append(wps, wp0)
 
 	// Fly a downwind if needed
@@ -1602,8 +1603,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		}
 	}
 
-	s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",
-		ac.ADSBCallsign, depart, arrive)
+	//s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",		ac.ADSBCallsign, depart, arrive)
+
 	return nil, "", ErrVFRSimTookTooLong
 }
 

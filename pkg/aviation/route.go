@@ -493,7 +493,7 @@ func (wa WaypointArray) checkDescending(e *util.ErrorLogger) {
 }
 
 func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
-	magneticVariation float32, airport string, wind WindModel, lg *log.Logger) WaypointArray {
+	magneticVariation float32, airport string, wind WindModel, lg *log.Logger) {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := r.Float32(), r.Float32()
 	ralt := r.Float32()
@@ -513,7 +513,7 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 		return v
 	}
 
-	for i := 0; i < len(w); i++ { // NOTE: written this way since we append to w in the following
+	for i := range w {
 		wp := &w[i]
 		if wp.Radius > 0 {
 			// Work in nm coordinates
@@ -524,7 +524,7 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 			const Pi = 3.1415926535
 			t := 2 * Pi * rtheta
 
-			pp := math.Add2f(p, math.Scale2f([2]float32{math.Sin(t), math.Cos(t)}, r))
+			pp := math.Add2f(p, math.Scale2f(math.SinCos(t), r))
 			wp.Location = math.NM2LL(pp, nmPerLongitude)
 			wp.Radius = 0 // clean up
 
@@ -561,32 +561,28 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 				ralt = jitter(ralt)
 			}
 		}
-		if wp.Land {
-			land := constructVFRLanding(*wp, perf, airport, wind, nmPerLongitude, magneticVariation, lg)
-			wp.Land = false
-			wp.Delete = false // overflights have this added to their last waypoint automatically
-			w = w[:i+1]
-			w = append(w, land...)
-		}
 	}
-
-	return w
 }
 
-func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, wind WindModel, nmPerLongitude float32,
+// Takes waypoints up to the one with the Land specifier. Rewrite that one and then append the landing route.
+func AppendVFRLanding(wps []Waypoint, perf AircraftPerformance, airport string, wind WindModel, nmPerLongitude float32,
 	magneticVariation float32, lg *log.Logger) []Waypoint {
+	wp := &wps[len(wps)-1]
+	wp.Land = false
+	wp.Delete = false
+
 	ap, ok := DB.Airports[airport]
 	if !ok {
 		lg.Errorf("%s: couldn't find arrival airport", airport)
 		wp.Delete = true
-		return []Waypoint{wp} // best we can do
+		return wps // best we can do
 	}
 
 	rwy, opp := ap.SelectBestRunway(wind, magneticVariation)
 	if rwy == nil || opp == nil {
 		lg.Error("couldn't find a runway to land on", slog.String("airport", airport), slog.Any("runways", ap.Runways))
 		wp.Delete = true
-		return []Waypoint{wp} // best we can do
+		return wps // best we can do
 	}
 
 	rg := MakeRouteGenerator(rwy.Threshold, opp.Threshold, nmPerLongitude)
@@ -597,7 +593,6 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 	// Check if aircraft is aligned with runway (within +/- 90 degrees)
 	headingDiff := math.HeadingDifference(aircraftHeading, rwy.Heading)
 
-	var wps []Waypoint
 	addpt := func(n string, dx, dy, dalt float32, fo bool, slow bool) {
 		wp := rg.Waypoint("_"+n, dx, dy)
 		alt := float32(ap.Elevation) + dalt
@@ -608,11 +603,11 @@ func constructVFRLanding(wp Waypoint, perf AircraftPerformance, airport string, 
 		wps = append(wps, wp)
 	}
 
-	if headingDiff <= 90 {
+	if headingDiff <= 60 {
 		// Aircraft is aligned with runway - create straight-in approach
 
 		// Waypoint 1 mile out at 300' AGL on extended centerline
-		addpt("lineup", -2, 0, 300, true, true)
+		addpt("lineup", -2, 0, 300, false, true)
 		addpt("threshold", -1, 0, 0, true, true)
 		addpt("end", 1, 0, 0, true, true)
 	} else {

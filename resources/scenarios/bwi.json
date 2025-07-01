@@ -1400,7 +1400,6 @@
       },
 	  {
         "waypoints": "LAFLN BILIT/a11000/ho DEALE/a10000/s280",
-		"spawn": "LAFLN",
 		"runway_waypoints": {
           "KDCA": {
             "1": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000- HITEK/a7000/delete",
@@ -2007,15 +2006,8 @@
   "CLIPR3": {
     "arrivals": [
       {
-        "waypoints": "NUGGY TROYZ BELAY TRISH CLIPR/a12000/ho BAL/a10000/s250 EYESS",
-		"runway_waypoints": {
-          "KDCA": {
-            "1": "EYESS FELTY HITEK/a6000 CAVDI/delete",
-            "19": "EYESS EDDWD MEGGS/a6000 NAYES/delete"
-          }
-        },
         "star": "CLIPR3",
-		"spawn": "NUGGY",
+	"spawn": "NUGGY",
         "initial_controller": "NY_A1_CTR",
         "initial_altitude": 15000,
         "initial_speed": 280,
