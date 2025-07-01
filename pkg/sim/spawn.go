@@ -1456,7 +1456,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	rg := av.MakeRouteGenerator(rwy.Threshold, opp, s.State.NmPerLongitude)
 	wp0 := rg.Waypoint("_dep_climb", 3, 0)
-	wp0.FlyOver = true
 	wps = append(wps, wp0)
 
 	// Fly a downwind if needed
