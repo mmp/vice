@@ -461,6 +461,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			for _, ar := range flow.Arrivals {
 				addController(ar.InitialController)
 				addControllersFromWaypoints(ar.Waypoints)
+				for _, rwys := range ar.RunwayWaypoints {
+					for _, rwyWps := range rwys {
+						addControllersFromWaypoints(rwyWps)
+					}
+				}
 			}
 			for _, of := range flow.Overflights {
 				addController(of.InitialController)
@@ -933,6 +938,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		for i := range flow.Arrivals {
 			rewrite(&flow.Arrivals[i].InitialController)
 			rewriteWaypoints(flow.Arrivals[i].Waypoints)
+			for _, rwyWps := range flow.Arrivals[i].RunwayWaypoints {
+				for _, wps := range rwyWps {
+					rewriteWaypoints(wps)
+				}
+			}
 		}
 		for i := range flow.Overflights {
 			rewrite(&flow.Overflights[i].InitialController)
