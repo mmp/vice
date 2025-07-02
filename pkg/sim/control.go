@@ -912,7 +912,7 @@ func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 }
 
 func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
-	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
+	return s.dispatchFlightPlanCommand(tcp, acid,
 		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
 				return av.ErrNotPointedOutToMe
@@ -920,7 +920,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -937,6 +937,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 			}
 
 			delete(s.PointOuts, acid)
+			return nil
 		})
 }
 
