@@ -13,6 +13,7 @@ import (
 	gomath "math"
 	"net"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"runtime"
 	"strconv"
@@ -676,12 +677,20 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 // Status / statistics via HTTP...
 
 func (sm *SimManager) launchHTTPServer() int {
-	handler := http.NewServeMux()
-	handler.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		sm.statsHandler(w, r)
 		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
-	handler.HandleFunc("/speech", sm.handleSpeechWSConnection)
+
+	mux.HandleFunc("/speech", sm.handleSpeechWSConnection)
+
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	var listener net.Listener
 	var err error
@@ -699,7 +708,7 @@ func (sm *SimManager) launchHTTPServer() int {
 		sm.lg.Warnf("Unable to start HTTP server")
 		return 0
 	} else {
-		go http.Serve(listener, handler)
+		go http.Serve(listener, mux)
 
 		sm.httpPort = port
 		return port

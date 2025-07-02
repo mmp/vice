@@ -13,7 +13,6 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	_ "net/http/pprof"
 	"os"
 	"runtime"
 	"runtime/debug"
