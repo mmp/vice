@@ -394,9 +394,6 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 			// These can only be set for non-active flight plans: 5-171
 			return ErrTrackIsActive
 		}
-		if fp.HandoffTrackController != "" {
-			return ErrTrackIsBeingHandedOff
-		}
 
 		if spec.GlobalLeaderLineDirection.IsSet {
 			s.eventStream.Post(Event{
