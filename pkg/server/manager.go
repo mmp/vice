@@ -102,7 +102,8 @@ type NewSimConfiguration struct {
 	RequirePassword bool
 	Password        string
 
-	LiveWeather bool
+	LiveWeather                 bool
+	EnforceUniqueCallsignSuffix bool
 
 	AllowInstructorRPO  bool
 	Instructor          bool
@@ -253,32 +254,33 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		"@"+config.NewSimName+": "+config.ScenarioName)
 
 	nsc := sim.NewSimConfiguration{
-		TFRs:                    config.TFRs,
-		LiveWeather:             config.LiveWeather,
-		TRACON:                  config.TRACONName,
-		LaunchConfig:            config.Scenario.LaunchConfig,
-		STARSFacilityAdaptation: deep.MustCopy(sg.STARSFacilityAdaptation),
-		IsLocal:                 config.IsLocal,
-		DepartureRunways:        sc.DepartureRunways,
-		ArrivalRunways:          sc.ArrivalRunways,
-		VFRReportingPoints:      sg.VFRReportingPoints,
-		ReportingPoints:         sg.ReportingPoints,
-		Description:             description,
-		MagneticVariation:       sg.MagneticVariation,
-		NmPerLongitude:          sg.NmPerLongitude,
-		Wind:                    sc.Wind,
-		Airports:                sg.Airports,
-		Fixes:                   sg.Fixes,
-		PrimaryAirport:          sg.PrimaryAirport,
-		Center:                  util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
-		Range:                   util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
-		DefaultMaps:             sc.DefaultMaps,
-		InboundFlows:            sg.InboundFlows,
-		Airspace:                sg.Airspace,
-		ControllerAirspace:      sc.Airspace,
-		ControlPositions:        sg.ControlPositions,
-		VirtualControllers:      sc.VirtualControllers,
-		SignOnPositions:         make(map[string]*av.Controller),
+		TFRs:                        config.TFRs,
+		LiveWeather:                 config.LiveWeather,
+		TRACON:                      config.TRACONName,
+		LaunchConfig:                config.Scenario.LaunchConfig,
+		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),
+		IsLocal:                     config.IsLocal,
+		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+		DepartureRunways:            sc.DepartureRunways,
+		ArrivalRunways:              sc.ArrivalRunways,
+		VFRReportingPoints:          sg.VFRReportingPoints,
+		ReportingPoints:             sg.ReportingPoints,
+		Description:                 description,
+		MagneticVariation:           sg.MagneticVariation,
+		NmPerLongitude:              sg.NmPerLongitude,
+		Wind:                        sc.Wind,
+		Airports:                    sg.Airports,
+		Fixes:                       sg.Fixes,
+		PrimaryAirport:              sg.PrimaryAirport,
+		Center:                      util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
+		Range:                       util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
+		DefaultMaps:                 sc.DefaultMaps,
+		InboundFlows:                sg.InboundFlows,
+		Airspace:                    sg.Airspace,
+		ControllerAirspace:          sc.Airspace,
+		ControlPositions:            sg.ControlPositions,
+		VirtualControllers:          sc.VirtualControllers,
+		SignOnPositions:             make(map[string]*av.Controller),
 	}
 
 	if !config.IsLocal {

@@ -62,6 +62,8 @@ type Sim struct {
 
 	ReportingPoints []av.ReportingPoint
 
+	EnforceUniqueCallsignSuffix bool
+
 	FutureControllerContacts []FutureControllerContact
 	FutureOnCourse           []FutureOnCourse
 	FutureSquawkChanges      []FutureChangeSquawk
@@ -180,6 +182,8 @@ type NewSimConfiguration struct {
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
+	EnforceUniqueCallsignSuffix bool
+
 	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
 	NmPerLongitude    float32
@@ -210,6 +214,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		lg:          lg,
 
 		ReportingPoints: config.ReportingPoints,
+
+		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
 
 		lastUpdateTime: time.Now(),
 

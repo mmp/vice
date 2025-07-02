@@ -382,6 +382,11 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				c.NewSimConfiguration.DisableTextToSpeech = config.DisableTextToSpeech
 			}
 
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Checkbox("Ensure last two digits/characters in callsigns are unique",
+				&c.NewSimConfiguration.EnforceUniqueCallsignSuffix)
+
 			validAirport := c.Scenario.PrimaryAirport != "KAAC"
 
 			imgui.TableNextRow()

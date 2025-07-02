@@ -203,7 +203,8 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"PSA5342": nil,
 }
 
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, enforceUniqueSuffix bool,
+	currentCallsigns []ADSBCallsign, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -230,7 +231,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign fu
 
 	// random callsign
 	callsign = strings.ToUpper(dbAirline.ICAO)
-	for {
+	for range 100 {
 		format := "####"
 		if len(dbAirline.Callsign.CallsignFormats) > 0 {
 			f, ok := rand.SampleWeighted(r, dbAirline.Callsign.CallsignFormats,
@@ -264,17 +265,24 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign fu
 				break loop
 			}
 		}
-		if !checkCallsign(callsign + id) { // duplicate
-			id = ""
-			continue
-		} else if _, ok := badCallsigns[callsign+id]; ok {
+		if _, ok := badCallsigns[callsign+id]; ok {
 			id = ""
 			continue // nope
-		} else {
-			callsign += id
-			return
+		} else if slices.Contains(currentCallsigns, ADSBCallsign(callsign+id)) {
+			id = ""
+			continue
+		} else if enforceUniqueSuffix && slices.ContainsFunc(currentCallsigns, func(cs ADSBCallsign) bool {
+			suffix := (callsign + id)[len(callsign+id)-2:]
+			return strings.HasSuffix(string(cs), suffix)
+		}) {
+			id = ""
+			continue
 		}
+		callsign += id
+		return
 	}
+
+	return "", ""
 }
 
 type Runway struct {
