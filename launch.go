@@ -304,17 +304,25 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			}
 
 			if len(c.Scenario.ArrivalRunways) > 0 {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text("Landing:")
-				imgui.TableNextColumn()
-
 				var a []string
 				for _, rwy := range c.Scenario.ArrivalRunways {
 					a = append(a, rwy.Airport+"/"+rwy.Runway)
 				}
 				sort.Strings(a)
-				imgui.Text(strings.Join(a, ", "))
+				base := "Landing: "
+				for len(a) > 0 {
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					const max = 5 // per line
+					if len(a) > max {
+						imgui.Text(base + strings.Join(a[:max], ", "))
+						base = "    "
+						a = a[max:]
+					} else {
+						imgui.Text(base + strings.Join(a, ", "))
+						break
+					}
+				}
 			}
 
 			imgui.TableNextRow()
@@ -384,7 +392,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Checkbox("Ensure last two digits/characters in callsigns are unique",
+			imgui.Checkbox("Ensure last two characters in callsigns are unique",
 				&c.NewSimConfiguration.EnforceUniqueCallsignSuffix)
 
 			validAirport := c.Scenario.PrimaryAirport != "KAAC"
@@ -654,14 +662,14 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	imgui.Text("Departures")
 
 	sumRates := lc.TotalDepartureRate()
-	airportRunwayNumCategories := make(map[string]int) // key is e.g. JFK/22R, then count of active categories
+	airportDepartures := make(map[string]int) // key is e.g. KJFK, then count of active runways cross categories.
 	for ap, runwayRates := range lc.DepartureRates {
-		for rwy, categories := range runwayRates {
-			airportRunwayNumCategories[ap+"/"+rwy] = airportRunwayNumCategories[ap+"/"+rwy] + len(categories)
+		for _, categories := range runwayRates {
+			airportDepartures[ap] = airportDepartures[ap] + len(categories)
 		}
 	}
 	maxDepartureCategories := 0
-	for _, n := range airportRunwayNumCategories {
+	for _, n := range airportDepartures {
 		maxDepartureCategories = max(n, maxDepartureCategories)
 	}
 
@@ -678,39 +686,32 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	}
 	adrColumns := min(3, maxDepartureCategories)
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-	if imgui.BeginTableV("departureRunways", int32(2+2*adrColumns), flags, imgui.Vec2{tableScale * float32(200+200*adrColumns), 0}, 0.) {
+	if imgui.BeginTableV("departureRunways", int32(1+3*adrColumns), flags, imgui.Vec2{tableScale * float32(200+250*adrColumns), 0}, 0.) {
 		imgui.TableSetupColumn("Airport")
-		imgui.TableSetupColumn("Runway")
 		for range adrColumns {
+			imgui.TableSetupColumn("Runway")
 			imgui.TableSetupColumn("Category")
 			imgui.TableSetupColumn("ADR")
 		}
 		imgui.TableHeadersRow()
 
 		for _, airport := range util.SortedMapKeys(lc.DepartureRates) {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(airport)
+
 			imgui.PushIDStr(airport)
+			adrColumn := 0
 			for _, runway := range util.SortedMapKeys(lc.DepartureRates[airport]) {
 				imgui.PushIDStr(runway)
-				adrColumn := 0
-
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text(airport)
-				imgui.TableNextColumn()
-				rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
-				imgui.Text(rshort)
-				imgui.TableNextColumn()
 
 				for _, category := range util.SortedMapKeys(lc.DepartureRates[airport][runway]) {
-					imgui.PushIDStr(category)
+					imgui.TableNextColumn()
+					rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
+					imgui.Text(rshort)
+					imgui.TableNextColumn()
 
-					if adrColumn > 0 && adrColumn%adrColumns == 0 {
-						// Overflow
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						imgui.TableNextColumn()
-						imgui.TableNextColumn()
-					}
+					imgui.PushIDStr(category)
 
 					if category == "" {
 						imgui.Text("(All)")
@@ -724,8 +725,14 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 						lc.DepartureRates[airport][runway][category] = float32(r) / lc.DepartureRateScale
 						changed = true
 					}
-					imgui.TableNextColumn()
+
 					adrColumn++
+
+					if adrColumn < airportDepartures[airport] && adrColumn%adrColumns == 0 {
+						// Overflow
+						imgui.TableNextRow()
+						imgui.TableNextColumn()
+					}
 
 					imgui.PopID()
 				}
