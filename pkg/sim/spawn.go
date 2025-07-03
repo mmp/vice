@@ -875,7 +875,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 
 			if dist, err := ac.Nav.distanceToEndOfApproach(); err == nil && dist < 2.0 {
 				// Hold departure; the arrival's too close
-				fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
+				//fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
 				return false
 			}
 		}
