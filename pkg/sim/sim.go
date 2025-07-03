@@ -36,8 +36,9 @@ type Sim struct {
 
 	Aircraft map[av.ADSBCallsign]*Aircraft
 
-	SignOnPositions  map[string]*av.Controller
-	humanControllers map[string]*humanController
+	SignOnPositions    map[string]*av.Controller
+	humanControllers   map[string]*humanController
+	virtualControllers []string
 
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
@@ -222,7 +223,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
 
-		Instructors: make(map[string]bool),
+		Instructors:        make(map[string]bool),
+		virtualControllers: config.VirtualControllers,
 
 		Rand: rand.Make(),
 	}
