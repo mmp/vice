@@ -27,3 +27,5 @@ vice.slog
 resources/speech/
 SDL2.dll
 __debug_*
+*.prof
+*.pprof
