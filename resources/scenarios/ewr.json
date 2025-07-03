@@ -28,6 +28,14 @@
         },
         "RZ9": {
           "cifp_id": "RZ29"
+        },
+        "S29": {
+          "full_name": "Stadium Visual Runway 29",
+          "runway": "29",
+          "type": "Visual",
+          "waypoints": [
+            "TEB/a3000 GIMEE/a2500 HILOK/a1500-2000 SLIMR/a1500-2000 COPKO/a700 CHUMR/a500"
+          ]
         }
       },
       "approach_regions": {
@@ -9679,6 +9687,7 @@
           "4P": {
             "primary": true,
             "arrivals": [
+              "FQM3",
               "PHLBO4",
               "WRI",
               "PHL"
@@ -9686,7 +9695,6 @@
           },
           "4A": {
             "arrivals": [
-              "FQM3",
               "FLOSI4"
             ],
             "backup": "4P"
