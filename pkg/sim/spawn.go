@@ -98,7 +98,7 @@ type LaunchConfig struct {
 	DepartureRateScale float32
 
 	VFRDepartureRateScale   float32
-	VFRAirports             map[string]*av.Airport
+	VFRAirportRates         map[string]int // name -> VFRRateSum()
 	VFFRequestRate          int32
 	HaveVFRReportingRegions bool
 
@@ -116,12 +116,16 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
-		VFRAirports:                 vfrAirports,
+		VFRAirportRates:             make(map[string]int),
 		VFFRequestRate:              10,
 		HaveVFRReportingRegions:     haveVFRReportingRegions,
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
+	}
+
+	for icao, ap := range vfrAirports {
+		lc.VFRAirportRates[icao] = ap.VFRRateSum()
 	}
 
 	// Walk the departure runways to create the map for departures.
@@ -239,8 +243,8 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 			s.DepartureState[ap][rwy].setIFRRate(s, r)
 		}
 
-		for name, ap := range lc.VFRAirports {
-			r := scaleRate(float32(ap.VFRRateSum()), lc.VFRDepartureRateScale)
+		for name, rate := range lc.VFRAirportRates {
+			r := scaleRate(float32(rate), lc.VFRDepartureRateScale)
 			rwy := s.State.VFRRunways[name]
 			s.DepartureState[name][rwy.Id].setVFRRate(s, r)
 		}

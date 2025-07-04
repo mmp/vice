@@ -752,13 +752,13 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 }
 
 func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
-	if len(lc.VFRAirports) == 0 {
+	if len(lc.VFRAirportRates) == 0 {
 		return
 	}
 
 	sumVFRRates := 0
-	for _, ap := range lc.VFRAirports {
-		r := float32(ap.VFRRateSum()) * lc.VFRDepartureRateScale
+	for _, rate := range lc.VFRAirportRates {
+		r := float32(rate) * lc.VFRDepartureRateScale
 		if r > 0 {
 			sumVFRRates += int(r)
 		}
@@ -979,7 +979,7 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 		}
 	}
 
-	for _, airport := range util.SortedMapKeys(config.VFRAirports) {
+	for _, airport := range util.SortedMapKeys(config.VFRAirportRates) {
 		rwy := client.State.VFRRunways[airport]
 		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{
 			LaunchAircraft: LaunchAircraft{Airport: airport},
@@ -1505,7 +1505,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
 				changed = drawDepartureUI(&lc.client.State.LaunchConfig, p)
 			}
-			if len(lc.client.State.LaunchConfig.VFRAirports) > 0 &&
+			if len(lc.client.State.LaunchConfig.VFRAirportRates) > 0 &&
 				imgui.CollapsingHeaderBoolPtr("VFR Departures", nil) {
 				changed = drawVFRDepartureUI(&lc.client.State.LaunchConfig, p) || changed
 			}
