@@ -128,8 +128,6 @@ type DepartureRunway struct {
 	Runway      string `json:"runway"`
 	Category    string `json:"category,omitempty"`
 	DefaultRate int    `json:"rate"`
-
-	ExitRoutes map[string]*av.ExitRoute // copied from airport's  departure_routes
 }
 
 type ArrivalRunway struct {

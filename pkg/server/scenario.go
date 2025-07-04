@@ -150,7 +150,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
-	for i, rwy := range s.DepartureRunways {
+	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
 
 		if airportExits[rwy.Airport] == nil {
@@ -163,7 +163,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
 			} else {
-				s.DepartureRunways[i].ExitRoutes = routes
 				for exit := range routes {
 					// It's fine if multiple active runways cover the exit.
 					airportExits[rwy.Airport][exit] = nil
@@ -242,7 +241,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			} else {
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
-				for fix, route := range rwy.ExitRoutes {
+				exitRoutes := ap.DepartureRoutes[rwy.Runway]
+				for fix, route := range exitRoutes {
 					if rwy.Category == "" || ap.ExitCategories[fix] == rwy.Category {
 						if activeAirportSIDs[rwy.Airport] == nil {
 							activeAirportSIDs[rwy.Airport] = make(map[string]interface{})

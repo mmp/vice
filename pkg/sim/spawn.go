@@ -1236,10 +1236,12 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 	rwy := &s.State.DepartureRunways[idx]
 
+	exitRoutes := ap.DepartureRoutes[rwy.Runway]
+
 	// Sample uniformly, minding the category, if specified
 	idx = rand.SampleFiltered(s.Rand, ap.Departures,
 		func(d av.Departure) bool {
-			_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+			_, ok := exitRoutes[d.Exit] // make sure the runway handles the exit
 			return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 		})
 	if idx == -1 {
@@ -1257,7 +1259,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
 
-	exitRoute := rwy.ExitRoutes[dep.Exit]
+	exitRoute := exitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
