@@ -231,6 +231,8 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 		ControllerToken: token,
 		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
 	}
+	result.PruneForClient()
+
 	return nil
 }
 
@@ -457,8 +459,19 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 		ControllerToken: token,
 		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
 	}
+	result.PruneForClient()
 
 	return nil
+}
+
+// PruneForClient tidies the NewSimResult, removing fields that are not used by client code
+// in order to reduce the amount of bandwidth used to send the NewSimResult to the client.
+func (r *NewSimResult) PruneForClient() {
+	r.SimState = deep.MustCopy(r.SimState)
+
+	for _, ap := range r.SimState.Airports {
+		ap.Departures = nil
+	}
 }
 
 type ConnectResult struct {
