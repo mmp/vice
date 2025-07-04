@@ -197,8 +197,8 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 		Color: color,
 	}
 
-	for name, ap := range ctx.Client.State.DepartureAirports {
-		if ap.VFRRateSum() > 0 {
+	for name := range ctx.Client.State.DepartureAirports {
+		if ap := ctx.Client.State.Airports[name]; ap.VFRRateSum() > 0 {
 			pll := av.DB.Airports[name].Location
 			pw := transforms.WindowFromLatLongP(pll)
 			ld.AddCircle(pw, 10, 32)

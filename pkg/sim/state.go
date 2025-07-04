@@ -40,8 +40,8 @@ type State struct {
 	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
 	Airports          map[string]*av.Airport
-	DepartureAirports map[string]*av.Airport
-	ArrivalAirports   map[string]*av.Airport
+	DepartureAirports map[string]interface{}
+	ArrivalAirports   map[string]interface{}
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 	ReleaseDepartures []ReleaseDeparture
@@ -227,13 +227,13 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		}
 	}
 
-	ss.DepartureAirports = make(map[string]*av.Airport)
+	ss.DepartureAirports = make(map[string]interface{})
 	for name := range ss.LaunchConfig.DepartureRates {
-		ss.DepartureAirports[name] = ss.Airports[name]
+		ss.DepartureAirports[name] = nil
 	}
 	for name, ap := range ss.Airports {
 		if ap.VFRRateSum() > 0 {
-			ss.DepartureAirports[name] = ap
+			ss.DepartureAirports[name] = nil
 
 			if rwy, _ := av.DB.Airports[name].SelectBestRunway(ss /* wind */, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
@@ -243,11 +243,11 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		}
 	}
 
-	ss.ArrivalAirports = make(map[string]*av.Airport)
+	ss.ArrivalAirports = make(map[string]interface{})
 	for _, airportRates := range ss.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
 			if name != "overflights" {
-				ss.ArrivalAirports[name] = ss.Airports[name]
+				ss.ArrivalAirports[name] = nil
 			}
 		}
 	}

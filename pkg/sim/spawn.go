@@ -423,7 +423,7 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 		s.NextInboundSpawn[group] = randomDelay(rateSum)
 	}
 
-	for name, ap := range s.State.DepartureAirports {
+	for name := range s.State.DepartureAirports {
 		s.DepartureState[name] = make(map[string]*RunwayLaunchState)
 
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
@@ -436,6 +436,7 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 			}
 		}
 
+		ap := s.State.Airports[name]
 		if vfrRate := float32(ap.VFRRateSum()); vfrRate > 0 {
 			rwy := s.State.VFRRunways[name]
 			state, ok := s.DepartureState[name][rwy.Id]
@@ -962,7 +963,7 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 	// near-impossible to find valid routes.
 	if depState.VFRAttempts < 400 ||
 		(depState.VFRSuccesses > 0 && depState.VFRAttempts/depState.VFRSuccesses < 200) {
-		ap := s.State.DepartureAirports[depart]
+		ap := s.State.Airports[depart]
 
 		// Sample among the randoms and the routes
 		rateSum := 0
@@ -989,7 +990,7 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
 				arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-					func(ap string) int { return s.State.DepartureAirports[ap].VFRRateSum() })
+					func(ap string) int { return s.State.Airports[ap].VFRRateSum() })
 				if !ok {
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
 					continue
@@ -1206,11 +1207,11 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	for range 50 {
 		// Sample destination airport: may be where we started from.
 		arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-			func(ap string) int { return s.State.DepartureAirports[ap].VFRRateSum() })
+			func(ap string) int { return s.State.Airports[ap].VFRRateSum() })
 		if !ok {
 			return nil, nil
 		}
-		if ap, ok := s.State.DepartureAirports[departureAirport]; !ok || ap.VFRRateSum() == 0 {
+		if ap, ok := s.State.Airports[departureAirport]; !ok || ap.VFRRateSum() == 0 {
 			// This shouldn't happen...
 			return nil, nil
 		} else {
