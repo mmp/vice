@@ -7,7 +7,6 @@ package util
 import (
 	"bufio"
 	"compress/flate"
-	"encoding/gob"
 	"errors"
 	"fmt"
 	"io"
@@ -19,6 +18,8 @@ import (
 	"time"
 
 	"github.com/mmp/vice/pkg/log"
+
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 var ErrRPCTimeout = errors.New("RPC call timed out")
@@ -26,47 +27,37 @@ var ErrRPCTimeout = errors.New("RPC call timed out")
 ///////////////////////////////////////////////////////////////////////////
 // RPC/Networking stuff
 
-// Straight out of net/rpc/server.go
-type gobServerCodec struct {
+type mpServerCodec struct {
 	rwc    io.ReadWriteCloser
-	dec    *gob.Decoder
-	enc    *gob.Encoder
+	dec    *msgpack.Decoder
+	enc    *msgpack.Encoder
 	encBuf *bufio.Writer
 	lg     *log.Logger
 	closed bool
 }
 
-func (c *gobServerCodec) ReadRequestHeader(r *rpc.Request) error {
+func (c *mpServerCodec) ReadRequestHeader(r *rpc.Request) error {
 	return c.dec.Decode(r)
 }
 
-func (c *gobServerCodec) ReadRequestBody(body any) error {
+func (c *mpServerCodec) ReadRequestBody(body any) error {
 	return c.dec.Decode(body)
 }
 
-func (c *gobServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
+func (c *mpServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
 	if err = c.enc.Encode(r); err != nil {
-		if c.encBuf.Flush() == nil {
-			// Gob couldn't encode the header. Should not happen, so if it does,
-			// shut down the connection to signal that the connection is broken.
-			c.lg.Errorf("rpc: gob error encoding response: %v", err)
-			c.Close()
-		}
+		c.Close()
 		return
 	}
 	if err = c.enc.Encode(body); err != nil {
-		if c.encBuf.Flush() == nil {
-			// Was a gob problem encoding the body but the header has been written.
-			// Shut down the connection to signal that the connection is broken.
-			c.lg.Errorf("rpc: gob error encoding body: %v", err)
-			c.Close()
-		}
+		c.lg.Errorf("rpc: error encoding body: %v", err)
+		c.Close()
 		return
 	}
 	return c.encBuf.Flush()
 }
 
-func (c *gobServerCodec) Close() error {
+func (c *mpServerCodec) Close() error {
 	if c.closed {
 		// Only call c.rwc.Close once; otherwise the semantics are undefined.
 		return nil
@@ -75,12 +66,12 @@ func (c *gobServerCodec) Close() error {
 	return c.rwc.Close()
 }
 
-func MakeGOBServerCodec(conn io.ReadWriteCloser, lg *log.Logger) rpc.ServerCodec {
+func MakeMessagepackServerCodec(conn io.ReadWriteCloser, lg *log.Logger) rpc.ServerCodec {
 	buf := bufio.NewWriter(conn)
-	return &gobServerCodec{
+	return &mpServerCodec{
 		rwc:    conn,
-		dec:    gob.NewDecoder(conn),
-		enc:    gob.NewEncoder(buf),
+		dec:    msgpack.NewDecoder(conn),
+		enc:    msgpack.NewEncoder(buf),
 		lg:     lg,
 		encBuf: buf,
 	}
@@ -114,15 +105,14 @@ func (c *LoggingServerCodec) WriteResponse(r *rpc.Response, body any) error {
 	return err
 }
 
-// This from net/rpc/client.go...
-type gobClientCodec struct {
+type mpClientCodec struct {
 	rwc    io.ReadWriteCloser
-	dec    *gob.Decoder
-	enc    *gob.Encoder
+	dec    *msgpack.Decoder
+	enc    *msgpack.Encoder
 	encBuf *bufio.Writer
 }
 
-func (c *gobClientCodec) WriteRequest(r *rpc.Request, body any) (err error) {
+func (c *mpClientCodec) WriteRequest(r *rpc.Request, body any) (err error) {
 	if err = c.enc.Encode(r); err != nil {
 		return
 	}
@@ -132,21 +122,26 @@ func (c *gobClientCodec) WriteRequest(r *rpc.Request, body any) (err error) {
 	return c.encBuf.Flush()
 }
 
-func (c *gobClientCodec) ReadResponseHeader(r *rpc.Response) error {
+func (c *mpClientCodec) ReadResponseHeader(r *rpc.Response) error {
 	return c.dec.Decode(r)
 }
 
-func (c *gobClientCodec) ReadResponseBody(body any) error {
+func (c *mpClientCodec) ReadResponseBody(body any) error {
 	return c.dec.Decode(body)
 }
 
-func (c *gobClientCodec) Close() error {
+func (c *mpClientCodec) Close() error {
 	return c.rwc.Close()
 }
 
-func MakeGOBClientCodec(conn io.ReadWriteCloser) rpc.ClientCodec {
+func MakeMessagepackClientCodec(conn io.ReadWriteCloser) rpc.ClientCodec {
 	encBuf := bufio.NewWriter(conn)
-	return &gobClientCodec{conn, gob.NewDecoder(conn), gob.NewEncoder(encBuf), encBuf}
+	return &mpClientCodec{
+		rwc:    conn,
+		dec:    msgpack.NewDecoder(conn),
+		enc:    msgpack.NewEncoder(encBuf),
+		encBuf: encBuf,
+	}
 }
 
 type LoggingClientCodec struct {

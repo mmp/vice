@@ -47,7 +47,7 @@ import (
 // 37: rework STARS flight plan (et al)
 // 38: rework STARS flight plan (et al) ongoing
 // 39: speech v0.1
-// 40: clean up what's transmitted server->client at initial connect/spawn
+// 40: clean up what's transmitted server->client at initial connect/spawn, gob->msgpack
 const ViceSerializeVersion = 40
 
 const ViceServerAddress = "vice.pharr.org"
@@ -132,7 +132,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 			} else if cc, err := util.MakeCompressedConn(util.MakeLoggingConn(conn, lg)); err != nil {
 				lg.Errorf("MakeCompressedConn: %v", err)
 			} else {
-				codec := util.MakeGOBServerCodec(cc, lg)
+				codec := util.MakeMessagepackServerCodec(cc, lg)
 				codec = util.MakeLoggingServerCodec(conn.RemoteAddr().String(), codec, lg)
 				go server.ServeCodec(codec)
 			}

@@ -575,7 +575,7 @@ func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
 		return nil, err
 	}
 
-	codec := util.MakeGOBClientCodec(cc)
+	codec := util.MakeMessagepackClientCodec(cc)
 	codec = util.MakeLoggingClientCodec(hostname, codec, lg)
 	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }
