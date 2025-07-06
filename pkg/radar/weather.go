@@ -7,6 +7,7 @@ import (
 	"image/draw"
 	"image/png"
 	"log/slog"
+	"math/bits"
 	"net/http"
 	"net/url"
 	"sort"
@@ -347,6 +348,23 @@ var wxStippleDense [32]uint32 = [32]uint32{
 	0b00000000001000000000000000100000,
 	0b00000000001000000000000000100000,
 	0b11000000000000001100000000000000,
+}
+
+// The above stipple masks are ordered so that they match the orientation
+// of how we want them drawn on the screen, though that doesn't seem to be
+// how glPolygonStipple expects them, which is with the bits in each byte
+// reversed. I think that we should just be able to call
+// gl.PixelStorei(gl.PACK_LSB_FIRST, gl.FALSE) and provide them as above,
+// though that doesn't seem to work.  Hence, we just reverse the bytes by
+// hand.
+func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
+	var result [32]uint32
+	for i, line := range stipple {
+		a, b, c, d := uint8(line>>24), uint8(line>>16), uint8(line>>8), uint8(line)
+		a, b, c, d = bits.Reverse8(a), bits.Reverse8(b), bits.Reverse8(c), bits.Reverse8(d)
+		result[i] = uint32(a)<<24 + uint32(b)<<16 + uint32(c)<<8 + uint32(d)
+	}
+	return result
 }
 
 // A single scanline of this color map, converted to RGB bytes:

@@ -2,7 +2,6 @@ package radar
 
 import (
 	"fmt"
-	"math/bits"
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -105,23 +104,6 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 }
 
 // Other
-
-// The above stipple masks are ordered so that they match the orientation
-// of how we want them drawn on the screen, though that doesn't seem to be
-// how glPolygonStipple expects them, which is with the bits in each byte
-// reversed. I think that we should just be able to call
-// gl.PixelStorei(gl.PACK_LSB_FIRST, gl.FALSE) and provide them as above,
-// though that doesn't seem to work.  Hence, we just reverse the bytes by
-// hand.
-func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
-	var result [32]uint32
-	for i, line := range stipple {
-		a, b, c, d := uint8(line>>24), uint8(line>>16), uint8(line>>8), uint8(line)
-		a, b, c, d = bits.Reverse8(a), bits.Reverse8(b), bits.Reverse8(c), bits.Reverse8(d)
-		result[i] = uint32(a)<<24 + uint32(b)<<16 + uint32(c)<<8 + uint32(d)
-	}
-	return result
-}
 
 // pt should return nm-based coordinates
 func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
