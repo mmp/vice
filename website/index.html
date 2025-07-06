@@ -8058,6 +8058,17 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>If "true", causes the legacy STARS font to be used in the STARS display.</td>
               </tr>
               <tr>
+                <td>"untracked_position_symbol_overrides"</td>
+                <td>Object</td>
+                <td>Allows customizing the position symbol displayed for unassociated tracks based on their transponder beacon codes. The object contains:
+                  <ul>
+                    <li>"beacon_codes": a string containing comma-separated beacon codes and ranges (e.g., "1200,1300-1377"). Ranges are inclusive.</li>
+                    <li>"symbol": a single character to display as the position symbol for aircraft with matching beacon codes (e.g., "=").</li>
+                  </ul>
+                  If this is not set, untracked aircraft display standard symbols: "*" for Mode C, "+" for Mode A, or a diamond for standby.
+                </td>
+              </tr>
+              <tr>
                 <td>"vfr_list"</td>
                 <td>Object</td>
                 <td>Configures the VFR list display format. The following property may be specified:

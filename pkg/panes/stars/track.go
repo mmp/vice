@@ -595,9 +595,18 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
-		positionSymbol := "*"
+		positionSymbol := ""
 
 		if trk.IsUnassociated() {
+			// See if a position symbol override applies. Note that this may be overridden in code following shortly.
+			fa := ctx.Client.State.STARSFacilityAdaptation
+			for _, r := range fa.UntrackedPositionSymbolOverrides.CodeRanges {
+				if trk.Squawk >= r[0] && trk.Squawk <= r[1] { // ranges are inclusive
+					positionSymbol = fa.UntrackedPositionSymbolOverrides.Symbol
+					break
+				}
+			}
+
 			switch trk.Mode {
 			case av.TransponderModeStandby:
 				ps := sp.currentPrefs()
@@ -606,13 +615,13 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 			case av.TransponderModeAltitude:
 				if sp.beaconCodeSelected(trk.Squawk) {
 					positionSymbol = string(rune(129)) // square
-				} else {
+				} else if positionSymbol == "" {
 					positionSymbol = "*"
 				}
 			case av.TransponderModeOn:
 				if sp.beaconCodeSelected(trk.Squawk) {
 					positionSymbol = string(rune(128)) // triangle
-				} else {
+				} else if positionSymbol == "" {
 					positionSymbol = "+"
 				}
 			}

@@ -1195,6 +1195,37 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 		}
 	}
 
+	if s.UntrackedPositionSymbolOverrides.CodeRangesString != "" {
+		e.Push("untracked_position_symbol_overrides")
+		for c := range strings.SplitSeq(s.UntrackedPositionSymbolOverrides.CodeRangesString, ",") {
+			low, high, ok := strings.Cut(c, "-")
+
+			var err error
+			var r [2]av.Squawk
+			r[0], err = av.ParseSquawk(low)
+			if err != nil {
+				e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", low, err)
+			} else if ok {
+				r[1], err = av.ParseSquawk(high)
+				if err != nil {
+					e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", high, err)
+				} else if r[0] > r[1] {
+					e.ErrorString("first code %q in range must be less than or equal to second %q", low, high)
+				}
+			} else {
+				r[1] = r[0]
+			}
+			s.UntrackedPositionSymbolOverrides.CodeRanges = append(s.UntrackedPositionSymbolOverrides.CodeRanges, r)
+		}
+
+		if len(s.UntrackedPositionSymbolOverrides.Symbol) == 0 {
+			e.ErrorString("\"symbol\" must be provided if \"untracked_position_symbol_overrides\" is specified")
+		} else if len(s.UntrackedPositionSymbolOverrides.Symbol) > 1 {
+			e.ErrorString("only one character may be provided for \"symbol\"")
+		}
+		e.Pop()
+	}
+
 	seenIds := make(map[string][]string)
 	for _, list := range s.CoordinationLists {
 		e.Push("\"coordination_lists\" " + list.Name)
