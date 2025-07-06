@@ -990,6 +990,10 @@ func (p *EnrouteSquawkCodePool) IsAssigned(code Squawk) bool {
 	return !p.Available.IsAvailable(int(code))
 }
 
+func (p *EnrouteSquawkCodePool) InInitialPool(code Squawk) bool {
+	return p.Initial.IsAvailable(int(code))
+}
+
 func (p *EnrouteSquawkCodePool) Return(code Squawk) error {
 	if !p.Initial.InRange(int(code)) || !p.Initial.IsAvailable(int(code)) {
 		// It's not ours; just ignore it.
@@ -1171,6 +1175,7 @@ type BeaconCodeTable struct {
 }
 
 type LocalPool struct {
+	Initial     *util.IntRangeSet
 	Available   *util.IntRangeSet
 	Ranges      [][2]Squawk
 	Backups     string
@@ -1183,11 +1188,13 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 	if len(spec.Pools) == 0 {
 		// Return a reasonable default
 		p.Pools["vfr"] = LocalPool{
+			Initial:     util.MakeIntRangeSet(0o201, 0o277),
 			Available:   util.MakeIntRangeSet(0o201, 0o277),
 			Ranges:      [][2]Squawk{{0o0201, 0o0277}},
 			FlightRules: FlightRulesVFR,
 		}
 		p.Pools["ifr"] = LocalPool{
+			Initial:     util.MakeIntRangeSet(0o301, 0o377),
 			Available:   util.MakeIntRangeSet(0o301, 0o377),
 			Ranges:      [][2]Squawk{{0o0301, 0o0377}},
 			FlightRules: FlightRulesIFR,
@@ -1215,6 +1222,7 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 			}
 
 			p.Pools[name] = LocalPool{
+				Initial:   rs.Clone(),
 				Available: rs,
 				Ranges:    poolRanges,
 				Backups:   pspec.Backups,
@@ -1294,6 +1302,24 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 			}
 		}
 	}
+}
+
+func (p *LocalSquawkCodePool) IsAssigned(code Squawk) bool {
+	for _, pool := range p.Pools {
+		if pool.Initial.IsAvailable(int(code)) && !pool.Available.IsAvailable(int(code)) {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *LocalSquawkCodePool) InInitialPool(code Squawk) bool {
+	for _, pool := range p.Pools {
+		if pool.Initial.IsAvailable(int(code)) {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *LocalSquawkCodePool) Return(sq Squawk) error {

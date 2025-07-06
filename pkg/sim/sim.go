@@ -932,6 +932,8 @@ func (s *Sim) Update() {
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
 	s.lastUpdateTime = time.Now()
+
+	s.CheckLeaks()
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
@@ -1431,6 +1433,53 @@ func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, bool) {
 		}
 	}
 	return nil, false
+}
+
+// Make sure we're not leaking beacon codes or list indices.
+func (s *Sim) CheckLeaks() {
+	var usedIndices [100]bool // 1-99 are handed out
+	nUsedIndices := 0
+	seenSquawks := make(map[av.Squawk]interface{})
+
+	check := func(fp *STARSFlightPlan) {
+		if usedIndices[fp.ListIndex] {
+			s.lg.Errorf("List index %d used more than once", fp.ListIndex)
+		} else {
+			usedIndices[fp.ListIndex] = true
+			nUsedIndices++
+		}
+
+		if _, ok := seenSquawks[fp.AssignedSquawk]; ok {
+			s.lg.Errorf("%s: squawk code %q assigned to multiple aircraft", fp.ACID, fp.AssignedSquawk)
+		}
+		seenSquawks[fp.AssignedSquawk] = nil
+
+		if s.ERAMComputer.SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
+			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
+				s.lg.Errorf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
+			}
+		} else if s.LocalCodePool.InInitialPool(fp.AssignedSquawk) {
+			if !s.LocalCodePool.IsAssigned(fp.AssignedSquawk) {
+				s.lg.Errorf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
+			}
+		} else {
+			s.lg.Errorf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+		}
+	}
+
+	for _, ac := range s.Aircraft {
+		if ac.IsAssociated() {
+			check(ac.STARSFlightPlan)
+		}
+	}
+	for _, fp := range s.STARSComputer.FlightPlans {
+		check(fp)
+	}
+
+	if len(s.STARSComputer.AvailableIndices) != 99-nUsedIndices {
+		s.lg.Errorf("%d available list indices but %d used so should be %d", len(s.STARSComputer.AvailableIndices),
+			nUsedIndices, 99-nUsedIndices)
+	}
 }
 
 func IsValidACID(acid string) bool {
