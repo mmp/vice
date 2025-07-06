@@ -72,8 +72,8 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 			totalSize += sliceDataSize
 
 			// For slices of pointers or complex types, calculate deep size
-			if t.Elem().Kind() == reflect.Ptr || t.Elem().Kind() == reflect.Struct || 
-			   t.Elem().Kind() == reflect.Slice || t.Elem().Kind() == reflect.Map {
+			if t.Elem().Kind() == reflect.Ptr || t.Elem().Kind() == reflect.Struct ||
+				t.Elem().Kind() == reflect.Slice || t.Elem().Kind() == reflect.Map {
 				for i := 0; i < v.Len(); i++ {
 					totalSize += sizeOfValue(v.Index(i), false, threshold, indent+"  ", visited, fmt.Sprintf("%s[%d]", path, i)) - elemSize
 				}
@@ -110,7 +110,7 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 	case reflect.Array:
 		elemSize := int64(t.Elem().Size())
 		if t.Elem().Kind() == reflect.Ptr || t.Elem().Kind() == reflect.Struct ||
-		   t.Elem().Kind() == reflect.Slice || t.Elem().Kind() == reflect.Map {
+			t.Elem().Kind() == reflect.Slice || t.Elem().Kind() == reflect.Map {
 			for i := 0; i < v.Len(); i++ {
 				totalSize += sizeOfValue(v.Index(i), false, threshold, indent+"  ", visited, fmt.Sprintf("%s[%d]", path, i)) - elemSize
 			}

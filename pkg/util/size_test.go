@@ -68,7 +68,7 @@ func TestSizeOf(t *testing.T) {
 	n1 := &Node{Value: 1}
 	n2 := &Node{Value: 2, Next: n1}
 	n1.Next = n2 // circular reference
-	
+
 	size = SizeOf(n1, false, 0)
 	if size == 0 || size > 1000 { // should handle circular refs gracefully
 		t.Errorf("Unexpected size for circular reference: %d", size)
