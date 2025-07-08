@@ -1557,7 +1557,11 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 					imgui.TableNextColumn()
 					if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
 						lc.client.ReleaseDeparture(ac.ADSBCallsign,
-							func(err error) { lc.lg.Errorf("%s: %v", ac.ADSBCallsign, err) })
+							func(err error) {
+								if err != nil {
+									lc.lg.Errorf("%s: %v", ac.ADSBCallsign, err)
+								}
+							})
 					}
 				}
 				imgui.PopID()
