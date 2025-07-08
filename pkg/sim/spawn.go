@@ -864,7 +864,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 	depAc := s.Aircraft[dep.ADSBCallsign]
 	if depAc.FlightPlan.Rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
 		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
-			fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
+			//fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
 			return false
 		}
 	}
