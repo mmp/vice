@@ -41,6 +41,9 @@ func (c *mpServerCodec) ReadRequestHeader(r *rpc.Request) error {
 }
 
 func (c *mpServerCodec) ReadRequestBody(body any) error {
+	if body == nil {
+		return nil
+	}
 	return c.dec.Decode(body)
 }
 
@@ -127,6 +130,9 @@ func (c *mpClientCodec) ReadResponseHeader(r *rpc.Response) error {
 }
 
 func (c *mpClientCodec) ReadResponseBody(body any) error {
+	if body == nil {
+		return nil
+	}
 	return c.dec.Decode(body)
 }
 
