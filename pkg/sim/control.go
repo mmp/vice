@@ -1207,7 +1207,7 @@ func (s *Sim) ClearedApproach(tcp string, callsign av.ADSBCallsign, approach str
 				resp, err = ac.ClearedApproach(approach, s.lg)
 			}
 
-			if err == nil {
+			if err == nil && ac.IsAssociated() {
 				ac.ApproachController = ac.STARSFlightPlan.ControllingController
 			}
 			return setTransmissionController(tcp, resp)
@@ -1273,7 +1273,7 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) *speech.RadioTransmission {
 			result := ac.ContactTower(s.lg)
-			if result.Type != speech.RadioTransmissionUnexpected {
+			if result.Type != speech.RadioTransmissionUnexpected && ac.IsAssociated() {
 				ac.STARSFlightPlan.ControllingController = "_TOWER"
 			}
 			return setTransmissionController(tcp, result)
@@ -1310,7 +1310,9 @@ func (s *Sim) RadarServicesTerminated(tcp string, callsign av.ADSBCallsign) erro
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
 
 			// Leave our frequency
-			ac.STARSFlightPlan.ControllingController = ""
+			if ac.IsAssociated() {
+				ac.STARSFlightPlan.ControllingController = ""
+			}
 
 			return setTransmissionController(tcp, speech.MakeReadbackTransmission("[radar services terminated, seeya|radar services terminated, squawk VFR]"))
 		})
