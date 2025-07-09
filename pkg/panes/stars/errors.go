@@ -101,7 +101,6 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrInvalidFix:                   ErrSTARSIllegalFix,
 	sim.ErrInvalidRestrictionAreaIndex:  ErrSTARSIllegalGeoId,
 	sim.ErrNoMatchingFlight:             ErrSTARSNoFlight,
-	sim.ErrNoMoreListIndices:            ErrSTARSCapacity,
 	sim.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	sim.ErrNotFlyingRoute:               ErrSTARSIllegalValue,
 	sim.ErrNotLaunchController:          ErrSTARSIllegalTrack,

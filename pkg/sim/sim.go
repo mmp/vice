@@ -1442,11 +1442,13 @@ func (s *Sim) CheckLeaks() {
 	seenSquawks := make(map[av.Squawk]interface{})
 
 	check := func(fp *STARSFlightPlan) {
-		if usedIndices[fp.ListIndex] {
-			s.lg.Errorf("List index %d used more than once", fp.ListIndex)
-		} else {
-			usedIndices[fp.ListIndex] = true
-			nUsedIndices++
+		if fp.ListIndex != UnsetSTARSListIndex {
+			if usedIndices[fp.ListIndex] {
+				s.lg.Errorf("List index %d used more than once", fp.ListIndex)
+			} else {
+				usedIndices[fp.ListIndex] = true
+				nUsedIndices++
+			}
 		}
 
 		if _, ok := seenSquawks[fp.AssignedSquawk]; ok {

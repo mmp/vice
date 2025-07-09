@@ -487,7 +487,7 @@ func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
 		if fp.ACID == ACID(s) {
 			return fp
 		}
-		if n == fp.ListIndex {
+		if fp.ListIndex != UnsetSTARSListIndex && n == fp.ListIndex {
 			return fp
 		}
 		if sq == fp.AssignedSquawk {

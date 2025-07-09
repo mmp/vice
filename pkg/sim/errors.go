@@ -29,7 +29,6 @@ var (
 	ErrInvalidRestrictionAreaIndex     = errors.New("Invalid restriction area index")
 	ErrNoMatchingFlight                = errors.New("No matching flight")
 	ErrNoMatchingFlightPlan            = errors.New("No matching flight plan")
-	ErrNoMoreListIndices               = errors.New("No more list indices")
 	ErrNoVFRAircraftForFlightFollowing = errors.New("No VFR aircraft available for flight following")
 	ErrNotClearedForApproach           = errors.New("Aircraft has not been cleared for an approach")
 	ErrNotFlyingRoute                  = errors.New("Aircraft is not currently flying its assigned route")

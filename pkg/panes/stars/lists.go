@@ -131,6 +131,9 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			}
 		},
 		"INDEX": func(fp *sim.STARSFlightPlan) string {
+			if fp.ListIndex == sim.UnsetSTARSListIndex {
+				return "  "
+			}
 			return fmt.Sprintf("%2d", fp.ListIndex)
 		},
 		"NUMAC": func(fp *sim.STARSFlightPlan) string {
