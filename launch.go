@@ -285,7 +285,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			}
 		}
 
-		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
+		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 600, 0}, 0.) {
 			if c.newSimType == NewSimCreateRemote {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
