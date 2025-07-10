@@ -918,20 +918,29 @@ func (s *Sim) Update() {
 	// time is scaled by the sim rate, then we add in any time from the
 	// last update that wasn't accounted for.
 	elapsed := time.Since(s.lastUpdateTime)
-	elapsed = time.Duration(s.State.SimRate*float32(elapsed)) + s.updateTimeSlop
+	elapsed = time.Duration(s.State.SimRate * float32(elapsed))
+	s.Step(elapsed)
+	s.lastUpdateTime = time.Now()
+}
+
+// Step advances the simulation by the given elapsed time duration.
+// This method encapsulates the core simulation stepping logic that was
+// previously inline in Update().
+func (s *Sim) Step(elapsed time.Duration) {
+	elapsed += s.updateTimeSlop
+
 	// Run the sim for this many seconds
 	ns := int(elapsed.Truncate(time.Second).Seconds())
 	if ns > 10 {
 		s.lg.Warn("unexpected hitch in update rate", slog.Duration("elapsed", elapsed),
 			slog.Int("steps", ns), slog.Duration("slop", s.updateTimeSlop))
 	}
-	for i := 0; i < ns; i++ {
+	for range ns {
 		s.State.SimTime = s.State.SimTime.Add(time.Second)
 		s.updateState()
 	}
-	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
-	s.lastUpdateTime = time.Now()
+	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
 	s.CheckLeaks()
 }
