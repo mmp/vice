@@ -113,11 +113,10 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.10">0.11.10</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.9">0.11.9</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.8">0.11.8</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.7">0.11.7</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-earlier">Earlier Releases</a></li>
 	    </ul>
 	  </li>
@@ -1027,7 +1026,7 @@ Y90.
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.12.0/Vice-v0.12.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.0 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.12.1/Vice-v0.12.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.1 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1036,7 +1035,7 @@ Y90.
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.12.0/Vice-v0.12.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.0 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.12.1/Vice-v0.12.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.1 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1062,6 +1061,37 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.12.1">0.12.1 (10 July 2025)</h3>
+            <ul>
+              <li>New scenarios: ALB (Scullzyojr), BTV (Crystal), SYR (Crystal/EkimWasHere), BGR (Crystal), PVD/OQU (radarcontacto).</li>
+              <li>Scenario updates: D10 (aeronutaviation), JFK, EWR, A80 (agnuse), SCT, ONT, BWI/DCA (Ketan K), AUS (Xavier Caldwell), PVD (radarcontacto).</li>
+              <li>Updated to latest FAA CIFP / AIRAC 2506 (Ketan K).</li>
+              <li>Added text-to-speech (TTS) support for pilot readbacks. (Only for multi-controller for now.)</li>
+              <li>Improved turn rate calculations for more realistic aircraft behavior (radarcontacto).</li>
+              <li>VFRs stay at or under 200kts under bravo shelves (Neel P).</li>
+              <li>Fixed various bugs with altitude reporting, approach intercepts, and departure release flow.</li>
+              <li>Fixed (hopefully) bugs that were causing the server to crash.</li>
+              <li>Improved instructor sign-on flow: it's possible to be an instructor without signing into a control position.</li>
+              <li>STARS:
+                <ul>
+                  <li>Added adaptation for SP2 on the 3rd line of FDBs (radarcontacto).</li>
+                  <li>Added "untracked_position_symbol_overrides" adaptation.</li>
+                  <li>Don't draw history trails for unsupported datablocks.</li>
+                  <li>Fixed various datablock display issues.</li>
+                  <li>Fixed weather radar orientation.</li>
+                  <li>Added color pickers for drawn routes (Rick R).</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>STARS coordination and system list contents are now adaptable.</li>
+                  <li>Added "vfr_inhibit" airspace filter.</li>
+                  <li>Improved handling of VFR aircraft under Class B airspace.</li>
+                  <li>Added validation for missing airport definitions.</li>
+                </ul>
+              </li>
+            </ul>
 
             <h3 id="release-0.12.0">0.12.0 (27 May 2025)</h3>
             <ul>
@@ -1143,6 +1173,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </ul>
               </li>
             </ul>
+
+            <div class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
 
             <h3 id="release-0.11.9">0.11.9 (22 March 2025)</h3>
             <ul>
@@ -1328,12 +1364,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </ul>
               </li>
             </ul>
-
-            <div class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
 
             <h3>0.11.4 (24 August 2024)</h3>
             <ul>
