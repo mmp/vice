@@ -273,11 +273,22 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		if ctrl, ok := sg.ControlPositions[s.SoloController]; ok {
 			if ctrl.DefaultAirport == "" {
 				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+			} else {
+				// Validate that default airport exists
+				if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+					e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
+				}
 			}
 		}
 		for _, callsign := range s.SplitConfigurations.Splits() {
-			if ctrl, ok := sg.ControlPositions[callsign]; ok && ctrl.DefaultAirport == "" {
-				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+			if ctrl, ok := sg.ControlPositions[callsign]; ok {
+				if ctrl.DefaultAirport == "" {
+					e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+				} else {
+					if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+						e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
+					}
+				}
 			}
 		}
 	}
@@ -789,6 +800,13 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		}
 		if len(ctrl.Scope) > 1 {
 			e.ErrorString("\"scope_char\" may only be a single character")
+		}
+
+		// Validate default airport if specified
+		if ctrl.DefaultAirport != "" {
+			if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+				e.ErrorString("\"default_airport\" %q is not an airport in this scenario", ctrl.DefaultAirport)
+			}
 		}
 
 		e.Pop()
