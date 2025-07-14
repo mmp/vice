@@ -1474,7 +1474,8 @@ func (s *Sim) CheckLeaks() {
 				s.lg.Errorf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
 			}
 		} else {
-			s.lg.Errorf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+			// It may be controller-assigned to something arbitrary.
+			//s.lg.Errorf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
 		}
 	}
 
