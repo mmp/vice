@@ -1065,7 +1065,7 @@ how it simulates aircraft or the STARS interface.
             <h3 id="release-0.12.1">0.12.1 (10 July 2025)</h3>
             <ul>
               <li>New scenarios: ALB (Scullzyojr), BTV (Crystal), SYR (Crystal/EkimWasHere), BGR (Crystal), PVD/OQU (radarcontacto).</li>
-              <li>Scenario updates: D10 (aeronutaviation), JFK, EWR, A80 (agnuse), SCT, ONT, BWI/DCA (Ketan K), AUS (Xavier Caldwell), PVD (radarcontacto).</li>
+              <li>Scenario updates: D10 (aeronutaviation), JFK, EWR, A80 (anguse), SCT, ONT, BWI/DCA (Ketan K), AUS (Xavier Caldwell), PVD (radarcontacto).</li>
               <li>Updated to latest FAA CIFP / AIRAC 2506 (Ketan K).</li>
               <li>Added text-to-speech (TTS) support for pilot readbacks. (Only for multi-controller for now.)</li>
               <li>Improved turn rate calculations for more realistic aircraft behavior (radarcontacto).</li>
@@ -1073,6 +1073,7 @@ how it simulates aircraft or the STARS interface.
               <li>Fixed various bugs with altitude reporting, approach intercepts, and departure release flow.</li>
               <li>Fixed (hopefully) bugs that were causing the server to crash.</li>
               <li>Improved instructor sign-on flow: it's possible to be an instructor without signing into a control position.</li>
+              <li>Departures are automatically held as needed based on same-runway arrivals and intersecting-runway departures.</li>
               <li>STARS:
                 <ul>
                   <li>Don't draw history trails for unsupported datablocks.</li>
