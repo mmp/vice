@@ -54,6 +54,8 @@ var (
 	resetSim          = flag.Bool("resetsim", false, "discard the saved simulation and do not try to resume it")
 	showRoutes        = flag.String("routes", "", "display the STARS, SIDs, and approaches known for the given airport")
 	listMaps          = flag.String("listmaps", "", "path to a video map file to list maps of (e.g., resources/videomaps/ZNY-videomaps.gob.zst)")
+	listScenarios     = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
+	runSim            = flag.String("runsim", "", "run specified scenario for 3600 update steps (format: ARTCC/TRACON/scenario)")
 )
 
 func init() {
@@ -125,7 +127,76 @@ func main() {
 			airports := util.SortedMapKeys(scenarioAirports[tracon])
 			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
 		}
-		os.Exit(0)
+	} else if *listScenarios {
+		scenarios, err := server.ListAllScenarios(*scenarioFilename, *videoMapFilename, lg)
+		if err != nil {
+			lg.Errorf("Failed to list scenarios: %v", err)
+			os.Exit(1)
+		}
+
+		for _, s := range scenarios {
+			fmt.Println(s)
+		}
+	} else if *runSim != "" {
+		parts := strings.SplitN(*runSim, "/", 2)
+		if len(parts) != 2 {
+			lg.Errorf("Invalid scenario format. Expected: TRACON/scenario")
+			os.Exit(1)
+		}
+		tracon, scenarioName := parts[0], parts[1]
+
+		var e util.ErrorLogger
+		scenarioGroups, configs, _ := server.LoadScenarioGroups(false, *scenarioFilename, *videoMapFilename, &e, lg)
+		if e.HaveErrors() {
+			e.PrintErrors(lg)
+			os.Exit(1)
+		}
+
+		// Find the matching scenario
+		config, scenarioGroup, err := server.LookupScenario(tracon, scenarioName, scenarioGroups, configs)
+		if err != nil {
+			lg.Errorf("%v", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("Running scenario: %s\n", *runSim)
+
+		newSimConfig, err := server.CreateNewSimConfiguration(config, scenarioGroup, scenarioName)
+		if err != nil {
+			lg.Errorf("Failed to create simulation configuration: %v", err)
+			os.Exit(1)
+		}
+
+		s := sim.NewSim(*newSimConfig, nil /*manifest*/, lg)
+
+		state, err := s.SignOn(newSimConfig.PrimaryController, false, false)
+		if err != nil {
+			lg.Errorf("Failed to sign in primary controller %s: %v", newSimConfig.PrimaryController, err)
+			os.Exit(1)
+		}
+
+		// Check launch configuration
+		fmt.Printf("Departure rates: %v\n", state.LaunchConfig.DepartureRates)
+		fmt.Printf("Inbound flow rates: %v\n", state.LaunchConfig.InboundFlowRates)
+
+		startTime := time.Now()
+		s.Prespawn()
+
+		// Check initial aircraft count
+		fmt.Printf("Starting simulation with %d aircraft\n", len(s.Aircraft))
+
+		// Run the sim for an hour of virtual time.
+		const totalUpdates = 3600
+		for range totalUpdates {
+			s.Step(time.Second)
+		}
+
+		// Check final aircraft count
+		fmt.Printf("Simulation ended with %d aircraft\n", len(s.Aircraft))
+
+		elapsed := time.Since(startTime)
+		fmt.Printf("Simulation complete: %d updates in %.2f seconds (%.1fx real-time)\n",
+			totalUpdates, elapsed.Seconds(), totalUpdates/elapsed.Seconds())
 	} else if *broadcastMessage != "" {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {

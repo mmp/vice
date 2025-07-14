@@ -22,6 +22,8 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
 )
 
 type scenarioGroup struct {
@@ -1674,4 +1676,114 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	return scenarioGroups, simConfigurations, mapManifests
+}
+
+// ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
+func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
+	var e util.ErrorLogger
+	scenarioGroups, _, _ := LoadScenarioGroups(false, scenarioFilename, videoMapFilename, &e, lg)
+	if e.HaveErrors() {
+		return nil, fmt.Errorf("failed to load scenarios")
+	}
+
+	var scenarios []string
+	for tracon, groups := range scenarioGroups {
+		for _, group := range groups {
+			for scenarioName := range group.Scenarios {
+				scenarios = append(scenarios, tracon+"/"+scenarioName)
+			}
+		}
+	}
+
+	slices.Sort(scenarios)
+	return scenarios, nil
+}
+
+// LookupScenario finds a scenario configuration by TRACON/scenario name
+func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[string]*scenarioGroup, configs map[string]map[string]*Configuration) (*Configuration, *scenarioGroup, error) {
+	if groups, ok := scenarioGroups[tracon]; ok {
+		for _, group := range groups {
+			if _, ok := group.Scenarios[scenarioName]; ok {
+				if cfgs, ok := configs[tracon]; ok {
+					for _, cfg := range cfgs {
+						if cfg.ScenarioConfigs[scenarioName] != nil {
+							return cfg, group, nil
+						}
+					}
+				}
+			}
+		}
+	}
+	return nil, nil, fmt.Errorf("scenario not found: %s/%s", tracon, scenarioName)
+}
+
+// CreateLaunchConfig creates a properly initialized LaunchConfig from scenario data
+func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.LaunchConfig {
+	// Create VFR airports map
+	vfrAirports := make(map[string]*av.Airport)
+	for name, ap := range scenarioGroup.Airports {
+		if ap.VFRRateSum() > 0 {
+			vfrAirports[name] = ap
+		}
+	}
+
+	// Check for VFR reporting regions
+	haveVFRReportingRegions := false
+	for _, cfg := range scenarioGroup.STARSFacilityAdaptation.ControllerConfigs {
+		if cfg.FlightFollowingAirspace != nil {
+			haveVFRReportingRegions = true
+			break
+		}
+	}
+
+	// Create proper LaunchConfig
+	return sim.MakeLaunchConfig(
+		scenario.DepartureRunways,
+		util.Select(scenario.VFRRateScale == nil, 1.0, *scenario.VFRRateScale),
+		vfrAirports,
+		scenario.InboundFlowDefaultRates,
+		haveVFRReportingRegions,
+	)
+}
+
+// CreateNewSimConfiguration creates a NewSimConfiguration from scenario components
+func CreateNewSimConfiguration(config *Configuration, scenarioGroup *scenarioGroup, scenarioName string) (*sim.NewSimConfiguration, error) {
+	scenario, ok := scenarioGroup.Scenarios[scenarioName]
+	if !ok {
+		return nil, fmt.Errorf("scenario %s not found in group", scenarioName)
+	}
+
+	simConfig := config.ScenarioConfigs[scenarioName]
+	if simConfig == nil {
+		return nil, fmt.Errorf("scenario configuration %s not found", scenarioName)
+	}
+
+	newSimConfig := &sim.NewSimConfiguration{
+		TRACON:                  scenarioGroup.TRACON,
+		Description:             scenarioName,
+		LaunchConfig:            CreateLaunchConfig(scenario, scenarioGroup),
+		DepartureRunways:        simConfig.DepartureRunways,
+		ArrivalRunways:          simConfig.ArrivalRunways,
+		PrimaryAirport:          simConfig.PrimaryAirport,
+		Airports:                scenarioGroup.Airports,
+		Fixes:                   scenarioGroup.Fixes,
+		VFRReportingPoints:      scenarioGroup.VFRReportingPoints,
+		ControlPositions:        scenarioGroup.ControlPositions,
+		PrimaryController:       scenario.SoloController,
+		SignOnPositions:         scenarioGroup.ControlPositions,
+		InboundFlows:            scenarioGroup.InboundFlows,
+		STARSFacilityAdaptation: deep.MustCopy(scenarioGroup.STARSFacilityAdaptation),
+		ReportingPoints:         scenarioGroup.ReportingPoints,
+		MagneticVariation:       scenarioGroup.MagneticVariation,
+		NmPerLongitude:          scenarioGroup.NmPerLongitude,
+		Wind:                    scenario.Wind,
+		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.STARSFacilityAdaptation.Center, scenario.Center),
+		Range:                   util.Select(scenario.Range == 0, scenarioGroup.STARSFacilityAdaptation.Range, scenario.Range),
+		DefaultMaps:             scenario.DefaultMaps,
+		Airspace:                scenarioGroup.Airspace,
+		ControllerAirspace:      scenario.Airspace,
+		VirtualControllers:      scenario.VirtualControllers,
+	}
+
+	return newSimConfig, nil
 }
