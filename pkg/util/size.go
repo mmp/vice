@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"io"
 	"reflect"
 	"unsafe"
 )
@@ -9,16 +10,16 @@ import (
 // SizeOf returns the total size in bytes of the given object.
 // If printMembers is true and obj is a struct, it prints the size of each field.
 // If threshold > 0, prints any element that is threshold bytes or larger.
-func SizeOf(obj any, printMembers bool, threshold int64) int64 {
+func SizeOf(obj any, w io.Writer, printMembers bool, threshold int64) int64 {
 	if obj == nil {
 		return 0
 	}
 
 	v := reflect.ValueOf(obj)
-	return sizeOfValue(v, printMembers, threshold, "", make(map[uintptr]bool), "")
+	return sizeOfValue(v, w, printMembers, threshold, "", make(map[uintptr]bool), "")
 }
 
-func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent string, visited map[uintptr]bool, path string) int64 {
+func sizeOfValue(v reflect.Value, w io.Writer, printMembers bool, threshold int64, indent string, visited map[uintptr]bool, path string) int64 {
 	if !v.IsValid() {
 		return 0
 	}
@@ -41,22 +42,22 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 	switch v.Kind() {
 	case reflect.Ptr:
 		if !v.IsNil() {
-			totalSize += sizeOfValue(v.Elem(), false, threshold, indent+"  ", visited, path+".*")
+			totalSize += sizeOfValue(v.Elem(), w, false, threshold, indent+"  ", visited, path+".*")
 		}
 
 	case reflect.Struct:
 		if printMembers && indent == "" {
-			fmt.Printf("Struct %s total size: %d bytes\n", t.Name(), baseSize)
-			fmt.Println("Field sizes:")
+			fmt.Fprintf(w, "Struct %s total size: %d bytes\n", t.Name(), baseSize)
+			fmt.Fprintln(w, "Field sizes:")
 		}
 
 		for i := 0; i < v.NumField(); i++ {
 			field := v.Field(i)
 			fieldType := t.Field(i)
-			fieldSize := sizeOfValue(field, false, threshold, indent+"  ", visited, path+"."+fieldType.Name)
+			fieldSize := sizeOfValue(field, w, false, threshold, indent+"  ", visited, path+"."+fieldType.Name)
 
 			if printMembers && indent == "" {
-				fmt.Printf("  %s (%s): %d bytes\n", fieldType.Name, fieldType.Type, fieldSize)
+				fmt.Fprintf(w, "  %s (%s): %d bytes\n", fieldType.Name, fieldType.Type, fieldSize)
 			}
 
 			// For embedded fields, add their deep size
@@ -75,7 +76,7 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 			if t.Elem().Kind() == reflect.Ptr || t.Elem().Kind() == reflect.Struct ||
 				t.Elem().Kind() == reflect.Slice || t.Elem().Kind() == reflect.Map {
 				for i := 0; i < v.Len(); i++ {
-					totalSize += sizeOfValue(v.Index(i), false, threshold, indent+"  ", visited, fmt.Sprintf("%s[%d]", path, i)) - elemSize
+					totalSize += sizeOfValue(v.Index(i), w, false, threshold, indent+"  ", visited, fmt.Sprintf("%s[%d]", path, i)) - elemSize
 				}
 			}
 		}
@@ -99,8 +100,8 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 			// Add size of all keys and values
 			iter := v.MapRange()
 			for iter.Next() {
-				totalSize += sizeOfValue(iter.Key(), false, threshold, indent+"  ", visited, path+".key")
-				totalSize += sizeOfValue(iter.Value(), false, threshold, indent+"  ", visited, path+".value")
+				totalSize += sizeOfValue(iter.Key(), w, false, threshold, indent+"  ", visited, path+".key")
+				totalSize += sizeOfValue(iter.Value(), w, false, threshold, indent+"  ", visited, path+".value")
 			}
 		}
 
@@ -112,13 +113,13 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 		if t.Elem().Kind() == reflect.Ptr || t.Elem().Kind() == reflect.Struct ||
 			t.Elem().Kind() == reflect.Slice || t.Elem().Kind() == reflect.Map {
 			for i := 0; i < v.Len(); i++ {
-				totalSize += sizeOfValue(v.Index(i), false, threshold, indent+"  ", visited, fmt.Sprintf("%s[%d]", path, i)) - elemSize
+				totalSize += sizeOfValue(v.Index(i), w, false, threshold, indent+"  ", visited, fmt.Sprintf("%s[%d]", path, i)) - elemSize
 			}
 		}
 
 	case reflect.Interface:
 		if !v.IsNil() {
-			totalSize += sizeOfValue(v.Elem(), false, threshold, indent+"  ", visited, path)
+			totalSize += sizeOfValue(v.Elem(), w, false, threshold, indent+"  ", visited, path)
 		}
 	}
 
@@ -127,7 +128,7 @@ func sizeOfValue(v reflect.Value, printMembers bool, threshold int64, indent str
 		if path == "" {
 			path = fmt.Sprintf("<%s>", t.String())
 		}
-		fmt.Printf("%s: %d bytes\n", path, totalSize)
+		fmt.Fprintf(w, "%s: %d bytes\n", path, totalSize)
 	}
 
 	return totalSize
