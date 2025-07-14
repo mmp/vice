@@ -21,15 +21,18 @@ import (
 	"path/filepath"
 	"sync"
 
-	"cloud.google.com/go/storage"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
-	"google.golang.org/api/iterator"
 
+	"cloud.google.com/go/storage"
 	"github.com/AllenDang/cimgui-go/imgui"
+	"google.golang.org/api/iterator"
 )
 
+// resourcesManifest holds the filenames and SHA256 hashes of all the resource files this build
+// of vice expects to have available.
+//
 //go:embed manifest.json
 var resourcesManifest string
 
@@ -93,6 +96,10 @@ func calculateSHA256(path string) (string, error) {
 	return hex.EncodeToString(hasher.Sum(nil)), nil
 }
 
+// We write the manifest.json file to our local resources directory *after*
+// downloading all of the resources it lists (and delete manifest.json if
+// it is out of date). Thus, we can assume that if manifest.json is there,
+// the underlying resources are all as expected.
 func checkManifestUpToDate(manifestPath string) bool {
 	if existingManifest, err := os.ReadFile(manifestPath); err == nil {
 		return string(existingManifest) == resourcesManifest
@@ -100,12 +107,8 @@ func checkManifestUpToDate(manifestPath string) bool {
 	return false
 }
 
+// Removes any resource files that are present on disk but are not listed in the manifest.
 func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) {
-	manifestFiles := make(map[string]bool)
-	for filename := range manifest {
-		manifestFiles[filename] = true
-	}
-
 	filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return nil
@@ -116,7 +119,11 @@ func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) 
 			return nil
 		}
 
-		if relPath != "manifest.json" && !manifestFiles[relPath] {
+		if relPath == "manifest.json" {
+			return nil
+		}
+
+		if _, ok := manifest[relPath]; !ok {
 			os.Remove(path)
 		}
 
@@ -124,33 +131,32 @@ func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) 
 	})
 }
 
-func writeManifestFile(manifestPath string) {
-	manifestFile, err := os.Create(manifestPath)
+func writeManifestFile(manifestPath string) error {
+	f, err := os.Create(manifestPath)
 	if err != nil {
-		panic(fmt.Sprintf("failed to create manifest file: %v", err))
+		return err
 	}
-	defer manifestFile.Close()
+	defer f.Close()
 
-	if _, err := manifestFile.WriteString(resourcesManifest); err != nil {
-		panic(fmt.Sprintf("failed to write manifest: %v", err))
-	}
-
-	if err := manifestFile.Sync(); err != nil {
-		panic(fmt.Sprintf("failed to sync manifest file: %v", err))
-	}
+	_, err = f.WriteString(resourcesManifest)
+	return err
 }
 
 type workerStatus struct {
-	doneChan     chan struct{}
-	finishedChan chan int64 // bytes
-	errorsChan   chan string
+	doneCh            chan struct{}
+	bytesDownloadedCh chan int64
+	errorsCh          chan string
 }
 
+// launchWorkers launches goroutines to check each entry in the manifest
+// and see if we have a local copy of it with the correct contents.  If
+// not, the file is downloaded from GCS. The returned workerStatus struct has
+// three chans that provide information about the workers' progress.
 func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatus, int64) {
 	status := workerStatus{
-		doneChan:     make(chan struct{}),
-		finishedChan: make(chan int64),
-		errorsChan:   make(chan string),
+		doneCh:            make(chan struct{}),
+		bytesDownloadedCh: make(chan int64),
+		errorsCh:          make(chan string),
 	}
 
 	ctx := context.Background()
@@ -191,6 +197,10 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		hash     string
 	}
 	fileChan := make(chan fileTask, len(manifest))
+	for filename, hash := range manifest {
+		fileChan <- fileTask{filename: filename, hash: hash}
+	}
+	close(fileChan)
 
 	var wg sync.WaitGroup
 	const numWorkers = 8
@@ -203,7 +213,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 				func() {
 					fullPath := filepath.Join(resourcesDir, task.filename)
 
-					defer func() { status.finishedChan <- sizes[task.hash] }()
+					defer func() { status.bytesDownloadedCh <- sizes[task.hash] }()
 
 					// Check if file exists and has correct hash
 					if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == task.hash {
@@ -216,33 +226,38 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 					url := fmt.Sprintf("https://storage.googleapis.com/vice-resources/%s", task.hash)
 					resp, err := http.Get(url)
 					if err != nil {
-						status.errorsChan <- err.Error()
+						status.errorsCh <- err.Error()
 						return
 					}
 					defer resp.Body.Close()
 
 					if resp.StatusCode != http.StatusOK {
-						status.errorsChan <- fmt.Sprintf("Failed to download %s: status %d", task.filename, resp.StatusCode)
+						status.errorsCh <- fmt.Sprintf("Failed to download %s: status %d", task.filename, resp.StatusCode)
 						return
 					}
 
 					// Create directory if needed
 					if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
-						status.errorsChan <- fmt.Sprintf("Failed to create directory for %s: %v", task.filename, err)
+						status.errorsCh <- fmt.Sprintf("%s: failed to create file's directory: %v", task.filename, err)
 						return
 					}
 
 					// Write file
 					f, err := os.Create(fullPath)
 					if err != nil {
-						status.errorsChan <- fmt.Sprintf("Failed to create %s: %v", task.filename, err)
+						status.errorsCh <- fmt.Sprintf("%s: failed to create: %v", task.filename, err)
 						return
 					}
 					defer f.Close()
 
 					_, err = io.Copy(f, resp.Body)
 					if err != nil {
-						status.errorsChan <- fmt.Sprintf("Failed to write %s: %v", task.filename, err)
+						status.errorsCh <- fmt.Sprintf("%s: failed to write: %v", task.filename, err)
+						return
+					}
+
+					if err := f.Sync(); err != nil {
+						status.errorsCh <- fmt.Sprintf("%s: failed to sync: %v", task.filename, err)
 						return
 					}
 				}()
@@ -250,26 +265,25 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		}()
 	}
 
+	// Launch a separate goroutine to wait for the workers and report back
+	// when they're all done. (We don't want to do this synchronously so
+	// that SyncResources can update the UI/report progress.)
 	go func() {
-		for filename, hash := range manifest {
-			fileChan <- fileTask{filename: filename, hash: hash}
-		}
-		close(fileChan)
 		wg.Wait()
-		close(status.doneChan)
+		close(status.doneCh)
 	}()
 
 	return status, totalSize
 }
 
-func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) {
+func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) error {
 	if resourcesManifest == "" {
-		panic("manifest.json was not present during build")
+		return fmt.Errorf("manifest.json was not present during build")
 	}
 
 	configDir, err := os.UserConfigDir()
 	if err != nil {
-		panic(fmt.Sprintf("failed to get user config dir: %v", err))
+		return fmt.Errorf("failed to get user config dir: %v", err)
 	}
 
 	resourcesDir := filepath.Join(configDir, "vice", "resources")
@@ -277,28 +291,29 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 
 	var manifest map[string]string
 	if err := json.Unmarshal([]byte(resourcesManifest), &manifest); err != nil {
-		panic(fmt.Sprintf("failed to unmarshal manifest: %v", err))
+		return fmt.Errorf("failed to unmarshal resources manifest: %v", err)
 	}
 
 	// Check if manifest is up to date early
 	if checkManifestUpToDate(manifestPath) {
-		return
+		return nil
 	}
 
+	// Otherwise remove it immediately to reflect that the local resources
+	// directory will be in flux and doesn't match any manifest.
 	if _, err := os.Stat(manifestPath); err == nil {
 		os.Remove(manifestPath)
 	}
 
-	// Launch worker goroutines
 	ws, totalBytes := launchWorkers(resourcesDir, manifest)
 
 	if plat != nil {
+		// Draw download progress dialog box
 		client := &ResourcesDownloadModalClient{totalFiles: len(manifest), totalBytes: totalBytes}
 		dialog := NewModalDialogBox(client, plat)
 
 	loop:
 		for {
-			// Draw download progress dialog box
 			plat.ProcessEvents()
 			plat.NewFrame()
 			imgui.NewFrame()
@@ -313,29 +328,30 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 			plat.PostRender()
 
 			select {
-			case <-ws.doneChan:
+			case <-ws.doneCh:
 				break loop
-			case nb := <-ws.finishedChan:
+			case nb := <-ws.bytesDownloadedCh:
 				client.currentFile++
 				client.downloadedBytes += nb
-			case e := <-ws.errorsChan:
+			case e := <-ws.errorsCh:
 				client.errors = append(client.errors, e)
 			default:
 				break
 			}
 		}
 	} else {
+		// Text-mode (e.g. for the server and tests; print updates to stdout.)
 		nfiles, nbytes := 0, int64(0)
 	loopb:
 		for {
 			select {
-			case <-ws.doneChan:
+			case <-ws.doneCh:
 				break loopb
-			case nb := <-ws.finishedChan:
+			case nb := <-ws.bytesDownloadedCh:
 				nfiles++
 				nbytes += nb
 				fmt.Printf("%d files (%d bytes) downloaded\n", nfiles, nbytes)
-			case e := <-ws.errorsChan:
+			case e := <-ws.errorsCh:
 				fmt.Printf("Error: %v\n", e)
 			default:
 				break
@@ -345,5 +361,6 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 
 	removeStaleResourcesFiles(resourcesDir, manifest)
 
-	writeManifestFile(manifestPath)
+	// Only now do we write the current manifest.json to reflect that we are good to go.
+	return writeManifestFile(manifestPath)
 }

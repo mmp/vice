@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/pkg/renderer"
 )
 
-func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) {
+func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) error {
 	// Nothing to do!
+	return nil
 }

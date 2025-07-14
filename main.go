@@ -90,7 +90,11 @@ func main() {
 	}
 
 	if *lintScenarios {
-		SyncResources(nil, nil, nil)
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
 		av.InitDB()
 
 		var e util.ErrorLogger
@@ -203,7 +207,11 @@ func main() {
 	} else if *broadcastMessage != "" {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
-		SyncResources(nil, nil, nil)
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
 		av.InitDB()
 
 		server.LaunchServer(server.ServerLaunchConfig{
@@ -213,14 +221,22 @@ func main() {
 			ExtraVideoMap:       *videoMapFilename,
 		}, lg)
 	} else if *showRoutes != "" {
-		SyncResources(nil, nil, nil)
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
 		av.InitDB()
 
 		if err := av.PrintCIFPRoutes(*showRoutes); err != nil {
 			lg.Errorf("%s", err)
 		}
 	} else if *listMaps != "" {
-		SyncResources(nil, nil, nil)
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
 		av.InitDB()
 
 		var e util.ErrorLogger
@@ -272,7 +288,10 @@ func main() {
 
 		uiInit(render, plat, config, eventStream, lg)
 
-		SyncResources(plat, render, lg)
+		if err := SyncResources(plat, render, lg); err != nil {
+			ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
+		}
+
 		av.InitDB()
 
 		// After we have plat and render
