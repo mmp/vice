@@ -370,7 +370,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				imgui.Checkbox("Require Password", &c.RequirePassword)
 				if c.RequirePassword {
 					imgui.TableNextColumn()
-					imgui.InputTextMultiline("Password", &c.Password, imgui.Vec2{}, 0, nil)
+					imgui.InputTextWithHint("Password", "", &c.Password, 0, nil)
 					if c.Password == "" {
 						imgui.SameLine()
 						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
