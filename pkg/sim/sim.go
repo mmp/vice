@@ -815,6 +815,18 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		}
 	}
 
+	if util.SizeOf(*update, os.Stderr, false, 32*1024) > 256*1024*1024 {
+		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
+		f, err := os.Create(fn)
+		if err != nil {
+			s.lg.Errorf("%s: unable to create: %v", fn, err)
+		} else {
+			util.SizeOf(*update, f, true, 1024)
+			spew.Fdump(f, *update)
+		}
+		panic("too big")
+	}
+
 	// While it seemed that this could be skipped, it's actually necessary
 	// to avoid races: while another copy is made as it's marshaled to be
 	// returned from RPC call, there may be other updates to the sim state
