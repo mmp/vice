@@ -13,6 +13,8 @@ import (
 	"github.com/mmp/vice/pkg/util"
 )
 
+const UnsetSTARSListIndex = 0
+
 type ERAMComputer struct {
 	SquawkCodePool *av.EnrouteSquawkCodePool
 	Identifier     string
@@ -230,29 +232,25 @@ func (sc *STARSComputer) CreateFlightPlan(fp STARSFlightPlan) (STARSFlightPlan, 
 		return fp, ErrDuplicateACID
 	}
 
-	var err error
-	fp.ListIndex, err = sc.getListIndex()
-	if err != nil {
-		return fp, err
-	}
+	fp.ListIndex = sc.getListIndex()
 
 	sc.FlightPlans = append(sc.FlightPlans, &fp)
 
 	return fp, nil
 }
 
-func (sc *STARSComputer) getListIndex() (int, error) {
+func (sc *STARSComputer) getListIndex() int {
 	if len(sc.AvailableIndices) == 0 {
-		return 0, ErrNoMoreListIndices
+		return UnsetSTARSListIndex
 	}
 
 	idx := sc.AvailableIndices[0]
 	sc.AvailableIndices = sc.AvailableIndices[1:]
-	return idx, nil
+	return idx
 }
 
 func (sc *STARSComputer) returnListIndex(idx int) {
-	if idx != 0 {
+	if idx != UnsetSTARSListIndex {
 		sc.AvailableIndices = append(sc.AvailableIndices, idx)
 	}
 }

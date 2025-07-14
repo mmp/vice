@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -61,6 +62,8 @@ type Sim struct {
 	PointOuts map[ACID]PointOut
 
 	ReportingPoints []av.ReportingPoint
+
+	EnforceUniqueCallsignSuffix bool
 
 	FutureControllerContacts []FutureControllerContact
 	FutureOnCourse           []FutureOnCourse
@@ -126,8 +129,6 @@ type DepartureRunway struct {
 	Runway      string `json:"runway"`
 	Category    string `json:"category,omitempty"`
 	DefaultRate int    `json:"rate"`
-
-	ExitRoutes map[string]*av.ExitRoute // copied from airport's  departure_routes
 }
 
 type ArrivalRunway struct {
@@ -180,6 +181,8 @@ type NewSimConfiguration struct {
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
+	EnforceUniqueCallsignSuffix bool
+
 	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
 	NmPerLongitude    float32
@@ -210,6 +213,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		lg:          lg,
 
 		ReportingPoints: config.ReportingPoints,
+
+		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
 
 		lastUpdateTime: time.Now(),
 
@@ -811,6 +816,18 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		}
 	}
 
+	if util.SizeOf(*update, os.Stderr, false, 32*1024) > 256*1024*1024 {
+		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
+		f, err := os.Create(fn)
+		if err != nil {
+			s.lg.Errorf("%s: unable to create: %v", fn, err)
+		} else {
+			util.SizeOf(*update, f, true, 1024)
+			spew.Fdump(f, *update)
+		}
+		panic("too big")
+	}
+
 	// While it seemed that this could be skipped, it's actually necessary
 	// to avoid races: while another copy is made as it's marshaled to be
 	// returned from RPC call, there may be other updates to the sim state
@@ -914,20 +931,31 @@ func (s *Sim) Update() {
 	// time is scaled by the sim rate, then we add in any time from the
 	// last update that wasn't accounted for.
 	elapsed := time.Since(s.lastUpdateTime)
-	elapsed = time.Duration(s.State.SimRate*float32(elapsed)) + s.updateTimeSlop
+	elapsed = time.Duration(s.State.SimRate * float32(elapsed))
+	s.Step(elapsed)
+	s.lastUpdateTime = time.Now()
+}
+
+// Step advances the simulation by the given elapsed time duration.
+// This method encapsulates the core simulation stepping logic that was
+// previously inline in Update().
+func (s *Sim) Step(elapsed time.Duration) {
+	elapsed += s.updateTimeSlop
+
 	// Run the sim for this many seconds
 	ns := int(elapsed.Truncate(time.Second).Seconds())
 	if ns > 10 {
 		s.lg.Warn("unexpected hitch in update rate", slog.Duration("elapsed", elapsed),
 			slog.Int("steps", ns), slog.Duration("slop", s.updateTimeSlop))
 	}
-	for i := 0; i < ns; i++ {
+	for range ns {
 		s.State.SimTime = s.State.SimTime.Add(time.Second)
 		s.updateState()
 	}
+
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
-	s.lastUpdateTime = time.Now()
+	s.CheckLeaks()
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
@@ -1391,6 +1419,10 @@ func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	return s.callsignForACID(acid)
+}
+
+func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	for cs, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
 			return cs, true
@@ -1423,6 +1455,56 @@ func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, bool) {
 		}
 	}
 	return nil, false
+}
+
+// Make sure we're not leaking beacon codes or list indices.
+func (s *Sim) CheckLeaks() {
+	var usedIndices [100]bool // 1-99 are handed out
+	nUsedIndices := 0
+	seenSquawks := make(map[av.Squawk]interface{})
+
+	check := func(fp *STARSFlightPlan) {
+		if fp.ListIndex != UnsetSTARSListIndex {
+			if usedIndices[fp.ListIndex] {
+				s.lg.Errorf("List index %d used more than once", fp.ListIndex)
+			} else {
+				usedIndices[fp.ListIndex] = true
+				nUsedIndices++
+			}
+		}
+
+		if _, ok := seenSquawks[fp.AssignedSquawk]; ok {
+			s.lg.Errorf("%s: squawk code %q assigned to multiple aircraft", fp.ACID, fp.AssignedSquawk)
+		}
+		seenSquawks[fp.AssignedSquawk] = nil
+
+		if s.ERAMComputer.SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
+			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
+				s.lg.Errorf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
+			}
+		} else if s.LocalCodePool.InInitialPool(fp.AssignedSquawk) {
+			if !s.LocalCodePool.IsAssigned(fp.AssignedSquawk) {
+				s.lg.Errorf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
+			}
+		} else {
+			// It may be controller-assigned to something arbitrary.
+			//s.lg.Errorf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+		}
+	}
+
+	for _, ac := range s.Aircraft {
+		if ac.IsAssociated() {
+			check(ac.STARSFlightPlan)
+		}
+	}
+	for _, fp := range s.STARSComputer.FlightPlans {
+		check(fp)
+	}
+
+	if len(s.STARSComputer.AvailableIndices) != 99-nUsedIndices {
+		s.lg.Errorf("%d available list indices but %d used so should be %d", len(s.STARSComputer.AvailableIndices),
+			nUsedIndices, 99-nUsedIndices)
+	}
 }
 
 func IsValidACID(acid string) bool {
@@ -1475,82 +1557,4 @@ func (t *Track) HandingOffTo(tcp string) bool {
 	return sfp.HandoffTrackController == tcp &&
 		(!slices.Contains(sfp.RedirectedHandoff.Redirector, tcp) || // not a redirector
 			sfp.RedirectedHandoff.RedirectedTo == tcp) // redirected to
-}
-
-func (ac *Aircraft) transferTracks(from, to string) {
-	if ac.ApproachController == from {
-		ac.ApproachController = to
-	}
-	if ac.PreArrivalDropController == from {
-		ac.PreArrivalDropController = to
-	}
-
-	if ac.IsUnassociated() {
-		return
-	}
-
-	sfp := ac.STARSFlightPlan
-	if sfp.HandoffTrackController == from {
-		sfp.HandoffTrackController = to
-	}
-	if sfp.TrackingController == from {
-		sfp.TrackingController = to
-	}
-	if sfp.ControllingController == from {
-		sfp.ControllingController = to
-	}
-}
-
-func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryController string) {
-	if callsign == primaryController {
-		// Don't change anything; the sim will pause without the primary
-		// controller, so we might as well have all of the tracks and
-		// inbound handoffs waiting for them when they return.
-		return
-	}
-	if ac.IsUnassociated() {
-		return
-	}
-
-	sfp := ac.STARSFlightPlan
-	if sfp.HandoffTrackController == callsign {
-		// Otherwise redirect handoffs to the primary controller. This is
-		// not a perfect solution; for an arrival, for example, we should
-		// re-resolve it based on the signed-in controllers, as is done in
-		// Sim updateState() for arrivals when they are first handed
-		// off. We don't have all of that information here, though...
-		sfp.HandoffTrackController = primaryController
-	}
-
-	if sfp.ControllingController == callsign {
-		if sfp.TrackingController == callsign {
-			// Drop track of aircraft that we control
-			sfp.TrackingController = ""
-			sfp.ControllingController = ""
-		} else {
-			// Another controller has the track but not yet control;
-			// just give them control
-			sfp.ControllingController = sfp.TrackingController
-		}
-	}
-}
-
-func (ac *Aircraft) IsUnassociated() bool {
-	return ac.STARSFlightPlan == nil
-}
-
-func (ac *Aircraft) IsAssociated() bool {
-	return ac.STARSFlightPlan != nil
-}
-
-func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
-	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
-	ac.STARSFlightPlan = fp
-	ac.PreArrivalDropController = ""
-}
-
-func (ac *Aircraft) DisassociateFlightPlan() *STARSFlightPlan {
-	fp := ac.STARSFlightPlan
-	ac.STARSFlightPlan = nil
-	return fp
 }

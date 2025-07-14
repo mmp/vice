@@ -93,7 +93,7 @@ func (l *LinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude floa
 	for i := 0; i < nsegs; i++ {
 		pt := func(i int) [2]float32 {
 			a := float32(i) / float32(nsegs) * 2 * gomath.Pi
-			v := [2]float32{math.Sin(a), math.Cos(a)}
+			v := math.SinCos(a)
 			v = math.Scale2f(v, r)
 			return math.NM2LL(math.Add2f(pc, v), nmPerLongitude)
 		}
@@ -287,7 +287,7 @@ func (t *TrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude flo
 	for i := 0; i < nsegs; i++ {
 		pt := func(i int) [2]float32 {
 			a := float32(i) / float32(nsegs) * 2 * gomath.Pi
-			v := [2]float32{math.Sin(a), math.Cos(a)}
+			v := math.SinCos(a)
 			v = math.Scale2f(v, r)
 			return math.NM2LL(math.Add2f(pc, v), nmPerLongitude)
 		}

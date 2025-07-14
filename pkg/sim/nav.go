@@ -266,17 +266,29 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
-		Waypoints:      util.DuplicateSlice(wp),
 		FixAssignments: make(map[string]NavFixAssignment),
 		Rand:           rand.Make(),
 	}
 
-	nav.Waypoints = av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
+	// Copy the provided waypoints so that any local modifications we make don't pollute the
+	// waypoints stored for the scenario. Try to size the allocation so that reallocation
+	// isn't necessary: for IFR we just have the destination airport to add but for VFR we may
+	// need a number of extra ones to join the pattern and land.
+	nav.Waypoints = make([]av.Waypoint, len(wp)+util.Select(fp.Rules == av.FlightRulesIFR, 1, 12))
+	copy(nav.Waypoints, wp)
+
+	av.RandomizeRoute(nav.Waypoints, nav.Rand, randomizeAltitudeRange, nav.Perf, nmPerLongitude,
 		magneticVariation, fp.ArrivalAirport, wind, lg)
 
-	if fp.Rules == av.FlightRulesIFR && slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land }) {
-		lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
-			slog.Any("flightplan", fp))
+	landIdx := slices.IndexFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Land })
+	if landIdx != -1 {
+		if fp.Rules == av.FlightRulesIFR {
+			lg.Warn("IFR aircraft has /land in route", slog.Any("waypoints", nav.Waypoints),
+				slog.Any("flightplan", fp))
+		} else {
+			nav.Waypoints = av.AppendVFRLanding(nav.Waypoints[:landIdx+1], nav.Perf, fp.ArrivalAirport,
+				wind, nmPerLongitude, magneticVariation, lg)
+		}
 	}
 
 	nav.FlightState = FlightState{
@@ -475,7 +487,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 		exped := util.Select(nav.Altitude.ExpediteAfterSpeed, ", expediting", "")
 		lines = append(lines, fmt.Sprintf("At %.0f kts, %s to %s"+exped,
 			*nav.Altitude.AfterSpeedSpeed, dir, av.FormatAltitude(*nav.Altitude.AfterSpeed)))
-	} else if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
+	} else if c, ok := nav.getWaypointAltitudeConstraint(); ok && !nav.flyingPT() {
 		dir := util.Select(c.Altitude > nav.FlightState.Altitude, "Climbing", "Descending")
 		alt := c.Altitude
 		if nav.Altitude.Cleared != nil {
@@ -914,7 +926,7 @@ func (nav *Nav) updatePositionAndGS(wind av.WindModel, lg *log.Logger) {
 	// Calculate offset vector based on heading and current TAS.
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
 	TAS := nav.TAS() / 3600
-	flightVector := math.Scale2f([2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}, TAS)
+	flightVector := math.Scale2f(math.SinCos(math.Radians(hdg)), TAS)
 
 	// Further offset based on the wind
 	var windVector [2]float32
@@ -1047,7 +1059,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 			// Choose a point a bit farther ahead on the arc
 			angle += float32(util.Select(arc.Clockwise, 10, -10))
-			p := math.Add2f(pc, math.Scale2f([2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}, arc.Radius))
+			p := math.Add2f(pc, math.Scale2f(math.SinCos(math.Radians(angle)), arc.Radius))
 			pTarget = math.NM2LL(p, nav.FlightState.NmPerLongitude)
 		} else {
 			if len(nav.Waypoints) == 0 {
@@ -1060,7 +1072,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 		// No magnetic correction yet, just the raw geometric heading vector
 		hdg := math.Heading2LL(nav.FlightState.Position, pTarget, nav.FlightState.NmPerLongitude, 0)
-		v := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+		v := math.SinCos(math.Radians(hdg))
 		v = math.Scale2f(v, nav.FlightState.GS)
 
 		if nav.IsAirborne() {
@@ -1088,9 +1100,9 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 		heading = math.NormalizeHeading(hdg)
 		if nav.Heading.Arc != nil {
-			lg.Debugf("heading: flying %.0f for %.1fnm radius arc", heading, nav.Heading.Arc.Radius)
+			//lg.Debugf("heading: flying %.0f for %.1fnm radius arc", heading, nav.Heading.Arc.Radius)
 		} else {
-			lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
+			//lg.Debugf("heading: flying %.0f to %s", heading, nav.Waypoints[0].Fix)
 		}
 	}
 
@@ -1123,18 +1135,15 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 		}
 	}()
 
-	// In theory, turn rate is proportional to tan(bankAngle) but to make
-	// the turn in/turn out math easier, we model it linearly, which is not
-	// unreasonable since tan(theta) is linear-ish around 0.
-	// Note that this is signed.
+	// Note that turnRate is signed.
 	maxBankAngle := nav.Perf.Turn.MaxBankAngle
 	maxRollRate := nav.Perf.Turn.MaxBankRate
+	tasMS := nav.TAS() * 0.514444
 	turnRate := func(bankAngle float32) float32 {
 		if bankAngle == 0 {
 			return 0
 		}
 		bankRad := math.Radians(bankAngle)
-		tasMS := nav.TAS() * 0.514444
 		rate := math.Degrees(9.81 * math.Tan(bankRad) / tasMS)
 		return min(rate, 3)
 	}
@@ -1303,7 +1312,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		return *nav.Altitude.Assigned, rate
 	}
 
-	if c := nav.getWaypointAltitudeConstraint(); c != nil && !nav.flyingPT() {
+	if c, ok := nav.getWaypointAltitudeConstraint(); ok && !nav.flyingPT() {
 		//lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
 			// Always climb as soon as we can
@@ -1369,21 +1378,21 @@ type WaypointCrossingConstraint struct {
 // subsequent altitude restrictions--e.g., sometimes it needs to be lower
 // than it would otherwise at one waypoint in order to make a restriction
 // at a subsequent waypoint.
-func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
+func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, bool) {
 	if nav.Heading.Assigned != nil {
 		// ignore what's going on with the fixes
-		return nil
+		return WaypointCrossingConstraint{}, false
 	}
 
 	if nav.InterceptedButNotCleared() {
 		// Assuming this must be an altitude constraint on the approach,
 		// we'll ignore it until the aircraft has been cleared for the
 		// approach.
-		return nil
+		return WaypointCrossingConstraint{}, false
 	}
 
 	getRestriction := func(i int) *av.AltitudeRestriction {
-		wp := nav.Waypoints[i]
+		wp := &nav.Waypoints[i]
 		// Return any controller-assigned constraint in preference to a
 		// charted one.
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Arrive.Altitude != nil {
@@ -1425,7 +1434,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 	}
 	if lastWp == -1 {
 		// No applicable altitude restrictions found, so nothing to do here.
-		return nil
+		return WaypointCrossingConstraint{}, false
 	}
 
 	// Figure out what climb/descent rate we will use for modeling the
@@ -1543,11 +1552,11 @@ func (nav *Nav) getWaypointAltitudeConstraint() *WaypointCrossingConstraint {
 		}
 	}
 
-	return &WaypointCrossingConstraint{
+	return WaypointCrossingConstraint{
 		Altitude: alt,
 		ETA:      eta,
 		Fix:      fix,
-	}
+	}, true
 }
 
 func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) (float32, float32) {
@@ -1631,7 +1640,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av
 		return targetSpeed, 0.8 * maxAccel
 	}
 
-	if wp, speed, eta, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
+	if wpOnSID, speed, eta, ok := nav.getUpcomingSpeedRestrictionWaypoint(); nav.Heading.Assigned == nil && ok {
 		//lg.Debugf("speed: %.0f to cross %s in %.0fs", speed, wp.Fix, eta)
 		if eta < 5 { // includes unknown ETA case
 			return speed, MaximumRate
@@ -1640,7 +1649,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av
 		if speed > nav.FlightState.IAS {
 			// accelerate immediately
 			return speed, MaximumRate
-		} else if wp.OnSID {
+		} else if wpOnSID {
 			// don't accelerate past speed constraints on SIDs
 			return speed, MaximumRate
 		} else {
@@ -1730,14 +1739,15 @@ func (nav *Nav) targetAltitudeIAS() (float32, float32) {
 	return math.Lerp(x, min(cruiseIAS, 280), cruiseIAS), 0.8 * maxAccel
 }
 
-func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (av.Waypoint, float32, float32, bool) {
+func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (onSID bool, speed float32, eta float32, ok bool) {
 	haveWaypointSpeedRestriction :=
 		slices.ContainsFunc(nav.Waypoints, func(wp av.Waypoint) bool { return wp.Speed > 0 })
 
 	// Skip all this work in the (common) case that it's unnecessary.
 	if len(nav.FixAssignments) > 0 || haveWaypointSpeedRestriction {
 		var eta float32
-		for i, wp := range nav.Waypoints {
+		for i := range nav.Waypoints {
+			wp := &nav.Waypoints[i]
 			if i == 0 {
 				eta = float32(wp.ETA(nav.FlightState.Position, nav.FlightState.GS,
 					nav.FlightState.NmPerLongitude).Seconds())
@@ -1754,11 +1764,11 @@ func (nav *Nav) getUpcomingSpeedRestrictionWaypoint() (av.Waypoint, float32, flo
 			}
 
 			if spd != 0 {
-				return wp, spd, eta, true
+				return wp.OnSID, spd, eta, true
 			}
 		}
 	}
-	return av.Waypoint{}, 0, 0, false
+	return false, 0, 0, false
 }
 
 // distanceToEndOfApproach returns the remaining distance to the last
@@ -1799,7 +1809,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 		return nil
 	}
 
-	wp := nav.Waypoints[0]
+	wp := &nav.Waypoints[0]
 
 	// Are we nearly at the fix and is it time to turn for the outbound heading?
 	// First, figure out the outbound heading.
@@ -1835,7 +1845,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 
 	passedWaypoint := false
 	if wp.FlyOver {
-		dist := math.NMDistance2LL(nav.FlightState.Position, wp.Location)
+		dist := math.NMDistance2LLFast(nav.FlightState.Position, wp.Location, nav.FlightState.NmPerLongitude)
 		eta := dist / nav.FlightState.GS * 3600 // in seconds
 		passedWaypoint = eta < 2
 	} else {
@@ -1902,7 +1912,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 			if wps, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
 				// Hacky: below we peel off the current waypoint, so re-add
 				// it here so everything works out.
-				nav.Waypoints = append([]av.Waypoint{wp}, wps...)
+				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)
 			}
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
@@ -1923,7 +1933,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 		}
 
 		if wp.AirworkMinutes > 0 {
-			nav.Airwork = StartAirwork(wp, *nav)
+			nav.Airwork = StartAirwork(*wp, *nav)
 		}
 
 		// Remove the waypoint from the route unless it's the destination
@@ -1943,7 +1953,7 @@ func (nav *Nav) updateWaypoints(wind av.WindModel, fp *av.FlightPlan, lg *log.Lo
 
 		nav.Check(lg)
 
-		return &wp
+		return wp
 	}
 	return nil
 }
@@ -1971,7 +1981,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 	// Get two points that give the line of the outbound course.
 	p0 := math.LL2NM(p, nav.FlightState.NmPerLongitude)
 	hm := hdg - nav.FlightState.MagneticVariation
-	p1 := math.Add2f(p0, [2]float32{math.Sin(math.Radians(hm)), math.Cos(math.Radians(hm))})
+	p1 := math.Add2f(p0, math.SinCos(math.Radians(hm)))
 
 	// Make a ghost aircraft to use to simulate the turn.
 	nav2 := *nav
@@ -1993,7 +2003,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 		if math.Sign(initialDist) != math.Sign(curDist) {
 			// Aircraft is on the other side of the line than it started on.
-			lg.Debugf("turning now to intercept outbound in %d seconds", i)
+			//lg.Debugf("turning now to intercept outbound in %d seconds", i)
 			return true
 		}
 	}
@@ -2004,8 +2014,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 // start turning to intercept the radial.
 func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wind av.WindModel, lg *log.Logger) bool {
 	p0 = math.LL2NM(p0, nav.FlightState.NmPerLongitude)
-	p1 := math.Add2f(p0, [2]float32{math.Sin(math.Radians(hdg - nav.FlightState.MagneticVariation)),
-		math.Cos(math.Radians(hdg - nav.FlightState.MagneticVariation))})
+	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdg-nav.FlightState.MagneticVariation)))
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0, p1)
 	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
@@ -2286,7 +2295,7 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 		// constraints, set its cleared altitude to its current altitude
 		// for now.
 		if len(nav.Waypoints) > 0 && (nav.Waypoints[0].OnSTAR || nav.Waypoints[0].OnApproach) && nav.Altitude.Assigned == nil {
-			if c := nav.getWaypointAltitudeConstraint(); c != nil {
+			if _, ok := nav.getWaypointAltitudeConstraint(); ok {
 				// Don't take a direct pointer to nav.FlightState.Altitude!
 				alt := nav.FlightState.Altitude
 				nav.Altitude.Cleared = &alt
@@ -2740,7 +2749,7 @@ func (nav *Nav) prepareForChartedVisual() (*speech.RadioTransmission, error) {
 	pac0 := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
 	// Find a second point along its current course (note: ignoring wind)
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
-	dir := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+	dir := math.SinCos(math.Radians(hdg))
 	pac1 := math.Add2f(pac0, dir)
 
 	checkSegment := func(i int) *av.Waypoint {

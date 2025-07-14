@@ -647,7 +647,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	// ATPA approach volumes
 	atpaIndex := 901
 	for _, name := range util.SortedMapKeys(ss.ArrivalAirports) {
-		ap := ss.ArrivalAirports[name]
+		ap := ss.Airports[name]
 		for _, rwy := range util.SortedMapKeys(ap.ATPAVolumes) {
 			vol := ap.ATPAVolumes[rwy]
 

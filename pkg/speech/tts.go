@@ -40,7 +40,7 @@ func InitTTS(l *log.Logger) error {
 	loadPronunciations()
 
 	lg = l
-	ctx, _ := context.WithTimeout(context.TODO(), 3*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
 
 	var err error
 	client, err = texttospeech.NewClient(ctx)

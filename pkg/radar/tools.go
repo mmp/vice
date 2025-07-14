@@ -2,7 +2,6 @@ package radar
 
 import (
 	"fmt"
-	"math/bits"
 	"strings"
 
 	av "github.com/mmp/vice/pkg/aviation"
@@ -106,23 +105,6 @@ func (st *ScopeTransformations) PixelDistanceNM(nmPerLongitude float32) float32 
 
 // Other
 
-// The above stipple masks are ordered so that they match the orientation
-// of how we want them drawn on the screen, though that doesn't seem to be
-// how glPolygonStipple expects them, which is with the bits in each byte
-// reversed. I think that we should just be able to call
-// gl.PixelStorei(gl.PACK_LSB_FIRST, gl.FALSE) and provide them as above,
-// though that doesn't seem to work.  Hence, we just reverse the bytes by
-// hand.
-func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
-	var result [32]uint32
-	for i, line := range stipple {
-		a, b, c, d := uint8(line>>24), uint8(line>>16), uint8(line>>8), uint8(line)
-		a, b, c, d = bits.Reverse8(a), bits.Reverse8(b), bits.Reverse8(c), bits.Reverse8(d)
-		result[i] = uint32(a)<<24 + uint32(b)<<16 + uint32(c)<<8 + uint32(d)
-	}
-	return result
-}
-
 // pt should return nm-based coordinates
 func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]float32 {
 	prev, pok := pt(-1)
@@ -156,7 +138,7 @@ func calculateOffset(font *renderer.Font, pt func(int) ([2]float32, bool)) [2]fl
 		angle += Pi / 2
 	}
 
-	offset := math.Scale2f([2]float32{math.Sin(angle), math.Cos(angle)}, 8)
+	offset := math.Scale2f(math.SinCos(angle), 8)
 
 	h := math.NormalizeHeading(math.Degrees(angle))
 	if (h >= 160 && h < 200) || (h >= 340 || h < 20) {
@@ -187,11 +169,11 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 	// direction given by the angle a.
 	drawArrow := func(p [2]float32, a float32) {
 		aa := a + math.Radians(180+30)
-		pa := math.Add2f(p, math.Scale2f([2]float32{math.Sin(aa), math.Cos(aa)}, 0.5))
+		pa := math.Add2f(p, math.Scale2f(math.SinCos(aa), 0.5))
 		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pa, ctx.NmPerLongitude), color)
 
 		ba := a - math.Radians(180+30)
-		pb := math.Add2f(p, math.Scale2f([2]float32{math.Sin(ba), math.Cos(ba)}, 0.5))
+		pb := math.Add2f(p, math.Scale2f(math.SinCos(ba), 0.5))
 		ld.AddLine(math.NM2LL(p, ctx.NmPerLongitude), math.NM2LL(pb, ctx.NmPerLongitude), color)
 	}
 
@@ -200,7 +182,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 			// Don't draw a segment to the next waypoint (if there is one)
 			// but instead draw an arrow showing the heading.
 			a := math.Radians(float32(wp.Heading) - ctx.MagneticVariation)
-			v := [2]float32{math.Sin(a), math.Cos(a)}
+			v := math.SinCos(a)
 			v = math.Scale2f(v, 2)
 			pend := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
 			pend = math.Add2f(pend, v)
@@ -243,7 +225,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					}
 					a = math.NormalizeHeading(a)
 					r := math.Lerp(float32(i)/float32(n), r0, r1)
-					v := math.Scale2f([2]float32{math.Sin(math.Radians(a)), math.Cos(math.Radians(a))}, r)
+					v := math.Scale2f(math.SinCos(math.Radians(a)), r)
 					pnext := math.NM2LL(math.Add2f(pc, v), ctx.NmPerLongitude)
 					ld.AddLine(pprev, pnext, color)
 					pprev = pnext
@@ -313,7 +295,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					var prev [2]float32
 					step := util.Select(a0 < a1, 1, -1)
 					for i := a0; i != a1; i += step {
-						v := [2]float32{math.Sin(math.Radians(float32(i))), math.Cos(math.Radians(float32(i)))}
+						v := math.SinCos(math.Radians(float32(i)))
 						pt := math.Add2f(center, v)
 						if i != a0 {
 							addseg(prev, pt)

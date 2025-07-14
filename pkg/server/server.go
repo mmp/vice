@@ -5,18 +5,13 @@
 package server
 
 import (
-	"fmt"
 	"net"
 	"net/rpc"
 	"os"
-	"runtime/pprof"
-	"slices"
-	"time"
+	"strconv"
 
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/util"
-
-	"github.com/shirou/gopsutil/cpu"
 )
 
 // Version history 0-7 not explicitly recorded
@@ -52,7 +47,8 @@ import (
 // 37: rework STARS flight plan (et al)
 // 38: rework STARS flight plan (et al) ongoing
 // 39: speech v0.1
-const ViceSerializeVersion = 39
+// 40: clean up what's transmitted server->client at initial connect/spawn, gob->msgpack
+const ViceSerializeVersion = 40
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
@@ -67,45 +63,8 @@ type ServerLaunchConfig struct {
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
-	const nhist = 10
-	const limit = 95
-	var history []float64
-	go func() {
-		t := time.Tick(1 * time.Second)
-		for {
-			<-t
-
-			if usage, err := cpu.Percent(0, false); err != nil {
-				lg.Errorf("cpu.Percent: %v", err)
-			} else {
-				history = append(history, usage[0])
-				if n := len(history); n > nhist {
-					history = history[:nhist]
-
-					if slices.Min(history) > limit {
-						fmt.Printf("Warning: last %d ticks over %d utilization: %#v\n", nhist, limit, history)
-
-						f, err := os.CreateTemp(".", "threaddump-*.txt")
-						if err != nil {
-							panic(err)
-						}
-						fmt.Println("Dumping to ", f.Name())
-
-						fmt.Fprint(f, util.DumpHeldMutexes(lg))
-						fmt.Fprint(f, "\n")
-
-						pprof.Lookup("goroutine").WriteTo(f, 2)
-
-						f.Close()
-
-						panic("bye")
-					} else if slices.Min(history[:n-3]) > limit {
-						fmt.Printf("Warning: last 3 ticks over %d utilization: %#v\n", limit, history)
-					}
-				}
-			}
-		}
-	}()
+	util.MonitorCPUUsage(95, true /* panic if wedged */, lg)
+	util.MonitorMemoryUsage(128 /* trigger MB */, 64 /* delta MB */, lg)
 
 	_, server, e := makeServer(config, lg)
 	if e.HaveErrors() {
@@ -137,7 +96,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 			return 0, nil, errorLogger
 		}
 		rpcPort = listener.Addr().(*net.TCPAddr).Port
-	} else if listener, err = net.Listen("tcp", fmt.Sprintf(":%d", config.Port)); err == nil {
+	} else if listener, err = net.Listen("tcp", ":"+strconv.Itoa(config.Port)); err == nil {
 		rpcPort = config.Port
 	} else {
 		errorLogger.Error(err)
@@ -173,7 +132,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 			} else if cc, err := util.MakeCompressedConn(util.MakeLoggingConn(conn, lg)); err != nil {
 				lg.Errorf("MakeCompressedConn: %v", err)
 			} else {
-				codec := util.MakeGOBServerCodec(cc, lg)
+				codec := util.MakeMessagepackServerCodec(cc, lg)
 				codec = util.MakeLoggingServerCodec(conn.RemoteAddr().String(), codec, lg)
 				go server.ServeCodec(codec)
 			}

@@ -386,7 +386,8 @@ func (m *ModalDialogBox) Draw() {
 	imgui.OpenPopupStr(title)
 
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{400, 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
+	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 400, dpiScale * 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
 			imgui.SetKeyboardFocusHere()

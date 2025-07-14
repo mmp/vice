@@ -1,0 +1,40 @@
+name: Run All Scenarios
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  run-scenarios:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
+        cache-dependency-path: go.sum
+
+    - name: Install Linux dependencies
+      run: |
+        sudo apt update
+        sudo apt install xorg-dev libsdl2-dev libsystemd-dev
+
+    - name: Build vice
+      run: go build -o vice .
+    
+    - name: Run all scenarios
+      run: ./run-all-scenarios.sh ./vice
+    
+    - name: Upload logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: scenario-logs
+        path: |
+          scenario-test-*.txt

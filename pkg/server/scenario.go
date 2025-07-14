@@ -22,6 +22,8 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+
+	"github.com/brunoga/deep"
 )
 
 type scenarioGroup struct {
@@ -150,7 +152,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
-	for i, rwy := range s.DepartureRunways {
+	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
 
 		if airportExits[rwy.Airport] == nil {
@@ -163,7 +165,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			if routes, ok := ap.DepartureRoutes[rwy.Runway]; !ok {
 				e.ErrorString("runway departure routes not found")
 			} else {
-				s.DepartureRunways[i].ExitRoutes = routes
 				for exit := range routes {
 					// It's fine if multiple active runways cover the exit.
 					airportExits[rwy.Airport][exit] = nil
@@ -242,7 +243,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			} else {
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
-				for fix, route := range rwy.ExitRoutes {
+				exitRoutes := ap.DepartureRoutes[rwy.Runway]
+				for fix, route := range exitRoutes {
 					if rwy.Category == "" || ap.ExitCategories[fix] == rwy.Category {
 						if activeAirportSIDs[rwy.Airport] == nil {
 							activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
@@ -273,11 +275,22 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		if ctrl, ok := sg.ControlPositions[s.SoloController]; ok {
 			if ctrl.DefaultAirport == "" {
 				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+			} else {
+				// Validate that default airport exists
+				if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+					e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
+				}
 			}
 		}
 		for _, callsign := range s.SplitConfigurations.Splits() {
-			if ctrl, ok := sg.ControlPositions[callsign]; ok && ctrl.DefaultAirport == "" {
-				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+			if ctrl, ok := sg.ControlPositions[callsign]; ok {
+				if ctrl.DefaultAirport == "" {
+					e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+				} else {
+					if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+						e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
+					}
+				}
 			}
 		}
 	}
@@ -461,6 +474,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			for _, ar := range flow.Arrivals {
 				addController(ar.InitialController)
 				addControllersFromWaypoints(ar.Waypoints)
+				for _, rwys := range ar.RunwayWaypoints {
+					for _, rwyWps := range rwys {
+						addControllersFromWaypoints(rwyWps)
+					}
+				}
 			}
 			for _, of := range flow.Overflights {
 				addController(of.InitialController)
@@ -786,6 +804,13 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			e.ErrorString("\"scope_char\" may only be a single character")
 		}
 
+		// Validate default airport if specified
+		if ctrl.DefaultAirport != "" {
+			if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+				e.ErrorString("\"default_airport\" %q is not an airport in this scenario", ctrl.DefaultAirport)
+			}
+		}
+
 		e.Pop()
 	}
 
@@ -933,6 +958,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		for i := range flow.Arrivals {
 			rewrite(&flow.Arrivals[i].InitialController)
 			rewriteWaypoints(flow.Arrivals[i].Waypoints)
+			for _, rwyWps := range flow.Arrivals[i].RunwayWaypoints {
+				for _, wps := range rwyWps {
+					rewriteWaypoints(wps)
+				}
+			}
 		}
 		for i := range flow.Overflights {
 			rewrite(&flow.Overflights[i].InitialController)
@@ -1183,6 +1213,37 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 				s.MonitoredBeaconCodeBlocks = append(s.MonitoredBeaconCodeBlocks, code)
 			}
 		}
+	}
+
+	if s.UntrackedPositionSymbolOverrides.CodeRangesString != "" {
+		e.Push("untracked_position_symbol_overrides")
+		for c := range strings.SplitSeq(s.UntrackedPositionSymbolOverrides.CodeRangesString, ",") {
+			low, high, ok := strings.Cut(c, "-")
+
+			var err error
+			var r [2]av.Squawk
+			r[0], err = av.ParseSquawk(low)
+			if err != nil {
+				e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", low, err)
+			} else if ok {
+				r[1], err = av.ParseSquawk(high)
+				if err != nil {
+					e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", high, err)
+				} else if r[0] > r[1] {
+					e.ErrorString("first code %q in range must be less than or equal to second %q", low, high)
+				}
+			} else {
+				r[1] = r[0]
+			}
+			s.UntrackedPositionSymbolOverrides.CodeRanges = append(s.UntrackedPositionSymbolOverrides.CodeRanges, r)
+		}
+
+		if len(s.UntrackedPositionSymbolOverrides.Symbol) == 0 {
+			e.ErrorString("\"symbol\" must be provided if \"untracked_position_symbol_overrides\" is specified")
+		} else if len(s.UntrackedPositionSymbolOverrides.Symbol) > 1 {
+			e.ErrorString("only one character may be provided for \"symbol\"")
+		}
+		e.Pop()
 	}
 
 	seenIds := make(map[string][]string)
@@ -1615,4 +1676,114 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	return scenarioGroups, simConfigurations, mapManifests
+}
+
+// ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
+func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
+	var e util.ErrorLogger
+	scenarioGroups, _, _ := LoadScenarioGroups(false, scenarioFilename, videoMapFilename, &e, lg)
+	if e.HaveErrors() {
+		return nil, fmt.Errorf("failed to load scenarios")
+	}
+
+	var scenarios []string
+	for tracon, groups := range scenarioGroups {
+		for _, group := range groups {
+			for scenarioName := range group.Scenarios {
+				scenarios = append(scenarios, tracon+"/"+scenarioName)
+			}
+		}
+	}
+
+	slices.Sort(scenarios)
+	return scenarios, nil
+}
+
+// LookupScenario finds a scenario configuration by TRACON/scenario name
+func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[string]*scenarioGroup, configs map[string]map[string]*Configuration) (*Configuration, *scenarioGroup, error) {
+	if groups, ok := scenarioGroups[tracon]; ok {
+		for _, group := range groups {
+			if _, ok := group.Scenarios[scenarioName]; ok {
+				if cfgs, ok := configs[tracon]; ok {
+					for _, cfg := range cfgs {
+						if cfg.ScenarioConfigs[scenarioName] != nil {
+							return cfg, group, nil
+						}
+					}
+				}
+			}
+		}
+	}
+	return nil, nil, fmt.Errorf("scenario not found: %s/%s", tracon, scenarioName)
+}
+
+// CreateLaunchConfig creates a properly initialized LaunchConfig from scenario data
+func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.LaunchConfig {
+	// Create VFR airports map
+	vfrAirports := make(map[string]*av.Airport)
+	for name, ap := range scenarioGroup.Airports {
+		if ap.VFRRateSum() > 0 {
+			vfrAirports[name] = ap
+		}
+	}
+
+	// Check for VFR reporting regions
+	haveVFRReportingRegions := false
+	for _, cfg := range scenarioGroup.STARSFacilityAdaptation.ControllerConfigs {
+		if cfg.FlightFollowingAirspace != nil {
+			haveVFRReportingRegions = true
+			break
+		}
+	}
+
+	// Create proper LaunchConfig
+	return sim.MakeLaunchConfig(
+		scenario.DepartureRunways,
+		util.Select(scenario.VFRRateScale == nil, 1.0, *scenario.VFRRateScale),
+		vfrAirports,
+		scenario.InboundFlowDefaultRates,
+		haveVFRReportingRegions,
+	)
+}
+
+// CreateNewSimConfiguration creates a NewSimConfiguration from scenario components
+func CreateNewSimConfiguration(config *Configuration, scenarioGroup *scenarioGroup, scenarioName string) (*sim.NewSimConfiguration, error) {
+	scenario, ok := scenarioGroup.Scenarios[scenarioName]
+	if !ok {
+		return nil, fmt.Errorf("scenario %s not found in group", scenarioName)
+	}
+
+	simConfig := config.ScenarioConfigs[scenarioName]
+	if simConfig == nil {
+		return nil, fmt.Errorf("scenario configuration %s not found", scenarioName)
+	}
+
+	newSimConfig := &sim.NewSimConfiguration{
+		TRACON:                  scenarioGroup.TRACON,
+		Description:             scenarioName,
+		LaunchConfig:            CreateLaunchConfig(scenario, scenarioGroup),
+		DepartureRunways:        simConfig.DepartureRunways,
+		ArrivalRunways:          simConfig.ArrivalRunways,
+		PrimaryAirport:          simConfig.PrimaryAirport,
+		Airports:                scenarioGroup.Airports,
+		Fixes:                   scenarioGroup.Fixes,
+		VFRReportingPoints:      scenarioGroup.VFRReportingPoints,
+		ControlPositions:        scenarioGroup.ControlPositions,
+		PrimaryController:       scenario.SoloController,
+		SignOnPositions:         scenarioGroup.ControlPositions,
+		InboundFlows:            scenarioGroup.InboundFlows,
+		STARSFacilityAdaptation: deep.MustCopy(scenarioGroup.STARSFacilityAdaptation),
+		ReportingPoints:         scenarioGroup.ReportingPoints,
+		MagneticVariation:       scenarioGroup.MagneticVariation,
+		NmPerLongitude:          scenarioGroup.NmPerLongitude,
+		Wind:                    scenario.Wind,
+		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.STARSFacilityAdaptation.Center, scenario.Center),
+		Range:                   util.Select(scenario.Range == 0, scenarioGroup.STARSFacilityAdaptation.Range, scenario.Range),
+		DefaultMaps:             scenario.DefaultMaps,
+		Airspace:                scenarioGroup.Airspace,
+		ControllerAirspace:      scenario.Airspace,
+		VirtualControllers:      scenario.VirtualControllers,
+	}
+
+	return newSimConfig, nil
 }

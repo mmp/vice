@@ -9,7 +9,13 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime"
 	"runtime/pprof"
+	"slices"
+	"time"
+
+	"github.com/mmp/vice/pkg/log"
+	"github.com/shirou/gopsutil/cpu"
 )
 
 type Profiler struct {
@@ -86,5 +92,87 @@ func (p *Profiler) Cleanup() {
 			fmt.Fprintf(os.Stderr, "unable to write memory profile file: %v", err)
 		}
 		p.mem.Close()
+	}
+}
+
+func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
+	const nhist = 10
+	var history []float64
+	go func() {
+		t := time.Tick(1 * time.Second)
+		for {
+			<-t
+
+			if usage, err := cpu.Percent(0, false); err != nil {
+				lg.Errorf("cpu.Percent: %v", err)
+			} else {
+				history = append(history, usage[0])
+				if n := len(history); n > nhist {
+					history = history[1:]
+
+					if slices.Min(history) > float64(limit) {
+						lg.Warnf("Last %d ticks over %d utilization: %#v. Dumping", nhist, limit, history)
+
+						writeProfile("mutex", lg)
+
+						filename := fmt.Sprintf("dump%d.txt", time.Now().Unix())
+						if f, err := os.Create(filename); err != nil {
+							lg.Errorf("failed to create dump file: %v", err)
+						} else {
+							fmt.Fprint(f, DumpHeldMutexes(lg))
+							fmt.Fprint(f, "\n")
+
+							pprof.Lookup("goroutine").WriteTo(f, 2)
+
+							f.Close()
+						}
+
+						if panicIfWedged {
+							panic("bye")
+						}
+					} else if slices.Min(history[:n-3]) > float64(limit) {
+						lg.Warnf("Last 3 ticks over %d utilization: %#v\n", limit, history)
+					}
+				}
+			}
+		}
+	}()
+}
+
+// MonitorMemoryUsage launches a goroutine that periodically checks how much memory is in use; if it's above
+// the threshold, it writes out a memory profile file and then bumps the threshold by the given increment.
+func MonitorMemoryUsage(triggerMB int, incMB int, lg *log.Logger) {
+	go func() {
+		threshold := uint64(triggerMB) * 1024 * 1024
+		delta := uint64(incMB) * 1024 * 1024
+
+		t := time.Tick(5 * time.Second)
+		for {
+			<-t
+
+			var memStats runtime.MemStats
+			runtime.ReadMemStats(&memStats)
+
+			heapAlloc := memStats.HeapAlloc
+			if heapAlloc > threshold {
+				threshold += delta
+				lg.Warn("Writing heap profile: heapAlloc=%d MB", heapAlloc/(1024*1024))
+				writeProfile("heap", lg)
+			}
+		}
+	}()
+}
+
+func writeProfile(ptype string, lg *log.Logger) {
+	filename := fmt.Sprintf("%s_%d.pprof", ptype, time.Now().Unix())
+	if f, err := os.Create(filename); err != nil {
+		lg.Errorf("failed to create %q profile file: %v", ptype, err)
+	} else {
+		if err := pprof.Lookup(ptype).WriteTo(f, 0); err != nil {
+			lg.Errorf("failed to write %q profile: %v", ptype, err)
+		} else {
+			lg.Warnf("%q profile written to %s", ptype, filename)
+		}
+		f.Close()
 	}
 }

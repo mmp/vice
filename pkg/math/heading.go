@@ -141,8 +141,14 @@ func HeadingAsHour(heading float32) int {
 func NormalizeHeading(h float32) float32 {
 	if h < 0 {
 		return 360 - NormalizeHeading(-h)
+	} else {
+		// Don't bother calling out to Mod(); assume that we'll only be
+		// slightly out of range at worst.
+		for h >= 360 {
+			h -= 360
+		}
+		return h
 	}
-	return Mod(h, 360)
 }
 
 func OppositeHeading(h float32) float32 {

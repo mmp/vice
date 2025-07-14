@@ -74,7 +74,6 @@
     "North": {
       "arrivals": [
         {
-          "spawn": "N048.02.18.441,W111.44.31.655",
           "waypoints": "N048.02.18.441,W111.44.31.655/ho gtf",
           "route": "N048.02.18.441,W111.44.31.655 GTF",
           "initial_controller": "SLC_03_CTR",
@@ -107,7 +106,6 @@
     "South": {
       "arrivals": [
         {
-          "spawn": "N046.51.34.683,W111.16.52.966",
           "waypoints": "N046.51.34.683,W111.16.52.966/ho gtf",
           "route": "N046.51.34.683,W111.16.52.9665 GTF",
           "initial_controller": "SLC_03_CTR",
