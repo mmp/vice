@@ -396,7 +396,7 @@ func AvailableFontSizes(name string) []int {
 }
 
 func loadFontBytes(path string) []byte {
-	b, err := fs.ReadFile(*util.ExecutableResourcesFS(), path)
+	b, err := fs.ReadFile(util.GetResourcesFS(), path)
 	if err != nil {
 		panic(err)
 	}

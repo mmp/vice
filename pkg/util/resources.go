@@ -87,7 +87,7 @@ func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem f
 		})
 }
 
-func ExecutableResourcesFS() *fs.StatFS {
+func executableResourcesFS() *fs.StatFS {
 	path, err := os.Executable()
 	if err != nil {
 		panic(err)
