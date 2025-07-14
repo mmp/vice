@@ -57,6 +57,12 @@ jobs:
         go install github.com/tc-hib/go-winres@latest
         go-winres make --in windows/winres.json
 
+    - name: Bundle resources
+      env:
+         GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+      run: |
+        go run util/bundleresources.go
+
     - name: Build
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt

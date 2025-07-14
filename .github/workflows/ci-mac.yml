@@ -38,6 +38,8 @@ jobs:
       run: brew install sdl2 pkg-config glfw
 
     - name: Bundle resources
+      env:
+         GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
         go run util/bundleresources.go
 

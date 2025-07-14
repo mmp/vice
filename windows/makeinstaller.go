@@ -203,11 +203,7 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <ComponentRef Id="SDLDLL" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
-      <ComponentRef Id="ResourcesFilesId" />
-      <ComponentRef Id="AudioId" />
       <ComponentRef Id="FontsId" />
-      <ComponentRef Id="ScenariosId" />
-      <ComponentRef Id="VideoMapsId" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
