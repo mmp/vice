@@ -341,35 +341,54 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 	// Launch worker goroutines
 	ws, totalBytes := launchWorkers(resourcesDir, manifest)
 
-	client := &ResourcesDownloadModalClient{totalFiles: len(manifest), totalBytes: totalBytes}
-	dialog := NewModalDialogBox(client, plat)
+	if plat != nil {
+		client := &ResourcesDownloadModalClient{totalFiles: len(manifest), totalBytes: totalBytes}
+		dialog := NewModalDialogBox(client, plat)
 
-loop:
-	for {
-		// Draw download progress dialog box
-		plat.ProcessEvents()
-		plat.NewFrame()
-		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
-		dialog.Draw()
-		imgui.PopFont()
+	loop:
+		for {
+			// Draw download progress dialog box
+			plat.ProcessEvents()
+			plat.NewFrame()
+			imgui.NewFrame()
+			imgui.PushFont(&ui.font.Ifont)
+			dialog.Draw()
+			imgui.PopFont()
 
-		imgui.Render()
-		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
-		r.RenderCommandBuffer(&cb)
-		plat.PostRender()
+			imgui.Render()
+			var cb renderer.CommandBuffer
+			renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
+			r.RenderCommandBuffer(&cb)
+			plat.PostRender()
 
-		select {
-		case <-ws.doneChan:
-			break loop
-		case nb := <-ws.finishedChan:
-			client.currentFile++
-			client.downloadedBytes += nb
-		case e := <-ws.errorsChan:
-			client.errors = append(client.errors, e)
-		default:
-			break
+			select {
+			case <-ws.doneChan:
+				break loop
+			case nb := <-ws.finishedChan:
+				client.currentFile++
+				client.downloadedBytes += nb
+			case e := <-ws.errorsChan:
+				client.errors = append(client.errors, e)
+			default:
+				break
+			}
+		}
+	} else {
+		nfiles, nbytes := 0, int64(0)
+	loopb:
+		for {
+			select {
+			case <-ws.doneChan:
+				break loopb
+			case nb := <-ws.finishedChan:
+				nfiles++
+				nbytes += nb
+				fmt.Printf("%d files (%d bytes) downloaded\n", nfiles, nbytes)
+			case e := <-ws.errorsChan:
+				fmt.Printf("Error: %v\n", e)
+			default:
+				break
+			}
 		}
 	}
 
