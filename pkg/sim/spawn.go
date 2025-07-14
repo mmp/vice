@@ -1180,8 +1180,16 @@ func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps a
 }
 
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
-	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, s.EnforceUniqueCallsignSuffix,
-		slices.Collect(maps.Keys(s.Aircraft)), lg)
+	var callsigns []av.ADSBCallsign
+	if s.EnforceUniqueCallsignSuffix {
+		// Collect all currently in-use or soon-to-be in-use callsigns.
+		callsigns = slices.Collect(maps.Keys(s.Aircraft))
+		for _, fp := range s.STARSComputer.FlightPlans {
+			callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
+		}
+	}
+
+	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, lg)
 
 	if actype == "" {
 		return nil, ""

@@ -203,8 +203,8 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"PSA5342": nil,
 }
 
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, enforceUniqueSuffix bool,
-	currentCallsigns []ADSBCallsign, lg *log.Logger) (actype, callsign string) {
+// currentCallsigns will be empty if we don't care about unique suffixes.
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -271,7 +271,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, enforceUniqueSuf
 		} else if slices.Contains(currentCallsigns, ADSBCallsign(callsign+id)) {
 			id = ""
 			continue
-		} else if enforceUniqueSuffix && slices.ContainsFunc(currentCallsigns, func(cs ADSBCallsign) bool {
+		} else if slices.ContainsFunc(currentCallsigns, func(cs ADSBCallsign) bool {
 			suffix := (callsign + id)[len(callsign+id)-2:]
 			return strings.HasSuffix(string(cs), suffix)
 		}) {
