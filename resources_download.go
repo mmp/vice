@@ -78,40 +78,6 @@ func (r *ResourcesDownloadModalClient) Draw() int {
 	return -1
 }
 
-func copyDir(src, dst string) error {
-	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		relPath, err := filepath.Rel(src, path)
-		if err != nil {
-			return err
-		}
-
-		dstPath := filepath.Join(dst, relPath)
-
-		if info.IsDir() {
-			return os.MkdirAll(dstPath, info.Mode())
-		}
-
-		srcFile, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-		defer srcFile.Close()
-
-		dstFile, err := os.Create(dstPath)
-		if err != nil {
-			return err
-		}
-		defer dstFile.Close()
-
-		_, err = io.Copy(dstFile, srcFile)
-		return err
-	})
-}
-
 func calculateSHA256(path string) (string, error) {
 	file, err := os.Open(path)
 	if err != nil {
@@ -125,19 +91,6 @@ func calculateSHA256(path string) (string, error) {
 	}
 
 	return hex.EncodeToString(hasher.Sum(nil)), nil
-}
-
-func migrateResourcesIfNeeded(resourcesDir string) {
-	if _, err := os.Stat("./resources"); err == nil {
-		if _, err := os.Stat(resourcesDir); os.IsNotExist(err) {
-			if err := os.MkdirAll(resourcesDir, 0755); err != nil {
-				panic(fmt.Sprintf("failed to create resources directory: %v", err))
-			}
-			if err := copyDir("./resources", resourcesDir); err != nil {
-				panic(fmt.Sprintf("failed to copy resources: %v", err))
-			}
-		}
-	}
 }
 
 func checkManifestUpToDate(manifestPath string) bool {
@@ -321,8 +274,6 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 
 	resourcesDir := filepath.Join(configDir, "vice", "resources")
 	manifestPath := filepath.Join(resourcesDir, "manifest.json")
-
-	migrateResourcesIfNeeded(resourcesDir)
 
 	var manifest map[string]string
 	if err := json.Unmarshal([]byte(resourcesManifest), &manifest); err != nil {

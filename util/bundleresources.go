@@ -2,6 +2,12 @@
 // Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
+// bundleresources goes through the current resources directory and uploads
+// files whose contents aren't already in the GCS bucket. It then generates a
+// JSON manifest that records the filenames and their associated hashes; this
+// is then used by vice at runtime to make sure it has all of the resources
+// locally.
+
 package main
 
 import (
@@ -79,7 +85,9 @@ func listExistingObjects(ctx context.Context, bucket *storage.BucketHandle) (map
 	return existingObjects, nil
 }
 
-func uploadToGCS(ctx context.Context, bucket *storage.BucketHandle, path, hash string, existing map[string]bool) (bool, error) {
+// Upload the file at the given path (with associated SHA256 hash) to the
+// GCS bucket, unless that hash has already been uploaded.
+func maybeUploadToGCS(ctx context.Context, bucket *storage.BucketHandle, path, hash string, existing map[string]bool) (bool, error) {
 	if existing[hash] {
 		// The object exists already
 		return false, nil
@@ -113,6 +121,7 @@ func main() {
 	if credsJSON == "" {
 		log.Fatal("GCS_UPLOAD_CREDENTIALS environment variable not set")
 	}
+
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
 	if err != nil {
@@ -171,7 +180,7 @@ func main() {
 					log.Fatalf("failed to compute hash for %s: %v", path, err)
 				}
 
-				uploaded, err := uploadToGCS(ctx, bucket, path, hash, existingObjects)
+				uploaded, err := maybeUploadToGCS(ctx, bucket, path, hash, existingObjects)
 
 				resultsChan <- uploadResult{
 					path:     path,
@@ -218,11 +227,11 @@ func main() {
 		log.Fatal("Some uploads failed")
 	}
 
+	// Generate and write the manifest.
 	manifestData, err := json.MarshalIndent(manifest, "", "  ")
 	if err != nil {
 		log.Fatalf("Failed to marshal manifest: %v", err)
 	}
-
 	if err := os.WriteFile(outFile, manifestData, 0644); err != nil {
 		log.Fatalf("%s: failed to write manifest: %v", outFile, err)
 	}
