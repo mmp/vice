@@ -113,18 +113,3 @@ func Clamp[T constraints.Ordered](x T, low T, high T) T {
 func Lerp(x, a, b float32) float32 {
 	return (1-x)*a + x*b
 }
-
-// GCD calculates the greatest common divisor of a and b
-func GCD(a, b int) int {
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
-	}
-	return a
-}
-
-// LCM calculates the least common multiple of a and b
-func LCM(a, b int) int {
-	return a / GCD(a, b) * b
-}
