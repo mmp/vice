@@ -75,7 +75,7 @@ func main() {
 		return files
 	}
 
-	r.FontFiles = initFiles("resources/fonts/*.zst")
+	r.FontFiles = initFiles("fonts/*.zst")
 
 	tmpl, err := template.New("installer.wxs").Parse(xmlTemplate)
 	if err != nil {
@@ -127,13 +127,11 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="libstdcpp" Guid='a7080cc5-8ddf-45b9-bf09-466652cc8b06'>
             <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
           </Component>
-          <Directory Id="ResourcesFolder" Name="resources">
-            <Directory Id="MyFontsFolder" Name="fonts">
-              <Component Id="FontsId" Guid="263928e7-8110-4fae-8030-2ee477cb0595">
+          <Directory Id="MyFontsFolder" Name="fonts">
+            <Component Id="FontsId" Guid="333b7858-8503-4310-b039-e1341613dada">
 {{range .FontFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
 {{end}}
-              </Component>
-            </Directory>
+            </Component>
           </Directory>
         </Directory>
 

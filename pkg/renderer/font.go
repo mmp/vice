@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"fmt"
 	"image"
+	"io/fs"
 	gomath "math"
 	"runtime"
 	"sort"
@@ -20,7 +21,14 @@ import (
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/IconFontCppHeaders"
+)
+import (
+	"bytes"
+	"io"
+	"os"
+	"path/filepath"
 )
 
 var ttfPinner runtime.Pinner
@@ -250,13 +258,13 @@ func FontsInit(r Renderer, p platform.Platform) {
 	}
 
 	// Decompress and get the glyph ranges for the Font Awesome fonts just once.
-	faTTF := util.LoadResourceBytes("fonts/Font Awesome 5 Free-Solid-900.otf.zst")
-	fabrTTF := util.LoadResourceBytes("fonts/Font Awesome 5 Brands-Regular-400.otf.zst")
+	faTTF := loadFont("Font Awesome 5 Free-Solid-900.otf.zst")
+	fabrTTF := loadFont("Font Awesome 5 Brands-Regular-400.otf.zst")
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
 	add := func(filename string, mono bool, name string) {
-		ttf := util.LoadResourceBytes("fonts/" + filename)
+		ttf := loadFont(filename)
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			sp := float32(size)
 			if runtime.GOOS == "windows" {
@@ -385,4 +393,70 @@ func AvailableFontSizes(name string) []int {
 		}
 	}
 	return util.SortedMapKeys(sizes)
+}
+
+var fontsFS fs.StatFS
+
+func init() {
+	path, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+
+	dir := filepath.Dir(path)
+	if runtime.GOOS == "darwin" {
+		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
+	} else {
+		dir = filepath.Join(dir, "resources")
+	}
+
+	// Is there a "fonts" directory in the FS?
+	check := func(fs fs.StatFS) bool {
+		info, err := fs.Stat("fonts")
+		return err == nil && info.IsDir()
+	}
+
+	fsys := os.DirFS(dir).(fs.StatFS)
+	if check(fsys) {
+		fontsFS = fsys
+		return
+	}
+
+	// Try CWD as well as CWD/../..; these are useful for development and
+	// debugging but shouldn't be needed for release builds.
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	for _, alts := range []string{".", "../.."} {
+		dir = filepath.Join(wd, alts)
+
+		fsys = os.DirFS(dir).(fs.StatFS)
+		if check(fsys) {
+			fontsFS = fsys
+			return
+		}
+	}
+	panic("unable to find fonts")
+}
+
+func loadFont(name string) []byte {
+	b, err := fs.ReadFile(fontsFS, "fonts/"+name)
+	if err != nil {
+		panic(err)
+	}
+
+	zr, err := zstd.NewReader(bytes.NewReader(b))
+	if err != nil {
+		panic(err)
+	}
+
+	b, err = io.ReadAll(zr)
+	if err != nil {
+		panic(err)
+	}
+
+	zr.Close()
+
+	return b
 }

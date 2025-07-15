@@ -81,7 +81,7 @@ jobs:
         mkdir Vice.app/Contents/Resources
         cp icon.icns Vice.app/Contents/Resources
         mkdir -p Vice.app/Contents/Resources/fonts
-        cp resources/fonts/*zst Vice.app/Contents/Resources/fonts/
+        cp fonts/*zst Vice.app/Contents/Resources/fonts/
 
     - name: Check Secrets
     # The secrets aren't available for PRs but we don't want the build to fail just because of that...
