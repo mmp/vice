@@ -63,6 +63,55 @@ func WrapText(s string, columnLimit int, indent int, wrapAll bool) (string, int)
 	return result.String(), lines
 }
 
+func WrapTextNoSpace(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
+	var accum, result strings.Builder
+	var wrapLine bool
+	column := 0
+	lines := 1
+
+	flush := func() {
+		if wrapLine && column > columnLimit {
+			result.WriteRune('\n')
+			lines++
+			for i := 0; i < indent; i++ {
+				result.WriteRune(' ')
+			}
+			// reset column to reflect indent + what’s in accum
+			column = indent + accum.Len()
+		}
+		result.WriteString(accum.String())
+		accum.Reset()
+	}
+
+	for _, ch := range s {
+		// If wrapAll isn't enabled, then if the line starts with a space,
+		// assume it is preformatted and pass it through unchanged.
+		if column == 0 {
+			wrapLine = wrapAll || ch != ' '
+		}
+
+		accum.WriteRune(ch)
+		column++
+
+		// NEW: mid-word wrap when wrapAll==true
+		if wrapAll && column > columnLimit {
+			wrapLine = true
+			flush()
+		}
+
+		if ch == '\n' {
+			flush()
+			column = 0
+			lines++
+		} else if ch == ' ' {
+			flush()
+		}
+	}
+
+	flush()
+	return result.String(), lines
+}
+
 // StopShouting turns text of the form "UNITED AIRLINES" to "United Airlines"
 func StopShouting(orig string) string {
 	var s strings.Builder
