@@ -403,9 +403,6 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 			// These can only be set for non-active flight plans: 5-171
 			return ErrTrackIsActive
 		}
-		if fp.HandoffTrackController != "" {
-			return ErrTrackIsBeingHandedOff
-		}
 
 		if spec.GlobalLeaderLineDirection.IsSet {
 			s.eventStream.Post(Event{
@@ -655,6 +652,12 @@ func (s *Sim) handoffTrack(fp *STARSFlightPlan, toTCP string) {
 	acceptDelay := 4 + s.Rand.Intn(10)
 	s.Handoffs[fp.ACID] = Handoff{
 		AutoAcceptTime: s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
+	}
+	if fp.TypeOfFlight == av.FlightTypeDeparture && !s.isActiveHumanController(fp.TrackingController) && !s.isActiveHumanController(toTCP) {
+		if callsign, ok := s.callsignForACID(fp.ACID); ok {
+			// aircraft is a departure that will likely never talk to a human, send it on course (mainly so it climbs up to cruise)
+			s.enqueueDepartOnCourse(callsign)
+		}
 	}
 }
 
@@ -915,7 +918,7 @@ func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 }
 
 func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
-	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
+	return s.dispatchFlightPlanCommand(tcp, acid,
 		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
 				return av.ErrNotPointedOutToMe
@@ -923,7 +926,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) {
+		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -940,6 +943,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 			}
 
 			delete(s.PointOuts, acid)
+			return nil
 		})
 }
 
@@ -1266,7 +1270,7 @@ func (s *Sim) ClearedApproach(tcp string, callsign av.ADSBCallsign, approach str
 				resp, err = ac.ClearedApproach(approach, s.lg)
 			}
 
-			if err == nil {
+			if err == nil && ac.IsAssociated() {
 				ac.ApproachController = ac.STARSFlightPlan.ControllingController
 			}
 			return setTransmissionController(tcp, resp)
@@ -1332,7 +1336,7 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) *speech.RadioTransmission {
 			result := ac.ContactTower(s.lg)
-			if result.Type != speech.RadioTransmissionUnexpected {
+			if result.Type != speech.RadioTransmissionUnexpected && ac.IsAssociated() {
 				ac.STARSFlightPlan.ControllingController = "_TOWER"
 			}
 			return setTransmissionController(tcp, result)
@@ -1369,7 +1373,9 @@ func (s *Sim) RadarServicesTerminated(tcp string, callsign av.ADSBCallsign) erro
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
 
 			// Leave our frequency
-			ac.STARSFlightPlan.ControllingController = ""
+			if ac.IsAssociated() {
+				ac.STARSFlightPlan.ControllingController = ""
+			}
 
 			return setTransmissionController(tcp, speech.MakeReadbackTransmission("[radar services terminated, seeya|radar services terminated, squawk VFR]"))
 		})

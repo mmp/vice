@@ -61,7 +61,6 @@ var errorStringToError = map[string]error{
 	sim.ErrInvalidFix.Error():                   sim.ErrInvalidFix,
 	sim.ErrInvalidRestrictionAreaIndex.Error():  sim.ErrInvalidRestrictionAreaIndex,
 	sim.ErrNoMatchingFlight.Error():             sim.ErrNoMatchingFlight,
-	sim.ErrNoMoreListIndices.Error():            sim.ErrNoMoreListIndices,
 	sim.ErrNotClearedForApproach.Error():        sim.ErrNotClearedForApproach,
 	sim.ErrNotFlyingRoute.Error():               sim.ErrNotFlyingRoute,
 	sim.ErrNotLaunchController.Error():          sim.ErrNotLaunchController,

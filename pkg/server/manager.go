@@ -13,6 +13,7 @@ import (
 	gomath "math"
 	"net"
 	"net/http"
+	"net/http/pprof"
 	"os"
 	"runtime"
 	"strconv"
@@ -102,7 +103,8 @@ type NewSimConfiguration struct {
 	RequirePassword bool
 	Password        string
 
-	LiveWeather bool
+	LiveWeather                 bool
+	EnforceUniqueCallsignSuffix bool
 
 	AllowInstructorRPO  bool
 	Instructor          bool
@@ -229,6 +231,8 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 		ControllerToken: token,
 		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
 	}
+	result.PruneForClient()
+
 	return nil
 }
 
@@ -253,32 +257,33 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		"@"+config.NewSimName+": "+config.ScenarioName)
 
 	nsc := sim.NewSimConfiguration{
-		TFRs:                    config.TFRs,
-		LiveWeather:             config.LiveWeather,
-		TRACON:                  config.TRACONName,
-		LaunchConfig:            config.Scenario.LaunchConfig,
-		STARSFacilityAdaptation: deep.MustCopy(sg.STARSFacilityAdaptation),
-		IsLocal:                 config.IsLocal,
-		DepartureRunways:        sc.DepartureRunways,
-		ArrivalRunways:          sc.ArrivalRunways,
-		VFRReportingPoints:      sg.VFRReportingPoints,
-		ReportingPoints:         sg.ReportingPoints,
-		Description:             description,
-		MagneticVariation:       sg.MagneticVariation,
-		NmPerLongitude:          sg.NmPerLongitude,
-		Wind:                    sc.Wind,
-		Airports:                sg.Airports,
-		Fixes:                   sg.Fixes,
-		PrimaryAirport:          sg.PrimaryAirport,
-		Center:                  util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
-		Range:                   util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
-		DefaultMaps:             sc.DefaultMaps,
-		InboundFlows:            sg.InboundFlows,
-		Airspace:                sg.Airspace,
-		ControllerAirspace:      sc.Airspace,
-		ControlPositions:        sg.ControlPositions,
-		VirtualControllers:      sc.VirtualControllers,
-		SignOnPositions:         make(map[string]*av.Controller),
+		TFRs:                        config.TFRs,
+		LiveWeather:                 config.LiveWeather,
+		TRACON:                      config.TRACONName,
+		LaunchConfig:                config.Scenario.LaunchConfig,
+		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),
+		IsLocal:                     config.IsLocal,
+		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+		DepartureRunways:            sc.DepartureRunways,
+		ArrivalRunways:              sc.ArrivalRunways,
+		VFRReportingPoints:          sg.VFRReportingPoints,
+		ReportingPoints:             sg.ReportingPoints,
+		Description:                 description,
+		MagneticVariation:           sg.MagneticVariation,
+		NmPerLongitude:              sg.NmPerLongitude,
+		Wind:                        sc.Wind,
+		Airports:                    sg.Airports,
+		Fixes:                       sg.Fixes,
+		PrimaryAirport:              sg.PrimaryAirport,
+		Center:                      util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
+		Range:                       util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
+		DefaultMaps:                 sc.DefaultMaps,
+		InboundFlows:                sg.InboundFlows,
+		Airspace:                    sg.Airspace,
+		ControllerAirspace:          sc.Airspace,
+		ControlPositions:            sg.ControlPositions,
+		VirtualControllers:          sc.VirtualControllers,
+		SignOnPositions:             make(map[string]*av.Controller),
 	}
 
 	if !config.IsLocal {
@@ -454,8 +459,19 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 		ControllerToken: token,
 		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
 	}
+	result.PruneForClient()
 
 	return nil
+}
+
+// PruneForClient tidies the NewSimResult, removing fields that are not used by client code
+// in order to reduce the amount of bandwidth used to send the NewSimResult to the client.
+func (r *NewSimResult) PruneForClient() {
+	r.SimState = deep.MustCopy(r.SimState)
+
+	for _, ap := range r.SimState.Airports {
+		ap.Departures = nil
+	}
 }
 
 type ConnectResult struct {
@@ -674,12 +690,20 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 // Status / statistics via HTTP...
 
 func (sm *SimManager) launchHTTPServer() int {
-	handler := http.NewServeMux()
-	handler.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
 		sm.statsHandler(w, r)
 		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
-	handler.HandleFunc("/speech", sm.handleSpeechWSConnection)
+
+	mux.HandleFunc("/speech", sm.handleSpeechWSConnection)
+
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 
 	var listener net.Listener
 	var err error
@@ -697,7 +721,7 @@ func (sm *SimManager) launchHTTPServer() int {
 		sm.lg.Warnf("Unable to start HTTP server")
 		return 0
 	} else {
-		go http.Serve(listener, handler)
+		go http.Serve(listener, mux)
 
 		sm.httpPort = port
 		return port

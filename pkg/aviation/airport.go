@@ -170,7 +170,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 	// Segment along the approach course
 	p0 := math.LL2NM(a.Threshold, nmPerLongitude)
 	hdg := a.Heading - magneticVariation + 180
-	v := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+	v := math.SinCos(math.Radians(hdg))
 	p1 := math.Add2f(p0, math.Scale2f(v, a.Length))
 
 	vp := [2]float32{-v[1], v[0]} // perp

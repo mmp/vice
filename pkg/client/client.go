@@ -486,11 +486,11 @@ func (c *ControlClient) TowerListAirports() []string {
 	// first three then are assigned to the corresponding tower list.
 	ap := util.SortedMapKeys(c.State.ArrivalAirports)
 	sort.Slice(ap, func(a, b int) bool {
-		ai := c.State.ArrivalAirports[ap[a]].TowerListIndex
+		ai := c.State.Airports[ap[a]].TowerListIndex
 		if ai == 0 {
 			ai = 1000
 		}
-		bi := c.State.ArrivalAirports[ap[b]].TowerListIndex
+		bi := c.State.Airports[ap[b]].TowerListIndex
 		if bi == 0 {
 			bi = 1000
 		}
@@ -575,7 +575,7 @@ func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
 		return nil, err
 	}
 
-	codec := util.MakeGOBClientCodec(cc)
+	codec := util.MakeMessagepackClientCodec(cc)
 	codec = util.MakeLoggingClientCodec(hostname, codec, lg)
 	return &RPCClient{rpc.NewClientWithCodec(codec)}, nil
 }

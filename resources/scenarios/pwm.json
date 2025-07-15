@@ -105,7 +105,6 @@
     "East": {
       "arrivals": [
         {
-          "spawn": "N42.06.33,W70.56.44",
           "waypoints": "CCC FOSTY BILJE BUOYY/ho SHAUN CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
           "route": "SCOGS3",
           "initial_controller": "BOS_17_CTR",
@@ -142,7 +141,6 @@
           }
         },
         {
-          "spawn": "N42.59.39.440,W70.56.44",
           "waypoints": "CAM CDOGG/ho KAYCC ARARR BUXTO",
           "route": "CDOGG4",
           "initial_controller": "BOS_17_CTR",
@@ -175,7 +173,6 @@
     "West": {
       "arrivals": [
         {
-          "spawn": "N42.06.33,W70.56.44",
           "waypoints": "BUOYY SHAUN/ho CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
           "route": "SCOGS3",
           "initial_controller": "BOS_17_CTR",
@@ -204,7 +201,6 @@
           }
         },
         {
-          "spawn": "N42.59.39.440,W70.56.44",
           "waypoints": "CAM CDOGG/ho KAYCC YOMON YAAKK SAPPE/a3000",
           "route": "CDOGG4",
           "initial_controller": "BOS_17_CTR",

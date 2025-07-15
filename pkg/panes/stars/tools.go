@@ -54,7 +54,7 @@ func (sp *STARSPane) drawCompass(ctx *panes.Context, scopeExtent math.Extent2D, 
 	// Draw lines at a 5 degree spacing.
 	for h := float32(5); h <= 360; h += 5 {
 		hr := h
-		dir := [2]float32{math.Sin(math.Radians(hr)), math.Cos(math.Radians(hr))}
+		dir := math.SinCos(math.Radians(hr))
 		// Find the intersection of the line from the center point to the edge of the window.
 		isect, _, t := bounds.IntersectRay(pw, dir)
 		if !isect {
@@ -197,8 +197,8 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 		Color: color,
 	}
 
-	for name, ap := range ctx.Client.State.DepartureAirports {
-		if ap.VFRRateSum() > 0 {
+	for name := range ctx.Client.State.DepartureAirports {
+		if ap := ctx.Client.State.Airports[name]; ap.VFRRateSum() > 0 {
 			pll := av.DB.Airports[name].Location
 			pw := transforms.WindowFromLatLongP(pll)
 			ld.AddCircle(pw, 10, 32)
@@ -467,7 +467,7 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 							// This should be the only other case... The heading arrow is drawn
 							// up to 2nm out, so put the runway 1nm along its axis.
 							a := math.Radians(float32(wp[0].Heading) - ctx.MagneticVariation)
-							v := [2]float32{math.Sin(a), math.Cos(a)}
+							v := math.SinCos(a)
 							pend := math.LL2NM(wp[0].Location, ctx.NmPerLongitude)
 							pend = math.Add2f(pend, v)
 							pell := math.NM2LL(pend, ctx.NmPerLongitude)
@@ -651,7 +651,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 		// h is a vector in nm coordinates with length l=dist
 		hdg := state.TrackHeading(ctx.NmPerLongitude)
-		h := [2]float32{math.Sin(math.Radians(hdg)), math.Cos(math.Radians(hdg))}
+		h := math.SinCos(math.Radians(hdg))
 		h = math.Scale2f(h, dist)
 		end := math.Add2f(math.LL2NM(state.track.Location, ctx.NmPerLongitude), h)
 

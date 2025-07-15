@@ -377,13 +377,13 @@ func lookupFlightPlan(ctx *panes.Context, s string) (*sim.STARSFlightPlan, *sim.
 
 	state := &ctx.Client.State
 	for _, trk := range state.Tracks {
-		if trk.IsAssociated() && (trk.FlightPlan.ACID == sim.ACID(s) ||
-			trk.FlightPlan.AssignedSquawk == sq || trk.FlightPlan.ListIndex == idx) {
+		if trk.IsAssociated() && (trk.FlightPlan.ACID == sim.ACID(s) || trk.FlightPlan.AssignedSquawk == sq ||
+			(trk.FlightPlan.ListIndex == idx && trk.FlightPlan.ListIndex != sim.UnsetSTARSListIndex)) {
 			return trk.FlightPlan, trk
 		}
 	}
 	for i, fp := range state.UnassociatedFlightPlans {
-		if fp.ACID == sim.ACID(s) || fp.AssignedSquawk == sq || fp.ListIndex == idx {
+		if fp.ACID == sim.ACID(s) || fp.AssignedSquawk == sq || (fp.ListIndex == idx && fp.ListIndex != sim.UnsetSTARSListIndex) {
 			return state.UnassociatedFlightPlans[i], nil
 		}
 	}
@@ -415,7 +415,7 @@ func lookupTrack(ctx *panes.Context, tracks []sim.Track, s string) *sim.Track {
 	if idx, err := strconv.Atoi(s); err == nil {
 		if trk, ok := util.SeqLookupFunc(maps.Values(ctx.Client.State.Tracks),
 			func(trk *sim.Track) bool {
-				return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx
+				return trk.IsAssociated() && trk.FlightPlan.ListIndex == idx && trk.FlightPlan.ListIndex != sim.UnsetSTARSListIndex
 			}); ok {
 			return trk
 		}
@@ -912,7 +912,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			fps := ctx.Client.State.UnassociatedFlightPlans
 			if n, err := strconv.Atoi(cmd); err == nil { // line number
 				if idx := slices.IndexFunc(fps, func(fp *sim.STARSFlightPlan) bool {
-					return fp.ListIndex == n && fp.Rules == av.FlightRulesVFR
+					return fp.ListIndex == n && fp.ListIndex != sim.UnsetSTARSListIndex && fp.Rules == av.FlightRulesVFR
 				}); idx != -1 {
 					sp.deleteFlightPlan(ctx, fps[idx].ACID)
 					status.clear = true
@@ -2393,7 +2393,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					if sqerr == nil && sq == dep.Squawk {
 						return &rel[i]
 					}
-					if nerr == nil && n >= 0 && n == dep.ListIndex {
+					if nerr == nil && n >= 0 && n == dep.ListIndex && dep.ListIndex != sim.UnsetSTARSListIndex {
 						return &rel[i]
 					}
 				}

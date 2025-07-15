@@ -10,47 +10,53 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+// Mathematical Constants
+const (
+	Pi         = gomath.Pi
+	InvPi      = 0.31830988618379067154
+	Inv2Pi     = 0.15915494309189533577
+	Inv4Pi     = 0.07957747154594766788
+	PiOver2    = 1.57079632679489661923
+	PiOver4    = 0.78539816339744830961
+	FourOverPi = 1.27323949337005615234375
+	Sqrt2      = 1.41421356237309504880
+)
+
+var Infinity float32 = float32(gomath.Inf(1))
+
+// FloatToBits converts a float32 to its bit representation
+func FloatToBits(f float32) uint32 {
+	return gomath.Float32bits(f)
+}
+
+// BitsToFloat converts a bit representation to float32
+func BitsToFloat(ui uint32) float32 {
+	return gomath.Float32frombits(ui)
+}
+
+// Exponent returns the exponent of a float32
+func Exponent(v float32) int {
+	return int(FloatToBits(v)>>23) - 127
+}
+
+// Significand returns the significand of a float32
+func Significand(v float32) int {
+	return int(FloatToBits(v) & ((1 << 23) - 1))
+}
+
+// SignBit returns true if the given float32's sign bit is set. (i.e., it's non-negative)
+func SignBit(v float32) bool {
+	return int(FloatToBits(v)>>31) != 0
+}
+
 // Degrees converts an angle expressed in degrees to radians
 func Degrees(r float32) float32 {
-	return r * 180 / gomath.Pi
+	return r * 180 / Pi
 }
 
 // Radians converts an angle expressed in radians to degrees
 func Radians(d float32) float32 {
-	return d / 180 * gomath.Pi
-}
-
-// Pi returns the value of π as a float32
-func Pi() float32 {
-	return float32(gomath.Pi)
-}
-
-// A number of utility functions for evaluating transcendentals and the like follow;
-// since we mostly use float32, it's handy to be able to call these directly rather than
-// with all of the casts that are required when using the math package.
-
-func Sin(a float32) float32 {
-	return float32(gomath.Sin(float64(a)))
-}
-
-func SafeASin(a float32) float32 {
-	return float32(gomath.Asin(float64(Clamp(a, -1, 1))))
-}
-
-func SafeACos(a float32) float32 {
-	return float32(gomath.Acos(float64(Clamp(a, -1, 1))))
-}
-
-func Cos(a float32) float32 {
-	return float32(gomath.Cos(float64(a)))
-}
-
-func Tan(a float32) float32 {
-	return float32(gomath.Tan(float64(a)))
-}
-
-func Atan2(y, x float32) float32 {
-	return float32(gomath.Atan2(float64(y), float64(x)))
+	return d / 180 * Pi
 }
 
 func Sqrt(a float32) float32 {
@@ -89,10 +95,6 @@ func Abs[V constraints.Integer | constraints.Float](x V) V {
 
 func Pow(a, b float32) float32 {
 	return float32(gomath.Pow(float64(a), float64(b)))
-}
-
-func Exp(x float32) float32 {
-	return float32(gomath.Exp(float64(x)))
 }
 
 func Sqr[V constraints.Integer | constraints.Float](v V) V { return v * v }

@@ -203,7 +203,8 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"PSA5342": nil,
 }
 
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign func(s string) bool, lg *log.Logger) (actype, callsign string) {
+// currentCallsigns will be empty if we don't care about unique suffixes.
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -230,7 +231,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign fu
 
 	// random callsign
 	callsign = strings.ToUpper(dbAirline.ICAO)
-	for {
+	for range 100 {
 		format := "####"
 		if len(dbAirline.Callsign.CallsignFormats) > 0 {
 			f, ok := rand.SampleWeighted(r, dbAirline.Callsign.CallsignFormats,
@@ -264,17 +265,24 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, checkCallsign fu
 				break loop
 			}
 		}
-		if !checkCallsign(callsign + id) { // duplicate
-			id = ""
-			continue
-		} else if _, ok := badCallsigns[callsign+id]; ok {
+		if _, ok := badCallsigns[callsign+id]; ok {
 			id = ""
 			continue // nope
-		} else {
-			callsign += id
-			return
+		} else if slices.Contains(currentCallsigns, ADSBCallsign(callsign+id)) {
+			id = ""
+			continue
+		} else if slices.ContainsFunc(currentCallsigns, func(cs ADSBCallsign) bool {
+			suffix := (callsign + id)[len(callsign+id)-2:]
+			return strings.HasSuffix(string(cs), suffix)
+		}) {
+			id = ""
+			continue
 		}
+		callsign += id
+		return
 	}
+
+	return "", ""
 }
 
 type Runway struct {
@@ -571,7 +579,7 @@ func DensityRatioAtAltitude(alt float32) float32 {
 	const R = 8.314463    // universal gas constant J/(mol K)
 	const T_b = 288.15    // reference temperature at sea level, degrees K
 
-	return math.Exp(-g0 * M_air * altm / (R * T_b))
+	return math.FastExp(-g0 * M_air * altm / (R * T_b))
 }
 
 func IASToTAS(ias, altitude float32) float32 {
@@ -721,6 +729,10 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 				"must provide at least two \"waypoints\" for arrival " +
 					"(even if \"runway_waypoints\" are provided)",
 			)
+		}
+		if ar.SpawnWaypoint != "" {
+			e.ErrorString("\"spawn\" cannot be specified if \"waypoints\" are provided")
+			return
 		}
 
 		ar.Waypoints = ar.Waypoints.InitializeLocations(loc, nmPerLongitude, magneticVariation, false, e)
@@ -978,6 +990,10 @@ func (p *EnrouteSquawkCodePool) IsAssigned(code Squawk) bool {
 	return !p.Available.IsAvailable(int(code))
 }
 
+func (p *EnrouteSquawkCodePool) InInitialPool(code Squawk) bool {
+	return p.Initial.IsAvailable(int(code))
+}
+
 func (p *EnrouteSquawkCodePool) Return(code Squawk) error {
 	if !p.Initial.InRange(int(code)) || !p.Initial.IsAvailable(int(code)) {
 		// It's not ours; just ignore it.
@@ -1159,6 +1175,7 @@ type BeaconCodeTable struct {
 }
 
 type LocalPool struct {
+	Initial     *util.IntRangeSet
 	Available   *util.IntRangeSet
 	Ranges      [][2]Squawk
 	Backups     string
@@ -1171,11 +1188,13 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 	if len(spec.Pools) == 0 {
 		// Return a reasonable default
 		p.Pools["vfr"] = LocalPool{
+			Initial:     util.MakeIntRangeSet(0o201, 0o277),
 			Available:   util.MakeIntRangeSet(0o201, 0o277),
 			Ranges:      [][2]Squawk{{0o0201, 0o0277}},
 			FlightRules: FlightRulesVFR,
 		}
 		p.Pools["ifr"] = LocalPool{
+			Initial:     util.MakeIntRangeSet(0o301, 0o377),
 			Available:   util.MakeIntRangeSet(0o301, 0o377),
 			Ranges:      [][2]Squawk{{0o0301, 0o0377}},
 			FlightRules: FlightRulesIFR,
@@ -1203,6 +1222,7 @@ func MakeLocalSquawkCodePool(spec LocalSquawkCodePoolSpecifier) *LocalSquawkCode
 			}
 
 			p.Pools[name] = LocalPool{
+				Initial:   rs.Clone(),
 				Available: rs,
 				Ranges:    poolRanges,
 				Backups:   pspec.Backups,
@@ -1282,6 +1302,24 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 			}
 		}
 	}
+}
+
+func (p *LocalSquawkCodePool) IsAssigned(code Squawk) bool {
+	for _, pool := range p.Pools {
+		if pool.Initial.IsAvailable(int(code)) && !pool.Available.IsAvailable(int(code)) {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *LocalSquawkCodePool) InInitialPool(code Squawk) bool {
+	for _, pool := range p.Pools {
+		if pool.Initial.IsAvailable(int(code)) {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *LocalSquawkCodePool) Return(sq Squawk) error {

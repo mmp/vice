@@ -56,7 +56,7 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Inconsolata Condensed Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: "Roboto Regular", Size: 16},
 	}
 }
 
@@ -105,7 +105,7 @@ func (mp *MessagesPane) Upgrade(prev, current int) {
 }
 
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
-	if newFont, changed := renderer.DrawFontPicker(&mp.FontIdentifier, "Font"); changed {
+	if newFont, changed := renderer.DrawFontSizeSelector(&mp.FontIdentifier); changed {
 		mp.font = newFont
 	}
 

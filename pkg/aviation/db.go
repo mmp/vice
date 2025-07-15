@@ -1305,38 +1305,42 @@ func MakeAirspaceGrid(v []*AirspaceVolume) *AirspaceGrid {
 	}
 }
 
-func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
+func (g *AirspaceGrid) getEntries(p math.Point2LL) []*AirspaceVolume {
 	// Quantize coordinates to grid; roughly 6nm resolution (at least in
 	// latitude...)
-	xq, yq := int(10*p[0]), int(10*p[1])
-	pq := [2]int{xq, yq}
+	pq := [2]int{int(10 * p[0]), int(10 * p[1])}
 
-	if _, ok := g.entries[pq]; !ok {
-		g.entries[pq] = util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
+	if vols, ok := g.entries[pq]; ok {
+		return vols
+	} else {
+		// Center of the grid cell
+		pc := math.Point2LL{(float32(pq[0]) + 0.5) / 10, (float32(pq[1]) + 0.5) / 10}
+
+		vols := util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
 			// Assumes both polygonal and an initialized PolygonBounds...
 			// The distance check has some slop in it just so we can be
 			// lazy about thinking about rounding in the grid quantization.
-			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(p), p) < 10
+			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(pc), pc) < 10
 		})
+		g.entries[pq] = vols
+		return vols
 	}
+}
 
-	return slices.ContainsFunc(g.entries[pq], func(av *AirspaceVolume) bool {
-		return av.Inside(p, alt)
-	})
+func (g *AirspaceGrid) Inside(p math.Point2LL, alt int) bool {
+	for _, vol := range g.getEntries(p) {
+		if vol.Inside(p, alt) {
+			return true
+		}
+	}
+	return false
 }
 
 func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
-	// Quantize coordinates as in Inside.
-	xq, yq := int(10*p[0]), int(10*p[1])
-	pq := [2]int{xq, yq}
-
-	if _, ok := g.entries[pq]; !ok {
-		g.entries[pq] = util.FilterSlice(g.volumes, func(v *AirspaceVolume) bool {
-			return math.NMDistance2LL(v.PolygonBounds.ClosestPointInBox(p), p) < 10
-		})
+	for _, vol := range g.getEntries(p) {
+		if vol.Below(p, alt) {
+			return true
+		}
 	}
-
-	return slices.ContainsFunc(g.entries[pq], func(av *AirspaceVolume) bool {
-		return av.Below(p, alt)
-	})
+	return false
 }

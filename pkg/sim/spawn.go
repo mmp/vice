@@ -99,7 +99,7 @@ type LaunchConfig struct {
 	DepartureRateScale float32
 
 	VFRDepartureRateScale   float32
-	VFRAirports             map[string]*av.Airport
+	VFRAirportRates         map[string]int // name -> VFRRateSum()
 	VFFRequestRate          int32
 	HaveVFRReportingRegions bool
 
@@ -117,12 +117,16 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 		GoAroundRate:                0.01,
 		DepartureRateScale:          1,
 		VFRDepartureRateScale:       vfrRateScale,
-		VFRAirports:                 vfrAirports,
+		VFRAirportRates:             make(map[string]int),
 		VFFRequestRate:              10,
 		HaveVFRReportingRegions:     haveVFRReportingRegions,
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
+	}
+
+	for icao, ap := range vfrAirports {
+		lc.VFRAirportRates[icao] = ap.VFRRateSum()
 	}
 
 	// Walk the departure runways to create the map for departures.
@@ -240,8 +244,8 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 			s.DepartureState[ap][rwy].setIFRRate(s, r)
 		}
 
-		for name, ap := range lc.VFRAirports {
-			r := scaleRate(float32(ap.VFRRateSum()), lc.VFRDepartureRateScale)
+		for name, rate := range lc.VFRAirportRates {
+			r := scaleRate(float32(rate), lc.VFRDepartureRateScale)
 			rwy := s.State.VFRRunways[name]
 			s.DepartureState[name][rwy.Id].setVFRRate(s, r)
 		}
@@ -435,7 +439,7 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 		s.NextInboundSpawn[group] = randomDelay(rateSum)
 	}
 
-	for name, ap := range s.State.DepartureAirports {
+	for name := range s.State.DepartureAirports {
 		s.DepartureState[name] = make(map[string]*RunwayLaunchState)
 
 		if runwayRates, ok := s.State.LaunchConfig.DepartureRates[name]; ok {
@@ -448,6 +452,7 @@ func (s *Sim) setInitialSpawnTimes(now time.Time) {
 			}
 		}
 
+		ap := s.State.Airports[name]
 		if vfrRate := float32(ap.VFRRateSum()); vfrRate > 0 {
 			rwy := s.State.VFRRunways[name]
 			state, ok := s.DepartureState[name][rwy.Id]
@@ -875,7 +880,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 	depAc := s.Aircraft[dep.ADSBCallsign]
 	if depAc.FlightPlan.Rules == av.FlightRulesIFR || depState.LastArrivalFlightRules == av.FlightRulesIFR {
 		if elapsed := s.State.SimTime.Sub(depState.LastArrivalLandingTime); elapsed <= time.Minute {
-			fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
+			//fmt.Printf("holding %s due to recent arrival\n", dep.ADSBCallsign)
 			return false
 		}
 	}
@@ -891,7 +896,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 
 			if dist, err := ac.Nav.distanceToEndOfApproach(); err == nil && dist < 2.0 {
 				// Hold departure; the arrival's too close
-				fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
+				//fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
 				return false
 			}
 		}
@@ -974,7 +979,7 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 	// near-impossible to find valid routes.
 	if depState.VFRAttempts < 400 ||
 		(depState.VFRSuccesses > 0 && depState.VFRAttempts/depState.VFRSuccesses < 200) {
-		ap := s.State.DepartureAirports[depart]
+		ap := s.State.Airports[depart]
 
 		// Sample among the randoms and the routes
 		rateSum := 0
@@ -1001,7 +1006,7 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 			if sampledRandoms != nil {
 				// Sample destination airport: may be where we started from.
 				arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-					func(ap string) int { return s.State.DepartureAirports[ap].VFRRateSum() })
+					func(ap string) int { return s.State.Airports[ap].VFRRateSum() })
 				if !ok {
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
 					continue
@@ -1212,10 +1217,16 @@ func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps a
 }
 
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
-	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, func(callsign string) bool {
-		_, ok := s.Aircraft[av.ADSBCallsign(callsign)]
-		return !ok
-	}, lg)
+	var callsigns []av.ADSBCallsign
+	if s.EnforceUniqueCallsignSuffix {
+		// Collect all currently in-use or soon-to-be in-use callsigns.
+		callsigns = slices.Collect(maps.Keys(s.Aircraft))
+		for _, fp := range s.STARSComputer.FlightPlans {
+			callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
+		}
+	}
+
+	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, lg)
 
 	if actype == "" {
 		return nil, ""
@@ -1241,11 +1252,11 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 	for range 50 {
 		// Sample destination airport: may be where we started from.
 		arrive, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.State.DepartureAirports),
-			func(ap string) int { return s.State.DepartureAirports[ap].VFRRateSum() })
+			func(ap string) int { return s.State.Airports[ap].VFRRateSum() })
 		if !ok {
 			return nil, nil
 		}
-		if ap, ok := s.State.DepartureAirports[departureAirport]; !ok || ap.VFRRateSum() == 0 {
+		if ap, ok := s.State.Airports[departureAirport]; !ok || ap.VFRRateSum() == 0 {
 			// This shouldn't happen...
 			return nil, nil
 		} else {
@@ -1271,10 +1282,12 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 	rwy := &s.State.DepartureRunways[idx]
 
+	exitRoutes := ap.DepartureRoutes[rwy.Runway]
+
 	// Sample uniformly, minding the category, if specified
 	idx = rand.SampleFiltered(s.Rand, ap.Departures,
 		func(d av.Departure) bool {
-			_, ok := rwy.ExitRoutes[d.Exit] // make sure the runway handles the exit
+			_, ok := exitRoutes[d.Exit] // make sure the runway handles the exit
 			return ok && (rwy.Category == "" || rwy.Category == ap.ExitCategories[d.Exit])
 		})
 	if idx == -1 {
@@ -1292,7 +1305,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
 
-	exitRoute := rwy.ExitRoutes[dep.Exit]
+	exitRoute := exitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute, s.State.NmPerLongitude,
 		s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
 	if err != nil {
@@ -1487,7 +1500,9 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		mid = math.NM2LL(midnm, s.State.NmPerLongitude)
 	}
 
-	var wps []av.Waypoint
+	// This should be sufficient capacity to avoid reallocations / recopying in the following.
+	wps := make([]av.Waypoint, 0, 20)
+
 	wps = append(wps, av.Waypoint{Fix: "_dep_threshold", Location: rwy.Threshold})
 	opp := math.Offset2LL(rwy.Threshold, rwy.Heading, 1 /* nm */, s.State.NmPerLongitude,
 		s.State.MagneticVariation)
@@ -1495,7 +1510,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 
 	rg := av.MakeRouteGenerator(rwy.Threshold, opp, s.State.NmPerLongitude)
 	wp0 := rg.Waypoint("_dep_climb", 3, 0)
-	wp0.FlyOver = true
 	wps = append(wps, wp0)
 
 	// Fly a downwind if needed
@@ -1602,8 +1616,8 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		}
 	}
 
-	s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",
-		ac.ADSBCallsign, depart, arrive)
+	//s.lg.Infof("%s: %s/%s aircraft not finished after 3 hours of sim time",		ac.ADSBCallsign, depart, arrive)
+
 	return nil, "", ErrVFRSimTookTooLong
 }
 

@@ -93,7 +93,6 @@
     "RANGY Arrival Land South": {
       "arrivals": [
         {
-          "spawn": "N44.48.12.250,W70.40.51.970",
           "waypoints": "RANGY/ho BUP AALYS",
           "route": "BUP AALYS",
           "initial_controller": "BOS_17_CTR",
@@ -122,7 +121,6 @@
 "AUG Arrival Land South": {
   "arrivals": [
     {
-      "spawn": "N44.19.12.073,W069.47.47.632",
       "waypoints": "AUG/ho KBHB",
       "route": "AUG KBHB",
       "initial_controller": "BOS_17_CTR",
@@ -155,7 +153,6 @@
     "RANGY Arrival Land North": {
       "arrivals": [
         {
-          "spawn": "N44.48.12.250,W70.40.51.970",
           "waypoints": "RANGY/ho BUP AALYS DELGE KUCEV KBHB KBGR",
           "route": "BUP AALYS DELGE KUCEV KBHB KBGR",
           "initial_controller": "BOS_17_CTR",
@@ -180,7 +177,6 @@
     "AUG Arrival Land North": {
       "arrivals": [
         {
-          "spawn": "N44.19.12.073,W069.47.47.632",
           "waypoints": "AUG/ho KBHB",
           "route": "AUG KBHB",
           "initial_controller": "BOS_17_CTR",

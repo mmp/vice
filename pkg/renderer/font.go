@@ -295,11 +295,7 @@ func FontsInit(r Renderer, p platform.Platform) {
 	add("Roboto-Regular.ttf.zst", false, "Roboto Regular")
 	add("RobotoMono-Medium.ttf.zst", false, "Roboto Mono")
 	add("RobotoMono-MediumItalic.ttf.zst", false, "Roboto Mono Italic")
-	add("VT323-Regular.ttf.zst", true, "VT323 Regular")
-	add("FixedDemiBold.otf.zst", true, "Fixed Demi Bold")
-	add("Inconsolata-SemiBold.ttf.zst", true, "Inconsolata SemiBold")
 	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
-	add("Inconsolata_Condensed-Regular.ttf.zst", true, "Inconsolata Condensed Regular")
 	add("ERAM.ttf.zst", true, "ERAMv102")
 
 	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
@@ -337,37 +333,6 @@ func getAllFonts() []FontIdentifier {
 	})
 
 	return fs
-}
-
-func DrawFontPicker(id *FontIdentifier, label string) (newFont *Font, changed bool) {
-	f := getAllFonts()
-	lastFontName := ""
-	if imgui.BeginComboV(label+fmt.Sprintf("##%p", id), id.Name, imgui.ComboFlagsHeightLarge) {
-		// Take advantage of the sort order returned by getAllFonts()--that
-		// all fonts of the same name come consecutively.
-		for _, font := range f {
-			if font.Name != lastFontName {
-				lastFontName = font.Name
-				// Use the 14pt version of the font in the combo box.
-				displayFont := GetFont(FontIdentifier{Name: font.Name, Size: 14})
-				imgui.PushFont(&displayFont.Ifont)
-				if imgui.SelectableBoolV(font.Name, id.Name == font.Name, 0, imgui.Vec2{}) {
-					id.Name = font.Name
-					changed = true
-					newFont = GetFont(*id)
-				}
-				imgui.PopFont()
-			}
-		}
-		imgui.EndCombo()
-	}
-
-	if nf, ch := DrawFontSizeSelector(id); ch {
-		changed = true
-		newFont = nf
-	}
-
-	return
 }
 
 func DrawFontSizeSelector(id *FontIdentifier) (newFont *Font, changed bool) {

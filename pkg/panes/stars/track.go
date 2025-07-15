@@ -595,9 +595,18 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	for _, trk := range tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
-		positionSymbol := "*"
+		positionSymbol := ""
 
 		if trk.IsUnassociated() {
+			// See if a position symbol override applies. Note that this may be overridden in code following shortly.
+			fa := ctx.Client.State.STARSFacilityAdaptation
+			for _, r := range fa.UntrackedPositionSymbolOverrides.CodeRanges {
+				if trk.Squawk >= r[0] && trk.Squawk <= r[1] { // ranges are inclusive
+					positionSymbol = fa.UntrackedPositionSymbolOverrides.Symbol
+					break
+				}
+			}
+
 			switch trk.Mode {
 			case av.TransponderModeStandby:
 				ps := sp.currentPrefs()
@@ -606,13 +615,13 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 			case av.TransponderModeAltitude:
 				if sp.beaconCodeSelected(trk.Squawk) {
 					positionSymbol = string(rune(129)) // square
-				} else {
+				} else if positionSymbol == "" {
 					positionSymbol = "*"
 				}
 			case av.TransponderModeOn:
 				if sp.beaconCodeSelected(trk.Squawk) {
 					positionSymbol = string(rune(128)) // triangle
-				} else {
+				} else if positionSymbol == "" {
 					positionSymbol = "+"
 				}
 			}
@@ -1433,7 +1442,7 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 
 func (sp *STARSPane) getLeaderLineVector(ctx *panes.Context, dir math.CardinalOrdinalDirection) [2]float32 {
 	angle := dir.Heading()
-	v := [2]float32{math.Sin(math.Radians(angle)), math.Cos(math.Radians(angle))}
+	v := math.SinCos(math.Radians(angle))
 	ps := sp.currentPrefs()
 	pxLengths := []float32{0, 17, 32, 47, 62, 77, 114, 152}
 	idx := min(ps.LeaderLineLength, len(pxLengths)-1)

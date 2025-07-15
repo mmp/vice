@@ -131,6 +131,9 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			}
 		},
 		"INDEX": func(fp *sim.STARSFlightPlan) string {
+			if fp.ListIndex == sim.UnsetSTARSListIndex {
+				return "  "
+			}
 			return fmt.Sprintf("%2d", fp.ListIndex)
 		},
 		"NUMAC": func(fp *sim.STARSFlightPlan) string {
@@ -454,7 +457,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 	if filter.All || filter.Intrail25 {
 		var vols []string
 		for _, r := range ctx.Client.State.ArrivalRunways {
-			if ap, ok := ctx.Client.State.ArrivalAirports[r.Airport]; ok {
+			if ap, ok := ctx.Client.State.Airports[r.Airport]; ok {
 				if vol, ok := ap.ATPAVolumes[r.Runway]; ok && vol.Enable25nmApproach {
 					vols = append(vols, vol.Id) // TODO:include airport?
 				}
@@ -1056,7 +1059,7 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 		}
 	}
 
-	loc := ctx.Client.State.ArrivalAirports[airport].Location
+	loc := ctx.Client.State.Airports[airport].Location
 	m := make(map[float32]string)
 	for _, trk := range tracks {
 		if trk.IsAssociated() && trk.ArrivalAirport == airport {

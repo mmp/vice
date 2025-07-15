@@ -12,9 +12,6 @@ osx/vice_amd64
 osx/vice_arm64
 resources/version.txt
 notarize.out
-vatsim-internal.cpp
-vatsim-internal.go
-vatsim-internal.h
 Vice.App/
 icon.iconset/
 icon.icns
@@ -27,3 +24,6 @@ vice.slog
 resources/speech/
 SDL2.dll
 __debug_*
+*.prof
+*.pprof
+scenario-test-*.txt

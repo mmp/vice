@@ -312,8 +312,13 @@ type STARSFacilityAdaptation struct {
 		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
 	} `json:"filters"`
 
-	MonitoredBeaconCodeBlocksString *string `json:"beacon_code_blocks"`
-	MonitoredBeaconCodeBlocks       []av.Squawk
+	MonitoredBeaconCodeBlocksString  *string
+	MonitoredBeaconCodeBlocks        []av.Squawk
+	UntrackedPositionSymbolOverrides struct {
+		CodeRangesString string         `json:"beacon_codes"`
+		CodeRanges       [][2]av.Squawk // inclusive
+		Symbol           string         `json:"symbol"`
+	} `json:"untracked_position_symbol_overrides"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
 	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`

@@ -243,7 +243,7 @@ type ATPAVolume struct {
 // reference point, in nm coordinates.
 func (ar *ApproachRegion) referenceLinePoint(dist, nmPerLongitude, magneticVariation float32) [2]float32 {
 	hdg := math.Radians(ar.ReferenceLineHeading + 180 - magneticVariation)
-	v := [2]float32{math.Sin(hdg), math.Cos(hdg)}
+	v := math.SinCos(hdg)
 	pref := math.LL2NM(ar.ReferencePoint, nmPerLongitude)
 	return math.Add2f(pref, math.Scale2f(v, dist))
 }
