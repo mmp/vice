@@ -816,7 +816,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		}
 	}
 
-	if util.SizeOf(*update, os.Stderr, false, 32*1024) > 256*1024*1024 {
+	if util.SizeOf(*update, os.Stderr, false, 256*1024) > 256*1024*1024 {
 		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
 		f, err := os.Create(fn)
 		if err != nil {
