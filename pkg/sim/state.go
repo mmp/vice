@@ -7,7 +7,6 @@ package sim
 import (
 	"fmt"
 	"maps"
-	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -82,6 +81,7 @@ type State struct {
 	Paused         bool
 	SimRate        float32
 	SimDescription string
+	SimStartTime   time.Time
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 
 	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
@@ -110,6 +110,7 @@ type ReleaseDeparture struct {
 }
 
 func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *State {
+	now := time.Now()
 	ss := &State{
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
@@ -141,7 +142,8 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 
 		SimRate:        1,
 		SimDescription: config.Description,
-		SimTime:        time.Now(),
+		SimStartTime:   now,
+		SimTime:        now,
 
 		Instructors: make(map[string]bool),
 	}
@@ -415,9 +417,8 @@ func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// gust and then back...
 	windSpeed := float32(ss.Wind.Speed)
 	if ss.Wind.Gust > 0 {
-		base := time.UnixMicro(0)
-		sec := ss.SimTime.Sub(base).Seconds()
-		windSpeed += float32(ss.Wind.Gust-ss.Wind.Speed) * float32(1+gomath.Cos(sec/4)) / 2
+		sec := float32(ss.SimTime.Sub(ss.SimStartTime).Seconds())
+		windSpeed += float32(ss.Wind.Gust-ss.Wind.Speed) * float32(1+math.Cos(sec/4)) / 2
 	}
 
 	// Wind.Direction is where it's coming from, so +180 to get the vector
