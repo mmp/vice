@@ -2841,7 +2841,7 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *
 		if dh := nav.DeferredNavHeading; dh != nil {
 			now := time.Now()
 			if dh.Time.Sub(now) > 6*time.Second {
-				dh.Time = now.Add(time.Duration((4 + 3*nav.Rand.Float32()) * float32(time.Second)))
+				dh.Time = now.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
 			}
 		}
 
