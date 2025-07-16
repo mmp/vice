@@ -109,19 +109,15 @@ type AdaptationFixes []AdaptationFix
 ///////////////////////////////////////////////////////////////////////////
 
 func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32) (*Runway, *Runway) {
-	w := wind.CurrentWindVector(ap.Location, float32(ap.Elevation))
-	// This gives the vector affecting the aircraft, so negate it. Also, as
-	// elsewhere, swap x and y in the args here since we want to measure
-	// angle w.r.t. +y.
-	angle := math.Degrees(math.Atan2(-w[0], -w[1]))
-	angle = math.NormalizeHeading(angle + magneticVariation)
+	ws := wind.LookupWind(ap.Location, float32(ap.Elevation))
+	whdg := math.NormalizeHeading(float32(ws.Direction) + magneticVariation)
 
 	// Find best aligned runway
 	minDelta := float32(1000)
 	bestRwy := -1
 	for i, rwy := range ap.Runways {
 		if _, ok := LookupOppositeRunway(ap.Id, rwy.Id); ok {
-			d := math.HeadingDifference(angle, rwy.Heading)
+			d := math.HeadingDifference(whdg, rwy.Heading)
 			if d < minDelta {
 				minDelta = d
 				bestRwy = i
