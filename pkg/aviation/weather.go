@@ -65,7 +65,14 @@ func (w Wind) Randomize(r *rand.Rand) Wind {
 }
 
 type WindModel interface {
-	GetWindVector(p math.Point2LL, alt float32) [2]float32
+	// CurrentWindVector returns the wind vector at the current instant,
+	// incorporating gusting, if relevant. Note that it returns a vector
+	// corresponding to the wind's effect on an aircraft (e.g., if the wind
+	// heading is 090, the vector will be pointed in the -x direction.)
+	CurrentWindVector(p math.Point2LL, alt float32) [2]float32
+
+	// LookupWind returns a Wind object describing the conditions at the given location.
+	LookupWind(p math.Point2LL, alt float32) Wind
 }
 
 ///////////////////////////////////////////////////////////////////////////

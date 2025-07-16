@@ -931,7 +931,7 @@ func (nav *Nav) updatePositionAndGS(wind av.WindModel, lg *log.Logger) {
 	// Further offset based on the wind
 	var windVector [2]float32
 	if nav.IsAirborne() && wind != nil {
-		windVector = wind.GetWindVector(nav.FlightState.Position, nav.FlightState.Altitude)
+		windVector = wind.CurrentWindVector(nav.FlightState.Position, nav.FlightState.Altitude)
 	}
 
 	// Update the aircraft's state
@@ -1077,7 +1077,7 @@ func (nav *Nav) TargetHeading(wind av.WindModel, lg *log.Logger) (heading float3
 
 		if nav.IsAirborne() {
 			// model where we'll actually end up, given the wind
-			vp := math.Add2f(v, wind.GetWindVector(nav.FlightState.Position, nav.FlightState.Altitude))
+			vp := math.Add2f(v, wind.CurrentWindVector(nav.FlightState.Position, nav.FlightState.Altitude))
 
 			// Find the deflection angle of how much the wind pushes us off course.
 			vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)

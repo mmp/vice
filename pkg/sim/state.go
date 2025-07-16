@@ -412,7 +412,7 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 	return ss.Center
 }
 
-func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
+func (ss *State) CurrentWindVector(p math.Point2LL, alt float32) [2]float32 {
 	// Sinusoidal wind speed variation from the base speed up to base +
 	// gust and then back...
 	windSpeed := float32(ss.Wind.Speed)
@@ -427,6 +427,10 @@ func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
 	vWind := math.SinCos(math.Radians(d))
 	vWind = math.Scale2f(vWind, windSpeed/3600)
 	return vWind
+}
+
+func (ss *State) LookupWind(p math.Point2LL, alt float32) av.Wind {
+	return ss.Wind
 }
 
 func (ss *State) FacilityFromController(callsign string) (string, bool) {

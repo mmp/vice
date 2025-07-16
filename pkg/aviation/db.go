@@ -109,7 +109,7 @@ type AdaptationFixes []AdaptationFix
 ///////////////////////////////////////////////////////////////////////////
 
 func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32) (*Runway, *Runway) {
-	w := wind.GetWindVector(ap.Location, float32(ap.Elevation))
+	w := wind.CurrentWindVector(ap.Location, float32(ap.Elevation))
 	// This gives the vector affecting the aircraft, so negate it. Also, as
 	// elsewhere, swap x and y in the args here since we want to measure
 	// angle w.r.t. +y.
