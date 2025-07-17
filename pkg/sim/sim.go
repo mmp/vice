@@ -1437,7 +1437,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	} else {
 		return AircraftDisplayState{
 			Spew:        spew.Sdump(ac),
-			FlightState: ac.NavSummary(s.lg),
+			FlightState: ac.NavSummary(s.State /* wind */, s.lg),
 		}, nil
 	}
 }

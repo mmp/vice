@@ -466,7 +466,7 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 
 // Full human-readable summary of nav state for use when paused and mouse
 // hover on the scope
-func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
+func (nav *Nav) Summary(fp av.FlightPlan, wind av.WindModel, lg *log.Logger) string {
 	var lines []string
 	lines = append(lines, "Departure from "+fp.DepartureAirport+" to "+fp.ArrivalAirport)
 
@@ -546,7 +546,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, lg *log.Logger) string {
 	targetAltitude, _ := nav.TargetAltitude(lg)
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
 		int(nav.FlightState.GS), int(nav.TAS())))
-	ias, _ := nav.TargetSpeed(targetAltitude, &fp, nil, lg)
+	ias, _ := nav.TargetSpeed(targetAltitude, &fp, wind, nil, lg)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {
@@ -660,11 +660,11 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
-func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) (float32, bool) {
+func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, wind av.WindModel, bravo *av.AirspaceGrid, lg *log.Logger) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
-	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, bravo, lg)
+	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, wind, bravo, lg)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
@@ -985,7 +985,7 @@ func (nav *Nav) Check(lg *log.Logger) {
 // returns passed waypoint if any
 func (nav *Nav) Update(wind av.WindModel, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
 	targetAltitude, altitudeRate := nav.TargetAltitude(lg)
-	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, fp, bravo, lg)
+	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, fp, wind, bravo, lg)
 	nav.updateAltitude(targetAltitude, altitudeRate, lg, deltaKts, slowingTo250)
 	nav.updateHeading(wind, lg)
 	nav.updatePositionAndGS(wind, lg)
@@ -1559,7 +1559,8 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 	}, true
 }
 
-func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) (float32, float32) {
+func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wind av.WindModel, bravo *av.AirspaceGrid,
+	lg *log.Logger) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
 			return spd, rate
@@ -1670,16 +1671,22 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, bravo *av
 		return *nav.Speed.Restriction, MaximumRate
 	}
 
-	// Absent controller speed restrictions, slow down arrivals starting 15 miles out.
-	if nav.Speed.Assigned == nil && fd != 0 && fd < 15 {
-		spd := nav.Perf.Speed
-		// Expected speed at 10 DME, without further direction.
-		approachSpeed := 1.25 * spd.Landing
+	// If fd != 0, we're flying an approach; absent controller speed
+	// restrictions (and inside 5 DME), maintain approach speed on final
+	// and only start transitioning to the landing reference speed in the
+	// last half mile before touchdown.
+	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
+		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
+		w := wind.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude)
+		approachSpeed := nav.Perf.ApproachSpeed(w, hdg)
 
-		x := math.Clamp((fd-1)/9, float32(0), float32(1))
-		ias := math.Lerp(x, spd.Landing, approachSpeed)
+		if fd < 0.5 {
+			// Short final: slow down to landing speed.
+			approachSpeed = math.Lerp(fd/0.5, nav.Perf.Speed.Landing, approachSpeed)
+		}
+
 		// Don't speed up after being been cleared to land.
-		ias = min(ias, nav.FlightState.IAS)
+		ias := min(approachSpeed, nav.FlightState.IAS)
 
 		//lg.Debugf("speed: approach cleared, %.1f nm out, ias %.0f", fd, ias)
 		return ias, MaximumRate

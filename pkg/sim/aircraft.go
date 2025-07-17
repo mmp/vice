@@ -407,8 +407,8 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	return nil
 }
 
-func (ac *Aircraft) NavSummary(lg *log.Logger) string {
-	return ac.Nav.Summary(ac.FlightPlan, lg)
+func (ac *Aircraft) NavSummary(wind av.WindModel, lg *log.Logger) string {
+	return ac.Nav.Summary(ac.FlightPlan, wind, lg)
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *speech.RadioTransmission {
