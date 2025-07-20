@@ -13,6 +13,8 @@ import (
 
 type CardinalOrdinalDirection int
 
+type HeadingT interface{ ~int | ~float32 }
+
 const (
 	North = iota
 	NorthEast
@@ -80,25 +82,28 @@ func ParseCardinalOrdinalDirection(s string) (CardinalOrdinalDirection, error) {
 // result.
 func Heading2LL(from Point2LL, to Point2LL, nmPerLongitude float32, magCorrection float32) float32 {
 	v := Point2LL{to[0] - from[0], to[1] - from[1]}
+	angle := VectorHeading(Scale2f(v, nmPerLongitude))
+	return NormalizeHeading(angle + magCorrection)
+}
 
+func VectorHeading(v [2]float32) float32 {
 	// Note that atan2() normally measures w.r.t. the +x axis and angles
 	// are positive for counter-clockwise. We want to measure w.r.t. +y and
 	// to have positive angles be clockwise. Happily, swapping the order of
 	// values passed to atan2()--passing (x,y), gives what we want.
-	angle := Degrees(Atan2(v[0]*nmPerLongitude, v[1]*NMPerLatitude))
-	return NormalizeHeading(angle + magCorrection)
+	return NormalizeHeading(Degrees(Atan2(v[0], v[1])))
 }
 
 // HeadingDifference returns the minimum difference between two
 // headings. (i.e., the result is always in the range [0,180].)
-func HeadingDifference(a float32, b float32) float32 {
-	var d float32
+func HeadingDifference[T HeadingT](a, b T) T {
+	var d T
 	if a > b {
 		d = a - b
 	} else {
 		d = b - a
 	}
-	if d > 180 {
+	if d > T(180) {
 		d = 360 - d
 	}
 	return d
@@ -107,15 +112,15 @@ func HeadingDifference(a float32, b float32) float32 {
 // Figure out which way is closest: first find the angle to rotate the
 // target heading by so that it's aligned with 180 degrees. This lets us
 // not worry about the complexities of the wrap around at 0/360..
-func HeadingSignedTurn(cur, target float32) float32 {
+func HeadingSignedTurn[T HeadingT](cur, target T) T {
 	rot := NormalizeHeading(180 - target)
 	return 180 - NormalizeHeading(cur+rot) // w.r.t. 180 target
 }
 
 // compass converts a heading expressed into degrees into a string
 // corresponding to the closest compass direction.
-func Compass(heading float32) string {
-	h := NormalizeHeading(heading + 22.5) // now [0,45] is north, etc...
+func Compass[T HeadingT](heading T) string {
+	h := NormalizeHeading(float32(heading) + 22.5) // now [0,45] is north, etc...
 	idx := int(h / 45)
 	return [...]string{"North", "Northeast", "East", "Southeast",
 		"South", "Southwest", "West", "Northwest"}[idx]
@@ -123,22 +128,22 @@ func Compass(heading float32) string {
 
 // ShortCompass converts a heading expressed in degrees into an abbreviated
 // string corresponding to the closest compass direction.
-func ShortCompass(heading float32) string {
-	h := NormalizeHeading(heading + 22.5) // now [0,45] is north, etc...
+func ShortCompass[T HeadingT](heading T) string {
+	h := NormalizeHeading(float32(heading) + 22.5) // now [0,45] is north, etc...
 	idx := int(h / 45)
 	return [...]string{"N", "NE", "E", "SE", "S", "SW", "W", "NW"}[idx]
 }
 
 // headingAsHour converts a heading expressed in degrees into the closest
 // "o'clock" value, with an integer result in the range [1,12].
-func HeadingAsHour(heading float32) int {
+func HeadingAsHour[T HeadingT](heading T) int {
 	heading = NormalizeHeading(heading - 15)
 	// now [0,30] is 1 o'clock, etc
 	return 1 + int(heading/30)
 }
 
 // Reduces it to [0,360).
-func NormalizeHeading(h float32) float32 {
+func NormalizeHeading[T HeadingT](h T) T {
 	if h < 0 {
 		return 360 - NormalizeHeading(-h)
 	} else {
@@ -151,6 +156,6 @@ func NormalizeHeading(h float32) float32 {
 	}
 }
 
-func OppositeHeading(h float32) float32 {
+func OppositeHeading[T HeadingT](h T) T {
 	return NormalizeHeading(h + 180)
 }

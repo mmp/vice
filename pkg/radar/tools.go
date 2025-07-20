@@ -206,12 +206,12 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 				p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
 				r0 := math.Distance2f(p0, pc)
 				v0 := math.Normalize2f(math.Sub2f(p0, pc))
-				a0 := math.NormalizeHeading(math.Degrees(math.Atan2(v0[0], v0[1]))) // angle w.r.t. the arc center
+				a0 := math.VectorHeading(v0) // angle w.r.t. the arc center
 
 				p1 := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
 				r1 := math.Distance2f(p1, pc)
 				v1 := math.Normalize2f(math.Sub2f(p1, pc))
-				a1 := math.NormalizeHeading(math.Degrees(math.Atan2(v1[0], v1[1])))
+				a1 := math.VectorHeading(v1)
 
 				// Draw a segment every degree
 				n := int(math.HeadingDifference(a0, a1))
@@ -249,7 +249,7 @@ func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints m
 					p0 := math.LL2NM(waypoints[i].Location, ctx.NmPerLongitude)
 					p1 := math.LL2NM(waypoints[i+1].Location, ctx.NmPerLongitude)
 					v := math.Sub2f(p1, p0)
-					drawArrow(math.Mid2f(p0, p1), math.Atan2(v[0], v[1]))
+					drawArrow(math.Mid2f(p0, p1), math.Radians(math.VectorHeading(v)))
 				}
 			}
 		}
