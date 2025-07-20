@@ -50,6 +50,7 @@ const (
 	CommandModeReleaseDeparture
 	CommandModeRestrictionArea
 	CommandModeDrawRoute
+	CommandModeDrawWind
 
 	// These correspond to buttons on the main DCB menu.
 	CommandModeRange
@@ -113,6 +114,8 @@ func (c CommandMode) PreviewString(sp *STARSPane) string {
 		return "AR"
 	case CommandModeDrawRoute:
 		return "DRAWROUTE"
+	case CommandModeDrawWind:
+		return "WIND " + strconv.Itoa(sp.windDrawAltitude)
 	case CommandModeRange:
 		return "RANGE"
 	case CommandModePlaceCenter:
@@ -361,6 +364,16 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			} else {
 				sp.setCommandMode(ctx, CommandModeTargetGen)
 			}
+
+		case imgui.KeyUpArrow:
+			if sp.commandMode == CommandModeDrawWind {
+				sp.windDrawAltitude = min(17000, sp.windDrawAltitude+1000)
+			}
+
+		case imgui.KeyDownArrow:
+			if sp.commandMode == CommandModeDrawWind {
+				sp.windDrawAltitude = max(0, sp.windDrawAltitude-1000)
+			}
 		}
 	}
 }
@@ -549,6 +562,11 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 		case ".DRAWROUTE":
 			sp.setCommandMode(ctx, CommandModeDrawRoute)
+			return
+
+		case ".WIND":
+			sp.setCommandMode(ctx, CommandModeDrawWind)
+			sp.windDrawAltitude = av.DB.Airports[ctx.Client.State.PrimaryAirport].Elevation / 1000 * 1000
 			return
 
 		case ".VFR":
