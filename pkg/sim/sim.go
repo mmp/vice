@@ -176,8 +176,7 @@ type NewSimConfiguration struct {
 	SignOnPositions    map[string]*av.Controller
 
 	TFRs                    []av.TFR
-	LiveWeather             bool
-	Wind                    av.Wind
+	Wind                    map[math.Point2LL][]av.WindLayer
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
@@ -962,6 +961,8 @@ func (s *Sim) Step(elapsed time.Duration) {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
+	s.State.WX.UpdateTime(now)
+
 	for acid, ho := range s.Handoffs {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
@@ -1024,7 +1025,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			passedWaypoint := ac.Update(s.State, s.bravoAirspace, nil /* s.lg*/)
+			passedWaypoint := ac.Update(s.State.WX, s.bravoAirspace, nil /* s.lg*/)
 
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
@@ -1127,7 +1128,8 @@ func (s *Sim) updateState() {
 							} else {
 								// VFR aircraft - select best runway based on wind
 								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
-								if rwy, _ := ap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation); rwy != nil {
+								ws := s.State.WX.Lookup(ap.Location, float32(ap.Elevation))
+								if rwy, _ := ap.SelectBestRunway(ws.Wind.Direction, s.State.MagneticVariation); rwy != nil {
 									runway = rwy.Id
 								}
 							}
@@ -1437,7 +1439,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	} else {
 		return AircraftDisplayState{
 			Spew:        spew.Sdump(ac),
-			FlightState: ac.NavSummary(s.State /* wind */, s.lg),
+			FlightState: ac.NavSummary(s.State.WX, s.lg),
 		}, nil
 	}
 }

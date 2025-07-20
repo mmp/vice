@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
+	"golang.org/x/exp/rand"
 
 	"github.com/brunoga/deep"
 )
@@ -52,11 +53,12 @@ type scenarioGroup struct {
 }
 
 type scenario struct {
-	SoloController      string                   `json:"solo_controller"`
-	SplitConfigurations av.SplitConfigurationSet `json:"multi_controllers"`
-	DefaultSplit        string                   `json:"default_split"`
-	Wind                av.Wind                  `json:"wind"`
-	VirtualControllers  []string                 `json:"controllers"`
+	SoloController      string                           `json:"solo_controller"`
+	SplitConfigurations av.SplitConfigurationSet         `json:"multi_controllers"`
+	DefaultSplit        string                           `json:"default_split"`
+	WindSpec            map[string]interface{}           `json:"wind"` // Will manually deserialize to handle legacyWind
+	Wind                map[math.Point2LL][]av.WindLayer // Derived from WindSpec in PostDeserialize
+	VirtualControllers  []string                         `json:"controllers"`
 
 	// Map from inbound flow names to a map from airport name to default rate,
 	// with "overflights" a special case to denote overflights
@@ -74,6 +76,12 @@ type scenario struct {
 	Range        float32       `json:"range"`
 	DefaultMaps  []string      `json:"default_maps"`
 	VFRRateScale *float32      `json:"vfr_rate_scale"`
+}
+
+type legacyWind struct {
+	Direction int `json:"direction"`
+	Speed     int `json:"speed"`
+	Gust      int `json:"gust"`
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
@@ -582,6 +590,60 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		one := float32(1)
 		s.VFRRateScale = &one
 	}
+
+	windInt := func(name string) (int, bool) {
+		if v, ok := s.WindSpec[name]; ok {
+			if vf, ok := v.(float64); ok {
+				return int(vf), true
+			}
+		}
+		return 0, false
+	}
+
+	s.Wind = make(map[math.Point2LL][]av.WindLayer)
+	if len(s.WindSpec) > 0 {
+		if dir, ok := windInt("direction"); ok {
+			// Treat it as legacy wind:
+			//	Direction int `json:"direction"`
+			//  Speed     int `json:"speed"`
+			//  Gust      int `json:"gust"`
+			spd, _ := windInt("speed")
+			gst, _ := windInt("gust")
+			s.Wind[s.Center] = []av.WindLayer{av.WindLayer{
+				Altitude:  float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
+				Direction: float32(dir),
+				Speed:     float32(spd),
+				Gust:      float32(gst),
+			}}
+		} else {
+			for p, layers := range s.WindSpec {
+				if loc, ok := sg.Locate(p); !ok {
+					e.ErrorString("unknown location %q in \"wind\"", p)
+				} else if lstr, ok := layers.(string); ok {
+					s.Wind[loc] = av.ParseWindLayers(lstr, e)
+				} else {
+					e.ErrorString("Expecting quoted string for %q in \"wind\"", p)
+				}
+			}
+		}
+	} else {
+		s.Wind[s.Center] = []av.WindLayer{av.WindLayer{
+			Altitude:  float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
+			Direction: float32(10 * (1 + rand.Intn(36))),
+			Speed:     float32(rand.Intn(10)),
+		}}
+	}
+}
+
+func (s *scenario) AverageWind() av.WindLayer {
+	iter := func(yield func(float32, av.WindLayer) bool) {
+		for _, layers := range s.Wind {
+			if !yield(1, layers[0]) {
+				return
+			}
+		}
+	}
+	return av.BlendWindLayers(iter)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1409,7 +1471,7 @@ func initializeSimConfigurations(sg *scenarioGroup,
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
 			LaunchConfig:        lc,
-			Wind:                scenario.Wind,
+			AverageWind:         scenario.AverageWind(),
 			DepartureRunways:    scenario.DepartureRunways,
 			ArrivalRunways:      scenario.ArrivalRunways,
 			PrimaryAirport:      sg.PrimaryAirport,

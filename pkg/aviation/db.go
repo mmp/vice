@@ -108,9 +108,8 @@ type AdaptationFixes []AdaptationFix
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32) (*Runway, *Runway) {
-	ws := wind.LookupWind(ap.Location, float32(ap.Elevation))
-	whdg := math.NormalizeHeading(float32(ws.Direction) + magneticVariation)
+func (ap FAAAirport) SelectBestRunway(windDir float32, magneticVariation float32) (*Runway, *Runway) {
+	whdg := math.NormalizeHeading(windDir + magneticVariation)
 
 	// Find best aligned runway
 	minDelta := float32(1000)
@@ -220,14 +219,14 @@ func (ap AircraftPerformance) baseApproachSpeed() float32 {
 // full gust factor (not to exceed 20 knots). Pistons add half the gust
 // factor... I suppose we should also add a max additive but most pistons
 // won't be landing in very windy conditions
-func (ap AircraftPerformance) ApproachSpeed(w Wind, runwayHeading float32) float32 {
-	gustFactor := max(0, float32(w.Gust-w.Speed))
+func (ap AircraftPerformance) ApproachSpeed(wx WeatherSample, runwayHeading float32) float32 {
+	gustFactor := max(0, float32(wx.Wind.Gust-wx.Wind.Speed))
 
 	additive := float32(0)
 	switch ap.Engine.AircraftType {
 	case "J", "T":
-		diff := math.HeadingDifference(float32(w.Direction), runwayHeading)
-		headwind := max(0, float32(w.Speed)*math.Cos(math.Radians(diff)))
+		diff := math.HeadingDifference(float32(wx.Wind.Direction), runwayHeading)
+		headwind := max(0, float32(wx.Wind.Speed)*math.Cos(math.Radians(diff)))
 		additive = min(headwind/2+gustFactor, 20)
 		fmt.Printf("base %.1f heading diff %f headwind %f gust %f addititve %f\n", ap.baseApproachSpeed(),
 			diff, headwind, gustFactor, additive)
