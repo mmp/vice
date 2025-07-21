@@ -853,12 +853,12 @@ func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransfor
 		for x := range max(1, int(ctx.PaneExtent.Width()/pix)) {
 			pw := [2]float32{float32(x)*pix + pix/2, float32(y)*pix + pix/2}
 			pll := transforms.LatLongFromWindowP(pw)
-			wx := ctx.Client.State.WX.Lookup(pll, float32(sp.windDrawAltitude))
+			ws := ctx.Client.State.WX.LookupWind(pll, float32(sp.windDrawAltitude))
 			// Round to nearest 5 knots
-			spd := int(wx.Wind.Speed+2.5) / 5 * 5
+			spd := int(ws.Speed+2.5) / 5 * 5
 
 			// Rotate so we can draw a canonical barb below
-			rot := math.Rotator2f(wx.Wind.Direction)
+			rot := math.Rotator2f(ws.Direction)
 
 			// Main line
 			ld.AddLine(pw, math.Add2f(pw, rot([2]float32{0, pix / 2})))

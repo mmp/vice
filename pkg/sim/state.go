@@ -134,7 +134,8 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 
-		WX: av.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), now, config.MagneticVariation, config.Wind, lg),
+		WX: av.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), now, config.NmPerLongitude,
+			config.MagneticVariation, config.Wind, lg),
 
 		SimRate:        1,
 		SimDescription: config.Description,
@@ -207,7 +208,7 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 			ss.DepartureAirports[name] = nil
 
 			ap := av.DB.Airports[name]
-			windDir := ss.WX.Lookup(ap.Location, float32(ap.Elevation)).Wind.Direction
+			windDir := ss.WX.LookupWind(ap.Location, float32(ap.Elevation)).Direction
 			if rwy, _ := ap.SelectBestRunway(windDir, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
 			} else {

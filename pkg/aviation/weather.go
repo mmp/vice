@@ -7,7 +7,6 @@ package aviation
 import (
 	"encoding/json"
 	"fmt"
-	"iter"
 	"net/http"
 	"net/url"
 	"slices"
@@ -22,10 +21,11 @@ import (
 )
 
 type WindLayer struct {
-	Altitude  float32
-	Direction float32 // 0 -> variable
-	Speed     float32
-	Gust      float32
+	Altitude        float32
+	Direction       float32    // 0 -> variable
+	DirectionVector [2]float32 // normalized vector
+	Speed           float32
+	Gust            float32
 }
 
 // ParseWindLayers parses a string of the form
@@ -59,6 +59,7 @@ func ParseWindLayers(str string, e *util.ErrorLogger) []WindLayer {
 			continue
 		} else {
 			layer.Direction = float32(dir)
+			layer.DirectionVector = math.SinCos(math.Radians(layer.Direction))
 		}
 
 		s, g, ok := strings.Cut(f[2], "g")
@@ -93,21 +94,26 @@ func ParseWindLayers(str string, e *util.ErrorLogger) []WindLayer {
 	return layers
 }
 
-func BlendWindLayers(it iter.Seq2[float32, WindLayer]) WindLayer {
+func BlendWindLayers(wts []float32, layers []WindLayer) WindLayer {
 	var alt, sumwt float32
 	var vspd, vgst [2]float32
-	for wt, layer := range it {
-		alt += wt * layer.Altitude
-		vspd = math.Add2f(vspd, math.Scale2f(math.SinCos(math.Radians(layer.Direction)), layer.Speed*wt))
-		vgst = math.Add2f(vgst, math.Scale2f(math.SinCos(math.Radians(layer.Direction)), layer.Gust*wt))
-		sumwt += wt
+	for i, wt := range wts {
+		if wt != 0 {
+			layer := layers[i]
+			alt += wt * layer.Altitude
+			vspd = math.Add2f(vspd, math.Scale2f(layer.DirectionVector, layer.Speed*wt))
+			vgst = math.Add2f(vgst, math.Scale2f(layer.DirectionVector, layer.Gust*wt))
+			sumwt += wt
+		}
 	}
 
+	invwt := 1 / sumwt
 	return WindLayer{
-		Altitude:  alt / sumwt,
-		Direction: math.VectorHeading(vspd),
-		Speed:     math.Length2f(vspd) / sumwt,
-		Gust:      math.Length2f(vgst) / sumwt,
+		Altitude:        alt * invwt,
+		Direction:       math.VectorHeading(vspd),
+		DirectionVector: math.Normalize2f(vspd),
+		Speed:           math.Length2f(vspd) * invwt,
+		Gust:            math.Length2f(vgst) * invwt,
 	}
 }
 
@@ -126,12 +132,8 @@ func interpolateWind(alt float32, layers []WindLayer) WindLayer {
 
 		l0, l1 := layers[i-1], layers[i]
 		t := (alt - l0.Altitude) / (l1.Altitude - l0.Altitude)
-		iter := func(yield func(float32, WindLayer) bool) {
-			if yield(1-t, l0) {
-				yield(t, l1)
-			}
-		}
-		return BlendWindLayers(iter)
+		wts := [2]float32{1 - t, t}
+		return BlendWindLayers(wts[:], layers[i-1:i+1])
 	}
 }
 
@@ -144,14 +146,15 @@ type WindTreeNode struct {
 
 type WeatherModel struct {
 	METAR             map[string]*METAR
+	NmPerLongitude    float32
 	MagneticVariation float32
 	WindRoot          *WindTreeNode
 	StartTime         time.Time
 	CurrentTime       time.Time
 }
 
-func MakeWeatherModel(airports []string, now time.Time, magneticVariation float32, wind map[math.Point2LL][]WindLayer,
-	lg *log.Logger) *WeatherModel {
+func MakeWeatherModel(airports []string, now time.Time, nmPerLongitude float32, magneticVariation float32,
+	wind map[math.Point2LL][]WindLayer, lg *log.Logger) *WeatherModel {
 	wm := &WeatherModel{
 		MagneticVariation: magneticVariation,
 		StartTime:         now,
@@ -293,10 +296,11 @@ func (w *WeatherModel) updateMETARs(airports []string, wind map[math.Point2LL][]
 		for _, metar := range w.METAR {
 			ap := DB.Airports[metar.ICAO]
 			wind[ap.Location] = []WindLayer{WindLayer{
-				Altitude:  float32(ap.Elevation),
-				Direction: util.Select(metar.Wind.Variable, 0, metar.Wind.Direction),
-				Speed:     metar.Wind.Speed,
-				Gust:      metar.Wind.Gust,
+				Altitude:        float32(ap.Elevation),
+				Direction:       util.Select(metar.Wind.Variable, 0, metar.Wind.Direction),
+				DirectionVector: math.SinCos(math.Radians(metar.Wind.Direction)),
+				Speed:           metar.Wind.Speed,
+				Gust:            metar.Wind.Gust,
 			}}
 		}
 	}
@@ -308,16 +312,18 @@ type WeatherSample struct {
 	Altimeter   float32
 	Temperature float32
 	Dewpoint    float32
-	Wind        struct {
-		// Vector is the wind vector at the sample time, incorporating
-		// gusting, if relevant. Note that it corresponds to the wind's
-		// effect on an aircraft (e.g., if the wind heading is 090, the
-		// vector will be pointed in the -x direction.)
-		Vector    [2]float32
-		Direction float32
-		Speed     float32 // current speed in knots, including gusting.
-		Gust      float32
-	}
+	Wind        WindSample
+}
+
+type WindSample struct {
+	// Vector is the wind vector at the sample time, incorporating
+	// gusting, if relevant. Note that it corresponds to the wind's
+	// effect on an aircraft (e.g., if the wind heading is 090, the
+	// vector will be pointed in the -x direction.)
+	Vector    [2]float32
+	Direction float32
+	Speed     float32 // current speed in knots, including gusting.
+	Gust      float32
 }
 
 func (w *WeatherModel) UpdateTime(t time.Time) {
@@ -329,15 +335,15 @@ func (w *WeatherModel) GetMETAR(icao string) *METAR {
 	return w.METAR[icao]
 }
 
-func (w *WeatherModel) Lookup(p math.Point2LL, alt float32) WeatherSample {
+func (w *WeatherModel) LookupWX(p math.Point2LL, alt float32) WeatherSample {
 	var ws WeatherSample
 
 	// Altimeter/temp/dewpoint via METAR: currently we use all of them,
 	// weighted by distance; this is probably not ideal.
 	var sumwt float32
 	for _, m := range w.METAR {
-		d := math.NMDistance2LL(p, m.Location())
-		wt := 1 / d
+		d := math.NMDistance2LLFast(p, m.Location(), w.NmPerLongitude)
+		wt := 1 / max(0.01, d)
 
 		ws.Altimeter += wt * m.Altimeter
 		ws.Temperature += wt * m.Temperature
@@ -348,6 +354,12 @@ func (w *WeatherModel) Lookup(p math.Point2LL, alt float32) WeatherSample {
 	ws.Temperature /= sumwt
 	ws.Dewpoint /= sumwt
 
+	ws.Wind = w.LookupWind(p, alt)
+
+	return ws
+}
+
+func (w *WeatherModel) LookupWind(p math.Point2LL, alt float32) WindSample {
 	// Wind: first find up to the three nearest sample points
 	const nw = 3
 	var wind [nw]*WindTreeNode
@@ -358,7 +370,7 @@ func (w *WeatherModel) Lookup(p math.Point2LL, alt float32) WeatherSample {
 			return
 		}
 
-		d := math.NMDistance2LL(p, node.Location)
+		d := math.NMDistance2LLFast(p, node.Location, w.NmPerLongitude)
 		for i := range nw {
 			if wind[i] == nil || d < dist[i] {
 				// Sort by distance, low to high
@@ -392,30 +404,30 @@ func (w *WeatherModel) Lookup(p math.Point2LL, alt float32) WeatherSample {
 	}
 	search(w.WindRoot)
 
-	wl := BlendWindLayers(func(yield func(float32, WindLayer) bool) {
-		for _, w := range wind {
-			if w != nil {
-				l := interpolateWind(alt, w.Layers)
-				d := math.NMDistance2LL(p, w.Location)
-				wt := 1 / max(0.01, d)
-
-				if !yield(wt, l) {
-					return
-				}
-			}
+	var bwt [nw]float32
+	var blayers [nw]WindLayer
+	for i, wnd := range wind {
+		if wnd != nil {
+			blayers[i] = interpolateWind(alt, wnd.Layers)
+			d := math.NMDistance2LLFast(p, wnd.Location, w.NmPerLongitude)
+			bwt[i] = 1 / max(0.01, d)
 		}
-	})
-	ws.Wind.Direction = wl.Direction
-	ws.Wind.Speed = wl.Speed
-	ws.Wind.Gust = wl.Gust
+	}
+	wl := BlendWindLayers(bwt[:], blayers[:])
+
+	ws := WindSample{
+		Direction: wl.Direction,
+		Speed:     wl.Speed,
+		Gust:      wl.Gust,
+	}
 
 	elapsed := float32(w.CurrentTime.Sub(w.StartTime).Seconds())
 	gustScale := float32(1+math.Cos(elapsed/4)) / 2
-	spd := ws.Wind.Speed + gustScale*ws.Wind.Gust
+	spd := ws.Speed + gustScale*ws.Gust
 
 	// point the vector so it's how the aircraft is affected
-	v := math.SinCos(math.Radians(math.OppositeHeading(ws.Wind.Direction)))
-	ws.Wind.Vector = math.Scale2f(v, spd/3600) // knots -> per second
+	v := math.SinCos(math.Radians(math.OppositeHeading(ws.Direction)))
+	ws.Vector = math.Scale2f(v, spd/3600) // knots -> per second
 
 	return ws
 }
@@ -439,24 +451,6 @@ func (w WindSample) String() string {
 
 		return wind + "KT"
 	}
-}
-
-func (w WindSample) Randomize(r *rand.Rand) WindSample {
-	w.Speed += -3 + r.Intn(6)
-	if w.Speed < 0 {
-		w.Speed = 0
-	} else if w.Speed < 4 {
-		w.Variable = true
-	} else {
-		dir := 10 * ((w.Direction + 5) / 10)
-		dir +=
-		w.Direction = dir
-		gst := w.Gust - 3 + r.Intn(6)
-		if gst-w.Speed > 5 {
-			w.Gust = gst
-		}
-	}
-	return w
 }
 */
 

@@ -1128,8 +1128,8 @@ func (s *Sim) updateState() {
 							} else {
 								// VFR aircraft - select best runway based on wind
 								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
-								ws := s.State.WX.Lookup(ap.Location, float32(ap.Elevation))
-								if rwy, _ := ap.SelectBestRunway(ws.Wind.Direction, s.State.MagneticVariation); rwy != nil {
+								ws := s.State.WX.LookupWind(ap.Location, float32(ap.Elevation))
+								if rwy, _ := ap.SelectBestRunway(ws.Direction, s.State.MagneticVariation); rwy != nil {
 									runway = rwy.Id
 								}
 							}

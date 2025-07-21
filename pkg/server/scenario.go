@@ -610,10 +610,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			spd, _ := windInt("speed")
 			gst, _ := windInt("gust")
 			s.Wind[s.Center] = []av.WindLayer{av.WindLayer{
-				Altitude:  float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
-				Direction: float32(dir),
-				Speed:     float32(spd),
-				Gust:      float32(gst),
+				Altitude:        float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
+				Direction:       float32(dir),
+				DirectionVector: math.SinCos(math.Radians(float32(dir))),
+				Speed:           float32(spd),
+				Gust:            float32(gst),
 			}}
 		} else {
 			for p, layers := range s.WindSpec {
@@ -627,23 +628,24 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 	} else {
+		dir := float32(10 * (1 + rand.Intn(36)))
 		s.Wind[s.Center] = []av.WindLayer{av.WindLayer{
-			Altitude:  float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
-			Direction: float32(10 * (1 + rand.Intn(36))),
-			Speed:     float32(rand.Intn(10)),
+			Altitude:        float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
+			Direction:       dir,
+			DirectionVector: math.SinCos(math.Radians(dir)),
+			Speed:           float32(rand.Intn(10)),
 		}}
 	}
 }
 
 func (s *scenario) AverageWind() av.WindLayer {
-	iter := func(yield func(float32, av.WindLayer) bool) {
-		for _, layers := range s.Wind {
-			if !yield(1, layers[0]) {
-				return
-			}
-		}
+	var wts []float32
+	var l []av.WindLayer
+	for _, layers := range s.Wind {
+		wts = append(wts, 1)
+		l = append(l, layers[0])
 	}
-	return av.BlendWindLayers(iter)
+	return av.BlendWindLayers(wts, l)
 }
 
 ///////////////////////////////////////////////////////////////////////////

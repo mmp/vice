@@ -287,9 +287,9 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 				slog.Any("flightplan", fp))
 		} else {
 			ap := av.DB.Airports[fp.ArrivalAirport]
-			ws := wx.Lookup(ap.Location, float32(ap.Elevation))
+			ws := wx.LookupWind(ap.Location, float32(ap.Elevation))
 			nav.Waypoints = av.AppendVFRLanding(nav.Waypoints[:landIdx+1], nav.Perf, fp.ArrivalAirport,
-				ws.Wind.Direction, nmPerLongitude, magneticVariation, lg)
+				ws.Direction, nmPerLongitude, magneticVariation, lg)
 		}
 	}
 
@@ -933,7 +933,7 @@ func (nav *Nav) updatePositionAndGS(wx *av.WeatherModel, lg *log.Logger) {
 	// Further offset based on the wind
 	var windVector [2]float32
 	if nav.IsAirborne() && wx != nil {
-		windVector = wx.Lookup(nav.FlightState.Position, nav.FlightState.Altitude).Wind.Vector
+		windVector = wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector
 	}
 
 	// Update the aircraft's state
@@ -1079,7 +1079,7 @@ func (nav *Nav) TargetHeading(wx *av.WeatherModel, lg *log.Logger) (heading floa
 
 		if nav.IsAirborne() {
 			// model where we'll actually end up, given the wind
-			vp := math.Add2f(v, wx.Lookup(nav.FlightState.Position, nav.FlightState.Altitude).Wind.Vector)
+			vp := math.Add2f(v, wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector)
 
 			// Find the deflection angle of how much the wind pushes us off course.
 			vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
@@ -1679,7 +1679,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wx *av.We
 	// last half mile before touchdown.
 	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
 		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-		w := wx.Lookup(nav.FlightState.Position, nav.FlightState.Altitude)
+		w := wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude)
 		approachSpeed := nav.Perf.ApproachSpeed(w, hdg)
 
 		if fd < 0.5 {
