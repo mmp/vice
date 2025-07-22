@@ -83,6 +83,8 @@ type Sim struct {
 
 	Rand *rand.Rand
 
+	SquawkWarnedACIDs map[ACID]interface{} // Warn once in CheckLeaks(); don't spam the logs
+
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
@@ -223,6 +225,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Instructors: make(map[string]bool),
 
 		Rand: rand.Make(),
+
+		SquawkWarnedACIDs: make(map[ACID]interface{}),
 	}
 
 	// Automatically add nearby airports and VORs as candidate reporting points
@@ -1475,22 +1479,28 @@ func (s *Sim) CheckLeaks() {
 			}
 		}
 
-		if _, ok := seenSquawks[fp.AssignedSquawk]; ok {
-			s.lg.Errorf("%s: squawk code %q assigned to multiple aircraft", fp.ACID, fp.AssignedSquawk)
+		_, warned := s.SquawkWarnedACIDs[fp.ACID]
+
+		if _, ok := seenSquawks[fp.AssignedSquawk]; ok && !warned {
+			s.lg.Warnf("%s: squawk code %q assigned to multiple aircraft", fp.ACID, fp.AssignedSquawk)
+			s.SquawkWarnedACIDs[fp.ACID] = nil
 		}
 		seenSquawks[fp.AssignedSquawk] = nil
 
 		if s.ERAMComputer.SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
-			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
-				s.lg.Errorf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
+			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
+				s.lg.Warnf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
+				s.SquawkWarnedACIDs[fp.ACID] = nil
 			}
 		} else if s.LocalCodePool.InInitialPool(fp.AssignedSquawk) {
-			if !s.LocalCodePool.IsAssigned(fp.AssignedSquawk) {
-				s.lg.Errorf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
+			if !s.LocalCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
+				s.lg.Warnf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
+				s.SquawkWarnedACIDs[fp.ACID] = nil
 			}
-		} else {
+		} else if !warned {
 			// It may be controller-assigned to something arbitrary.
-			//s.lg.Errorf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+			s.lg.Warnf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+			s.SquawkWarnedACIDs[fp.ACID] = nil
 		}
 	}
 
