@@ -381,7 +381,15 @@ func (nav *Nav) AssignedHeading() (float32, bool) {
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment.
 func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
-	delay := 8 + 5*nav.Rand.Float32()
+	var delay float32
+	if nav.Heading.Assigned != nil && nav.DeferredNavHeading == nil {
+		// Already in heading mode; have less of a delay.
+		delay = 4 + 3*nav.Rand.Float32()
+	} else {
+		// LNAV -> heading mode--longer delay
+		delay = 8 + 5*nav.Rand.Float32()
+	}
+
 	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time:    now.Add(time.Duration(delay * float32(time.Second))),
@@ -402,7 +410,15 @@ func (nav *Nav) AssignedWaypoints() []av.Waypoint {
 }
 
 func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
-	delay := 8 + 5*nav.Rand.Float32()
+	var delay float32
+	if nav.Heading.Assigned == nil && nav.DeferredNavHeading == nil {
+		// Already in LNAV mode; have less of a delay
+		delay = 4 + 3*nav.Rand.Float32()
+	} else {
+		// heading->LNAV--longer delay
+		delay = 8 + 5*nav.Rand.Float32()
+	}
+
 	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
 		Time:      now.Add(time.Duration(delay * float32(time.Second))),
