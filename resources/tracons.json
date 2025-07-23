@@ -1,4 +1,8 @@
 {
+    "HNL": {
+        "Name": "Honolulu CERAP",
+        "ARTCC": "ZHN"
+    },
     "A11": {
         "Name": "Anchorage TRACON",
         "ARTCC": "ZAN"
