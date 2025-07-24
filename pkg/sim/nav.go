@@ -386,8 +386,8 @@ func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
 		// Already in heading mode; have less of a delay.
 		delay = 4 + 3*nav.Rand.Float32()
 	} else {
-		// LNAV -> heading mode--longer delay
-		delay = 8 + 5*nav.Rand.Float32()
+		// LNAV -> heading mode--longer delay but not as long as heading->LNAV
+		delay = 5 + 4*nav.Rand.Float32()
 	}
 
 	now := time.Now()
