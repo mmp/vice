@@ -56,7 +56,7 @@ type scenario struct {
 	SoloController      string                           `json:"solo_controller"`
 	SplitConfigurations av.SplitConfigurationSet         `json:"multi_controllers"`
 	DefaultSplit        string                           `json:"default_split"`
-	WindSpec            map[string]interface{}           `json:"wind"` // Will manually deserialize to handle legacyWind
+	WindSpec            map[string]interface{}           `json:"wind"` // Will manually deserialize to handle legacy wind
 	Wind                map[math.Point2LL][]av.WindLayer // Derived from WindSpec in PostDeserialize
 	VirtualControllers  []string                         `json:"controllers"`
 
@@ -76,12 +76,6 @@ type scenario struct {
 	Range        float32       `json:"range"`
 	DefaultMaps  []string      `json:"default_maps"`
 	VFRRateScale *float32      `json:"vfr_rate_scale"`
-}
-
-type legacyWind struct {
-	Direction int `json:"direction"`
-	Speed     int `json:"speed"`
-	Gust      int `json:"gust"`
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
