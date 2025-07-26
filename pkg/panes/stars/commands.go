@@ -1259,7 +1259,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 						ch := s[i]
 						if ch >= '0' && ch <= '9' {
 							i++
-						} else if ch == 'L' || ch == 'R' || ch == 'C' {
+						} else if ch == 'L' || ch == 'R' || ch == 'C' || ch == 'W' {
 							i++
 							break
 						} else {
