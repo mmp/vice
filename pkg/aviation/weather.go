@@ -165,14 +165,6 @@ func MakeWeatherModel(airports []string, now time.Time, nmPerLongitude float32, 
 	var nodes []*WindTreeNode
 	for loc, layers := range wind {
 		layers = slices.Clone(layers)
-		if len(layers) == 1 {
-			// Model increased wind speed at higher altitudes
-			lalt := layers[0]
-			lalt.Altitude += 7500
-			lalt.Speed *= 3
-			lalt.Gust *= 3
-			layers = append(layers, lalt)
-		}
 
 		// Sort layers by altitude
 		slices.SortFunc(layers, func(a, b WindLayer) int { return int(a.Altitude - b.Altitude) })
