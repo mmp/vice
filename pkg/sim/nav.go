@@ -560,6 +560,11 @@ func (nav *Nav) Summary(fp av.FlightPlan, wx *av.WeatherModel, lg *log.Logger) s
 		}
 	}
 
+	// Wind
+	wind := wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude)
+	lines = append(lines, fmt.Sprintf("Wind %03d at %.0f%s", int(wind.Direction), wind.Speed,
+		util.Select(wind.Gust != 0, fmt.Sprintf(" gust %.0f", wind.Gust), "")))
+
 	// Speed; don't be as exhaustive as we are for altitude
 	targetAltitude, _ := nav.TargetAltitude(lg)
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
