@@ -76,13 +76,13 @@ func ParseCardinalOrdinalDirection(s string) (CardinalOrdinalDirection, error) {
 	return CardinalOrdinalDirection(0), fmt.Errorf("invalid direction")
 }
 
-// Heading2ll returns the heading from the point |from| to the point |to|
+// Heading2LL returns the heading from the point |from| to the point |to|
 // in degrees.  The provided points should be in latitude-longitude
 // coordinates and the provided magnetic correction is applied to the
 // result.
 func Heading2LL(from Point2LL, to Point2LL, nmPerLongitude float32, magCorrection float32) float32 {
 	v := Point2LL{to[0] - from[0], to[1] - from[1]}
-	angle := VectorHeading(Scale2f(v, nmPerLongitude))
+	angle := Degrees(Atan2(v[0]*nmPerLongitude, v[1]*NMPerLatitude))
 	return NormalizeHeading(angle + magCorrection)
 }
 
