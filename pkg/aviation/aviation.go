@@ -533,8 +533,17 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 		n := len(rwy)
 		num, ext := "", ""
 		switch rwy[n-1] {
-		case 'R', 'L', 'C', 'W':
-			ext = string(rwy[n-1])
+		case 'R':
+			ext = "L"
+			num = rwy[:n-1]
+		case 'L':
+			ext = "R"
+			num = rwy[:n-1]
+		case 'C':
+			ext = "C"
+			num = rwy[:n-1]
+		case 'W':
+			ext = "W"
 			num = rwy[:n-1]
 		default:
 			num = rwy
