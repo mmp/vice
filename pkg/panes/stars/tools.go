@@ -837,6 +837,62 @@ func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTr
 	ld.GenerateCommands(cb)
 }
 
+func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	if sp.commandMode != CommandModeDrawWind {
+		return
+	}
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+	td := renderer.GetTrianglesDrawBuilder()
+	defer renderer.ReturnTrianglesDrawBuilder(td)
+
+	// Wind barbs: https://www.weather.gov/hfo/windbarbinfo
+	const pix = 50
+	for y := range max(1, int(ctx.PaneExtent.Height()/pix)) {
+		for x := range max(1, int(ctx.PaneExtent.Width()/pix)) {
+			pw := [2]float32{float32(x)*pix + pix/2, float32(y)*pix + pix/2}
+			pll := transforms.LatLongFromWindowP(pw)
+			ws := ctx.Client.State.WX.LookupWind(pll, float32(sp.windDrawAltitude))
+			// Round to nearest 5 knots
+			spd := int(ws.Speed+2.5) / 5 * 5
+
+			// Rotate so we can draw a canonical barb below
+			rot := math.Rotator2f(ws.Direction)
+
+			// Main line
+			ld.AddLine(pw, math.Add2f(pw, rot([2]float32{0, pix / 2})))
+			pb := [2]float32{0, pix / 2}
+			for spd > 50 {
+				// Triangle
+				v0 := math.Add2f(pw, rot(pb))
+				v1 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{0, -6})))
+				v2 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, -3})))
+				td.AddTriangle(v0, v1, v2)
+				pb[1] -= 6
+				spd -= 50
+			}
+			for spd > 10 {
+				// long line
+				ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, pix / 20}))))
+				pb[1] -= 3
+				spd -= 10
+			}
+			if spd > 5 {
+				// short line
+				ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 8, pix / 40}))))
+			}
+		}
+	}
+
+	cb.LineWidth(1, ctx.DPIScale)
+	ps := sp.currentPrefs()
+	cb.SetRGB(ps.Brightness.Lines.RGB())
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+}
+
 type STARSRangeBearingLine struct {
 	P [2]struct {
 		// If callsign is given, use that aircraft's position;

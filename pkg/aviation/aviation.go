@@ -497,7 +497,7 @@ func cleanRunway(rwy string) string {
 	for i, ch := range rwy {
 		if ch >= '0' && ch <= '9' {
 			continue
-		} else if ch == 'L' || ch == 'R' || ch == 'C' {
+		} else if ch == 'L' || ch == 'R' || ch == 'C' || ch == 'W' {
 			return rwy[:i+1]
 		} else {
 			return rwy[:i]
@@ -541,6 +541,9 @@ func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
 			num = rwy[:n-1]
 		case 'C':
 			ext = "C"
+			num = rwy[:n-1]
+		case 'W':
+			ext = "W"
 			num = rwy[:n-1]
 		default:
 			num = rwy

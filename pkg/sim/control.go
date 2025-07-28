@@ -19,7 +19,9 @@ import (
 )
 
 func setTransmissionController(tcp string, rt *speech.RadioTransmission) *speech.RadioTransmission {
-	rt.Controller = tcp
+	if rt != nil {
+		rt.Controller = tcp
+	}
 	return rt
 }
 
@@ -1261,7 +1263,9 @@ func (s *Sim) GoAround(tcp string, callsign av.ADSBCallsign) error {
 	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) *speech.RadioTransmission {
 			rt := ac.GoAround()
-			rt.Type = speech.RadioTransmissionUnexpected
+			if rt != nil {
+				rt.Type = speech.RadioTransmissionUnexpected
+			}
 			return setTransmissionController(tcp, rt)
 		})
 }
@@ -1273,7 +1277,7 @@ func (s *Sim) ContactTower(tcp string, callsign av.ADSBCallsign) error {
 	return s.dispatchControlledAircraftCommand(tcp, callsign,
 		func(tcp string, ac *Aircraft) *speech.RadioTransmission {
 			result := ac.ContactTower(s.lg)
-			if result.Type != speech.RadioTransmissionUnexpected && ac.IsAssociated() {
+			if result != nil && result.Type != speech.RadioTransmissionUnexpected && ac.IsAssociated() {
 				ac.STARSFlightPlan.ControllingController = "_TOWER"
 			}
 			return setTransmissionController(tcp, result)

@@ -63,49 +63,6 @@ func (t *TransientMap[K, V]) Delete(key K) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// RingBuffer
-
-// RingBuffer represents an array of no more than a given maximum number of
-// items.  Once it has filled, old items are discarded to make way for new
-// ones.
-type RingBuffer[V any] struct {
-	entries []V
-	max     int
-	index   int
-}
-
-func NewRingBuffer[V any](capacity int) *RingBuffer[V] {
-	return &RingBuffer[V]{max: capacity}
-}
-
-// Add adds all of the provided values to the ring buffer.
-func (r *RingBuffer[V]) Add(values ...V) {
-	for _, v := range values {
-		if len(r.entries) < r.max {
-			// Append to the entries slice if it hasn't yet hit the limit.
-			r.entries = append(r.entries, v)
-		} else {
-			// Otherwise treat r.entries as a ring buffer where
-			// (r.index+1)%r.max is the oldest entry and successive newer
-			// entries follow.
-			r.entries[r.index%r.max] = v
-		}
-		r.index++
-	}
-}
-
-// Size returns the total number of items stored in the ring buffer.
-func (r *RingBuffer[V]) Size() int {
-	return min(len(r.entries), r.max)
-}
-
-// Get returns the specified element of the ring buffer where the index i
-// is between 0 and Size()-1 and 0 is the oldest element in the buffer.
-func (r *RingBuffer[V]) Get(i int) V {
-	return r.entries[(r.index+i)%len(r.entries)]
-}
-
-///////////////////////////////////////////////////////////////////////////
 // OrderedMap
 
 type OrderedMap struct {
@@ -372,26 +329,6 @@ func AllPermutations[S ~[]E, E any](s S) iter.Seq[iter.Seq2[int, E]] {
 			}
 
 			next()
-		}
-	}
-}
-
-func SliceReverseValues[Slice ~[]E, E any](s Slice) iter.Seq[E] {
-	return func(yield func(E) bool) {
-		for _, v := range SliceReverseValues2(s) {
-			if !yield(v) {
-				break
-			}
-		}
-	}
-}
-
-func SliceReverseValues2[Slice ~[]E, E any](s Slice) iter.Seq2[int, E] {
-	return func(yield func(int, E) bool) {
-		for i := len(s) - 1; i >= 0; i-- {
-			if !yield(i, s[i]) {
-				break
-			}
 		}
 	}
 }

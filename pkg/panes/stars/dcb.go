@@ -173,7 +173,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 			m == CommandModeHandOff || m == CommandModeVFRPlan || m == CommandModeMultiFunc ||
 			m == CommandModeFlightData || m == CommandModeCollisionAlert || m == CommandModeMin ||
 			m == CommandModeTargetGen || m == CommandModeTargetGenLock || m == CommandModeReleaseDeparture ||
-			m == CommandModeRestrictionArea || m == CommandModeDrawRoute
+			m == CommandModeRestrictionArea || m == CommandModeDrawRoute || m == CommandModeDrawWind
 	}
 	isMainMenuMode := func(m CommandMode) bool {
 		return m == CommandModeRange || m == CommandModePlaceCenter || m == CommandModeRangeRings ||

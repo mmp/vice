@@ -312,7 +312,7 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway string) {
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway string, manualLaunch bool) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State /* wind */, s.Rand)
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State.WX, s.Rand)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
@@ -1093,13 +1093,14 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	airline := rand.SampleSlice(s.Rand, arr.Airlines[arrivalAirport])
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
+			arrivalAirport)
 	}
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.Airport, arrivalAirport)
 
 	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.WX, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
 	}
@@ -1263,14 +1264,15 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	airline := rand.SampleSlice(s.Rand, dep.Airlines)
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
+			departureAirport)
 	}
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
 
 	exitRoute := exitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute, s.State.NmPerLongitude,
-		s.State.MagneticVariation, s.State /* wind */, s.State.SimTime, s.lg)
+		s.State.MagneticVariation, s.State.WX, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
 	}
@@ -1353,13 +1355,13 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	airline := rand.SampleSlice(s.Rand, of.Airlines)
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft for overflight %+v in %q", airline, group)
 	}
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
 
 	if err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
-		s.State /* wind */, s.State.SimTime, s.lg); err != nil {
+		s.State.WX, s.State.SimTime, s.lg); err != nil {
 		return nil, err
 	}
 
@@ -1397,7 +1399,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	return ac, err
 }
 
-func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel, r *rand.Rand) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, now time.Time, wx *av.WeatherModel, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           now,
@@ -1410,7 +1412,7 @@ func makeDepartureAircraft(ac *Aircraft, now time.Time, wind av.WindModel, r *ra
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(wind, nil, nil /* lg */)
+		simAc.Update(wx, nil, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second
@@ -1554,7 +1556,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	wps[len(wps)-1].Land = true
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.State /* wind */, s.lg); err != nil {
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.WX, s.lg); err != nil {
 		return nil, "", err
 	}
 
@@ -1565,7 +1567,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	// Check airspace violations
 	simac := deep.MustCopy(*ac)
 	for range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
-		if wp := simac.Update(s.State /* wind */, s.bravoAirspace, nil); wp != nil && wp.Delete {
+		if wp := simac.Update(s.State.WX, s.bravoAirspace, nil); wp != nil && wp.Delete {
 			return ac, rwy.Id, nil
 		}
 		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||

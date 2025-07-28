@@ -2110,7 +2110,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               For VFR aircraft or for VFRs that request pop-up IFR clearance, a variety of commands are available to
               create flight plans and associate them with aircraft; see the section on <a href="#flight-plans">Flight Plans</a> below.</p>
 
-            <p>A single controller may own an aircraft's track and a single controller may own control of an aircraft.  The same controller may own both or two different controllers may the track and control.  A controller must have control of an aircraft in order to issue instructions to the pilot.  See the discussion of <a href="#stars-track-ownership">Track Ownership</a> below for more information about how control and track ownership are transferred between controllers.
+            <p>A single controller may own an aircraft's track and a single controller may own control of an aircraft.  The same controller may own both or two different controllers may own each track and control.  A controller must have control of an aircraft in order to issue instructions to the pilot.  See the discussion of <a href="#stars-track-ownership">Track Ownership</a> below for more information about how control and track ownership are transferred between controllers.
             </p>
 
             <p>Each controller in the terminal environment is responsible for at least one <i>terminal control position</i> (TCP).
@@ -5549,15 +5549,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </thead>
               <tbody>
                 <tr>
-                  <td><code>[MULTIFUNC]TP(#)</code></td>
+                  <td><code>[MULTIFUNC]P(#)</code></td>
                   <td>Toggles whether the corresponding tower list is shown.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]TP(#)[SLEW]</code></td>
+                  <td><code>[MULTIFUNC]P(#)[SLEW]</code></td>
                   <td>Places the upper left corner of the given tower list at the slewed point.</td>
                 </tr>
                 <tr>
-                  <td><code>[MULTIFUNC]TP(#)(##)</code></td>
+                  <td><code>[MULTIFUNC]P(#)(##)</code></td>
                   <td>Sets how the maximum number of lines of text displayed in the specified tower list. The first number corresponds to the tower list index.</td>
                 </tr>
               </tbody>
@@ -7609,12 +7609,34 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"wind"</td>
                 <td>Object</td>
-                <td>This specifies the current winds for the scenario.  Winds are included in the simulation and affect aircraft similarly to how they do in the real world.
+                <td>This specifies the current winds for the scenario.  Winds are included in the simulation and affect aircraft similarly to how they do in the real world. Two formats are supported:
                   <ul>
-                    <li>"direction": the wind's direction, expressed as a number giving the heading</li>
-                    <li>"speed": the wind speed in knots</li>
-                    <li>"gust": if present, gives the wind gust speed</li>
+                    <li><b>Wind layers (recommended)</b>: Specify wind profiles at different locations with altitude-based layers.
+                      <ul>
+                        <li>Format: <code>{"location": "alt/dir/spd,alt/dir/spd,..."}</code>, where "location" is one
+                          of the formats for <a href="#fe-locations">specifying locations</a> and one or more
+                          altitude-based wind measurements is provided.</li>
+                        <li>Each wind measurement: altitude (feet) / direction (heading) / speed (knots)</li>
+                        <li>For gusts, append 'g' and the gust speed (e.g., "12g17" for 12 knots gusting to 17)</li>
+                        <li>Variable winds: use direction 0</li>
+                        <li>Example: <code>{"KJFK": "0/220/12, 1000/230/10g15, 3000/290/15, 10000/280/35"}</code></li>
+                      </ul>
+                    </li>
+                    <li><b>Simple format (legacy)</b>: A single wind configuration for all locations and altitudes.
+                      <ul>
+                        <li>"direction": the wind's direction, expressed as a number giving the heading.</li>
+                        <li>"speed": the wind speed in knots.</li>
+                        <li>"gust": if present, gives the wind gust speed.</li>
+                      </ul>
+                    </li>
                   </ul>
+                  The wind can be visualized in STARS by typing ".WIND" and pressing <code>[Enter]</code>.
+                  The wind direction and speed are shown using <a href="https://www.weather.gov/hfo/windbarbinfo">wind barbs</a>.
+                  "WIND" and an altitude will be shown in the preview area; the altitude can be stepped up and down
+                  using the up and down arrow keys. Pressing <code>[Escape]</code> clears the wind display.
+                  <div class="text-center">
+                    <img src="wind-barbs.png" srcset="wind-barbs-2x.png 2x" width="257" height="161">
+                  </div><br>
                 </td>
               </tr>
             </tbody>

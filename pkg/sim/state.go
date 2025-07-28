@@ -5,9 +5,7 @@
 package sim
 
 import (
-	"fmt"
 	"maps"
-	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -16,7 +14,6 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/util"
 
 	"github.com/brunoga/deep"
@@ -74,14 +71,14 @@ type State struct {
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	METAR map[string]*av.METAR
-	Wind  av.Wind
+	WX *av.WeatherModel
 
 	TotalIFR, TotalVFR int
 
 	Paused         bool
 	SimRate        float32
 	SimDescription string
+	SimStartTime   time.Time
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 
 	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
@@ -110,6 +107,7 @@ type ReleaseDeparture struct {
 }
 
 func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *State {
+	now := time.Now()
 	ss := &State{
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
@@ -136,12 +134,13 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 
-		METAR: make(map[string]*av.METAR),
-		Wind:  config.Wind,
+		WX: av.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), now, config.NmPerLongitude,
+			config.MagneticVariation, config.Wind, lg),
 
 		SimRate:        1,
 		SimDescription: config.Description,
-		SimTime:        time.Now(),
+		SimStartTime:   now,
+		SimTime:        now,
 
 		Instructors: make(map[string]bool),
 	}
@@ -200,33 +199,6 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		}
 	}
 
-	// Make some fake METARs; slightly different for all airports.
-	r := rand.Make()
-	alt := 2980 + r.Intn(40)
-
-	fakeMETAR := func(icao []string) {
-		for _, ap := range icao {
-			ss.METAR[ap] = &av.METAR{
-				// Just provide the stuff that the STARS display shows
-				AirportICAO: ap,
-				Wind:        ss.Wind.Randomize(r),
-				Altimeter:   fmt.Sprintf("A%d", alt-2+r.Intn(4)),
-			}
-		}
-	}
-
-	realMETAR := func(icao []string) {
-		metar, err := av.GetWeather(icao...)
-		if err != nil {
-			lg.Errorf("%s: error getting weather: %+v", strings.Join(icao, ", "), err)
-		}
-
-		for _, m := range metar {
-			// Just provide the stuff that the STARS display shows
-			ss.METAR[m.AirportICAO] = &m
-		}
-	}
-
 	ss.DepartureAirports = make(map[string]interface{})
 	for name := range ss.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = nil
@@ -235,7 +207,9 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		if ap.VFRRateSum() > 0 {
 			ss.DepartureAirports[name] = nil
 
-			if rwy, _ := av.DB.Airports[name].SelectBestRunway(ss /* wind */, ss.MagneticVariation); rwy != nil {
+			ap := av.DB.Airports[name]
+			windDir := ss.WX.LookupWind(ap.Location, float32(ap.Elevation)).Direction
+			if rwy, _ := ap.SelectBestRunway(windDir, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
 			} else {
 				lg.Errorf("%s: unable to find runway for VFRs", name)
@@ -250,19 +224,6 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 				ss.ArrivalAirports[name] = nil
 			}
 		}
-	}
-
-	// Get the unique airports we potentially want METAR for.
-	aps := slices.Collect(maps.Keys(ss.DepartureAirports))
-	aps = slices.AppendSeq(aps, maps.Keys(ss.ArrivalAirports))
-	aps = append(aps, ss.STARSFacilityAdaptation.Altimeters...)
-	slices.Sort(aps)
-	aps = slices.Compact(aps)
-
-	if config.LiveWeather {
-		realMETAR(aps)
-	} else {
-		fakeMETAR(aps)
 	}
 
 	return ss
@@ -408,24 +369,6 @@ func (ss *State) GetInitialCenter() math.Point2LL {
 		return config.Center
 	}
 	return ss.Center
-}
-
-func (ss *State) GetWindVector(p math.Point2LL, alt float32) [2]float32 {
-	// Sinusoidal wind speed variation from the base speed up to base +
-	// gust and then back...
-	windSpeed := float32(ss.Wind.Speed)
-	if ss.Wind.Gust > 0 {
-		base := time.UnixMicro(0)
-		sec := ss.SimTime.Sub(base).Seconds()
-		windSpeed += float32(ss.Wind.Gust-ss.Wind.Speed) * float32(1+gomath.Cos(sec/4)) / 2
-	}
-
-	// Wind.Direction is where it's coming from, so +180 to get the vector
-	// that affects the aircraft's course.
-	d := math.OppositeHeading(float32(ss.Wind.Direction))
-	vWind := math.SinCos(math.Radians(d))
-	vWind = math.Scale2f(vWind, windSpeed/3600)
-	return vWind
 }
 
 func (ss *State) FacilityFromController(callsign string) (string, bool) {

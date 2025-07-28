@@ -108,20 +108,15 @@ type AdaptationFixes []AdaptationFix
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32) (*Runway, *Runway) {
-	w := wind.GetWindVector(ap.Location, float32(ap.Elevation))
-	// This gives the vector affecting the aircraft, so negate it. Also, as
-	// elsewhere, swap x and y in the args here since we want to measure
-	// angle w.r.t. +y.
-	angle := math.Degrees(math.Atan2(-w[0], -w[1]))
-	angle = math.NormalizeHeading(angle + magneticVariation)
+func (ap FAAAirport) SelectBestRunway(windDir float32, magneticVariation float32) (*Runway, *Runway) {
+	whdg := math.NormalizeHeading(windDir + magneticVariation)
 
 	// Find best aligned runway
 	minDelta := float32(1000)
 	bestRwy := -1
 	for i, rwy := range ap.Runways {
 		if _, ok := LookupOppositeRunway(ap.Id, rwy.Id); ok {
-			d := math.HeadingDifference(angle, rwy.Heading)
+			d := math.HeadingDifference(whdg, rwy.Heading)
 			if d < minDelta {
 				minDelta = d
 				bestRwy = i
@@ -203,6 +198,43 @@ type Airline struct {
 type FleetAircraft struct {
 	ICAO  string
 	Count int
+}
+
+// baseApproachSpeed returns a reasonable final approach speed for this
+// aircraft type. If landing speed is available, a small buffer above that
+// speed is used. Otherwise V2 or a default is returned.
+func (ap AircraftPerformance) baseApproachSpeed() float32 {
+	if ap.Speed.Landing > 0 {
+		return ap.Speed.Landing + 5
+	} else if ap.Speed.V2 > 0 {
+		return 1.25 * ap.Speed.V2
+	} else {
+		return 120
+	}
+}
+
+// ApproachSpeed returns the final approach speed including wind
+// additives. The runway heading is used to compute the headwind component
+// of the provided wind. Jets and turboprops add half the headwind plus the
+// full gust factor (not to exceed 20 knots). Pistons add half the gust
+// factor... I suppose we should also add a max additive but most pistons
+// won't be landing in very windy conditions
+func (ap AircraftPerformance) ApproachSpeed(ws WindSample, runwayHeading float32) float32 {
+	gustFactor := max(0, float32(ws.Gust-ws.Speed))
+
+	additive := float32(0)
+	switch ap.Engine.AircraftType {
+	case "J", "T":
+		diff := math.HeadingDifference(float32(ws.Direction), runwayHeading)
+		headwind := max(0, float32(ws.Speed)*math.Cos(math.Radians(diff)))
+		additive = min(headwind/2+gustFactor, 20)
+		fmt.Printf("base %.1f heading diff %f headwind %f gust %f addititve %f\n", ap.baseApproachSpeed(),
+			diff, headwind, gustFactor, additive)
+	case "P":
+		additive = gustFactor / 2
+	}
+
+	return ap.baseApproachSpeed() + additive
 }
 
 func InitDB() {
