@@ -78,7 +78,7 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	for _, alert := range util.SortedMapKeys(audioAlerts) {
 		idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + audioAlerts[alert]))
 		if err != nil {
-			lg.Error("Error adding static audio effect: %v", err)
+			lg.Errorf("Error adding static audio effect: %v", err)
 		}
 		mp.alertAudioIndex[alert] = idx
 	}

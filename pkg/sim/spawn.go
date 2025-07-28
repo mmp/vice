@@ -1093,7 +1093,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	airline := rand.SampleSlice(s.Rand, arr.Airlines[arrivalAirport])
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
+			arrivalAirport)
 	}
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.Airport, arrivalAirport)
@@ -1263,7 +1264,8 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	airline := rand.SampleSlice(s.Rand, dep.Airlines)
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
+			departureAirport)
 	}
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, departureAirport, dep.Destination)
@@ -1353,7 +1355,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	airline := rand.SampleSlice(s.Rand, of.Airlines)
 	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
 	if ac == nil {
-		return nil, fmt.Errorf("unable to sample a valid aircraft")
+		return nil, fmt.Errorf("unable to sample a valid aircraft for overflight %+v in %q", airline, group)
 	}
 
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.DepartureAirport, airline.ArrivalAirport)

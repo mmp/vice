@@ -918,7 +918,7 @@ func (nav *Nav) updateHeading(wx *av.WeatherModel, lg *log.Logger) {
 	}
 	if math.HeadingDifference(nav.FlightState.Heading, targetHeading) < 1 {
 		if nav.FlightState.BankAngle > 10 {
-			lg.Warnf("reached target but bank angle %f\n", nav.FlightState.BankAngle)
+			lg.Warnf("reached target but bank angle %f", nav.FlightState.BankAngle)
 		}
 		nav.FlightState.Heading = targetHeading
 		nav.FlightState.BankAngle = 0
