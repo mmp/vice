@@ -415,7 +415,7 @@ func (w *WeatherModel) LookupWind(p math.Point2LL, alt float32) WindSample {
 
 	elapsed := float32(w.CurrentTime.Sub(w.StartTime).Seconds())
 	gustScale := float32(1+math.Cos(elapsed/4)) / 2
-	spd := ws.Speed + gustScale*ws.Gust
+	spd := ws.Speed + gustScale*(ws.Gust-ws.Speed)
 
 	// point the vector so it's how the aircraft is affected
 	v := math.SinCos(math.Radians(math.OppositeHeading(ws.Direction)))
