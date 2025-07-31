@@ -1100,7 +1100,8 @@ func (nav *Nav) TargetHeading(wx *av.WeatherModel, lg *log.Logger) (heading floa
 
 		if nav.IsAirborne() {
 			// model where we'll actually end up, given the wind
-			vp := math.Add2f(v, wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector)
+			wvec := wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector
+			vp := math.Add2f(v, math.Scale2f(wvec, 3600))
 
 			// Find the deflection angle of how much the wind pushes us off course.
 			vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
