@@ -228,8 +228,6 @@ func (ap AircraftPerformance) ApproachSpeed(ws WindSample, runwayHeading float32
 		diff := math.HeadingDifference(float32(ws.Direction), runwayHeading)
 		headwind := max(0, float32(ws.Speed)*math.Cos(math.Radians(diff)))
 		additive = min(headwind/2+gustFactor, 20)
-		fmt.Printf("base %.1f heading diff %f headwind %f gust %f addititve %f\n", ap.baseApproachSpeed(),
-			diff, headwind, gustFactor, additive)
 	case "P":
 		additive = gustFactor / 2
 	}
