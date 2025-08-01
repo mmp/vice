@@ -1340,7 +1340,11 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		//lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
 			// Always climb as soon as we can
-			return c.Altitude, rate
+			alt := c.Altitude
+			if nav.Altitude.Cleared != nil {
+				alt = min(alt, *nav.Altitude.Cleared)
+			}
+			return alt, rate
 		} else {
 			// Descending
 			rate = (nav.FlightState.Altitude - c.Altitude) / c.ETA
