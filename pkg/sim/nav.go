@@ -1578,6 +1578,12 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 		if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 			alt = nav.FlightState.Altitude
 		}
+	} else {
+		// For climbing aircraft, if the constraint is "at" (not "at or above"),
+		// target that specific altitude instead of climbing higher
+		if altRange[0] != 0 && altRange[0] == altRange[1] {
+			alt = altRange[0]
+		}
 	}
 
 	return WaypointCrossingConstraint{
