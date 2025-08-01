@@ -160,6 +160,7 @@ func MakeWeatherModel(airports []string, now time.Time, nmPerLongitude float32, 
 	wind map[math.Point2LL][]WindLayer, lg *log.Logger) *WeatherModel {
 	wm := &WeatherModel{
 		MagneticVariation:  magneticVariation,
+		NmPerLongitude:     nmPerLongitude,
 		StartTime:          now,
 		GustStartTime:      now,
 		GustActiveDuration: 4 * time.Second, // Don't bother randomizing the first one
