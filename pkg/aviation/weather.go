@@ -95,6 +95,10 @@ func ParseWindLayers(str string, e *util.ErrorLogger) []WindLayer {
 }
 
 func BlendWindLayers(wts []float32, layers []WindLayer) WindLayer {
+	if len(layers) == 1 {
+		return layers[0]
+	}
+
 	var alt, sumwt float32
 	var vspd, vgst [2]float32
 	for i, wt := range wts {
@@ -145,19 +149,26 @@ type WindTreeNode struct {
 }
 
 type WeatherModel struct {
-	METAR             map[string]*METAR
-	NmPerLongitude    float32
-	MagneticVariation float32
-	WindRoot          *WindTreeNode
-	StartTime         time.Time
-	CurrentTime       time.Time
+	METAR              map[string]*METAR
+	NmPerLongitude     float32
+	MagneticVariation  float32
+	WindRoot           *WindTreeNode
+	StartTime          time.Time
+	CurrentTime        time.Time
+	GustStartTime      time.Time
+	GustActiveDuration time.Duration
+	GustCalmDuration   time.Duration
 }
 
 func MakeWeatherModel(airports []string, now time.Time, nmPerLongitude float32, magneticVariation float32,
 	wind map[math.Point2LL][]WindLayer, lg *log.Logger) *WeatherModel {
 	wm := &WeatherModel{
-		MagneticVariation: magneticVariation,
-		StartTime:         now,
+		MagneticVariation:  magneticVariation,
+		NmPerLongitude:     nmPerLongitude,
+		StartTime:          now,
+		GustStartTime:      now,
+		GustActiveDuration: 4 * time.Second, // Don't bother randomizing the first one
+		GustCalmDuration:   26 * time.Second,
 	}
 
 	wind = wm.updateMETARs(airports, wind, lg)
@@ -413,13 +424,36 @@ func (w *WeatherModel) LookupWind(p math.Point2LL, alt float32) WindSample {
 		Gust:      wl.Gust,
 	}
 
-	elapsed := float32(w.CurrentTime.Sub(w.StartTime).Seconds())
-	gustScale := float32(1+math.Cos(elapsed/4)) / 2
-	spd := ws.Speed + gustScale*ws.Gust
+	if ws.Gust > ws.Speed {
+		// How far are we into the gust cycle?
+		elapsed := w.CurrentTime.Sub(w.GustStartTime)
+
+		// Don't bother randomizing the length of the ramp up and ramp down cycles.
+		const rampUp = 2 * time.Second
+		const rampDown = 4 * time.Second
+		if elapsed < rampUp {
+			// Lerp from the base speed to the gust speed over the ramp up period
+			ws.Speed = math.Lerp(float32(elapsed.Seconds()/rampUp.Seconds()), ws.Speed, ws.Gust)
+		} else if elapsed -= rampUp; elapsed < w.GustActiveDuration {
+			// Gust is active: return fixed gust speed
+			ws.Speed = wl.Gust
+		} else if elapsed -= w.GustActiveDuration; elapsed < rampDown {
+			// Ramping down: lerp back down to the base speed
+			ws.Speed = math.Lerp(float32(elapsed.Seconds()/rampDown.Seconds()), ws.Gust, ws.Speed)
+		} else if elapsed -= rampDown; elapsed < w.GustCalmDuration {
+			// Calm period; leave the speed unchanged
+		} else {
+			// We've reached the end of the calm period; prepare for a new cycle.
+			r := rand.Make()
+			w.GustStartTime = w.CurrentTime
+			w.GustActiveDuration = 3*time.Second + time.Duration(2*r.Float32()*float32(time.Second))
+			w.GustCalmDuration = 5*time.Second + time.Duration(10*r.Float32()*float32(time.Second))
+		}
+	}
 
 	// point the vector so it's how the aircraft is affected
 	v := math.SinCos(math.Radians(math.OppositeHeading(ws.Direction)))
-	ws.Vector = math.Scale2f(v, spd/3600) // knots -> per second
+	ws.Vector = math.Scale2f(v, ws.Speed/3600) // knots -> per second
 
 	return ws
 }

@@ -603,8 +603,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			//  Gust      int `json:"gust"`
 			spd, _ := windInt("speed")
 			gst, _ := windInt("gust")
-			s.Wind[s.Center] = []av.WindLayer{av.WindLayer{
-				Altitude:        float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
+			ap := av.DB.Airports[sg.PrimaryAirport]
+			s.Wind[ap.Location] = []av.WindLayer{av.WindLayer{
+				Altitude:        float32(ap.Elevation),
 				Direction:       float32(dir),
 				DirectionVector: math.SinCos(math.Radians(float32(dir))),
 				Speed:           float32(spd),
@@ -623,8 +624,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	} else {
 		dir := float32(10 * (1 + rand.Intn(36)))
-		s.Wind[s.Center] = []av.WindLayer{av.WindLayer{
-			Altitude:        float32(av.DB.Airports[sg.PrimaryAirport].Elevation),
+		ap := av.DB.Airports[sg.PrimaryAirport]
+		s.Wind[ap.Location] = []av.WindLayer{av.WindLayer{
+			Altitude:        float32(ap.Elevation),
 			Direction:       dir,
 			DirectionVector: math.SinCos(math.Radians(dir)),
 			Speed:           float32(rand.Intn(10)),

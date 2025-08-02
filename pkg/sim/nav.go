@@ -1100,7 +1100,8 @@ func (nav *Nav) TargetHeading(wx *av.WeatherModel, lg *log.Logger) (heading floa
 
 		if nav.IsAirborne() {
 			// model where we'll actually end up, given the wind
-			vp := math.Add2f(v, wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector)
+			wvec := wx.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector
+			vp := math.Add2f(v, math.Scale2f(wvec, 3600))
 
 			// Find the deflection angle of how much the wind pushes us off course.
 			vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
@@ -1339,7 +1340,11 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 		//lg.Debugf("alt: altitude %.0f for waypoint %s in %.0f seconds", c.Altitude, c.Fix, c.ETA)
 		if c.ETA < 5 || nav.FlightState.Altitude < c.Altitude {
 			// Always climb as soon as we can
-			return c.Altitude, rate
+			alt := c.Altitude
+			if nav.Altitude.Cleared != nil {
+				alt = min(alt, *nav.Altitude.Cleared)
+			}
+			return alt, rate
 		} else {
 			// Descending
 			rate = (nav.FlightState.Altitude - c.Altitude) / c.ETA
@@ -1573,6 +1578,12 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 		if ar.TargetAltitude(nav.FlightState.Altitude) == nav.FlightState.Altitude {
 			alt = nav.FlightState.Altitude
 		}
+	} else {
+		// For climbing aircraft, if the constraint is "at" (not "at or above"),
+		// target that specific altitude instead of climbing higher
+		if altRange[0] != 0 && altRange[0] == altRange[1] {
+			alt = altRange[0]
+		}
 	}
 
 	return WaypointCrossingConstraint{
@@ -1670,7 +1681,10 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wx *av.We
 			return speed, MaximumRate
 		}
 
-		if speed > nav.FlightState.IAS {
+		if speed == nav.FlightState.IAS {
+			// There already
+			return speed, 0
+		} else if speed > nav.FlightState.IAS {
 			// accelerate immediately
 			return speed, MaximumRate
 		} else if wpOnSID {
