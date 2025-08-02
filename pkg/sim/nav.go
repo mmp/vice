@@ -1681,7 +1681,10 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wx *av.We
 			return speed, MaximumRate
 		}
 
-		if speed > nav.FlightState.IAS {
+		if speed == nav.FlightState.IAS {
+			// There already
+			return speed, 0
+		} else if speed > nav.FlightState.IAS {
 			// accelerate immediately
 			return speed, MaximumRate
 		} else if wpOnSID {
