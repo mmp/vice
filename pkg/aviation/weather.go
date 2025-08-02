@@ -95,6 +95,10 @@ func ParseWindLayers(str string, e *util.ErrorLogger) []WindLayer {
 }
 
 func BlendWindLayers(wts []float32, layers []WindLayer) WindLayer {
+	if len(layers) == 1 {
+		return layers[0]
+	}
+
 	var alt, sumwt float32
 	var vspd, vgst [2]float32
 	for i, wt := range wts {
