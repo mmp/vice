@@ -520,6 +520,72 @@ func (sm *SimManager) SignOff(token string) error {
 	return sm.signOff(token)
 }
 
+func (sm *SimManager) KickController(adminToken, targetTCP string) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	// First verify that the admin has permission to kick
+	adminCtrl, adminSim, ok := sm.lookupController(adminToken)
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+
+	// Any signed-in controller can kick others (no instructor/RPO restriction)
+
+	// Find the target controller in the same sim
+	var targetToken string
+	for tcp, ctrl := range adminCtrl.asim.controllersByTCP {
+		if tcp == targetTCP {
+			targetToken = ctrl.token
+			break
+		}
+	}
+
+	if targetToken == "" {
+		return ErrNoControllerToKick
+	}
+
+	// Don't allow kicking yourself
+	if targetToken == adminToken {
+		return ErrCannotKickSelf
+	}
+
+	// Send immediate feedback to the admin
+	adminSim.PostEvent(sim.Event{
+		Type:        sim.StatusMessageEvent,
+		WrittenText: fmt.Sprintf("Kicking %s...", targetTCP),
+		ToController: adminCtrl.tcp,
+	})
+
+	// Send notification to the kicked controller
+	adminSim.PostEvent(sim.Event{
+		Type:         sim.StatusMessageEvent,
+		WrittenText:  fmt.Sprintf("You have been kicked by %s", adminCtrl.tcp),
+		ToController: targetTCP,
+	})
+
+	// Perform the kick after a short delay to allow notification delivery
+	go func() {
+		time.Sleep(500 * time.Millisecond) // Give time for notification to be processed
+		
+		sm.mu.Lock(sm.lg)
+		defer sm.mu.Unlock(sm.lg)
+		
+		err := sm.signOff(targetToken)
+		if err == nil {
+			sm.lg.Infof("%s: kicked by %s", targetTCP, adminCtrl.tcp)
+			adminSim.PostEvent(sim.Event{
+				Type:        sim.StatusMessageEvent,
+				WrittenText: fmt.Sprintf("%s was kicked by %s", targetTCP, adminCtrl.tcp),
+			})
+		} else {
+			sm.lg.Errorf("Failed to kick %s: %v", targetTCP, err)
+		}
+	}()
+
+	return nil
+}
+
 func (sm *SimManager) signOff(token string) error {
 	if ctrl, s, ok := sm.lookupController(token); !ok {
 		return ErrNoSimForControllerToken
@@ -595,6 +661,23 @@ func (sm *SimManager) lookupController(token string) (*humanController, *sim.Sim
 		return ctrl, ctrl.asim.sim, true
 	}
 	return nil, nil, false
+}
+
+// UpdateControllerPosition updates the controller mappings after a position change
+func (sm *SimManager) UpdateControllerPosition(token, oldTCP, newTCP string) {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	if ctrl, ok := sm.controllersByToken[token]; ok {
+		// Remove from old TCP mapping
+		delete(ctrl.asim.controllersByTCP, oldTCP)
+		
+		// Update the controller's TCP field
+		ctrl.tcp = newTCP
+		
+		// Add to new TCP mapping
+		ctrl.asim.controllersByTCP[newTCP] = ctrl
+	}
 }
 
 const simIdleLimit = 4 * time.Hour

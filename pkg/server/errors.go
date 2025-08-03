@@ -23,6 +23,9 @@ var (
 	ErrRPCTimeout                = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
 	ErrServerDisconnected        = errors.New("Server disconnected")
+	ErrInsufficientPermissions   = errors.New("Insufficient permissions to perform this action")
+	ErrNoControllerToKick        = errors.New("No controller found with that position")
+	ErrCannotKickSelf            = errors.New("Cannot kick yourself")
 )
 
 var errorStringToError = map[string]error{
@@ -87,6 +90,9 @@ var errorStringToError = map[string]error{
 	ErrRPCTimeout.Error():                ErrRPCTimeout,
 	ErrRPCVersionMismatch.Error():        ErrRPCVersionMismatch,
 	ErrServerDisconnected.Error():        ErrServerDisconnected,
+	ErrInsufficientPermissions.Error():   ErrInsufficientPermissions,
+	ErrNoControllerToKick.Error():        ErrNoControllerToKick,
+	ErrCannotKickSelf.Error():            ErrCannotKickSelf,
 }
 
 func TryDecodeError(e error) error {
