@@ -6,11 +6,14 @@ package renderer
 
 import (
 	"C"
-	_ "embed"
+	"bytes"
 	"fmt"
 	"image"
+	"io"
 	"io/fs"
 	gomath "math"
+	"os"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strconv"
@@ -23,12 +26,6 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/IconFontCppHeaders"
-)
-import (
-	"bytes"
-	"io"
-	"os"
-	"path/filepath"
 )
 
 var ttfPinner runtime.Pinner
