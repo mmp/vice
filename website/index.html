@@ -113,7 +113,8 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.1</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.12.2</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.1">0.12.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.10">0.11.10</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.9">0.11.9</a></li>
@@ -1011,6 +1012,22 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.12.2">0.12.2 (TBD August 2025)</h3>
+            <ul>
+              <li>Scenario update: MIA (Connor Allen)</li>
+              <li>Overhauled wind modeling: multi-layer wind support with interpolation between sample points.</li>
+              <li>Aircraft now adjust speeds on final approach based on wind conditions.</li>
+              <li>Fixed bug: departures no longer climb past "at" altitude constraints.</li>
+              <li>Fixed bug: "cleared_altitude" is now obeyed for departures on SIDs.</li>
+              <li>Fixed bug with waypoint speed restrictions that nerfed climb/descent rates.</li>
+              <li>STARS:
+                <ul>
+                  <li>Added <code>.WIND</code> command to display wind information with visual wind barbs.</li>
+                </ul>
+              </li>
+              <li>Added support for water runways (suffix 'W').</li>
+            </ul>
 
             <h3 id="release-0.12.1">0.12.1 (10 July 2025)</h3>
             <ul>
