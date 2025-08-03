@@ -227,7 +227,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			if event.ToController != "" && event.ToController != ctx.UserTCP {
 				break
 			}
-			
+
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
 			start := max(0, n-5)

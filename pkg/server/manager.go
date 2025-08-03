@@ -552,8 +552,8 @@ func (sm *SimManager) KickController(adminToken, targetTCP string) error {
 
 	// Send immediate feedback to the admin
 	adminSim.PostEvent(sim.Event{
-		Type:        sim.StatusMessageEvent,
-		WrittenText: fmt.Sprintf("Kicking %s...", targetTCP),
+		Type:         sim.StatusMessageEvent,
+		WrittenText:  fmt.Sprintf("Kicking %s...", targetTCP),
 		ToController: adminCtrl.tcp,
 	})
 
@@ -567,10 +567,10 @@ func (sm *SimManager) KickController(adminToken, targetTCP string) error {
 	// Perform the kick after a short delay to allow notification delivery
 	go func() {
 		time.Sleep(500 * time.Millisecond) // Give time for notification to be processed
-		
+
 		sm.mu.Lock(sm.lg)
 		defer sm.mu.Unlock(sm.lg)
-		
+
 		err := sm.signOff(targetToken)
 		if err == nil {
 			sm.lg.Infof("%s: kicked by %s", targetTCP, adminCtrl.tcp)
@@ -671,10 +671,10 @@ func (sm *SimManager) UpdateControllerPosition(token, oldTCP, newTCP string) {
 	if ctrl, ok := sm.controllersByToken[token]; ok {
 		// Remove from old TCP mapping
 		delete(ctrl.asim.controllersByTCP, oldTCP)
-		
+
 		// Update the controller's TCP field
 		ctrl.tcp = newTCP
-		
+
 		// Add to new TCP mapping
 		ctrl.asim.controllersByTCP[newTCP] = ctrl
 	}
