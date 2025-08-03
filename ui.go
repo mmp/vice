@@ -304,11 +304,11 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			// Check if this is a kick notification
 			if strings.Contains(event.WrittenText, "You have been kicked by") {
 				client := &KickNotificationModalClient{
-					message: event.WrittenText,
-					mgr:     mgr,
-					config:  config,
+					message:  event.WrittenText,
+					mgr:      mgr,
+					config:   config,
 					platform: p,
-					logger:  lg,
+					logger:   lg,
 				}
 				uiShowModalDialog(NewModalDialogBox(client, p), true) // Show at front for visibility
 			}
@@ -969,7 +969,7 @@ func (k *KickNotificationModalClient) Opening()      {}
 
 func (k *KickNotificationModalClient) Buttons() []ModalDialogButton {
 	return []ModalDialogButton{{
-		text: "Ok", 
+		text: "Ok",
 		action: func() bool {
 			// When the user clicks OK, show the connection dialog
 			uiShowConnectDialog(k.mgr, true, k.config, k.platform, k.logger)
