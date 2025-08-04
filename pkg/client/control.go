@@ -23,6 +23,18 @@ func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) 
 		}))
 }
 
+func (c *ControlClient) TakeOrReturnFlowControl(eventStream *sim.EventStream) {
+	c.addCall(makeRPCCall(c.client.Go("Sim.TakeOrReturnFlowControl", c.controllerToken, nil, nil),
+		func(err error) {
+			if err != nil {
+				eventStream.Post(sim.Event{
+					Type:        sim.StatusMessageEvent,
+					WrittenText: err.Error(),
+				})
+			}
+		}))
+}
+
 func (c *ControlClient) LaunchDeparture(ac sim.Aircraft, rwy string) {
 	c.addCall(makeRPCCall(c.client.Go("Sim.LaunchAircraft", &server.LaunchAircraftArgs{
 		ControllerToken: c.controllerToken,
@@ -358,6 +370,19 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 	defer c.mu.Unlock()
 
 	c.State.LaunchConfig = lc
+}
+
+func (c *ControlClient) SetMultiControllers(mc av.SplitConfiguration) {
+	c.addCall(makeRPCCall(c.client.Go("Sim.SetMultiControllers",
+		&server.SetMultiControllersArgs{
+			ControllerToken: c.controllerToken,
+			Config:          mc,
+		}, nil, nil), nil))
+
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.State.MultiControllers = mc
 }
 
 func (c *ControlClient) DeleteAllAircraft(callback func(err error)) {
