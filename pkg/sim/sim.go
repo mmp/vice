@@ -267,9 +267,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
-	s.State = newState(config, manifest, lg)
-
-	s.setInitialSpawnTimes(time.Now()) // FIXME? will be clobbered in prespawn
+	startTime := time.Now()
+	s.State = newState(config, startTime, manifest, lg)
 
 	return s
 }

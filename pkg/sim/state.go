@@ -78,7 +78,6 @@ type State struct {
 	Paused         bool
 	SimRate        float32
 	SimDescription string
-	SimStartTime   time.Time
 	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 
 	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
@@ -106,8 +105,10 @@ type ReleaseDeparture struct {
 	Exit                string
 }
 
-func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *State {
-	now := time.Now()
+func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, lg *log.Logger) *State {
+	// Roll back the start time to account for prespawn
+	startTime = startTime.Add(-initialSimSeconds * time.Second)
+
 	ss := &State{
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
@@ -134,13 +135,12 @@ func newState(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Lo
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 
-		WX: av.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), now, config.NmPerLongitude,
-			config.MagneticVariation, config.Wind, lg),
+		WX: av.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), startTime,
+			config.NmPerLongitude, config.MagneticVariation, config.Wind, lg),
 
 		SimRate:        1,
 		SimDescription: config.Description,
-		SimStartTime:   now,
-		SimTime:        now,
+		SimTime:        startTime,
 
 		Instructors: make(map[string]bool),
 	}
