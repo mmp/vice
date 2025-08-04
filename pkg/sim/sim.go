@@ -908,13 +908,15 @@ func (s *Sim) Update() {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	startUpdate := time.Now()
-	defer func() {
-		if d := time.Since(startUpdate); d > 200*time.Millisecond {
-			s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
-				slog.Any("sim", s))
-		}
-	}()
+	if !util.DebuggerIsRunning() {
+		startUpdate := time.Now()
+		defer func() {
+			if d := time.Since(startUpdate); d > 200*time.Millisecond {
+				s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
+					slog.Any("sim", s))
+			}
+		}()
+	}
 
 	for _, ac := range s.Aircraft {
 		ac.Check(s.lg)

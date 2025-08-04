@@ -11,10 +11,8 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
-	"os"
 	"slices"
 	"sort"
-	"strings"
 	"sync"
 	"time"
 
@@ -110,11 +108,6 @@ type RPCClient struct {
 	*rpc.Client
 }
 
-func debuggerIsRunning() bool {
-	dlv, ok := os.LookupEnv("_")
-	return ok && strings.HasSuffix(dlv, "/dlv")
-}
-
 func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) error {
 	pc := &pendingCall{
 		Call:      c.Go(serviceMethod, args, reply, nil),
@@ -127,7 +120,7 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 			return pc.Call.Error
 
 		case <-time.After(5 * time.Second):
-			if !debuggerIsRunning() {
+			if !util.DebuggerIsRunning() {
 				return server.ErrRPCTimeout
 			}
 		}
@@ -412,7 +405,7 @@ func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr fun
 }
 
 func checkTimeout(call *pendingCall, eventStream *sim.EventStream, onErr func(error)) bool {
-	if time.Since(call.IssueTime) > 5*time.Second && !debuggerIsRunning() {
+	if time.Since(call.IssueTime) > 5*time.Second && !util.DebuggerIsRunning() {
 		eventStream.Post(sim.Event{
 			Type:        sim.StatusMessageEvent,
 			WrittenText: "No response from server for over 5 seconds. Network connection may be lost.",
