@@ -46,8 +46,8 @@ jobs:
     - name: Build universal binary
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -tags static,downloadresources -o vice_amd64 .
-        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -tags static,downloadresources -o vice_arm64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 .
         lipo -create -output vice vice_amd64 vice_arm64
 
     - name: Run tests

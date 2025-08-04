@@ -20,9 +20,9 @@ import (
 	av "github.com/mmp/vice/pkg/aviation"
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/math"
+	"github.com/mmp/vice/pkg/rand"
 	"github.com/mmp/vice/pkg/sim"
 	"github.com/mmp/vice/pkg/util"
-	"golang.org/x/exp/rand"
 
 	"github.com/brunoga/deep"
 )
@@ -623,13 +623,14 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 	} else {
-		dir := float32(10 * (1 + rand.Intn(36)))
+		r := rand.Make()
+		dir := float32(10 * (1 + r.Intn(36)))
 		ap := av.DB.Airports[sg.PrimaryAirport]
 		s.Wind[ap.Location] = []av.WindLayer{av.WindLayer{
 			Altitude:        float32(ap.Elevation),
 			Direction:       dir,
 			DirectionVector: math.SinCos(math.Radians(dir)),
-			Speed:           float32(rand.Intn(10)),
+			Speed:           float32(r.Intn(10)),
 		}}
 	}
 }

@@ -25,7 +25,6 @@ import (
 	"github.com/mmp/vice/pkg/math"
 	"github.com/mmp/vice/pkg/util"
 
-	"github.com/gocolly/colly/v2"
 	"github.com/klauspost/compress/zstd"
 )
 
@@ -993,24 +992,37 @@ type TFRListJSON struct {
 func allTFRUrls(lg *log.Logger) []string {
 	lg.Infof("Fetching TFR URLs")
 
-	// Try to look legit.
-	c := colly.NewCollector(
-		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"))
+	// Create HTTP request
+	req, err := http.NewRequest("GET", "https://tfr.faa.gov/tfrapi/exportTfrList", nil)
+	if err != nil {
+		lg.Errorf("Error creating request: %s", err)
+		return nil
+	}
 
-	c.OnRequest(func(r *colly.Request) {
-		r.Headers.Set("Access-Control-Allow-Origin", "*")
-		r.Headers.Set("Accept", "*/*")
-		r.Headers.Set("Sec-Fetch-Site", "same-origin")
-		r.Headers.Set("Accept-Language", "en-US,en;q=0.9")
-		r.Headers.Set("Accept-Encoding", "gzip, deflate, br")
-		r.Headers.Set("Sec-Fetch-Mode", "cors")
-		r.Headers.Set("Access-Control-Allow-Credentials", "true")
-		r.Headers.Set("Connection", "keep-alive")
-		r.Headers.Set("Sec-Fetch-Dest", "empty")
-	})
+	// Make the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		lg.Errorf("Error fetching TFRs: %s", err)
+		return nil
+	}
+	defer resp.Body.Close()
 
+	// Read response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		lg.Errorf("Error reading response: %s", err)
+		return nil
+	}
+
+	lg.Infof("TFR json: %s", string(body))
+
+	// Parse JSON
 	var tfr_url_list []TFRListJSON
-	var urls []string
+	if err := json.Unmarshal(body, &tfr_url_list); err != nil {
+		lg.Errorf("Error parsing JSON: %s", err)
+		return nil
+	}
 
 	// This is still somewhat brittle. In a mind bending design choice the FAAs JSON link
 	// (https://tfr.faa.gov/tfr3/export/json) is assembled via javascript and not an actual
@@ -1018,22 +1030,12 @@ func allTFRUrls(lg *log.Logger) []string {
 	// We then assume the same URL scheme for NOTAM details (https://tfr.faa.gov/download/detail_${NOTAM_ID}.xml)
 	// and fetch the data from there...which is actually XML...for now....
 
-	c.OnResponse(func(r *colly.Response) {
-		lg.Infof("TFR json: %s", string(r.Body))
-		json.Unmarshal([]byte(r.Body), &tfr_url_list)
-
-		for _, tfr_url := range tfr_url_list {
-			id := strings.Replace(tfr_url.Notam_id, "/", "_", -1)
-			url := "https://tfr.faa.gov/download/detail_" + id + ".xml"
-			urls = append(urls, url)
-		}
-	})
-
-	c.OnError(func(r *colly.Response, err error) {
-		lg.Errorf("Error fetching TFRs: %s", err)
-	})
-
-	c.Visit("https://tfr.faa.gov/tfrapi/exportTfrList")
+	var urls []string
+	for _, tfr_url := range tfr_url_list {
+		id := strings.Replace(tfr_url.Notam_id, "/", "_", -1)
+		url := "https://tfr.faa.gov/download/detail_" + id + ".xml"
+		urls = append(urls, url)
+	}
 
 	return slices.Compact(urls)
 }
