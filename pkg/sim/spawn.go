@@ -369,23 +369,20 @@ func (s *Sim) Prespawn() {
 	start := time.Now()
 	s.lg.Info("starting aircraft prespawn")
 
+	s.setInitialSpawnTimes(s.State.SimTime)
+
 	// Prime the pump before the user gets involved
-	t := time.Now().Add(-(initialSimSeconds + 1) * time.Second)
-	s.setInitialSpawnTimes(t)
 	s.prespawn = true
 	for i := 0; i < initialSimSeconds; i++ {
 		// Controlled only at the tail end.
 		s.prespawnUncontrolledOnly = i < initialSimSeconds-initialSimControlledSeconds
 
-		s.State.SimTime = t
-		s.lastUpdateTime = t
-		t = t.Add(1 * time.Second)
+		s.State.SimTime = s.State.SimTime.Add(time.Second)
 
 		s.updateState()
 	}
 	s.prespawnUncontrolledOnly, s.prespawn = false, false
 
-	s.State.SimTime = time.Now()
 	s.lastUpdateTime = time.Now()
 
 	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))

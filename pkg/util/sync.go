@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"log/slog"
 	gomath "math"
-	"os"
 	"runtime"
 	"strings"
 	"sync"
@@ -69,11 +68,6 @@ func DumpHeldMutexes(lg *log.Logger) string {
 	return s
 }
 
-func debuggerIsRunning() bool {
-	dlv, ok := os.LookupEnv("_")
-	return ok && strings.HasSuffix(dlv, "/dlv")
-}
-
 func (l *LoggingMutex) Lock(lg *log.Logger) {
 	tryTime := time.Now()
 	lg.Debug("attempting to acquire mutex", slog.Any("mutex", l))
@@ -93,7 +87,7 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 			case <-locked:
 				break loop
 			case <-time.After(10 * time.Second):
-				if !debuggerIsRunning() {
+				if !DebuggerIsRunning() {
 					lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
 						slog.Any("held_mutexes", heldMutexes))
 

@@ -267,9 +267,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
-	s.State = newState(config, manifest, lg)
-
-	s.setInitialSpawnTimes(time.Now()) // FIXME? will be clobbered in prespawn
+	startTime := time.Now()
+	s.State = newState(config, startTime, manifest, lg)
 
 	return s
 }
@@ -909,13 +908,15 @@ func (s *Sim) Update() {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	startUpdate := time.Now()
-	defer func() {
-		if d := time.Since(startUpdate); d > 200*time.Millisecond {
-			s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
-				slog.Any("sim", s))
-		}
-	}()
+	if !util.DebuggerIsRunning() {
+		startUpdate := time.Now()
+		defer func() {
+			if d := time.Since(startUpdate); d > 200*time.Millisecond {
+				s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
+					slog.Any("sim", s))
+			}
+		}()
+	}
 
 	for _, ac := range s.Aircraft {
 		ac.Check(s.lg)
