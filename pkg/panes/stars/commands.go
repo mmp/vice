@@ -688,6 +688,39 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		}
 
+		if len(cmd) >= 3 && cmd[:2] == "*K" {
+			// Kick controller command: *K <controller_tcp>
+			targetTCP := strings.TrimSpace(cmd[2:])
+			if targetTCP == "" {
+				status.err = ErrSTARSCommandFormat
+				return
+			}
+
+			// Any signed-in controller can kick others (no instructor/RPO restriction)
+
+			// Verify the target controller exists and is signed in
+			if !slices.Contains(ctx.Client.State.HumanControllers, targetTCP) {
+				status.err = ErrSTARSIllegalPosition
+				return
+			}
+
+			// Don't allow kicking yourself
+			if targetTCP == ctx.UserTCP {
+				status.err = ErrSTARSIllegalParam
+				return
+			}
+
+			// Kick the controller
+			ctx.Client.KickController(targetTCP, func(err error) {
+				if err != nil {
+					sp.displayError(err, ctx, "")
+				}
+			})
+
+			status.clear = true
+			return
+		}
+
 		if len(cmd) > 3 && cmd[:3] == "*F " && sp.wipSignificantPoint != nil {
 			if sig, ok := sp.significantPoints[cmd[3:]]; ok {
 				status = sp.displaySignificantPointInfo(*sp.wipSignificantPoint, sig.Location,

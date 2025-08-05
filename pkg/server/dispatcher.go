@@ -34,6 +34,17 @@ func (sd *dispatcher) SignOff(token string, _ *struct{}) error {
 	return sd.sm.SignOff(token)
 }
 
+type KickControllerArgs struct {
+	ControllerToken string
+	TargetTCP       string
+}
+
+func (sd *dispatcher) KickController(kc *KickControllerArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	return sd.sm.KickController(kc.ControllerToken, kc.TargetTCP)
+}
+
 type ChangeControlPositionArgs struct {
 	ControllerToken string
 	TCP             string
@@ -46,7 +57,13 @@ func (sd *dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *st
 	if ctrl, s, ok := sd.sm.LookupController(cs.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		return s.ChangeControlPosition(ctrl.tcp, cs.TCP, cs.KeepTracks)
+		oldTCP := ctrl.tcp
+		if err := s.ChangeControlPosition(ctrl.tcp, cs.TCP, cs.KeepTracks); err != nil {
+			return err
+		}
+		// Update the controller mappings in SimManager after successful position change
+		sd.sm.UpdateControllerPosition(cs.ControllerToken, oldTCP, cs.TCP)
+		return nil
 	}
 }
 

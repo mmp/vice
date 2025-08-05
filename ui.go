@@ -300,6 +300,18 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	for _, event := range ui.eventsSubscription.Get() {
 		if event.Type == sim.ServerBroadcastMessageEvent {
 			uiShowModalDialog(NewModalDialogBox(&BroadcastModalDialog{Message: event.WrittenText}, p), false)
+		} else if event.Type == sim.StatusMessageEvent && event.ToController != "" && controlClient != nil && event.ToController == controlClient.State.UserTCP {
+			// Check if this is a kick notification
+			if strings.Contains(event.WrittenText, "You have been kicked by") {
+				client := &KickNotificationModalClient{
+					message:  event.WrittenText,
+					mgr:      mgr,
+					config:   config,
+					platform: p,
+					logger:   lg,
+				}
+				uiShowModalDialog(NewModalDialogBox(client, p), true) // Show at front for visibility
+			}
 		}
 	}
 
@@ -941,6 +953,34 @@ func (e *ErrorModalClient) Draw() int {
 
 		imgui.EndTable()
 	}
+	return -1
+}
+
+type KickNotificationModalClient struct {
+	message  string
+	mgr      *client.ConnectionManager
+	config   *Config
+	platform platform.Platform
+	logger   *log.Logger
+}
+
+func (k *KickNotificationModalClient) Title() string { return "Kicked from Simulation" }
+func (k *KickNotificationModalClient) Opening()      {}
+
+func (k *KickNotificationModalClient) Buttons() []ModalDialogButton {
+	return []ModalDialogButton{{
+		text: "Ok",
+		action: func() bool {
+			// When the user clicks OK, show the connection dialog
+			uiShowConnectDialog(k.mgr, true, k.config, k.platform, k.logger)
+			return true
+		},
+	}}
+}
+
+func (k *KickNotificationModalClient) Draw() int {
+	text, _ := util.WrapText(k.message, 80, 0, true)
+	imgui.Text("\n\n" + text + "\n\n")
 	return -1
 }
 
