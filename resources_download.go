@@ -9,7 +9,6 @@
 package main
 
 import (
-	"context"
 	"crypto/sha256"
 	_ "embed"
 	"encoding/hex"
@@ -24,10 +23,9 @@ import (
 	"github.com/mmp/vice/pkg/log"
 	"github.com/mmp/vice/pkg/platform"
 	"github.com/mmp/vice/pkg/renderer"
+	"github.com/mmp/vice/pkg/util"
 
-	"cloud.google.com/go/storage"
 	"github.com/AllenDang/cimgui-go/imgui"
-	"google.golang.org/api/iterator"
 )
 
 // resourcesManifest holds the filenames and SHA256 hashes of all the resource files this build
@@ -159,9 +157,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		errorsCh:          make(chan string),
 	}
 
-	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
-	sizes := make(map[string]int64)
+	sizes, err := util.ListGCSBucketObjects("vice-resources")
 	if err != nil {
 		// If for some reason we can't list the bucket contents, at least
 		// populate sizes with bogus sizes for the items in the manifest so
@@ -170,20 +166,6 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		// case as well.)
 		for _, hash := range manifest {
 			sizes[hash] = 1
-		}
-	} else {
-		defer client.Close()
-		bucket := client.Bucket("vice-resources")
-
-		// Get the sizes of all of the objects in the bucket; note that the key is the hash.
-		query := storage.Query{Projection: storage.ProjectionNoACL}
-		it := bucket.Objects(ctx, &query)
-		for {
-			if obj, err := it.Next(); err == iterator.Done {
-				break
-			} else if err == nil {
-				sizes[obj.Name] = obj.Size
-			}
 		}
 	}
 
