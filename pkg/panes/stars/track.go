@@ -710,7 +710,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 			nmPerLongitude := ctx.NmPerLongitude
 			magneticVariation := ctx.MagneticVariation
 			for _, trk := range tracks {
-				if !trk.IsAssociated() {
+				if trk.IsUnassociated() {
 					continue
 				}
 				state := sp.TrackState[trk.ADSBCallsign]
