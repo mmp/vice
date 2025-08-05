@@ -44,6 +44,7 @@ type Sim struct {
 	ERAMComputer  *ERAMComputer
 
 	LocalCodePool *av.LocalSquawkCodePool
+	CIDAllocator  *CIDAllocator
 
 	GenerationIndex int // for sequencing StateUpdates
 
@@ -203,6 +204,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SignOnPositions: config.SignOnPositions,
 
 		STARSComputer: makeSTARSComputer(config.TRACON),
+
+		CIDAllocator: NewCIDAllocator(),
 
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
