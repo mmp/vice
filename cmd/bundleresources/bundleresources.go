@@ -33,11 +33,6 @@ const bucketName = "vice-resources"
 const resourcesDir = "./resources"
 const outFile = "manifest.json"
 
-type resourceFile struct {
-	path    string
-	relPath string
-}
-
 type uploadResult struct {
 	path     string
 	hash     string

@@ -13,5 +13,5 @@ import (
 )
 
 func initResourcesFS() *fs.StatFS {
-	return executableResourcesFS()
+	return localResourcesFS()
 }

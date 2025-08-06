@@ -10,7 +10,6 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"runtime"
 
 	"github.com/klauspost/compress/zstd"
 )
@@ -87,51 +86,26 @@ func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem f
 		})
 }
 
-func executableResourcesFS() *fs.StatFS {
-	path, err := os.Executable()
+func localResourcesFS() *fs.StatFS {
+	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
 
-	dir := filepath.Dir(path)
-	if runtime.GOOS == "darwin" {
-		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
-	} else {
-		dir = filepath.Join(dir, "resources")
-	}
-
-	fsys, ok := os.DirFS(dir).(fs.StatFS)
-	if !ok {
-		panic("FS from DirFS is not a StatFS?")
-	}
-
-	check := func(fs fs.StatFS) bool {
-		_, errv := fsys.Stat("videomaps")
-		_, errs := fsys.Stat("scenarios")
-		return errv == nil && errs == nil
-	}
-
-	if check(fsys) {
-		return &fsys
-	}
-
-	// Try CWD as well as CWD/../..; these are useful for development and
-	// debugging but shouldn't be needed for release builds.
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	for _, alts := range []string{".", "../.."} {
-		dir = filepath.Join(wd, alts, "resources")
-
-		fsys, ok = os.DirFS(dir).(fs.StatFS)
+	// Try CWD as well the two directories above it.
+	for range 3 {
+		fsys, ok := os.DirFS(filepath.Join(dir, "resources")).(fs.StatFS)
 		if !ok {
 			panic("FS from DirFS is not a StatFS?")
 		}
 
-		if check(fsys) {
+		_, errv := fsys.Stat("videomaps")
+		_, errs := fsys.Stat("scenarios")
+		if errv == nil && errs == nil { // got it
 			return &fsys
 		}
+
+		dir = filepath.Join(dir, "..")
 	}
-	panic("unable to find videomaps in CWD")
+	panic("unable to find videomaps in CWD; last try:" + dir)
 }

@@ -48,12 +48,12 @@ jobs:
     - name: Build
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags imguifreetype,downloadresources -o ./ .
+        go build -tags imguifreetype,downloadresources -o ./ ./cmd/vice
         ls
 
     - name: Run tests
       run:
-        go test -v
+        go test -v ./...
 
     - name: Check scenarios
       run:

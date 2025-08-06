@@ -395,45 +395,26 @@ func AvailableFontSizes(name string) []int {
 var fontsFS fs.StatFS
 
 func init() {
-	path, err := os.Executable()
+	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
 
-	dir := filepath.Dir(path)
-	if runtime.GOOS == "darwin" {
-		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
-	} else {
-		dir = filepath.Join(dir, "resources")
-	}
+	// Try CWD as well the two directories above it.
+	for range 3 {
+		fsys, ok := os.DirFS(dir).(fs.StatFS)
+		if !ok {
+			panic("FS from DirFS is not a StatFS?")
+		}
 
-	// Is there a "fonts" directory in the FS?
-	check := func(fs fs.StatFS) bool {
-		info, err := fs.Stat("fonts")
-		return err == nil && info.IsDir()
-	}
-
-	fsys := os.DirFS(dir).(fs.StatFS)
-	if check(fsys) {
-		fontsFS = fsys
-		return
-	}
-
-	// Try CWD as well as CWD/../..; these are useful for development and
-	// debugging but shouldn't be needed for release builds.
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	for _, alts := range []string{".", "../.."} {
-		dir = filepath.Join(wd, alts)
-
-		fsys = os.DirFS(dir).(fs.StatFS)
-		if check(fsys) {
+		if _, err := fsys.Stat("fonts"); err == nil { // got it
 			fontsFS = fsys
 			return
 		}
+
+		dir = filepath.Join(dir, "..")
 	}
+
 	panic("unable to find fonts")
 }
 

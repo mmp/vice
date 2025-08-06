@@ -41,17 +41,17 @@ jobs:
       env:
          GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
-        go run util/bundleresources.go
+        go run ./cmd/bundleresources
 
     - name: Build universal binary
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 .
-        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 ./cmd/vice
+        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 ./cmd/vice
         lipo -create -output vice vice_amd64 vice_arm64
 
     - name: Run tests
-      run: go test -v
+      run: go test -v ./...
 
     - name: Check scenarios
       run: ./vice -lint
