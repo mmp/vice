@@ -384,6 +384,14 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 
 		if wp.HumanHandoff {
 			haveHO = true
+
+			// Check if any subsequent waypoints have a TCPHandoff
+			for _, wfut := range wa[i:] {
+				if wfut.TCPHandoff != "" {
+					e.ErrorString("Cannot have handoff to virtual controller after human handoff")
+					break
+				}
+			}
 		}
 
 		if wp.TransferComms && !haveHO {

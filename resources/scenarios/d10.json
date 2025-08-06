@@ -11905,7 +11905,7 @@
           }
         },
         {
-          "waypoints": "JTROE/a16000+/ho MASTY/a16000+/ho1D GREGS/a11000/s250/ho1N BLECO/a3000 MNKEE JFRYE/h143",
+          "waypoints": "JTROE/a16000+ MASTY/a16000+/ho1D GREGS/a11000/s250/ho1N BLECO/a3000 MNKEE JFRYE/h143",
           "star": "HERBZ1",
           "initial_controller": "FTW_75_CTR",
           "initial_altitude": 17000,
