@@ -72,7 +72,7 @@ type SimScenarioConfiguration struct {
 	SplitConfigurations av.SplitConfigurationSet
 	PrimaryAirport      string
 
-	Wind         av.Wind
+	AverageWind  av.WindLayer
 	LaunchConfig sim.LaunchConfig
 
 	DepartureRunways []sim.DepartureRunway
@@ -103,7 +103,6 @@ type NewSimConfiguration struct {
 	RequirePassword bool
 	Password        string
 
-	LiveWeather                 bool
 	EnforceUniqueCallsignSuffix bool
 
 	AllowInstructorRPO  bool
@@ -258,7 +257,6 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 
 	nsc := sim.NewSimConfiguration{
 		TFRs:                        config.TFRs,
-		LiveWeather:                 config.LiveWeather,
 		TRACON:                      config.TRACONName,
 		LaunchConfig:                config.Scenario.LaunchConfig,
 		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),

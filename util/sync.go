@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"log/slog"
 	gomath "math"
-	"os"
 	"runtime"
 	"strings"
 	"sync"
@@ -53,7 +52,7 @@ var heldMutexes map[*LoggingMutex]interface{} = make(map[*LoggingMutex]interface
 type LoggingMutex struct {
 	sync.Mutex
 	acq      time.Time
-	acqStack []log.StackFrame
+	acqStack log.StackFrames
 }
 
 func DumpHeldMutexes(lg *log.Logger) string {
@@ -67,11 +66,6 @@ func DumpHeldMutexes(lg *log.Logger) string {
 		s += "\n"
 	}
 	return s
-}
-
-func debuggerIsRunning() bool {
-	dlv, ok := os.LookupEnv("_")
-	return ok && strings.HasSuffix(dlv, "/dlv")
 }
 
 func (l *LoggingMutex) Lock(lg *log.Logger) {
@@ -93,7 +87,7 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 			case <-locked:
 				break loop
 			case <-time.After(10 * time.Second):
-				if !debuggerIsRunning() {
+				if !DebuggerIsRunning() {
 					lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
 						slog.Any("held_mutexes", heldMutexes))
 
@@ -104,7 +98,7 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 					lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
 						int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
 						runtime.NumGoroutine())
-					lg.Errorf("Callstack for who holds: %s", strings.Join(MapSlice(l.acqStack, func(f log.StackFrame) string { return f.String() }), " | "))
+					lg.Errorf("Callstack for who holds: %s", strings.Join(l.acqStack.Strings(), " | "))
 				}
 			}
 		}

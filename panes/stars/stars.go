@@ -232,6 +232,8 @@ type STARSPane struct {
 		AirspaceColor    *[3]float32
 	}
 
+	windDrawAltitude int
+
 	// We keep a pool of each type so that we don't need to allocate a new
 	// object each time we generate a datablock.
 	fdbArena util.ObjectArena[fullDatablock]
@@ -761,6 +763,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.drawCRDARegions(ctx, transforms, cb)
 	sp.drawSelectedRoute(ctx, transforms, cb)
 	sp.drawPlotPoints(ctx, transforms, cb)
+	sp.drawWind(ctx, transforms, cb)
 
 	sp.drawCompass(ctx, scopeExtent, transforms, cb)
 

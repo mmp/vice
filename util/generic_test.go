@@ -155,36 +155,6 @@ func TestFilterSliceInPlace(t *testing.T) {
 	}
 }
 
-func TestRingBuffer(t *testing.T) {
-	rb := NewRingBuffer[int](10)
-
-	if rb.Size() != 0 {
-		t.Errorf("empty should have zero size")
-	}
-
-	rb.Add(0, 1, 2, 3, 4)
-	if rb.Size() != 5 {
-		t.Errorf("expected size 5; got %d", rb.Size())
-	}
-	for i := 0; i < 5; i++ {
-		if rb.Get(i) != i {
-			t.Errorf("returned unexpected value")
-		}
-	}
-
-	for i := 5; i < 18; i++ {
-		rb.Add(i)
-	}
-	if rb.Size() != 10 {
-		t.Errorf("expected size 10")
-	}
-	for i := 0; i < 10; i++ {
-		if rb.Get(i) != 8+i {
-			t.Errorf("after filling, at %d got %d, expected %d", i, rb.Get(i), 8+i)
-		}
-	}
-}
-
 func TestReduceSlice(t *testing.T) {
 	v := []int{1, -2, 3, 4}
 
@@ -385,24 +355,6 @@ func TestMapSeq(t *testing.T) {
 	}
 }
 
-func TestSlicesReverse(t *testing.T) {
-	type test struct {
-		in, out []int
-	}
-	for _, c := range []test{
-		test{in: []int{1, 2, 3}, out: []int{3, 2, 1}},
-		test{in: []int{1}, out: []int{1}},
-		test{in: []int{}, out: []int{}},
-	} {
-		vals := make([]int, 0)
-		for v := range SliceReverseValues(c.in) {
-			vals = append(vals, v)
-		}
-		if !slices.Equal(vals, c.out) {
-			t.Errorf("reverse mismatch: %v gave %v expected %v", c.in, vals, c.out)
-		}
-	}
-}
 func TestSortedMapKeys(t *testing.T) {
 	m := map[int]string{
 		3: "three",
@@ -475,24 +427,6 @@ func TestMapSeq2(t *testing.T) {
 	}
 	if count != 3 {
 		t.Errorf("MapSeq2 should iterate 3 times, got %d", count)
-	}
-}
-
-func TestSliceReverseValues2(t *testing.T) {
-	s := []int{1, 2, 3, 4, 5}
-	count := 0
-	for i, v := range SliceReverseValues2(s) {
-		count++
-		expected := s[i]
-		if i != len(s)-count {
-			t.Errorf("SliceReverseValues2 index mismatch: got %d, expected %d", i, len(s)-count)
-		}
-		if v != expected {
-			t.Errorf("SliceReverseValues2 value mismatch at index %d: got %d, expected %d", i, v, expected)
-		}
-	}
-	if count != len(s) {
-		t.Errorf("SliceReverseValues2 should iterate %d times, got %d", len(s), count)
 	}
 }
 

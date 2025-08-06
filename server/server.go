@@ -48,7 +48,8 @@ import (
 // 38: rework STARS flight plan (et al) ongoing
 // 39: speech v0.1
 // 40: clean up what's transmitted server->client at initial connect/spawn, gob->msgpack
-const ViceSerializeVersion = 40
+// 41: sim.State.SimStartTime
+const ViceSerializeVersion = 41
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

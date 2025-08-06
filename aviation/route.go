@@ -384,6 +384,14 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 
 		if wp.HumanHandoff {
 			haveHO = true
+
+			// Check if any subsequent waypoints have a TCPHandoff
+			for _, wfut := range wa[i:] {
+				if wfut.TCPHandoff != "" {
+					e.ErrorString("Cannot have handoff to virtual controller after human handoff")
+					break
+				}
+			}
 		}
 
 		if wp.TransferComms && !haveHO {
@@ -493,7 +501,7 @@ func (wa WaypointArray) checkDescending(e *util.ErrorLogger) {
 }
 
 func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, perf AircraftPerformance, nmPerLongitude float32,
-	magneticVariation float32, airport string, wind WindModel, lg *log.Logger) {
+	magneticVariation float32, airport string, lg *log.Logger) {
 	// Random values used for altitude and position randomization
 	rtheta, rrad := r.Float32(), r.Float32()
 	ralt := r.Float32()
@@ -565,7 +573,7 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 }
 
 // Takes waypoints up to the one with the Land specifier. Rewrite that one and then append the landing route.
-func AppendVFRLanding(wps []Waypoint, perf AircraftPerformance, airport string, wind WindModel, nmPerLongitude float32,
+func AppendVFRLanding(wps []Waypoint, perf AircraftPerformance, airport string, windDir float32, nmPerLongitude float32,
 	magneticVariation float32, lg *log.Logger) []Waypoint {
 	wp := &wps[len(wps)-1]
 	wp.Land = false
@@ -578,7 +586,7 @@ func AppendVFRLanding(wps []Waypoint, perf AircraftPerformance, airport string, 
 		return wps // best we can do
 	}
 
-	rwy, opp := ap.SelectBestRunway(wind, magneticVariation)
+	rwy, opp := ap.SelectBestRunway(windDir, magneticVariation)
 	if rwy == nil || opp == nil {
 		lg.Error("couldn't find a runway to land on", slog.String("airport", airport), slog.Any("runways", ap.Runways))
 		wp.Delete = true

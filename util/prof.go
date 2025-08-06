@@ -156,7 +156,7 @@ func MonitorMemoryUsage(triggerMB int, incMB int, lg *log.Logger) {
 			heapAlloc := memStats.HeapAlloc
 			if heapAlloc > threshold {
 				threshold += delta
-				lg.Warn("Writing heap profile: heapAlloc=%d MB", heapAlloc/(1024*1024))
+				lg.Warnf("Writing heap profile: heapAlloc=%d MB", heapAlloc/(1024*1024))
 				writeProfile("heap", lg)
 			}
 		}

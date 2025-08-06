@@ -710,21 +710,18 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 			nmPerLongitude := ctx.NmPerLongitude
 			magneticVariation := ctx.MagneticVariation
 			for _, trk := range tracks {
+				if trk.IsUnassociated() {
+					continue
+				}
 				state := sp.TrackState[trk.ADSBCallsign]
 
 				// Create a ghost track if appropriate, add it to the
 				// ghosts slice, and draw its radar track.
 				force := state.Ghost.State == GhostStateForced || ps.CRDA.ForceAllGhosts
-				heading := util.Select(state.HaveHeading(), state.TrackHeading(nmPerLongitude),
-					trk.Heading)
+				heading := util.Select(state.HaveHeading(), state.TrackHeading(nmPerLongitude), trk.Heading)
 
-				sp := ""
-				if trk.IsAssociated() {
-					sp = trk.FlightPlan.Scratchpad
-				}
-
-				ghost := region.TryMakeGhost(trk.RadarTrack, heading, sp, force, offset, leaderDirection,
-					runwayIntersection, nmPerLongitude, magneticVariation, otherRegion)
+				ghost := region.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
+					leaderDirection, runwayIntersection, nmPerLongitude, magneticVariation, otherRegion)
 				if ghost != nil {
 					ghost.TrackId = trackId
 					ghosts = append(ghosts, ghost)

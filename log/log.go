@@ -5,6 +5,7 @@
 package log
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"log/slog"
@@ -13,6 +14,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
+	"slices"
 	"strings"
 	"time"
 
@@ -79,7 +81,7 @@ func New(server bool, level string, dir string) *Logger {
 		fmt.Fprintf(os.Stderr, "%s: invalid log level", level)
 	}
 
-	h := slog.NewJSONHandler(w, &slog.HandlerOptions{Level: lvl})
+	h := newHandler(w, &slog.HandlerOptions{Level: lvl})
 	l := &Logger{
 		Logger:  slog.New(h),
 		LogFile: w.Filename,
@@ -131,7 +133,7 @@ func New(server bool, level string, dir string) *Logger {
 // go through to slog.)
 func (l *Logger) Debug(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
-		args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
+		args = append([]any{slog.Any("callstack", Callstack(nil).Strings())}, args...)
 		l.Logger.Debug(msg, args...)
 	}
 }
@@ -140,25 +142,25 @@ func (l *Logger) Debug(msg string, args ...any) {
 // printf-style formatting of the provided args.
 func (l *Logger) Debugf(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelDebug) {
-		l.Logger.Debug(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
+		l.Logger.Debug(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil).Strings()))
 	}
 }
 
 func (l *Logger) Info(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
-		args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
+		args = append([]any{slog.Any("callstack", Callstack(nil).Strings())}, args...)
 		l.Logger.Info(msg, args...)
 	}
 }
 
 func (l *Logger) Infof(msg string, args ...any) {
 	if l != nil && l.Logger.Enabled(nil, slog.LevelInfo) {
-		l.Logger.Info(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
+		l.Logger.Info(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil).Strings()))
 	}
 }
 
 func (l *Logger) Warn(msg string, args ...any) {
-	args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
+	args = append([]any{slog.Any("callstack", Callstack(nil).Strings())}, args...)
 	if l == nil {
 		slog.Warn(msg, args...)
 	} else {
@@ -168,24 +170,26 @@ func (l *Logger) Warn(msg string, args ...any) {
 
 func (l *Logger) Warnf(msg string, args ...any) {
 	if l == nil {
-		slog.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
+		slog.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil).Strings()))
 	} else {
-		l.Logger.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
+		l.Logger.Warn(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil).Strings()))
 	}
 }
 
 func (l *Logger) Error(msg string, args ...any) {
-	args = append([]any{slog.Any("callstack", Callstack(nil))}, args...)
-	slog.Error(msg, args...)
-	if l != nil {
+	args = append([]any{slog.Any("callstack", Callstack(nil).Strings())}, args...)
+	if l == nil {
+		slog.Error(msg, args...)
+	} else {
 		l.Logger.Error(msg, args...)
 	}
 }
 
 func (l *Logger) Errorf(msg string, args ...any) {
-	slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
-	if l != nil {
-		l.Logger.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil)))
+	if l == nil {
+		slog.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil).Strings()))
+	} else {
+		l.Logger.Error(fmt.Sprintf(msg, args...), slog.Any("callstack", Callstack(nil).Strings()))
 	}
 }
 
@@ -285,5 +289,52 @@ func (l *Logger) launchCrashServer() {
 
 	if err := srv.ListenAndServe(); err != nil {
 		l.Errorf("Failed to start HTTP server for crash reports: %v\n", err)
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// handler is an implementation of slog.Handler that sends log entries both
+// to a JSON handler (that will log to disk) and a text handler that prints
+// warnings and errors to stderr.
+type handler struct {
+	json slog.Handler
+	txt  slog.Handler
+}
+
+func newHandler(w io.Writer, opts *slog.HandlerOptions) *handler {
+	return &handler{
+		json: slog.NewJSONHandler(w, opts),
+		txt:  slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelWarn}),
+	}
+}
+
+func (h *handler) Enabled(ctx context.Context, level slog.Level) bool {
+	return h.json.Enabled(ctx, level) || h.txt.Enabled(ctx, level)
+}
+
+func (h *handler) Handle(ctx context.Context, rec slog.Record) error {
+	if h.txt.Enabled(ctx, rec.Level) {
+		_ = h.txt.Handle(ctx, rec)
+	}
+	if h.json.Enabled(ctx, rec.Level) {
+		return h.json.Handle(ctx, rec)
+	}
+	return nil
+}
+
+func (h *handler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	// Handlers own the attrs passed to them, so we make sure each gets
+	// its own copy.
+	return &handler{
+		json: h.json.WithAttrs(slices.Clone(attrs)),
+		txt:  h.txt.WithAttrs(slices.Clone(attrs)),
+	}
+}
+
+func (h *handler) WithGroup(name string) slog.Handler {
+	return &handler{
+		json: h.json.WithGroup(name),
+		txt:  h.txt.WithGroup(name),
 	}
 }

@@ -83,6 +83,8 @@ type Sim struct {
 
 	Rand *rand.Rand
 
+	SquawkWarnedACIDs map[ACID]interface{} // Warn once in CheckLeaks(); don't spam the logs
+
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
@@ -176,8 +178,7 @@ type NewSimConfiguration struct {
 	SignOnPositions    map[string]*av.Controller
 
 	TFRs                    []av.TFR
-	LiveWeather             bool
-	Wind                    av.Wind
+	Wind                    map[math.Point2LL][]av.WindLayer
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
@@ -224,6 +225,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Instructors: make(map[string]bool),
 
 		Rand: rand.Make(),
+
+		SquawkWarnedACIDs: make(map[ACID]interface{}),
 	}
 
 	// Automatically add nearby airports and VORs as candidate reporting points
@@ -264,9 +267,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
-	s.State = newState(config, manifest, lg)
-
-	s.setInitialSpawnTimes(time.Now()) // FIXME? will be clobbered in prespawn
+	startTime := time.Now()
+	s.State = newState(config, startTime, manifest, lg)
 
 	return s
 }
@@ -816,7 +818,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		}
 	}
 
-	if util.SizeOf(*update, os.Stderr, false, 32*1024) > 256*1024*1024 {
+	if util.SizeOf(*update, os.Stderr, false, 256*1024) > 256*1024*1024 {
 		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
 		f, err := os.Create(fn)
 		if err != nil {
@@ -906,13 +908,15 @@ func (s *Sim) Update() {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	startUpdate := time.Now()
-	defer func() {
-		if d := time.Since(startUpdate); d > 200*time.Millisecond {
-			s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
-				slog.Any("sim", s))
-		}
-	}()
+	if !util.DebuggerIsRunning() {
+		startUpdate := time.Now()
+		defer func() {
+			if d := time.Since(startUpdate); d > 200*time.Millisecond {
+				s.lg.Warn("unexpectedly long Sim Update() call", slog.Duration("duration", d),
+					slog.Any("sim", s))
+			}
+		}()
+	}
 
 	for _, ac := range s.Aircraft {
 		ac.Check(s.lg)
@@ -961,6 +965,8 @@ func (s *Sim) Step(elapsed time.Duration) {
 // separate so time management can be outside this so we can do the prespawn stuff...
 func (s *Sim) updateState() {
 	now := s.State.SimTime
+
+	s.State.WX.UpdateTime(now)
 
 	for acid, ho := range s.Handoffs {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
@@ -1024,7 +1030,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			passedWaypoint := ac.Update(s.State, s.bravoAirspace, nil /* s.lg*/)
+			passedWaypoint := ac.Update(s.State.WX, s.bravoAirspace, nil /* s.lg*/)
 
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
@@ -1127,7 +1133,8 @@ func (s *Sim) updateState() {
 							} else {
 								// VFR aircraft - select best runway based on wind
 								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
-								if rwy, _ := ap.SelectBestRunway(s.State /* wind */, s.State.MagneticVariation); rwy != nil {
+								ws := s.State.WX.LookupWind(ap.Location, float32(ap.Elevation))
+								if rwy, _ := ap.SelectBestRunway(ws.Direction, s.State.MagneticVariation); rwy != nil {
 									runway = rwy.Id
 								}
 							}
@@ -1437,7 +1444,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	} else {
 		return AircraftDisplayState{
 			Spew:        spew.Sdump(ac),
-			FlightState: ac.NavSummary(s.lg),
+			FlightState: ac.NavSummary(s.State.WX, s.lg),
 		}, nil
 	}
 }
@@ -1473,22 +1480,28 @@ func (s *Sim) CheckLeaks() {
 			}
 		}
 
-		if _, ok := seenSquawks[fp.AssignedSquawk]; ok {
-			s.lg.Errorf("%s: squawk code %q assigned to multiple aircraft", fp.ACID, fp.AssignedSquawk)
+		_, warned := s.SquawkWarnedACIDs[fp.ACID]
+
+		if _, ok := seenSquawks[fp.AssignedSquawk]; ok && !warned {
+			s.lg.Warnf("%s: squawk code %q assigned to multiple aircraft", fp.ACID, fp.AssignedSquawk)
+			s.SquawkWarnedACIDs[fp.ACID] = nil
 		}
 		seenSquawks[fp.AssignedSquawk] = nil
 
 		if s.ERAMComputer.SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
-			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) {
-				s.lg.Errorf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
+			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
+				s.lg.Warnf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
+				s.SquawkWarnedACIDs[fp.ACID] = nil
 			}
 		} else if s.LocalCodePool.InInitialPool(fp.AssignedSquawk) {
-			if !s.LocalCodePool.IsAssigned(fp.AssignedSquawk) {
-				s.lg.Errorf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
+			if !s.LocalCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
+				s.lg.Warnf("%s: squawking unassigned local code %q", fp.ACID, fp.AssignedSquawk)
+				s.SquawkWarnedACIDs[fp.ACID] = nil
 			}
-		} else {
+		} else if !warned {
 			// It may be controller-assigned to something arbitrary.
-			//s.lg.Errorf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+			s.lg.Warnf("%s: squawk code %q not in any pool", fp.ACID, fp.AssignedSquawk)
+			s.SquawkWarnedACIDs[fp.ACID] = nil
 		}
 	}
 

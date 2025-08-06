@@ -54,9 +54,13 @@ func (f StackFrame) String() string {
 }
 
 func (f StackFrames) String() string {
+	return strings.Join(f.Strings(), "\n")
+}
+
+func (f StackFrames) Strings() []string {
 	var s []string
 	for _, frame := range f {
 		s = append(s, frame.String())
 	}
-	return strings.Join(s, "\n")
+	return s
 }

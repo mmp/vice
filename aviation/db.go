@@ -25,7 +25,6 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
-	"github.com/gocolly/colly/v2"
 	"github.com/klauspost/compress/zstd"
 )
 
@@ -108,20 +107,15 @@ type AdaptationFixes []AdaptationFix
 
 ///////////////////////////////////////////////////////////////////////////
 
-func (ap FAAAirport) SelectBestRunway(wind WindModel, magneticVariation float32) (*Runway, *Runway) {
-	w := wind.GetWindVector(ap.Location, float32(ap.Elevation))
-	// This gives the vector affecting the aircraft, so negate it. Also, as
-	// elsewhere, swap x and y in the args here since we want to measure
-	// angle w.r.t. +y.
-	angle := math.Degrees(math.Atan2(-w[0], -w[1]))
-	angle = math.NormalizeHeading(angle + magneticVariation)
+func (ap FAAAirport) SelectBestRunway(windDir float32, magneticVariation float32) (*Runway, *Runway) {
+	whdg := math.NormalizeHeading(windDir + magneticVariation)
 
 	// Find best aligned runway
 	minDelta := float32(1000)
 	bestRwy := -1
 	for i, rwy := range ap.Runways {
 		if _, ok := LookupOppositeRunway(ap.Id, rwy.Id); ok {
-			d := math.HeadingDifference(angle, rwy.Heading)
+			d := math.HeadingDifference(whdg, rwy.Heading)
 			if d < minDelta {
 				minDelta = d
 				bestRwy = i
@@ -203,6 +197,41 @@ type Airline struct {
 type FleetAircraft struct {
 	ICAO  string
 	Count int
+}
+
+// baseApproachSpeed returns a reasonable final approach speed for this
+// aircraft type. If landing speed is available, a small buffer above that
+// speed is used. Otherwise V2 or a default is returned.
+func (ap AircraftPerformance) baseApproachSpeed() float32 {
+	if ap.Speed.Landing > 0 {
+		return ap.Speed.Landing + 5
+	} else if ap.Speed.V2 > 0 {
+		return 1.25 * ap.Speed.V2
+	} else {
+		return 120
+	}
+}
+
+// ApproachSpeed returns the final approach speed including wind
+// additives. The runway heading is used to compute the headwind component
+// of the provided wind. Jets and turboprops add half the headwind plus the
+// full gust factor (not to exceed 20 knots). Pistons add half the gust
+// factor... I suppose we should also add a max additive but most pistons
+// won't be landing in very windy conditions
+func (ap AircraftPerformance) ApproachSpeed(ws WindSample, runwayHeading float32) float32 {
+	gustFactor := max(0, float32(ws.Gust-ws.Speed))
+
+	additive := float32(0)
+	switch ap.Engine.AircraftType {
+	case "J", "T":
+		diff := math.HeadingDifference(float32(ws.Direction), runwayHeading)
+		headwind := max(0, float32(ws.Speed)*math.Cos(math.Radians(diff)))
+		additive = min(headwind/2+gustFactor, 20)
+	case "P":
+		additive = gustFactor / 2
+	}
+
+	return ap.baseApproachSpeed() + additive
 }
 
 func InitDB() {
@@ -963,24 +992,37 @@ type TFRListJSON struct {
 func allTFRUrls(lg *log.Logger) []string {
 	lg.Infof("Fetching TFR URLs")
 
-	// Try to look legit.
-	c := colly.NewCollector(
-		colly.UserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15"))
+	// Create HTTP request
+	req, err := http.NewRequest("GET", "https://tfr.faa.gov/tfrapi/exportTfrList", nil)
+	if err != nil {
+		lg.Errorf("Error creating request: %s", err)
+		return nil
+	}
 
-	c.OnRequest(func(r *colly.Request) {
-		r.Headers.Set("Access-Control-Allow-Origin", "*")
-		r.Headers.Set("Accept", "*/*")
-		r.Headers.Set("Sec-Fetch-Site", "same-origin")
-		r.Headers.Set("Accept-Language", "en-US,en;q=0.9")
-		r.Headers.Set("Accept-Encoding", "gzip, deflate, br")
-		r.Headers.Set("Sec-Fetch-Mode", "cors")
-		r.Headers.Set("Access-Control-Allow-Credentials", "true")
-		r.Headers.Set("Connection", "keep-alive")
-		r.Headers.Set("Sec-Fetch-Dest", "empty")
-	})
+	// Make the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		lg.Errorf("Error fetching TFRs: %s", err)
+		return nil
+	}
+	defer resp.Body.Close()
 
+	// Read response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		lg.Errorf("Error reading response: %s", err)
+		return nil
+	}
+
+	lg.Infof("TFR json: %s", string(body))
+
+	// Parse JSON
 	var tfr_url_list []TFRListJSON
-	var urls []string
+	if err := json.Unmarshal(body, &tfr_url_list); err != nil {
+		lg.Errorf("Error parsing JSON: %s", err)
+		return nil
+	}
 
 	// This is still somewhat brittle. In a mind bending design choice the FAAs JSON link
 	// (https://tfr.faa.gov/tfr3/export/json) is assembled via javascript and not an actual
@@ -988,22 +1030,12 @@ func allTFRUrls(lg *log.Logger) []string {
 	// We then assume the same URL scheme for NOTAM details (https://tfr.faa.gov/download/detail_${NOTAM_ID}.xml)
 	// and fetch the data from there...which is actually XML...for now....
 
-	c.OnResponse(func(r *colly.Response) {
-		lg.Infof("TFR json: %s", string(r.Body))
-		json.Unmarshal([]byte(r.Body), &tfr_url_list)
-
-		for _, tfr_url := range tfr_url_list {
-			id := strings.Replace(tfr_url.Notam_id, "/", "_", -1)
-			url := "https://tfr.faa.gov/download/detail_" + id + ".xml"
-			urls = append(urls, url)
-		}
-	})
-
-	c.OnError(func(r *colly.Response, err error) {
-		lg.Errorf("Error fetching TFRs: %s", err)
-	})
-
-	c.Visit("https://tfr.faa.gov/tfrapi/exportTfrList")
+	var urls []string
+	for _, tfr_url := range tfr_url_list {
+		id := strings.Replace(tfr_url.Notam_id, "/", "_", -1)
+		url := "https://tfr.faa.gov/download/detail_" + id + ".xml"
+		urls = append(urls, url)
+	}
 
 	return slices.Compact(urls)
 }
