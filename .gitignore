@@ -24,6 +24,7 @@ vice.slog
 resources/speech/
 SDL2.dll
 __debug_*
+manifest.json
 *.prof
 *.pprof
 scenario-test-*.txt

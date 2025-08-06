@@ -1578,19 +1578,6 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 			return nil
 		}
 
-		// This is a terrible hack, but the Windows WIX installer toolkit
-		// is even more so, so here we go. For reasons not understood, it's
-		// not removing the old bdl.json file on an upgrade install; since
-		// it got renamed to y90.json, having both gives errors about
-		// scenarios being redefined. So cull it here instead...
-		if strings.ToLower(filepath.Base(path)) == "bdl.json" {
-			return nil
-		}
-		// And ditto for aac, which got split into two.
-		if strings.ToLower(filepath.Base(path)) == "aac.json" {
-			return nil
-		}
-
 		s := loadScenarioGroup(fs, path, e)
 		if s != nil {
 			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {
