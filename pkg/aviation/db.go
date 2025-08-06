@@ -234,7 +234,7 @@ func (ap AircraftPerformance) ApproachSpeed(ws WindSample, runwayHeading float32
 	return ap.baseApproachSpeed() + additive
 }
 
-func init() {
+func InitDB() {
 	db := &StaticDatabase{}
 
 	var wg sync.WaitGroup

@@ -387,7 +387,7 @@ func (m *ModalDialogBox) Draw() {
 
 	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 300, dpiScale * 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 400, dpiScale * 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
 			imgui.SetKeyboardFocusHere()
@@ -400,13 +400,16 @@ func (m *ModalDialogBox) Draw() {
 
 		buttons := m.client.Buttons()
 
-		// First, figure out where to start drawing so the buttons end up right-justified.
-		// https://github.com/ocornut/imgui/discussions/3862
-		var allButtonText []string
-		for _, b := range buttons {
-			allButtonText = append(allButtonText, b.text)
+		// Only position buttons if we have any
+		if len(buttons) > 0 {
+			// First, figure out where to start drawing so the buttons end up right-justified.
+			// https://github.com/ocornut/imgui/discussions/3862
+			var allButtonText []string
+			for _, b := range buttons {
+				allButtonText = append(allButtonText, b.text)
+			}
+			setCursorForRightButtons(allButtonText)
 		}
-		setCursorForRightButtons(allButtonText)
 
 		for i, b := range buttons {
 			if b.disabled {

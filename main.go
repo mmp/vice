@@ -90,6 +90,13 @@ func main() {
 	}
 
 	if *lintScenarios {
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
+		av.InitDB()
+
 		var e util.ErrorLogger
 		scenarioGroups, _, _ :=
 			server.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
@@ -200,6 +207,13 @@ func main() {
 	} else if *broadcastMessage != "" {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
+		av.InitDB()
+
 		server.LaunchServer(server.ServerLaunchConfig{
 			Port:                *serverPort,
 			MultiControllerOnly: true,
@@ -207,10 +221,24 @@ func main() {
 			ExtraVideoMap:       *videoMapFilename,
 		}, lg)
 	} else if *showRoutes != "" {
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
+		av.InitDB()
+
 		if err := av.PrintCIFPRoutes(*showRoutes); err != nil {
 			lg.Errorf("%s", err)
 		}
 	} else if *listMaps != "" {
+		if err := SyncResources(nil, nil, nil); err != nil {
+			lg.Errorf("SyncResources: %v", err)
+			os.Exit(1)
+		}
+
+		av.InitDB()
+
 		var e util.ErrorLogger
 		sim.PrintVideoMaps(*listMaps, &e)
 		if e.HaveErrors() {
@@ -248,6 +276,31 @@ func main() {
 			panic(fmt.Sprintf("Unable to create application window: %v", err))
 		}
 
+		imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
+
+		render, err = renderer.NewOpenGL2Renderer(lg)
+		if err != nil {
+			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
+		}
+		renderer.FontsInit(render, plat)
+
+		eventStream := sim.NewEventStream(lg)
+
+		uiInit(render, plat, config, eventStream, lg)
+
+		if err := SyncResources(plat, render, lg); err != nil {
+			ShowFatalErrorDialog(render, plat, lg, "Error syncing resources: %v", err)
+		}
+
+		av.InitDB()
+
+		// After we have plat and render
+		if configErr != nil {
+			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
+		}
+
+		config.Activate(render, plat, eventStream, lg)
+
 		var mgr *client.ConnectionManager
 		var errorLogger util.ErrorLogger
 		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
@@ -277,25 +330,6 @@ func main() {
 				}
 			},
 		)
-
-		imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
-
-		render, err = renderer.NewOpenGL2Renderer(lg)
-		if err != nil {
-			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
-		}
-		renderer.FontsInit(render, plat)
-
-		eventStream := sim.NewEventStream(lg)
-
-		uiInit(render, plat, config, eventStream, lg)
-
-		// After we have plat and render
-		if configErr != nil {
-			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
-		}
-
-		config.Activate(render, plat, eventStream, lg)
 
 		if errorLogger.HaveErrors() {
 			ShowFatalErrorDialog(render, plat, lg, "%s", errorLogger.String())
