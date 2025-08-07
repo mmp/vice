@@ -5,7 +5,6 @@
 package rand
 
 import (
-	"math/rand/v2"
 	"testing"
 )
 
@@ -26,6 +25,9 @@ func TestPermutationElement(t *testing.T) {
 }
 
 func TestRandomPermute(t *testing.T) {
+	r := Make()
+	r.Seed(6502)
+
 	for _, n := range []int{0, 1, 5, 11, 42} {
 		s := make([]int, n)
 		for i := range n {
@@ -33,7 +35,7 @@ func TestRandomPermute(t *testing.T) {
 		}
 		got := make([]bool, n)
 
-		seed := rand.Uint32()
+		seed := r.Uint32()
 		for i, v := range PermuteSlice(s, seed) {
 			if i != v {
 				t.Errorf("mismatch index/value: %d/%d slice %+v", i, v, s)
@@ -53,6 +55,8 @@ func TestRandomPermute(t *testing.T) {
 
 func TestSampleFiltered(t *testing.T) {
 	r := Make()
+	r.Seed(6502)
+
 	if SampleFiltered(r, []int{}, func(int) bool { return true }) != -1 {
 		t.Errorf("Returned non-zero for empty slice")
 	}
@@ -86,6 +90,7 @@ func TestSampleWeighted(t *testing.T) {
 
 	n := 100000
 	r := Make()
+	r.Seed(6502)
 	for i := 0; i < n; i++ {
 		v, ok := SampleWeighted(r, a, func(v int) int { return v })
 		if !ok {
