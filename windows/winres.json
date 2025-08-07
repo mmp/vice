@@ -2,11 +2,11 @@
   "RT_GROUP_ICON": {
     "APP": {
       "0000": [
-        "../icons/tower-256x256.png",
-        "../icons/tower-64x64.png",
-        "../icons/tower-48x48.png",
-        "../icons/tower-32x32.png",
-        "../icons/tower-16x16.png"
+        "../cmd/vice/icons/tower-256x256.png",
+        "../cmd/vice/icons/tower-64x64.png",
+        "../cmd/vice/icons/tower-48x48.png",
+        "../cmd/vice/icons/tower-32x32.png",
+        "../cmd/vice/icons/tower-16x16.png"
       ]
     }
   },

@@ -41,17 +41,18 @@ jobs:
       env:
          GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
-        go run util/bundleresources.go
+        go run ./cmd/bundleresources
+        mv manifest.json cmd/vice
 
     - name: Build universal binary
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 .
-        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 .
+        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 ./cmd/vice
+        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 ./cmd/vice
         lipo -create -output vice vice_amd64 vice_arm64
 
     - name: Run tests
-      run: go test -v
+      run: go test -v ./...
 
     - name: Check scenarios
       run: ./vice -lint
@@ -59,18 +60,18 @@ jobs:
     - name: Create icons
       run: |
         mkdir -p icon.iconset
-        cp icons/tower-rounded-inset-16x16.png icon.iconset/icon_16x16.png
-        cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_16x16@2.png
-        cp icons/tower-rounded-inset-32x32.png icon.iconset/icon_32x32.png
-        cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_32x32@2.png
-        cp icons/tower-rounded-inset-64x64.png icon.iconset/icon_64x64.png
-        cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_64x64@2.png
-        cp icons/tower-rounded-inset-128x128.png icon.iconset/icon_128x128.png
-        cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_128x128@2.png
-        cp icons/tower-rounded-inset-256x256.png icon.iconset/icon_256x256.png
-        cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_256x256@2.png
-        cp icons/tower-rounded-inset-512x512.png icon.iconset/icon_512x512.png
-        cp icons/tower-rounded-inset-1024x1024.png icon.iconset/icon_512x512@2.png
+        cp cmd/vice/icons/tower-rounded-inset-16x16.png icon.iconset/icon_16x16.png
+        cp cmd/vice/icons/tower-rounded-inset-32x32.png icon.iconset/icon_16x16@2.png
+        cp cmd/vice/icons/tower-rounded-inset-32x32.png icon.iconset/icon_32x32.png
+        cp cmd/vice/icons/tower-rounded-inset-64x64.png icon.iconset/icon_32x32@2.png
+        cp cmd/vice/icons/tower-rounded-inset-64x64.png icon.iconset/icon_64x64.png
+        cp cmd/vice/icons/tower-rounded-inset-128x128.png icon.iconset/icon_64x64@2.png
+        cp cmd/vice/icons/tower-rounded-inset-128x128.png icon.iconset/icon_128x128.png
+        cp cmd/vice/icons/tower-rounded-inset-256x256.png icon.iconset/icon_128x128@2.png
+        cp cmd/vice/icons/tower-rounded-inset-256x256.png icon.iconset/icon_256x256.png
+        cp cmd/vice/icons/tower-rounded-inset-512x512.png icon.iconset/icon_256x256@2.png
+        cp cmd/vice/icons/tower-rounded-inset-512x512.png icon.iconset/icon_512x512.png
+        cp cmd/vice/icons/tower-rounded-inset-1024x1024.png icon.iconset/icon_512x512@2.png
         iconutil -c icns icon.iconset
 
     - name: Create Vice.app
