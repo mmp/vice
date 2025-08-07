@@ -17,7 +17,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/panes/stars"
+	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
