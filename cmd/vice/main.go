@@ -85,13 +85,18 @@ func main() {
 		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))
 	}
 
-	if *lintScenarios {
+	// Common initialization functionality when running in the shell and not launching the GUI.
+	cliInit := func() {
 		if err := SyncResources(nil, nil, nil); err != nil {
 			lg.Errorf("SyncResources: %v", err)
 			os.Exit(1)
 		}
 
 		av.InitDB()
+	}
+
+	if *lintScenarios {
+		cliInit()
 
 		var e util.ErrorLogger
 		scenarioGroups, _, _ :=
@@ -131,6 +136,8 @@ func main() {
 			fmt.Printf("%s (%s),\n", tracon, strings.Join(airports, ", "))
 		}
 	} else if *listScenarios {
+		cliInit()
+
 		scenarios, err := server.ListAllScenarios(*scenarioFilename, *videoMapFilename, lg)
 		if err != nil {
 			lg.Errorf("Failed to list scenarios: %v", err)
@@ -141,6 +148,8 @@ func main() {
 			fmt.Println(s)
 		}
 	} else if *runSim != "" {
+		cliInit()
+
 		parts := strings.SplitN(*runSim, "/", 2)
 		if len(parts) != 2 {
 			lg.Errorf("Invalid scenario format. Expected: TRACON/scenario")
@@ -203,13 +212,7 @@ func main() {
 	} else if *broadcastMessage != "" {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
-		if err := SyncResources(nil, nil, nil); err != nil {
-			lg.Errorf("SyncResources: %v", err)
-			os.Exit(1)
-		}
-
-		av.InitDB()
-
+		cliInit()
 		server.LaunchServer(server.ServerLaunchConfig{
 			Port:                *serverPort,
 			MultiControllerOnly: true,
@@ -217,23 +220,13 @@ func main() {
 			ExtraVideoMap:       *videoMapFilename,
 		}, lg)
 	} else if *showRoutes != "" {
-		if err := SyncResources(nil, nil, nil); err != nil {
-			lg.Errorf("SyncResources: %v", err)
-			os.Exit(1)
-		}
-
-		av.InitDB()
+		cliInit()
 
 		if err := av.PrintCIFPRoutes(*showRoutes); err != nil {
 			lg.Errorf("%s", err)
 		}
 	} else if *listMaps != "" {
-		if err := SyncResources(nil, nil, nil); err != nil {
-			lg.Errorf("SyncResources: %v", err)
-			os.Exit(1)
-		}
-
-		av.InitDB()
+		cliInit()
 
 		var e util.ErrorLogger
 		sim.PrintVideoMaps(*listMaps, &e)
