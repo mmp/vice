@@ -99,6 +99,14 @@ func (r *Rand) Bool() bool {
 	return r.Random()&1 == 0
 }
 
+func ShuffleSlice[Slice ~[]E, E any](s Slice, r *Rand) {
+	n := len(s)
+	for i := range n - 1 {
+		j := i + r.Intn(n-i)
+		s[i], s[j] = s[j], s[i]
+	}
+}
+
 // PermutationElement returns the ith element of a random permutation of the
 // set of integers [0...,n-1].
 // i/n, p is hash, via Andrew Kensler
