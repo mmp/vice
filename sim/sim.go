@@ -73,6 +73,8 @@ type Sim struct {
 	updateTimeSlop time.Duration
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 
+	lastControlCommandTime time.Time
+
 	prespawn                 bool
 	prespawnUncontrolledOnly bool
 
@@ -284,6 +286,7 @@ func (s *Sim) Activate(lg *log.Logger) {
 
 	now := time.Now()
 	s.lastUpdateTime = now
+	s.lastControlCommandTime = now
 
 	if s.Rand == nil {
 		s.Rand = rand.Make()
@@ -446,8 +449,8 @@ func (s *Sim) TogglePause(tcp string) error {
 	defer s.mu.Unlock(s.lg)
 
 	s.State.Paused = !s.State.Paused
-	s.lg.Debugf("paused: %v", s.State.Paused)
 	s.lastUpdateTime = time.Now() // ignore time passage...
+	s.lastControlCommandTime = time.Now()
 
 	s.eventStream.Post(Event{
 		Type:        GlobalMessageEvent,
@@ -466,6 +469,7 @@ func (s *Sim) FastForward(tcp string) error {
 	}
 	s.updateTimeSlop = 0
 	s.lastUpdateTime = time.Now()
+	s.lastControlCommandTime = time.Now()
 
 	s.eventStream.Post(Event{
 		Type:        GlobalMessageEvent,
@@ -485,7 +489,8 @@ func (s *Sim) SetSimRate(tcp string, rate float32) error {
 	defer s.mu.Unlock(s.lg)
 
 	s.State.SimRate = rate
-	fmt.Printf("sim rate set to %f\n", s.State.SimRate)
+	s.lastControlCommandTime = time.Now()
+
 	s.lg.Infof("sim rate set to %f", s.State.SimRate)
 	return nil
 }
@@ -916,6 +921,15 @@ func (s *Sim) Update() {
 					slog.Any("sim", s))
 			}
 		}()
+
+		if time.Since(s.lastControlCommandTime) > 15*time.Minute {
+			s.eventStream.Post(Event{
+				Type:        StatusMessageEvent,
+				WrittenText: "Pausing sim due to inactivity.",
+			})
+
+			s.State.Paused = true
+		}
 	}
 
 	if s.State.Paused {

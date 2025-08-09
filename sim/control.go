@@ -38,6 +38,8 @@ func (s *Sim) isInstructorOrRPO(tcp string) bool {
 func (s *Sim) dispatchAircraftCommand(tcp string, callsign av.ADSBCallsign,
 	check func(tcp string, ac *Aircraft) error,
 	cmd func(tcp string, ac *Aircraft) *speech.RadioTransmission) error {
+	s.lastControlCommandTime = time.Now()
+
 	if ac, ok := s.Aircraft[callsign]; !ok {
 		return av.ErrNoAircraftForCallsign
 	} else if _, ok := s.humanControllers[tcp]; !ok {
@@ -108,6 +110,8 @@ func (s *Sim) dispatchVFRAircraftCommand(tcp string, callsign av.ADSBCallsign,
 func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
 	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission) error {
+	s.lastControlCommandTime = time.Now()
+
 	fp, _ := s.GetFlightPlanForACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
@@ -292,6 +296,8 @@ func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error 
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	s.lastControlCommandTime = time.Now()
+
 	if err := s.preCheckFlightPlanSpecifier(&spec); err != nil {
 		return err
 	}
@@ -371,6 +377,8 @@ func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error 
 func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+
+	s.lastControlCommandTime = time.Now()
 
 	fp, active := s.GetFlightPlanForACID(acid)
 	if fp == nil {
@@ -509,6 +517,8 @@ func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	s.lastControlCommandTime = time.Now()
+
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.TrackingController == tcp && ac.STARSFlightPlan.ACID == acid {
 			s.deleteFlightPlan(ac.DisassociateFlightPlan())
@@ -534,6 +544,8 @@ func (s *Sim) deleteFlightPlan(fp *STARSFlightPlan) {
 }
 
 func (s *Sim) RepositionTrack(tcp string, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {
+	s.lastControlCommandTime = time.Now()
+
 	// Find the corresponding flight plan.
 	var fp *STARSFlightPlan
 	// First look for the referenced flight plan in associated aircraft.
@@ -987,6 +999,8 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+
+	s.lastControlCommandTime = time.Now()
 
 	ac, ok := s.Aircraft[callsign]
 	if !ok {
