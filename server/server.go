@@ -64,8 +64,8 @@ type ServerLaunchConfig struct {
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
-	util.MonitorCPUUsage(95, true /* panic if wedged */, lg)
-	util.MonitorMemoryUsage(128 /* trigger MB */, 64 /* delta MB */, lg)
+	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
+	util.MonitorMemoryUsage(192 /* trigger MB */, 64 /* delta MB */, lg)
 
 	_, server, e := makeServer(config, lg)
 	if e.HaveErrors() {
