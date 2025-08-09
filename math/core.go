@@ -67,6 +67,10 @@ func Mod(a, b float32) float32 {
 	return float32(gomath.Mod(float64(a), float64(b)))
 }
 
+func Round(v float32) float32 {
+	return float32(gomath.Round(float64(v)))
+}
+
 // Sign returns 1 if v > 0, -1 if v < 0, or 0 if v == 0
 func Sign(v float32) float32 {
 	if v > 0 {
