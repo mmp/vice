@@ -668,9 +668,15 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 	}
 
 	if nav.Altitude.Assigned != nil && *nav.Altitude.Assigned != nav.FlightState.Altitude {
-		resp.Add("at {alt} for {alt} [assigned|]", nav.FlightState.Altitude, *nav.Altitude.Assigned)
+		resp.Add("[at|] {alt} for {alt} [assigned|]", nav.FlightState.Altitude, *nav.Altitude.Assigned)
+	} else if c, ok := nav.getWaypointAltitudeConstraint(); ok && !nav.flyingPT() {
+		alt := c.Altitude
+		if nav.Altitude.Cleared != nil {
+			alt = min(alt, *nav.Altitude.Cleared)
+		}
+		resp.Add("[at|] {alt} for {alt}", nav.FlightState.Altitude, alt)
 	} else {
-		resp.Add("at {alt}", nav.FlightState.Altitude)
+		resp.Add("[at|] {alt}", nav.FlightState.Altitude)
 	}
 
 	if nav.Speed.Assigned != nil {
