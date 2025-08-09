@@ -918,10 +918,6 @@ func (s *Sim) Update() {
 		}()
 	}
 
-	for _, ac := range s.Aircraft {
-		ac.Check(s.lg)
-	}
-
 	if s.State.Paused {
 		return
 	}
@@ -936,14 +932,19 @@ func (s *Sim) Update() {
 	// last update that wasn't accounted for.
 	elapsed := time.Since(s.lastUpdateTime)
 	elapsed = time.Duration(s.State.SimRate * float32(elapsed))
-	s.Step(elapsed)
+	if s.Step(elapsed) {
+		// Don't bother with this if we didn't change any aircraft state
+		for _, ac := range s.Aircraft {
+			ac.Check(s.lg)
+		}
+	}
 	s.lastUpdateTime = time.Now()
 }
 
 // Step advances the simulation by the given elapsed time duration.
 // This method encapsulates the core simulation stepping logic that was
 // previously inline in Update().
-func (s *Sim) Step(elapsed time.Duration) {
+func (s *Sim) Step(elapsed time.Duration) bool {
 	elapsed += s.updateTimeSlop
 
 	// Run the sim for this many seconds
@@ -959,7 +960,11 @@ func (s *Sim) Step(elapsed time.Duration) {
 
 	s.updateTimeSlop = elapsed - elapsed.Truncate(time.Second)
 
-	s.CheckLeaks()
+	if ns > 0 {
+		// Don't bother with this if we didn't change any aircraft state
+		s.CheckLeaks()
+	}
+	return ns > 0
 }
 
 // separate so time management can be outside this so we can do the prespawn stuff...
