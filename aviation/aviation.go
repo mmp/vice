@@ -230,7 +230,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 	}
 
 	// random callsign
-	callsign = strings.ToUpper(dbAirline.ICAO)
+	var cs strings.Builder
 	for range 100 {
 		format := "####"
 		if len(dbAirline.Callsign.CallsignFormats) > 0 {
@@ -248,38 +248,36 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 			}
 		}
 
-		id := ""
+		cs.WriteString(strings.ToUpper(dbAirline.ICAO))
 	loop:
 		for i, ch := range format {
 			switch ch {
 			case '#':
 				if i == 0 {
-					// Don't start with a 0.
-					id += strconv.Itoa(1 + r.Intn(9))
+					cs.WriteByte(byte('1' + r.Intn(9))) // Don't start with a 0.
 				} else {
-					id += strconv.Itoa(r.Intn(10))
+					cs.WriteByte(byte('0' + r.Intn(10)))
 				}
 			case '@':
-				id += string(rune('A' + r.Intn(26)))
+				cs.WriteByte(byte('A' + r.Intn(26)))
 			case 'x':
 				break loop
 			}
 		}
-		if _, ok := badCallsigns[callsign+id]; ok {
-			id = ""
+		if _, ok := badCallsigns[cs.String()]; ok {
+			cs.Reset()
 			continue // nope
-		} else if slices.Contains(currentCallsigns, ADSBCallsign(callsign+id)) {
-			id = ""
+		} else if slices.Contains(currentCallsigns, ADSBCallsign(cs.String())) {
+			cs.Reset()
 			continue
-		} else if slices.ContainsFunc(currentCallsigns, func(cs ADSBCallsign) bool {
-			suffix := (callsign + id)[len(callsign+id)-2:]
-			return strings.HasSuffix(string(cs), suffix)
-		}) {
-			id = ""
+		} else if suffix := cs.String()[cs.Len()-2:]; slices.ContainsFunc(currentCallsigns,
+			func(callsign ADSBCallsign) bool {
+				return strings.HasSuffix(string(callsign), suffix)
+			}) {
+			cs.Reset()
 			continue
 		}
-		callsign += id
-		return
+		return actype, cs.String()
 	}
 
 	return "", ""
