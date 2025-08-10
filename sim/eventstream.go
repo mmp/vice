@@ -14,7 +14,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/speech"
 )
 
 type EventSubscriberId int
@@ -225,7 +224,7 @@ type Event struct {
 	ToController          string // For radio transmissions, the controlling controller.
 	WrittenText           string
 	SpokenText            string
-	RadioTransmissionType speech.RadioTransmissionType   // For radio transmissions only
+	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 }
 

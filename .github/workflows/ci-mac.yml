@@ -39,7 +39,7 @@ jobs:
 
     - name: Bundle resources
       env:
-         GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+         VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
         go run ./cmd/bundleresources
         mv manifest.json cmd/vice

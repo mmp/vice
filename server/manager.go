@@ -25,16 +25,21 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
-	"github.com/shirou/gopsutil/cpu"
 
 	"github.com/brunoga/deep"
 	"github.com/gorilla/websocket"
+	"github.com/shirou/gopsutil/cpu"
 )
 
 ///////////////////////////////////////////////////////////////////////////
 // SimManager
+
+type ttsUsageStats struct {
+	Calls    int
+	Words    int
+	LastUsed time.Time
+}
 
 type SimManager struct {
 	scenarioGroups     map[string]map[string]*scenarioGroup
@@ -46,7 +51,8 @@ type SimManager struct {
 	startTime          time.Time
 	httpPort           int
 	websocketTXBytes   int64
-	haveTTS            bool
+	tts                sim.TTSProvider
+	ttsUsageByIP       map[string]*ttsUsageStats
 	lg                 *log.Logger
 }
 
@@ -148,7 +154,7 @@ func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech b
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
-	lg *log.Logger) *SimManager {
+	serverAddress string, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:     scenarioGroups,
 		configs:            simConfigurations,
@@ -156,18 +162,34 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 		controllersByToken: make(map[string]*humanController),
 		mapManifests:       manifests,
 		startTime:          time.Now(),
+		tts:                makeTTSProvider(serverAddress, lg),
+		ttsUsageByIP:       make(map[string]*ttsUsageStats),
 		lg:                 lg,
-	}
-
-	if err := speech.InitTTS(lg); err != nil {
-		lg.Warnf("TTS: %v", err)
-	} else {
-		sm.haveTTS = true
 	}
 
 	sm.launchHTTPServer()
 
 	return sm
+}
+
+func makeTTSProvider(serverAddress string, lg *log.Logger) sim.TTSProvider {
+	// Try to create a Google TTS provider first
+	provider := NewGoogleTTSProvider(lg)
+	if provider != nil {
+		lg.Info("Using Google TTS provider")
+		return provider
+	}
+
+	// If Google TTS is not available (no credentials), try to connect to the remote server
+	lg.Infof("Google TTS unavailable, attempting to use remote TTS provider at %s", serverAddress)
+	remoteProvider, err := NewRemoteTTSProvider(serverAddress, lg)
+	if err != nil {
+		lg.Errorf("Failed to connect to remote TTS provider: %v", err)
+		return nil
+	}
+
+	lg.Info("Successfully connected to remote TTS provider")
+	return remoteProvider
 }
 
 type NewSimResult struct {
@@ -228,7 +250,7 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 	*result = NewSimResult{
 		SimState:        ss,
 		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
+		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
 	}
 	result.PruneForClient()
 
@@ -282,6 +304,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		ControlPositions:            sg.ControlPositions,
 		VirtualControllers:          sc.VirtualControllers,
 		SignOnPositions:             make(map[string]*av.Controller),
+		TTSProvider:                 sm.tts,
 	}
 
 	if !config.IsLocal {
@@ -345,7 +368,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 	if as.name != "" {
 		lg = lg.With(slog.String("sim_name", as.name))
 	}
-	as.sim.Activate(lg)
+	as.sim.Activate(lg, sm.tts)
 
 	sm.mu.Lock(sm.lg)
 
@@ -455,7 +478,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 	*result = NewSimResult{
 		SimState:        ss,
 		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.haveTTS, sm.httpPort, 0),
+		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
 	}
 	result.PruneForClient()
 
@@ -492,7 +515,7 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
-	result.HaveTTS = sm.haveTTS
+	result.HaveTTS = sm.tts != nil
 
 	return nil
 }
@@ -684,6 +707,108 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 	return nil
 }
 
+// GetAllVoices returns all available voices for TTS
+func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
+	if sm.tts == nil {
+		return fmt.Errorf("TTS not available")
+	}
+
+	fut := sm.tts.GetAllVoices()
+	for {
+		select {
+		case v, ok := <-fut.VoicesCh:
+			if ok {
+				*voices = v
+				return nil
+			}
+			fut.VoicesCh = nil // stop checking
+		case err, ok := <-fut.ErrCh:
+			if ok {
+				return err
+			}
+			fut.ErrCh = nil
+		}
+	}
+}
+
+// TextToSpeech converts text to speech and returns the audio data
+func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
+	if sm.tts == nil {
+		return fmt.Errorf("TTS not available")
+	}
+
+	if len(strings.Fields(req.Text)) > 50 {
+		return fmt.Errorf("TTS capacity exceeded")
+	}
+
+	// Use ClientIP from the request (populated by LoggingServerCodec)
+	clientIP := req.ClientIP
+	if clientIP == "" {
+		clientIP = "unknown"
+	}
+
+	if err := sm.UpdateTTSUsage(clientIP, req.Text); err != nil {
+		return err
+	}
+
+	fut := sm.tts.TextToSpeech(req.Voice, req.Text)
+
+	for {
+		select {
+		case mp3, ok := <-fut.Mp3Ch:
+			if ok {
+				*speechMp3 = mp3
+				return nil
+			}
+			fut.Mp3Ch = nil // stop checking
+		case err, ok := <-fut.ErrCh:
+			if ok {
+				return err
+			}
+			fut.ErrCh = nil // stop checking
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// TTS usage tracking
+
+func (sm *SimManager) UpdateTTSUsage(ip, text string) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	if _, ok := sm.ttsUsageByIP[ip]; !ok {
+		sm.ttsUsageByIP[ip] = &ttsUsageStats{}
+	}
+
+	stats := sm.ttsUsageByIP[ip]
+	stats.Calls++
+	stats.Words += len(strings.Fields(text))
+	stats.LastUsed = time.Now()
+
+	if stats.Words > 30000 {
+		return fmt.Errorf("TTS capacity exceeded")
+	}
+
+	return nil
+}
+
+func (sm *SimManager) GetTTSStats() []ttsClientStats {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	var stats []ttsClientStats
+	for ip, usage := range sm.ttsUsageByIP {
+		stats = append(stats, ttsClientStats{
+			IP:       ip,
+			Calls:    usage.Calls,
+			Words:    usage.Words,
+			LastUsed: usage.LastUsed,
+		})
+	}
+	return stats
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Status / statistics via HTTP...
 
@@ -726,6 +851,13 @@ func (sm *SimManager) launchHTTPServer() int {
 	}
 }
 
+type ttsClientStats struct {
+	IP       string
+	Calls    int
+	Words    int
+	LastUsed time.Time
+}
+
 type serverStats struct {
 	Uptime           time.Duration
 	AllocMemory      uint64
@@ -738,6 +870,7 @@ type serverStats struct {
 	CPUUsage         int
 
 	SimStatus []simStatus
+	TTSStats  []ttsClientStats
 }
 
 func formatBytes(v int64) string {
@@ -770,7 +903,7 @@ func (ss simStatus) LogValue() slog.Value {
 		slog.Int("total_vfr", ss.TotalVFR))
 }
 
-func (sm *SimManager) getSimStatus() []simStatus {
+func (sm *SimManager) GetSimStatus() []simStatus {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
@@ -862,6 +995,28 @@ tr:nth-child(even) {
 {{end}}
 </table>
 
+<h1>Text-to-Speech Usage</h1>
+{{if .TTSStats}}
+<table>
+  <tr>
+  <th>Client IP</th>
+  <th>Call Count</th>
+  <th>Word Count</th>
+  <th>Last Used</th>
+  </tr>
+{{range .TTSStats}}
+  <tr>
+  <td>{{.IP}}</td>
+  <td>{{.Calls}}</td>
+  <td>{{.Words}}</td>
+  <td>{{.LastUsed.Format "2006-01-02 15:04:05"}}</td>
+  </tr>
+{{end}}
+</table>
+{{else}}
+<p>No TTS usage recorded.</p>
+{{end}}
+
 </body>
 </html>
 `))
@@ -881,7 +1036,8 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 		CPUUsage:         int(gomath.Round(usage[0])),
 		TXWebsocket:      sm.websocketTXBytes,
 
-		SimStatus: sm.getSimStatus(),
+		SimStatus: sm.GetSimStatus(),
+		TTSStats:  sm.GetTTSStats(),
 	}
 
 	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()

@@ -112,9 +112,9 @@ func main() {
 	}
 
 	// Get credentials and create storage client.
-	credsJSON := os.Getenv("GCS_UPLOAD_CREDENTIALS")
+	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
 	if credsJSON == "" {
-		log.Fatal("GCS_UPLOAD_CREDENTIALS environment variable not set")
+		log.Fatal("VICE_GCS_CREDENTIALS environment variable not set")
 	}
 
 	ctx := context.Background()

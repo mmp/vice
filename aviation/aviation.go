@@ -1331,3 +1331,27 @@ func (p *LocalSquawkCodePool) Return(sq Squawk) error {
 	}
 	return fmt.Errorf("returned code %s not in any pool's range", sq)
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+type RadioTransmissionType int
+
+const (
+	RadioTransmissionUnknown    = iota
+	RadioTransmissionContact    // Messages initiated by the pilot
+	RadioTransmissionReadback   // Reading back an instruction
+	RadioTransmissionUnexpected // Something urgent or unusual
+)
+
+func (r RadioTransmissionType) String() string {
+	switch r {
+	case RadioTransmissionContact:
+		return "contact"
+	case RadioTransmissionReadback:
+		return "readback"
+	case RadioTransmissionUnexpected:
+		return "urgent"
+	default:
+		return "(unhandled type)"
+	}
+}

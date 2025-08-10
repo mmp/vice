@@ -15,7 +15,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 )
 
@@ -588,7 +587,7 @@ func (nav *Nav) Summary(fp av.FlightPlan, wx *av.WeatherModel, lg *log.Logger) s
 		if nfa.Arrive.Altitude != nil || nfa.Arrive.Speed != nil {
 			line := "Cross " + fix + " "
 			if nfa.Arrive.Altitude != nil {
-				ar := speech.MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
+				ar := MakeReadbackTransmission("{altrest}", nfa.Arrive.Altitude)
 				line += ar.Written(nav.Rand) + " "
 			}
 			if nfa.Arrive.Speed != nil {
@@ -644,18 +643,18 @@ func (nav *Nav) Summary(fp av.FlightPlan, wx *av.WeatherModel, lg *log.Logger) s
 	return strings.Join(lines, "\n")
 }
 
-func (nav *Nav) DepartureMessage() *speech.RadioTransmission {
+func (nav *Nav) DepartureMessage() *RadioTransmission {
 	target := util.Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
 	if target != nil && *target-nav.FlightState.Altitude > 100 {
 		// one of the two should be set, but just in case...
-		return speech.MakeContactTransmission("at {alt} climbing {alt}", nav.FlightState.Altitude, *target)
+		return MakeContactTransmission("at {alt} climbing {alt}", nav.FlightState.Altitude, *target)
 	} else {
-		return speech.MakeContactTransmission("at {alt}", nav.FlightState.Altitude)
+		return MakeContactTransmission("at {alt}", nav.FlightState.Altitude)
 	}
 }
 
-func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string) *speech.RadioTransmission {
-	var resp speech.RadioTransmission
+func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string) *RadioTransmission {
+	var resp RadioTransmission
 
 	if hdg, ok := nav.AssignedHeading(); ok {
 		resp.Add("[heading {hdg}|on a {hdg} heading]", hdg)
@@ -2137,7 +2136,7 @@ func TurnAngle(from, to float32, turn TurnMethod) float32 {
 	}
 }
 
-func (nav *Nav) GoAround() *speech.RadioTransmission {
+func (nav *Nav) GoAround() *RadioTransmission {
 	hdg := nav.FlightState.Heading
 	nav.Heading = NavHeading{Assigned: &hdg}
 	nav.DeferredNavHeading = nil
@@ -2151,21 +2150,21 @@ func (nav *Nav) GoAround() *speech.RadioTransmission {
 	// Keep the destination airport at the end of the route.
 	nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
 
-	return speech.MakeReadbackTransmission("[going around|on the go]")
+	return MakeReadbackTransmission("[going around|on the go]")
 }
 
-func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) *speech.RadioTransmission {
+func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) *RadioTransmission {
 	if alt > nav.Perf.Ceiling {
-		return speech.MakeUnexpectedTransmission("unable. That altitude is above our ceiling.")
+		return MakeUnexpectedTransmission("unable. That altitude is above our ceiling.")
 	}
 
-	var response *speech.RadioTransmission
+	var response *RadioTransmission
 	if alt > nav.FlightState.Altitude {
-		response = speech.MakeReadbackTransmission("[climb-and-maintain|up to|] {alt}", alt)
+		response = MakeReadbackTransmission("[climb-and-maintain|up to|] {alt}", alt)
 	} else if alt == nav.FlightState.Altitude {
-		response = speech.MakeReadbackTransmission("[maintain|we'll keep it at|] {alt}", alt)
+		response = MakeReadbackTransmission("[maintain|we'll keep it at|] {alt}", alt)
 	} else {
-		response = speech.MakeReadbackTransmission("[descend-and-maintain|down to|] {alt}", alt)
+		response = MakeReadbackTransmission("[descend-and-maintain|down to|] {alt}", alt)
 	}
 
 	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
@@ -2173,7 +2172,7 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) *speech.RadioTransm
 		spd := *nav.Speed.Assigned
 		nav.Altitude.AfterSpeedSpeed = &spd
 
-		rspeed := speech.MakeReadbackTransmission("at {spd}", *nav.Speed.Assigned)
+		rspeed := MakeReadbackTransmission("at {spd}", *nav.Speed.Assigned)
 		rspeed.Merge(response)
 		response = rspeed
 	} else {
@@ -2182,151 +2181,151 @@ func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) *speech.RadioTransm
 	return response
 }
 
-func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) *speech.RadioTransmission {
+func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) *RadioTransmission {
 	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
 	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
 
 	if speed == 0 {
 		nav.Speed = NavSpeed{}
-		return speech.MakeReadbackTransmission("cancel speed restrictions")
+		return MakeReadbackTransmission("cancel speed restrictions")
 	} else if float32(speed) < nav.Perf.Speed.Landing {
-		return speech.MakeReadbackTransmission("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
+		return MakeReadbackTransmission("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
 	} else if float32(speed) > maxIAS {
-		return speech.MakeReadbackTransmission("unable. Our maximum speed is {spd}", maxIAS)
+		return MakeReadbackTransmission("unable. Our maximum speed is {spd}", maxIAS)
 	} else if nav.Approach.Cleared {
 		// TODO: make sure we're not within 5 miles...
 		nav.Speed = NavSpeed{Assigned: &speed}
-		return speech.MakeReadbackTransmission("{spd} until 5 mile final", speed)
+		return MakeReadbackTransmission("{spd} until 5 mile final", speed)
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		nav.Speed.AfterAltitude = &speed
 		alt := *nav.Altitude.Assigned
 		nav.Speed.AfterAltitudeAltitude = &alt
 
-		return speech.MakeReadbackTransmission("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", alt, speed)
+		return MakeReadbackTransmission("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", alt, speed)
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
-			return speech.MakeReadbackTransmission("[reduce to {spd}|speed {spd}|slow to {spd}|{spd}]",
+			return MakeReadbackTransmission("[reduce to {spd}|speed {spd}|slow to {spd}|{spd}]",
 				speed)
 		} else if speed > nav.FlightState.IAS {
-			return speech.MakeReadbackTransmission("[increase to {spd}|speed {spd}|maintain {spd}|{spd}]", speed)
+			return MakeReadbackTransmission("[increase to {spd}|speed {spd}|maintain {spd}|{spd}]", speed)
 		} else {
-			return speech.MakeReadbackTransmission("[maintain {spd}|keep it at {spd}|we'll stay at {spd}|{spd}]", speed)
+			return MakeReadbackTransmission("[maintain {spd}|keep it at {spd}|we'll stay at {spd}|{spd}]", speed)
 		}
 	}
 }
 
-func (nav *Nav) MaintainSlowestPractical() *speech.RadioTransmission {
+func (nav *Nav) MaintainSlowestPractical() *RadioTransmission {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
-	return speech.MakeReadbackTransmission("[slowest practical speed|slowing as much as we can]")
+	return MakeReadbackTransmission("[slowest practical speed|slowing as much as we can]")
 }
 
-func (nav *Nav) MaintainMaximumForward() *speech.RadioTransmission {
+func (nav *Nav) MaintainMaximumForward() *RadioTransmission {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
-	return speech.MakeReadbackTransmission("[maximum forward speed|maintaining maximum forward speed]")
+	return MakeReadbackTransmission("[maximum forward speed|maintaining maximum forward speed]")
 }
 
-func (nav *Nav) SaySpeed() *speech.RadioTransmission {
+func (nav *Nav) SaySpeed() *RadioTransmission {
 	currentSpeed := nav.FlightState.IAS
 
 	if nav.Speed.Assigned != nil {
 		assignedSpeed := *nav.Speed.Assigned
 		if assignedSpeed < currentSpeed {
-			return speech.MakeReadbackTransmission("[at {spd} slowing to {spd}|at {spd} down to {spd}]", currentSpeed, assignedSpeed)
+			return MakeReadbackTransmission("[at {spd} slowing to {spd}|at {spd} down to {spd}]", currentSpeed, assignedSpeed)
 		} else if assignedSpeed > currentSpeed {
-			return speech.MakeReadbackTransmission("at {spd} speeding up to {spd}", currentSpeed, assignedSpeed)
+			return MakeReadbackTransmission("at {spd} speeding up to {spd}", currentSpeed, assignedSpeed)
 		} else {
-			return speech.MakeReadbackTransmission("[maintaining {spd}|at {spd}]", currentSpeed)
+			return MakeReadbackTransmission("[maintaining {spd}|at {spd}]", currentSpeed)
 		}
 	} else {
-		return speech.MakeReadbackTransmission("[maintaining {spd}|at {spd}]", currentSpeed)
+		return MakeReadbackTransmission("[maintaining {spd}|at {spd}]", currentSpeed)
 	}
 }
 
-func (nav *Nav) SayHeading() *speech.RadioTransmission {
+func (nav *Nav) SayHeading() *RadioTransmission {
 	currentHeading := nav.FlightState.Heading
 
 	if nav.Heading.Assigned != nil {
 		assignedHeading := *nav.Heading.Assigned
 		if assignedHeading != currentHeading {
-			return speech.MakeReadbackTransmission("[heading {hdg}|{hdg}]", currentHeading, assignedHeading)
+			return MakeReadbackTransmission("[heading {hdg}|{hdg}]", currentHeading, assignedHeading)
 		} else {
-			return speech.MakeReadbackTransmission("heading {hdg}", currentHeading)
+			return MakeReadbackTransmission("heading {hdg}", currentHeading)
 		}
 	} else {
-		return speech.MakeReadbackTransmission("heading {hdg}", currentHeading)
+		return MakeReadbackTransmission("heading {hdg}", currentHeading)
 	}
 }
 
-func (nav *Nav) SayAltitude() *speech.RadioTransmission {
+func (nav *Nav) SayAltitude() *RadioTransmission {
 	currentAltitude := nav.FlightState.Altitude
 
 	if nav.Altitude.Assigned != nil {
 		assignedAltitude := *nav.Altitude.Assigned
 		if assignedAltitude < currentAltitude {
-			return speech.MakeReadbackTransmission("[at {alt} descending to {alt}|at {alt} and descending]",
+			return MakeReadbackTransmission("[at {alt} descending to {alt}|at {alt} and descending]",
 				currentAltitude, assignedAltitude)
 		} else if assignedAltitude > currentAltitude {
-			return speech.MakeReadbackTransmission("at {alt} climbing to {alt}", currentAltitude, assignedAltitude)
+			return MakeReadbackTransmission("at {alt} climbing to {alt}", currentAltitude, assignedAltitude)
 		} else {
-			return speech.MakeReadbackTransmission("[maintaining {alt}|at {alt}]", currentAltitude)
+			return MakeReadbackTransmission("[maintaining {alt}|at {alt}]", currentAltitude)
 		}
 	} else {
-		return speech.MakeReadbackTransmission("maintaining {alt}", currentAltitude)
+		return MakeReadbackTransmission("maintaining {alt}", currentAltitude)
 	}
 }
 
-func (nav *Nav) ExpediteDescent() *speech.RadioTransmission {
+func (nav *Nav) ExpediteDescent() *RadioTransmission {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt >= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
-			return speech.MakeReadbackTransmission("[expediting down to|expedite to] {alt} once we're at {spd}",
+			return MakeReadbackTransmission("[expediting down to|expedite to] {alt} once we're at {spd}",
 				*nav.Altitude.AfterSpeed, *nav.Altitude.AfterSpeedSpeed)
 		} else {
-			return speech.MakeUnexpectedTransmission("unable. We're not descending")
+			return MakeUnexpectedTransmission("unable. We're not descending")
 		}
 	} else if nav.Altitude.Expedite {
-		return speech.MakeReadbackTransmission("[we're already expediting|that's our best rate]")
+		return MakeReadbackTransmission("[we're already expediting|that's our best rate]")
 	} else {
 		nav.Altitude.Expedite = true
-		return speech.MakeReadbackTransmission("[expediting down to|expedite] {alt}", alt)
+		return MakeReadbackTransmission("[expediting down to|expedite] {alt}", alt)
 	}
 }
 
-func (nav *Nav) ExpediteClimb() *speech.RadioTransmission {
+func (nav *Nav) ExpediteClimb() *RadioTransmission {
 	alt, _ := nav.TargetAltitude(nil)
 	if alt <= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
-			return speech.MakeReadbackTransmission("[expediting up to|expedite to] {alt} once we're at {spd}",
+			return MakeReadbackTransmission("[expediting up to|expedite to] {alt} once we're at {spd}",
 				*nav.Altitude.AfterSpeed, *nav.Altitude.AfterSpeedSpeed)
 		} else {
-			return speech.MakeUnexpectedTransmission("unable. We're not climbing")
+			return MakeUnexpectedTransmission("unable. We're not climbing")
 		}
 	} else if nav.Altitude.Expedite {
-		return speech.MakeReadbackTransmission("[we're already expediting|that's our best rate]")
+		return MakeReadbackTransmission("[we're already expediting|that's our best rate]")
 	} else {
 		nav.Altitude.Expedite = true
-		return speech.MakeReadbackTransmission("[expediting up to|expedite] {alt}", alt)
+		return MakeReadbackTransmission("[expediting up to|expedite] {alt}", alt)
 	}
 }
 
-func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) *speech.RadioTransmission {
+func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) *RadioTransmission {
 	if hdg <= 0 || hdg > 360 {
-		return speech.MakeUnexpectedTransmission("unable. {hdg} isn't a valid heading", hdg)
+		return MakeUnexpectedTransmission("unable. {hdg} isn't a valid heading", hdg)
 	}
 
 	nav.assignHeading(hdg, turn)
 
 	switch turn {
 	case TurnClosest:
-		return speech.MakeReadbackTransmission("[heading|fly heading] {hdg}", hdg)
+		return MakeReadbackTransmission("[heading|fly heading] {hdg}", hdg)
 	case TurnRight:
-		return speech.MakeReadbackTransmission("[right heading|right|turn right] {hdg}", hdg)
+		return MakeReadbackTransmission("[right heading|right|turn right] {hdg}", hdg)
 	case TurnLeft:
-		return speech.MakeReadbackTransmission("[left heading|left|turn left] {hdg}", hdg)
+		return MakeReadbackTransmission("[left heading|left|turn left] {hdg}", hdg)
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
 	}
@@ -2358,9 +2357,9 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 	nav.EnqueueHeading(hdg, turn)
 }
 
-func (nav *Nav) FlyPresentHeading() *speech.RadioTransmission {
+func (nav *Nav) FlyPresentHeading() *RadioTransmission {
 	nav.assignHeading(nav.FlightState.Heading, TurnClosest)
-	return speech.MakeReadbackTransmission("[fly present heading|present heading]")
+	return MakeReadbackTransmission("[fly present heading|present heading]")
 }
 
 func (nav *Nav) fixInRoute(fix string) bool {
@@ -2485,41 +2484,41 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 	return nil, ErrInvalidFix
 }
 
-func (nav *Nav) DirectFix(fix string) *speech.RadioTransmission {
+func (nav *Nav) DirectFix(fix string) *RadioTransmission {
 	if wps, err := nav.directFixWaypoints(fix); err == nil {
 		nav.EnqueueDirectFix(wps)
 		nav.Approach.NoPT = false
 		nav.Approach.InterceptState = NotIntercepting
-		return speech.MakeReadbackTransmission("direct {fix}", fix)
+		return MakeReadbackTransmission("direct {fix}", fix)
 	} else if err == ErrFixIsTooFarAway {
-		return speech.MakeUnexpectedTransmission("unable. {fix} is too far away to go direct", fix)
+		return MakeUnexpectedTransmission("unable. {fix} is too far away to go direct", fix)
 	} else {
-		return speech.MakeUnexpectedTransmission("unable. {fix} isn't a valid fix", fix)
+		return MakeUnexpectedTransmission("unable. {fix} isn't a valid fix", fix)
 	}
 }
 
-func (nav *Nav) DepartFixDirect(fixa string, fixb string) *speech.RadioTransmission {
+func (nav *Nav) DepartFixDirect(fixa string, fixb string) *RadioTransmission {
 	fa, fb := nav.fixPairInRoute(fixa, fixb)
 	if fa == nil {
-		return speech.MakeUnexpectedTransmission("unable. {fix} isn't in our route", fixa)
+		return MakeUnexpectedTransmission("unable. {fix} isn't in our route", fixa)
 	}
 	if fb == nil {
-		return speech.MakeUnexpectedTransmission("unable. {fix} isn't in our route after {fix}", fixb, fixa)
+		return MakeUnexpectedTransmission("unable. {fix} isn't in our route after {fix}", fixb, fixa)
 	}
 
 	nfa := nav.FixAssignments[fixa]
 	nfa.Depart.Fix = fb
 	nav.FixAssignments[fixa] = nfa
 
-	return speech.MakeReadbackTransmission("depart {fix} direct {fix}", fixa, fixb)
+	return MakeReadbackTransmission("depart {fix} direct {fix}", fixa, fixb)
 }
 
-func (nav *Nav) DepartFixHeading(fix string, hdg float32) *speech.RadioTransmission {
+func (nav *Nav) DepartFixHeading(fix string, hdg float32) *RadioTransmission {
 	if hdg <= 0 || hdg > 360 {
-		return speech.MakeUnexpectedTransmission("unable. Heading {hdg} is invalid", hdg)
+		return MakeUnexpectedTransmission("unable. Heading {hdg} is invalid", hdg)
 	}
 	if !nav.fixInRoute(fix) {
-		return speech.MakeUnexpectedTransmission("unable. {fix} isn't in our route")
+		return MakeUnexpectedTransmission("unable. {fix} isn't in our route")
 	}
 
 	nfa := nav.FixAssignments[fix]
@@ -2527,20 +2526,20 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) *speech.RadioTransmiss
 	nfa.Depart.Heading = &h
 	nav.FixAssignments[fix] = nfa
 
-	return speech.MakeReadbackTransmission("depart {fix} heading {hdg}", fix, hdg)
+	return MakeReadbackTransmission("depart {fix} heading {hdg}", fix, hdg)
 }
 
-func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) *speech.RadioTransmission {
+func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) *RadioTransmission {
 	if !nav.fixInRoute(fix) {
-		return speech.MakeUnexpectedTransmission("unable. " + fix + " isn't in our route")
+		return MakeUnexpectedTransmission("unable. " + fix + " isn't in our route")
 	}
 
-	pt := speech.MakeReadbackTransmission("cross {fix}", fix)
+	pt := MakeReadbackTransmission("cross {fix}", fix)
 
 	nfa := nav.FixAssignments[fix]
 	if ar != nil {
 		nfa.Arrive.Altitude = ar
-		pt.Merge(speech.MakeReadbackTransmission("{altrest}", ar))
+		pt.Merge(MakeReadbackTransmission("{altrest}", ar))
 		// Delete other altitude restrictions
 		nav.Altitude = NavAltitude{}
 	}
@@ -2570,14 +2569,14 @@ func (nav *Nav) getApproach(airport *av.Airport, id string, lg *log.Logger) (*av
 }
 
 func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints map[string]av.WaypointArray,
-	lg *log.Logger) *speech.RadioTransmission {
+	lg *log.Logger) *RadioTransmission {
 	ap, err := nav.getApproach(airport, id, lg)
 	if err != nil {
-		return speech.MakeUnexpectedTransmission("unable. We don't know the {appr} approach.", id)
+		return MakeUnexpectedTransmission("unable. We don't know the {appr} approach.", id)
 	}
 
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
-		return speech.MakeReadbackTransmission("you already told us to expect the {appr} approach.", ap.FullName)
+		return MakeReadbackTransmission("you already told us to expect the {appr} approach.", ap.FullName)
 	}
 
 	nav.Approach.Assigned = ap
@@ -2653,18 +2652,18 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 		}
 	}
 
-	return speech.MakeReadbackTransmission("[we'll expect the|expecting the|we'll plan for the] {appr} approach", ap.FullName)
+	return MakeReadbackTransmission("[we'll expect the|expecting the|we'll plan for the] {appr} approach", ap.FullName)
 }
 
-func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) *speech.RadioTransmission {
+func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) *RadioTransmission {
 	if nav.Approach.AssignedId == "" {
-		return speech.MakeUnexpectedTransmission("you never told us to expect an approach")
+		return MakeUnexpectedTransmission("you never told us to expect an approach")
 	}
 
 	if _, onHeading := nav.AssignedHeading(); !onHeading {
 		wps := nav.AssignedWaypoints()
 		if len(wps) == 0 || !wps[0].OnApproach {
-			return speech.MakeUnexpectedTransmission("we have to be on a heading or direct to an approach fix to intercept")
+			return MakeUnexpectedTransmission("we have to be on a heading or direct to an approach fix to intercept")
 		}
 	}
 
@@ -2674,28 +2673,28 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) *speech.RadioT
 	} else {
 		ap := nav.Approach.Assigned
 		if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
-			return speech.MakeReadbackTransmission("[intercepting the {appr} approach|intercepting {appr}]", ap.FullName)
+			return MakeReadbackTransmission("[intercepting the {appr} approach|intercepting {appr}]", ap.FullName)
 		} else {
-			return speech.MakeReadbackTransmission("[joining the {appr} approach course|joining {appr}]", ap.FullName)
+			return MakeReadbackTransmission("[joining the {appr} approach course|joining {appr}]", ap.FullName)
 		}
 	}
 }
 
-func (nav *Nav) AtFixCleared(fix, id string) *speech.RadioTransmission {
+func (nav *Nav) AtFixCleared(fix, id string) *RadioTransmission {
 	if nav.Approach.AssignedId == "" {
-		return speech.MakeUnexpectedTransmission("you never told us to expect an approach")
+		return MakeUnexpectedTransmission("you never told us to expect an approach")
 	}
 
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return speech.MakeUnexpectedTransmission("unable. We were never told to expect an approach")
+		return MakeUnexpectedTransmission("unable. We were never told to expect an approach")
 	}
 	if nav.Approach.AssignedId != id {
-		return speech.MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName)
+		return MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
 	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
-		return speech.MakeUnexpectedTransmission("unable. {fix} is not in our route", fix)
+		return MakeUnexpectedTransmission("unable. {fix} is not in our route", fix)
 	}
 	nav.Approach.AtFixClearedRoute = nil
 	for _, route := range ap.Waypoints {
@@ -2706,12 +2705,12 @@ func (nav *Nav) AtFixCleared(fix, id string) *speech.RadioTransmission {
 		}
 	}
 
-	return speech.MakeReadbackTransmission("at {fix} cleared {appr}", fix, ap.FullName)
+	return MakeReadbackTransmission("at {fix} cleared {appr}", fix, ap.FullName)
 }
 
-func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (*speech.RadioTransmission, error) {
+func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (*RadioTransmission, error) {
 	if nav.Approach.AssignedId == "" {
-		return speech.MakeUnexpectedTransmission("you never told us to expect an approach"),
+		return MakeUnexpectedTransmission("you never told us to expect an approach"),
 			ErrClearedForUnexpectedApproach
 	}
 
@@ -2752,7 +2751,7 @@ func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (*speech.Rad
 	} else if assignedHeading {
 		nav.Approach.InterceptState = InitialHeading
 	} else {
-		return speech.MakeUnexpectedTransmission("unable. We need either direct or a heading to intercept"),
+		return MakeUnexpectedTransmission("unable. We need either direct or a heading to intercept"),
 			ErrUnableCommand
 	}
 	// If the aircraft is on a heading, there's nothing more to do for
@@ -2765,7 +2764,7 @@ func (nav *Nav) prepareForApproach(straightIn bool, lg *log.Logger) (*speech.Rad
 	return nil, nil
 }
 
-func (nav *Nav) prepareForChartedVisual() (*speech.RadioTransmission, error) {
+func (nav *Nav) prepareForChartedVisual() (*RadioTransmission, error) {
 	// Airport PostDeserialize() checks that there is just a single set of
 	// waypoints for charted visual approaches.
 	wp := nav.Approach.Assigned.Waypoints[0]
@@ -2854,18 +2853,18 @@ func (nav *Nav) prepareForChartedVisual() (*speech.RadioTransmission, error) {
 		return nil, nil
 	}
 
-	return speech.MakeUnexpectedTransmission("unable. We are not on course to intercept the approach"),
+	return MakeUnexpectedTransmission("unable. We are not on course to intercept the approach"),
 		ErrUnableCommand
 }
 
-func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *log.Logger) (*speech.RadioTransmission, error) {
+func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *log.Logger) (*RadioTransmission, error) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return speech.MakeUnexpectedTransmission("unable. We haven't been told to expect an approach"),
+		return MakeUnexpectedTransmission("unable. We haven't been told to expect an approach"),
 			ErrClearedForUnexpectedApproach
 	}
 	if nav.Approach.AssignedId != id {
-		return speech.MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName),
+		return MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName),
 			ErrClearedForUnexpectedApproach
 	}
 
@@ -2898,45 +2897,45 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool, lg *
 		nav.flyProcedureTurnIfNecessary()
 
 		if straightIn {
-			return speech.MakeReadbackTransmission("cleared straight in {appr} [approach|]", ap.FullName), nil
+			return MakeReadbackTransmission("cleared straight in {appr} [approach|]", ap.FullName), nil
 		} else {
-			return speech.MakeReadbackTransmission("cleared {appr} [approach|]", ap.FullName), nil
+			return MakeReadbackTransmission("cleared {appr} [approach|]", ap.FullName), nil
 		}
 	}
 }
 
-func (nav *Nav) CancelApproachClearance() *speech.RadioTransmission {
+func (nav *Nav) CancelApproachClearance() *RadioTransmission {
 	if !nav.Approach.Cleared {
-		return speech.MakeUnexpectedTransmission("we're not currently cleared for an approach")
+		return MakeUnexpectedTransmission("we're not currently cleared for an approach")
 	}
 
 	nav.Approach.Cleared = false
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.NoPT = false
 
-	return speech.MakeReadbackTransmission("cancel approach clearance.")
+	return MakeReadbackTransmission("cancel approach clearance.")
 }
 
-func (nav *Nav) ClimbViaSID() *speech.RadioTransmission {
+func (nav *Nav) ClimbViaSID() *RadioTransmission {
 	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID {
-		return speech.MakeUnexpectedTransmission("unable. We're not flying a departure procedure")
+		return MakeUnexpectedTransmission("unable. We're not flying a departure procedure")
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueOnCourse()
-	return speech.MakeReadbackTransmission("climb via the SID")
+	return MakeReadbackTransmission("climb via the SID")
 }
 
-func (nav *Nav) DescendViaSTAR() *speech.RadioTransmission {
+func (nav *Nav) DescendViaSTAR() *RadioTransmission {
 	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR {
-		return speech.MakeUnexpectedTransmission("unable. We're not on a STAR")
+		return MakeUnexpectedTransmission("unable. We're not on a STAR")
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueOnCourse()
-	return speech.MakeReadbackTransmission("descend via the STAR")
+	return MakeReadbackTransmission("descend via the STAR")
 }
 
 func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
@@ -2959,9 +2958,9 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 	}
 }
 
-func (nav *Nav) ResumeOwnNavigation() *speech.RadioTransmission {
+func (nav *Nav) ResumeOwnNavigation() *RadioTransmission {
 	if nav.Heading.Assigned == nil {
-		return speech.MakeReadbackTransmission("I don't think you ever put us on a heading...")
+		return MakeReadbackTransmission("I don't think you ever put us on a heading...")
 	}
 
 	nav.Heading = NavHeading{}
@@ -2987,19 +2986,19 @@ func (nav *Nav) ResumeOwnNavigation() *speech.RadioTransmission {
 		}
 		nav.Waypoints = nav.Waypoints[startIdx:]
 	}
-	return speech.MakeReadbackTransmission("[own navigation|resuming own navigation]")
+	return MakeReadbackTransmission("[own navigation|resuming own navigation]")
 }
 
-func (nav *Nav) AltitudeOurDiscretion() *speech.RadioTransmission {
+func (nav *Nav) AltitudeOurDiscretion() *RadioTransmission {
 	if nav.Altitude.Assigned == nil {
-		return speech.MakeReadbackTransmission("You never assigned us an altitude...")
+		return MakeReadbackTransmission("You never assigned us an altitude...")
 	}
 
 	nav.Altitude = NavAltitude{}
 	alt := nav.FinalAltitude
 	nav.Altitude.Cleared = &alt
 
-	return speech.MakeReadbackTransmission("[altitude our discretion|altitude our discretion, maintain VFR]")
+	return MakeReadbackTransmission("[altitude our discretion|altitude our discretion, maintain VFR]")
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {

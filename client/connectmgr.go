@@ -42,12 +42,12 @@ type ConnectionManager struct {
 	onError     func(error)
 }
 
-func MakeServerManager(address, additionalScenario, additionalVideoMap string, lg *log.Logger,
+func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
 	cm := &ConnectionManager{
-		serverAddress:           address,
+		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
-		remoteSimServerChan:     TryConnectRemoteServer(address, lg),
+		remoteSimServerChan:     TryConnectRemoteServer(serverAddress, lg),
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
@@ -56,6 +56,7 @@ func MakeServerManager(address, additionalScenario, additionalVideoMap string, l
 	rpcPort, errorLogger := server.LaunchServerAsync(server.ServerLaunchConfig{
 		ExtraScenario: additionalScenario,
 		ExtraVideoMap: additionalVideoMap,
+		ServerAddress: serverAddress,
 	}, lg)
 
 	if !errorLogger.HaveErrors() {

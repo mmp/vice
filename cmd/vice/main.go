@@ -218,6 +218,7 @@ func main() {
 			MultiControllerOnly: true,
 			ExtraScenario:       *scenarioFilename,
 			ExtraVideoMap:       *videoMapFilename,
+			ServerAddress:       *serverAddress,
 		}, lg)
 	} else if *showRoutes != "" {
 		cliInit()

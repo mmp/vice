@@ -1,8 +1,8 @@
-// pkg/speech/transmission.go
+// pkg/sim/radio.go
 // Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package speech
+package sim
 
 import (
 	"bytes"
@@ -32,7 +32,11 @@ var (
 	saySTARMap    map[string]string
 )
 
-func loadPronunciations() {
+func loadPronunciationsIfNeeded() {
+	if len(sayAirportMap) != 0 {
+		return
+	}
+
 	n := 0
 	report := func(file string, err error) {
 		fmt.Fprintf(os.Stderr, "%s: %v\n", file, err)
@@ -63,28 +67,6 @@ func loadPronunciations() {
 ///////////////////////////////////////////////////////////////////////////
 // RadioTransmission
 
-type RadioTransmissionType int
-
-const (
-	RadioTransmissionUnknown    = iota
-	RadioTransmissionContact    // Messages initiated by the pilot
-	RadioTransmissionReadback   // Reading back an instruction
-	RadioTransmissionUnexpected // Something urgent or unusual
-)
-
-func (r RadioTransmissionType) String() string {
-	switch r {
-	case RadioTransmissionContact:
-		return "contact"
-	case RadioTransmissionReadback:
-		return "readback"
-	case RadioTransmissionUnexpected:
-		return "urgent"
-	default:
-		return "(unhandled type)"
-	}
-}
-
 // RadioTransmission holds components that together represent a single
 // radio transmission by a pilot; they may be built up from multiple
 // instructions provided in a single controller command.
@@ -92,14 +74,14 @@ type RadioTransmission struct {
 	Strings    []PhraseFormatString
 	Args       [][]any // each slice contains values passed to the corresponding PhraseFormatString
 	Controller string
-	Type       RadioTransmissionType
+	Type       av.RadioTransmissionType
 }
 
 // MakeContactRadioTransmission is a helper function to make a pilot
 // transmission for initial contact from a single formatting string and set
 // of arguments.
 func MakeContactTransmission(s string, args ...any) *RadioTransmission {
-	rt := &RadioTransmission{Type: RadioTransmissionContact}
+	rt := &RadioTransmission{Type: av.RadioTransmissionContact}
 	rt.Add(s, args...)
 	return rt
 }
@@ -108,7 +90,7 @@ func MakeContactTransmission(s string, args ...any) *RadioTransmission {
 // transmission of a readback from a single formatting string and set of
 // arguments.
 func MakeReadbackTransmission(s string, args ...any) *RadioTransmission {
-	rt := &RadioTransmission{Type: RadioTransmissionReadback}
+	rt := &RadioTransmission{Type: av.RadioTransmissionReadback}
 	rt.Add(s, args...)
 	return rt
 }
@@ -117,7 +99,7 @@ func MakeReadbackTransmission(s string, args ...any) *RadioTransmission {
 // transmission from the provided format string and arguments, but also
 // marks the transmission as unexpected.
 func MakeUnexpectedTransmission(s string, args ...any) *RadioTransmission {
-	rt := &RadioTransmission{Type: RadioTransmissionUnexpected}
+	rt := &RadioTransmission{Type: av.RadioTransmissionUnexpected}
 	rt.Add(s, args...)
 	return rt
 }
@@ -127,8 +109,8 @@ func MakeUnexpectedTransmission(s string, args ...any) *RadioTransmission {
 func (rt *RadioTransmission) Merge(r *RadioTransmission) {
 	rt.Strings = append(rt.Strings, r.Strings...)
 	rt.Args = append(rt.Args, r.Args...)
-	if r.Type == RadioTransmissionUnexpected {
-		rt.Type = RadioTransmissionUnexpected
+	if r.Type == av.RadioTransmissionUnexpected {
+		rt.Type = av.RadioTransmissionUnexpected
 	}
 }
 
