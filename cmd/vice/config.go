@@ -213,17 +213,17 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 }
 
 func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
-	tracon := ""
+	// Prefer a robust signal of scenario type: STARS scenarios define
+	// a PrimaryAirport in the sim state; ERAM scenarios do not.
+	isSTARSSim := false
 	if c.Sim != nil {
-		tracon = c.Sim.State.TRACON
+		isSTARSSim = c.Sim.State.TRACON != ""
 	}
 
-	if tracon == "" {
-		c.DisplayRoot = panes.NewDisplayPanes(eram.NewERAMPane(), panes.NewMessagesPane(),
-			panes.NewFlightStripPane())
+	if isSTARSSim {
+		c.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(), panes.NewFlightStripPane())
 	} else {
-		c.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
-			panes.NewFlightStripPane())
+		c.DisplayRoot = panes.NewDisplayPanes(eram.NewERAMPane(), panes.NewMessagesPane(), panes.NewFlightStripPane())
 	}
 
 	panes.Activate(c.DisplayRoot, r, p, eventStream, lg)
