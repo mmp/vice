@@ -1,10 +1,10 @@
 CONTAINER_ID = $(shell docker ps -alq)
 
 all:
-	go build -o vice
+	go build -o vice ./cmd/vice
 
 windows:
-	go build -ldflags -H=windowsgui -o ./vice.exe .
+	go build -ldflags -H=windowsgui -o ./vice.exe ./cmd/vice
 
 docker: 
 	docker build . -t vice

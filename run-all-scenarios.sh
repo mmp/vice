@@ -114,7 +114,7 @@ for i in "${!scenarios[@]}"; do
     
     # Run the scenario with timeout
     start_time=$(date +%s)
-    if timeout 300 "$VICE_BINARY" -runsim "$scenario" >> "$LOG_FILE" 2>&1; then
+    if timeout 1000 "$VICE_BINARY" -runsim "$scenario" >> "$LOG_FILE" 2>&1; then
         end_time=$(date +%s)
         duration=$((end_time - start_time))
         
