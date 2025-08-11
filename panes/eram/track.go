@@ -45,7 +45,7 @@ type TrackState struct {
 }
 
 type aircraftFixCoordinates struct {
-	coords     [][2]float32
+	coords     []math.Point2LL
 	deleteTime time.Time
 }
 

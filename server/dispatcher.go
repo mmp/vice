@@ -477,12 +477,12 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.Sta
 	}
 }
 
-type QULineArgs struct {
+type SendCoordinateInfoArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
 }
 
-func (sd *dispatcher) SendCoordinateInfo(da *QULineArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) SendCoordinateInfo(da *SendCoordinateInfoArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
@@ -494,13 +494,13 @@ func (sd *dispatcher) SendCoordinateInfo(da *QULineArgs, update *sim.StateUpdate
 	}
 }
 
-type QUDirectArgs struct {
+type FlightPlanDirectArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
 	Fix             string
 }
 
-func (sd *dispatcher) FlightPlanDirect(da *QUDirectArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
