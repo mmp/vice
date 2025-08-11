@@ -18,7 +18,6 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 )
-import "fmt"
 
 func (sp *STARSPane) initializeFonts(r renderer.Renderer, p platform.Platform) {
 	fonts := createFontAtlas(r, p)
@@ -129,7 +128,6 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 
 		f := renderer.MakeFont(int(scale)*sf.Height, true /* mono */, id, nil)
 		newFonts = append(newFonts, f)
-		fmt.Println(sf.Height, fontName, id)
 
 		if y+sf.Height >= yres {
 			panic("STARS font atlas texture too small")
