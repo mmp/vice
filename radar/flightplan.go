@@ -1,7 +1,6 @@
 package radar
 
 import (
-	"fmt"
 	"maps"
 	"slices"
 	"strings"
@@ -16,10 +15,6 @@ const ( // interim alt types
 	Procedure
 	Local
 )
-
-func FormatAltitude[T ~int | ~float32](alt T) string { // should this go in pkg/util/generic.go?
-	return fmt.Sprintf("%03v", int(alt+50)/100)
-}
 
 // Returns all aircraft that match the given suffix. If instructor is true,
 // returns all matching aircraft; otherwise only ones under the current

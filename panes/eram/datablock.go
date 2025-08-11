@@ -324,16 +324,16 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	// 	fmt.Println(track.ADSBCallsign, "has no assigned altitude")
 	// }
 	interimAltitude := track.FlightPlan.InterimAlt
-	formatCurrent := radar.FormatAltitude(currentAltitude)
-	formatAssigned := radar.FormatAltitude(assignedAltitude)
-	formatInterim := radar.FormatAltitude(interimAltitude)
+	formatCurrent := av.FormatScopeAltitude(currentAltitude)
+	formatAssigned := av.FormatScopeAltitude(assignedAltitude)
+	formatInterim := av.FormatScopeAltitude(interimAltitude)
 	if interimAltitude > 0 { // Interim alt takes precedence (i think) TODO: check this
 		intType := getInterimAltitudeType(track)
 		return fmt.Sprintf("%03v%s%03v", formatInterim, intType, formatCurrent)
 	} else /* if assignedAltitude != -1 */ { // Eventually for block altitudes...
 		switch {
 		case formatCurrent == formatAssigned:
-			return fmt.Sprintf("%vC", radar.FormatAltitude(currentAltitude))
+			return fmt.Sprintf("%vC", formatCurrent)
 		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw
 			middle := util.Select(state.Descending() || state.IsLevel(), downArrow, "+")
 			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent)
