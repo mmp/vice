@@ -228,7 +228,7 @@ type Event struct {
 	SpokenText            string
 	RadioTransmissionType speech.RadioTransmissionType   // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
-	WaypointInfo          [][2]float32
+	WaypointInfo          []math.Point2LL
 }
 
 func (e *Event) String() string {

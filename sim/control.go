@@ -1000,7 +1000,7 @@ func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
 		return av.ErrNoAircraftForCallsign
 	}
 	waypoints := []av.Waypoint(ac.Nav.Waypoints)
-	waypointPairs := [][2]float32{}
+	waypointPairs := []math.Point2LL{}
 	for _, wyp := range waypoints {
 		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
 			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
