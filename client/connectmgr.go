@@ -259,7 +259,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 				})
 				if err == server.ErrRPCTimeout || util.IsRPCServerError(err) {
 					cm.RemoteServer = nil
-					cm.client = nil
+					if cm.client != nil {
+						cm.client.Disconnect()
+						cm.client = nil
+					}
 					if cm.onNewClient != nil {
 						cm.onNewClient(nil)
 					}
