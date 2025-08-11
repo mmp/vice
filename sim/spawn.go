@@ -1133,7 +1133,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		if lowestAlt != gomath.MaxInt {
 			assigned = lowestAlt
 		} else {
-			fmt.Println("Warning: no altitude restriction found for arrival", ac.ADSBCallsign)
+			s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
 		}
 	}
 
