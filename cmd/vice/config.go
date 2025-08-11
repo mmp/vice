@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/panes/eram"
 	"github.com/mmp/vice/panes/stars"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -212,7 +213,15 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 }
 
 func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
-	if c.DisplayRoot == nil {
+	tracon := ""
+	if c.Sim != nil {
+		tracon = c.Sim.State.TRACON
+	}
+
+	if tracon == "" {
+		c.DisplayRoot = panes.NewDisplayPanes(eram.NewERAMPane(), panes.NewMessagesPane(),
+			panes.NewFlightStripPane())
+	} else {
 		c.DisplayRoot = panes.NewDisplayPanes(stars.NewSTARSPane(), panes.NewMessagesPane(),
 			panes.NewFlightStripPane())
 	}
