@@ -722,8 +722,8 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			e.ErrorString("\"artcc\" must be specified")
 		}
 		if _, ok := av.DB.ARTCCs[sg.ARTCC]; !ok {
-			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at " +
-				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc")
+			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
+				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc", sg.ARTCC)
 		}
 	}
 

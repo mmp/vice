@@ -15,101 +15,131 @@ import (
 	"unicode"
 )
 
-// WrapText wraps the provided text string to the given column limit, returning the
-// wrapped string and the number of lines it became.  indent gives the amount to
-// indent wrapped lines.  By default, lines that start with a space are assumed to be
-// preformatted and are not wrapped; providing a true value for wrapAll overrides
-// that behavior and causes them to be wrapped as well.
-func WrapText(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
-	var accum, result strings.Builder
+type TextWrapConfig struct {
+	ColumnLimit int
+	Indent      int
+	WrapAll     bool
+	WrapNoSpace bool
+}
 
-	var wrapLine bool
-	column := 0
+func (cfg TextWrapConfig) Wrap(s string) (string, int) {
+	if cfg.ColumnLimit <= 0 {
+		return s, strings.Count(s, "\n") + 1
+	}
+
+	var result strings.Builder
 	lines := 1
 
-	flush := func() {
-		if wrapLine && column > columnLimit {
-			result.WriteRune('\n')
-			lines++
-			for i := 0; i < indent; i++ {
-				result.WriteRune(' ')
+	// Buffer for the current (not-yet-emitted) line segment
+	var currentLine []rune
+	lastSpaceIndex := -1 // index of last space in currentLine; -1 means none
+
+	isContinuation := false // true if current physical line is a wrapped continuation
+	preformatted := false   // true if current input line should bypass wrapping
+
+	// Helper to compute capacity for the current physical line
+	capacityForLine := func() int {
+		if isContinuation {
+			cap := cfg.ColumnLimit - cfg.Indent
+			if cap <= 0 {
+				return 1 // ensure forward progress
 			}
-			column = indent + accum.Len()
+			return cap
 		}
-		result.WriteString(accum.String())
-		accum.Reset()
+		return cfg.ColumnLimit
+	}
+
+	// Helper to write indent for continuation lines
+	writeIndent := func() {
+		for i := 0; i < cfg.Indent; i++ {
+			result.WriteRune(' ')
+		}
+	}
+
+	// Helper to recompute lastSpaceIndex after slicing currentLine
+	recomputeLastSpace := func() {
+		lastSpaceIndex = -1
+		for i := len(currentLine) - 1; i >= 0; i-- {
+			if currentLine[i] == ' ' {
+				lastSpaceIndex = i
+				break
+			}
+		}
 	}
 
 	for _, ch := range s {
-		// If wrapAll isn't enabled, then if the line starts with a space,
-		// assume it is preformatted and pass it through unchanged.
-		if column == 0 {
-			wrapLine = wrapAll || ch != ' '
+		// Detect preformatted input lines (those that begin with a space) unless WrapAll
+		if len(currentLine) == 0 && !isContinuation {
+			preformatted = !cfg.WrapAll && ch == ' '
 		}
 
-		accum.WriteRune(ch)
-		column++
+		if preformatted {
+			// Pass through until input newline
+			result.WriteRune(ch)
+			if ch == '\n' {
+				lines++
+				isContinuation = false
+				preformatted = false
+			}
+			continue
+		}
 
+		currentLine = append(currentLine, ch)
+		if ch == ' ' {
+			lastSpaceIndex = len(currentLine) - 1
+		}
+
+		// If an input newline is present in the buffer, flush the whole buffer
 		if ch == '\n' {
-			flush()
-			column = 0
+			result.WriteString(string(currentLine))
+			currentLine = currentLine[:0]
+			lastSpaceIndex = -1
 			lines++
-		} else if ch == ' ' {
-			flush()
+			isContinuation = false
+			continue
+		}
+
+		// Wrap while currentLine exceeds capacity
+		for cap := capacityForLine(); len(currentLine) > cap; cap = capacityForLine() {
+			// If we are not allowed to break mid-word and there is no space, allow overflow until space/newline
+			if !cfg.WrapNoSpace && lastSpaceIndex == -1 {
+				break
+			}
+
+			breakPos := cap
+			if !cfg.WrapNoSpace && lastSpaceIndex >= 0 {
+				// Prefer wrapping at last space when allowed
+				breakPos = lastSpaceIndex + 1
+			}
+
+			// Emit up to breakPos, then newline + indent
+			result.WriteString(string(currentLine[:breakPos]))
+			result.WriteRune('\n')
+			lines++
+			writeIndent()
+
+			// Remainder stays in currentLine; recompute space index
+			currentLine = currentLine[breakPos:]
+			isContinuation = true
+			recomputeLastSpace()
 		}
 	}
 
-	flush()
+	if len(currentLine) > 0 {
+		result.WriteString(string(currentLine))
+	}
+
 	return result.String(), lines
 }
 
-func WrapTextNoSpace(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
-	var accum, result strings.Builder
-	var wrapLine bool
-	column := 0
-	lines := 1
-
-	flush := func() {
-		if wrapLine && column > columnLimit {
-			result.WriteRune('\n')
-			lines++
-			for i := 0; i < indent; i++ {
-				result.WriteRune(' ')
-			}
-			// reset column to reflect indent + what’s in accum
-			column = indent + accum.Len()
-		}
-		result.WriteString(accum.String())
-		accum.Reset()
+func WrapText(s string, columnLimit int, indent int, wrapAll bool, noSpace bool) (string, int) {
+	cfg := TextWrapConfig{
+		ColumnLimit: columnLimit,
+		Indent:      indent,
+		WrapAll:     wrapAll,
+		WrapNoSpace: noSpace,
 	}
-
-	for _, ch := range s {
-		// If wrapAll isn't enabled, then if the line starts with a space,
-		// assume it is preformatted and pass it through unchanged.
-		if column == 0 {
-			wrapLine = wrapAll || ch != ' '
-		}
-
-		accum.WriteRune(ch)
-		column++
-
-		// NEW: mid-word wrap when wrapAll==true
-		if wrapAll && column > columnLimit {
-			wrapLine = true
-			flush()
-		}
-
-		if ch == '\n' {
-			flush()
-			column = 0
-			lines++
-		} else if ch == ' ' {
-			flush()
-		}
-	}
-
-	flush()
-	return result.String(), lines
+	return cfg.Wrap(s)
 }
 
 // StopShouting turns text of the form "UNITED AIRLINES" to "United Airlines"

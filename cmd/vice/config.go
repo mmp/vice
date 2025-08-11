@@ -217,7 +217,7 @@ func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream 
 	// a PrimaryAirport in the sim state; ERAM scenarios do not.
 	isSTARSSim := false
 	if c.Sim != nil {
-		isSTARSSim = c.Sim.State.TRACON != ""
+		isSTARSSim = c.Sim.State.PrimaryAirport != ""
 	}
 
 	if isSTARSSim {

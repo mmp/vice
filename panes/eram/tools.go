@@ -85,7 +85,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	}
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	out, _ := util.WrapTextNoSpace(ep.bigOutput.String(), cols, 0, true)
+	out, _ := util.WrapText(ep.bigOutput.String(), cols, 0, true, true)
 	ep.bigOutput.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandBigPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
@@ -100,7 +100,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	bx, _ = style.Font.BoundText("X", 0)
 	cols = int(sz[0] / float32(bx))
 	input := ep.Input.String() + "_"
-	inText, _ := util.WrapTextNoSpace(input, cols, 0, true)
+	inText, _ := util.WrapText(input, cols, 0, true, true)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
@@ -189,7 +189,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	inputSize := float32(77)
 	bx, _ := style.Font.BoundText("X", 0)
 	cols := int(sz[0] / float32(bx))
-	inText, _ := util.WrapTextNoSpace(ep.smallOutput.String(), cols, 0, true)
+	inText, _ := util.WrapText(ep.smallOutput.String(), cols, 0, true, true)
 	_, h := style.Font.BoundText(inText, style.LineSpacing)
 	if float32(h)+4 > inputSize {
 		inputSize = float32(h) + 4
@@ -210,7 +210,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	// Draw wrapped text output in the box
 
 	cols = int(sz[0] / float32(bx))
-	out, _ := util.WrapTextNoSpace(ep.smallOutput.String(), cols, 0, true)
+	out, _ := util.WrapText(ep.smallOutput.String(), cols, 0, true, true)
 	ep.smallOutput.formatWrap(ps, out)
 	winBase := math.Add2f(ps.commandSmallPosition, ctx.PaneExtent.P0)
 	commandDrawState.cb.SetScissorBounds(math.Extent2D{
@@ -219,7 +219,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.writeText(td, ep.smallOutput, [2]float32{p0[0] + 2, p0[1] - 2})
 
-	// Restore scissor
+	// Restore scissor	
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
