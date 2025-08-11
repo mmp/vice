@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/rpc"
 
-	"github.com/mmp/vice/pkg/log"
-	"github.com/mmp/vice/pkg/server"
+	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/server"
 )
 
 type ERAMError struct {

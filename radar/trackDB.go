@@ -1,9 +1,9 @@
 package radar
 
 import (
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/util"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/util"
 )
 
 func GetTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {

@@ -11,10 +11,10 @@ import (
 	"time"
 	"unicode"
 
-	av "github.com/mmp/vice/pkg/aviation"
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // All parsing functions have this signature; they take a string to try to

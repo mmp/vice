@@ -1,9 +1,9 @@
 package eram
 
 import (
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/radar"
-	"github.com/mmp/vice/pkg/sim"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/sim"
 )
 
 type Preferences struct {

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"strings"
 
-	av "github.com/mmp/vice/pkg/aviation"
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/radar"
-	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // DatablockType enumerates the supported ERAM datablock formats. Only the

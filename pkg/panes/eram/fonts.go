@@ -7,9 +7,9 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/mmp/vice/pkg/platform"
-	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/util"
+	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
 
 func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {

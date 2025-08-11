@@ -7,12 +7,12 @@ package eram
 import (
 	"time"
 
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/platform"
-	"github.com/mmp/vice/pkg/radar"
-	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/util"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/util"
 )
 
 var commandDrawState struct {

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	av "github.com/mmp/vice/pkg/aviation"
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/radar"
-	"github.com/mmp/vice/pkg/renderer"
-	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // Gap ranges (in degrees) where reduced separation J rings should not be drawn.

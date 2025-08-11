@@ -5,13 +5,13 @@ import (
 	"strings"
 	"unicode"
 
-	av "github.com/mmp/vice/pkg/aviation"
-	"github.com/mmp/vice/pkg/math"
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/platform"
-	"github.com/mmp/vice/pkg/radar"
-	"github.com/mmp/vice/pkg/server"
-	"github.com/mmp/vice/pkg/sim"
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/server"
+	"github.com/mmp/vice/sim"
 )
 
 type CommandMode int

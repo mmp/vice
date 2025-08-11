@@ -6,9 +6,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/mmp/vice/pkg/panes"
-	"github.com/mmp/vice/pkg/sim"
-	"github.com/mmp/vice/pkg/util"
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 const ( // interim alt types
