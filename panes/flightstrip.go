@@ -131,7 +131,7 @@ func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
 	return start
 }
 
-func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
+func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, tcp string) {
 	if _, ok := fsp.addedPlans[fp.ACID]; ok {
 		// We've seen it before.
 		return

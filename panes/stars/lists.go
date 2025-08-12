@@ -64,10 +64,10 @@ func drawSystemList(pw [2]float32, style renderer.TextStyle, td *renderer.TextDr
 // the provided format string, which uses []-delimited specifiers to
 // specify entries in a line; characters outside of brackets are passed
 // through unchanged. A number of built-in specifiers are available to show
-// values from the STARSFlightPlan; additional custom specifiers can be
+// values from the NASFlightPlan; additional custom specifiers can be
 // provided in custom for items that are not in the flight plan and are
 // limited to specific list types.
-func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.STARSFlightPlan,
+func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.NASFlightPlan,
 	custom map[string]func() string) string {
 	rewriteFixForList := func(fix string) string {
 		if spt, ok := sp.significantPoints[fix]; ok && spt.ShortName != "" {
@@ -79,11 +79,11 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 		return fmt.Sprintf("%3s", fix)
 	}
 
-	formatters := map[string]func(*sim.STARSFlightPlan) string{
-		"ACID": func(fp *sim.STARSFlightPlan) string {
+	formatters := map[string]func(*sim.NASFlightPlan) string{
+		"ACID": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%-7s", string(fp.ACID))
 		},
-		"ACID_MSAWCA": func(fp *sim.STARSFlightPlan) string {
+		"ACID_MSAWCA": func(fp *sim.NASFlightPlan) string {
 			s := string(fp.ACID)
 			if fp.DisableMSAW {
 				if fp.DisableCA {
@@ -96,10 +96,10 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			}
 			return fmt.Sprintf("%-8s", s)
 		},
-		"ACTYPE": func(fp *sim.STARSFlightPlan) string {
+		"ACTYPE": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%4s", fp.AircraftType)
 		},
-		"BEACON": func(fp *sim.STARSFlightPlan) string {
+		"BEACON": func(fp *sim.NASFlightPlan) string {
 			haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
 			if haveCode {
 				return fp.AssignedSquawk.String()
@@ -107,22 +107,22 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 				return "VFR "
 			}
 		},
-		"CWT": func(fp *sim.STARSFlightPlan) string {
+		"CWT": func(fp *sim.NASFlightPlan) string {
 			return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " ")
 		},
-		"DEP_EXIT_FIX": func(fp *sim.STARSFlightPlan) string {
+		"DEP_EXIT_FIX": func(fp *sim.NASFlightPlan) string {
 			if fp.TypeOfFlight == av.FlightTypeDeparture {
 				return rewriteFixForList(fp.ExitFix)
 			}
 			return "   "
 		},
-		"ENTRY_FIX": func(fp *sim.STARSFlightPlan) string {
+		"ENTRY_FIX": func(fp *sim.NASFlightPlan) string {
 			return rewriteFixForList(fp.EntryFix)
 		},
-		"EXIT_FIX": func(fp *sim.STARSFlightPlan) string {
+		"EXIT_FIX": func(fp *sim.NASFlightPlan) string {
 			return rewriteFixForList(fp.ExitFix)
 		},
-		"EXIT_GATE": func(fp *sim.STARSFlightPlan) string {
+		"EXIT_GATE": func(fp *sim.NASFlightPlan) string {
 			exit := rewriteFixForList(fp.ExitFix)
 			if ctx.FacilityAdaptation.AllowLongScratchpad {
 				return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
@@ -130,19 +130,19 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 				return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
 			}
 		},
-		"INDEX": func(fp *sim.STARSFlightPlan) string {
+		"INDEX": func(fp *sim.NASFlightPlan) string {
 			if fp.ListIndex == sim.UnsetSTARSListIndex {
 				return "  "
 			}
 			return fmt.Sprintf("%2d", fp.ListIndex)
 		},
-		"NUMAC": func(fp *sim.STARSFlightPlan) string {
+		"NUMAC": func(fp *sim.NASFlightPlan) string {
 			return strconv.Itoa(fp.AircraftCount)
 		},
-		"OWNER": func(fp *sim.STARSFlightPlan) string {
+		"OWNER": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%3s", fp.TrackingController)
 		},
-		"REQ_ALT": func(fp *sim.STARSFlightPlan) string {
+		"REQ_ALT": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%03d", fp.RequestedAltitude/100)
 		},
 	}
@@ -617,7 +617,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.STARSFlightPlan) bool {
+		func(fp *sim.NASFlightPlan) bool {
 			// Only include NAS VFR flight plans.
 			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero() && fp.PlanType == sim.LocalEnroute
 		})
@@ -627,7 +627,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 			sp.VFRFPFirstSeen[fp.ACID] = ctx.Now
 		}
 	}
-	slices.SortFunc(vfr, func(a, b *sim.STARSFlightPlan) int {
+	slices.SortFunc(vfr, func(a, b *sim.NASFlightPlan) int {
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
@@ -652,7 +652,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.STARSFlightPlan) bool {
+		func(fp *sim.NASFlightPlan) bool {
 			if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok {
 				// If it's a VFR still waiting for a NAS code, don't show it yet.
 				if ctx.Now.Sub(seen) < 2*time.Second {
@@ -683,7 +683,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 		})
 
 	// 2-92: default sort is by ACID
-	slices.SortFunc(plans, func(a, b *sim.STARSFlightPlan) int {
+	slices.SortFunc(plans, func(a, b *sim.NASFlightPlan) int {
 		return strings.Compare(string(a.ACID), string(b.ACID))
 	})
 
@@ -1173,7 +1173,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.Reset()
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.STARSFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
+				func(fp *sim.NASFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
 				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]

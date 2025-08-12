@@ -45,7 +45,7 @@ type Aircraft struct {
 	STARRunwayWaypoints map[string]av.WaypointArray
 	GotContactTower     bool
 
-	STARSFlightPlan *STARSFlightPlan
+	STARSFlightPlan *NASFlightPlan
 
 	HoldForRelease    bool
 	Released          bool // only used for hold for release
@@ -673,13 +673,13 @@ func (ac *Aircraft) IsAssociated() bool {
 	return ac.STARSFlightPlan != nil
 }
 
-func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
+func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
 	ac.STARSFlightPlan = fp
 	ac.PreArrivalDropController = ""
 }
 
-func (ac *Aircraft) DisassociateFlightPlan() *STARSFlightPlan {
+func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
 	fp := ac.STARSFlightPlan
 	ac.STARSFlightPlan = nil
 	return fp

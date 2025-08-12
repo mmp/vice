@@ -23,7 +23,7 @@ type ERAMComputer struct {
 
 type STARSComputer struct {
 	Identifier       string
-	FlightPlans      []*STARSFlightPlan
+	FlightPlans      []*NASFlightPlan
 	HoldForRelease   []*Aircraft
 	AvailableIndices []int
 }
@@ -86,7 +86,7 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 
 func (sc *STARSComputer) Update(s *Sim) {
 	// Delete any dropped flight plans after the few minute delay has passed.
-	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans, func(fp *STARSFlightPlan) bool {
+	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans, func(fp *NASFlightPlan) bool {
 		if !fp.DeleteTime.IsZero() && s.State.SimTime.After(fp.DeleteTime) {
 			// Return beacon code, list index
 			s.deleteFlightPlan(fp)
@@ -191,17 +191,17 @@ func (sc *STARSComputer) Update(s *Sim) {
 	}
 }
 
-func (sc *STARSComputer) lookupFlightPlanByACID(acid ACID) *STARSFlightPlan {
+func (sc *STARSComputer) lookupFlightPlanByACID(acid ACID) *NASFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
+		func(fp *NASFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		return sc.FlightPlans[idx]
 	}
 	return nil
 }
 
-func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *STARSFlightPlan {
+func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *NASFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *STARSFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
+		func(fp *NASFlightPlan) bool { return acid == fp.ACID }); idx != -1 {
 		fp := sc.FlightPlans[idx]
 		sc.FlightPlans = append(sc.FlightPlans[:idx], sc.FlightPlans[idx+1:]...)
 		return fp
@@ -209,17 +209,17 @@ func (sc *STARSComputer) takeFlightPlanByACID(acid ACID) *STARSFlightPlan {
 	return nil
 }
 
-func (sc *STARSComputer) lookupFlightPlanBySquawk(sq av.Squawk) *STARSFlightPlan {
+func (sc *STARSComputer) lookupFlightPlanBySquawk(sq av.Squawk) *NASFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *STARSFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
+		func(fp *NASFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
 		return sc.FlightPlans[idx]
 	}
 	return nil
 }
 
-func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *STARSFlightPlan {
+func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *NASFlightPlan {
 	if idx := slices.IndexFunc(sc.FlightPlans,
-		func(fp *STARSFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
+		func(fp *NASFlightPlan) bool { return sq == fp.AssignedSquawk }); idx != -1 {
 		fp := sc.FlightPlans[idx]
 		sc.FlightPlans = slices.Delete(sc.FlightPlans, idx, idx+1)
 		return fp
@@ -227,7 +227,7 @@ func (sc *STARSComputer) takeFlightPlanBySquawk(sq av.Squawk) *STARSFlightPlan {
 	return nil
 }
 
-func (sc *STARSComputer) CreateFlightPlan(fp STARSFlightPlan) (STARSFlightPlan, error) {
+func (sc *STARSComputer) CreateFlightPlan(fp NASFlightPlan) (NASFlightPlan, error) {
 	if fp2 := sc.lookupFlightPlanByACID(fp.ACID); fp2 != nil {
 		return fp, ErrDuplicateACID
 	}
@@ -298,7 +298,7 @@ const (
 type ERAMComputer struct {
 	STARSComputers   map[string]*STARSComputer
 	ReceivedMessages []FlightPlanMessage
-	FlightPlans      map[av.Squawk]*STARSFlightPlan
+	FlightPlans      map[av.Squawk]*NASFlightPlan
 	TrackInformation map[string]*TrackInformation
 	SquawkCodePool   *av.SquawkCodePool
 	// This is shared among all STARS computers for our facility; we keep a
@@ -315,7 +315,7 @@ func MakeERAMComputer(fac string, adapt av.ERAMAdaptation, starsBeaconBank int, 
 	ec := &ERAMComputer{
 		Adaptation:       adapt,
 		STARSComputers:   make(map[string]*STARSComputer),
-		FlightPlans:      make(map[av.Squawk]*STARSFlightPlan),
+		FlightPlans:      make(map[av.Squawk]*NASFlightPlan),
 		TrackInformation: make(map[string]*TrackInformation),
 		SquawkCodePool:   av.MakeCompleteSquawkCodePool(),
 		STARSCodePool:    av.MakeSquawkBankCodePool(starsBeaconBank),
@@ -358,13 +358,13 @@ func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *
 	// / comp.TrackInformation after sending them?
 	return
 
-	sendPlanIfReady := func(fp *STARSFlightPlan) {
+	sendPlanIfReady := func(fp *NASFlightPlan) {
 		if simTime.Add(TransmitFPMessageTime).Before(fp.CoordinationTime.Time) {
 			return
 		}
 
 		if coordFix, ok := comp.Adaptation.CoordinationFixes[fp.CoordinationFix]; !ok {
-			lg.Errorf("%s: no coordination fix found for STARSFlightPlan CoordinationFix",
+			lg.Errorf("%s: no coordination fix found for NASFlightPlan CoordinationFix",
 				fp.CoordinationFix)
 		} else if adaptFix, err := coordFix.Fix(fp.Altitude); err != nil {
 			lg.Errorf("%s @ %s", fp.CoordinationFix, fp.Altitude)
@@ -389,7 +389,7 @@ func (comp *ERAMComputer) SendFlightPlans(tracon string, simTime time.Time, lg *
 }
 
 // For individual plans being sent.
-func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, simTime time.Time) error {
+func (comp *ERAMComputer) SendFlightPlan(fp *NASFlightPlan, tracon string, simTime time.Time) error {
 	msg := MakeFlightPlanMessage(fp)
 	msg.MessageType = Plan
 	msg.SourceID = formatSourceID(comp.Identifier, simTime)
@@ -409,7 +409,7 @@ func (comp *ERAMComputer) SendFlightPlan(fp *STARSFlightPlan, tracon string, sim
 	}
 }
 
-func (comp *ERAMComputer) AddFlightPlan(plan *STARSFlightPlan) {
+func (comp *ERAMComputer) AddFlightPlan(plan *NASFlightPlan) {
 	comp.FlightPlans[plan.FlightPlan.AssignedSquawk] = plan
 }
 
@@ -418,7 +418,7 @@ func (comp *ERAMComputer) AddTrackInformation(callsign string, trk TrackInformat
 }
 
 func (comp *ERAMComputer) AddDeparture(fp *av.FlightPlan, tracon string, simTime time.Time) {
-	starsFP := av.MakeSTARSFlightPlan(fp)
+	starsFP := av.MakeNASFlightPlan(fp)
 
 	if fix := comp.Adaptation.FixForRouteAndAltitude(starsFP.Route, starsFP.Altitude); fix != nil {
 		msg := MakeFlightPlanMessage(starsFP)
@@ -590,7 +590,7 @@ func (ec *ERAMComputer) AdaptationFixForAltitude(fix string, altitude string) *a
 	return ec.Adaptation.AdaptationFixForAltitude(fix, altitude)
 }
 
-func (comp *ERAMComputer) InitiateTrack(callsign string, controller string, fp *STARSFlightPlan) error {
+func (comp *ERAMComputer) InitiateTrack(callsign string, controller string, fp *NASFlightPlan) error {
 	if fp != nil { // FIXME: why is this nil?
 		comp.SquawkCodePool.Claim(fp.AssignedSquawk)
 	}
@@ -662,7 +662,7 @@ const TransmitFPMessageTime = 30 * time.Minute
 
 type STARSComputer struct {
 	Identifier        string
-	ContainedPlans    map[av.Squawk]*STARSFlightPlan
+	ContainedPlans    map[av.Squawk]*NASFlightPlan
 	ReceivedMessages  []FlightPlanMessage
 	TrackInformation  map[string]*TrackInformation
 	ERAMInbox         *[]FlightPlanMessage            // The address of the overlying ERAM's message inbox.
@@ -672,7 +672,7 @@ type STARSComputer struct {
 func MakeSTARSComputer(id string, sq *av.SquawkCodePool) *STARSComputer {
 	return &STARSComputer{
 		Identifier:       id,
-		ContainedPlans:   make(map[av.Squawk]*STARSFlightPlan),
+		ContainedPlans:   make(map[av.Squawk]*NASFlightPlan),
 		TrackInformation: make(map[string]*TrackInformation),
 		STARSInbox:       make(map[string]*[]FlightPlanMessage),
 		SquawkCodePool:   sq,
@@ -719,7 +719,7 @@ func (comp *STARSComputer) RequestFlightPlan(bcn av.Squawk, simTime time.Time) {
 	comp.SendToOverlyingERAMFacility(message)
 }
 
-func (comp *STARSComputer) GetFlightPlan(identifier string) (*STARSFlightPlan, error) {
+func (comp *STARSComputer) GetFlightPlan(identifier string) (*NASFlightPlan, error) {
 	if squawk, err := av.ParseSquawk(identifier); err == nil {
 		// Squawk code was entered
 		if fp, ok := comp.ContainedPlans[squawk]; ok {
@@ -737,7 +737,7 @@ func (comp *STARSComputer) GetFlightPlan(identifier string) (*STARSFlightPlan, e
 	return nil, ErrNoMatchingFlight
 }
 
-func (comp *STARSComputer) AddFlightPlan(plan *STARSFlightPlan) {
+func (comp *STARSComputer) AddFlightPlan(plan *NASFlightPlan) {
 	comp.ContainedPlans[plan.FlightPlan.AssignedSquawk] = plan
 }
 
@@ -760,7 +760,7 @@ func (comp *STARSComputer) LookupTrackIndex(idx int) *TrackInformation {
 	return comp.TrackInformation[k[idx]]
 }
 
-func (comp *STARSComputer) AutoAssociateFP(ac *av.Aircraft, fp *STARSFlightPlan) {
+func (comp *STARSComputer) AutoAssociateFP(ac *av.Aircraft, fp *NASFlightPlan) {
 	comp.AddTrackInformation(ac.Callsign, TrackInformation{
 		TrackOwner:      ac.TrackingController, // Should happen initially, so ac.TrackingController can still be used
 		FlightPlan:      fp,
@@ -805,7 +805,7 @@ func inDropArea(ac *av.Aircraft) bool {
 	return false
 }
 
-func (comp *STARSComputer) InitiateTrack(callsign string, controller string, fp *STARSFlightPlan, haveControl bool) error {
+func (comp *STARSComputer) InitiateTrack(callsign string, controller string, fp *NASFlightPlan, haveControl bool) error {
 	if _, ok := comp.TrackInformation[callsign]; ok {
 		return av.ErrOtherControllerHasTrack
 	}
@@ -937,7 +937,7 @@ func (comp *STARSComputer) AutomatedAcceptHandoff(ac *av.Aircraft, controller st
 	}
 
 	if ctrl := controllers[trk.TrackOwner]; ctrl != nil && ctrl.FacilityIdentifier != "" { // inter-facility
-		// TODO: in other places where a *STARSFlightPlan is passed in, can
+		// TODO: in other places where a *NASFlightPlan is passed in, can
 		// we look it up this way instead?
 		msg := MakeFlightPlanMessage(comp.ContainedPlans[ac.Squawk])
 		msg.SourceID = formatSourceID(trk.TrackOwner, simTime)
@@ -1286,7 +1286,7 @@ type TrackInformation struct {
 	Identifier        string
 	TrackOwner        string
 	HandoffController string
-	FlightPlan        *STARSFlightPlan
+	FlightPlan        *NASFlightPlan
 	PointOut          string
 	PointOutHistory   []string
 	RedirectedHandoff av.RedirectedHandoff
@@ -1352,7 +1352,7 @@ type AbbreviatedFPFields struct {
 	Error error
 }
 
-func MakeFlightPlanMessage(fp *STARSFlightPlan) FlightPlanMessage {
+func MakeFlightPlanMessage(fp *NASFlightPlan) FlightPlanMessage {
 	return FlightPlanMessage{
 		BCN:      fp.AssignedSquawk,
 		Altitude: fp.Altitude, // Eventually we'll change this to a string
@@ -1427,7 +1427,7 @@ func (ec ERAMComputers) Update(s *Sim) {
 }
 
 // identifier can be bcn or callsign
-func (ec ERAMComputers) GetSTARSFlightPlan(tracon string, identifier string) (*STARSFlightPlan, error) {
+func (ec ERAMComputers) GetNASFlightPlan(tracon string, identifier string) (*NASFlightPlan, error) {
 	_, starsComputer, err := ec.FacilityComputers(tracon)
 	if err != nil {
 		return nil, err
@@ -1437,7 +1437,7 @@ func (ec ERAMComputers) GetSTARSFlightPlan(tracon string, identifier string) (*S
 }
 
 func (ec *ERAMComputers) AddArrival(ac *av.Aircraft, facility string, fa STARSFacilityAdaptation, simTime time.Time) error {
-	starsFP := av.MakeSTARSFlightPlan(ac.FlightPlan)
+	starsFP := av.MakeNASFlightPlan(ac.FlightPlan)
 	if err := starsFP.SetCoordinationFix(fa, ac, simTime); err != nil {
 		return err
 	}
@@ -1576,9 +1576,9 @@ func (e ERAMComputers) DumpMap() {
 }
 
 // Converts the message to a STARS flight plan.
-func (s FlightPlanMessage) FlightPlan() *STARSFlightPlan {
+func (s FlightPlanMessage) FlightPlan() *NASFlightPlan {
 	rules := av.FlightRules(util.Select(strings.Contains(s.Altitude, "VFR"), av.VFR, av.IFR))
-	flightPlan := &STARSFlightPlan{
+	flightPlan := &NASFlightPlan{
 		FlightPlan: &av.FlightPlan{
 			Rules:            rules,
 			AircraftType:     s.AircraftData.AircraftType,
@@ -1621,7 +1621,7 @@ func FlightPlanDepartureMessage(fp av.FlightPlan, sendingFacility string, simTim
 	}
 }
 
-func MakeSTARSFlightPlanFromAbbreviated(abbr string, stars *STARSComputer, facilityAdaptation STARSFacilityAdaptation) (*STARSFlightPlan, error) {
+func MakeNASFlightPlanFromAbbreviated(abbr string, stars *STARSComputer, facilityAdaptation STARSFacilityAdaptation) (*NASFlightPlan, error) {
 	if strings.Contains(abbr, "*") {
 		// VFR FP; it's a required field
 		// TODO(mtrokel)
@@ -1644,7 +1644,7 @@ func MakeSTARSFlightPlanFromAbbreviated(abbr string, stars *STARSComputer, facil
 				}
 			}
 
-			fp := &STARSFlightPlan{ // TODO: Do single char ap parsing
+			fp := &NASFlightPlan{ // TODO: Do single char ap parsing
 				FlightPlan: &av.FlightPlan{
 					Callsign:         info.ACID,
 					Rules:            util.Select(info.Rules == av.UNKNOWN, av.VFR, info.Rules),
