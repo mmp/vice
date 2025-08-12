@@ -535,7 +535,7 @@ type STARSFlightPlan struct {
 
 type ACID string
 
-type STARSFlightPlanSpecifier struct {
+type FlightPlanSpecifier struct {
 	ACID                  util.Optional[ACID]
 	EntryFix              util.Optional[string]
 	ExitFix               util.Optional[string]
@@ -588,7 +588,7 @@ type STARSFlightPlanSpecifier struct {
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
 }
 
-func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
+func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 	nasPool *av.EnrouteSquawkCodePool) (STARSFlightPlan, error) {
 	sfp := STARSFlightPlan{
 		ACID:                  s.ACID.GetOr(""),
@@ -680,7 +680,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	}
 }
 
-func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
+func (fp *STARSFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
 	nasPool *av.EnrouteSquawkCodePool) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()

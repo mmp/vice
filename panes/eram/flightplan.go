@@ -19,7 +19,7 @@ import (
 
 // All parsing functions have this signature; they take a string to try to
 // parse, an optional callback to validate scratchpads (required if
-// scratchpads may be parsed), and the STARSFlightPlanSpecifier to update
+// scratchpads may be parsed), and the FlightPlanSpecifier to update
 // with the result. On a successful parse, true, nil is returned.  There
 // are two possibilities for an unsuccessful parse:
 //
@@ -31,7 +31,7 @@ import (
 //
 // 2. false, non-nil error: it's invalid and it's not that thing; if there
 // are other things it might be, we keep trying them.
-type fpEntryParseFunc func(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error)
+type fpEntryParseFunc func(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error)
 
 // Flight plans can be comprised of a variety of different entries,
 // sometimes with different syntax in different cases.  The functions below
@@ -72,8 +72,8 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 // codepaths that call this, but the format strings should all be
 // compile-time constants so it's not like there's an opportunity for
 // runtime recovery here.
-func parseOneFlightPlan(format string, text string, checkSp func(s string, primary bool) bool) (sim.STARSFlightPlanSpecifier, error) {
-	spec := sim.STARSFlightPlanSpecifier{}
+func parseOneFlightPlan(format string, text string, checkSp func(s string, primary bool) bool) (sim.FlightPlanSpecifier, error) {
+	spec := sim.FlightPlanSpecifier{}
 
 	if text == "" {
 		return spec, ErrCommandFormat
@@ -114,8 +114,8 @@ func parseOneFlightPlan(format string, text string, checkSp func(s string, prima
 // field (if any), again according to the given specifiers. Once a field is
 // not successfully consumed, the parse specifier is ignored and parsing
 // continues.
-func parseFlightPlan(format string, text string, checkSp func(s string, primary bool) bool) (sim.STARSFlightPlanSpecifier, error) {
-	spec := sim.STARSFlightPlanSpecifier{}
+func parseFlightPlan(format string, text string, checkSp func(s string, primary bool) bool) (sim.FlightPlanSpecifier, error) {
+	spec := sim.FlightPlanSpecifier{}
 
 	fields := strings.Fields(text)
 	for len(format) > 0 {
@@ -195,7 +195,7 @@ func parseFlightPlan(format string, text string, checkSp func(s string, primary 
 	return spec, nil
 }
 
-func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s[0] < 'A' || s[0] > 'Z' {
 		// ACID must start with a letter
 		return false, ErrERAMIllegalACID
@@ -210,7 +210,7 @@ func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.
 }
 
 // A320, A320/G, 2/F16/G
-func parseFpNumAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpNumAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if tf := strings.Split(s, "/"); len(tf) == 3 { // formation # / actype / eq suffix
 		if count, err := strconv.Atoi(tf[0]); err != nil || len(tf[0]) > 2 { // 2 digits max
 			return true, ErrCommandFormat
@@ -225,7 +225,7 @@ func parseFpNumAcTypeEqSuffix(s string, checkSp func(s string, primary bool) boo
 }
 
 // F16* 2/B2**/G : require 4 chars for actype
-func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s == "" {
 		return false, ErrCommandFormat
 	}
@@ -251,7 +251,7 @@ func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bo
 }
 
 // A320/G, C172
-func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	actype, suffix, _ := strings.Cut(s, "/")
 
 	if len(actype) < 2 || actype[0] < 'A' || actype[0] > 'Z' {
@@ -286,11 +286,11 @@ func parseFpAltitude(s string, ptr *util.Optional[int]) (bool, error) {
 	}
 }
 
-func parseFpAssignedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpAssignedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	return parseFpAltitude(s, &spec.AssignedAltitude)
 }
 
-func parseFPInterimAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFPInterimAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if unicode.IsLetter(rune(s[0])) {
 		interimType := string(s[0])
 		if !slices.Contains([]string{"P", "L"}, interimType) {
@@ -302,7 +302,7 @@ func parseFPInterimAltitude(s string, checkSp func(s string, primary bool) bool,
 	return parseFpAltitude(s, &spec.InterimAlt)
 }
 
-func parseFpPlusAssignedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpPlusAssignedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if !strings.HasPrefix(s, "+") {
 		return false, ErrCommandFormat
 	}
@@ -310,7 +310,7 @@ func parseFpPlusAssignedAltitude(s string, checkSp func(s string, primary bool) 
 	return parseFpAltitude(s, &spec.AssignedAltitude)
 }
 
-func parseFpPlus2RequestedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpPlus2RequestedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if !strings.HasPrefix(s, "++") {
 		return false, ErrCommandFormat
 	}
@@ -318,7 +318,7 @@ func parseFpPlus2RequestedAltitude(s string, checkSp func(s string, primary bool
 	return parseFpAltitude(s, &spec.RequestedAltitude)
 }
 
-func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s == "+" || s == "/" || s == "/1" || s == "/2" || s == "/3" || s == "/4" ||
 		(len(s) == 4 && util.IsAllNumbers(s)) {
 		spec.SquawkAssignment.Set(s)
@@ -330,7 +330,7 @@ func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *si
 	return false, nil
 }
 
-func parseFPCoordinationTime(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFPCoordinationTime(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if len(s) != 5 || s[4] != 'E' {
 		return false, ErrCommandFormat
 	}
@@ -345,7 +345,7 @@ func parseFPCoordinationTime(s string, checkSp func(s string, primary bool) bool
 	return true, nil
 }
 
-func parseFpFixPair(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpFixPair(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	// entry*exit / entry*exit*type of flight
 	entry, exit, ok := strings.Cut(s, "*")
 	if !ok {
@@ -363,7 +363,7 @@ func parseFpFixPair(s string, checkSp func(s string, primary bool) bool, spec *s
 	return true, nil
 }
 
-func parseFpRNAVToggle(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpRNAVToggle(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s == "R" {
 		spec.RNAVToggle.Set(true)
 		return true, nil
@@ -371,7 +371,7 @@ func parseFpRNAVToggle(s string, checkSp func(s string, primary bool) bool, spec
 	return false, nil
 }
 
-func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if strings.HasPrefix(s, ".") {
 		switch strings.TrimPrefix(s, ".") {
 		case "V", "P" /* VFR on top */ :
@@ -389,15 +389,15 @@ func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spe
 	return false, ErrCommandFormat
 }
 
-func parseFpPilotAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpPilotAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	return parseFpAltitude(s, &spec.PilotReportedAltitude)
 }
 
-func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	return parseFpAltitude(s, &spec.RequestedAltitude)
 }
 
-// func parseFpSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+// func parseFpSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 // 	if !checkSp(s, true) {
 // 		return false, ErrSTARSIllegalScratchpad
 // 	}
@@ -405,7 +405,7 @@ func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) boo
 // 	return true, nil
 // }
 
-// func parseFpTriSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+// func parseFpTriSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 // 	if !strings.HasPrefix(s, STARSTriangleCharacter) {
 // 		return false, ErrCommandFormat
 // 	}
@@ -413,7 +413,7 @@ func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) boo
 // 	return parseFpSp1(sp, checkSp, spec)
 // }
 
-// func parseFpPlusSp2(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+// func parseFpPlusSp2(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 // 	// Scratchpad 2
 // 	if !strings.HasPrefix(s, "+") {
 // 		return false, ErrCommandFormat
@@ -426,7 +426,7 @@ func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) boo
 // 	return true, nil
 // }
 
-func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if len(s) != 2 || s[0] < '1' || s[0] > '9' || s[1] < 'A' || s[1] > 'Z' { // must be two char TCP
 		return false, ErrERAMIllegalPosition
 	}
@@ -436,7 +436,7 @@ func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.S
 	return true, nil
 }
 
-func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	// TODO: use per-controller defaults for entry/exit if not specified.
 	// TODO: assign TCP based on fix pair if it's not specified
 	// TODO: adapted single-char ids
@@ -463,7 +463,7 @@ func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, sp
 	return false, ErrERAMIllegalPosition
 }
 
-func parseFpTypeOfFlight(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpTypeOfFlight(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	// Type of flight
 	// TODO: allow optional single character airport ID after type
 	if s == "A" {
@@ -482,7 +482,7 @@ func parseFpTypeOfFlight(s string, checkSp func(s string, primary bool) bool, sp
 }
 
 // JFK, LGA*JFK, FRG*DPK*
-func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool, spec *sim.STARSFlightPlanSpecifier) (bool, error) {
+func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	// For now just see if it's a valid airport, pending a better model of
 	// coordination fixes.
 	if dep, arr, ok := strings.Cut(s, "*"); ok {

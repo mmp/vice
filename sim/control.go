@@ -297,7 +297,7 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 		})
 }
 
-func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error {
+func (s *Sim) CreateFlightPlan(tcp string, spec FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -329,7 +329,7 @@ func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error 
 }
 
 // General checks both for create and modify; this returns errors that prevent fp creation.
-func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error {
+func (s *Sim) preCheckFlightPlanSpecifier(spec *FlightPlanSpecifier) error {
 	if spec.ACID.IsSet {
 		acid := spec.ACID.Get()
 		if !IsValidACID(string(acid)) {
@@ -367,7 +367,7 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error 
 
 // General checks both for create and modify; this returns informational
 // messages that don't prevent the fp from being created.
-func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
+func (s *Sim) postCheckFlightPlanSpecifier(spec FlightPlanSpecifier) error {
 	if spec.AircraftType.IsSet {
 		if _, ok := av.DB.AircraftPerformance[spec.AircraftType.Get()]; !ok {
 			return ErrIllegalACType
@@ -377,7 +377,7 @@ func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error 
 	return nil
 }
 
-func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) error {
+func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -423,7 +423,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 
 // Associate the specified flight plan with the track. Flight plan for ACID
 // must not already exist.
-func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlanSpecifier) error {
+func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -483,7 +483,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 
 // Flight plan for acid must already exist; spec gives optional amendments.
 func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID,
-	spec *STARSFlightPlanSpecifier) error {
+	spec *FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 

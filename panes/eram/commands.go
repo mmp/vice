@@ -195,7 +195,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		// first field is the altitude, second is the CID.
 		fields := strings.Split(cmd, " ")
 		var trk *sim.Track
-		var fp sim.STARSFlightPlanSpecifier
+		var fp sim.FlightPlanSpecifier
 		if len(fields) == 1 {
 			var ok bool
 			trk, ok = ctx.Client.State.GetTrackByFLID(fields[0])
@@ -203,7 +203,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				status.err = ErrERAMIllegalACID
 				return
 			}
-			fp = sim.STARSFlightPlanSpecifier{}
+			fp = sim.FlightPlanSpecifier{}
 			fp.InterimAlt.Set(0)
 
 		} else if len(fields) == 2 {
@@ -421,7 +421,7 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 }
 
 // Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes.
-func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.STARSFlightPlanSpecifier) {
+func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.FlightPlanSpecifier) {
 	trk, ok := ctx.Client.State.GetTrackByFLID(cid)
 	if !ok {
 		ep.bigOutput.displayError(ep.currentPrefs(), ErrERAMIllegalACID)
