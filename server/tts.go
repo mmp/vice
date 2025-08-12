@@ -64,67 +64,68 @@ type listVoicesResponse struct {
 	Voices []voiceInfo `json:"voices"`
 }
 
+var ErrMissingTTSCredentials = errors.New("VICE_GCS_CREDENTIALS not set")
 var ErrTTSUnavailable = errors.New("TTS service unavailable")
 
-var tokenSource oauth2.TokenSource
-var httpClient *http.Client
-var voices []string
-var voicesCh chan []string
-
-func init() {
-	tryInitializeGoogleTTS()
+// GoogleTTSProvider implements sim.TTSProvider using Google Cloud TTS
+type GoogleTTSProvider struct {
+	httpClient *http.Client
+	voicesCh   chan []string
+	errCh      chan error
+	voices     []sim.Voice
+	lg         *log.Logger
 }
 
-func tryInitializeGoogleTTS() {
+func NewGoogleTTSProvider(lg *log.Logger) (sim.TTSProvider, error) {
 	creds := os.Getenv("VICE_GCS_CREDENTIALS")
 	if creds == "" {
-		fmt.Printf("VICE_GCS_CREDENTIALS not set: not initializing local TTS\n")
-		return
+		return nil, ErrMissingTTSCredentials
 	}
 
-	voicesCh = make(chan []string)
+	// Create JWT config from service account JSON
+	config, err := google.JWTConfigFromJSON(
+		[]byte(creds),
+		"https://www.googleapis.com/auth/cloud-platform",
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx := context.Background()
+	g := &GoogleTTSProvider{
+		httpClient: oauth2.NewClient(ctx, config.TokenSource(ctx)),
+		voicesCh:   make(chan []string),
+		errCh:      make(chan error),
+		lg:         lg,
+	}
+	g.httpClient.Timeout = 10 * time.Second
+
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-		defer cancel()
-
-		// Create JWT config from service account JSON
-		config, err := google.JWTConfigFromJSON(
-			[]byte(creds),
-			"https://www.googleapis.com/auth/cloud-platform",
-		)
-		if err != nil {
-			fmt.Printf("TTS JWT config: %v\n", err)
-			return
-		}
-
-		// Create token source and HTTP client
-		tokenSource = config.TokenSource(ctx)
-		httpClient = oauth2.NewClient(ctx, tokenSource)
-
-		defer close(voicesCh)
+		defer close(g.voicesCh)
+		defer close(g.errCh)
 
 		// List available voices
-		resp, err := httpClient.Get("https://texttospeech.googleapis.com/v1/voices")
+		resp, err := g.httpClient.Get("https://texttospeech.googleapis.com/v1/voices")
 		if err != nil {
-			fmt.Printf("TTS ListVoices request: %v\n", err)
+			g.errCh <- err
 			return
 		}
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			fmt.Printf("TTS ListVoices status: %d\n", resp.StatusCode)
+			g.errCh <- fmt.Errorf("TTS ListVoices status: %d\n", resp.StatusCode)
 			return
 		}
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Printf("TTS ListVoices read: %v\n", err)
+			g.errCh <- err
 			return
 		}
 
 		var voicesResp listVoicesResponse
 		if err := json.Unmarshal(body, &voicesResp); err != nil {
-			fmt.Printf("TTS ListVoices unmarshal: %v\n", err)
+			g.errCh <- err
 			return
 		}
 
@@ -137,20 +138,10 @@ func tryInitializeGoogleTTS() {
 				}
 			}
 		}
-		voicesCh <- voices
+		g.voicesCh <- voices
 	}()
-}
 
-// GoogleTTSProvider implements sim.TTSProvider using Google Cloud TTS
-type GoogleTTSProvider struct {
-	lg *log.Logger
-}
-
-func NewGoogleTTSProvider(lg *log.Logger) sim.TTSProvider {
-	if httpClient == nil {
-		return nil
-	}
-	return &GoogleTTSProvider{lg: lg}
+	return g, nil
 }
 
 func (g *GoogleTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
@@ -162,31 +153,45 @@ func (g *GoogleTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
 		defer close(vch)
 		defer close(errch)
 
+		if len(g.voices) > 0 {
+			vch <- g.voices
+			return
+		}
+
+		if g.httpClient == nil || g.voicesCh == nil {
+			errch <- ErrTTSUnavailable
+			return
+		}
+
 		// The RPC to Google TTS for the voices list was made when
 		// GoogleTTSProvider was created, with the hope that it would
 		// return by the time code elsewhere asked for it.
-		if voicesCh != nil && len(voices) == 0 {
-			select {
-			case voices = <-voicesCh:
+		var voices []string
+		var ok bool
+		select {
+		case voices, ok = <-g.voicesCh:
+			if ok {
 				break
-			case <-time.After(5 * time.Second):
-				errch <- errors.New("Google TTS list voices call timed out")
-				voicesCh = nil
-				return
 			}
+			g.voicesCh = nil
+		case err := <-g.errCh:
+			errch <- fmt.Errorf("list voices: %v", err)
+			return
 		}
 
-		if httpClient == nil || len(voices) == 0 {
+		if len(voices) == 0 {
+			// This shouldn't happen, but...
 			errch <- errors.New("Unable to get voices from Google TTS")
 			return
 		}
 
 		// Convert string slice to Voice slice
-		result := make([]sim.Voice, len(voices))
+		g.voices = make([]sim.Voice, len(voices))
 		for i, v := range voices {
-			result[i] = sim.Voice(v)
+			g.voices[i] = sim.Voice(v)
 		}
-		vch <- result
+
+		vch <- g.voices
 	}()
 
 	return fut
@@ -203,7 +208,7 @@ func (g *GoogleTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 		defer close(mp3ch)
 		defer close(errch)
 
-		if httpClient == nil {
+		if g.httpClient == nil {
 			errch <- ErrTTSUnavailable
 			return
 		}
@@ -230,7 +235,7 @@ func (g *GoogleTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 			return
 		}
 
-		resp, err := httpClient.Post(
+		resp, err := g.httpClient.Post(
 			"https://texttospeech.googleapis.com/v1/text:synthesize",
 			"application/json",
 			bytes.NewReader(reqBody),
@@ -278,7 +283,7 @@ func (g *GoogleTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 type TTSRequest struct {
 	Voice    sim.Voice
 	Text     string
-	ClientIP string // Automatically populated by LoggingServerCodec
+	ClientIP string // Automatically populated by util.LoggingServerCodec
 }
 
 // RemoteTTSProvider implements sim.TTSProvider by making RPC calls to a remote server

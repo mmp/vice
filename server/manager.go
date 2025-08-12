@@ -174,22 +174,22 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 
 func makeTTSProvider(serverAddress string, lg *log.Logger) sim.TTSProvider {
 	// Try to create a Google TTS provider first
-	provider := NewGoogleTTSProvider(lg)
-	if provider != nil {
+	p, err := NewGoogleTTSProvider(lg)
+	if err == nil {
 		lg.Info("Using Google TTS provider")
-		return provider
+		return p
 	}
 
 	// If Google TTS is not available (no credentials), try to connect to the remote server
-	lg.Infof("Google TTS unavailable, attempting to use remote TTS provider at %s", serverAddress)
-	remoteProvider, err := NewRemoteTTSProvider(serverAddress, lg)
+	lg.Infof("Google TTS unavailable: %v, attempting to use remote TTS provider at %s", err, serverAddress)
+	rp, err := NewRemoteTTSProvider(serverAddress, lg)
 	if err != nil {
 		lg.Errorf("Failed to connect to remote TTS provider: %v", err)
 		return nil
 	}
 
 	lg.Info("Successfully connected to remote TTS provider")
-	return remoteProvider
+	return rp
 }
 
 type NewSimResult struct {

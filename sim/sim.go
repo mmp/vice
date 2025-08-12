@@ -776,14 +776,14 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 				ac, ok := s.Aircraft[e.ADSBCallsign]
 				if !ok {
-					fmt.Printf("%s: no ac found for radio transmission?", e.ADSBCallsign)
+					s.lg.Warnf("%s: no ac found for radio transmission?", e.ADSBCallsign)
 					continue
 				}
 
 				if ac.Voice == "" {
 					var err error
 					if ac.Voice, err = s.getRandomVoice(); err != nil {
-						s.lg.Debugf("TTS getRandomVoice: %v", err)
+						s.lg.Warnf("TTS getRandomVoice: %v", err)
 						continue
 					}
 				}
@@ -967,6 +967,14 @@ func (s *Sim) GetControllerSpeech(tcp string) []PilotSpeech {
 		case err, ok := <-req.fut.ErrCh:
 			if ok {
 				s.lg.Warnf("TTS error for %s %q: %v", req.callsign, req.text, err)
+
+				speech = append(speech, PilotSpeech{
+					Callsign: req.callsign,
+					Type:     req.ty,
+					Text:     req.text,
+					// No MP3!
+				})
+
 				return false // remove it from the slice
 			}
 			req.fut.ErrCh = nil

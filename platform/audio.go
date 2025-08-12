@@ -103,6 +103,11 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		return ErrCurrentlyPlayingSpeech
 	}
 
+	if len(mp3) == 0 {
+		finished()
+		return nil
+	}
+
 	if _, pcm, err := minimp3.DecodeFull(mp3); err != nil {
 		return err
 	} else {
