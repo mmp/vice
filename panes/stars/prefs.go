@@ -184,23 +184,23 @@ type CommonPreferences struct {
 	DisplaySuspendedTrackAltitude bool
 
 	Brightness struct {
-		DCB                STARSBrightness
-		BackgroundContrast STARSBrightness
-		VideoGroupA        STARSBrightness
-		VideoGroupB        STARSBrightness
-		FullDatablocks     STARSBrightness
-		Lists              STARSBrightness
-		Positions          STARSBrightness
-		LimitedDatablocks  STARSBrightness
-		OtherTracks        STARSBrightness
-		Lines              STARSBrightness
-		RangeRings         STARSBrightness
-		Compass            STARSBrightness
-		BeaconSymbols      STARSBrightness
-		PrimarySymbols     STARSBrightness
-		History            STARSBrightness
-		Weather            STARSBrightness
-		WxContrast         STARSBrightness
+		DCB                radar.Brightness
+		BackgroundContrast radar.Brightness
+		VideoGroupA        radar.Brightness
+		VideoGroupB        radar.Brightness
+		FullDatablocks     radar.Brightness
+		Lists              radar.Brightness
+		Positions          radar.Brightness
+		LimitedDatablocks  radar.Brightness
+		OtherTracks        radar.Brightness
+		Lines              radar.Brightness
+		RangeRings         radar.Brightness
+		Compass            radar.Brightness
+		BeaconSymbols      radar.Brightness
+		PrimarySymbols     radar.Brightness
+		History            radar.Brightness
+		Weather            radar.Brightness
+		WxContrast         radar.Brightness
 	}
 
 	CharSize struct {
@@ -462,8 +462,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.CharSize.DCB = 1
 	}
 	if from < 9 {
-		remap := func(b *STARSBrightness) {
-			*b = STARSBrightness(min(*b*2, 100))
+		remap := func(b *radar.Brightness) {
+			*b = radar.Brightness(min(*b*2, 100))
 		}
 		remap(&p.Brightness.VideoGroupA)
 		remap(&p.Brightness.VideoGroupB)
@@ -539,7 +539,7 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 
 		// Brightness goes in steps of 5 (similarly not enforced previously...)
-		remapBrightness := func(b *STARSBrightness) {
+		remapBrightness := func(b *radar.Brightness) {
 			*b = (*b + 2) / 5 * 5
 			*b = math.Clamp(*b, 0, 100)
 		}
