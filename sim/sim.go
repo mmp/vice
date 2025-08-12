@@ -44,6 +44,7 @@ type Sim struct {
 	ERAMComputer  *ERAMComputer
 
 	LocalCodePool *av.LocalSquawkCodePool
+	CIDAllocator  *CIDAllocator
 
 	GenerationIndex int // for sequencing StateUpdates
 
@@ -107,7 +108,7 @@ type AircraftDisplayState struct {
 type Track struct {
 	av.RadarTrack
 
-	FlightPlan *STARSFlightPlan
+	FlightPlan *NASFlightPlan
 
 	// Sort of hacky to carry these along here but it's convenient...
 	DepartureAirport          string
@@ -203,6 +204,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SignOnPositions: config.SignOnPositions,
 
 		STARSComputer: makeSTARSComputer(config.TRACON),
+
+		CIDAllocator: NewCIDAllocator(),
 
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
@@ -595,7 +598,7 @@ type GlobalMessage struct {
 type StateUpdate struct {
 	GenerationIndex         int
 	Tracks                  map[av.ADSBCallsign]*Track
-	UnassociatedFlightPlans []*STARSFlightPlan
+	UnassociatedFlightPlans []*NASFlightPlan
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
@@ -1450,7 +1453,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 }
 
 // bool indicates whether it's active
-func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, bool) {
+func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, bool) {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
 			return ac.STARSFlightPlan, true
@@ -1470,7 +1473,7 @@ func (s *Sim) CheckLeaks() {
 	nUsedIndices := 0
 	seenSquawks := make(map[av.Squawk]interface{})
 
-	check := func(fp *STARSFlightPlan) {
+	check := func(fp *NASFlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {
 			if usedIndices[fp.ListIndex] {
 				s.lg.Errorf("List index %d used more than once", fp.ListIndex)

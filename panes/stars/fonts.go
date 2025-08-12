@@ -134,6 +134,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 		}
 
 		for ch, glyph := range sf.Glyphs {
+
 			dx := glyph.Bounds[0] + 1 // pad
 			if x+dx > xres {
 				// Start a new line

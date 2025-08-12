@@ -106,8 +106,8 @@ func (s *Sim) dispatchVFRAircraftCommand(tcp string, callsign av.ADSBCallsign,
 
 // Note that ac may be nil, but flight plan will not be!
 func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
-	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
-	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission) error {
+	check func(tcp string, fp *NASFlightPlan, ac *Aircraft) error,
+	cmd func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission) error {
 	fp, _ := s.GetFlightPlanForACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
@@ -131,7 +131,7 @@ func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 	radioTransmission := cmd(tcp, fp, ac)
 
 	s.lg.Info("dispatch_fp_command", slog.String("acid", string(fp.ACID)),
-		slog.Any("prepost_fp", []STARSFlightPlan{preFp, *fp}),
+		slog.Any("prepost_fp", []NASFlightPlan{preFp, *fp}),
 		slog.Any("radio_transmission", radioTransmission))
 
 	if radioTransmission != nil {
@@ -142,10 +142,10 @@ func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 }
 
 func (s *Sim) dispatchTrackedFlightPlanCommand(tcp string, acid ACID,
-	check func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error,
-	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft)) error {
+	check func(tcp string, fp *NASFlightPlan, ac *Aircraft) error,
+	cmd func(tcp string, fp *NASFlightPlan, ac *Aircraft)) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if fp.TrackingController != tcp && !s.isInstructorOrRPO(tcp) {
 				return av.ErrOtherControllerHasTrack
 			}
@@ -154,7 +154,7 @@ func (s *Sim) dispatchTrackedFlightPlanCommand(tcp string, acid ACID,
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			cmd(tcp, fp, ac)
 			// No radio transmissions for these
 			return nil
@@ -185,6 +185,15 @@ func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft) {
+	if s.CIDAllocator != nil {
+		if fp := ac.STARSFlightPlan; fp != nil && fp.CID != "" {
+			s.CIDAllocator.Release(fp.CID)
+			fp.CID = ""
+		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
+			s.CIDAllocator.Release(fp.CID)
+			fp.CID = ""
+		}
+	}
 	delete(s.Aircraft, ac.ADSBCallsign)
 
 	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
@@ -288,7 +297,7 @@ func (s *Sim) Ident(tcp string, callsign av.ADSBCallsign) error {
 		})
 }
 
-func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error {
+func (s *Sim) CreateFlightPlan(tcp string, spec FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -306,7 +315,7 @@ func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error 
 		return ErrDuplicateACID
 	}
 	if slices.ContainsFunc(s.State.UnassociatedFlightPlans,
-		func(fp2 *STARSFlightPlan) bool { return fp.ACID == fp2.ACID }) {
+		func(fp2 *NASFlightPlan) bool { return fp.ACID == fp2.ACID }) {
 		return ErrDuplicateACID
 	}
 
@@ -320,7 +329,7 @@ func (s *Sim) CreateFlightPlan(tcp string, spec STARSFlightPlanSpecifier) error 
 }
 
 // General checks both for create and modify; this returns errors that prevent fp creation.
-func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error {
+func (s *Sim) preCheckFlightPlanSpecifier(spec *FlightPlanSpecifier) error {
 	if spec.ACID.IsSet {
 		acid := spec.ACID.Get()
 		if !IsValidACID(string(acid)) {
@@ -358,7 +367,7 @@ func (s *Sim) preCheckFlightPlanSpecifier(spec *STARSFlightPlanSpecifier) error 
 
 // General checks both for create and modify; this returns informational
 // messages that don't prevent the fp from being created.
-func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error {
+func (s *Sim) postCheckFlightPlanSpecifier(spec FlightPlanSpecifier) error {
 	if spec.AircraftType.IsSet {
 		if _, ok := av.DB.AircraftPerformance[spec.AircraftType.Get()]; !ok {
 			return ErrIllegalACType
@@ -368,7 +377,7 @@ func (s *Sim) postCheckFlightPlanSpecifier(spec STARSFlightPlanSpecifier) error 
 	return nil
 }
 
-func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecifier) error {
+func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -414,7 +423,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 
 // Associate the specified flight plan with the track. Flight plan for ACID
 // must not already exist.
-func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlanSpecifier) error {
+func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -474,7 +483,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec STARSFlightPlan
 
 // Flight plan for acid must already exist; spec gives optional amendments.
 func (s *Sim) ActivateFlightPlan(tcp string, callsign av.ADSBCallsign, acid ACID,
-	spec *STARSFlightPlanSpecifier) error {
+	spec *FlightPlanSpecifier) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -524,7 +533,7 @@ func (s *Sim) DeleteFlightPlan(tcp string, acid ACID) error {
 	return ErrNoMatchingFlightPlan
 }
 
-func (s *Sim) deleteFlightPlan(fp *STARSFlightPlan) {
+func (s *Sim) deleteFlightPlan(fp *NASFlightPlan) {
 	s.STARSComputer.returnListIndex(fp.ListIndex)
 	if fp.PlanType == LocalNonEnroute {
 		s.LocalCodePool.Return(fp.AssignedSquawk)
@@ -535,7 +544,7 @@ func (s *Sim) deleteFlightPlan(fp *STARSFlightPlan) {
 
 func (s *Sim) RepositionTrack(tcp string, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {
 	// Find the corresponding flight plan.
-	var fp *STARSFlightPlan
+	var fp *NASFlightPlan
 	// First look for the referenced flight plan in associated aircraft.
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
@@ -606,7 +615,7 @@ func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[toTCP]; !ok {
 				return av.ErrNoController
 			} else if toTCP == tcp {
@@ -621,12 +630,12 @@ func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) {
 			s.handoffTrack(fp, toTCP)
 		})
 }
 
-func (s *Sim) handoffTrack(fp *STARSFlightPlan, toTCP string) {
+func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP string) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
 		FromController: fp.TrackingController,
@@ -659,13 +668,13 @@ func (s *Sim) ContactTrackingController(tcp string, acid ACID) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) error {
 			if sfp.ControllingController != tcp {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			return s.contactController(tcp, sfp, ac, sfp.TrackingController)
 		})
 }
@@ -675,18 +684,18 @@ func (s *Sim) ContactController(tcp string, acid ACID, toTCP string) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) error {
 			if sfp.ControllingController != tcp {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			return s.contactController(tcp, sfp, ac, toTCP)
 		})
 }
 
-func (s *Sim) contactController(fromTCP string, sfp *STARSFlightPlan, ac *Aircraft, toTCP string) *speech.RadioTransmission {
+func (s *Sim) contactController(fromTCP string, sfp *NASFlightPlan, ac *Aircraft, toTCP string) *speech.RadioTransmission {
 	// Immediately respond to the current controller that we're
 	// changing frequency.
 	var resp *speech.RadioTransmission
@@ -726,7 +735,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if fp.HandoffTrackController == tcp {
 				return nil
 			}
@@ -736,7 +745,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			}
 			return av.ErrNotBeingHandedOffToMe
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				ACID:           fp.ACID,
@@ -773,7 +782,7 @@ func (s *Sim) CancelHandoff(tcp string, acid ACID) error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchTrackedFlightPlanCommand(tcp, acid, nil,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) {
 			delete(s.Handoffs, acid)
 			fp.HandoffTrackController = ""
 			fp.RedirectedHandoff = RedirectedHandoff{}
@@ -782,7 +791,7 @@ func (s *Sim) CancelHandoff(tcp string, acid ACID) error {
 
 func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			} else if octrl.Id() == tcp || octrl.Id() == ac.STARSFlightPlan.TrackingController {
@@ -798,7 +807,7 @@ func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			octrl := s.State.Controllers[controller]
 			rh := &fp.RedirectedHandoff
 			rh.OriginalOwner = fp.TrackingController
@@ -817,13 +826,13 @@ func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
 
 func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			// TODO(mtrokel): need checks here that we do have an inbound
 			// redirected handoff or that we have an outbound one to
 			// recall.
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			rh := &fp.RedirectedHandoff
 			if rh.RedirectedTo == tcp { // Accept
 				s.eventStream.Post(Event{
@@ -851,13 +860,13 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
 
 func (s *Sim) ForceQL(tcp string, acid ACID, controller string) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
@@ -872,7 +881,7 @@ func (s *Sim) ForceQL(tcp string, acid ACID, controller string) error {
 
 func (s *Sim) PointOut(fromTCP string, acid ACID, toTCP string) error {
 	return s.dispatchTrackedFlightPlanCommand(fromTCP, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if octrl, ok := s.State.Controllers[toTCP]; !ok {
 				return av.ErrNoController
 			} else if octrl.Facility != s.State.Controllers[fromTCP].Facility {
@@ -887,7 +896,7 @@ func (s *Sim) PointOut(fromTCP string, acid ACID, toTCP string) error {
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) {
 			ctrl := s.State.Controllers[fromTCP]
 			octrl := s.State.Controllers[toTCP]
 			s.pointOut(acid, ctrl, octrl)
@@ -912,14 +921,14 @@ func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 
 func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
 				return av.ErrNotPointedOutToMe
 			}
 
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -942,13 +951,13 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 
 func (s *Sim) RecallPointOut(tcp string, acid ACID) error {
 	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || po.FromController != tcp {
 				return av.ErrNotPointedOutByMe
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) {
 			s.eventStream.Post(Event{
 				Type:           RecalledPointOutEvent,
 				FromController: tcp,
@@ -962,13 +971,13 @@ func (s *Sim) RecallPointOut(tcp string, acid ACID) error {
 
 func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) error {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
-		func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -982,6 +991,60 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 
 			return nil
 		})
+}
+
+// TODO: Migrate to ERAM computer.
+func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
+	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	if ac == nil {
+		return av.ErrNoAircraftForCallsign
+	}
+	waypoints := []av.Waypoint(ac.Nav.Waypoints)
+	waypointPairs := []math.Point2LL{}
+	for _, wyp := range waypoints {
+		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
+			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
+		}
+
+	}
+	ctrl := s.State.ResolveController(tcp)
+	s.eventStream.Post(Event{
+		Type:         FixCoordinatesEvent,
+		ACID:         acid,
+		WaypointInfo: waypointPairs,
+		ToController: ctrl,
+	})
+	return nil
+}
+
+// TODO: Migrate to ERAM computer.
+func (s *Sim) FlightPlanDirect(tcp, fix string, acid ACID) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	fp := ac.FlightPlan
+	idx := strings.Index(fp.Route, fix)
+	if idx < 0 {
+		return av.ErrNoMatchingFix
+	}
+	rte := fp.Route[idx:]
+	fp.Route = rte
+	// Update sim Track as well
+	trk := s.State.Tracks[ac.ADSBCallsign]
+	pos, ok := av.DB.LookupWaypoint(fix)
+	if !ok {
+		return av.ErrNoMatchingFix // Check this pls
+	}
+	for i, wpPos := range trk.Route {
+		if wpPos == pos {
+			// Remove all waypoints before the fix
+			trk.Route = trk.Route[i:]
+			break
+		}
+	}
+	// TODO: Post an event that will update the controller's output.
+	return nil
 }
 
 func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {

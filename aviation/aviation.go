@@ -427,6 +427,10 @@ func FormatAltitude(falt float32) string {
 	}
 }
 
+func FormatScopeAltitude[T ~int | ~float32](alt T) string {
+	return fmt.Sprintf("%03v", int(alt+50)/100)
+}
+
 type TransponderMode int
 
 const (

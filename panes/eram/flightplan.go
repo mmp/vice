@@ -2,13 +2,14 @@
 // Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package stars
+package eram
 
 import (
-	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/panes"
@@ -43,6 +44,7 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 	"#/AC_TYPE4/EQ":   parseFpNumAcType4EqSuffix,
 	"AC_TYPE/EQ":      parseFpAcTypeEqSuffix,
 	"ALT_A":           parseFpAssignedAltitude,
+	"ALT_I":           parseFPInterimAltitude,
 	"ALT_P":           parseFpPilotAltitude,
 	"ALT_R":           parseFpRequestedAltitude,
 	"BEACON":          parseFpBeacon,
@@ -51,15 +53,15 @@ var fpParseFuncs = map[string]fpEntryParseFunc{
 	"FLT_TYPE":        parseFpTypeOfFlight,
 	"PLUS_ALT_A":      parseFpPlusAssignedAltitude,
 	"PLUS_PLUS_ALT_R": parseFpPlus2RequestedAltitude,
-	"PLUS_SP2":        parseFpPlusSp2,
-	"RNAV":            parseFpRNAVToggle,
-	"RULES":           parseFpFlightRules,
-	"SP1":             parseFpSp1,
-	"TCP":             parseFpTCP,
-	"TCP/FIX_PAIR":    parseFpTCPOrFixPair,
-	"TRI_ALT_A":       parseFpTriAssignedAltitude,
-	"TRI_SP1":         parseFpTriSp1,
-	"VFR_ARR_FIXES":   parseFpVFRArrivalFixes,
+	// "PLUS_SP2":        parseFpPlusSp2,
+	"RNAV":  parseFpRNAVToggle,
+	"RULES": parseFpFlightRules,
+	// "SP1":             parseFpSp1,
+	"TCP":          parseFpTCP,
+	"TCP/FIX_PAIR": parseFpTCPOrFixPair,
+	// "TRI_ALT_A":       parseFpTriAssignedAltitude,
+	// "TRI_SP1":         parseFpTriSp1,
+	"VFR_ARR_FIXES": parseFpVFRArrivalFixes,
 }
 
 // parseOneFlightPlan takes a format string that of one or more of the
@@ -74,13 +76,13 @@ func parseOneFlightPlan(format string, text string, checkSp func(s string, prima
 	spec := sim.FlightPlanSpecifier{}
 
 	if text == "" {
-		return spec, ErrSTARSCommandFormat
+		return spec, ErrCommandFormat
 	}
 
 	text, _, ok := strings.Cut(text, " ")
 	if ok {
 		// Extra junk at the end
-		return spec, ErrSTARSCommandFormat
+		return spec, ErrCommandFormat
 	}
 
 	for _, s := range strings.Split(format, ",") {
@@ -92,7 +94,7 @@ func parseOneFlightPlan(format string, text string, checkSp func(s string, prima
 	}
 
 	// Nothing matched
-	return spec, ErrSTARSCommandFormat
+	return spec, ErrCommandFormat
 }
 
 // parseFlightPlan is similar to parseOneFlightPlan but it takes a richer
@@ -146,7 +148,7 @@ func parseFlightPlan(format string, text string, checkSp func(s string, primary 
 			}
 
 			if len(fields) == 0 {
-				return spec, ErrSTARSCommandFormat
+				return spec, ErrCommandFormat
 			}
 
 			ok, err := tryParse(fmtspec, fields[0])
@@ -156,7 +158,7 @@ func parseFlightPlan(format string, text string, checkSp func(s string, primary 
 				return spec, err
 			}
 			if !ok { // required but not successfully parsed
-				return spec, ErrSTARSCommandFormat
+				return spec, ErrCommandFormat
 			}
 		} else if mode == '?' {
 			fmtspecs := strings.Split(fmtspec, ",")
@@ -187,7 +189,7 @@ func parseFlightPlan(format string, text string, checkSp func(s string, primary 
 
 	if len(fields) > 0 {
 		// There's extra junk at the end of the specified flight plan
-		return spec, ErrSTARSCommandFormat
+		return spec, ErrCommandFormat
 	}
 
 	return spec, nil
@@ -196,11 +198,11 @@ func parseFlightPlan(format string, text string, checkSp func(s string, primary 
 func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s[0] < 'A' || s[0] > 'Z' {
 		// ACID must start with a letter
-		return false, ErrSTARSIllegalACID
+		return false, ErrERAMIllegalACID
 	}
 	if len(s) > 7 {
 		// No more than 7 characters
-		return false, ErrSTARSIllegalACID
+		return false, ErrERAMIllegalACID
 	}
 
 	spec.ACID.Set(sim.ACID(s))
@@ -211,7 +213,7 @@ func parseFpACID(s string, checkSp func(s string, primary bool) bool, spec *sim.
 func parseFpNumAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if tf := strings.Split(s, "/"); len(tf) == 3 { // formation # / actype / eq suffix
 		if count, err := strconv.Atoi(tf[0]); err != nil || len(tf[0]) > 2 { // 2 digits max
-			return true, ErrSTARSCommandFormat
+			return true, ErrCommandFormat
 		} else {
 			spec.AircraftCount.Set(count)
 			s = strings.Join(tf[1:], "/")
@@ -225,13 +227,13 @@ func parseFpNumAcTypeEqSuffix(s string, checkSp func(s string, primary bool) boo
 // F16* 2/B2**/G : require 4 chars for actype
 func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if s == "" {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	tf := strings.Split(s, "/")
 	if len(tf) == 3 { // formation # / actype / eq suffix
 		if count, err := strconv.Atoi(tf[0]); err != nil || len(tf[0]) > 2 { // 2 digits max
-			return true, ErrSTARSCommandFormat
+			return true, ErrCommandFormat
 		} else {
 			spec.AircraftCount.Set(count)
 			tf = tf[1:]
@@ -239,7 +241,7 @@ func parseFpNumAcType4EqSuffix(s string, checkSp func(s string, primary bool) bo
 	}
 
 	if len(tf[0]) != 4 {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	tf[0] = strings.TrimRight(tf[0], "*")
@@ -254,7 +256,7 @@ func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, 
 
 	if len(actype) < 2 || actype[0] < 'A' || actype[0] > 'Z' {
 		// a/c types are at least 2 chars and start with a letter
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	actype = strings.TrimRight(actype, "*") // hack: for ones that require 4 chars
@@ -264,7 +266,7 @@ func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, 
 	// equipment suffix?
 	if len(suffix) > 0 {
 		if len(suffix) != 1 || suffix[0] < 'A' || suffix[0] > 'Z' {
-			return true, ErrSTARSCommandFormat
+			return true, ErrCommandFormat
 		}
 		spec.EquipmentSuffix.Set(suffix)
 	}
@@ -273,11 +275,11 @@ func parseFpAcTypeEqSuffix(s string, checkSp func(s string, primary bool) bool, 
 
 func parseFpAltitude(s string, ptr *util.Optional[int]) (bool, error) {
 	if len(s) != 3 {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	if alt, err := strconv.Atoi(s); err != nil {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	} else {
 		ptr.Set(alt * 100)
 		return true, nil
@@ -288,9 +290,21 @@ func parseFpAssignedAltitude(s string, checkSp func(s string, primary bool) bool
 	return parseFpAltitude(s, &spec.AssignedAltitude)
 }
 
+func parseFPInterimAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
+	if unicode.IsLetter(rune(s[0])) {
+		interimType := string(s[0])
+		if !slices.Contains([]string{"P", "L"}, interimType) {
+			return false, ErrCommandFormat
+		}
+		spec.InterimType.Set(interimType)
+		s = strings.TrimPrefix(s, interimType)
+	}
+	return parseFpAltitude(s, &spec.InterimAlt)
+}
+
 func parseFpPlusAssignedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if !strings.HasPrefix(s, "+") {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 	s = strings.TrimPrefix(s, "+")
 	return parseFpAltitude(s, &spec.AssignedAltitude)
@@ -298,18 +312,10 @@ func parseFpPlusAssignedAltitude(s string, checkSp func(s string, primary bool) 
 
 func parseFpPlus2RequestedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if !strings.HasPrefix(s, "++") {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 	s = strings.TrimPrefix(s, "++")
 	return parseFpAltitude(s, &spec.RequestedAltitude)
-}
-
-func parseFpTriAssignedAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
-	if !strings.HasPrefix(s, STARSTriangleCharacter) {
-		return false, ErrSTARSCommandFormat
-	}
-	s = strings.TrimPrefix(s, STARSTriangleCharacter)
-	return parseFpAltitude(s, &spec.AssignedAltitude)
 }
 
 func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
@@ -326,12 +332,12 @@ func parseFpBeacon(s string, checkSp func(s string, primary bool) bool, spec *si
 
 func parseFPCoordinationTime(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if len(s) != 5 || s[4] != 'E' {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	t, err := time.Parse("1504", s[:4])
 	if err != nil {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	spec.CoordinationTime.Set(t)
@@ -343,7 +349,7 @@ func parseFpFixPair(s string, checkSp func(s string, primary bool) bool, spec *s
 	// entry*exit / entry*exit*type of flight
 	entry, exit, ok := strings.Cut(s, "*")
 	if !ok {
-		return false, ErrSTARSCommandFormat
+		return false, ErrCommandFormat
 	}
 
 	exit, flttp, _ := strings.Cut(exit, "*")
@@ -377,10 +383,10 @@ func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spe
 			return true, nil
 
 		default:
-			return true, ErrSTARSIllegalValue
+			return true, ErrERAMIllegalValue
 		}
 	}
-	return false, ErrSTARSCommandFormat
+	return false, ErrCommandFormat
 }
 
 func parseFpPilotAltitude(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
@@ -391,38 +397,38 @@ func parseFpRequestedAltitude(s string, checkSp func(s string, primary bool) boo
 	return parseFpAltitude(s, &spec.RequestedAltitude)
 }
 
-func parseFpSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
-	if !checkSp(s, true) {
-		return false, ErrSTARSIllegalScratchpad
-	}
-	spec.Scratchpad.Set(s)
-	return true, nil
-}
+// func parseFpSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
+// 	if !checkSp(s, true) {
+// 		return false, ErrSTARSIllegalScratchpad
+// 	}
+// 	spec.Scratchpad.Set(s)
+// 	return true, nil
+// }
 
-func parseFpTriSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
-	if !strings.HasPrefix(s, STARSTriangleCharacter) {
-		return false, ErrSTARSCommandFormat
-	}
-	sp := strings.TrimPrefix(s, STARSTriangleCharacter)
-	return parseFpSp1(sp, checkSp, spec)
-}
+// func parseFpTriSp1(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
+// 	if !strings.HasPrefix(s, STARSTriangleCharacter) {
+// 		return false, ErrCommandFormat
+// 	}
+// 	sp := strings.TrimPrefix(s, STARSTriangleCharacter)
+// 	return parseFpSp1(sp, checkSp, spec)
+// }
 
-func parseFpPlusSp2(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
-	// Scratchpad 2
-	if !strings.HasPrefix(s, "+") {
-		return false, ErrSTARSCommandFormat
-	}
-	sp := strings.TrimPrefix(s, "+")
-	if !checkSp(sp, false) {
-		return false, ErrSTARSIllegalScratchpad
-	}
-	spec.SecondaryScratchpad.Set(sp)
-	return true, nil
-}
+// func parseFpPlusSp2(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
+// 	// Scratchpad 2
+// 	if !strings.HasPrefix(s, "+") {
+// 		return false, ErrCommandFormat
+// 	}
+// 	sp := strings.TrimPrefix(s, "+")
+// 	if !checkSp(sp, false) {
+// 		return false, ErrSTARSIllegalScratchpad
+// 	}
+// 	spec.SecondaryScratchpad.Set(sp)
+// 	return true, nil
+// }
 
 func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
 	if len(s) != 2 || s[0] < '1' || s[0] > '9' || s[1] < 'A' || s[1] > 'Z' { // must be two char TCP
-		return false, ErrSTARSIllegalPosition
+		return false, ErrERAMIllegalPosition
 	}
 
 	spec.TrackingController.Set(s)
@@ -454,7 +460,7 @@ func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, sp
 		spec.TrackingController.Set(s)
 		return true, nil
 	}
-	return false, ErrSTARSIllegalPosition
+	return false, ErrERAMIllegalPosition
 }
 
 func parseFpTypeOfFlight(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
@@ -472,7 +478,7 @@ func parseFpTypeOfFlight(s string, checkSp func(s string, primary bool) bool, sp
 		spec.TypeOfFlight.Set(av.FlightTypeOverflight)
 		return true, nil
 	}
-	return false, ErrSTARSCommandFormat
+	return false, ErrCommandFormat
 }
 
 // JFK, LGA*JFK, FRG*DPK*
@@ -481,7 +487,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	// coordination fixes.
 	if dep, arr, ok := strings.Cut(s, "*"); ok {
 		if len(dep) != 3 || len(arr) != 3 {
-			return false, ErrSTARSIllegalAirport
+			return false, ErrERAMIllegalAirport
 		}
 		// TODO: ILL FIX if entry fix is invalid
 		spec.EntryFix.Set(dep)
@@ -490,7 +496,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	} else {
 		// TODO: entry should be our default airport
 		if len(s) != 3 {
-			return false, ErrSTARSIllegalAirport
+			return false, ErrERAMIllegalAirport
 		}
 		spec.ExitFix.Set(s)
 	}
@@ -503,7 +509,7 @@ func parseFpVFRArrivalFixes(s string, checkSp func(s string, primary bool) bool,
 	} else if _, ok := av.DB.Airports["K"+spec.ExitFix.Get()]; ok {
 		return true, nil
 	} else {
-		return false, ErrSTARSIllegalAirport
+		return false, ErrERAMIllegalAirport
 	}
 }
 
@@ -522,12 +528,12 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 	fac := ctx.FacilityAdaptation
 
 	if !fac.CheckScratchpad(contents) {
-		return ErrSTARSCommandFormat
+		return ErrCommandFormat
 	}
 
 	if !isSecondary && isImplied && lc == 1 {
 		// One-character for primary is only allowed via [MF]Y
-		return ErrSTARSCommandFormat
+		return ErrCommandFormat
 	}
 
 	if !isSecondary && isImplied {
@@ -536,7 +542,7 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 		if lc == 2 {
 			for _, ctrl := range ctx.Client.State.Controllers {
 				if ctrl.FacilityIdentifier == "" && ctrl.TCP == contents {
-					return ErrSTARSCommandFormat
+					return ErrCommandFormat
 				}
 			}
 		}
@@ -545,123 +551,125 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 	return nil
 }
 
-// See STARS Operators Manual 5-184...
 // trk may be nil
-func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
-	if fp == nil { // shouldn't happen...
-		return "NO PLAN"
-	}
 
-	fmtTime := func(t time.Time) string {
-		return t.UTC().Format("1504")
-	}
+// TODO Make for ERAM
 
-	// Common stuff
-	var state *TrackState
-	if trk != nil {
-		state = sp.TrackState[trk.ADSBCallsign]
-	}
+// func (sp *STARSPane) formatFlightPlan(ctx *panes.Context, fp *sim.NASFlightPlan, trk *sim.Track) string {
+// 	if fp == nil { // shouldn't happen...
+// 		return "NO PLAN"
+// 	}
 
-	var aircraftType string
-	if fp.AircraftCount > 1 {
-		aircraftType = strconv.Itoa(fp.AircraftCount) + "/"
-	}
-	aircraftType += fp.AircraftType
-	if fp.CWTCategory != "" {
-		aircraftType += "/" + fp.CWTCategory
-	}
-	if fp.RNAV {
-		aircraftType += "^"
-	}
-	if fp.EquipmentSuffix != "" {
-		aircraftType += "/" + fp.EquipmentSuffix
-	}
+// 	fmtTime := func(t time.Time) string {
+// 		return t.UTC().Format("1504")
+// 	}
 
-	fmtfix := func(f string) string {
-		if f == "" {
-			return ""
-		}
-		if len(f) > 3 {
-			f = f[:3]
-		}
-		return f + "  "
-	}
+// 	// Common stuff
+// 	var state *TrackState
+// 	if trk != nil {
+// 		state = sp.TrackState[trk.ADSBCallsign]
+// 	}
 
-	trkalt := func() string {
-		if trk == nil {
-			return ""
-		} else if trk.Mode == av.TransponderModeAltitude {
-			return fmt.Sprintf("%03d ", int(trk.TransponderAltitude+50)/100)
-		} else if fp.PilotReportedAltitude != 0 {
-			return fmt.Sprintf("%03d ", fp.PilotReportedAltitude/100)
-		} else {
-			return "RDR "
-		}
-	}
-	result := string(fp.ACID) + " " // all start with aricraft id
-	switch fp.TypeOfFlight {
-	case av.FlightTypeOverflight:
-		result += aircraftType + " "
-		result += fp.AssignedSquawk.String() + " " + fp.TrackingController + " "
-		result += trkalt()
-		result += "\n"
+// 	var aircraftType string
+// 	if fp.AircraftCount > 1 {
+// 		aircraftType = strconv.Itoa(fp.AircraftCount) + "/"
+// 	}
+// 	aircraftType += fp.AircraftType
+// 	if fp.CWTCategory != "" {
+// 		aircraftType += "/" + fp.CWTCategory
+// 	}
+// 	if fp.RNAV {
+// 		aircraftType += "^"
+// 	}
+// 	if fp.EquipmentSuffix != "" {
+// 		aircraftType += "/" + fp.EquipmentSuffix
+// 	}
 
-		result += fmtfix(fp.EntryFix)
-		if state != nil {
-			result += "E" + fmtTime(state.FirstRadarTrackTime) + " "
-		} else {
-			result += "E" + fmtTime(fp.CoordinationTime) + " "
-		}
-		result += fmtfix(fp.ExitFix)
-		if fp.RequestedAltitude != 0 {
-			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + "\n"
-		}
+// 	fmtfix := func(f string) string {
+// 		if f == "" {
+// 			return ""
+// 		}
+// 		if len(f) > 3 {
+// 			f = f[:3]
+// 		}
+// 		return f + "  "
+// 	}
 
-		// TODO: [mode S equipage] [target identification] [target address]
+// 	trkalt := func() string {
+// 		if trk == nil {
+// 			return ""
+// 		} else if trk.Mode == av.TransponderModeAltitude {
+// 			return fmt.Sprintf("%03d ", int(trk.TransponderAltitude+50)/100)
+// 		} else if fp.PilotReportedAltitude != 0 {
+// 			return fmt.Sprintf("%03d ", fp.PilotReportedAltitude/100)
+// 		} else {
+// 			return "RDR "
+// 		}
+// 	}
+// 	result := string(fp.ACID) + " " // all start with aricraft id
+// 	switch fp.TypeOfFlight {
+// 	case av.FlightTypeOverflight:
+// 		result += aircraftType + " "
+// 		result += fp.AssignedSquawk.String() + " " + fp.TrackingController + " "
+// 		result += trkalt()
+// 		result += "\n"
 
-	case av.FlightTypeDeparture:
-		if state == nil || state.FirstRadarTrackTime.IsZero() {
-			// Proposed departure
-			result += aircraftType + " "
-			result += fp.AssignedSquawk.String() + " " + fp.TrackingController + "\n"
+// 		result += fmtfix(fp.EntryFix)
+// 		if state != nil {
+// 			result += "E" + fmtTime(state.FirstRadarTrackTime) + " "
+// 		} else {
+// 			result += "E" + fmtTime(fp.CoordinationTime) + " "
+// 		}
+// 		result += fmtfix(fp.ExitFix)
+// 		if fp.RequestedAltitude != 0 {
+// 			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + "\n"
+// 		}
 
-			result += fmtfix(fp.EntryFix)
-			result += fmtfix(fp.ExitFix)
-			if !fp.CoordinationTime.IsZero() {
-				result += "P" + fmtTime(fp.CoordinationTime) + " "
-			}
-			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
-		} else {
-			// Active departure
-			result += fp.AssignedSquawk.String() + " "
-			result += fmtfix(fp.EntryFix)
-			result += "D" + fmtTime(state.FirstRadarTrackTime) + " "
-			result += trkalt() + "\n"
+// 		// TODO: [mode S equipage] [target identification] [target address]
 
-			result += fmtfix(fp.ExitFix)
-			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + " "
-			result += aircraftType
+// 	case av.FlightTypeDeparture:
+// 		if state == nil || state.FirstRadarTrackTime.IsZero() {
+// 			// Proposed departure
+// 			result += aircraftType + " "
+// 			result += fp.AssignedSquawk.String() + " " + fp.TrackingController + "\n"
 
-			// TODO: [mode S equipage] [target identification] [target address]
-		}
-	case av.FlightTypeArrival:
-		result += aircraftType + " "
-		result += fp.AssignedSquawk.String() + " "
-		result += fp.TrackingController + " "
-		result += trkalt() + "\n"
+// 			result += fmtfix(fp.EntryFix)
+// 			result += fmtfix(fp.ExitFix)
+// 			if !fp.CoordinationTime.IsZero() {
+// 				result += "P" + fmtTime(fp.CoordinationTime) + " "
+// 			}
+// 			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
+// 		} else {
+// 			// Active departure
+// 			result += fp.AssignedSquawk.String() + " "
+// 			result += fmtfix(fp.EntryFix)
+// 			result += "D" + fmtTime(state.FirstRadarTrackTime) + " "
+// 			result += trkalt() + "\n"
 
-		result += fmtfix(fp.EntryFix)
-		if state != nil {
-			result += "A" + fmtTime(state.FirstRadarTrackTime) + " "
-		} else {
-			result += "A" + fmtTime(fp.CoordinationTime) + " "
-		}
-		result += fmtfix(fp.ExitFix)
-		// TODO: [mode S equipage] [target identification] [target address]
+// 			result += fmtfix(fp.ExitFix)
+// 			result += "R" + fmt.Sprintf("%03d", fp.RequestedAltitude/100) + " "
+// 			result += aircraftType
 
-	default:
-		return "FLIGHT TYPE UNKNOWN"
-	}
+// 			// TODO: [mode S equipage] [target identification] [target address]
+// 		}
+// 	case av.FlightTypeArrival:
+// 		result += aircraftType + " "
+// 		result += fp.AssignedSquawk.String() + " "
+// 		result += fp.TrackingController + " "
+// 		result += trkalt() + "\n"
 
-	return result
-}
+// 		result += fmtfix(fp.EntryFix)
+// 		if state != nil {
+// 			result += "A" + fmtTime(state.FirstRadarTrackTime) + " "
+// 		} else {
+// 			result += "A" + fmtTime(fp.CoordinationTime) + " "
+// 		}
+// 		result += fmtfix(fp.ExitFix)
+// 		// TODO: [mode S equipage] [target identification] [target address]
+
+// 	default:
+// 		return "FLIGHT TYPE UNKNOWN"
+// 	}
+
+// 	return result
+// }

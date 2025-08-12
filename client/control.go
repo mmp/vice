@@ -46,7 +46,7 @@ func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
 	}, nil, nil), nil))
 }
 
-func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, callback func(error)) {
+func (c *ControlClient) CreateFlightPlan(spec sim.FlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go("Sim.CreateFlightPlan", &server.CreateFlightPlanArgs{
@@ -55,7 +55,7 @@ func (c *ControlClient) CreateFlightPlan(spec sim.STARSFlightPlanSpecifier, call
 		}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlanSpecifier, callback func(error)) {
+func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.FlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go("Sim.ModifyFlightPlan", &server.ModifyFlightPlanArgs{
@@ -65,7 +65,7 @@ func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.STARSFlightPlan
 		}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier, callback func(error)) {
+func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier, callback func(error)) {
 	var update sim.StateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go("Sim.AssociateFlightPlan", &server.AssociateFlightPlanArgs{
@@ -80,7 +80,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.S
 			}))
 }
 
-func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.STARSFlightPlanSpecifier,
+func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.FlightPlanSpecifier,
 	callback func(error)) {
 	var update sim.StateUpdate
 	c.addCall(
@@ -372,6 +372,23 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.DeleteAircraft", &server.DeleteAircraftListArgs{
 		ControllerToken: c.controllerToken,
 		Aircraft:        aircraft,
+	}, &update, nil), &update, callback))
+}
+
+func (c *ControlClient) GetQULines(aircraft sim.ACID, callback func(err error)) {
+	var update sim.StateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.SendCoordinateInfo", &server.SendCoordinateInfoArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            aircraft,
+	}, &update, nil), &update, callback))
+}
+
+func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback func(err error)) {
+	var update sim.StateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.FlightPlanDirect", &server.FlightPlanDirectArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            aircraft,
+		Fix:             fix,
 	}, &update, nil), &update, callback))
 }
 

@@ -452,14 +452,15 @@ type AirspaceAwareness struct {
 	AircraftType        []string `json:"aircraft_type"`
 }
 
-type STARSFlightPlan struct {
+type NASFlightPlan struct {
 	ACID                  ACID
+	CID                   string
 	EntryFix              string
 	ExitFix               string
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time
-	PlanType              STARSFlightPlanType
+	PlanType              NASFlightPlanType
 
 	AssignedSquawk av.Squawk
 
@@ -475,6 +476,12 @@ type STARSFlightPlan struct {
 	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
+	InterimAlt            int
+	InterimType           int
+	AltitudeBlock         [2]int
+	ControllerReportedAlt int
+	VFROTP                bool
+
 	RequestedAltitude     int
 	PilotReportedAltitude int
 
@@ -487,6 +494,7 @@ type STARSFlightPlan struct {
 	RNAV bool
 
 	Location math.Point2LL
+	Route    string
 
 	PointOutHistory             []string
 	InhibitModeCAltitudeDisplay bool
@@ -527,14 +535,14 @@ type STARSFlightPlan struct {
 
 type ACID string
 
-type STARSFlightPlanSpecifier struct {
+type FlightPlanSpecifier struct {
 	ACID                  util.Optional[ACID]
 	EntryFix              util.Optional[string]
 	ExitFix               util.Optional[string]
 	ExitFixIsIntermediate util.Optional[bool]
 	Rules                 util.Optional[av.FlightRules]
 	CoordinationTime      util.Optional[time.Time]
-	PlanType              util.Optional[STARSFlightPlanType]
+	PlanType              util.Optional[NASFlightPlanType]
 
 	SquawkAssignment         util.Optional[string]
 	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
@@ -548,6 +556,11 @@ type STARSFlightPlanSpecifier struct {
 	TypeOfFlight util.Optional[av.TypeOfFlight]
 
 	AssignedAltitude      util.Optional[int]
+	InterimAlt            util.Optional[int]
+	InterimType           util.Optional[string]
+	AltitudeBlock         util.Optional[[2]int]
+	ControllerReportedAlt util.Optional[int]
+	VFROTP                util.Optional[bool]
 	RequestedAltitude     util.Optional[int]
 	PilotReportedAltitude util.Optional[int]
 
@@ -575,9 +588,9 @@ type STARSFlightPlanSpecifier struct {
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
 }
 
-func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool) (STARSFlightPlan, error) {
-	sfp := STARSFlightPlan{
+func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
+	nasPool *av.EnrouteSquawkCodePool) (NASFlightPlan, error) {
+	sfp := NASFlightPlan{
 		ACID:                  s.ACID.GetOr(""),
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
@@ -648,7 +661,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 	return sfp, err
 }
 
-func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, rules av.FlightRules,
+func assignCode(assignment util.Optional[string], planType NASFlightPlanType, rules av.FlightRules,
 	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
@@ -667,7 +680,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	}
 }
 
-func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
+func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
 	nasPool *av.EnrouteSquawkCodePool) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
@@ -714,6 +727,20 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 			if rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
 				fp.DisableMSAW = true
 			}
+		}
+	}
+	if spec.InterimAlt.IsSet {
+		fp.InterimAlt = spec.InterimAlt.Get()
+		fmt.Println("Interim altitude:", fp.InterimAlt)
+	}
+	if spec.InterimType.IsSet {
+		interimType := spec.InterimType.Get()
+		fmt.Println("Interim type:", interimType)
+		switch interimType {
+		case "L":
+			fp.InterimType = 2
+		case "P":
+			fp.InterimType = 1
 		}
 	}
 
@@ -810,11 +837,11 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	return
 }
 
-type STARSFlightPlanType int
+type NASFlightPlanType int
 
 // Flight plan types (STARS)
 const (
-	UnknownFlightPlanType STARSFlightPlanType = iota
+	UnknownFlightPlanType NASFlightPlanType = iota
 
 	// Flight plan received from a NAS ARTCC.  This is a flight plan that
 	// has been sent over by an overlying ERAM facility.

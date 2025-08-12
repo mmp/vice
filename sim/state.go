@@ -32,7 +32,7 @@ type State struct {
 	Tracks map[av.ADSBCallsign]*Track
 
 	// Unassociated ones, including unsupported DBs
-	UnassociatedFlightPlans []*STARSFlightPlan
+	UnassociatedFlightPlans []*NASFlightPlan
 
 	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
@@ -408,14 +408,14 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp *STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		func(fp *NASFlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
 
 	return false
 }
 
-func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
+func (ss *State) FindMatchingFlightPlan(s string) *NASFlightPlan {
 	n := -1
 	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
 		n = pn
@@ -468,6 +468,24 @@ func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
 	return nil, false
 }
 
+func (ss *State) GetTrackByFLID(flid string) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if !trk.IsAssociated() {
+			continue
+		}
+		if trk.FlightPlan.CID == flid {
+			return ss.Tracks[i], true
+		}
+		if trk.ADSBCallsign == av.ADSBCallsign(flid) {
+			return ss.Tracks[i], true
+		}
+		if sq, err := av.ParseSquawk(flid); err != nil && trk.FlightPlan.AssignedSquawk == sq {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
 func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 	for i, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
@@ -480,7 +498,7 @@ func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 
 // FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
 // FIXME FIXME FIXME
-func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
+func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
 	for _, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			return trk.FlightPlan

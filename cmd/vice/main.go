@@ -302,6 +302,15 @@ func main() {
 		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
+					// Determine if this is a STARS or ERAM scenario
+					isSTARSSim := c.State.TRACON != ""
+					
+					// Rebuild the display hierarchy with the appropriate pane
+					config.RebuildDisplayRootForSim(isSTARSSim)
+					
+					// Reactivate the display hierarchy
+					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
+					
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
 				uiResetControlClient(c, plat, lg)
