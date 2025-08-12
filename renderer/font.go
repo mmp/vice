@@ -395,7 +395,29 @@ func AvailableFontSizes(name string) []int {
 var fontsFS fs.StatFS
 
 func init() {
-	dir, err := os.Getwd()
+	path, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+
+	dir := filepath.Dir(path)
+	if runtime.GOOS == "darwin" {
+		dir = filepath.Clean(filepath.Join(dir, "..", "Resources"))
+	}
+
+	// Is there a "fonts" directory in the FS?
+	check := func(fs fs.StatFS) bool {
+		info, err := fs.Stat("fonts")
+		return err == nil && info.IsDir()
+	}
+
+	fsys := os.DirFS(dir).(fs.StatFS)
+	if check(fsys) {
+		fontsFS = fsys
+		return
+	}
+
+	dir, err = os.Getwd()
 	if err != nil {
 		panic(err)
 	}
