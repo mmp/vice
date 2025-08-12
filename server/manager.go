@@ -7,7 +7,6 @@ package server
 import (
 	crand "crypto/rand"
 	"encoding/base64"
-	"encoding/gob"
 	"fmt"
 	"log/slog"
 	gomath "math"
@@ -30,6 +29,7 @@ import (
 	"github.com/brunoga/deep"
 	"github.com/gorilla/websocket"
 	"github.com/shirou/gopsutil/cpu"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -452,8 +452,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 						continue
 					}
 
-					enc := gob.NewEncoder(w)
-					if err := enc.Encode(ps); err != nil {
+					if err := msgpack.NewEncoder(w).Encode(ps); err != nil {
 						sm.lg.Errorf("speechWs encode: %v", err)
 						continue
 					}

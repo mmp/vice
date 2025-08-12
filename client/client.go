@@ -5,7 +5,6 @@
 package client
 
 import (
-	"encoding/gob"
 	"errors"
 	"fmt"
 	"net"
@@ -25,6 +24,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/gorilla/websocket"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 type ControlClient struct {
@@ -220,9 +220,8 @@ func initializeSpeechWebsocket(controllerToken string, wsURL string, lg *log.Log
 				continue
 			}
 
-			gr := gob.NewDecoder(r)
 			var ps sim.PilotSpeech
-			if err := gr.Decode(&ps); err != nil {
+			if err := msgpack.NewDecoder(r).Decode(&ps); err != nil {
 				lg.Errorf("PilotSpeech: %v", err)
 				continue
 			}
@@ -339,7 +338,6 @@ loop:
 		select {
 		case ps, ok := <-c.speechCh:
 			if ok {
-				//fmt.Printf("got speech %s\n", ps.Callsign)
 				c.bufferedSpeech = append(c.bufferedSpeech, ps)
 			}
 		default:
