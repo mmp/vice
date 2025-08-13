@@ -2,63 +2,114 @@ package main
 
 import (
 	"bytes"
+	"context"
 	_ "embed"
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
+	"image"
 	"image/png"
 	"io"
 	"log"
 	"math"
 	"math/rand"
-	"net"
 	"net/http"
-	"net/http/pprof"
 	"net/url"
 	"os"
-	"path"
 	"path/filepath"
-	"runtime"
-	"slices"
 	"strings"
-	"text/template"
 	"time"
 
-	"github.com/klauspost/compress/zstd"
+	"cloud.google.com/go/storage"
+	"github.com/mmp/vice/util"
+	"google.golang.org/api/iterator"
+	"google.golang.org/api/option"
 )
 
+const bucketName = "vice-wx"
+
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Fprintf(os.Stderr, "usage: wxscrape <scrape-dir>\n")
+	var metar, wx, tfrs bool
+	if len(os.Args) == 1 {
+		metar, wx, tfrs = true, true, true
+	} else {
+		for _, a := range os.Args[1:] {
+			switch strings.ToLower(a) {
+			case "metar":
+				metar = true
+			case "wx":
+				wx = true
+			case "tfrs":
+				tfrs = true
+			default:
+				fmt.Fprintf(os.Stderr, "usage: wxscrape [metar|wx|tfrs]...\n")
+				os.Exit(1)
+			}
+		}
+	}
+
+	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
+	if credsJSON == "" {
+		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set\n")
 		os.Exit(1)
 	}
 
-	if err := os.Chdir(os.Args[1]); err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %v\n", os.Args[1], err)
+	ctx := context.Background()
+	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
+	bucket := client.Bucket(bucketName)
 
-	launchHTTPServer()
-
-	go fetchMETAR()
-	go fetchWX()
-	go fetchHRRR()
-	go fetchTFRs()
-
-	for {
-		time.Sleep(time.Hour)
+	if metar {
+		go fetchMETAR(ctx, bucket)
 	}
+	if wx {
+		go fetchWX(ctx, bucket)
+	}
+	if tfrs {
+		go fetchTFRs(ctx, bucket)
+	}
+
+	select {} // wait forever
 }
 
 func LogInfo(msg string, args ...any) {
 	log.Printf("INFO "+msg, args...)
 }
 
-var errors []string
-
 func LogError(msg string, args ...any) {
 	log.Printf("ERROR "+msg, args...)
-	errors = append(errors, fmt.Sprintf(time.Now().Format(time.DateTime)+" "+msg, args...))
+}
+
+func listExisting(ctx context.Context, bucket *storage.BucketHandle, base string) map[string]interface{} {
+	m := make(map[string]interface{})
+
+	// See what has been archived already
+	query := storage.Query{
+		Projection: storage.ProjectionNoACL,
+		Prefix:     base,
+	}
+	LogInfo("Archiver: listing existing objects in %q", query.Prefix)
+
+	it := bucket.Objects(ctx, &query)
+	var sz int64
+	for {
+		if obj, err := it.Next(); err == iterator.Done {
+			break
+		} else if err != nil {
+			LogError("%v", err)
+			break
+		} else {
+			sz += obj.Size
+			m[obj.Name] = obj.Size
+		}
+	}
+
+	LogInfo("Found %d objects in %q, %s", len(m), query.Prefix, util.ByteCount(sz))
+
+	return m
 }
 
 // https://adip.faa.gov/agis/public/#/airportSearch/advanced -> control tower Yes
@@ -69,9 +120,7 @@ func LogError(msg string, args ...any) {
 //go:embed metar-airports.txt
 var metarAirports string
 
-func fetchMETAR() {
-	os.Mkdir("metar", 0755)
-
+func fetchMETAR(ctx context.Context, bucket *storage.BucketHandle) {
 	var airports []string
 	for ap := range strings.Lines(metarAirports) {
 		airports = append(airports, strings.TrimSpace(ap))
@@ -94,7 +143,7 @@ func fetchMETAR() {
 				LogInfo("%s: fetching METAR: last fetch %s ago", ap, time.Since(t))
 			}
 
-			if doWithBackoff(func() Status { return fetchAirportMETAR(ap) }) {
+			if doWithBackoff(func() Status { return fetchAirportMETAR(ctx, bucket, ap) }) {
 				lastReport[ap] = time.Now()
 			} else {
 				LogError("%s: unable to fetch METAR; giving up for this cycle", ap)
@@ -133,7 +182,7 @@ func doWithBackoff(f func() Status) bool {
 	return false // unsuccessful after multiple retries
 }
 
-func downloadToFile(url, filename string, compress bool) Status {
+func downloadToGCS(ctx context.Context, bucket *storage.BucketHandle, url, objpath string) Status {
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
@@ -144,7 +193,7 @@ func downloadToFile(url, filename string, compress bool) Status {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode != http.StatusOK {
 		LogError("%s: HTTP status code %d", url, resp.StatusCode)
 		if resp.StatusCode >= 500 {
 			return StatusTransientFailure
@@ -152,74 +201,28 @@ func downloadToFile(url, filename string, compress bool) Status {
 		return StatusPermanentFailure
 	}
 
-	if compress {
-		filename += ".zst"
-	}
+	objw := bucket.Object(objpath).NewWriter(ctx)
 
-	tmpFile := filename + ".tmp"
-	f, err := os.Create(tmpFile)
+	_, err = io.Copy(objw, resp.Body)
 	if err != nil {
-		LogError("%s: %v", tmpFile, err)
-		return StatusPermanentFailure
+		LogError("%s: %v", objpath, err)
+		return StatusTransientFailure
 	}
 
-	if compress {
-		zw, err := zstd.NewWriter(f, zstd.WithEncoderLevel(zstd.SpeedBestCompression))
-		if err != nil {
-			f.Close()
-			os.Remove(tmpFile)
-			LogError("%s: %v", tmpFile, err)
-			return StatusTransientFailure
-		}
-
-		_, err = io.Copy(zw, resp.Body)
-		if err != nil {
-			zw.Close()
-			f.Close()
-			os.Remove(tmpFile)
-			LogError("%s: %v", tmpFile, err)
-			return StatusTransientFailure
-		}
-
-		if err = zw.Close(); err != nil {
-			f.Close()
-			os.Remove(tmpFile)
-			LogError("%s: %v", tmpFile, err)
-			return StatusTransientFailure
-		}
-	} else {
-		_, err = io.Copy(f, resp.Body)
-		if err != nil {
-			f.Close()
-			os.Remove(tmpFile)
-			LogError("%s: %v", tmpFile, err)
-			return StatusTransientFailure
-		}
-	}
-
-	if err := f.Close(); err != nil {
-		os.Remove(tmpFile)
-		LogError("%s: %v", tmpFile, err)
-		return StatusPermanentFailure
-	}
-
-	if err := os.Rename(tmpFile, filename); err != nil {
-		os.Remove(tmpFile)
-		LogError("%s -> %s: %v", tmpFile, filename, err)
+	if err := objw.Close(); err != nil {
+		LogError("%s: %v", objpath, err)
 		return StatusPermanentFailure
 	}
 
 	return StatusSuccess
 }
 
-func fetchAirportMETAR(ap string) Status {
-	_ = os.Mkdir(filepath.Join("metar", ap), 0755)
-
+func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap string) Status {
 	const aviationWeatherCenterDataApi = `https://aviationweather.gov/api/data/metar?ids=%s&format=json&hours=%d`
 	requestUrl := fmt.Sprintf(aviationWeatherCenterDataApi, ap, 36 /* hours */)
 
-	fn := filepath.Join("metar", ap, time.Now().Format(time.RFC3339)+".txt")
-	status := downloadToFile(requestUrl, fn, true /* compress */)
+	path := filepath.Join("scrape", "metar", ap, time.Now().Format(time.RFC3339)+".txt")
+	status := downloadToGCS(ctx, bucket, requestUrl, path)
 	if status == StatusSuccess {
 		LogInfo("%s: downloaded METAR data", ap)
 	}
@@ -236,23 +239,19 @@ type TraconSpec struct {
 	Distance  float32 `json:"distance"` // 128 by default
 }
 
-func fetchWX() {
-	os.Mkdir("WX", 0755)
-
+func fetchWX(ctx context.Context, bucket *storage.BucketHandle) {
 	var tracons map[string]TraconSpec
 	if err := json.Unmarshal(traconAirports, &tracons); err != nil {
 		LogError("tracon-airports.json: %v", err)
 	}
 	for tracon, spec := range tracons {
-		go fetchTraconWX(tracon, spec)
+		go fetchTraconWX(ctx, bucket, tracon, spec)
 	}
 }
 
 // fetchTraconWX runs asynchronously in a goroutine and fetches radar
 // images for a single TRACON and writes them to disk.
-func fetchTraconWX(tracon string, spec TraconSpec) {
-	os.Mkdir(filepath.Join("WX", tracon), 0755)
-
+func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon string, spec TraconSpec) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.Intn(200)) * time.Second)
 
@@ -309,23 +308,54 @@ func fetchTraconWX(tracon string, spec TraconSpec) {
 				return StatusTransientFailure
 			}
 
-			img, err := png.Decode(bytes.NewReader(b))
-			if err != nil {
-				LogError("%s: %s: %v", tracon, url, err)
-				return StatusTransientFailure
-			}
-
-			// Is it all-white?
-			haveWX = false
-			bounds := img.Bounds()
-			for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-				for x := bounds.Min.X; x < bounds.Max.X; x++ {
-					r, g, b, _ := img.At(x, y).RGBA()
-					if r != 0xffff || g != 0xffff || b != 0xffff {
-						haveWX = true
-						break
-					}
+			var status Status
+			haveWX, status = func() (bool, Status) {
+				// Skip the PNG decode if we are reasonably assured that there is or is not WX.
+				if fetchDistance == 128 && len(b) <= 5623 {
+					return false, StatusSuccess
+				} else if fetchDistance == 128 && len(b) > 7000 {
+					return true, StatusSuccess
 				}
+
+				// For the few larger-distance fetches and for anything ambiguous, decode and check.
+				img, err := png.Decode(bytes.NewReader(b))
+				if err != nil {
+					LogError("%s: %s: %v", tracon, url, err)
+					return false, StatusTransientFailure
+				}
+
+				if nimg, ok := img.(*image.NRGBA); !ok {
+					// This path is much slower but we'll keep it
+					// around for robustness in case the image format
+					// somehow changes.
+					LogError("%s: %s: PNG is not an *image.NRGBA", tracon, url)
+					bounds := img.Bounds()
+					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+						for x := bounds.Min.X; x < bounds.Max.X; x++ {
+							r, g, b, _ := img.At(x, y).RGBA()
+							if r != 0xffff || g != 0xffff || b != 0xffff {
+								return true, StatusSuccess
+							}
+						}
+					}
+					return false, StatusSuccess
+				} else {
+					bounds := nimg.Rect
+					stride := nimg.Stride
+					pix := nimg.Pix
+					for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+						for x := bounds.Min.X; x < bounds.Max.X; x++ {
+							offset := (y-bounds.Min.Y)*stride + (x-bounds.Min.X)*4
+							if pix[offset] != 0xff || pix[offset+1] != 0xff || pix[offset+2] != 0xff {
+								return true, StatusSuccess
+							}
+						}
+					}
+					return false, StatusSuccess
+				}
+			}()
+			if status != StatusSuccess {
+				return status
 			}
 
 			type WX struct {
@@ -341,29 +371,16 @@ func fetchTraconWX(tracon string, spec TraconSpec) {
 				Longitude:  spec.Longitude,
 			}
 
-			fn := filepath.Join("WX", tracon, time.Now().UTC().Format(time.RFC3339)+".gob.tmp")
-			f, err := os.Create(fn)
-			if err != nil {
-				log.Print(err)
-				return StatusPermanentFailure
-			}
+			path := filepath.Join("scrape", "WX", tracon, time.Now().UTC().Format(time.RFC3339)+".gob")
 
-			if err := gob.NewEncoder(f).Encode(wx); err != nil {
-				log.Print(err)
-				f.Close()
-				os.Remove(fn)
-				return StatusPermanentFailure
-			}
+			objw := bucket.Object(path).NewWriter(ctx)
 
-			if err := f.Close(); err != nil {
-				log.Print(err)
-				os.Remove(fn)
-				return StatusPermanentFailure
+			if err := gob.NewEncoder(objw).Encode(wx); err != nil {
+				LogError("%s: %v", path, err)
+				return StatusTransientFailure
 			}
-
-			if err := os.Rename(fn, strings.TrimSuffix(fn, ".tmp")); err != nil {
-				log.Print(err)
-				os.Remove(fn + ".tmp")
+			if err := objw.Close(); err != nil {
+				LogError("%s: %v", path, err)
 				return StatusPermanentFailure
 			}
 
@@ -388,50 +405,8 @@ func fetchTraconWX(tracon string, spec TraconSpec) {
 	}
 }
 
-func fetchHRRR() {
-	os.Mkdir("HRRR", 0755)
-
-	const baseURL = "https://nomads.ncep.noaa.gov/pub/data/nccf/com/hrrr/prod/hrrr.%s/conus/hrrr.t%02dz.wrfprsf00.grib2"
-
-	tick := time.Tick(5 * time.Minute)
-
-	// Start 24 hours in the past
-	fetchTime := time.Now().Add(-24 * time.Hour).UTC()
-
-	for {
-		// Don't try to fetch stuff that is too recent
-		for time.Since(fetchTime) < 3*time.Hour {
-			<-tick
-		}
-
-		date := fetchTime.Format("20060102")
-		url := fmt.Sprintf(baseURL, date, fetchTime.Hour())
-		fn := filepath.Join("HRRR", date+"-"+path.Base(url))
-
-		if f, err := os.Open(fn); err == nil {
-			LogInfo("%s: already exists. Skipping fetch", fn)
-			fetchTime = fetchTime.Add(time.Hour)
-			f.Close()
-			continue
-		}
-
-		tryFetch := func() Status {
-			LogInfo("Attempting to fetch %s", url)
-			return downloadToFile(url, fn, false /* don't compress */)
-		}
-
-		if doWithBackoff(tryFetch) {
-			LogInfo("%s: finished download", fn)
-			fetchTime = fetchTime.Add(time.Hour)
-		} else {
-			LogError("%s: unable to download", fn)
-			<-tick
-		}
-	}
-}
-
-func fetchTFRs() {
-	os.Mkdir("tfrs", 0755)
+func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle) {
+	existing := listExisting(ctx, bucket, "scrape/tfrs")
 
 	tick := time.Tick(time.Hour)
 
@@ -468,20 +443,21 @@ func fetchTFRs() {
 				safeID := strings.ReplaceAll(tfr.NotamID, "/", "_")
 				safeID = strings.ReplaceAll(safeID, "\\", "_")
 				safeID = strings.ReplaceAll(safeID, ":", "_")
-				xmlFile := filepath.Join("tfrs", safeID+".xml")
+				path := filepath.Join("scrape", "tfrs", safeID+".xml")
 
 				// Check if already downloaded
-				if _, err := os.Stat(xmlFile); err == nil {
+				if _, ok := existing[path]; ok {
 					LogInfo("TFR %s already downloaded", tfr.NotamID)
 					continue
 				}
 
 				// Download the TFR
 				url := fmt.Sprintf("https://tfr.faa.gov/download/detail_%s.xml", safeID)
-				if downloadToFile(url, xmlFile, true /* compress */) != StatusSuccess {
+				if downloadToGCS(ctx, bucket, url, path) != StatusSuccess {
 					LogError("Failed to download TFR %s", tfr.NotamID)
 				} else {
 					LogInfo("Downloaded TFR %s", tfr.NotamID)
+					existing[path] = 0
 				}
 
 				// Small delay between downloads
@@ -493,129 +469,4 @@ func fetchTFRs() {
 
 		<-tick
 	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-var startTime time.Time
-
-func launchHTTPServer() {
-	startTime = time.Now()
-
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
-		statsHandler(w, r)
-	})
-
-	mux.HandleFunc("/debug/pprof/", pprof.Index)
-	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
-	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
-
-	if listener, err := net.Listen("tcp", ":8001"); err == nil {
-		LogInfo("Launching HTTP server on port 8001")
-		go http.Serve(listener, mux)
-	} else {
-		fmt.Fprintf(os.Stderr, "Unable to start HTTP server: %v", err)
-		os.Exit(1)
-	}
-}
-
-type serverStats struct {
-	Uptime           time.Duration
-	AllocMemory      uint64
-	TotalAllocMemory uint64
-	SysMemory        uint64
-	NumGC            uint32
-	NumGoRoutines    int
-	Errors           string
-}
-
-func formatBytes(v int64) string {
-	if v < 1024 {
-		return fmt.Sprintf("%d B", v)
-	} else if v < 1024*1024 {
-		return fmt.Sprintf("%d KiB", v/1024)
-	} else if v < 1024*1024*1024 {
-		return fmt.Sprintf("%d MiB", v/1024/1024)
-	} else {
-		return fmt.Sprintf("%d GiB", v/1024/1024/1024)
-	}
-}
-
-var templateFuncs = template.FuncMap{"bytes": formatBytes}
-
-var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
-<!DOCTYPE html>
-<html>
-<head>
-<title>wxscrape status</title>
-</head>
-<style>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  border: 1px solid #dddddd;
-  padding: 8px;
-  text-align: left;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-#log {
-    font-family: "Courier New", monospace;  /* use a monospace font */
-    width: 100%;
-    height: 500px;
-    font-size: 12px;
-    overflow: auto;  /* add scrollbars as necessary */
-    white-space: pre-wrap;  /* wrap text */
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-</style>
-<body>
-<h1>Status</h1>
-<ul>
-  <li>Uptime: {{.Uptime}}</li>
-  <li>Allocated memory: {{.AllocMemory}} MB</li>
-  <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
-  <li>System memory: {{.SysMemory}} MB</li>
-  <li>Garbage collection passes: {{.NumGC}}</li>
-  <li>Running goroutines: {{.NumGoRoutines}}</li>
-</ul>
-
-<h1>Errors</h1>
-<pre>
-{{.Errors}}
-</pre>
-
-</body>
-</html>
-`))
-
-func statsHandler(w http.ResponseWriter, r *http.Request) {
-	var m runtime.MemStats
-	runtime.ReadMemStats(&m)
-
-	errs := slices.Clone(errors)
-	slices.Reverse(errs)
-
-	stats := serverStats{
-		Uptime:           time.Since(startTime).Round(time.Second),
-		AllocMemory:      m.Alloc / (1024 * 1024),
-		TotalAllocMemory: m.TotalAlloc / (1024 * 1024),
-		SysMemory:        m.Sys / (1024 * 1024),
-		NumGC:            m.NumGC,
-		NumGoRoutines:    runtime.NumGoroutine(),
-		Errors:           strings.Join(errs, "\n"),
-	}
-
-	statsTemplate.Execute(w, stats)
 }
