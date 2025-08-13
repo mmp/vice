@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 const bucketName = "vice-wx"
@@ -116,11 +115,7 @@ func EnqueueFiles(dir string, ch chan<- string) error {
 	return err
 }
 
-var startTime time.Time
-
 func launchHTTPServer() {
-	startTime = time.Now()
-
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
