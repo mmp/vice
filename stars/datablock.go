@@ -13,7 +13,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/radar"	
+	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
