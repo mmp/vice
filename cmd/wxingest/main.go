@@ -77,20 +77,6 @@ func main() {
 	}
 }
 
-type ByteCount int64
-
-func (b ByteCount) String() string {
-	if b < 1024 {
-		return fmt.Sprintf("%d B", b)
-	} else if b < 1024*1024 {
-		return fmt.Sprintf("%d kB", b/1024)
-	} else if b < 1024*1024*1024 {
-		return fmt.Sprintf("%.1f MB", float64(b)/(1024*1024))
-	} else {
-		return fmt.Sprintf("%.1f GB", float64(b)/(1024*1024*1024))
-	}
-}
-
 type CountingWriter struct {
 	io.Writer
 	N int64

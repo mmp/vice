@@ -521,7 +521,7 @@ func uploadWindGrid(g *WindGrid, st StorageBackend, arch *Archiver) error {
 	close(cellCh)
 
 	wg.Wait()
-	LogInfo("%s: %s stored in %d objects for HRRR file", g.HRRRPath, ByteCount(totBytes), len(g.Cells))
+	LogInfo("%s: %s stored in %d objects for HRRR file", g.HRRRPath, util.ByteCount(totBytes), len(g.Cells))
 	LogInfo("upload finished in %s", time.Since(start))
 
 	start = time.Now()

@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/mmp/vice/util"
+
 	"cloud.google.com/go/storage"
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
@@ -36,7 +38,7 @@ func (d DryRunBackend) Store(path string, object any) (int64, error) {
 		return 0, err
 	}
 
-	LogInfo("%s: would have stored %s if not -dryrun", path, ByteCount(cw.N))
+	LogInfo("%s: would have stored %s if not -dryrun", path, util.ByteCount(cw.N))
 	return cw.N, nil
 }
 
@@ -87,7 +89,7 @@ func (g GCSBackend) Store(path string, object any) (int64, error) {
 		return 0, err
 	}
 
-	LogInfo("%s: uploaded, %s", path, ByteCount(cw.N))
+	LogInfo("%s: uploaded, %s", path, util.ByteCount(cw.N))
 	return cw.N, nil
 }
 
@@ -128,7 +130,7 @@ func (fb FileBackend) Store(path string, object any) (int64, error) {
 		return 0, err
 	}
 
-	LogInfo("%s: wrote %s", path, ByteCount(cw.N))
+	LogInfo("%s: wrote %s", path, util.ByteCount(cw.N))
 	return cw.N, nil
 
 }

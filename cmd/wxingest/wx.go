@@ -54,7 +54,7 @@ func ingestWX(st StorageBackend) {
 	}
 	wg.Wait()
 
-	LogInfo("Total of %s of WX stored this run", ByteCount(totalBytes))
+	LogInfo("Total of %s of WX stored this run", util.ByteCount(totalBytes))
 }
 
 func processWX(st StorageBackend, path string, arch *Archiver, tree *kdNode) (int64, error) {

@@ -318,7 +318,7 @@ func storeMETAR(st StorageBackend, airportMETAR map[string][]FileMETAR) {
 	close(ch)
 	wg.Wait()
 
-	LogInfo("Stored %s in %d objects for METAR", ByteCount(totalBytes), len(airportMETAR))
+	LogInfo("Stored %s in %d objects for METAR", util.ByteCount(totalBytes), len(airportMETAR))
 }
 
 func storeAirportMETAR(st StorageBackend, ap string, fm []FileMETAR) (int64, error) {

@@ -64,7 +64,7 @@ func MakeArchiver(base string, flags int) (*Archiver, error) {
 			}
 		}
 
-		LogInfo("Archiver: found %d objects, %s", arch.ArchivedFiles(), ByteCount(arch.ArchivedFileSize()))
+		LogInfo("Archiver: found %d objects, %s", arch.ArchivedFiles(), util.ByteCount(arch.ArchivedFileSize()))
 	}
 
 	return arch, nil

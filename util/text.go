@@ -7,6 +7,7 @@ package util
 import (
 	"crypto/sha256"
 	"errors"
+	"fmt"
 	"hash/fnv"
 	"io"
 	"iter"
@@ -14,6 +15,20 @@ import (
 	"strings"
 	"unicode"
 )
+
+type ByteCount int64
+
+func (b ByteCount) String() string {
+	if b < 1024 {
+		return fmt.Sprintf("%d B", b)
+	} else if b < 1024*1024 {
+		return fmt.Sprintf("%d kB", b/1024)
+	} else if b < 1024*1024*1024 {
+		return fmt.Sprintf("%.1f MB", float64(b)/(1024*1024))
+	} else {
+		return fmt.Sprintf("%.1f GB", float64(b)/(1024*1024*1024))
+	}
+}
 
 // WrapText wraps the provided text string to the given column limit, returning the
 // wrapped string and the number of lines it became.  indent gives the amount to
