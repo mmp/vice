@@ -43,8 +43,12 @@ jobs:
       env:
          VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
-        go run ./cmd/bundleresources
-        mv manifest.json cmd/vice
+        if [ -z "${{ secrets.GCS_UPLOAD_CREDENTIALS }}" ]; then
+            go run ./cmd/bundleresources
+            mv manifest.json cmd/vice
+        else
+            touch cmd/vice/manifest.json
+        fi
 
     - name: Build
       run: |
