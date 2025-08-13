@@ -42,10 +42,10 @@ jobs:
          VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
       run: |
         if [ -z "${{ secrets.GCS_UPLOAD_CREDENTIALS }}" ]; then
+            touch cmd/vice/manifest.json
+        else
             go run ./cmd/bundleresources
             mv manifest.json cmd/vice
-        else
-            touch cmd/vice/manifest.json
         fi
 
     - name: Build universal binary
