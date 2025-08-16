@@ -5,7 +5,6 @@
 package sim
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -212,7 +211,7 @@ type PhraseFormatString string
 func (s PhraseFormatString) Written(r *rand.Rand, args []any) string {
 	sr := s.resolveOptions(r, nil)
 
-	var result bytes.Buffer
+	var result strings.Builder
 	sr.applyFormatting(args, func(fmt SnippetFormatter, arg any) {
 		result.WriteString(fmt.Written(arg))
 	}, func(ch rune) {
@@ -224,7 +223,7 @@ func (s PhraseFormatString) Written(r *rand.Rand, args []any) string {
 func (s PhraseFormatString) Spoken(r *rand.Rand, args []any) string {
 	sr := s.resolveOptions(r, nil)
 
-	var result bytes.Buffer
+	var result strings.Builder
 	sr.applyFormatting(args, func(f SnippetFormatter, arg any) {
 		result.WriteString(f.Spoken(r, arg))
 	}, func(ch rune) {
