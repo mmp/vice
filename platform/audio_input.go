@@ -10,6 +10,7 @@ import "C"
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"unsafe"
 
@@ -57,13 +58,17 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 		UserData: unsafe.Pointer(ar),
 	}
 
-	// If deviceName is empty, use the default device
-	var deviceToUse *string
-	if deviceName != "" {
-		deviceToUse = &deviceName
+	// Use SDL's default device mechanism for empty string
+	var deviceID sdl.AudioDeviceID
+	var err error
+	if deviceName == "" {
+		deviceID, err = sdl.OpenAudioDevice("", true, &spec, nil, 0)
+	} else {
+		// For named devices, we need to pass a C string directly
+		// to avoid the Go pointer issue
+		deviceID, err = sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
 	}
-
-	deviceID, err := sdl.OpenAudioDevice(deviceToUse, true, &spec, nil, 0)
+	
 	if err != nil {
 		return fmt.Errorf("failed to open audio device: %v", err)
 	}

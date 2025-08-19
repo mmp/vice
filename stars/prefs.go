@@ -152,8 +152,7 @@ type CommonPreferences struct {
 
 	AudioVolume int // 1-10
 
-	PushToTalkKey      imgui.Key // Key for push-to-talk functionality
-	SelectedMicrophone string    // Selected microphone device name
+
 
 	RadarTrackHistory int // Number of history markers
 	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
@@ -342,7 +341,6 @@ func makeDefaultPreferences() *Preferences {
 	prefs.RadarTrackHistoryRate = 4.5
 
 	prefs.AudioVolume = 10
-	prefs.PushToTalkKey = imgui.KeyV // Default to V key for push-to-talk
 	prefs.AudioEffectEnabled = make([]bool, AudioNumTypes)
 	for i := range AudioNumTypes {
 		prefs.AudioEffectEnabled[i] = false // These are all non-standard.

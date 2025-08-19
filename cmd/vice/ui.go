@@ -42,6 +42,7 @@ var (
 		menuBarHeight float32
 
 		showAboutDialog bool
+		showSTT         bool
 
 		iconTextureID     uint32
 		sadTowerTextureID uint32
@@ -52,6 +53,7 @@ var (
 
 		launchControlWindow  *LaunchControlWindow
 		missingPrimaryDialog *ModalDialogBox
+		sttPane              *panes.STTPane
 
 		// Scenario routes to draw on the scope
 		showSettings      bool
@@ -233,6 +235,13 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Show summary of keyboard commands")
 		}
 
+		if imgui.Button(renderer.FontAwesomeIconMicrophone) {
+			ui.showSTT = !ui.showSTT
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Show Speech-to-Text window")
+		}
+
 		flashDep := controlClient != nil && !ui.showLaunchControl &&
 			len(controlClient.State.GetRegularReleaseDepartures()) > 0 && (time.Now().UnixMilli()/500)&1 == 1
 		if flashDep {
@@ -285,6 +294,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 		if ui.showScenarioInfo {
 			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
+		}
+
+		if ui.showSTT {
+			uiDrawSTTWindow(p, render, lg)
 		}
 
 		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
@@ -1347,6 +1360,28 @@ func uiDrawMissingPrimaryDialog(mgr *client.ConnectionManager, c *client.Control
 			uiShowModalDialog(ui.missingPrimaryDialog, true)
 		}
 	}
+}
+
+func uiDrawSTTWindow(p platform.Platform, r renderer.Renderer, lg *log.Logger) {
+	if ui.sttPane == nil {
+		ui.sttPane = &panes.STTPane{
+			FontSize: 14,
+		}
+	}
+
+	// Create a minimal context for the STT pane
+	ctx := &panes.Context{
+		Platform:   p,
+		Renderer:   r,
+		Lg:         lg,
+		HaveFocus:  true,
+		Keyboard:   p.GetKeyboard(),
+		Mouse:      p.GetMouse(),
+		Now:        time.Now(),
+	}
+
+	// Draw the STT pane
+	ui.sttPane.Draw(ctx, nil)
 }
 
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform) {
