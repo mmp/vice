@@ -24,10 +24,10 @@ type STTPane struct {
 	SelectedMicrophone string
 
 	// State
-	pushToTalkRecording bool
-	lastTranscription   string
-	recordingPTTKey     bool      // Whether we're recording a new PTT key
-	capturedKey         imgui.Key // Temporarily captured key during recording
+	PushToTalkRecording bool
+	LastTranscription   string
+	RecordingPTTKey     bool      // Whether we're recording a new PTT key
+	CapturedKey         imgui.Key // Temporarily captured key during recording
 
 	// Display settings
 	FontSize      int
@@ -81,27 +81,27 @@ func (sp *STTPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		// Push-to-talk key recording
 		keyName := "None"
 		if sp.PushToTalkKey != imgui.KeyNone {
-			keyName = getKeyName(sp.PushToTalkKey)
+			keyName = GetKeyName(sp.PushToTalkKey)
 		}
 		
 		imgui.Text("Push-to-Talk Key: ")
 		imgui.SameLine()
 		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
 
-		if sp.recordingPTTKey {
+		if sp.RecordingPTTKey {
 			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
 			
 			// Check for any key press
-			if sp.capturedKey != imgui.KeyNone {
-				sp.PushToTalkKey = sp.capturedKey
-				sp.recordingPTTKey = false
-				sp.capturedKey = imgui.KeyNone
+			if sp.CapturedKey != imgui.KeyNone {
+				sp.PushToTalkKey = sp.CapturedKey
+				sp.RecordingPTTKey = false
+				sp.CapturedKey = imgui.KeyNone
 			}
 		} else {
 			imgui.SameLine()
 			if imgui.Button("Change Key") {
-				sp.recordingPTTKey = true
-				sp.capturedKey = imgui.KeyNone
+				sp.RecordingPTTKey = true
+				sp.CapturedKey = imgui.KeyNone
 			}
 			imgui.SameLine()
 			if imgui.Button("Clear") {
@@ -136,11 +136,11 @@ func (sp *STTPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		imgui.Separator()
 
 		// Push-to-talk status
-		if sp.pushToTalkRecording {
+		if sp.PushToTalkRecording {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
-		} else if sp.lastTranscription != "" {
+		} else if sp.LastTranscription != "" {
 			imgui.Text("Last transcription:")
-			imgui.TextWrapped(sp.lastTranscription)
+			imgui.TextWrapped(sp.LastTranscription)
 		}
 
 		imgui.End()
@@ -153,14 +153,14 @@ func (sp *STTPane) processKeyboardInput(ctx *Context) {
 	}
 
 	// If we're recording a PTT key, capture any key press
-	if sp.recordingPTTKey {
+	if sp.RecordingPTTKey {
 		for key := range ctx.Keyboard.Pressed {
 			// Ignore modifier keys
 			if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
 				key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
 				key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
 				key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
-				sp.capturedKey = key
+				sp.CapturedKey = key
 				return // Don't process normal key commands while recording
 			}
 		}
@@ -170,12 +170,12 @@ func (sp *STTPane) processKeyboardInput(ctx *Context) {
 	// Handle push-to-talk
 	for key := range ctx.Keyboard.Pressed {
 		if key == sp.PushToTalkKey && sp.PushToTalkKey != imgui.KeyNone {
-			if !sp.pushToTalkRecording {
+			if !sp.PushToTalkRecording {
 				// Start recording with selected microphone
 				if err := ctx.Platform.StartAudioRecordingWithDevice(sp.SelectedMicrophone); err != nil {
 					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
 				} else {
-					sp.pushToTalkRecording = true
+					sp.PushToTalkRecording = true
 					fmt.Println("Push-to-talk: Started recording")
 				}
 			}
@@ -183,7 +183,7 @@ func (sp *STTPane) processKeyboardInput(ctx *Context) {
 	}
 
 	// Check for push-to-talk key release
-	if sp.pushToTalkRecording && ctx.Keyboard != nil {
+	if sp.PushToTalkRecording && ctx.Keyboard != nil {
 		if sp.PushToTalkKey != imgui.KeyNone && !imgui.IsKeyDown(sp.PushToTalkKey) {
 			// Stop recording and transcribe
 			audioData, err := ctx.Platform.StopAudioRecording()
@@ -205,17 +205,17 @@ func (sp *STTPane) processKeyboardInput(ctx *Context) {
 					if err != nil {
 						fmt.Printf("Push-to-talk: Transcription error: %v\n", err)
 					} else {
-						sp.lastTranscription = transcription
+						sp.LastTranscription = transcription
 						fmt.Printf("Push-to-talk: Transcription: %s\n", transcription)
 					}
 				}(audioData)
 			}
-			sp.pushToTalkRecording = false
+			sp.PushToTalkRecording = false
 		}
 	}
 }
 
-func getKeyName(key imgui.Key) string {
+func GetKeyName(key imgui.Key) string {
 	switch key {
 	case imgui.KeyA:
 		return "A"
