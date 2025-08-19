@@ -64,6 +64,8 @@ func (sp *STTPane) Deactivate() {
 
 func (sp *STTPane) CanTakeKeyboardFocus() bool { return true }
 
+func (sp *STTPane) Hide() bool { return false }
+
 func (sp *STTPane) Name() string { return "Speech to Text" }
 
 func (sp *STTPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
