@@ -32,7 +32,7 @@ var (
 	whisperWrap    *whisperWrapper
 )
 
-// Prepare initializes the Whisper wrapper and preloads the model
+// Initializes the wrapper and preloads model
 func Prepare(lg *vclog.Logger) error {
 	whisperOnce.Do(func() {
 		ww, err := newWhisperWrapper(lg)
@@ -44,7 +44,7 @@ func Prepare(lg *vclog.Logger) error {
 			whisperInitErr = fmt.Errorf("setup whisper: %w", err)
 			return
 		}
-		// Preload the model so first transcription is faster and more reliable
+		// Preload model
 		if err := ww.PreloadModel(); err != nil {
 			lg.Warnf("Whisper preload failed (continuing): %v", err)
 		}
@@ -52,7 +52,7 @@ func Prepare(lg *vclog.Logger) error {
 		if whisperWrap != nil {
 			dev, ct := whisperWrap.Settings()
 			modelName := "tiny"
-			if dev == "cuda" {
+			if dev == "cuda" { // Use a large model if CUDA is available
 				modelName = "large"
 			}
 			lg.Infof("Whisper model ready: device=%s compute_type=%s model=%s", dev, ct, modelName)
