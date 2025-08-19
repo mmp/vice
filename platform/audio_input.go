@@ -33,8 +33,13 @@ func NewAudioRecorder(lg *log.Logger) *AudioRecorder {
 	}
 }
 
-// StartRecording starts recording audio from the microphone
+// StartRecording starts recording audio from the default microphone
 func (ar *AudioRecorder) StartRecording() error {
+	return ar.StartRecordingWithDevice("")
+}
+
+// StartRecordingWithDevice starts recording audio from the specified microphone
+func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
 
@@ -52,7 +57,13 @@ func (ar *AudioRecorder) StartRecording() error {
 		UserData: unsafe.Pointer(ar),
 	}
 
-	deviceID, err := sdl.OpenAudioDevice("", true, &spec, nil, 0)
+	// If deviceName is empty, use the default device
+	var deviceToUse *string
+	if deviceName != "" {
+		deviceToUse = &deviceName
+	}
+
+	deviceID, err := sdl.OpenAudioDevice(deviceToUse, true, &spec, nil, 0)
 	if err != nil {
 		return fmt.Errorf("failed to open audio device: %v", err)
 	}
@@ -64,7 +75,7 @@ func (ar *AudioRecorder) StartRecording() error {
 	// Start recording
 	sdl.PauseAudioDevice(deviceID, false)
 
-	ar.lg.Info("Started audio recording")
+	ar.lg.Infof("Started audio recording from device: %s", deviceName)
 	return nil
 }
 
@@ -104,4 +115,19 @@ func (ar *AudioRecorder) addAudioData(data []int16) {
 	if ar.recording {
 		ar.audioData = append(ar.audioData, data...)
 	}
+}
+
+// GetAudioInputDevices returns a list of available audio input devices
+func GetAudioInputDevices() []string {
+	count := sdl.GetNumAudioDevices(true) // true for capture devices
+	devices := make([]string, 0, count)
+	
+	for i := 0; i < count; i++ {
+		name := sdl.GetAudioDeviceName(i, true)
+		if name != "" {
+			devices = append(devices, name)
+		}
+	}
+	
+	return devices
 }

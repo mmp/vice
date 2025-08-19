@@ -188,6 +188,8 @@ type STARSPane struct {
 	// Push-to-talk state
 	pushToTalkRecording bool
 	lastTranscription   string
+	recordingPTTKey     bool      // Whether we're recording a new PTT key
+	capturedKey         imgui.Key // Temporarily captured key during recording
 
 	highlightedLocation        math.Point2LL
 	highlightedLocationEndTime time.Time

@@ -779,10 +779,18 @@ func (g *glfwPlatform) StartAudioRecording() error {
 	return g.audioRecorder.StartRecording()
 }
 
+func (g *glfwPlatform) StartAudioRecordingWithDevice(deviceName string) error {
+	return g.audioRecorder.StartRecordingWithDevice(deviceName)
+}
+
 func (g *glfwPlatform) StopAudioRecording() ([]int16, error) {
 	return g.audioRecorder.StopRecording()
 }
 
 func (g *glfwPlatform) IsAudioRecording() bool {
 	return g.audioRecorder.IsRecording()
+}
+
+func (g *glfwPlatform) GetAudioInputDevices() []string {
+	return GetAudioInputDevices()
 }

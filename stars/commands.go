@@ -219,6 +219,21 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 
 	ps := sp.currentPrefs()
 
+	// If we're recording a PTT key, capture any key press
+	if sp.recordingPTTKey {
+		for key := range ctx.Keyboard.Pressed {
+			// Ignore modifier keys
+			if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
+				key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
+				key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
+				key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
+				sp.capturedKey = key
+				return // Don't process normal key commands while recording
+			}
+		}
+		return
+	}
+
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
 		case imgui.KeyBackspace:
@@ -380,12 +395,12 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 		// Push-to-talk handling
 		if key == ps.PushToTalkKey && ps.PushToTalkKey != imgui.KeyNone {
 			if !sp.pushToTalkRecording {
-				// Start recording
-				if err := ctx.Platform.StartAudioRecording(); err != nil {
+				// Start recording with selected microphone
+				if err := ctx.Platform.StartAudioRecordingWithDevice(ps.SelectedMicrophone); err != nil {
 					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
 				} else {
 					sp.pushToTalkRecording = true
-					ctx.Lg.Info("Started push-to-talk recording")
+					fmt.Println("Push-to-talk: Started recording")
 				}
 			}
 		}
@@ -400,23 +415,27 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			if err != nil {
 				ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
 			} else {
-				// Convert to STT format and transcribe
-				audio := &stt.AudioData{
-					SampleRate: platform.AudioSampleRate,
-					Channels:   1,
-					Data:       audioData,
-				}
+				fmt.Println("Push-to-talk: Stopped recording, transcribing...")
 				
-				transcription, err := stt.Transcribe(audio)
-				if err != nil {
-					ctx.Lg.Errorf("Failed to transcribe audio: %v", err)
-				} else {
-					sp.lastTranscription = transcription
-					fmt.Printf("Transcription: %s\n", transcription)
-				}
+				// Transcribe in a goroutine to avoid blocking
+				go func(data []int16) {
+					// Convert to STT format and transcribe
+					audio := &stt.AudioData{
+						SampleRate: platform.AudioSampleRate,
+						Channels:   1,
+						Data:       data,
+					}
+					
+					transcription, err := stt.Transcribe(audio)
+					if err != nil {
+						fmt.Printf("Push-to-talk: Transcription error: %v\n", err)
+					} else {
+						sp.lastTranscription = transcription
+						fmt.Printf("Push-to-talk: Transcription: %s\n", transcription)
+					}
+				}(audioData)
 			}
 			sp.pushToTalkRecording = false
-			ctx.Lg.Info("Stopped push-to-talk recording")
 		}
 	}
 }

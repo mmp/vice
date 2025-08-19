@@ -136,6 +136,8 @@ type Platform interface {
 
 	// Audio recording methods
 	StartAudioRecording() error
+	StartAudioRecordingWithDevice(deviceName string) error
 	StopAudioRecording() ([]int16, error)
 	IsAudioRecording() bool
+	GetAudioInputDevices() []string
 }
