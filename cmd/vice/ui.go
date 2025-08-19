@@ -1393,6 +1393,17 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 
 	imgui.Separator()
 	
+	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
+		sizes := renderer.AvailableFontSizes("Roboto Regular")
+		for _, size := range sizes {
+			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
+				config.UIFontSize = size
+				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
+			}
+		}
+		imgui.EndCombo()
+	}
+
 	// Speech-to-Text settings
 	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
 		if ui.sttPane == nil {
@@ -1473,16 +1484,6 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 
 	imgui.Separator()
 
-	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := renderer.AvailableFontSizes("Roboto Regular")
-		for _, size := range sizes {
-			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
-				config.UIFontSize = size
-				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
-			}
-		}
-		imgui.EndCombo()
-	}
 
 	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
 		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {
