@@ -465,3 +465,40 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		}
 	}
 }
+
+func getKeyName(key imgui.Key) string {
+	switch key {
+	case imgui.KeyV:
+		return "V"
+	case imgui.KeyC:
+		return "C"
+	case imgui.KeyX:
+		return "X"
+	case imgui.KeyZ:
+		return "Z"
+	case imgui.KeyF1:
+		return "F1"
+	case imgui.KeyF2:
+		return "F2"
+	case imgui.KeyF3:
+		return "F3"
+	case imgui.KeyF4:
+		return "F4"
+	case imgui.KeyF5:
+		return "F5"
+	case imgui.KeyF6:
+		return "F6"
+	case imgui.KeyF7:
+		return "F7"
+	case imgui.KeyF8:
+		return "F8"
+	case imgui.KeySpace:
+		return "Space"
+	case imgui.KeyTab:
+		return "Tab"
+	case imgui.KeyCapsLock:
+		return "CapsLock"
+	default:
+		return "Unknown"
+	}
+}
