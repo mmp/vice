@@ -234,8 +234,6 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Show summary of keyboard commands")
 		}
 
-
-
 		flashDep := controlClient != nil && !ui.showLaunchControl &&
 			len(controlClient.State.GetRegularReleaseDepartures()) > 0 && (time.Now().UnixMilli()/500)&1 == 1
 		if flashDep {
@@ -289,8 +287,6 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.showScenarioInfo {
 			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
 		}
-
-
 
 		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
 
@@ -1363,13 +1359,13 @@ func uiDrawSTTWindow(p platform.Platform, r renderer.Renderer, lg *log.Logger) {
 
 	// Create a minimal context for the STT pane
 	ctx := &panes.Context{
-		Platform:   p,
-		Renderer:   r,
-		Lg:         lg,
-		HaveFocus:  true,
-		Keyboard:   p.GetKeyboard(),
-		Mouse:      p.GetMouse(),
-		Now:        time.Now(),
+		Platform:  p,
+		Renderer:  r,
+		Lg:        lg,
+		HaveFocus: true,
+		Keyboard:  p.GetKeyboard(),
+		Mouse:     p.GetMouse(),
+		Now:       time.Now(),
 	}
 
 	// Draw the STT pane
@@ -1392,7 +1388,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	config.InhibitDiscordActivity.Store(!update)
 
 	imgui.Separator()
-	
+
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := renderer.AvailableFontSizes("Roboto Regular")
 		for _, size := range sizes {
@@ -1405,85 +1401,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	}
 
 	// Speech-to-Text settings
-	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
-		if ui.sttPane == nil {
-			ui.sttPane = &panes.STTPane{
-				FontSize: 14,
-			}
-		}
-		
-		// Push-to-talk key recording
-		keyName := "None"
-		if ui.sttPane.PushToTalkKey != imgui.KeyNone {
-			keyName = panes.GetKeyName(ui.sttPane.PushToTalkKey)
-		}
-		
-		imgui.Text("Push-to-Talk Key: ")
-		imgui.SameLine()
-		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
-
-		if ui.sttPane.RecordingPTTKey {
-			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
-			
-			// Check for any key press
-			keyboard := p.GetKeyboard()
-			if keyboard != nil {
-				for key := range keyboard.Pressed {
-					// Ignore modifier keys
-					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
-						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
-						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
-						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
-						ui.sttPane.PushToTalkKey = key
-						ui.sttPane.RecordingPTTKey = false
-						break
-					}
-				}
-			}
-		} else {
-			imgui.SameLine()
-			if imgui.Button("Change Key") {
-				ui.sttPane.RecordingPTTKey = true
-			}
-			imgui.SameLine()
-			if imgui.Button("Clear") {
-				ui.sttPane.PushToTalkKey = imgui.KeyNone
-			}
-		}
-
-		// Microphone selection
-		imgui.Text("Microphone:")
-		imgui.SameLine()
-		micName := ui.sttPane.SelectedMicrophone
-		if micName == "" {
-			micName = "Default"
-		}
-		if imgui.BeginComboV("##microphone", micName, 0) {
-			if imgui.SelectableBoolV("Default", ui.sttPane.SelectedMicrophone == "", 0, imgui.Vec2{}) {
-				ui.sttPane.SelectedMicrophone = ""
-			}
-			
-			// Get available microphones
-			mics := p.GetAudioInputDevices()
-			for _, mic := range mics {
-				if imgui.SelectableBoolV(mic, mic == ui.sttPane.SelectedMicrophone, 0, imgui.Vec2{}) {
-					ui.sttPane.SelectedMicrophone = mic
-				}
-			}
-			imgui.EndCombo()
-		}
-
-		// Push-to-talk status
-		if ui.sttPane.PushToTalkRecording {
-			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
-		} else if ui.sttPane.LastTranscription != "" {
-			imgui.Text("Last transcription:")
-			imgui.TextWrapped(ui.sttPane.LastTranscription)
-		}
-	}
+	// (Removed: STT now lives under STARS pane settings)
 
 	imgui.Separator()
-
 
 	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
 		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {

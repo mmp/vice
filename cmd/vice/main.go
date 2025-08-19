@@ -27,6 +27,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -260,6 +261,11 @@ func main() {
 
 		var controlClient *client.ControlClient
 		var err error
+
+		// go ru local STT (faster-whisper) early so model setup/download happens before UI
+		if err := stt.Prepare(lg); err != nil {
+			lg.Errorf("STT prepare failed: %v", err)
+		}
 
 		plat, err = platform.New(&config.Config, lg)
 		if err != nil {

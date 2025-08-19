@@ -10,6 +10,7 @@ import "C"
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"unsafe"
 
@@ -19,11 +20,12 @@ import (
 
 // AudioRecorder handles microphone recording
 type AudioRecorder struct {
-	deviceID sdl.AudioDeviceID
+	deviceID  sdl.AudioDeviceID
 	recording bool
 	audioData []int16
 	mu        sync.Mutex
 	lg        *log.Logger
+	pinner    runtime.Pinner
 }
 
 // NewAudioRecorder creates a new audio recorder
@@ -48,13 +50,15 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 	}
 
 	// Open audio device for recording
+	user := unsafe.Pointer(ar)
+	ar.pinner.Pin(user)
 	spec := sdl.AudioSpec{
 		Freq:     AudioSampleRate,
 		Format:   sdl.AUDIO_S16SYS,
 		Channels: 1,
 		Samples:  2048,
 		Callback: sdl.AudioCallback(C.audioInputCallback),
-		UserData: unsafe.Pointer(ar),
+		UserData: user,
 	}
 
 	// Use SDL's default device mechanism for empty string
@@ -67,8 +71,9 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 		// to avoid the Go pointer issue
 		deviceID, err = sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
 	}
-	
+
 	if err != nil {
+		ar.pinner.Unpin()
 		return fmt.Errorf("failed to open audio device: %v", err)
 	}
 
@@ -100,6 +105,9 @@ func (ar *AudioRecorder) StopRecording() ([]int16, error) {
 	audioData := ar.audioData
 	ar.audioData = nil
 
+	// Safe to unpin now that device is closed and callback won't run
+	ar.pinner.Unpin()
+
 	ar.lg.Infof("Stopped audio recording, captured %d samples", len(audioData))
 	return audioData, nil
 }
@@ -115,7 +123,7 @@ func (ar *AudioRecorder) IsRecording() bool {
 func (ar *AudioRecorder) addAudioData(data []int16) {
 	ar.mu.Lock()
 	defer ar.mu.Unlock()
-	
+
 	if ar.recording {
 		ar.audioData = append(ar.audioData, data...)
 	}
@@ -125,13 +133,13 @@ func (ar *AudioRecorder) addAudioData(data []int16) {
 func GetAudioInputDevices() []string {
 	count := sdl.GetNumAudioDevices(true) // true for capture devices
 	devices := make([]string, 0, count)
-	
+
 	for i := 0; i < count; i++ {
 		name := sdl.GetAudioDeviceName(i, true)
 		if name != "" {
 			devices = append(devices, name)
 		}
 	}
-	
+
 	return devices
 }

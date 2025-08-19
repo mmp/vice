@@ -26,6 +26,7 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/mmp/vice/stt"
 )
 
 // Cache the routes we show when paused but periodically fetch them
@@ -218,6 +219,47 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	sp.previewAreaInput += strings.ReplaceAll(input, "`", STARSTriangleCharacter)
 
 	ps := sp.currentPrefs()
+
+	// Push-to-talk handling (minimal, non-invasive)
+	if ps.PushToTalkKey != imgui.KeyNone {
+		// Start on initial press (ignore repeats by checking our own flag)
+		if _, pressed := ctx.Keyboard.Pressed[ps.PushToTalkKey]; pressed {
+			if !sp.pushToTalkRecording && !ctx.Platform.IsAudioRecording() {
+				if err := ctx.Platform.StartAudioRecordingWithDevice(ps.SelectedMicrophone); err != nil {
+					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
+				} else {
+					sp.pushToTalkRecording = true
+					fmt.Println("Push-to-talk: Started recording")
+				}
+			}
+		}
+
+		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
+		if sp.pushToTalkRecording && !imgui.IsKeyDown(ps.PushToTalkKey) {
+			if ctx.Platform.IsAudioRecording() {
+				data, err := ctx.Platform.StopAudioRecording()
+				sp.pushToTalkRecording = false
+				if err != nil {
+					ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
+				} else {
+					fmt.Println("Push-to-talk: Stopped recording, transcribing...")
+					go func(samples []int16) {
+						audio := &stt.AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
+						text, err := stt.Transcribe(audio)
+						if err != nil {
+							fmt.Printf("Push-to-talk: Transcription error: %v\n", err)
+							return
+						}
+						sp.lastTranscription = text
+						fmt.Printf("Push-to-talk: Transcription: %s\n", text)
+					}(data)
+				}
+			} else if !ctx.Platform.IsAudioRecording() {
+				// Platform already not recording; reset our flag
+				sp.pushToTalkRecording = false
+			}
+		}
+	}
 
 	for key := range ctx.Keyboard.Pressed {
 		switch key {

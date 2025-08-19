@@ -83,14 +83,14 @@ func (sp *STTPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		if sp.PushToTalkKey != imgui.KeyNone {
 			keyName = GetKeyName(sp.PushToTalkKey)
 		}
-		
+
 		imgui.Text("Push-to-Talk Key: ")
 		imgui.SameLine()
 		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
 
 		if sp.RecordingPTTKey {
 			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
-			
+
 			// Check for any key press
 			if sp.CapturedKey != imgui.KeyNone {
 				sp.PushToTalkKey = sp.CapturedKey
@@ -122,7 +122,7 @@ func (sp *STTPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			if imgui.SelectableBoolV("Default", sp.SelectedMicrophone == "", 0, imgui.Vec2{}) {
 				sp.SelectedMicrophone = ""
 			}
-			
+
 			// Get available microphones
 			mics := ctx.Platform.GetAudioInputDevices()
 			for _, mic := range mics {
@@ -170,7 +170,7 @@ func (sp *STTPane) processKeyboardInput(ctx *Context) {
 	// Handle push-to-talk
 	for key := range ctx.Keyboard.Pressed {
 		if key == sp.PushToTalkKey && sp.PushToTalkKey != imgui.KeyNone {
-			if !sp.PushToTalkRecording {
+			if !sp.PushToTalkRecording && !ctx.Platform.IsAudioRecording() {
 				// Start recording with selected microphone
 				if err := ctx.Platform.StartAudioRecordingWithDevice(sp.SelectedMicrophone); err != nil {
 					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
@@ -185,30 +185,35 @@ func (sp *STTPane) processKeyboardInput(ctx *Context) {
 	// Check for push-to-talk key release
 	if sp.PushToTalkRecording && ctx.Keyboard != nil {
 		if sp.PushToTalkKey != imgui.KeyNone && !imgui.IsKeyDown(sp.PushToTalkKey) {
-			// Stop recording and transcribe
-			audioData, err := ctx.Platform.StopAudioRecording()
-			if err != nil {
-				ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
+			if ctx.Platform.IsAudioRecording() {
+				// Stop recording and transcribe
+				audioData, err := ctx.Platform.StopAudioRecording()
+				if err != nil {
+					ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
+				} else {
+					fmt.Println("Push-to-talk: Stopped recording, transcribing...")
+
+					// Transcribe in a goroutine to avoid blocking
+					go func(data []int16) {
+						// Convert to STT format and transcribe
+						audio := &stt.AudioData{
+							SampleRate: platform.AudioSampleRate,
+							Channels:   1,
+							Data:       data,
+						}
+
+						transcription, err := stt.Transcribe(audio)
+						if err != nil {
+							fmt.Printf("Push-to-talk: Transcription error: %v\n", err)
+						} else {
+							sp.LastTranscription = transcription
+							fmt.Printf("Push-to-talk: Transcription: %s\n", transcription)
+						}
+					}(audioData)
+				}
 			} else {
-				fmt.Println("Push-to-talk: Stopped recording, transcribing...")
-				
-				// Transcribe in a goroutine to avoid blocking
-				go func(data []int16) {
-					// Convert to STT format and transcribe
-					audio := &stt.AudioData{
-						SampleRate: platform.AudioSampleRate,
-						Channels:   1,
-						Data:       data,
-					}
-					
-					transcription, err := stt.Transcribe(audio)
-					if err != nil {
-						fmt.Printf("Push-to-talk: Transcription error: %v\n", err)
-					} else {
-						sp.LastTranscription = transcription
-						fmt.Printf("Push-to-talk: Transcription: %s\n", transcription)
-					}
-				}(audioData)
+				// Not recording at platform level; reset flag
+				sp.PushToTalkRecording = false
 			}
 			sp.PushToTalkRecording = false
 		}

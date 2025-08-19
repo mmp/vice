@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/brunoga/deep"
 )
 
@@ -151,7 +152,9 @@ type CommonPreferences struct {
 
 	AudioVolume int // 1-10
 
-
+	// Speech-to-Text settings
+	PushToTalkKey      imgui.Key
+	SelectedMicrophone string
 
 	RadarTrackHistory int // Number of history markers
 	// 4-94: 0.5s increments via trackball but 0.1s increments allowed if
@@ -344,6 +347,9 @@ func makeDefaultPreferences() *Preferences {
 	for i := range AudioNumTypes {
 		prefs.AudioEffectEnabled[i] = false // These are all non-standard.
 	}
+
+	// Default Speech-to-Text settings
+	prefs.PushToTalkKey = imgui.KeyV
 
 	prefs.VideoMapVisible = make(map[int]interface{})
 
