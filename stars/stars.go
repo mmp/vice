@@ -185,6 +185,10 @@ type STARSPane struct {
 	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
 	testAudioEndTime time.Time
 
+	// Push-to-talk state
+	pushToTalkRecording bool
+	lastTranscription   string
+
 	highlightedLocation        math.Point2LL
 	highlightedLocationEndTime time.Time
 

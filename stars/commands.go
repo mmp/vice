@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -374,6 +375,48 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			if sp.commandMode == CommandModeDrawWind {
 				sp.windDrawAltitude = max(0, sp.windDrawAltitude-1000)
 			}
+		}
+
+		// Push-to-talk handling
+		if key == ps.PushToTalkKey && ps.PushToTalkKey != imgui.KeyNone {
+			if !sp.pushToTalkRecording {
+				// Start recording
+				if err := ctx.Platform.StartAudioRecording(); err != nil {
+					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
+				} else {
+					sp.pushToTalkRecording = true
+					ctx.Lg.Info("Started push-to-talk recording")
+				}
+			}
+		}
+	}
+
+	// Check for push-to-talk key release
+	if sp.pushToTalkRecording && ctx.Keyboard != nil {
+		ps := sp.currentPrefs()
+		if ps.PushToTalkKey != imgui.KeyNone && !imgui.IsKeyDown(ps.PushToTalkKey) {
+			// Stop recording and transcribe
+			audioData, err := ctx.Platform.StopAudioRecording()
+			if err != nil {
+				ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
+			} else {
+				// Convert to STT format and transcribe
+				audio := &stt.AudioData{
+					SampleRate: platform.AudioSampleRate,
+					Channels:   1,
+					Data:       audioData,
+				}
+				
+				transcription, err := stt.Transcribe(audio)
+				if err != nil {
+					ctx.Lg.Errorf("Failed to transcribe audio: %v", err)
+				} else {
+					sp.lastTranscription = transcription
+					fmt.Printf("Transcription: %s\n", transcription)
+				}
+			}
+			sp.pushToTalkRecording = false
+			ctx.Lg.Info("Stopped push-to-talk recording")
 		}
 	}
 }

@@ -133,4 +133,9 @@ type Platform interface {
 	// StopPlayAudio stops playback of the audio effect specified
 	// by the given identifier.
 	StopPlayAudio(id int)
+
+	// Audio recording methods
+	StartAudioRecording() error
+	StopAudioRecording() ([]int16, error)
+	IsAudioRecording() bool
 }

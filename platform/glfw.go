@@ -50,6 +50,8 @@ type glfwPlatform struct {
 	mouseDeltaStartPos     [2]float32
 	mouseDeltaWindowCenter [2]float32
 	mouseDelta             [2]float32
+
+	audioRecorder *AudioRecorder
 }
 
 type Config struct {
@@ -123,11 +125,12 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	window.MakeContextCurrent()
 
 	platform := &glfwPlatform{
-		config:      config,
-		imguiIO:     io,
-		window:      window,
-		multisample: config.EnableMSAA,
-		heldFKeys:   make(map[imgui.Key]interface{}),
+		config:        config,
+		imguiIO:       io,
+		window:        window,
+		multisample:   config.EnableMSAA,
+		heldFKeys:     make(map[imgui.Key]interface{}),
+		audioRecorder: NewAudioRecorder(lg),
 	}
 	platform.installCallbacks()
 	platform.createMouseCursors()
@@ -769,4 +772,17 @@ func glfwKeyToImguiKey(keycode glfw.Key) imgui.Key {
 	default:
 		return imgui.KeyNone
 	}
+}
+
+// Audio recording methods
+func (g *glfwPlatform) StartAudioRecording() error {
+	return g.audioRecorder.StartRecording()
+}
+
+func (g *glfwPlatform) StopAudioRecording() ([]int16, error) {
+	return g.audioRecorder.StopRecording()
+}
+
+func (g *glfwPlatform) IsAudioRecording() bool {
+	return g.audioRecorder.IsRecording()
 }

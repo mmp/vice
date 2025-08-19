@@ -45,6 +45,48 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	}
 
 	imgui.Separator()
+	imgui.Text("Push-to-Talk Settings")
+
+	// Push-to-talk key selection
+	keyName := "None"
+	if ps.PushToTalkKey != imgui.KeyNone {
+		keyName = ps.PushToTalkKey.String()
+	}
+	
+	if imgui.BeginComboV("Push-to-Talk Key", keyName, imgui.ComboFlagsHeightLarge) {
+		// Common keys for push-to-talk
+		commonKeys := []imgui.Key{
+			imgui.KeyV, imgui.KeyC, imgui.KeyX, imgui.KeyZ,
+			imgui.KeyF1, imgui.KeyF2, imgui.KeyF3, imgui.KeyF4,
+			imgui.KeyF5, imgui.KeyF6, imgui.KeyF7, imgui.KeyF8,
+			imgui.KeySpace, imgui.KeyTab, imgui.KeyCapsLock,
+		}
+		
+		// Option to disable push-to-talk
+		if imgui.SelectableBoolV("None", ps.PushToTalkKey == imgui.KeyNone, 0, imgui.Vec2{}) {
+			ps.PushToTalkKey = imgui.KeyNone
+		}
+		
+		for _, key := range commonKeys {
+			if imgui.SelectableBoolV(key.String(), key == ps.PushToTalkKey, 0, imgui.Vec2{}) {
+				ps.PushToTalkKey = key
+			}
+		}
+		imgui.EndCombo()
+	}
+
+	imgui.Separator()
+	
+	// Push-to-talk status
+	if sp.pushToTalkRecording {
+		imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
+	} else if sp.lastTranscription != "" {
+		imgui.Text("Last transcription:")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{0, 1, 0, 1}, sp.lastTranscription)
+	}
+	
+	imgui.Separator()
 	imgui.Text("Non-standard Audio Effects")
 
 	// Only offer the non-standard ones to globally disable.
