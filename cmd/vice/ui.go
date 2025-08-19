@@ -235,7 +235,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Show summary of keyboard commands")
 		}
 
-		if imgui.Button(renderer.FontAwesomeIconMicrophone) {
+		if imgui.Button("[STT]") {
 			ui.showSTT = !ui.showSTT
 		}
 		if imgui.IsItemHovered() {
@@ -297,7 +297,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 
 		if ui.showSTT {
-			uiDrawSTTWindow(p, render, lg)
+			uiDrawSTTWindow(p, r, lg)
 		}
 
 		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
