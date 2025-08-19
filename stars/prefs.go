@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
+	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/brunoga/deep"
 )
 

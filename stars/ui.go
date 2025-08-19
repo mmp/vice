@@ -50,7 +50,7 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	// Push-to-talk key selection
 	keyName := "None"
 	if ps.PushToTalkKey != imgui.KeyNone {
-		keyName = ps.PushToTalkKey.String()
+		keyName = getKeyName(ps.PushToTalkKey)
 	}
 	
 	if imgui.BeginComboV("Push-to-Talk Key", keyName, imgui.ComboFlagsHeightLarge) {
@@ -68,7 +68,7 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 		}
 		
 		for _, key := range commonKeys {
-			if imgui.SelectableBoolV(key.String(), key == ps.PushToTalkKey, 0, imgui.Vec2{}) {
+			if imgui.SelectableBoolV(getKeyName(key), key == ps.PushToTalkKey, 0, imgui.Vec2{}) {
 				ps.PushToTalkKey = key
 			}
 		}

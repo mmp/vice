@@ -4,6 +4,10 @@
 
 package platform
 
+// typedef unsigned char uint8;
+// void audioInputCallback(void *userdata, uint8 *stream, int len);
+import "C"
+
 import (
 	"fmt"
 	"sync"
