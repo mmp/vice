@@ -8,8 +8,11 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -43,7 +46,15 @@ func init() {
 	})
 }
 
-func (sp *STTPane) Activate(ss *State, cs *EventStream) {
+func (sp *STTPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+	// Nothing to initialize
+}
+
+func (sp *STTPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+	// Nothing to initialize
+}
+
+func (sp *STTPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	// Nothing to initialize
 }
 
@@ -61,8 +72,8 @@ func (sp *STTPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 	// Draw the UI window
 	displaySize := ctx.Platform.DisplaySize()
-	imgui.SetNextWindowPosCondUncheckedV(imgui.Vec2{displaySize[0] - 400, 50}, imgui.CondFirstUseEver, imgui.Vec2{})
-	imgui.SetNextWindowSizeConstraintsV(imgui.Vec2{300, 200}, imgui.Vec2{600, 400})
+	imgui.SetNextWindowPosV(imgui.Vec2{displaySize[0] - 400, 50}, imgui.CondFirstUseEver, imgui.Vec2{})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 200}, imgui.Vec2{600, 400})
 
 	if imgui.BeginV("Speech to Text", nil, imgui.WindowFlagsAlwaysAutoResize) {
 		// Push-to-talk key recording
