@@ -229,7 +229,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
 				} else {
 					sp.pushToTalkRecording = true
-					fmt.Println("Push-to-talk: Started recording")
+					ctx.Lg.Infof("Push-to-talk: Started recording")
 				}
 			}
 		}
@@ -242,16 +242,34 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				if err != nil {
 					ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
 				} else {
-					fmt.Println("Push-to-talk: Stopped recording, transcribing...")
+					ctx.Lg.Infof("Push-to-talk: Stopped recording, transcribing...")
 					go func(samples []int16) {
 						audio := &stt.AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := stt.Transcribe(audio)
+						text, err := stt.VoiceToCommand(audio, map[string]string{}) // TODO: Pass in approaches
 						if err != nil {
-							fmt.Printf("Push-to-talk: Transcription error: %v\n", err)
+							ctx.Lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
 							return
 						}
-						sp.lastTranscription = text
-						fmt.Printf("Push-to-talk: Transcription: %s\n", text)
+						fields := strings.Fields(text)
+						if len(fields) > 0 {
+							callsign := fields[0]
+							// Check if callsign matches, if not check if the numbers match
+							_, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign))
+							if !ok && len(callsign) > 3 {
+								// use only the numbers to check
+								callsignNumbers := callsign[3:]
+								ac, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsignNumbers))
+								if ok {
+									callsign = string(ac.ADSBCallsign)
+								}
+							}
+							if len(fields) > 1 {
+								cmd := strings.Join(fields[1:], " ")
+								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
+							}
+							sp.lastTranscription = text
+							ctx.Lg.Infof("Push-to-talk: Transcription: %s\n", text)
+						}
 					}(data)
 				}
 			} else if !ctx.Platform.IsAudioRecording() {

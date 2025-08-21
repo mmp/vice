@@ -370,7 +370,7 @@ def transcribe(path):
     for s in segs:
         raw = s.text or ""
         expanded = expand_digits_to_words(raw)  # ICAO digit words, punctuation→spaces
-        cleaned  = letters_only(expanded, ascii_only=ascii_only, lowercase=lowercase)
+        cleaned  = letters_only(expanded, ascii_only=ascii_only, lowercase=True)
         if not cleaned:
             continue
         parts.append(cleaned)
@@ -378,7 +378,7 @@ def transcribe(path):
 
     return {
         "text": " ".join(parts),  # spaces always kept
-        "language": info.language,
+        "language": (info.language or "").lower(),
         "language_probability": info.language_probability,
         "segments": seg_list,
         "device": device,
