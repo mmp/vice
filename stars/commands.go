@@ -255,14 +255,22 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 							callsign := fields[0]
 							// Check if callsign matches, if not check if the numbers match
 							_, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign))
+							fmt.Println("Prelim: Callsign: ", callsign, "OK: ", ok)
 							if !ok && len(callsign) > 3 {
-								// use only the numbers to check
+								// ignore airline and use numbers
 								callsignNumbers := callsign[3:]
-								ac, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsignNumbers))
-								if ok {
-									callsign = string(ac.ADSBCallsign)
+								matching := sp.tracksFromACIDSuffix(ctx, callsignNumbers)
+								if len(matching) == 1 {
+									callsign = string(matching[0].ADSBCallsign)
 								}
-							}
+							} else if _, err := strconv.Atoi(callsign); err != nil {
+								// if they only say numbers
+								matching := sp.tracksFromACIDSuffix(ctx, callsign)
+								if len(matching) == 1 {
+									callsign = string(matching[0].ADSBCallsign)
+								}
+							} 
+							fmt.Println("Final: Callsign: ", callsign)
 							if len(fields) > 1 {
 								cmd := strings.Join(fields[1:], " ")
 								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
