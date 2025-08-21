@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
@@ -251,20 +252,23 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 							return
 						}
 						fields := strings.Fields(text)
+
+						trimFunc := func(s string) string {
+							for i, char := range s {
+								if unicode.IsDigit(char) {
+									return s[i:]
+								}
+							}
+							return ""
+						}
 						if len(fields) > 0 {
 							callsign := fields[0]
 							// Check if callsign matches, if not check if the numbers match
 							_, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign))
 							fmt.Println("Prelim: Callsign: ", callsign, "OK: ", ok)
-							if !ok && len(callsign) > 3 {
-								// ignore airline and use numbers
-								callsignNumbers := callsign[3:]
-								matching := sp.tracksFromACIDSuffix(ctx, callsignNumbers)
-								if len(matching) == 1 {
-									callsign = string(matching[0].ADSBCallsign)
-								}
-							} else if _, err := strconv.Atoi(callsign); err != nil {
-								// if they only say numbers
+							if !ok {
+								// trim until first number
+								callsign = trimFunc(callsign)
 								matching := sp.tracksFromACIDSuffix(ctx, callsign)
 								if len(matching) == 1 {
 									callsign = string(matching[0].ADSBCallsign)
@@ -274,10 +278,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 							if len(fields) > 1 {
 								cmd := strings.Join(fields[1:], " ")
 								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
+								fmt.Println("Command: ", cmd, "Callsign: ", callsign)
 							}
 							sp.lastTranscription = text
 							ctx.Lg.Infof("Push-to-talk: Transcription: %s\n", text)
+							
 						}
+
+
 					}(data)
 				}
 			} else if !ctx.Platform.IsAudioRecording() {
