@@ -277,13 +277,62 @@ func (w *whisperWrapper) PreloadModel() error {
 	w.logger.Infof("Preloading Whisper model (%s)...", modelName)
 
 	persistent := `
-import sys, json, time, os
+import sys, json, time, os, unicodedata, re
 from faster_whisper import WhisperModel
 
 model = None
 device = None
 compute_type = None
 model_name = None
+
+# -------------------- digit expansion + letters-only -----------------------
+
+DIGIT_MAP_ICAO = {
+    '0':'zero','1':'wun','2':'too','3':'tree','4':'fower',
+    '5':'fife','6':'six','7':'seven','8':'ait','9':'niner'
+}
+
+# Replace all punctuation with spaces, then expand digit runs to ICAO words
+def expand_digits_to_words(s: str) -> str:
+    # 1) Turn punctuation into spaces so we never lose word boundaries
+    # Includes common ASCII and unicode dashes
+    s = re.sub(r"[,\.\-–—:;\/\\\(\)\[\]\{\}!?\+_=*\"'<>|]", " ", s)
+    # 2) Collapse any weird whitespace runs early (optional but nice)
+    s = re.sub(r"\s+", " ", s).strip()
+
+    # 3) Per-digit expansion for any remaining digit runs
+    def repl(match):
+        return " ".join(DIGIT_MAP_ICAO[ch] for ch in match.group(0))
+    return re.sub(r"\d+", repl, s)
+
+def letters_only(s: str, ascii_only: bool = True, lowercase: bool = False) -> str:
+    """
+    Keep only letters and spaces (no punctuation, ever).
+    Spaces are always preserved (multiple spaces collapsed to one).
+    """
+    out = []
+    for ch in s:
+        if ascii_only:
+            is_letter = ch.isascii() and ch.isalpha()
+        else:
+            is_letter = unicodedata.category(ch).startswith('L')
+
+        if is_letter:
+            out.append(ch.lower() if lowercase else ch)
+        elif ch.isspace():
+            out.append(' ')
+        # else: drop punctuation and everything else
+
+    # Collapse runs of whitespace and strip
+    return ' '.join(''.join(out).split())
+
+def get_filter_cfg():
+    # Always keep spaces; no punctuation is kept.
+    ascii_only = os.getenv("ONLY_LETTERS_ASCII", "1") == "1"
+    lowercase   = os.getenv("ONLY_LETTERS_LOWER", "0") == "1"
+    return ascii_only, lowercase
+
+# --------------------------------------------------------------------------
 
 def check_cuda():
     try:
@@ -310,22 +359,32 @@ def load_model():
 def transcribe(path):
     if model is None:
         return {"error": "model not loaded"}
+
+    ascii_only, lowercase = get_filter_cfg()
+
     t0 = time.time()
     segs, info = model.transcribe(path)
     parts = []
     seg_list = []
+
     for s in segs:
-        parts.append(s.text)
-        seg_list.append({"start": s.start, "end": s.end, "text": s.text})
+        raw = s.text or ""
+        expanded = expand_digits_to_words(raw)  # ICAO digit words, punctuation→spaces
+        cleaned  = letters_only(expanded, ascii_only=ascii_only, lowercase=lowercase)
+        if not cleaned:
+            continue
+        parts.append(cleaned)
+        seg_list.append({"start": s.start, "end": s.end, "text": cleaned})
+
     return {
-        "text": " ".join(parts),
+        "text": " ".join(parts),  # spaces always kept
         "language": info.language,
         "language_probability": info.language_probability,
         "segments": seg_list,
         "device": device,
         "compute_type": compute_type,
         "transcription_time": time.time()-t0,
-        }
+    }
 
 def main():
     load_model()
