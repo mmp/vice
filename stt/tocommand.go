@@ -16,7 +16,7 @@ type OpenAIMessage struct {
 }
 
 type OpenAIRequest struct {
-	Model   string          `json:"model"`
+	Model    string          `json:"model"`
 	Messages []OpenAIMessage `json:"input"`
 }
 
@@ -49,7 +49,7 @@ func CallModel(model string, approaches map[string]string, transcript string) (s
 	}
 
 	reqBody := OpenAIRequest{
-		Model:   model,
+		Model:    model,
 		Messages: []OpenAIMessage{systemMsg, userMsg},
 	}
 

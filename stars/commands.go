@@ -273,7 +273,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 								if len(matching) == 1 {
 									callsign = string(matching[0].ADSBCallsign)
 								}
-							} 
+							}
 							fmt.Println("Final: Callsign: ", callsign)
 							if len(fields) > 1 {
 								cmd := strings.Join(fields[1:], " ")
@@ -282,9 +282,8 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 							}
 							sp.lastTranscription = text
 							ctx.Lg.Infof("Push-to-talk: Transcription: %s\n", text)
-							
-						}
 
+						}
 
 					}(data)
 				}
