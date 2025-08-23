@@ -52,7 +52,6 @@ var (
 
 		launchControlWindow  *LaunchControlWindow
 		missingPrimaryDialog *ModalDialogBox
-		sttPane              *panes.STTPane
 
 		// Scenario routes to draw on the scope
 		showSettings      bool
@@ -1348,28 +1347,6 @@ func uiDrawMissingPrimaryDialog(mgr *client.ConnectionManager, c *client.Control
 			uiShowModalDialog(ui.missingPrimaryDialog, true)
 		}
 	}
-}
-
-func uiDrawSTTWindow(p platform.Platform, r renderer.Renderer, lg *log.Logger) {
-	if ui.sttPane == nil {
-		ui.sttPane = &panes.STTPane{
-			FontSize: 14,
-		}
-	}
-
-	// Create a minimal context for the STT pane
-	ctx := &panes.Context{
-		Platform:  p,
-		Renderer:  r,
-		Lg:        lg,
-		HaveFocus: true,
-		Keyboard:  p.GetKeyboard(),
-		Mouse:     p.GetMouse(),
-		Now:       time.Now(),
-	}
-
-	// Draw the STT pane
-	ui.sttPane.Draw(ctx, nil)
 }
 
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform) {

@@ -224,13 +224,14 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	// Push-to-talk handling (minimal, non-invasive)
 	if ps.PushToTalkKey != imgui.KeyNone {
 		// Start on initial press (ignore repeats by checking our own flag)
-		if _, pressed := ctx.Keyboard.Pressed[ps.PushToTalkKey]; pressed {
+		if imgui.IsKeyDown(ps.PushToTalkKey) {
 			if !sp.pushToTalkRecording && !ctx.Platform.IsAudioRecording() {
 				if err := ctx.Platform.StartAudioRecordingWithDevice(ps.SelectedMicrophone); err != nil {
 					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
 				} else {
 					sp.pushToTalkRecording = true
 					ctx.Lg.Infof("Push-to-talk: Started recording")
+					fmt.Println("Push-to-talk: Started recording")
 				}
 			}
 		}
@@ -265,7 +266,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 							callsign := fields[0]
 							// Check if callsign matches, if not check if the numbers match
 							_, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign))
-							fmt.Println("Prelim: Callsign: ", callsign, "OK: ", ok)
 							if !ok {
 								// trim until first number
 								callsign = trimFunc(callsign)
@@ -274,7 +274,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 									callsign = string(matching[0].ADSBCallsign)
 								}
 							}
-							fmt.Println("Final: Callsign: ", callsign)
 							if len(fields) > 1 {
 								cmd := strings.Join(fields[1:], " ")
 								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
