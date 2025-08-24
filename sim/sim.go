@@ -20,6 +20,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/davecgh/go-spew/spew"
 )
@@ -200,7 +201,7 @@ type NewSimConfiguration struct {
 	SignOnPositions    map[string]*av.Controller
 
 	TFRs                    []av.TFR
-	Wind                    map[math.Point2LL][]av.WindLayer
+	Wind                    map[math.Point2LL][]wx.WindLayer
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 

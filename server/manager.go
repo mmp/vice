@@ -25,6 +25,7 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 	"github.com/gorilla/websocket"
@@ -78,7 +79,7 @@ type SimScenarioConfiguration struct {
 	SplitConfigurations av.SplitConfigurationSet
 	PrimaryAirport      string
 
-	AverageWind  av.WindLayer
+	AverageWind  wx.WindLayer
 	LaunchConfig sim.LaunchConfig
 
 	DepartureRunways []sim.DepartureRunway

@@ -225,14 +225,14 @@ func (ap AircraftPerformance) baseApproachSpeed() float32 {
 // full gust factor (not to exceed 20 knots). Pistons add half the gust
 // factor... I suppose we should also add a max additive but most pistons
 // won't be landing in very windy conditions
-func (ap AircraftPerformance) ApproachSpeed(ws WindSample, runwayHeading float32) float32 {
-	gustFactor := max(0, float32(ws.Gust-ws.Speed))
+func (ap AircraftPerformance) ApproachSpeed(windDirection, windSpeed, windGust float32, runwayHeading float32) float32 {
+	gustFactor := max(0, windGust-windSpeed)
 
 	additive := float32(0)
 	switch ap.Engine.AircraftType {
 	case "J", "T":
-		diff := math.HeadingDifference(float32(ws.Direction), runwayHeading)
-		headwind := max(0, float32(ws.Speed)*math.Cos(math.Radians(diff)))
+		diff := math.HeadingDifference(windDirection, runwayHeading)
+		headwind := max(0, float32(windSpeed)*math.Cos(math.Radians(diff)))
 		additive = min(headwind/2+gustFactor, 20)
 	case "P":
 		additive = gustFactor / 2
