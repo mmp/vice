@@ -111,14 +111,11 @@ func (s *Sim) dispatchFlightPlanCommand(tcp string, acid ACID,
 	cmd func(tcp string, fp *STARSFlightPlan, ac *Aircraft) *RadioTransmission) error {
 	s.lastControlCommandTime = time.Now()
 
-	fp, _ := s.GetFlightPlanForACID(acid)
+	fp, ac, _ := s.GetFlightPlanForACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
-	ac := s.Aircraft[av.ADSBCallsign(acid)] // FIXME: buggy if ACID and ADSB callsign don't match
-	if ac != nil && ac.STARSFlightPlan.ACID != acid {
-		ac = nil
-	}
+	// ac may or may not be nil; we'll pass it along if we have it
 
 	if _, ok := s.humanControllers[tcp]; !ok {
 		return ErrUnknownController
@@ -379,7 +376,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec STARSFlightPlanSpecif
 
 	s.lastControlCommandTime = time.Now()
 
-	fp, active := s.GetFlightPlanForACID(acid)
+	fp, _, active := s.GetFlightPlanForACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -674,6 +671,9 @@ func (s *Sim) ContactTrackingController(tcp string, acid ACID) error {
 			if sfp.ControllingController != tcp {
 				return av.ErrOtherControllerHasTrack
 			}
+			if ac == nil {
+				return av.ErrNoAircraftForCallsign
+			}
 			return nil
 		},
 		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) *RadioTransmission {
@@ -689,6 +689,9 @@ func (s *Sim) ContactController(tcp string, acid ACID, toTCP string) error {
 		func(tcp string, sfp *STARSFlightPlan, ac *Aircraft) error {
 			if sfp.ControllingController != tcp {
 				return av.ErrOtherControllerHasTrack
+			}
+			if ac == nil {
+				return av.ErrNoAircraftForCallsign
 			}
 			return nil
 		},

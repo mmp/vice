@@ -828,7 +828,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 	}
 
 	for _, ac := range s.STARSComputer.HoldForRelease {
-		fp, _ := s.GetFlightPlanForACID(ACID(ac.ADSBCallsign))
+		fp, _, _ := s.GetFlightPlanForACID(ACID(ac.ADSBCallsign))
 		if fp == nil {
 			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
 			continue
@@ -1079,7 +1079,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _ := s.GetFlightPlanForACID(acid); fp != nil {
+		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil {
 			if fp.HandoffTrackController != "" && !s.isActiveHumanController(fp.HandoffTrackController) {
 				// Automated accept
 				s.eventStream.Post(Event{
@@ -1107,7 +1107,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _ := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(po.ToController) {
+		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(po.ToController) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -1555,19 +1555,19 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	}
 }
 
-// bool indicates whether it's active
-func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, bool) {
+// *Aircraft may be nil. bool indicates whether the flight plan is active.
+func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
-			return ac.STARSFlightPlan, true
+			return ac.STARSFlightPlan, ac, true
 		}
 	}
 	for i, fp := range s.STARSComputer.FlightPlans {
 		if fp.ACID == acid {
-			return s.STARSComputer.FlightPlans[i], !fp.Location.IsZero()
+			return s.STARSComputer.FlightPlans[i], nil, !fp.Location.IsZero()
 		}
 	}
-	return nil, false
+	return nil, nil, false
 }
 
 // Make sure we're not leaking beacon codes or list indices.
