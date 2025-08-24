@@ -14,6 +14,10 @@ import (
 #include <whisper.h>
 #include <stdlib.h>
 
+// no-op logger to silence library output
+static void cb_log_disable(enum ggml_log_level level, const char * text, void * user_data) { (void)level; (void)text; (void)user_data; }
+static void whisper_log_set_silent_bridge() { whisper_log_set(cb_log_disable, NULL); }
+
 extern void callNewSegment(void* user_data, int new);
 extern void callProgress(void* user_data, int progress);
 extern bool callEncoderBegin(void* user_data);
@@ -87,6 +91,9 @@ func Whisper_init(path string) *Context {
 		return nil
 	}
 }
+
+// Whisper_log_set_silent disables all logging from the underlying library.
+func Whisper_log_set_silent() { C.whisper_log_set_silent_bridge() }
 
 func (ctx *Context) Whisper_free() { C.whisper_free((*C.struct_whisper_context)(ctx)) }
 

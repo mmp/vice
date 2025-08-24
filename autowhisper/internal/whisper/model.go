@@ -19,6 +19,8 @@ func New(path string) (Model, error) {
 	if _, err := os.Stat(path); err != nil {
 		return nil, err
 	}
+	// silence native logs before init
+	whisperlow.Whisper_log_set_silent()
 	if ctx := whisperlow.Whisper_init(path); ctx == nil {
 		return nil, ErrUnableToLoadModel
 	} else {
