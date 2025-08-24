@@ -2,57 +2,62 @@ package main
 
 import (
 	"bytes"
+	"context"
 	_ "embed"
 	"encoding/gob"
 	"fmt"
 	"image/png"
-	"os"
+	"io"
 	"path/filepath"
 	"strings"
-	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"golang.org/x/sync/errgroup"
 )
 
-func ingestWX(st StorageBackend) {
-	flags := ArchiverFlagsNoCheckArchived
-	if *dryRun {
-		flags = flags | ArchiverFlagsDryRun
-	}
-	arch, err := MakeArchiver("WX", flags)
-	if err != nil {
-		LogFatal("Archiver: %v", err)
-	}
+func ingestWX(sb StorageBackend) {
+	eg, ctx := errgroup.WithContext(context.Background())
 
 	ch := make(chan string)
-	var wg sync.WaitGroup
-	var totalBytes int64
+	eg.Go(func() error { return EnqueueObjects(sb, "scrape/WX", ch) })
+
+	var totalBytes, totalObjects int64
 	for range *nWorkers {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		eg.Go(func() error {
 			for path := range ch {
-				n, err := processWX(st, path, arch)
-				if err != nil {
-					LogError("%s: %v", path, err)
+				select {
+				case <-ctx.Done():
+					return ctx.Err()
+				default:
 				}
-				atomic.AddInt64(&totalBytes, n)
+
+				n, err := processWX(sb, path)
+				if err != nil {
+					return fmt.Errorf("%s: %v", path, err)
+				}
+
+				nb := atomic.AddInt64(&totalBytes, n)
+				nobj := atomic.AddInt64(&totalObjects, 1)
+				if nobj%10000 == 0 {
+					LogInfo("Processed %d WX objects so far, %s", nobj, util.ByteCount(nb))
+				}
 			}
-		}()
+			return nil
+		})
 	}
 
-	if err := EnqueueFiles("WX", ch); err != nil {
-		LogFatal("%v", err)
+	if err := eg.Wait(); err != nil {
+		LogError("WX: %v", err)
 	}
-	wg.Wait()
 
-	LogInfo("Total of %s of WX stored this run", util.ByteCount(totalBytes))
+	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
 }
 
-func processWX(st StorageBackend, path string, arch *Archiver) (int64, error) {
+func processWX(sb StorageBackend, path string) (int64, error) {
 	// Parse time
 	t, err := time.Parse(time.RFC3339, strings.TrimSuffix(filepath.Base(path), ".gob"))
 	if err != nil {
@@ -60,7 +65,13 @@ func processWX(st StorageBackend, path string, arch *Archiver) (int64, error) {
 	}
 	t = t.UTC()
 
-	scraped, err := os.ReadFile(path)
+	r, err := sb.OpenRead(path)
+	if err != nil {
+		return 0, err
+	}
+	defer r.Close()
+
+	scraped, err := io.ReadAll(r)
 	if err != nil {
 		return 0, err
 	}
@@ -94,13 +105,23 @@ func processWX(st StorageBackend, path string, arch *Archiver) (int64, error) {
 		Longitude:  wxs.Longitude,
 	}
 
-	tracon := strings.Split(path, "/")[1]
-	fn := fmt.Sprintf("WX/%s/%d/%02d/%02d/%s.msgpack.zst", tracon, t.Year(), t.Month(), t.Day(), t.Format("150405"))
-	n, err := st.Store(fn, wxp)
-
-	if err == nil {
-		err = arch.Archive(path)
+	tracon, _, ok := strings.Cut(strings.TrimPrefix(path, "scrape/WX/"), "/")
+	if !ok {
+		return 0, fmt.Errorf("%s: unexpected format; can't find TRACON", path)
 	}
 
-	return n, err
+	objpath := fmt.Sprintf("WX/%s/%d/%02d/%02d/%s.msgpack.zst", tracon, t.Year(), t.Month(), t.Day(), t.Format("150405"))
+
+	n, err := sb.StoreObject(objpath, wxp)
+	if err != nil {
+		return 0, err
+	}
+
+	// Archive only if everything's worked out.
+	apath := filepath.Join("archive", strings.TrimPrefix(path, "scrape/"))
+	if _, err := sb.Store(apath, bytes.NewReader(scraped)); err != nil {
+		return n, err
+	}
+
+	return n, sb.Delete(path)
 }
