@@ -52,6 +52,11 @@ jobs:
             go run ./cmd/bundleresources
             mv manifest.json cmd/vice
         fi
+    - name: Install whisper-cpp
+      run: |
+        cd whisper.cpp
+        make -j4
+        cd ..
 
     - name: Build
       run: |
