@@ -30,6 +30,11 @@ require (
 )
 
 require (
+	github.com/go-audio/riff v1.0.0 // indirect
+	github.com/go-audio/wav v1.1.0 // indirect
+)
+
+require (
 	cel.dev/expr v0.20.0 // indirect
 	cloud.google.com/go v0.120.0 // indirect
 	cloud.google.com/go/auth v0.16.1 // indirect
@@ -47,6 +52,7 @@ require (
 	github.com/envoyproxy/go-control-plane/envoy v1.32.4 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
+	github.com/go-audio/audio v1.0.0
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

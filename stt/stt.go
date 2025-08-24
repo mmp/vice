@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	whisper "github.com/checkandmate1/whisper/pkg"
+	whisper "github.com/mmp/vice/autowhisper"
 )
 
 // AudioData represents audio data in memory
@@ -121,15 +121,13 @@ func VoiceToCommand(audio *AudioData, approaches map[string]string) (string, err
 func Transcribe2(audio *AudioData) (string, error) {
 	// Make a model 
 
-	model, err := whisper.NewTemporaryTranscriber("whisper-cli", "../../resources/models/ggml-tiny.bin", true)
+	text, err := whisper.Transcribe("../../resources/models/ggml-tiny.bin", audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
+		Language: "en",
+	})
 	if err != nil {
 		return "", err
 	}
-
-	text, err := model.TranscribeSamples(audio.SampleRate, audio.Channels, audio.Data)
-	if err != nil {
-		return "", err
-	}
+	fmt.Println("Transcription: ", text)
 	return processTranscription(text), nil
 }
 
