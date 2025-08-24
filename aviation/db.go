@@ -72,6 +72,10 @@ type TRACON struct {
 	Radius    float32
 }
 
+func (t TRACON) Center() math.Point2LL {
+	return math.Point2LL{t.Longitude, t.Latitude}
+}
+
 type ARTCC struct {
 	Name string
 }
