@@ -65,8 +65,11 @@ type FAAAirport struct {
 }
 
 type TRACON struct {
-	Name  string
-	ARTCC string
+	Name      string
+	ARTCC     string
+	Latitude  float32
+	Longitude float32
+	Radius    float32
 }
 
 type ARTCC struct {
