@@ -57,32 +57,32 @@ type CommonPreferences struct {
 		Portal  int // Same here...
 	}
 	Brightness struct {
-		Background radar.ScopeBrightness
-		Cursor     radar.ScopeBrightness
-		Text       radar.ScopeBrightness
-		PRTGT      radar.ScopeBrightness
-		UNPTGT     radar.ScopeBrightness
-		PRHST      radar.ScopeBrightness
-		UNPHST     radar.ScopeBrightness
-		LDB        radar.ScopeBrightness
-		SLDB       radar.ScopeBrightness
-		WX         radar.ScopeBrightness
-		NEXRAD     radar.ScopeBrightness
-		Backlight  radar.ScopeBrightness
-		Button     radar.ScopeBrightness
-		Border     radar.ScopeBrightness
-		Toolbar    radar.ScopeBrightness
-		TBBRDR     radar.ScopeBrightness
-		ABBRDR     radar.ScopeBrightness
-		FDB        radar.ScopeBrightness
-		Portal     radar.ScopeBrightness
-		Satcomm    radar.ScopeBrightness
-		ONFREQ     radar.ScopeBrightness
-		Line4      radar.ScopeBrightness
-		Dwell      radar.ScopeBrightness
-		Fence      radar.ScopeBrightness
-		DBFEL      radar.ScopeBrightness
-		Outage     radar.ScopeBrightness
+		Background radar.Brightness
+		Cursor     radar.Brightness
+		Text       radar.Brightness
+		PRTGT      radar.Brightness
+		UNPTGT     radar.Brightness
+		PRHST      radar.Brightness
+		UNPHST     radar.Brightness
+		LDB        radar.Brightness
+		SLDB       radar.Brightness
+		WX         radar.Brightness
+		NEXRAD     radar.Brightness
+		Backlight  radar.Brightness
+		Button     radar.Brightness
+		Border     radar.Brightness
+		Toolbar    radar.Brightness
+		TBBRDR     radar.Brightness
+		ABBRDR     radar.Brightness
+		FDB        radar.Brightness
+		Portal     radar.Brightness
+		Satcomm    radar.Brightness
+		ONFREQ     radar.Brightness
+		Line4      radar.Brightness
+		Dwell      radar.Brightness
+		Fence      radar.Brightness
+		DBFEL      radar.Brightness
+		Outage     radar.Brightness
 	}
 }
 

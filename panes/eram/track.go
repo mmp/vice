@@ -318,7 +318,7 @@ func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When rada
 
 // datablockBrightness returns the configured brightness for the given track's
 // datablock type.
-func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.ScopeBrightness {
+func (ep *ERAMPane) datablockBrightness(state *TrackState) radar.Brightness {
 	ps := ep.currentPrefs()
 	if state.DatablockType == FullDatablock {
 		return ps.Brightness.FDB
@@ -485,7 +485,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
 
-		var bright radar.ScopeBrightness
+		var bright radar.Brightness
 		if trk.IsAssociated() {
 			bright = ps.Brightness.PRHST
 		} else {

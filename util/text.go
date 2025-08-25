@@ -7,7 +7,6 @@ package util
 import (
 	"crypto/sha256"
 	"errors"
-	"fmt"
 	"hash/fnv"
 	"io"
 	"iter"
@@ -16,27 +15,12 @@ import (
 	"unicode"
 )
 
-type ByteCount int64
-
-func (b ByteCount) String() string {
-	if b < 1024 {
-		return fmt.Sprintf("%d B", b)
-	} else if b < 1024*1024 {
-		return fmt.Sprintf("%d kB", b/1024)
-	} else if b < 1024*1024*1024 {
-		return fmt.Sprintf("%.1f MB", float64(b)/(1024*1024))
-	} else {
-		return fmt.Sprintf("%.1f GB", float64(b)/(1024*1024*1024))
-	}
+type TextWrapConfig struct {
+	ColumnLimit int
+	Indent      int
+	WrapAll     bool
+	WrapNoSpace bool
 }
-
-// WrapText wraps the provided text string to the given column limit, returning the
-// wrapped string and the number of lines it became.  indent gives the amount to
-// indent wrapped lines.  By default, lines that start with a space are assumed to be
-// preformatted and are not wrapped; providing a true value for wrapAll overrides
-// that behavior and causes them to be wrapped as well.
-func WrapText(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
-	var accum, result strings.Builder
 
 func (cfg TextWrapConfig) Wrap(s string) (string, int) {
 	if cfg.ColumnLimit <= 0 {

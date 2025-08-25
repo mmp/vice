@@ -1559,7 +1559,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 }
 
 // bool indicates whether it's active
-func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, bool) {
+func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
 			return ac.STARSFlightPlan, ac, true

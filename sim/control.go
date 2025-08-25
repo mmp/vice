@@ -154,7 +154,7 @@ func (s *Sim) dispatchTrackedFlightPlanCommand(tcp string, acid ACID,
 			}
 			return nil
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			cmd(tcp, fp, ac)
 			// No radio transmissions for these
 			return nil
@@ -685,7 +685,7 @@ func (s *Sim) ContactTrackingController(tcp string, acid ACID) error {
 			}
 			return nil
 		},
-		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			return s.contactController(tcp, sfp, ac, sfp.TrackingController)
 		})
 }
@@ -704,12 +704,12 @@ func (s *Sim) ContactController(tcp string, acid ACID, toTCP string) error {
 			}
 			return nil
 		},
-		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, sfp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			return s.contactController(tcp, sfp, ac, toTCP)
 		})
 }
 
-func (s *Sim) contactController(fromTCP string, sfp *NASFlightPlan, ac *Aircraft, toTCP string) *speech.RadioTransmission {
+func (s *Sim) contactController(fromTCP string, sfp *NASFlightPlan, ac *Aircraft, toTCP string) *RadioTransmission {
 	// Immediately respond to the current controller that we're
 	// changing frequency.
 	var resp *RadioTransmission
@@ -759,7 +759,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			}
 			return av.ErrNotBeingHandedOffToMe
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				ACID:           fp.ACID,
@@ -821,7 +821,7 @@ func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
 			}
 			return nil
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			octrl := s.State.Controllers[controller]
 			rh := &fp.RedirectedHandoff
 			rh.OriginalOwner = fp.TrackingController
@@ -846,7 +846,7 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
 			// recall.
 			return nil
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			rh := &fp.RedirectedHandoff
 			if rh.RedirectedTo == tcp { // Accept
 				s.eventStream.Post(Event{
@@ -880,7 +880,7 @@ func (s *Sim) ForceQL(tcp string, acid ACID, controller string) error {
 			}
 			return nil
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
@@ -942,7 +942,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 
 			return nil
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
@@ -991,7 +991,7 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 			}
 			return nil
 		},
-		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *speech.RadioTransmission {
+		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *RadioTransmission {
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{

@@ -34,7 +34,7 @@ const (
 // leader line.
 type datablock interface {
 	draw(td *renderer.TextDrawBuilder, pt [2]float32, font *renderer.Font,
-		sb *strings.Builder, brightness radar.ScopeBrightness,
+		sb *strings.Builder, brightness radar.Brightness,
 		dir math.CardinalOrdinalDirection, halfSeconds int64)
 }
 
@@ -91,7 +91,7 @@ func dbChopTrailing(f []dbChar) []dbChar {
 // dbDrawLines renders the given datablock lines.  The leader line direction is
 // used only to determine justification.
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
+	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 	scale := float32(2) // 1.5 for default font
 	if len(lines) >= 5 {
@@ -120,7 +120,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 
 // dbDrawLine renders a single datablock line.
 func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
+	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	halfSeconds int64) {
 
 	style := renderer.TextStyle{Font: font}
@@ -183,7 +183,7 @@ type limitedDatablock struct {
 }
 
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
+	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 
 	lines := []dbLine{
@@ -209,7 +209,7 @@ type fullDatablock struct {
 }
 
 func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
-	font *renderer.Font, sb *strings.Builder, brightness radar.ScopeBrightness,
+	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
 
 	lines := []dbLine{
@@ -284,7 +284,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		db := ep.fdbArena.AllocClear()
 		// DBLine 0 is point out
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
-		vciBright := radar.ScopeBrightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
+		vciBright := radar.Brightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
 		vciColor := vciBright.ScaleRGB(renderer.RGB{0.01, 1, 0.05})
 		dbWriteText(db.vci[:], util.Select(state.DisplayVCI, vci, ""), vciColor, false)
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)

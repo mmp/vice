@@ -451,7 +451,7 @@ func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) ma
 	return m
 }
 
-func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.STARSFlightPlan,
+func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NASFlightPlan,
 	color renderer.RGB, brightness radar.Brightness) datablock {
 	state := sp.TrackState[trk.ADSBCallsign]
 	if state != nil && !sp.datablockVisible(ctx, trk) {
