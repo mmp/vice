@@ -83,6 +83,16 @@ jobs:
           -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
         cmake --build whisper.cpp/build_go --parallel 4
         ls -l whisper.cpp/build_go/src/libwhisper.a
+        mkdir -p whisper.cpp/build_go/ggml/src
+        for base in ggml ggml-base ggml-cpu; do
+          if [ ! -f "whisper.cpp/build_go/ggml/src/lib${base}.a" ]; then
+            found=$(find whisper.cpp/build_go -type f \( -name "${base}.a" -o -name "lib${base}.a" \) | head -n1 || true)
+            if [ -n "$found" ]; then
+              cp -f "$found" "whisper.cpp/build_go/ggml/src/lib${base}.a"
+            fi
+          fi
+        done
+        ls -l whisper.cpp/build_go/ggml/src || true
 
     - name: Build
       run: |
