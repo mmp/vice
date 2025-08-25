@@ -802,6 +802,8 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				})
 			}
 		}
+	} else {
+		s.lg.Errorf("GetStateUpdate called for non-human controller %s", tcp)
 	}
 
 	*update = StateUpdate{
