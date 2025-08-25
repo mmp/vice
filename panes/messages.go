@@ -10,12 +10,12 @@ import (
 	"slices"
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/speech"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -195,7 +195,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			}
 
 			var msg Message
-			if event.RadioTransmissionType == speech.RadioTransmissionContact {
+			if event.RadioTransmissionType == av.RadioTransmissionContact {
 				msg = Message{contents: prefix + event.WrittenText}
 				if mp.ContactTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
@@ -205,7 +205,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					event.WrittenText = strings.ToUpper(event.WrittenText[:1]) + event.WrittenText[1:]
 				}
 				msg = Message{contents: prefix + event.WrittenText,
-					error: event.Type == speech.RadioTransmissionUnexpected,
+					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected,
 				}
 				if mp.ReadbackTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])

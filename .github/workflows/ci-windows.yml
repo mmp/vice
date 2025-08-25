@@ -59,10 +59,15 @@ jobs:
 
     - name: Bundle resources
       env:
-         GCS_UPLOAD_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+         VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+      shell: bash
       run: |
-        go run ./cmd/bundleresources
-        move manifest.json cmd/vice
+        if [ -z "${{ secrets.GCS_UPLOAD_CREDENTIALS }}" ]; then
+            touch cmd/vice/manifest.json
+        else
+            go run ./cmd/bundleresources
+            mv manifest.json cmd/vice
+        fi
 
     - name: Build
       run: |

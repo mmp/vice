@@ -12,6 +12,7 @@ import (
 	"runtime"
 	"runtime/pprof"
 	"slices"
+	"sync"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -20,6 +21,7 @@ import (
 
 type Profiler struct {
 	cpu, mem *os.File
+	mu       sync.Mutex
 }
 
 func CreateProfiler(cpu, mem string) (Profiler, error) {
@@ -82,6 +84,9 @@ func CreateProfiler(cpu, mem string) (Profiler, error) {
 }
 
 func (p *Profiler) Cleanup() {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
 	if p.cpu != nil {
 		pprof.StopCPUProfile()
 		p.cpu.Close()

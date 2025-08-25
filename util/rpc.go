@@ -13,6 +13,7 @@ import (
 	"log/slog"
 	"net"
 	"net/rpc"
+	"reflect"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -21,8 +22,6 @@ import (
 
 	"github.com/vmihailenco/msgpack/v5"
 )
-
-var ErrRPCTimeout = errors.New("RPC call timed out")
 
 ///////////////////////////////////////////////////////////////////////////
 // RPC/Networking stuff
@@ -97,6 +96,31 @@ func (c *LoggingServerCodec) ReadRequestHeader(r *rpc.Request) error {
 	return err
 }
 
+func (c *LoggingServerCodec) ReadRequestBody(body any) error {
+	if err := c.ServerCodec.ReadRequestBody(body); err != nil {
+		return err
+	}
+
+	// Super hacky: if the body is a pointer to a struct with a string-valued ClientIP field, then we
+	// set it here based on the LoggingServerCodec's label, which in turn is set to be the IP/port of
+	// the caller. This seems to be the least-gross way to pipe that information back to the caller
+	// for logging.
+	val := reflect.ValueOf(body)
+	if val.Kind() == reflect.Ptr && val.Elem().Kind() == reflect.Struct {
+		structVal := val.Elem()
+		clientIPField := structVal.FieldByName("ClientIP")
+
+		// If the struct has a ClientIP string field and it's empty, set it
+		if clientIPField.IsValid() && clientIPField.Kind() == reflect.String && clientIPField.CanSet() {
+			if clientIPField.String() == "" {
+				clientIPField.SetString(c.label)
+			}
+		}
+	}
+
+	return nil
+}
+
 func (c *LoggingServerCodec) WriteResponse(r *rpc.Response, body any) error {
 	c.lg.Info("server: writing rpc response", slog.String("label", c.label),
 		slog.String("service_method", r.ServiceMethod),
@@ -106,6 +130,10 @@ func (c *LoggingServerCodec) WriteResponse(r *rpc.Response, body any) error {
 		slog.String("service_method", r.ServiceMethod),
 		slog.Any("error", err))
 	return err
+}
+
+func (c *LoggingServerCodec) Close() error {
+	return c.ServerCodec.Close()
 }
 
 type mpClientCodec struct {

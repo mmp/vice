@@ -11,16 +11,14 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// RGB
+type Brightness int
 
-type ScopeBrightness int
-
-func (b ScopeBrightness) RGB() renderer.RGB {
+func (b Brightness) RGB() renderer.RGB {
 	v := float32(b) / 100
 	return renderer.RGB{v, v, v}
 }
 
-func (b ScopeBrightness) ScaleRGB(r renderer.RGB) renderer.RGB {
+func (b Brightness) ScaleRGB(r renderer.RGB) renderer.RGB {
 	return r.Scale(float32(b) / 100)
 }
 

@@ -1,4 +1,4 @@
-// pkg/panes/stars/dcb.go
+// stars/dcb.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -744,7 +744,7 @@ var dcbDrawState struct {
 	cursor       [2]float32
 	drawStartPos [2]float32
 	style        renderer.TextStyle
-	brightness   radar.ScopeBrightness
+	brightness   radar.Brightness
 	position     int
 }
 
@@ -1572,12 +1572,12 @@ func (s *dcbRangeRingRadiusSpinner) ModeAfter() CommandMode {
 // dcbBrightnessSpinner handles spinners in the BRITE menu
 type dcbBrightnessSpinner struct {
 	text     string
-	b        *radar.ScopeBrightness
-	min      radar.ScopeBrightness
+	b        *radar.Brightness
+	min      radar.Brightness
 	allowOff bool
 }
 
-func makeBrightnessSpinner(t string, b *radar.ScopeBrightness, min radar.ScopeBrightness, allowOff bool) dcbSpinner {
+func makeBrightnessSpinner(t string, b *radar.Brightness, min radar.Brightness, allowOff bool) dcbSpinner {
 	return &dcbBrightnessSpinner{text: t, b: b, min: min, allowOff: allowOff}
 }
 
@@ -1591,11 +1591,11 @@ func (s *dcbBrightnessSpinner) Equals(other dcbSpinner) bool {
 }
 
 func (s *dcbBrightnessSpinner) Delta(delta int) {
-	*s.b -= radar.ScopeBrightness(5 * delta)
+	*s.b -= radar.Brightness(5 * delta)
 	if *s.b < s.min && s.allowOff {
-		*s.b = radar.ScopeBrightness(0)
+		*s.b = radar.Brightness(0)
 	} else {
-		*s.b = radar.ScopeBrightness(math.Clamp(*s.b, s.min, 100))
+		*s.b = radar.Brightness(math.Clamp(*s.b, s.min, 100))
 	}
 }
 
@@ -1609,7 +1609,7 @@ func (s *dcbBrightnessSpinner) KeyboardInput(text string) (CommandMode, error) {
 	} else if v < int(s.min) || v > 100 || (v == 0 && !s.allowOff) {
 		return CommandModeNone, ErrSTARSIllegalValue
 	} else {
-		*s.b = radar.ScopeBrightness(v)
+		*s.b = radar.Brightness(v)
 		return CommandModeBrite, nil
 	}
 }

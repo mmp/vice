@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
@@ -58,7 +59,7 @@ type scenario struct {
 	SplitConfigurations av.SplitConfigurationSet         `json:"multi_controllers"`
 	DefaultSplit        string                           `json:"default_split"`
 	WindSpec            map[string]interface{}           `json:"wind"` // Will manually deserialize to handle legacy wind
-	Wind                map[math.Point2LL][]av.WindLayer // Derived from WindSpec in PostDeserialize
+	Wind                map[math.Point2LL][]wx.WindLayer // Derived from WindSpec in PostDeserialize
 	VirtualControllers  []string                         `json:"controllers"`
 
 	// Map from inbound flow names to a map from airport name to default rate,
@@ -595,7 +596,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		return 0, false
 	}
 
-	s.Wind = make(map[math.Point2LL][]av.WindLayer)
+	s.Wind = make(map[math.Point2LL][]wx.WindLayer)
 	if len(s.WindSpec) > 0 {
 		if dir, ok := windInt("direction"); ok {
 			// Treat it as legacy wind:
@@ -605,7 +606,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			spd, _ := windInt("speed")
 			gst, _ := windInt("gust")
 			ap := av.DB.Airports[sg.PrimaryAirport]
-			s.Wind[ap.Location] = []av.WindLayer{av.WindLayer{
+			s.Wind[ap.Location] = []wx.WindLayer{wx.WindLayer{
 				Altitude:        float32(ap.Elevation),
 				Direction:       float32(dir),
 				DirectionVector: math.SinCos(math.Radians(float32(dir))),
@@ -617,7 +618,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				if loc, ok := sg.Locate(p); !ok {
 					e.ErrorString("unknown location %q in \"wind\"", p)
 				} else if lstr, ok := layers.(string); ok {
-					s.Wind[loc] = av.ParseWindLayers(lstr, e)
+					s.Wind[loc] = wx.ParseWindLayers(lstr, e)
 				} else {
 					e.ErrorString("Expecting quoted string for %q in \"wind\"", p)
 				}
@@ -627,7 +628,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		r := rand.Make()
 		dir := float32(10 * (1 + r.Intn(36)))
 		ap := av.DB.Airports[sg.PrimaryAirport]
-		s.Wind[ap.Location] = []av.WindLayer{av.WindLayer{
+		s.Wind[ap.Location] = []wx.WindLayer{wx.WindLayer{
 			Altitude:        float32(ap.Elevation),
 			Direction:       dir,
 			DirectionVector: math.SinCos(math.Radians(dir)),
@@ -636,14 +637,14 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 }
 
-func (s *scenario) AverageWind() av.WindLayer {
+func (s *scenario) AverageWind() wx.WindLayer {
 	var wts []float32
-	var l []av.WindLayer
+	var l []wx.WindLayer
 	for _, layers := range s.Wind {
 		wts = append(wts, 1)
 		l = append(l, layers[0])
 	}
-	return av.BlendWindLayers(wts, l)
+	return wx.BlendWindLayers(wts, l)
 }
 
 ///////////////////////////////////////////////////////////////////////////

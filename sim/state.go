@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
@@ -71,7 +72,7 @@ type State struct {
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	WX *av.WeatherModel
+	WX *wx.WeatherModel
 
 	TotalIFR, TotalVFR int
 
@@ -135,7 +136,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 
-		WX: av.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), startTime,
+		WX: wx.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), startTime,
 			config.NmPerLongitude, config.MagneticVariation, config.Wind, lg),
 
 		SimRate:        1,

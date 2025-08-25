@@ -62,11 +62,12 @@ type ServerLaunchConfig struct {
 	MultiControllerOnly bool
 	ExtraScenario       string
 	ExtraVideoMap       string
+	ServerAddress       string // address to use for remote TTS provider
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
-	util.MonitorCPUUsage(95, true /* panic if wedged */, lg)
-	util.MonitorMemoryUsage(128 /* trigger MB */, 64 /* delta MB */, lg)
+	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
+	util.MonitorMemoryUsage(192 /* trigger MB */, 64 /* delta MB */, lg)
 
 	_, server, e := makeServer(config, lg)
 	if e.HaveErrors() {
@@ -114,7 +115,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, lg)
+		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, config.ServerAddress, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

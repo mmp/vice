@@ -1,4 +1,4 @@
-// pkg/panes/stars/prefs.go
+// stars/prefs.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -184,23 +184,23 @@ type CommonPreferences struct {
 	DisplaySuspendedTrackAltitude bool
 
 	Brightness struct {
-		DCB                radar.ScopeBrightness
-		BackgroundContrast radar.ScopeBrightness
-		VideoGroupA        radar.ScopeBrightness
-		VideoGroupB        radar.ScopeBrightness
-		FullDatablocks     radar.ScopeBrightness
-		Lists              radar.ScopeBrightness
-		Positions          radar.ScopeBrightness
-		LimitedDatablocks  radar.ScopeBrightness
-		OtherTracks        radar.ScopeBrightness
-		Lines              radar.ScopeBrightness
-		RangeRings         radar.ScopeBrightness
-		Compass            radar.ScopeBrightness
-		BeaconSymbols      radar.ScopeBrightness
-		PrimarySymbols     radar.ScopeBrightness
-		History            radar.ScopeBrightness
-		Weather            radar.ScopeBrightness
-		WxContrast         radar.ScopeBrightness
+		DCB                radar.Brightness
+		BackgroundContrast radar.Brightness
+		VideoGroupA        radar.Brightness
+		VideoGroupB        radar.Brightness
+		FullDatablocks     radar.Brightness
+		Lists              radar.Brightness
+		Positions          radar.Brightness
+		LimitedDatablocks  radar.Brightness
+		OtherTracks        radar.Brightness
+		Lines              radar.Brightness
+		RangeRings         radar.Brightness
+		Compass            radar.Brightness
+		BeaconSymbols      radar.Brightness
+		PrimarySymbols     radar.Brightness
+		History            radar.Brightness
+		Weather            radar.Brightness
+		WxContrast         radar.Brightness
 	}
 
 	CharSize struct {
@@ -462,8 +462,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		p.CharSize.DCB = 1
 	}
 	if from < 9 {
-		remap := func(b *radar.ScopeBrightness) {
-			*b = radar.ScopeBrightness(min(*b*2, 100))
+		remap := func(b *radar.Brightness) {
+			*b = radar.Brightness(min(*b*2, 100))
 		}
 		remap(&p.Brightness.VideoGroupA)
 		remap(&p.Brightness.VideoGroupB)
@@ -539,7 +539,7 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 
 		// Brightness goes in steps of 5 (similarly not enforced previously...)
-		remapBrightness := func(b *radar.ScopeBrightness) {
+		remapBrightness := func(b *radar.Brightness) {
 			*b = (*b + 2) / 5 * 5
 			*b = math.Clamp(*b, 0, 100)
 		}

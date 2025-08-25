@@ -393,7 +393,6 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 }
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
-
 	if c.HaveTTS() && cmds != "P" && cmds != "X" {
 		c.mu.Lock()
 
