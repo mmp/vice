@@ -83,7 +83,6 @@ jobs:
           -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
         cmake --build whisper.cpp/build_go --parallel 4
         ls -l whisper.cpp/build_go/src/libwhisper.a
-        ls -l whisper.cpp/build_go/ggml/src/libggml*.a
 
     - name: Build
       run: |
