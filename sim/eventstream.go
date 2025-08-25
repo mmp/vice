@@ -171,7 +171,7 @@ func (e *EventsSubscription) Get() []Event {
 		return nil
 	}
 
-	events := e.stream.events[e.offset:]
+	events := slices.Clone(e.stream.events[e.offset:])
 	e.offset = len(e.stream.events)
 	e.lastGet = time.Now()
 	e.warnedNoGet = false
