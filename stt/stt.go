@@ -104,7 +104,7 @@ func CallModel(model string, approaches map[string]string, transcript string) (s
 }
 
 func VoiceToCommand(audio *AudioData, approaches map[string]string) (string, error) {
-	text, err := Transcribe2(audio)
+	text, err := Transcribe(audio)
 	if err != nil {
 		return "", err
 	}
@@ -118,10 +118,10 @@ func VoiceToCommand(audio *AudioData, approaches map[string]string) (string, err
 	return command, nil
 }
 
-func Transcribe2(audio *AudioData) (string, error) {
+func Transcribe(audio *AudioData) (string, error) {
 	// Make a model 
 
-	text, err := whisper.Transcribe("../../resources/models/ggml-tiny.bin", audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
+	text, err := whisper.Transcribe("../../resources/models/ggml-medium-q5_0.bin", audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
 		Language: "en",
 	})
 	if err != nil {
