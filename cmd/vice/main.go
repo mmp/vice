@@ -219,6 +219,7 @@ func main() {
 			ExtraScenario:       *scenarioFilename,
 			ExtraVideoMap:       *videoMapFilename,
 			ServerAddress:       *serverAddress,
+			IsLocal:             false,
 		}, lg)
 	} else if *showRoutes != "" {
 		cliInit()

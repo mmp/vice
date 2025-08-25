@@ -57,6 +57,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 		ExtraScenario: additionalScenario,
 		ExtraVideoMap: additionalVideoMap,
 		ServerAddress: serverAddress,
+		IsLocal:       true,
 	}, lg)
 
 	if !errorLogger.HaveErrors() {
