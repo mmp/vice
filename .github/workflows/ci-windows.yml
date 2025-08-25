@@ -70,17 +70,7 @@ jobs:
             mv manifest.json cmd/vice
         fi
 
-    - name: Build
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags static,downloadresources -ldflags="-s -w -H=windowsgui" -o ./vice.exe ./cmd/vice
-        ls
-      env:
-        CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
-        CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
-        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
-
-    - name: Build whisper-cpp (MinGW static libs)
+    - name: Build whisper-cpp
       shell: bash
       run: |
         cmake -S whisper.cpp -B whisper.cpp/build_go \
@@ -92,6 +82,16 @@ jobs:
         cmake --build whisper.cpp/build_go --parallel 4
         ls -l whisper.cpp/build_go/src/libwhisper.a
         ls -l whisper.cpp/build_go/ggml/src/libggml*.a
+
+    - name: Build
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
+        go build -tags static,downloadresources -ldflags="-s -w -H=windowsgui" -o ./vice.exe ./cmd/vice
+        ls
+      env:
+        CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
 
     - name: Check scenarios
       run:

@@ -48,12 +48,20 @@ jobs:
           -DGGML_METAL=ON \
           -DGGML_BLAS=ON \
           -DGGML_METAL_EMBED_LIBRARY=ON \
-          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
         cmake --build whisper.cpp/build_go --parallel 4
         ls -l whisper.cpp/build_go/src/libwhisper.a
         ls -l whisper.cpp/build_go/ggml/src/libggml*.a
         ls -l whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a
         ls -l whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a
+        lipo -info whisper.cpp/build_go/src/libwhisper.a || true
+        lipo -info whisper.cpp/build_go/ggml/src/libggml.a || true
+        lipo -info whisper.cpp/build_go/ggml/src/libggml-base.a || true
+        lipo -info whisper.cpp/build_go/ggml/src/libggml-cpu.a || true
+        lipo -info whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a || true
+        lipo -info whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a || true
 
     - name: Bundle resources
       env:
