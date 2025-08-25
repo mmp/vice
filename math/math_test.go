@@ -5,7 +5,7 @@
 package math
 
 import (
-	gomath "math"
+	"math"
 	"testing"
 
 	"github.com/mmp/vice/rand"
@@ -328,8 +328,8 @@ func TestSegmentSegmentIntersect(t *testing.T) {
 
 func TestSignBit(t *testing.T) {
 	for _, v := range []float32{-1, 0, -0, 1, 55, -125.2} {
-		if SignBit(v) != gomath.Signbit(float64(v)) {
-			t.Errorf("%f: got %v for sign bit; expected %v", v, SignBit(v), gomath.Signbit(float64(v)))
+		if SignBit(v) != math.Signbit(float64(v)) {
+			t.Errorf("%f: got %v for sign bit; expected %v", v, SignBit(v), math.Signbit(float64(v)))
 		}
 	}
 }

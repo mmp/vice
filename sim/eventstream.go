@@ -204,6 +204,7 @@ const (
 	TransferRejectedEvent
 	RecalledPointOutEvent
 	FlightPlanAssociatedEvent
+	FixCoordinatesEvent
 	NumEventTypes
 )
 
@@ -226,6 +227,7 @@ type Event struct {
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+	WaypointInfo          []math.Point2LL
 }
 
 func (e *Event) String() string {
