@@ -1015,7 +1015,7 @@ func (s *Sim) Update() {
 			}
 		}()
 
-		if time.Since(s.lastControlCommandTime) > 15*time.Minute {
+		if time.Since(s.lastControlCommandTime) > 15*time.Minute && !s.State.Paused {
 			s.eventStream.Post(Event{
 				Type:        StatusMessageEvent,
 				WrittenText: "Pausing sim due to inactivity.",
