@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	whisper "github.com/mmp/vice/autowhisper"
+	"github.com/mmp/vice/log"
 )
 
 // AudioData represents audio data in memory
@@ -103,15 +104,15 @@ func CallModel(model string, approaches map[string]string, transcript string) (s
 	return "", fmt.Errorf("no output found: %s", string(body))
 }
 
-func VoiceToCommand(audio *AudioData, approaches map[string]string) (string, error) {
+func VoiceToCommand(audio *AudioData, approaches map[string]string, lg *log.Logger) (string, error) {
 	text, err := Transcribe(audio)
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("Transcription: ", text)
+	lg.Infof("Transcription: %s", text)
 	model := os.Getenv("OPENAI_MODEL")
 	command, err := CallModel(model, approaches, text)
-	fmt.Println("Command: ", command)
+	lg.Infof("Command: %s", command)
 	if err != nil {
 		return "", err
 	}
@@ -127,7 +128,6 @@ func Transcribe(audio *AudioData) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("Transcription: ", text)
 	return processTranscription(text), nil
 }
 

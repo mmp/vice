@@ -247,7 +247,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 					ctx.Lg.Infof("Push-to-talk: Stopped recording, transcribing...")
 					go func(samples []int16) {
 						audio := &stt.AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := stt.VoiceToCommand(audio, map[string]string{}) // TODO: Pass in approaches
+						text, err := stt.VoiceToCommand(audio, map[string]string{}, ctx.Lg) // TODO: Pass in approaches
 						if err != nil {
 							ctx.Lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
 							return
@@ -4756,7 +4756,7 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+	if (mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) || sp.pushToTalkKeyCapture {
 		ctx.Client.HoldRadioTransmissions()
 	} else {
 		ctx.Client.AllowRadioTransmissions()
