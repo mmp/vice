@@ -329,6 +329,10 @@ func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider) {
 	}
 }
 
+func (s *Sim) Destroy() {
+	s.eventStream.Destroy()
+}
+
 // getRandomVoice returns a random voice from the voice pool, using the same
 // shuffling logic that was previously in GoogleTTSProvider
 func (s *Sim) getRandomVoice() (Voice, error) {

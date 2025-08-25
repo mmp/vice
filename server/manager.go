@@ -470,6 +470,8 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 
 		sm.lg.Infof("%s: terminating sim after %s idle", as.name, as.sim.IdleTime())
 
+		as.sim.Destroy()
+
 		sm.mu.Lock(sm.lg)
 		delete(sm.activeSims, as.name)
 		sm.mu.Unlock(sm.lg)
