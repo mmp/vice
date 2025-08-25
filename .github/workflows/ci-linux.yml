@@ -42,6 +42,12 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
+    - name: Install whisper-cpp
+      run: |
+        cmake -S whisper.cpp -B whisper.cpp/build_go -DGGML_CPU=ON -DGGML_OPENMP=ON -DCMAKE_BUILD_TYPE=Release
+        cmake --build whisper.cpp/build_go --parallel 4
+        ls -la whisper.cpp/build_go/libwhisper.so
+
     - name: Bundle resources
       env:
          VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
@@ -52,11 +58,6 @@ jobs:
             go run ./cmd/bundleresources
             mv manifest.json cmd/vice
         fi
-    - name: Install whisper-cpp
-      run: |
-        cd whisper.cpp
-        make -j4
-        cd ..
 
     - name: Build
       run: |
