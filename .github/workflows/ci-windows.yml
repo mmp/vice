@@ -26,6 +26,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0   # fetch whole history so we can get tags for the installer :-(
+        submodules: true
 
     - name: Check git tags
       run: |
@@ -78,6 +79,19 @@ jobs:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
+
+    - name: Build whisper-cpp (MinGW static libs)
+      shell: bash
+      run: |
+        cmake -S whisper.cpp -B whisper.cpp/build_go \
+          -G "MinGW Makefiles" \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DGGML_CPU=ON \
+          -DGGML_OPENMP=OFF \
+          -DCMAKE_BUILD_TYPE=Release
+        cmake --build whisper.cpp/build_go --parallel 4
+        ls -l whisper.cpp/build_go/src/libwhisper.a
+        ls -l whisper.cpp/build_go/ggml/src/libggml*.a
 
     - name: Check scenarios
       run:

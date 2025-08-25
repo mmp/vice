@@ -24,6 +24,9 @@ jobs:
     steps:
     - name: Checkout source
       uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
 
     - name: Setup go
       uses: actions/setup-go@v5
@@ -36,6 +39,21 @@ jobs:
 
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
+
+    - name: Install whisper-cpp
+      run: |
+        cmake -S whisper.cpp -B whisper.cpp/build_go \
+          -DBUILD_SHARED_LIBS=OFF \
+          -DGGML_CPU=ON \
+          -DGGML_METAL=ON \
+          -DGGML_BLAS=ON \
+          -DGGML_METAL_EMBED_LIBRARY=ON \
+          -DCMAKE_BUILD_TYPE=Release
+        cmake --build whisper.cpp/build_go --parallel 4
+        ls -l whisper.cpp/build_go/src/libwhisper.a
+        ls -l whisper.cpp/build_go/ggml/src/libggml*.a
+        ls -l whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a
+        ls -l whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a
 
     - name: Bundle resources
       env:
