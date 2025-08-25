@@ -224,7 +224,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	// Push-to-talk handling (minimal, non-invasive)
 	if ps.PushToTalkKey != imgui.KeyNone {
 		// Start on initial press (ignore repeats by checking our own flag)
-		if imgui.IsKeyDown(ps.PushToTalkKey) {
+		if imgui.IsKeyDown(ps.PushToTalkKey) && !ctx.Client.RadioIsActive() {
 			if !sp.pushToTalkRecording && !ctx.Platform.IsAudioRecording() {
 				if err := ctx.Platform.StartAudioRecordingWithDevice(ps.SelectedMicrophone); err != nil {
 					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
@@ -234,6 +234,8 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 					fmt.Println("Push-to-talk: Started recording")
 				}
 			}
+		} else if ctx.Client.RadioIsActive() {
+			// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
 		}
 
 		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
