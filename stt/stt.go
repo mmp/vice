@@ -20,7 +20,6 @@ type AudioData struct {
 	Data       []int16 // PCM audio data
 }
 
-
 // Input for the function
 type OpenAIMessage struct {
 	Role    string `json:"role"`
@@ -120,7 +119,7 @@ func VoiceToCommand(audio *AudioData, approaches map[string]string, lg *log.Logg
 }
 
 func Transcribe(audio *AudioData) (string, error) {
-	// Make a model 
+	// Make a model
 
 	text, err := whisper.Transcribe("../../resources/models/ggml-medium-q5_0.bin", audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
 		Language: "en",
@@ -131,9 +130,8 @@ func Transcribe(audio *AudioData) (string, error) {
 	return processTranscription(text), nil
 }
 
-
 // The OpenAI model was fine-tuned to handle numbers as their ICAO words (eg. 1 as wun, 2 as too, etc.)
-// This is mainly to bring some normalization to the transcription and between controller phraseology. 
+// This is mainly to bring some normalization to the transcription and between controller phraseology.
 // For example, sometimes the transcription will be 3-5-0 rather than 350, or controllers will say "climb and maintain 1-0, ten, thousand"
 // processTranscription() removes all punctuation and numbers, and replaces them with their ICAO counterparts.
 func processTranscription(text string) string {
