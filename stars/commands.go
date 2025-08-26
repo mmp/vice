@@ -247,7 +247,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				} else {
 					ctx.Lg.Infof("Push-to-talk: Stopped recording, transcribing...")
 					go func(samples []int16) {
-						// Make approach map 
+						// Make approach map
 						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
 						for _, apt := range ctx.Client.State.Airports {
 							for code, appr := range apt.Approaches {
