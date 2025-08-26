@@ -231,7 +231,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				} else {
 					sp.pushToTalkRecording = true
 					ctx.Lg.Infof("Push-to-talk: Started recording")
-					fmt.Println("Push-to-talk: Started recording")
 				}
 			}
 		} else if ctx.Client.RadioIsActive() {
@@ -248,8 +247,15 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 				} else {
 					ctx.Lg.Infof("Push-to-talk: Stopped recording, transcribing...")
 					go func(samples []int16) {
+						// Make approach map 
+						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
+						for _, apt := range ctx.Client.State.Airports {
+							for code, appr := range apt.Approaches {
+								approaches = append(approaches, [2]string{appr.FullName, code})
+							}
+						}
 						audio := &stt.AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := stt.VoiceToCommand(audio, map[string]string{}, ctx.Lg) // TODO: Pass in approaches
+						text, err := stt.VoiceToCommand(audio, approaches, ctx.Lg)
 						if err != nil {
 							ctx.Lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
 							return
@@ -279,7 +285,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 							if len(fields) > 1 {
 								cmd := strings.Join(fields[1:], " ")
 								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
-								fmt.Println("Command: ", cmd, "Callsign: ", callsign)
+								ctx.Lg.Infof("Command: %v Callsign: %v", cmd, callsign)
 							}
 							sp.lastTranscription = text
 							ctx.Lg.Infof("Push-to-talk: Transcription: %s\n", text)

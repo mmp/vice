@@ -40,7 +40,7 @@ type OpenAIResponse struct {
 	} `json:"output"`
 }
 
-func CallModel(model string, approaches map[string]string, transcript string) (string, error) {
+func callModel(model string, approaches [][2]string, transcript string) (string, error) {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		return "", fmt.Errorf("OPENAI_API_KEY is not set")
@@ -51,9 +51,24 @@ func CallModel(model string, approaches map[string]string, transcript string) (s
 		Role:    "system",
 		Content: "Convert ATC transcripts to DSL; output only the DSL line.",
 	}
+	var apprStr string
+	for _, approach := range approaches {
+		pronounce := formatToModel(approach[0])
+		// Replace only standalone 'l' or 'r' at the end (with space before them)
+		if strings.HasSuffix(pronounce, " l") {
+			pronounce = strings.TrimSuffix(pronounce, " l") + " left"
+		} else if strings.HasSuffix(pronounce, " r") {
+			pronounce = strings.TrimSuffix(pronounce, " r") + " right"
+		}
+		pronounce = strings.TrimSpace(pronounce)
 
-	// userContent := fmt.Sprintf("AllowedApproaches: %v\nTranscript: \"%s\"", approaches, transcript)
-	userContent := fmt.Sprintf("Transcript: \"%s\"", transcript)
+		apprStr += fmt.Sprintf("\"%s\": \"%s\", ", pronounce, approach[1])
+	}
+	apprStr = strings.TrimSuffix(apprStr, ", ")
+	fmt.Println(apprStr)
+
+	userContent := fmt.Sprintf("AllowedApproaches: %s\nTranscript: \"%s\"", apprStr, transcript)
+	fmt.Println("User content: ", userContent)
 	userMsg := OpenAIMessage{
 		Role:    "user",
 		Content: userContent,
@@ -103,14 +118,14 @@ func CallModel(model string, approaches map[string]string, transcript string) (s
 	return "", fmt.Errorf("no output found: %s", string(body))
 }
 
-func VoiceToCommand(audio *AudioData, approaches map[string]string, lg *log.Logger) (string, error) {
+func VoiceToCommand(audio *AudioData, approaches [][2]string, lg *log.Logger) (string, error) {
 	text, err := Transcribe(audio)
 	if err != nil {
 		return "", err
 	}
-	lg.Infof("Transcription: %s", text)
+	fmt.Println("Transcription: ", text)
 	model := os.Getenv("OPENAI_MODEL")
-	command, err := CallModel(model, approaches, text)
+	command, err := callModel(model, approaches, text)
 	lg.Infof("Command: %s", command)
 	if err != nil {
 		return "", err
@@ -127,14 +142,15 @@ func Transcribe(audio *AudioData) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return processTranscription(text), nil
+	fmt.Println("Transcription (no formatting): ", text)
+	return formatToModel(text), nil
 }
 
 // The OpenAI model was fine-tuned to handle numbers as their ICAO words (eg. 1 as wun, 2 as too, etc.)
 // This is mainly to bring some normalization to the transcription and between controller phraseology.
 // For example, sometimes the transcription will be 3-5-0 rather than 350, or controllers will say "climb and maintain 1-0, ten, thousand"
-// processTranscription() removes all punctuation and numbers, and replaces them with their ICAO counterparts.
-func processTranscription(text string) string {
+// formatToModel() removes all punctuation and numbers, and replaces them with their ICAO counterparts.
+func formatToModel(text string) string {
 	punctuation := []string{",", ".", "-", "–", "—", ":", ";", "/", "\\", "(", ")", "[", "]", "{", "}", "!", "?", "+", "_", "=", "*", "\"", "'", "<", ">", "|"}
 	for _, p := range punctuation {
 		text = strings.ReplaceAll(text, p, "")
@@ -154,5 +170,7 @@ func processTranscription(text string) string {
 	for number, word := range numberToWord {
 		text = strings.ReplaceAll(text, number, word+" ")
 	}
+	text = strings.ReplaceAll(text, "  ", " ") // Remove double spaces
+	text = strings.ToLower(text)
 	return text
 }
