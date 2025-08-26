@@ -12,7 +12,9 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
+	"net/http/pprof"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -55,6 +57,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set\n")
 		os.Exit(1)
 	}
+
+	launchHTTPServer()
 
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
@@ -450,5 +454,23 @@ func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle) {
 		})
 
 		<-tick
+	}
+}
+
+func launchHTTPServer() {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+
+	if listener, err := net.Listen("tcp", ":8002"); err == nil {
+		LogInfo("Launching HTTP server on port 8002")
+		go http.Serve(listener, mux)
+	} else {
+		fmt.Fprintf(os.Stderr, "Unable to start HTTP server: %v", err)
+		os.Exit(1)
 	}
 }
