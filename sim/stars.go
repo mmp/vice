@@ -912,7 +912,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 	// (Re)compute this ourselves rather than taking it as an argument
 	// since the one in ScenarioGroup depends on our initializing Center
 	// which just happened above.
-	nmPerLongitude := 60 * math.Cos(math.Radians(fa.Center[1]))
+	nmPerLongitude := math.NMPerLongitudeAt(fa.Center)
 
 	makePolygonAirportFilters := func(id string, description string, delta float32,
 		floor int, ceiling int, airports []string) FilterRegions {

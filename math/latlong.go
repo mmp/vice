@@ -1,4 +1,4 @@
-// pkg/math/latlong.go
+// math/latlong.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -13,6 +13,12 @@ import (
 )
 
 const NMPerLatitude = 60
+
+// NMPerLongitudeAt returns the number of nautical miles spanned by one
+// degree of longitude at the given lat-long point.
+func NMPerLongitudeAt(p Point2LL) float32 {
+	return 60 * Cos(Radians(p[1]))
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Point2LL

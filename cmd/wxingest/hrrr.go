@@ -484,7 +484,7 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return nil, fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
 	}
 	center, radius := tspec.Center(), tspec.Radius
-	nmPerLongitude := 60 * math.Cos(math.Radians(center[1]))
+	nmPerLongitude := math.NMPerLongitudeAt(center)
 
 	start := time.Now()
 	n, nbytes := 0, 0
