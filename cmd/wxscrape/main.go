@@ -296,14 +296,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 
 			var status Status
 			haveWX, status = func() (bool, Status) {
-				// Skip the PNG decode if we are reasonably assured that there is or is not WX.
-				if tspec.Radius == 128 && len(b) <= 5623 {
-					return false, StatusSuccess
-				} else if tspec.Radius == 128 && len(b) > 7000 {
-					return true, StatusSuccess
-				}
-
-				// For the few larger-distance fetches and for anything ambiguous, decode and check.
+				// Decode and see if there's anything there.
 				img, err := png.Decode(bytes.NewReader(b))
 				if err != nil {
 					LogError("%s: %s: %v", tracon, url, err)
