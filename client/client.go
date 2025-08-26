@@ -503,7 +503,7 @@ func (c *ControlClient) StringIsSPC(s string) bool {
 	return av.StringIsSPC(s) || slices.Contains(c.State.STARSFacilityAdaptation.CustomSPCs, s)
 }
 
-func (c *ControlClient) xIsActive() bool {
+func (c *ControlClient) RadioIsActive() bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
