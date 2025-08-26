@@ -836,7 +836,12 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	// Validate that all of the TRACON ARTCCs are known.
 	for name, tracon := range tracons {
 		if _, ok := artccs[tracon.ARTCC]; !ok {
-			panic(tracon.ARTCC + ": ARTCC unknown for TRACON " + name)
+			fmt.Fprintln(os.Stderr, tracon.ARTCC+": ARTCC unknown for TRACON "+name)
+			os.Exit(1)
+		}
+		if tracon.Radius < 20 {
+			fmt.Fprintf(os.Stderr, tracon.ARTCC+": unexpectedly small radius %f\n", tracon.Radius)
+			os.Exit(1)
 		}
 	}
 
