@@ -11,7 +11,6 @@ import (
 	"image/png"
 	"io"
 	"log"
-	"math"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -20,8 +19,11 @@ import (
 	"strings"
 	"time"
 
-	"cloud.google.com/go/storage"
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
+
+	"cloud.google.com/go/storage"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
@@ -229,48 +231,29 @@ func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap str
 	return status
 }
 
-//go:embed tracon-airports.json
-var traconAirports []byte
-
-type TraconSpec struct {
-	Airport   string  `json:"airport"`
-	Latitude  float32 `json:"latitude"`
-	Longitude float32 `json:"longitude"`
-	Distance  float32 `json:"distance"` // 128 by default
-}
-
 func fetchWX(ctx context.Context, bucket *storage.BucketHandle) {
-	var tracons map[string]TraconSpec
-	if err := json.Unmarshal(traconAirports, &tracons); err != nil {
-		LogError("tracon-airports.json: %v", err)
-	}
-	for tracon, spec := range tracons {
-		go fetchTraconWX(ctx, bucket, tracon, spec)
+	av.InitDB()
+
+	for tracon := range av.DB.TRACONs {
+		go fetchTraconWX(ctx, bucket, tracon)
 	}
 }
 
 // fetchTraconWX runs asynchronously in a goroutine and fetches radar
 // images for a single TRACON and writes them to disk.
-func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon string, spec TraconSpec) {
+func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon string) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.Intn(200)) * time.Second)
 
 	tick := time.Tick(5 * time.Minute)
 
-	fetchDistance := spec.Distance
-	if fetchDistance == 0 { // unspecified
-		// Fetch this many nm out from the center
-		const wxFetchDistance = 128
-		fetchDistance = wxFetchDistance
+	tspec, ok := av.DB.TRACONs[tracon]
+	if !ok {
+		LogError("%s: unable to find TRACON info", tracon)
 	}
-	fetchResolution := int(4 * fetchDistance)
-
-	// Figure out how far out in degrees latitude / longitude to fetch.
-	// Latitude is easy: 60nm per degree
-	dlat := float32(fetchDistance) / 60
-	// Longitude: figure out nm per degree at center
-	nmPerLong := 60 * math.Cos(float64(spec.Latitude*math.Pi/180))
-	dlong := fetchDistance / float32(nmPerLong)
+	center := tspec.Center()
+	fetchResolution := int(4 * tspec.Radius) // -> 0.5nm per pixel
+	bbox := math.BoundLatLongCircle(center, tspec.Radius)
 
 	// The weather radar image comes via a WMS GetMap request from the NOAA.
 	//
@@ -286,8 +269,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 	params.Add("WIDTH", fmt.Sprintf("%d", fetchResolution))
 	params.Add("HEIGHT", fmt.Sprintf("%d", fetchResolution))
 	params.Add("LAYERS", "conus_bref_qcd")
-	params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", spec.Longitude-dlong, spec.Latitude-dlat,
-		spec.Longitude+dlong, spec.Latitude+dlat))
+	params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", bbox.P0[0], bbox.P0[1], bbox.P1[0], bbox.P1[1]))
 
 	url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
 
@@ -311,9 +293,9 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 			var status Status
 			haveWX, status = func() (bool, Status) {
 				// Skip the PNG decode if we are reasonably assured that there is or is not WX.
-				if fetchDistance == 128 && len(b) <= 5623 {
+				if tspec.Radius == 128 && len(b) <= 5623 {
 					return false, StatusSuccess
-				} else if fetchDistance == 128 && len(b) > 7000 {
+				} else if tspec.Radius == 128 && len(b) > 7000 {
 					return true, StatusSuccess
 				}
 
@@ -367,8 +349,8 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 			wx := WX{
 				PNG:        b,
 				Resolution: fetchResolution,
-				Latitude:   spec.Latitude,
-				Longitude:  spec.Longitude,
+				Latitude:   center[1],
+				Longitude:  center[0],
 			}
 
 			path := filepath.Join("scrape", "WX", tracon, time.Now().UTC().Format(time.RFC3339)+".gob")
@@ -388,7 +370,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 		}
 
 		if doWithBackoff(tryFetch) {
-			LogInfo("Got WX for %s centered at %s, have WX %v", tracon, spec.Airport, haveWX)
+			LogInfo("Got WX for %s have WX %v", tracon, haveWX)
 
 			<-tick
 

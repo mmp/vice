@@ -18,12 +18,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -49,7 +49,8 @@ func (r *ResourcesDownloadModalClient) Title() string {
 func (r *ResourcesDownloadModalClient) Opening() {}
 
 func (r *ResourcesDownloadModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{ModalDialogButton{text: "Cancel",
+	btext := util.Select(r.currentFile == r.totalFiles && len(r.errors) > 0, "Ok", "Cancel")
+	return []ModalDialogButton{ModalDialogButton{text: btext,
 		action: func() bool {
 			os.Exit(1)
 			return true
@@ -143,7 +144,7 @@ func writeManifestFile(manifestPath string) error {
 type workerStatus struct {
 	doneCh            chan struct{}
 	bytesDownloadedCh chan int64
-	errorsCh          chan string
+	errorsCh          chan error
 }
 
 // launchWorkers launches goroutines to check each entry in the manifest
@@ -154,7 +155,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 	status := workerStatus{
 		doneCh:            make(chan struct{}),
 		bytesDownloadedCh: make(chan int64),
-		errorsCh:          make(chan string),
+		errorsCh:          make(chan error),
 	}
 
 	sizes, err := util.ListGCSBucketObjects("vice-resources")
@@ -174,88 +175,77 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		totalSize += sizes[hash]
 	}
 
-	type fileTask struct {
-		filename string
-		hash     string
-	}
-	fileChan := make(chan fileTask, len(manifest))
+	var eg errgroup.Group
+	sem := make(chan struct{}, 8)
 	for filename, hash := range manifest {
-		fileChan <- fileTask{filename: filename, hash: hash}
-	}
-	close(fileChan)
+		eg.Go(func() error {
+			sem <- struct{}{}
+			defer func() {
+				status.bytesDownloadedCh <- sizes[hash]
+				<-sem
+			}()
 
-	var wg sync.WaitGroup
-	const numWorkers = 8
-	for range numWorkers {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+			fullPath := filepath.Join(resourcesDir, filename)
 
-			for task := range fileChan {
-				func() {
-					fullPath := filepath.Join(resourcesDir, task.filename)
-
-					defer func() { status.bytesDownloadedCh <- sizes[task.hash] }()
-
-					// Check if file exists and has correct hash
-					if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == task.hash {
-						return
-					}
-
-					os.Remove(fullPath) // ignore errors; it may not exist
-
-					// Download the file
-					url := fmt.Sprintf("https://storage.googleapis.com/vice-resources/%s", task.hash)
-					resp, err := http.Get(url)
-					if err != nil {
-						status.errorsCh <- err.Error()
-						return
-					}
-					defer resp.Body.Close()
-
-					if resp.StatusCode != http.StatusOK {
-						status.errorsCh <- fmt.Sprintf("Failed to download %s: status %d", task.filename, resp.StatusCode)
-						return
-					}
-
-					// Create directory if needed
-					if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
-						status.errorsCh <- fmt.Sprintf("%s: failed to create file's directory: %v", task.filename, err)
-						return
-					}
-
-					// Write file
-					f, err := os.Create(fullPath)
-					if err != nil {
-						status.errorsCh <- fmt.Sprintf("%s: failed to create: %v", task.filename, err)
-						return
-					}
-					defer f.Close()
-
-					_, err = io.Copy(f, resp.Body)
-					if err != nil {
-						status.errorsCh <- fmt.Sprintf("%s: failed to write: %v", task.filename, err)
-						return
-					}
-
-					if err := f.Sync(); err != nil {
-						status.errorsCh <- fmt.Sprintf("%s: failed to sync: %v", task.filename, err)
-						return
-					}
-				}()
-			}
-		}()
+			return maybeDownload(filename, fullPath, hash)
+		})
 	}
 
 	// Launch a separate goroutine to wait for the workers and report back
 	// when they're all done. (We don't want to do this synchronously so
 	// that SyncResources can update the UI/report progress.)
 	go func() {
-		wg.Wait()
+		if err := eg.Wait(); err != nil {
+			status.errorsCh <- err
+		}
 		close(status.doneCh)
 	}()
 
 	return status, totalSize
+}
+
+func maybeDownload(filename, fullPath, hash string) error {
+	// Check if file exists and has correct hash
+	if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == hash {
+		return nil
+	}
+
+	os.Remove(fullPath) // ignore errors; it may not exist
+
+	// Download the file
+	url := "https://storage.googleapis.com/vice-resources/" + hash
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("%s: failed to download: status %d", filename, resp.StatusCode)
+	}
+
+	// Create directory if needed
+	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
+		return fmt.Errorf("%s: failed to create file's directory: %v", filename, err)
+	}
+
+	// Write file
+	f, err := os.Create(fullPath)
+	if err != nil {
+		return fmt.Errorf("%s: failed to create: %v", filename, err)
+	}
+
+	_, err = io.Copy(f, resp.Body)
+	if err != nil {
+		f.Close()
+		return fmt.Errorf("%s: failed to write: %v", filename, err)
+	}
+
+	if err := f.Close(); err != nil {
+		return fmt.Errorf("%s: failed write: %v", filename, err)
+	}
+
+	return nil
 }
 
 func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) error {
@@ -311,12 +301,17 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 
 			select {
 			case <-ws.doneCh:
-				break loop
+				if len(client.errors) == 0 {
+					// Keep running the event loop if errors have been
+					// reported; when the user acks, os.Exit will be
+					// called.
+					break loop
+				}
 			case nb := <-ws.bytesDownloadedCh:
 				client.currentFile++
 				client.downloadedBytes += nb
 			case e := <-ws.errorsCh:
-				client.errors = append(client.errors, e)
+				client.errors = append(client.errors, e.Error())
 			default:
 				break
 			}

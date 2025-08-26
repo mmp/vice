@@ -338,3 +338,36 @@ func (h *handler) WithGroup(name string) slog.Handler {
 		txt:  h.txt.WithGroup(name),
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////
+
+// AnyPointerSlice is similar to slog.Any but takes a slice of pointers;
+// unlike passing a slice of pointers to slog.Any, it logs the values
+// pointed-to by the pointers rather than the pointer values themselves.
+func AnyPointerSlice[T any](name string, ptrs []*T) slog.Attr {
+	values := make([]any, len(ptrs))
+	for i, ptr := range ptrs {
+		if ptr == nil {
+			values[i] = nil
+			continue
+		}
+
+		// Check if this implements LogValuer
+		if lv, ok := any(ptr).(slog.LogValuer); ok {
+			v := lv.LogValue()
+			// If it's a group, convert to a map for proper JSON serialization
+			if v.Kind() == slog.KindGroup {
+				m := make(map[string]any)
+				for _, attr := range v.Group() {
+					m[attr.Key] = attr.Value.Any()
+				}
+				values[i] = m
+			} else {
+				values[i] = v.Any()
+			}
+		} else {
+			values[i] = *ptr
+		}
+	}
+	return slog.Any(name, values)
+}

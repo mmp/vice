@@ -12,6 +12,7 @@ import (
 
 func TestEventStream(t *testing.T) {
 	es := NewEventStream(nil)
+	defer es.Destroy()
 
 	es.Post(Event{})
 	sub := es.Subscribe()
@@ -40,6 +41,7 @@ func TestEventStream(t *testing.T) {
 
 func TestEventStreamCompact(t *testing.T) {
 	es := NewEventStream(nil)
+	defer es.Destroy()
 
 	// multiple consumers, at different offsets
 	subs := [4]*EventsSubscription{es.Subscribe(), es.Subscribe(), es.Subscribe(), es.Subscribe()}
@@ -75,7 +77,10 @@ func TestEventStreamCompact(t *testing.T) {
 			}
 		}
 
+		es.mu.Lock()
 		es.compact()
+		es.mu.Unlock()
+
 		iter++
 	}
 

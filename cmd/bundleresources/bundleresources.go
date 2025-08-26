@@ -21,10 +21,10 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	"cloud.google.com/go/storage"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
@@ -34,10 +34,8 @@ const resourcesDir = "./resources"
 const outFile = "manifest.json"
 
 type uploadResult struct {
-	path     string
-	hash     string
-	uploaded bool
-	err      error
+	path string
+	hash string
 }
 
 func isTemporaryFile(name string) bool {
@@ -47,7 +45,7 @@ func isTemporaryFile(name string) bool {
 		strings.HasSuffix(base, "~")
 }
 
-func computeSHA256(path string) (string, error) {
+func sha256file(path string) (string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return "", err
@@ -81,29 +79,20 @@ func listExistingObjects(ctx context.Context, bucket *storage.BucketHandle) (map
 }
 
 // Upload the file at the given path (with associated SHA256 hash) to the
-// GCS bucket, unless that hash has already been uploaded.
-func maybeUploadToGCS(ctx context.Context, bucket *storage.BucketHandle, path, hash string, existing map[string]bool) (bool, error) {
-	if existing[hash] {
-		// The object exists already
-		return false, nil
-	}
-
-	// Object doesn't exist, upload it
+// GCS bucket.
+func uploadToGCS(ctx context.Context, bucket *storage.BucketHandle, path, hash string) error {
 	file, err := os.Open(path)
 	if err != nil {
-		return false, err
+		return err
 	}
 	defer file.Close()
 
-	obj := bucket.Object(hash)
-	w := obj.NewWriter(ctx)
-	defer w.Close()
+	w := bucket.Object(hash).NewWriter(ctx)
 
-	if _, err := io.Copy(w, file); err != nil {
-		return false, err
+	if _, err = io.Copy(w, file); err != nil {
+		return err
 	}
-
-	return true, nil
+	return w.Close()
 }
 
 func main() {
@@ -126,34 +115,6 @@ func main() {
 
 	bucket := client.Bucket(bucketName)
 
-	// Walk the resources directory and record all non-temporary files
-	var files []string
-	err = filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() || isTemporaryFile(path) {
-			return nil
-		}
-
-		files = append(files, path)
-
-		return nil
-	})
-	if err != nil {
-		log.Fatalf("Error walking resources directory: %v", err)
-	}
-
-	// Enqueue jobs for resources files
-	filesChan := make(chan string, len(files))
-	resultsChan := make(chan uploadResult, len(files))
-
-	for _, f := range files {
-		filesChan <- f
-	}
-	close(filesChan)
-
 	// List existing objects in the bucket
 	listStart := time.Now()
 	existingObjects, err := listExistingObjects(ctx, bucket)
@@ -162,64 +123,74 @@ func main() {
 	}
 	fmt.Printf("Listed %d existing objects in %s\n", len(existingObjects), time.Since(listStart))
 
+	// Walk the resources directory and send the paths of all non-temporary files to filesChan
+	var eg errgroup.Group
+	filesChan := make(chan string, 1)
+	eg.Go(func() error {
+		defer close(filesChan)
+
+		return filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if info.IsDir() || isTemporaryFile(path) {
+				return nil
+			}
+
+			filesChan <- path
+
+			return nil
+		})
+	})
+
+	resultsChan := make(chan uploadResult)
+
 	// Launch upload workers
-	const numWorkers = 8
-	var wg sync.WaitGroup
+	const numWorkers = 16
 	for range numWorkers {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		eg.Go(func() error {
 			for path := range filesChan {
-				hash, err := computeSHA256(path)
+				hash, err := sha256file(path)
 				if err != nil {
-					log.Fatalf("failed to compute hash for %s: %v", path, err)
+					return fmt.Errorf("%s: %v", path, err)
 				}
 
-				uploaded, err := maybeUploadToGCS(ctx, bucket, path, hash, existingObjects)
+				if existingObjects[hash] {
+					fmt.Printf("Skipped %s -> %s (already exists)\n", path, hash)
+				} else {
+					if err := uploadToGCS(ctx, bucket, path, hash); err != nil {
+						return err
+					}
+					fmt.Printf("Uploaded %s -> %s\n", path, hash)
+				}
 
 				resultsChan <- uploadResult{
-					path:     path,
-					hash:     hash,
-					uploaded: uploaded,
-					err:      err,
+					path: path,
+					hash: hash,
 				}
 			}
-		}()
+			return nil
+		})
 	}
 
 	// Close the results channel once all workers have finished.
 	go func() {
-		wg.Wait()
+		if err := eg.Wait(); err != nil {
+			log.Fatalf("%v", err)
+		}
 		close(resultsChan)
 	}()
 
 	// Harvest results as they come in and build the manifest.
 	manifest := make(map[string]string)
-	hasError := false
 	for result := range resultsChan {
-		if result.err != nil {
-			log.Printf("Failed to upload %s: %v", result.path, result.err)
-			hasError = true
-			continue
-		}
-
 		relPath, err := filepath.Rel(resourcesDir, result.path)
 		if err != nil {
-			log.Printf("%s: %v", result.path, err)
-			hasError = true
-			continue
+			log.Fatalf("%s: %v", result.path, err)
 		}
 
 		manifest[relPath] = result.hash
-
-		if result.uploaded {
-			fmt.Printf("Uploaded %s -> %s\n", result.path, result.hash)
-		} else {
-			fmt.Printf("Skipped %s -> %s (already exists)\n", result.path, result.hash)
-		}
-	}
-	if hasError {
-		log.Fatal("Some uploads failed")
 	}
 
 	// Generate and write the manifest.

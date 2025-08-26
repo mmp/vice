@@ -4,75 +4,71 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"io/fs"
 	"log"
 	"net"
 	"net/http"
 	"net/http/pprof"
 	"os"
-	"path/filepath"
 	"strings"
+
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/util"
 )
 
-const bucketName = "vice-wx"
-
 var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local files")
-var local = flag.Bool("local", false, "Store processed files locally")
-var doArchive = flag.Bool("archive", true, "Archive files (locally or to GCS)")
 var nWorkers = flag.Int("nworkers", 32, "Number of worker goroutines for concurrent uploads")
+var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
+var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
 
 func main() {
+	const bucketName = "vice-wx"
+
 	flag.Parse()
 
 	usage := func() {
-		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] <metar|wx|hrrr> <ingest-dir>\nwhere [flags] may be:\n")
+		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|wx|hrrr]...\nwhere [flags] may be:\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
-	if len(flag.Args()) != 2 {
-		usage()
-	}
+	av.InitDB()
 
-	dir := flag.Args()[1]
-	if err := os.Chdir(dir); err != nil {
-		fmt.Fprintf(os.Stderr, "%s: %v\n", dir, err)
-		os.Exit(1)
-	}
-
-	var st StorageBackend
-	if *dryRun {
-		if *local {
-			fmt.Fprintf(os.Stderr, "Can't give both -local and -dryrun")
-			os.Exit(1)
-		}
-		st = &DryRunBackend{}
-	} else if *local {
-		st = MakeFileBackend(bucketName)
-
-		if *doArchive {
-			fmt.Fprintf(os.Stderr, "Disabling -archive for local run\n")
-			*doArchive = false
-		}
-	} else {
-		var err error
-		st, err = MakeGCSBackend(bucketName)
+	if *profile {
+		prof, err := util.CreateProfiler("wxingest.cpu.prof", "wxingest.heap.prof")
 		if err != nil {
-			LogFatal("%v", err)
+			panic(err)
 		}
+		defer prof.Cleanup()
 	}
+
+	sb, err := MakeGCSBackend(bucketName)
+	if err != nil {
+		LogFatal("%v", err)
+	}
+	if *dryRun {
+		sb = &DryRunBackend{g: sb}
+	}
+	defer sb.Close()
 
 	launchHTTPServer()
 
-	switch flag.Args()[0] {
-	case "metar", "METAR":
-		ingestMETAR(st)
-	case "wx", "WX":
-		ingestWX(st)
-	case "hrrr", "HRRR":
-		ingestHRRR(st)
-	default:
-		usage()
+	if len(flag.Args()) == 0 {
+		ingestMETAR(sb)
+		ingestWX(sb)
+		ingestHRRR(sb)
+	} else {
+		for _, a := range flag.Args() {
+			switch strings.ToLower(a) {
+			case "metar":
+				ingestMETAR(sb)
+			case "wx":
+				ingestWX(sb)
+			case "hrrr":
+				ingestHRRR(sb)
+			default:
+				usage()
+			}
+		}
 	}
 }
 
@@ -100,17 +96,14 @@ func LogFatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func EnqueueFiles(dir string, ch chan<- string) error {
-	err := filepath.WalkDir(dir, func(path string, de fs.DirEntry, err error) error {
-		if err != nil {
-			return err
+func EnqueueObjects(sb StorageBackend, base string, ch chan<- string) error {
+	objs, err := sb.List(base)
+	if err == nil {
+		LogInfo("%s: found %d objects", base, len(objs))
+		for name := range objs {
+			ch <- name
 		}
-		if de.IsDir() || strings.HasSuffix(path, ".tmp") {
-			return nil
-		}
-		ch <- path
-		return nil
-	})
+	}
 	close(ch)
 	return err
 }

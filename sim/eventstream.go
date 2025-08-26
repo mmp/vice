@@ -7,7 +7,9 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	"runtime"
+	"slices"
 	"sync"
 	"time"
 
@@ -26,8 +28,10 @@ type EventSubscriberId int
 type EventStream struct {
 	mu            sync.Mutex
 	events        []Event
-	lastCompact   time.Time
 	subscriptions map[*EventsSubscription]interface{}
+	lastPost      time.Time
+	warnedLong    bool
+	done          chan struct{}
 	lg            *log.Logger
 }
 
@@ -35,14 +39,17 @@ type EventsSubscription struct {
 	stream *EventStream
 	// offset is offset in the EventStream stream array up to which the
 	// subscriber has consumed events so far.
-	offset int
-	source string
+	offset      int
+	source      string
+	lastGet     time.Time
+	warnedNoGet bool
 }
 
 func (e *EventsSubscription) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Int("offset", e.offset),
-		slog.String("source", e.source))
+		slog.String("source", e.source),
+		slog.Time("last_get", e.lastGet))
 }
 
 func (e *EventsSubscription) PostEvent(event Event) {
@@ -50,10 +57,14 @@ func (e *EventsSubscription) PostEvent(event Event) {
 }
 
 func NewEventStream(lg *log.Logger) *EventStream {
-	return &EventStream{
+	es := &EventStream{
 		subscriptions: make(map[*EventsSubscription]interface{}),
+		lastPost:      time.Now(),
+		done:          make(chan struct{}),
 		lg:            lg,
 	}
+	go es.monitor()
+	return es
 }
 
 // Subscribe registers a new subscriber to the stream and returns an
@@ -66,9 +77,10 @@ func (e *EventStream) Subscribe() *EventsSubscription {
 	source := fmt.Sprintf("%s:%d", fn, line)
 
 	sub := &EventsSubscription{
-		stream: e,
-		offset: len(e.events),
-		source: source,
+		stream:  e,
+		offset:  len(e.events),
+		source:  source,
+		lastGet: time.Now(),
 	}
 
 	e.mu.Lock()
@@ -76,6 +88,47 @@ func (e *EventStream) Subscribe() *EventsSubscription {
 
 	e.subscriptions[sub] = nil
 	return sub
+}
+
+func (e *EventStream) monitor() {
+	tick := time.Tick(5 * time.Second)
+
+	for {
+		<-tick
+
+		select {
+		case <-e.done:
+			return
+		default:
+		}
+
+		e.mu.Lock()
+
+		e.compact()
+
+		if len(e.events) > 1000 && !e.warnedLong {
+			// It's likely that one of the subscribers is out to lunch if
+			// the stream has grown this long.
+			e.lg.Warn("Long EventStream", slog.Int("length", len(e.events)),
+				log.AnyPointerSlice("subscriptions", slices.Collect(maps.Keys(e.subscriptions))))
+			e.warnedLong = true
+		}
+
+		// Check if any of the subscribers haven't been consuming events,
+		// though only if events are being posted to the stream so we don't
+		// complain when the sim is paused, etc.
+		if time.Since(e.lastPost) < 5*time.Second {
+			for sub := range e.subscriptions {
+				if d := time.Since(sub.lastGet); d > 10*time.Second && !sub.warnedNoGet {
+					e.lg.Warn("Subscriber has not called Get() recently",
+						slog.Duration("duration", d), slog.Any("subscriber", sub))
+					sub.warnedNoGet = true
+				}
+			}
+		}
+
+		e.mu.Unlock()
+	}
 }
 
 // Unsubscribe removes a subscriber from the subscriber list
@@ -101,15 +154,7 @@ func (e *EventStream) Post(event Event) {
 
 	// Ignore the event if no one's paying attention.
 	if len(e.subscriptions) > 0 {
-		if len(e.events)+1 == cap(e.events) {
-			// Dump the state of things if the array's about to grow; in
-			// general we expect it to pretty quickly reach steady state
-			// with just a handful of entries.
-			e.mu.Unlock()
-			e.lg.Debug("current event stream", slog.Any("event_stream", e))
-			e.mu.Lock()
-		}
-
+		e.lastPost = time.Now()
 		e.events = append(e.events, event)
 	}
 }
@@ -126,15 +171,25 @@ func (e *EventsSubscription) Get() []Event {
 		return nil
 	}
 
-	events := e.stream.events[e.offset:]
+	events := slices.Clone(e.stream.events[e.offset:])
 	e.offset = len(e.stream.events)
-
-	if time.Since(e.stream.lastCompact) > 1*time.Second {
-		e.stream.compact()
-		e.stream.lastCompact = time.Now()
-	}
+	e.lastGet = time.Now()
+	e.warnedNoGet = false
 
 	return events
+}
+
+func (e *EventStream) Destroy() {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+
+	select {
+	case e.done <- struct{}{}:
+	default:
+	}
+
+	close(e.done)
+	clear(e.subscriptions)
 }
 
 // compact reclaims storage for events that all subscribers have seen; it
@@ -148,10 +203,6 @@ func (e *EventStream) compact() {
 		}
 	}
 
-	if len(e.events) > 1000 && e.lg != nil {
-		e.lg.Warnf("EventStream length %d", len(e.events))
-	}
-
 	if minOffset > cap(e.events)/2 {
 		n := len(e.events) - minOffset
 
@@ -161,6 +212,8 @@ func (e *EventStream) compact() {
 		for sub := range e.subscriptions {
 			sub.offset -= minOffset
 		}
+
+		e.warnedLong = false // reset this after a successful compact.
 	}
 }
 
@@ -173,9 +226,7 @@ func (e *EventStream) LogValue() slog.Value {
 	if len(e.events) > 0 {
 		items = append(items, slog.Any("last_element", e.events[len(e.events)-1]))
 	}
-	for sub := range e.subscriptions {
-		items = append(items, slog.Any(fmt.Sprintf("subscriber_%p", sub), sub))
-	}
+	items = append(items, log.AnyPointerSlice("subscriptions", slices.Collect(maps.Keys(e.subscriptions))))
 	return slog.GroupValue(items...)
 }
 

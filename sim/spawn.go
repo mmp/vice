@@ -19,6 +19,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
@@ -1178,16 +1179,13 @@ func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps a
 }
 
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
-	var callsigns []av.ADSBCallsign
-	if s.EnforceUniqueCallsignSuffix {
-		// Collect all currently in-use or soon-to-be in-use callsigns.
-		callsigns = slices.Collect(maps.Keys(s.Aircraft))
-		for _, fp := range s.STARSComputer.FlightPlans {
-			callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
-		}
+	// Collect all currently in-use or soon-to-be in-use callsigns.
+	callsigns := slices.Collect(maps.Keys(s.Aircraft))
+	for _, fp := range s.STARSComputer.FlightPlans {
+		callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
 	}
 
-	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, lg)
+	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, lg)
 
 	if actype == "" {
 		return nil, ""
@@ -1396,7 +1394,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	return ac, err
 }
 
-func makeDepartureAircraft(ac *Aircraft, now time.Time, wx *av.WeatherModel, r *rand.Rand) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, now time.Time, model *wx.WeatherModel, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           now,
@@ -1409,7 +1407,7 @@ func makeDepartureAircraft(ac *Aircraft, now time.Time, wx *av.WeatherModel, r *
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(wx, nil, nil /* lg */)
+		simAc.Update(model, nil, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second

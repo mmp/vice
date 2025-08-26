@@ -1,8 +1,8 @@
-// pkg/aviation/weather.go
+// pkg/wx/model.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package aviation
+package wx
 
 import (
 	"encoding/json"
@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
@@ -247,7 +248,7 @@ func (w *WeatherModel) updateMETARs(airports []string, wind map[math.Point2LL][]
 			ds := -3 + 6*r.Float32()                // windspeed
 			dd := [3]float32{-10, 0, 10}[r.Intn(3)] // wind direction
 
-			loc := DB.Airports[icao].Location
+			loc := av.DB.Airports[icao].Location
 			m.Longitude = loc[0]
 			m.Latitude = loc[1]
 			m.Altimeter += da
@@ -293,7 +294,7 @@ func (w *WeatherModel) updateMETARs(airports []string, wind map[math.Point2LL][]
 		wind = make(map[math.Point2LL][]WindLayer)
 
 		for _, metar := range w.METAR {
-			ap := DB.Airports[metar.ICAO]
+			ap := av.DB.Airports[metar.ICAO]
 			wind[ap.Location] = []WindLayer{WindLayer{
 				Altitude:        float32(ap.Elevation),
 				Direction:       util.Select(metar.Wind.Variable, 0, metar.Wind.Direction),
@@ -453,28 +454,6 @@ func (w *WeatherModel) LookupWind(p math.Point2LL, alt float32) WindSample {
 
 	return ws
 }
-
-/*
-func (w WindSample) String() string {
-	if w.Speed <= 0 {
-		return "00000KT"
-	} else if w.Variable {
-		return fmt.Sprintf("VRB%02dKT", w.Speed)
-	} else {
-		wind := fmt.Sprintf("%03d%02d", w.Direction, w.Speed)
-
-		// According to Federal Meteorological Handbook No. 1 (FCM-H1-2019)
-		//   Gusts are indicated by rapid fluctuations in wind speed
-		//   with a variation of 10 knots or more between peaks and lulls.
-		// The Aviation Weather Center reports gust values according to the above or revised definitions.
-		if w.Gust > 0 {
-			wind += fmt.Sprintf("G%02d", w.Gust)
-		}
-
-		return wind + "KT"
-	}
-}
-*/
 
 ///////////////////////////////////////////////////////////////////////////
 // METAR

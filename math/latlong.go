@@ -396,3 +396,22 @@ type LocationResolver interface {
 func SetLocationResolver(r LocationResolver) {
 	locr = r
 }
+
+func BoundLatLongCircle(c Point2LL, r float32) Extent2D {
+	// Figure out how far out in degrees latitude / longitude to fetch.
+	// Latitude is easy: 60nm per degree
+	dlat := float32(r) / 60
+
+	// Longitude: figure out nm per degree at center. Note that we would
+	// actually like the nm per degree at the Northernmost edge of the
+	// bounds (in the Northern hemisphere at least) so this will chop off a
+	// small amount at the top. So long as r isn't too big, this should be
+	// fine.
+	nmPerLong := 60 * Cos(Radians(c[1]-dlat))
+	dlong := r / float32(nmPerLong)
+
+	return Extent2D{
+		P0: [2]float32{c[0] - dlong, c[1] - dlat},
+		P1: [2]float32{c[0] + dlong, c[1] + dlat},
+	}
+}

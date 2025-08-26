@@ -58,6 +58,20 @@ jobs:
         go install github.com/tc-hib/go-winres@latest
         go-winres make --in windows/winres.json
 
+    - name: Build for lint (local resources)
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
+        go build -tags static -ldflags="-s -w -H=windowsgui" -o ./vice.exe ./cmd/vice
+        ls
+      env:
+        CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
+        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
+
+    - name: Check scenarios
+      run:
+        ./vice.exe -lint
+
     - name: Bundle resources
       env:
          VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
@@ -95,6 +109,7 @@ jobs:
         ls -l whisper.cpp/build_go/ggml/src || true
 
     - name: Build
+    - name: Build for release (download resources)
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
         go build -tags static,downloadresources -ldflags="-s -w -H=windowsgui" -o ./vice.exe ./cmd/vice
@@ -103,10 +118,6 @@ jobs:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
-
-    - name: Check scenarios
-      run:
-        ./vice.exe -lint
 
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $GITHUB_PATH
