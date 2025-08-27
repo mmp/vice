@@ -214,8 +214,9 @@ type STARSPane struct {
 	// search).
 	significantPointsSlice []sim.SignificantPoint
 
-	showVFRAirports bool
-	scopeDraw       struct {
+	showVFRAirports    bool
+	showTRACONBoundary bool
+	scopeDraw          struct {
 		arrivals    map[string]map[int]bool               // group->index
 		approaches  map[string]map[string]bool            // airport->approach
 		departures  map[string]map[string]map[string]bool // airport->runway->exit
@@ -773,6 +774,8 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawRangeRings(ctx, transforms, cb)
 
+	sp.drawTRACONBoundary(ctx, transforms, cb)
+
 	sp.drawVideoMaps(ctx, transforms, cb)
 
 	sp.drawScenarioRoutes(ctx, transforms, sp.systemFont(ctx, ps.CharSize.Tools), cb)
@@ -922,6 +925,28 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 		renderer.RGBFromUInt8(50, 205, 50),
 		renderer.RGBFromUInt8(255, 106, 106),
 	},
+}
+
+func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	if !sp.showTRACONBoundary {
+		return
+	}
+
+	tracon, ok := av.DB.TRACONs[ctx.Client.State.TRACON]
+	if !ok {
+		return
+	}
+
+	// Draw the TRACON boundary as a red circle
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	ld.AddLatLongCircle(tracon.Center(), ctx.NmPerLongitude, tracon.Radius, 360)
+
+	transforms.LoadLatLongViewingMatrices(cb)
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(renderer.RGB{R: 1, G: 0, B: 0})
+	ld.GenerateCommands(cb)
 }
 
 func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {

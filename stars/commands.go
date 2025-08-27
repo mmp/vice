@@ -574,6 +574,11 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			status.clear = true
 			return
 
+		case ".BOUNDS":
+			sp.showTRACONBoundary = !sp.showTRACONBoundary
+			status.clear = true
+			return
+
 			/*
 				case "?":
 					ctx.Client.State.ERAMComputers.DumpMap()
