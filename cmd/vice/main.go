@@ -94,6 +94,14 @@ func main() {
 
 		av.InitDB()
 	}
+	_ = imguiInit()
+	config, configErr := LoadOrMakeDefaultConfig(lg)
+	if *scenarioFilename == "" && config.ScenarioFile != "" {
+		*scenarioFilename = config.ScenarioFile
+	}
+	if *videoMapFilename == "" && config.VideoMapFile != "" {
+		*videoMapFilename = config.VideoMapFile
+	}
 
 	if *lintScenarios {
 		cliInit()
@@ -254,10 +262,6 @@ func main() {
 		///////////////////////////////////////////////////////////////////////////
 		// Global initialization and set up. Note that there are some subtle
 		// inter-dependencies in the following; the order is carefully crafted.
-
-		_ = imguiInit()
-
-		config, configErr := LoadOrMakeDefaultConfig(lg)
 
 		var controlClient *client.ControlClient
 		var err error

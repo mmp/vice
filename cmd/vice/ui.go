@@ -28,6 +28,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 )
 
@@ -1399,6 +1400,58 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 
 			imgui.EndCombo()
 		}
+	}
+
+	if imgui.CollapsingHeaderBoolPtr("Scenario Files", nil) {
+		imgui.BeginGroup()
+		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
+		imgui.SameLine()
+		if imgui.Button("Select##scenario") {
+			path, err := zenity.SelectFile(
+				zenity.Title("Select Scenario JSON File"),
+				zenity.FileFilters{
+					{
+						Name:     "JSON Files",
+						Patterns: []string{"*.json"},
+					},
+				},
+			)
+			if err != nil {
+				fmt.Printf("Error selecting scenario file: %v\n", err)
+			} else {
+				config.ScenarioFile = path
+			}
+		}
+		imgui.SameLine()
+		if imgui.Button("Clear##scenario") {
+			config.ScenarioFile = ""
+		}
+		imgui.EndGroup()
+
+		imgui.BeginGroup()
+		imgui.Text(fmt.Sprintf("Video Map: %s", util.Select(config.VideoMapFile != "", config.VideoMapFile, "None Selected")))
+		imgui.SameLine()
+		if imgui.Button("Select##videoMap") {
+			path, err := zenity.SelectFile(
+				zenity.Title("Select Video Map JSON File"),
+				zenity.FileFilters{
+					{
+						Name:     "Video Map JSON Files",
+						Patterns: []string{"*.json"},
+					},
+				},
+			)
+			if err != nil {
+				fmt.Printf("Error selecting video map file: %v\n", err)
+			} else {
+				config.VideoMapFile = path
+			}
+		}
+		imgui.SameLine()
+		if imgui.Button("Clear##videoMap") {
+			config.VideoMapFile = ""
+		}
+		imgui.EndGroup()
 	}
 
 	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
