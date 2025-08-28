@@ -12,7 +12,9 @@ import (
 	"io"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
+	"net/http/pprof"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -55,6 +57,8 @@ func main() {
 		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set\n")
 		os.Exit(1)
 	}
+
+	launchHTTPServer()
 
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
@@ -292,14 +296,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 
 			var status Status
 			haveWX, status = func() (bool, Status) {
-				// Skip the PNG decode if we are reasonably assured that there is or is not WX.
-				if tspec.Radius == 128 && len(b) <= 5623 {
-					return false, StatusSuccess
-				} else if tspec.Radius == 128 && len(b) > 7000 {
-					return true, StatusSuccess
-				}
-
-				// For the few larger-distance fetches and for anything ambiguous, decode and check.
+				// Decode and see if there's anything there.
 				img, err := png.Decode(bytes.NewReader(b))
 				if err != nil {
 					LogError("%s: %s: %v", tracon, url, err)
@@ -450,5 +447,23 @@ func fetchTFRs(ctx context.Context, bucket *storage.BucketHandle) {
 		})
 
 		<-tick
+	}
+}
+
+func launchHTTPServer() {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/debug/pprof/", pprof.Index)
+	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
+	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
+	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
+	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
+
+	if listener, err := net.Listen("tcp", ":8002"); err == nil {
+		LogInfo("Launching HTTP server on port 8002")
+		go http.Serve(listener, mux)
+	} else {
+		fmt.Fprintf(os.Stderr, "Unable to start HTTP server: %v", err)
+		os.Exit(1)
 	}
 }

@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
@@ -115,34 +114,6 @@ func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
 	default:
 		panic("unhandled AirspaceVolume type")
 	}
-}
-
-func (a *AirspaceVolume) GenerateDrawCommands(cb *renderer.CommandBuffer, nmPerLongitude float32) {
-	ld := renderer.GetLinesDrawBuilder()
-
-	switch a.Type {
-	case AirspaceVolumePolygon:
-		var v [][2]float32
-		for _, vtx := range a.Vertices {
-			v = append(v, [2]float32(vtx))
-		}
-		ld.AddLineLoop(v)
-
-		for _, h := range a.Holes {
-			var v [][2]float32
-			for _, vtx := range h {
-				v = append(v, [2]float32(vtx))
-			}
-			ld.AddLineLoop(v)
-		}
-	case AirspaceVolumeCircle:
-		ld.AddLatLongCircle(a.Center, nmPerLongitude, a.Radius, 360)
-	default:
-		panic("unhandled AirspaceVolume type")
-	}
-
-	ld.GenerateCommands(cb)
-	renderer.ReturnLinesDrawBuilder(ld)
 }
 
 func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
