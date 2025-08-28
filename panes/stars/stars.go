@@ -531,6 +531,34 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		}
 	}
 
+	drawAirspace := func(a av.AirspaceVolume, cb *renderer.CommandBuffer) {
+		ld := renderer.GetLinesDrawBuilder()
+
+		switch a.Type {
+		case av.AirspaceVolumePolygon:
+			var v [][2]float32
+			for _, vtx := range a.Vertices {
+				v = append(v, [2]float32(vtx))
+			}
+			ld.AddLineLoop(v)
+
+			for _, h := range a.Holes {
+				var v [][2]float32
+				for _, vtx := range h {
+					v = append(v, [2]float32(vtx))
+				}
+				ld.AddLineLoop(v)
+			}
+		case av.AirspaceVolumeCircle:
+			ld.AddLatLongCircle(a.Center, ss.NmPerLongitude, a.Radius, 360)
+		default:
+			panic("unhandled AirspaceVolume type")
+		}
+
+		ld.GenerateCommands(cb)
+		renderer.ReturnLinesDrawBuilder(ld)
+	}
+
 	// Make automatic built-in system maps
 	asIdx := 700
 	addAirspaceVolumes := func(label string, name string, filt sim.FilterRegions) {
@@ -547,7 +575,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		}
 		asIdx++
 		for _, f := range filt {
-			f.GenerateDrawCommands(&vm.CommandBuffer, ss.NmPerLongitude)
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
 		}
 		addMap(vm)
 
@@ -559,7 +587,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 				Category: VideoMapProcessingAreas,
 			}
 			asIdx++
-			f.GenerateDrawCommands(&vm.CommandBuffer, ss.NmPerLongitude)
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
 			addMap(vm)
 		}
 	}
@@ -604,7 +632,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 				Category: VideoMapProcessingAreas,
 			}
 			for _, asp := range airspace {
-				asp.GenerateDrawCommands(&amap.CommandBuffer, ss.NmPerLongitude)
+				drawAirspace(asp, &amap.CommandBuffer)
 			}
 
 			addMap(amap)

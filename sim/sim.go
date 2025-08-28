@@ -332,6 +332,10 @@ func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider) {
 	}
 }
 
+func (s *Sim) Destroy() {
+	s.eventStream.Destroy()
+}
+
 // getRandomVoice returns a random voice from the voice pool, using the same
 // shuffling logic that was previously in GoogleTTSProvider
 func (s *Sim) getRandomVoice() (Voice, error) {
@@ -801,6 +805,8 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				})
 			}
 		}
+	} else {
+		s.lg.Errorf("GetStateUpdate called for non-human controller %s", tcp)
 	}
 
 	*update = StateUpdate{
@@ -1012,7 +1018,7 @@ func (s *Sim) Update() {
 			}
 		}()
 
-		if time.Since(s.lastControlCommandTime) > 15*time.Minute {
+		if time.Since(s.lastControlCommandTime) > 15*time.Minute && !s.State.Paused {
 			s.eventStream.Post(Event{
 				Type:        StatusMessageEvent,
 				WrittenText: "Pausing sim due to inactivity.",

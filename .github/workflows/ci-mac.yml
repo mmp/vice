@@ -37,6 +37,14 @@ jobs:
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
 
+    - name: Build for lint (local resources, single arch)
+      run: |
+        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
+        CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags static -o vice ./cmd/vice
+
+    - name: Check scenarios
+      run: ./vice -lint
+
     - name: Bundle resources
       env:
          VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
@@ -57,9 +65,6 @@ jobs:
 
     - name: Run tests
       run: go test -v ./...
-
-    - name: Check scenarios
-      run: ./vice -lint
 
     - name: Create icons
       run: |

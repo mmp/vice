@@ -39,6 +39,15 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
+    - name: Build for lint (local resources)
+      run: |
+        go build -tags imguifreetype -o ./ ./cmd/vice
+        ls
+
+    - name: Check scenarios
+      run:
+        ./vice -lint
+
     - name: Bundle resources
       env:
          VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
@@ -53,13 +62,8 @@ jobs:
     - name: Build
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags imguifreetype,downloadresources -o ./ ./cmd/vice
-        ls
+        go build -tags imguifreetype,downloadresources ./...
 
     - name: Run tests
       run:
         go test -v ./...
-
-    - name: Check scenarios
-      run:
-        ./vice -lint

@@ -54,6 +54,7 @@ type SimManager struct {
 	websocketTXBytes   int64
 	tts                sim.TTSProvider
 	ttsUsageByIP       map[string]*ttsUsageStats
+	local              bool
 	lg                 *log.Logger
 }
 
@@ -92,7 +93,6 @@ type activeSim struct {
 	scenario      string
 	sim           *sim.Sim
 	password      string
-	local         bool
 
 	controllersByTCP map[string]*humanController
 }
@@ -114,7 +114,6 @@ type NewSimConfiguration struct {
 
 	AllowInstructorRPO  bool
 	Instructor          bool
-	IsLocal             bool
 	DisableTextToSpeech bool
 }
 
@@ -155,7 +154,7 @@ func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech b
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
-	serverAddress string, lg *log.Logger) *SimManager {
+	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:     scenarioGroups,
 		configs:            simConfigurations,
@@ -165,6 +164,7 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 		startTime:          time.Now(),
 		tts:                makeTTSProvider(serverAddress, lg),
 		ttsUsageByIP:       make(map[string]*ttsUsageStats),
+		local:              isLocal,
 		lg:                 lg,
 	}
 
@@ -214,7 +214,6 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 			scenario:         config.ScenarioName,
 			sim:              sim,
 			password:         config.Password,
-			local:            config.IsLocal,
 			controllersByTCP: make(map[string]*humanController),
 		}
 		pos := sim.State.PrimaryController
@@ -275,7 +274,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		return nil
 	}
 
-	description := util.Select(config.IsLocal, " "+config.ScenarioName,
+	description := util.Select(sm.local, " "+config.ScenarioName,
 		"@"+config.NewSimName+": "+config.ScenarioName)
 
 	nsc := sim.NewSimConfiguration{
@@ -283,7 +282,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		TRACON:                      config.TRACONName,
 		LaunchConfig:                config.Scenario.LaunchConfig,
 		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),
-		IsLocal:                     config.IsLocal,
+		IsLocal:                     sm.local,
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
 		DepartureRunways:            sc.DepartureRunways,
 		ArrivalRunways:              sc.ArrivalRunways,
@@ -308,7 +307,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		TTSProvider:                 sm.tts,
 	}
 
-	if !config.IsLocal {
+	if !sm.local {
 		selectedSplit := config.Scenario.SelectedSplit
 		var err error
 		nsc.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
@@ -330,7 +329,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 			nsc.SignOnPositions[callsign] = ctrl
 		}
 	}
-	if !config.IsLocal {
+	if !sm.local {
 		configs, err := sc.SplitConfigurations.GetConfiguration(config.Scenario.SelectedSplit)
 		if err != nil {
 			lg.Errorf("unable to get configurations for split: %v", err)
@@ -359,7 +358,9 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	as := &activeSim{ // no password, etc.
 		sim:              sim,
 		controllersByTCP: make(map[string]*humanController),
-		local:            true,
+	}
+	if !sm.local {
+		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
 	return sm.Add(as, result, sim.State.PrimaryController, false, false, false)
 }
@@ -408,7 +409,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 
 		for !sm.SimShouldExit(as.sim) {
 			// Terminate idle Sims after 4 hours, but not local Sims.
-			if !as.local {
+			if !sm.local {
 				// Sign off controllers we haven't heard from in 15 seconds so that
 				// someone else can take their place. We only make this check for
 				// multi-controller sims; we don't want to do this for local sims
@@ -469,6 +470,8 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 		}
 
 		sm.lg.Infof("%s: terminating sim after %s idle", as.name, as.sim.IdleTime())
+
+		as.sim.Destroy()
 
 		sm.mu.Lock(sm.lg)
 		delete(sm.activeSims, as.name)

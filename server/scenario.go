@@ -708,7 +708,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	sg.STARSFacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
 
 	sg.NmPerLatitude = 60
-	sg.NmPerLongitude = 60 * math.Cos(math.Radians(sg.STARSFacilityAdaptation.Center[1]))
+	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.STARSFacilityAdaptation.Center)
 
 	if sg.ARTCC == "" {
 		if sg.TRACON == "" {

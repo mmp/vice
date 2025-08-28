@@ -204,7 +204,7 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 }
 
 // currentCallsigns will be empty if we don't care about unique suffixes.
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, lg *log.Logger) (actype, callsign string) {
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -227,6 +227,19 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 		lg.Errorf("Aircraft %q not found in performance database for airline %+v",
 			actype, a)
 		return "", ""
+	}
+
+	callsignClashesWithExisting := func(proposed string) bool {
+		if uniqueSuffix {
+			// Reject if the last 2 characters of callsign match an existing callsign.
+			suffixMatches := func(cs ADSBCallsign) bool {
+				return strings.HasSuffix(string(cs), proposed[len(proposed)-2:])
+			}
+			return slices.ContainsFunc(currentCallsigns, suffixMatches)
+		} else {
+			// Reject only if there's an exact match
+			return slices.Contains(currentCallsigns, ADSBCallsign(proposed))
+		}
 	}
 
 	// random callsign
@@ -270,10 +283,7 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 		} else if slices.Contains(currentCallsigns, ADSBCallsign(cs.String())) {
 			cs.Reset()
 			continue
-		} else if suffix := cs.String()[cs.Len()-2:]; slices.ContainsFunc(currentCallsigns,
-			func(callsign ADSBCallsign) bool {
-				return strings.HasSuffix(string(callsign), suffix)
-			}) {
+		} else if callsignClashesWithExisting(cs.String()) {
 			cs.Reset()
 			continue
 		}

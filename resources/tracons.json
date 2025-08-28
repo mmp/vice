@@ -4,35 +4,35 @@
     "ARTCC": "ZAN",
     "Latitude": 61.1744,
     "Longitude": -149.9964,
-    "Radius": 128
+    "Radius": 75
   },
   "A80": {
     "Name": "Atlanta TRACON",
     "ARTCC": "ZTL",
     "Latitude": 33.6367,
     "Longitude": -84.4281,
-    "Radius": 128
+    "Radius": 90
   },
   "A90": {
     "Name": "Boston TRACON",
     "ARTCC": "ZBW",
     "Latitude": 42.3643,
     "Longitude": -71.0052,
-    "Radius": 128
+    "Radius": 110
   },
   "AAC": {
     "Name": "Academy TRACON",
     "ARTCC": "ZFW",
-    "Latitude": 35.48192,
-    "Longitude": -97.50847,
-    "Radius": 128
+    "Latitude": 36.170918,
+    "Longitude": -95.661255,
+    "Radius": 75
   },
   "ABE": {
     "Name": "Allentown TRACON",
     "ARTCC": "ZNY",
     "Latitude": 40.6514,
     "Longitude": -75.4406,
-    "Radius": 128
+    "Radius": 75
   },
   "ABI": {
     "Name": "Abilene TRACON",
@@ -46,7 +46,7 @@
     "ARTCC": "ZAB",
     "Latitude": 35.0402,
     "Longitude": -106.6092,
-    "Radius": 128
+    "Radius": 90
   },
   "ACT": {
     "Name": "Waco TRACON",
@@ -60,21 +60,21 @@
     "ARTCC": "ZDC",
     "Latitude": 39.4576,
     "Longitude": -74.5772,
-    "Radius": 128
+    "Radius": 100
   },
   "AGS": {
     "Name": "Augusta TRACON",
     "ARTCC": "ZTL",
     "Latitude": 33.3699,
     "Longitude": -81.9645,
-    "Radius": 128
+    "Radius": 90
   },
   "ALB": {
     "Name": "Albany TRACON",
     "ARTCC": "ZBW",
     "Latitude": 42.7483,
     "Longitude": -73.8017,
-    "Radius": 128
+    "Radius": 75
   },
   "ALO": {
     "Name": "Waterloo TRACON",
@@ -95,28 +95,28 @@
     "ARTCC": "ZDV",
     "Latitude": 39.2232,
     "Longitude": -106.8688,
-    "Radius": 128
+    "Radius": 75
   },
   "AUS": {
     "Name": "Austin TRACON",
     "ARTCC": "ZHU",
     "Latitude": 30.1945,
     "Longitude": -97.6699,
-    "Radius": 128
+    "Radius": 75
   },
   "AVL": {
     "Name": "Asheville TRACON",
     "ARTCC": "ZTL",
     "Latitude": 35.4362,
     "Longitude": -82.5418,
-    "Radius": 128
+    "Radius": 75
   },
   "AVP": {
     "Name": "Wilkes-Barre TRACON",
     "ARTCC": "ZNY",
     "Latitude": 41.3385,
     "Longitude": -75.7234,
-    "Radius": 128
+    "Radius": 75
   },
   "AZO": {
     "Name": "Kalamazoo TRACON",
@@ -137,28 +137,28 @@
     "ARTCC": "ZNY",
     "Latitude": 42.2087,
     "Longitude": -75.9798,
-    "Radius": 128
+    "Radius": 75
   },
   "BGR": {
     "Name": "Bangor TRACON",
     "ARTCC": "ZBW",
     "Latitude": 44.8074,
     "Longitude": -68.8281,
-    "Radius": 128
+    "Radius": 75
   },
   "BHM": {
     "Name": "Birmingham TRACON",
     "ARTCC": "ZTL",
     "Latitude": 33.5629,
     "Longitude": -86.7535,
-    "Radius": 128
+    "Radius": 100
   },
   "BIL": {
     "Name": "Billings TRACON",
     "ARTCC": "ZLC",
     "Latitude": 45.8077,
     "Longitude": -108.5429,
-    "Radius": 128
+    "Radius": 75
   },
   "BIS": {
     "Name": "Bismarck TRACON",
@@ -172,14 +172,14 @@
     "ARTCC": "ZME",
     "Latitude": 36.1245,
     "Longitude": -86.6782,
-    "Radius": 128
+    "Radius": 75
   },
   "BOI": {
     "Name": "Boise TRACON",
     "ARTCC": "ZLC",
     "Latitude": 43.5644,
     "Longitude": -116.2228,
-    "Radius": 128
+    "Radius": 75
   },
   "BTR": {
     "Name": "Baton Rouge TRACON",
@@ -193,21 +193,21 @@
     "ARTCC": "ZBW",
     "Latitude": 44.4719,
     "Longitude": -73.1533,
-    "Radius": 128
+    "Radius": 75
   },
   "BUF": {
     "Name": "Buffalo TRACON",
     "ARTCC": "ZOB",
     "Latitude": 42.9405,
     "Longitude": -78.7322,
-    "Radius": 128
+    "Radius": 75
   },
   "C90": {
     "Name": "Chicago TRACON",
     "ARTCC": "ZAU",
     "Latitude": 41.9786,
     "Longitude": -87.9048,
-    "Radius": 128
+    "Radius": 100
   },
   "CAE": {
     "Name": "Columbia TRACON",
@@ -235,14 +235,14 @@
     "ARTCC": "ZJX",
     "Latitude": 32.8986,
     "Longitude": -80.0405,
-    "Radius": 128
+    "Radius": 75
   },
   "CID": {
     "Name": "Cedar Rapids TRACON",
     "ARTCC": "ZAU",
     "Latitude": 41.8847,
     "Longitude": -91.7108,
-    "Radius": 128
+    "Radius": 75
   },
   "CKB": {
     "Name": "Clarksburg TRACON",
@@ -256,14 +256,14 @@
     "ARTCC": "ZOB",
     "Latitude": 41.4117,
     "Longitude": -81.8498,
-    "Radius": 128
+    "Radius": 70
   },
   "CLT": {
     "Name": "Charlotte TRACON",
     "ARTCC": "ZTL",
     "Latitude": 35.214,
     "Longitude": -80.9431,
-    "Radius": 128
+    "Radius": 75
   },
   "CMH": {
     "Name": "Columbus TRACON",
@@ -284,14 +284,14 @@
     "ARTCC": "ZDV",
     "Latitude": 38.8058,
     "Longitude": -104.7008,
-    "Radius": 128
+    "Radius": 75
   },
   "CPR": {
     "Name": "Casper TRACON",
     "ARTCC": "ZDV",
     "Latitude": 42.908,
     "Longitude": -106.4642,
-    "Radius": 128
+    "Radius": 60
   },
   "CRP": {
     "Name": "Corpus Christi TRACON",
@@ -326,21 +326,21 @@
     "ARTCC": "ZFW",
     "Latitude": 32.8968,
     "Longitude": -97.038,
-    "Radius": 128
+    "Radius": 90
   },
   "D21": {
     "Name": "Detroit TRACON",
     "ARTCC": "ZOB",
     "Latitude": 42.2124,
     "Longitude": -83.3534,
-    "Radius": 128
+    "Radius": 90
   },
   "DAB": {
     "Name": "Daytona Beach TRACON",
     "ARTCC": "ZJX",
     "Latitude": 29.1799,
     "Longitude": -81.0581,
-    "Radius": 128
+    "Radius": 75
   },
   "DAY": {
     "Name": "Dayton TRACON",
@@ -368,7 +368,7 @@
     "ARTCC": "ZNY",
     "Latitude": 42.1598,
     "Longitude": -76.8916,
-    "Radius": 128
+    "Radius": 75
   },
   "ELP": {
     "Name": "El Paso TRACON",
@@ -403,14 +403,14 @@
     "ARTCC": "ZNY",
     "Latitude": 40.6925,
     "Longitude": -74.1687,
-    "Radius": 128
+    "Radius": 75
   },
   "F11": {
     "Name": "Central Florida TRACON",
     "ARTCC": "ZJX",
     "Latitude": 28.4294,
     "Longitude": -81.309,
-    "Radius": 128
+    "Radius": 100
   },
   "FAI": {
     "Name": "Fairbanks TRACON",
@@ -515,21 +515,21 @@
     "ARTCC": "ZTL",
     "Latitude": 36.0978,
     "Longitude": -79.9373,
-    "Radius": 128
+    "Radius": 75
   },
   "GSP": {
     "Name": "Greer TRACON",
     "ARTCC": "ZTL",
     "Latitude": 34.8957,
     "Longitude": -82.2189,
-    "Radius": 128
+    "Radius": 75
   },
   "GTF": {
     "Name": "Great Falls TRACON",
     "ARTCC": "ZLC",
     "Latitude": 47.482,
     "Longitude": -111.3706,
-    "Radius": 128
+    "Radius": 75
   },
   "HLN": {
     "Name": "Helena TRACON",
@@ -564,7 +564,7 @@
     "ARTCC": "ZHU",
     "Latitude": 29.9844,
     "Longitude": -95.3414,
-    "Radius": 128
+    "Radius": 150
   },
   "ICT": {
     "Name": "Wichita TRACON",
@@ -585,7 +585,7 @@
     "ARTCC": "ZID",
     "Latitude": 39.7173,
     "Longitude": -86.2944,
-    "Radius": 128
+    "Radius": 90
   },
   "ITO": {
     "Name": "Hilo TRACON",
@@ -606,14 +606,14 @@
     "ARTCC": "ZJX",
     "Latitude": 30.4941,
     "Longitude": -81.6879,
-    "Radius": 128
+    "Radius": 150
   },
   "L30": {
     "Name": "Las Vegas TRACON",
     "ARTCC": "ZLA",
     "Latitude": 36.0801,
     "Longitude": -115.1522,
-    "Radius": 128
+    "Radius": 90
   },
   "LAN": {
     "Name": "Lansing TRACON",
@@ -669,7 +669,7 @@
     "ARTCC": "ZMP",
     "Latitude": 44.882,
     "Longitude": -93.2218,
-    "Radius": 128
+    "Radius": 75
   },
   "MAF": {
     "Name": "Midland TRACON",
@@ -690,14 +690,14 @@
     "ARTCC": "ZKC",
     "Latitude": 39.2976,
     "Longitude": -94.7139,
-    "Radius": 128
+    "Radius": 75
   },
   "MDT": {
     "Name": "Harrisburg Intl TRACON",
     "ARTCC": "ZNY",
     "Latitude": 40.1935,
     "Longitude": -76.7634,
-    "Radius": 128
+    "Radius": 75
   },
   "MFD": {
     "Name": "Mansfield TRACON",
@@ -718,7 +718,7 @@
     "ARTCC": "ZMA",
     "Latitude": 25.7932,
     "Longitude": -80.2906,
-    "Radius": 128
+    "Radius": 75
   },
   "MKE": {
     "Name": "Milwaukee TRACON",
@@ -732,7 +732,7 @@
     "ARTCC": "ZAU",
     "Latitude": 43.1695,
     "Longitude": -86.2382,
-    "Radius": 128
+    "Radius": 100
   },
   "MLI": {
     "Name": "Quad City TRACON",
@@ -746,7 +746,7 @@
     "ARTCC": "ZFW",
     "Latitude": 32.5109,
     "Longitude": -92.0378,
-    "Radius": 128
+    "Radius": 100
   },
   "MOB": {
     "Name": "Mobile TRACON",
@@ -774,14 +774,14 @@
     "ARTCC": "ZSE",
     "Latitude": 47.2077,
     "Longitude": -119.3203,
-    "Radius": 128
+    "Radius": 100
   },
   "MYR": {
     "Name": "Myrtle Beach TRACON",
     "ARTCC": "ZJX",
     "Latitude": 33.6797,
     "Longitude": -78.9283,
-    "Radius": 128
+    "Radius": 100
   },
   "N90": {
     "Name": "New York TRACON",
@@ -793,184 +793,184 @@
   "NCT": {
     "Name": "NorCal TRACON",
     "ARTCC": "ZOA",
-    "Latitude": 37.864204,
-    "Longitude": -122.375,
-    "Radius": 256
+    "Latitude": 38.119999,
+    "Longitude": -121.168419,
+    "Radius": 160
   },
   "NMM": {
     "Name": "Meridian TRACON",
     "ARTCC": "ZME",
     "Latitude": 32.3526,
     "Longitude": -88.7514,
-    "Radius": 128
+    "Radius": 100
   },
   "OKC": {
     "Name": "Oklahoma City TRACON",
     "ARTCC": "ZFW",
     "Latitude": 35.3931,
     "Longitude": -97.6007,
-    "Radius": 128
+    "Radius": 90
   },
   "ORF": {
     "Name": "Norfolk TRACON",
     "ARTCC": "ZDC",
     "Latitude": 36.8946,
     "Longitude": -76.2012,
-    "Radius": 128
+    "Radius": 100
   },
   "P31": {
     "Name": "Pensacola TRACON",
     "ARTCC": "ZJX",
     "Latitude": 30.4734,
     "Longitude": -87.1866,
-    "Radius": 128
+    "Radius": 75
   },
   "P50": {
     "Name": "Phoenix TRACON",
     "ARTCC": "ZAB",
     "Latitude": 33.4343,
     "Longitude": -112.008,
-    "Radius": 128
+    "Radius": 75
   },
   "P80": {
     "Name": "Portland TRACON",
     "ARTCC": "ZSE",
     "Latitude": 45.5898,
     "Longitude": -122.5951,
-    "Radius": 128
+    "Radius": 75
   },
   "PBI": {
     "Name": "Palm Beach TRACON",
     "ARTCC": "ZMA",
     "Latitude": 26.6832,
     "Longitude": -80.0957,
-    "Radius": 128
+    "Radius": 100
   },
   "PCT": {
     "Name": "Potomac TRACON",
     "ARTCC": "ZDC",
     "Latitude": 38.8521,
     "Longitude": -77.0377,
-    "Radius": 128
+    "Radius": 100
   },
   "PHL": {
     "Name": "Philadelphia TRACON",
     "ARTCC": "ZNY",
     "Latitude": 39.8719,
     "Longitude": -75.2411,
-    "Radius": 128
+    "Radius": 75
   },
   "PIA": {
     "Name": "Peoria TRACON",
     "ARTCC": "ZKC",
     "Latitude": 40.6642,
     "Longitude": -89.6933,
-    "Radius": 128
+    "Radius": 100
   },
   "PIT": {
     "Name": "Pittsburgh TRACON",
     "ARTCC": "ZOB",
     "Latitude": 40.4915,
     "Longitude": -80.2329,
-    "Radius": 128
+    "Radius": 75
   },
   "PSC": {
     "Name": "Pasco TRACON",
     "ARTCC": "ZSE",
     "Latitude": 46.2647,
     "Longitude": -119.119,
-    "Radius": 128
+    "Radius": 100
   },
   "PVD": {
     "Name": "Providence TRACON",
     "ARTCC": "ZBW",
     "Latitude": 41.7267,
     "Longitude": -71.4273,
-    "Radius": 128
+    "Radius": 85
   },
   "PWM": {
     "Name": "Portland TRACON",
     "ARTCC": "ZBW",
     "Latitude": 43.6462,
     "Longitude": -70.3093,
-    "Radius": 128
+    "Radius": 100
   },
   "R90": {
     "Name": "Omaha TRACON",
     "ARTCC": "ZMP",
     "Latitude": 41.3032,
     "Longitude": -95.8941,
-    "Radius": 128
+    "Radius": 160
   },
   "RDG": {
     "Name": "Reading TRACON",
     "ARTCC": "ZNY",
     "Latitude": 40.3785,
     "Longitude": -75.9652,
-    "Radius": 128
+    "Radius": 75
   },
   "RDU": {
     "Name": "Raleigh-Durham TRACON",
     "ARTCC": "ZDC",
     "Latitude": 35.8776,
     "Longitude": -78.7875,
-    "Radius": 128
+    "Radius": 75
   },
   "RFD": {
     "Name": "Rockford TRACON",
     "ARTCC": "ZAU",
     "Latitude": 42.1954,
     "Longitude": -89.0972,
-    "Radius": 128
+    "Radius": 100
   },
   "ROA": {
     "Name": "Roanoke TRACON",
     "ARTCC": "ZDC",
     "Latitude": 37.3255,
     "Longitude": -79.9754,
-    "Radius": 128
+    "Radius": 100
   },
   "ROC": {
     "Name": "Rochester TRACON",
     "ARTCC": "ZOB",
     "Latitude": 43.1189,
     "Longitude": -77.6724,
-    "Radius": 128
+    "Radius": 100
   },
   "ROW": {
     "Name": "Roswell TRACON",
     "ARTCC": "ZAB",
     "Latitude": 33.3016,
     "Longitude": -104.5308,
-    "Radius": 128
+    "Radius": 100
   },
   "RST": {
     "Name": "Rochester TRACON",
     "ARTCC": "ZMP",
     "Latitude": 43.9083,
     "Longitude": -92.5,
-    "Radius": 128
+    "Radius": 100
   },
   "RSW": {
     "Name": "Fort Myers TRACON",
     "ARTCC": "ZMA",
     "Latitude": 26.5362,
     "Longitude": -81.7552,
-    "Radius": 128
+    "Radius": 100
   },
   "S46": {
     "Name": "Seattle TRACON",
     "ARTCC": "ZSE",
     "Latitude": 47.4502,
     "Longitude": -122.3088,
-    "Radius": 128
+    "Radius": 75
   },
   "S56": {
     "Name": "Salt Lake City TRACON",
     "ARTCC": "ZLC",
     "Latitude": 40.7884,
     "Longitude": -111.9778,
-    "Radius": 128
+    "Radius": 90
   },
   "SAT": {
     "Name": "San Antonio TRACON",
@@ -984,70 +984,70 @@
     "ARTCC": "ZJX",
     "Latitude": 32.1276,
     "Longitude": -81.2021,
-    "Radius": 128
+    "Radius": 75
   },
   "SBA": {
     "Name": "Santa Barbara TRACON",
     "ARTCC": "ZLA",
     "Latitude": 34.4262,
     "Longitude": -119.8404,
-    "Radius": 128
+    "Radius": 100
   },
   "SBN": {
     "Name": "South Bend TRACON",
     "ARTCC": "ZAU",
     "Latitude": 41.7087,
     "Longitude": -86.3173,
-    "Radius": 128
+    "Radius": 75
   },
   "SCT": {
     "Name": "SoCal TRACON",
     "ARTCC": "ZLA",
     "Latitude": 33.66723,
     "Longitude": -117.523056,
-    "Radius": 192
+    "Radius": 160
   },
   "SDF": {
     "Name": "Standiford TRACON",
     "ARTCC": "ZID",
     "Latitude": 38.1744,
     "Longitude": -85.736,
-    "Radius": 128
+    "Radius": 75
   },
   "SGF": {
     "Name": "Springfield TRACON",
     "ARTCC": "ZKC",
     "Latitude": 37.2457,
     "Longitude": -93.3886,
-    "Radius": 128
+    "Radius": 75
   },
   "SHV": {
     "Name": "Shreveport TRACON",
     "ARTCC": "ZFW",
     "Latitude": 32.4466,
     "Longitude": -93.8256,
-    "Radius": 128
+    "Radius": 100
   },
   "SPI": {
     "Name": "Springfield TRACON",
     "ARTCC": "ZKC",
     "Latitude": 39.8441,
     "Longitude": -89.6779,
-    "Radius": 128
+    "Radius": 100
   },
   "SUX": {
     "Name": "Sioux Gateway TRACON",
     "ARTCC": "ZMP",
     "Latitude": 42.4026,
     "Longitude": -96.3844,
-    "Radius": 128
+    "Radius": 100
   },
   "SYR": {
     "Name": "Syracuse TRACON",
     "ARTCC": "ZBW",
     "Latitude": 43.1112,
     "Longitude": -76.1063,
-    "Radius": 128
+    "Radius": 110
   },
   "T75": {
     "Name": "St Louis TRACON",
@@ -1075,7 +1075,7 @@
     "ARTCC": "ZMA",
     "Latitude": 27.9755,
     "Longitude": -82.5332,
-    "Radius": 128
+    "Radius": 75
   },
   "TRI": {
     "Name": "Tri-Cities TRACON",
@@ -1117,14 +1117,14 @@
     "ARTCC": "ZNY",
     "Latitude": 40.0155,
     "Longitude": -74.5937,
-    "Radius": 128
+    "Radius": 75
   },
   "Y90": {
     "Name": "Yankee TRACON",
     "ARTCC": "ZBW",
     "Latitude": 41.9389,
     "Longitude": -72.6832,
-    "Radius": 128
+    "Radius": 75
   },
   "YNG": {
     "Name": "Youngstown TRACON",
