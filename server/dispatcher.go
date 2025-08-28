@@ -127,7 +127,7 @@ func (sd *dispatcher) FastForward(token string, update *sim.StateUpdate) error {
 type AssociateFlightPlanArgs struct {
 	ControllerToken     string
 	Callsign            av.ADSBCallsign
-	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
+	FlightPlanSpecifier sim.FlightPlanSpecifier
 }
 
 func (sd *dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *sim.StateUpdate) error {
@@ -148,7 +148,7 @@ type ActivateFlightPlanArgs struct {
 	ControllerToken     string
 	TrackCallsign       av.ADSBCallsign
 	FpACID              sim.ACID
-	FlightPlanSpecifier *sim.STARSFlightPlanSpecifier
+	FlightPlanSpecifier *sim.FlightPlanSpecifier
 }
 
 func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim.StateUpdate) error {
@@ -167,7 +167,7 @@ func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim
 
 type CreateFlightPlanArgs struct {
 	ControllerToken     string
-	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
+	FlightPlanSpecifier sim.FlightPlanSpecifier
 }
 
 func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.StateUpdate) error {
@@ -186,7 +186,7 @@ func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.St
 
 type ModifyFlightPlanArgs struct {
 	ControllerToken     string
-	FlightPlanSpecifier sim.STARSFlightPlanSpecifier
+	FlightPlanSpecifier sim.FlightPlanSpecifier
 	ACID                sim.ACID
 }
 
@@ -472,6 +472,41 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.Sta
 		return ErrNoSimForControllerToken
 	} else {
 		err := s.DeleteAircraftSlice(ctrl.tcp, da.Aircraft)
+		s.GetStateUpdate(ctrl.tcp, update)
+		return err
+	}
+}
+
+type SendCoordinateInfoArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+}
+
+func (sd *dispatcher) SendCoordinateInfo(da *SendCoordinateInfoArgs, update *sim.StateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		err := s.SendCoordinateInfo(ctrl.tcp, da.ACID)
+		s.GetStateUpdate(ctrl.tcp, update)
+		return err
+	}
+}
+
+type FlightPlanDirectArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+	Fix             string
+}
+
+func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *sim.StateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if ctrl, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		err := s.FlightPlanDirect(ctrl.tcp, da.Fix, da.ACID)
 		s.GetStateUpdate(ctrl.tcp, update)
 		return err
 	}

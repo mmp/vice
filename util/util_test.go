@@ -13,7 +13,7 @@ import (
 func TestWrapText(t *testing.T) {
 	input := "this is a test_with_a_long_line of stuff"
 	expected := "this is \n  a \n  test_with_a_long_line \n  of \n  stuff"
-	wrap, lines := WrapText(input, 8, 2, false)
+	wrap, lines := WrapText(input, 8, 2, false, false)
 	if wrap != expected {
 		t.Errorf("wrapping gave %q; expected %q", wrap, expected)
 	}
