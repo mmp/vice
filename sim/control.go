@@ -1412,7 +1412,7 @@ func (s *Sim) processEnqueued() {
 				} else {
 					if ac.RequestedFlightFollowing {
 						s.requestFlightFollowing(ac, c.TCP)
-					} 
+					}
 				}
 			}
 			return false // remove it from the slice
