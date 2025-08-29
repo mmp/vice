@@ -280,4 +280,9 @@ var whatsNew []string = []string{
 	`STARS coordination and system list contents are now adaptable`,
 	`Fixed various bugs with altitude reporting, approach intercepts, and departure release flow`,
 	`VFRs stay at or under 200kts under bravo shelves (Neel P)`,
+	`Scenario update: MIA (Connor Allen)`,
+	`Overhauled wind modeling: multi-layer wind support with interpolation between sample points`,
+	`STARS: Added ".WIND" command to display wind information with visual wind barbs`,
+	`Aircraft now adjust speeds on final approach based on wind conditions`,
+	`Fixed a number of bugs related to speed and altitude restrictions at waypoints`,
 }
