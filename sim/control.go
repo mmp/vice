@@ -1025,6 +1025,16 @@ func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	}
 }
 
+func (s *Sim) PilotMixUp(tcp string, callsign av.ADSBCallsign) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) *RadioTransmission {
+			return ac.PilotMixUp()
+		})
+}
+
 func (s *Sim) AssignAltitude(tcp string, callsign av.ADSBCallsign, altitude int, afterSpeed bool) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -1402,7 +1412,7 @@ func (s *Sim) processEnqueued() {
 				} else {
 					if ac.RequestedFlightFollowing {
 						s.requestFlightFollowing(ac, c.TCP)
-					}
+					} 
 				}
 			}
 			return false // remove it from the slice
