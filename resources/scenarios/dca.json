@@ -2806,7 +2806,7 @@
               },
 			  {
                 "departure_airport": "KIAD",
-				"arrival_airport": "ATL",
+				"arrival_airport": "KATL",
                 "icao": "UAL",
 				"fleet": "short"
               },

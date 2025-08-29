@@ -18,12 +18,8 @@ type InstallFile struct {
 }
 
 type Release struct {
-	Version       string
-	ResourceFiles []InstallFile
-	AudioFiles    []InstallFile
-	FontFiles     []InstallFile
-	VideoMapFiles []InstallFile
-	ScenarioFiles []InstallFile
+	Version   string
+	FontFiles []InstallFile
 }
 
 func getLatestGitTag() string {
@@ -79,11 +75,7 @@ func main() {
 		return files
 	}
 
-	r.ResourceFiles = initFiles("resources/*.zst", "resources/*json", "resources/mva-fus3.zip")
-	r.AudioFiles = initFiles("resources/audio/*.mp3")
-	r.FontFiles = initFiles("resources/fonts/*.zst")
-	r.VideoMapFiles = initFiles("resources/videomaps/*.zst", "resources/videomaps/*.gob")
-	r.ScenarioFiles = initFiles("resources/scenarios/*.json")
+	r.FontFiles = initFiles("fonts/*.zst")
 
 	tmpl, err := template.New("installer.wxs").Parse(xmlTemplate)
 	if err != nil {
@@ -135,35 +127,11 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="libstdcpp" Guid='a7080cc5-8ddf-45b9-bf09-466652cc8b06'>
             <File KeyPath="yes" Source="windows/libstdc++-6.dll"></File>
           </Component>
-          <Directory Id="ResourcesFolder" Name="resources">
-            <Component Id="ResourcesFilesId" Guid="b5e58c58-4d43-4613-91f7-d55fb9fdde91">
-{{range .ResourceFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
-{{end}}
-            </Component>
-            <Directory Id="AudioFolder" Name="audio">
-              <Component Id="AudioId" Guid="e14412f8-b08c-45d3-a753-706bf5f560f5">
-{{range .AudioFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
-{{end}}
-              </Component>
-            </Directory>
-            <Directory Id="MyFontsFolder" Name="fonts">
-              <Component Id="FontsId" Guid="263928e7-8110-4fae-8030-2ee477cb0595">
+          <Directory Id="MyFontsFolder" Name="fonts">
+            <Component Id="FontsId" Guid="333b7858-8503-4310-b039-e1341613dada">
 {{range .FontFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
 {{end}}
-              </Component>
-            </Directory>
-            <Directory Id="VideoMapsFolder" Name="videomaps">
-              <Component Id="VideoMapsId" Guid="f120781f-c141-4b3e-bd72-8ca98048be48">
-{{range .VideoMapFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
-{{end}}
-              </Component>
-            </Directory>
-            <Directory Id="ScenariosFolder" Name="scenarios">
-              <Component Id="ScenariosId" Guid="3072033b-c670-4e11-b941-2ea9bf892a83">
-{{range .ScenarioFiles}}                <File Id="{{.Id}}" Source="{{.Source}}" {{if .KeyPath}}KeyPath="yes" {{end}}/>
-{{end}}
-              </Component>
-            </Directory>
+            </Component>
           </Directory>
         </Directory>
 
@@ -233,11 +201,7 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
       <ComponentRef Id="SDLDLL" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
-      <ComponentRef Id="ResourcesFilesId" />
-      <ComponentRef Id="AudioId" />
       <ComponentRef Id="FontsId" />
-      <ComponentRef Id="ScenariosId" />
-      <ComponentRef Id="VideoMapsId" />
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
