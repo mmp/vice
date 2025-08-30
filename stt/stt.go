@@ -7,10 +7,12 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	whisper "github.com/mmp/vice/autowhisper"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/util"
 )
 
 // AudioData represents audio data in memory
@@ -135,8 +137,9 @@ func VoiceToCommand(audio *AudioData, approaches [][2]string, lg *log.Logger) (s
 
 func Transcribe(audio *AudioData) (string, error) {
 	// Make a model
-
-	text, err := whisper.Transcribe("../../resources/models/ggml-medium-q5_0.bin", audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
+	resourcesPath := util.GetResourcesFolderPath()
+	modelPath := filepath.Join(resourcesPath, "models", "ggml-medium-q5_0.bin")
+	text, err := whisper.Transcribe(modelPath, audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
 		Language: "en",
 	})
 	if err != nil {
