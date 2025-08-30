@@ -186,6 +186,7 @@ var (
 	FontAwesomeIconRedo                = faUsedIcons["Redo"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
+	FontAwesomeIconUsers               = faUsedIcons["Users"]
 )
 
 var (
@@ -227,6 +228,7 @@ var (
 		"Redo":                FontAwesomeString("Redo"),
 		"Square":              FontAwesomeString("Square"),
 		"Trash":               FontAwesomeString("Trash"),
+		"Users":               FontAwesomeString("Users"),
 	}
 	faBrandsUsedIcons map[string]string = map[string]string{
 		"Discord": FontAwesomeBrandsString("Discord"),
