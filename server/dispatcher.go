@@ -5,6 +5,7 @@
 package server
 
 import (
+	"math/rand"
 	"strconv"
 	"strings"
 
@@ -481,6 +482,7 @@ type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        av.ADSBCallsign
 	Commands        string
+	Multiple        bool
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -500,6 +502,25 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 	callsign := cmds.Callsign
 	commands := strings.Fields(cmds.Commands)
+
+	rewriteError := func(err error) {
+		result.RemainingInput = cmds.Commands
+		if err != nil {
+			result.ErrorMessage = err.Error()
+		}
+	}
+
+	if cmds.Multiple {
+		if err := s.PilotMixUp(ctrl.tcp, callsign); err != nil {
+			rewriteError(err)
+		}
+		return nil // don't continue with the commands
+	} else if num := rand.Intn(25); num == 0 { // 1/25 chance of a pilot mix-up
+		if err := s.PilotMixUp(ctrl.tcp, callsign); err != nil {
+			rewriteError(err)
+		}
+		return nil // don't continue with the commands
+	}
 
 	for i, command := range commands {
 		rewriteError := func(err error) {
