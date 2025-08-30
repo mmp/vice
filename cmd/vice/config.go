@@ -58,6 +58,9 @@ type ConfigNoSim struct {
 	DisableTextToSpeech    bool
 
 	UserTCP string
+
+	ScenarioFile string
+	VideoMapFile string
 }
 
 type ConfigSim struct {
