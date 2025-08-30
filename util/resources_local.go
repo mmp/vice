@@ -10,8 +10,43 @@ package util
 
 import (
 	"io/fs"
+	"os"
+	"path/filepath"
 )
 
 func initResourcesFS() *fs.StatFS {
-	return localResourcesFS()
+	dir := GetResourcesFolderPath()
+	fsys, ok := os.DirFS(dir).(fs.StatFS)
+		if !ok {
+			panic("FS from DirFS is not a StatFS?")
+		}
+
+		_, errv := fsys.Stat("videomaps")
+		_, errs := fsys.Stat("scenarios")
+		if errv == nil && errs == nil { // got it
+		return &fsys
+	}
+	panic("erros not nil: " + errv.Error() + " " + errs.Error())
+}
+
+func GetResourcesFolderPath() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	// Try CWD as well the two directories above it.
+	for range 3 {
+		resourcesPath := filepath.Join(dir, "resources")
+
+		// Check if this directory contains the expected subdirectories
+		if _, err := os.Stat(filepath.Join(resourcesPath, "videomaps")); err == nil {
+			if _, err := os.Stat(filepath.Join(resourcesPath, "scenarios")); err == nil {
+				return resourcesPath
+			}
+		}
+
+		dir = filepath.Join(dir, "..")
+	}
+	panic("unable to find resources directory with videomaps and scenarios")
 }
