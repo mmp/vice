@@ -3,6 +3,7 @@ package autowhisper
 import (
 	"errors"
 	"fmt"
+	"io"
 	"math"
 	"runtime"
 	"strings"
@@ -98,7 +99,7 @@ func TranscribeFile(modelPath, audioPath string, opts Options) (string, error) {
 			}
 		}
 		if err != nil {
-			if strings.Contains(err.Error(), "EOF") {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return "", err
