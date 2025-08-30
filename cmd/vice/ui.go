@@ -1365,6 +1365,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
+	imgui.Separator()
+
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := renderer.AvailableFontSizes("Roboto Regular")
 		for _, size := range sizes {
@@ -1375,6 +1377,11 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		}
 		imgui.EndCombo()
 	}
+
+	// Speech-to-Text settings
+	// (Removed: STT now lives under STARS pane settings)
+
+	imgui.Separator()
 
 	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
 		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {

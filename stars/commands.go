@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
@@ -21,10 +22,12 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/davecgh/go-spew/spew"
+	"github.com/mmp/vice/stt"
 )
 
 // Cache the routes we show when paused but periodically fetch them
@@ -217,6 +220,86 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	sp.previewAreaInput += strings.ReplaceAll(input, "`", STARSTriangleCharacter)
 
 	ps := sp.currentPrefs()
+
+	// Push-to-talk handling (minimal, non-invasive)
+	if ps.PushToTalkKey != imgui.KeyNone {
+		// Start on initial press (ignore repeats by checking our own flag)
+		if imgui.IsKeyDown(ps.PushToTalkKey) && !ctx.Client.RadioIsActive() {
+			if !sp.pushToTalkRecording && !ctx.Platform.IsAudioRecording() {
+				if err := ctx.Platform.StartAudioRecordingWithDevice(ps.SelectedMicrophone); err != nil {
+					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
+				} else {
+					sp.pushToTalkRecording = true
+					ctx.Lg.Infof("Push-to-talk: Started recording")
+				}
+			}
+		} else if ctx.Client.RadioIsActive() {
+			// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
+		}
+
+		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
+		if sp.pushToTalkRecording && !imgui.IsKeyDown(ps.PushToTalkKey) {
+			if ctx.Platform.IsAudioRecording() {
+				data, err := ctx.Platform.StopAudioRecording()
+				sp.pushToTalkRecording = false
+				if err != nil {
+					ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
+				} else {
+					ctx.Lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+					go func(samples []int16) {
+						// Make approach map
+						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
+						for _, apt := range ctx.Client.State.Airports {
+							for code, appr := range apt.Approaches {
+								approaches = append(approaches, [2]string{appr.FullName, code})
+							}
+						}
+						audio := &stt.AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
+						text, err := stt.VoiceToCommand(audio, approaches, ctx.Lg)
+						if err != nil {
+							ctx.Lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
+							return
+						}
+						fields := strings.Fields(text)
+
+						trimFunc := func(s string) string {
+							for i, char := range s {
+								if unicode.IsDigit(char) {
+									return s[i:]
+								}
+							}
+							return ""
+						}
+						if len(fields) > 0 {
+							callsign := fields[0]
+							// Check if callsign matches, if not check if the numbers match
+							_, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign))
+							if !ok {
+								// trim until first number
+								callsign = trimFunc(callsign)
+								matching := sp.tracksFromACIDSuffix(ctx, callsign)
+								if len(matching) == 1 {
+									callsign = string(matching[0].ADSBCallsign)
+								}
+							}
+							if len(fields) > 1 {
+								cmd := strings.Join(fields[1:], " ")
+								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
+								ctx.Lg.Infof("Command: %v Callsign: %v", cmd, callsign)
+							}
+							sp.lastTranscription = text
+							ctx.Lg.Infof("Push-to-talk: Transcription: %s\n", text)
+
+						}
+
+					}(data)
+				}
+			} else if !ctx.Platform.IsAudioRecording() {
+				// Platform already not recording; reset our flag
+				sp.pushToTalkRecording = false
+			}
+		}
+	}
 
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
@@ -4686,7 +4769,7 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+	if (mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) || sp.pushToTalkKeyCapture {
 		ctx.Client.HoldRadioTransmissions()
 	} else {
 		ctx.Client.AllowRadioTransmissions()

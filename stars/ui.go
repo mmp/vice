@@ -55,6 +55,71 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 			sp.playOnce(p, i)
 		}
 	}
+
+	imgui.Separator()
+	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
+		// Push-to-talk key
+		keyName := "None"
+		if ps.PushToTalkKey != imgui.KeyNone {
+			keyName = getKeyName(ps.PushToTalkKey)
+		}
+		imgui.Text("Push-to-Talk Key: ")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
+
+		if sp.pushToTalkKeyCapture {
+			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
+			if kb := p.GetKeyboard(); kb != nil {
+				for key := range kb.Pressed {
+					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
+						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
+						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
+						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
+						fmt.Println("Set PTT to ", key)
+						ps.PushToTalkKey = key
+						sp.pushToTalkKeyCapture = false
+						break
+					}
+				}
+			}
+		} else {
+			imgui.SameLine()
+			if imgui.Button("Change Key") {
+				sp.pushToTalkKeyCapture = true
+			}
+			imgui.SameLine()
+			if imgui.Button("Clear") {
+				ps.PushToTalkKey = imgui.KeyNone
+			}
+		}
+
+		// Microphone selection
+		imgui.Text("Microphone:")
+		imgui.SameLine()
+		micName := ps.SelectedMicrophone
+		if micName == "" {
+			micName = "Default"
+		}
+		if imgui.BeginComboV("##microphone", micName, 0) {
+			if imgui.SelectableBoolV("Default", ps.SelectedMicrophone == "", 0, imgui.Vec2{}) {
+				ps.SelectedMicrophone = ""
+			}
+			mics := p.GetAudioInputDevices()
+			for _, mic := range mics {
+				if imgui.SelectableBoolV(mic, mic == ps.SelectedMicrophone, 0, imgui.Vec2{}) {
+					ps.SelectedMicrophone = mic
+				}
+			}
+			imgui.EndCombo()
+		}
+
+		if sp.pushToTalkRecording {
+			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
+		} else if sp.lastTranscription != "" {
+			imgui.Text("Last transcription:")
+			imgui.TextWrapped(sp.lastTranscription)
+		}
+	}
 }
 
 func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
@@ -421,5 +486,162 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				imgui.EndTable()
 			}
 		}
+	}
+}
+
+func getKeyName(key imgui.Key) string {
+	switch key {
+	case imgui.KeyA:
+		return "A"
+	case imgui.KeyB:
+		return "B"
+	case imgui.KeyC:
+		return "C"
+	case imgui.KeyD:
+		return "D"
+	case imgui.KeyE:
+		return "E"
+	case imgui.KeyF:
+		return "F"
+	case imgui.KeyG:
+		return "G"
+	case imgui.KeyH:
+		return "H"
+	case imgui.KeyI:
+		return "I"
+	case imgui.KeyJ:
+		return "J"
+	case imgui.KeyK:
+		return "K"
+	case imgui.KeyL:
+		return "L"
+	case imgui.KeyM:
+		return "M"
+	case imgui.KeyN:
+		return "N"
+	case imgui.KeyO:
+		return "O"
+	case imgui.KeyP:
+		return "P"
+	case imgui.KeyQ:
+		return "Q"
+	case imgui.KeyR:
+		return "R"
+	case imgui.KeyS:
+		return "S"
+	case imgui.KeyT:
+		return "T"
+	case imgui.KeyU:
+		return "U"
+	case imgui.KeyV:
+		return "V"
+	case imgui.KeyW:
+		return "W"
+	case imgui.KeyX:
+		return "X"
+	case imgui.KeyY:
+		return "Y"
+	case imgui.KeyZ:
+		return "Z"
+	case imgui.Key0:
+		return "0"
+	case imgui.Key1:
+		return "1"
+	case imgui.Key2:
+		return "2"
+	case imgui.Key3:
+		return "3"
+	case imgui.Key4:
+		return "4"
+	case imgui.Key5:
+		return "5"
+	case imgui.Key6:
+		return "6"
+	case imgui.Key7:
+		return "7"
+	case imgui.Key8:
+		return "8"
+	case imgui.Key9:
+		return "9"
+	case imgui.KeyF1:
+		return "F1"
+	case imgui.KeyF2:
+		return "F2"
+	case imgui.KeyF3:
+		return "F3"
+	case imgui.KeyF4:
+		return "F4"
+	case imgui.KeyF5:
+		return "F5"
+	case imgui.KeyF6:
+		return "F6"
+	case imgui.KeyF7:
+		return "F7"
+	case imgui.KeyF8:
+		return "F8"
+	case imgui.KeyF9:
+		return "F9"
+	case imgui.KeyF10:
+		return "F10"
+	case imgui.KeyF11:
+		return "F11"
+	case imgui.KeyF12:
+		return "F12"
+	case imgui.KeySpace:
+		return "Space"
+	case imgui.KeyTab:
+		return "Tab"
+	case imgui.KeyCapsLock:
+		return "CapsLock"
+	case imgui.KeyEnter:
+		return "Enter"
+	case imgui.KeyBackspace:
+		return "Backspace"
+	case imgui.KeyInsert:
+		return "Insert"
+	case imgui.KeyDelete:
+		return "Delete"
+	case imgui.KeyHome:
+		return "Home"
+	case imgui.KeyEnd:
+		return "End"
+	case imgui.KeyPageUp:
+		return "PageUp"
+	case imgui.KeyPageDown:
+		return "PageDown"
+	case imgui.KeyLeftArrow:
+		return "Left"
+	case imgui.KeyRightArrow:
+		return "Right"
+	case imgui.KeyUpArrow:
+		return "Up"
+	case imgui.KeyDownArrow:
+		return "Down"
+	case imgui.KeyEscape:
+		return "Escape"
+	case imgui.KeyGraveAccent:
+		return "`"
+	case imgui.KeyMinus:
+		return "-"
+	case imgui.KeyEqual:
+		return "="
+	case imgui.KeyLeftBracket:
+		return "["
+	case imgui.KeyRightBracket:
+		return "]"
+	case imgui.KeyBackslash:
+		return "\\"
+	case imgui.KeySemicolon:
+		return ";"
+	case imgui.KeyApostrophe:
+		return "'"
+	case imgui.KeyComma:
+		return ","
+	case imgui.KeyPeriod:
+		return "."
+	case imgui.KeySlash:
+		return "/"
+	default:
+		return "Unknown"
 	}
 }
