@@ -59,10 +59,11 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Separator()
 	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
 		// Push-to-talk key
-		keyName := "None"
-		if ps.PushToTalkKey != imgui.KeyNone {
-			keyName = getKeyName(ps.PushToTalkKey)
+		if ps.PushToTalkKey == imgui.KeyNone {
+			ps.PushToTalkKey = imgui.KeySemicolon
 		}
+		keyName := getKeyName(ps.PushToTalkKey)
+
 		imgui.Text("Push-to-Talk Key: ")
 		imgui.SameLine()
 		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
