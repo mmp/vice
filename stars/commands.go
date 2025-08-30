@@ -194,10 +194,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	}
 
 	if !instructorRPO && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
-		if ctx.Client.RadioIsActive() {
-			// Discard entered TGT GEN text if we're awaiting a readback
-			input = ""
-		} else if input != "" {
+		if input != "" {
 			// As long as text is being entered, hold radio transmissions
 			// for the coming few seconds.
 			ctx.Client.HoldRadioTransmissions()
@@ -2461,6 +2458,13 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		}
 
+		instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
+		if ctx.Client.RadioIsActive() && !instructorRPO {
+			// Ignore the command but leave the entered text; don't allow issuing
+			// the command until the readback is complete.
+			return
+		}
+
 		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
@@ -4155,6 +4159,13 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			return
 
 		case CommandModeTargetGen, CommandModeTargetGenLock:
+			instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
+			if ctx.Client.RadioIsActive() && !instructorRPO {
+				// Ignore the command but leave the entered text; don't allow issuing
+				// the command until the readback is complete.
+				return
+			}
+
 			if len(cmd) > 0 {
 				sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 				status.clear = true
