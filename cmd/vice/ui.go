@@ -1447,16 +1447,24 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.Text("Microphone:")
 		imgui.SameLine()
 		micName := config.SelectedMicrophone
+		cleanMic := func(r rune) rune {
+			if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == ' '{
+				return r
+			}
+			return -1
+		}
 		if micName == "" {
 			micName = "Default"
 		}
+		micName = strings.Map(cleanMic, micName)
 		if imgui.BeginComboV("##microphone", micName, 0) {
 			if imgui.SelectableBoolV("Default", config.SelectedMicrophone == "", 0, imgui.Vec2{}) {
 				config.SelectedMicrophone = ""
 			}
 			mics := p.GetAudioInputDevices()
 			for _, mic := range mics {
-				if imgui.SelectableBoolV(mic, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
+				micFormatted := strings.Map(cleanMic, mic)
+				if imgui.SelectableBoolV(micFormatted, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
 					config.SelectedMicrophone = mic
 				}
 			}
