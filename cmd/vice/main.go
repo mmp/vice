@@ -27,6 +27,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -382,6 +383,8 @@ func main() {
 			// Generate and render vice draw lists
 			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
 				ui.menuBarHeight, lg)
+
+			stt.ProcessSTTKeyboardInput(plat, controlClient, lg, config.UserPTTKey, &config.SelectedMicrophone)
 
 			// Draw the user interface
 			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)

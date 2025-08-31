@@ -1378,9 +1378,6 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndCombo()
 	}
 
-	// Speech-to-Text settings
-	// (Removed: STT now lives under STARS pane settings)
-
 	imgui.Separator()
 
 	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
@@ -1406,6 +1403,71 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			}
 
 			imgui.EndCombo()
+		}
+	}
+
+	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
+		// Push-to-talk key
+		if config.UserPTTKey == imgui.KeyNone {
+			config.UserPTTKey = imgui.KeySemicolon
+		}
+		keyName := platform.GetImGuiKeyName(config.UserPTTKey)
+
+		imgui.Text("Push-to-Talk Key: ")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
+
+		if c.PTTCapture {
+			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
+			if kb := p.GetKeyboard(); kb != nil {
+				for key := range kb.Pressed {
+					fmt.Println("Pressed: ", platform.GetImGuiKeyName(key))
+					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
+						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
+						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
+						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
+						config.UserPTTKey = key
+						c.PTTCapture = false
+						break
+					}
+				}
+			}
+		} else {
+			imgui.SameLine()
+			if imgui.Button("Change Key") {
+				c.PTTCapture = true
+			}
+			imgui.SameLine()
+			if imgui.Button("Clear") {
+				config.UserPTTKey = imgui.KeyNone
+			}
+		}
+
+		// Microphone selection
+		imgui.Text("Microphone:")
+		imgui.SameLine()
+		micName := config.SelectedMicrophone
+		if micName == "" {
+			micName = "Default"
+		}
+		if imgui.BeginComboV("##microphone", micName, 0) {
+			if imgui.SelectableBoolV("Default", config.SelectedMicrophone == "", 0, imgui.Vec2{}) {
+				config.SelectedMicrophone = ""
+			}
+			mics := p.GetAudioInputDevices()
+			for _, mic := range mics {
+				if imgui.SelectableBoolV(mic, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
+					config.SelectedMicrophone = mic
+				}
+			}
+			imgui.EndCombo()
+		}
+
+			if c.PTTRecording {
+			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
+		} else if c.LastTranscription != "" {
+			imgui.Text("Last transcription:")
+			imgui.TextWrapped(c.LastTranscription)
 		}
 	}
 

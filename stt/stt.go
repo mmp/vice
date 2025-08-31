@@ -9,10 +9,17 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 
-	whisper "github.com/mmp/vice/autowhisper"
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
+	whisper "github.com/mmp/vice/autowhisper"
 )
 
 // AudioData represents audio data in memory
@@ -129,6 +136,7 @@ func VoiceToCommand(audio *AudioData, approaches [][2]string, lg *log.Logger) (s
 	model := os.Getenv("OPENAI_MODEL")
 	command, err := callModel(model, approaches, text)
 	lg.Infof("Command: %s", command)
+	fmt.Printf("Command: %s\n", command)
 	if err != nil {
 		return "", err
 	}
@@ -176,4 +184,94 @@ func formatToModel(text string) string {
 	text = strings.ReplaceAll(text, "  ", " ") // Remove double spaces
 	text = strings.ToLower(text)
 	return text
+}
+
+func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
+	PTTKey imgui.Key, SelectedMicrophone *string) {
+	if PTTKey != imgui.KeyNone {
+		// Start on initial press (ignore repeats by checking our own flag)
+		if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
+			if !client.PTTRecording && !p.IsAudioRecording() {
+				if err := p.StartAudioRecordingWithDevice(*SelectedMicrophone); err != nil {
+					lg.Errorf("Failed to start audio recording: %v", err)
+				} else {
+					client.PTTRecording = true
+					lg.Infof("Push-to-talk: Started recording")
+					fmt.Printf("Push-to-talk: Started recording\n")
+				}
+			}
+		} else if client.RadioIsActive() {
+			// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
+		}
+
+		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
+		if client.PTTRecording && !imgui.IsKeyDown(PTTKey) {
+			if p.IsAudioRecording() {
+				data, err := p.StopAudioRecording()
+				client.PTTRecording = false
+				if err != nil {
+					lg.Errorf("Failed to stop audio recording: %v", err)
+				} else {
+					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+					fmt.Printf("Push-to-talk: Stopped recording, transcribing...\n")
+					go func(samples []int16) {
+						// Make approach map
+						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
+						for _, apt := range client.State.Airports {
+							for code, appr := range apt.Approaches {
+								approaches = append(approaches, [2]string{appr.FullName, code})
+							}
+						}
+						audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
+						text, err := VoiceToCommand(audio, approaches, lg)
+						if err != nil {
+							lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
+							return
+						}
+						fields := strings.Fields(text)
+
+						trimFunc := func(s string) string {
+							for i, char := range s {
+								if unicode.IsDigit(char) {
+									return s[i:]
+								}
+							}
+							return ""
+						}
+						if len(fields) > 0 {
+							callsign := fields[0]
+							// Check if callsign matches, if not check if the numbers match
+							_, ok := client.State.GetTrackByCallsign(av.ADSBCallsign(callsign))
+							if !ok {
+								// trim until first number
+								callsign = trimFunc(callsign)
+								matching := stars.TracksFromACIDSuffix(client, callsign)
+								if len(matching) == 1 {
+									callsign = string(matching[0].ADSBCallsign)
+								}
+							}
+							if len(fields) > 1 {
+								cmd := strings.Join(fields[1:], " ")
+								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd,
+									nil)
+								lg.Infof("Command: %v Callsign: %v", cmd, callsign)
+								fmt.Printf("Command: %v Callsign: %v\n", cmd, callsign)
+							}
+							client.LastTranscription = text
+							client.PTTRecording = false
+							lg.Infof("Push-to-talk: Transcription: %s\n", text)
+							fmt.Printf("Push-to-talk: Transcription: %s\n", text)
+
+						}
+
+					}(data)
+				}
+			} else if !p.IsAudioRecording() {
+				// Platform already not recording; reset our flag
+				client.PTTRecording = false
+				return
+			}
+		}
+	}
+	return
 }

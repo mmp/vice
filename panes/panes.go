@@ -17,6 +17,8 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower
@@ -94,6 +96,11 @@ type Context struct {
 
 	// Full display size, including the menu and status bar.
 	displaySize [2]float32
+
+	UserPTTKey imgui.Key
+	PTTCapture bool // where else could I put this?
+	SelectedMicrophone string
+	LastTranscription string
 }
 
 func (ctx *Context) InitializeMouse(p platform.Platform) {

@@ -12,9 +12,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -27,7 +27,6 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/davecgh/go-spew/spew"
-	"github.com/mmp/vice/stt"
 )
 
 // Cache the routes we show when paused but periodically fetch them
@@ -217,86 +216,6 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 	sp.previewAreaInput += strings.ReplaceAll(input, "`", STARSTriangleCharacter)
 
 	ps := sp.currentPrefs()
-
-	// Push-to-talk handling (minimal, non-invasive)
-	if ps.PushToTalkKey != imgui.KeyNone {
-		// Start on initial press (ignore repeats by checking our own flag)
-		if imgui.IsKeyDown(ps.PushToTalkKey) && !ctx.Client.RadioIsActive() {
-			if !sp.pushToTalkRecording && !ctx.Platform.IsAudioRecording() {
-				if err := ctx.Platform.StartAudioRecordingWithDevice(ps.SelectedMicrophone); err != nil {
-					ctx.Lg.Errorf("Failed to start audio recording: %v", err)
-				} else {
-					sp.pushToTalkRecording = true
-					ctx.Lg.Infof("Push-to-talk: Started recording")
-				}
-			}
-		} else if ctx.Client.RadioIsActive() {
-			// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
-		}
-
-		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
-		if sp.pushToTalkRecording && !imgui.IsKeyDown(ps.PushToTalkKey) {
-			if ctx.Platform.IsAudioRecording() {
-				data, err := ctx.Platform.StopAudioRecording()
-				sp.pushToTalkRecording = false
-				if err != nil {
-					ctx.Lg.Errorf("Failed to stop audio recording: %v", err)
-				} else {
-					ctx.Lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-					go func(samples []int16) {
-						// Make approach map
-						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
-						for _, apt := range ctx.Client.State.Airports {
-							for code, appr := range apt.Approaches {
-								approaches = append(approaches, [2]string{appr.FullName, code})
-							}
-						}
-						audio := &stt.AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := stt.VoiceToCommand(audio, approaches, ctx.Lg)
-						if err != nil {
-							ctx.Lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
-							return
-						}
-						fields := strings.Fields(text)
-
-						trimFunc := func(s string) string {
-							for i, char := range s {
-								if unicode.IsDigit(char) {
-									return s[i:]
-								}
-							}
-							return ""
-						}
-						if len(fields) > 0 {
-							callsign := fields[0]
-							// Check if callsign matches, if not check if the numbers match
-							_, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(callsign))
-							if !ok {
-								// trim until first number
-								callsign = trimFunc(callsign)
-								matching := sp.tracksFromACIDSuffix(ctx, callsign)
-								if len(matching) == 1 {
-									callsign = string(matching[0].ADSBCallsign)
-								}
-							}
-							if len(fields) > 1 {
-								cmd := strings.Join(fields[1:], " ")
-								sp.runAircraftCommands(ctx, av.ADSBCallsign(callsign), cmd)
-								ctx.Lg.Infof("Command: %v Callsign: %v", cmd, callsign)
-							}
-							sp.lastTranscription = text
-							ctx.Lg.Infof("Push-to-talk: Transcription: %s\n", text)
-
-						}
-
-					}(data)
-				}
-			} else if !ctx.Platform.IsAudioRecording() {
-				// Platform already not recording; reset our flag
-				sp.pushToTalkRecording = false
-			}
-		}
-	}
 
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
@@ -2555,7 +2474,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmds = cmd
 		}
 
-		matching := sp.tracksFromACIDSuffix(ctx, suffix)
+		matching := TracksFromACIDSuffix(ctx.Client, suffix)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return
@@ -4780,7 +4699,7 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if (mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) || sp.pushToTalkKeyCapture {
+	if (mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) || ctx.Client.PTTRecording {
 		ctx.Client.HoldRadioTransmissions()
 	} else {
 		ctx.Client.AllowRadioTransmissions()
@@ -5067,7 +4986,7 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 // Returns all aircraft that match the given suffix. If instructor is true,
 // returns all matching aircraft; otherwise only ones under the current
 // controller's control are considered for matching.
-func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string) []*sim.Track {
+func TracksFromACIDSuffix(client *client.ControlClient, suffix string) []*sim.Track {
 	match := func(trk *sim.Track) bool {
 		if trk.IsUnassociated() {
 			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
@@ -5077,17 +4996,17 @@ func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string) []*
 				return false
 			}
 
-			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			if fp.ControllingController == client.State.UserTCP || client.State.AreInstructorOrRPO(client.State.UserTCP) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
+			if client.State.ResolveController(trk.FlightPlan.TrackingController) == client.State.UserTCP &&
 				trk.FlightPlan.ControllingController == "" {
 				return true
 			}
 			return false
 		}
 	}
-	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
+	return slices.Collect(util.FilterSeq(maps.Values(client.State.Tracks), match))
 }

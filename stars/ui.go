@@ -55,72 +55,6 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 			sp.playOnce(p, i)
 		}
 	}
-
-	imgui.Separator()
-	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
-		// Push-to-talk key
-		if ps.PushToTalkKey == imgui.KeyNone {
-			ps.PushToTalkKey = imgui.KeySemicolon
-		}
-		keyName := getKeyName(ps.PushToTalkKey)
-
-		imgui.Text("Push-to-Talk Key: ")
-		imgui.SameLine()
-		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
-
-		if sp.pushToTalkKeyCapture {
-			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
-			if kb := p.GetKeyboard(); kb != nil {
-				for key := range kb.Pressed {
-					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
-						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
-						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
-						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
-						fmt.Println("Set PTT to ", key)
-						ps.PushToTalkKey = key
-						sp.pushToTalkKeyCapture = false
-						break
-					}
-				}
-			}
-		} else {
-			imgui.SameLine()
-			if imgui.Button("Change Key") {
-				sp.pushToTalkKeyCapture = true
-			}
-			imgui.SameLine()
-			if imgui.Button("Clear") {
-				ps.PushToTalkKey = imgui.KeyNone
-			}
-		}
-
-		// Microphone selection
-		imgui.Text("Microphone:")
-		imgui.SameLine()
-		micName := ps.SelectedMicrophone
-		if micName == "" {
-			micName = "Default"
-		}
-		if imgui.BeginComboV("##microphone", micName, 0) {
-			if imgui.SelectableBoolV("Default", ps.SelectedMicrophone == "", 0, imgui.Vec2{}) {
-				ps.SelectedMicrophone = ""
-			}
-			mics := p.GetAudioInputDevices()
-			for _, mic := range mics {
-				if imgui.SelectableBoolV(mic, mic == ps.SelectedMicrophone, 0, imgui.Vec2{}) {
-					ps.SelectedMicrophone = mic
-				}
-			}
-			imgui.EndCombo()
-		}
-
-		if sp.pushToTalkRecording {
-			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
-		} else if sp.lastTranscription != "" {
-			imgui.Text("Last transcription:")
-			imgui.TextWrapped(sp.lastTranscription)
-		}
-	}
 }
 
 func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
@@ -491,6 +425,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 }
 
 func getKeyName(key imgui.Key) string {
+	
 	switch key {
 	case imgui.KeyA:
 		return "A"
