@@ -1448,7 +1448,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.SameLine()
 		micName := config.SelectedMicrophone
 		cleanMic := func(r rune) rune {
-			if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == ' '{
+			if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == ' ' {
 				return r
 			}
 			return -1
@@ -1471,7 +1471,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.EndCombo()
 		}
 
-			if c.PTTRecording {
+		if c.PTTRecording {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
 		} else {
 			if c.LastTranscription != "" {

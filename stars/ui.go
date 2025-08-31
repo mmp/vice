@@ -423,4 +423,3 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		}
 	}
 }
-

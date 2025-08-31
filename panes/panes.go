@@ -97,10 +97,10 @@ type Context struct {
 	// Full display size, including the menu and status bar.
 	displaySize [2]float32
 
-	UserPTTKey imgui.Key
-	PTTCapture bool // where else could I put this?
+	UserPTTKey         imgui.Key
+	PTTCapture         bool // where else could I put this?
 	SelectedMicrophone string
-	LastTranscription string
+	LastTranscription  string
 }
 
 func (ctx *Context) InitializeMouse(p platform.Platform) {

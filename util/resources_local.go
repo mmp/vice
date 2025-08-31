@@ -17,13 +17,13 @@ import (
 func initResourcesFS() *fs.StatFS {
 	dir := GetResourcesFolderPath()
 	fsys, ok := os.DirFS(dir).(fs.StatFS)
-		if !ok {
-			panic("FS from DirFS is not a StatFS?")
-		}
+	if !ok {
+		panic("FS from DirFS is not a StatFS?")
+	}
 
-		_, errv := fsys.Stat("videomaps")
-		_, errs := fsys.Stat("scenarios")
-		if errv == nil && errs == nil { // got it
+	_, errv := fsys.Stat("videomaps")
+	_, errs := fsys.Stat("scenarios")
+	if errv == nil && errs == nil { // got it
 		return &fsys
 	}
 	panic("erros not nil: " + errv.Error() + " " + errs.Error())
