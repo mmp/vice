@@ -74,10 +74,8 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 		apprStr += fmt.Sprintf("\"%s\": \"%s\", ", pronounce, approach[1])
 	}
 	apprStr = strings.TrimSuffix(apprStr, ", ")
-	fmt.Println(apprStr)
 
 	userContent := fmt.Sprintf("AllowedApproaches: %s\nTranscript: \"%s\"", apprStr, transcript)
-	fmt.Println("User content: ", userContent)
 	userMsg := OpenAIMessage{
 		Role:    "user",
 		Content: userContent,
@@ -127,16 +125,15 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 	return "", fmt.Errorf("no output found: %s", string(body))
 }
 
-func VoiceToCommand(audio *AudioData, approaches [][2]string, lg *log.Logger) (string, error) {
+func VoiceToCommand(audio *AudioData, approaches [][2]string, lastTranscription *string, lg *log.Logger) (string, error) {
 	text, err := Transcribe(audio)
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("Transcription: ", text)
+	*lastTranscription = text
 	model := os.Getenv("OPENAI_MODEL")
 	command, err := callModel(model, approaches, text)
 	lg.Infof("Command: %s", command)
-	fmt.Printf("Command: %s\n", command)
 	if err != nil {
 		return "", err
 	}
@@ -153,7 +150,6 @@ func Transcribe(audio *AudioData) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("Transcription (no formatting): ", text)
 	return formatToModel(text), nil
 }
 
@@ -197,7 +193,6 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 				} else {
 					client.PTTRecording = true
 					lg.Infof("Push-to-talk: Started recording")
-					fmt.Printf("Push-to-talk: Started recording\n")
 				}
 			}
 		} else if client.RadioIsActive() {
@@ -213,7 +208,6 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 					lg.Errorf("Failed to stop audio recording: %v", err)
 				} else {
 					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-					fmt.Printf("Push-to-talk: Stopped recording, transcribing...\n")
 					go func(samples []int16) {
 						// Make approach map
 						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
@@ -223,7 +217,7 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 							}
 						}
 						audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := VoiceToCommand(audio, approaches, lg)
+						text, err := VoiceToCommand(audio, approaches, &client.LastTranscription, lg)
 						if err != nil {
 							lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
 							return
@@ -250,17 +244,15 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 									callsign = string(matching[0].ADSBCallsign)
 								}
 							}
-							if len(fields) > 1 {
+							if len(fields) > 1 && callsign != "" {
 								cmd := strings.Join(fields[1:], " ")
 								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd,
 									nil)
 								lg.Infof("Command: %v Callsign: %v", cmd, callsign)
-								fmt.Printf("Command: %v Callsign: %v\n", cmd, callsign)
+								client.LastCommand = callsign + " " + cmd
 							}
-							client.LastTranscription = text
 							client.PTTRecording = false
 							lg.Infof("Push-to-talk: Transcription: %s\n", text)
-							fmt.Printf("Push-to-talk: Transcription: %s\n", text)
 
 						}
 

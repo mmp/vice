@@ -42,6 +42,7 @@ type ControlClient struct {
 	PTTRecording              bool
 	PTTCapture               bool
 	LastTranscription         string
+	LastCommand               string
 
 	lg *log.Logger
 	mu sync.Mutex
