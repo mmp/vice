@@ -93,6 +93,7 @@ type activeSim struct {
 	scenario      string
 	sim           *sim.Sim
 	password      string
+	mu            util.LoggingMutex
 
 	controllersByTCP map[string]*humanController
 }
@@ -150,6 +151,26 @@ func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech b
 	as.controllersByTCP[tcp] = hc
 
 	return hc
+}
+
+func (as *activeSim) HandleSpeechWSConnection(tcp string, w http.ResponseWriter, r *http.Request, lg *log.Logger) {
+	as.mu.Lock(lg)
+	defer as.mu.Unlock(lg)
+
+	if ctrl, ok := as.controllersByTCP[tcp]; !ok {
+		lg.Errorf("%s: unknown TCP", tcp)
+	} else {
+		if ctrl.speechWs != nil {
+			ctrl.speechWs.Close()
+		}
+
+		var err error
+		upgrader := websocket.Upgrader{EnableCompression: false}
+		ctrl.speechWs, err = upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			lg.Errorf("Unable to upgrade speech websocket: %v", err)
+		}
+	}
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
@@ -560,31 +581,27 @@ func (sm *SimManager) signOff(token string) error {
 	}
 }
 
-func (sm *SimManager) handleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
+func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
 	authHeader := r.Header.Get("Authorization")
 	if !strings.HasPrefix(authHeader, "Bearer ") {
 		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
 		return
 	}
-
 	token := strings.TrimPrefix(authHeader, "Bearer ")
+
+	sm.mu.Lock(sm.lg)
+
 	ctrl, ok := sm.controllersByToken[token]
 	if !ok {
+		sm.mu.Unlock(sm.lg)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
 		return
 	}
-	if ctrl.speechWs != nil {
-		ctrl.speechWs.Close()
-	}
+	tcp, asim := ctrl.tcp, ctrl.asim
+	sm.mu.Unlock(sm.lg)
 
-	var err error
-	upgrader := websocket.Upgrader{EnableCompression: false}
-	ctrl.speechWs, err = upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		sm.lg.Errorf("Unable to upgrade speech websocket: %v", err)
-		return
-	}
+	asim.HandleSpeechWSConnection(tcp, w, r, sm.lg)
 }
 
 func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
@@ -823,7 +840,7 @@ func (sm *SimManager) launchHTTPServer() int {
 		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
 
-	mux.HandleFunc("/speech", sm.handleSpeechWSConnection)
+	mux.HandleFunc("/speech", sm.HandleSpeechWSConnection)
 
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
