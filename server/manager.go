@@ -550,10 +550,10 @@ func (sm *SimManager) signOff(token string) error {
 	if ctrl, s, ok := sm.lookupController(token); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		err := s.SignOff(ctrl.tcp)
+		err := s.SignOff(ctrl)
 
 		// Do this cleanup regardless of an error return from SignOff
-		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
+		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl)
 		delete(sm.controllersByToken, token)
 
 		return err
@@ -609,18 +609,18 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 	return nil
 }
 
-func (sm *SimManager) LookupController(token string) (*humanController, *sim.Sim, bool) {
+func (sm *SimManager) LookupController(token string) (string, *sim.Sim, bool) {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	return sm.lookupController(token)
 }
 
-func (sm *SimManager) lookupController(token string) (*humanController, *sim.Sim, bool) {
+func (sm *SimManager) lookupController(token string) (string, *sim.Sim, bool) {
 	if ctrl, ok := sm.controllersByToken[token]; ok {
-		return ctrl, ctrl.asim.sim, true
+		return ctrl.tcp, ctrl.asim.sim, true
 	}
-	return nil, nil, false
+	return "", nil, false
 }
 
 const simIdleLimit = 4 * time.Hour
