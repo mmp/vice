@@ -17,6 +17,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"text/template"
 	"time"
 
@@ -51,7 +52,7 @@ type SimManager struct {
 	mapManifests       map[string]*sim.VideoMapManifest
 	startTime          time.Time
 	httpPort           int
-	websocketTXBytes   int64
+	websocketTXBytes   atomic.Int64
 	tts                sim.TTSProvider
 	ttsUsageByIP       map[string]*ttsUsageStats
 	local              bool
@@ -171,6 +172,40 @@ func (as *activeSim) HandleSpeechWSConnection(tcp string, w http.ResponseWriter,
 			lg.Errorf("Unable to upgrade speech websocket: %v", err)
 		}
 	}
+}
+
+func (as *activeSim) SendSpeechMP3s(lg *log.Logger) int64 {
+	as.mu.Lock(lg)
+	defer as.mu.Unlock(lg)
+
+	var nb int
+	for tcp, ctrl := range as.controllersByTCP {
+		if ctrl.speechWs == nil {
+			continue
+		}
+
+		for _, ps := range as.sim.GetControllerSpeech(tcp) {
+			nb += len(ps.MP3)
+
+			w, err := ctrl.speechWs.NextWriter(websocket.BinaryMessage)
+			if err != nil {
+				lg.Errorf("speechWs: %v", err)
+				continue
+			}
+
+			if err := msgpack.NewEncoder(w).Encode(ps); err != nil {
+				lg.Errorf("speechWs encode: %v", err)
+				continue
+			}
+
+			if err := w.Close(); err != nil {
+				lg.Errorf("speechWs close: %v", err)
+				continue
+			}
+		}
+	}
+
+	return int64(nb)
 }
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
@@ -461,31 +496,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 
 			as.sim.Update()
 
-			for tcp, ctrl := range as.controllersByTCP {
-				if ctrl.speechWs == nil {
-					continue
-				}
-
-				for _, ps := range as.sim.GetControllerSpeech(tcp) {
-					sm.websocketTXBytes += int64(len(ps.MP3))
-
-					w, err := ctrl.speechWs.NextWriter(websocket.BinaryMessage)
-					if err != nil {
-						sm.lg.Errorf("speechWs: %v", err)
-						continue
-					}
-
-					if err := msgpack.NewEncoder(w).Encode(ps); err != nil {
-						sm.lg.Errorf("speechWs encode: %v", err)
-						continue
-					}
-
-					if err := w.Close(); err != nil {
-						sm.lg.Errorf("speechWs close: %v", err)
-						continue
-					}
-				}
-			}
+			sm.websocketTXBytes.Add(as.SendSpeechMP3s(sm.lg))
 
 			time.Sleep(100 * time.Millisecond)
 		}
@@ -1054,7 +1065,7 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 		NumGC:            m.NumGC,
 		NumGoRoutines:    runtime.NumGoroutine(),
 		CPUUsage:         int(gomath.Round(usage[0])),
-		TXWebsocket:      sm.websocketTXBytes,
+		TXWebsocket:      sm.websocketTXBytes.Load(),
 
 		SimStatus: sm.GetSimStatus(),
 		TTSStats:  sm.GetTTSStats(),
