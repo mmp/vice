@@ -1,42 +1,112 @@
+// wx/sample.go
+// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 package wx
 
 import (
+	"bytes"
 	"fmt"
 	"maps"
 	"slices"
+	"strconv"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 )
 
 type Sample struct {
-	MB          float32
 	UComponent  float32 // eastward
 	VComponent  float32 // northward
-	Temperature float32 // Kelvin, evidently
-	Height      float32 // geopotential height
+	Temperature float32 // Kelvin
+	Height      float32 // geopotential height (meters)
 }
 
-// Lat-longs to stack of levels
-type SampleSet map[[2]float32][]Sample
+// This is fairly specialized to our needs we ingest from: at each
+// lat-long, we store a vertical stack of 40 levels with samples from the
+// source HRRR files (wind direction, speed, temperature, height). The
+// vertical indexing of is low to high where LevelIndexFromId and
+// IdFromLevelIndex perform the indexing and its inverse.
+const NumSampleLevels = 40
 
-type SampleSetSOA struct {
+type SampleField struct {
+	// Lat-longs to stack of levels
+	SampleStacks map[math.Point2LL]*SampleStack
+}
+
+type SampleStack struct {
+	Levels [NumSampleLevels]Sample
+}
+
+// For storage, this information is encoded in structure-of-arrays format,
+// which makes it more compressible.
+type SampleFieldSOA struct {
 	Lat, Long []float32
-	Levels    []MBLevelSOA
+	Levels    [NumSampleLevels]LevelsSOA
 }
 
-const WindHeightOffset = 500
+const windHeightOffset = 500
 
-type MBLevelSOA struct {
-	MB float32
+type LevelsSOA struct {
 	// All of the following are delta encoded
 	Heading     []uint8 // degrees/2
 	Speed       []uint8 // knots
 	Temperature []int8  // Temperature in Celsius
-	Height      []uint8 // geopotential height + WindHeightOffset in 100s of feet
+	Height      []uint8 // geopotential height (MSL) + windHeightOffset in meters
 }
 
-func UVToDirSpeed(u, v float32) (float32, float32) {
+func MakeSampleField() SampleField {
+	return SampleField{SampleStacks: make(map[math.Point2LL]*SampleStack)}
+}
+
+func LevelIndexFromId(b []byte) int {
+	// Very simple/limited atoi for just what we need
+	atoi := func(b []byte) int {
+		i := 0
+		for _, d := range b {
+			if d == ' ' {
+				break
+			}
+			i *= 10
+			i += int(d - '0')
+		}
+		return i
+	}
+
+	if !bytes.HasSuffix(b, []byte(" mb")) {
+		return -1 // don't care
+	} else if bytes.HasPrefix(b, []byte("1013")) { // 1013.2
+		return 0
+	} else if mb := atoi(b); mb >= 50 && mb <= 1000 {
+		// We should be seeing values ranging from 50-1000 in steps of 25
+		if (mb-50)%25 != 0 {
+			panic("unexpected mb: " + string(b))
+		}
+		// First map 50 -> 0, 75 -> 1, ...
+		i := (mb - 50) / 25
+		// Reverse: 0 -> 38, 1 -> 37, ...
+		i = 38 - i
+		// Offset to account for 1013.2 at the start
+		return 1 + i
+	} else {
+		panic("unexpected mb " + string(b))
+	}
+}
+
+func IdFromLevelIndex(i int) string {
+	switch {
+	case i == 0:
+		return "1013.2 mb"
+	case i >= 1 && i < NumSampleLevels:
+		i -= 1
+		i = 38 - i
+		return fmt.Sprintf("%d mb", 50+25*i)
+	default:
+		panic("unexpected level index " + strconv.Itoa(i))
+	}
+}
+
+func uvToDirSpeed(u, v float32) (float32, float32) {
 	dir := 270 - math.Degrees(math.Atan2(v, u))
 	dir = math.NormalizeHeading(dir)
 
@@ -45,17 +115,17 @@ func UVToDirSpeed(u, v float32) (float32, float32) {
 	return float32(dir), float32(spd)
 }
 
-func DirSpeedToUV(dir, speed float32) (float32, float32) {
+func dirSpeedToUV(dir, speed float32) (float32, float32) {
 	s := speed * 0.51444 // knots -> m/s
 	d := math.Radians(dir)
 	return -s * float32(math.Sin(d)), -s * float32(math.Cos(d))
 }
 
-func SampleSetToSOA(c SampleSet) (SampleSetSOA, error) {
-	soa := SampleSetSOA{}
+func (sf SampleField) ToSOA() (SampleFieldSOA, error) {
+	soa := SampleFieldSOA{}
 
-	keys := slices.Collect(maps.Keys(c))
-	slices.SortFunc(keys, func(a, b [2]float32) int {
+	pts := slices.Collect(maps.Keys(sf.SampleStacks))
+	slices.SortFunc(pts, func(a, b math.Point2LL) int {
 		if a[0] < b[0] {
 			return -1
 		} else if a[0] > b[0] {
@@ -68,31 +138,17 @@ func SampleSetToSOA(c SampleSet) (SampleSetSOA, error) {
 		return 0
 	})
 
-	for _, k := range keys {
-		// TODO: check ordering of latlong
-		soa.Long = append(soa.Long, k[0])
-		soa.Lat = append(soa.Lat, k[1])
+	for _, pt := range pts {
+		soa.Long = append(soa.Long, pt[0])
+		soa.Lat = append(soa.Lat, pt[1])
 
-		levels := c[k]
-		if len(soa.Levels) == 0 {
-			soa.Levels = make([]MBLevelSOA, len(levels))
-		} else if len(levels) != len(soa.Levels) {
-			return SampleSetSOA{}, fmt.Errorf("non-uniform number of levels in different entries")
-		}
-
-		for i, level := range levels {
-			if soa.Levels[i].MB == 0 {
-				soa.Levels[i].MB = level.MB
-			} else if soa.Levels[i].MB != level.MB {
-				return SampleSetSOA{}, fmt.Errorf("different MB layout in different cells")
-			}
-
-			hdg, spd := UVToDirSpeed(level.UComponent, level.VComponent)
+		for i, level := range sf.SampleStacks[pt].Levels {
+			hdg, spd := uvToDirSpeed(level.UComponent, level.VComponent)
 			if hdg < 0 || hdg > 360 {
-				return SampleSetSOA{}, fmt.Errorf("bad heading: %f not in 0-360", hdg)
+				return SampleFieldSOA{}, fmt.Errorf("bad heading: %f not in 0-360", hdg)
 			}
 			if spd < 0 || spd > 255 {
-				return SampleSetSOA{}, fmt.Errorf("bad speed: %f not in 0-255", spd)
+				return SampleFieldSOA{}, fmt.Errorf("bad speed: %f not in 0-255", spd)
 			}
 			soa.Levels[i].Heading = append(soa.Levels[i].Heading, uint8(math.Round(hdg+1)/2))
 			soa.Levels[i].Speed = append(soa.Levels[i].Speed, uint8(math.Round(spd)))
@@ -100,14 +156,14 @@ func SampleSetToSOA(c SampleSet) (SampleSetSOA, error) {
 			tc := level.Temperature - 273.15 // K -> C
 			tq := int(math.Round(tc))
 			if tq < -128 || tq > 127 {
-				return SampleSetSOA{}, fmt.Errorf("bad temperature: %d not in -128-127", tq)
+				return SampleFieldSOA{}, fmt.Errorf("bad temperature: %d not in -128-127", tq)
 			}
 			soa.Levels[i].Temperature = append(soa.Levels[i].Temperature, int8(tq))
 
-			h := level.Height + WindHeightOffset // deal with slightly below sea level
-			h = (h + 50) / 100                   // 100s of feet
+			h := level.Height + windHeightOffset // deal with slightly below sea level
+			h = (h + 50) / 100                   // 100s of meters
 			if h < 0 || h > 255 {
-				return SampleSetSOA{}, fmt.Errorf("bad remapped height: %f not in 0-255", h)
+				return SampleFieldSOA{}, fmt.Errorf("bad remapped height: %f not in 0-255", h)
 			}
 			soa.Levels[i].Height = append(soa.Levels[i].Height, uint8(h))
 		}
@@ -123,56 +179,50 @@ func SampleSetToSOA(c SampleSet) (SampleSetSOA, error) {
 	return soa, nil
 }
 
-func SampleSetSOAToAOS(s SampleSetSOA) SampleSet {
-	w := make(map[[2]float32][]Sample)
+func (sfsoa SampleFieldSOA) ToAOS() SampleField {
+	sf := MakeSampleField()
 
-	levels := make([]MBLevelSOA, len(s.Levels))
-	for i := range s.Levels {
-		levels[i].MB = s.Levels[i].MB
-		levels[i].Heading = util.DeltaDecode(s.Levels[i].Heading)
-		levels[i].Speed = util.DeltaDecode(s.Levels[i].Speed)
-		levels[i].Temperature = util.DeltaDecode(s.Levels[i].Temperature)
-		levels[i].Height = util.DeltaDecode(s.Levels[i].Height)
+	var levels [NumSampleLevels]LevelsSOA
+	for i := range sfsoa.Levels {
+		levels[i].Heading = util.DeltaDecode(sfsoa.Levels[i].Heading)
+		levels[i].Speed = util.DeltaDecode(sfsoa.Levels[i].Speed)
+		levels[i].Temperature = util.DeltaDecode(sfsoa.Levels[i].Temperature)
+		levels[i].Height = util.DeltaDecode(sfsoa.Levels[i].Height)
 	}
 
-	for i := range s.Lat {
-		samplevels := make([]Sample, len(levels))
+	for i := range sfsoa.Lat {
+		var stack SampleStack
 		for j, level := range levels {
-			wl := Sample{
-				MB:          level.MB,
+			s := Sample{
 				Temperature: float32(level.Temperature[i]) + 273.15, // C -> K
-				Height:      float32(level.Height[i])*100 - WindHeightOffset,
+				Height:      float32(level.Height[i])*100 - windHeightOffset,
 			}
-			wl.UComponent, wl.VComponent = DirSpeedToUV(float32(level.Heading[i])*2, float32(level.Speed[i]))
+			s.UComponent, s.VComponent = dirSpeedToUV(float32(level.Heading[i])*2, float32(level.Speed[i]))
 
-			samplevels[j] = wl
+			stack.Levels[j] = s
 		}
 
-		w[[2]float32{s.Long[i], s.Lat[i]}] = samplevels
+		sf.SampleStacks[math.Point2LL{sfsoa.Long[i], sfsoa.Lat[i]}] = &stack
 	}
 
-	return w
+	return sf
 }
 
-func CheckSampleSetConversion(cell SampleSet, soa SampleSetSOA) error {
-	ckcell := SampleSetSOAToAOS(soa)
-	if len(ckcell) != len(cell) {
-		return fmt.Errorf("mismatch in number of entries %d - %d", len(cell), len(ckcell))
+func CheckSampleFieldConversion(sf SampleField, soa SampleFieldSOA) error {
+	cksf := soa.ToAOS()
+	if len(cksf.SampleStacks) != len(sf.SampleStacks) {
+		return fmt.Errorf("mismatch in number of entries %d - %d", len(sf.SampleStacks), len(cksf.SampleStacks))
 	}
-	for p, levels := range cell {
-		cklevels, ok := ckcell[p]
+	for p, stack := range sf.SampleStacks {
+		ckstack, ok := cksf.SampleStacks[p]
 		if !ok {
-			return fmt.Errorf("missing point in map %v", p)
+			return fmt.Errorf("missing point in SampleStacks map %v", p)
 		}
-		for i := range levels {
-			sl, ckl := levels[i], cklevels[i]
+		for i := range stack.Levels {
+			sl, ckl := stack.Levels[i], ckstack.Levels[i]
 
-			if sl.MB != ckl.MB {
-				return fmt.Errorf("MB mismatch round trip %f - %f", sl.MB, ckl.MB)
-			}
-
-			d, s := UVToDirSpeed(sl.UComponent, sl.VComponent)
-			cd, cs := UVToDirSpeed(ckl.UComponent, ckl.VComponent)
+			d, s := uvToDirSpeed(sl.UComponent, sl.VComponent)
+			cd, cs := uvToDirSpeed(ckl.UComponent, ckl.VComponent)
 			if s >= 1 { // don't worry about direction for idle winds
 				if math.HeadingDifference(d, cd) > 2 {
 					fmt.Printf("SL: %+v\n", sl)

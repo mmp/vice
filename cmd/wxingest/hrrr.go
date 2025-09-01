@@ -176,7 +176,7 @@ func listIngestedHRRR(sb StorageBackend) map[time.Time][]string {
 		ingested[tm] = append(ingested[tm], tracon)
 	}
 
-	LogInfo("Found %d ingested HRRR TRACON objects", len(ingested))
+	LogInfo("Found %d ingested HRRR TRACON objects for %d times", len(hrrrPaths), len(ingested))
 
 	return ingested
 }
@@ -249,13 +249,12 @@ func ingestHRRRForTracon(gribPath string, tracon string, tfr *util.TempFileRegis
 		return 0, err
 	}
 
-	// FIXME: figure out naming here: wx.SampleSet vs HRRR etc.
-	cell, err := windCellFromCSV(tracon, f)
+	sf, err := sampleFieldFromCSV(tracon, f)
 	if err != nil {
 		return 0, err
 	}
 
-	return uploadWeatherSampleSet(cell, tracon, t, sb)
+	return uploadWeatherSampleField(sf, tracon, t, sb)
 }
 
 func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) (*os.File, error) {
@@ -302,7 +301,7 @@ func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) 
 	return cf, nil
 }
 
-func windCellFromCSV(tracon string, f *os.File) (wx.SampleSet, error) {
+func sampleFieldFromCSV(tracon string, f *os.File) (*wx.SampleField, error) {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	// Read chunks of the file asynchronously and with double-buffering so
@@ -317,7 +316,7 @@ func windCellFromCSV(tracon string, f *os.File) (wx.SampleSet, error) {
 	readBufCh := make(chan []byte, 1)
 	eg.Go(func() error { return readCSV(ctx, f, freeBufCh, readBufCh) })
 
-	cell, err := parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
+	sf, err := parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
 	if err != nil {
 		return nil, err
 	}
@@ -326,7 +325,7 @@ func windCellFromCSV(tracon string, f *os.File) (wx.SampleSet, error) {
 		return nil, err
 	}
 
-	return cell, nil
+	return sf, nil
 }
 
 func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh chan<- []byte) error {
@@ -405,7 +404,7 @@ func atof(s []byte) float32 {
 			}
 			return float32(v)
 		default:
-			panic("bad string passed to atoi: " + string(s))
+			panic("bad string passed to atof: " + string(s))
 		}
 	}
 	vf := float64(digits)
@@ -428,11 +427,12 @@ const (
 )
 
 type LineItem struct {
-	Lat, Long, MB, Value float32
-	Type                 int
+	Lat, Long, Value float32
+	Type             int
+	Level            int
 }
 
-func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (wx.SampleSet, error) {
+func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.SampleField, error) {
 	bp := 0 // buf pos
 	var buf []byte
 
@@ -466,18 +466,17 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return append(accum, getline()...)
 	}
 
-	var arena []wx.Sample
-	allocLevels := func() []wx.Sample {
-		const nlevels = 40
+	var arena []wx.SampleStack
+	allocStack := func() *wx.SampleStack {
 		if len(arena) == 0 {
-			arena = make([]wx.Sample, 1024*nlevels)
+			arena = make([]wx.SampleStack, 1024)
 		}
-		s := arena[:nlevels]
-		arena = arena[nlevels:]
+		s := &arena[0]
+		arena = arena[1:]
 		return s
 	}
 
-	cell := wx.SampleSet(make(map[[2]float32][]wx.Sample))
+	sf := wx.MakeSampleField()
 
 	tspec, ok := av.DB.TRACONs[tracon]
 	if !ok {
@@ -495,7 +494,7 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 			LogInfo("%s: processed %d lines of HRRR CSV (%.2f M / sec, %.2f MB/s)", filename, n,
 				float64(n)/elapsed/(1024*1024), float64(nbytes)/elapsed/(1024*1024))
 
-			return cell, nil
+			return &sf, nil
 		}
 		if n%1000000 == 0 {
 			select {
@@ -511,49 +510,27 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		if item, err := parseHRRRLine(line); err != nil {
 			return nil, err
 		} else if item.Type != LineItemUnsetType {
-			if d := math.NMDistance2LLFast(center, math.Point2LL{item.Long, item.Lat}, nmPerLongitude); d > radius {
+			pt := math.Point2LL{item.Long, item.Lat}
+			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d > radius {
 				// Skip this point
 				continue
 			}
 
-			levels, ok := cell[[2]float32{item.Lat, item.Long}]
+			stack, ok := sf.SampleStacks[pt]
 			if !ok {
-				levels = allocLevels()
-				cell[[2]float32{item.Lat, item.Long}] = levels
-			}
-
-			idx, err := func(mb float32) (int, error) {
-				// It ranges from 50-1000 in steps of 25
-				if mb >= 50 && mb <= 1000 {
-					if (int(mb)-50)%25 != 0 {
-						return 0, fmt.Errorf("unexpected mb: %.8f", mb)
-					}
-					return (int(mb) - 50) / 25, nil
-				} else if mb == 1013.2 {
-					return 39, nil // Then the last one is at 1013.2
-				} else {
-					return 0, fmt.Errorf("unexpected mb: %.8f", mb)
-				}
-			}(item.MB)
-			if err != nil {
-				return wx.SampleSet{}, err
-			}
-			level := &levels[idx]
-			if level.MB == 0 {
-				level.MB = item.MB
-			} else if level.MB != item.MB {
-				return wx.SampleSet{}, fmt.Errorf("level %.8g vs current %.8g idx %d", level.MB, item.MB, idx)
+				stack = allocStack()
+				sf.SampleStacks[pt] = stack
 			}
 
 			switch item.Type {
 			case LineItemUDirection:
-				level.UComponent = item.Value
+				stack.Levels[item.Level].UComponent = item.Value
 			case LineItemVDirection:
-				level.VComponent = item.Value
+				stack.Levels[item.Level].VComponent = item.Value
 			case LineItemTemperature:
-				level.Temperature = item.Value
+				stack.Levels[item.Level].Temperature = item.Value
 			case LineItemHeight:
-				level.Height = item.Value
+				stack.Levels[item.Level].Height = item.Value
 			}
 		}
 	}
@@ -580,11 +557,12 @@ func parseHRRRLine(line []byte) (LineItem, error) {
 		return LineItem{}, fmt.Errorf("Didn't find 5 records in line %q. OUT OF SPACE?", string(line))
 	}
 
-	if !bytes.HasSuffix(record[1], []byte(" mb")) {
-		// skip "surface" records
+	level := wx.LevelIndexFromId(record[1])
+	if level == -1 {
+		// not a level we care about (cloud tops, etc.)
 		return LineItem{}, nil
 	}
-	r1 := record[1][:len(record[1])-3] // strings.TrimSuffix(record[1], " mb") {
+	li.Level = level
 
 	if bytes.Equal(record[0], []byte("UGRD")) {
 		li.Type = LineItemUDirection
@@ -598,18 +576,17 @@ func parseHRRRLine(line []byte) (LineItem, error) {
 
 	li.Lat = atof(record[3])
 	li.Long = atof(record[2])
-	li.MB = atof(r1)
 	li.Value = atof(record[4])
 
 	return li, nil
 }
 
-func uploadWeatherSampleSet(cell wx.SampleSet, tracon string, t time.Time, st StorageBackend) (int64, error) {
-	soa, err := wx.SampleSetToSOA(cell)
+func uploadWeatherSampleField(sf *wx.SampleField, tracon string, t time.Time, st StorageBackend) (int64, error) {
+	soa, err := sf.ToSOA()
 	if err != nil {
 		return 0, err
 	}
-	if err := wx.CheckSampleSetConversion(cell, soa); err != nil {
+	if err := wx.CheckSampleFieldConversion(*sf, soa); err != nil {
 		return 0, err
 	}
 
