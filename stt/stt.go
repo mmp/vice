@@ -185,12 +185,12 @@ func formatToModel(text string) string {
 }
 
 func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
-	PTTKey imgui.Key, SelectedMicrophone *string) {
+	PTTKey imgui.Key, SelectedMicrophone string) {
 	if PTTKey != imgui.KeyNone {
 		// Start on initial press (ignore repeats by checking our own flag)
 		if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
 			if !client.PTTRecording && !p.IsAudioRecording() {
-				if err := p.StartAudioRecordingWithDevice(*SelectedMicrophone); err != nil {
+				if err := p.StartAudioRecordingWithDevice(SelectedMicrophone); err != nil {
 					lg.Errorf("Failed to start audio recording: %v", err)
 				} else {
 					client.PTTRecording = true

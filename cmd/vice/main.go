@@ -384,7 +384,7 @@ func main() {
 			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
 				ui.menuBarHeight, lg)
 
-			stt.ProcessSTTKeyboardInput(plat, controlClient, lg, config.UserPTTKey, &config.SelectedMicrophone)
+			stt.ProcessSTTKeyboardInput(plat, controlClient, lg, config.UserPTTKey, config.SelectedMicrophone)
 
 			// Draw the user interface
 			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)
