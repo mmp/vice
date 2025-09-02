@@ -20,13 +20,7 @@ func initResourcesFS() *fs.StatFS {
 	if !ok {
 		panic("FS from DirFS is not a StatFS?")
 	}
-
-	_, errv := fsys.Stat("videomaps")
-	_, errs := fsys.Stat("scenarios")
-	if errv == nil && errs == nil { // got it
-		return &fsys
-	}
-	panic("erros not nil: " + errv.Error() + " " + errs.Error())
+	return &fsys
 }
 
 func GetResourcesFolderPath() string {
