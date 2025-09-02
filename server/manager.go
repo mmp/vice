@@ -44,19 +44,24 @@ type ttsUsageStats struct {
 }
 
 type SimManager struct {
-	scenarioGroups     map[string]map[string]*scenarioGroup
-	configs            map[string]map[string]*Configuration
-	activeSims         map[string]*activeSim
-	controllersByToken map[string]*humanController
-	mu                 util.LoggingMutex
-	mapManifests       map[string]*sim.VideoMapManifest
-	startTime          time.Time
-	httpPort           int
-	websocketTXBytes   atomic.Int64
-	tts                sim.TTSProvider
-	ttsUsageByIP       map[string]*ttsUsageStats
-	local              bool
-	lg                 *log.Logger
+	scenarioGroups   map[string]map[string]*scenarioGroup
+	configs          map[string]map[string]*Configuration
+	activeSims       map[string]*activeSim
+	sessionsByToken  map[string]*controllerSession
+	mu               util.LoggingMutex
+	mapManifests     map[string]*sim.VideoMapManifest
+	startTime        time.Time
+	httpPort         int
+	websocketTXBytes atomic.Int64
+	tts              sim.TTSProvider
+	ttsUsageByIP     map[string]*ttsUsageStats
+	local            bool
+	lg               *log.Logger
+}
+
+type controllerSession struct {
+	asim *activeSim
+	tcp  string
 }
 
 type Configuration struct {
@@ -65,9 +70,7 @@ type Configuration struct {
 	DefaultScenario  string
 }
 
-type humanController struct {
-	asim                *activeSim
-	tcp                 string
+type connectionState struct {
 	token               string
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
@@ -96,7 +99,7 @@ type activeSim struct {
 	password      string
 	mu            util.LoggingMutex
 
-	controllersByTCP map[string]*humanController
+	connectionsByTCP map[string]*connectionState
 }
 
 type NewSimConfiguration struct {
@@ -140,25 +143,78 @@ type RemoteSim struct {
 	CoveredPositions   map[string]av.Controller
 }
 
-func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech bool) *humanController {
-	hc := &humanController{
-		asim:                as,
-		tcp:                 tcp,
-		lastUpdateCall:      time.Now(),
+func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech bool, lg *log.Logger) {
+	as.mu.Lock(lg)
+	defer as.mu.Unlock(lg)
+
+	as.connectionsByTCP[tcp] = &connectionState{
 		token:               token,
+		lastUpdateCall:      time.Now(),
 		disableTextToSpeech: disableTextToSpeech,
 	}
+}
 
-	as.controllersByTCP[tcp] = hc
+func (as *activeSim) CullIdleControllers(sm *SimManager) {
+	as.mu.Lock(sm.lg)
 
-	return hc
+	// Sign off controllers we haven't heard from in 15 seconds so that
+	// someone else can take their place. We only make this check for
+	// multi-controller sims; we don't want to do this for local sims so
+	// that we don't kick people off e.g. when their computer sleeps.
+	var tokensToSignOff []string
+	for tcp, ctrl := range as.connectionsByTCP {
+		if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
+			if !ctrl.warnedNoUpdateCalls {
+				ctrl.warnedNoUpdateCalls = true
+				sm.lg.Warnf("%s: no messages for 5 seconds", tcp)
+				as.sim.PostEvent(sim.Event{
+					Type:        sim.StatusMessageEvent,
+					WrittenText: tcp + " has not been heard from for 5 seconds. Connection lost?",
+				})
+			}
+
+			if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
+				sm.lg.Warnf("%s: signing off idle controller", tcp)
+				// Collect tokens to sign off after releasing the lock
+				tokensToSignOff = append(tokensToSignOff, ctrl.token)
+			}
+		}
+	}
+	as.mu.Unlock(sm.lg)
+
+	// Sign off controllers without holding as.mu to avoid deadlock
+	for _, token := range tokensToSignOff {
+		if err := sm.SignOff(token); err != nil {
+			sm.lg.Errorf("error signing off idle controller: %v", err)
+		}
+		// Note: SignOff handles deletion from connectionsByTCP
+	}
+}
+
+func (as *activeSim) GotUpdateCallForTCP(tcp string, lg *log.Logger) {
+	as.mu.Lock(lg)
+	defer as.mu.Unlock(lg)
+
+	if ctrl, ok := as.connectionsByTCP[tcp]; !ok {
+		lg.Errorf("%s: unknown TCP for sim", tcp)
+	} else {
+		ctrl.lastUpdateCall = time.Now()
+		if ctrl.warnedNoUpdateCalls {
+			ctrl.warnedNoUpdateCalls = false
+			lg.Warnf("%s: connection re-established", tcp)
+			as.sim.PostEvent(sim.Event{
+				Type:        sim.StatusMessageEvent,
+				WrittenText: tcp + " is back online.",
+			})
+		}
+	}
 }
 
 func (as *activeSim) HandleSpeechWSConnection(tcp string, w http.ResponseWriter, r *http.Request, lg *log.Logger) {
 	as.mu.Lock(lg)
 	defer as.mu.Unlock(lg)
 
-	if ctrl, ok := as.controllersByTCP[tcp]; !ok {
+	if ctrl, ok := as.connectionsByTCP[tcp]; !ok {
 		lg.Errorf("%s: unknown TCP", tcp)
 	} else {
 		if ctrl.speechWs != nil {
@@ -179,7 +235,7 @@ func (as *activeSim) SendSpeechMP3s(lg *log.Logger) int64 {
 	defer as.mu.Unlock(lg)
 
 	var nb int
-	for tcp, ctrl := range as.controllersByTCP {
+	for tcp, ctrl := range as.connectionsByTCP {
 		if ctrl.speechWs == nil {
 			continue
 		}
@@ -208,20 +264,27 @@ func (as *activeSim) SendSpeechMP3s(lg *log.Logger) int64 {
 	return int64(nb)
 }
 
+func (as *activeSim) SignOff(tcp string, lg *log.Logger) {
+	as.mu.Lock(lg)
+	defer as.mu.Unlock(lg)
+
+	delete(as.connectionsByTCP, tcp)
+}
+
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
 	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
-		scenarioGroups:     scenarioGroups,
-		configs:            simConfigurations,
-		activeSims:         make(map[string]*activeSim),
-		controllersByToken: make(map[string]*humanController),
-		mapManifests:       manifests,
-		startTime:          time.Now(),
-		tts:                makeTTSProvider(serverAddress, lg),
-		ttsUsageByIP:       make(map[string]*ttsUsageStats),
-		local:              isLocal,
-		lg:                 lg,
+		scenarioGroups:  scenarioGroups,
+		configs:         simConfigurations,
+		activeSims:      make(map[string]*activeSim),
+		sessionsByToken: make(map[string]*controllerSession),
+		mapManifests:    manifests,
+		startTime:       time.Now(),
+		tts:             makeTTSProvider(serverAddress, lg),
+		ttsUsageByIP:    make(map[string]*ttsUsageStats),
+		local:           isLocal,
+		lg:              lg,
 	}
 
 	sm.launchHTTPServer()
@@ -270,7 +333,7 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 			scenario:         config.ScenarioName,
 			sim:              sim,
 			password:         config.Password,
-			controllersByTCP: make(map[string]*humanController),
+			connectionsByTCP: make(map[string]*connectionState),
 		}
 		pos := sim.State.PrimaryController
 		return sm.Add(as, result, pos, config.Instructor, true, config.DisableTextToSpeech)
@@ -300,8 +363,11 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 		return err
 	}
 
-	hc := as.AddHumanController(config.Position, token, config.DisableTextToSpeech)
-	sm.controllersByToken[token] = hc
+	as.AddHumanController(config.Position, token, config.DisableTextToSpeech, sm.lg)
+	sm.sessionsByToken[token] = &controllerSession{
+		tcp:  config.Position,
+		asim: as,
+	}
 
 	*result = NewSimResult{
 		SimState:        ss,
@@ -413,7 +479,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	as := &activeSim{ // no password, etc.
 		sim:              sim,
-		controllersByTCP: make(map[string]*humanController),
+		connectionsByTCP: make(map[string]*connectionState),
 	}
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
@@ -450,8 +516,11 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 		return err
 	}
 
-	hc := as.AddHumanController(initialTCP, token, disableTextToSpeech)
-	sm.controllersByToken[token] = hc
+	as.AddHumanController(initialTCP, token, disableTextToSpeech, sm.lg)
+	sm.sessionsByToken[token] = &controllerSession{
+		tcp:  initialTCP,
+		asim: as,
+	}
 
 	sm.mu.Unlock(sm.lg)
 
@@ -466,32 +535,7 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 		for !sm.SimShouldExit(as.sim) {
 			// Terminate idle Sims after 4 hours, but not local Sims.
 			if !sm.local {
-				// Sign off controllers we haven't heard from in 15 seconds so that
-				// someone else can take their place. We only make this check for
-				// multi-controller sims; we don't want to do this for local sims
-				// so that we don't kick people off e.g. when their computer
-				// sleeps.
-				sm.mu.Lock(sm.lg) // FIXME: have a per-ActiveSim lock?
-				for tcp, ctrl := range as.controllersByTCP {
-					if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
-						if !ctrl.warnedNoUpdateCalls {
-							ctrl.warnedNoUpdateCalls = true
-							sm.lg.Warnf("%s: no messages for 5 seconds", tcp)
-							as.sim.PostEvent(sim.Event{
-								Type:        sim.StatusMessageEvent,
-								WrittenText: tcp + " has not been heard from for 5 seconds. Connection lost?",
-							})
-						}
-
-						if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-							sm.lg.Warnf("%s: signing off idle controller", tcp)
-							if err := sm.signOff(ctrl.token); err != nil {
-								sm.lg.Errorf("%s: error signing off idle controller: %v", tcp, err)
-							}
-						}
-					}
-				}
-				sm.mu.Unlock(sm.lg)
+				as.CullIdleControllers(sm)
 			}
 
 			as.sim.Update()
@@ -506,6 +550,12 @@ func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string
 		as.sim.Destroy()
 
 		sm.mu.Lock(sm.lg)
+		// Clean up all controllers for this sim
+		for token, ctrl := range sm.sessionsByToken {
+			if ctrl.asim == as {
+				delete(sm.sessionsByToken, token)
+			}
+		}
 		delete(sm.activeSims, as.name)
 		sm.mu.Unlock(sm.lg)
 	}()
@@ -579,17 +629,19 @@ func (sm *SimManager) SignOff(token string) error {
 }
 
 func (sm *SimManager) signOff(token string) error {
-	if ctrl, s, ok := sm.lookupController(token); !ok {
+	ctrl, ok := sm.sessionsByToken[token]
+	if !ok {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.SignOff(ctrl)
-
-		// Do this cleanup regardless of an error return from SignOff
-		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl)
-		delete(sm.controllersByToken, token)
-
-		return err
 	}
+
+	delete(sm.sessionsByToken, token)
+
+	// Hold sm.mu while acquiring asim.mu to maintain consistent lock ordering
+	// This ensures we always acquire sm.mu before asim.mu
+	ctrl.asim.SignOff(ctrl.tcp, sm.lg)
+
+	// Call SignOff after releasing asim.mu but still holding sm.mu
+	return ctrl.asim.sim.SignOff(ctrl.tcp)
 }
 
 func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
@@ -602,7 +654,7 @@ func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Re
 
 	sm.mu.Lock(sm.lg)
 
-	ctrl, ok := sm.controllersByToken[token]
+	ctrl, ok := sm.sessionsByToken[token]
 	if !ok {
 		sm.mu.Unlock(sm.lg)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -645,7 +697,7 @@ func (sm *SimManager) LookupController(token string) (string, *sim.Sim, bool) {
 }
 
 func (sm *SimManager) lookupController(token string) (string, *sim.Sim, bool) {
-	if ctrl, ok := sm.controllersByToken[token]; ok {
+	if ctrl, ok := sm.sessionsByToken[token]; ok {
 		return ctrl.tcp, ctrl.asim.sim, true
 	}
 	return "", nil, false
@@ -685,24 +737,18 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) error {
 	sm.mu.Lock(sm.lg)
 
-	if ctrl, ok := sm.controllersByToken[token]; !ok {
+	if ctrl, ok := sm.sessionsByToken[token]; !ok {
 		sm.mu.Unlock(sm.lg)
 		return ErrNoSimForControllerToken
 	} else {
-		s := ctrl.asim.sim
-		ctrl.lastUpdateCall = time.Now()
-		if ctrl.warnedNoUpdateCalls {
-			ctrl.warnedNoUpdateCalls = false
-			sm.lg.Warnf("%s: connection re-established", ctrl.tcp)
-			s.PostEvent(sim.Event{
-				Type:        sim.StatusMessageEvent,
-				WrittenText: ctrl.tcp + " is back online.",
-			})
-		}
+		asim := ctrl.asim
+		sim := ctrl.asim.sim
+		tcp := ctrl.tcp
 
 		sm.mu.Unlock(sm.lg)
 
-		s.GetStateUpdate(ctrl.tcp, update)
+		asim.GotUpdateCallForTCP(tcp, sm.lg)
+		sim.GetStateUpdate(tcp, update)
 
 		return nil
 	}
