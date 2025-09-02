@@ -258,12 +258,11 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 
 					}(data)
 				}
-			} else if !p.IsAudioRecording() {
+			} else {
 				// Platform already not recording; reset our flag
 				client.PTTRecording = false
 				return
 			}
 		}
 	}
-	return
 }
