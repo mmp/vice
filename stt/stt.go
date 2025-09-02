@@ -68,6 +68,8 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 			pronounce = strings.TrimSuffix(pronounce, " l") + " left"
 		} else if strings.HasSuffix(pronounce, " r") {
 			pronounce = strings.TrimSuffix(pronounce, " r") + " right"
+		} else if strings.HasSuffix(pronounce, " c") {
+			pronounce = strings.TrimSuffix(pronounce, " c") + " center"
 		}
 		pronounce = strings.TrimSpace(pronounce)
 
