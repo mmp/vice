@@ -186,85 +186,87 @@ func formatToModel(text string) string {
 
 func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
 	PTTKey imgui.Key, SelectedMicrophone string) {
-	if PTTKey != imgui.KeyNone {
-		// Start on initial press (ignore repeats by checking our own flag)
-		if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
-			if !client.PTTRecording && !p.IsAudioRecording() {
-				if err := p.StartAudioRecordingWithDevice(SelectedMicrophone); err != nil {
-					lg.Errorf("Failed to start audio recording: %v", err)
-				} else {
-					client.PTTRecording = true
-					lg.Infof("Push-to-talk: Started recording")
-				}
-			}
-		} else if client.RadioIsActive() {
-			// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
-		}
-
-		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
-		if client.PTTRecording && !imgui.IsKeyDown(PTTKey) {
-			if p.IsAudioRecording() {
-				data, err := p.StopAudioRecording()
-				client.PTTRecording = false
-				if err != nil {
-					lg.Errorf("Failed to stop audio recording: %v", err)
-				} else {
-					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-					go func(samples []int16) {
-						// Make approach map
-						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
-						for _, apt := range client.State.Airports {
-							for code, appr := range apt.Approaches {
-								approaches = append(approaches, [2]string{appr.FullName, code})
-							}
-						}
-						audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := VoiceToCommand(audio, approaches, &client.LastTranscription, lg)
-						if err != nil {
-							lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
-							return
-						}
-						fields := strings.Fields(text)
-
-						trimFunc := func(s string) string {
-							for i, char := range s {
-								if unicode.IsDigit(char) {
-									return s[i:]
-								}
-							}
-							return ""
-						}
-						if len(fields) > 0 {
-							callsign := fields[0]
-							// Check if callsign matches, if not check if the numbers match
-							_, ok := client.State.GetTrackByCallsign(av.ADSBCallsign(callsign))
-							if !ok {
-								// trim until first number
-								callsign = trimFunc(callsign)
-								matching := stars.TracksFromACIDSuffix(client, callsign)
-								if len(matching) == 1 {
-									callsign = string(matching[0].ADSBCallsign)
-								}
-							}
-							if len(fields) > 1 && callsign != "" {
-								cmd := strings.Join(fields[1:], " ")
-								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd,
-									nil)
-								lg.Infof("Command: %v Callsign: %v", cmd, callsign)
-								client.LastCommand = callsign + " " + cmd
-							}
-							client.PTTRecording = false
-							lg.Infof("Push-to-talk: Transcription: %s\n", text)
-
-						}
-
-					}(data)
-				}
-			} else {
-				// Platform already not recording; reset our flag
-				client.PTTRecording = false
-				return
-			}
-		}
+	if PTTKey == imgui.KeyNone {
+		return
 	}
+	// Start on initial press (ignore repeats by checking our own flag)
+	if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
+		if !client.PTTRecording && !p.IsAudioRecording() {
+			if err := p.StartAudioRecordingWithDevice(SelectedMicrophone); err != nil {
+				lg.Errorf("Failed to start audio recording: %v", err)
+			} else {
+				client.PTTRecording = true
+				lg.Infof("Push-to-talk: Started recording")
+			}
+		}
+	} else if client.RadioIsActive() {
+		// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
+	}
+
+	// Independently detect release (do not tie to pressed state; key repeat may keep it true)
+	if !client.PTTRecording || imgui.IsKeyDown(PTTKey) {
+		return
+	}
+	client.PTTRecording = false
+	if !p.IsAudioRecording() {
+		return
+	}
+
+	data, err := p.StopAudioRecording()
+	if err != nil {
+		lg.Errorf("Failed to stop audio recording: %v", err)
+		return
+	}
+
+	lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+	go func(samples []int16) {
+		// Make approach map
+		approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
+		for _, apt := range client.State.Airports {
+			for code, appr := range apt.Approaches {
+				approaches = append(approaches, [2]string{appr.FullName, code})
+			}
+		}
+		audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
+		text, err := VoiceToCommand(audio, approaches, &client.LastTranscription, lg)
+		if err != nil {
+			lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
+			return
+		}
+		fields := strings.Fields(text)
+		if len(fields) == 0 {
+			return
+		}
+
+		trimFunc := func(s string) string {
+			for i, char := range s {
+				if unicode.IsDigit(char) {
+					return s[i:]
+				}
+			}
+			return ""
+		}
+
+		callsign := fields[0]
+		// Check if callsign matches, if not check if the numbers match
+		_, ok := client.State.GetTrackByCallsign(av.ADSBCallsign(callsign))
+		if !ok {
+			// trim until first number
+			callsign = trimFunc(callsign)
+			matching := stars.TracksFromACIDSuffix(client, callsign)
+			if len(matching) == 1 {
+				callsign = string(matching[0].ADSBCallsign)
+			}
+		}
+		if len(fields) > 1 && callsign != "" {
+			cmd := strings.Join(fields[1:], " ")
+			client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd,
+				nil)
+			lg.Infof("Command: %v Callsign: %v", cmd, callsign)
+			client.LastCommand = callsign + " " + cmd
+		}
+		client.PTTRecording = false
+		lg.Infof("Push-to-talk: Transcription: %s\n", text)
+
+	}(data)
 }
