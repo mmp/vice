@@ -49,6 +49,14 @@ type OpenAIResponse struct {
 	} `json:"output"`
 }
 
+var pending []chan sttResult
+
+type sttResult struct {
+	Command string
+	LastTranscription string
+	Error error
+}
+
 func callModel(model string, approaches [][2]string, transcript string) (string, error) {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
@@ -186,6 +194,9 @@ func formatToModel(text string) string {
 
 func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
 	PTTKey imgui.Key, SelectedMicrophone string) {
+
+	checkPending(client, lg)
+
 	if PTTKey == imgui.KeyNone {
 		return
 	}
@@ -219,21 +230,21 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 	}
 
 	lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-	go func(samples []int16) {
-		// Make approach map
-		approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
-		for _, apt := range client.State.Airports {
-			for code, appr := range apt.Approaches {
-				approaches = append(approaches, [2]string{appr.FullName, code})
-			}
-		}
+	approaches := getApproaches(client)
+
+	out := make(chan sttResult, 1)
+	pending = append(pending, out)
+	go func(samples []int16, approaches [][2]string, out chan sttResult) {
+		defer close(out) // close the channel when the goroutine finishes
 		audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-		text, err := VoiceToCommand(audio, approaches, &client.LastTranscription, lg)
-		if err != nil {
-			lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
-			return
-		}
-		fields := strings.Fields(text)
+		var last string 
+		text, err := VoiceToCommand(audio, approaches, &last, lg)
+		out <- sttResult{Command: text, LastTranscription: last, Error: err}
+	}(data, approaches, out)
+}
+
+func runOutput(text string, client *client.ControlClient, lg *log.Logger) {
+	fields := strings.Fields(text)
 		if len(fields) == 0 {
 			return
 		}
@@ -267,6 +278,35 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 		}
 		client.PTTRecording = false
 		lg.Infof("Push-to-talk: Transcription: %s\n", text)
+}
 
-	}(data)
+func getApproaches(client *client.ControlClient) [][2]string {
+	approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
+	for _, apt := range client.State.Airports {
+		for code, appr := range apt.Approaches {
+			approaches = append(approaches, [2]string{appr.FullName, code})
+		}
+	}
+	return approaches
+}
+
+// Checks all channels in pending and calls runOutput() if the API returned a result
+func checkPending(client *client.ControlClient, lg *log.Logger) {
+	notReady := []chan sttResult{}
+	for _, ch := range pending {
+		select {
+		case res, ok := <-ch:
+			if res.Error != nil {
+				lg.Errorf("Push-to-talk: Transcription error: %v\n", res.Error.Error())
+			}
+			if ok {
+				runOutput(res.Command, client, lg)
+				client.LastTranscription = res.LastTranscription
+			}
+			// finished; do not add to notReady
+		default:
+			notReady = append(notReady, ch) // API hasn't returne yet, so add it to notReady for it to be checked again
+		}
+	}
+	pending = notReady
 }
