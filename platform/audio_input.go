@@ -21,6 +21,7 @@ import (
 // AudioRecorder handles microphone recording
 type AudioRecorder struct {
 	deviceID  sdl.AudioDeviceID
+	openDevices map[string]sdl.AudioDeviceID
 	recording bool
 	audioData []int16
 	mu        sync.Mutex
@@ -64,17 +65,14 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 	// Use SDL's default device mechanism for empty string
 	var deviceID sdl.AudioDeviceID
 	var err error
-	if deviceName == "" {
-		deviceID, err = sdl.OpenAudioDevice("", true, &spec, nil, 0)
+	if _, ok := ar.openDevices[deviceName]; ok { // Add device to openDevices if not present
+		deviceID = ar.openDevices[deviceName]
 	} else {
-		// For named devices, we need to pass a C string directly
-		// to avoid the Go pointer issue
 		deviceID, err = sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
-	}
-
-	if err != nil {
-		ar.pinner.Unpin()
-		return fmt.Errorf("failed to open audio device: %v", err)
+		if err != nil {
+			ar.pinner.Unpin()
+			return fmt.Errorf("failed to open audio device: %v", err)
+		}
 	}
 
 	ar.deviceID = deviceID
