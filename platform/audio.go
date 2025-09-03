@@ -271,7 +271,7 @@ func audioInputCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 
 	// Convert bytes to int16 samples
 	samples := make([]int16, n/2)
-	for i := 0; i < n/2; i++ {
+	for i := range n/2 {
 		samples[i] = int16(in[2*i]) | (int16(in[2*i+1]) << 8)
 	}
 
