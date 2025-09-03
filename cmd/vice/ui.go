@@ -1421,11 +1421,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
 			if kb := p.GetKeyboard(); kb != nil {
 				for key := range kb.Pressed {
-					fmt.Println("Pressed: ", platform.GetImGuiKeyName(key))
-					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
-						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
-						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
-						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
+					// Any characters that are detected in GetKeyboard().Pressed and can edit an input area should be excempt.
+					if key != imgui.KeyV && key != imgui.KeyDelete && key != imgui.KeyBackspace && 
+					key != imgui.KeyEscape && key != imgui.KeyEnter {
 						config.UserPTTKey = key
 						c.PTTCapture = false
 						break
