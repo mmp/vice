@@ -110,7 +110,7 @@ func processWX(sb StorageBackend, path string) (int64, error) {
 		return 0, fmt.Errorf("%s: unexpected format; can't find TRACON", path)
 	}
 
-	objpath := fmt.Sprintf("WX/%s/%d/%02d/%02d/%s.msgpack.zst", tracon, t.Year(), t.Month(), t.Day(), t.Format("150405"))
+	objpath := fmt.Sprintf("precip/%s/%s.msgpack.zst", tracon, t.Format(time.RFC3339))
 
 	n, err := sb.StoreObject(objpath, wxp)
 	if err != nil {
