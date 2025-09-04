@@ -9,7 +9,6 @@ import (
 	"slices"
 	"strings"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/mmp/vice/util"
@@ -201,58 +200,41 @@ func readZipMETAREntries(sb StorageBackend, path string) ([]FileMETAR, error) {
 	return fms, nil
 }
 
-func storeMETAR(st StorageBackend, metar map[string][]FileMETAR) error {
-	LogInfo("Uploading METAR for %d airports", len(metar))
+func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
+	LogInfo("Uploading METAR for %d airports", len(fmetar))
 
-	var eg errgroup.Group
-	var totalBytes int64
-	sem := make(chan struct{}, *nWorkers)
-	for ap := range metar {
-		eg.Go(func() error {
-			sem <- struct{}{}
-			defer func() { <-sem }()
+	// Flatten out the METAR, sort by date, eliminate duplicates, and convert to SOA
+	metar := make(map[string]wx.BasicMETARSOA)
+	for ap, fm := range fmetar {
+		var recs []wx.BasicMETAR
+		for _, m := range fm {
+			recs = append(recs, m.METAR...)
+		}
 
-			if n, err := storeAirportMETAR(st, ap, metar[ap]); err != nil {
-				return err
-			} else {
-				atomic.AddInt64(&totalBytes, n)
-				return nil
-			}
-		})
+		// Sort by date; since the time format used is 2006-01-02 15:04:05,
+		// string compare sorts them in time order.
+		slices.SortFunc(recs, func(a, b wx.BasicMETAR) int { return strings.Compare(a.ReportTime, b.ReportTime) })
+
+		// Eliminate duplicates (may happen since the scraper grabs 24-hour chunks every 16 hours.
+		recs = slices.CompactFunc(recs, func(a, b wx.BasicMETAR) bool { return a.ReportTime == b.ReportTime })
+
+		soa, err := wx.MakeBasicMETARSOA(recs)
+		if err != nil {
+			return err
+		}
+		if err := wx.CheckBasicMETARSOA(soa, recs); err != nil {
+			return err
+		}
+
+		metar[ap] = soa
 	}
 
-	err := eg.Wait()
-
-	LogInfo("Stored %s for %d airports' METAR", util.ByteCount(totalBytes), len(metar))
+	nb, err := st.StoreObject("METAR.msgpack.zstd", metar)
+	if err == nil {
+		LogInfo("Stored %s for %d airports' METAR", util.ByteCount(nb), len(metar))
+	}
 
 	return err
-}
-
-func storeAirportMETAR(st StorageBackend, ap string, fm []FileMETAR) (int64, error) {
-	// Flatten all of the METAR
-	var recs []wx.BasicMETAR
-	for _, m := range fm {
-		recs = append(recs, m.METAR...)
-	}
-
-	// Sort by date; since the time format used is 2006-01-02 15:04:05,
-	// string compare sorts them in time order.
-	slices.SortFunc(recs, func(a, b wx.BasicMETAR) int { return strings.Compare(a.ReportTime, b.ReportTime) })
-
-	// Eliminate duplicates (may happen since the scraper grabs 24-hour chunks every 16 hours.
-	recs = slices.CompactFunc(recs, func(a, b wx.BasicMETAR) bool { return a.ReportTime == b.ReportTime })
-
-	soa, err := wx.MakeBasicMETARSOA(recs)
-	if err != nil {
-		return 0, err
-	}
-
-	if err := wx.CheckBasicMETARSOA(soa, recs); err != nil {
-		return 0, err
-	}
-
-	path := fmt.Sprintf("metar/%s.msgpack.zstd", ap)
-	return st.StoreObject(path, soa)
 }
 
 func archiveMETAR(arch []toArchive, sb StorageBackend) error {
