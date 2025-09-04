@@ -397,7 +397,9 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 			if result.RemainingInput == cmds {
 				c.awaitReadbackCallsign = ""
 			}
-			handleResult(result.ErrorMessage, result.RemainingInput)
+			if handleResult != nil {
+				handleResult(result.ErrorMessage, result.RemainingInput)
+			}
 			if err != nil {
 				c.lg.Errorf("%s: %v", callsign, err)
 			}
