@@ -23,7 +23,10 @@ func ingestWX(sb StorageBackend) {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	ch := make(chan string)
-	eg.Go(func() error { return EnqueueObjects(sb, "scrape/WX", ch) })
+	eg.Go(func() error {
+		defer close(ch)
+		return sb.ChanList("scrape/WX", ch)
+	})
 
 	var totalBytes, totalObjects int64
 	for range *nWorkers {

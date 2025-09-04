@@ -23,23 +23,9 @@ type FileMETAR struct {
 }
 
 func ingestMETAR(sb StorageBackend) {
-	// Snapshot what's available at the start; this is what we will archive
-	// when we're done. (Don't archive new scraped ones that landed after
-	// we started ingesting.)
-	scraped, err := sb.List("scrape/metar")
-	if err != nil {
-		LogError("%v", err)
-		return
-	}
-	if len(scraped) == 0 {
-		LogInfo("scrape/metar: no new METAR objects found. Skipping METAR ingest.")
-		return
-	}
-	LogInfo("scrape/metar: found %d objects", len(scraped))
-
 	// Load both archived METAR and the newly-scraped records into memory
 	// and collect them by airport.
-	metar, arch, err := loadAllMETAR(scraped, sb)
+	metar, arch, err := loadAllMETAR(sb)
 	if err != nil {
 		LogError("%v", err)
 		return
@@ -62,44 +48,47 @@ type toArchive struct {
 	b    []byte
 }
 
-func loadAllMETAR(scraped map[string]int64, sb StorageBackend) (map[string][]FileMETAR, []toArchive, error) {
+func loadAllMETAR(sb StorageBackend) (map[string][]FileMETAR, []toArchive, error) {
 	metar := make(map[string][]FileMETAR)
 	var arch []toArchive
 	var mu sync.Mutex // protects both metar and arch
-
 	var eg errgroup.Group
-	sem := make(chan struct{}, *nWorkers)
 
-	for path := range scraped {
+	scrapedCh := make(chan string)
+
+	for range *nWorkers {
 		eg.Go(func() error {
-			sem <- struct{}{}
-			defer func() { <-sem }()
+			for path := range scrapedCh {
+				if fm, b, err := loadScrapedMETAR(sb, path); err != nil {
+					return err
+				} else {
+					mu.Lock()
 
-			if fm, b, err := loadScrapedMETAR(sb, path); err != nil {
-				return err
-			} else {
-				mu.Lock()
+					if len(fm.METAR) > 0 {
+						metar[fm.ICAO] = append(metar[fm.ICAO], fm)
+					}
 
-				if len(fm.METAR) > 0 {
-					metar[fm.ICAO] = append(metar[fm.ICAO], fm)
+					// Add this to the list of objects to archive (if ingest is successful).
+					arch = append(arch, toArchive{path: path, b: b})
+					mu.Unlock()
+					return nil
 				}
-
-				// Add this to the list of objects to archive (if ingest is successful).
-				arch = append(arch, toArchive{path: path, b: b})
-				mu.Unlock()
-				return nil
 			}
+			return nil
 		})
 	}
+
+	eg.Go(func() error {
+		defer close(scrapedCh)
+		return sb.ChanList("scrape/metar", scrapedCh)
+	})
 
 	archivedPathCh := make(chan string)
 
 	for range *nWorkers {
 		eg.Go(func() error {
 			for path := range archivedPathCh {
-				sem <- struct{}{}
 				recs, err := readZipMETAREntries(sb, path)
-				<-sem
 
 				if err != nil {
 					return err
@@ -118,7 +107,8 @@ func loadAllMETAR(scraped map[string]int64, sb StorageBackend) (map[string][]Fil
 	}
 
 	eg.Go(func() error {
-		return EnqueueObjects(sb, "archive/metar", archivedPathCh)
+		defer close(archivedPathCh)
+		return sb.ChanList("archive/metar", archivedPathCh)
 	})
 
 	err := eg.Wait()

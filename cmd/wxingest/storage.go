@@ -18,6 +18,7 @@ import (
 
 type StorageBackend interface {
 	List(path string) (map[string]int64, error)
+	ChanList(path string, ch chan<- string) error
 	OpenRead(path string) (io.ReadCloser, error)
 	Store(path string, r io.Reader) (int64, error)
 	StoreObject(path string, object any) (int64, error)
@@ -52,6 +53,10 @@ type DryRunBackend struct {
 
 func (d DryRunBackend) List(path string) (map[string]int64, error) {
 	return d.g.List(path)
+}
+
+func (d DryRunBackend) ChanList(path string, ch chan<- string) error {
+	return d.g.ChanList(path, ch)
 }
 
 func (d DryRunBackend) OpenRead(path string) (io.ReadCloser, error) {
@@ -126,6 +131,25 @@ func (g GCSBackend) List(path string) (map[string]int64, error) {
 	}
 
 	return m, nil
+}
+
+func (g GCSBackend) ChanList(path string, ch chan<- string) error {
+	path = fpath.Clean(path)
+	query := storage.Query{
+		Projection: storage.ProjectionNoACL,
+		Prefix:     path,
+	}
+
+	it := g.bucket.Objects(g.ctx, &query)
+	for {
+		if obj, err := it.Next(); err == iterator.Done {
+			return nil
+		} else if err != nil {
+			return err
+		} else if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+			ch <- obj.Name
+		}
+	}
 }
 
 func (g GCSBackend) OpenRead(path string) (io.ReadCloser, error) {

@@ -61,9 +61,9 @@ func main() {
 			switch strings.ToLower(a) {
 			case "metar":
 				ingestMETAR(sb)
-			case "wx":
+			case "precip":
 				ingestWX(sb)
-			case "hrrr":
+			case "atmos":
 				ingestHRRR(sb)
 			default:
 				usage()
@@ -94,18 +94,6 @@ func LogError(msg string, args ...any) {
 func LogFatal(msg string, args ...any) {
 	log.Printf("FATAL "+msg, args...)
 	os.Exit(1)
-}
-
-func EnqueueObjects(sb StorageBackend, base string, ch chan<- string) error {
-	objs, err := sb.List(base)
-	if err == nil {
-		LogInfo("%s: found %d objects", base, len(objs))
-		for name := range objs {
-			ch <- name
-		}
-	}
-	close(ch)
-	return err
 }
 
 func launchHTTPServer() {
