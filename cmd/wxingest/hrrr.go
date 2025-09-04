@@ -590,7 +590,7 @@ func uploadWeatherSampleField(sf *wx.SampleField, tracon string, t time.Time, st
 		return 0, err
 	}
 
-	path := fmt.Sprintf("hrrr/%s/%d/%02d/%02d/%02d.msgpack.zstd", tracon, t.Year(), t.Month(), t.Day(), t.Hour())
+	path := fmt.Sprintf("atmos/%s/%s.msgpack.zstd", tracon, t.Format(time.RFC3339))
 
 	if *hrrrQuick {
 		// skip upload
