@@ -3,6 +3,9 @@ package wx
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -58,6 +61,75 @@ func (b *BasicMETAR) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
+func (b BasicMETAR) Time() time.Time {
+	t, err := time.Parse(time.DateTime, b.ReportTime)
+	if err != nil {
+		panic(err)
+	}
+	return t.UTC()
+}
+
+// IsVMC returns true if Visual Meteorological Conditions apply
+// VMC requires >= 3 miles visibility and >= 1000' ceiling AGL
+func (b BasicMETAR) IsVMC() bool {
+	// >= 3 miles visibility
+	vis, err := b.Visibility()
+	if err != nil || vis < 3 {
+		return false
+	}
+
+	// >= 1000' ceiling AGL
+	ceil, err := b.Ceiling()
+	return err == nil && ceil >= 1000
+}
+
+// Visibility extracts visibility in statute miles from the raw METAR
+func (b BasicMETAR) Visibility() (float32, error) {
+	for _, f := range strings.Fields(b.Raw) {
+		if strings.HasSuffix(f, "SM") {
+			f = strings.TrimSuffix(f, "SM")
+			f = strings.TrimPrefix(f, "M") // there if 1/4 or less
+
+			// Handle fractional visibility like 1/4SM
+			if snum, sdenom, ok := strings.Cut(f, "/"); ok {
+				if num, err := strconv.Atoi(snum); err != nil {
+					return -1, err
+				} else if denom, err := strconv.Atoi(sdenom); err != nil {
+					return -1, err
+				} else {
+					return float32(num) / float32(denom), nil
+				}
+			} else if vis, err := strconv.Atoi(f); err != nil {
+				return -1, err
+			} else {
+				return float32(vis), nil
+			}
+		}
+	}
+	return -1, fmt.Errorf("%s: no visibility found", b.Raw)
+}
+
+// Ceiling returns ceiling in feet AGL (above ground level)
+func (b BasicMETAR) Ceiling() (int, error) {
+	for _, f := range strings.Fields(b.Raw) {
+		// BKN (broken) or OVC (overcast) constitute a ceiling
+		if strings.HasPrefix(f, "BKN") || strings.HasPrefix(f, "OVC") {
+			if len(f) < 6 {
+				return 0, fmt.Errorf("%s: too short", f)
+			}
+
+			// Cloud height is in hundreds of feet
+			if alt, err := strconv.Atoi(f[3:6]); err == nil {
+				alt *= 100
+				return alt, nil
+			} else {
+				return -1, err
+			}
+		}
+	}
+	// No ceiling means unlimited (typically reported as 12000')
+	return 12000, nil
 }
 
 // Structure-of-arrays representation of an array of BasicMETAR objects
