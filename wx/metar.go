@@ -1,6 +1,7 @@
 package wx
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/mmp/vice/math"
@@ -13,10 +14,50 @@ type BasicMETAR struct {
 	ReportTime  string  `json:"reportTime"`
 	Temperature float32 `json:"temp"`
 	Altimeter   float32 `json:"altim"`
-	WindDir     any     `json:"wdir"` // nil or string "VRB" for variable, else number for heading
+	WindDir     *int    `json:"-"` // nil for variable winds, otherwise heading 0-360
 	WindSpeed   int     `json:"wspd"`
 	WindGust    *int    `json:"wgst"`
 	Raw         string  `json:"rawOb"`
+
+	// WindDirRaw is used for JSON unmarshaling only
+	WindDirRaw any `json:"wdir"` // nil or string "VRB" for variable, else number for heading
+}
+
+// UnmarshalJSON handles converting WindDirRaw to WindDir
+func (b *BasicMETAR) UnmarshalJSON(data []byte) error {
+	type Alias BasicMETAR
+	aux := &struct {
+		*Alias
+	}{
+		Alias: (*Alias)(b),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Convert WindDirRaw to WindDir
+	switch v := b.WindDirRaw.(type) {
+	case nil:
+		b.WindDir = nil
+	case string:
+		if v == "VRB" {
+			b.WindDir = nil
+		} else {
+			return fmt.Errorf("unexpected wind direction string %q", v)
+		}
+	case float64:
+		if v < 0 || v > 360 {
+			return fmt.Errorf("wind direction out of range: %f", v)
+		}
+		dir := int(v)
+		b.WindDir = &dir
+	default:
+		return fmt.Errorf("unexpected wind direction type %T: %v", b.WindDirRaw, b.WindDirRaw)
+	}
+
+	return nil
+}
 }
 
 // Structure-of-arrays representation of an array of BasicMETAR objects
@@ -34,28 +75,6 @@ type BasicMETARSOA struct {
 	// since there's generally not much character alignment between
 	// successive reports.
 	Raw []string
-}
-
-// parseWindDirection converts the wind direction from BasicMETAR format to
-// int16. Returns -1 for nil or "VRB" (variable), otherwise the numeric
-// direction.
-func parseWindDirection(windDir any) (int16, error) {
-	switch v := windDir.(type) {
-	case nil:
-		return -1, nil
-	case string:
-		if v == "VRB" {
-			return -1, nil
-		}
-		return 0, fmt.Errorf("unexpected wind direction string %q", v)
-	case float64:
-		if v < 0 || v > 360 {
-			return 0, fmt.Errorf("wind direction out of range: %f", v)
-		}
-		return int16(v), nil
-	default:
-		return 0, fmt.Errorf("unexpected wind direction type %T: %v", windDir, windDir)
-	}
 }
 
 func MakeBasicMETARSOA(recs []BasicMETAR) (BasicMETARSOA, error) {
@@ -87,9 +106,15 @@ func MakeBasicMETARSOA(recs []BasicMETAR) (BasicMETARSOA, error) {
 		}
 		soa.Altimeter = append(soa.Altimeter, alt)
 
-		dir, err := parseWindDirection(m.WindDir)
-		if err != nil {
-			return BasicMETARSOA{}, err
+		// Convert wind direction: -1 for variable, otherwise the numeric direction
+		var dir int16
+		if m.WindDir == nil {
+			dir = -1
+		} else {
+			if *m.WindDir < 0 || *m.WindDir > 360 {
+				return BasicMETARSOA{}, fmt.Errorf("wind direction out of range: %d", *m.WindDir)
+			}
+			dir = int16(*m.WindDir)
 		}
 		soa.WindDir = append(soa.WindDir, dir)
 
@@ -140,9 +165,10 @@ func DecodeBasicMETARSOA(soa BasicMETARSOA) []BasicMETAR {
 		}
 
 		if dir[i] == -1 {
-			cm.WindDir = "VRB"
+			cm.WindDir = nil
 		} else {
-			cm.WindDir = float64(dir[i])
+			d := int(dir[i])
+			cm.WindDir = &d
 		}
 
 		// Always set gust on decode, even if it was nil in the original.
@@ -174,16 +200,15 @@ func CheckBasicMETARSOA(soa BasicMETARSOA, orig []BasicMETAR) error {
 		if math.Abs(mo.Altimeter-mc.Altimeter) > 0.001 {
 			return fmt.Errorf("Altimeter mismatch: %.8g - %.8g", mo.Altimeter, mc.Altimeter)
 		}
-		if _, ok := mo.WindDir.(string); ok || mo.WindDir == nil {
-			if sc, ok := mc.WindDir.(string); !ok || sc != "VRB" {
-				return fmt.Errorf("WindDir mismatch: %v - %v", mo.WindDir, mc.WindDir)
+		// Check WindDir - both should be nil for variable winds
+		if mo.WindDir == nil {
+			if mc.WindDir != nil {
+				return fmt.Errorf("WindDir mismatch: orig nil - %d", *mc.WindDir)
 			}
-		} else if d, ok := mo.WindDir.(float64); ok {
-			if dc, ok := mc.WindDir.(float64); !ok || d != dc {
-				return fmt.Errorf("WindDir mismatch: %v - %v", mo.WindDir, mc.WindDir)
-			}
-		} else {
-			return fmt.Errorf("WindDir mismatch: %v - %v", mo.WindDir, mc.WindDir)
+		} else if mc.WindDir == nil {
+			return fmt.Errorf("WindDir mismatch: orig %d - nil", *mo.WindDir)
+		} else if *mo.WindDir != *mc.WindDir {
+			return fmt.Errorf("WindDir mismatch: %d - %d", *mo.WindDir, *mc.WindDir)
 		}
 
 		if mo.WindGust == nil {
