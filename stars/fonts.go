@@ -126,7 +126,7 @@ func createFontAtlas(r renderer.Renderer, p platform.Platform) []*renderer.Font 
 			Size: sf.Height,
 		}
 
-		f := renderer.MakeFont(int(scale)*sf.Height, true /* mono */, id, nil)
+		f := renderer.MakeFont(int(scale)*sf.Height, id, nil)
 		newFonts = append(newFonts, f)
 
 		if y+sf.Height >= yres {

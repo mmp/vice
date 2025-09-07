@@ -56,7 +56,7 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Roboto Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 16},
 	}
 }
 

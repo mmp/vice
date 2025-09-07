@@ -28,6 +28,15 @@ import (
 	"github.com/mmp/IconFontCppHeaders"
 )
 
+// Font name constants
+const (
+	RobotoRegular        = "Roboto Regular"
+	RobotoMono           = "Roboto Mono"
+	RobotoMonoItalic     = "Roboto Mono Italic"
+	FlightStripPrinter   = "Flight Strip Printer"
+	LargeFontAwesomeOnly = "LargeFontAwesomeOnly"
+)
+
 var ttfPinner runtime.Pinner
 
 // Each loaded (font,size) combination is represented by (surprise) a Font.
@@ -40,17 +49,15 @@ type Font struct {
 	glyphs map[rune]*Glyph
 	// Font size
 	Size  int
-	Mono  bool
 	Ifont imgui.Font
 	Id    FontIdentifier
 	TexId uint32 // texture that holds the glyph texture atlas
 }
 
-func MakeFont(size int, mono bool, id FontIdentifier, ifont *imgui.Font) *Font {
+func MakeFont(size int, id FontIdentifier, ifont *imgui.Font) *Font {
 	f := &Font{
 		glyphs: make(map[rune]*Glyph),
 		Size:   size,
-		Mono:   mono,
 		Id:     id,
 	}
 	if ifont != nil {
@@ -157,11 +164,16 @@ var (
 	FontAwesomeIconArrowLeft           = faUsedIcons["ArrowLeft"]
 	FontAwesomeIconArrowRight          = faUsedIcons["ArrowRight"]
 	FontAwesomeIconArrowUp             = faUsedIcons["ArrowUp"]
+	FontAwesomeIconBolt                = faUsedIcons["Bolt"]
 	FontAwesomeIconBook                = faUsedIcons["Book"]
 	FontAwesomeIconBug                 = faUsedIcons["Bug"]
 	FontAwesomeIconCaretDown           = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
+	FontAwesomeIconCloud               = faUsedIcons["Cloud"]
+	FontAwesomeIconCloudRain           = faUsedIcons["CloudRain"]
+	FontAwesomeIconCloudShowersHeavy   = faUsedIcons["CloudShowersHeavy"]
+	FontAwesomeIconCloudSun            = faUsedIcons["CloudSun"]
 	FontAwesomeIconCog                 = faUsedIcons["Cog"]
 	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
@@ -184,8 +196,12 @@ var (
 	FontAwesomeIconQuestionCircle      = faUsedIcons["QuestionCircle"]
 	FontAwesomeIconPlaneDeparture      = faUsedIcons["PlaneDeparture"]
 	FontAwesomeIconRedo                = faUsedIcons["Redo"]
+	FontAwesomeIconSmog                = faUsedIcons["Smog"]
+	FontAwesomeIconSnowflake           = faUsedIcons["Snowflake"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
+	FontAwesomeIconSun                 = faUsedIcons["Sun"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
+	FontAwesomeIconWind                = faUsedIcons["Wind"]
 )
 
 var (
@@ -200,11 +216,16 @@ var (
 		"ArrowLeft":           FontAwesomeString("ArrowLeft"),
 		"ArrowRight":          FontAwesomeString("ArrowRight"),
 		"ArrowUp":             FontAwesomeString("ArrowUp"),
+		"Bolt":                FontAwesomeString("Bolt"),
 		"Book":                FontAwesomeString("Book"),
 		"Bug":                 FontAwesomeString("Bug"),
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
+		"Cloud":               FontAwesomeString("Cloud"),
+		"CloudRain":           FontAwesomeString("CloudRain"),
+		"CloudShowersHeavy":   FontAwesomeString("CloudShowersHeavy"),
+		"CloudSun":            FontAwesomeString("CloudSun"),
 		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
@@ -225,8 +246,12 @@ var (
 		"QuestionCircle":      FontAwesomeString("QuestionCircle"),
 		"PlaneDeparture":      FontAwesomeString("PlaneDeparture"),
 		"Redo":                FontAwesomeString("Redo"),
+		"Smog":                FontAwesomeString("Smog"),
+		"Snowflake":           FontAwesomeString("Snowflake"),
 		"Square":              FontAwesomeString("Square"),
+		"Sun":                 FontAwesomeString("Sun"),
 		"Trash":               FontAwesomeString("Trash"),
+		"Wind":                FontAwesomeString("Wind"),
 	}
 	faBrandsUsedIcons map[string]string = map[string]string{
 		"Discord": FontAwesomeBrandsString("Discord"),
@@ -260,46 +285,72 @@ func FontsInit(r Renderer, p platform.Platform) {
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
-	add := func(filename string, mono bool, name string) {
-		ttf := loadFont(filename)
-		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
-			sp := float32(size)
-			if runtime.GOOS == "windows" {
-				if dpis := p.DPIScale(); dpis > 1 {
-					sp *= p.DPIScale()
-				} else {
-					// Fix font sizes to account for Windows using 96dpi but
-					// everyone else using 72...
-					sp *= 96. / 72.
-				}
-				sp = float32(int(sp + 0.5))
+	// Helper to calculate scaled pixel size for a given point size
+	calcPixelSize := func(size int) float32 {
+		sp := float32(size)
+		if runtime.GOOS == "windows" {
+			if dpis := p.DPIScale(); dpis > 1 {
+				sp *= p.DPIScale()
+			} else {
+				// Fix font sizes to account for Windows using 96dpi but
+				// everyone else using 72...
+				sp *= 96. / 72.
 			}
-
-			addTTF := func(ttf []byte, sp float32, fconfig *imgui.FontConfig, r imgui.GlyphRange) *imgui.Font {
-				ttfPinner.Pin(&ttf[0])
-				return io.Fonts().AddFontFromMemoryTTFV(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)),
-					sp, fconfig, r.Data())
-			}
-
-			ttfPinner.Pin(&ttf[0])
-			ifont := io.Fonts().AddFontFromMemoryTTF(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp)
-
-			config := imgui.NewFontConfig()
-			config.SetMergeMode(true)
-			// Scale down the font size by an ad-hoc factor to (generally)
-			// make the icon sizes match the font's character sizes.
-			addTTF(faTTF, .8*sp, config, faGlyphRange)
-			addTTF(fabrTTF, .8*sp, config, faBrandsGlyphRange)
-
-			id := FontIdentifier{Name: name, Size: size}
-			fonts[id] = MakeFont(int(sp), mono, id, ifont)
+			sp = float32(int(sp + 0.5))
 		}
+		return sp
 	}
 
-	add("Roboto-Regular.ttf.zst", false, "Roboto Regular")
-	add("RobotoMono-Medium.ttf.zst", false, "Roboto Mono")
-	add("RobotoMono-MediumItalic.ttf.zst", false, "Roboto Mono Italic")
-	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
+	// Helper to add TTF data to imgui
+	addTTF := func(ttf []byte, sp float32, fconfig *imgui.FontConfig, r imgui.GlyphRange) *imgui.Font {
+		ttfPinner.Pin(&ttf[0])
+		return io.Fonts().AddFontFromMemoryTTFV(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)),
+			sp, fconfig, r.Data())
+	}
+
+	// Helper to create a font with optional FontAwesome icons merged in
+	createFontSize := func(ttf []byte, size int, name string) {
+		sp := calcPixelSize(size)
+
+		var ifont *imgui.Font
+		if ttf != nil {
+			ttfPinner.Pin(&ttf[0])
+			ifont = io.Fonts().AddFontFromMemoryTTF(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp)
+		}
+
+		config := imgui.NewFontConfig()
+		if ttf != nil {
+			config.SetMergeMode(true)
+		}
+		// Scale down the font size by an ad-hoc factor to (generally)
+		// make the icon sizes match the font's character sizes.
+		iconScale := float32(0.8)
+		if ttf == nil {
+			// For FontAwesome-only font, don't scale down
+			iconScale = 1.0
+			ifont = addTTF(faTTF, iconScale*sp, config, faGlyphRange)
+		} else {
+			addTTF(faTTF, iconScale*sp, config, faGlyphRange)
+		}
+
+		config.SetMergeMode(true)
+		addTTF(fabrTTF, iconScale*sp, config, faBrandsGlyphRange)
+
+		id := FontIdentifier{Name: name, Size: size}
+		fonts[id] = MakeFont(int(sp), id, ifont)
+	}
+
+	for fn, name := range map[string]string{
+		"Roboto-Regular.ttf.zst":          RobotoRegular,
+		"RobotoMono-Medium.ttf.zst":       RobotoMono,
+		"RobotoMono-MediumItalic.ttf.zst": RobotoMonoItalic,
+		"Flight-Strip-Printer.ttf.zst":    FlightStripPrinter} {
+		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
+			createFontSize(loadFont(fn), size, name)
+		}
+	}
+	// Add a large FontAwesome-only font for weather icons
+	createFontSize(nil, 64, LargeFontAwesomeOnly)
 
 	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
 	lg.Infof("Fonts texture used %.1f MB", float32(w*h*bpp)/(1024*1024))
@@ -363,7 +414,7 @@ func GetFont(id FontIdentifier) *Font {
 }
 
 func GetDefaultFont() *Font {
-	return GetFont(FontIdentifier{Name: "Roboto Regular", Size: 14})
+	return GetFont(FontIdentifier{Name: RobotoRegular, Size: 14})
 }
 
 func FontAwesomeString(id string) string {
