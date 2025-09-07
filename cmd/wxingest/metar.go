@@ -71,7 +71,6 @@ func loadAllMETAR(sb StorageBackend) (map[string][]FileMETAR, []toArchive, error
 					// Add this to the list of objects to archive (if ingest is successful).
 					arch = append(arch, toArchive{path: path, b: b})
 					mu.Unlock()
-					return nil
 				}
 			}
 			return nil
