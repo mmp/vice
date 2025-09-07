@@ -22,25 +22,21 @@ type FileMETAR struct {
 	METAR []wx.BasicMETAR
 }
 
-func ingestMETAR(sb StorageBackend) {
+func ingestMETAR(sb StorageBackend) error {
 	// Load both archived METAR and the newly-scraped records into memory
 	// and collect them by airport.
 	metar, arch, err := loadAllMETAR(sb)
 	if err != nil {
-		LogError("%v", err)
-		return
+		return err
 	}
 
 	// Store per-airport METAR objects, overwriting old ones.
 	if err := storeMETAR(sb, metar); err != nil {
-		LogError("%v", err)
-		return
+		return err
 	}
 
 	// Archive the new stuff.
-	if err := archiveMETAR(arch, sb); err != nil {
-		LogError("%v", err)
-	}
+	return archiveMETAR(arch, sb)
 }
 
 type toArchive struct {

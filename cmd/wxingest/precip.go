@@ -19,7 +19,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func ingestWX(sb StorageBackend) {
+func ingestPrecip(sb StorageBackend) error {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	ch := make(chan string)
@@ -38,7 +38,7 @@ func ingestWX(sb StorageBackend) {
 				default:
 				}
 
-				n, err := processWX(sb, path)
+				n, err := processPrecip(sb, path)
 				if err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
@@ -53,14 +53,12 @@ func ingestWX(sb StorageBackend) {
 		})
 	}
 
-	if err := eg.Wait(); err != nil {
-		LogError("WX: %v", err)
-	}
-
+	err := eg.Wait()
 	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
+	return err
 }
 
-func processWX(sb StorageBackend, path string) (int64, error) {
+func processPrecip(sb StorageBackend, path string) (int64, error) {
 	// Parse time
 	t, err := time.Parse(time.RFC3339, strings.TrimSuffix(filepath.Base(path), ".gob"))
 	if err != nil {

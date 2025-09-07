@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"iter"
@@ -37,29 +38,25 @@ var hrrrTRACONs = []string{
 }
 
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
-func ingestHRRR(sb StorageBackend) {
+func ingestHRRR(sb StorageBackend) error {
 	tmp := os.Getenv("WXINGEST_TMP")
 	if tmp == "" {
-		LogError("Must set WXINGEST_TMP environment variable for HRRR")
+		return errors.New("Must set WXINGEST_TMP environment variable for HRRR")
 	}
 	_ = os.RemoveAll(tmp)
 	if err := os.Mkdir(tmp, 0755); err != nil {
-		LogError("%s: %v", tmp, err)
-		return
-
+		return err
 	}
 	if err := os.Chdir(tmp); err != nil {
-		LogError("%s: %v", tmp, err)
-		return
+		return err
 	}
 
 	hrrrsb, err := MakeGCSBackend("high-resolution-rapid-refresh")
 	if err != nil {
-		LogError("%v", err)
-		return
+		return err
 	}
 
-	existing := listIngestedHRRR(sb)
+	existing := listIngestedAtmos(sb)
 
 	tfr := util.MakeTempFileRegistry(nil)
 	defer tfr.RemoveAll()
@@ -123,12 +120,10 @@ func ingestHRRR(sb StorageBackend) {
 		})
 	}
 
-	if err := eg.Wait(); err != nil {
-		LogError("%v", err)
-	}
+	return eg.Wait()
 }
 
-func listIngestedHRRR(sb StorageBackend) map[time.Time][]string {
+func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 	ingested := make(map[time.Time][]string) // which TRACONs have the data for the time
 
 	if *hrrrQuick {
@@ -136,47 +131,34 @@ func listIngestedHRRR(sb StorageBackend) map[time.Time][]string {
 		return nil
 	}
 
-	// List all objects under hrrr/ in one call
-	hrrrPaths, err := sb.List("hrrr/")
+	// List all objects under atmos/ in one call
+	atmosPaths, err := sb.List("atmos/")
 	if err != nil {
-		LogError("Failed to list hrrr/ directory: %v", err)
+		LogError("Failed to list atmos/ directory: %v", err)
 		return ingested
 	}
 
 	// Parse all paths in a single pass
-	for path := range hrrrPaths {
-		// Parse paths like "hrrr/PVD/2025/08/06/03.msgpack.zstd"
-		parts := strings.Split(strings.TrimPrefix(path, "hrrr/"), "/")
-		if len(parts) != 5 {
-			LogError("%s: malformed HRRR path", path)
+	for path := range atmosPaths {
+		// Parse paths like atmos/BOI/2025-07-27T18:00:00Z.msgpack.zstd
+		parts := strings.Split(strings.TrimPrefix(path, "atmos/"), "/")
+		if len(parts) != 2 {
+			LogError("%s: malformed path", path)
 			continue
 		}
 
 		tracon := parts[0]
 
-		y, err := strconv.Atoi(parts[1])
+		tm, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zstd"))
 		if err != nil {
+			LogError("%s", err)
 			continue
 		}
-		m, err := strconv.Atoi(parts[2])
-		if err != nil {
-			continue
-		}
-		d, err := strconv.Atoi(parts[3])
-		if err != nil {
-			continue
-		}
-		h, err := strconv.Atoi(strings.TrimSuffix(parts[4], ".msgpack.zstd"))
-		if err != nil {
-			continue
-		}
-
-		tm := time.Date(y, time.Month(m), d, h, 0, 0, 0, time.UTC)
 
 		ingested[tm] = append(ingested[tm], tracon)
 	}
 
-	LogInfo("Found %d ingested HRRR TRACON objects for %d times", len(hrrrPaths), len(ingested))
+	LogInfo("Found %d ingested atmos TRACON objects for %d times", len(atmosPaths), len(ingested))
 
 	return ingested
 }
