@@ -210,6 +210,7 @@ type NewSimConfiguration struct {
 	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
 	NmPerLongitude    float32
+	StartTime         time.Time
 	Center            math.Point2LL
 	Range             float32
 	DefaultMaps       []string
@@ -294,8 +295,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
-	startTime := time.Now()
-	s.State = newState(config, startTime, manifest, lg)
+	s.State = newState(config, config.StartTime, manifest, lg)
 
 	return s
 }

@@ -120,6 +120,8 @@ type NewSimConfiguration struct {
 	AllowInstructorRPO  bool
 	Instructor          bool
 	DisableTextToSpeech bool
+
+	StartTime time.Time
 }
 
 type SimConnectionConfiguration struct {
@@ -358,7 +360,7 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 	// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
 	signOnConfig := *config
 	signOnConfig.Instructor = config.Instructor && config.Position == ""
-	state, token, err := sm.signOn(session, &signOnConfig)
+	token, err := sm.signOn(session, &signOnConfig)
 	if err != nil {
 		return err
 	}
@@ -368,6 +370,9 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 		tcp:     config.Position,
 		session: session,
 	}
+
+	// Get the state for the controller
+	state := session.sim.State.GetStateForController(config.Position)
 
 	*result = NewSimResult{
 		SimState:        state,
@@ -427,6 +432,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		VirtualControllers:          sc.VirtualControllers,
 		SignOnPositions:             make(map[string]*av.Controller),
 		TTSProvider:                 sm.tts,
+		StartTime:                   config.StartTime,
 	}
 
 	if !sm.local {
@@ -510,7 +516,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 		Instructor:          instructor,
 		DisableTextToSpeech: disableTextToSpeech,
 	}
-	state, token, err := sm.signOn(session, signOnConfig)
+	token, err := sm.signOn(session, signOnConfig)
 	if err != nil {
 		sm.mu.Unlock(sm.lg)
 		return err
@@ -528,6 +534,9 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	if prespawn {
 		session.sim.Prespawn()
 	}
+
+	// Get the state after prespawn (if any) has completed
+	state := session.sim.State.GetStateForController(initialTCP)
 
 	go func() {
 		defer sm.lg.CatchAndReportCrash()
@@ -606,19 +615,19 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 // assume SimManager lock is held
-func (sm *SimManager) signOn(ss *simSession, config *SimConnectionConfiguration) (*sim.State, string, error) {
-	state, err := ss.sim.SignOn(config.Position, config.Instructor, config.DisableTextToSpeech)
+func (sm *SimManager) signOn(ss *simSession, config *SimConnectionConfiguration) (string, error) {
+	_, err := ss.sim.SignOn(config.Position, config.Instructor, config.DisableTextToSpeech)
 	if err != nil {
-		return nil, "", err
+		return "", err
 	}
 
 	var buf [16]byte
 	if _, err := crand.Read(buf[:]); err != nil {
-		return nil, "", err
+		return "", err
 	}
 	token := base64.StdEncoding.EncodeToString(buf[:])
 
-	return state, token, nil
+	return token, nil
 }
 
 func (sm *SimManager) SignOff(token string) error {

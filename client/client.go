@@ -186,7 +186,7 @@ func NewControlClient(ss sim.State, controllerToken string, wsURL string, client
 		cc.speechWs, cc.speechCh = initializeSpeechWebsocket(controllerToken, wsURL, lg)
 	}
 
-	cc.SessionStats.SignOnTime = time.Now()
+	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
 	return cc
 }
