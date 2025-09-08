@@ -13,8 +13,8 @@ import (
 
 // This is as much of the METAR as we need at runtime.
 type BasicMETAR struct {
-	ICAO        string  `json:"icaoId"`
-	ReportTime  string  `json:"reportTime"`
+	ICAO        string `json:"icaoId"`
+	Time        time.Time
 	Temperature float32 `json:"temp"`
 	Altimeter   float32 `json:"altim"`
 	WindDir     *int    `json:"-"` // nil for variable winds, otherwise heading 0-360
@@ -22,8 +22,9 @@ type BasicMETAR struct {
 	WindGust    *int    `json:"wgst"`
 	Raw         string  `json:"rawOb"`
 
-	// WindDirRaw is used for JSON unmarshaling only
-	WindDirRaw any `json:"wdir"` // nil or string "VRB" for variable, else number for heading
+	// WindDirRaw and ReportTime are used for JSON unmarshaling only
+	WindDirRaw any    `json:"wdir"` // nil or string "VRB" for variable, else number for heading
+	ReportTime string `json:"reportTime"`
 }
 
 // UnmarshalJSON handles converting WindDirRaw to WindDir
@@ -59,15 +60,22 @@ func (b *BasicMETAR) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("unexpected wind direction type %T: %v", b.WindDirRaw, b.WindDirRaw)
 	}
 
-	return nil
+	// Parse time
+	var err error
+	b.Time, err = parseMETARTime(b.ReportTime)
+
+	return err
 }
 
-func (b BasicMETAR) Time() time.Time {
-	t, err := time.Parse(time.DateTime, b.ReportTime)
+func parseMETARTime(s string) (time.Time, error) {
+	t, err := time.Parse(time.DateTime, s)
 	if err != nil {
-		panic(err)
+		t, err = time.Parse("2006-01-02T15:04:05.999Z", s)
+		if err != nil {
+			return time.Time{}, err
+		}
 	}
-	return t.UTC()
+	return t.UTC(), nil
 }
 
 // IsVMC returns true if Visual Meteorological Conditions apply
@@ -234,6 +242,12 @@ func DecodeBasicMETARSOA(soa BasicMETARSOA) []BasicMETAR {
 			Altimeter:   float32(alt[i]) / 10,
 			WindSpeed:   int(speed[i]),
 			Raw:         soa.Raw[i],
+		}
+
+		var err error
+		cm.Time, err = parseMETARTime(cm.ReportTime)
+		if err != nil {
+			panic(err)
 		}
 
 		if dir[i] == -1 {

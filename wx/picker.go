@@ -50,12 +50,12 @@ func dayWeatherStatus(metars []BasicMETAR, year int, month time.Month, day int) 
 	nextDay := dayStart.AddDate(0, 0, 1)
 
 	startIdx, _ := slices.BinarySearchFunc(metars, dayStart, func(m BasicMETAR, t time.Time) int {
-		return m.Time().Compare(t)
+		return m.Time.Compare(t)
 	})
 
 	hasVMC, hasIMC := false, false
 
-	for i := startIdx; i < len(metars) && metars[i].Time().Before(nextDay); i++ {
+	for i := startIdx; i < len(metars) && metars[i].Time.Before(nextDay); i++ {
 		if metars[i].IsVMC() {
 			hasVMC = true
 		} else {
@@ -656,7 +656,7 @@ func validateAndAdjustDate(date *time.Time, metars []BasicMETAR) (bool, int) {
 		return false, 0
 	}
 
-	start, end := metars[0].Time(), metars[len(metars)-1].Time()
+	start, end := metars[0].Time, metars[len(metars)-1].Time
 	changed := false
 
 	if date.Before(start) {
@@ -669,7 +669,7 @@ func validateAndAdjustDate(date *time.Time, metars []BasicMETAR) (bool, int) {
 
 	// Find the most recent METAR before `date`
 	metarIdx, ok := slices.BinarySearchFunc(metars, *date, func(m BasicMETAR, t time.Time) int {
-		return m.Time().Compare(t)
+		return m.Time.Compare(t)
 	})
 	if !ok && metarIdx > 0 {
 		metarIdx--
@@ -686,7 +686,7 @@ func validateAndAdjustDate(date *time.Time, metars []BasicMETAR) (bool, int) {
 // Returns true if the time was changed
 func drawTimePickerPopup(date *time.Time, metars []BasicMETAR, metarIdx int, monospaceFont *imgui.Font) bool {
 	changed := false
-	start, end := metars[0].Time(), metars[len(metars)-1].Time()
+	start, end := metars[0].Time, metars[len(metars)-1].Time
 
 	if imgui.BeginTableV("picker_layout", 2, imgui.TableFlagsBorders|imgui.TableFlagsSizingFixedFit, imgui.Vec2{pickerTableWidth, 0}, 0) {
 		imgui.TableSetupColumnV("Date Selection", imgui.TableColumnFlagsWidthFixed, calendarColumnWidth, 0)
