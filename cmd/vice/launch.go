@@ -90,12 +90,12 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	}
 	c.GroupName = groupName
 
-	if c.Scenario, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
+	if c.ScenarioConfig, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
 		if scenarioName != "" {
 			c.lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
 		}
 		scenarioName = groupConfig.DefaultScenario
-		c.Scenario = groupConfig.ScenarioConfigs[scenarioName]
+		c.ScenarioConfig = groupConfig.ScenarioConfigs[scenarioName]
 	}
 	c.ScenarioName = scenarioName
 }
@@ -263,13 +263,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.EndTable()
 		}
 
-		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
-			if imgui.BeginComboV("Split", c.Scenario.SelectedSplit, imgui.ComboFlagsHeightLarge) {
+		if sc := c.ScenarioConfig.SplitConfigurations; sc.Len() > 1 {
+			if imgui.BeginComboV("Split", c.ScenarioConfig.SelectedSplit, imgui.ComboFlagsHeightLarge) {
 				for _, split := range sc.Splits() {
-					if imgui.SelectableBoolV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
+					if imgui.SelectableBoolV(split, split == c.ScenarioConfig.SelectedSplit, 0, imgui.Vec2{}) {
 						var err error
-						c.Scenario.SelectedSplit = split
-						c.Scenario.SelectedController, err = sc.GetPrimaryController(split)
+						c.ScenarioConfig.SelectedSplit = split
+						c.ScenarioConfig.SelectedController, err = sc.GetPrimaryController(split)
 						if err != nil {
 							c.lg.Errorf("unable to find primary controller: %v", err)
 						}
@@ -297,9 +297,9 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				return id
 			}
 
-			if len(c.Scenario.ArrivalRunways) > 0 {
+			if len(c.ScenarioConfig.ArrivalRunways) > 0 {
 				var a []string
-				for _, rwy := range c.Scenario.ArrivalRunways {
+				for _, rwy := range c.ScenarioConfig.ArrivalRunways {
 					a = append(a, rwy.Airport+"/"+rwy.Runway)
 				}
 				sort.Strings(a)
@@ -323,7 +323,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.TableNextColumn()
 			imgui.Text("Control Position:")
 			imgui.TableNextColumn()
-			imgui.Text(fmtPosition(c.Scenario.SelectedController))
+			imgui.Text(fmtPosition(c.ScenarioConfig.SelectedController))
 
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -339,7 +339,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				} else if c.connectionConfig.Position == "RPO" {
 					curPos = 2
 				}
-				if imgui.RadioButtonIntPtr(c.Scenario.SelectedController, &curPos, 0) {
+				if imgui.RadioButtonIntPtr(c.ScenarioConfig.SelectedController, &curPos, 0) {
 					c.connectionConfig.Position = "" // default: server will sort it out
 				}
 				if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
@@ -394,7 +394,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.Text("Wind:")
 
 			imgui.TableNextColumn()
-			wind := c.Scenario.AverageWind
+			wind := c.ScenarioConfig.AverageWind
 
 			var dir string
 			if wind.Direction == 0 {
@@ -516,8 +516,8 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	// Check rate limits and clamp if necessary
 	const rateLimit = 100.0
 	rateClamped := false
-	if !c.Scenario.LaunchConfig.CheckRateLimits(rateLimit) {
-		c.Scenario.LaunchConfig.ClampRates(rateLimit)
+	if !c.ScenarioConfig.LaunchConfig.CheckRateLimits(rateLimit) {
+		c.ScenarioConfig.LaunchConfig.ClampRates(rateLimit)
 		rateClamped = true
 	}
 
@@ -528,10 +528,10 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 		imgui.PopStyleColor()
 	}
 
-	drawDepartureUI(&c.Scenario.LaunchConfig, p)
-	drawVFRDepartureUI(&c.Scenario.LaunchConfig, p)
-	drawArrivalUI(&c.Scenario.LaunchConfig, p)
-	drawOverflightUI(&c.Scenario.LaunchConfig, p)
+	drawDepartureUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawVFRDepartureUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawArrivalUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawOverflightUI(&c.ScenarioConfig.LaunchConfig, p)
 	return false
 }
 

@@ -107,7 +107,7 @@ type NewSimConfiguration struct {
 	GroupName    string
 	ScenarioName string
 
-	Scenario *SimScenarioConfiguration
+	ScenarioConfig *SimScenarioConfiguration
 
 	TFRs []av.TFR
 
@@ -407,7 +407,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 	nsc := sim.NewSimConfiguration{
 		TFRs:                        config.TFRs,
 		TRACON:                      config.TRACONName,
-		LaunchConfig:                config.Scenario.LaunchConfig,
+		LaunchConfig:                config.ScenarioConfig.LaunchConfig,
 		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),
 		IsLocal:                     sm.local,
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
@@ -436,7 +436,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 	}
 
 	if !sm.local {
-		selectedSplit := config.Scenario.SelectedSplit
+		selectedSplit := config.ScenarioConfig.SelectedSplit
 		var err error
 		nsc.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
 		if err != nil {
@@ -458,7 +458,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		}
 	}
 	if !sm.local {
-		configs, err := sc.SplitConfigurations.GetConfiguration(config.Scenario.SelectedSplit)
+		configs, err := sc.SplitConfigurations.GetConfiguration(config.ScenarioConfig.SelectedSplit)
 		if err != nil {
 			lg.Errorf("unable to get configurations for split: %v", err)
 		}
