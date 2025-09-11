@@ -1,8 +1,8 @@
-// wx/picker.go
+// wxpicker.go
 // Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
-package wx
+package main
 
 import (
 	"fmt"
@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -45,11 +46,11 @@ const (
 )
 
 // dayWeatherStatus returns weather status for a given day
-func dayWeatherStatus(metars []BasicMETAR, year int, month time.Month, day int) int {
+func dayWeatherStatus(metars []wx.BasicMETAR, year int, month time.Month, day int) int {
 	dayStart := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 	nextDay := dayStart.AddDate(0, 0, 1)
 
-	startIdx, _ := slices.BinarySearchFunc(metars, dayStart, func(m BasicMETAR, t time.Time) int {
+	startIdx, _ := slices.BinarySearchFunc(metars, dayStart, func(m wx.BasicMETAR, t time.Time) int {
 		return m.Time.Compare(t)
 	})
 
@@ -220,7 +221,7 @@ func drawWindBackground(center [2]float32, drawList *imgui.DrawList) {
 }
 
 // drawDirectionalWind draws a directional wind arrow with gust indication
-func drawDirectionalWind(metar BasicMETAR, center [2]float32, drawList *imgui.DrawList) {
+func drawDirectionalWind(metar wx.BasicMETAR, center [2]float32, drawList *imgui.DrawList) {
 	color := windSpeedColor(metar.WindSpeed)
 	centerImGui := imgui.Vec2{X: center[0], Y: center[1]}
 
@@ -266,7 +267,7 @@ func drawDirectionalWind(metar BasicMETAR, center [2]float32, drawList *imgui.Dr
 }
 
 // drawVariableOrCalmWind draws variable wind text or calm wind dot
-func drawVariableOrCalmWind(metar BasicMETAR, center [2]float32, drawList *imgui.DrawList) {
+func drawVariableOrCalmWind(metar wx.BasicMETAR, center [2]float32, drawList *imgui.DrawList) {
 	centerImGui := imgui.Vec2{X: center[0], Y: center[1]}
 
 	if metar.WindSpeed > 0 {
@@ -281,7 +282,7 @@ func drawVariableOrCalmWind(metar BasicMETAR, center [2]float32, drawList *imgui
 }
 
 // drawWindIndicator draws a visual wind direction and speed indicator
-func drawWindIndicator(metar BasicMETAR) {
+func drawWindIndicator(metar wx.BasicMETAR) {
 	drawList := imgui.WindowDrawList()
 	pos := imgui.CursorScreenPos()
 	center := [2]float32{pos.X + windIndicatorRadius, pos.Y + windIndicatorRadius}
@@ -315,7 +316,7 @@ func formatRawMETAR(raw string) string {
 }
 
 // drawVMCIMCStatus displays VMC/IMC status with appropriate colors
-func drawVMCIMCStatus(metar BasicMETAR) {
+func drawVMCIMCStatus(metar wx.BasicMETAR) {
 	if metar.IsVMC() {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{0.0, 0.8, 0.0, 1.0}) // Green
 		imgui.Text("VMC")
@@ -328,7 +329,7 @@ func drawVMCIMCStatus(metar BasicMETAR) {
 }
 
 // drawVisibilityAndCeiling displays visibility and ceiling information
-func drawVisibilityAndCeiling(metar BasicMETAR) {
+func drawVisibilityAndCeiling(metar wx.BasicMETAR) {
 	if vis, err := metar.Visibility(); err == nil {
 		imgui.Text(fmt.Sprintf("Visibility: %.1f sm", vis))
 	}
@@ -345,7 +346,7 @@ func drawVisibilityAndCeiling(metar BasicMETAR) {
 }
 
 // drawWindAndWeatherIcons renders wind information and weather condition icons
-func drawWindAndWeatherIcons(metar BasicMETAR, largeFont *renderer.Font) {
+func drawWindAndWeatherIcons(metar wx.BasicMETAR, largeFont *renderer.Font) {
 	// Wind text display
 	if metar.WindDir == nil {
 		if metar.WindSpeed > 0 {
@@ -401,7 +402,7 @@ func drawWindAndWeatherIcons(metar BasicMETAR, largeFont *renderer.Font) {
 }
 
 // drawMETARDisplay renders the METAR information panel
-func drawMETARDisplay(metar BasicMETAR, monospaceFont *imgui.Font, largeFont *renderer.Font) {
+func drawMETARDisplay(metar wx.BasicMETAR, monospaceFont *imgui.Font, largeFont *renderer.Font) {
 	imgui.PushFont(monospaceFont)
 	imgui.TextWrapped(formatRawMETAR(metar.Raw))
 	imgui.PopFont()
@@ -419,7 +420,7 @@ func drawMETARDisplay(metar BasicMETAR, monospaceFont *imgui.Font, largeFont *re
 }
 
 // Returns true if the button was clicked
-func drawCurrentMonthDayButton(year int, month time.Month, day int, isSelected bool, start, end time.Time, metars []BasicMETAR) bool {
+func drawCurrentMonthDayButton(year int, month time.Month, day int, isSelected bool, start, end time.Time, metars []wx.BasicMETAR) bool {
 	pushedStyles := 0
 	dayDisabled := false
 
@@ -581,7 +582,7 @@ func drawCalendarHeader() {
 
 // drawCalendarGrid renders the calendar grid with day buttons
 // Returns true if a date was selected
-func drawCalendarGrid(date *time.Time, start, end time.Time, metars []BasicMETAR) bool {
+func drawCalendarGrid(date *time.Time, start, end time.Time, metars []wx.BasicMETAR) bool {
 	changed := false
 	year, month := date.Year(), date.Month()
 	prevMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).AddDate(0, -1, 0)
@@ -637,7 +638,7 @@ func drawCalendarGrid(date *time.Time, start, end time.Time, metars []BasicMETAR
 
 // drawCalendar renders the calendar portion of the date picker
 // Returns true if a date was selected
-func drawCalendar(date *time.Time, start, end time.Time, metars []BasicMETAR, columnWidth float32) bool {
+func drawCalendar(date *time.Time, start, end time.Time, metars []wx.BasicMETAR, columnWidth float32) bool {
 	changed := drawMonthNavigation(date, start, end, columnWidth)
 
 	if imgui.BeginTableV("calendar_full", 7, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
@@ -651,7 +652,7 @@ func drawCalendar(date *time.Time, start, end time.Time, metars []BasicMETAR, co
 
 // validateAndAdjustDate validates the date is within METAR bounds and finds the appropriate METAR index
 // Returns (changed, metarIdx)
-func validateAndAdjustDate(date *time.Time, metars []BasicMETAR) (bool, int) {
+func validateAndAdjustDate(date *time.Time, metars []wx.BasicMETAR) (bool, int) {
 	if len(metars) == 0 {
 		return false, 0
 	}
@@ -668,7 +669,7 @@ func validateAndAdjustDate(date *time.Time, metars []BasicMETAR) (bool, int) {
 	}
 
 	// Find the most recent METAR before `date`
-	metarIdx, ok := slices.BinarySearchFunc(metars, *date, func(m BasicMETAR, t time.Time) int {
+	metarIdx, ok := slices.BinarySearchFunc(metars, *date, func(m wx.BasicMETAR, t time.Time) int {
 		return m.Time.Compare(t)
 	})
 	if !ok && metarIdx > 0 {
@@ -684,7 +685,7 @@ func validateAndAdjustDate(date *time.Time, metars []BasicMETAR) (bool, int) {
 
 // drawTimePickerPopup renders the popup with date picker and METAR display
 // Returns true if the time was changed
-func drawTimePickerPopup(date *time.Time, metars []BasicMETAR, metarIdx int, monospaceFont *imgui.Font) bool {
+func drawTimePickerPopup(date *time.Time, metars []wx.BasicMETAR, metarIdx int, monospaceFont *imgui.Font) bool {
 	changed := false
 	start, end := metars[0].Time, metars[len(metars)-1].Time
 
@@ -727,7 +728,7 @@ func drawTimePickerPopup(date *time.Time, metars []BasicMETAR, metarIdx int, mon
 
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
-func TimePicker(label string, date *time.Time, metars []BasicMETAR, monospaceFont *imgui.Font) bool {
+func TimePicker(label string, date *time.Time, metars []wx.BasicMETAR, monospaceFont *imgui.Font) bool {
 	changed, metarIdx := validateAndAdjustDate(date, metars)
 
 	imgui.Text(label)
