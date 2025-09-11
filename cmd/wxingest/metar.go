@@ -214,7 +214,7 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 		metar[ap] = soa
 	}
 
-	nb, err := st.StoreObject("METAR.msgpack.zstd", metar)
+	nb, err := st.StoreObject("METAR.msgpack.zst", metar)
 	if err == nil {
 		LogInfo("Stored %s for %d airports' METAR", util.ByteCount(nb), len(metar))
 	}

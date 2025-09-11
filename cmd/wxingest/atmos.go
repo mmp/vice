@@ -140,7 +140,7 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 
 	// Parse all paths in a single pass
 	for path := range atmosPaths {
-		// Parse paths like atmos/BOI/2025-07-27T18:00:00Z.msgpack.zstd
+		// Parse paths like atmos/BOI/2025-07-27T18:00:00Z.msgpack.zst
 		parts := strings.Split(strings.TrimPrefix(path, "atmos/"), "/")
 		if len(parts) != 2 {
 			LogError("%s: malformed path", path)
@@ -149,7 +149,7 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 
 		tracon := parts[0]
 
-		tm, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zstd"))
+		tm, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst"))
 		if err != nil {
 			LogError("%s", err)
 			continue
@@ -572,7 +572,7 @@ func uploadWeatherSampleField(sf *wx.SampleField, tracon string, t time.Time, st
 		return 0, err
 	}
 
-	path := fmt.Sprintf("atmos/%s/%s.msgpack.zstd", tracon, t.Format(time.RFC3339))
+	path := fmt.Sprintf("atmos/%s/%s.msgpack.zst", tracon, t.Format(time.RFC3339))
 
 	if *hrrrQuick {
 		// skip upload
