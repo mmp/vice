@@ -40,10 +40,34 @@ const (
 	arrowHeadLength = 15
 	arrowHeadAngle  = 25
 	windDotRadius   = 8
-
-	// Time constants
-	minutesPerDay = 1439 // 23:59
 )
+
+// getValidFullDays returns a sorted list of dates where the entire 24-hour period
+// is covered by intervals (midnight to midnight in UTC)
+func getValidFullDays(intervals []util.TimeInterval) []time.Time {
+	var days []time.Time
+
+	for _, interval := range intervals {
+		// Start at midnight of the first day that could be fully covered
+		// (the day after the interval starts, if it doesn't start at midnight)
+		curDay := interval.Start().Truncate(24 * time.Hour)
+		if !interval.Start().Equal(curDay) {
+			// Interval doesn't start at midnight, so this day isn't fully covered
+			curDay = curDay.Add(24 * time.Hour)
+		}
+
+		// Add all full days in this interval
+		for curDay.Before(interval.End()) {
+			nextDay := curDay.Add(24 * time.Hour)
+			if !interval.End().Before(nextDay) {
+				days = append(days, curDay)
+			}
+			curDay = nextDay
+		}
+	}
+
+	return days
+}
 
 // dayWeatherStatus returns weather status for a given day
 func dayWeatherStatus(metars []wx.BasicMETAR, year int, month time.Month, day int) int {
@@ -420,13 +444,17 @@ func drawMETARDisplay(metar wx.BasicMETAR, monospaceFont *imgui.Font, largeFont 
 }
 
 // Returns true if the button was clicked
-func drawCurrentMonthDayButton(year int, month time.Month, day int, isSelected bool, start, end time.Time, metars []wx.BasicMETAR) bool {
+func drawCurrentMonthDayButton(year int, month time.Month, day int, isSelected bool, validDays []time.Time, metars []wx.BasicMETAR) bool {
 	pushedStyles := 0
 	dayDisabled := false
 
 	if day > 0 {
-		dayDate := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
-		dayDisabled = dayDate.Before(start) || dayDate.After(end)
+		dayStart := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+
+		_, ok := slices.BinarySearchFunc(validDays, dayStart, func(a, b time.Time) int {
+			return a.Compare(b)
+		})
+		dayDisabled = !ok
 	}
 
 	if isSelected {
@@ -478,18 +506,10 @@ func isMonthAfterRange(month, end time.Time) bool {
 
 // drawTimeSelector renders the time slider for selecting hour and minute
 // Returns true if the time was changed
-func drawTimeSelector(date *time.Time, start, end time.Time) bool {
-	// Calculate time bounds based on METAR data for boundary days
-	minMinute := int32(0)             // Default: start of day
-	maxMinute := int32(minutesPerDay) // Default: end of day (23:59)
-
-	if date.Year() == start.Year() && date.Month() == start.Month() && date.Day() == start.Day() {
-		// On the first day, can't go before first METAR time
-		minMinute = int32(start.Hour()*60 + start.Minute())
-	}
-	if date.Year() == end.Year() && date.Month() == end.Month() && date.Day() == end.Day() {
-		maxMinute = int32(end.Hour()*60 + end.Minute())
-	}
+// Since we only allow selecting full days, this always shows 00:00 to 23:59
+func drawTimeSelector(date *time.Time) bool {
+	const minMinute = 0
+	const maxMinute = 1439 // 23:59
 
 	imgui.PushItemWidth(timeSliderWidth)
 	curMinute := int32(date.Hour()*60 + date.Minute())
@@ -505,7 +525,10 @@ func drawTimeSelector(date *time.Time, start, end time.Time) bool {
 
 // drawMonthNavigation renders the month navigation buttons and header
 // Returns true if the month was changed
-func drawMonthNavigation(date *time.Time, start, end time.Time, columnWidth float32) bool {
+func drawMonthNavigation(date *time.Time, validDays []time.Time, columnWidth float32) bool {
+	start := validDays[0]
+	end := validDays[len(validDays)-1].AddDate(0, 0, 1) // End of the last valid day
+
 	changed := false
 	year, month := date.Year(), date.Month()
 	prevMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).AddDate(0, -1, 0)
@@ -582,7 +605,7 @@ func drawCalendarHeader() {
 
 // drawCalendarGrid renders the calendar grid with day buttons
 // Returns true if a date was selected
-func drawCalendarGrid(date *time.Time, start, end time.Time, metars []wx.BasicMETAR) bool {
+func drawCalendarGrid(date *time.Time, validDays []time.Time, metars []wx.BasicMETAR) bool {
 	changed := false
 	year, month := date.Year(), date.Month()
 	prevMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC).AddDate(0, -1, 0)
@@ -612,8 +635,9 @@ func drawCalendarGrid(date *time.Time, start, end time.Time, metars []wx.BasicME
 				imgui.EndDisabled()
 			} else if day <= daysInCurrMonth {
 				// Current month days
-				if drawCurrentMonthDayButton(year, month, day, day == date.Day(), start, end, metars) {
-					*date = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+				if drawCurrentMonthDayButton(year, month, day, day == date.Day(), validDays, metars) {
+					// Since we only allow full days, just set to midnight
+					*date = time.Date(year, month, day, date.Hour(), date.Minute(), 0, 0, time.UTC)
 					changed = true
 				}
 				day++
@@ -638,56 +662,65 @@ func drawCalendarGrid(date *time.Time, start, end time.Time, metars []wx.BasicME
 
 // drawCalendar renders the calendar portion of the date picker
 // Returns true if a date was selected
-func drawCalendar(date *time.Time, start, end time.Time, metars []wx.BasicMETAR, columnWidth float32) bool {
-	changed := drawMonthNavigation(date, start, end, columnWidth)
+func drawCalendar(date *time.Time, validDays []time.Time, metars []wx.BasicMETAR, columnWidth float32) bool {
+	changed := drawMonthNavigation(date, validDays, columnWidth)
 
 	if imgui.BeginTableV("calendar_full", 7, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
 		drawCalendarHeader()
-		changed = drawCalendarGrid(date, start, end, metars) || changed
+		changed = drawCalendarGrid(date, validDays, metars) || changed
 		imgui.EndTable()
 	}
 
 	return changed
 }
 
-// validateAndAdjustDate validates the date is within METAR bounds and finds the appropriate METAR index
+// validateAndAdjustDate validates the date is within valid days and finds the appropriate METAR index
 // Returns (changed, metarIdx)
-func validateAndAdjustDate(date *time.Time, metars []wx.BasicMETAR) (bool, int) {
-	if len(metars) == 0 {
-		return false, 0
+func validateAndAdjustDate(date *time.Time, validDays []time.Time) bool {
+	if len(validDays) == 0 {
+		return false
 	}
 
-	start, end := metars[0].Time, metars[len(metars)-1].Time
-	changed := false
-
-	if date.Before(start) {
-		*date = start
-		changed = true
-	} else if date.After(end) {
-		*date = end
-		changed = true
-	}
-
-	// Find the most recent METAR before `date`
-	metarIdx, ok := slices.BinarySearchFunc(metars, *date, func(m wx.BasicMETAR, t time.Time) int {
-		return m.Time.Compare(t)
+	// Check if the current date is a valid day
+	dayStart := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
+	idx, found := slices.BinarySearchFunc(validDays, dayStart, func(a, b time.Time) int {
+		return a.Compare(b)
 	})
-	if !ok && metarIdx > 0 {
-		metarIdx--
-	}
-	// Ensure metarIdx is within bounds
-	if metarIdx >= len(metars) {
-		metarIdx = len(metars) - 1
+
+	if found {
+		return false // date unchanged
 	}
 
-	return changed, metarIdx
+	// Current day is not valid, find the nearest valid day
+	if idx >= len(validDays) {
+		// After all valid days, use the last one
+		*date = validDays[len(validDays)-1]
+	} else if idx == 0 {
+		// Before all valid days, use the first one
+		*date = validDays[0]
+	} else {
+		// Between two valid days, pick the closer one
+		prevDay, nextDay := validDays[idx-1], validDays[idx]
+		if dayStart.Sub(prevDay) < nextDay.Sub(dayStart) {
+			*date = prevDay
+		} else {
+			*date = nextDay
+		}
+	}
+	return true // changed the date
 }
 
 // drawTimePickerPopup renders the popup with date picker and METAR display
 // Returns true if the time was changed
-func drawTimePickerPopup(date *time.Time, metars []wx.BasicMETAR, metarIdx int, monospaceFont *imgui.Font) bool {
+func drawTimePickerPopup(date *time.Time, intervals []util.TimeInterval, metars []wx.BasicMETAR, metarIdx int, monospaceFont *imgui.Font) bool {
 	changed := false
-	start, end := metars[0].Time, metars[len(metars)-1].Time
+
+	// Compute valid days from intervals
+	validDays := getValidFullDays(intervals)
+	if len(validDays) == 0 {
+		// No valid full days, shouldn't happen but handle gracefully
+		return false
+	}
 
 	if imgui.BeginTableV("picker_layout", 2, imgui.TableFlagsBorders|imgui.TableFlagsSizingFixedFit, imgui.Vec2{pickerTableWidth, 0}, 0) {
 		imgui.TableSetupColumnV("Date Selection", imgui.TableColumnFlagsWidthFixed, calendarColumnWidth, 0)
@@ -698,10 +731,10 @@ func drawTimePickerPopup(date *time.Time, metars []wx.BasicMETAR, metarIdx int, 
 
 		// Left side: Date picker
 		imgui.TableNextColumn()
-		changed = drawCalendar(date, start, end, metars, calendarColumnWidth) || changed
+		changed = drawCalendar(date, validDays, metars, calendarColumnWidth) || changed
 
 		imgui.Separator()
-		changed = drawTimeSelector(date, start, end) || changed
+		changed = drawTimeSelector(date) || changed
 
 		// Right side: METAR display
 		imgui.TableNextColumn()
@@ -728,19 +761,34 @@ func drawTimePickerPopup(date *time.Time, metars []wx.BasicMETAR, metarIdx int, 
 
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
-func TimePicker(label string, date *time.Time, metars []wx.BasicMETAR, monospaceFont *imgui.Font) bool {
-	changed, metarIdx := validateAndAdjustDate(date, metars)
+func TimePicker(label string, date *time.Time, intervals []util.TimeInterval, metars []wx.BasicMETAR, monospaceFont *imgui.Font) bool {
+	// Compute valid days from intervals
+	validDays := getValidFullDays(intervals)
+	if len(validDays) == 0 {
+		return false
+	}
+
+	changed := validateAndAdjustDate(date, validDays)
+
+	// Find the most recent METAR before `date`
+	metarIdx, ok := slices.BinarySearchFunc(metars, *date, func(m wx.BasicMETAR, t time.Time) int {
+		return m.Time.Compare(t)
+	})
+	if !ok && metarIdx > 0 {
+		metarIdx--
+	}
+	// Ensure metarIdx is within bounds
+	if metarIdx >= len(metars) {
+		metarIdx = len(metars) - 1
+	}
 
 	imgui.Text(label)
 	imgui.SameLine()
 	if imgui.Button(date.Format("2006-01-02 15:04")) {
 		imgui.OpenPopupStr(label + "_popup")
 	}
-
 	if imgui.BeginPopupV(label+"_popup", imgui.WindowFlagsNoMove|imgui.WindowFlagsNoResize) {
-		// Draw the time picker popup
-		changed = drawTimePickerPopup(date, metars, metarIdx, monospaceFont) || changed
-
+		changed = drawTimePickerPopup(date, intervals, metars, metarIdx, monospaceFont) || changed
 		imgui.EndPopup()
 	}
 
