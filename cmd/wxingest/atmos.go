@@ -236,7 +236,7 @@ func ingestHRRRForTracon(gribPath string, tracon string, tfr *util.TempFileRegis
 		return 0, err
 	}
 
-	return uploadWeatherSampleField(sf, tracon, t, sb)
+	return uploadWeatherAtmos(sf, tracon, t, sb)
 }
 
 func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) (*os.File, error) {
@@ -283,7 +283,7 @@ func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) 
 	return cf, nil
 }
 
-func sampleFieldFromCSV(tracon string, f *os.File) (*wx.SampleField, error) {
+func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	// Read chunks of the file asynchronously and with double-buffering so
@@ -414,7 +414,7 @@ type LineItem struct {
 	Level            int
 }
 
-func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.SampleField, error) {
+func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.Atmos, error) {
 	bp := 0 // buf pos
 	var buf []byte
 
@@ -458,7 +458,7 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return s
 	}
 
-	sf := wx.MakeSampleField()
+	at := wx.MakeAtmos()
 
 	tspec, ok := av.DB.TRACONs[tracon]
 	if !ok {
@@ -476,7 +476,7 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 			LogInfo("%s: processed %d lines of HRRR CSV (%.2f M / sec, %.2f MB/s)", filename, n,
 				float64(n)/elapsed/(1024*1024), float64(nbytes)/elapsed/(1024*1024))
 
-			return &sf, nil
+			return &at, nil
 		}
 		if n%1000000 == 0 {
 			select {
@@ -498,10 +498,10 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 				continue
 			}
 
-			stack, ok := sf.SampleStacks[pt]
+			stack, ok := at.SampleStacks[pt]
 			if !ok {
 				stack = allocStack()
-				sf.SampleStacks[pt] = stack
+				at.SampleStacks[pt] = stack
 			}
 
 			switch item.Type {
@@ -563,12 +563,12 @@ func parseHRRRLine(line []byte) (LineItem, error) {
 	return li, nil
 }
 
-func uploadWeatherSampleField(sf *wx.SampleField, tracon string, t time.Time, st StorageBackend) (int64, error) {
-	soa, err := sf.ToSOA()
+func uploadWeatherAtmos(at *wx.Atmos, tracon string, t time.Time, st StorageBackend) (int64, error) {
+	soa, err := at.ToSOA()
 	if err != nil {
 		return 0, err
 	}
-	if err := wx.CheckSampleFieldConversion(*sf, soa); err != nil {
+	if err := wx.CheckAtmosConversion(*at, soa); err != nil {
 		return 0, err
 	}
 

@@ -1,4 +1,4 @@
-// wx/sample.go
+// wx/atmos.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -29,7 +29,7 @@ type Sample struct {
 // IdFromLevelIndex perform the indexing and its inverse.
 const NumSampleLevels = 40
 
-type SampleField struct {
+type Atmos struct {
 	// Lat-longs to stack of levels
 	SampleStacks map[math.Point2LL]*SampleStack
 }
@@ -40,7 +40,7 @@ type SampleStack struct {
 
 // For storage, this information is encoded in structure-of-arrays format,
 // which makes it more compressible.
-type SampleFieldSOA struct {
+type AtmosSOA struct {
 	Lat, Long []float32
 	Levels    [NumSampleLevels]LevelsSOA
 }
@@ -55,8 +55,8 @@ type LevelsSOA struct {
 	Height      []uint8 // geopotential height (MSL) + windHeightOffset in meters
 }
 
-func MakeSampleField() SampleField {
-	return SampleField{SampleStacks: make(map[math.Point2LL]*SampleStack)}
+func MakeAtmos() Atmos {
+	return Atmos{SampleStacks: make(map[math.Point2LL]*SampleStack)}
 }
 
 func LevelIndexFromId(b []byte) int {
@@ -121,8 +121,8 @@ func dirSpeedToUV(dir, speed float32) (float32, float32) {
 	return -s * float32(math.Sin(d)), -s * float32(math.Cos(d))
 }
 
-func (sf SampleField) ToSOA() (SampleFieldSOA, error) {
-	soa := SampleFieldSOA{}
+func (sf Atmos) ToSOA() (AtmosSOA, error) {
+	soa := AtmosSOA{}
 
 	pts := slices.Collect(maps.Keys(sf.SampleStacks))
 	slices.SortFunc(pts, func(a, b math.Point2LL) int {
@@ -145,10 +145,10 @@ func (sf SampleField) ToSOA() (SampleFieldSOA, error) {
 		for i, level := range sf.SampleStacks[pt].Levels {
 			hdg, spd := uvToDirSpeed(level.UComponent, level.VComponent)
 			if hdg < 0 || hdg > 360 {
-				return SampleFieldSOA{}, fmt.Errorf("bad heading: %f not in 0-360", hdg)
+				return AtmosSOA{}, fmt.Errorf("bad heading: %f not in 0-360", hdg)
 			}
 			if spd < 0 || spd > 255 {
-				return SampleFieldSOA{}, fmt.Errorf("bad speed: %f not in 0-255", spd)
+				return AtmosSOA{}, fmt.Errorf("bad speed: %f not in 0-255", spd)
 			}
 			soa.Levels[i].Heading = append(soa.Levels[i].Heading, uint8(math.Round(hdg+1)/2))
 			soa.Levels[i].Speed = append(soa.Levels[i].Speed, uint8(math.Round(spd)))
@@ -156,14 +156,14 @@ func (sf SampleField) ToSOA() (SampleFieldSOA, error) {
 			tc := level.Temperature - 273.15 // K -> C
 			tq := int(math.Round(tc))
 			if tq < -128 || tq > 127 {
-				return SampleFieldSOA{}, fmt.Errorf("bad temperature: %d not in -128-127", tq)
+				return AtmosSOA{}, fmt.Errorf("bad temperature: %d not in -128-127", tq)
 			}
 			soa.Levels[i].Temperature = append(soa.Levels[i].Temperature, int8(tq))
 
 			h := level.Height + windHeightOffset // deal with slightly below sea level
 			h = (h + 50) / 100                   // 100s of meters
 			if h < 0 || h > 255 {
-				return SampleFieldSOA{}, fmt.Errorf("bad remapped height: %f not in 0-255", h)
+				return AtmosSOA{}, fmt.Errorf("bad remapped height: %f not in 0-255", h)
 			}
 			soa.Levels[i].Height = append(soa.Levels[i].Height, uint8(h))
 		}
@@ -179,18 +179,18 @@ func (sf SampleField) ToSOA() (SampleFieldSOA, error) {
 	return soa, nil
 }
 
-func (sfsoa SampleFieldSOA) ToAOS() SampleField {
-	sf := MakeSampleField()
+func (atsoa AtmosSOA) ToAOS() Atmos {
+	at := MakeAtmos()
 
 	var levels [NumSampleLevels]LevelsSOA
-	for i := range sfsoa.Levels {
-		levels[i].Heading = util.DeltaDecode(sfsoa.Levels[i].Heading)
-		levels[i].Speed = util.DeltaDecode(sfsoa.Levels[i].Speed)
-		levels[i].Temperature = util.DeltaDecode(sfsoa.Levels[i].Temperature)
-		levels[i].Height = util.DeltaDecode(sfsoa.Levels[i].Height)
+	for i := range atsoa.Levels {
+		levels[i].Heading = util.DeltaDecode(atsoa.Levels[i].Heading)
+		levels[i].Speed = util.DeltaDecode(atsoa.Levels[i].Speed)
+		levels[i].Temperature = util.DeltaDecode(atsoa.Levels[i].Temperature)
+		levels[i].Height = util.DeltaDecode(atsoa.Levels[i].Height)
 	}
 
-	for i := range sfsoa.Lat {
+	for i := range atsoa.Lat {
 		var stack SampleStack
 		for j, level := range levels {
 			s := Sample{
@@ -202,19 +202,19 @@ func (sfsoa SampleFieldSOA) ToAOS() SampleField {
 			stack.Levels[j] = s
 		}
 
-		sf.SampleStacks[math.Point2LL{sfsoa.Long[i], sfsoa.Lat[i]}] = &stack
+		at.SampleStacks[math.Point2LL{atsoa.Long[i], atsoa.Lat[i]}] = &stack
 	}
 
-	return sf
+	return at
 }
 
-func CheckSampleFieldConversion(sf SampleField, soa SampleFieldSOA) error {
-	cksf := soa.ToAOS()
-	if len(cksf.SampleStacks) != len(sf.SampleStacks) {
-		return fmt.Errorf("mismatch in number of entries %d - %d", len(sf.SampleStacks), len(cksf.SampleStacks))
+func CheckAtmosConversion(at Atmos, soa AtmosSOA) error {
+	ckat := soa.ToAOS()
+	if len(ckat.SampleStacks) != len(at.SampleStacks) {
+		return fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(ckat.SampleStacks))
 	}
-	for p, stack := range sf.SampleStacks {
-		ckstack, ok := cksf.SampleStacks[p]
+	for p, stack := range at.SampleStacks {
+		ckstack, ok := ckat.SampleStacks[p]
 		if !ok {
 			return fmt.Errorf("missing point in SampleStacks map %v", p)
 		}
