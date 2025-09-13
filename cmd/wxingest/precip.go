@@ -93,13 +93,7 @@ func processPrecip(sb StorageBackend, path string) (int64, error) {
 		return 0, err
 	}
 
-	type WXProcessed struct {
-		DBZ        []byte
-		Resolution int
-		Latitude   float32
-		Longitude  float32
-	}
-	wxp := WXProcessed{
+	wxp := wx.Precip{
 		DBZ:        util.DeltaEncode(wx.RadarImageToDBZ(img)),
 		Resolution: wxs.Resolution,
 		Latitude:   wxs.Latitude,

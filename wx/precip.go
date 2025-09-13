@@ -14,6 +14,14 @@ import (
 	"github.com/mmp/vice/math"
 )
 
+// Precip is the object type that is stored in GCS after wx ingest for precipitation.
+type Precip struct {
+	DBZ        []byte
+	Resolution int
+	Latitude   float32
+	Longitude  float32
+}
+
 func FetchRadarImage(center math.Point2LL, radius float32, resolution int) (image.Image, math.Extent2D, error) {
 	// The weather radar image comes via a WMS GetMap request from the NOAA.
 	//
