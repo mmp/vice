@@ -762,6 +762,13 @@ func drawTimePickerPopup(date *time.Time, intervals []util.TimeInterval, metars 
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
 func TimePicker(label string, date *time.Time, intervals []util.TimeInterval, metars []wx.BasicMETAR, monospaceFont *imgui.Font) bool {
+	// We lose the timezone when the times come through RPC from the
+	// server, so reestablish that here since we'd like to work in UTC
+	// throughout.
+	intervals = util.MapSlice(intervals, func(ti util.TimeInterval) util.TimeInterval {
+		return util.TimeInterval{ti[0].UTC(), ti[1].UTC()}
+	})
+
 	// Compute valid days from intervals
 	validDays := getValidFullDays(intervals)
 	if len(validDays) == 0 {
