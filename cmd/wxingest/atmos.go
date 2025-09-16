@@ -67,16 +67,43 @@ func ingestHRRR(sb StorageBackend) error {
 		// Roughly when the scrape started; ingest will run for this time and
 		// it will be incremented by an hour at a time until it is a few hours
 		// before the current time.
-		fetchTime := time.Date(2025, 7, 26, 2, 0, 0, 0, time.UTC)
+		fetchTime := time.Date(2025, 7, 28, 0, 0, 0, 0, time.UTC)
 
+		doTime := func(t time.Time) bool {
+			// Days that for various reasons the scraper didn't get a full
+			// days' information; don't spend the time processing HRRRs for
+			// those days since it'll be wasted effort.
+			skipDays := []time.Time{
+				time.Date(2025, 7, 30, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 8, 11, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 8, 12, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 8, 13, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 8, 14, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 3, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 4, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 5, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 6, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 7, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 8, 0, 0, 0, 0, time.UTC),
+				time.Date(2025, 9, 9, 0, 0, 0, 0, time.UTC),
+			}
+			for _, skip := range skipDays {
+				if t.Year() == skip.Year() && t.Month() == skip.Month() && t.Day() == skip.Day() {
+					return false
+				}
+			}
+
+			tracons := existing[fetchTime] // may be empty
+			slices.Sort(tracons)
+			return !slices.Equal(tracons, hrrrTRACONs)
+		}
+
+		// Stop once we get close to the current time.
 		for time.Since(fetchTime) > 3*time.Hour {
-			if tracons, ok := existing[fetchTime]; !ok {
-				slices.Sort(tracons)
-				if !slices.Equal(tracons, hrrrTRACONs) {
-					tCh <- fetchTime
-					if *hrrrQuick {
-						break
-					}
+			if doTime(fetchTime) {
+				tCh <- fetchTime
+				if *hrrrQuick {
+					break
 				}
 			}
 			fetchTime = fetchTime.Add(time.Hour)
