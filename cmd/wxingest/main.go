@@ -4,11 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"iter"
 	"log"
 	"net"
 	"net/http"
 	"net/http/pprof"
 	"os"
+	"path/filepath"
+	"slices"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
@@ -100,6 +103,46 @@ func LogError(msg string, args ...any) {
 func LogFatal(msg string, args ...any) {
 	log.Printf("FATAL "+msg, args...)
 	os.Exit(1)
+}
+
+func generateManifests(sb StorageBackend, prefix string, items iter.Seq[string]) error {
+	LogInfo("%s: updating manifests", prefix)
+
+	var eg errgroup.Group
+	ch := make(chan string)
+	eg.Go(func() error {
+		defer close(ch)
+		for item := range items {
+			ch <- item
+		}
+		return nil
+	})
+
+	for range *nWorkers {
+		eg.Go(func() error {
+			for item := range ch {
+				paths, err := sb.List(filepath.Join(prefix, item))
+				if err != nil {
+					return err
+				}
+				var manifest []string
+				for path := range paths {
+					file := filepath.Base(path)
+					if file != "manifest.msgpack.zst" {
+						manifest = append(manifest, file)
+					}
+				}
+				slices.Sort(manifest)
+
+				mpath := filepath.Join(prefix, item, "manifest.msgpack.zst")
+				sb.StoreObject(mpath, manifest)
+				LogInfo("Stored %d items in %s", len(manifest), mpath)
+			}
+			return nil
+		})
+	}
+
+	return eg.Wait()
 }
 
 func launchHTTPServer() {

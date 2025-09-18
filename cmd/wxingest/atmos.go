@@ -23,20 +23,6 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// NOTE: PANC (A11) is not included: we only process the conus dataset for
-// now and giving that -small_grib with the PANC lat-longs generates a
-// ~1.4GB grib file, for reasons unknown.
-//
-// vice -listscenarios 2>/dev/null | cut -d / -f 1 | grep -v A11 | uniq
-var hrrrTRACONs = []string{
-	"A80", "A90", "AAC", "ABE", "ABQ", "AGS", "ALB", "ASE", "AUS", "AVL", "BGR",
-	"BHM", "BIL", "BNA", "BOI", "BTV", "BUF", "C90", "CHS", "CID", "CLE", "CLT", "COS",
-	"CPR", "D01", "D10", "D21", "DAB", "EWR", "F11", "GSO", "GSP", "GTF", "I90", "IND",
-	"JAX", "L30", "M98", "MCI", "MDT", "MIA", "MKE", "N90", "NCT", "OKC", "P31", "P50",
-	"P80", "PCT", "PHL", "PIT", "PVD", "PWM", "R90", "RDU", "S46", "S56", "SAV", "SBA",
-	"SBN", "SCT", "SDF", "SGF", "SYR", "TPA", "Y90",
-}
-
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
 func ingestHRRR(sb StorageBackend) error {
 	tmp := os.Getenv("WXINGEST_TMP")
@@ -95,7 +81,7 @@ func ingestHRRR(sb StorageBackend) error {
 
 			tracons := existing[fetchTime] // may be empty
 			slices.Sort(tracons)
-			return !slices.Equal(tracons, hrrrTRACONs)
+			return !slices.Equal(tracons, wx.AtmosTRACONs)
 		}
 
 		// Stop once we get close to the current time.
@@ -147,7 +133,12 @@ func ingestHRRR(sb StorageBackend) error {
 		})
 	}
 
-	return eg.Wait()
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	return generateManifests(sb, "atmos", slices.Values(wx.AtmosTRACONs))
+
 }
 
 func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
@@ -171,6 +162,9 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 		parts := strings.Split(strings.TrimPrefix(path, "atmos/"), "/")
 		if len(parts) != 2 {
 			LogError("%s: malformed path", path)
+			continue
+		}
+		if parts[1] == "manifest.msgpack.zst" {
 			continue
 		}
 
@@ -228,7 +222,7 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, t
 	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
 	sem := make(chan struct{}, *nWorkers)
-	for _, tracon := range hrrrTRACONs {
+	for _, tracon := range wx.AtmosTRACONs {
 		if !slices.Contains(existingTRACONs, tracon) {
 			eg.Go(func() error {
 				sem <- struct{}{}
@@ -475,10 +469,10 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return append(accum, getline()...)
 	}
 
-	var arena []wx.SampleStack
-	allocStack := func() *wx.SampleStack {
+	var arena []wx.AtmosSampleStack
+	allocStack := func() *wx.AtmosSampleStack {
 		if len(arena) == 0 {
-			arena = make([]wx.SampleStack, 1024)
+			arena = make([]wx.AtmosSampleStack, 1024)
 		}
 		s := &arena[0]
 		arena = arena[1:]

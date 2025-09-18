@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"image/png"
 	"io"
+	"maps"
 	"path/filepath"
 	"strings"
 	"sync/atomic"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -55,7 +57,11 @@ func ingestPrecip(sb StorageBackend) error {
 
 	err := eg.Wait()
 	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
-	return err
+	if err != nil {
+		return err
+	}
+
+	return generateManifests(sb, "precip", maps.Keys(av.DB.TRACONs))
 }
 
 func processPrecip(sb StorageBackend, path string) (int64, error) {
