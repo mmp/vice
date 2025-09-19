@@ -469,10 +469,10 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return append(accum, getline()...)
 	}
 
-	var arena []wx.SampleStack
-	allocStack := func() *wx.SampleStack {
+	var arena []wx.AtmosSampleStack
+	allocStack := func() *wx.AtmosSampleStack {
 		if len(arena) == 0 {
-			arena = make([]wx.SampleStack, 1024)
+			arena = make([]wx.AtmosSampleStack, 1024)
 		}
 		s := &arena[0]
 		arena = arena[1:]

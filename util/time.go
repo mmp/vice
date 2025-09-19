@@ -5,6 +5,8 @@
 package util
 
 import (
+	"fmt"
+	"slices"
 	"time"
 )
 
@@ -96,4 +98,28 @@ func FindTimeIntervals(times []time.Time, d time.Duration) []TimeInterval {
 
 	// Add the final interval
 	return append(intervals, TimeInterval{start, times[len(times)-1]})
+}
+
+// FindTimeAtOrBefore finds the index of the time at or before t in a sorted slice of times.
+// Returns the index and an error if times is empty or t is out of range.
+func FindTimeAtOrBefore(times []time.Time, t time.Time) (int, error) {
+	if len(times) == 0 {
+		return 0, fmt.Errorf("no times available")
+	}
+	if t.Before(times[0]) {
+		return 0, fmt.Errorf("time %s is before earliest available time %s",
+			t.Format(time.RFC3339), times[0].Format(time.RFC3339))
+	}
+	if t.After(times[len(times)-1]) {
+		return 0, fmt.Errorf("time %s is after latest available time %s",
+			t.Format(time.RFC3339), times[len(times)-1].Format(time.RFC3339))
+	}
+
+	idx, ok := slices.BinarySearchFunc(times, t, func(a, b time.Time) int {
+		return a.Compare(b)
+	})
+	if !ok && idx > 0 {
+		idx-- // We want the time <= t
+	}
+	return idx, nil
 }
