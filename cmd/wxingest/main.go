@@ -52,6 +52,8 @@ func main() {
 	if *dryRun {
 		sb = &DryRunBackend{g: sb}
 	}
+	// Wrap with tracking backend to track bytes uploaded/downloaded
+	sb = NewTrackingBackend(sb)
 	defer sb.Close()
 
 	launchHTTPServer()
@@ -78,6 +80,11 @@ func main() {
 
 	if err := eg.Wait(); err != nil {
 		LogError("%v", err)
+	}
+
+	// Report the total bytes transferred
+	if tb, ok := sb.(*TrackingBackend); ok {
+		tb.ReportStats()
 	}
 }
 
