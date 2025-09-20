@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -46,6 +47,13 @@ type NewSimConfiguration struct {
 	// UI state
 	newSimType       int32
 	connectionConfig server.SimConnectionConfiguration
+
+	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR
+	airportMETAR    map[string][]wx.METAR
+	metarAirports   []string
+	fetchMETARError error
+	fetchingMETAR   bool
+	metarGeneration int
 }
 
 func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
@@ -98,6 +106,51 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 		c.ScenarioConfig = groupConfig.ScenarioConfigs[scenarioName]
 	}
 	c.ScenarioName = scenarioName
+
+	c.fetchMETAR()
+
+	c.updateStartTimeForRunways()
+}
+
+func (c *NewSimConfiguration) fetchMETAR() {
+	c.mu.Lock(c.lg)
+	defer c.mu.Unlock(c.lg)
+
+	if c.ScenarioConfig == nil || c.selectedServer == nil {
+		c.fetchingMETAR = false
+		return
+	}
+
+	airports := c.ScenarioConfig.AllAirports()
+	if slices.Equal(c.metarAirports, airports) {
+		// No need to refetch
+		return
+	}
+
+	c.airportMETAR = nil
+	c.fetchMETARError = nil
+	c.fetchingMETAR = true
+	c.metarGeneration++
+	currentGeneration := c.metarGeneration
+
+	c.mgr.GetMETAR(c.selectedServer, airports, func(metars map[string][]wx.METAR, err error) {
+		c.mu.Lock(c.lg)
+		defer c.mu.Unlock(c.lg)
+
+		if currentGeneration != c.metarGeneration {
+			return
+		}
+
+		c.fetchingMETAR = false
+
+		if err != nil {
+			c.fetchMETARError = err
+		} else {
+			c.airportMETAR = metars
+			c.metarAirports = airports
+			c.updateStartTimeForRunways()
+		}
+	})
 }
 
 const (
@@ -117,6 +170,11 @@ func (c *NewSimConfiguration) ShowRatesWindow() bool {
 func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 	if err := c.mgr.UpdateRemoteSims(); err != nil {
 		c.lg.Warnf("UpdateRemoteSims: %v", err)
+	}
+
+	// Fetch weather data lazily when needed
+	if err := c.mgr.UpdateAvailableWX(c.selectedServer); err != nil {
+		c.lg.Warnf("UpdateAvailableWX: %v", err)
 	}
 
 	if c.displayError != nil {
@@ -353,7 +411,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		}
 
 		// Show TTS disable option if the server supports TTS
-		if c.selectedServer != nil && c.selectedServer.HaveTTS {
+		if c.selectedServer.HaveTTS {
 			imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 			// Also update configs for both joining remote sims and creating new sims
 			c.connectionConfig.DisableTextToSpeech = config.DisableTextToSpeech
@@ -363,18 +421,58 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		imgui.Checkbox("Ensure last two characters in callsigns are unique",
 			&c.NewSimConfiguration.EnforceUniqueCallsignSuffix)
 
-		wind := c.ScenarioConfig.AverageWind
-		var dir string
-		if wind.Direction == 0 {
-			dir = "Variable"
-		} else {
-			dir = fmt.Sprintf("%03d", int(wind.Direction+5)/10*10)
-		}
+		// Lock for accessing METAR variables
+		c.mu.Lock(c.lg)
+		defer c.mu.Unlock(c.lg)
 
-		if wind.Gust > wind.Speed {
-			imgui.Text(fmt.Sprintf("Wind: %s at %.0f gust %.0f", dir, wind.Speed, wind.Gust))
-		} else {
-			imgui.Text(fmt.Sprintf("Wind: %s at %.0f", dir, wind.Speed))
+		if c.fetchingMETAR {
+			imgui.Text("METAR: Fetching...")
+		} else if c.fetchMETARError != nil {
+			imgui.Text("METAR error: " + c.fetchMETARError.Error())
+		} else if len(c.airportMETAR) > 0 {
+			chopRmk := func(s string) string {
+				if idx := strings.Index(s, "RMK"); idx != -1 {
+					return strings.TrimSpace(s[:idx])
+				}
+				return s
+			}
+
+			metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
+			slices.Sort(metarAirports)
+			if idx := slices.Index(metarAirports, c.ScenarioConfig.PrimaryAirport); idx > 0 {
+				// Move primary to the front
+				metarAirports = slices.Delete(metarAirports, idx, idx+1)
+				metarAirports = slices.Insert(metarAirports, 0, c.ScenarioConfig.PrimaryAirport)
+			}
+
+			metar := c.airportMETAR[metarAirports[0]]
+			TimePicker("Simulation start date/time", &c.NewSimConfiguration.StartTime,
+				c.selectedServer.AvailableWX, metar, &ui.fixedFont.Ifont)
+
+			imgui.SameLine()
+			if imgui.Button(renderer.FontAwesomeIconRedo) {
+				c.updateStartTimeForRunways()
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Pick a new time based on runway configuration and weather")
+			}
+
+			tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+			if imgui.BeginTableV("metar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 800, 0}, 0.) {
+				for i, ap := range metarAirports {
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					if i == 0 {
+						imgui.Text("METAR:")
+					}
+					imgui.TableNextColumn()
+					imgui.PushFont(&ui.fixedFont.Ifont)
+					metar := wx.METARForTime(c.airportMETAR[ap], c.NewSimConfiguration.StartTime)
+					imgui.Text(chopRmk(metar.Raw))
+					imgui.PopFont()
+				}
+				imgui.EndTable()
+			}
 		}
 	} else {
 		// Join remote
@@ -516,7 +614,6 @@ func (c *NewSimConfiguration) Start() error {
 		}
 	} else {
 		// Create sim configuration for new sim
-		c.NewSimConfiguration.StartTime = time.Now()
 		if err := c.mgr.CreateNewSim(c.NewSimConfiguration, c.selectedServer, c.lg); err != nil {
 			c.lg.Errorf("CreateNewSim failed: %v", err)
 			return err
@@ -1519,4 +1616,47 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 	imgui.End()
 
 	return show
+}
+
+func (c *NewSimConfiguration) updateStartTimeForRunways() {
+	if c.ScenarioConfig == nil || c.selectedServer == nil || c.airportMETAR == nil {
+		return
+	}
+
+	airports := c.ScenarioConfig.AllAirports()
+	if len(airports) == 0 {
+		return
+	}
+	var ap string
+	if slices.Contains(airports, c.ScenarioConfig.PrimaryAirport) {
+		ap = c.ScenarioConfig.PrimaryAirport
+	} else {
+		ap = airports[0]
+	}
+
+	// Get runway headings for the selected airport
+	var sumRunwayVecs [2]float32
+	if dbap, ok := av.DB.Airports[ap]; ok {
+		for _, rwy := range dbap.Runways {
+			if slices.ContainsFunc(c.ScenarioConfig.DepartureRunways, func(r sim.DepartureRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+			if slices.ContainsFunc(c.ScenarioConfig.ArrivalRunways, func(r sim.ArrivalRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+		}
+	}
+	avgRwyHeading := math.VectorHeading(sumRunwayVecs)
+	avgRwyMagneticHeading := avgRwyHeading + c.ScenarioConfig.MagneticVariation
+
+	// Use wx.SampleMETAR to pick an appropriate time
+	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
+		if sampledMETAR := wx.SampleMETAR(apMETAR, c.selectedServer.AvailableWX, avgRwyMagneticHeading); sampledMETAR != nil {
+			c.StartTime = sampledMETAR.Time.UTC()
+		}
+	}
 }

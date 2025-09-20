@@ -1,5 +1,5 @@
-// pkg/client/client.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// client/client.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package client
@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/gorilla/websocket"
 	"github.com/vmihailenco/msgpack/v5"
@@ -61,7 +62,8 @@ type ControlClient struct {
 type Server struct {
 	*RPCClient
 
-	HaveTTS bool
+	HaveTTS     bool
+	AvailableWX []util.TimeInterval
 
 	name        string
 	configs     map[string]map[string]*server.Configuration
@@ -534,6 +536,41 @@ func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	return c.lastTransmissionCallsign
 }
 
+func (c *ControlClient) GetPrecipURL(t time.Time, callback func(url string, nextTime time.Time, err error)) {
+	args := server.PrecipURLArgs{
+		TRACON: c.State.TRACON,
+		Time:   t,
+	}
+	var result server.PrecipURL
+	c.addCall(makeRPCCall(c.client.Go("SimManager.GetPrecipURL", args, &result, nil),
+		func(err error) {
+			if callback != nil {
+				callback(result.URL, result.NextTime, err)
+			}
+		}))
+}
+
+func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, error)) {
+	spec := server.GetAtmosArgs{
+		TRACON: c.State.TRACON,
+		Time:   t,
+	}
+	var result server.GetAtmosResult
+	c.addCall(makeRPCCall(c.client.Go("SimManager.GetAtmosGrid", spec, &result, nil),
+		func(err error) {
+			if callback != nil {
+				if result.AtmosSOA != nil {
+					callback(result.AtmosSOA.ToAOS().GetGrid(), err)
+				} else {
+					callback(nil, err)
+				}
+			}
+		}))
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Server
+
 type serverConnection struct {
 	Server *Server
 	Err    error
@@ -553,6 +590,15 @@ func (s *Server) setRunningSims(rs map[string]*server.RemoteSim) {
 
 func (s *Server) GetRunningSims() map[string]*server.RemoteSim {
 	return s.runningSims
+}
+
+func (s *Server) UpdateAvailableWX() error {
+	if len(s.AvailableWX) > 0 {
+		// Already fetched
+		return nil
+	}
+
+	return s.callWithTimeout("SimManager.GetAvailableWX", 0, &s.AvailableWX)
 }
 
 func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {

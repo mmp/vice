@@ -19,7 +19,7 @@ import (
 // METAR from a single file
 type FileMETAR struct {
 	ICAO  string
-	METAR []wx.BasicMETAR
+	METAR []wx.METAR
 }
 
 func ingestMETAR(sb StorageBackend) error {
@@ -189,25 +189,25 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 	LogInfo("Uploading METAR for %d airports", len(fmetar))
 
 	// Flatten out the METAR, sort by date, eliminate duplicates, and convert to SOA
-	metar := make(map[string]wx.BasicMETARSOA)
+	metar := make(map[string]wx.METARSOA)
 	for ap, fm := range fmetar {
-		var recs []wx.BasicMETAR
+		var recs []wx.METAR
 		for _, m := range fm {
 			recs = append(recs, m.METAR...)
 		}
 
 		// Sort by date; since the time format used is 2006-01-02 15:04:05,
 		// string compare sorts them in time order.
-		slices.SortFunc(recs, func(a, b wx.BasicMETAR) int { return strings.Compare(a.ReportTime, b.ReportTime) })
+		slices.SortFunc(recs, func(a, b wx.METAR) int { return strings.Compare(a.ReportTime, b.ReportTime) })
 
 		// Eliminate duplicates (may happen since the scraper grabs 24-hour chunks every 16 hours.
-		recs = slices.CompactFunc(recs, func(a, b wx.BasicMETAR) bool { return a.ReportTime == b.ReportTime })
+		recs = slices.CompactFunc(recs, func(a, b wx.METAR) bool { return a.ReportTime == b.ReportTime })
 
-		soa, err := wx.MakeBasicMETARSOA(recs)
+		soa, err := wx.MakeMETARSOA(recs)
 		if err != nil {
 			return err
 		}
-		if err := wx.CheckBasicMETARSOA(soa, recs); err != nil {
+		if err := wx.CheckMETARSOA(soa, recs); err != nil {
 			return err
 		}
 

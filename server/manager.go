@@ -1,4 +1,4 @@
-// pkg/server/manager.go
+// server/manager.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -56,6 +56,7 @@ type SimManager struct {
 	tts              sim.TTSProvider
 	ttsUsageByIP     map[string]*ttsUsageStats
 	local            bool
+	wxProvider       wx.Provider
 	lg               *log.Logger
 }
 
@@ -83,12 +84,23 @@ type SimScenarioConfiguration struct {
 	SelectedSplit       string
 	SplitConfigurations av.SplitConfigurationSet
 	PrimaryAirport      string
+	MagneticVariation   float32
 
-	AverageWind  wx.WindLayer
 	LaunchConfig sim.LaunchConfig
 
 	DepartureRunways []sim.DepartureRunway
 	ArrivalRunways   []sim.ArrivalRunway
+}
+
+func (s *SimScenarioConfiguration) AllAirports() []string {
+	allAirports := make(map[string]bool)
+	for _, runway := range s.DepartureRunways {
+		allAirports[runway.Airport] = true
+	}
+	for _, runway := range s.ArrivalRunways {
+		allAirports[runway.Airport] = true
+	}
+	return util.SortedMapKeys(allAirports)
 }
 
 type simSession struct {
@@ -273,6 +285,8 @@ func (ss *simSession) SignOff(tcp string, lg *log.Logger) {
 	delete(ss.connectionsByTCP, tcp)
 }
 
+///////////////////////////////////////////////////////////////////////////
+
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
 	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
@@ -287,6 +301,12 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 		ttsUsageByIP:    make(map[string]*ttsUsageStats),
 		local:           isLocal,
 		lg:              lg,
+	}
+
+	var err error
+	sm.wxProvider, err = MakeWXProvider(serverAddress, lg)
+	if err != nil {
+		lg.Errorf("%v", err)
 	}
 
 	sm.launchHTTPServer()
@@ -418,7 +438,6 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		Description:                 description,
 		MagneticVariation:           sg.MagneticVariation,
 		NmPerLongitude:              sg.NmPerLongitude,
-		Wind:                        sc.Wind,
 		Airports:                    sg.Airports,
 		Fixes:                       sg.Fixes,
 		PrimaryAirport:              sg.PrimaryAirport,
@@ -432,6 +451,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		VirtualControllers:          sc.VirtualControllers,
 		SignOnPositions:             make(map[string]*av.Controller),
 		TTSProvider:                 sm.tts,
+		WXProvider:                  sm.wxProvider,
 		StartTime:                   config.StartTime,
 	}
 
@@ -498,7 +518,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	if session.name != "" {
 		lg = lg.With(slog.String("sim_name", session.name))
 	}
-	session.sim.Activate(lg, sm.tts)
+	session.sim.Activate(lg, sm.tts, sm.wxProvider)
 
 	sm.mu.Lock(sm.lg)
 
@@ -611,6 +631,14 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	result.Configurations = sm.configs
 	result.HaveTTS = sm.tts != nil
 
+	return nil
+}
+
+func (sm *SimManager) GetAvailableWX(unused int, result *[]util.TimeInterval) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	*result = sm.wxProvider.GetAvailableTimeIntervals()
 	return nil
 }
 
@@ -854,6 +882,58 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 			fut.ErrCh = nil // stop checking
 		}
 	}
+}
+
+func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	var err error
+	*result, err = sm.wxProvider.GetMETAR(airports)
+	return err
+}
+
+func (sm *SimManager) GetTimeIntervals(_ struct{}, result *[]util.TimeInterval) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	*result = sm.wxProvider.GetAvailableTimeIntervals()
+	return nil
+}
+
+type PrecipURLArgs struct {
+	TRACON string
+	Time   time.Time
+}
+
+type PrecipURL struct {
+	URL      string
+	NextTime time.Time
+}
+
+func (sm *SimManager) GetPrecipURL(args PrecipURLArgs, result *PrecipURL) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	var err error
+	result.URL, result.NextTime, err = sm.wxProvider.GetPrecipURL(args.TRACON, args.Time)
+	return err
+}
+
+type GetAtmosArgs struct {
+	TRACON string
+	Time   time.Time
+}
+
+type GetAtmosResult struct {
+	AtmosSOA *wx.AtmosSOA
+	Time     time.Time
+	NextTime time.Time
+}
+
+func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	var err error
+	result.AtmosSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmos(args.TRACON, args.Time)
+	return err
 }
 
 ///////////////////////////////////////////////////////////////////////////

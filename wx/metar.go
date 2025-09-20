@@ -3,16 +3,18 @@ package wx
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
 
 // This is as much of the METAR as we need at runtime.
-type BasicMETAR struct {
+type METAR struct {
 	ICAO        string `json:"icaoId"`
 	Time        time.Time
 	Temperature float32 `json:"temp"`
@@ -27,13 +29,18 @@ type BasicMETAR struct {
 	ReportTime string `json:"reportTime"`
 }
 
+func (m METAR) Altimeter_inHg() float32 {
+	// Conversion formula (hectoPascal to Inch of Mercury): 29.92 * (hpa / 1013.2)
+	return 0.02953 * m.Altimeter
+}
+
 // UnmarshalJSON handles converting WindDirRaw to WindDir
-func (b *BasicMETAR) UnmarshalJSON(data []byte) error {
-	type Alias BasicMETAR
+func (m *METAR) UnmarshalJSON(data []byte) error {
+	type Alias METAR
 	aux := &struct {
 		*Alias
 	}{
-		Alias: (*Alias)(b),
+		Alias: (*Alias)(m),
 	}
 
 	if err := json.Unmarshal(data, &aux); err != nil {
@@ -41,12 +48,12 @@ func (b *BasicMETAR) UnmarshalJSON(data []byte) error {
 	}
 
 	// Convert WindDirRaw to WindDir
-	switch v := b.WindDirRaw.(type) {
+	switch v := m.WindDirRaw.(type) {
 	case nil:
-		b.WindDir = nil
+		m.WindDir = nil
 	case string:
 		if v == "VRB" {
-			b.WindDir = nil
+			m.WindDir = nil
 		} else {
 			return fmt.Errorf("unexpected wind direction string %q", v)
 		}
@@ -55,14 +62,14 @@ func (b *BasicMETAR) UnmarshalJSON(data []byte) error {
 			return fmt.Errorf("wind direction out of range: %f", v)
 		}
 		dir := int(v)
-		b.WindDir = &dir
+		m.WindDir = &dir
 	default:
-		return fmt.Errorf("unexpected wind direction type %T: %v", b.WindDirRaw, b.WindDirRaw)
+		return fmt.Errorf("unexpected wind direction type %T: %v", m.WindDirRaw, m.WindDirRaw)
 	}
 
 	// Parse time
 	var err error
-	b.Time, err = parseMETARTime(b.ReportTime)
+	m.Time, err = parseMETARTime(m.ReportTime)
 
 	return err
 }
@@ -80,21 +87,21 @@ func parseMETARTime(s string) (time.Time, error) {
 
 // IsVMC returns true if Visual Meteorological Conditions apply
 // VMC requires >= 3 miles visibility and >= 1000' ceiling AGL
-func (b BasicMETAR) IsVMC() bool {
+func (m METAR) IsVMC() bool {
 	// >= 3 miles visibility
-	vis, err := b.Visibility()
+	vis, err := m.Visibility()
 	if err != nil || vis < 3 {
 		return false
 	}
 
 	// >= 1000' ceiling AGL
-	ceil, err := b.Ceiling()
+	ceil, err := m.Ceiling()
 	return err == nil && ceil >= 1000
 }
 
 // Visibility extracts visibility in statute miles from the raw METAR
-func (b BasicMETAR) Visibility() (float32, error) {
-	for _, f := range strings.Fields(b.Raw) {
+func (m METAR) Visibility() (float32, error) {
+	for _, f := range strings.Fields(m.Raw) {
 		if strings.HasSuffix(f, "SM") {
 			f = strings.TrimSuffix(f, "SM")
 			f = strings.TrimPrefix(f, "M") // there if 1/4 or less
@@ -115,12 +122,12 @@ func (b BasicMETAR) Visibility() (float32, error) {
 			}
 		}
 	}
-	return -1, fmt.Errorf("%s: no visibility found", b.Raw)
+	return -1, fmt.Errorf("%s: no visibility found", m.Raw)
 }
 
 // Ceiling returns ceiling in feet AGL (above ground level)
-func (b BasicMETAR) Ceiling() (int, error) {
-	for _, f := range strings.Fields(b.Raw) {
+func (m METAR) Ceiling() (int, error) {
+	for _, f := range strings.Fields(m.Raw) {
 		// BKN (broken) or OVC (overcast) constitute a ceiling
 		if strings.HasPrefix(f, "BKN") || strings.HasPrefix(f, "OVC") {
 			if len(f) < 6 {
@@ -140,9 +147,45 @@ func (b BasicMETAR) Ceiling() (int, error) {
 	return 12000, nil
 }
 
-// Structure-of-arrays representation of an array of BasicMETAR objects
+func METARForTime(metar []METAR, t time.Time) METAR {
+	if idx, _ := slices.BinarySearchFunc(metar, t, func(m METAR, t time.Time) int {
+		return m.Time.Compare(t)
+	}); idx < len(metar) {
+		return metar[idx]
+	}
+	return METAR{}
+}
+
+// Given an average headings (e.g. runway directions) and a slice of valid time intervals,
+// randomly sample a METAR entry with wind that is compatible with the headings.
+func SampleMETAR(metar []METAR, intervals []util.TimeInterval, avgHdg float32) *METAR {
+	var m *METAR
+	r := rand.Make()
+	n := float32(0)
+
+	for _, iv := range intervals {
+		idx, _ := slices.BinarySearchFunc(metar, iv[0], func(m METAR, t time.Time) int {
+			return m.Time.Compare(t)
+		})
+
+		for idx < len(metar) && metar[idx].Time.Before(iv[1]) {
+			if metar[idx].WindDir != nil && math.HeadingDifference(avgHdg, float32(*metar[idx].WindDir)) < 30 {
+				n++
+				if r.Float32() < 1/n { // reservoir sampling
+					m = &metar[idx]
+				}
+			}
+			idx++
+		}
+	}
+	return m
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// Structure-of-arrays representation of an array of METAR objects
 // for better compressability.
-type BasicMETARSOA struct {
+type METARSOA struct {
 	// These are all delta coded
 	ReportTime  [][]byte
 	Temperature []int16 // fixed point, one decimal digit
@@ -157,12 +200,12 @@ type BasicMETARSOA struct {
 	Raw []string
 }
 
-func MakeBasicMETARSOA(recs []BasicMETAR) (BasicMETARSOA, error) {
+func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 	if len(recs) == 0 {
-		return BasicMETARSOA{}, fmt.Errorf("No METAR records provided")
+		return METARSOA{}, fmt.Errorf("No METAR records provided")
 	}
 
-	soa := BasicMETARSOA{}
+	soa := METARSOA{}
 	for _, m := range recs {
 		soa.ReportTime = append(soa.ReportTime, []byte(m.ReportTime))
 
@@ -176,13 +219,13 @@ func MakeBasicMETARSOA(recs []BasicMETAR) (BasicMETARSOA, error) {
 
 		temp, err := toFixedS14_1(m.Temperature)
 		if err != nil {
-			return BasicMETARSOA{}, err
+			return METARSOA{}, err
 		}
 		soa.Temperature = append(soa.Temperature, temp)
 
 		alt, err := toFixedS14_1(m.Altimeter)
 		if err != nil {
-			return BasicMETARSOA{}, err
+			return METARSOA{}, err
 		}
 		soa.Altimeter = append(soa.Altimeter, alt)
 
@@ -192,20 +235,20 @@ func MakeBasicMETARSOA(recs []BasicMETAR) (BasicMETARSOA, error) {
 			dir = -1
 		} else {
 			if *m.WindDir < 0 || *m.WindDir > 360 {
-				return BasicMETARSOA{}, fmt.Errorf("wind direction out of range: %d", *m.WindDir)
+				return METARSOA{}, fmt.Errorf("wind direction out of range: %d", *m.WindDir)
 			}
 			dir = int16(*m.WindDir)
 		}
 		soa.WindDir = append(soa.WindDir, dir)
 
 		if m.WindSpeed < 0 || m.WindSpeed > 32767 {
-			return BasicMETARSOA{}, fmt.Errorf("Unexpected wind speed %d", m.WindSpeed)
+			return METARSOA{}, fmt.Errorf("Unexpected wind speed %d", m.WindSpeed)
 		}
 		soa.WindSpeed = append(soa.WindSpeed, int16(m.WindSpeed))
 
 		if m.WindGust != nil {
 			if *m.WindGust < 0 || *m.WindGust > 32767 {
-				return BasicMETARSOA{}, fmt.Errorf("Unexpected wind gust %d", *m.WindGust)
+				return METARSOA{}, fmt.Errorf("Unexpected wind gust %d", *m.WindGust)
 			}
 			soa.WindGust = append(soa.WindGust, int16(*m.WindGust))
 		} else {
@@ -225,8 +268,8 @@ func MakeBasicMETARSOA(recs []BasicMETAR) (BasicMETARSOA, error) {
 	return soa, nil
 }
 
-func DecodeBasicMETARSOA(soa BasicMETARSOA) []BasicMETAR {
-	var m []BasicMETAR
+func DecodeMETARSOA(soa METARSOA) []METAR {
+	var m []METAR
 
 	reportTime := util.DeltaDecodeBytesSlice(soa.ReportTime)
 	temp := util.DeltaDecode(soa.Temperature)
@@ -236,7 +279,7 @@ func DecodeBasicMETARSOA(soa BasicMETARSOA) []BasicMETAR {
 	gust := util.DeltaDecode(soa.WindGust)
 
 	for i := range soa.ReportTime {
-		cm := BasicMETAR{
+		cm := METAR{
 			ReportTime:  string(reportTime[i]),
 			Temperature: float32(temp[i]) / 10,
 			Altimeter:   float32(alt[i]) / 10,
@@ -267,8 +310,8 @@ func DecodeBasicMETARSOA(soa BasicMETARSOA) []BasicMETAR {
 	return m
 }
 
-func CheckBasicMETARSOA(soa BasicMETARSOA, orig []BasicMETAR) error {
-	check := DecodeBasicMETARSOA(soa)
+func CheckMETARSOA(soa METARSOA, orig []METAR) error {
+	check := DecodeMETARSOA(soa)
 
 	if len(orig) != len(check) {
 		return fmt.Errorf("Record count mismatch: %d - %d", len(orig), len(check))

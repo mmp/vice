@@ -337,7 +337,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 			text += ctx.Client.CurrentTime().UTC().Format("1504/05 ")
 		}
 		if filter.All || filter.Altimeter {
-			if metar := ctx.Client.State.WX.GetMETAR(ctx.Client.State.PrimaryAirport); metar != nil {
+			if metar, ok := ctx.Client.State.METAR[ctx.Client.State.PrimaryAirport]; ok {
 				text += fmt.Sprintf("%4.2f", metar.Altimeter_inHg())
 			}
 		}
@@ -524,7 +524,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 		var altimeters []string
 		for _, ap := range airports {
-			if metar := ctx.Client.State.WX.GetMETAR(ap); metar != nil {
+			if metar, ok := ctx.Client.State.METAR[ap]; ok {
 				altimeters = append(altimeters, stripK(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
 			}
 		}

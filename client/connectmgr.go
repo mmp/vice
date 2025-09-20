@@ -18,6 +18,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 )
 
 type ConnectionManager struct {
@@ -30,6 +31,9 @@ type ConnectionManager struct {
 	lastRemoteSimsUpdate  time.Time
 	updateRemoteSimsCall  *pendingCall
 	updateRemoteSimsError error
+
+	// METAR fetch state
+	pendingMETARCall *pendingCall
 
 	LocalServer   *Server
 	RemoteServer  *Server
@@ -206,6 +210,13 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 	return nil
 }
 
+func (cm *ConnectionManager) UpdateAvailableWX(srv *Server) error {
+	if srv == nil {
+		return nil
+	}
+	return srv.UpdateAvailableWX()
+}
+
 func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfiguration, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 	if err := srv.callWithTimeout("SimManager.ConnectToSim", config, &result); err != nil {
@@ -251,6 +262,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
 	}
 
+	if cm.pendingMETARCall != nil && cm.pendingMETARCall.CheckFinished(nil, nil) {
+		cm.pendingMETARCall = nil
+	}
+
 	if cm.client != nil {
 		cm.client.GetUpdates(es, p,
 			func(err error) {
@@ -275,4 +290,28 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 				}
 			})
 	}
+}
+
+func (cm *ConnectionManager) GetMETAR(srv *Server, airports []string, callback func(map[string][]wx.METAR, error)) {
+	if srv == nil || srv.RPCClient == nil {
+		callback(nil, errors.New("no server available"))
+		return
+	}
+
+	// Cancel any pending METAR call
+	cm.pendingMETARCall = nil
+
+	var soaMETAR map[string]wx.METARSOA
+	cm.pendingMETARCall = makeRPCCall(srv.Go("SimManager.GetMETAR", airports, &soaMETAR, nil),
+		func(err error) {
+			if err != nil {
+				callback(nil, err)
+			} else {
+				m := make(map[string][]wx.METAR)
+				for ap, soa := range soaMETAR {
+					m[ap] = wx.DecodeMETARSOA(soa)
+				}
+				callback(m, nil)
+			}
+		})
 }

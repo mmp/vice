@@ -838,7 +838,7 @@ func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTr
 }
 
 func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-	if sp.commandMode != CommandModeDrawWind {
+	if sp.commandMode != CommandModeDrawWind || sp.atmosGrid == nil {
 		return
 	}
 
@@ -849,39 +849,46 @@ func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransfor
 
 	// Wind barbs: https://www.weather.gov/hfo/windbarbinfo
 	const pix = 50
-	for y := range max(1, int(ctx.PaneExtent.Height()/pix)) {
-		for x := range max(1, int(ctx.PaneExtent.Width()/pix)) {
-			pw := [2]float32{float32(x)*pix + pix/2, float32(y)*pix + pix/2}
-			pll := transforms.LatLongFromWindowP(pw)
-			ws := ctx.Client.State.WX.LookupWind(pll, float32(sp.windDrawAltitude))
-			// Round to nearest 5 knots
-			spd := int(ws.Speed+2.5) / 5 * 5
+	step := 1
+	if r := sp.currentPrefs().Range; r > 55 {
+		step = 3
+	} else if r > 32 {
+		step = 2
+	}
+	for pll, samp := range sp.atmosGrid.SamplesAtLevel(sp.windDrawAltitudeIndex, step) {
+		// Round to nearest 5 knots
+		spd := int(samp.WindSpeed()+2.5) / 5 * 5
 
-			// Rotate so we can draw a canonical barb below
-			rot := math.Rotator2f(ws.Direction)
+		pw := transforms.WindowFromLatLongP(pll)
+		if spd <= 5 {
+			ld.AddCircle(pw, 4 /* pix */, 10)
+			continue
+		}
 
-			// Main line
-			ld.AddLine(pw, math.Add2f(pw, rot([2]float32{0, pix / 2})))
-			pb := [2]float32{0, pix / 2}
-			for spd > 50 {
-				// Triangle
-				v0 := math.Add2f(pw, rot(pb))
-				v1 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{0, -6})))
-				v2 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, -3})))
-				td.AddTriangle(v0, v1, v2)
-				pb[1] -= 6
-				spd -= 50
-			}
-			for spd > 10 {
-				// long line
-				ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, pix / 20}))))
-				pb[1] -= 3
-				spd -= 10
-			}
-			if spd > 5 {
-				// short line
-				ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 8, pix / 40}))))
-			}
+		// Rotate so we can draw a canonical barb below
+		rot := math.Rotator2f(samp.WindDirection())
+
+		// Main line
+		ld.AddLine(math.Sub2f(pw, rot([2]float32{0, pix / 4})), math.Add2f(pw, rot([2]float32{0, pix / 4})))
+		pb := [2]float32{0, pix / 4}
+		for spd >= 50 {
+			// Triangle
+			v0 := math.Add2f(pw, rot(pb))
+			v1 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{0, -6})))
+			v2 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, -3})))
+			td.AddTriangle(v0, v1, v2)
+			pb[1] -= 6
+			spd -= 50
+		}
+		for spd >= 10 {
+			// long line
+			ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, pix / 20}))))
+			pb[1] -= 3
+			spd -= 10
+		}
+		if spd >= 5 {
+			// short line
+			ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 8, pix / 40}))))
 		}
 	}
 

@@ -1,4 +1,4 @@
-// pkg/sim/sim.go
+// sim/sim.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -48,6 +48,10 @@ type Sim struct {
 	GenerationIndex int // for sequencing StateUpdates
 
 	VFRReportingPoints []av.VFRReportingPoint
+
+	wxModel    *wx.Model
+	wxProvider wx.Provider
+	METAR      map[string][]wx.METAR
 
 	eventStream *EventStream
 	lg          *log.Logger
@@ -201,7 +205,6 @@ type NewSimConfiguration struct {
 	SignOnPositions    map[string]*av.Controller
 
 	TFRs                    []av.TFR
-	Wind                    map[math.Point2LL][]wx.WindLayer
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
@@ -217,6 +220,7 @@ type NewSimConfiguration struct {
 	Airspace          av.Airspace
 
 	TTSProvider TTSProvider
+	WXProvider  wx.Provider
 }
 
 func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
@@ -233,6 +237,9 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
 		VFRReportingPoints: config.VFRReportingPoints,
+
+		wxModel: wx.MakeModel(config.WXProvider, config.TRACON, config.StartTime.UTC(), lg),
+		METAR:   make(map[string][]wx.METAR),
 
 		humanControllers: make(map[string]*humanController),
 
@@ -255,6 +262,24 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SquawkWarnedACIDs: make(map[ACID]interface{}),
 
 		ttsProvider: config.TTSProvider,
+		wxProvider:  config.WXProvider,
+	}
+
+	apmetar, err := s.wxProvider.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
+	if err != nil {
+		lg.Errorf("%v", err)
+	} else {
+		for ap, msoa := range apmetar {
+			metar := wx.DecodeMETARSOA(msoa)
+			idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
+				return m.Time.Compare(t)
+			})
+			if !ok && idx > 0 {
+				// METAR <= the start time
+				idx--
+			}
+			s.METAR[ap] = metar[idx:]
+		}
 	}
 
 	// Automatically add nearby airports and VORs as candidate reporting points
@@ -295,12 +320,12 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
-	s.State = newState(config, config.StartTime, manifest, lg)
+	s.State = newState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
 
 	return s
 }
 
-func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider) {
+func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Provider) {
 	s.lg = lg
 
 	loadPronunciationsIfNeeded()
@@ -326,6 +351,11 @@ func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider) {
 		vf := ttsProvider.GetAllVoices()
 		s.ttsVoicesFuture = &vf
 		s.ttsVoices = nil
+	}
+
+	s.wxProvider = provider
+	if s.wxModel == nil {
+		s.wxModel = wx.MakeModel(provider, s.State.TRACON, s.State.SimTime, s.lg)
 	}
 }
 
@@ -685,6 +715,8 @@ type StateUpdate struct {
 
 	Time time.Time
 
+	METAR map[string]wx.METAR
+
 	LaunchConfig LaunchConfig
 
 	UserRestrictionAreas []av.RestrictionArea
@@ -814,6 +846,8 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		Time: s.State.SimTime,
 
+		METAR: make(map[string]wx.METAR),
+
 		LaunchConfig: s.State.LaunchConfig,
 
 		UserRestrictionAreas: s.State.UserRestrictionAreas,
@@ -899,6 +933,18 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		}
 	}
 
+	// Get latest METAR
+	for ap, metar := range s.METAR {
+		// Drop the current METAR and move to the next one if the current time is after the next one's report time.
+		for len(metar) > 1 && s.State.SimTime.After(metar[1].Time) {
+			metar = metar[1:]
+		}
+		s.METAR[ap] = metar
+		if len(metar) > 0 { // this should be true, but...
+			update.METAR[ap] = metar[0]
+		}
+	}
+
 	if util.SizeOf(*update, os.Stderr, false, 256*1024) > 256*1024*1024 {
 		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
 		f, err := os.Create(fn)
@@ -931,6 +977,7 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		state.UnassociatedFlightPlans = su.UnassociatedFlightPlans
 		state.ReleaseDepartures = su.ReleaseDepartures
 		state.LaunchConfig = su.LaunchConfig
+		state.METAR = su.METAR
 
 		state.UserRestrictionAreas = su.UserRestrictionAreas
 
@@ -1078,8 +1125,6 @@ func (s *Sim) Step(elapsed time.Duration) bool {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
-	s.State.WX.UpdateTime(now)
-
 	for acid, ho := range s.Handoffs {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
@@ -1142,7 +1187,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			passedWaypoint := ac.Update(s.State.WX, s.bravoAirspace, nil /* s.lg*/)
+			passedWaypoint := ac.Update(s.wxModel, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
 
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
@@ -1245,8 +1290,8 @@ func (s *Sim) updateState() {
 							} else {
 								// VFR aircraft - select best runway based on wind
 								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
-								ws := s.State.WX.LookupWind(ap.Location, float32(ap.Elevation))
-								if rwy, _ := ap.SelectBestRunway(ws.Direction, s.State.MagneticVariation); rwy != nil {
+								as := s.wxModel.Lookup(ap.Location, float32(ap.Elevation), s.State.SimTime)
+								if rwy, _ := ap.SelectBestRunway(as.WindDirection(), s.State.MagneticVariation); rwy != nil {
 									runway = rwy.Id
 								}
 							}
@@ -1556,7 +1601,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	} else {
 		return AircraftDisplayState{
 			Spew:        spew.Sdump(ac),
-			FlightState: ac.NavSummary(s.State.WX, s.lg),
+			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.lg),
 		}, nil
 	}
 }

@@ -35,6 +35,7 @@ import (
 var (
 	ui struct {
 		font           *renderer.Font
+		fixedFont      *renderer.Font
 		aboutFont      *renderer.Font
 		aboutFontSmall *renderer.Font
 
@@ -87,6 +88,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	}
 
 	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
+	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize + 2 /* better match regular size */})
 	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 18})
 	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 14})
 	ui.eventsSubscription = es.Subscribe()

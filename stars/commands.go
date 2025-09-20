@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/davecgh/go-spew/spew"
@@ -115,7 +116,11 @@ func (c CommandMode) PreviewString(sp *STARSPane) string {
 	case CommandModeDrawRoute:
 		return "DRAWROUTE"
 	case CommandModeDrawWind:
-		return "WIND " + strconv.Itoa(sp.windDrawAltitude)
+		if sp.atmosGrid != nil {
+			return "WIND " + strconv.Itoa(int(sp.atmosGrid.AltitudeForIndex(sp.windDrawAltitudeIndex)))
+		} else {
+			return "WIND"
+		}
 	case CommandModeRange:
 		return "RANGE"
 	case CommandModePlaceCenter:
@@ -363,13 +368,15 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			}
 
 		case imgui.KeyUpArrow:
-			if sp.commandMode == CommandModeDrawWind {
-				sp.windDrawAltitude = min(17000, sp.windDrawAltitude+1000)
+			if sp.commandMode == CommandModeDrawWind && sp.atmosGrid != nil {
+				sp.windDrawAltitudeIndex++
+				sp.windDrawAltitudeIndex = min(sp.windDrawAltitudeIndex, sp.atmosGrid.Res[2]-1)
 			}
 
 		case imgui.KeyDownArrow:
-			if sp.commandMode == CommandModeDrawWind {
-				sp.windDrawAltitude = max(0, sp.windDrawAltitude-1000)
+			if sp.commandMode == CommandModeDrawWind && sp.atmosGrid != nil {
+				sp.windDrawAltitudeIndex--
+				sp.windDrawAltitudeIndex = max(sp.windDrawAltitudeIndex, 0)
 			}
 		}
 	}
@@ -563,7 +570,17 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 		case ".WIND":
 			sp.setCommandMode(ctx, CommandModeDrawWind)
-			sp.windDrawAltitude = av.DB.Airports[ctx.Client.State.PrimaryAirport].Elevation / 1000 * 1000
+			if sp.atmosGrid == nil {
+				ctx.Client.GetAtmosGrid(ctx.Client.State.SimTime,
+					func(ag *wx.AtmosGrid, err error) {
+						if err != nil {
+							ctx.Lg.Errorf("%v", err)
+						} else {
+							sp.atmosGrid = ag
+						}
+					})
+			}
+			sp.windDrawAltitudeIndex = 0
 			return
 
 		case ".VFR":
