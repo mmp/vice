@@ -14,6 +14,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -21,6 +22,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -2489,7 +2491,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmds = cmd
 		}
 
-		matching := sp.tracksFromACIDSuffix(ctx, suffix)
+		matching := TracksFromACIDSuffix(ctx.Client, suffix)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return
@@ -4714,7 +4716,7 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+	if (mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) || ctx.Client.PTTRecording {
 		ctx.Client.HoldRadioTransmissions()
 	} else {
 		ctx.Client.AllowRadioTransmissions()
@@ -5001,7 +5003,7 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 // Returns all aircraft that match the given suffix. If instructor is true,
 // returns all matching aircraft; otherwise only ones under the current
 // controller's control are considered for matching.
-func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string) []*sim.Track {
+func TracksFromACIDSuffix(client *client.ControlClient, suffix string) []*sim.Track {
 	match := func(trk *sim.Track) bool {
 		if trk.IsUnassociated() {
 			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
@@ -5011,17 +5013,17 @@ func (sp *STARSPane) tracksFromACIDSuffix(ctx *panes.Context, suffix string) []*
 				return false
 			}
 
-			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			if fp.ControllingController == client.State.UserTCP || client.State.AreInstructorOrRPO(client.State.UserTCP) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
+			if client.State.ResolveController(trk.FlightPlan.TrackingController) == client.State.UserTCP &&
 				trk.FlightPlan.ControllingController == "" {
 				return true
 			}
 			return false
 		}
 	}
-	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
+	return slices.Collect(util.FilterSeq(maps.Values(client.State.Tracks), match))
 }
