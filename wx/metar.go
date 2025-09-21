@@ -18,6 +18,7 @@ type METAR struct {
 	ICAO        string `json:"icaoId"`
 	Time        time.Time
 	Temperature float32 `json:"temp"`
+	Dewpoint    float32 `json:"dewp"`
 	Altimeter   float32 `json:"altim"`
 	WindDir     *int    `json:"-"` // nil for variable winds, otherwise heading 0-360
 	WindSpeed   int     `json:"wspd"`
@@ -189,6 +190,7 @@ type METARSOA struct {
 	// These are all delta coded
 	ReportTime  [][]byte
 	Temperature []int16 // fixed point, one decimal digit
+	Dewpoint    []int16 // fixed point, one decimal digit
 	Altimeter   []int16 // fixed point, one decimal digit
 	WindDir     []int16
 	WindSpeed   []int16
@@ -222,6 +224,12 @@ func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 			return METARSOA{}, err
 		}
 		soa.Temperature = append(soa.Temperature, temp)
+
+		dewp, err := toFixedS14_1(m.Dewpoint)
+		if err != nil {
+			return METARSOA{}, err
+		}
+		soa.Dewpoint = append(soa.Dewpoint, dewp)
 
 		alt, err := toFixedS14_1(m.Altimeter)
 		if err != nil {
@@ -260,6 +268,7 @@ func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 
 	soa.ReportTime = util.DeltaEncodeBytesSlice(soa.ReportTime)
 	soa.Temperature = util.DeltaEncode(soa.Temperature)
+	soa.Dewpoint = util.DeltaEncode(soa.Dewpoint)
 	soa.Altimeter = util.DeltaEncode(soa.Altimeter)
 	soa.WindDir = util.DeltaEncode(soa.WindDir)
 	soa.WindSpeed = util.DeltaEncode(soa.WindSpeed)
@@ -273,6 +282,7 @@ func DecodeMETARSOA(soa METARSOA) []METAR {
 
 	reportTime := util.DeltaDecodeBytesSlice(soa.ReportTime)
 	temp := util.DeltaDecode(soa.Temperature)
+	dewp := util.DeltaDecode(soa.Dewpoint)
 	alt := util.DeltaDecode(soa.Altimeter)
 	dir := util.DeltaDecode(soa.WindDir)
 	speed := util.DeltaDecode(soa.WindSpeed)
@@ -282,6 +292,7 @@ func DecodeMETARSOA(soa METARSOA) []METAR {
 		cm := METAR{
 			ReportTime:  string(reportTime[i]),
 			Temperature: float32(temp[i]) / 10,
+			Dewpoint:    float32(dewp[i]) / 10,
 			Altimeter:   float32(alt[i]) / 10,
 			WindSpeed:   int(speed[i]),
 			Raw:         soa.Raw[i],
@@ -325,6 +336,9 @@ func CheckMETARSOA(soa METARSOA, orig []METAR) error {
 		}
 		if math.Abs(mo.Temperature-mc.Temperature) > 0.001 {
 			return fmt.Errorf("Temperature mismatch: %.8g - %.8g", mo.Temperature, mc.Temperature)
+		}
+		if math.Abs(mo.Dewpoint-mc.Dewpoint) > 0.001 {
+			return fmt.Errorf("Dewpoint mismatch: %.8g - %.8g", mo.Dewpoint, mc.Dewpoint)
 		}
 		if math.Abs(mo.Altimeter-mc.Altimeter) > 0.001 {
 			return fmt.Errorf("Altimeter mismatch: %.8g - %.8g", mo.Altimeter, mc.Altimeter)
