@@ -129,6 +129,20 @@ func IdFromLevelIndex(i int) string {
 	}
 }
 
+// PressureFromLevelIndex returns pressure in millibars at the level.
+func PressureFromLevelIndex(i int) float32 {
+	switch {
+	case i == 0:
+		return 1013.2
+	case i >= 1 && i < NumSampleLevels:
+		i -= 1
+		i = 38 - i
+		return float32(50 + 25*i)
+	default:
+		panic("unexpected level index " + strconv.Itoa(i))
+	}
+}
+
 func uvToDirSpeed(u, v float32) (float32, float32) {
 	dir := 270 - math.Degrees(math.Atan2(v, u))
 	dir = math.NormalizeHeading(dir)
@@ -315,6 +329,7 @@ type Sample struct {
 	WindSample
 	Temperature float32 // Celsius
 	Dewpoint    float32 // Celsius
+	Pressure    float32 // millibars
 }
 
 func (s WindSample) WindDirection() float32 {
@@ -333,6 +348,7 @@ func LerpSample(x float32, s0, s1 Sample) Sample {
 		WindSample:  WindSample{WindVec: math.Lerp2f(x, s0.WindVec, s1.WindVec)},
 		Temperature: math.Lerp(x, s0.Temperature, s1.Temperature),
 		Dewpoint:    math.Lerp(x, s0.Dewpoint, s1.Dewpoint),
+		Pressure:    math.Lerp(x, s0.Pressure, s1.Pressure),
 	}
 }
 
@@ -405,6 +421,9 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 			const kelvinToCelsius = -273.15
 			g.Points[gidx].Temperature += math.Lerp(t, s0.Temperature, s1.Temperature) + kelvinToCelsius
 			g.Points[gidx].Dewpoint += math.Lerp(t, s0.Dewpoint, s1.Dewpoint) + kelvinToCelsius
+
+			p0, p1 := PressureFromLevelIndex(idx), PressureFromLevelIndex(idx+1)
+			g.Points[gidx].Pressure = math.Lerp(t, p0, p1)
 
 			sumWt[gidx]++
 		}
