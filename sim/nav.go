@@ -1,5 +1,5 @@
-// pkg/sim/nav.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// sim/nav.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package sim
@@ -537,7 +537,9 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime time.Time, lg
 				" to "+av.FormatAltitude(tgt)+" from previous crossing restriction")
 		}
 	}
-	if nav.FlightState.Altitude != nav.FlightState.PrevAltitude {
+	if nav.FlightState.Altitude < nav.FlightState.PrevAltitude {
+		lines = append(lines, fmt.Sprintf("Descent rate %.0f ft/minute", 60*(nav.FlightState.PrevAltitude-nav.FlightState.Altitude)))
+	} else if nav.FlightState.Altitude > nav.FlightState.PrevAltitude {
 		lines = append(lines, fmt.Sprintf("Climb rate %.0f ft/minute", 60*(nav.FlightState.Altitude-nav.FlightState.PrevAltitude)))
 	}
 
@@ -561,12 +563,12 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime time.Time, lg
 		}
 	}
 
-	// Wind
-	var wxs wx.Sample
-	if model != nil {
-		wxs = model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime)
+	// weather
+	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime)
+	lines = append(lines, wxs.String())
+	if nav.FlightState.Altitude > nav.FlightState.PrevAltitude {
+		lines = append(lines, fmt.Sprintf("Weather-based climb rate factor %.2fx", nav.atmosClimbFactor(wxs, nil)))
 	}
-	lines = append(lines, fmt.Sprintf("Wind %03d at %.0f", int(wxs.WindDirection()), wxs.WindSpeed()))
 
 	// Speed; don't be as exhaustive as we are for altitude
 	targetAltitude, _ := nav.TargetAltitude(lg)
@@ -776,7 +778,7 @@ func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, wxs wx.Sample, br
 	}
 }
 
-func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logger, deltaKts float32, slowingTo250 bool) {
+func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, deltaKts float32, slowingTo250 bool, wxs wx.Sample, lg *log.Logger) {
 	nav.FlightState.PrevAltitude = nav.FlightState.Altitude
 
 	if targetAltitude == nav.FlightState.Altitude {
@@ -838,6 +840,7 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 	// Baseline climb and descent capabilities in ft/minute
 	climb, descent := nav.Perf.Rate.Climb, nav.Perf.Rate.Descent
 
+	climb *= nav.atmosClimbFactor(wxs, lg)
 	// Reduce rates from highest possible to be more realistic.
 	if !nav.Altitude.Expedite {
 		// For high performing aircraft, reduce climb rate after 5,000'
@@ -914,6 +917,74 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 		}
 
 		setAltitude(max(targetAltitude, nav.FlightState.Altitude+nav.FlightState.AltitudeRate/60))
+	}
+}
+
+// atmosClimbFactor returns a factor in [0,1] to model the reduction in
+// rate of climb depending on atmospheric conditions.
+func (nav *Nav) atmosClimbFactor(wxs wx.Sample, lg *log.Logger) float32 {
+	var tempCorrection, altCorrection float32
+	switch nav.Perf.Engine.AircraftType {
+	case "J":
+		tempCorrection = -0.02 // -2% per °C above ISA
+		altCorrection = -0.03  // -3% per 1000 ft
+	case "T":
+		tempCorrection = -0.015 // -1.5% per °C above ISA
+		altCorrection = -0.04   // -4% per 1000 ft
+	case "P":
+		tempCorrection = -0.03 // -3% per °C above ISA
+		altCorrection = -0.08  // -8% per 1000 ft
+	default:
+		// Default to turbofan if unknown
+		tempCorrection = -0.02
+		altCorrection = -0.03
+	}
+
+	// Temperature factor (only apply if above ISA)
+	pressureAltitude := mbToPressureAltitude(wxs.Pressure)
+	isaTemp := 15 - (2 * pressureAltitude / 1000)
+	tempFactor := float32(1)
+	tempDeviation := wxs.Temperature - isaTemp
+	if tempDeviation > 0 {
+		tempFactor = 1 + (tempCorrection * tempDeviation)
+	}
+
+	// Altitude factor
+	densityAltitude := pressureAltitude + (120 * tempDeviation)
+	altFactor := 1 + (altCorrection * densityAltitude / 1000)
+
+	// Humidity factor
+	var humidityFactor float32
+	relativeHumidity := wxs.RelativeHumidity()
+	switch {
+	case relativeHumidity < 40:
+		humidityFactor = 1 // No correction
+	case relativeHumidity < 70:
+		humidityFactor = 0.98 // -2% average
+	case relativeHumidity < 90:
+		humidityFactor = 0.97 // -3% average
+	default:
+		humidityFactor = 0.95 // -5% average
+	}
+
+	if f := tempFactor * altFactor * humidityFactor; f != f {
+		// TODO: chase down these NaNs
+		lg.Warnf("NaN climb factor. Sample: %#v", wxs)
+	}
+	return max(0, tempFactor*altFactor*humidityFactor)
+}
+
+// mbToPressureAltitude converts pressure in millibars to pressure altitude in feet
+// Using the standard atmosphere pressure-altitude relationship
+func mbToPressureAltitude(mb float32) float32 {
+	// Simplified pressure altitude calculation (more accurate version uses
+	// the barometric formula).
+	if mb > 226.32 {
+		// Troposphere formula (valid up to 36,089 ft)
+		return 145366.45 * (1 - math.Pow(mb/1013.25, 0.190284))
+	} else {
+		// Stratosphere formula
+		return 36089.24 + (20806.0 * math.Log(226.32/mb))
 	}
 }
 
@@ -1025,7 +1096,7 @@ func (nav *Nav) Update(model *wx.Model, fp *av.FlightPlan, simTime time.Time, br
 func (nav *Nav) UpdateWithWeather(wxs wx.Sample, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
 	targetAltitude, altitudeRate := nav.TargetAltitude(lg)
 	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, fp, wxs, bravo, lg)
-	nav.updateAltitude(targetAltitude, altitudeRate, lg, deltaKts, slowingTo250)
+	nav.updateAltitude(targetAltitude, altitudeRate, deltaKts, slowingTo250, wxs, lg)
 	nav.updateHeading(wxs, lg)
 	nav.updatePositionAndGS(wxs, lg)
 	if nav.Airwork != nil && !nav.Airwork.Update(nav) {
