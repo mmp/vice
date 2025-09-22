@@ -230,7 +230,7 @@ func MakeGCSProvider(lg *log.Logger) (*GCSProvider, error) {
 		}
 		return nil
 	})
-	for range 16 {
+	for range 4 { // Limit parallelism because zstd is a memory pig.
 		eg.Go(func() error { return g.fetchManifests(pch) })
 	}
 	go func() {
@@ -245,18 +245,24 @@ func MakeGCSProvider(lg *log.Logger) (*GCSProvider, error) {
 }
 
 func (g *GCSProvider) fetchManifests(pch <-chan string) error {
+	zr, err := zstd.NewReader(nil, zstd.WithDecoderConcurrency(0))
+	if err != nil {
+		return err
+	}
+
 	for prefix := range pch {
 		var manifest []string
 		if r, err := g.gcsClient.GetReader(filepath.Join(prefix, "manifest.msgpack.zst")); err != nil {
 			return err
-		} else if zr, err := zstd.NewReader(r); err != nil {
-			return err
-		} else if err := msgpack.NewDecoder(zr).Decode(&manifest); err != nil {
-			return err
 		} else {
-			zr.Close()
-			if err := r.Close(); err != nil {
+			zr.Reset(r)
+			if err := msgpack.NewDecoder(zr).Decode(&manifest); err != nil {
 				return err
+			} else {
+				zr.Close()
+				if err := r.Close(); err != nil {
+					return err
+				}
 			}
 		}
 

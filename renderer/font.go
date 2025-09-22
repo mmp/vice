@@ -497,7 +497,7 @@ func loadFont(name string) []byte {
 		panic(err)
 	}
 
-	zr, err := zstd.NewReader(bytes.NewReader(b))
+	zr, err := zstd.NewReader(bytes.NewReader(b), zstd.WithDecoderConcurrency(0))
 	if err != nil {
 		panic(err)
 	}

@@ -28,7 +28,7 @@ type Precip struct {
 }
 
 func DecodePrecip(r io.Reader) (*Precip, error) {
-	zr, err := zstd.NewReader(r)
+	zr, err := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 	if err != nil {
 		return nil, err
 	}

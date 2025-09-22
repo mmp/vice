@@ -93,7 +93,7 @@ func CacheRetrieveObject(path string, obj any) (time.Time, error) {
 		return time.Time{}, err
 	}
 
-	zr, err := zstd.NewReader(f)
+	zr, err := zstd.NewReader(f, zstd.WithDecoderConcurrency(0))
 	if err != nil {
 		return time.Time{}, err
 	}
