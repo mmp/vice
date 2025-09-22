@@ -343,6 +343,31 @@ func (s WindSample) WindSpeed() float32 { // returns knots
 	return l * 3600 /* seconds -> hour */
 }
 
+func (s Sample) String() string {
+	return fmt.Sprintf("Wind %03d at %d, temp %.1fC, dewpoint %.1fC (%.1f%% rel. humidity), pressure %.1f mb",
+		int(s.WindDirection()), int(s.WindSpeed()+0.5), s.Temperature, s.Dewpoint, s.RelativeHumidity(), s.Pressure)
+}
+
+func (s Sample) RelativeHumidity() float32 {
+	// Magnus formula constants
+	// Use dewpoint to determine if we're dealing with ice or water
+	a := util.Select(s.Dewpoint > 0, float32(17.625), float32(21.875))
+	b := util.Select(s.Dewpoint > 0, float32(243.04), float32(265.5))
+
+	// Calculate saturation vapor pressure at dew point (neglecting 6.1094
+	// factor, which will cancel out in the division below).
+	vpDew := math.FastExp((a * s.Dewpoint) / (b + s.Dewpoint))
+
+	// Saturation vapor pressure at temperature (also neglecting 6.1094 factor).
+	aTemp := util.Select(s.Temperature > 0, float32(17.625), float32(21.875))
+	bTemp := util.Select(s.Temperature > 0, float32(243.04), float32(265.5))
+	vpTemp := math.FastExp((aTemp * s.Temperature) / (bTemp + s.Temperature))
+
+	rh := 100 * (vpDew / vpTemp)
+
+	return math.Clamp(rh, 0, 100)
+}
+
 func LerpSample(x float32, s0, s1 Sample) Sample {
 	return Sample{
 		WindSample:  WindSample{WindVec: math.Lerp2f(x, s0.WindVec, s1.WindVec)},
