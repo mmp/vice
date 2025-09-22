@@ -285,7 +285,7 @@ func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) 
 	}
 	tfr.RegisterPath(cf.Name())
 
-	cmd = exec.Command("wgrib2", smallGribPath, "-match", ":(UGRD|VGRD|TMP|HGT):", "-csv", cf.Name())
+	cmd = exec.Command("wgrib2", smallGribPath, "-match", ":(UGRD|VGRD|TMP|DPT|HGT):", "-csv", cf.Name())
 	//LogInfo("Running " + cmd.String())
 	if err := cmd.Run(); err != nil {
 		cf.Close()
@@ -426,6 +426,7 @@ const (
 	LineItemUDirection
 	LineItemVDirection
 	LineItemTemperature
+	LineItemDewpoint
 	LineItemHeight
 )
 
@@ -532,6 +533,8 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 				stack.Levels[item.Level].VComponent = item.Value
 			case LineItemTemperature:
 				stack.Levels[item.Level].Temperature = item.Value
+			case LineItemDewpoint:
+				stack.Levels[item.Level].Dewpoint = item.Value
 			case LineItemHeight:
 				stack.Levels[item.Level].Height = item.Value
 			}
@@ -573,6 +576,8 @@ func parseHRRRLine(line []byte) (LineItem, error) {
 		li.Type = LineItemVDirection
 	} else if bytes.Equal(record[0], []byte("TMP")) {
 		li.Type = LineItemTemperature
+	} else if bytes.Equal(record[0], []byte("DPT")) {
+		li.Type = LineItemDewpoint
 	} else if bytes.Equal(record[0], []byte("HGT")) {
 		li.Type = LineItemHeight
 	}

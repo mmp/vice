@@ -32,9 +32,9 @@ var AtmosTRACONs = []string{
 
 // This is fairly specialized to our needs we ingest from: at each
 // lat-long, we store a vertical stack of 40 levels with samples from the
-// source HRRR files (wind direction, speed, temperature, height). The
-// vertical indexing of is low to high where LevelIndexFromId and
-// IdFromLevelIndex perform the indexing and its inverse.
+// source HRRR files (wind direction, speed, temperature, dewpoint,
+// height). The vertical indexing of is low to high where LevelIndexFromId
+// and IdFromLevelIndex perform the indexing and its inverse.
 const NumSampleLevels = 40
 
 type Atmos struct {
@@ -56,6 +56,7 @@ type AtmosSample struct {
 	UComponent  float32 // eastward m/s
 	VComponent  float32 // northward m/s
 	Temperature float32 // Kelvin
+	Dewpoint    float32 // Kelvin
 	Height      float32 // geopotential height (meters)
 }
 
@@ -73,6 +74,7 @@ type AtmosLevelsSOA struct {
 	Heading     []uint8 // degrees/2
 	Speed       []uint8 // knots
 	Temperature []int8  // Temperature in Celsius
+	Dewpoint    []int8  // Dewpoint in Celsius
 	Height      []uint8 // geopotential height (MSL) + windHeightOffset in meters
 }
 
@@ -181,6 +183,13 @@ func (at Atmos) ToSOA() (AtmosSOA, error) {
 			}
 			soa.Levels[i].Temperature = append(soa.Levels[i].Temperature, int8(tq))
 
+			dc := level.Dewpoint - 273.15 // K -> C
+			dq := int(math.Round(dc))
+			if dq < -128 || dq > 127 {
+				return AtmosSOA{}, fmt.Errorf("bad dewpoint: %d not in -128-127", dq)
+			}
+			soa.Levels[i].Dewpoint = append(soa.Levels[i].Dewpoint, int8(dq))
+
 			h := level.Height + windHeightOffset // deal with slightly below sea level
 			h = (h + 50) / 100                   // 100s of meters
 			if h < 0 || h > 255 {
@@ -194,6 +203,7 @@ func (at Atmos) ToSOA() (AtmosSOA, error) {
 		soa.Levels[i].Heading = util.DeltaEncode(soa.Levels[i].Heading)
 		soa.Levels[i].Speed = util.DeltaEncode(soa.Levels[i].Speed)
 		soa.Levels[i].Temperature = util.DeltaEncode(soa.Levels[i].Temperature)
+		soa.Levels[i].Dewpoint = util.DeltaEncode(soa.Levels[i].Dewpoint)
 		soa.Levels[i].Height = util.DeltaEncode(soa.Levels[i].Height)
 	}
 
@@ -208,6 +218,7 @@ func (atsoa AtmosSOA) ToAOS() Atmos {
 		levels[i].Heading = util.DeltaDecode(atsoa.Levels[i].Heading)
 		levels[i].Speed = util.DeltaDecode(atsoa.Levels[i].Speed)
 		levels[i].Temperature = util.DeltaDecode(atsoa.Levels[i].Temperature)
+		levels[i].Dewpoint = util.DeltaDecode(atsoa.Levels[i].Dewpoint)
 		levels[i].Height = util.DeltaDecode(atsoa.Levels[i].Height)
 	}
 
@@ -216,6 +227,7 @@ func (atsoa AtmosSOA) ToAOS() Atmos {
 		for j, level := range levels {
 			s := AtmosSample{
 				Temperature: float32(level.Temperature[i]) + 273.15, // C -> K
+				Dewpoint:    float32(level.Dewpoint[i]) + 273.15,    // C -> K
 				Height:      float32(level.Height[i])*100 - windHeightOffset,
 			}
 			s.UComponent, s.VComponent = dirSpeedToUV(float32(level.Heading[i])*2, float32(level.Speed[i]))
@@ -269,6 +281,9 @@ func CheckAtmosConversion(at Atmos, soa AtmosSOA) error {
 			if math.Abs(sl.Temperature-ckl.Temperature) > 0.51 {
 				return fmt.Errorf("Temperature mismatch round trip %f - %f", sl.Temperature, ckl.Temperature)
 			}
+			if math.Abs(sl.Dewpoint-ckl.Dewpoint) > 0.51 {
+				return fmt.Errorf("Dewpoint mismatch round trip %f - %f", sl.Dewpoint, ckl.Dewpoint)
+			}
 			if math.Abs(sl.Height-ckl.Height) > 51 {
 				return fmt.Errorf("Height mismatch round trip %f - %f", sl.Height, ckl.Height)
 			}
@@ -299,6 +314,7 @@ type WindSample struct {
 type Sample struct {
 	WindSample
 	Temperature float32 // Celsius
+	Dewpoint    float32 // Celsius
 }
 
 func (s WindSample) WindDirection() float32 {
@@ -316,6 +332,7 @@ func LerpSample(x float32, s0, s1 Sample) Sample {
 	return Sample{
 		WindSample:  WindSample{WindVec: math.Lerp2f(x, s0.WindVec, s1.WindVec)},
 		Temperature: math.Lerp(x, s0.Temperature, s1.Temperature),
+		Dewpoint:    math.Lerp(x, s0.Dewpoint, s1.Dewpoint),
 	}
 }
 
@@ -387,6 +404,7 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 
 			const kelvinToCelsius = -273.15
 			g.Points[gidx].Temperature += math.Lerp(t, s0.Temperature, s1.Temperature) + kelvinToCelsius
+			g.Points[gidx].Dewpoint += math.Lerp(t, s0.Dewpoint, s1.Dewpoint) + kelvinToCelsius
 
 			sumWt[gidx]++
 		}
@@ -396,6 +414,7 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 		if wt != 0 {
 			g.Points[i].WindVec = math.Scale2f(g.Points[i].WindVec, 1/wt)
 			g.Points[i].Temperature /= wt
+			g.Points[i].Dewpoint /= wt
 		}
 	}
 
