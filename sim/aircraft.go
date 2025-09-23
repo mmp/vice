@@ -45,7 +45,7 @@ type Aircraft struct {
 	STARRunwayWaypoints map[string]av.WaypointArray
 	GotContactTower     bool
 
-	STARSFlightPlan *STARSFlightPlan
+	NASFlightPlan *NASFlightPlan
 
 	HoldForRelease    bool
 	Released          bool // only used for hold for release
@@ -620,7 +620,7 @@ func (ac *Aircraft) transferTracks(from, to string) {
 		return
 	}
 
-	sfp := ac.STARSFlightPlan
+	sfp := ac.NASFlightPlan
 	if sfp.HandoffTrackController == from {
 		sfp.HandoffTrackController = to
 	}
@@ -643,7 +643,7 @@ func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryControlle
 		return
 	}
 
-	sfp := ac.STARSFlightPlan
+	sfp := ac.NASFlightPlan
 	if sfp.HandoffTrackController == callsign {
 		// Otherwise redirect handoffs to the primary controller. This is
 		// not a perfect solution; for an arrival, for example, we should
@@ -667,21 +667,21 @@ func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryControlle
 }
 
 func (ac *Aircraft) IsUnassociated() bool {
-	return ac.STARSFlightPlan == nil
+	return ac.NASFlightPlan == nil
 }
 
 func (ac *Aircraft) IsAssociated() bool {
-	return ac.STARSFlightPlan != nil
+	return ac.NASFlightPlan != nil
 }
 
-func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
+func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
-	ac.STARSFlightPlan = fp
+	ac.NASFlightPlan = fp
 	ac.PreArrivalDropController = ""
 }
 
-func (ac *Aircraft) DisassociateFlightPlan() *STARSFlightPlan {
-	fp := ac.STARSFlightPlan
-	ac.STARSFlightPlan = nil
+func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
+	fp := ac.NASFlightPlan
+	ac.NASFlightPlan = nil
 	return fp
 }

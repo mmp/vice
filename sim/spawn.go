@@ -519,7 +519,7 @@ func (s *Sim) isHumanControlled(ac *Aircraft, departure bool) bool {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
 	} else {
-		fp := ac.STARSFlightPlan
+		fp := ac.NASFlightPlan
 		if fp == nil {
 			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
@@ -1103,7 +1103,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 
-	starsFp := STARSFlightPlan{
+	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
@@ -1273,7 +1273,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
-	starsFp := STARSFlightPlan{
+	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:          shortExit,
@@ -1360,7 +1360,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
-	starsFp := STARSFlightPlan{
+	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          "", // TODO

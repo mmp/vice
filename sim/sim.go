@@ -134,7 +134,7 @@ type AircraftDisplayState struct {
 type Track struct {
 	av.RadarTrack
 
-	FlightPlan *STARSFlightPlan
+	FlightPlan *NASFlightPlan
 
 	// Sort of hacky to carry these along here but it's convenient...
 	DepartureAirport          string
@@ -706,7 +706,7 @@ type GlobalMessage struct {
 type StateUpdate struct {
 	GenerationIndex         int
 	Tracks                  map[av.ADSBCallsign]*Track
-	UnassociatedFlightPlans []*STARSFlightPlan
+	UnassociatedFlightPlans []*NASFlightPlan
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
@@ -895,7 +895,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
-			FlightPlan:                ac.STARSFlightPlan,
+			FlightPlan:                ac.NASFlightPlan,
 			DepartureAirport:          ac.FlightPlan.DepartureAirport,
 			DepartureAirportElevation: ac.DepartureAirportElevation(),
 			DepartureAirportLocation:  ac.DepartureAirportLocation(),
@@ -1198,7 +1198,7 @@ func (s *Sim) updateState() {
 				// when they're currently tracked by an external facility.
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
-					sfp := ac.STARSFlightPlan
+					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
@@ -1206,7 +1206,7 @@ func (s *Sim) updateState() {
 						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
 					}
 				} else if passedWaypoint.TCPHandoff != "" {
-					sfp := ac.STARSFlightPlan
+					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
@@ -1217,7 +1217,7 @@ func (s *Sim) updateState() {
 
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
-					sfp := ac.STARSFlightPlan
+					sfp := ac.NASFlightPlan
 
 					if passedWaypoint.ClearApproach {
 						ac.ApproachController = sfp.ControllingController
@@ -1322,7 +1322,7 @@ func (s *Sim) updateState() {
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
 				!s.prespawn {
 				// Time to check in
-				fp := ac.STARSFlightPlan
+				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}
@@ -1533,7 +1533,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 	if ac.IsUnassociated() { // this shouldn't happen...
 		return
 	}
-	sfp := ac.STARSFlightPlan
+	sfp := ac.NASFlightPlan
 
 	// Update controller before calling GoAround so the
 	// transmission goes to the right controller.
@@ -1588,7 +1588,7 @@ func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 
 func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	for cs, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
+		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			return cs, true
 		}
 	}
@@ -1607,10 +1607,10 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 }
 
 // *Aircraft may be nil. bool indicates whether the flight plan is active.
-func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, *Aircraft, bool) {
+func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
-			return ac.STARSFlightPlan, ac, true
+		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
+			return ac.NASFlightPlan, ac, true
 		}
 	}
 	for i, fp := range s.STARSComputer.FlightPlans {
@@ -1627,7 +1627,7 @@ func (s *Sim) CheckLeaks() {
 	nUsedIndices := 0
 	seenSquawks := make(map[av.Squawk]interface{})
 
-	check := func(fp *STARSFlightPlan) {
+	check := func(fp *NASFlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {
 			if usedIndices[fp.ListIndex] {
 				s.lg.Errorf("List index %d used more than once", fp.ListIndex)
@@ -1664,7 +1664,7 @@ func (s *Sim) CheckLeaks() {
 
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() {
-			check(ac.STARSFlightPlan)
+			check(ac.NASFlightPlan)
 		}
 	}
 	for _, fp := range s.STARSComputer.FlightPlans {

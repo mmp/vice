@@ -452,14 +452,14 @@ type AirspaceAwareness struct {
 	AircraftType        []string `json:"aircraft_type"`
 }
 
-type STARSFlightPlan struct {
+type NASFlightPlan struct {
 	ACID                  ACID
 	EntryFix              string
 	ExitFix               string
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time
-	PlanType              STARSFlightPlanType
+	PlanType              NASFlightPlanType
 
 	AssignedSquawk av.Squawk
 
@@ -527,14 +527,14 @@ type STARSFlightPlan struct {
 
 type ACID string
 
-type STARSFlightPlanSpecifier struct {
+type FlightPlanSpecifier struct {
 	ACID                  util.Optional[ACID]
 	EntryFix              util.Optional[string]
 	ExitFix               util.Optional[string]
 	ExitFixIsIntermediate util.Optional[bool]
 	Rules                 util.Optional[av.FlightRules]
 	CoordinationTime      util.Optional[time.Time]
-	PlanType              util.Optional[STARSFlightPlanType]
+	PlanType              util.Optional[NASFlightPlanType]
 
 	SquawkAssignment         util.Optional[string]
 	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
@@ -575,9 +575,9 @@ type STARSFlightPlanSpecifier struct {
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
 }
 
-func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool) (STARSFlightPlan, error) {
-	sfp := STARSFlightPlan{
+func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
+	nasPool *av.EnrouteSquawkCodePool) (NASFlightPlan, error) {
+	sfp := NASFlightPlan{
 		ACID:                  s.ACID.GetOr(""),
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
@@ -648,7 +648,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 	return sfp, err
 }
 
-func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, rules av.FlightRules,
+func assignCode(assignment util.Optional[string], planType NASFlightPlanType, rules av.FlightRules,
 	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
@@ -667,7 +667,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	}
 }
 
-func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
+func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
 	nasPool *av.EnrouteSquawkCodePool) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
@@ -810,11 +810,11 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	return
 }
 
-type STARSFlightPlanType int
+type NASFlightPlanType int
 
 // Flight plan types (STARS)
 const (
-	UnknownFlightPlanType STARSFlightPlanType = iota
+	UnknownFlightPlanType NASFlightPlanType = iota
 
 	// Flight plan received from a NAS ARTCC.  This is a flight plan that
 	// has been sent over by an overlying ERAM facility.
