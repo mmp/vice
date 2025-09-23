@@ -911,7 +911,10 @@ func (m *MessageModalClient) Buttons() []ModalDialogButton {
 }
 
 func (m *MessageModalClient) Draw() int {
-	text, _ := util.WrapText(m.message, 80, 0, true)
+	text, _ := util.TextWrapConfig{
+		ColumnLimit: 80,
+		WrapAll:     true,
+	}.Wrap(m.message)
 	imgui.Text("\n\n" + text + "\n\n")
 	return -1
 }
@@ -941,7 +944,10 @@ func (e *ErrorModalClient) Draw() int {
 		imgui.Image(imgui.TextureID(ui.sadTowerTextureID), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
-		text, _ := util.WrapText(e.message, 80, 0, true)
+		text, _ := util.TextWrapConfig{
+			ColumnLimit: 80,
+			WrapAll:     true,
+		}.Wrap(e.message)
 		imgui.Text("\n\n" + text)
 
 		imgui.EndTable()

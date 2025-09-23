@@ -2546,7 +2546,9 @@ func (sp *STARSPane) displayQLStatus(ctx *panes.Context) (status CommandStatus) 
 		}
 		status.output += ty + " QUICKLOOK REGIONS\n"
 		slices.Sort(regions)
-		out, _ := util.WrapText(strings.Join(regions, " "), 32, 0, false)
+		out, _ := util.TextWrapConfig{
+			ColumnLimit: 32,
+		}.Wrap(strings.Join(regions, " "))
 		status.output += out
 	}
 
