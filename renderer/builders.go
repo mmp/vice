@@ -208,6 +208,43 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs 
 	}
 }
 
+// AddGappedCircle draws the outline of a circle like AddCircle but omits
+// segments whose midpoint angle falls within any of the specified gap ranges
+// (in degrees). Each gap is a two-element slice giving the start and end
+// angles. If start > end, the gap is assumed to wrap around 360 degrees.
+func (l *ColoredLinesDrawBuilder) AddGappedCircle(p [2]float32, radius float32, nsegs int, gaps [][2]float32, color RGB) {
+	circle := math.CirclePoints(nsegs)
+	for i := 0; i < nsegs; i++ {
+		start := float32(i) / float32(nsegs) * 360
+		end := float32(i+1) / float32(nsegs) * 360
+		diff := math.Mod(end-start+360, 360)
+		mid := math.Mod(start+diff/2, 360)
+
+		inGap := false
+		for _, g := range gaps {
+			gs, ge := g[0], g[1]
+			if gs <= ge {
+				if mid >= gs && mid <= ge {
+					inGap = true
+					break
+				}
+			} else {
+				if mid >= gs || mid <= ge {
+					inGap = true
+					break
+				}
+			}
+		}
+		if inGap {
+			continue
+		}
+
+		p0 := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
+		p1 := [2]float32{p[0] + radius*circle[(i+1)%nsegs][0], p[1] + radius*circle[(i+1)%nsegs][1]}
+		l.AddLine(p0, p1, color)
+	}
+}
+
 func (l *ColoredLinesDrawBuilder) GenerateCommands(cb *CommandBuffer) (int, int) {
 	if len(l.indices) == 0 {
 		return 0, 0
