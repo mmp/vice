@@ -49,7 +49,7 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 
 	go func() {
 		defer close(ch)
-		atmos, atmosTime, nextTime, err := m.provider.GetAtmos(m.tracon, t)
+		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.tracon, t)
 		ch <- AtmosResult{
 			AtmosSOA: atmos,
 			Time:     atmosTime,

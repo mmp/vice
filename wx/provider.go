@@ -19,5 +19,5 @@ type Provider interface {
 	// Returns the item at-or-before the given time
 	GetPrecipURL(tracon string, t time.Time) (string, time.Time, error)
 	// Returns atmos, it's time, the time for the next one in the series.
-	GetAtmos(tracon string, t time.Time) (*AtmosSOA, time.Time, time.Time, error)
+	GetAtmosGrid(tracon string, t time.Time) (*AtmosSOA, time.Time, time.Time, error)
 }

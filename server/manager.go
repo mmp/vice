@@ -932,7 +932,7 @@ func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) er
 	defer sm.lg.CatchAndReportCrash()
 
 	var err error
-	result.AtmosSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmos(args.TRACON, args.Time)
+	result.AtmosSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time)
 	return err
 }
 

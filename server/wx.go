@@ -159,13 +159,13 @@ func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return result.URL, result.NextTime, nil
 }
 
-func (r *RPCProvider) GetAtmos(tracon string, t time.Time) (atmos *wx.AtmosSOA, time time.Time, nextTime time.Time, err error) {
+func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosSOA, time time.Time, nextTime time.Time, err error) {
 	args := GetAtmosArgs{
 		TRACON: tracon,
 		Time:   t,
 	}
 	var result GetAtmosResult
-	if err = r.callWithTimeout("SimManager.GetAtmos", args, &result); err == nil {
+	if err = r.callWithTimeout("SimManager.GetAtmosGrid", args, &result); err == nil {
 		atmos = result.AtmosSOA
 		time = result.Time
 		nextTime = result.NextTime
@@ -448,7 +448,7 @@ func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return url, nextTime, nil
 }
 
-func (g *GCSProvider) GetAtmos(tracon string, t time.Time) (atmos *wx.AtmosSOA, atmosTime time.Time, nextTime time.Time, err error) {
+func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosSOA, atmosTime time.Time, nextTime time.Time, err error) {
 	times := g.getAvailableTimes("atmos/" + tracon)
 	if len(times) == 0 {
 		err = errors.New(tracon + ": unknown TRACON")
