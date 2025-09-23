@@ -123,7 +123,7 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 
 		case <-time.After(5 * time.Second):
 			if !util.DebuggerIsRunning() {
-				return server.ErrRPCTimeout
+				return fmt.Errorf("%s: %w", serviceMethod, server.ErrRPCTimeout)
 			}
 		}
 	}
