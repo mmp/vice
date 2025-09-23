@@ -149,8 +149,10 @@ func (sc *STARSComputer) Update(s *Sim) {
 					ac.InDepartureFilter = inFilter
 				} else { // arrival or overflight
 					if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil &&
-						fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController) {
 						// Inbound handoff from an external facility
+						(fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController)) ||
+						// Virtual controller
+						s.State.IsLocalController(fp.TrackingController) {
 						return true
 					} else if inVolumes(filters.ArrivalAcquisition) {
 						return true
