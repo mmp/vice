@@ -635,9 +635,6 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 func (sm *SimManager) GetAvailableWX(unused int, result *[]util.TimeInterval) error {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
 	*result = sm.wxProvider.GetAvailableTimeIntervals()
 	return nil
 }
