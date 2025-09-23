@@ -278,7 +278,10 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 				// METAR <= the start time
 				idx--
 			}
-			s.METAR[ap] = metar[idx:]
+			for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
+				s.METAR[ap] = append(s.METAR[ap], metar[idx])
+				idx++
+			}
 		}
 	}
 
