@@ -9,6 +9,7 @@ import (
 	"iter"
 	"log/slog"
 	"maps"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -340,6 +341,21 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 		s.lg.Warn("already have an aircraft with that callsign!",
 			slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 		return
+	}
+
+	if s.CIDAllocator != nil {
+		fp := ac.NASFlightPlan
+		if fp == nil {
+			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+		}
+		if fp != nil && fp.CID == "" {
+			if cid, err := s.CIDAllocator.Allocate(); err == nil {
+				fp.CID = cid
+				ac.NASFlightPlan = fp
+			} else {
+				s.lg.Warn("no CID available", slog.String("callsign", string(ac.ADSBCallsign)))
+			}
+		}
 	}
 
 	s.Aircraft[ac.ADSBCallsign] = &ac
@@ -1102,6 +1118,25 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	if err != nil {
 		return nil, err
 	}
+	var assigned int
+	if s.State.TRACON == "" && arr.AssignedAltitude == 0 {
+		// Get the altitude from the route and waypoints if possible
+		wps := arr.Waypoints
+		lowestAlt := gomath.MaxInt
+		for _, wp := range wps {
+			if wp.AltitudeRestriction == nil {
+				continue
+			}
+			if int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude)) < lowestAlt {
+				lowestAlt = int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude))
+			}
+		}
+		if lowestAlt != gomath.MaxInt {
+			assigned = lowestAlt
+		} else {
+			s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+		}
+	}
 
 	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
@@ -1123,6 +1158,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+
+		AssignedAltitude: assigned,
 	}
 
 	// VFRs don't go around since they aren't talking to us.
@@ -1288,9 +1325,10 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		SecondaryScratchpad: dep.SecondaryScratchpad,
 		RequestedAltitude:   ac.FlightPlan.Altitude,
 
-		AircraftCount: 1,
-		AircraftType:  ac.FlightPlan.AircraftType,
-		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount:    1,
+		AircraftType:     ac.FlightPlan.AircraftType,
+		CWTCategory:      av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AssignedAltitude: util.Select(s.State.TRACON == "", ac.FlightPlan.Altitude, 0),
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1379,6 +1417,8 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+
+		AssignedAltitude: util.Select(s.State.TRACON == "", int(of.AssignedAltitude), 0),
 	}
 
 	// Like departures, these are already associated
@@ -1435,6 +1475,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		ac.Mode = av.TransponderModeStandby // flat out off
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
+	// This doesnt need an 11 altitude
 
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {

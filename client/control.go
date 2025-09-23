@@ -375,6 +375,23 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 	}, &update, nil), &update, callback))
 }
 
+func (c *ControlClient) GetQULines(aircraft sim.ACID, callback func(err error)) {
+	var update sim.StateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.SendCoordinateInfo", &server.SendCoordinateInfoArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            aircraft,
+	}, &update, nil), &update, callback))
+}
+
+func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback func(err error)) {
+	var update sim.StateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go("Sim.FlightPlanDirect", &server.FlightPlanDirectArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            aircraft,
+		Fix:             fix,
+	}, &update, nil), &update, callback))
+}
+
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, handleResult func(message string, remainingInput string)) {
 	if c.HaveTTS() && cmds != "P" && cmds != "X" {
 		c.mu.Lock()

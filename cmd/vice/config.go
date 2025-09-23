@@ -15,6 +15,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
+	"github.com/mmp/vice/eram"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -50,6 +51,7 @@ type ConfigNoSim struct {
 
 	// Store individual pane instances instead of the entire display hierarchy
 	STARSPane       *stars.STARSPane
+	ERAMPane        *eram.ERAMPane
 	MessagesPane    *panes.MessagesPane
 	FlightStripPane *panes.FlightStripPane
 
@@ -172,6 +174,7 @@ func getDefaultConfig() *Config {
 			WhatsNewIndex:         len(whatsNew),
 			NotifiedTargetGenMode: true, // don't warn for new installs
 			STARSPane:             stars.NewSTARSPane(),
+			ERAMPane:              eram.NewERAMPane(),
 			MessagesPane:          panes.NewMessagesPane(),
 			FlightStripPane:       panes.NewFlightStripPane(),
 			SplitLinePositions:    [2]float32{0.8, 0.075}, // Default split positions
@@ -215,6 +218,9 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		if config.STARSPane == nil {
 			config.STARSPane = stars.NewSTARSPane()
 		}
+		if config.ERAMPane == nil {
+			config.ERAMPane = eram.NewERAMPane()
+		}
 		if config.MessagesPane == nil {
 			config.MessagesPane = panes.NewMessagesPane()
 		}
@@ -238,7 +244,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 				})
 			}
 			// Also upgrade the individual panes
-			for _, pane := range []panes.Pane{config.STARSPane, config.MessagesPane, config.FlightStripPane} {
+			for _, pane := range []panes.Pane{config.STARSPane, config.ERAMPane, config.MessagesPane, config.FlightStripPane} {
 				if up, ok := pane.(panes.PaneUpgrader); ok && pane != nil {
 					up.Upgrade(config.Version, server.ViceSerializeVersion)
 				}
@@ -289,6 +295,10 @@ func (c *Config) migrateFromDisplayRoot(lg *log.Logger) {
 			if c.STARSPane == nil {
 				c.STARSPane = pane
 			}
+		case *eram.ERAMPane:
+			if c.ERAMPane == nil {
+				c.ERAMPane = pane
+			}
 		case *panes.MessagesPane:
 			if c.MessagesPane == nil {
 				c.MessagesPane = pane
@@ -304,6 +314,10 @@ func (c *Config) migrateFromDisplayRoot(lg *log.Logger) {
 	if c.STARSPane == nil {
 		c.STARSPane = stars.NewSTARSPane()
 		lg.Infof("Created new STARSPane during migration")
+	}
+	if c.ERAMPane == nil {
+		c.ERAMPane = eram.NewERAMPane()
+		lg.Infof("Created new ERAMPane during migration")
 	}
 	if c.MessagesPane == nil {
 		c.MessagesPane = panes.NewMessagesPane()
@@ -344,8 +358,35 @@ func (c *ConfigNoSim) buildDisplayRoot(radarPane panes.Pane) *panes.DisplayNode 
 }
 
 func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
+	// Prefer a robust signal of scenario type: STARS scenarios define
+	// a PrimaryAirport in the sim state; ERAM scenarios do not.
+	isSTARSSim := false
+	if c.Sim != nil {
+		isSTARSSim = c.Sim.State.TRACON != ""
+	}
+
+	// Use stored pane instances instead of creating new ones
+	var radarPane panes.Pane
+	if isSTARSSim {
+		radarPane = c.STARSPane
+	} else {
+		radarPane = c.ERAMPane
+	}
+
 	// Build the display hierarchy from stored panes and split positions
-	c.DisplayRoot = c.buildDisplayRoot(c.STARSPane)
+	c.DisplayRoot = c.buildDisplayRoot(radarPane)
 
 	panes.Activate(c.DisplayRoot, r, p, eventStream, lg)
+}
+
+// RebuildDisplayRootForSim rebuilds the display hierarchy with the appropriate radar pane
+// based on the sim type (STARS vs ERAM). This is used when switching between scenarios.
+func (c *Config) RebuildDisplayRootForSim(isSTARSSim bool) {
+	var radarPane panes.Pane
+	if isSTARSSim {
+		radarPane = c.STARSPane
+	} else {
+		radarPane = c.ERAMPane
+	}
+	c.DisplayRoot = c.buildDisplayRoot(radarPane)
 }

@@ -185,6 +185,15 @@ func (s *Sim) DeleteAircraft(tcp string, callsign av.ADSBCallsign) error {
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft) {
+	if s.CIDAllocator != nil {
+		if fp := ac.NASFlightPlan; fp != nil && fp.CID != "" {
+			s.CIDAllocator.Release(fp.CID)
+			fp.CID = ""
+		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
+			s.CIDAllocator.Release(fp.CID)
+			fp.CID = ""
+		}
+	}
 	delete(s.Aircraft, ac.ADSBCallsign)
 
 	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
@@ -996,6 +1005,60 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 
 			return nil
 		})
+}
+
+// TODO: Migrate to ERAM computer.
+func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
+	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	if ac == nil {
+		return av.ErrNoAircraftForCallsign
+	}
+	waypoints := []av.Waypoint(ac.Nav.Waypoints)
+	waypointPairs := []math.Point2LL{}
+	for _, wyp := range waypoints {
+		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
+			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
+		}
+
+	}
+	ctrl := s.State.ResolveController(tcp)
+	s.eventStream.Post(Event{
+		Type:         FixCoordinatesEvent,
+		ACID:         acid,
+		WaypointInfo: waypointPairs,
+		ToController: ctrl,
+	})
+	return nil
+}
+
+// TODO: Migrate to ERAM computer.
+func (s *Sim) FlightPlanDirect(tcp, fix string, acid ACID) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	ac := s.Aircraft[av.ADSBCallsign(acid)]
+	fp := ac.FlightPlan
+	idx := strings.Index(fp.Route, fix)
+	if idx < 0 {
+		return av.ErrNoMatchingFix
+	}
+	rte := fp.Route[idx:]
+	fp.Route = rte
+	// Update sim Track as well
+	trk := s.State.Tracks[ac.ADSBCallsign]
+	pos, ok := av.DB.LookupWaypoint(fix)
+	if !ok {
+		return av.ErrNoMatchingFix // Check this pls
+	}
+	for i, wpPos := range trk.Route {
+		if wpPos == pos {
+			// Remove all waypoints before the fix
+			trk.Route = trk.Route[i:]
+			break
+		}
+	}
+	// TODO: Post an event that will update the controller's output.
+	return nil
 }
 
 func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {

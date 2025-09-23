@@ -34,6 +34,7 @@ const (
 	RobotoMono           = "Roboto Mono"
 	RobotoMonoItalic     = "Roboto Mono Italic"
 	FlightStripPrinter   = "Flight Strip Printer"
+	ERAMv102             = "ERAM v102"
 	LargeFontAwesomeOnly = "LargeFontAwesomeOnly"
 )
 
@@ -98,9 +99,10 @@ type FontIdentifier struct {
 // copy over the necessary information into our Glyph structure.
 func (f *Font) createGlyph(ch rune) *Glyph {
 	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
-	return &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
+	g := &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
 		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}
+	return g
 }
 
 func (f *Font) AddGlyph(ch int, g *Glyph) {
@@ -269,11 +271,12 @@ func FontsInit(r Renderer, p platform.Platform) {
 	// is then used shortly when the fonts are loaded.
 	glyphRangeForIcons := func(icons map[string]string) imgui.GlyphRange {
 		builder := imgui.NewFontGlyphRangesBuilder()
+		builder.AddChar(imgui.Wchar(0x2191))
+		builder.AddChar(imgui.Wchar(0x2193))
 		for _, str := range icons {
 			unicode, _ := utf8.DecodeRuneInString(str)
 			builder.AddChar(imgui.Wchar(unicode))
 		}
-
 		r := imgui.NewGlyphRange()
 		builder.BuildRanges(r)
 		return r
@@ -344,6 +347,7 @@ func FontsInit(r Renderer, p platform.Platform) {
 		"Roboto-Regular.ttf.zst":          RobotoRegular,
 		"RobotoMono-Medium.ttf.zst":       RobotoMono,
 		"RobotoMono-MediumItalic.ttf.zst": RobotoMonoItalic,
+		"ERAM.ttf.zst":                    ERAMv102,
 		"Flight-Strip-Printer.ttf.zst":    FlightStripPrinter} {
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			createFontSize(loadFont(fn), size, name)

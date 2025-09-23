@@ -477,6 +477,41 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.Sta
 	}
 }
 
+type SendCoordinateInfoArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+}
+
+func (sd *dispatcher) SendCoordinateInfo(da *SendCoordinateInfoArgs, update *sim.StateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if tcp, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		err := s.SendCoordinateInfo(tcp, da.ACID)
+		s.GetStateUpdate(tcp, update)
+		return err
+	}
+}
+
+type FlightPlanDirectArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+	Fix             string
+}
+
+func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *sim.StateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if tcp, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		err := s.FlightPlanDirect(tcp, da.Fix, da.ACID)
+		s.GetStateUpdate(tcp, update)
+		return err
+	}
+}
+
 type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        av.ADSBCallsign

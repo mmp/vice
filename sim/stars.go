@@ -454,6 +454,7 @@ type AirspaceAwareness struct {
 
 type NASFlightPlan struct {
 	ACID                  ACID
+	CID                   string
 	EntryFix              string
 	ExitFix               string
 	ExitFixIsIntermediate bool
@@ -475,6 +476,12 @@ type NASFlightPlan struct {
 	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
+	InterimAlt            int
+	InterimType           int
+	AltitudeBlock         [2]int
+	ControllerReportedAlt int
+	VFROTP                bool
+
 	RequestedAltitude     int
 	PilotReportedAltitude int
 
@@ -487,6 +494,7 @@ type NASFlightPlan struct {
 	RNAV bool
 
 	Location math.Point2LL
+	Route    string
 
 	PointOutHistory             []string
 	InhibitModeCAltitudeDisplay bool
@@ -548,6 +556,11 @@ type FlightPlanSpecifier struct {
 	TypeOfFlight util.Optional[av.TypeOfFlight]
 
 	AssignedAltitude      util.Optional[int]
+	InterimAlt            util.Optional[int]
+	InterimType           util.Optional[string]
+	AltitudeBlock         util.Optional[[2]int]
+	ControllerReportedAlt util.Optional[int]
+	VFROTP                util.Optional[bool]
 	RequestedAltitude     util.Optional[int]
 	PilotReportedAltitude util.Optional[int]
 
@@ -714,6 +727,20 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 			if rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
 				fp.DisableMSAW = true
 			}
+		}
+	}
+	if spec.InterimAlt.IsSet {
+		fp.InterimAlt = spec.InterimAlt.Get()
+		fmt.Println("Interim altitude:", fp.InterimAlt)
+	}
+	if spec.InterimType.IsSet {
+		interimType := spec.InterimType.Get()
+		fmt.Println("Interim type:", interimType)
+		switch interimType {
+		case "L":
+			fp.InterimType = 2
+		case "P":
+			fp.InterimType = 1
 		}
 	}
 
