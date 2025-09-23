@@ -635,6 +635,9 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 }
 
 func (sm *SimManager) GetAvailableWX(unused int, result *[]util.TimeInterval) error {
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
+	}
 	*result = sm.wxProvider.GetAvailableTimeIntervals()
 	return nil
 }
@@ -884,6 +887,10 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA) error {
 	defer sm.lg.CatchAndReportCrash()
 
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
+	}
+
 	var err error
 	*result, err = sm.wxProvider.GetMETAR(airports)
 	return err
@@ -891,6 +898,10 @@ func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA
 
 func (sm *SimManager) GetTimeIntervals(_ struct{}, result *[]util.TimeInterval) error {
 	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
+	}
 
 	*result = sm.wxProvider.GetAvailableTimeIntervals()
 	return nil
@@ -908,6 +919,10 @@ type PrecipURL struct {
 
 func (sm *SimManager) GetPrecipURL(args PrecipURLArgs, result *PrecipURL) error {
 	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
+	}
 
 	var err error
 	result.URL, result.NextTime, err = sm.wxProvider.GetPrecipURL(args.TRACON, args.Time)
@@ -927,6 +942,10 @@ type GetAtmosResult struct {
 
 func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) error {
 	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
+	}
 
 	var err error
 	result.AtmosSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time)

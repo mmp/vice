@@ -47,7 +47,7 @@ type RPCProvider struct {
 	lg     *log.Logger
 }
 
-func MakeRPCProvider(serverAddress string, lg *log.Logger) (*RPCProvider, error) {
+func MakeRPCProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
 	lg.Debugf("%s: connecting for TTS", serverAddress)
 	start := time.Now()
 	conn, err := net.DialTimeout("tcp", serverAddress, 5*time.Second)
@@ -192,7 +192,7 @@ type GCSProvider struct {
 	lg        *log.Logger
 }
 
-func MakeGCSProvider(lg *log.Logger) (*GCSProvider, error) {
+func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	g := &GCSProvider{
 		metarCh:          make(chan map[string]wx.METARSOA, 1),
 		validIntervalsCh: make(chan struct{}),

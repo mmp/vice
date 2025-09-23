@@ -268,22 +268,24 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		wxProvider:  config.WXProvider,
 	}
 
-	apmetar, err := s.wxProvider.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
-	if err != nil {
-		lg.Errorf("%v", err)
-	} else {
-		for ap, msoa := range apmetar {
-			metar := wx.DecodeMETARSOA(msoa)
-			idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
-				return m.Time.Compare(t)
-			})
-			if !ok && idx > 0 {
-				// METAR <= the start time
-				idx--
-			}
-			for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
-				s.METAR[ap] = append(s.METAR[ap], metar[idx])
-				idx++
+	if s.wxProvider != nil {
+		apmetar, err := s.wxProvider.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
+		if err != nil {
+			lg.Errorf("%v", err)
+		} else {
+			for ap, msoa := range apmetar {
+				metar := wx.DecodeMETARSOA(msoa)
+				idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
+					return m.Time.Compare(t)
+				})
+				if !ok && idx > 0 {
+					// METAR <= the start time
+					idx--
+				}
+				for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
+					s.METAR[ap] = append(s.METAR[ap], metar[idx])
+					idx++
+				}
 			}
 		}
 	}

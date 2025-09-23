@@ -45,6 +45,10 @@ func MakeModel(provider Provider, tracon string, startTime time.Time, lg *log.Lo
 }
 
 func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
+	if m.provider == nil {
+		return nil
+	}
+
 	ch := make(chan AtmosResult)
 
 	go func() {
