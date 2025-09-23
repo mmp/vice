@@ -51,7 +51,8 @@ import (
 // 41: sim.State.SimStartTime
 // 42: server.NewSimConfiguration.StartTime
 // 43: WX rework (scrape, etc.)
-const ViceSerializeVersion = 43
+// 44: store pane instances and split positions separately, rather than the entire DisplayNode hierarchy
+const ViceSerializeVersion = 44
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

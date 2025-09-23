@@ -1,5 +1,5 @@
-// display.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// panes/display.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // This file contains functionality related to vice's "window manager",
@@ -543,7 +543,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	return renderer.RendererStats{}
 }
 
-func NewDisplayPanes(stars, messages, fsp Pane) *DisplayNode {
+func NewDisplayPanes(radar, messages, fsp Pane) *DisplayNode {
 	return &DisplayNode{
 		SplitLine: SplitLine{
 			Pos:  0.8,
@@ -557,7 +557,7 @@ func NewDisplayPanes(stars, messages, fsp Pane) *DisplayNode {
 				},
 				Children: [2]*DisplayNode{
 					&DisplayNode{Pane: messages},
-					&DisplayNode{Pane: stars},
+					&DisplayNode{Pane: radar},
 				},
 			},
 			&DisplayNode{Pane: fsp},
