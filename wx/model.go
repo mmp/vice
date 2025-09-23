@@ -74,7 +74,7 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 
 	s0, ok0 := m.grids[0].Lookup(p, alt)
 	s1, ok1 := m.grids[1].Lookup(p, alt)
-	if !ok0 {
+	if !ok0 || m.times[0].Equal(m.times[1]) {
 		return s1
 	} else if !ok1 {
 		return s0
