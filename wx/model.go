@@ -102,26 +102,26 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 	if ar.Err != nil {
 		m.lg.Errorf("%v", ar.Err)
 		return
-	}
-
-	// Shift down to make room for the new one in [1].
-	m.grids[0], m.times[0] = m.grids[1], m.times[1]
-
-	atmos := ar.AtmosSOA.ToAOS()
-	m.grids[1] = atmos.GetGrid()
-	m.times[1] = ar.Time
-	m.nextFetch = ar.NextTime
-
-	if m.grids[0] == nil {
-		// We just got the very first one; copy it into [0] for now so
-		// code elsewhere can assume that either none or both are
-		// present.
+	} else if ar.AtmosSOA != nil {
+		// Shift down to make room for the new one in [1].
 		m.grids[0], m.times[0] = m.grids[1], m.times[1]
 
-		// And get started on fetching the next one.
-		m.ch = m.fetchAtmos(m.nextFetch)
-	} else {
-		m.ch = nil
+		atmos := ar.AtmosSOA.ToAOS()
+		m.grids[1] = atmos.GetGrid()
+		m.times[1] = ar.Time
+		m.nextFetch = ar.NextTime
+
+		if m.grids[0] == nil {
+			// We just got the very first one; copy it into [0] for now so
+			// code elsewhere can assume that either none or both are
+			// present.
+			m.grids[0], m.times[0] = m.grids[1], m.times[1]
+
+			// And get started on fetching the next one.
+			m.ch = m.fetchAtmos(m.nextFetch)
+		} else {
+			m.ch = nil
+		}
 	}
 }
 
