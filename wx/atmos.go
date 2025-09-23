@@ -332,6 +332,38 @@ type Sample struct {
 	Pressure    float32 // millibars
 }
 
+func MakeStandardSampleForAltitude(alt float32) Sample {
+	altMeters := alt * 0.3048
+
+	// Temperature decreasing linearly with altitude
+	const seaLevelTempC = 15.0       // ISA temperature in C
+	const lapseRate = -0.0065        // lapse rate in troposphere: -6.5°C per 1000m
+	const seaLevelPressure = 1013.25 // Sea level standard pressure in mb
+	temperature := seaLevelTempC + lapseRate*altMeters
+
+	// Barometric formula for pressure in troposphere
+	// P = P0 * (T/T0)^(g*M/(R*L))
+	// where exponent = 5.25588 for standard atmosphere
+	const seaLevelTempK = 288.15 // ISA temperature in K
+	tempRatio := (seaLevelTempK + lapseRate*altMeters) / seaLevelTempK
+	pressure := seaLevelPressure * math.Pow(tempRatio, 5.25588)
+
+	// Standard atmosphere assumes dry air, so dewpoint is well below temperature
+	// Set dewpoint 20°C below temperature as a reasonable approximation
+	dewpoint := temperature - 20
+
+	// TODO: This uses the troposphere model regardless of altitude.
+	// Should be updated to handle stratosphere (above 36,089 ft) if
+	// higher altitudes become important in the future.
+
+	return Sample{
+		WindSample:  WindSample{}, // Calm wind
+		Temperature: temperature,
+		Dewpoint:    dewpoint,
+		Pressure:    pressure,
+	}
+}
+
 func (s WindSample) WindDirection() float32 {
 	// Because WindVec represents how the wind applies force to the
 	// aircraft, we need to spin it around to get its direction.

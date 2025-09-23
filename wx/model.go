@@ -68,8 +68,7 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 	m.checkFetches(t)
 
 	if m.grids[0] == nil {
-		// No wind, 0 degrees Celsius until the fetch comes in.
-		return Sample{Pressure: 1013.2}
+		return MakeStandardSampleForAltitude(alt)
 	}
 
 	s0, ok0 := m.grids[0].Lookup(p, alt)
