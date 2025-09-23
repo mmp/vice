@@ -258,11 +258,8 @@ func (g *GCSProvider) fetchManifests(pch <-chan string) error {
 			zr.Reset(r)
 			if err := msgpack.NewDecoder(zr).Decode(&manifest); err != nil {
 				return err
-			} else {
-				zr.Close()
-				if err := r.Close(); err != nil {
-					return err
-				}
+			} else if err := r.Close(); err != nil {
+				return err
 			}
 		}
 
