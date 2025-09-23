@@ -453,9 +453,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			if imgui.Button(renderer.FontAwesomeIconRedo) {
 				c.updateStartTimeForRunways()
 			}
-			if imgui.IsItemHovered() {
-				imgui.SetTooltip("Pick a new time based on runway configuration and weather")
-			}
 
 			tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 			if imgui.BeginTableV("metar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 800, 0}, 0.) {
