@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AllenDang/cimgui-go/imgui"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
@@ -16,6 +15,8 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 	"golang.org/x/exp/slices"
 )
 
@@ -53,6 +54,8 @@ type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet
 	prefSet            *PrefrenceSet
 	TrackState         map[av.ADSBCallsign]*TrackState
+
+	ERAMOptIn bool
 
 	events *sim.EventsSubscription
 
@@ -455,4 +458,12 @@ func (ep *ERAMPane) getVideoMapLibrary(ss sim.State, client *client.ControlClien
 		return ml, nil
 	}
 	return client.GetVideoMapLibrary(filename)
+}
+
+var _ panes.UIDrawer = (*ERAMPane)(nil)
+
+func (ep *ERAMPane) DisplayName() string { return "ERAM" }
+
+func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
+	imgui.Checkbox("Enable experimental ERAM support", &ep.ERAMOptIn)
 }
