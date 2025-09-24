@@ -117,7 +117,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	// Shift + tab locks TG
 	var prefix string
 	cmd := cmdLine.String()
-	var original string = cmd
+	original := cmd
 	if len(cmd) >= 2 { //  trim a prefix
 		prefix = cmd[:2]
 		cmd = strings.TrimPrefix(cmd, prefix+" ")

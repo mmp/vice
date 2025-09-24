@@ -132,7 +132,7 @@ func dbDrawLine(line dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		}
 	}
 
-	for i := 0; i < line.length; i++ {
+	for i := range line.length {
 		ch := line.ch[i]
 		if ch.ch == 0 {
 			sb.WriteByte(' ')

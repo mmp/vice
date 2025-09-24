@@ -94,30 +94,30 @@ func NewERAMPane() *ERAMPane {
 	return &ERAMPane{}
 }
 
-func (p *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.EventStream, log *log.Logger) {
+func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.EventStream, log *log.Logger) {
 	// Activate maps
-	if p.InboundPointOuts == nil {
-		p.InboundPointOuts = make(map[string]string)
+	if ep.InboundPointOuts == nil {
+		ep.InboundPointOuts = make(map[string]string)
 	}
-	if p.OutboundPointOuts == nil {
-		p.OutboundPointOuts = make(map[string]string)
-	}
-
-	if p.TrackState == nil {
-		p.TrackState = make(map[av.ADSBCallsign]*TrackState)
+	if ep.OutboundPointOuts == nil {
+		ep.OutboundPointOuts = make(map[string]string)
 	}
 
-	if p.aircraftFixCoordinates == nil {
-		p.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
+	if ep.TrackState == nil {
+		ep.TrackState = make(map[av.ADSBCallsign]*TrackState)
 	}
 
-	p.events = es.Subscribe()
+	if ep.aircraftFixCoordinates == nil {
+		ep.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
+	}
+
+	ep.events = es.Subscribe()
 
 	// TODO: initialize fonts and audio
-	p.initializeFonts(r, pl)
+	ep.initializeFonts(r, pl)
 
 	// Activate weather radar, events
-	p.prefSet = &PrefrenceSet{}
+	ep.prefSet = &PrefrenceSet{}
 }
 
 func init() {
@@ -127,6 +127,7 @@ func init() {
 		return &p, err
 	})
 }
+
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
@@ -145,14 +146,13 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// ctr := UserCenter
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
-	scopeExtend := ctx.PaneExtent
 
 	// Following are the draw functions. They are listed in the best of my ability
 
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
 	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
-	cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
@@ -178,6 +178,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// updateAudio
 	ep.drawPauseOverlay(ctx, cb)
 }
+
 func (ep *ERAMPane) Hide() bool {
 	return false
 }
