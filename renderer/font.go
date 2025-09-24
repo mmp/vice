@@ -36,7 +36,6 @@ const (
 	RobotoMono           = "Roboto Mono"
 	RobotoMonoItalic     = "Roboto Mono Italic"
 	FlightStripPrinter   = "Flight Strip Printer"
-	ERAMv102             = "ERAM v102"
 	LargeFontAwesomeOnly = "LargeFontAwesomeOnly"
 )
 
@@ -349,7 +348,6 @@ func FontsInit(r Renderer, p platform.Platform) {
 		"Roboto-Regular.ttf.zst":          RobotoRegular,
 		"RobotoMono-Medium.ttf.zst":       RobotoMono,
 		"RobotoMono-MediumItalic.ttf.zst": RobotoMonoItalic,
-		"ERAM.ttf.zst":                    ERAMv102,
 		"Flight-Strip-Printer.ttf.zst":    FlightStripPrinter} {
 		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
 			createFontSize(loadFont(fn), size, name)
