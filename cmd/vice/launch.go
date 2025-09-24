@@ -269,7 +269,11 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			artccs := make(map[string]interface{})
 			allTRACONs := util.SortedMapKeys(c.selectedServer.GetConfigs())
 			for _, tracon := range allTRACONs {
-				artccs[av.DB.TRACONs[tracon].ARTCC] = nil
+				if tracon == "" {
+					// ERAM scenario; ignore for now
+				} else {
+					artccs[av.DB.TRACONs[tracon].ARTCC] = nil
+				}
 			}
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
