@@ -375,9 +375,9 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) GetQULines(aircraft sim.ACID, callback func(err error)) {
+func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, callback func(err error)) {
 	var update sim.StateUpdate
-	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SendCoordinateInfoRPC, &server.SendCoordinateInfoArgs{
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SendRouteCoordinatesRPC, &server.SendRouteCoordinatesArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            aircraft,
 	}, &update, nil), &update, callback))

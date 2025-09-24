@@ -1008,7 +1008,7 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 }
 
 // TODO: Migrate to ERAM computer.
-func (s *Sim) SendCoordinateInfo(tcp string, acid ACID) error {
+func (s *Sim) SendRouteCoordinates(tcp string, acid ACID) error {
 	ac := s.Aircraft[av.ADSBCallsign(acid)]
 	if ac == nil {
 		return av.ErrNoAircraftForCallsign

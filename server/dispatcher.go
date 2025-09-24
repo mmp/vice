@@ -535,20 +535,20 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.Sta
 	}
 }
 
-type SendCoordinateInfoArgs struct {
+type SendRouteCoordinatesArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
 }
 
-const SendCoordinateInfoRPC = "Sim.SendCoordinateInfo"
+const SendRouteCoordinatesRPC = "Sim.SendRouteCoordinates"
 
-func (sd *dispatcher) SendCoordinateInfo(da *SendCoordinateInfoArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+	if tcp, s, ok := sd.sm.LookupController(rca.ControllerToken); !ok {
 		return ErrNoSimForControllerToken
 	} else {
-		err := s.SendCoordinateInfo(tcp, da.ACID)
+		err := s.SendRouteCoordinates(tcp, rca.ACID)
 		s.GetStateUpdate(tcp, update)
 		return err
 	}

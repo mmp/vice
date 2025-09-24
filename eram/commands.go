@@ -461,7 +461,7 @@ func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
 }
 
 func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.GetQULines(acid, func(err error) {
+	ctx.Client.SendRouteCoordinates(acid, func(err error) {
 		if err != nil {
 			ep.bigOutput.displayError(ep.currentPrefs(), err)
 		}
