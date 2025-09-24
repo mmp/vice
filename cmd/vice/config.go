@@ -8,8 +8,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"iter"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"time"
 
@@ -163,6 +165,11 @@ func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pla
 	return true
 }
 
+func (c *Config) AllPanes() iter.Seq[panes.Pane] {
+	p := []panes.Pane{c.FlightStripPane, c.MessagesPane, c.STARSPane, c.ERAMPane}
+	return slices.Values(p)
+}
+
 func getDefaultConfig() *Config {
 	return &Config{
 		ConfigNoSim: ConfigNoSim{
@@ -244,7 +251,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 				})
 			}
 			// Also upgrade the individual panes
-			for _, pane := range []panes.Pane{config.STARSPane, config.ERAMPane, config.MessagesPane, config.FlightStripPane} {
+			for pane := range config.AllPanes() {
 				if up, ok := pane.(panes.PaneUpgrader); ok && pane != nil {
 					up.Upgrade(config.Version, server.ViceSerializeVersion)
 				}
