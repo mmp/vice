@@ -13,12 +13,17 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
+
+var _ panes.UIDrawer = (*STARSPane)(nil)
+
+func (sp *STARSPane) DisplayName() string { return "STARS" }
 
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	ps := sp.currentPrefs()

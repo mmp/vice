@@ -384,8 +384,6 @@ func NewSTARSPane() *STARSPane {
 	return &STARSPane{}
 }
 
-func (sp *STARSPane) DisplayName() string { return "STARS" }
-
 func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {

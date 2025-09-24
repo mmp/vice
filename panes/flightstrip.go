@@ -231,9 +231,11 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 }
 
-func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
-
 func (fsp *FlightStripPane) Hide() bool { return fsp.HideFlightStrips }
+
+var _ UIDrawer = (*FlightStripPane)(nil)
+
+func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
 	show := !fsp.HideFlightStrips
