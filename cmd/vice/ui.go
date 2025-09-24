@@ -1462,13 +1462,13 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndGroup()
 	}
 
-	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+	for pane := range config.AllPanes() {
 		if draw, ok := pane.(panes.UIDrawer); ok {
 			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}
 		}
-	})
+	}
 
 	imgui.End()
 }
