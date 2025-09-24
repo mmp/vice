@@ -1,4 +1,4 @@
-// pkg/renderer/font.go
+// renderer/font.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	"image/color"
 	"io"
 	"io/fs"
 	gomath "math"
@@ -27,6 +28,7 @@ import (
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/IconFontCppHeaders"
 )
+import "iter"
 
 // Font name constants
 const (
@@ -514,4 +516,111 @@ func loadFont(name string) []byte {
 	zr.Close()
 
 	return b
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Bitmap fonts
+
+type BitmapFont struct {
+	PointSize     int
+	Width, Height int
+	Glyphs        []BitmapGlyph
+}
+
+type BitmapGlyph struct {
+	Name   string
+	StepX  int
+	Bounds [2]int
+	Offset [2]int
+	Bitmap []uint32
+}
+
+func CreateBitmapFontAtlas(r Renderer, p platform.Platform, fontIter iter.Seq2[string, BitmapFont]) []*Font {
+	xres, yres := 2048, 1024
+	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: xres, Y: yres}})
+	x, y := 0, 0
+
+	var newFonts []*Font
+
+	scale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+
+	for name, bf := range fontIter {
+		id := FontIdentifier{
+			Name: name,
+			Size: bf.Height,
+		}
+
+		f := MakeFont(int(scale)*bf.Height, id, nil)
+		newFonts = append(newFonts, f)
+
+		if y+bf.Height >= yres {
+			panic("Font atlas texture too small")
+		}
+
+		for ch, glyph := range bf.Glyphs {
+			dx := glyph.Bounds[0] + 1 // pad
+			if x+dx > xres {
+				// Start a new line
+				x = 0
+				y += bf.Height + 1
+			}
+
+			glyph.rasterize(atlas, x, y)
+			glyph.addToFont(ch, x, y, xres, yres, bf, f, scale)
+
+			x += dx
+		}
+
+		// Start a new line after finishing a font.
+		x = 0
+		y += bf.Height + 1
+	}
+
+	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)
+	for _, font := range newFonts {
+		font.TexId = atlasId
+	}
+
+	return newFonts
+}
+
+func (glyph BitmapGlyph) rasterize(img *image.RGBA, x0, y0 int) {
+	// BitmapGlyphs store their bitmaps as an array of uint32s, where each
+	// uint32 encodes a scanline and bits are set in it to indicate that
+	// the corresponding pixel should be drawn; thus, there are no
+	// intermediate values for anti-aliasing.
+	for y, line := range glyph.Bitmap {
+		for x := 0; x < glyph.Bounds[0]; x++ {
+			// The high bit corresponds to the first pixel in the scanline,
+			// so the bitmask is set up accordingly...
+			mask := uint32(1 << (31 - x))
+			if line&mask != 0 {
+				on := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+				img.SetRGBA(x0+x, y0+y, on)
+			}
+		}
+	}
+}
+
+func (glyph BitmapGlyph) addToFont(ch, x, y, xres, yres int, bf BitmapFont, f *Font, scale float32) {
+	g := &Glyph{
+		// Vertex coordinates for the quad: shift based on the offset
+		// associated with the glyph.  Also, count up from the bottom in y
+		// rather than drawing from the top.
+		X0: scale * float32(glyph.Offset[0]),
+		X1: scale * float32(glyph.Offset[0]+glyph.Bounds[0]),
+		Y0: scale * float32(bf.Height-glyph.Offset[1]-glyph.Bounds[1]),
+		Y1: scale * float32(bf.Height-glyph.Offset[1]),
+
+		// Texture coordinates: just the extent of where we rasterized the
+		// glyph in the atlas, rescaled to [0,1].
+		U0: float32(x) / float32(xres),
+		V0: float32(y) / float32(yres),
+		U1: (float32(x + glyph.Bounds[0])) / float32(xres),
+		V1: (float32(y + glyph.Bounds[1])) / float32(yres),
+
+		AdvanceX: scale * float32(glyph.StepX),
+		Visible:  true,
+	}
+	f.AddGlyph(ch, g)
 }
