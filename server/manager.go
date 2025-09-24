@@ -1,5 +1,5 @@
 // server/manager.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package server
@@ -340,6 +340,8 @@ type NewSimResult struct {
 	SpeechWSPort    int
 }
 
+const NewSimRPC = "SimManager.NewSim"
+
 func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) error {
 	c2 := config
 	c2.TFRs = nil
@@ -363,6 +365,8 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 		return ErrInvalidSSimConfiguration
 	}
 }
+
+const ConnectToSimRPC = "SimManager.ConnectToSim"
 
 func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *NewSimResult) error {
 	sm.mu.Lock(sm.lg)
@@ -502,6 +506,8 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 	return &nsc
 }
 
+const AddLocalRPC = "SimManager.AddLocal"
+
 func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	session := &simSession{ // no password, etc.
 		sim:              sim,
@@ -615,6 +621,8 @@ type ConnectResult struct {
 	HaveTTS        bool
 }
 
+const ConnectRPC = "SimManager.Connect"
+
 func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	if version != ViceRPCVersion {
 		return ErrRPCVersionMismatch
@@ -633,6 +641,8 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 
 	return nil
 }
+
+const GetAvailableWXRPC = "SimManager.GetAvailableWX"
 
 func (sm *SimManager) GetAvailableWX(unused int, result *[]util.TimeInterval) error {
 	if sm.wxProvider == nil {
@@ -704,6 +714,8 @@ func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Re
 	session.HandleSpeechWSConnection(tcp, w, r, sm.lg)
 }
 
+const GetRunningSimsRPC = "SimManager.GetRunningSims"
+
 func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
@@ -759,6 +771,8 @@ func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
 	return nIdle > 10
 }
 
+const GetSerializeSimRPC = "SimManager.GetSerializeSim"
+
 func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 	if _, sim, ok := sm.LookupController(token); !ok {
 		return ErrNoSimForControllerToken
@@ -796,6 +810,8 @@ type SimBroadcastMessage struct {
 	Message  string
 }
 
+const BroadcastRPC = "SimManager.Broadcast"
+
 func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 	pw, err := os.ReadFile("password")
 	if err != nil {
@@ -821,6 +837,8 @@ func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
 	return nil
 }
 
+const GetAllVoicesRPC = "SimManager.GetAllVoices"
+
 // GetAllVoices returns all available voices for TTS
 func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
 	if sm.tts == nil {
@@ -844,6 +862,8 @@ func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
 		}
 	}
 }
+
+const TextToSpeechRPC = "SimManager.TextToSpeech"
 
 // TextToSpeech converts text to speech and returns the audio data
 func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
@@ -884,6 +904,8 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 	}
 }
 
+const GetMETARRPC = "SimManager.GetMETAR"
+
 func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA) error {
 	defer sm.lg.CatchAndReportCrash()
 
@@ -895,6 +917,8 @@ func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA
 	*result, err = sm.wxProvider.GetMETAR(airports)
 	return err
 }
+
+const GetTimeIntervalsRPC = "SimManager.GetTimeIntervals"
 
 func (sm *SimManager) GetTimeIntervals(_ struct{}, result *[]util.TimeInterval) error {
 	defer sm.lg.CatchAndReportCrash()
@@ -916,6 +940,8 @@ type PrecipURL struct {
 	URL      string
 	NextTime time.Time
 }
+
+const GetPrecipURLRPC = "SimManager.GetPrecipURL"
 
 func (sm *SimManager) GetPrecipURL(args PrecipURLArgs, result *PrecipURL) error {
 	defer sm.lg.CatchAndReportCrash()
@@ -939,6 +965,8 @@ type GetAtmosResult struct {
 	Time     time.Time
 	NextTime time.Time
 }
+
+const GetAtmosGridRPC = "SimManager.GetAtmosGrid"
 
 func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) error {
 	defer sm.lg.CatchAndReportCrash()

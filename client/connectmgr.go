@@ -1,5 +1,5 @@
-// pkg/client/connectmgr.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// client/connectmgr.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package client
@@ -70,7 +70,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 			errorLogger.Error(err)
 		} else {
 			var cr server.ConnectResult
-			if err := client.callWithTimeout("SimManager.Connect", server.ViceRPCVersion, &cr); err != nil {
+			if err := client.callWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
@@ -93,7 +93,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	}
 
 	var result server.NewSimResult
-	if err := cm.LocalServer.Call("SimManager.AddLocal", s, &result); err != nil {
+	if err := cm.LocalServer.Call(server.AddLocalRPC, s, &result); err != nil {
 		return nil, err
 	}
 
@@ -107,7 +107,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 
-	if err := srv.callWithTimeout("SimManager.NewSim", config, &result); err != nil {
+	if err := srv.callWithTimeout(server.NewSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
@@ -190,7 +190,7 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 
 		var rs map[string]*server.RemoteSim
 		cm.updateRemoteSimsError = nil
-		cm.updateRemoteSimsCall = makeRPCCall(cm.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
+		cm.updateRemoteSimsCall = makeRPCCall(cm.RemoteServer.Go(server.GetRunningSimsRPC, 0, &rs, nil),
 			func(err error) {
 				if err == nil {
 					if cm.RemoteServer != nil {
@@ -219,7 +219,7 @@ func (cm *ConnectionManager) UpdateAvailableWX(srv *Server) error {
 
 func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfiguration, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
-	if err := srv.callWithTimeout("SimManager.ConnectToSim", config, &result); err != nil {
+	if err := srv.callWithTimeout(server.ConnectToSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
@@ -302,7 +302,7 @@ func (cm *ConnectionManager) GetMETAR(srv *Server, airports []string, callback f
 	cm.pendingMETARCall = nil
 
 	var soaMETAR map[string]wx.METARSOA
-	cm.pendingMETARCall = makeRPCCall(srv.Go("SimManager.GetMETAR", airports, &soaMETAR, nil),
+	cm.pendingMETARCall = makeRPCCall(srv.Go(server.GetMETARRPC, airports, &soaMETAR, nil),
 		func(err error) {
 			if err != nil {
 				callback(nil, err)

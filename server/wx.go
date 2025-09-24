@@ -76,7 +76,7 @@ func MakeRPCProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) 
 
 	go func() {
 		defer close(r.timeIntervalsCh)
-		if err := r.callWithTimeout("SimManager.GetTimeIntervals", struct{}{}, &r.timeIntervals); err != nil {
+		if err := r.callWithTimeout(GetTimeIntervalsRPC, struct{}{}, &r.timeIntervals); err != nil {
 			lg.Errorf("%v", err)
 		}
 	}()
@@ -123,7 +123,7 @@ func (r *RPCProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error
 			defer close(ch)
 
 			var m map[string]wx.METARSOA
-			if err := r.callWithTimeout("SimManager.GetMETAR", unrequested, &m); err != nil {
+			if err := r.callWithTimeout(GetMETARRPC, unrequested, &m); err != nil {
 				r.lg.Errorf("%v", err)
 			} else {
 				ch <- m
@@ -153,7 +153,7 @@ func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 		Time:   t,
 	}
 	var result PrecipURL
-	if err := r.callWithTimeout("SimManager.GetPrecipURL", args, &result); err != nil {
+	if err := r.callWithTimeout(GetPrecipURLRPC, args, &result); err != nil {
 		return "", time.Time{}, err
 	}
 	return result.URL, result.NextTime, nil
@@ -165,7 +165,7 @@ func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosS
 		Time:   t,
 	}
 	var result GetAtmosResult
-	if err = r.callWithTimeout("SimManager.GetAtmosGrid", args, &result); err == nil {
+	if err = r.callWithTimeout(GetAtmosGridRPC, args, &result); err == nil {
 		atmos = result.AtmosSOA
 		time = result.Time
 		nextTime = result.NextTime

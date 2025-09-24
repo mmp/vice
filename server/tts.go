@@ -356,7 +356,7 @@ func (r *RemoteTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
 		if r.cachedVoices == nil {
 			// Fetch voices from remote server
 			var voices []sim.Voice
-			if err := r.callWithTimeout("SimManager.GetAllVoices", struct{}{}, &voices); err != nil {
+			if err := r.callWithTimeout(GetAllVoicesRPC, struct{}{}, &voices); err != nil {
 				errch <- err
 				return
 			}
@@ -381,7 +381,7 @@ func (r *RemoteTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 		defer close(errch)
 
 		var mp3 []byte
-		if err := r.callWithTimeout("SimManager.TextToSpeech", &TTSRequest{
+		if err := r.callWithTimeout(TextToSpeechRPC, &TTSRequest{
 			Voice: voice,
 			Text:  text,
 		}, &mp3); err != nil {

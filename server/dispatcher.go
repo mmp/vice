@@ -1,5 +1,5 @@
-// pkg/server/dispatcher.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// server/dispatcher.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package server
@@ -18,6 +18,8 @@ type dispatcher struct {
 	sm *SimManager
 }
 
+const GetStateUpdateRPC = "Sim.GetStateUpdate"
+
 func (sd *dispatcher) GetStateUpdate(token string, update *sim.StateUpdate) error {
 	// Most of the methods in this file are called from the RPC dispatcher,
 	// which spawns up goroutines as needed to handle requests, so if we
@@ -27,6 +29,8 @@ func (sd *dispatcher) GetStateUpdate(token string, update *sim.StateUpdate) erro
 
 	return sd.sm.GetStateUpdate(token, update)
 }
+
+const SignOffRPC = "Sim.SignOff"
 
 func (sd *dispatcher) SignOff(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -40,6 +44,8 @@ type ChangeControlPositionArgs struct {
 	KeepTracks      bool
 }
 
+const ChangeControlPositionRPC = "Sim.ChangeControlPosition"
+
 func (sd *dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -49,6 +55,8 @@ func (sd *dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *st
 		return s.ChangeControlPosition(tcp, cs.TCP, cs.KeepTracks)
 	}
 }
+
+const TakeOrReturnLaunchControlRPC = "Sim.TakeOrReturnLaunchControl"
 
 func (sd *dispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -65,6 +73,8 @@ type SetSimRateArgs struct {
 	Rate            float32
 }
 
+const SetSimRateRPC = "Sim.SetSimRate"
+
 func (sd *dispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -80,6 +90,8 @@ type SetLaunchConfigArgs struct {
 	Config          sim.LaunchConfig
 }
 
+const SetLaunchConfigRPC = "Sim.SetLaunchConfig"
+
 func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -89,6 +101,8 @@ func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) erro
 		return s.SetLaunchConfig(tcp, lc.Config)
 	}
 }
+
+const TogglePauseRPC = "Sim.TogglePause"
 
 func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -100,6 +114,8 @@ func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	}
 }
 
+const RequestFlightFollowingRPC = "Sim.RequestFlightFollowing"
+
 func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -109,6 +125,8 @@ func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 		return s.RequestFlightFollowing()
 	}
 }
+
+const FastForwardRPC = "Sim.FastForward"
 
 func (sd *dispatcher) FastForward(token string, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -129,6 +147,8 @@ type AssociateFlightPlanArgs struct {
 	Callsign            av.ADSBCallsign
 	FlightPlanSpecifier sim.FlightPlanSpecifier
 }
+
+const AssociateFlightPlanRPC = "Sim.AssociateFlightPlan"
 
 func (sd *dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -151,6 +171,8 @@ type ActivateFlightPlanArgs struct {
 	FlightPlanSpecifier *sim.FlightPlanSpecifier
 }
 
+const ActivateFlightPlanRPC = "Sim.ActivateFlightPlan"
+
 func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -169,6 +191,8 @@ type CreateFlightPlanArgs struct {
 	ControllerToken     string
 	FlightPlanSpecifier sim.FlightPlanSpecifier
 }
+
+const CreateFlightPlanRPC = "Sim.CreateFlightPlan"
 
 func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -189,6 +213,8 @@ type ModifyFlightPlanArgs struct {
 	FlightPlanSpecifier sim.FlightPlanSpecifier
 	ACID                sim.ACID
 }
+
+const ModifyFlightPlanRPC = "Sim.ModifyFlightPlan"
 
 func (sd *dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -216,6 +242,8 @@ type ACIDSpecifier struct {
 
 type DeleteFlightPlanArgs ACIDSpecifier
 
+const DeleteFlightPlanRPC = "Sim.DeleteFlightPlan"
+
 func (sd *dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -237,6 +265,8 @@ type RepositionTrackArgs struct {
 	Position        math.Point2LL   // to
 }
 
+const RepositionTrackRPC = "Sim.RepositionTrack"
+
 func (sd *dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -257,6 +287,8 @@ type HandoffArgs struct {
 	ToTCP           string
 }
 
+const HandoffTrackRPC = "Sim.HandoffTrack"
+
 func (sd *dispatcher) HandoffTrack(h *HandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -271,6 +303,8 @@ func (sd *dispatcher) HandoffTrack(h *HandoffArgs, update *sim.StateUpdate) erro
 	}
 }
 
+const RedirectHandoffRPC = "Sim.RedirectHandoff"
+
 func (sd *dispatcher) RedirectHandoff(h *HandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -284,6 +318,8 @@ func (sd *dispatcher) RedirectHandoff(h *HandoffArgs, update *sim.StateUpdate) e
 		return err
 	}
 }
+
+const AcceptRedirectedHandoffRPC = "Sim.AcceptRedirectedHandoff"
 
 func (sd *dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -301,6 +337,8 @@ func (sd *dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *sim
 
 type AcceptHandoffArgs ACIDSpecifier
 
+const AcceptHandoffRPC = "Sim.AcceptHandoff"
+
 func (sd *dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -316,6 +354,8 @@ func (sd *dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *sim.StateUpda
 }
 
 type CancelHandoffArgs ACIDSpecifier
+
+const CancelHandoffRPC = "Sim.CancelHandoff"
 
 func (sd *dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -343,6 +383,8 @@ type ForceQLArgs struct {
 	Controller      string
 }
 
+const ForceQLRPC = "Sim.ForceQL"
+
 func (sd *dispatcher) ForceQL(ql *ForceQLArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -362,6 +404,8 @@ type GlobalMessageArgs struct {
 	Message         string
 }
 
+const GlobalMessageRPC = "Sim.GlobalMessage"
+
 func (sd *dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -371,6 +415,8 @@ func (sd *dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 		return s.GlobalMessage(tcp, gm.Message)
 	}
 }
+
+const PointOutRPC = "Sim.PointOut"
 
 func (sd *dispatcher) PointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -386,6 +432,8 @@ func (sd *dispatcher) PointOut(po *PointOutArgs, update *sim.StateUpdate) error 
 	}
 }
 
+const AcknowledgePointOutRPC = "Sim.AcknowledgePointOut"
+
 func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -400,6 +448,8 @@ func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *sim.StateUpd
 	}
 }
 
+const RecallPointOutRPC = "Sim.RecallPointOut"
+
 func (sd *dispatcher) RecallPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -413,6 +463,8 @@ func (sd *dispatcher) RecallPointOut(po *PointOutArgs, update *sim.StateUpdate) 
 		return err
 	}
 }
+
+const RejectPointOutRPC = "Sim.RejectPointOut"
 
 func (sd *dispatcher) RejectPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -430,6 +482,8 @@ func (sd *dispatcher) RejectPointOut(po *PointOutArgs, update *sim.StateUpdate) 
 
 type HeldDepartureArgs AircraftSpecifier
 
+const ReleaseDepartureRPC = "Sim.ReleaseDeparture"
+
 func (sd *dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -445,6 +499,8 @@ func (sd *dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *sim.StateU
 }
 
 type DeleteAircraftArgs AircraftSpecifier
+
+const DeleteAllAircraftRPC = "Sim.DeleteAllAircraft"
 
 func (sd *dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -465,6 +521,8 @@ type DeleteAircraftListArgs struct {
 	Aircraft        []sim.Aircraft
 }
 
+const DeleteAircraftRPC = "Sim.DeleteAircraft"
+
 func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -481,6 +539,8 @@ type SendCoordinateInfoArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
 }
+
+const SendCoordinateInfoRPC = "Sim.SendCoordinateInfo"
 
 func (sd *dispatcher) SendCoordinateInfo(da *SendCoordinateInfoArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -499,6 +559,8 @@ type FlightPlanDirectArgs struct {
 	ACID            sim.ACID
 	Fix             string
 }
+
+const FlightPlanDirectRPC = "Sim.FlightPlanDirect"
 
 func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -524,6 +586,8 @@ type AircraftCommandsResult struct {
 	ErrorMessage   string
 	RemainingInput string
 }
+
+const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
 
 func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *AircraftCommandsResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -972,6 +1036,8 @@ type LaunchAircraftArgs struct {
 	DepartureRunway string
 }
 
+const LaunchAircraftRPC = "Sim.LaunchAircraft"
+
 func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -990,6 +1056,8 @@ type CreateDepartureArgs struct {
 	Category        string
 	Rules           av.FlightRules
 }
+
+const CreateDepartureRPC = "Sim.CreateDeparture"
 
 func (sd *dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -1018,6 +1086,8 @@ type CreateArrivalArgs struct {
 	Airport         string
 }
 
+const CreateArrivalRPC = "Sim.CreateArrival"
+
 func (sd *dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -1036,6 +1106,8 @@ type CreateOverflightArgs struct {
 	ControllerToken string
 	Group           string
 }
+
+const CreateOverflightRPC = "Sim.CreateOverflight"
 
 func (sd *dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -1062,6 +1134,8 @@ type CreateRestrictionAreaResultArgs struct {
 	StateUpdate sim.StateUpdate
 }
 
+const CreateRestrictionAreaRPC = "Sim.CreateRestrictionArea"
+
 func (sd *dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *CreateRestrictionAreaResultArgs) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -1075,6 +1149,8 @@ func (sd *dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *Cre
 		return nil
 	}
 }
+
+const UpdateRestrictionAreaRPC = "Sim.UpdateRestrictionArea"
 
 func (sd *dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -1090,6 +1166,8 @@ func (sd *dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *sim
 		return err
 	}
 }
+
+const DeleteRestrictionAreaRPC = "Sim.DeleteRestrictionArea"
 
 func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
@@ -1111,6 +1189,8 @@ type VideoMapsArgs struct {
 	Filename        string
 }
 
+const GetVideoMapLibraryRPC = "Sim.GetVideoMapLibrary"
+
 func (sd *dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLibrary) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
@@ -1124,6 +1204,8 @@ func (sd *dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLib
 		return err
 	}
 }
+
+const GetAircraftDisplayStateRPC = "Sim.GetAircraftDisplayState"
 
 func (sd *dispatcher) GetAircraftDisplayState(as *AircraftSpecifier, state *sim.AircraftDisplayState) error {
 	defer sd.sm.lg.CatchAndReportCrash()

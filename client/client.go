@@ -261,7 +261,7 @@ func (c *ControlClient) Disconnect() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	if err := c.client.callWithTimeout("Sim.SignOff", c.controllerToken, nil); err != nil {
+	if err := c.client.callWithTimeout(server.SignOffRPC, c.controllerToken, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
 	}
 	if c.speechWs != nil {
@@ -320,7 +320,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		c.lastUpdateRequest = time.Now()
 
 		var update sim.StateUpdate
-		c.updateCall = makeStateUpdateRPCCall(c.client.Go("Sim.GetStateUpdate", c.controllerToken, &update, nil), &update,
+		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
 				d := time.Since(c.updateCall.IssueTime)
 				c.lastUpdateLatency = d
@@ -542,7 +542,7 @@ func (c *ControlClient) GetPrecipURL(t time.Time, callback func(url string, next
 		Time:   t,
 	}
 	var result server.PrecipURL
-	c.addCall(makeRPCCall(c.client.Go("SimManager.GetPrecipURL", args, &result, nil),
+	c.addCall(makeRPCCall(c.client.Go(server.GetPrecipURLRPC, args, &result, nil),
 		func(err error) {
 			if callback != nil {
 				callback(result.URL, result.NextTime, err)
@@ -556,7 +556,7 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 		Time:   t,
 	}
 	var result server.GetAtmosResult
-	c.addCall(makeRPCCall(c.client.Go("SimManager.GetAtmosGrid", spec, &result, nil),
+	c.addCall(makeRPCCall(c.client.Go(server.GetAtmosGridRPC, spec, &result, nil),
 		func(err error) {
 			if callback != nil {
 				if result.AtmosSOA != nil {
@@ -598,7 +598,7 @@ func (s *Server) UpdateAvailableWX() error {
 		return nil
 	}
 
-	return s.callWithTimeout("SimManager.GetAvailableWX", 0, &s.AvailableWX)
+	return s.callWithTimeout(server.GetAvailableWXRPC, 0, &s.AvailableWX)
 }
 
 func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
@@ -626,7 +626,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 		} else {
 			var cr server.ConnectResult
 			start := time.Now()
-			if err := client.callWithTimeout("SimManager.Connect", server.ViceRPCVersion, &cr); err != nil {
+			if err := client.callWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
@@ -653,7 +653,7 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		return
 	}
 
-	err = client.callWithTimeout("SimManager.Broadcast", &server.SimBroadcastMessage{
+	err = client.callWithTimeout(server.BroadcastRPC, &server.SimBroadcastMessage{
 		Password: password,
 		Message:  msg,
 	}, nil)
