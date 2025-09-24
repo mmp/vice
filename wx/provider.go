@@ -29,11 +29,23 @@ func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {
 		atmosIntervalTolerance  = 65 * time.Minute
 	)
 
-	mi := util.FindTimeIntervals(metar, metarIntervalTolerance)
-	pi := util.FindTimeIntervals(precip, precipIntervalTolerance)
-	ai := util.FindTimeIntervals(atmos, atmosIntervalTolerance)
+	var intervals [][]util.TimeInterval
 
-	iv := util.MergeIntervals(mi, pi, ai)
+	if metar != nil {
+		intervals = append(intervals, util.FindTimeIntervals(metar, metarIntervalTolerance))
+	}
+	if precip != nil {
+		intervals = append(intervals, util.FindTimeIntervals(precip, precipIntervalTolerance))
+	}
+	if atmos != nil {
+		intervals = append(intervals, util.FindTimeIntervals(atmos, atmosIntervalTolerance))
+	}
+
+	if len(intervals) == 0 {
+		return nil
+	}
+
+	iv := util.MergeIntervals(intervals...)
 
 	iv = util.MapSlice(iv, func(ti util.TimeInterval) util.TimeInterval {
 		// Make sure we're in UTC.

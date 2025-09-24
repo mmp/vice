@@ -23,6 +23,45 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
+	var metar map[string]wx.METARSOA
+	if err := sb.ReadObject("METAR.msgpack.zst", &metar); err != nil {
+		return nil, err
+	}
+
+	phlMETAR, ok := metar["KPHL"]
+	if !ok {
+		return nil, fmt.Errorf("KPHL not found in METAR data")
+	}
+
+	decoded := wx.DecodeMETARSOA(phlMETAR)
+	times := make([]time.Time, 0, len(decoded))
+	for _, metar := range decoded {
+		times = append(times, metar.Time.UTC())
+	}
+
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+	return times, nil
+}
+
+func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
+	var manifest []string
+	if err := sb.ReadObject("precip/PHL/manifest.msgpack.zst", &manifest); err != nil {
+		return nil, err
+	}
+
+	times := make([]time.Time, 0, len(manifest))
+	for _, file := range manifest {
+		t, err := time.Parse(time.RFC3339, strings.TrimSuffix(file, ".msgpack.zst"))
+		if err != nil {
+			return nil, err
+		}
+		times = append(times, t)
+	}
+
+	return times, nil
+}
+
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
 func ingestHRRR(sb StorageBackend) error {
 	tmp := os.Getenv("WXINGEST_TMP")
@@ -42,6 +81,26 @@ func ingestHRRR(sb StorageBackend) error {
 		return err
 	}
 
+	// Get available METAR and precip data times to determine valid intervals
+	metarTimes, err := getAvailableMETARTimes(sb)
+	if err != nil {
+		return fmt.Errorf("failed to get METAR times: %w", err)
+	}
+
+	precipTimes, err := getAvailablePrecipTimes(sb)
+	if err != nil {
+		return fmt.Errorf("failed to get precip times: %w", err)
+	}
+
+	// Find complete day intervals where both METAR and precip data are available
+	validIntervals := wx.FullDataDays(metarTimes, precipTimes, nil)
+	if len(validIntervals) == 0 {
+		return errors.New("no valid time intervals with complete METAR and precip data")
+	}
+	for _, iv := range validIntervals {
+		LogInfo("Time interval with valid METAR/precip: %s - %s", iv[0], iv[1])
+	}
+
 	existing := listIngestedAtmos(sb)
 
 	tfr := util.MakeTempFileRegistry(nil)
@@ -50,51 +109,40 @@ func ingestHRRR(sb StorageBackend) error {
 	tCh := make(chan time.Time)
 	var eg errgroup.Group
 	eg.Go(func() error {
-		// Roughly when the scrape started; ingest will run for this time and
-		// it will be incremented by an hour at a time until it is a few hours
-		// before the current time.
-		fetchTime := time.Date(2025, 7, 28, 0, 0, 0, 0, time.UTC)
+		defer close(tCh)
 
-		doTime := func(t time.Time) bool {
-			// Days that for various reasons the scraper didn't get a full
-			// days' information; don't spend the time processing HRRRs for
-			// those days since it'll be wasted effort.
-			skipDays := []time.Time{
-				time.Date(2025, 7, 30, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 8, 11, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 8, 12, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 8, 13, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 8, 14, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 3, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 4, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 5, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 6, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 7, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 8, 0, 0, 0, 0, time.UTC),
-				time.Date(2025, 9, 9, 0, 0, 0, 0, time.UTC),
-			}
-			for _, skip := range skipDays {
-				if t.Year() == skip.Year() && t.Month() == skip.Month() && t.Day() == skip.Day() {
-					return false
-				}
-			}
+		// Process all hours within valid day intervals
+		for _, interval := range validIntervals {
+			start := interval[0].UTC()
+			end := interval[1].UTC()
 
-			tracons := existing[fetchTime] // may be empty
-			slices.Sort(tracons)
-			return !slices.Equal(tracons, wx.AtmosTRACONs)
-		}
-
-		// Stop once we get close to the current time.
-		for time.Since(fetchTime) > 3*time.Hour {
-			if doTime(fetchTime) {
-				tCh <- fetchTime
-				if *hrrrQuick {
+			// Iterate through each hour in the interval (including the
+			// 0000Z at the end).
+			for t := start; !t.After(end); t = t.Add(time.Hour) {
+				// Stop once we get close to the current time
+				if time.Since(t) <= 3*time.Hour {
 					break
 				}
+
+				// Check if we already have data for all TRACONs at this time
+				tracons := existing[t] // may be empty
+				slices.Sort(tracons)
+				var missing []string
+				for _, tracon := range wx.AtmosTRACONs {
+					if !slices.Contains(tracons, tracon) {
+						missing = append(missing, tracon)
+					}
+				}
+				if len(missing) > 0 {
+					LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
+
+					tCh <- t
+					if *hrrrQuick {
+						return nil
+					}
+				}
 			}
-			fetchTime = fetchTime.Add(time.Hour)
 		}
-		close(tCh)
 		return nil
 	})
 
