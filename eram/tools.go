@@ -219,7 +219,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	}, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.writeText(td, ep.smallOutput, [2]float32{p0[0] + 2, p0[1] - 2})
 
-	// Restore scissor	
+	// Restore scissor
 	commandDrawState.cb.SetScissorBounds(ctx.PaneExtent,
 		ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 
