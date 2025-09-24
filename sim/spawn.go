@@ -351,7 +351,6 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 		if fp != nil && fp.CID == "" {
 			if cid, err := s.CIDAllocator.Allocate(); err == nil {
 				fp.CID = cid
-				ac.NASFlightPlan = fp
 			} else {
 				s.lg.Warn("no CID available", slog.String("callsign", string(ac.ADSBCallsign)))
 			}
