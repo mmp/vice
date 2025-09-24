@@ -22,6 +22,7 @@ type StorageBackend interface {
 	List(path string) (map[string]int64, error)
 	ChanList(path string, ch chan<- string) error
 	OpenRead(path string) (io.ReadCloser, error)
+	ReadObject(path string, result any) error
 	Store(path string, r io.Reader) (int64, error)
 	StoreObject(path string, object any) (int64, error)
 	Delete(path string) error
@@ -63,6 +64,10 @@ func (d DryRunBackend) ChanList(path string, ch chan<- string) error {
 
 func (d DryRunBackend) OpenRead(path string) (io.ReadCloser, error) {
 	return d.g.OpenRead(path)
+}
+
+func (d DryRunBackend) ReadObject(path string, result any) error {
+	return d.g.ReadObject(path, result)
 }
 
 func (d DryRunBackend) Store(path string, r io.Reader) (int64, error) {
@@ -164,6 +169,22 @@ func (g GCSBackend) OpenRead(path string) (io.ReadCloser, error) {
 	return g.bucket.Object(path).NewReader(g.ctx)
 }
 
+func (g GCSBackend) ReadObject(path string, result any) error {
+	r, err := g.OpenRead(path)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	zr, err := zstd.NewReader(r)
+	if err != nil {
+		return err
+	}
+	defer zr.Close()
+
+	return msgpack.NewDecoder(zr).Decode(result)
+}
+
 func (g GCSBackend) Store(path string, r io.Reader) (int64, error) {
 	objw := g.bucket.Object(path).NewWriter(g.ctx)
 	n, err := io.Copy(objw, r)
@@ -232,6 +253,12 @@ func (t *TrackingBackend) OpenRead(path string) (io.ReadCloser, error) {
 		ReadCloser: rc,
 		n:          &t.down,
 	}, nil
+}
+
+func (t *TrackingBackend) ReadObject(path string, result any) error {
+	// We don't need to track bytes for ReadObject since it uses OpenRead internally
+	// and OpenRead already tracks the bytes
+	return t.sb.ReadObject(path, result)
 }
 
 func (t *TrackingBackend) Store(path string, r io.Reader) (int64, error) {
