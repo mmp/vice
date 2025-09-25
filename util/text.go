@@ -287,3 +287,26 @@ func SelectInTwoEdits(str string, seq iter.Seq[string], dist1, dist2 []string) (
 	}
 	return dist1, dist2
 }
+
+func TransposeStrings(strs []string) ([]string, error) {
+	if len(strs) == 0 {
+		return nil, nil
+	}
+
+	n := len(strs[0])
+	b := make([]strings.Builder, n)
+	for _, s := range strs {
+		if len(s) != n {
+			return nil, errors.New("not all string lengths are equal")
+		}
+		for i := range len(s) {
+			b[i].WriteByte(s[i])
+		}
+	}
+
+	r := make([]string, n)
+	for i := range n {
+		r[i] = b[i].String()
+	}
+	return r, nil
+}
