@@ -5,13 +5,12 @@
 package util
 
 import (
+	"compress/flate"
 	"os"
 	"path/filepath"
 	"slices"
-	"sync"
 	"time"
 
-	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
@@ -23,32 +22,9 @@ func fullCachePath(path string) (string, error) {
 	return filepath.Join(cd, "Vice", path), nil
 }
 
-var (
-	// Pool a limited number of them to keep memory use under control.
-	zstdEncoders     chan *zstd.Encoder
-	zstdEncodersOnce sync.Once
-)
-
-func initZstdEncoders(n int) error {
-	zstdEncoders = make(chan *zstd.Encoder, n)
-	for range n {
-		ze, err := zstd.NewWriter(nil, zstd.WithEncoderLevel(zstd.SpeedBestCompression), zstd.WithEncoderConcurrency(1))
-		if err != nil {
-			return err
-		}
-		zstdEncoders <- ze
-	}
-	return nil
-}
 
 func CacheStoreObject(path string, obj any) error {
-	var err error
-	zstdEncodersOnce.Do(func() { err = initZstdEncoders(2) })
-	if err != nil {
-		return err
-	}
-
-	path, err = fullCachePath(path)
+	path, err := fullCachePath(path)
 	if err != nil {
 		return err
 	}
@@ -61,19 +37,17 @@ func CacheStoreObject(path string, obj any) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 
-	zw := <-zstdEncoders
-	defer func() { zstdEncoders <- zw }()
-	zw.Reset(f)
-
-	if err := msgpack.NewEncoder(zw).Encode(obj); err != nil {
-		f.Close()
-		return err
-	} else if err := zw.Close(); err != nil {
-		f.Close()
+	fw, err := flate.NewWriter(f, flate.BestSpeed)
+	if err != nil {
 		return err
 	}
-	return f.Close()
+
+	if err := msgpack.NewEncoder(fw).Encode(obj); err != nil {
+		return err
+	}
+	return fw.Close()
 }
 
 func CacheRetrieveObject(path string, obj any) (time.Time, error) {
@@ -93,13 +67,10 @@ func CacheRetrieveObject(path string, obj any) (time.Time, error) {
 		return time.Time{}, err
 	}
 
-	zr, err := zstd.NewReader(f, zstd.WithDecoderConcurrency(0))
-	if err != nil {
-		return time.Time{}, err
-	}
-	defer zr.Close()
+	fr := flate.NewReader(f)
+	defer fr.Close()
 
-	return fi.ModTime(), msgpack.NewDecoder(zr).Decode(obj)
+	return fi.ModTime(), msgpack.NewDecoder(fr).Decode(obj)
 }
 
 func CacheCullObjects(maxBytes int64) error {
