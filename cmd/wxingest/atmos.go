@@ -45,19 +45,33 @@ func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
 }
 
 func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
-	var manifest []string
-	if err := sb.ReadObject("precip/PHL/manifest.msgpack.zst", &manifest); err != nil {
+	var tm []string
+	if err := sb.ReadObject("precip/manifest.msgpack.zst", &tm); err != nil {
+		return nil, err
+	}
+	manifest, err := util.TransposeStrings(tm)
+	if err != nil {
 		return nil, err
 	}
 
-	times := make([]time.Time, 0, len(manifest))
-	for _, file := range manifest {
-		t, err := time.Parse(time.RFC3339, strings.TrimSuffix(file, ".msgpack.zst"))
-		if err != nil {
-			return nil, err
+	var times []time.Time
+	for _, relativePath := range manifest {
+		// Parse paths like "PHL/2025-08-06T03:00:00Z.msgpack.zst" to extract timestamp
+		parts := strings.Split(relativePath, "/")
+		if len(parts) != 2 {
+			LogError("%s: unexpected path in manifest", relativePath)
+			continue
 		}
-		times = append(times, t)
+
+		t, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst"))
+		if err != nil {
+			LogError("%v", err)
+			continue
+		}
+		times = append(times, t.UTC())
 	}
+
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 
 	return times, nil
 }
@@ -185,7 +199,7 @@ func ingestHRRR(sb StorageBackend) error {
 		return err
 	}
 
-	return generateManifests(sb, "atmos", slices.Values(wx.AtmosTRACONs))
+	return generateManifest(sb, "atmos")
 
 }
 
@@ -206,13 +220,14 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 
 	// Parse all paths in a single pass
 	for path := range atmosPaths {
+		if path == "atmos/manifest.msgpack.zst" {
+			continue
+		}
+
 		// Parse paths like atmos/BOI/2025-07-27T18:00:00Z.msgpack.zst
 		parts := strings.Split(strings.TrimPrefix(path, "atmos/"), "/")
 		if len(parts) != 2 {
 			LogError("%s: malformed path", path)
-			continue
-		}
-		if parts[1] == "manifest.msgpack.zst" {
 			continue
 		}
 

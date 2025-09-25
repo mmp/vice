@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io"
-	"iter"
 	"log"
 	"net"
 	"net/http"
@@ -112,44 +111,38 @@ func LogFatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func generateManifests(sb StorageBackend, prefix string, items iter.Seq[string]) error {
-	LogInfo("%s: updating manifests", prefix)
+func generateManifest(sb StorageBackend, prefix string) error {
+	LogInfo("%s: updating consolidated manifest", prefix)
 
-	var eg errgroup.Group
-	ch := make(chan string)
-	eg.Go(func() error {
-		defer close(ch)
-		for item := range items {
-			ch <- item
-		}
-		return nil
-	})
-
-	for range *nWorkers {
-		eg.Go(func() error {
-			for item := range ch {
-				paths, err := sb.List(filepath.Join(prefix, item))
-				if err != nil {
-					return err
-				}
-				var manifest []string
-				for path := range paths {
-					file := filepath.Base(path)
-					if file != "manifest.msgpack.zst" {
-						manifest = append(manifest, file)
-					}
-				}
-				slices.Sort(manifest)
-
-				mpath := filepath.Join(prefix, item, "manifest.msgpack.zst")
-				sb.StoreObject(mpath, manifest)
-				LogInfo("Stored %d items in %s", len(manifest), mpath)
-			}
-			return nil
-		})
+	paths, err := sb.List(prefix + "/")
+	if err != nil {
+		return err
 	}
 
-	return eg.Wait()
+	var manifest []string
+	for path := range paths {
+		// Remove prefix and exclude existing manifests
+		relativePath := strings.TrimPrefix(path, prefix+"/")
+		if !strings.HasSuffix(relativePath, "manifest.msgpack.zst") {
+			manifest = append(manifest, relativePath)
+		}
+	}
+	slices.Sort(manifest)
+
+	tm, err := util.TransposeStrings(manifest) // for better compressibility
+	if err != nil {
+		return err
+	}
+
+	manifestPath := filepath.Join(prefix, "manifest.msgpack.zst")
+	n, err := sb.StoreObject(manifestPath, tm)
+	if err != nil {
+		return err
+	}
+
+	LogInfo("Stored %d items in consolidated %s (%s)", len(manifest), manifestPath, util.ByteCount(n))
+
+	return nil
 }
 
 func launchHTTPServer() {
