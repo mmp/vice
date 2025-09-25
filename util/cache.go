@@ -22,7 +22,6 @@ func fullCachePath(path string) (string, error) {
 	return filepath.Join(cd, "Vice", path), nil
 }
 
-
 func CacheStoreObject(path string, obj any) error {
 	path, err := fullCachePath(path)
 	if err != nil {
