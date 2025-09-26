@@ -469,3 +469,105 @@ func TestAtan2(t *testing.T) {
 		}
 	})
 }
+
+func TestLog(t *testing.T) {
+	// Test special cases
+	specialCases := []struct {
+		name     string
+		input    float32
+		expected float32
+		isNaN    bool
+		isInf    int // 0 for finite, -1 for -inf, 1 for +inf
+	}{
+		{"Log(1)", 1, 0, false, 0},
+		{"Log(e)", 2.718281828, 1, false, 0},
+		{"Log(e^2)", 7.389056099, 2, false, 0},
+		{"Log(0)", 0, 0, false, -1},
+		{"Log(-1)", -1, 0, true, 0},
+		{"Log(-10)", -10, 0, true, 0},
+		{"Log(NaN)", float32(math.NaN()), 0, true, 0},
+		{"Log(+Inf)", float32(math.Inf(1)), 0, false, 1},
+	}
+
+	for _, tc := range specialCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := Log(tc.input)
+			if tc.isNaN {
+				if !math.IsNaN(float64(result)) {
+					t.Errorf("Log(%v) = %v, expected NaN", tc.input, result)
+				}
+			} else if tc.isInf != 0 {
+				if !math.IsInf(float64(result), tc.isInf) {
+					t.Errorf("Log(%v) = %v, expected %v", tc.input, result,
+						map[int]string{-1: "-Inf", 1: "+Inf"}[tc.isInf])
+				}
+			} else {
+				if Abs(result-tc.expected) > 1e-5 {
+					t.Errorf("Log(%v) = %v, expected %v", tc.input, result, tc.expected)
+				}
+			}
+		})
+	}
+
+	// Test accuracy over a range of values
+	t.Run("Log accuracy", func(t *testing.T) {
+		tolerance := float32(1e-4)
+		maxErr := float32(0)
+		worstX := float32(0)
+
+		// Test values from 0.01 to 100
+		testValues := []float32{
+			0.01, 0.1, 0.5, 0.9, 1.0, 1.1, 1.5, 2.0,
+			2.718281828, 3.0, 5.0, 10.0, 20.0, 50.0, 100.0,
+		}
+
+		for _, x := range testValues {
+			actual := Log(x)
+			expected := float32(math.Log(float64(x)))
+
+			err := absoluteError(actual, expected)
+			if err > maxErr {
+				maxErr = err
+				worstX = x
+			}
+
+			if err > tolerance {
+				t.Errorf("Log(%v): got %v, expected %v, error %v (exceeds tolerance %v)",
+					x, actual, expected, err, tolerance)
+			}
+		}
+
+		t.Logf("Max error: %v at x=%v", maxErr, worstX)
+
+		// Test powers of 2 (these should be particularly accurate)
+		for i := -10; i <= 10; i++ {
+			x := float32(math.Pow(2, float64(i)))
+			actual := Log(x)
+			expected := float32(math.Log(float64(x)))
+
+			err := absoluteError(actual, expected)
+			if err > tolerance {
+				t.Errorf("Log(2^%d=%v): got %v, expected %v, error %v",
+					i, x, actual, expected, err)
+			}
+		}
+	})
+
+	// Test Log with range of inputs and compare to standard library
+	t.Run("Log comparison with standard library", func(t *testing.T) {
+		tolerance := float32(5e-4) // Slightly more permissive for polynomial approximation
+
+		// Test logarithmic spacing
+		for i := -20; i <= 20; i++ {
+			x := float32(math.Exp(float64(i) * 0.5))
+			actual := Log(x)
+			expected := float32(math.Log(float64(x)))
+
+			relErr := relativeError(actual, expected)
+			if relErr > tolerance && absoluteError(actual, expected) > 1e-6 {
+				t.Errorf("Log(%v): got %v, expected %v, relative error %v",
+					x, actual, expected, relErr)
+			}
+		}
+	})
+}

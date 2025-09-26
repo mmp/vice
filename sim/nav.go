@@ -1,5 +1,5 @@
-// pkg/sim/nav.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// sim/nav.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package sim
@@ -184,10 +184,10 @@ const (
 )
 
 func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan, perf av.AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, model *wx.WeatherModel, lg *log.Logger) *Nav {
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, arr.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, model, lg); nav != nil {
+		magneticVariation, model, simTime, lg); nav != nil {
 		spd := arr.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if arr.AssignedAltitude > 0 {
@@ -212,9 +212,9 @@ func MakeArrivalNav(callsign av.ADSBCallsign, arr *av.Arrival, fp av.FlightPlan,
 
 func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance,
 	assignedAlt, clearedAlt, speedRestriction int, wp []av.Waypoint, randomizeAltitudeRange bool,
-	nmPerLongitude float32, magneticVariation float32, model *wx.WeatherModel, lg *log.Logger) *Nav {
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) *Nav {
 	if nav := makeNav(callsign, fp, perf, wp, randomizeAltitudeRange, nmPerLongitude, magneticVariation,
-		model, lg); nav != nil {
+		model, simTime, lg); nav != nil {
 		if assignedAlt != 0 {
 			alt := float32(min(assignedAlt, fp.Altitude))
 			nav.Altitude.Assigned = &alt
@@ -234,10 +234,10 @@ func MakeDepartureNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.Aircra
 }
 
 func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.FlightPlan, perf av.AircraftPerformance,
-	nmPerLongitude float32, magneticVariation float32, model *wx.WeatherModel, lg *log.Logger) *Nav {
+	nmPerLongitude float32, magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) *Nav {
 	randomizeAltitudeRange := fp.Rules == av.FlightRulesVFR
 	if nav := makeNav(callsign, fp, perf, of.Waypoints, randomizeAltitudeRange, nmPerLongitude,
-		magneticVariation, model, lg); nav != nil {
+		magneticVariation, model, simTime, lg); nav != nil {
 		spd := of.SpeedRestriction
 		nav.Speed.Restriction = util.Select(spd != 0, &spd, nil)
 		if of.AssignedAltitude > 0 {
@@ -262,8 +262,8 @@ func MakeOverflightNav(callsign av.ADSBCallsign, of *av.Overflight, fp av.Flight
 }
 
 func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerformance, wp []av.Waypoint,
-	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.WeatherModel,
-	lg *log.Logger) *Nav {
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
+	simTime time.Time, lg *log.Logger) *Nav {
 	nav := &Nav{
 		Perf:           perf,
 		FinalAltitude:  float32(fp.Altitude),
@@ -288,9 +288,9 @@ func makeNav(callsign av.ADSBCallsign, fp av.FlightPlan, perf av.AircraftPerform
 				slog.Any("flightplan", fp))
 		} else {
 			ap := av.DB.Airports[fp.ArrivalAirport]
-			ws := model.LookupWind(ap.Location, float32(ap.Elevation))
+			as := model.Lookup(ap.Location, float32(ap.Elevation), simTime)
 			nav.Waypoints = av.AppendVFRLanding(nav.Waypoints[:landIdx+1], nav.Perf, fp.ArrivalAirport,
-				ws.Direction, nmPerLongitude, magneticVariation, lg)
+				as.WindDirection(), nmPerLongitude, magneticVariation, lg)
 		}
 	}
 
@@ -485,7 +485,7 @@ func (nav *Nav) OnExtendedCenterline(maxNmDeviation float32) bool {
 
 // Full human-readable summary of nav state for use when paused and mouse
 // hover on the scope
-func (nav *Nav) Summary(fp av.FlightPlan, model *wx.WeatherModel, lg *log.Logger) string {
+func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime time.Time, lg *log.Logger) string {
 	var lines []string
 	lines = append(lines, "Departure from "+fp.DepartureAirport+" to "+fp.ArrivalAirport)
 
@@ -537,7 +537,9 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.WeatherModel, lg *log.Logger
 				" to "+av.FormatAltitude(tgt)+" from previous crossing restriction")
 		}
 	}
-	if nav.FlightState.Altitude != nav.FlightState.PrevAltitude {
+	if nav.FlightState.Altitude < nav.FlightState.PrevAltitude {
+		lines = append(lines, fmt.Sprintf("Descent rate %.0f ft/minute", 60*(nav.FlightState.PrevAltitude-nav.FlightState.Altitude)))
+	} else if nav.FlightState.Altitude > nav.FlightState.PrevAltitude {
 		lines = append(lines, fmt.Sprintf("Climb rate %.0f ft/minute", 60*(nav.FlightState.Altitude-nav.FlightState.PrevAltitude)))
 	}
 
@@ -561,16 +563,18 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.WeatherModel, lg *log.Logger
 		}
 	}
 
-	// Wind
-	wind := model.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude)
-	lines = append(lines, fmt.Sprintf("Wind %03d at %.0f%s", int(wind.Direction), wind.Speed,
-		util.Select(wind.Gust != 0, fmt.Sprintf(" gust %.0f", wind.Gust), "")))
+	// weather
+	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime)
+	lines = append(lines, wxs.String())
+	if nav.FlightState.Altitude > nav.FlightState.PrevAltitude {
+		lines = append(lines, fmt.Sprintf("Weather-based climb rate factor %.2fx", nav.atmosClimbFactor(wxs, nil)))
+	}
 
 	// Speed; don't be as exhaustive as we are for altitude
 	targetAltitude, _ := nav.TargetAltitude(lg)
 	lines = append(lines, fmt.Sprintf("IAS %d GS %d TAS %d", int(nav.FlightState.IAS),
 		int(nav.FlightState.GS), int(nav.TAS())))
-	ias, _ := nav.TargetSpeed(targetAltitude, &fp, model, nil, lg)
+	ias, _ := nav.TargetSpeed(targetAltitude, &fp, wxs, nil, lg)
 	if nav.Speed.MaintainSlowestPractical {
 		lines = append(lines, fmt.Sprintf("Maintain slowest practical speed: %.0f kts", ias))
 	} else if nav.Speed.MaintainMaximumForward {
@@ -690,11 +694,11 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 ///////////////////////////////////////////////////////////////////////////
 // Simulation
 
-func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, model *wx.WeatherModel, bravo *av.AirspaceGrid, lg *log.Logger) (float32, bool) {
+func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, wxs wx.Sample, bravo *av.AirspaceGrid, lg *log.Logger) (float32, bool) {
 	// Figure out what speed we're supposed to be going. The following is
 	// prioritized, so once targetSpeed has been set, nothing should
 	// override it.
-	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, model, bravo, lg)
+	targetSpeed, targetRate := nav.TargetSpeed(alt, fp, wxs, bravo, lg)
 
 	// Stay within the aircraft's capabilities
 	targetSpeed = math.Clamp(targetSpeed, nav.Perf.Speed.Min, MaxIAS)
@@ -774,7 +778,7 @@ func (nav *Nav) updateAirspeed(alt float32, fp *av.FlightPlan, model *wx.Weather
 	}
 }
 
-func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logger, deltaKts float32, slowingTo250 bool) {
+func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, deltaKts float32, slowingTo250 bool, wxs wx.Sample, lg *log.Logger) {
 	nav.FlightState.PrevAltitude = nav.FlightState.Altitude
 
 	if targetAltitude == nav.FlightState.Altitude {
@@ -836,6 +840,7 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 	// Baseline climb and descent capabilities in ft/minute
 	climb, descent := nav.Perf.Rate.Climb, nav.Perf.Rate.Descent
 
+	climb *= nav.atmosClimbFactor(wxs, lg)
 	// Reduce rates from highest possible to be more realistic.
 	if !nav.Altitude.Expedite {
 		// For high performing aircraft, reduce climb rate after 5,000'
@@ -915,8 +920,76 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, lg *log.Logge
 	}
 }
 
-func (nav *Nav) updateHeading(model *wx.WeatherModel, lg *log.Logger) {
-	targetHeading, turnDirection, turnRate := nav.TargetHeading(model, lg)
+// atmosClimbFactor returns a factor in [0,1] to model the reduction in
+// rate of climb depending on atmospheric conditions.
+func (nav *Nav) atmosClimbFactor(wxs wx.Sample, lg *log.Logger) float32 {
+	var tempCorrection, altCorrection float32
+	switch nav.Perf.Engine.AircraftType {
+	case "J":
+		tempCorrection = -0.02 // -2% per °C above ISA
+		altCorrection = -0.03  // -3% per 1000 ft
+	case "T":
+		tempCorrection = -0.015 // -1.5% per °C above ISA
+		altCorrection = -0.04   // -4% per 1000 ft
+	case "P":
+		tempCorrection = -0.03 // -3% per °C above ISA
+		altCorrection = -0.08  // -8% per 1000 ft
+	default:
+		// Default to turbofan if unknown
+		tempCorrection = -0.02
+		altCorrection = -0.03
+	}
+
+	// Temperature factor (only apply if above ISA)
+	pressureAltitude := mbToPressureAltitude(wxs.Pressure)
+	isaTemp := 15 - (2 * pressureAltitude / 1000)
+	tempFactor := float32(1)
+	tempDeviation := wxs.Temperature - isaTemp
+	if tempDeviation > 0 {
+		tempFactor = 1 + (tempCorrection * tempDeviation)
+	}
+
+	// Altitude factor
+	densityAltitude := pressureAltitude + (120 * tempDeviation)
+	altFactor := 1 + (altCorrection * densityAltitude / 1000)
+
+	// Humidity factor
+	var humidityFactor float32
+	relativeHumidity := wxs.RelativeHumidity()
+	switch {
+	case relativeHumidity < 40:
+		humidityFactor = 1 // No correction
+	case relativeHumidity < 70:
+		humidityFactor = 0.98 // -2% average
+	case relativeHumidity < 90:
+		humidityFactor = 0.97 // -3% average
+	default:
+		humidityFactor = 0.95 // -5% average
+	}
+
+	if f := tempFactor * altFactor * humidityFactor; f != f {
+		// TODO: chase down these NaNs
+		lg.Warnf("NaN climb factor. Sample: %#v", wxs)
+	}
+	return max(0, tempFactor*altFactor*humidityFactor)
+}
+
+// mbToPressureAltitude converts pressure in millibars to pressure altitude in feet
+// Using the standard atmosphere pressure-altitude relationship
+func mbToPressureAltitude(mb float32) float32 {
+	// Simplified pressure altitude calculation (more accurate version uses
+	// the barometric formula).
+	if mb > 226.32 {
+		// Troposphere formula (valid up to 36,089 ft)
+		return 145366.45 * (1 - math.Pow(mb/1013.25, 0.190284))
+	} else {
+		// Stratosphere formula
+		return 36089.24 + (20806.0 * math.Log(226.32/mb))
+	}
+}
+
+func (nav *Nav) updateHeading(wxs wx.Sample, lg *log.Logger) {
+	targetHeading, turnDirection, turnRate := nav.TargetHeading(wxs, lg)
 
 	if nav.FlightState.Heading == targetHeading {
 		// BankAngle should be zero(ish) at this point but just to be sure.
@@ -952,7 +1025,7 @@ func (nav *Nav) updateHeading(model *wx.WeatherModel, lg *log.Logger) {
 	nav.FlightState.Heading = math.NormalizeHeading(nav.FlightState.Heading + turn)
 }
 
-func (nav *Nav) updatePositionAndGS(model *wx.WeatherModel, lg *log.Logger) {
+func (nav *Nav) updatePositionAndGS(wxs wx.Sample, lg *log.Logger) {
 	// Calculate offset vector based on heading and current TAS.
 	hdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
 	TAS := nav.TAS() / 3600
@@ -960,8 +1033,8 @@ func (nav *Nav) updatePositionAndGS(model *wx.WeatherModel, lg *log.Logger) {
 
 	// Further offset based on the wind
 	var windVector [2]float32
-	if nav.IsAirborne() && model != nil {
-		windVector = model.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector
+	if nav.IsAirborne() {
+		windVector = wxs.WindVec
 	}
 
 	// Update the aircraft's state
@@ -1013,29 +1086,31 @@ func (nav *Nav) Check(lg *log.Logger) {
 }
 
 // returns passed waypoint if any
-func (nav *Nav) Update(model *wx.WeatherModel, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
+func (nav *Nav) Update(model *wx.Model, fp *av.FlightPlan, simTime time.Time, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
+	// Perform single weather lookup at the start
+	wxs := model.Lookup(nav.FlightState.Position, nav.FlightState.Altitude, simTime)
+	return nav.UpdateWithWeather(wxs, fp, bravo, lg)
+}
+
+// UpdateWithWeather is a helper for simulations that use pre-fetched weather
+func (nav *Nav) UpdateWithWeather(wxs wx.Sample, fp *av.FlightPlan, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
 	targetAltitude, altitudeRate := nav.TargetAltitude(lg)
-	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, fp, model, bravo, lg)
-	nav.updateAltitude(targetAltitude, altitudeRate, lg, deltaKts, slowingTo250)
-	nav.updateHeading(model, lg)
-	nav.updatePositionAndGS(model, lg)
+	deltaKts, slowingTo250 := nav.updateAirspeed(targetAltitude, fp, wxs, bravo, lg)
+	nav.updateAltitude(targetAltitude, altitudeRate, deltaKts, slowingTo250, wxs, lg)
+	nav.updateHeading(wxs, lg)
+	nav.updatePositionAndGS(wxs, lg)
 	if nav.Airwork != nil && !nav.Airwork.Update(nav) {
 		nav.Airwork = nil // Done.
 	}
 
-	//lg.Debug("nav_update", slog.Any("flight_state", nav.FlightState))
-
-	// Don't refer to DeferredNavHeading here; assume that if the pilot hasn't
-	// punched in a new heading assignment, we should update waypoints or
-	// not as per the old assignment.
 	if nav.Airwork == nil && nav.Heading.Assigned == nil {
-		return nav.updateWaypoints(model, fp, lg)
+		return nav.updateWaypoints(wxs, fp, lg)
 	}
 
 	return nil
 }
 
-func (nav *Nav) TargetHeading(model *wx.WeatherModel, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
+func (nav *Nav) TargetHeading(wxs wx.Sample, lg *log.Logger) (heading float32, turn TurnMethod, rate float32) {
 	if nav.Airwork != nil {
 		return nav.Airwork.TargetHeading()
 	}
@@ -1055,13 +1130,13 @@ func (nav *Nav) TargetHeading(model *wx.WeatherModel, lg *log.Logger) (heading f
 	// nav.Heading.Assigned may still be nil pending a deferred turn
 	if (nav.Approach.InterceptState == InitialHeading ||
 		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
-		heading, turn = nav.ApproachHeading(model, lg)
+		heading, turn = nav.ApproachHeading(wxs, lg)
 	} else if nav.Heading.RacetrackPT != nil {
 		nav.FlightState.BankAngle = 0
-		return nav.Heading.RacetrackPT.GetHeading(nav, model, lg)
+		return nav.Heading.RacetrackPT.GetHeading(nav, wxs, lg)
 	} else if nav.Heading.Standard45PT != nil {
 		nav.FlightState.BankAngle = 0
-		return nav.Heading.Standard45PT.GetHeading(nav, model, lg)
+		return nav.Heading.Standard45PT.GetHeading(nav, wxs, lg)
 	} else if nav.Heading.Assigned != nil {
 		heading = *nav.Heading.Assigned
 		if nav.Heading.Turn != nil {
@@ -1107,7 +1182,7 @@ func (nav *Nav) TargetHeading(model *wx.WeatherModel, lg *log.Logger) (heading f
 
 		if nav.IsAirborne() {
 			// model where we'll actually end up, given the wind
-			wvec := model.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude).Vector
+			wvec := wxs.WindVec
 			vp := math.Add2f(v, math.Scale2f(wvec, 3600))
 
 			// Find the deflection angle of how much the wind pushes us off course.
@@ -1223,7 +1298,7 @@ func (nav *Nav) TargetHeading(model *wx.WeatherModel, lg *log.Logger) (heading f
 	return
 }
 
-func (nav *Nav) ApproachHeading(model *wx.WeatherModel, lg *log.Logger) (heading float32, turn TurnMethod) {
+func (nav *Nav) ApproachHeading(wxs wx.Sample, lg *log.Logger) (heading float32, turn TurnMethod) {
 	// Baseline
 	heading, turn = *nav.Heading.Assigned, TurnClosest
 
@@ -1241,7 +1316,7 @@ func (nav *Nav) ApproachHeading(model *wx.WeatherModel, lg *log.Logger) (heading
 
 		loc := ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
-		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, model, lg) {
+		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wxs, lg) {
 			lg.Debugf("heading: time to turn for approach heading %.1f", hdg)
 
 			nav.Approach.InterceptState = TurningToJoin
@@ -1600,7 +1675,7 @@ func (nav *Nav) getWaypointAltitudeConstraint() (WaypointCrossingConstraint, boo
 	}, true
 }
 
-func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, model *wx.WeatherModel, bravo *av.AirspaceGrid,
+func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sample, bravo *av.AirspaceGrid,
 	lg *log.Logger) (float32, float32) {
 	if nav.Airwork != nil {
 		if spd, rate, ok := nav.Airwork.TargetSpeed(); ok {
@@ -1721,8 +1796,7 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, model *wx
 	// last half mile before touchdown.
 	if nav.Speed.Assigned == nil && fd != 0 && fd < 10 {
 		hdg := nav.Approach.Assigned.RunwayHeading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
-		w := model.LookupWind(nav.FlightState.Position, nav.FlightState.Altitude)
-		approachSpeed := nav.Perf.ApproachSpeed(w.Direction, w.Speed, w.Gust, hdg)
+		approachSpeed := nav.Perf.ApproachSpeed(wxs.WindDirection(), wxs.WindSpeed(), 0 /* FIXME: GUST */, hdg)
 
 		if fd < 0.5 {
 			// Short final: slow down to landing speed.
@@ -1855,7 +1929,7 @@ func (nav *Nav) distanceToEndOfApproach() (float32, error) {
 	}
 }
 
-func (nav *Nav) updateWaypoints(model *wx.WeatherModel, fp *av.FlightPlan, lg *log.Logger) *av.Waypoint {
+func (nav *Nav) updateWaypoints(wxs wx.Sample, fp *av.FlightPlan, lg *log.Logger) *av.Waypoint {
 	if len(nav.Waypoints) == 0 {
 		return nil
 	}
@@ -1900,7 +1974,7 @@ func (nav *Nav) updateWaypoints(model *wx.WeatherModel, fp *av.FlightPlan, lg *l
 		eta := dist / nav.FlightState.GS * 3600 // in seconds
 		passedWaypoint = eta < 2
 	} else {
-		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, model, lg)
+		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wxs, lg)
 	}
 
 	if passedWaypoint {
@@ -2012,7 +2086,7 @@ func (nav *Nav) updateWaypoints(model *wx.WeatherModel, fp *av.FlightPlan, lg *l
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial.
-func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMethod, model *wx.WeatherModel, lg *log.Logger) bool {
+func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMethod, wxs wx.Sample, lg *log.Logger) bool {
 	dist := math.NMDistance2LL(nav.FlightState.Position, p)
 	eta := dist / nav.FlightState.GS * 3600 // in seconds
 
@@ -2047,7 +2121,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
 	for i := 0; i < n; i++ {
-		nav2.Update(model, nil, nil, nil)
+		nav2.UpdateWithWeather(wxs, nil, nil, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
 			nav2.FlightState.NmPerLongitude),
 			p0, p1)
@@ -2063,7 +2137,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 // Given a point and a radial, returns true when the aircraft should
 // start turning to intercept the radial.
-func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, model *wx.WeatherModel, lg *log.Logger) bool {
+func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wxs wx.Sample, lg *log.Logger) bool {
 	p0 = math.LL2NM(p0, nav.FlightState.NmPerLongitude)
 	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdg-nav.FlightState.MagneticVariation)))
 
@@ -2091,7 +2165,7 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 	n := int(1 + turnAngle)
 	//fmt.Printf("n sim %d: ", n)
 	for i := 0; i < n; i++ {
-		nav2.Update(model, nil, nil, nil)
+		nav2.UpdateWithWeather(wxs, nil, nil, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
 		//fmt.Printf("%d: curDist %f ", i, curDist)
 		//if math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist) {
@@ -3191,7 +3265,7 @@ func MakeFlyRacetrackPT(nav *Nav, wp []av.Waypoint) *FlyRacetrackPT {
 	return fp
 }
 
-func (fp *FlyRacetrackPT) GetHeading(nav *Nav, model *wx.WeatherModel, lg *log.Logger) (float32, TurnMethod, float32) {
+func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wxs wx.Sample, lg *log.Logger) (float32, TurnMethod, float32) {
 	pt := fp.ProcedureTurn
 
 	switch fp.State {
@@ -3208,10 +3282,10 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, model *wx.WeatherModel, lg *log.L
 			// Turn start is based on lining up for the inbound heading,
 			// even though the actual turn will be that plus 180.
 			startTurn = nav.shouldTurnForOutbound(fp.FixLocation, fp.InboundHeading,
-				fp.OutboundTurnMethod, model, lg)
+				fp.OutboundTurnMethod, wxs, lg)
 		case av.ParallelEntry, av.TeardropEntry:
 			startTurn = nav.shouldTurnForOutbound(fp.FixLocation, fp.OutboundHeading,
-				fp.OutboundTurnMethod, model, lg)
+				fp.OutboundTurnMethod, wxs, lg)
 		}
 
 		if startTurn {
@@ -3242,7 +3316,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, model *wx.WeatherModel, lg *log.L
 		if fp.Entry == av.TeardropEntry {
 			// start the turn when we will intercept the inbound radial
 			turn := TurnMethod(util.Select(pt.RightTurns, TurnRight, TurnLeft))
-			if d > 0.5 && nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, model, lg) {
+			if d > 0.5 && nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wxs, lg) {
 				lg.Debug("teardrop Turning inbound!")
 				fp.State = PTStateTurningInbound
 			}
@@ -3280,7 +3354,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, model *wx.WeatherModel, lg *log.L
 	case PTStateFlyingInbound:
 		// This state is only used for ParallelEntry
 		turn := TurnMethod(util.Select(pt.RightTurns, TurnRight, TurnLeft))
-		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, model, lg) {
+		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wxs, lg) {
 			lg.Debug("parallel inbound direct fix")
 			nav.Heading = NavHeading{}
 			nav.Altitude = NavAltitude{}
@@ -3299,12 +3373,12 @@ func (fp *FlyRacetrackPT) GetAltitude(nav *Nav) (float32, bool) {
 	return float32(fp.ProcedureTurn.ExitAltitude), descend
 }
 
-func (fp *FlyStandard45PT) GetHeading(nav *Nav, model *wx.WeatherModel, lg *log.Logger) (float32, TurnMethod, float32) {
+func (fp *FlyStandard45PT) GetHeading(nav *Nav, wxs wx.Sample, lg *log.Logger) (float32, TurnMethod, float32) {
 	outboundHeading := math.OppositeHeading(fp.InboundHeading)
 
 	switch fp.State {
 	case PT45StateApproaching:
-		if nav.shouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, model, lg) {
+		if nav.shouldTurnForOutbound(fp.FixLocation, outboundHeading, TurnClosest, wxs, lg) {
 			lg.Debugf("turning outbound to %.0f", outboundHeading)
 			fp.State = PT45StateTurningOutbound
 		}
@@ -3355,7 +3429,7 @@ func (fp *FlyStandard45PT) GetHeading(nav *Nav, model *wx.WeatherModel, lg *log.
 		return hdg, TurnMethod(turn), StandardTurnRate
 	case PT45StateFlyingIn:
 		turn := TurnMethod(util.Select(fp.ProcedureTurn.RightTurns, TurnRight, TurnLeft))
-		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, model, lg) {
+		if nav.shouldTurnToIntercept(fp.FixLocation, fp.InboundHeading, turn, wxs, lg) {
 			fp.State = PT45StateTurningToIntercept
 			lg.Debugf("starting turn to intercept %.0f", fp.InboundHeading)
 		}

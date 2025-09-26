@@ -33,7 +33,7 @@ type State struct {
 	Tracks map[av.ADSBCallsign]*Track
 
 	// Unassociated ones, including unsupported DBs
-	UnassociatedFlightPlans []*STARSFlightPlan
+	UnassociatedFlightPlans []*NASFlightPlan
 
 	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
@@ -72,7 +72,7 @@ type State struct {
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	WX *wx.WeatherModel
+	METAR map[string]wx.METAR
 
 	TotalIFR, TotalVFR int
 
@@ -106,7 +106,7 @@ type ReleaseDeparture struct {
 	Exit                string
 }
 
-func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, lg *log.Logger) *State {
+func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model, metar map[string][]wx.METAR, lg *log.Logger) *State {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
@@ -135,15 +135,20 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		MagneticVariation: config.MagneticVariation,
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
-
-		WX: wx.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), startTime,
-			config.NmPerLongitude, config.MagneticVariation, config.Wind, lg),
+		METAR:             make(map[string]wx.METAR),
 
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        startTime,
 
 		Instructors: make(map[string]bool),
+	}
+
+	// Grab initial METAR for each airport
+	for ap, m := range metar {
+		if len(m) > 0 {
+			ss.METAR[ap] = m[0]
+		}
 	}
 
 	if manifest != nil {
@@ -209,7 +214,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 			ss.DepartureAirports[name] = nil
 
 			ap := av.DB.Airports[name]
-			windDir := ss.WX.LookupWind(ap.Location, float32(ap.Elevation)).Direction
+			windDir := model.Lookup(ap.Location, float32(ap.Elevation), startTime).WindDirection()
 			if rwy, _ := ap.SelectBestRunway(windDir, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
 			} else {
@@ -409,14 +414,14 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp *STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		func(fp *NASFlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
 
 	return false
 }
 
-func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
+func (ss *State) FindMatchingFlightPlan(s string) *NASFlightPlan {
 	n := -1
 	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
 		n = pn
@@ -469,6 +474,24 @@ func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
 	return nil, false
 }
 
+func (ss *State) GetTrackByFLID(flid string) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if !trk.IsAssociated() {
+			continue
+		}
+		if trk.FlightPlan.CID == flid {
+			return ss.Tracks[i], true
+		}
+		if trk.ADSBCallsign == av.ADSBCallsign(flid) {
+			return ss.Tracks[i], true
+		}
+		if sq, err := av.ParseSquawk(flid); err != nil && trk.FlightPlan.AssignedSquawk == sq {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
 func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 	for i, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
@@ -481,7 +504,7 @@ func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 
 // FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
 // FIXME FIXME FIXME
-func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
+func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
 	for _, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			return trk.FlightPlan

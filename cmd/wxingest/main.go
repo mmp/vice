@@ -4,15 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"iter"
 	"log"
 	"net"
 	"net/http"
 	"net/http/pprof"
 	"os"
+	"path/filepath"
+	"slices"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
+	"golang.org/x/sync/errgroup"
 )
 
 var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local files")
@@ -26,7 +30,7 @@ func main() {
 	flag.Parse()
 
 	usage := func() {
-		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|wx|hrrr]...\nwhere [flags] may be:\n")
+		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|precip|atmos]...\nwhere [flags] may be:\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -48,27 +52,39 @@ func main() {
 	if *dryRun {
 		sb = &DryRunBackend{g: sb}
 	}
+	// Wrap with tracking backend to track bytes uploaded/downloaded
+	sb = NewTrackingBackend(sb)
 	defer sb.Close()
 
 	launchHTTPServer()
 
+	var eg errgroup.Group
 	if len(flag.Args()) == 0 {
-		ingestMETAR(sb)
-		ingestWX(sb)
-		ingestHRRR(sb)
+		eg.Go(func() error { return ingestMETAR(sb) })
+		eg.Go(func() error { return ingestPrecip(sb) })
+		eg.Go(func() error { return ingestHRRR(sb) })
 	} else {
 		for _, a := range flag.Args() {
 			switch strings.ToLower(a) {
 			case "metar":
-				ingestMETAR(sb)
-			case "wx":
-				ingestWX(sb)
-			case "hrrr":
-				ingestHRRR(sb)
+				eg.Go(func() error { return ingestMETAR(sb) })
+			case "precip":
+				eg.Go(func() error { return ingestPrecip(sb) })
+			case "atmos":
+				eg.Go(func() error { return ingestHRRR(sb) })
 			default:
 				usage()
 			}
 		}
+	}
+
+	if err := eg.Wait(); err != nil {
+		LogError("%v", err)
+	}
+
+	// Report the total bytes transferred
+	if tb, ok := sb.(*TrackingBackend); ok {
+		tb.ReportStats()
 	}
 }
 
@@ -96,16 +112,44 @@ func LogFatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func EnqueueObjects(sb StorageBackend, base string, ch chan<- string) error {
-	objs, err := sb.List(base)
-	if err == nil {
-		LogInfo("%s: found %d objects", base, len(objs))
-		for name := range objs {
-			ch <- name
+func generateManifests(sb StorageBackend, prefix string, items iter.Seq[string]) error {
+	LogInfo("%s: updating manifests", prefix)
+
+	var eg errgroup.Group
+	ch := make(chan string)
+	eg.Go(func() error {
+		defer close(ch)
+		for item := range items {
+			ch <- item
 		}
+		return nil
+	})
+
+	for range *nWorkers {
+		eg.Go(func() error {
+			for item := range ch {
+				paths, err := sb.List(filepath.Join(prefix, item))
+				if err != nil {
+					return err
+				}
+				var manifest []string
+				for path := range paths {
+					file := filepath.Base(path)
+					if file != "manifest.msgpack.zst" {
+						manifest = append(manifest, file)
+					}
+				}
+				slices.Sort(manifest)
+
+				mpath := filepath.Join(prefix, item, "manifest.msgpack.zst")
+				sb.StoreObject(mpath, manifest)
+				LogInfo("Stored %d items in %s", len(manifest), mpath)
+			}
+			return nil
+		})
 	}
-	close(ch)
-	return err
+
+	return eg.Wait()
 }
 
 func launchHTTPServer() {
@@ -122,6 +166,5 @@ func launchHTTPServer() {
 		go http.Serve(listener, mux)
 	} else {
 		fmt.Fprintf(os.Stderr, "Unable to start HTTP server: %v", err)
-		os.Exit(1)
 	}
 }

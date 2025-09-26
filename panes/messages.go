@@ -56,11 +56,9 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Roboto Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 16},
 	}
 }
-
-func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
 func (mp *MessagesPane) Hide() bool { return false }
 
@@ -103,6 +101,10 @@ func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
 
 func (mp *MessagesPane) Upgrade(prev, current int) {
 }
+
+var _ UIDrawer = (*MessagesPane)(nil)
+
+func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontSizeSelector(&mp.FontIdentifier); changed {

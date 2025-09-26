@@ -1,10 +1,9 @@
 package radar
 
 import (
-	_ "embed"
-	"image"
-	"image/draw"
+	"fmt"
 	"math/bits"
+	"net/http"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -17,89 +16,69 @@ import (
 
 // Weather
 
-// WeatherRadar provides functionality for fetching radar images to display
-// in radar scopes. Only locations in the USA are currently supported, as
-// the only current data source is the US NOAA...
+// WeatherRadar provides functionality for fetching precipitation data
+// from the server and displaying it in radar scopes.
 type WeatherRadar struct {
-	active bool
-
-	// Radar images are fetched and processed in a separate goroutine;
-	// updated radar center locations are sent from the main thread via
-	// reqChan and command buffers to draw each of the 6 weather levels are
-	// returned by cbChan.
-	reqChan chan math.Point2LL
-	cbChan  chan [NumWxLevels]*renderer.CommandBuffer
-	cb      [numWxHistory][NumWxLevels]*renderer.CommandBuffer
+	tracon          string
+	nextFetchTime   time.Time
+	fetchInProgress bool
+	precipCh        chan *wx.Precip
+	errCh           chan error
+	cb              [numWxHistory][NumWxLevels]*renderer.CommandBuffer
+	mu              util.LoggingMutex
 }
 
-// WXHistory, Levels, and Fetch distance should eventually be ommited as they're depenent on the scope used.
+// WXHistory and Levels should eventually be omitted as they're dependent on the scope used.
 const numWxHistory = 3
 
 const NumWxLevels = 6
 
-// Fetch this many nm out from the center
-const wxFetchDistance = 128
-
-// fetchWeather runs asynchronously in a goroutine, receiving requests from
-// reqChan, fetching corresponding radar images from the NOAA, and sending
-// the results back on cbChan.  New images are also automatically
-// fetched periodically, with a wait time specified by the delay parameter.
-func fetchWeather(reqChan chan math.Point2LL, cbChan chan [NumWxLevels]*renderer.CommandBuffer, lg *log.Logger) {
-	// STARS seems to get new radar roughly every 5 minutes
-	const fetchRate = 5 * time.Minute
-
-	// center stores the current center position of the radar image
-	var center math.Point2LL
-	fetchTimer := time.NewTimer(fetchRate)
-	for {
-		var ok bool
-		// Wait until we get an updated center or we've timed out on fetchRate.
-		select {
-		case center, ok = <-reqChan:
-			if ok {
-				// Drain any additional requests so that we get the most
-				// recent one.
-				for len(reqChan) > 0 {
-					center = <-reqChan
-				}
-			} else {
-				// The channel is closed; wrap up.
-				close(cbChan)
-				return
-			}
-		case <-fetchTimer.C:
-			// Periodically make a new request even if the center hasn't
-			// changed.
-		}
-
-		fetchTimer.Reset(fetchRate)
-		lg.Infof("Getting WX, center %v", center)
-
-		fetchResolution := 4 * wxFetchDistance // 2x for radius->diameter, 2x to get 0.5nm blocks
-		img, bounds, err := wx.FetchRadarImage(center, wxFetchDistance, fetchResolution)
-		if err == nil {
-			cbChan <- makeWeatherCommandBuffers(img, bounds)
-			lg.Info("finish weather fetch")
-		} else {
-			lg.Infof("%v", err)
-		}
+// fetchPrecipitation fetches precipitation data from GCS via RPC
+func (w *WeatherRadar) fetchPrecipitation(ctx *panes.Context) {
+	w.fetchInProgress = true
+	if w.precipCh == nil {
+		w.precipCh = make(chan *wx.Precip)
 	}
+	if w.errCh == nil {
+		w.errCh = make(chan error)
+	}
+
+	ctx.Client.GetPrecipURL(ctx.Client.State.SimTime, func(url string, nextTime time.Time, err error) {
+		w.mu.Lock(ctx.Lg)
+		defer w.mu.Unlock(ctx.Lg)
+
+		if err != nil {
+			w.nextFetchTime = time.Now().Add(time.Minute)
+			ctx.Lg.Warnf("Failed to get precip URL: %v", err)
+			w.fetchInProgress = false
+			return
+		}
+
+		w.nextFetchTime = nextTime
+
+		go w.fetchPrecip(url, ctx.Lg)
+	})
 }
 
-// Activate must be called to initialize the WeatherRadar before weather
-// radar images can be fetched.
-func (w *WeatherRadar) Activate(r renderer.Renderer, lg *log.Logger) {
-	if w.active {
+func (w *WeatherRadar) fetchPrecip(url string, lg *log.Logger) {
+	resp, err := http.Get(url)
+	if err != nil {
+		w.errCh <- err
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		w.errCh <- fmt.Errorf("HTTP error: %d", resp.StatusCode)
 		return
 	}
 
-	w.active = true
-	if w.reqChan == nil {
-		w.reqChan = make(chan math.Point2LL, 32)
+	precip, err := wx.DecodePrecip(resp.Body)
+	if err != nil {
+		w.errCh <- err
+	} else {
+		w.precipCh <- precip
 	}
-	w.cbChan = make(chan [NumWxLevels]*renderer.CommandBuffer, 8)
-
-	go fetchWeather(w.reqChan, w.cbChan, lg)
 }
 
 func (w *WeatherRadar) HaveWeather() [NumWxLevels]bool {
@@ -110,103 +89,68 @@ func (w *WeatherRadar) HaveWeather() [NumWxLevels]bool {
 	return r
 }
 
-// UpdateCenter provides a new center point for the radar image, causing a
-// new image to be fetched.
-func (w *WeatherRadar) UpdateCenter(center math.Point2LL) {
-	// UpdateCenter may be called before Activate, e.g. when we are loading
-	// a saved sim, so at least set up the chan so that we keep the center
-	// point.
-	if w.reqChan == nil {
-		w.reqChan = make(chan math.Point2LL, 32)
+func dbzToLevel(dbz byte) int {
+	// Map the dBZ value to a STARS WX level.
+	if dbz > 55 {
+		return 6
+	} else if dbz > 50 {
+		return 5
+	} else if dbz > 45 {
+		return 4
+	} else if dbz > 40 {
+		return 3
+	} else if dbz > 30 {
+		return 2
+	} else if dbz > 20 {
+		return 1
 	}
-	select {
-	case w.reqChan <- center:
-		// success
-	default:
-		// The channel is full..
-	}
+	return 0
 }
 
-func dbzToLevel(dbzs []byte) []int {
-	levels := make([]int, len(dbzs))
-	for i, dbz := range dbzs {
-		// Map the dBZ value to a STARS WX level.
-		level := 0
-		if dbz > 55 {
-			level = 6
-		} else if dbz > 50 {
-			level = 5
-		} else if dbz > 45 {
-			level = 4
-		} else if dbz > 40 {
-			level = 3
-		} else if dbz > 30 {
-			level = 2
-		} else if dbz > 20 {
-			level = 1
-		}
+func makeWeatherCommandBuffers(precip *wx.Precip) [NumWxLevels]*renderer.CommandBuffer {
+	nx, ny := precip.Resolution, precip.Resolution
+	bounds := precip.BoundsLL()
 
-		levels[i] = level
-	}
-	return levels
-}
-
-func makeWeatherCommandBuffers(img image.Image, rb math.Extent2D) [NumWxLevels]*renderer.CommandBuffer {
-	// Convert the Image returned by png.Decode to a simple 8-bit RGBA image.
-	rgba := image.NewRGBA(img.Bounds())
-	draw.Draw(rgba, img.Bounds(), img, image.Point{}, draw.Over)
-
-	dbz := wx.RadarImageToDBZ(img)
-	levels := dbzToLevel(dbz)
-
-	// Now generate the command buffer for each weather level.  We don't
-	// draw anything for level==0, so the indexing into cb is off by 1
-	// below.
+	// Now generate the command buffer for each weather level.
 	var cb [NumWxLevels]*renderer.CommandBuffer
 	tb := renderer.GetTrianglesDrawBuilder()
 	defer renderer.ReturnTrianglesDrawBuilder(tb)
 
-	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	for level := 1; level <= NumWxLevels; level++ {
 		tb.Reset()
 		levelHasWeather := false
 
-		// We'd like to be somewhat efficient and not necessarily draw an
-		// individual quad for each block, but on the other hand don't want
-		// to make this too complicated... So we'll consider block
-		// scanlines and quads across neighbors that are the same level
-		// when we find them.
+		// Process each row of the precipitation grid
 		for y := 0; y < ny; y++ {
 			for x := 0; x < nx; x++ {
-				// Skip ahead until we reach a block at the level we currently care about.
-				if levels[x+y*nx] != level {
+				idx := x + y*nx
+				if idx >= len(precip.DBZ) {
+					continue
+				}
+
+				dbzLevel := dbzToLevel(precip.DBZ[idx])
+				if dbzLevel != level {
 					continue
 				}
 				levelHasWeather = true
 
-				// Now see how long a span of repeats we have.
-				// Each quad spans [0,0]->[1,1] in texture coordinates; the
-				// texture is created with repeat wrap mode, so we just pad
-				// out the u coordinate into u1 accordingly.
+				// Find the span of consecutive pixels at this level
 				x0 := x
-				u1 := float32(0)
-				for x < nx && levels[x+y*nx] == level {
+				for x < nx && x+y*nx < len(precip.DBZ) && dbzToLevel(precip.DBZ[x+y*nx]) == level {
 					x++
-					u1++
 				}
 
-				// Corner points
-				p0 := rb.Lerp([2]float32{float32(x0) / float32(nx), float32(ny-1-y) / float32(ny)})
-				p1 := rb.Lerp([2]float32{float32(x) / float32(nx), float32(ny-y) / float32(ny)})
+				// Convert grid coordinates to lat/long positions
+				p0 := bounds.Lerp([2]float32{float32(x0) / float32(nx), float32(ny-1-y) / float32(ny)})
+				p1 := bounds.Lerp([2]float32{float32(x) / float32(nx), float32(ny-y) / float32(ny)})
 
-				// Draw a single quad
+				// Draw a quad for this span
 				tb.AddQuad([2]float32{p0[0], p0[1]}, [2]float32{p1[0], p0[1]},
 					[2]float32{p1[0], p1[1]}, [2]float32{p0[0], p1[1]})
 			}
 		}
 
-		// Subtract one so that level==1 is drawn by cb[0], etc, since we
-		// don't draw anything for level==0.
+		// Store command buffer for this level (level 1 goes to index 0)
 		if levelHasWeather {
 			cb[level-1] = &renderer.CommandBuffer{}
 			tb.GenerateCommands(cb[level-1])
@@ -307,25 +251,36 @@ func reverseStippleBytes(stipple [32]uint32) [32]uint32 {
 	return result
 }
 
-// Draw draws the current weather radar image, if available. (If none is yet
-// available, it returns rather than stalling waiting for it).
+// Draw draws the current weather radar data, if available.
 func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, contrast float32,
 	active [NumWxLevels]bool, transforms ScopeTransformations, cb *renderer.CommandBuffer) {
-	select {
-	case cb := <-w.cbChan:
-		// Got updated command buffers, yaay.  Note that we always drain
-		// the cbChan, even if if the WeatherRadar is inactive.
+	w.mu.Lock(ctx.Lg)
+	defer w.mu.Unlock(ctx.Lg)
 
+	select {
+	case err := <-w.errCh:
+		ctx.Lg.Warnf("%v", err)
+		w.fetchInProgress = false
+	case precip := <-w.precipCh:
 		// Shift history down before storing the latest
 		w.cb[2], w.cb[1] = w.cb[1], w.cb[0]
-		w.cb[0] = cb
+		w.cb[0] = makeWeatherCommandBuffers(precip)
 
+		w.fetchInProgress = false
 	default:
-		// no message
 	}
 
-	if !w.active {
-		return
+	traconChanged := w.tracon != ctx.Client.State.TRACON
+	if traconChanged {
+		w.tracon = ctx.Client.State.TRACON
+		w.fetchInProgress = false
+		w.nextFetchTime = time.Time{}
+		w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}
+	}
+	shouldFetch := ctx.Client.State.SimTime.After(w.nextFetchTime) && !w.fetchInProgress
+
+	if shouldFetch {
+		w.fetchPrecipitation(ctx)
 	}
 
 	hist = math.Clamp(hist, 0, len(w.cb)-1)

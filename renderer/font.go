@@ -1,4 +1,4 @@
-// pkg/renderer/font.go
+// renderer/font.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	"image/color"
 	"io"
 	"io/fs"
 	gomath "math"
@@ -27,6 +28,16 @@ import (
 	"github.com/klauspost/compress/zstd"
 	"github.com/mmp/IconFontCppHeaders"
 )
+import "iter"
+
+// Font name constants
+const (
+	RobotoRegular        = "Roboto Regular"
+	RobotoMono           = "Roboto Mono"
+	RobotoMonoItalic     = "Roboto Mono Italic"
+	FlightStripPrinter   = "Flight Strip Printer"
+	LargeFontAwesomeOnly = "LargeFontAwesomeOnly"
+)
 
 var ttfPinner runtime.Pinner
 
@@ -40,17 +51,15 @@ type Font struct {
 	glyphs map[rune]*Glyph
 	// Font size
 	Size  int
-	Mono  bool
 	Ifont imgui.Font
 	Id    FontIdentifier
 	TexId uint32 // texture that holds the glyph texture atlas
 }
 
-func MakeFont(size int, mono bool, id FontIdentifier, ifont *imgui.Font) *Font {
+func MakeFont(size int, id FontIdentifier, ifont *imgui.Font) *Font {
 	f := &Font{
 		glyphs: make(map[rune]*Glyph),
 		Size:   size,
-		Mono:   mono,
 		Id:     id,
 	}
 	if ifont != nil {
@@ -91,9 +100,10 @@ type FontIdentifier struct {
 // copy over the necessary information into our Glyph structure.
 func (f *Font) createGlyph(ch rune) *Glyph {
 	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
-	return &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
+	g := &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
 		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}
+	return g
 }
 
 func (f *Font) AddGlyph(ch int, g *Glyph) {
@@ -157,11 +167,16 @@ var (
 	FontAwesomeIconArrowLeft           = faUsedIcons["ArrowLeft"]
 	FontAwesomeIconArrowRight          = faUsedIcons["ArrowRight"]
 	FontAwesomeIconArrowUp             = faUsedIcons["ArrowUp"]
+	FontAwesomeIconBolt                = faUsedIcons["Bolt"]
 	FontAwesomeIconBook                = faUsedIcons["Book"]
 	FontAwesomeIconBug                 = faUsedIcons["Bug"]
 	FontAwesomeIconCaretDown           = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
+	FontAwesomeIconCloud               = faUsedIcons["Cloud"]
+	FontAwesomeIconCloudRain           = faUsedIcons["CloudRain"]
+	FontAwesomeIconCloudShowersHeavy   = faUsedIcons["CloudShowersHeavy"]
+	FontAwesomeIconCloudSun            = faUsedIcons["CloudSun"]
 	FontAwesomeIconCog                 = faUsedIcons["Cog"]
 	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
@@ -184,8 +199,12 @@ var (
 	FontAwesomeIconQuestionCircle      = faUsedIcons["QuestionCircle"]
 	FontAwesomeIconPlaneDeparture      = faUsedIcons["PlaneDeparture"]
 	FontAwesomeIconRedo                = faUsedIcons["Redo"]
+	FontAwesomeIconSmog                = faUsedIcons["Smog"]
+	FontAwesomeIconSnowflake           = faUsedIcons["Snowflake"]
 	FontAwesomeIconSquare              = faUsedIcons["Square"]
+	FontAwesomeIconSun                 = faUsedIcons["Sun"]
 	FontAwesomeIconTrash               = faUsedIcons["Trash"]
+	FontAwesomeIconWind                = faUsedIcons["Wind"]
 )
 
 var (
@@ -200,11 +219,16 @@ var (
 		"ArrowLeft":           FontAwesomeString("ArrowLeft"),
 		"ArrowRight":          FontAwesomeString("ArrowRight"),
 		"ArrowUp":             FontAwesomeString("ArrowUp"),
+		"Bolt":                FontAwesomeString("Bolt"),
 		"Book":                FontAwesomeString("Book"),
 		"Bug":                 FontAwesomeString("Bug"),
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
+		"Cloud":               FontAwesomeString("Cloud"),
+		"CloudRain":           FontAwesomeString("CloudRain"),
+		"CloudShowersHeavy":   FontAwesomeString("CloudShowersHeavy"),
+		"CloudSun":            FontAwesomeString("CloudSun"),
 		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
@@ -225,8 +249,12 @@ var (
 		"QuestionCircle":      FontAwesomeString("QuestionCircle"),
 		"PlaneDeparture":      FontAwesomeString("PlaneDeparture"),
 		"Redo":                FontAwesomeString("Redo"),
+		"Smog":                FontAwesomeString("Smog"),
+		"Snowflake":           FontAwesomeString("Snowflake"),
 		"Square":              FontAwesomeString("Square"),
+		"Sun":                 FontAwesomeString("Sun"),
 		"Trash":               FontAwesomeString("Trash"),
+		"Wind":                FontAwesomeString("Wind"),
 	}
 	faBrandsUsedIcons map[string]string = map[string]string{
 		"Discord": FontAwesomeBrandsString("Discord"),
@@ -244,11 +272,12 @@ func FontsInit(r Renderer, p platform.Platform) {
 	// is then used shortly when the fonts are loaded.
 	glyphRangeForIcons := func(icons map[string]string) imgui.GlyphRange {
 		builder := imgui.NewFontGlyphRangesBuilder()
+		builder.AddChar(imgui.Wchar(0x2191))
+		builder.AddChar(imgui.Wchar(0x2193))
 		for _, str := range icons {
 			unicode, _ := utf8.DecodeRuneInString(str)
 			builder.AddChar(imgui.Wchar(unicode))
 		}
-
 		r := imgui.NewGlyphRange()
 		builder.BuildRanges(r)
 		return r
@@ -260,46 +289,72 @@ func FontsInit(r Renderer, p platform.Platform) {
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
-	add := func(filename string, mono bool, name string) {
-		ttf := loadFont(filename)
-		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
-			sp := float32(size)
-			if runtime.GOOS == "windows" {
-				if dpis := p.DPIScale(); dpis > 1 {
-					sp *= p.DPIScale()
-				} else {
-					// Fix font sizes to account for Windows using 96dpi but
-					// everyone else using 72...
-					sp *= 96. / 72.
-				}
-				sp = float32(int(sp + 0.5))
+	// Helper to calculate scaled pixel size for a given point size
+	calcPixelSize := func(size int) float32 {
+		sp := float32(size)
+		if runtime.GOOS == "windows" {
+			if dpis := p.DPIScale(); dpis > 1 {
+				sp *= p.DPIScale()
+			} else {
+				// Fix font sizes to account for Windows using 96dpi but
+				// everyone else using 72...
+				sp *= 96. / 72.
 			}
-
-			addTTF := func(ttf []byte, sp float32, fconfig *imgui.FontConfig, r imgui.GlyphRange) *imgui.Font {
-				ttfPinner.Pin(&ttf[0])
-				return io.Fonts().AddFontFromMemoryTTFV(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)),
-					sp, fconfig, r.Data())
-			}
-
-			ttfPinner.Pin(&ttf[0])
-			ifont := io.Fonts().AddFontFromMemoryTTF(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp)
-
-			config := imgui.NewFontConfig()
-			config.SetMergeMode(true)
-			// Scale down the font size by an ad-hoc factor to (generally)
-			// make the icon sizes match the font's character sizes.
-			addTTF(faTTF, .8*sp, config, faGlyphRange)
-			addTTF(fabrTTF, .8*sp, config, faBrandsGlyphRange)
-
-			id := FontIdentifier{Name: name, Size: size}
-			fonts[id] = MakeFont(int(sp), mono, id, ifont)
+			sp = float32(int(sp + 0.5))
 		}
+		return sp
 	}
 
-	add("Roboto-Regular.ttf.zst", false, "Roboto Regular")
-	add("RobotoMono-Medium.ttf.zst", false, "Roboto Mono")
-	add("RobotoMono-MediumItalic.ttf.zst", false, "Roboto Mono Italic")
-	add("Flight-Strip-Printer.ttf.zst", true, "Flight Strip Printer")
+	// Helper to add TTF data to imgui
+	addTTF := func(ttf []byte, sp float32, fconfig *imgui.FontConfig, r imgui.GlyphRange) *imgui.Font {
+		ttfPinner.Pin(&ttf[0])
+		return io.Fonts().AddFontFromMemoryTTFV(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)),
+			sp, fconfig, r.Data())
+	}
+
+	// Helper to create a font with optional FontAwesome icons merged in
+	createFontSize := func(ttf []byte, size int, name string) {
+		sp := calcPixelSize(size)
+
+		var ifont *imgui.Font
+		if ttf != nil {
+			ttfPinner.Pin(&ttf[0])
+			ifont = io.Fonts().AddFontFromMemoryTTF(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp)
+		}
+
+		config := imgui.NewFontConfig()
+		if ttf != nil {
+			config.SetMergeMode(true)
+		}
+		// Scale down the font size by an ad-hoc factor to (generally)
+		// make the icon sizes match the font's character sizes.
+		iconScale := float32(0.8)
+		if ttf == nil {
+			// For FontAwesome-only font, don't scale down
+			iconScale = 1.0
+			ifont = addTTF(faTTF, iconScale*sp, config, faGlyphRange)
+		} else {
+			addTTF(faTTF, iconScale*sp, config, faGlyphRange)
+		}
+
+		config.SetMergeMode(true)
+		addTTF(fabrTTF, iconScale*sp, config, faBrandsGlyphRange)
+
+		id := FontIdentifier{Name: name, Size: size}
+		fonts[id] = MakeFont(int(sp), id, ifont)
+	}
+
+	for fn, name := range map[string]string{
+		"Roboto-Regular.ttf.zst":          RobotoRegular,
+		"RobotoMono-Medium.ttf.zst":       RobotoMono,
+		"RobotoMono-MediumItalic.ttf.zst": RobotoMonoItalic,
+		"Flight-Strip-Printer.ttf.zst":    FlightStripPrinter} {
+		for _, size := range []int{6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 18, 20, 22, 24, 28} {
+			createFontSize(loadFont(fn), size, name)
+		}
+	}
+	// Add a large FontAwesome-only font for weather icons
+	createFontSize(nil, 64, LargeFontAwesomeOnly)
 
 	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
 	lg.Infof("Fonts texture used %.1f MB", float32(w*h*bpp)/(1024*1024))
@@ -363,7 +418,7 @@ func GetFont(id FontIdentifier) *Font {
 }
 
 func GetDefaultFont() *Font {
-	return GetFont(FontIdentifier{Name: "Roboto Regular", Size: 14})
+	return GetFont(FontIdentifier{Name: RobotoRegular, Size: 14})
 }
 
 func FontAwesomeString(id string) string {
@@ -446,7 +501,7 @@ func loadFont(name string) []byte {
 		panic(err)
 	}
 
-	zr, err := zstd.NewReader(bytes.NewReader(b))
+	zr, err := zstd.NewReader(bytes.NewReader(b), zstd.WithDecoderConcurrency(0))
 	if err != nil {
 		panic(err)
 	}
@@ -459,4 +514,111 @@ func loadFont(name string) []byte {
 	zr.Close()
 
 	return b
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Bitmap fonts
+
+type BitmapFont struct {
+	PointSize     int
+	Width, Height int
+	Glyphs        []BitmapGlyph
+}
+
+type BitmapGlyph struct {
+	Name   string
+	StepX  int
+	Bounds [2]int
+	Offset [2]int
+	Bitmap []uint32
+}
+
+func CreateBitmapFontAtlas(r Renderer, p platform.Platform, fontIter iter.Seq2[string, BitmapFont]) []*Font {
+	xres, yres := 2048, 1024
+	atlas := image.NewRGBA(image.Rectangle{Max: image.Point{X: xres, Y: yres}})
+	x, y := 0, 0
+
+	var newFonts []*Font
+
+	scale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+
+	for name, bf := range fontIter {
+		id := FontIdentifier{
+			Name: name,
+			Size: bf.Height,
+		}
+
+		f := MakeFont(int(scale)*bf.Height, id, nil)
+		newFonts = append(newFonts, f)
+
+		if y+bf.Height >= yres {
+			panic("Font atlas texture too small")
+		}
+
+		for ch, glyph := range bf.Glyphs {
+			dx := glyph.Bounds[0] + 1 // pad
+			if x+dx > xres {
+				// Start a new line
+				x = 0
+				y += bf.Height + 1
+			}
+
+			glyph.rasterize(atlas, x, y)
+			glyph.addToFont(ch, x, y, xres, yres, bf, f, scale)
+
+			x += dx
+		}
+
+		// Start a new line after finishing a font.
+		x = 0
+		y += bf.Height + 1
+	}
+
+	atlasId := r.CreateTextureFromImage(atlas, true /* nearest filter */)
+	for _, font := range newFonts {
+		font.TexId = atlasId
+	}
+
+	return newFonts
+}
+
+func (glyph BitmapGlyph) rasterize(img *image.RGBA, x0, y0 int) {
+	// BitmapGlyphs store their bitmaps as an array of uint32s, where each
+	// uint32 encodes a scanline and bits are set in it to indicate that
+	// the corresponding pixel should be drawn; thus, there are no
+	// intermediate values for anti-aliasing.
+	for y, line := range glyph.Bitmap {
+		for x := 0; x < glyph.Bounds[0]; x++ {
+			// The high bit corresponds to the first pixel in the scanline,
+			// so the bitmask is set up accordingly...
+			mask := uint32(1 << (31 - x))
+			if line&mask != 0 {
+				on := color.RGBA{R: 255, G: 255, B: 255, A: 255}
+				img.SetRGBA(x0+x, y0+y, on)
+			}
+		}
+	}
+}
+
+func (glyph BitmapGlyph) addToFont(ch, x, y, xres, yres int, bf BitmapFont, f *Font, scale float32) {
+	g := &Glyph{
+		// Vertex coordinates for the quad: shift based on the offset
+		// associated with the glyph.  Also, count up from the bottom in y
+		// rather than drawing from the top.
+		X0: scale * float32(glyph.Offset[0]),
+		X1: scale * float32(glyph.Offset[0]+glyph.Bounds[0]),
+		Y0: scale * float32(bf.Height-glyph.Offset[1]-glyph.Bounds[1]),
+		Y1: scale * float32(bf.Height-glyph.Offset[1]),
+
+		// Texture coordinates: just the extent of where we rasterized the
+		// glyph in the atlas, rescaled to [0,1].
+		U0: float32(x) / float32(xres),
+		V0: float32(y) / float32(yres),
+		U1: (float32(x + glyph.Bounds[0])) / float32(xres),
+		V1: (float32(y + glyph.Bounds[1])) / float32(yres),
+
+		AdvanceX: scale * float32(glyph.StepX),
+		Visible:  true,
+	}
+	f.AddGlyph(ch, g)
 }

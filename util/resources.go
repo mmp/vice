@@ -50,7 +50,7 @@ func LoadResource(path string) ResourceReadCloser {
 	br := bytesReadCloser{bytes.NewReader(f)}
 
 	if filepath.Ext(path) == ".zst" {
-		zr, err := zstd.NewReader(br)
+		zr, err := zstd.NewReader(br, zstd.WithDecoderConcurrency(0))
 		if err != nil {
 			panic(err)
 		}

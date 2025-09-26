@@ -1,4 +1,4 @@
-// pkg/sim/sim.go
+// sim/sim.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -44,10 +44,15 @@ type Sim struct {
 	ERAMComputer  *ERAMComputer
 
 	LocalCodePool *av.LocalSquawkCodePool
+	CIDAllocator  *CIDAllocator
 
 	GenerationIndex int // for sequencing StateUpdates
 
 	VFRReportingPoints []av.VFRReportingPoint
+
+	wxModel    *wx.Model
+	wxProvider wx.Provider
+	METAR      map[string][]wx.METAR
 
 	eventStream *EventStream
 	lg          *log.Logger
@@ -130,7 +135,7 @@ type AircraftDisplayState struct {
 type Track struct {
 	av.RadarTrack
 
-	FlightPlan *STARSFlightPlan
+	FlightPlan *NASFlightPlan
 
 	// Sort of hacky to carry these along here but it's convenient...
 	DepartureAirport          string
@@ -201,7 +206,6 @@ type NewSimConfiguration struct {
 	SignOnPositions    map[string]*av.Controller
 
 	TFRs                    []av.TFR
-	Wind                    map[math.Point2LL][]wx.WindLayer
 	STARSFacilityAdaptation STARSFacilityAdaptation
 	IsLocal                 bool
 
@@ -210,12 +214,14 @@ type NewSimConfiguration struct {
 	ReportingPoints   []av.ReportingPoint
 	MagneticVariation float32
 	NmPerLongitude    float32
+	StartTime         time.Time
 	Center            math.Point2LL
 	Range             float32
 	DefaultMaps       []string
 	Airspace          av.Airspace
 
 	TTSProvider TTSProvider
+	WXProvider  wx.Provider
 }
 
 func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
@@ -229,9 +235,14 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		STARSComputer: makeSTARSComputer(config.TRACON),
 
+		CIDAllocator: NewCIDAllocator(),
+
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
 
 		VFRReportingPoints: config.VFRReportingPoints,
+
+		wxModel: wx.MakeModel(config.WXProvider, config.TRACON, config.StartTime.UTC(), lg),
+		METAR:   make(map[string][]wx.METAR),
 
 		humanControllers: make(map[string]*humanController),
 
@@ -254,6 +265,29 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SquawkWarnedACIDs: make(map[ACID]interface{}),
 
 		ttsProvider: config.TTSProvider,
+		wxProvider:  config.WXProvider,
+	}
+
+	if s.wxProvider != nil {
+		apmetar, err := s.wxProvider.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
+		if err != nil {
+			lg.Errorf("%v", err)
+		} else {
+			for ap, msoa := range apmetar {
+				metar := wx.DecodeMETARSOA(msoa)
+				idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
+					return m.Time.Compare(t)
+				})
+				if !ok && idx > 0 {
+					// METAR <= the start time
+					idx--
+				}
+				for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
+					s.METAR[ap] = append(s.METAR[ap], metar[idx])
+					idx++
+				}
+			}
+		}
 	}
 
 	// Automatically add nearby airports and VORs as candidate reporting points
@@ -294,13 +328,12 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
 
-	startTime := time.Now()
-	s.State = newState(config, startTime, manifest, lg)
+	s.State = newState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
 
 	return s
 }
 
-func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider) {
+func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Provider) {
 	s.lg = lg
 
 	loadPronunciationsIfNeeded()
@@ -326,6 +359,11 @@ func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider) {
 		vf := ttsProvider.GetAllVoices()
 		s.ttsVoicesFuture = &vf
 		s.ttsVoices = nil
+	}
+
+	s.wxProvider = provider
+	if s.wxModel == nil {
+		s.wxModel = wx.MakeModel(provider, s.State.TRACON, s.State.SimTime, s.lg)
 	}
 }
 
@@ -676,7 +714,7 @@ type GlobalMessage struct {
 type StateUpdate struct {
 	GenerationIndex         int
 	Tracks                  map[av.ADSBCallsign]*Track
-	UnassociatedFlightPlans []*STARSFlightPlan
+	UnassociatedFlightPlans []*NASFlightPlan
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
@@ -684,6 +722,8 @@ type StateUpdate struct {
 	HumanControllers []string
 
 	Time time.Time
+
+	METAR map[string]wx.METAR
 
 	LaunchConfig LaunchConfig
 
@@ -814,6 +854,8 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		Time: s.State.SimTime,
 
+		METAR: make(map[string]wx.METAR),
+
 		LaunchConfig: s.State.LaunchConfig,
 
 		UserRestrictionAreas: s.State.UserRestrictionAreas,
@@ -861,7 +903,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
-			FlightPlan:                ac.STARSFlightPlan,
+			FlightPlan:                ac.NASFlightPlan,
 			DepartureAirport:          ac.FlightPlan.DepartureAirport,
 			DepartureAirportElevation: ac.DepartureAirportElevation(),
 			DepartureAirportLocation:  ac.DepartureAirportLocation(),
@@ -899,6 +941,18 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		}
 	}
 
+	// Get latest METAR
+	for ap, metar := range s.METAR {
+		// Drop the current METAR and move to the next one if the current time is after the next one's report time.
+		for len(metar) > 1 && s.State.SimTime.After(metar[1].Time) {
+			metar = metar[1:]
+		}
+		s.METAR[ap] = metar
+		if len(metar) > 0 { // this should be true, but...
+			update.METAR[ap] = metar[0]
+		}
+	}
+
 	if util.SizeOf(*update, os.Stderr, false, 256*1024) > 256*1024*1024 {
 		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
 		f, err := os.Create(fn)
@@ -931,6 +985,7 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		state.UnassociatedFlightPlans = su.UnassociatedFlightPlans
 		state.ReleaseDepartures = su.ReleaseDepartures
 		state.LaunchConfig = su.LaunchConfig
+		state.METAR = su.METAR
 
 		state.UserRestrictionAreas = su.UserRestrictionAreas
 
@@ -1078,8 +1133,6 @@ func (s *Sim) Step(elapsed time.Duration) bool {
 func (s *Sim) updateState() {
 	now := s.State.SimTime
 
-	s.State.WX.UpdateTime(now)
-
 	for acid, ho := range s.Handoffs {
 		if !now.After(ho.AutoAcceptTime) && !s.prespawn {
 			continue
@@ -1142,7 +1195,7 @@ func (s *Sim) updateState() {
 				continue
 			}
 
-			passedWaypoint := ac.Update(s.State.WX, s.bravoAirspace, nil /* s.lg*/)
+			passedWaypoint := ac.Update(s.wxModel, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
 
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
@@ -1153,7 +1206,7 @@ func (s *Sim) updateState() {
 				// when they're currently tracked by an external facility.
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
-					sfp := ac.STARSFlightPlan
+					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
@@ -1161,7 +1214,7 @@ func (s *Sim) updateState() {
 						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
 					}
 				} else if passedWaypoint.TCPHandoff != "" {
-					sfp := ac.STARSFlightPlan
+					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
@@ -1172,7 +1225,7 @@ func (s *Sim) updateState() {
 
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
-					sfp := ac.STARSFlightPlan
+					sfp := ac.NASFlightPlan
 
 					if passedWaypoint.ClearApproach {
 						ac.ApproachController = sfp.ControllingController
@@ -1245,8 +1298,8 @@ func (s *Sim) updateState() {
 							} else {
 								// VFR aircraft - select best runway based on wind
 								ap := av.DB.Airports[ac.FlightPlan.ArrivalAirport]
-								ws := s.State.WX.LookupWind(ap.Location, float32(ap.Elevation))
-								if rwy, _ := ap.SelectBestRunway(ws.Direction, s.State.MagneticVariation); rwy != nil {
+								as := s.wxModel.Lookup(ap.Location, float32(ap.Elevation), s.State.SimTime)
+								if rwy, _ := ap.SelectBestRunway(as.WindDirection(), s.State.MagneticVariation); rwy != nil {
 									runway = rwy.Id
 								}
 							}
@@ -1277,7 +1330,7 @@ func (s *Sim) updateState() {
 			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
 				!s.prespawn {
 				// Time to check in
-				fp := ac.STARSFlightPlan
+				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}
@@ -1488,7 +1541,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 	if ac.IsUnassociated() { // this shouldn't happen...
 		return
 	}
-	sfp := ac.STARSFlightPlan
+	sfp := ac.NASFlightPlan
 
 	// Update controller before calling GoAround so the
 	// transmission goes to the right controller.
@@ -1543,7 +1596,7 @@ func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 
 func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 	for cs, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
+		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			return cs, true
 		}
 	}
@@ -1556,16 +1609,16 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 	} else {
 		return AircraftDisplayState{
 			Spew:        spew.Sdump(ac),
-			FlightState: ac.NavSummary(s.State.WX, s.lg),
+			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.lg),
 		}, nil
 	}
 }
 
 // *Aircraft may be nil. bool indicates whether the flight plan is active.
-func (s *Sim) GetFlightPlanForACID(acid ACID) (*STARSFlightPlan, *Aircraft, bool) {
+func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
-		if ac.IsAssociated() && ac.STARSFlightPlan.ACID == acid {
-			return ac.STARSFlightPlan, ac, true
+		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
+			return ac.NASFlightPlan, ac, true
 		}
 	}
 	for i, fp := range s.STARSComputer.FlightPlans {
@@ -1582,7 +1635,7 @@ func (s *Sim) CheckLeaks() {
 	nUsedIndices := 0
 	seenSquawks := make(map[av.Squawk]interface{})
 
-	check := func(fp *STARSFlightPlan) {
+	check := func(fp *NASFlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {
 			if usedIndices[fp.ListIndex] {
 				s.lg.Errorf("List index %d used more than once", fp.ListIndex)
@@ -1619,7 +1672,7 @@ func (s *Sim) CheckLeaks() {
 
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() {
-			check(ac.STARSFlightPlan)
+			check(ac.NASFlightPlan)
 		}
 	}
 	for _, fp := range s.STARSComputer.FlightPlans {

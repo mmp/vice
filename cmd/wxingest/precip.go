@@ -8,22 +8,27 @@ import (
 	"fmt"
 	"image/png"
 	"io"
+	"maps"
 	"path/filepath"
 	"strings"
 	"sync/atomic"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
 	"golang.org/x/sync/errgroup"
 )
 
-func ingestWX(sb StorageBackend) {
+func ingestPrecip(sb StorageBackend) error {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	ch := make(chan string)
-	eg.Go(func() error { return EnqueueObjects(sb, "scrape/WX", ch) })
+	eg.Go(func() error {
+		defer close(ch)
+		return sb.ChanList("scrape/WX", ch)
+	})
 
 	var totalBytes, totalObjects int64
 	for range *nWorkers {
@@ -35,7 +40,7 @@ func ingestWX(sb StorageBackend) {
 				default:
 				}
 
-				n, err := processWX(sb, path)
+				n, err := processPrecip(sb, path)
 				if err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
@@ -50,14 +55,16 @@ func ingestWX(sb StorageBackend) {
 		})
 	}
 
-	if err := eg.Wait(); err != nil {
-		LogError("WX: %v", err)
+	err := eg.Wait()
+	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
+	if err != nil {
+		return err
 	}
 
-	LogInfo("Ingested %s of WX stored in %d objects", util.ByteCount(totalBytes), totalObjects)
+	return generateManifests(sb, "precip", maps.Keys(av.DB.TRACONs))
 }
 
-func processWX(sb StorageBackend, path string) (int64, error) {
+func processPrecip(sb StorageBackend, path string) (int64, error) {
 	// Parse time
 	t, err := time.Parse(time.RFC3339, strings.TrimSuffix(filepath.Base(path), ".gob"))
 	if err != nil {
@@ -92,13 +99,7 @@ func processWX(sb StorageBackend, path string) (int64, error) {
 		return 0, err
 	}
 
-	type WXProcessed struct {
-		DBZ        []byte
-		Resolution int
-		Latitude   float32
-		Longitude  float32
-	}
-	wxp := WXProcessed{
+	wxp := wx.Precip{
 		DBZ:        util.DeltaEncode(wx.RadarImageToDBZ(img)),
 		Resolution: wxs.Resolution,
 		Latitude:   wxs.Latitude,
@@ -110,7 +111,7 @@ func processWX(sb StorageBackend, path string) (int64, error) {
 		return 0, fmt.Errorf("%s: unexpected format; can't find TRACON", path)
 	}
 
-	objpath := fmt.Sprintf("WX/%s/%d/%02d/%02d/%s.msgpack.zst", tracon, t.Year(), t.Month(), t.Day(), t.Format("150405"))
+	objpath := fmt.Sprintf("precip/%s/%s.msgpack.zst", tracon, t.Format(time.RFC3339))
 
 	n, err := sb.StoreObject(objpath, wxp)
 	if err != nil {

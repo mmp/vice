@@ -23,6 +23,7 @@ var (
 	ErrRPCTimeout                = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
 	ErrServerDisconnected        = errors.New("Server disconnected")
+	ErrWeatherUnavailable        = errors.New("Unable to reach weather server")
 )
 
 var errorStringToError = map[string]error{

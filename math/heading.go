@@ -94,6 +94,10 @@ func VectorHeading(v [2]float32) float32 {
 	return NormalizeHeading(Degrees(Atan2(v[0], v[1])))
 }
 
+func HeadingVector(hdg float32) [2]float32 {
+	return SinCos(Radians(hdg))
+}
+
 // HeadingDifference returns the minimum difference between two
 // headings. (i.e., the result is always in the range [0,180].)
 func HeadingDifference[T HeadingT](a, b T) T {

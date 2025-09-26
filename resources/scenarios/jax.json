@@ -3673,7 +3673,7 @@
         "initial_controller": "Tampa East Approach",
         "initial_speed": 150,
         "description": "V441 North",
-        "waypoints": "PIE BAYPO/ho V441 OCF V157 TAY KVLD/delete"
+        "waypoints": "PIE BAYPO/ho V441 OCF V157 TAALR KVLD/delete"
       }
     ]
   },
@@ -3692,7 +3692,7 @@
         "initial_controller": "Jacksonville Center (Sector 54)",
         "initial_speed": 150,
         "description": "V441 South",
-        "waypoints": "KVLD TAY/ho V157 OCF V441 BAYPO/delete"
+        "waypoints": "KVLD TAALR/ho V157 OCF V441 BAYPO/delete"
       }
     ]
   },

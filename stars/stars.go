@@ -27,6 +27,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -233,7 +234,8 @@ type STARSPane struct {
 		AirspaceColor    *[3]float32
 	}
 
-	windDrawAltitude int
+	atmosGrid             *wx.AtmosGrid
+	windDrawAltitudeIndex int
 
 	// We keep a pool of each type so that we don't need to allocate a new
 	// object each time we generate a datablock.
@@ -382,8 +384,6 @@ func NewSTARSPane() *STARSPane {
 	return &STARSPane{}
 }
 
-func (sp *STARSPane) DisplayName() string { return "STARS" }
-
 func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
@@ -411,8 +411,6 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	}
 
 	sp.events = eventStream.Subscribe()
-
-	sp.weatherRadar.Activate(r, lg)
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -448,7 +446,6 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pl
 	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
-	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
 
 	sp.makeMaps(client, ss, lg)
 	sp.makeSignificantPoints(ss)
@@ -478,10 +475,10 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 
 	sp.resetPrefsForNewSim(ss, pl)
 
-	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
-
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
+
+	sp.atmosGrid = nil
 
 	// nil these out rather than clearing them so that they are rebuilt
 	// from scratch.

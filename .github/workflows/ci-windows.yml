@@ -56,7 +56,7 @@ jobs:
     - name: Prepare icon resources
       run: |
         go install github.com/tc-hib/go-winres@latest
-        go-winres make --in windows/winres.json
+        go-winres make --in windows/winres.json --out cmd/vice/rsrc
 
     - name: Build whisper-cpp
       shell: bash

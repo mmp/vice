@@ -20,16 +20,15 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
-	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
 
 type scenarioGroup struct {
-	TRACON             string                     `json:"tracon"`
+	ARTCC              string                     `json:"artcc" scope:"eram"`
+	TRACON             string                     `json:"tracon" scope:"stars"`
 	Name               string                     `json:"name"`
 	Airports           map[string]*av.Airport     `json:"airports"`
 	Fixes              map[string]math.Point2LL   `json:"-"`
@@ -41,7 +40,7 @@ type scenarioGroup struct {
 	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
 	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
 
-	PrimaryAirport string `json:"primary_airport"`
+	PrimaryAirport string `json:"primary_airport" scope:"stars"`
 
 	ReportingPointStrings []string            `json:"reporting_points"`
 	ReportingPoints       []av.ReportingPoint // not in JSON
@@ -54,12 +53,12 @@ type scenarioGroup struct {
 }
 
 type scenario struct {
-	SoloController      string                           `json:"solo_controller"`
-	SplitConfigurations av.SplitConfigurationSet         `json:"multi_controllers"`
-	DefaultSplit        string                           `json:"default_split"`
-	WindSpec            map[string]interface{}           `json:"wind"` // Will manually deserialize to handle legacy wind
-	Wind                map[math.Point2LL][]wx.WindLayer // Derived from WindSpec in PostDeserialize
-	VirtualControllers  []string                         `json:"controllers"`
+	SoloController      string                   `json:"solo_controller"`
+	SplitConfigurations av.SplitConfigurationSet `json:"multi_controllers"`
+	DefaultSplit        string                   `json:"default_split"`
+	VirtualControllers  []string                 `json:"controllers"`
+
+	_ any `json:"wind"` // FIXME: REMOVE
 
 	// Map from inbound flow names to a map from airport name to default rate,
 	// with "overflights" a special case to denote overflights
@@ -585,65 +584,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		one := float32(1)
 		s.VFRRateScale = &one
 	}
-
-	windInt := func(name string) (int, bool) {
-		if v, ok := s.WindSpec[name]; ok {
-			if vf, ok := v.(float64); ok {
-				return int(vf), true
-			}
-		}
-		return 0, false
-	}
-
-	s.Wind = make(map[math.Point2LL][]wx.WindLayer)
-	if len(s.WindSpec) > 0 {
-		if dir, ok := windInt("direction"); ok {
-			// Treat it as legacy wind:
-			//	Direction int `json:"direction"`
-			//  Speed     int `json:"speed"`
-			//  Gust      int `json:"gust"`
-			spd, _ := windInt("speed")
-			gst, _ := windInt("gust")
-			ap := av.DB.Airports[sg.PrimaryAirport]
-			s.Wind[ap.Location] = []wx.WindLayer{wx.WindLayer{
-				Altitude:        float32(ap.Elevation),
-				Direction:       float32(dir),
-				DirectionVector: math.SinCos(math.Radians(float32(dir))),
-				Speed:           float32(spd),
-				Gust:            float32(gst),
-			}}
-		} else {
-			for p, layers := range s.WindSpec {
-				if loc, ok := sg.Locate(p); !ok {
-					e.ErrorString("unknown location %q in \"wind\"", p)
-				} else if lstr, ok := layers.(string); ok {
-					s.Wind[loc] = wx.ParseWindLayers(lstr, e)
-				} else {
-					e.ErrorString("Expecting quoted string for %q in \"wind\"", p)
-				}
-			}
-		}
-	} else {
-		r := rand.Make()
-		dir := float32(10 * (1 + r.Intn(36)))
-		ap := av.DB.Airports[sg.PrimaryAirport]
-		s.Wind[ap.Location] = []wx.WindLayer{wx.WindLayer{
-			Altitude:        float32(ap.Elevation),
-			Direction:       dir,
-			DirectionVector: math.SinCos(math.Radians(dir)),
-			Speed:           float32(r.Intn(10)),
-		}}
-	}
-}
-
-func (s *scenario) AverageWind() wx.WindLayer {
-	var wts []float32
-	var l []wx.WindLayer
-	for _, layers := range s.Wind {
-		wts = append(wts, 1)
-		l = append(l, layers[0])
-	}
-	return wx.BlendWindLayers(wts, l)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -709,12 +649,22 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.STARSFacilityAdaptation.Center)
 
-	if sg.TRACON == "" {
-		e.ErrorString("\"tracon\" must be specified")
-	} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
-		e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
-			"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
-			sg.TRACON)
+	if sg.ARTCC == "" {
+		if sg.TRACON == "" {
+			e.ErrorString("\"tracon\" or must be specified")
+		} else if _, ok := av.DB.TRACONs[sg.TRACON]; !ok {
+			e.ErrorString("TRACON %q is unknown; it must be a 3-letter identifier listed at "+
+				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon.",
+				sg.TRACON)
+		}
+	} else if sg.TRACON == "" {
+		if sg.ARTCC == "" {
+			e.ErrorString("\"artcc\" must be specified")
+		}
+		if _, ok := av.DB.ARTCCs[sg.ARTCC]; !ok {
+			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
+				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc", sg.ARTCC)
+		}
 	}
 
 	sg.Fixes = make(map[string]math.Point2LL)
@@ -794,13 +744,18 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			e.Pop()
 		}
 	}
-
-	if sg.PrimaryAirport == "" {
-		e.ErrorString("\"primary_airport\" not specified")
-	} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
-		e.ErrorString("\"primary_airport\" %q unknown", sg.PrimaryAirport)
-	} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
-		e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+	if sg.ARTCC == "" {
+		if sg.PrimaryAirport == "" {
+			e.ErrorString("\"primary_airport\" not specified")
+		} else if ap, ok := av.DB.Airports[sg.PrimaryAirport]; !ok {
+			e.ErrorString("\"primary_airport\" %q unknown", sg.PrimaryAirport)
+		} else if mvar, err := av.DB.MagneticGrid.Lookup(ap.Location); err != nil {
+			e.ErrorString("%s: unable to find magnetic declination: %v", sg.PrimaryAirport, err)
+		} else {
+			sg.MagneticVariation = mvar + sg.MagneticAdjustment
+		}
+	} else if mvar, err := av.DB.MagneticGrid.Lookup(sg.STARSFacilityAdaptation.Center); err != nil {
+		e.ErrorString("%s: unable to find magnetic declination: %v", sg.ARTCC, err)
 	} else {
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
@@ -836,7 +791,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
 			e.ErrorString("missing \"eram_facility\" for center controller")
 		}
-		if ctrl.ERAMFacility {
+		if ctrl.ERAMFacility && sg.ARTCC == "" {
 			if ctrl.FacilityIdentifier == "" {
 				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
 			}
@@ -1471,10 +1426,10 @@ func initializeSimConfigurations(sg *scenarioGroup,
 		sc := &SimScenarioConfiguration{
 			SplitConfigurations: scenario.SplitConfigurations,
 			LaunchConfig:        lc,
-			AverageWind:         scenario.AverageWind(),
 			DepartureRunways:    scenario.DepartureRunways,
 			ArrivalRunways:      scenario.ArrivalRunways,
 			PrimaryAirport:      sg.PrimaryAirport,
+			MagneticVariation:   sg.MagneticVariation,
 		}
 
 		if multiController {
@@ -1543,8 +1498,8 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		e.ErrorString("scenario group is missing \"name\"")
 		return nil
 	}
-	if s.TRACON == "" {
-		e.ErrorString("scenario group is missing \"tracon\"")
+	if s.TRACON == "" && s.ARTCC == "" {
+		e.ErrorString("scenario group is missing \"tracon\" or \"artcc\"")
 		return nil
 	}
 	return &s
@@ -1690,7 +1645,7 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 			} else if manifest, ok := mapManifests[vf]; !ok {
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
-			} else {
+			} else { // if tracon
 				sgroup.PostDeserialize(multiControllerOnly, e, simConfigurations, manifest)
 			}
 
@@ -1825,7 +1780,6 @@ func CreateNewSimConfiguration(config *Configuration, scenarioGroup *scenarioGro
 		ReportingPoints:         scenarioGroup.ReportingPoints,
 		MagneticVariation:       scenarioGroup.MagneticVariation,
 		NmPerLongitude:          scenarioGroup.NmPerLongitude,
-		Wind:                    scenario.Wind,
 		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.STARSFacilityAdaptation.Center, scenario.Center),
 		Range:                   util.Select(scenario.Range == 0, scenarioGroup.STARSFacilityAdaptation.Range, scenario.Range),
 		DefaultMaps:             scenario.DefaultMaps,

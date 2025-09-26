@@ -1,5 +1,5 @@
-// pkg/util/util_test.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// util/util_test.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package util
@@ -13,12 +13,34 @@ import (
 func TestWrapText(t *testing.T) {
 	input := "this is a test_with_a_long_line of stuff"
 	expected := "this is \n  a \n  test_with_a_long_line \n  of \n  stuff"
-	wrap, lines := WrapText(input, 8, 2, false)
+	wrap, lines := WrapText(input, 8, 2, false, false)
 	if wrap != expected {
 		t.Errorf("wrapping gave %q; expected %q", wrap, expected)
 	}
 	if lines != 5 {
 		t.Errorf("wrapping returned %d lines, expected 5", lines)
+	}
+}
+
+func TestWrapNoSpace(t *testing.T) {
+	// Test breaking mid-word when WrapNoSpace is true
+	input := "supercalifragilisticexpialidocious"
+	wrap, lines := WrapText(input, 10, 2, false, true)
+	expected := "supercalif\n  ragilist\n  icexpial\n  idocious"
+	if wrap != expected {
+		t.Errorf("WrapNoSpace gave %q; expected %q", wrap, expected)
+	}
+	if lines != 4 {
+		t.Errorf("WrapNoSpace returned %d lines, expected 4", lines)
+	}
+
+	// Test that without WrapNoSpace, long words overflow
+	wrap2, lines2 := WrapText(input, 10, 2, false, false)
+	if wrap2 != input {
+		t.Errorf("Without WrapNoSpace gave %q; expected %q", wrap2, input)
+	}
+	if lines2 != 1 {
+		t.Errorf("Without WrapNoSpace returned %d lines, expected 1", lines2)
 	}
 }
 

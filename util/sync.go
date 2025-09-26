@@ -8,9 +8,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"maps"
 	gomath "math"
 	"runtime"
-	"strings"
+	"slices"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -73,35 +74,41 @@ func (l *LoggingMutex) Lock(lg *log.Logger) {
 	lg.Debug("attempting to acquire mutex", slog.Any("mutex", l))
 
 	if !l.Mutex.TryLock() {
-		// Lock with timeout.
-		locked := make(chan struct{}, 1)
+		stopCh := make(chan struct{}, 1)
 
+		// Do error logging in a separate goroutine but acquire the lock in
+		// the main one; in this way we can better track the locked mutex
+		// with the goroutine that acquired the lock.
 		go func() {
-			l.Mutex.Lock()
-			locked <- struct{}{}
-		}()
+			defer lg.CatchAndReportCrash()
 
-	loop:
-		for {
-			select {
-			case <-locked:
-				break loop
-			case <-time.After(10 * time.Second):
-				if !DebuggerIsRunning() {
-					lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
-						slog.Any("held_mutexes", heldMutexes))
+			for {
+				select {
+				case <-stopCh:
+					return
+				case <-time.After(10 * time.Second):
+					if !DebuggerIsRunning() {
+						func() {
+							var m runtime.MemStats
+							runtime.ReadMemStats(&m)
+							usage, _ := cpu.Percent(time.Second, false)
+							lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
+								int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
+								runtime.NumGoroutine())
 
-					var m runtime.MemStats
-					runtime.ReadMemStats(&m)
-					usage, _ := cpu.Percent(time.Second, false)
+							heldMutexesMutex.Lock()
+							defer heldMutexesMutex.Unlock()
 
-					lg.Errorf("CPU: %d%% alloc: %dMB total alloc: %dMB sys mem: %dMB goroutines: %d",
-						int(gomath.Round(usage[0])), m.Alloc/(1024*1024), m.TotalAlloc/(1024*1024), m.Sys/(1024*1024),
-						runtime.NumGoroutine())
-					lg.Errorf("Callstack for who holds: %s", strings.Join(l.acqStack.Strings(), " | "))
+							lg.Error("unable to acquire mutex after 10 seconds", slog.Any("mutex", l),
+								log.AnyPointerSlice("held_mutexes", slices.Collect(maps.Keys(heldMutexes))))
+						}()
+					}
 				}
 			}
-		}
+		}()
+
+		l.Mutex.Lock()
+		close(stopCh)
 	}
 
 	heldMutexesMutex.Lock()

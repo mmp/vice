@@ -45,7 +45,7 @@ type Aircraft struct {
 	STARRunwayWaypoints map[string]av.WaypointArray
 	GotContactTower     bool
 
-	STARSFlightPlan *STARSFlightPlan
+	NASFlightPlan *NASFlightPlan
 
 	HoldForRelease    bool
 	Released          bool // only used for hold for release
@@ -105,12 +105,12 @@ func (ac *Aircraft) TAS() float32 {
 ///////////////////////////////////////////////////////////////////////////
 // Navigation and simulation
 
-func (ac *Aircraft) Update(model *wx.WeatherModel, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
+func (ac *Aircraft) Update(model *wx.Model, simTime time.Time, bravo *av.AirspaceGrid, lg *log.Logger) *av.Waypoint {
 	if lg != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 
-	passedWaypoint := ac.Nav.Update(model, &ac.FlightPlan, bravo, lg)
+	passedWaypoint := ac.Nav.Update(model, &ac.FlightPlan, simTime, bravo, lg)
 	if passedWaypoint != nil {
 		lg.Debug("passed", slog.Any("waypoint", passedWaypoint))
 	}
@@ -268,7 +268,7 @@ func (ac *Aircraft) InterceptApproach(lg *log.Logger) *RadioTransmission {
 }
 
 func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLongitude float32, magneticVariation float32,
-	model *wx.WeatherModel, now time.Time, lg *log.Logger) error {
+	model *wx.Model, simTime time.Time, lg *log.Logger) error {
 	ac.STAR = arr.STAR
 	ac.STARRunwayWaypoints = arr.RunwayWaypoints[ac.FlightPlan.ArrivalAirport]
 
@@ -290,7 +290,8 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 	}
 	ac.TypeOfFlight = av.FlightTypeArrival
 
-	nav := MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation, model, lg)
+	nav := MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation, model,
+		simTime, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -311,7 +312,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 
 func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string, dep *av.Departure,
 	runway string, exitRoute av.ExitRoute, nmPerLongitude float32, magneticVariation float32,
-	model *wx.WeatherModel, now time.Time, lg *log.Logger) error {
+	model *wx.Model, simTime time.Time, lg *log.Logger) error {
 	wp := util.DuplicateSlice(exitRoute.Waypoints)
 	wp = append(wp, dep.RouteWaypoints...)
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
@@ -344,7 +345,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	randomizeAltitudeRange := ac.FlightPlan.Rules == av.FlightRulesVFR
 	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
-		nmPerLongitude, magneticVariation, model, lg)
+		nmPerLongitude, magneticVariation, model, simTime, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -356,8 +357,8 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 }
 
 func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
-	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.WeatherModel,
-	lg *log.Logger) error {
+	randomizeAltitudeRange bool, nmPerLongitude float32, magneticVariation float32, model *wx.Model,
+	simTime time.Time, lg *log.Logger) error {
 	wp := util.DuplicateSlice(wps)
 
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
@@ -370,7 +371,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 
 	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
 		ac.FlightPlan.Altitude /* cleared alt */, 0 /* speed restriction */, wp,
-		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, lg)
+		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -381,7 +382,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 }
 
 func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float32,
-	magneticVariation float32, model *wx.WeatherModel, now time.Time, lg *log.Logger) error {
+	magneticVariation float32, model *wx.Model, simTime time.Time, lg *log.Logger) error {
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
 		lg.Errorf("%s: unable to get performance model", ac.FlightPlan.AircraftType)
@@ -397,7 +398,7 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	ac.TypeOfFlight = av.FlightTypeOverflight
 
 	nav := MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
-		magneticVariation, model, lg)
+		magneticVariation, model, simTime, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
 	}
@@ -406,8 +407,8 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	return nil
 }
 
-func (ac *Aircraft) NavSummary(model *wx.WeatherModel, lg *log.Logger) string {
-	return ac.Nav.Summary(ac.FlightPlan, model, lg)
+func (ac *Aircraft) NavSummary(model *wx.Model, simTime time.Time, lg *log.Logger) string {
+	return ac.Nav.Summary(ac.FlightPlan, model, simTime, lg)
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *RadioTransmission {
@@ -619,7 +620,7 @@ func (ac *Aircraft) transferTracks(from, to string) {
 		return
 	}
 
-	sfp := ac.STARSFlightPlan
+	sfp := ac.NASFlightPlan
 	if sfp.HandoffTrackController == from {
 		sfp.HandoffTrackController = to
 	}
@@ -642,7 +643,7 @@ func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryControlle
 		return
 	}
 
-	sfp := ac.STARSFlightPlan
+	sfp := ac.NASFlightPlan
 	if sfp.HandoffTrackController == callsign {
 		// Otherwise redirect handoffs to the primary controller. This is
 		// not a perfect solution; for an arrival, for example, we should
@@ -666,21 +667,21 @@ func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryControlle
 }
 
 func (ac *Aircraft) IsUnassociated() bool {
-	return ac.STARSFlightPlan == nil
+	return ac.NASFlightPlan == nil
 }
 
 func (ac *Aircraft) IsAssociated() bool {
-	return ac.STARSFlightPlan != nil
+	return ac.NASFlightPlan != nil
 }
 
-func (ac *Aircraft) AssociateFlightPlan(fp *STARSFlightPlan) {
+func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
-	ac.STARSFlightPlan = fp
+	ac.NASFlightPlan = fp
 	ac.PreArrivalDropController = ""
 }
 
-func (ac *Aircraft) DisassociateFlightPlan() *STARSFlightPlan {
-	fp := ac.STARSFlightPlan
-	ac.STARSFlightPlan = nil
+func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
+	fp := ac.NASFlightPlan
+	ac.NASFlightPlan = nil
 	return fp
 }

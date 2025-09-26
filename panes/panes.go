@@ -6,6 +6,8 @@ package panes
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 	"time"
 
@@ -159,6 +161,34 @@ func (ctx *Context) GetTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 
 func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByACID(acid)
+}
+
+// Returns all aircraft that match the given suffix. If instructor, returns
+// all matching aircraft; otherwise only ones under the current
+// controller's control are considered for matching.
+func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
+	match := func(trk *sim.Track) bool {
+		if trk.IsUnassociated() {
+			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
+		} else {
+			fp := trk.FlightPlan
+			if !strings.HasSuffix(string(fp.ACID), suffix) {
+				return false
+			}
+
+			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+				return true
+			}
+
+			// Hold for release aircraft still in the list
+			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
+				trk.FlightPlan.ControllingController == "" {
+				return true
+			}
+			return false
+		}
+	}
+	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
 }
 
 var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))

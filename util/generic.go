@@ -465,6 +465,42 @@ func Seq2Values[K, V any](seq iter.Seq2[K, V]) iter.Seq[V] {
 	}
 }
 
+func SeqConcat[V any](seq ...iter.Seq[V]) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		for _, s := range seq {
+			for v := range s {
+				if !yield(v) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func SeqSingle[V any](v V) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		yield(v)
+	}
+}
+
+func Seq2Concat[K, V any](seq ...iter.Seq2[K, V]) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for _, s := range seq {
+			for k, v := range s {
+				if !yield(k, v) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func Seq2Single[K, V any](k K, v V) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		yield(k, v)
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////
 
 type Optional[T any] struct {

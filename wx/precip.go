@@ -6,13 +6,51 @@ import (
 	"image"
 	"image/draw"
 	"image/png"
+	"io"
 	"net/http"
 	"net/url"
 	"sort"
 	"sync"
 
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
+
+	"github.com/klauspost/compress/zstd"
+	"github.com/vmihailenco/msgpack/v5"
 )
+
+// Precip is the object type that is stored in GCS after wx ingest for precipitation.
+type Precip struct {
+	DBZ        []byte
+	Resolution int
+	Latitude   float32
+	Longitude  float32
+}
+
+func DecodePrecip(r io.Reader) (*Precip, error) {
+	zr, err := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
+	if err != nil {
+		return nil, err
+	}
+
+	var precip Precip
+	if err := msgpack.NewDecoder(zr).Decode(&precip); err != nil {
+		return nil, err
+	}
+
+	precip.DBZ = util.DeltaDecode(precip.DBZ)
+
+	return &precip, nil
+}
+
+// lat-long bounds
+func (p Precip) BoundsLL() math.Extent2D {
+	centerLL := math.Point2LL{p.Longitude, p.Latitude}
+
+	// Resolution is in pixels, and we have 0.5nm per pixel (2 samples per nm)
+	widthNM := float32(p.Resolution) / 2
+	return math.BoundLatLongCircle(centerLL, widthNM/2 /* radius */)
+}
 
 func FetchRadarImage(center math.Point2LL, radius float32, resolution int) (image.Image, math.Extent2D, error) {
 	// The weather radar image comes via a WMS GetMap request from the NOAA.

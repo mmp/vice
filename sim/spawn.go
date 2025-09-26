@@ -1,4 +1,4 @@
-// pkg/sim/spawn.go
+// sim/spawn.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -9,6 +9,7 @@ import (
 	"iter"
 	"log/slog"
 	"maps"
+	gomath "math"
 	"slices"
 	"strconv"
 	"strings"
@@ -313,7 +314,7 @@ func (s *Sim) LaunchAircraft(ac Aircraft, departureRunway string) {
 }
 
 func (s *Sim) addDepartureToPool(ac *Aircraft, runway string, manualLaunch bool) {
-	depac := makeDepartureAircraft(ac, s.State.SimTime, s.State.WX, s.Rand)
+	depac := makeDepartureAircraft(ac, s.State.SimTime, s.wxModel, s.Rand)
 
 	ac.WaitingForLaunch = true
 	s.addAircraftNoLock(*ac)
@@ -340,6 +341,20 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 		s.lg.Warn("already have an aircraft with that callsign!",
 			slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 		return
+	}
+
+	if s.CIDAllocator != nil {
+		fp := ac.NASFlightPlan
+		if fp == nil {
+			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+		}
+		if fp != nil && fp.CID == "" {
+			if cid, err := s.CIDAllocator.Allocate(); err == nil {
+				fp.CID = cid
+			} else {
+				s.lg.Warn("no CID available", slog.String("callsign", string(ac.ADSBCallsign)))
+			}
+		}
 	}
 
 	s.Aircraft[ac.ADSBCallsign] = &ac
@@ -519,7 +534,7 @@ func (s *Sim) isHumanControlled(ac *Aircraft, departure bool) bool {
 		// No VFR flights are controlled, so it's easy for them.
 		return false
 	} else {
-		fp := ac.STARSFlightPlan
+		fp := ac.NASFlightPlan
 		if fp == nil {
 			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
@@ -993,10 +1008,10 @@ func (s *Sim) makeNewVFRDeparture(depart, runway string) (ac *Aircraft, err erro
 					s.lg.Errorf("%s: unable to sample VFR destination airport???", depart)
 					continue
 				}
-				ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, sampledRandoms.Fleet, nil)
+				ac, _, err = s.createUncontrolledVFRDeparture(depart, arrive, sampledRandoms.Fleet, nil, s.State.SimTime)
 			} else if sampledRoute != nil {
 				ac, _, err = s.createUncontrolledVFRDeparture(depart, sampledRoute.Destination, sampledRoute.Fleet,
-					sampledRoute.Waypoints)
+					sampledRoute.Waypoints, s.State.SimTime)
 			}
 
 			if err == nil && ac != nil {
@@ -1098,12 +1113,31 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.Airport, arrivalAirport)
 
 	err := ac.InitializeArrival(s.State.Airports[arrivalAirport], &arr,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.WX, s.State.SimTime, s.lg)
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
 	}
+	var assigned int
+	if s.State.TRACON == "" && arr.AssignedAltitude == 0 {
+		// Get the altitude from the route and waypoints if possible
+		wps := arr.Waypoints
+		lowestAlt := gomath.MaxInt
+		for _, wp := range wps {
+			if wp.AltitudeRestriction == nil {
+				continue
+			}
+			if int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude)) < lowestAlt {
+				lowestAlt = int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude))
+			}
+		}
+		if lowestAlt != gomath.MaxInt {
+			assigned = lowestAlt
+		} else {
+			s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+		}
+	}
 
-	starsFp := STARSFlightPlan{
+	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
@@ -1123,6 +1157,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+
+		AssignedAltitude: assigned,
 	}
 
 	// VFRs don't go around since they aren't talking to us.
@@ -1219,7 +1255,7 @@ func (s *Sim) CreateVFRDeparture(departureAirport string) (*Aircraft, error) {
 			// This shouldn't happen...
 			return nil, nil
 		} else {
-			ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil)
+			ac, _, err := s.createUncontrolledVFRDeparture(departureAirport, arrive, ap.VFR.Randoms.Fleet, nil, s.State.SimTime)
 			return ac, err
 		}
 	}
@@ -1267,13 +1303,13 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 	exitRoute := exitRoutes[dep.Exit]
 	err := ac.InitializeDeparture(ap, departureAirport, dep, runway, *exitRoute, s.State.NmPerLongitude,
-		s.State.MagneticVariation, s.State.WX, s.State.SimTime, s.lg)
+		s.State.MagneticVariation, s.wxModel, s.State.SimTime, s.lg)
 	if err != nil {
 		return nil, err
 	}
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
-	starsFp := STARSFlightPlan{
+	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:          shortExit,
@@ -1288,9 +1324,10 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		SecondaryScratchpad: dep.SecondaryScratchpad,
 		RequestedAltitude:   ac.FlightPlan.Altitude,
 
-		AircraftCount: 1,
-		AircraftType:  ac.FlightPlan.AircraftType,
-		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount:    1,
+		AircraftType:     ac.FlightPlan.AircraftType,
+		CWTCategory:      av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AssignedAltitude: util.Select(s.State.TRACON == "", ac.FlightPlan.Altitude, 0),
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1356,11 +1393,11 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	ac.InitializeFlightPlan(av.FlightRulesIFR, acType, airline.DepartureAirport, airline.ArrivalAirport)
 
 	if err := ac.InitializeOverflight(&of, s.State.NmPerLongitude, s.State.MagneticVariation,
-		s.State.WX, s.State.SimTime, s.lg); err != nil {
+		s.wxModel, s.State.SimTime, s.lg); err != nil {
 		return nil, err
 	}
 
-	starsFp := STARSFlightPlan{
+	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          "", // TODO
@@ -1379,6 +1416,8 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+
+		AssignedAltitude: util.Select(s.State.TRACON == "", int(of.AssignedAltitude), 0),
 	}
 
 	// Like departures, these are already associated
@@ -1394,11 +1433,11 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	return ac, err
 }
 
-func makeDepartureAircraft(ac *Aircraft, now time.Time, model *wx.WeatherModel, r *rand.Rand) DepartureAircraft {
+func makeDepartureAircraft(ac *Aircraft, simTime time.Time, model *wx.Model, r *rand.Rand) DepartureAircraft {
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
-		SpawnTime:           now,
-		ReadyDepartGateTime: now.Add(time.Duration(5+r.Intn(5)) * time.Minute),
+		SpawnTime:           simTime,
+		ReadyDepartGateTime: simTime.Add(time.Duration(5+r.Intn(5)) * time.Minute),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
@@ -1407,7 +1446,7 @@ func makeDepartureAircraft(ac *Aircraft, now time.Time, model *wx.WeatherModel, 
 	start := ac.Position()
 	d.MinSeparation = 120 * time.Second // just in case
 	for i := range 120 {
-		simAc.Update(model, nil, nil /* lg */)
+		simAc.Update(model, simTime, nil, nil /* lg */)
 		// We need 6,000' and airborne, but we'll add a bit of slop
 		if simAc.IsAirborne() && math.NMDistance2LL(start, simAc.Position()) > 7500*math.FeetToNauticalMiles {
 			d.MinSeparation = time.Duration(i) * time.Second
@@ -1418,7 +1457,7 @@ func makeDepartureAircraft(ac *Aircraft, now time.Time, model *wx.WeatherModel, 
 	return d
 }
 
-func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint) (*Aircraft, string, error) {
+func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, routeWps []av.Waypoint, simTime time.Time) (*Aircraft, string, error) {
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
 	rwy := s.State.VFRRunways[depart]
 
@@ -1435,6 +1474,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		ac.Mode = av.TransponderModeStandby // flat out off
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
+	// This doesnt need an 11 altitude
 
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
@@ -1551,7 +1591,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	wps[len(wps)-1].Land = true
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
-		s.State.NmPerLongitude, s.State.MagneticVariation, s.State.WX, s.lg); err != nil {
+		s.State.NmPerLongitude, s.State.MagneticVariation, s.wxModel, simTime, s.lg); err != nil {
 		return nil, "", err
 	}
 
@@ -1562,7 +1602,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	// Check airspace violations
 	simac := deep.MustCopy(*ac)
 	for range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
-		if wp := simac.Update(s.State.WX, s.bravoAirspace, nil); wp != nil && wp.Delete {
+		if wp := simac.Update(s.wxModel, simTime, s.bravoAirspace, nil); wp != nil && wp.Delete {
 			return ac, rwy.Id, nil
 		}
 		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||

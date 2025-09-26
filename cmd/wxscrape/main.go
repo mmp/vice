@@ -167,12 +167,11 @@ type Status int
 const (
 	StatusSuccess Status = iota
 	StatusTransientFailure
-	StatusPermanentFailure
 )
 
 func doWithBackoff(f func() Status) bool {
 	backoff := 5 * time.Second
-	for range 5 {
+	for range 7 {
 		switch f() {
 		case StatusSuccess:
 			return true
@@ -180,9 +179,6 @@ func doWithBackoff(f func() Status) bool {
 		case StatusTransientFailure:
 			time.Sleep(backoff)
 			backoff *= 2
-
-		case StatusPermanentFailure:
-			return false
 		}
 	}
 	return false // unsuccessful after multiple retries
@@ -201,10 +197,7 @@ func downloadToGCS(ctx context.Context, bucket *storage.BucketHandle, url, objpa
 
 	if resp.StatusCode != http.StatusOK {
 		LogError("%s: HTTP status code %d", url, resp.StatusCode)
-		if resp.StatusCode >= 500 {
-			return StatusTransientFailure
-		}
-		return StatusPermanentFailure
+		return StatusTransientFailure
 	}
 
 	objw := bucket.Object(objpath).NewWriter(ctx)
@@ -217,7 +210,7 @@ func downloadToGCS(ctx context.Context, bucket *storage.BucketHandle, url, objpa
 
 	if err := objw.Close(); err != nil {
 		LogError("%s: %v", objpath, err)
-		return StatusPermanentFailure
+		return StatusTransientFailure
 	}
 
 	return StatusSuccess
@@ -360,7 +353,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 			}
 			if err := objw.Close(); err != nil {
 				LogError("%s: %v", path, err)
-				return StatusPermanentFailure
+				return StatusTransientFailure
 			}
 
 			return StatusSuccess
