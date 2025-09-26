@@ -14,7 +14,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -411,7 +410,7 @@ func lookupFlightPlan(ctx *panes.Context, s string) (*sim.NASFlightPlan, *sim.Tr
 }
 
 func lookupTrackACIDBeacon(ctx *panes.Context, tracks []sim.Track, s string) *sim.Track {
-	if trk, ok := ctx.GetTrackByACID(sim.ACID(s)); ok {
+	if trk, ok := ctx.Client.State.GetTrackByACID(sim.ACID(s)); ok {
 		return trk
 	}
 
@@ -2491,7 +2490,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmds = cmd
 		}
 
-		matching := ctx.TracksFromACIDSuffix(suffix)
+		matching := ctx.Client.State.TracksFromACIDSuffix(suffix)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return
@@ -2502,7 +2501,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			trk = matching[0]
 		} else if len(matching) == 0 && sp.tgtGenDefaultCallsign(ctx) != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
-			trk, _ = ctx.GetTrackByCallsign(sp.tgtGenDefaultCallsign(ctx))
+			trk, _ = ctx.Client.State.GetTrackByCallsign(sp.tgtGenDefaultCallsign(ctx))
 			// But now we're going to run all of the given input as commands.
 			cmds = cmd
 		}
@@ -2962,7 +2961,7 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign av.ADSBCal
 
 	var spec sim.FlightPlanSpecifier
 	spec.GlobalLeaderLineDirection.Set(dir)
-	trk, _ := ctx.GetTrackByCallsign(callsign)
+	trk, _ := ctx.Client.State.GetTrackByCallsign(callsign)
 	sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
 }
 
@@ -2977,7 +2976,7 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 	ctx.Client.AssociateFlightPlan(callsign, spec,
 		func(err error) {
 			if err == nil {
-				if trk, ok := ctx.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
+				if trk, ok := ctx.Client.State.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
 					sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
 			} else {
@@ -3174,7 +3173,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			} else if cmd == "*" {
 				// Display parent aircraft flight plan
-				if trk, ok := ctx.GetTrackByCallsign(ghost.ADSBCallsign); ok && trk.IsAssociated() {
+				if trk, ok := ctx.Client.State.GetTrackByCallsign(ghost.ADSBCallsign); ok && trk.IsAssociated() {
 					status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
 				status.clear = true
@@ -4808,7 +4807,7 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]Qu
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *panes.Context, acid sim.ACID) (string, error) {
-	trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(acid)) // HAX conflates callsign/ACID
+	trk, ok := ctx.Client.State.GetTrackByCallsign(av.ADSBCallsign(acid)) // HAX conflates callsign/ACID
 	if !ok || !trk.IsAssociated() {
 		return "", ErrSTARSIllegalFlight
 	}

@@ -1506,8 +1506,8 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 				if ca.Acknowledged {
 					return false
 				}
-				trk0, ok0 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok0 := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk1, ok1 := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				if !ok0 || !ok1 {
 					return false
 				}
@@ -1520,7 +1520,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 				if ca.Acknowledged {
 					return false
 				}
-				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && !trk0.FlightPlan.DisableCA &&
 					ctx.Now.Before(ca.SoundEnd)
 			})

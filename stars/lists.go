@@ -745,8 +745,8 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 		lists = append(lists, "MCI")
 		mci = util.FilterSlice(sp.MCIAircraft, func(mci CAAircraft) bool {
 			// remove suppressed ones
-			trk0, ok0 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
-			trk1, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
+			trk0, ok0 := ctx.Client.State.GetTrackByCallsign(mci.ADSBCallsigns[0])
+			trk1, ok1 := ctx.Client.State.GetTrackByCallsign(mci.ADSBCallsigns[1])
 			return ok0 && ok1 && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk1.Squawk
 		})
 	}
@@ -796,7 +796,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 			} else if mcipair != nil {
 				// For MCIs, the unassociated track is always the second callsign.
 				// Beacon code is reported for MCI or blank if we don't have it.
-				trk1, ok := ctx.GetTrackByCallsign(mcipair.ADSBCallsigns[1])
+				trk1, ok := ctx.Client.State.GetTrackByCallsign(mcipair.ADSBCallsigns[1])
 				if ok && trk1.Mode != av.TransponderModeStandby {
 					text.WriteString(fmt.Sprintf("%-17s MCI\n", string(mcipair.ADSBCallsigns[0])+"*"+trk1.Squawk.String()))
 				} else {

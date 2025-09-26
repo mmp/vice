@@ -666,3 +666,4 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		lg.Errorf("broadcast error: %v", err)
 	}
 }
+

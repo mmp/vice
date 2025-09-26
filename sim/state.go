@@ -518,6 +518,34 @@ func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
 	return nil
 }
 
+// Returns all aircraft that match the given suffix. If instructor, returns
+// all matching aircraft; otherwise only ones under the current
+// controller's control are considered for matching.
+func (ss *State) TracksFromACIDSuffix(suffix string) []*Track {
+	match := func(trk *Track) bool {
+		if trk.IsUnassociated() {
+			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
+		} else {
+			fp := trk.FlightPlan
+			if !strings.HasSuffix(string(fp.ACID), suffix) {
+				return false
+			}
+
+			if fp.ControllingController == ss.UserTCP || ss.AreInstructorOrRPO(ss.UserTCP) {
+				return true
+			}
+
+			// Hold for release aircraft still in the list
+			if ss.ResolveController(trk.FlightPlan.TrackingController) == ss.UserTCP &&
+				trk.FlightPlan.ControllingController == "" {
+				return true
+			}
+			return false
+		}
+	}
+	return slices.Collect(util.FilterSeq(maps.Values(ss.Tracks), match))
+}
+
 func (ss *State) IsExternalController(tcp string) bool {
 	ctrl, ok := ss.Controllers[tcp]
 	return ok && ctrl.FacilityIdentifier != ""

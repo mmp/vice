@@ -247,7 +247,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				func(fp *sim.NASFlightPlan) bool { return fp.ACID == acid }) {
 				delete(sp.TrackState, callsign)
 			}
-		} else if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
+		} else if _, ok := ctx.Client.State.GetTrackByCallsign(callsign); !ok {
 			delete(sp.TrackState, callsign)
 		}
 	}
@@ -272,13 +272,13 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 	// Filter out any removed aircraft from the CA and MCI lists
 	sp.CAAircraft = util.FilterSliceInPlace(sp.CAAircraft, func(ca CAAircraft) bool {
-		_, a := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-		_, b := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
+		_, a := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+		_, b := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[1])
 		return a && b
 	})
 	sp.MCIAircraft = util.FilterSliceInPlace(sp.MCIAircraft, func(ca CAAircraft) bool {
-		_, a := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-		_, b := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
+		_, a := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+		_, b := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[1])
 		return a && b
 	})
 
@@ -1017,8 +1017,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	nmPerLongitude := ctx.NmPerLongitude
 	caConflict := func(callsigna, callsignb av.ADSBCallsign) bool {
 		// No CA if we don't have proper mode-C altitude for both.
-		trka, oka := ctx.GetTrackByCallsign(callsigna)
-		trkb, okb := ctx.GetTrackByCallsign(callsignb)
+		trka, oka := ctx.Client.State.GetTrackByCallsign(callsigna)
+		trkb, okb := ctx.Client.State.GetTrackByCallsign(callsignb)
 		if !oka || !okb {
 			return false
 		}
@@ -1062,8 +1062,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 
 	// Assume that the second one is the untracked one.
 	mciConflict := func(callsigna, callsignb av.ADSBCallsign) bool {
-		trka, oka := ctx.GetTrackByCallsign(callsigna)
-		trkb, okb := ctx.GetTrackByCallsign(callsignb)
+		trka, oka := ctx.Client.State.GetTrackByCallsign(callsigna)
+		trkb, okb := ctx.Client.State.GetTrackByCallsign(callsignb)
 		if !oka || !okb {
 			return false
 		}
