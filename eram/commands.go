@@ -287,7 +287,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			cmds = cmd
 		}
 
-		matching := ctx.TracksFromACIDSuffix(suffix)
+		matching := ctx.Client.State.TracksFromACIDSuffix(suffix)
 		if len(matching) > 1 {
 			status.err = ErrERAMAmbiguousACID
 			return
@@ -298,7 +298,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			trk = matching[0]
 		} else if len(matching) == 0 && ep.tgtGenDefaultCallsign(ctx) != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
-			trk, _ = ctx.GetTrackByCallsign(ep.tgtGenDefaultCallsign(ctx))
+			trk, _ = ctx.Client.State.GetTrackByCallsign(ep.tgtGenDefaultCallsign(ctx))
 			// But now we're going to run all of the given input as commands.
 			cmds = cmd
 		}

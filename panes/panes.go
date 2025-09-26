@@ -6,12 +6,9 @@ package panes
 
 import (
 	"fmt"
-	"maps"
-	"slices"
 	"strings"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -19,6 +16,8 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+
+	"github.com/AllenDang/cimgui-go/imgui"
 )
 
 // Panes (should) mostly operate in window coordinates: (0,0) is lower
@@ -96,6 +95,11 @@ type Context struct {
 
 	// Full display size, including the menu and status bar.
 	displaySize [2]float32
+
+	UserPTTKey         imgui.Key
+	PTTCapture         bool // where else could I put this?
+	SelectedMicrophone string
+	LastTranscription  string
 }
 
 func (ctx *Context) InitializeMouse(p platform.Platform) {
@@ -137,51 +141,6 @@ func (ctx *Context) SetWindowCoordinateMatrices(cb *renderer.CommandBuffer) {
 	h := float32(int(ctx.PaneExtent.Height() + 0.5))
 	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, w, 0, h))
 	cb.LoadModelViewMatrix(math.Identity3x3())
-}
-
-// Convenience methods since these are frequently used.
-func (ctx *Context) GetTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track, bool) {
-	return ctx.Client.State.GetTrackByCallsign(callsign)
-}
-
-func (ctx *Context) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*sim.Track, bool) {
-	return ctx.Client.State.GetOurTrackByCallsign(callsign)
-}
-
-func (ctx *Context) GetTrackByACID(acid sim.ACID) (*sim.Track, bool) {
-	return ctx.Client.State.GetTrackByACID(acid)
-}
-
-func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
-	return ctx.Client.State.GetOurTrackByACID(acid)
-}
-
-// Returns all aircraft that match the given suffix. If instructor, returns
-// all matching aircraft; otherwise only ones under the current
-// controller's control are considered for matching.
-func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
-	match := func(trk *sim.Track) bool {
-		if trk.IsUnassociated() {
-			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
-		} else {
-			fp := trk.FlightPlan
-			if !strings.HasSuffix(string(fp.ACID), suffix) {
-				return false
-			}
-
-			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
-				return true
-			}
-
-			// Hold for release aircraft still in the list
-			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
-				trk.FlightPlan.ControllingController == "" {
-				return true
-			}
-			return false
-		}
-	}
-	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
 }
 
 var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))

@@ -6,6 +6,7 @@ package platform
 
 // typedef unsigned char uint8;
 // void audioCallback(void *userdata, uint8 *stream, int len);
+// void audioInputCallback(void *userdata, uint8 *stream, int len);
 import "C"
 
 import (
@@ -260,4 +261,19 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}
+}
+
+//export audioInputCallback
+func audioInputCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
+	n := int(size)
+	in := unsafe.Slice(ptr, n)
+	ar := (*AudioRecorder)(user)
+
+	// Convert bytes to int16 samples
+	samples := make([]int16, n/2)
+	for i := 0; i < n/2; i++ {
+		samples[i] = int16(in[2*i]) | (int16(in[2*i+1]) << 8)
+	}
+
+	ar.addAudioData(samples)
 }
