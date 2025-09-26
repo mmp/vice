@@ -189,16 +189,12 @@ var cloudTable = []weatherCondition{
 }
 
 func parseWeatherConditions(raw string) []weatherCondition {
-	// Split raw METAR into parts, stopping at RMK
+	// Split raw METAR into parts
 	parts := strings.Fields(raw)
 	if len(parts) > 3 {
 		// Drop ICAO, time, and wind.
 		parts = parts[3:]
 	}
-	if idx := slices.Index(parts, "RMK"); idx != -1 {
-		parts = parts[:idx]
-	}
-
 	var conditions []weatherCondition
 	for _, part := range parts {
 		// Try each pattern in order (priority matters)
@@ -327,14 +323,11 @@ func drawWindIndicator(metar wx.METAR) {
 	imgui.Dummy(imgui.Vec2{X: windIndicatorRadius * 2, Y: windIndicatorRadius * 2})
 }
 
-// formatRawMETAR formats the raw METAR text by removing airport code and remarks
+// formatRawMETAR formats the raw METAR text by removing airport code
 func formatRawMETAR(raw string) string {
 	// Remove the first element (airport code)
 	if parts := strings.Fields(raw); len(parts) > 1 {
 		raw = strings.Join(parts[1:], " ")
-	}
-	if idx := strings.Index(raw, "RMK"); idx != -1 {
-		raw = strings.TrimSpace(raw[:idx])
 	}
 	return raw
 }

@@ -256,10 +256,6 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 func (g *GCSProvider) fetchMETAR() (map[string]wx.METARSOA, error) {
 	var m map[string]wx.METARSOA
 	err := g.fetchCached("METAR.msgpack.zst", &m)
-
-	m["KAAC"] = m["KOKC"] // fake METAR for KAAC
-	// TODO: rewrite Raw METAR?
-
 	return m, err
 }
 

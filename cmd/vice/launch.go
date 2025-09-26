@@ -434,13 +434,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		} else if c.fetchMETARError != nil {
 			imgui.Text("METAR error: " + c.fetchMETARError.Error())
 		} else if len(c.airportMETAR) > 0 {
-			chopRmk := func(s string) string {
-				if idx := strings.Index(s, "RMK"); idx != -1 {
-					return strings.TrimSpace(s[:idx])
-				}
-				return s
-			}
-
 			metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
 			slices.Sort(metarAirports)
 			if idx := slices.Index(metarAirports, c.ScenarioConfig.PrimaryAirport); idx > 0 {
@@ -469,7 +462,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					imgui.TableNextColumn()
 					imgui.PushFont(&ui.fixedFont.Ifont)
 					metar := wx.METARForTime(c.airportMETAR[ap], c.NewSimConfiguration.StartTime)
-					imgui.Text(chopRmk(metar.Raw))
+					imgui.Text(metar.Raw)
 					imgui.PopFont()
 				}
 				imgui.EndTable()
