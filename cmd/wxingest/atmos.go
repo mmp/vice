@@ -121,7 +121,7 @@ func ingestHRRR(sb StorageBackend) error {
 	defer tfr.RemoveAll()
 
 	tCh := make(chan time.Time)
-	var eg errgroup.Group
+	eg, ctx := errgroup.WithContext(context.Background())
 	eg.Go(func() error {
 		defer close(tCh)
 
@@ -150,7 +150,11 @@ func ingestHRRR(sb StorageBackend) error {
 				if len(missing) > 0 {
 					LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
 
-					tCh <- t
+					select {
+					case tCh <- t:
+					case <-ctx.Done():
+						return ctx.Err()
+					}
 					if *hrrrQuick {
 						return nil
 					}
@@ -176,7 +180,11 @@ func ingestHRRR(sb StorageBackend) error {
 			if err != nil {
 				return err
 			}
-			hrrrCh <- downloadedHRRR{path: path, t: t}
+			select {
+			case hrrrCh <- downloadedHRRR{path: path, t: t}:
+			case <-ctx.Done():
+				return ctx.Err()
+			}
 		}
 		return nil
 	})
@@ -382,10 +390,12 @@ func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
 	readBufCh := make(chan []byte, 1)
 	eg.Go(func() error { return readCSV(ctx, f, freeBufCh, readBufCh) })
 
-	sf, err := parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
-	if err != nil {
-		return nil, err
-	}
+	var sf *wx.Atmos
+	eg.Go(func() error {
+		var err error
+		sf, err = parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
+		return err
+	})
 
 	if err := eg.Wait(); err != nil {
 		return nil, err
@@ -396,7 +406,14 @@ func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
 
 func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh chan<- []byte) error {
 	for {
-		buf := <-freeBufCh
+		var buf []byte
+		select {
+		case buf = <-freeBufCh:
+		case <-ctx.Done():
+			close(readBufCh)
+			return ctx.Err()
+		}
+
 		n, err := f.Read(buf)
 		if n == 0 && err == io.EOF {
 			close(readBufCh) // no more coming
@@ -408,7 +425,7 @@ func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh
 			case readBufCh <- buf[:n]:
 			case <-ctx.Done():
 				close(readBufCh)
-				return nil
+				return ctx.Err()
 			}
 		}
 	}
