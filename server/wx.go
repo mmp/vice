@@ -370,13 +370,6 @@ func (g *GCSProvider) collectTimeIntervals() ([]util.TimeInterval, error) {
 		return nil, errors.New("PHL not found in atmosTimes")
 	}
 
-	mf := wx.FullDataDays(metar, nil, nil)
-	pf := wx.FullDataDays(nil, precip, nil)
-	af := wx.FullDataDays(nil, nil, atmos)
-	fmt.Printf("metar full %#v\n", mf)
-	fmt.Printf("precip full %#v\n", pf)
-	fmt.Printf("atmos full %#v\n", af)
-
 	return wx.FullDataDays(metar, precip, atmos), nil
 }
 
