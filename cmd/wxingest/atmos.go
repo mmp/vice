@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -255,7 +256,31 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 	return ingested
 }
 
+func checkDiskSpace(path string, requiredGB int64) error {
+	var stat syscall.Statfs_t
+	if err := syscall.Statfs(path, &stat); err != nil {
+		return fmt.Errorf("failed to check disk space for %s: %w", path, err)
+	}
+
+	// Calculate available space in bytes
+	availableBytes := int64(stat.Bavail) * int64(stat.Bsize)
+	requiredBytes := requiredGB * 1024 * 1024 * 1024
+
+	if availableBytes < requiredBytes {
+		return fmt.Errorf("insufficient disk space in %s: %.2f GB available, %d GB required",
+			path, float64(availableBytes)/(1024*1024*1024), requiredGB)
+	}
+
+	return nil
+}
+
 func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb StorageBackend) (string, error) {
+	// Check disk space before downloading
+	tmp := os.Getenv("WXINGEST_TMP")
+	if err := checkDiskSpace(tmp, 8); err != nil {
+		return "", err
+	}
+
 	// Download the grib2 file from the NOAA archive
 	hrrrpath := fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
 	hrrrr, err := hrrrsb.OpenRead(hrrrpath)
