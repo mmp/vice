@@ -503,8 +503,8 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 
 	const xyDelta = 2 /* roughly 2nm spacing */
 	nmPerLongitude := math.NMPerLongitudeAt(math.Point2LL(g.Extent.Center()))
-	g.Res[0] = int(max(2, nmPerLongitude*g.Extent.Width()/xyDelta))
-	g.Res[1] = int(max(2, 60*g.Extent.Height()/xyDelta))
+	g.Res[0] = int(max(1, nmPerLongitude*g.Extent.Width()/xyDelta))
+	g.Res[1] = int(max(1, 60*g.Extent.Height()/xyDelta))
 
 	const metersToFeet = 3.28084
 	for _, stack := range sampleStacks {
@@ -519,10 +519,10 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	sumWt := make([]float32, g.Res[0]*g.Res[1]*g.Res[2])
 
 	// In xy, we accumulate to the nearest sample in the grid; for
-	// z/altitude, we lerp between  along the non-uniform altitude spacing from the
+	// z/altitude, we lerp along the non-uniform altitude spacing from the
 	// original data.
 	for p, stack := range sampleStacks {
-		pg, _ := g.ptToGrid(p)
+		pg := g.ptToGrid(p)
 		ipg := [2]int{int(math.Round(pg[0])), int(math.Round(pg[1]))}
 
 		for z := range g.Res[2] {
@@ -583,18 +583,15 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	return g
 }
 
-func (g *AtmosGrid) ptToGrid(p [2]float32) ([2]float32, bool) {
-	if !g.Extent.Inside(p) {
-		return [2]float32{0, 0}, false
-	}
+func (g *AtmosGrid) ptToGrid(p [2]float32) [2]float32 {
 	pg := math.Sub2f(p, g.Extent.P0)
-	pg[0] *= float32(g.Res[0]-1) / g.Extent.Width()
-	pg[1] *= float32(g.Res[1]-1) / g.Extent.Height()
+	pg[0] *= float32(g.Res[0]) / g.Extent.Width()
+	pg[1] *= float32(g.Res[1]) / g.Extent.Height()
 
-	pg[0] = math.Clamp(pg[0], 0, float32(g.Res[0])-1)
-	pg[1] = math.Clamp(pg[1], 0, float32(g.Res[1])-1)
+	pg[0] = math.Clamp(pg[0]+0.5, 0, float32(g.Res[0]-1))
+	pg[1] = math.Clamp(pg[1]+0.5, 0, float32(g.Res[1]-1))
 
-	return pg, true
+	return pg
 }
 
 func (g *AtmosGrid) gridToAlt(z int) float32 {
@@ -620,10 +617,7 @@ func (g *AtmosGrid) altToGrid(alt float32) float32 {
 }
 
 func (g *AtmosGrid) Lookup(p math.Point2LL, alt float32) (Sample, bool) {
-	pg, ok := g.ptToGrid(p)
-	if !ok {
-		return Sample{}, false
-	}
+	pg := g.ptToGrid(p)
 	zg := g.altToGrid(alt)
 
 	// Closest lookup for now
@@ -645,9 +639,9 @@ func (g *AtmosGrid) AltitudeForIndex(idx int) float32 {
 func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sample] {
 	return func(yield func(math.Point2LL, Sample) bool) {
 		for y := 0; y < g.Res[1]; y += step {
-			ty := float32(y) / float32(g.Res[1]-1)
+			ty := float32(y) / float32(g.Res[1])
 			for x := 0; x < g.Res[0]; x += step {
-				tx := float32(x) / float32(g.Res[0]-1)
+				tx := float32(x) / float32(g.Res[0])
 				idx := x + y*g.Res[0] + level*g.Res[0]*g.Res[1]
 
 				p := math.Point2LL(g.Extent.Lerp([2]float32{tx, ty}))
