@@ -2475,18 +2475,18 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		}
 
-		instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
-		if ctx.Client.RadioIsActive() && !instructorRPO {
-			// Ignore the command but leave the entered text; don't allow issuing
-			// the command until the readback is complete.
-			return
-		}
-
 		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
 			suffix = string(sp.tgtGenDefaultCallsign(ctx))
 			cmds = cmd
+		}
+
+		instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
+		if ctx.Client.RadioIsActive() && !instructorRPO && cmds != "X" {
+			// Don't allow issuing commands during pilot transmissions unless
+			// it's an instructor/RPO or the command is "X" to delete an aircraft.
+			return
 		}
 
 		matching := ctx.TracksFromACIDSuffix(suffix)
@@ -4179,9 +4179,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeTargetGen, CommandModeTargetGenLock:
 			instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
-			if ctx.Client.RadioIsActive() && !instructorRPO {
-				// Ignore the command but leave the entered text; don't allow issuing
-				// the command until the readback is complete.
+			if ctx.Client.RadioIsActive() && !instructorRPO && cmd != "X" {
+				// Don't allow issuing commands during pilot transmissions unless
+				// it's an instructor/RPO or the command is "X" to delete an aircraft.
 				return
 			}
 
