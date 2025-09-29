@@ -83,8 +83,8 @@ type STARSPane struct {
 	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
 	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
-	allVideoMaps []sim.VideoMap
-	dcbVideoMaps []*sim.VideoMap
+	allVideoMaps []radar.ClientVideoMap
+	dcbVideoMaps []*radar.ClientVideoMap
 
 	weatherRadar radar.WeatherRadar
 
@@ -492,7 +492,8 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
-	addMap := func(vm sim.VideoMap) {
+	// Helper to add a ClientVideoMap directly (for airspace volumes)
+	addMap := func(vm radar.ClientVideoMap) {
 		for i := range 999 {
 			// See if id is available
 			id := (vm.Id + i) % 1000
@@ -513,20 +514,30 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	}
 
 	// First grab the video maps needed for the DCB
-	sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
+	dcbMaps := util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
 		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
+
+	// Convert to ClientVideoMaps for rendering
+	sp.allVideoMaps = radar.BuildClientVideoMaps(dcbMaps)
 	for _, vm := range sp.allVideoMaps {
 		usedIds[vm.Id] = nil
 	}
 
 	// Now make a second pass through the maps and add all of the ones that
 	// don't have a conflicting ID with an existing map.
+	var additionalMaps []sim.VideoMap
 	for _, vm := range vmf.Maps {
 		if _, ok := usedIds[vm.Id]; !ok {
-			sp.allVideoMaps = append(sp.allVideoMaps, vm)
+			additionalMaps = append(additionalMaps, vm)
 			usedIds[vm.Id] = nil
 		}
+	}
+
+	// Convert and append the additional maps
+	if len(additionalMaps) > 0 {
+		clientMaps := radar.BuildClientVideoMaps(additionalMaps)
+		sp.allVideoMaps = append(sp.allVideoMaps, clientMaps...)
 	}
 
 	drawAirspace := func(a av.AirspaceVolume, cb *renderer.CommandBuffer) {
@@ -565,11 +576,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		}
 
 		// Add a map with all of them
-		vm := sim.VideoMap{
-			Label:    label,
-			Name:     name,
-			Id:       asIdx,
-			Category: VideoMapProcessingAreas,
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    label,
+				Name:     name,
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
 		}
 		asIdx++
 		for _, f := range filt {
@@ -578,11 +591,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		addMap(vm)
 
 		for _, f := range filt {
-			vm := sim.VideoMap{
-				Label:    strings.ToUpper(f.Id),
-				Name:     strings.ToUpper(f.Description),
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
 			}
 			asIdx++
 			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
@@ -599,11 +614,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.STARSFacilityAdaptation.Filters.Quicklook)
 
 	// MVAs
-	mvas := sim.VideoMap{
-		Label:    ss.TRACON + " MVA",
-		Name:     "ALL MINIMUM VECTORING ALTITUDES",
-		Id:       asIdx,
-		Category: VideoMapProcessingAreas,
+	mvas := radar.ClientVideoMap{
+		VideoMap: sim.VideoMap{
+			Label:    ss.TRACON + " MVA",
+			Name:     "ALL MINIMUM VECTORING ALTITUDES",
+			Id:       asIdx,
+			Category: VideoMapProcessingAreas,
+		},
 	}
 	ld := renderer.GetLinesDrawBuilder()
 	for _, mva := range av.DB.MVAs[ss.TRACON] {
@@ -623,11 +640,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 				continue
 			}
 
-			amap := sim.VideoMap{
-				Label:    name,
-				Name:     name + " CLASS " + class,
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
+			amap := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    name,
+					Name:     name + " CLASS " + class,
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
 			}
 			for _, asp := range airspace {
 				drawAirspace(asp, &amap.CommandBuffer)
@@ -643,11 +662,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	// Radar maps
 	radarIndex := 801
 	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {
-		sm := sim.VideoMap{
-			Label:    name + "RCM",
-			Name:     name + " RADAR COVERAGE MAP",
-			Id:       radarIndex,
-			Category: VideoMapProcessingAreas,
+		sm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    name + "RCM",
+				Name:     name + " RADAR COVERAGE MAP",
+				Id:       radarIndex,
+				Category: VideoMapProcessingAreas,
+			},
 		}
 
 		site := ss.STARSFacilityAdaptation.RadarSites[name]
@@ -672,11 +693,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 			if len(label) > 7 {
 				label = label[:7]
 			}
-			sm := sim.VideoMap{
-				Label:    label,
-				Name:     name + rwy + " ATPA APPROACH VOLUME",
-				Id:       atpaIndex,
-				Category: VideoMapProcessingAreas,
+			sm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    label,
+					Name:     name + rwy + " ATPA APPROACH VOLUME",
+					Id:       atpaIndex,
+					Category: VideoMapProcessingAreas,
+				},
 			}
 
 			ld := renderer.GetLinesDrawBuilder()
@@ -695,7 +718,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
 	for _, name := range ss.ControllerVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
@@ -952,13 +975,13 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTra
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []sim.VideoMap
+	var draw []radar.ClientVideoMap
 	for _, vm := range sp.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
+	slices.SortFunc(draw, func(a, b radar.ClientVideoMap) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
 		brite := util.Select(vm.Group == 0, ps.Brightness.VideoGroupA, ps.Brightness.VideoGroupB)

@@ -2041,7 +2041,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else if slices.ContainsFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Id == idx }) {
+			} else if slices.ContainsFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Id == idx }) {
 				// Valid map index.
 				_, vis := ps.VideoMapVisible[idx]
 				if (vis && op == "T") || op == "I" {

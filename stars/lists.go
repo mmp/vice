@@ -894,13 +894,13 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 	if ps.VideoMapsList.Selection == VideoMapCurrent {
 		for _, vm := range sp.allVideoMaps {
 			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
-				m = append(m, vm)
+				m = append(m, vm.VideoMap)
 			}
 		}
 	} else {
 		for _, vm := range sp.allVideoMaps {
 			if vm.Category == int(ps.VideoMapsList.Selection) {
-				m = append(m, vm)
+				m = append(m, vm.VideoMap)
 			}
 		}
 	}

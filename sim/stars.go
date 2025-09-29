@@ -21,7 +21,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/klauspost/compress/zstd"
@@ -79,8 +78,6 @@ type VideoMap struct {
 	}
 	Color int
 	Lines [][]math.Point2LL
-
-	CommandBuffer renderer.CommandBuffer
 }
 
 // This should match VideoMapLibrary in dat2vice
@@ -209,26 +206,6 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
 			return nil, err
 		}
-	}
-
-	// Convert the line specifications into command buffers for drawing.
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	for i, m := range vmf.Maps {
-		ld.Reset()
-
-		for _, lines := range m.Lines {
-			// Slightly annoying: the line vertices are stored with
-			// Point2LLs but AddLineStrip() expects [2]float32s.
-			fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
-			ld.AddLineStrip(fl)
-		}
-		ld.GenerateCommands(&m.CommandBuffer)
-
-		// Clear out Lines so that the memory can be reclaimed since they
-		// aren't needed any more.
-		m.Lines = nil
-		vmf.Maps[i] = m
 	}
 
 	return &vmf, nil
