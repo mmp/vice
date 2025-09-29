@@ -400,7 +400,7 @@ func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) 
 	return cf, nil
 }
 
-func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
+func sampleFieldFromCSV(tracon string, f *os.File) (*wx.AtmosByPoint, error) {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	// Read chunks of the file asynchronously and with double-buffering so
@@ -415,7 +415,7 @@ func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
 	readBufCh := make(chan []byte, 1)
 	eg.Go(func() error { return readCSV(ctx, f, freeBufCh, readBufCh) })
 
-	var sf *wx.Atmos
+	var sf *wx.AtmosByPoint
 	eg.Go(func() error {
 		var err error
 		sf, err = parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
@@ -541,7 +541,7 @@ type LineItem struct {
 	Level            int
 }
 
-func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.Atmos, error) {
+func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.AtmosByPoint, error) {
 	bp := 0 // buf pos
 	var buf []byte
 
@@ -585,7 +585,7 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return s
 	}
 
-	at := wx.MakeAtmos()
+	at := wx.MakeAtmosByPoint()
 
 	tspec, ok := av.DB.TRACONs[tracon]
 	if !ok {
@@ -694,7 +694,7 @@ func parseHRRRLine(line []byte) (LineItem, error) {
 	return li, nil
 }
 
-func uploadWeatherAtmos(at *wx.Atmos, tracon string, t time.Time, st StorageBackend) (int64, error) {
+func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st StorageBackend) (int64, error) {
 	soa, err := at.ToSOA()
 	if err != nil {
 		return 0, err

@@ -961,9 +961,9 @@ type GetAtmosArgs struct {
 }
 
 type GetAtmosResult struct {
-	AtmosSOA *wx.AtmosSOA
-	Time     time.Time
-	NextTime time.Time
+	AtmosByPointSOA *wx.AtmosByPointSOA
+	Time            time.Time
+	NextTime        time.Time
 }
 
 const GetAtmosGridRPC = "SimManager.GetAtmosGrid"
@@ -976,7 +976,7 @@ func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) er
 	}
 
 	var err error
-	result.AtmosSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time)
+	result.AtmosByPointSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time)
 	return err
 }
 

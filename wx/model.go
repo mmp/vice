@@ -26,10 +26,10 @@ type Model struct {
 }
 
 type AtmosResult struct {
-	AtmosSOA *AtmosSOA
-	Time     time.Time
-	NextTime time.Time
-	Err      error
+	AtmosByPointSOA *AtmosByPointSOA
+	Time            time.Time
+	NextTime        time.Time
+	Err             error
 }
 
 func MakeModel(provider Provider, tracon string, startTime time.Time, lg *log.Logger) *Model {
@@ -55,10 +55,10 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 		defer close(ch)
 		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.tracon, t)
 		ch <- AtmosResult{
-			AtmosSOA: atmos,
-			Time:     atmosTime,
-			NextTime: nextTime,
-			Err:      err,
+			AtmosByPointSOA: atmos,
+			Time:            atmosTime,
+			NextTime:        nextTime,
+			Err:             err,
 		}
 	}()
 
@@ -105,11 +105,11 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 	if ar.Err != nil {
 		m.lg.Errorf("%v", ar.Err)
 		return
-	} else if ar.AtmosSOA != nil {
+	} else if ar.AtmosByPointSOA != nil {
 		// Shift down to make room for the new one in [1].
 		m.grids[0], m.times[0] = m.grids[1], m.times[1]
 
-		atmos := ar.AtmosSOA.ToAOS()
+		atmos := ar.AtmosByPointSOA.ToAOS()
 		m.grids[1] = atmos.GetGrid()
 		m.times[1] = ar.Time
 		m.nextFetch = ar.NextTime

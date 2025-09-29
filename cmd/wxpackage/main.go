@@ -228,7 +228,7 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, tracons map
 
 func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, tracon string, startDate, endDate time.Time, outputDir string) error {
 	// Load existing atmospheric data if it exists
-	traconAtmos := wx.AtmosTimes{
+	traconAtmos := wx.AtmosByTime{
 		SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 	}
 
@@ -237,7 +237,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 	if err == nil {
 		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", tracon, len(traconAtmos.SampleStacks))
 	} else if os.IsNotExist(err) {
-		traconAtmos = wx.AtmosTimes{
+		traconAtmos = wx.AtmosByTime{
 			SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 		}
 	} else {
@@ -297,7 +297,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 			return err
 		}
 
-		var atmosSOA wx.AtmosSOA
+		var atmosSOA wx.AtmosByPointSOA
 		if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
 			r.Close()
 			return err
@@ -317,7 +317,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		return nil
 	}
 
-	// Convert AtmosTimes to SOA format for storage
+	// Convert AtmosByTime to SOA format for storage
 	traconAtmosSOA, err := traconAtmos.ToSOA()
 	if err != nil {
 		return err
@@ -345,24 +345,24 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 }
 
 // loadExistingAtmosData loads existing atmospheric data from a file
-func loadExistingAtmosData(path string) (wx.AtmosTimes, error) {
+func loadExistingAtmosData(path string) (wx.AtmosByTime, error) {
 	f, err := os.Open(path)
 	if err != nil {
-		return wx.AtmosTimes{}, err
+		return wx.AtmosByTime{}, err
 	}
 	defer f.Close()
 
 	// Decompress and deserialize
 	zr, err := zstd.NewReader(f)
 	if err != nil {
-		return wx.AtmosTimes{}, err
+		return wx.AtmosByTime{}, err
 	}
 
-	var atmosSOA wx.AtmosTimesSOA
+	var atmosSOA wx.AtmosByTimeSOA
 	if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
-		return wx.AtmosTimes{}, err
+		return wx.AtmosByTime{}, err
 	}
 
-	// Convert SOA back to AtmosTimes
+	// Convert SOA back to AtmosByTime
 	return atmosSOA.ToAOS(), nil
 }

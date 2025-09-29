@@ -19,7 +19,7 @@ type Provider interface {
 	// Returns the item at-or-before the given time
 	GetPrecipURL(tracon string, t time.Time) (string, time.Time, error)
 	// Returns atmos, it's time, the time for the next one in the series.
-	GetAtmosGrid(tracon string, t time.Time) (*AtmosSOA, time.Time, time.Time, error)
+	GetAtmosGrid(tracon string, t time.Time) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
 func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {

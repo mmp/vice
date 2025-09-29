@@ -38,7 +38,7 @@ var AtmosTRACONs = []string{
 // and IdFromLevelIndex perform the indexing and its inverse.
 const NumSampleLevels = 40
 
-type Atmos struct {
+type AtmosByPoint struct {
 	// Lat-longs to stack of levels
 	SampleStacks map[math.Point2LL]*AtmosSampleStack
 }
@@ -63,7 +63,7 @@ type AtmosSample struct {
 
 // For storage, this information is encoded in structure-of-arrays format,
 // which makes it more compressible.
-type AtmosSOA struct {
+type AtmosByPointSOA struct {
 	Lat, Long []float32
 	Levels    [NumSampleLevels]AtmosLevelsSOA
 }
@@ -79,19 +79,19 @@ type AtmosLevelsSOA struct {
 	Height      []uint8 // geopotential height (MSL) + windHeightOffset in meters
 }
 
-type AtmosTimes struct {
+type AtmosByTime struct {
 	SampleStacks map[time.Time]*AtmosSampleStack
 }
 
-// AtmosTimesSOA stores atmospheric data for multiple time points
+// AtmosByTimeSOA stores atmospheric data for multiple time points
 // at a single location (used for offline weather packaging)
-type AtmosTimesSOA struct {
+type AtmosByTimeSOA struct {
 	Times  []int64 // Delta-encoded Unix timestamps
 	Levels [NumSampleLevels]AtmosLevelsSOA
 }
 
-func MakeAtmos() Atmos {
-	return Atmos{SampleStacks: make(map[math.Point2LL]*AtmosSampleStack)}
+func MakeAtmosByPoint() AtmosByPoint {
+	return AtmosByPoint{SampleStacks: make(map[math.Point2LL]*AtmosSampleStack)}
 }
 
 func LevelIndexFromId(b []byte) int {
@@ -254,8 +254,8 @@ func convertSOALevelsToStacks[K comparable](levels [NumSampleLevels]AtmosLevelsS
 	return stacks, nil
 }
 
-func (at Atmos) ToSOA() (AtmosSOA, error) {
-	soa := AtmosSOA{}
+func (at AtmosByPoint) ToSOA() (AtmosByPointSOA, error) {
+	soa := AtmosByPointSOA{}
 
 	pts := slices.Collect(maps.Keys(at.SampleStacks))
 	slices.SortFunc(pts, func(a, b math.Point2LL) int {
@@ -281,8 +281,8 @@ func (at Atmos) ToSOA() (AtmosSOA, error) {
 	return soa, err
 }
 
-func (atsoa AtmosSOA) ToAOS() Atmos {
-	at := MakeAtmos()
+func (atsoa AtmosByPointSOA) ToAOS() AtmosByPoint {
+	at := MakeAtmosByPoint()
 
 	// Create keys for the conversion
 	var keys []math.Point2LL
@@ -292,7 +292,7 @@ func (atsoa AtmosSOA) ToAOS() Atmos {
 
 	stacks, err := convertSOALevelsToStacks(atsoa.Levels, keys)
 	if err != nil {
-		// This shouldn't happen with well-formed data, but if it does, return empty Atmos
+		// This shouldn't happen with well-formed data, but if it does, return empty AtmosByPoint
 		return at
 	}
 
@@ -300,8 +300,8 @@ func (atsoa AtmosSOA) ToAOS() Atmos {
 	return at
 }
 
-func (at AtmosTimes) ToSOA() (AtmosTimesSOA, error) {
-	soa := AtmosTimesSOA{}
+func (at AtmosByTime) ToSOA() (AtmosByTimeSOA, error) {
+	soa := AtmosByTimeSOA{}
 
 	times := slices.Collect(maps.Keys(at.SampleStacks))
 	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
@@ -319,8 +319,8 @@ func (at AtmosTimes) ToSOA() (AtmosTimesSOA, error) {
 	return soa, err
 }
 
-func (atsoa AtmosTimesSOA) ToAOS() AtmosTimes {
-	at := AtmosTimes{SampleStacks: make(map[time.Time]*AtmosSampleStack)}
+func (atsoa AtmosByTimeSOA) ToAOS() AtmosByTime {
+	at := AtmosByTime{SampleStacks: make(map[time.Time]*AtmosSampleStack)}
 
 	// Delta decode the Unix timestamps
 	decodedTimestamps := util.DeltaDecode(atsoa.Times)
@@ -333,7 +333,7 @@ func (atsoa AtmosTimesSOA) ToAOS() AtmosTimes {
 
 	stacks, err := convertSOALevelsToStacks(atsoa.Levels, times)
 	if err != nil {
-		// This shouldn't happen with well-formed data, but if it does, return empty AtmosTimes
+		// This shouldn't happen with well-formed data, but if it does, return empty AtmosByTime
 		return at
 	}
 
@@ -341,7 +341,7 @@ func (atsoa AtmosTimesSOA) ToAOS() AtmosTimes {
 	return at
 }
 
-func CheckAtmosConversion(at Atmos, soa AtmosSOA) error {
+func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
 	ckat := soa.ToAOS()
 	if len(ckat.SampleStacks) != len(at.SampleStacks) {
 		return fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(ckat.SampleStacks))
@@ -392,7 +392,7 @@ func CheckAtmosConversion(at Atmos, soa AtmosSOA) error {
 	return nil
 }
 
-func (at Atmos) GetGrid() *AtmosGrid {
+func (at AtmosByPoint) GetGrid() *AtmosGrid {
 	return MakeAtmosGrid(at.SampleStacks)
 }
 
@@ -654,7 +654,7 @@ func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sam
 }
 
 // Average returns the averaged location and atmospheric data across all sample stacks
-func (a *Atmos) Average() (math.Point2LL, *AtmosSampleStack) {
+func (a *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 	if len(a.SampleStacks) == 0 {
 		return math.Point2LL{}, nil
 	}

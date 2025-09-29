@@ -158,14 +158,14 @@ func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return result.URL, result.NextTime, nil
 }
 
-func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosSOA, time time.Time, nextTime time.Time, err error) {
+func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, time time.Time, nextTime time.Time, err error) {
 	args := GetAtmosArgs{
 		TRACON: tracon,
 		Time:   t,
 	}
 	var result GetAtmosResult
 	if err = r.callWithTimeout(GetAtmosGridRPC, args, &result); err == nil {
-		atmos = result.AtmosSOA
+		atmos = result.AtmosByPointSOA
 		time = result.Time
 		nextTime = result.NextTime
 	}
@@ -413,7 +413,7 @@ func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return url, nextTime, nil
 }
 
-func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosSOA, atmosTime time.Time, nextTime time.Time, err error) {
+func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, atmosTime time.Time, nextTime time.Time, err error) {
 	<-g.atmosFetchDone
 
 	times, ok := g.atmosTimes[tracon]
@@ -431,7 +431,7 @@ func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosS
 
 	path := g.buildObjectPath("atmos/"+tracon, times[idx])
 
-	var atmosSOA wx.AtmosSOA
+	var atmosSOA wx.AtmosByPointSOA
 	if err = g.getObject(path, &atmosSOA); err == nil {
 		atmos = &atmosSOA
 		atmosTime = times[idx].UTC()
