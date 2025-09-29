@@ -332,6 +332,7 @@ func (g *GCSProvider) getObject(path string, obj any) error {
 	if err != nil {
 		return err
 	}
+	defer zr.Close()
 
 	return msgpack.NewDecoder(zr).Decode(obj)
 }

@@ -146,6 +146,7 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 	if err != nil {
 		return err
 	}
+	defer zr.Close()
 
 	var allMETAR map[string]wx.METARSOA
 	if err := msgpack.NewDecoder(zr).Decode(&allMETAR); err != nil {
@@ -299,9 +300,11 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 
 		var atmosSOA wx.AtmosByPointSOA
 		if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
+			zr.Close()
 			r.Close()
 			return err
 		}
+		zr.Close()
 		r.Close()
 
 		// Convert SOA to regular Atmos object and store the averaged stack
@@ -357,6 +360,7 @@ func loadExistingAtmosData(path string) (wx.AtmosByTime, error) {
 	if err != nil {
 		return wx.AtmosByTime{}, err
 	}
+	defer zr.Close()
 
 	var atmosSOA wx.AtmosByTimeSOA
 	if err := msgpack.NewDecoder(zr).Decode(&atmosSOA); err != nil {
