@@ -265,7 +265,6 @@ func (g *GCSProvider) fetchMETAR() (map[string]wx.METARSOA, error) {
 
 func (g *GCSProvider) fetchCached(path string, result any) error {
 	if t, err := util.CacheRetrieveObject("wx/"+path, result); err == nil && time.Since(t) < 6*time.Hour {
-		fmt.Printf("%s: retrieved from cache\n", path)
 		g.lg.Infof("%s: retrieved from cache", path)
 		return nil
 	}
@@ -276,7 +275,6 @@ func (g *GCSProvider) fetchCached(path string, result any) error {
 		return err
 	}
 
-	fmt.Printf("%s: fetched in %s\n", path, time.Since(start))
 	g.lg.Infof("%s: fetched in %s", path, time.Since(start))
 
 	return util.CacheStoreObject("wx/"+path, result)
