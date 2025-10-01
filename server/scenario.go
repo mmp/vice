@@ -1425,7 +1425,7 @@ func initializeSimConfigurations(sg *scenarioGroup,
 		DefaultScenario:  sg.DefaultScenario,
 		Facility:         facility,
 		ARTCC:            artcc,
-		Area:             sg.Area,	
+		Area:             sg.Area,
 	}
 
 	vfrAirports := make(map[string]*av.Airport)
