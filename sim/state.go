@@ -65,7 +65,7 @@ type State struct {
 	ScenarioDefaultVideoMaps []string
 	UserRestrictionAreas     []av.RestrictionArea
 
-	STARSFacilityAdaptation STARSFacilityAdaptation
+	FacilityAdaptation FacilityAdaptation
 
 	TRACON            string
 	MagneticVariation float32
@@ -129,7 +129,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		Range:                    config.Range,
 		ScenarioDefaultVideoMaps: config.DefaultMaps,
 
-		STARSFacilityAdaptation: deep.MustCopy(config.STARSFacilityAdaptation),
+		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
 
 		TRACON:            config.TRACON,
 		MagneticVariation: config.MagneticVariation,
@@ -184,7 +184,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	// Add the TFR restriction areas
 	for _, tfr := range config.TFRs {
 		ra := av.RestrictionAreaFromTFR(tfr)
-		ss.STARSFacilityAdaptation.RestrictionAreas = append(ss.STARSFacilityAdaptation.RestrictionAreas, ra)
+		ss.FacilityAdaptation.RestrictionAreas = append(ss.FacilityAdaptation.RestrictionAreas, ra)
 	}
 
 	for _, callsign := range config.VirtualControllers {
@@ -245,14 +245,14 @@ func (ss *State) GetStateForController(tcp string) *State {
 	state.UserTCP = tcp
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
 	} else {
-		state.ControllerVideoMaps = ss.STARSFacilityAdaptation.VideoMapNames
+		state.ControllerVideoMaps = ss.FacilityAdaptation.VideoMapNames
 		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
-		state.ControllerMonitoredBeaconCodeBlocks = ss.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
+		state.ControllerMonitoredBeaconCodeBlocks = ss.FacilityAdaptation.MonitoredBeaconCodeBlocks
 	}
 
 	return &state
@@ -341,7 +341,7 @@ func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
 				return false
 			}
 
-			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					// It'll be in a STARS coordination list
 					return false
@@ -354,7 +354,7 @@ func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
 func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep ReleaseDeparture) bool {
-			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return true
 				}
@@ -364,14 +364,14 @@ func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 }
 
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center

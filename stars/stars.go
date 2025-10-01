@@ -443,7 +443,7 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 }
 
 func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
+	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
 
@@ -604,14 +604,14 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 			addMap(vm)
 		}
 	}
-	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.STARSFacilityAdaptation.Filters.InhibitCA)
-	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.STARSFacilityAdaptation.Filters.InhibitMSAW)
-	addAirspaceVolumes("ARRACQ", "ARRIVAL ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalAcquisition)
-	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalDrop)
-	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.DepartureAcquisition)
-	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.SecondaryDrop)
-	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.STARSFacilityAdaptation.Filters.SurfaceTracking)
-	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.STARSFacilityAdaptation.Filters.Quicklook)
+	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitCA)
+	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitMSAW)
+	addAirspaceVolumes("ARRACQ", "ARRIVAL ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.ArrivalAcquisition)
+	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.FacilityAdaptation.Filters.ArrivalDrop)
+	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.DepartureAcquisition)
+	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
+	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
+	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.FacilityAdaptation.Filters.Quicklook)
 
 	// MVAs
 	mvas := radar.ClientVideoMap{
@@ -661,7 +661,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 
 	// Radar maps
 	radarIndex := 801
-	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {
+	for _, name := range util.SortedMapKeys(ss.FacilityAdaptation.RadarSites) {
 		sm := radar.ClientVideoMap{
 			VideoMap: sim.VideoMap{
 				Label:    name + "RCM",
@@ -671,7 +671,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 			},
 		}
 
-		site := ss.STARSFacilityAdaptation.RadarSites[name]
+		site := ss.FacilityAdaptation.RadarSites[name]
 		ld := renderer.GetLinesDrawBuilder()
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)
@@ -727,7 +727,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 }
 
 func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.STARSFacilityAdaptation.VideoMapFile
+	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
 	} else {
@@ -1322,7 +1322,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 }
 
 func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
-	sp.significantPoints = util.DuplicateMap(ss.STARSFacilityAdaptation.SignificantPoints)
+	sp.significantPoints = util.DuplicateMap(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)

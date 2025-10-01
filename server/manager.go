@@ -352,7 +352,7 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 
 	lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
 	if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
-		manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
+		manifest := sm.mapManifests[nsc.FacilityAdaptation.VideoMapFile]
 		sim := sim.NewSim(*nsc, manifest, lg)
 		session := &simSession{
 			name:             config.NewSimName,
@@ -435,7 +435,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		TFRs:                        config.TFRs,
 		TRACON:                      config.TRACONName,
 		LaunchConfig:                config.ScenarioConfig.LaunchConfig,
-		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),
+		FacilityAdaptation:     deep.MustCopy(sg.FacilityAdaptation),
 		IsLocal:                     sm.local,
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
 		DepartureRunways:            sc.DepartureRunways,
@@ -448,8 +448,8 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		Airports:                    sg.Airports,
 		Fixes:                       sg.Fixes,
 		PrimaryAirport:              sg.PrimaryAirport,
-		Center:                      util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
-		Range:                       util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
+		Center:                      util.Select(sc.Center.IsZero(), sg.FacilityAdaptation.Center, sc.Center),
+		Range:                       util.Select(sc.Range == 0, sg.FacilityAdaptation.Range, sc.Range),
 		DefaultMaps:                 sc.DefaultMaps,
 		InboundFlows:                sg.InboundFlows,
 		Airspace:                    sg.Airspace,

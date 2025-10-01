@@ -496,7 +496,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				UserTCP:            controlClient.State.UserTCP,
 				NmPerLongitude:     controlClient.State.NmPerLongitude,
 				MagneticVariation:  controlClient.State.MagneticVariation,
-				FacilityAdaptation: &controlClient.State.STARSFacilityAdaptation,
+				FacilityAdaptation: &controlClient.State.FacilityAdaptation,
 				displaySize:        p.DisplaySize(),
 			}
 

@@ -457,7 +457,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 }
 
 func (ep *ERAMPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.STARSFacilityAdaptation.VideoMapFile
+	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
 	}

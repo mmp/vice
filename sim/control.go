@@ -432,7 +432,7 @@ func (s *Sim) AssociateFlightPlan(callsign av.ADSBCallsign, spec FlightPlanSpeci
 	defer s.mu.Unlock(s.lg)
 
 	if spec.QuickFlightPlan.IsSet && spec.QuickFlightPlan.Get() {
-		base := s.State.STARSFacilityAdaptation.FlightPlan.QuickACID
+		base := s.State.FacilityAdaptation.FlightPlan.QuickACID
 		acid := base + fmt.Sprintf("%02d", s.State.QuickFlightPlanIndex%100)
 		spec.ACID.Set(ACID(acid))
 		s.State.QuickFlightPlanIndex++
