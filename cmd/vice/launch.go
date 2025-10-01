@@ -260,55 +260,123 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
 			imgui.TableSetupColumn("ARTCC")
-			imgui.TableSetupColumn("ATCT/TRACON")
+			imgui.TableSetupColumn("TRACON/AREA")
 			imgui.TableSetupColumn("Scenario")
 			imgui.TableHeadersRow()
 			imgui.TableNextRow()
 
 			// ARTCCs
-			artccs := make(map[string]interface{})
-			allTRACONs := util.SortedMapKeys(c.selectedServer.GetConfigs())
-			for _, tracon := range allTRACONs {
-				if tracon == "" {
-					// ERAM scenario; ignore for now
-				} else {
-					artccs[av.DB.TRACONs[tracon].ARTCC] = nil
+			configsByFacility := c.selectedServer.GetConfigs()
+			allFacilities := util.SortedMapKeys(configsByFacility)
+			facilityInfo := make(map[string]*server.Configuration, len(configsByFacility))
+			for facility, groups := range configsByFacility {
+				for _, cfg := range groups {
+					facilityInfo[facility] = cfg
+					break
 				}
 			}
+
+			selectedARTCC := ""
+			if info := facilityInfo[c.TRACONName]; info != nil && info.ARTCC != "" {
+				selectedARTCC = info.ARTCC
+			} else if traconInfo, ok := av.DB.TRACONs[c.TRACONName]; ok {
+				selectedARTCC = traconInfo.ARTCC
+			} else if c.TRACONName != "" {
+				selectedARTCC = c.TRACONName
+			}
+
+			artccs := make(map[string]interface{})
+			for facility, info := range facilityInfo {
+				if info == nil {
+					continue
+				}
+				artcc := info.ARTCC
+				if artcc == "" {
+					if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+						artcc = traconInfo.ARTCC
+					} else {
+						artcc = facility
+					}
+				}
+				artccs[artcc] = nil 
+			}
+
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, artcc := range util.SortedMapKeys(artccs) {
-					label := fmt.Sprintf("%s (%s)", artcc, strings.ReplaceAll(av.DB.ARTCCs[artcc].Name, " Center", ""))
-					if imgui.SelectableBoolV(label, artcc == av.DB.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
-						artcc != av.DB.TRACONs[c.TRACONName].ARTCC {
-						// a new ARTCC was chosen; reset the TRACON to the first one with that ARTCC
-						idx := slices.IndexFunc(allTRACONs, func(tracon string) bool { return artcc == av.DB.TRACONs[tracon].ARTCC })
-						c.SetTRACON(allTRACONs[idx])
+					name := av.DB.ARTCCs[artcc].Name
+					name = strings.TrimSuffix(name, " ARTCC")
+					name = strings.TrimSuffix(name, " Center")
+					name = strings.TrimSpace(name)
+					if name == "" {
+						name = artcc
+					}
+					label := fmt.Sprintf("%s (%s)", artcc, name)
+					if imgui.SelectableBoolV(label, artcc == selectedARTCC, 0, imgui.Vec2{}) && artcc != selectedARTCC {
+						idx := slices.IndexFunc(allFacilities, func(facility string) bool {
+							if info := facilityInfo[facility]; info != nil {
+								return info.ARTCC == artcc
+							}
+							if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+								return traconInfo.ARTCC == artcc
+							}
+							return facility == artcc
+						})
+						if idx >= 0 {
+							c.SetTRACON(allFacilities[idx])
+						}
 					}
 				}
 			}
 			imgui.EndChild()
 
-			// TRACONs for selected ARTCC
-			imgui.TableNextColumn()
-			if imgui.BeginChildStrV("tracons", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
-				for _, tracon := range allTRACONs {
-					if av.DB.TRACONs[tracon].ARTCC != av.DB.TRACONs[c.TRACONName].ARTCC {
-						continue
-					}
-					name := strings.TrimSuffix(av.DB.TRACONs[tracon].Name, " TRACON")
+			facilityLabel := func(facility string, info *server.Configuration) string {
+				if info != nil && info.Area != "" {
+					name := info.Area
+					name = strings.TrimSuffix(name, " ARTCC")
+					name = strings.TrimSuffix(name, " Center")
+					name = strings.TrimSpace(name)
+					return fmt.Sprintf("%s %s", facility, name)
+				}
+				if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+					name := strings.TrimSuffix(traconInfo.Name, " TRACON")
 					name = strings.TrimSuffix(name, " ATCT/TRACON")
 					name = strings.TrimSuffix(name, " Tower")
-					label := fmt.Sprintf("%s (%s)", tracon, name)
-					if imgui.SelectableBoolV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
-						// TRACON selected
-						c.SetTRACON(tracon)
+					name = strings.TrimSpace(name)
+					return fmt.Sprintf("%s (%s)", facility, name)
+				}
+				return facility
+			}
+
+			// TRACONs or areas for selected ARTCC
+			imgui.TableNextColumn()
+			if imgui.BeginChildStrV("tracons/ areas", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
+				for _, facility := range allFacilities {
+					info := facilityInfo[facility]
+					if info == nil {
+						continue
+					}
+					artcc := info.ARTCC
+
+					if artcc == "" {
+						if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+							artcc = traconInfo.ARTCC
+						} else {
+							artcc = facility
+						}
+					}
+					if selectedARTCC != "" && artcc != selectedARTCC {
+						continue
+					}
+					label := facilityLabel(facility, info)
+					if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
+						c.SetTRACON(facility)
 					}
 				}
 			}
 			imgui.EndChild()
 
-			// Scenarios for the tracon
+			// Scenarios for the tracon or area
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, groupName := range util.SortedMapKeys(c.selectedTRACONConfigs) {

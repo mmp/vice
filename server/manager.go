@@ -69,6 +69,9 @@ type Configuration struct {
 	ScenarioConfigs  map[string]*SimScenarioConfiguration
 	ControlPositions map[string]*av.Controller
 	DefaultScenario  string
+	Facility         string
+	ARTCC            string
+	Area             string
 }
 
 type connectionState struct {
