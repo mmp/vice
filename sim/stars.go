@@ -82,7 +82,7 @@ type VideoMap struct {
 
 // This should match VideoMapLibrary in dat2vice
 type VideoMapLibrary struct {
-	Maps []VideoMap
+	Maps          []VideoMap
 	ERAMMapGroups ERAMMapGroups
 }
 
@@ -101,7 +101,6 @@ type ERAMMapGroup struct {
 }
 
 type ERAMMapGroups map[string]ERAMMapGroup
-
 
 // VideoMapManifest stores which maps are available in a video map file and
 // is also able to provide the video map file's hash.
@@ -242,7 +241,7 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 				return nil, err
 			}
 		} else {
-		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
+			if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
 				return nil, err
 			}
 		}
@@ -306,6 +305,7 @@ type FacilityAdaptation struct {
 	ForceQLToSelf       bool                              `json:"force_ql_self" scope:"stars"`
 	AllowLongScratchpad bool                              `json:"allow_long_scratchpad" scope:"stars"`
 	VideoMapNames       []string                          `json:"stars_maps" scope:"stars"`
+	ERAMMapNames        map[string][]string               `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                 `json:"map_labels"`
 	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
 	RadarSites          map[string]*av.RadarSite          `json:"radar_sites" scope:"stars"`
@@ -329,7 +329,7 @@ type FacilityAdaptation struct {
 		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
 	} `json:"filters" scope:"stars"` //Should this be STARS or justy parts of it?
 
-	MonitoredBeaconCodeBlocksString  *string 
+	MonitoredBeaconCodeBlocksString  *string
 	MonitoredBeaconCodeBlocks        []av.Squawk
 	UntrackedPositionSymbolOverrides struct {
 		CodeRangesString string         `json:"beacon_codes"`
