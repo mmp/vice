@@ -83,7 +83,25 @@ type VideoMap struct {
 // This should match VideoMapLibrary in dat2vice
 type VideoMapLibrary struct {
 	Maps []VideoMap
+	ERAMMapGroups ERAMMapGroups
 }
+
+type ERAMMap struct {
+	BcgName    string
+	LabelLine1 string
+	LabelLine2 string
+	Name       string
+	Lines      [][]math.Point2LL
+}
+
+type ERAMMapGroup struct {
+	Maps       []ERAMMap
+	LabelLine1 string
+	LabelLine2 string
+}
+
+type ERAMMapGroups map[string]ERAMMapGroup
+
 
 // VideoMapManifest stores which maps are available in a video map file and
 // is also able to provide the video map file's hash.
@@ -95,6 +113,10 @@ type VideoMapManifest struct {
 
 func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
+
+	if strings.Contains(filename, "eram") {
+		return // ERAM manifest not here
+	}
 
 	manifest, err := LoadVideoMapManifest(filename)
 	if err != nil {
@@ -156,8 +178,17 @@ func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
 }
 
 func (v VideoMapManifest) HasMap(s string) bool {
-	_, ok := v.names[s]
-	return ok
+	for i, m := range v.names {
+		if i == s {
+			return true
+		}
+		if names, ok := m.([]string); ok {
+			if slices.Contains(names, s) {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // Hash returns a hash of the underlying video map file (i.e., not the manifest!)
@@ -203,8 +234,17 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 		if zr != nil {
 			_ = zr.Reset(br)
 		}
+		if strings.Contains(path, "eram") {
+			if vmf.ERAMMapGroups == nil {
+				vmf.ERAMMapGroups = make(ERAMMapGroups)
+			}
+			if err := gob.NewDecoder(r).Decode(&vmf.ERAMMapGroups); err != nil {
+				return nil, err
+			}
+		} else {
 		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
-			return nil, err
+				return nil, err
+			}
 		}
 	}
 
