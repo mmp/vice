@@ -136,8 +136,6 @@ func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
 
-	// Tracks: get visible tracks (500nm?) and update them.
-	scopeExtent := ctx.PaneExtent
 	ps := ep.currentPrefs()
 
 	tracks := ep.visibleTracks(ctx)
@@ -154,7 +152,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
-	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
+	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)

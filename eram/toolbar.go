@@ -75,20 +75,21 @@ var menuButtons []string = []string{"DRAW", "ATC\nTOOLS", "AB\nSETTING",
 
 var toolbarButtonPositions = make(map[string][2]float32)
 
-func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
-	// ps := ep.currentPrefs()
+func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (math.Extent2D) {
+	paneExtent := ctx.PaneExtent
 	scale := ep.toolbarButtonScale(ctx)
+	ps := ep.currentPrefs()
 
 	ep.startDrawtoolbar(ctx, scale, transforms, cb)
 
 	defer func() {
 		ep.endDrawtoolbar()
 
-		sz := buttonSize(buttonFull, scale)
-
-		paneExtent.P1[1] -= sz[1]
+		if ps.DisplayToolbar {
+			sz := buttonSize(buttonFull, scale)
+			paneExtent.P1[1] -= sz[1]
+		}
 	}()
-	ps := ep.currentPrefs()
 	if !ps.DisplayToolbar {
 		return paneExtent
 	}
