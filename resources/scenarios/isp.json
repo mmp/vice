@@ -2136,12 +2136,12 @@
           }
       ]
   },
-    "NELIE3": {
+    "NELIE4": {
     "arrivals": [
       {
-            "spawn": "ORW",
+            "spawn": "YANTC",
             "cruise_altitude": 22000,
-            "star": "NELIE3",
+            "star": "NELIE4",
             "initial_controller": "BOS_E_CTR",
             "initial_altitude": 6000,
             "assigned_altitude": 5000,
@@ -2354,7 +2354,7 @@
           "KHVN": 2,
           "KISP": 12
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 5,
           "KFOK": 2
         },
@@ -2412,7 +2412,7 @@
             },
             "ISP_B_APP": {
               "backup": "ISP_H_APP",
-              "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+              "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4" ]
             },
             "ISP_I_APP": {
               "backup": "ISP_B_APP",
@@ -2515,7 +2515,7 @@
             "KHVN": 2,
             "KISP": 12
           },
-          "NELIE3": {
+          "NELIE4": {
             "KISP": 5,
             "KFOK": 2
           },
@@ -2573,7 +2573,7 @@
         },
         "ISP_B_APP": {
           "backup": "ISP_H_APP",
-          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4" ]
         },
         "ISP_I_APP": {
           "backup": "ISP_B_APP",
@@ -2677,7 +2677,7 @@
             "KHVN": 2,
             "KISP": 12
           },
-          "NELIE3": {
+          "NELIE4": {
             "KISP": 5,
             "KFOK": 2
           },
@@ -2735,7 +2735,7 @@
         },
         "ISP_B_APP": {
           "backup": "ISP_H_APP",
-          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4" ]
         },
         "ISP_I_APP": {
           "backup": "ISP_B_APP",
@@ -2838,7 +2838,7 @@
             "KHVN": 2,
             "KISP": 12
           },
-          "NELIE3": {
+          "NELIE4": {
             "KISP": 5,
             "KFOK": 2
           },
@@ -2896,7 +2896,7 @@
         },
         "ISP_B_APP": {
           "backup": "ISP_H_APP",
-          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE3" ]
+          "arrivals": [ "Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4" ]
         },
         "ISP_I_APP": {
           "backup": "ISP_B_APP",

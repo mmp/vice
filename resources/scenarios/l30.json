@@ -2131,22 +2131,10 @@
         },
         "RKSTR4": {
             "arrivals": [
-                {
-                    "waypoints": "STYYX/a20000-24000 N035.41.16.716,W113.43.04.066/ho PEHTY/a14000-16000/s250 RKSTR",
-                    "runway_waypoints": {
-                        "KLAS": {
-                            "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a9200 BOOOO/a7000-/s230 NNEON PPENN/a6000/s190/h263",
-                            "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a9200 BOOOO/a7000-/s230 NNEON PPENN/a6000/s190/h263",
-                            "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
-                            "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
-                            "26L": "RKSTR HUXLY/a10000-13000/s250 HAYLN/a9000- PRINO/a8000/s210/h290",
-                            "26R": "RKSTR HUXLY/a10000-13000/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
-                            "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
-                            "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1"
-                        }
-                    },
+              {
+                "star": "RKSTR4",
+                "spawn": "STYYX",
                     "cruise_altitude": 35000,
-                    "star": "RKSTR4",
                     "initial_controller": "LAX_35_CTR",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
@@ -2230,21 +2218,9 @@
                     }
                 },
 				{
-                    "waypoints": "JJEAN N035.25.57.009,W113.49.07.549/ho PEHTY/a14000-16000/s250 RKSTR",
-                    "runway_waypoints": {
-                        "KLAS": {
-                            "19L": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a9200 BOOOO/a7000-/s230 NNEON PPENN/a6000/s190/h263",
-                            "19R": "RKSTR GROLL/a11000- FEREL/a10000+/s250 JOVII/a10000 FELAA/a9200 BOOOO/a7000-/s230 NNEON PPENN/a6000/s190/h263",
-                            "1L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
-                            "1R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
-                            "26L": "RKSTR HUXLY/a10000+/s250 HAYLN/a9000- PRINO/a8000/s210/h290",
-                            "26R": "RKSTR HUXLY/a10000+/s250 HAYLN/a9000- FLYES/a8000/s210/h292",
-                            "8L": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1",
-                            "8R": "RKSTR LEEEW/a14000+/s250 JAIDE/a13000- SHEEN/a12000+ NEETL CAMMP/a10000/s210 BUGSS/a9000 VANDL/a9000/h1"
-                        }
-                    },
+                                  "star": "RKSTR4",
+                                  "spawn": "JJEAN",
                     "cruise_altitude": 35000,
-                    "star": "RKSTR4",
                     "initial_controller": "LAX_35_CTR",
                     "initial_altitude": 25000,
                     "initial_speed": 280,
@@ -2303,24 +2279,12 @@
                 }
             ]
         },
-        "RNDRZ3": {
+        "RNDRZ4": {
             "arrivals": [
-                {
-                    "waypoints": "WATEV/a19000+/ho RNDRZ/a13000-16000/s250",
-                    "runway_waypoints": {
-                        "KLAS": {
-                            "19L": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "19R": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "1L": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 ROAMN/a8000/s210",
-                            "1R": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 ROAMN/a8000/s210",
-                            "26L": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "26R": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "8L": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 YAGGR/a8000/s210/h5",
-							"8R": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 YAGGR/a8000/s210/h5"
-                        }
-                    },
+              {
+                "star": "RNDRZ4",
+                "spawn": "WATEV",
                     "cruise_altitude": 35000,
-                    "star": "RNDRZ3",
                     "initial_controller": "LAX_38_CTR",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
@@ -2368,21 +2332,9 @@
                     }
                 },
 				{
-                    "waypoints": "MIYKE/ho RNDRZ/a13000-16000/s250",
-                    "runway_waypoints": {
-                        "KLAS": {
-                            "19L": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "19R": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "1L": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 ROAMN/a8000/s210",
-                            "1R": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 ROAMN/a8000/s210",
-                            "26L": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "26R": "RNDRZ/a19000-/s250 GRMMA BUETY/a13000+ ENNVY/a11000+ REDQN/a9000/s210 BERBN/a8000/s210/h79",
-                            "8L": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 YAGGR/a8000/s210/h5",
-							"8R": "RNDRZ/a19000-/s250 RUMLY/a13000- HIMIT/a8800+ SLOTS/a8000 YAGGR/a8000/s210/h5"
-                        }
-                    },
+                                  "spawn": "SLOPP",
                     "cruise_altitude": 35000,
-                    "star": "RNDRZ3",
+                    "star": "RNDRZ4",
                     "initial_controller": "LAX_38_CTR",
                     "initial_altitude": 22000,
                     "initial_speed": 280,
@@ -2596,7 +2548,7 @@
                 "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ3": {
+                "RNDRZ4": {
                     "KLAS": 10
                 },
 				"GAMES2": {
@@ -2642,7 +2594,7 @@
 
                     "LAS_G_APP": {
                         "backup": "LAS_F_APP",
-                        "arrivals": ["GAMES2", "RNDRZ3", "COKTL4", "JAYSN3", "FLCHR1"]
+                        "arrivals": ["GAMES2", "RNDRZ4", "COKTL4", "JAYSN3", "FLCHR1"]
                     },
                     "LAS_T_APP": {
                         "backup": "LAS_F_APP"
@@ -2746,7 +2698,7 @@
                 "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ3": {
+                "RNDRZ4": {
                     "KLAS": 15
                 },
 				"GAMES2": {
@@ -2792,7 +2744,7 @@
 
                     "LAS_G_APP": {
                         "backup": "LAS_F_APP",
-                        "arrivals": ["GAMES2", "RNDRZ3", "COKTL4", "JAYSN3","FLCHR1"]
+                        "arrivals": ["GAMES2", "RNDRZ4", "COKTL4", "JAYSN3","FLCHR1"]
                     },
                     "LAS_T_APP": {
                         "backup": "LAS_F_APP"
@@ -2891,7 +2843,7 @@
                 "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ3": {
+                "RNDRZ4": {
                     "KLAS": 15
                 },
 				"GAMES2": {
@@ -2925,7 +2877,7 @@
                     "LAS_M_DEP": {"backup": "LAS_D_DEP"},
                     "LAS_Y_APP": {"backup": "LAS_F_APP", "arrivals": ["NTNDO1"],"departures": ["KHND"]},
                     "LAS_L_APP": {"backup": "LAS_F_APP", "arrivals": ["RKSTR4", "WYLND1","BOEGY2"]},
-                    "LAS_G_APP": {"backup": "LAS_F_APP", "arrivals": ["GAMES2", "RNDRZ3", "COKTL4", "JAYSN3", "FLCHR1"]},
+                    "LAS_G_APP": {"backup": "LAS_F_APP", "arrivals": ["GAMES2", "RNDRZ4", "COKTL4", "JAYSN3", "FLCHR1"]},
                     "LAS_T_APP": {"backup": "LAS_F_APP"},
                     "LAS_K_APP": {"backup": "LAS_F_APP", "arrivals": ["CHOWW3"]}    
                 }
@@ -3019,7 +2971,7 @@
                 "RKSTR4": {
                     "KLAS": 15
                 },
-                "RNDRZ3": {
+                "RNDRZ4": {
                     "KLAS": 15
                 },
 				"GAMES2": {
@@ -3064,7 +3016,7 @@
 
                     "LAS_G_APP": {
                         "backup": "LAS_F_APP",
-                        "arrivals": ["GAMES2", "RNDRZ3", "JAYSN3", "COKTL4", "FLCHR1"]
+                        "arrivals": ["GAMES2", "RNDRZ4", "JAYSN3", "COKTL4", "FLCHR1"]
                     },
                     "LAS_T_APP": {
                         "backup": "LAS_F_APP"

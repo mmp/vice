@@ -26979,6 +26979,30 @@
     }
   },
   {
+    "icao": "jsx",
+    "name": "JetSuiteX",
+    "callsign": {
+      "name": "Bigstripe",
+      "length": 3
+    },
+    "fleets": {
+      "default": [
+        [
+          "E135",
+          15
+        ],
+        [
+          "E140",
+          1
+        ],
+        [
+          "E145",
+          33
+        ]
+      ]
+    }
+  },
+  {
     "icao": "jta",
     "name": "Japan Transocean Air",
     "callsign": {
@@ -34381,6 +34405,40 @@
     }
   },
   {
+    "icao": "pxt",
+    "name": "Pacific Coast Jet",
+    "callsign": {
+      "name": "Pac Coast",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "C750",
+          1
+        ],
+        [
+          "C680",
+          2
+        ],
+        [
+          "E55P",
+          1
+        ],
+        [
+          "C25B",
+          6
+        ],
+		[
+          "C25A",
+          3
+        ]
+      ]
+    }
+  },
+  {
     "icao": "pz",
     "name": "General Aviation Surinam",
     "callsign": {
@@ -37354,6 +37412,20 @@
         [
           "E75L",
           258
+        ]
+      ],
+	  "CRJ": [
+        [
+          "CRJ7",
+          109
+        ],
+		[
+          "CRJ9",
+          36
+        ],
+		[
+          "CRJ2",
+          81
         ]
       ],
 	  "long": [

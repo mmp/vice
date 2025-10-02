@@ -433,12 +433,12 @@
         }
     },
     "inbound_flows": {
-    "PITBL1": {
+    "PITBL2": {
         "arrivals": [
       {
-		"spawn": "PIRYT",
+		"spawn": "HMBOY",
         "cruise_altitude": 30000,
-        "star": "PITBL1",
+        "star": "PITBL2",
         "initial_controller": "LAX_14_CTR",
 		"initial_altitude": 24000,
         "assigned_altitude": 8000,
@@ -974,7 +974,7 @@
                 }
             ],
             "inbound_rates": {
-                "PITBL1": {
+                "PITBL2": {
                     "KSBA": 2
                 },
 				 "NORTHWEST SBA ARR": {
@@ -1006,7 +1006,7 @@
 			 "multi_controllers":{
                 "default": {
                     "SBA_H_APP":{"departures": ["KSBA"],
-					"arrivals": ["PITBL1","EAST SMX ARR"],
+					"arrivals": ["PITBL2","EAST SMX ARR"],
                         "primary": true
                     },
                     "SBA_I_APP":{"backup": "SBA_R_APP",
@@ -1078,7 +1078,7 @@
                 }
             ],
             "inbound_rates": {
-              "PITBL1": {
+              "PITBL2": {
                     "KSBA": 2
                 },
 				 "NORTHWEST SBA ARR": {
@@ -1110,7 +1110,7 @@
 			"multi_controllers":{
                 "default": {
                     "SBA_H_APP":{"departures": ["KSBA"],
-					"arrivals": ["PITBL1","EAST SMX ARR"],
+					"arrivals": ["PITBL2","EAST SMX ARR"],
                         "primary": true
                     },
                     "SBA_I_APP":{"backup": "SBA_R_APP",

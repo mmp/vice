@@ -673,15 +673,15 @@
               "I4R": { "cifp_id": "I4R" },
               "Z4R": { "cifp_id": "RZ4R" },
               "Y4R": { "cifp_id": "RY4R" },
-              "I3C": { "cifp_id": "IC13" },
-              "Z3C": { "cifp_id": "RZ13C" },
-              "Y3C": { "cifp_id": "RY13C" },
+              "I3L": { "cifp_id": "I13L" },
+              "Z3L": { "cifp_id": "RZ13L" },
+              "Y3L": { "cifp_id": "RY13L" },
               "Z2L": { "cifp_id": "RZ22L" },
               "Y2L": { "cifp_id": "RY22L" },
               "X2L": { "cifp_id": "RX22L" },
-              "I1C": { "cifp_id": "IC31" },
-              "Z1C": { "cifp_id": "RZ31C" },
-              "Y1C": { "cifp_id": "RY31C" }
+              "I1R": { "cifp_id": "I31R" },
+              "Z1R": { "cifp_id": "RZ31R" },
+              "Y1R": { "cifp_id": "RY31R" }
             },
             "approach_regions": {
             "4R": {
@@ -770,7 +770,7 @@
                     "Z2L"
                 ]
             },
-            "31C": {
+            "31R": {
                 "heading_tolerance":  90,
 
                 "near_distance": 0.1,
@@ -830,7 +830,7 @@
                 "tie_offset": 4
             },
             {
-                "runways": [ "31C", "31L" ],
+                "runways": [ "31R", "31L" ],
                 "leader_directions": [ "N", "N" ],
                 "tie_symbol": "/",
                 "stagger_symbol": "O",
@@ -855,21 +855,21 @@
                         "waypoints": "KMDW-22L/h250"
                     }
                 },
-                "13C": {
+                "13L": {
                     "PETTY,LEWKE": {
                         "cleared_altitude": 3000,
                         "sid": "MIDWA7",
-                        "waypoints": "KMDW-31C/h090"
+                        "waypoints": "KMDW-31R/h090"
                     },
                     "ACITO,BACEN,CMSKY,DENNT,EARND": {
                         "cleared_altitude": 3000,
                         "sid": "MIDWA7",
-                        "waypoints": "KMDW-31C/h170"
+                        "waypoints": "KMDW-31R/h170"
                     },
                     "PMPKN,RAYNR,PEKUE,SIMMN": {
                         "cleared_altitude": 3000,
                         "sid": "MIDWA7",
-                        "waypoints": "KMDW-31C/h200"
+                        "waypoints": "KMDW-31R/h200"
                     }
                 },
                 "22L": {
@@ -889,21 +889,21 @@
                         "waypoints": "KMDW-4R/h250"
                     }
                 },
-                "31C": {
+                "31R": {
                     "PETTY,LEWKE": {
                         "cleared_altitude": 3000,
                         "sid": "MIDWA7",
-                        "waypoints": "KMDW-13C/h100"
+                        "waypoints": "KMDW-13L/h100"
                     },
                     "ACITO,BACEN,CMSKY,DENNT,EARND": {
                         "cleared_altitude": 3000,
                         "sid": "MIDWA7",
-                        "waypoints": "KMDW-13C/h220"
+                        "waypoints": "KMDW-13L/h220"
                     },
                     "PMPKN,RAYNR,PEKUE,SIMMN": {
                         "cleared_altitude": 3000,
                         "sid": "MIDWA7",
-                        "waypoints": "KMDW-13C/h250"
+                        "waypoints": "KMDW-13L/h250"
                     }
                 }
             },
@@ -3125,7 +3125,7 @@
                     "N041.52.59.333,W087.17.50.507",
                     "N041.52.59.333,W087.17.50.507"
                 ],
-                "SSAT_31C_22L_4R": [
+                "SSAT_31R_22L_4R": [
                     "N042.03.21.296,W088.47.48.283",
                     "N042.03.25.004,W088.16.15.915",
                     "N041.55.28.623,W088.07.14.619",
@@ -3152,7 +3152,7 @@
                     "N042.01.51.318,W088.49.10.598",
                     "N042.03.21.296,W088.47.48.283"
                 ],
-                "SSAT_13C": [
+                "SSAT_13L": [
                     "N042.03.21.296,W088.47.48.283",
                     "N042.03.25.004,W088.16.15.915",
                     "N041.55.28.623,W088.07.14.619",
@@ -3503,37 +3503,37 @@
                         "upper": 15000
                     }
                 ],
-                "SSAT Sector 1 (S)_31C_22L_4R": [
+                "SSAT Sector 1 (S)_31R_22L_4R": [
                     {
                         "boundaries": [
-                            "SSAT_31C_22L_4R"
+                            "SSAT_31R_22L_4R"
                         ],
                         "lower": 0,
                         "upper": 5000
                     }
                 ],
-                "CHI_S_DEP_31C_22L_4R": [
+                "CHI_S_DEP_31R_22L_4R": [
                     {
                         "boundaries": [
-                            "SSAT_31C_22L_4R"
+                            "SSAT_31R_22L_4R"
                         ],
                         "lower": 0,
                         "upper": 15000
                     }
                 ],
-                "SSAT Sector 1 (S)_13C": [
+                "SSAT Sector 1 (S)_13L": [
                     {
                         "boundaries": [
-                            "SSAT_13C"
+                            "SSAT_13L"
                         ],
                         "lower": 0,
                         "upper": 5000
                     }
                 ],
-                "CHI_S_DEP_13C": [
+                "CHI_S_DEP_13L": [
                     {
                         "boundaries": [
-                            "SSAT_13C"
+                            "SSAT_13L"
                         ],
                         "lower": 0,
                         "upper": 15000
@@ -3812,9 +3812,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "STKNY/a6000 ALQUE/a6000/h047",
-                        "13C": "STKNY/a6000 GORLC/h043",
+                        "13L": "STKNY/a6000 GORLC/h043",
                         "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL/h095",
-                        "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                        "31R": "STKNY/a6000 WNNRS GAGGA/h091"
                     }
                     },
                     "waypoints": "OHHMY UGGLY/a24000 AGONY FARCE CHUMP/a17000-21000 HEDOC PURTY/a15000-19000 OCCHO/a14000-16000 KOOKS/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
@@ -3871,9 +3871,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "STKNY/a6000 ALQUE/a6000/h047",
-                        "13C": "STKNY/a6000 GORLC/h043",
+                        "13L": "STKNY/a6000 GORLC/h043",
                         "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL/h095",
-                        "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                        "31R": "STKNY/a6000 WNNRS GAGGA/h091"
                     }
                     },
                     "waypoints": "JALAP KAMBL/a24000-27000 MIGGS/a21000-23000 EDENS/a19000-21000 PURTY/a15000-19000 OCCHO/a14000-16000 KOOKS/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
@@ -3930,9 +3930,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "STKNY/a6000 ALQUE/a6000/h047",
-                        "13C": "STKNY/a6000 GORLC/h043",
+                        "13L": "STKNY/a6000 GORLC/h043",
                         "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL/h095",
-                        "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                        "31R": "STKNY/a6000 WNNRS GAGGA/h091"
                     }
                     },
                     "waypoints": "IRK ENNZO FUDDD/a31000 BOOKK/a24000-29000 LLVSS/a19000-21000 PEALE/a16000-19000 TOLCA/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
@@ -3989,9 +3989,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "STKNY/a6000 ALQUE/a6000/h047",
-                        "13C": "STKNY/a6000 GORLC/h043",
+                        "13L": "STKNY/a6000 GORLC/h043",
                         "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL/h095",
-                        "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                        "31R": "STKNY/a6000 WNNRS GAGGA/h091"
                     }
                     },
                     "waypoints": "MAGOO DARKK/a31000 BURUU/a24000-29000 ILIAD LLVSS/a19000-21000 PEALE/a16000-19000 TOLCA/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
@@ -4048,9 +4048,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "STKNY/a6000 ALQUE/a6000/h047",
-                        "13C": "STKNY/a6000 GORLC/h043",
+                        "13L": "STKNY/a6000 GORLC/h043",
                         "22L": "STKNY/a6000 PKACH/a6000 TUURN WADLL/h095",
-                        "31C": "STKNY/a6000 WNNRS GAGGA/h091"
+                        "31R": "STKNY/a6000 WNNRS GAGGA/h091"
                     }
                     },
                     "waypoints": "PHEEB/a24000- POOGY/a22000-27000 NANEE/a14000-16000 MMEGG/a9000+/ho ENDEE/a7000/s250 STKNY/a6000"
@@ -4297,9 +4297,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "HALIE/a6000 OLCYK/a4000+/h278",
-                        "13C": "HALIE/a6000 TINLY/a4000+/h279",
+                        "13L": "HALIE/a6000 TINLY/a4000+/h279",
                         "22L": "HALIE/a6000 GERMN/a4000+ LNANE BOCAH TACTT/a3000/h274",
-                        "31C": "HALIE/a6000 HAADN/a6000 HILLS/a5000/s240/h295"
+                        "31R": "HALIE/a6000 ELLJO/a6000 HILLS/a5000/s240/h295"
                     }
                     },
                     "speed_restriction": 250,
@@ -4349,9 +4349,9 @@
                     "runway_waypoints": {
                     "KMDW": {
                         "4R": "HALIE/a6000 OLCYK/a4000+/h278",
-                        "13C": "HALIE/a6000 TINLY/a4000+/h279",
+                        "13L": "HALIE/a6000 TINLY/a4000+/h279",
                         "22L": "HALIE/a6000 GERMN/a4000+ LNANE BOCAH TACTT/a3000/h274",
-                        "31C": "HALIE/a6000 HAADN/a6000 HILLS/a5000/s240/h295"
+                        "31R": "HALIE/a6000 ELLJO/a6000 HILLS/a5000/s240/h295"
                     }
                     },
                     "speed_restriction": 250,
@@ -6409,13 +6409,13 @@
             "_ORD_28R": "N41.58.08.634,W87.53.01.307",
             "_MDW_4L": "N41.46.52.841,W87.45.40.347",
             "_MDW_4R": "N41.46.44.906,W87.45.33.546",
-            "_MDW_13C": "N41.47.29.700,W87.45.39.682",
+            "_MDW_13L": "N41.47.29.700,W87.45.39.682",
             "_MDW_13R": "N41.47.16.989,W87.45.31.618",
             "_MDW_13L": "N41.47.32.338,W87.45.28.571",
             "_MDW_22R": "N41.47.32.402,W87.44.50.226",
             "_MDW_22L": "N41.47.31.227,W87.44.34.807",
             "_MDW_31L": "N41.46.50.778,W87.44.54.776",
-            "_MDW_31C": "N41.46.45.113,W87.44.37.099",
+            "_MDW_31R": "N41.46.45.113,W87.44.37.099",
             "_MDW_31R": "N41.46.57.325,W87.44.39.376",
             "_PWK_16": "N042.07.23.353,W087.54.24.147",
             "KORD": "N41.58.33.910,W87.54.26.002",
@@ -6555,7 +6555,7 @@
                     "speed": 7
                 }
             },
-            "KORD West KMDW 31C": {
+            "KORD West KMDW 31R": {
               "airspace": {
                 "Z": [ "CHI_APPW" ],
                 "East Departure (B)": [ "CHI_APPW" ],
@@ -6590,7 +6590,7 @@
                     },
                     {
                         "airport": "KMDW",
-                        "runway": "31C"
+                        "runway": "31R"
                     }
                 ],
                 "arrivals": {
@@ -6690,7 +6690,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "31C"
+                        "runway":  "31R"
                     }
                 ],
                 "wind": {
@@ -6699,7 +6699,7 @@
                     "speed": 7
                 }
             },
-            "KORD West KMDW 31C KPWK 16": {
+            "KORD West KMDW 31R KPWK 16": {
               "airspace": {
                 "Z": [ "CHI_APPW" ],
                 "East Departure (B)": [ "CHI_APPW" ],
@@ -6734,7 +6734,7 @@
                     },
                     {
                         "airport": "KMDW",
-                        "runway": "31C"
+                        "runway": "31R"
                     },
                     {
                         "airport": "KPWK",
@@ -6848,7 +6848,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "31C"
+                        "runway":  "31R"
                     },
                     {
                         "airport": "KPWK",
@@ -6881,7 +6881,7 @@
                     "speed": 7
                 }
             },
-            "KORD West KMDW 31C + Satellites": {
+            "KORD West KMDW 31R + Satellites": {
               "airspace": {
                 "Z": [ "CHI_APPW" ],
                 "East Departure (B)": [ "CHI_APPW" ],
@@ -6916,7 +6916,7 @@
                     },
                     {
                         "airport": "KMDW",
-                        "runway": "31C"
+                        "runway": "31R"
                     },
                     {
                         "airport": "KPWK",
@@ -7066,7 +7066,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "31C"
+                        "runway":  "31R"
                     },
                     {
                         "airport": "KPWK",
@@ -8558,7 +8558,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "31C"
+                        "runway":  "31R"
                     }
                 ],
                 "wind": {
@@ -8696,7 +8696,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "31C"
+                        "runway":  "31R"
                     },
                     {
                         "airport": "KPWK",
@@ -8899,7 +8899,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "31C"
+                        "runway":  "31R"
                     },
                     {
                         "airport": "KPWK",
@@ -9264,7 +9264,7 @@
                     "speed": 10
                 }
             },
-            "KORD East KMDW 13C": {
+            "KORD East KMDW 13L": {
               "airspace": {
                 "Z": [ "CHI_APPE" ],
                 "East Departure (B)": [ "CHI_APPE" ],
@@ -9299,7 +9299,7 @@
                     },
                     {
                         "airport": "KMDW",
-                        "runway": "13C"
+                        "runway": "13L"
                     }
                 ],
                 "arrivals": {
@@ -9399,7 +9399,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway": "13C"
+                        "runway": "13L"
                     }
                 ],
                 "wind": {
@@ -9674,7 +9674,7 @@
                     "speed": 7
                 }
             },
-            "KORD East KMDW 13C + Satellites": {
+            "KORD East KMDW 13L + Satellites": {
               "airspace": {
                 "Z": [ "CHI_APPW" ],
                 "East Departure (B)": [ "CHI_APPW" ],
@@ -9709,7 +9709,7 @@
                     },
                     {
                         "airport": "KMDW",
-                        "runway": "13C"
+                        "runway": "13L"
                     },
                     {
                         "airport": "KPWK",
@@ -9859,7 +9859,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "13C"
+                        "runway":  "13L"
                     },
                     {
                         "airport": "KPWK",
@@ -10107,17 +10107,17 @@
                     "speed": 7
                 }
             },
-            "KMDW 31C": {
+            "KMDW 31R": {
               "airspace": {
-                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
-                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
-                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
-                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31C_22L_4R" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31R_22L_4R" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31R_22L_4R", "CHI_S_DEP_31R_22L_4R" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31R_22L_4R" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31R_22L_4R" ]
               },
                     "arrival_runways": [
                         {
                             "airport": "KMDW",
-                            "runway": "31C"
+                            "runway": "31R"
                         }
                     ],
                     "arrivals": {
@@ -10149,7 +10149,7 @@
                         {
                             "airport": "KMDW",
                             "rate": 35,
-                            "runway":  "31C"
+                            "runway":  "31R"
                         }
                     ],
                     "wind": {
@@ -10159,10 +10159,10 @@
             },
             "KMDW 4R": {
               "airspace": {
-                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
-                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
-                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
-                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31C_22L_4R" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31R_22L_4R" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31R_22L_4R", "CHI_S_DEP_31R_22L_4R" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31R_22L_4R" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31R_22L_4R" ]
               },
               "arrival_runways": [
                     {
@@ -10206,17 +10206,17 @@
                     "speed": 10
                 }
             },
-            "KMDW 13C": {
+            "KMDW 13L": {
               "airspace": {
-                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_13C" ],
-                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_13C", "CHI_S_DEP_13C" ],
-                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_13C" ],
-                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_13C" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_13L" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_13L", "CHI_S_DEP_13L" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_13L" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_13L" ]
               },
                 "arrival_runways": [
                     {
                         "airport": "KMDW",
-                        "runway": "13C"
+                        "runway": "13L"
                     }
                 ],
                 "arrivals": {
@@ -10247,7 +10247,7 @@
                     {
                         "airport": "KMDW",
                         "rate": 35,
-                        "runway":  "13C"
+                        "runway":  "13L"
                     }
                 ],
                 "wind": {
@@ -10257,10 +10257,10 @@
             },
             "KMDW 22L": {
               "airspace": {
-                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
-                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31C_22L_4R", "CHI_S_DEP_31C_22L_4R" ],
-                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31C_22L_4R" ],
-                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31C_22L_4R" ]
+                "SSAT Sector 1 (S)": [ "SSAT Sector 1 (S)_31R_22L_4R" ],
+                "SSAT Sector 4 (U)": [ "SSAT Sector 1 (S)_31R_22L_4R", "CHI_S_DEP_31R_22L_4R" ],
+                "SSAT Sector 2 (P)": [ "SSAT Sector 1 (S)_31R_22L_4R" ],
+                "SSAT Sector 3 (L)": [ "SSAT Sector 1 (S)_31R_22L_4R" ]
               },
                 "arrival_runways": [
                     {

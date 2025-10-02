@@ -1549,8 +1549,8 @@
     "POWTN": { }
   },
       "stars_maps": [ "JRV North", "JRV CSIDE", "JRV STAR", "JRV South", "PCT MVA", "JRV WIGOL STAR",
-					  "JRV RIC RNP02", "JRV RIC RNP20", "JRV Sat Approaches", "JRV Fixes", "PCT ClassB", "PCT Coastlines", "PCT Zones", "PCT MEGA Combined", "PCT Roads", "PCT TAirway", "","","","",
-					  "JRV RIC RNP16", "JRV RIC RNP34", "JRV RAREA", "PCT Airport", "PCT ClassD", "PCT Helo Route", "PCT JAirway", "PCT QAirway", "PCT SFRA", "PCT VAirway" ],
+					  "RIC IAP H02-Y", "RIC IAP H20-Y", "JRV Sat Approaches", "JRV Fixes", "PCT ClassB", "PCT Coastlines", "PCT Zones", "PCT MEGA Combined", "PCT Roads", "PCT TAirway", "", "", "","","","",
+					  "RIC IAP H16-Y", "RIC IAP H34-Y", "JRV RAREA", "PCT Airport", "PCT ClassD", "PCT Helo Route", "PCT JAirway", "PCT QAirway", "PCT SFRA", "PCT VAirway" ],
 	  
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
   }

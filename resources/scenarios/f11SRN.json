@@ -23,7 +23,7 @@
           "PLUMR": {
             "cleared_altitude": 32000,
             "sid": "FSHUN3",
-            "waypoints": "_MCO_36R N028.07.47.255,W081.29.45.855/hoZ23 TUPPY"
+            "waypoints": "_MCO_36R N028.07.47.255,W081.29.45.855/hoZ23 FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 32000,
@@ -60,7 +60,7 @@
           "PLUMR": {
             "cleared_altitude": 7000,
             "sid": "FSHUN3",
-            "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN"
+            "waypoints": "FACTS/a2300+ EARRS/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- DADTI FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 7000,
@@ -112,7 +112,7 @@
           "PLUMR": {
             "cleared_altitude": 32000,
             "sid": "FSHUN3",
-            "waypoints": "BAAIT/a1500+ TUPPY"
+            "waypoints": "BAAIT/a1500+ FSHUN"
           },
           "PAINN": {
             "cleared_altitude": 32000,
@@ -154,7 +154,7 @@
           "PLUMR": {
             "cleared_altitude": 32000,
             "sid": "FSHUN3",
-            "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- TUPPY FSHUN PLUMR"
+            "waypoints": "SAWZZ/a2300+ HANDD/a3000+/s230 LEFTI/a4000+/s230 BLOSM/a7000- DADTI FSHUN PLUMR"
           },
           "PAINN": {
             "cleared_altitude": 32000,
@@ -12311,7 +12311,7 @@
           "initial_controller": "Tampa East Approach",
           "initial_speed": 150,
           "description": "Northbound overflights on T210",
-          "waypoints": "N028.06.48.526,W082.14.34.154 N028.08.47.742,W082.11.39.581/ho1D VARZE PUNQU/ho T210 KIZER/ho11N GUANO"
+          "waypoints": "N028.06.48.526,W082.14.34.154 N028.08.47.742,W082.11.39.581/ho1D VARZE PUNQU T210 KIZER/ho11N GUANO"
         }
       ],
       "arrivals": [
@@ -12347,7 +12347,7 @@
           "route": "CLEFF T208 VALKA",
           "description": "PBI-MLB",
           "initial_speed": 150,
-          "waypoints": "N028.06.48.526,W082.14.34.154 N028.08.47.742,W082.11.39.581/ho1D VARZE PUNQU/ho T210 KIZER/ho11N GUANO"
+          "waypoints": "N028.06.48.526,W082.14.34.154 N028.08.47.742,W082.11.39.581/ho1D VARZE PUNQU T210 KIZER/ho11N GUANO"
         }
       ]
     },
@@ -12403,7 +12403,7 @@
           "initial_controller": "Dayonta North Radar",
           "initial_speed": 150,
           "description": "Southbound overflights on T210",
-          "waypoints": "N029.16.54.614,W081.10.14.163 N029.10.03.980,W081.14.12.841/ho1V KIZER/ho T210 PUNQU/ho31E LAL"
+          "waypoints": "N029.16.54.614,W081.10.14.163 N029.10.03.980,W081.14.12.841/ho1V KIZER T210 PUNQU/ho31E LAL"
         }
       ]
     }

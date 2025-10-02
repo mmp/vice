@@ -616,7 +616,7 @@
   "HENBY3": {
     "arrivals": [
       {
-        "waypoints": "HOKEE PIGGS/ho HENBY/s280/h180",
+        "waypoints": "ROA PIGGS/ho HENBY/s280/h180",
         "star": "HENBY3",
         "initial_controller": "DC_CTR",
         "initial_altitude": 12000,

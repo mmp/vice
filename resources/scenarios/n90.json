@@ -945,7 +945,7 @@
           "altitude": 32000,
           "destination": "KLAS",
           "exit": "NEWEL",
-          "route": "NEWEL J60 DANNR J60 PSB J60 DJB FWA WORDY KK60K KK57I TYGER KK45C KK42A KA39Y KA36W FLYBY BUKKO GUP HAHAA RKSTR3"
+          "route": "NEWEL J60 DANNR J60 PSB J60 DJB FWA WORDY KK60K KK57I TYGER KK45C KK42A KA39Y KA36W FLYBY BUKKO GUP HAHAA RKSTR4"
         },
         {
           "airlines": [
@@ -7570,12 +7570,12 @@
       }
     ]
   },
-  "CAMRN4": {
+  "CAMRN5": {
     "arrivals": [
       {
         "spawn": "KARRS",
         "cruise_altitude": 39000,
-        "star": "CAMRN4",
+        "star": "CAMRN5",
         "initial_controller": "NY_36_CTR",
         "initial_altitude": 12000,
         "assigned_altitude": 11000,
@@ -7583,48 +7583,6 @@
         "speed_restriction": 250,
         "expect_approach": null,
         "airlines": {
-          "KFRG": [
-            {
-              "icao": "EJA",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "DPJ",
-              "airport": "KAUS"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KAUS"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KACY"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KACY"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KPHL"
-            },
-            {
-              "icao": "DPJ",
-              "airport": "KPHL"
-            }
-          ],
           "KJFK": [
             {
               "icao": "WJA",
@@ -9156,12 +9114,12 @@
       }
     ]
   },
-  "NELIE3": {
+  "NELIE4": {
     "arrivals": [
       {
-        "spawn": "ORW",
+        "spawn": "YANTC",
         "cruise_altitude": 22000,
-        "star": "NELIE3",
+        "star": "NELIE4",
         "initial_controller": "NY_36_CTR",
         "initial_altitude": 6000,
         "assigned_altitude": 5000,
@@ -11400,7 +11358,7 @@
           "KISP": 1,
           "KOXC": 1
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0,
           "KFOK": 0
         },
@@ -11437,9 +11395,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -11517,11 +11474,11 @@
           },
           "ISP_B_APP": {
              "backup": "ISP_H_APP",
-             "arrivals": ["NELIE3", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
+             "arrivals": ["NELIE4", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
           },
         "JFK_G_APP": {
           "primary": true,
-          "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+          "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
       },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -12054,7 +12011,7 @@
           "KISP": 1,
           "KOXC": 1
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0,
           "KFOK": 0
         },
@@ -12091,9 +12048,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -12171,11 +12127,11 @@
           },
           "ISP_B_APP": {
              "backup": "ISP_H_APP",
-             "arrivals": ["NELIE3", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
+             "arrivals": ["NELIE4", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
           },
           "JFK_G_APP": {
            "primary": true,
-           "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+           "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
           },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -12698,7 +12654,7 @@
           "KISP": 1,
           "KOXC": 1
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0,
           "KFOK": 0
         },
@@ -12735,9 +12691,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -12815,11 +12770,11 @@
           },
           "ISP_B_APP": {
              "backup": "ISP_H_APP",
-             "arrivals": ["NELIE3", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
+             "arrivals": ["NELIE4", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
           },
         "JFK_G_APP": {
           "primary": true,
-          "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+          "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
       },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -13352,7 +13307,7 @@
           "KISP": 1,
           "KOXC": 1
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0,
           "KFOK": 0
         },
@@ -13389,9 +13344,8 @@
         "OWENZ": {
           "KJFK": 10
         },
-        "CAMRN4": {
-          "KJFK": 12,
-          "KFRG": 1
+        "CAMRN5": {
+          "KJFK": 12
         },
         "LENDY8/IGN1": {
           "KJFK": 12
@@ -13469,11 +13423,11 @@
           },
           "ISP_B_APP": {
              "backup": "ISP_H_APP",
-             "arrivals": ["NELIE3", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
+             "arrivals": ["NELIE4", "(ISP) HFD T216 SALEM CCC", "(ISP) SEY ORCHA CCC", "(ISPN) T320 RICED KEYED", "(ISPN) SEY V34 CREAM"]
           },
         "JFK_G_APP": {
           "primary": true,
-          "arrivals": ["CAMRN4", "OWENZ", "(JFK) ZIGGI"]
+          "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
       },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
