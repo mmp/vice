@@ -478,11 +478,6 @@ func combine(x, y string) string {
 	if y == "" {
 		return x
 	}
-
-	// add space unless x already ends with space OR y already starts with space
-	if strings.HasSuffix(x, " ") || strings.HasPrefix(y, " ") {
-		return x + y
-	}
 	return x + " " + y
 
 }
