@@ -462,6 +462,7 @@ func (ep *ERAMPane) getVideoMapLibrary(ss sim.State, client *client.ControlClien
 	return client.GetVideoMapLibrary(filename)
 }
 
+/*
 var _ panes.UIDrawer = (*ERAMPane)(nil)
 
 func (ep *ERAMPane) DisplayName() string { return "ERAM" }
@@ -469,3 +470,4 @@ func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Enable experimental ERAM support", &ep.ERAMOptIn)
 }
+*/
