@@ -204,15 +204,23 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
-		for i, vm := range ep.allVideoMaps {
+		second := ctx.Keyboard.KeyAlt()
+		for i := 0; i < 40; i++ {
+			if second && i == 0 {
+				i = 20
+			}
+			var vm radar.ERAMVideoMap
+			if i < len(ep.allVideoMaps) {
+				vm = ep.allVideoMaps[i]
+			} 
 			label := vm.LabelLine1 + "\n" + vm.LabelLine2
 			_, vis := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]
 			nextRow := false
-			if i == 11 {
+			if (i == 10 && !second) || (i == 30 && second) {
 				nextRow = true
 				toolbarDrawState.offsetBottom = true // Offset the next row
 			}
-			if i == 22 {
+			if (i == 20 && !second ) || i == 42 {
 				break
 			}
 			
