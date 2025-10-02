@@ -298,7 +298,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 						artcc = facility
 					}
 				}
-				artccs[artcc] = nil 
+				artccs[artcc] = nil
 			}
 
 			imgui.TableNextColumn()
