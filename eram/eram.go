@@ -2,7 +2,6 @@ package eram
 
 import (
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -413,8 +412,6 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 		}
 	}
 
-	fmt.Println(ps.VideoMapVisible)
-
 	for _, vm := range draw {
 		color := renderer.RGB{.188, .188, .188} // TODO: Add map brightness
 
@@ -449,7 +446,8 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 
 	for _, name := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ERAMVideoMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
-			ps.VideoMapVisible[ep.allVideoMaps[idx].Name] = nil
+			
+			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
 		}
 	}
 }
