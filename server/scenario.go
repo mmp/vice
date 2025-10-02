@@ -1550,10 +1550,6 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 			return nil
 		}
 
-		if path == "scenarios/zny.json" { // skip to hide ERAM for first beta
-			return nil
-		}
-
 		s := loadScenarioGroup(fs, path, e)
 		if s != nil {
 			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
