@@ -1309,6 +1309,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
+	_, tracon := av.DB.TRACONs[s.State.TRACON]
 	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
@@ -1327,7 +1328,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		AircraftCount:    1,
 		AircraftType:     ac.FlightPlan.AircraftType,
 		CWTCategory:      av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
-		AssignedAltitude: util.Select(s.State.TRACON == "", ac.FlightPlan.Altitude, 0),
+		AssignedAltitude: util.Select(!tracon, ac.FlightPlan.Altitude, 0),
 	}
 
 	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
@@ -1397,6 +1398,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
+	_, tracon := av.DB.TRACONs[s.State.TRACON]
 	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
@@ -1417,7 +1419,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 
-		AssignedAltitude: util.Select(s.State.TRACON == "", int(of.AssignedAltitude), 0),
+		AssignedAltitude: util.Select(!tracon, int(of.AssignedAltitude), 0),
 	}
 
 	// Like departures, these are already associated
