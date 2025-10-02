@@ -150,9 +150,9 @@ func (sc *STARSComputer) Update(s *Sim) {
 				} else { // arrival or overflight
 					if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil &&
 						// Inbound handoff from an external facility
-						(fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController)) ||
-						// Virtual controller
-						s.State.IsLocalController(fp.TrackingController) {
+						((fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController)) ||
+							// Virtual controller
+							s.State.IsLocalController(fp.TrackingController)) {
 						return true
 					} else if inVolumes(filters.ArrivalAcquisition) {
 						return true
