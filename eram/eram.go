@@ -324,7 +324,8 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.bigOutput.displayError(ps, status.err)
 			} else if status.bigOutput != "" {
 				ep.bigOutput.displaySuccess(ps, status.bigOutput)
-
+			} else if status.output != "" {
+				ep.smallOutput.Set(ps, status.output)
 			}
 		case imgui.KeyEscape:
 			// Clear the input
