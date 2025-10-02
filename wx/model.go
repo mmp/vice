@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 )
@@ -37,6 +38,9 @@ func MakeModel(provider Provider, tracon string, startTime time.Time, lg *log.Lo
 		provider: provider,
 		tracon:   tracon,
 		lg:       lg,
+	}
+	if _, ok := aviation.DB.TRACONs[tracon]; !ok {
+		return m
 	}
 
 	m.ch = m.fetchAtmos(startTime)
@@ -89,6 +93,10 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 }
 
 func (m *Model) checkFetches(t time.Time) {
+	if _, ok := aviation.DB.TRACONs[m.tracon]; !ok {
+		return
+	}
+
 	// Kick off the next fetch if we've passed the second grid's time.
 	if !m.times[1].IsZero() && t.After(m.times[1]) && !m.nextFetch.IsZero() && m.ch == nil {
 		m.ch = m.fetchAtmos(m.nextFetch)
@@ -106,6 +114,10 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 		m.lg.Errorf("%v", ar.Err)
 		return
 	} else if ar.AtmosByPointSOA != nil {
+		if _, ok := aviation.DB.TRACONs[m.tracon]; !ok {
+			return
+		}
+
 		// Shift down to make room for the new one in [1].
 		m.grids[0], m.times[0] = m.grids[1], m.times[1]
 

@@ -978,6 +978,11 @@ func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) er
 	if sm.wxProvider == nil {
 		return ErrWeatherUnavailable
 	}
+	
+	// Only load for TRACON scenarios
+	if _, ok := av.DB.TRACONs[args.TRACON]; !ok {
+		return nil
+	}
 
 	var err error
 	result.AtmosByPointSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time)
