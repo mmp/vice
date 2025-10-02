@@ -63,6 +63,7 @@ type State struct {
 	Center                   math.Point2LL
 	Range                    float32
 	ScenarioDefaultVideoMaps []string
+	ScenarioDefaultVideoGroup string
 	UserRestrictionAreas     []av.RestrictionArea
 
 	FacilityAdaptation FacilityAdaptation
@@ -128,6 +129,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		Center:                   config.Center,
 		Range:                    config.Range,
 		ScenarioDefaultVideoMaps: config.DefaultMaps,
+		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 
 		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
 

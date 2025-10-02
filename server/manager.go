@@ -451,6 +451,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		Center:                      util.Select(sc.Center.IsZero(), sg.FacilityAdaptation.Center, sc.Center),
 		Range:                       util.Select(sc.Range == 0, sg.FacilityAdaptation.Range, sc.Range),
 		DefaultMaps:                 sc.DefaultMaps,
+		DefaultMapGroup:             sc.DefaultMapGroup,
 		InboundFlows:                sg.InboundFlows,
 		Airspace:                    sg.Airspace,
 		ControllerAirspace:          sc.Airspace,

@@ -1726,6 +1726,7 @@
                 "BASE MAP",
                 "LOW SECTOR"
             ],
+            "default_map_group": "ZNYMAP",
             "departure_runways": [
                 {
                     "airport": "KPHL",

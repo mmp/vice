@@ -218,6 +218,7 @@ type NewSimConfiguration struct {
 	Center            math.Point2LL
 	Range             float32
 	DefaultMaps       []string
+	DefaultMapGroup   string
 	Airspace          av.Airspace
 
 	TTSProvider TTSProvider

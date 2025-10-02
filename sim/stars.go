@@ -190,6 +190,15 @@ func (v VideoMapManifest) HasMap(s string) bool {
 	return false
 }
 
+func (v VideoMapManifest) HasMapGroup(s string) bool {
+	for i := range v.names {
+		if i == s {
+			return true
+		}
+	}
+	return false
+}
+
 // Hash returns a hash of the underlying video map file (i.e., not the manifest!)
 func (v VideoMapManifest) Hash() ([]byte, error) {
 	if f, err := v.filesystem.Open(v.filename); err == nil {
