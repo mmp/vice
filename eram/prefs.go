@@ -17,6 +17,7 @@ type Preferences struct {
 	CurrentCenter math.Point2LL
 
 	VideoMapGroup string // ZNYMAP, AREAA, AREAB, etc
+	VideoMapGroupLabel string // "ZNY\nARTCC", "AREA\nA", "AREA\nB", etc
 
 	AltitudeFilters []float32 // find out the different targets
 
