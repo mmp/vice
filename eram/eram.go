@@ -447,7 +447,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 
 	for _, name := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ERAMVideoMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
-			
+
 			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
 		}
 	}

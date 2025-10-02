@@ -205,9 +205,9 @@ type NewSimConfiguration struct {
 	MultiControllers   av.SplitConfiguration
 	SignOnPositions    map[string]*av.Controller
 
-	TFRs                    []av.TFR
+	TFRs               []av.TFR
 	FacilityAdaptation FacilityAdaptation
-	IsLocal                 bool
+	IsLocal            bool
 
 	EnforceUniqueCallsignSuffix bool
 

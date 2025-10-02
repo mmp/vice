@@ -75,7 +75,7 @@ var menuButtons []string = []string{"DRAW", "ATC\nTOOLS", "AB\nSETTING",
 
 var toolbarButtonPositions = make(map[string][2]float32)
 
-func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (math.Extent2D) {
+func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
 	paneExtent := ctx.PaneExtent
 	scale := ep.toolbarButtonScale(ctx)
 	ps := ep.currentPrefs()
@@ -212,7 +212,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			var vm radar.ERAMVideoMap
 			if i < len(ep.allVideoMaps) {
 				vm = ep.allVideoMaps[i]
-			} 
+			}
 			label := vm.LabelLine1 + "\n" + vm.LabelLine2
 			_, vis := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]
 			nextRow := false
@@ -220,10 +220,10 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 				nextRow = true
 				toolbarDrawState.offsetBottom = true // Offset the next row
 			}
-			if (i == 20 && !second ) || i == 42 {
+			if (i == 20 && !second) || i == 42 {
 				break
 			}
-			
+
 			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, nextRow) {
 				if label != "" {
 					if vis {

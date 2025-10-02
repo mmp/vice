@@ -138,7 +138,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		}
 		switch len(fields) {
 		case 0:
-			// Get all map names and print it out in the big output 
+			// Get all map names and print it out in the big output
 			visibleNames := []string{}
 			for groups := range vmf.ERAMMapGroups {
 				visibleNames = append(visibleNames, groups)
@@ -146,22 +146,22 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.output = fmt.Sprintf("AVAILABLE GEOMAPS: %s", strings.Join(visibleNames, " "))
 			return
 		case 1:
-		groupName := fields[0]
-		
-		maps, ok := vmf.ERAMMapGroups[groupName]
-		if !ok {
-			status.err = ErrERAMMapUnavailable
-			return
-		}
-		ps := ep.currentPrefs()
-		ps.VideoMapGroup = groupName
+			groupName := fields[0]
 
-		// Get rid of all visible maps
-		ps.VideoMapVisible = make(map[string]interface{})
-		
-		ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
-		ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
-		status.bigOutput = fmt.Sprintf("ACCEPT\nMAP REQUEST\n%v", ps.VideoMapGroup)
+			maps, ok := vmf.ERAMMapGroups[groupName]
+			if !ok {
+				status.err = ErrERAMMapUnavailable
+				return
+			}
+			ps := ep.currentPrefs()
+			ps.VideoMapGroup = groupName
+
+			// Get rid of all visible maps
+			ps.VideoMapVisible = make(map[string]interface{})
+
+			ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
+			ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
+			status.bigOutput = fmt.Sprintf("ACCEPT\nMAP REQUEST\n%v", ps.VideoMapGroup)
 		}
 	case "QP": // J rings, point out
 		fields := strings.Fields(cmd)

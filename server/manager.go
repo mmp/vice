@@ -435,7 +435,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		TFRs:                        config.TFRs,
 		TRACON:                      config.TRACONName,
 		LaunchConfig:                config.ScenarioConfig.LaunchConfig,
-		FacilityAdaptation:     deep.MustCopy(sg.FacilityAdaptation),
+		FacilityAdaptation:          deep.MustCopy(sg.FacilityAdaptation),
 		IsLocal:                     sm.local,
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
 		DepartureRunways:            sc.DepartureRunways,
@@ -978,7 +978,7 @@ func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) er
 	if sm.wxProvider == nil {
 		return ErrWeatherUnavailable
 	}
-	
+
 	// Only load for TRACON scenarios
 	if _, ok := av.DB.TRACONs[args.TRACON]; !ok {
 		return nil

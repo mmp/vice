@@ -24,8 +24,8 @@ var ( // TODO: Get actual error messages for this
 	ErrERAMIllegalValue    = NewERAMError("ILLEGAL VALUE")
 	ErrERAMIllegalAirport  = NewERAMError("ILLEGAL AIRPORT")
 	ErrIllegalUserAction   = NewERAMError("ILLEGAL USER ACTION")
-	ErrERAMMapUnavailable = NewERAMError("MAP UNAVAILABLE")
-	ErrERAMMessageTooLong = NewERAMError("MESSAGE TOO LONG")
+	ErrERAMMapUnavailable  = NewERAMError("MAP UNAVAILABLE")
+	ErrERAMMessageTooLong  = NewERAMError("MESSAGE TOO LONG")
 )
 
 var eramErrorRemap = map[error]*ERAMError{}

@@ -60,11 +60,11 @@ type State struct {
 	InboundFlows     map[string]*av.InboundFlow
 	LaunchConfig     LaunchConfig
 
-	Center                   math.Point2LL
-	Range                    float32
-	ScenarioDefaultVideoMaps []string
+	Center                    math.Point2LL
+	Range                     float32
+	ScenarioDefaultVideoMaps  []string
 	ScenarioDefaultVideoGroup string
-	UserRestrictionAreas     []av.RestrictionArea
+	UserRestrictionAreas      []av.RestrictionArea
 
 	FacilityAdaptation FacilityAdaptation
 
@@ -126,9 +126,9 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		InboundFlows:     config.InboundFlows,
 		LaunchConfig:     config.LaunchConfig,
 
-		Center:                   config.Center,
-		Range:                    config.Range,
-		ScenarioDefaultVideoMaps: config.DefaultMaps,
+		Center:                    config.Center,
+		Range:                     config.Range,
+		ScenarioDefaultVideoMaps:  config.DefaultMaps,
 		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 
 		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
