@@ -213,10 +213,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				status.err = ErrERAMIllegalACID
 				return
 			}
-			ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
 			status.bigOutput = fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
-		} else if unicode.IsDigit(rune(fields[0][0])) && len(fields) == 2 {
-
+			ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
+		} else if unicode.IsDigit(rune(fields[0][0])) && len(fields) == 2 { // TODO:For minutes to a fix 
+			status.err = ErrCommandFormat
+			return 
 		} else if len(fields) == 2 { // Direct a fix
 			// <fix> <FLID>
 			fix := fields[0]
@@ -227,9 +228,9 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				status.err = ErrERAMIllegalACID
 				return
 			}
-
-			ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
 			status.bigOutput = fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+			ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
+			
 		}
 	case "QQ": // interim altitude
 		// first field is the altitude, second is the CID.
@@ -521,7 +522,7 @@ func (ep *ERAMPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	return ep.targetGenLastCallsign
 }
 
-func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix string) {
+func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix string) error {
 	ctx.Client.FlightPlanDirect(acid, fix, func(err error) {
 		if err != nil {
 			ep.bigOutput.displayError(ep.currentPrefs(), err)
@@ -532,6 +533,7 @@ func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix stri
 		cmd := "D" + fix
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 	}
+	return nil
 }
 
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {
@@ -599,17 +601,19 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				state.DisplayJRing = false
 				state.DisplayReducedJRing = !state.DisplayReducedJRing
 				status.bigOutput = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+			default:
+				status.err = ErrCommandFormat
 			}
 		}
 	case "QU":
 		fields := strings.Fields(cmd)
 		if len(fields) == 1 {
 			if fields[0] == "/M" {
+				status.bigOutput = fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID) // if an error is returned from here it should be replaced by the callback
 				ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
-				status.bigOutput = fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			} else {
-				ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fields[0])
 				status.bigOutput = fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fields[0]) 
 				// TODO: Draw QU lunes after this CMD
 			}
 		}
