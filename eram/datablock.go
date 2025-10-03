@@ -308,8 +308,9 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		return ep.ldbArena.AllocClear()
 	case LimitedDatablock:
 		db := ep.ldbArena.AllocClear()
+		state := ep.TrackState[trk.ADSBCallsign]
 		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color, false)
-		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100), color, false)
+		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.track.TransponderAltitude+50)/100), color, false)
 		return db
 	default:
 		return nil // should not happen
