@@ -252,7 +252,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 		if ctx.Mouse != nil {
 			p1 := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			if wp.ADSBCallsign != "" {
-				if trk, ok := ctx.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
+				if trk, ok := ctx.Client.State.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
 					slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
 					state := sp.TrackState[wp.ADSBCallsign]
 					drawRBL(state.track.Location, p1, len(sp.RangeBearingLines)+1, state.track.Groundspeed)
@@ -302,8 +302,8 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransf
 		// Two aircraft haven't been specified.
 		return
 	}
-	trk0, ok0 := ctx.GetTrackByCallsign(cs0)
-	trk1, ok1 := ctx.GetTrackByCallsign(cs1)
+	trk0, ok0 := ctx.Client.State.GetTrackByCallsign(cs0)
+	trk1, ok1 := ctx.Client.State.GetTrackByCallsign(cs1)
 	if !ok0 || !ok1 {
 		// Missing track(s)
 		return
@@ -794,7 +794,7 @@ func (sp *STARSPane) drawSelectedRoute(ctx *panes.Context, transforms radar.Scop
 	if sp.drawRouteAircraft == "" {
 		return
 	}
-	trk, ok := ctx.GetTrackByCallsign(sp.drawRouteAircraft)
+	trk, ok := ctx.Client.State.GetTrackByCallsign(sp.drawRouteAircraft)
 	if !ok {
 		sp.drawRouteAircraft = ""
 		return

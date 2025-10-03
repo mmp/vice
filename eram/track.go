@@ -557,7 +557,7 @@ func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransf
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	for acid, info := range ep.aircraftFixCoordinates {
-		trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(acid))
+		trk, ok := ctx.Client.State.GetTrackByCallsign(av.ADSBCallsign(acid))
 		if !ok {
 			continue
 		}
