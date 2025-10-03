@@ -1,5 +1,6 @@
 {
     "artcc": "ZNY",
+    "area": "Area A (South)",
     "name": "ZNY",
     "airports": {
         "KPHL": {
@@ -13,7 +14,6 @@
                         "sid": "PHL2",
                         "waypoints": "KPHL-9R/ho MXE"
                     },
-
                     "STOEN": {
                         "handoff_controller": "ZNY 25 Modena",
                         "cleared_altitude": 10000,
@@ -1723,9 +1723,10 @@
                 "Philadelphia North Departure"
             ],
             "default_maps": [
-                "ZNY BASE MAP",
-                "ZNY LOW SECTOR"
-            ], 
+                "BASE MAP",
+                "LOW SECTOR"
+            ],
+            "default_map_group": "ZNYMAP",
             "departure_runways": [
                 {
                     "airport": "KPHL",
@@ -1744,24 +1745,37 @@
         "center": "N039.47.39.800,W076.10.50.300",
         "range": 150,
         "stars_maps": [
-            "ZNY BASE MAP",
-            "ZNY HIGH SECTOR",
-            "ZNY LOW SECTOR",
-            "ZNY HIGH AIRWAY",
-            "ZNY LOW AIRWAY",
-            "3NM RADAR BOUNDARY",
+            "BASE MAP",
+            "HIGH SECTOR",
+            "LOW SECTOR",
+            "HIGH AIRWAY",
+            "LOW AIRWAY",
+            "APCH BDRY",
+            "3NM BDRY",
             "MIA",
-            "ZNY MOA",
-            "ZNY STARS",
-            "ZNY CLASS B",
-            "ZNY MVA",
+            "HPAS",
+            "MIL",
+            "MOA",
+            "STARS",
+            "ZNY IAP",
+            "CLASS B",
+            "MVA",
             "N90 RVM",
             "N90 LIB RVM",
             "PHL-W RVM",
             "PHL-E RVM",
-            "ZNY MINOR RVM"
+            "MINOR RVM",
+            "EWR RVM",
+            "LGA RVM",
+            "JFK CFG",
+            "ISP RVM",
+            "ABE RVM",
+            "AVP RVM",
+            "BGM RVM",
+            "ELM RVM",
+            "MDT RVM",
+            "WRI RVM"
         ],
-
-        "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZNY-eram-videomaps.gob"
     }
 }

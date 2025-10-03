@@ -16,6 +16,8 @@ type Preferences struct {
 
 	CurrentCenter math.Point2LL
 
+	VideoMapGroup string // ZNYMAP, AREAA, AREAB, etc
+
 	AltitudeFilters []float32 // find out the different targets
 
 	// QuickLookPositions []QuickLookPositiosn // find out more about this
@@ -151,6 +153,8 @@ func (ep *ERAMPane) initPrefsForLoadedSim(ss sim.State) *Preferences {
 	p := makeDefaultPreferences()
 	p.Center = ss.GetInitialCenter()
 	p.CurrentCenter = p.Center
+	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+	p.Range = ss.Range
 	return p
 }
 

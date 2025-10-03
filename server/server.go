@@ -52,7 +52,8 @@ import (
 // 42: server.NewSimConfiguration.StartTime
 // 43: WX rework (scrape, etc.)
 // 44: store pane instances and split positions separately, rather than the entire DisplayNode hierarchy
-const ViceSerializeVersion = 44
+// 45: Change STARSFacilityAdaptation to FacilityAdaptation
+const ViceSerializeVersion = 45
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

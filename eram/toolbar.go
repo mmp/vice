@@ -133,7 +133,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarChecklist
 		}
 		ep.drawToolbarFullButton(ctx, "COMMAND\nMENUS", 0, scale, false, false)
-		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) { // Change to ERAM adapted name MANDATORY (This will probably be the hardest)
+		if ep.drawToolbarFullButton(ctx, ep.videoMapLabel, 0, scale, false, false) { // Change to ERAM adapted name MANDATORY (This will probably be the hardest)
 			ep.activeToolbarMenu = toolbarVideomap
 		}
 		ep.drawToolbarFullButton(ctx, fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1]), 0, scale, false, false)
@@ -194,7 +194,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
-		main := "VIDEOMAP"
+		main := ep.videoMapLabel
 		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom button color for VIDEOMAP
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
@@ -204,23 +204,32 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
-		for i, vm := range ep.allVideoMaps {
-			_, vis := ps.VideoMapVisible[vm.Name]
+		second := ctx.Keyboard.KeyAlt()
+		for i := 0; i < 40; i++ {
+			if second && i == 0 {
+				i = 20
+			}
+			var vm radar.ERAMVideoMap
+			if i < len(ep.allVideoMaps) {
+				vm = ep.allVideoMaps[i]
+			}
+			label := vm.LabelLine1 + "\n" + vm.LabelLine2
+			_, vis := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]
 			nextRow := false
-			if i == 11 {
+			if (i == 10 && !second) || (i == 30 && second) {
 				nextRow = true
 				toolbarDrawState.offsetBottom = true // Offset the next row
 			}
-			if i == 22 {
+			if (i == 20 && !second) || i == 42 {
 				break
 			}
 
-			if ep.drawToolbarFullButton(ctx, vm.Label, 0, scale, vis, nextRow) {
-				if vm.Label != "" {
+			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, nextRow) {
+				if label != "" {
 					if vis {
-						delete(ps.VideoMapVisible, vm.Name)
+						delete(ps.VideoMapVisible, combine(vm.LabelLine1, vm.LabelLine2))
 					} else {
-						ps.VideoMapVisible[vm.Name] = nil
+						ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)] = nil
 					}
 				}
 			}

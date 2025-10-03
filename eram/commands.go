@@ -115,14 +115,54 @@ type CommandStatus struct {
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
 	// TG will be the prefix for radio commands. TODO: Tab and semicolo (or comma) adds TG
 	// Shift + tab locks TG
-	var prefix string
-	cmd := cmdLine.String()
-	original := cmd
-	if len(cmd) >= 2 { //  trim a prefix
-		prefix = cmd[:2]
-		cmd = strings.TrimPrefix(cmd, prefix+" ")
+	original := cmdLine.String()
+
+	fieldsFull := strings.Fields(original)
+	if len(fieldsFull) == 0 {
+		return
 	}
+	prefix := fieldsFull[0]
+	cmd := strings.Join(fieldsFull[1:], " ")
+
 	switch prefix {
+	case "MR": // Map request
+		fields := strings.Fields(cmd)
+		if len(fields) > 1 {
+			status.err = ErrERAMMessageTooLong
+			return
+		}
+		vmf, err := ep.getVideoMapLibrary(ctx.Client.State, ctx.Client)
+		if err != nil {
+			status.err = err
+			return
+		}
+		switch len(fields) {
+		case 0:
+			// Get all map names and print it out in the big output
+			visibleNames := []string{}
+			for groups := range vmf.ERAMMapGroups {
+				visibleNames = append(visibleNames, groups)
+			}
+			status.output = fmt.Sprintf("AVAILABLE GEOMAPS: %s", strings.Join(visibleNames, " "))
+			return
+		case 1:
+			groupName := fields[0]
+
+			maps, ok := vmf.ERAMMapGroups[groupName]
+			if !ok {
+				status.err = ErrERAMMapUnavailable
+				return
+			}
+			ps := ep.currentPrefs()
+			ps.VideoMapGroup = groupName
+
+			// Get rid of all visible maps
+			ps.VideoMapVisible = make(map[string]interface{})
+
+			ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
+			ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
+			status.bigOutput = fmt.Sprintf("ACCEPT\nMAP REQUEST\n%v", ps.VideoMapGroup)
+		}
 	case "QP": // J rings, point out
 		fields := strings.Fields(cmd)
 		if len(fields) == 1 { // ack fdb after po

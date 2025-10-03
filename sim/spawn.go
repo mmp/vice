@@ -1321,7 +1321,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		TypeOfFlight: av.FlightTypeDeparture,
 
 		Scratchpad: util.Select(dep.Scratchpad != "", dep.Scratchpad,
-			s.State.STARSFacilityAdaptation.Scratchpads[dep.Exit]),
+			s.State.FacilityAdaptation.Scratchpads[dep.Exit]),
 		SecondaryScratchpad: dep.SecondaryScratchpad,
 		RequestedAltitude:   ac.FlightPlan.Altitude,
 
@@ -1609,7 +1609,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		}
 		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
 			s.charlieAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
-			s.State.STARSFacilityAdaptation.Filters.VFRInhibit.Inside(simac.Position(), int(simac.Altitude())) {
+			s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(simac.Position(), int(simac.Altitude())) {
 			return nil, "", ErrViolatedAirspace
 		}
 	}

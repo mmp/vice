@@ -46,11 +46,11 @@ type scenarioGroup struct {
 	ReportingPointStrings []string            `json:"reporting_points"`
 	ReportingPoints       []av.ReportingPoint // not in JSON
 
-	NmPerLatitude           float32 // Always 60
-	NmPerLongitude          float32 // Derived from Center
-	MagneticVariation       float32
-	MagneticAdjustment      float32                     `json:"magnetic_adjustment"`
-	STARSFacilityAdaptation sim.STARSFacilityAdaptation `json:"stars_config"`
+	NmPerLatitude      float32 // Always 60
+	NmPerLongitude     float32 // Derived from Center
+	MagneticVariation  float32
+	MagneticAdjustment float32                `json:"magnetic_adjustment"`
+	FacilityAdaptation sim.FacilityAdaptation `json:"stars_config"`
 }
 
 type scenario struct {
@@ -72,11 +72,12 @@ type scenario struct {
 	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
 
-	Center       math.Point2LL `json:"-"`
-	CenterString string        `json:"center"`
-	Range        float32       `json:"range"`
-	DefaultMaps  []string      `json:"default_maps"`
-	VFRRateScale *float32      `json:"vfr_rate_scale"`
+	Center          math.Point2LL `json:"-"`
+	CenterString    string        `json:"center"`
+	Range           float32       `json:"range"`
+	DefaultMaps     []string      `json:"default_maps"`
+	DefaultMapGroup string        `json:"default_map_group" scope:"eram"`
+	VFRRateScale    *float32      `json:"vfr_rate_scale"`
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
@@ -150,7 +151,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 	// Make sure all of the controllers used in airspace awareness will be there.
-	for _, aa := range sg.STARSFacilityAdaptation.AirspaceAwareness {
+	for _, aa := range sg.FacilityAdaptation.AirspaceAwareness {
 		addController(aa.ReceivingController)
 	}
 
@@ -581,6 +582,13 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
+	if sg.ARTCC != "" {
+		if !manifest.HasMapGroup(s.DefaultMapGroup) {
+			e.ErrorString("video map group %q in \"default_map_group\" not found. Use -listmaps "+
+				"<path to Zxx-videomaps.gob.zst> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
+		}
+	}
+
 	if s.VFRRateScale == nil { // unspecified -> default to 1
 		one := float32(1)
 		s.VFRRateScale = &one
@@ -645,10 +653,10 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			})))
 	allAirports := slices.Collect(maps.Keys(sg.Airports))
 
-	sg.STARSFacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
+	sg.FacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
 
 	sg.NmPerLatitude = 60
-	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.STARSFacilityAdaptation.Center)
+	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.FacilityAdaptation.Center)
 
 	if sg.ARTCC == "" {
 		if sg.TRACON == "" {
@@ -710,7 +718,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
-	PostDeserializeSTARSFacilityAdaptation(&sg.STARSFacilityAdaptation, e, sg, manifest)
+	PostDeserializeFacilityAdaptation(&sg.FacilityAdaptation, e, sg, manifest)
 
 	for name, volumes := range sg.Airspace.Volumes {
 		for i, vol := range volumes {
@@ -756,7 +764,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		} else {
 			sg.MagneticVariation = mvar + sg.MagneticAdjustment
 		}
-	} else if mvar, err := av.DB.MagneticGrid.Lookup(sg.STARSFacilityAdaptation.Center); err != nil {
+	} else if mvar, err := av.DB.MagneticGrid.Lookup(sg.FacilityAdaptation.Center); err != nil {
 		e.ErrorString("%s: unable to find magnetic declination: %v", sg.ARTCC, err)
 	} else {
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
@@ -768,8 +776,8 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 	for name, ap := range sg.Airports {
 		e.Push("Airport " + name)
 		ap.PostDeserialize(name, sg, sg.NmPerLongitude, sg.MagneticVariation,
-			sg.ControlPositions, sg.STARSFacilityAdaptation.Scratchpads, sg.Airports,
-			sg.STARSFacilityAdaptation.CheckScratchpad, e)
+			sg.ControlPositions, sg.FacilityAdaptation.Scratchpads, sg.Airports,
+			sg.FacilityAdaptation.CheckScratchpad, e)
 		e.Pop()
 	}
 
@@ -841,11 +849,11 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 
 		for i := range flow.Arrivals {
 			flow.Arrivals[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
-				sg.Airports, sg.ControlPositions, sg.STARSFacilityAdaptation.CheckScratchpad, e)
+				sg.Airports, sg.ControlPositions, sg.FacilityAdaptation.CheckScratchpad, e)
 		}
 		for i := range flow.Overflights {
 			flow.Overflights[i].PostDeserialize(sg, sg.NmPerLongitude, sg.MagneticVariation,
-				sg.Airports, sg.ControlPositions, sg.STARSFacilityAdaptation.CheckScratchpad, e)
+				sg.Airports, sg.ControlPositions, sg.FacilityAdaptation.CheckScratchpad, e)
 		}
 
 		e.Pop()
@@ -962,7 +970,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		}
 	}
 
-	fa := &sg.STARSFacilityAdaptation
+	fa := &sg.FacilityAdaptation
 	for i := range fa.AirspaceAwareness {
 		rewrite(&fa.AirspaceAwareness[i].ReceivingController)
 	}
@@ -992,7 +1000,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	sg.ControlPositions = pos
 }
 
-func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *util.ErrorLogger, sg *scenarioGroup,
+func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *scenarioGroup,
 	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -1435,7 +1443,7 @@ func initializeSimConfigurations(sg *scenarioGroup,
 		}
 	}
 	for name, scenario := range sg.Scenarios {
-		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.STARSFacilityAdaptation.ControllerConfigs),
+		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.FacilityAdaptation.ControllerConfigs),
 			func(cc *sim.STARSControllerConfig) bool { return len(cc.FlightFollowingAirspace) > 0 })
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
 			scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
@@ -1592,9 +1600,9 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 
 			// These may have an empty "video_map_file" member, which
 			// is automatically patched up here...
-			if s.STARSFacilityAdaptation.VideoMapFile == "" {
+			if s.FacilityAdaptation.VideoMapFile == "" {
 				if extraVideoMapFilename != "" {
-					s.STARSFacilityAdaptation.VideoMapFile = extraVideoMapFilename
+					s.FacilityAdaptation.VideoMapFile = extraVideoMapFilename
 				} else {
 					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
 						extraScenarioFilename)
@@ -1657,7 +1665,7 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 			}
 
 			// Make sure we have what we need in terms of video maps
-			fa := &sgroup.STARSFacilityAdaptation
+			fa := &sgroup.FacilityAdaptation
 			if vf := fa.VideoMapFile; vf == "" {
 				e.ErrorString("no \"video_map_file\" specified")
 			} else if manifest, ok := mapManifests[vf]; !ok {
@@ -1751,7 +1759,7 @@ func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.La
 
 	// Check for VFR reporting regions
 	haveVFRReportingRegions := false
-	for _, cfg := range scenarioGroup.STARSFacilityAdaptation.ControllerConfigs {
+	for _, cfg := range scenarioGroup.FacilityAdaptation.ControllerConfigs {
 		if cfg.FlightFollowingAirspace != nil {
 			haveVFRReportingRegions = true
 			break
@@ -1781,29 +1789,30 @@ func CreateNewSimConfiguration(config *Configuration, scenarioGroup *scenarioGro
 	}
 
 	newSimConfig := &sim.NewSimConfiguration{
-		TRACON:                  scenarioGroup.TRACON,
-		Description:             scenarioName,
-		LaunchConfig:            CreateLaunchConfig(scenario, scenarioGroup),
-		DepartureRunways:        simConfig.DepartureRunways,
-		ArrivalRunways:          simConfig.ArrivalRunways,
-		PrimaryAirport:          simConfig.PrimaryAirport,
-		Airports:                scenarioGroup.Airports,
-		Fixes:                   scenarioGroup.Fixes,
-		VFRReportingPoints:      scenarioGroup.VFRReportingPoints,
-		ControlPositions:        scenarioGroup.ControlPositions,
-		PrimaryController:       scenario.SoloController,
-		SignOnPositions:         scenarioGroup.ControlPositions,
-		InboundFlows:            scenarioGroup.InboundFlows,
-		STARSFacilityAdaptation: deep.MustCopy(scenarioGroup.STARSFacilityAdaptation),
-		ReportingPoints:         scenarioGroup.ReportingPoints,
-		MagneticVariation:       scenarioGroup.MagneticVariation,
-		NmPerLongitude:          scenarioGroup.NmPerLongitude,
-		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.STARSFacilityAdaptation.Center, scenario.Center),
-		Range:                   util.Select(scenario.Range == 0, scenarioGroup.STARSFacilityAdaptation.Range, scenario.Range),
-		DefaultMaps:             scenario.DefaultMaps,
-		Airspace:                scenarioGroup.Airspace,
-		ControllerAirspace:      scenario.Airspace,
-		VirtualControllers:      scenario.VirtualControllers,
+		TRACON:             scenarioGroup.TRACON,
+		Description:        scenarioName,
+		LaunchConfig:       CreateLaunchConfig(scenario, scenarioGroup),
+		DepartureRunways:   simConfig.DepartureRunways,
+		ArrivalRunways:     simConfig.ArrivalRunways,
+		PrimaryAirport:     simConfig.PrimaryAirport,
+		Airports:           scenarioGroup.Airports,
+		Fixes:              scenarioGroup.Fixes,
+		VFRReportingPoints: scenarioGroup.VFRReportingPoints,
+		ControlPositions:   scenarioGroup.ControlPositions,
+		PrimaryController:  scenario.SoloController,
+		SignOnPositions:    scenarioGroup.ControlPositions,
+		InboundFlows:       scenarioGroup.InboundFlows,
+		FacilityAdaptation: deep.MustCopy(scenarioGroup.FacilityAdaptation),
+		ReportingPoints:    scenarioGroup.ReportingPoints,
+		MagneticVariation:  scenarioGroup.MagneticVariation,
+		NmPerLongitude:     scenarioGroup.NmPerLongitude,
+		Center:             util.Select(scenario.Center.IsZero(), scenarioGroup.FacilityAdaptation.Center, scenario.Center),
+		Range:              util.Select(scenario.Range == 0, scenarioGroup.FacilityAdaptation.Range, scenario.Range),
+		DefaultMaps:        scenario.DefaultMaps,
+		DefaultMapGroup:    scenario.DefaultMapGroup,
+		Airspace:           scenarioGroup.Airspace,
+		ControllerAirspace: scenario.Airspace,
+		VirtualControllers: scenario.VirtualControllers,
 	}
 
 	return newSimConfig, nil
