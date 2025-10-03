@@ -656,7 +656,7 @@ func oppositeSide(p0, sz [2]float32) [2]float32 {
 }
 
 func oppositeHorizontal(p0, sz [2]float32) [2]float32 {
-	return math.Add2f(p0, [2]float32{sz[0], 0}) 
+	return math.Add2f(p0, [2]float32{sz[0], 0})
 }
 
 func shiftLeftOne(p0, sz [2]float32) [2]float32 {

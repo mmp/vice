@@ -287,7 +287,7 @@ func (inp inputText) String() string {
 func (inp *inputText) displayError(ps *Preferences, err error) {
 	if err != nil {
 		errMsg := inputText{}
-		errMsg.Add(xMark + " ", renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+		errMsg.Add(xMark+" ", renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
 		errMsg.AddBasic(ps, strings.ToUpper(err.Error()))
 		*inp = errMsg
 	}

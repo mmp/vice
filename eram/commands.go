@@ -585,7 +585,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		prefix = fieldsFull[0]
 		cmd = strings.Join(fieldsFull[1:], " ")
 	}
-	
+
 	switch prefix {
 	case "QP":
 		fields := strings.Fields(cmd)
