@@ -1,9 +1,9 @@
 package whisper
 
 import (
-	"fmt"
 	"io"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -78,18 +78,18 @@ func (c *context) ResetTimings() { c.model.ctx.Whisper_reset_timings() }
 func (c *context) PrintTimings() { c.model.ctx.Whisper_print_timings() }
 func (c *context) SystemInfo() string {
 	return "system_info: n_threads = " +
-		strconvI(c.params.Threads()) + " / " + strconvI(runtime.NumCPU()) +
+		strconv.Itoa(c.params.Threads()) + " / " + strconv.Itoa(runtime.NumCPU()) +
 		" | " + whisperlow.Whisper_print_system_info()
 }
 
-func (c *context) Process(data []float32, enc EncoderBeginCallback, seg SegmentCallback, prog ProgressCallback) error {
+func (c *context) Process(samples []float32, enc EncoderBeginCallback, seg SegmentCallback, prog ProgressCallback) error {
 	if c.model.ctx == nil {
 		return ErrInternalAppError
 	}
 	if seg != nil {
 		c.params.SetSingleSegment(true)
 	}
-	if err := c.model.ctx.Whisper_full(c.params, data,
+	if err := c.model.ctx.Whisper_full(c.params, samples,
 		func() bool {
 			if enc != nil {
 				return enc()
@@ -128,10 +128,10 @@ func (c *context) NextSegment() (Segment, error) {
 }
 
 func (c *context) IsText(t Token) bool {
-	switch {
-	case c.IsBEG(t), c.IsSOT(t), whisperlow.Token(t.Id) >= c.model.ctx.Whisper_token_eot(), c.IsPREV(t), c.IsSOLM(t), c.IsNOT(t):
-		return false
-	default:
+
+	if c.IsBEG(t) || c.IsSOT(t) || whisperlow.Token(t.Id) >= c.model.ctx.Whisper_token_eot() || c.IsPREV(t) || c.IsSOLM(t) || c.IsNOT(t) {
+		return false 
+	} else {
 		return true
 	}
 }
@@ -173,7 +173,7 @@ func toSegment(ctx *whisperlow.Context, n int) Segment {
 
 func toTokens(ctx *whisperlow.Context, n int) []Token {
 	res := make([]Token, ctx.Whisper_full_n_tokens(n))
-	for i := 0; i < len(res); i++ {
+	for i := range res {
 		d := ctx.Whisper_full_get_token_data(n, i)
 		res[i] = Token{
 			Id:    int(ctx.Whisper_full_get_token_id(n, i)),
@@ -186,4 +186,3 @@ func toTokens(ctx *whisperlow.Context, n int) []Token {
 	return res
 }
 
-func strconvI(i int) string { return fmt.Sprintf("%d", i) }
