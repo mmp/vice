@@ -394,7 +394,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 					}
 				}
 				ep.TrackState[callsign].leaderLineDirection = &dir
-				status.output = fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID)
 			} else { // handoffs
 				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
@@ -701,6 +701,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 					}
 				}
 				ep.TrackState[callsign].leaderLineDirection = &dir
+				status.bigOutput = fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID)
 			} else {
 				acid := sim.ACID(trk.ADSBCallsign)
 				ep.handoffTrack(ctx, acid, fields[0])
