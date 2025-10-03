@@ -864,7 +864,7 @@ func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) float32 {
 
 func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context) {
 	if nextRow {
-		toolbarDrawState.buttonCursor[0] = toolbarDrawState.buttonDrawStartPos[0] // Reset to the start of the row
+		toolbarDrawState.buttonCursor[0] = toolbarDrawState.buttonDrawStartPos[0] + 2 // Reset to the start of the row
 		toolbarDrawState.buttonCursor[1] -= sz[1] + 3                             // some space in between rows
 	}
 }
@@ -873,7 +873,7 @@ func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float3
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	color := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
-	toolbarDrawState.cb.LineWidth(2, ctx.DPIScale)
+	toolbarDrawState.cb.LineWidth(2.5, ctx.DPIScale)
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
