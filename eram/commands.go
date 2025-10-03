@@ -179,7 +179,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.DisplayJRing = !state.DisplayJRing
 				state.DisplayReducedJRing = false // clear reduced J ring
-				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			case "T": // reduced J ring
 				trk, ok := ctx.Client.State.GetTrackByFLID(fields[1])
 				if !ok {
@@ -188,12 +188,12 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
 				if state.track.TransponderAltitude > 23000 {
-					status.err = ErrERAMIllegalValue // maybe change this error to "not eligible?"
+					status.err = NewERAMError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
 					return
 				}
 				state.DisplayJRing = false // clear J ring
 				state.DisplayReducedJRing = !state.DisplayReducedJRing
-				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			default: // init a pointout
 				// <sector ID><FLID>
 				if len(fields) != 2 {
@@ -589,16 +589,16 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.DisplayJRing = !state.DisplayJRing
 				state.DisplayReducedJRing = false
-				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			case "T":
 				state := ep.TrackState[trk.ADSBCallsign]
 				if state.track.TransponderAltitude > 23000 {
-					status.err = ErrERAMIllegalValue
+					status.err = NewERAMError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
 					return
 				}
 				state.DisplayJRing = false
 				state.DisplayReducedJRing = !state.DisplayReducedJRing
-				status.output = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				status.bigOutput = fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
 	case "QU":

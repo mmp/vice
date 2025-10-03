@@ -2,6 +2,7 @@ package eram
 
 import (
 	"errors"
+	"fmt"
 	"net/rpc"
 
 	"github.com/mmp/vice/log"
@@ -12,8 +13,8 @@ type ERAMError struct {
 	error
 }
 
-func NewERAMError(msg string) *ERAMError {
-	return &ERAMError{errors.New(msg)}
+func NewERAMError(msg string, args ...any) *ERAMError {
+	return &ERAMError{errors.New(fmt.Sprintf(msg, args...))}
 }
 
 var ( // TODO: Get actual error messages for this
