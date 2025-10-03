@@ -36,7 +36,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		// Try execute a clicked command on the closest track.
 		trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms)
 		if trk != nil {
-			status := ep.executeERAMClickedCommand(ctx, ep.Input.String(), trk)
+			status := ep.executeERAMClickedCommand(ctx, ep.Input, trk)
 			ep.Input.Clear()
 			if status.err != nil {
 				ep.bigOutput.displayError(ep.currentPrefs(), status.err)
@@ -215,9 +215,9 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			}
 			status.bigOutput = fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
-		} else if unicode.IsDigit(rune(fields[0][0])) && len(fields) == 2 { // TODO:For minutes to a fix 
+		} else if unicode.IsDigit(rune(fields[0][0])) && len(fields) == 2 { // TODO:For minutes to a fix
 			status.err = ErrCommandFormat
-			return 
+			return
 		} else if len(fields) == 2 { // Direct a fix
 			// <fix> <FLID>
 			fix := fields[0]
@@ -230,7 +230,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			}
 			status.bigOutput = fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fix)
-			
+
 		}
 	case "QQ": // interim altitude
 		// first field is the altitude, second is the CID.
@@ -368,13 +368,16 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 					return
 				}
 				if !trk.IsAssociated() {
-					return // What error should be returned here?
+					status.err = ErrCommandFormat
+					return
 				}
+				// Toggle FDB display (only for non-owned tracks)
 				if trk.FlightPlan.TrackingController == ctx.UserTCP {
-					return // What error should be returned here?
+					status.err = NewERAMError("USER ACTION NOT ALLOWED ON A\nCONTROLLER FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
+					return
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
-				state.eFDB = !state.eFDB // toggle FDB
+				state.eFDB = !state.eFDB
 				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		case 2: // leader line & handoffs
@@ -568,20 +571,21 @@ func (ep *ERAMPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]floa
 	return trk, distance
 }
 
-func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, trk *sim.Track) (status CommandStatus) {
+func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputText, trk *sim.Track) (status CommandStatus) {
 	if trk == nil {
 		status.err = ErrERAMIllegalACID
 		return
 	}
 
-	var prefix string
-	original := cmd
-	if len(cmd) >= 2 {
-		prefix = cmd[:2]
-		cmd = strings.TrimPrefix(cmd, prefix)
-		cmd = strings.TrimSpace(cmd) // TODO: Do to ERAMCommand
-	}
+	original := cmdLine.String()
 
+	fieldsFull := strings.Fields(original)
+	var prefix, cmd string
+	if len(fieldsFull) > 0 {
+		prefix = fieldsFull[0]
+		cmd = strings.Join(fieldsFull[1:], " ")
+	}
+	
 	switch prefix {
 	case "QP":
 		fields := strings.Fields(cmd)
@@ -613,7 +617,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
 			} else {
 				status.bigOutput = fmt.Sprintf("ACCEPT\nREROUTE\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
-				ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fields[0]) 
+				ep.flightPlanDirect(ctx, sim.ACID(trk.ADSBCallsign), fields[0])
 				// TODO: Draw QU lunes after this CMD
 			}
 		}
@@ -688,8 +692,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 					return
 				}
 				if trk.FlightPlan.TrackingController == ctx.UserTCP {
-					// USER ACTION NOT ALLOWED ON A \nCONTROLLED FLIGHT FORCED DATA BLK <callsign>
-					status.err = ErrIllegalUserAction
+					status.err = NewERAMError("USER ACTION NOT ALLOWED ON A\nCONTROLLED FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
 					return
 				}
 				state := ep.TrackState[trk.ADSBCallsign]
