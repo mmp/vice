@@ -1776,6 +1776,6 @@
             "MDT RVM",
             "WRI RVM"
         ],
-        "video_map_file": "videomaps/ZNY-eram-videomaps.gob"
+        "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst"
     }
 }
