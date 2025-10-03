@@ -203,6 +203,13 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 		// Eliminate duplicates (may happen since the scraper grabs 24-hour chunks every 16 hours.
 		recs = slices.CompactFunc(recs, func(a, b wx.METAR) bool { return a.ReportTime == b.ReportTime })
 
+		// Chop raw after RMK; we don't display it anyway
+		for i := range recs {
+			if idx := strings.Index(recs[i].Raw, " RMK"); idx != -1 {
+				recs[i].Raw = recs[i].Raw[:idx]
+			}
+		}
+
 		soa, err := wx.MakeMETARSOA(recs)
 		if err != nil {
 			return err
@@ -213,6 +220,15 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 
 		metar[ap] = soa
 	}
+
+	// Make fake METAR for KAAC based on KOKC
+	metar["KAAC"] = metar["KOKC"]
+	kaac := metar["KAAC"]
+	kaac.Raw = slices.Clone(kaac.Raw)
+	for i := range metar["KAAC"].Raw {
+		kaac.Raw[i] = strings.ReplaceAll(kaac.Raw[i], "KOKC", "KAAC")
+	}
+	metar["KAAC"] = kaac
 
 	nb, err := st.StoreObject("METAR.msgpack.zst", metar)
 	if err == nil {

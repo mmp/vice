@@ -11,6 +11,7 @@ import (
 	"maps"
 	"slices"
 	"strconv"
+	"time"
 
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
@@ -37,7 +38,7 @@ var AtmosTRACONs = []string{
 // and IdFromLevelIndex perform the indexing and its inverse.
 const NumSampleLevels = 40
 
-type Atmos struct {
+type AtmosByPoint struct {
 	// Lat-longs to stack of levels
 	SampleStacks map[math.Point2LL]*AtmosSampleStack
 }
@@ -62,7 +63,7 @@ type AtmosSample struct {
 
 // For storage, this information is encoded in structure-of-arrays format,
 // which makes it more compressible.
-type AtmosSOA struct {
+type AtmosByPointSOA struct {
 	Lat, Long []float32
 	Levels    [NumSampleLevels]AtmosLevelsSOA
 }
@@ -78,8 +79,19 @@ type AtmosLevelsSOA struct {
 	Height      []uint8 // geopotential height (MSL) + windHeightOffset in meters
 }
 
-func MakeAtmos() Atmos {
-	return Atmos{SampleStacks: make(map[math.Point2LL]*AtmosSampleStack)}
+type AtmosByTime struct {
+	SampleStacks map[time.Time]*AtmosSampleStack
+}
+
+// AtmosByTimeSOA stores atmospheric data for multiple time points
+// at a single location (used for offline weather packaging)
+type AtmosByTimeSOA struct {
+	Times  []int64 // Delta-encoded Unix timestamps
+	Levels [NumSampleLevels]AtmosLevelsSOA
+}
+
+func MakeAtmosByPoint() AtmosByPoint {
+	return AtmosByPoint{SampleStacks: make(map[math.Point2LL]*AtmosSampleStack)}
 }
 
 func LevelIndexFromId(b []byte) int {
@@ -158,8 +170,92 @@ func dirSpeedToUV(dir, speed float32) (float32, float32) {
 	return -s * float32(math.Sin(d)), -s * float32(math.Cos(d))
 }
 
-func (at Atmos) ToSOA() (AtmosSOA, error) {
-	soa := AtmosSOA{}
+// Generic function to convert sample stacks to SOA levels
+func convertStacksToSOALevels[K comparable](stacks map[K]*AtmosSampleStack, keys []K) ([NumSampleLevels]AtmosLevelsSOA, error) {
+	var levels [NumSampleLevels]AtmosLevelsSOA
+
+	for _, key := range keys {
+		stack := stacks[key]
+		for i, level := range stack.Levels {
+			hdg, spd := uvToDirSpeed(level.UComponent, level.VComponent)
+			if hdg < 0 || hdg > 360 {
+				return levels, fmt.Errorf("bad heading: %f not in 0-360", hdg)
+			}
+			if spd < 0 || spd > 255 {
+				return levels, fmt.Errorf("bad speed: %f not in 0-255", spd)
+			}
+			levels[i].Heading = append(levels[i].Heading, uint8(math.Round(hdg+1)/2))
+			levels[i].Speed = append(levels[i].Speed, uint8(math.Round(spd)))
+
+			tc := level.Temperature - 273.15 // K -> C
+			tq := int(math.Round(tc))
+			if tq < -128 || tq > 127 {
+				return levels, fmt.Errorf("bad temperature: %d not in -128-127", tq)
+			}
+			levels[i].Temperature = append(levels[i].Temperature, int8(tq))
+
+			dc := level.Dewpoint - 273.15 // K -> C
+			dq := int(math.Round(dc))
+			if dq < -128 || dq > 127 {
+				return levels, fmt.Errorf("bad dewpoint: %d not in -128-127", dq)
+			}
+			levels[i].Dewpoint = append(levels[i].Dewpoint, int8(dq))
+
+			h := level.Height + windHeightOffset // deal with slightly below sea level
+			h = (h + 50) / 100                   // 100s of meters
+			if h < 0 || h > 255 {
+				return levels, fmt.Errorf("bad remapped height: %f not in 0-255", h)
+			}
+			levels[i].Height = append(levels[i].Height, uint8(h))
+		}
+	}
+
+	// Delta encode all levels
+	for i := range levels {
+		levels[i].Heading = util.DeltaEncode(levels[i].Heading)
+		levels[i].Speed = util.DeltaEncode(levels[i].Speed)
+		levels[i].Temperature = util.DeltaEncode(levels[i].Temperature)
+		levels[i].Dewpoint = util.DeltaEncode(levels[i].Dewpoint)
+		levels[i].Height = util.DeltaEncode(levels[i].Height)
+	}
+
+	return levels, nil
+}
+
+// Generic function to convert SOA levels back to sample stacks
+func convertSOALevelsToStacks[K comparable](levels [NumSampleLevels]AtmosLevelsSOA, keys []K) (map[K]*AtmosSampleStack, error) {
+	// Delta decode all levels first
+	var decodedLevels [NumSampleLevels]AtmosLevelsSOA
+	for i := range levels {
+		decodedLevels[i].Heading = util.DeltaDecode(levels[i].Heading)
+		decodedLevels[i].Speed = util.DeltaDecode(levels[i].Speed)
+		decodedLevels[i].Temperature = util.DeltaDecode(levels[i].Temperature)
+		decodedLevels[i].Dewpoint = util.DeltaDecode(levels[i].Dewpoint)
+		decodedLevels[i].Height = util.DeltaDecode(levels[i].Height)
+	}
+
+	stacks := make(map[K]*AtmosSampleStack)
+	for i, key := range keys {
+		var stack AtmosSampleStack
+		for j, level := range decodedLevels {
+			s := AtmosSample{
+				Temperature: float32(level.Temperature[i]) + 273.15, // C -> K
+				Dewpoint:    float32(level.Dewpoint[i]) + 273.15,    // C -> K
+				Height:      float32(level.Height[i])*100 - windHeightOffset,
+			}
+			s.UComponent, s.VComponent = dirSpeedToUV(float32(level.Heading[i])*2, float32(level.Speed[i]))
+
+			stack.Levels[j] = s
+		}
+
+		stacks[key] = &stack
+	}
+
+	return stacks, nil
+}
+
+func (at AtmosByPoint) ToSOA() (AtmosByPointSOA, error) {
+	soa := AtmosByPointSOA{}
 
 	pts := slices.Collect(maps.Keys(at.SampleStacks))
 	slices.SortFunc(pts, func(a, b math.Point2LL) int {
@@ -178,84 +274,74 @@ func (at Atmos) ToSOA() (AtmosSOA, error) {
 	for _, pt := range pts {
 		soa.Long = append(soa.Long, pt[0])
 		soa.Lat = append(soa.Lat, pt[1])
-
-		for i, level := range at.SampleStacks[pt].Levels {
-			hdg, spd := uvToDirSpeed(level.UComponent, level.VComponent)
-			if hdg < 0 || hdg > 360 {
-				return AtmosSOA{}, fmt.Errorf("bad heading: %f not in 0-360", hdg)
-			}
-			if spd < 0 || spd > 255 {
-				return AtmosSOA{}, fmt.Errorf("bad speed: %f not in 0-255", spd)
-			}
-			soa.Levels[i].Heading = append(soa.Levels[i].Heading, uint8(math.Round(hdg+1)/2))
-			soa.Levels[i].Speed = append(soa.Levels[i].Speed, uint8(math.Round(spd)))
-
-			tc := level.Temperature - 273.15 // K -> C
-			tq := int(math.Round(tc))
-			if tq < -128 || tq > 127 {
-				return AtmosSOA{}, fmt.Errorf("bad temperature: %d not in -128-127", tq)
-			}
-			soa.Levels[i].Temperature = append(soa.Levels[i].Temperature, int8(tq))
-
-			dc := level.Dewpoint - 273.15 // K -> C
-			dq := int(math.Round(dc))
-			if dq < -128 || dq > 127 {
-				return AtmosSOA{}, fmt.Errorf("bad dewpoint: %d not in -128-127", dq)
-			}
-			soa.Levels[i].Dewpoint = append(soa.Levels[i].Dewpoint, int8(dq))
-
-			h := level.Height + windHeightOffset // deal with slightly below sea level
-			h = (h + 50) / 100                   // 100s of meters
-			if h < 0 || h > 255 {
-				return AtmosSOA{}, fmt.Errorf("bad remapped height: %f not in 0-255", h)
-			}
-			soa.Levels[i].Height = append(soa.Levels[i].Height, uint8(h))
-		}
 	}
 
-	for i := range soa.Levels {
-		soa.Levels[i].Heading = util.DeltaEncode(soa.Levels[i].Heading)
-		soa.Levels[i].Speed = util.DeltaEncode(soa.Levels[i].Speed)
-		soa.Levels[i].Temperature = util.DeltaEncode(soa.Levels[i].Temperature)
-		soa.Levels[i].Dewpoint = util.DeltaEncode(soa.Levels[i].Dewpoint)
-		soa.Levels[i].Height = util.DeltaEncode(soa.Levels[i].Height)
-	}
-
-	return soa, nil
+	var err error
+	soa.Levels, err = convertStacksToSOALevels(at.SampleStacks, pts)
+	return soa, err
 }
 
-func (atsoa AtmosSOA) ToAOS() Atmos {
-	at := MakeAtmos()
+func (atsoa AtmosByPointSOA) ToAOS() AtmosByPoint {
+	at := MakeAtmosByPoint()
 
-	var levels [NumSampleLevels]AtmosLevelsSOA
-	for i := range atsoa.Levels {
-		levels[i].Heading = util.DeltaDecode(atsoa.Levels[i].Heading)
-		levels[i].Speed = util.DeltaDecode(atsoa.Levels[i].Speed)
-		levels[i].Temperature = util.DeltaDecode(atsoa.Levels[i].Temperature)
-		levels[i].Dewpoint = util.DeltaDecode(atsoa.Levels[i].Dewpoint)
-		levels[i].Height = util.DeltaDecode(atsoa.Levels[i].Height)
-	}
-
+	// Create keys for the conversion
+	var keys []math.Point2LL
 	for i := range atsoa.Lat {
-		var stack AtmosSampleStack
-		for j, level := range levels {
-			s := AtmosSample{
-				Temperature: float32(level.Temperature[i]) + 273.15, // C -> K
-				Dewpoint:    float32(level.Dewpoint[i]) + 273.15,    // C -> K
-				Height:      float32(level.Height[i])*100 - windHeightOffset,
-			}
-			s.UComponent, s.VComponent = dirSpeedToUV(float32(level.Heading[i])*2, float32(level.Speed[i]))
-
-			stack.Levels[j] = s
-		}
-
-		at.SampleStacks[math.Point2LL{atsoa.Long[i], atsoa.Lat[i]}] = &stack
+		keys = append(keys, math.Point2LL{atsoa.Long[i], atsoa.Lat[i]})
 	}
 
+	stacks, err := convertSOALevelsToStacks(atsoa.Levels, keys)
+	if err != nil {
+		// This shouldn't happen with well-formed data, but if it does, return empty AtmosByPoint
+		return at
+	}
+
+	at.SampleStacks = stacks
 	return at
 }
 
-func CheckAtmosConversion(at Atmos, soa AtmosSOA) error {
+func (at AtmosByTime) ToSOA() (AtmosByTimeSOA, error) {
+	soa := AtmosByTimeSOA{}
+
+	times := slices.Collect(maps.Keys(at.SampleStacks))
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+
+	// Convert times to Unix timestamps
+	for _, t := range times {
+		soa.Times = append(soa.Times, t.UTC().Unix())
+	}
+
+	// Delta encode the Unix timestamps
+	soa.Times = util.DeltaEncode(soa.Times)
+
+	var err error
+	soa.Levels, err = convertStacksToSOALevels(at.SampleStacks, times)
+	return soa, err
+}
+
+func (atsoa AtmosByTimeSOA) ToAOS() AtmosByTime {
+	at := AtmosByTime{SampleStacks: make(map[time.Time]*AtmosSampleStack)}
+
+	// Delta decode the Unix timestamps
+	decodedTimestamps := util.DeltaDecode(atsoa.Times)
+
+	// Convert Unix timestamps back to time.Time
+	var times []time.Time
+	for _, timestamp := range decodedTimestamps {
+		times = append(times, time.Unix(timestamp, 0).UTC())
+	}
+
+	stacks, err := convertSOALevelsToStacks(atsoa.Levels, times)
+	if err != nil {
+		// This shouldn't happen with well-formed data, but if it does, return empty AtmosByTime
+		return at
+	}
+
+	at.SampleStacks = stacks
+	return at
+}
+
+func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
 	ckat := soa.ToAOS()
 	if len(ckat.SampleStacks) != len(at.SampleStacks) {
 		return fmt.Errorf("mismatch in number of entries %d - %d", len(at.SampleStacks), len(ckat.SampleStacks))
@@ -306,7 +392,7 @@ func CheckAtmosConversion(at Atmos, soa AtmosSOA) error {
 	return nil
 }
 
-func (at Atmos) GetGrid() *AtmosGrid {
+func (at AtmosByPoint) GetGrid() *AtmosGrid {
 	return MakeAtmosGrid(at.SampleStacks)
 }
 
@@ -417,8 +503,8 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 
 	const xyDelta = 2 /* roughly 2nm spacing */
 	nmPerLongitude := math.NMPerLongitudeAt(math.Point2LL(g.Extent.Center()))
-	g.Res[0] = int(max(2, nmPerLongitude*g.Extent.Width()/xyDelta))
-	g.Res[1] = int(max(2, 60*g.Extent.Height()/xyDelta))
+	g.Res[0] = int(max(1, nmPerLongitude*g.Extent.Width()/xyDelta))
+	g.Res[1] = int(max(1, 60*g.Extent.Height()/xyDelta))
 
 	const metersToFeet = 3.28084
 	for _, stack := range sampleStacks {
@@ -433,10 +519,10 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	sumWt := make([]float32, g.Res[0]*g.Res[1]*g.Res[2])
 
 	// In xy, we accumulate to the nearest sample in the grid; for
-	// z/altitude, we lerp between  along the non-uniform altitude spacing from the
+	// z/altitude, we lerp along the non-uniform altitude spacing from the
 	// original data.
 	for p, stack := range sampleStacks {
-		pg, _ := g.ptToGrid(p)
+		pg := g.ptToGrid(p)
 		ipg := [2]int{int(math.Round(pg[0])), int(math.Round(pg[1]))}
 
 		for z := range g.Res[2] {
@@ -497,18 +583,15 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	return g
 }
 
-func (g *AtmosGrid) ptToGrid(p [2]float32) ([2]float32, bool) {
-	if !g.Extent.Inside(p) {
-		return [2]float32{0, 0}, false
-	}
+func (g *AtmosGrid) ptToGrid(p [2]float32) [2]float32 {
 	pg := math.Sub2f(p, g.Extent.P0)
-	pg[0] *= float32(g.Res[0]-1) / g.Extent.Width()
-	pg[1] *= float32(g.Res[1]-1) / g.Extent.Height()
+	pg[0] *= float32(g.Res[0]) / g.Extent.Width()
+	pg[1] *= float32(g.Res[1]) / g.Extent.Height()
 
-	pg[0] = math.Clamp(pg[0], 0, float32(g.Res[0])-1)
-	pg[1] = math.Clamp(pg[1], 0, float32(g.Res[1])-1)
+	pg[0] = math.Clamp(pg[0]+0.5, 0, float32(g.Res[0]-1))
+	pg[1] = math.Clamp(pg[1]+0.5, 0, float32(g.Res[1]-1))
 
-	return pg, true
+	return pg
 }
 
 func (g *AtmosGrid) gridToAlt(z int) float32 {
@@ -534,10 +617,7 @@ func (g *AtmosGrid) altToGrid(alt float32) float32 {
 }
 
 func (g *AtmosGrid) Lookup(p math.Point2LL, alt float32) (Sample, bool) {
-	pg, ok := g.ptToGrid(p)
-	if !ok {
-		return Sample{}, false
-	}
+	pg := g.ptToGrid(p)
 	zg := g.altToGrid(alt)
 
 	// Closest lookup for now
@@ -559,9 +639,9 @@ func (g *AtmosGrid) AltitudeForIndex(idx int) float32 {
 func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sample] {
 	return func(yield func(math.Point2LL, Sample) bool) {
 		for y := 0; y < g.Res[1]; y += step {
-			ty := float32(y) / float32(g.Res[1]-1)
+			ty := float32(y) / float32(g.Res[1])
 			for x := 0; x < g.Res[0]; x += step {
-				tx := float32(x) / float32(g.Res[0]-1)
+				tx := float32(x) / float32(g.Res[0])
 				idx := x + y*g.Res[0] + level*g.Res[0]*g.Res[1]
 
 				p := math.Point2LL(g.Extent.Lerp([2]float32{tx, ty}))
@@ -571,4 +651,48 @@ func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sam
 			}
 		}
 	}
+}
+
+// Average returns the averaged location and atmospheric data across all sample stacks
+func (a *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
+	if len(a.SampleStacks) == 0 {
+		return math.Point2LL{}, nil
+	}
+
+	// Calculate average location
+	var avgLat, avgLong float32
+	for location := range a.SampleStacks {
+		avgLong += float32(location[0])
+		avgLat += float32(location[1])
+	}
+	avgLat /= float32(len(a.SampleStacks))
+	avgLong /= float32(len(a.SampleStacks))
+	avgLoc := math.Point2LL{avgLong, avgLat}
+
+	// Initialize averaged sample stack
+	avgStack := &AtmosSampleStack{}
+
+	// Average each level across all sample stacks
+	for level := range NumSampleLevels {
+		var avgUComponent, avgVComponent, avgTemperature, avgDewpoint, avgHeight float32
+
+		for _, stack := range a.SampleStacks {
+			sample := stack.Levels[level]
+			avgUComponent += sample.UComponent
+			avgVComponent += sample.VComponent
+			avgTemperature += sample.Temperature
+			avgDewpoint += sample.Dewpoint
+			avgHeight += sample.Height
+		}
+
+		avgStack.Levels[level] = AtmosSample{
+			UComponent:  avgUComponent / float32(len(a.SampleStacks)),
+			VComponent:  avgVComponent / float32(len(a.SampleStacks)),
+			Temperature: avgTemperature / float32(len(a.SampleStacks)),
+			Dewpoint:    avgDewpoint / float32(len(a.SampleStacks)),
+			Height:      avgHeight / float32(len(a.SampleStacks)),
+		}
+	}
+
+	return avgLoc, avgStack
 }

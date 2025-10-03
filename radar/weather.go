@@ -49,7 +49,7 @@ func (w *WeatherRadar) fetchPrecipitation(ctx *panes.Context) {
 
 		if err != nil {
 			w.nextFetchTime = time.Now().Add(time.Minute)
-			ctx.Lg.Warnf("Failed to get precip URL: %v", err)
+			ctx.Lg.Infof("Failed to get precip URL: %v", err)
 			w.fetchInProgress = false
 			return
 		}

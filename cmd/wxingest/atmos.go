@@ -13,6 +13,7 @@ import (
 	"strconv"
 	"strings"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -45,19 +46,33 @@ func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
 }
 
 func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
-	var manifest []string
-	if err := sb.ReadObject("precip/PHL/manifest.msgpack.zst", &manifest); err != nil {
+	var tm []string
+	if err := sb.ReadObject("precip/manifest.msgpack.zst", &tm); err != nil {
+		return nil, err
+	}
+	manifest, err := util.TransposeStrings(tm)
+	if err != nil {
 		return nil, err
 	}
 
-	times := make([]time.Time, 0, len(manifest))
-	for _, file := range manifest {
-		t, err := time.Parse(time.RFC3339, strings.TrimSuffix(file, ".msgpack.zst"))
-		if err != nil {
-			return nil, err
+	var times []time.Time
+	for _, relativePath := range manifest {
+		// Parse paths like "PHL/2025-08-06T03:00:00Z.msgpack.zst" to extract timestamp
+		parts := strings.Split(relativePath, "/")
+		if len(parts) != 2 {
+			LogError("%s: unexpected path in manifest", relativePath)
+			continue
 		}
-		times = append(times, t)
+
+		t, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst"))
+		if err != nil {
+			LogError("%v", err)
+			continue
+		}
+		times = append(times, t.UTC())
 	}
+
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 
 	return times, nil
 }
@@ -107,7 +122,7 @@ func ingestHRRR(sb StorageBackend) error {
 	defer tfr.RemoveAll()
 
 	tCh := make(chan time.Time)
-	var eg errgroup.Group
+	eg, ctx := errgroup.WithContext(context.Background())
 	eg.Go(func() error {
 		defer close(tCh)
 
@@ -136,7 +151,11 @@ func ingestHRRR(sb StorageBackend) error {
 				if len(missing) > 0 {
 					LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
 
-					tCh <- t
+					select {
+					case tCh <- t:
+					case <-ctx.Done():
+						return ctx.Err()
+					}
 					if *hrrrQuick {
 						return nil
 					}
@@ -162,7 +181,11 @@ func ingestHRRR(sb StorageBackend) error {
 			if err != nil {
 				return err
 			}
-			hrrrCh <- downloadedHRRR{path: path, t: t}
+			select {
+			case hrrrCh <- downloadedHRRR{path: path, t: t}:
+			case <-ctx.Done():
+				return ctx.Err()
+			}
 		}
 		return nil
 	})
@@ -185,7 +208,7 @@ func ingestHRRR(sb StorageBackend) error {
 		return err
 	}
 
-	return generateManifests(sb, "atmos", slices.Values(wx.AtmosTRACONs))
+	return generateManifest(sb, "atmos")
 
 }
 
@@ -206,13 +229,14 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 
 	// Parse all paths in a single pass
 	for path := range atmosPaths {
+		if path == "atmos/manifest.msgpack.zst" {
+			continue
+		}
+
 		// Parse paths like atmos/BOI/2025-07-27T18:00:00Z.msgpack.zst
 		parts := strings.Split(strings.TrimPrefix(path, "atmos/"), "/")
 		if len(parts) != 2 {
 			LogError("%s: malformed path", path)
-			continue
-		}
-		if parts[1] == "manifest.msgpack.zst" {
 			continue
 		}
 
@@ -232,7 +256,31 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 	return ingested
 }
 
+func checkDiskSpace(path string, requiredGB int64) error {
+	var stat syscall.Statfs_t
+	if err := syscall.Statfs(path, &stat); err != nil {
+		return fmt.Errorf("failed to check disk space for %s: %w", path, err)
+	}
+
+	// Calculate available space in bytes
+	availableBytes := int64(stat.Bavail) * int64(stat.Bsize)
+	requiredBytes := requiredGB * 1024 * 1024 * 1024
+
+	if availableBytes < requiredBytes {
+		return fmt.Errorf("insufficient disk space in %s: %.2f GB available, %d GB required",
+			path, float64(availableBytes)/(1024*1024*1024), requiredGB)
+	}
+
+	return nil
+}
+
 func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb StorageBackend) (string, error) {
+	// Check disk space before downloading
+	tmp := os.Getenv("WXINGEST_TMP")
+	if err := checkDiskSpace(tmp, 8); err != nil {
+		return "", err
+	}
+
 	// Download the grib2 file from the NOAA archive
 	hrrrpath := fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
 	hrrrr, err := hrrrsb.OpenRead(hrrrpath)
@@ -352,7 +400,7 @@ func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) 
 	return cf, nil
 }
 
-func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
+func sampleFieldFromCSV(tracon string, f *os.File) (*wx.AtmosByPoint, error) {
 	eg, ctx := errgroup.WithContext(context.Background())
 
 	// Read chunks of the file asynchronously and with double-buffering so
@@ -367,10 +415,12 @@ func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
 	readBufCh := make(chan []byte, 1)
 	eg.Go(func() error { return readCSV(ctx, f, freeBufCh, readBufCh) })
 
-	sf, err := parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
-	if err != nil {
-		return nil, err
-	}
+	var sf *wx.AtmosByPoint
+	eg.Go(func() error {
+		var err error
+		sf, err = parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
+		return err
+	})
 
 	if err := eg.Wait(); err != nil {
 		return nil, err
@@ -381,7 +431,14 @@ func sampleFieldFromCSV(tracon string, f *os.File) (*wx.Atmos, error) {
 
 func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh chan<- []byte) error {
 	for {
-		buf := <-freeBufCh
+		var buf []byte
+		select {
+		case buf = <-freeBufCh:
+		case <-ctx.Done():
+			close(readBufCh)
+			return ctx.Err()
+		}
+
 		n, err := f.Read(buf)
 		if n == 0 && err == io.EOF {
 			close(readBufCh) // no more coming
@@ -393,7 +450,7 @@ func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh
 			case readBufCh <- buf[:n]:
 			case <-ctx.Done():
 				close(readBufCh)
-				return nil
+				return ctx.Err()
 			}
 		}
 	}
@@ -484,7 +541,7 @@ type LineItem struct {
 	Level            int
 }
 
-func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.Atmos, error) {
+func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.AtmosByPoint, error) {
 	bp := 0 // buf pos
 	var buf []byte
 
@@ -528,7 +585,7 @@ func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan
 		return s
 	}
 
-	at := wx.MakeAtmos()
+	at := wx.MakeAtmosByPoint()
 
 	tspec, ok := av.DB.TRACONs[tracon]
 	if !ok {
@@ -637,7 +694,7 @@ func parseHRRRLine(line []byte) (LineItem, error) {
 	return li, nil
 }
 
-func uploadWeatherAtmos(at *wx.Atmos, tracon string, t time.Time, st StorageBackend) (int64, error) {
+func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st StorageBackend) (int64, error) {
 	soa, err := at.ToSOA()
 	if err != nil {
 		return 0, err

@@ -373,8 +373,13 @@ func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream 
 	// Prefer a robust signal of scenario type: STARS scenarios define
 	// a PrimaryAirport in the sim state; ERAM scenarios do not.
 	isSTARSSim := false
-	if c.Sim != nil {
-		isSTARSSim = c.Sim.State.TRACON != ""
+	switch {
+	case c.Sim != nil:
+		isSTARSSim = c.Sim.State.PrimaryAirport != ""
+	case c.LastTRACON != "":
+		_, isSTARSSim = av.DB.TRACONs[c.LastTRACON]
+	default:
+		isSTARSSim = true
 	}
 
 	// Use stored pane instances instead of creating new ones

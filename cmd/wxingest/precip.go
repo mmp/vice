@@ -8,13 +8,11 @@ import (
 	"fmt"
 	"image/png"
 	"io"
-	"maps"
 	"path/filepath"
 	"strings"
 	"sync/atomic"
 	"time"
 
-	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -61,7 +59,7 @@ func ingestPrecip(sb StorageBackend) error {
 		return err
 	}
 
-	return generateManifests(sb, "precip", maps.Keys(av.DB.TRACONs))
+	return generateManifest(sb, "precip")
 }
 
 func processPrecip(sb StorageBackend, path string) (int64, error) {

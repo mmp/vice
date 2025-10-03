@@ -11,6 +11,7 @@ import (
 	"net/rpc"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"time"
@@ -22,14 +23,16 @@ import (
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
-	"golang.org/x/sync/errgroup"
 )
 
 func MakeWXProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
 	if g, err := MakeGCSProvider(lg); err == nil {
 		return g, nil
+	} else if r, err := MakeRPCProvider(serverAddress, lg); err == nil {
+		return r, nil
+	} else {
+		return MakeResourcesWXProvider(lg), nil
 	}
-	return MakeRPCProvider(serverAddress, lg)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -159,14 +162,14 @@ func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return result.URL, result.NextTime, nil
 }
 
-func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosSOA, time time.Time, nextTime time.Time, err error) {
+func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, time time.Time, nextTime time.Time, err error) {
 	args := GetAtmosArgs{
 		TRACON: tracon,
 		Time:   t,
 	}
 	var result GetAtmosResult
 	if err = r.callWithTimeout(GetAtmosGridRPC, args, &result); err == nil {
-		atmos = result.AtmosSOA
+		atmos = result.AtmosByPointSOA
 		time = result.Time
 		nextTime = result.NextTime
 	}
@@ -177,29 +180,28 @@ func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosS
 // GCSProvider
 
 type GCSProvider struct {
-	metar        map[string]wx.METARSOA
-	metarCh      chan map[string]wx.METARSOA
-	metarTimesCh chan []time.Time
+	metar          map[string]wx.METARSOA
+	metarFetchDone chan struct{}
 
-	timesCache     map[string][]time.Time // prefix -> times available in GCS
-	timesCacheDone chan struct{}
+	precipTimes     map[string][]time.Time
+	precipFetchDone chan struct{}
 
-	validIntervalsCh chan struct{}
-	validIntervals   []util.TimeInterval
+	atmosTimes     map[string][]time.Time
+	atmosFetchDone chan struct{}
 
-	mu        util.LoggingMutex
+	validIntervals     []util.TimeInterval
+	validIntervalsDone chan struct{}
+
 	gcsClient *util.GCSClient
 	lg        *log.Logger
 }
 
 func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	g := &GCSProvider{
-		metarCh:          make(chan map[string]wx.METARSOA, 1),
-		validIntervalsCh: make(chan struct{}),
-
-		metarTimesCh:   make(chan []time.Time, 1),
-		timesCache:     make(map[string][]time.Time),
-		timesCacheDone: make(chan struct{}),
+		metarFetchDone:     make(chan struct{}),
+		precipFetchDone:    make(chan struct{}),
+		atmosFetchDone:     make(chan struct{}),
+		validIntervalsDone: make(chan struct{}),
 
 		lg: lg,
 	}
@@ -216,67 +218,109 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 		return g, err
 	}
 
-	var eg errgroup.Group
-	eg.Go(func() error { return g.fetchMETAR() })
-
-	pch := make(chan string)
-	eg.Go(func() error {
-		defer close(pch)
-		for tracon := range av.DB.TRACONs {
-			pch <- "precip/" + tracon
-		}
-		for _, tracon := range wx.AtmosTRACONs {
-			pch <- "atmos/" + tracon
-		}
-		return nil
-	})
-	for range 4 { // Limit parallelism because zstd is a memory pig.
-		eg.Go(func() error { return g.fetchManifests(pch) })
-	}
 	go func() {
-		if err := eg.Wait(); err != nil {
+		defer close(g.metarFetchDone)
+		var err error
+		g.metar, err = g.fetchMETAR()
+		if err != nil {
 			g.lg.Errorf("%v", err)
 		}
-		close(g.timesCacheDone)
-		go g.collectTimeIntervals()
+	}()
+
+	go func() {
+		defer close(g.precipFetchDone)
+		var err error
+		g.precipTimes, err = g.fetchManifest("precip")
+		if err != nil {
+			g.lg.Errorf("%v", err)
+		}
+	}()
+
+	go func() {
+		defer close(g.atmosFetchDone)
+		var err error
+		g.atmosTimes, err = g.fetchManifest("atmos")
+		if err != nil {
+			g.lg.Errorf("%v", err)
+		}
+	}()
+
+	go func() {
+		defer close(g.validIntervalsDone)
+		var err error
+		g.validIntervals, err = g.collectTimeIntervals()
+		if err != nil {
+			g.lg.Errorf("%v", err)
+		}
 	}()
 
 	return g, nil
 }
 
-func (g *GCSProvider) fetchManifests(pch <-chan string) error {
-	zr, err := zstd.NewReader(nil, zstd.WithDecoderConcurrency(0))
-	if err != nil {
+func (g *GCSProvider) fetchMETAR() (map[string]wx.METARSOA, error) {
+	var m map[string]wx.METARSOA
+	err := g.fetchCached("METAR.msgpack.zst", &m)
+	return m, err
+}
+
+func (g *GCSProvider) fetchCached(path string, result any) error {
+	if t, err := util.CacheRetrieveObject("wx/"+path, result); err == nil && time.Since(t) < 6*time.Hour {
+		g.lg.Infof("%s: retrieved from cache", path)
+		return nil
+	}
+
+	start := time.Now()
+
+	if err := g.getObject(path, result); err != nil {
 		return err
 	}
 
-	for prefix := range pch {
-		var manifest []string
-		if r, err := g.gcsClient.GetReader(filepath.Join(prefix, "manifest.msgpack.zst")); err != nil {
-			return err
-		} else {
-			zr.Reset(r)
-			if err := msgpack.NewDecoder(zr).Decode(&manifest); err != nil {
-				return err
-			} else if err := r.Close(); err != nil {
-				return err
-			}
-		}
+	g.lg.Infof("%s: fetched in %s", path, time.Since(start))
 
-		times := make([]time.Time, 0, len(manifest))
-		for _, file := range manifest {
-			if t, err := time.Parse(time.RFC3339, strings.TrimSuffix(file, ".msgpack.zst")); err != nil {
-				return err
-			} else {
-				times = append(times, t)
-			}
-		}
+	return util.CacheStoreObject("wx/"+path, result)
+}
 
-		g.mu.Lock(g.lg)
-		g.timesCache[prefix] = times
-		g.mu.Unlock(g.lg)
+func (g *GCSProvider) fetchManifest(prefix string) (map[string][]time.Time, error) {
+	var tr []string
+	if err := g.fetchCached(filepath.Join(prefix, "manifest.msgpack.zst"), &tr); err != nil {
+		return nil, err
 	}
-	return nil
+	// Manifests are stored transposed, which makes them compress better..
+	manifest, err := util.TransposeStrings(tr)
+	if err != nil {
+		return nil, err
+	}
+
+	// Parse consolidated manifest - files are in format "TRACON/timestamp.msgpack.zst"
+	m := make(map[string][]time.Time)
+	buf := make([]byte, 0, 32) // Reusable buffer for TRACON strings
+	for _, relativePath := range manifest {
+		parts := strings.Split(relativePath, "/")
+		if len(parts) != 2 {
+			g.lg.Warnf("%s: invalid path in %s manifest", relativePath, prefix)
+			continue
+		}
+
+		if t, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst")); err != nil {
+			g.lg.Warnf("%v", err)
+			continue
+		} else {
+			// Copy TRACON to buffer to break GC reference, then intern
+			buf = buf[:0] // Reset buffer but keep capacity
+			buf = append(buf, parts[0]...)
+			traconKey := string(buf) // Create new string from buffer
+			m[traconKey] = append(m[traconKey], t.UTC())
+		}
+	}
+
+	// They should already be sorted by time, but...
+	for _, times := range m {
+		slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+	}
+
+	runtime.GC()
+
+	return m, nil
 }
 
 func (g *GCSProvider) getObject(path string, obj any) error {
@@ -290,51 +334,9 @@ func (g *GCSProvider) getObject(path string, obj any) error {
 	if err != nil {
 		return err
 	}
+	defer zr.Close()
 
 	return msgpack.NewDecoder(zr).Decode(obj)
-}
-
-func (g *GCSProvider) fetchMETAR() error {
-	defer close(g.metarCh)
-	defer close(g.metarTimesCh)
-
-	var m map[string]wx.METARSOA
-	if t, err := util.CacheRetrieveObject("wx/METAR", &m); err != nil || time.Since(t) > 24*time.Hour {
-		start := time.Now()
-
-		if err := g.getObject("METAR.msgpack.zst", &m); err != nil {
-			return err
-		}
-
-		m["KAAC"] = m["KOKC"] // fake METAR for KAAC
-		// TODO: rewrite Raw METAR?
-
-		if err := util.CacheStoreObject("wx/METAR", m); err != nil {
-			return err
-		}
-
-		g.lg.Infof("Fetched METAR for %d airports in %s", len(m), time.Since(start))
-	}
-
-	var times []time.Time
-	phlMETAR := wx.DecodeMETARSOA(m["KPHL"])
-	for _, metar := range phlMETAR {
-		times = append(times, metar.Time.UTC())
-	}
-	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
-	g.metarTimesCh <- times
-
-	g.metarCh <- m
-
-	return nil
-}
-
-func (g *GCSProvider) getAvailableTimes(prefix string) []time.Time {
-	<-g.timesCacheDone
-
-	g.mu.Lock(g.lg)
-	defer g.mu.Unlock(g.lg)
-	return g.timesCache[prefix]
 }
 
 func (g *GCSProvider) buildObjectPath(prefix string, t time.Time) string {
@@ -342,40 +344,40 @@ func (g *GCSProvider) buildObjectPath(prefix string, t time.Time) string {
 }
 
 func (g *GCSProvider) GetAvailableTimeIntervals() []util.TimeInterval {
-	<-g.validIntervalsCh // wait for intervals to be ready
-	g.mu.Lock(g.lg)
-	defer g.mu.Unlock(g.lg)
+	<-g.validIntervalsDone
 	return g.validIntervals
 }
 
-func (g *GCSProvider) collectTimeIntervals() {
-	metar := <-g.metarTimesCh
+func (g *GCSProvider) collectTimeIntervals() ([]util.TimeInterval, error) {
+	<-g.metarFetchDone
+	<-g.precipFetchDone
+	<-g.atmosFetchDone
 
-	precip, ok := g.timesCache["precip/PHL"]
-	if !ok {
-		g.lg.Errorf("precip/PHL not found in timesCache")
+	// Arbitrarily, use PHL as the exemplar to see what we have data for.
+	var metar []time.Time
+	if phl, ok := g.metar["KPHL"]; !ok {
+		return nil, errors.New("KPHL not found in metar")
+	} else {
+		for _, m := range wx.DecodeMETARSOA(phl) {
+			metar = append(metar, m.Time.UTC())
+		}
+		slices.SortFunc(metar, func(a, b time.Time) int { return a.Compare(b) })
 	}
-	atmos, ok := g.timesCache["atmos/PHL"]
+
+	precip, ok := g.precipTimes["PHL"]
 	if !ok {
-		g.lg.Errorf("atmos/PHL not found in timesCache")
+		return nil, errors.New("PHL not found in precipTimes")
+	}
+	atmos, ok := g.atmosTimes["PHL"]
+	if !ok {
+		return nil, errors.New("PHL not found in atmosTimes")
 	}
 
-	iv := wx.FullDataDays(metar, precip, atmos)
-
-	g.mu.Lock(g.lg)
-	g.validIntervals = iv
-	close(g.validIntervalsCh) // signal done
-	g.mu.Unlock(g.lg)
+	return wx.FullDataDays(metar, precip, atmos), nil
 }
 
 func (g *GCSProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error) {
-	g.mu.Lock(g.lg)
-	defer g.mu.Unlock(g.lg)
-
-	if g.metar == nil {
-		g.metar = <-g.metarCh
-		g.metarCh = nil
-	}
+	<-g.metarFetchDone
 
 	m := make(map[string]wx.METARSOA)
 	for _, ap := range airports {
@@ -386,27 +388,25 @@ func (g *GCSProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error
 	return m, nil
 }
 
-func (g *GCSProvider) getPath(prefix string, t time.Time) (string, time.Time, error) {
-	times := g.getAvailableTimes(prefix)
+func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Time, error) {
+	<-g.precipFetchDone
+
+	times, ok := g.precipTimes[tracon]
+	if !ok {
+		return "", time.Time{}, errors.New(tracon + ": unknown TRACON")
+	}
 
 	idx, err := util.FindTimeAtOrBefore(times, t)
 	if err != nil {
-		return "", time.Time{}, fmt.Errorf("%s: %w", prefix, err)
+		return "", time.Time{}, fmt.Errorf("%s: %w", tracon, err)
 	}
 
-	var next time.Time
+	var nextTime time.Time
 	if idx+1 < len(times) {
-		next = times[idx+1]
+		nextTime = times[idx+1]
 	}
 
-	return g.buildObjectPath(prefix, times[idx]), next, nil
-}
-
-func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Time, error) {
-	path, nextTime, err := g.getPath("precip/"+tracon, t)
-	if err != nil {
-		return "", time.Time{}, err
-	}
+	path := g.buildObjectPath("precip/"+tracon, times[idx])
 
 	url, err := g.gcsClient.GetURL(path, 4*time.Hour)
 	if err != nil {
@@ -416,9 +416,11 @@ func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return url, nextTime, nil
 }
 
-func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosSOA, atmosTime time.Time, nextTime time.Time, err error) {
-	times := g.getAvailableTimes("atmos/" + tracon)
-	if len(times) == 0 {
+func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, atmosTime time.Time, nextTime time.Time, err error) {
+	<-g.atmosFetchDone
+
+	times, ok := g.atmosTimes[tracon]
+	if !ok {
 		err = errors.New(tracon + ": unknown TRACON")
 		return
 	}
@@ -431,7 +433,8 @@ func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosS
 	}
 
 	path := g.buildObjectPath("atmos/"+tracon, times[idx])
-	var atmosSOA wx.AtmosSOA
+
+	var atmosSOA wx.AtmosByPointSOA
 	if err = g.getObject(path, &atmosSOA); err == nil {
 		atmos = &atmosSOA
 		atmosTime = times[idx].UTC()
@@ -440,4 +443,185 @@ func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosS
 		}
 	}
 	return
+}
+
+///////////////////////////////////////////////////////////////////////////
+// ResourcesWXProvider
+
+// ResourcesWXProvider implements the wx.Provider interface, providing
+// information from the local resources directory (more or less intended
+// for offline use of vice).
+type ResourcesWXProvider struct {
+	metar         map[string]wx.METARSOA     // airport -> METARSOA. Read-only after initialization.
+	atmosByTime   map[string]*wx.AtmosByTime // tracon -> AtmosByTime. Populated on-demand, protected by mu.
+	timeIntervals []util.TimeInterval
+
+	initDone chan struct{}
+	mu       util.LoggingMutex
+	lg       *log.Logger
+}
+
+func MakeResourcesWXProvider(lg *log.Logger) wx.Provider {
+	r := &ResourcesWXProvider{
+		metar:       make(map[string]wx.METARSOA),
+		atmosByTime: make(map[string]*wx.AtmosByTime),
+		initDone:    make(chan struct{}),
+		lg:          lg,
+	}
+
+	go func() {
+		if err := r.loadWX(); err != nil {
+			lg.Errorf("ResourcesWXProvider: %v", err)
+		}
+		close(r.initDone)
+	}()
+
+	return r
+}
+
+func (r *ResourcesWXProvider) loadWX() error {
+	metarTimes, err := r.loadMETAR()
+	if err != nil {
+		return err
+	}
+
+	// As elsewhere, arbitrarily use PHL to see when we do and do not have WX data.
+	phlAtmos, err := r.readAtmosByTime("PHL")
+	if err != nil {
+		return err
+	}
+	var atmosTimes []time.Time
+	for t := range phlAtmos.SampleStacks {
+		atmosTimes = append(atmosTimes, t)
+	}
+	slices.SortFunc(atmosTimes, func(a, b time.Time) int { return a.Compare(b) })
+
+	if len(metarTimes) > 0 && len(atmosTimes) > 0 {
+		r.timeIntervals = wx.FullDataDays(metarTimes, nil, atmosTimes)
+	} else {
+		r.lg.Warnf("Cannot compute time intervals: METAR times=%v, PHL atmos times=%v", metarTimes, atmosTimes)
+	}
+
+	r.lg.Infof("ResourcesWXProvider loaded: %d airports' METAR, time intervals: %v", len(r.metar), r.timeIntervals)
+
+	return nil
+}
+
+func (r *ResourcesWXProvider) loadMETAR() ([]time.Time, error) {
+	r.mu.Lock(r.lg)
+	defer r.mu.Unlock(r.lg)
+
+	rd := util.LoadResource("wx/METAR.msgpack.zst")
+	defer rd.Close()
+
+	if err := msgpack.NewDecoder(rd).Decode(&r.metar); err != nil {
+		return nil, err
+	}
+
+	var times []time.Time
+	for _, metarSOA := range r.metar {
+		for _, metar := range wx.DecodeMETARSOA(metarSOA) {
+			times = append(times, metar.Time)
+		}
+	}
+
+	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+
+	return times, nil
+}
+
+func (r *ResourcesWXProvider) readAtmosByTime(tracon string) (*wx.AtmosByTime, error) {
+	rd := util.LoadResource("wx/atmos/" + tracon + ".msgpack.zst")
+	defer rd.Close()
+
+	var atmosTimesSOA wx.AtmosByTimeSOA
+	if err := msgpack.NewDecoder(rd).Decode(&atmosTimesSOA); err != nil {
+		return nil, err
+	}
+
+	atmosByTime := atmosTimesSOA.ToAOS()
+
+	return &atmosByTime, nil
+}
+
+func (r *ResourcesWXProvider) GetAvailableTimeIntervals() []util.TimeInterval {
+	<-r.initDone
+
+	return r.timeIntervals
+}
+
+func (r *ResourcesWXProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error) {
+	<-r.initDone
+
+	m := make(map[string]wx.METARSOA)
+	for _, icao := range airports {
+		if metarSOA, ok := r.metar[icao]; ok {
+			m[icao] = metarSOA
+		}
+	}
+
+	return m, nil
+}
+
+func (r *ResourcesWXProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Time, error) {
+	return "", time.Time{}, errors.New("precipitation data not available in offline mode")
+}
+
+func (r *ResourcesWXProvider) getAtmosByTime(tracon string) (*wx.AtmosByTime, error) {
+	r.mu.Lock(r.lg)
+	defer r.mu.Unlock(r.lg)
+
+	if atmosTimes, ok := r.atmosByTime[tracon]; ok {
+		return atmosTimes, nil
+	} else {
+		atmosByTime, err := r.readAtmosByTime(tracon)
+		if err != nil {
+			return nil, err
+		}
+		r.atmosByTime[tracon] = atmosByTime
+		return atmosByTime, nil
+	}
+}
+
+func (r *ResourcesWXProvider) GetAtmosGrid(tracon string, tGet time.Time) (*wx.AtmosByPointSOA, time.Time, time.Time, error) {
+	<-r.initDone
+
+	atmosByTime, err := r.getAtmosByTime(tracon)
+
+	// Find the time at or before the requested time as well as the next
+	// time where we have atmos data. At some point we might want to start
+	// caching []time.Time for each entry in r.atmosByTime so that we can
+	// do a binary search rather than a linear search, though GetAtmosGrid
+	// is only called ~hourly (and via .WIND in STARS) and searches through
+	// a few months' worth of hourly data, so this is likely not much of an
+	// issue.
+	var t0, t1 time.Time
+	var sampleStack *wx.AtmosSampleStack
+
+	for tStack, stack := range atmosByTime.SampleStacks {
+		if tStack.Before(tGet) || tStack.Equal(tGet) {
+			if t0.IsZero() || tStack.After(t0) {
+				t0 = tStack
+				sampleStack = stack
+			}
+		} else if t1.IsZero() || tStack.Before(t1) {
+			t1 = tStack
+		}
+	}
+
+	if t0.IsZero() {
+		return nil, time.Time{}, time.Time{}, fmt.Errorf("%s: no atmospheric data available at or before requested time", tracon)
+	}
+
+	// Convert single sample stack to an AtmosByPointSOA.
+	atmosByPoint := wx.MakeAtmosByPoint()
+	pTRACON := av.DB.TRACONs[tracon].Center()
+	atmosByPoint.SampleStacks[pTRACON] = sampleStack
+
+	atmosByPointSOA, err := atmosByPoint.ToSOA()
+	if err != nil {
+		return nil, time.Time{}, time.Time{}, err
+	}
+
+	return &atmosByPointSOA, t0, t1, nil
 }

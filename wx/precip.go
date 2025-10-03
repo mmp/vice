@@ -32,6 +32,7 @@ func DecodePrecip(r io.Reader) (*Precip, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer zr.Close()
 
 	var precip Precip
 	if err := msgpack.NewDecoder(zr).Decode(&precip); err != nil {

@@ -303,7 +303,7 @@ func main() {
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
-					isSTARSSim := c.State.TRACON != ""
+					_, isSTARSSim := av.DB.TRACONs[c.State.TRACON]
 
 					// Rebuild the display hierarchy with the appropriate pane
 					config.RebuildDisplayRootForSim(isSTARSSim)

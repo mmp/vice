@@ -28,6 +28,7 @@ import (
 
 type scenarioGroup struct {
 	ARTCC              string                     `json:"artcc" scope:"eram"`
+	Area               string                     `json:"area" scope:"eram"`
 	TRACON             string                     `json:"tracon" scope:"stars"`
 	Name               string                     `json:"name"`
 	Airports           map[string]*av.Airport     `json:"airports"`
@@ -665,6 +666,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 			e.ErrorString("ARTCC %q is unknown; it must be a 3-letter identifier listed at "+
 				"https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/artcc", sg.ARTCC)
 		}
+		sg.TRACON = sg.ARTCC // TODO: find a better way to do this
 	}
 
 	sg.Fixes = make(map[string]math.Point2LL)
@@ -1406,10 +1408,24 @@ func PostDeserializeSTARSFacilityAdaptation(s *sim.STARSFacilityAdaptation, e *u
 
 func initializeSimConfigurations(sg *scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, multiController bool, e *util.ErrorLogger) {
+	facility := sg.TRACON
+	if facility == "" {
+		facility = sg.ARTCC
+	}
+	artcc := sg.ARTCC
+	if artcc == "" {
+		if info, ok := av.DB.TRACONs[facility]; ok {
+			artcc = info.ARTCC
+		}
+	}
+
 	config := &Configuration{
 		ScenarioConfigs:  make(map[string]*SimScenarioConfiguration),
 		ControlPositions: sg.ControlPositions,
 		DefaultScenario:  sg.DefaultScenario,
+		Facility:         facility,
+		ARTCC:            artcc,
+		Area:             sg.Area,
 	}
 
 	vfrAirports := make(map[string]*av.Airport)
@@ -1464,10 +1480,10 @@ func initializeSimConfigurations(sg *scenarioGroup,
 			config.DefaultScenario = util.SortedMapKeys(config.ScenarioConfigs)[0]
 		}
 
-		if simConfigurations[sg.TRACON] == nil {
-			simConfigurations[sg.TRACON] = make(map[string]*Configuration)
+		if simConfigurations[facility] == nil {
+			simConfigurations[facility] = make(map[string]*Configuration)
 		}
-		simConfigurations[sg.TRACON][sg.Name] = config
+		simConfigurations[facility][sg.Name] = config
 	}
 }
 
@@ -1536,13 +1552,14 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 
 		s := loadScenarioGroup(fs, path, e)
 		if s != nil {
-			if _, ok := scenarioGroups[s.TRACON][s.Name]; ok {
+			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
+			if _, ok := scenarioGroups[facility][s.Name]; ok {
 				e.ErrorString("%s / %s: scenario redefined", s.TRACON, s.Name)
 			} else {
-				if scenarioGroups[s.TRACON] == nil {
-					scenarioGroups[s.TRACON] = make(map[string]*scenarioGroup)
+				if scenarioGroups[facility] == nil {
+					scenarioGroups[facility] = make(map[string]*scenarioGroup)
 				}
-				scenarioGroups[s.TRACON][s.Name] = s
+				scenarioGroups[facility][s.Name] = s
 			}
 		}
 		return nil
@@ -1567,10 +1584,11 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 		s := loadScenarioGroup(fs, extraScenarioFilename, e)
 		if s != nil {
 			// These are allowed to redefine an existing scenario.
-			if scenarioGroups[s.TRACON] == nil {
-				scenarioGroups[s.TRACON] = make(map[string]*scenarioGroup)
+			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
+			if scenarioGroups[facility] == nil {
+				scenarioGroups[facility] = make(map[string]*scenarioGroup)
 			}
-			scenarioGroups[s.TRACON][s.Name] = s
+			scenarioGroups[facility][s.Name] = s
 
 			// These may have an empty "video_map_file" member, which
 			// is automatically patched up here...

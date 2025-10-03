@@ -61,7 +61,7 @@ type ERAMPane struct {
 
 	systemFont [11]*renderer.Font
 
-	allVideoMaps []sim.VideoMap
+	allVideoMaps []radar.ClientVideoMap
 
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
@@ -136,8 +136,6 @@ func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
 
-	// Tracks: get visible tracks (500nm?) and update them.
-	scopeExtent := ctx.PaneExtent
 	ps := ep.currentPrefs()
 
 	tracks := ep.visibleTracks(ctx)
@@ -154,7 +152,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
-	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
+	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
@@ -405,14 +403,14 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []sim.VideoMap
+	var draw []radar.ClientVideoMap
 	for _, vm := range ep.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Name]; ok {
 
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
+	slices.SortFunc(draw, func(a, b radar.ClientVideoMap) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
 		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1)
@@ -431,9 +429,13 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 	}
 	usedIds := make(map[int]interface{})
 
-	ep.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
+	// Filter the maps needed for this controller
+	filteredMaps := util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
 		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
+
+	// Convert to ClientVideoMaps for rendering
+	ep.allVideoMaps = radar.BuildClientVideoMaps(filteredMaps)
 	for _, vm := range ep.allVideoMaps {
 		usedIds[vm.Id] = nil
 	}
@@ -446,7 +448,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 		delete(ps.VideoMapVisible, k)
 	}
 	for _, name := range ss.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(ep.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 {
+		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == name }); idx != -1 {
 			ps.VideoMapVisible[ep.allVideoMaps[idx].Name] = nil
 		}
 	}

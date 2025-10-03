@@ -563,8 +563,8 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 	c.addCall(makeRPCCall(c.client.Go(server.GetAtmosGridRPC, spec, &result, nil),
 		func(err error) {
 			if callback != nil {
-				if result.AtmosSOA != nil {
-					callback(result.AtmosSOA.ToAOS().GetGrid(), err)
+				if result.AtmosByPointSOA != nil {
+					callback(result.AtmosByPointSOA.ToAOS().GetGrid(), err)
 				} else {
 					callback(nil, err)
 				}

@@ -75,20 +75,21 @@ var menuButtons []string = []string{"DRAW", "ATC\nTOOLS", "AB\nSETTING",
 
 var toolbarButtonPositions = make(map[string][2]float32)
 
-func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) (paneExtent math.Extent2D) {
-	// ps := ep.currentPrefs()
+func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) math.Extent2D {
+	paneExtent := ctx.PaneExtent
 	scale := ep.toolbarButtonScale(ctx)
+	ps := ep.currentPrefs()
 
 	ep.startDrawtoolbar(ctx, scale, transforms, cb)
 
 	defer func() {
 		ep.endDrawtoolbar()
 
-		sz := buttonSize(buttonFull, scale)
-
-		paneExtent.P1[1] -= sz[1]
+		if ps.DisplayToolbar {
+			sz := buttonSize(buttonFull, scale)
+			paneExtent.P1[1] -= sz[1]
+		}
 	}()
-	ps := ep.currentPrefs()
 	if !ps.DisplayToolbar {
 		return paneExtent
 	}
@@ -774,10 +775,8 @@ func drawToolbarText(text string, td *renderer.TextDrawBuilder, buttonSize [2]fl
 	}
 	style := toolbarDrawState.style
 	style.Color = color // is Renderer.LerpRGB needed here? The color inputed in scaled from in DrawToolbarButton
-	_, h := style.Font.BoundText(strings.Join(lines, "\n"), toolbarDrawState.style.LineSpacing)
 
-	slop := buttonSize[1] - float32(h) // todo: what if negative...
-	y0 := toolbarDrawState.buttonCursor[1] - 1 - slop/2
+	y0 := toolbarDrawState.buttonCursor[1] - 1
 	for _, line := range lines {
 		lw, lh := style.Font.BoundText(line, style.LineSpacing)
 		// Try to center the text, though if it's too big to fit in the
@@ -786,7 +785,7 @@ func drawToolbarText(text string, td *renderer.TextDrawBuilder, buttonSize [2]fl
 		x0 := toolbarDrawState.buttonCursor[0] + max(1, (buttonSize[0]-float32(lw))/2)
 
 		td.AddText(line, [2]float32{x0, y0}, style)
-		y0 -= float32(lh)
+		y0 -= float32(lh) * 1.2
 	}
 }
 
