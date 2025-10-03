@@ -259,7 +259,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 							if _, ok := sg.ControlPositions[route.DepartureController]; !ok {
 								e.ErrorString("controller %q for departure route %q is unknown", route.DepartureController, fix)
 							} else if !slices.Contains(s.VirtualControllers, route.DepartureController) {
-								s.VirtualControllers = append(s.VirtualControllers, route.DepartureController)
+								e.ErrorString("controller %q for departure route %q is not a virtual controller", route.DepartureController, fix)
 							}
 						}
 						activeAirportSIDs[rwy.Airport][route.SID] = nil
