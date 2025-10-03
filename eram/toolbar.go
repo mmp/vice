@@ -202,7 +202,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			resetButtonPosDefault(ctx, scale)
 			delete(toolbarDrawState.customButton, main)
 		}
-		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
+		ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
 		second := ctx.Keyboard.KeyAlt()
 		for i := 0; i < 40; i++ {
@@ -393,7 +393,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
 		}
-		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
+		ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
 		if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, false, false) {
 			// handle ALTIM SET
@@ -550,6 +550,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	if toolbarDrawState.offsetBottom && (text == "" || toolbarDrawState.noTearoff) { // Only offset for the first button (the tearoff)
 		ep.offsetFullButton(ctx)
+		toolbarDrawState.buttonCursor[0] += 3 // Add the padding
 		toolbarDrawState.offsetBottom = false
 	}
 
@@ -655,7 +656,7 @@ func oppositeSide(p0, sz [2]float32) [2]float32 {
 }
 
 func oppositeHorizontal(p0, sz [2]float32) [2]float32 {
-	return math.Add2f(p0, [2]float32{sz[0], 0})
+	return math.Add2f(p0, [2]float32{sz[0], 0}) 
 }
 
 func shiftLeftOne(p0, sz [2]float32) [2]float32 {
@@ -858,8 +859,9 @@ func cleanButtonName(name string) string {
 	return name
 }
 
-func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) float32 {
-	return ctx.PaneExtent.Height() - mainButtonPosition(ep.toolbarButtonScale(ctx))[1]
+func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) {
+	toolbarDrawState.buttonCursor[1] = ctx.PaneExtent.Height() - mainButtonPosition(ep.toolbarButtonScale(ctx))[1]
+	toolbarDrawState.buttonCursor[0] += 1
 }
 
 func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context) {
@@ -873,7 +875,7 @@ func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float3
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	color := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
-	toolbarDrawState.cb.LineWidth(2, ctx.DPIScale)
+	toolbarDrawState.cb.LineWidth(3, ctx.DPIScale)
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
