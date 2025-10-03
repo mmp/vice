@@ -87,6 +87,8 @@ jobs:
       run: |
         git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
         go build -tags static,downloadresources -ldflags="-s -w -H=windowsgui" -o ./vice.exe ./cmd/vice
+        go build -o ./crc2vice.exe ./cmd/crc2vice
+        go build -o ./dat2vice.exe ./cmd/dat2vice
         ls
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
@@ -121,4 +123,8 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: 'Vice-${{ github.ref_name }}-installer.msi'
+        files: |
+          'Vice-${{ github.ref_name }}-installer.msi'
+          dat2vice.exe
+          crc2vice.exe
+
