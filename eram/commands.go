@@ -403,7 +403,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				}
 				acid := sim.ACID(trk.ADSBCallsign)
 				sector := fields[0]
-				ep.handoffTrack(ctx, acid, sector)
+				err := ep.handoffTrack(ctx, acid, sector)
+				if err != nil {
+					status.err = err
+					return
+				}
 				status.bigOutput = fmt.Sprintf("ACCEPT\nINITIATE HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
@@ -704,7 +708,11 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmd string, tr
 				status.bigOutput = fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID)
 			} else {
 				acid := sim.ACID(trk.ADSBCallsign)
-				ep.handoffTrack(ctx, acid, fields[0])
+				err := ep.handoffTrack(ctx, acid, fields[0])
+				if err != nil {
+					status.err = err
+					return
+				}
 				status.bigOutput = fmt.Sprintf("ACCEPT\nINITIATE HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 			}
 		}
@@ -716,7 +724,7 @@ func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string,
 	// Look at the length of the controller string passed in. If it's one character, ERAM would have to find which controller it goes to.
 	// That is not here yet, so return an error.
 	if len(controller) == 1 {
-		return nil, ErrERAMIllegalPosition
+		return nil, ErrERAMSectorNotActive
 	}
 
 	for _, control := range ctx.Client.State.Controllers {
@@ -724,5 +732,5 @@ func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string,
 			return control, nil
 		}
 	}
-	return nil, ErrERAMIllegalPosition
+	return nil, ErrERAMSectorNotActive
 }

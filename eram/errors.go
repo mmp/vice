@@ -26,6 +26,7 @@ var ( // TODO: Get actual error messages for this
 	ErrIllegalUserAction   = NewERAMError("ILLEGAL USER ACTION")
 	ErrERAMMapUnavailable  = NewERAMError("MAP UNAVAILABLE")
 	ErrERAMMessageTooLong  = NewERAMError("MESSAGE TOO LONG")
+	ErrERAMSectorNotActive = NewERAMError("SECTOR NOT ACTIVE")
 )
 
 var eramErrorRemap = map[error]*ERAMError{}
