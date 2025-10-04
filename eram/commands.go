@@ -364,8 +364,12 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(ctx.UserTCP) {
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
-				ep.acceptHandoff(ctx, acid)
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				ep.acceptHandoff(ctx, acid)
+			} else if ok && trk.FlightPlan.TrackingController == ctx.UserTCP && trk.FlightPlan.HandoffTrackController != "" { // Recall handoff
+				acid := sim.ACID(trk.ADSBCallsign.String())
+				status.bigOutput = fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				ep.recallHandoff(ctx, acid)
 			} else { // Change to LDB or FDB
 				trk, ok := ctx.Client.State.GetTrackByFLID(cmd)
 				if !ok {
@@ -510,6 +514,11 @@ func (ep *ERAMPane) getACIDFromCID(ctx *panes.Context, cid string) (sim.ACID, er
 
 func (ep *ERAMPane) acceptHandoff(ctx *panes.Context, acid sim.ACID) {
 	ctx.Client.AcceptHandoff(acid,
+		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
+}
+
+func (ep *ERAMPane) recallHandoff(ctx *panes.Context, acid sim.ACID) {
+	ctx.Client.CancelHandoff(acid,
 		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 }
 
@@ -688,8 +697,13 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		case 0:
 			if trk.HandingOffTo(ctx.UserTCP) {
 				acid := sim.ACID(trk.ADSBCallsign.String())
-				ep.acceptHandoff(ctx, acid)
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				ep.acceptHandoff(ctx, acid)
+				return
+			} else if trk.FlightPlan.TrackingController == ctx.UserTCP && trk.FlightPlan.HandoffTrackController != "" {
+				acid := sim.ACID(trk.ADSBCallsign.String())
+				status.bigOutput = fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				ep.recallHandoff(ctx, acid)
 				return
 			} else {
 				if !trk.IsAssociated() {
