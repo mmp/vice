@@ -378,14 +378,9 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 				ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 			}
 
-			// get a list of all the brightness menus
-
-			vmf, err := ep.getVideoMapLibrary(ctx.Client.State, ctx.Client)
-			if err != nil {
-				fmt.Println(err)
-			}
+			// Build buttons for current group's video maps without reloading the library each frame
 			toolbarDrawState.buttonCursor = e0
-			maps := vmf.ERAMMapGroups[ep.currentPrefs().VideoMapGroup].Maps
+			maps := ep.allVideoMaps
 			// Overlay buttons should receive input even if occlusion is active
 			toolbarDrawState.processingOcclusion = true
 			for i, vm := range maps {
