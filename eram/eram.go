@@ -414,14 +414,14 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	}
 
 	for _, vm := range draw {
-		color := renderer.RGB{.188, .188, .188} // TODO: Add map brightness
-
+		color := renderer.RGB{R: .953, G: .953, B: .953}.Scale(float32(ps.VideoMapBrightness[vm.BcgName]) / 100)
 		cb.SetRGB(color)
 		cb.Call(vm.CommandBuffer)
 	}
 }
 
 func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
+	ps := ep.currentPrefs()
 	vmf, err := ep.getVideoMapLibrary(ss, client)
 	// fmt.Println(vmf.ERAMMapGroups, "VMFOKAY")
 	if err != nil {
@@ -431,10 +431,15 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 
 	maps := vmf.ERAMMapGroups[ep.currentPrefs().VideoMapGroup]
 
+	for _, eramMap := range maps.Maps {
+		if ps.VideoMapBrightness[eramMap.BcgName] == 0 { // If the brightness is not set, default it to 12
+			ps.VideoMapBrightness[eramMap.BcgName] = 12
+		}
+	}
+
 	// Convert to ClientVideoMaps for rendering
 	ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
 
-	ps := ep.currentPrefs()
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
 	}

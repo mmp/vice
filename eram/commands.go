@@ -162,6 +162,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			ep.videoMapLabel = fmt.Sprintf("%s\n%s", maps.LabelLine1, maps.LabelLine2)
 			ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
 			status.bigOutput = fmt.Sprintf("ACCEPT\nMAP REQUEST\n%v", ps.VideoMapGroup)
+			for _, eramMap := range maps.Maps {
+				if ps.VideoMapBrightness[eramMap.BcgName] == 0 { // If the brightness is not set, default it to 12
+					ps.VideoMapBrightness[eramMap.BcgName] = 12
+				}
+			}
 		}
 	case "QP": // J rings, point out
 		fields := strings.Fields(cmd)
