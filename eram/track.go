@@ -566,6 +566,9 @@ func (ep *ERAMPane) drawQULines(ctx *panes.Context, transforms radar.ScopeTransf
 
 		// Convert aircraft position to window coordinates
 		acWindowPos := transforms.WindowFromLatLongP(state.track.Location)
+		if len(info.coords) == 0 {
+			continue
+		}
 		firstFixWindowPos := transforms.WindowFromLatLongP(info.coords[0])
 		ld.AddLine(acWindowPos, firstFixWindowPos, color) // draw a line from the AC to the first fix
 
