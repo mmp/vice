@@ -1563,7 +1563,7 @@
             "radio_name": "New York center",
             "sector_id": "09"
         },
-        "ZNY 10 Westminster": {
+        "ZNY 10 Harrisburg": {
             "frequency": 133475,
             "eram_facility": true,
             "radio_name": "New York center",
@@ -1716,6 +1716,8 @@
         "ZNY Sector 25": {
             "solo_controller": "ZNY 25 Modena",
             "controllers": [
+                "ZNY 09 Westminster",
+                "ZNY 10 Harrisburg",
                 "ZNY 26 Lancaster",
                 "ZNY 27 Middletown",
                 "ZNY 55 Yardley",
