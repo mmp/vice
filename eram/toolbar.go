@@ -386,7 +386,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			for i, vm := range maps {
 				label := fmt.Sprintf("%s\n%d", vm.BcgName, ps.VideoMapBrightness[vm.BcgName])
 				if i == 10 {
-					toolbarDrawState.buttonCursor = [2]float32{e0[0], e0[1] - buttonSize(buttonFull, scale)[1] - 1}
+					toolbarDrawState.buttonCursor = [2]float32{e0[0], e0[1] - buttonSize(buttonFull, scale)[1] - 2}
 					// toolbarDrawState.offsetBottom = true
 					// toolbarDrawState.noTearoff = true
 				}
