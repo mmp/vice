@@ -1551,13 +1551,13 @@
         }
     },
     "control_positions": {
-        "ZNY 8 BRNAN": {
+        "ZNY 08 BRNAN": {
             "frequency": 124775,
             "eram_facility": true,
             "radio_name": "New York center",
             "sector_id": "08"
         },
-        "ZNY 9 Westminster": {
+        "ZNY 09 Westminster": {
             "frequency": 134325,
             "eram_facility": true,
             "radio_name": "New York center",
