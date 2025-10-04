@@ -459,8 +459,6 @@ func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
 			ep.bigOutput.displayError(ep.currentPrefs(), err)
 			return
 		}
-		// Clear the track state for this callsign.
-		delete(ep.TrackState, trk.ADSBCallsign)
 	})
 }
 
