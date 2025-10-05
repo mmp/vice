@@ -879,11 +879,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
 	}
 
-	for id, controller := range controlPositions {
-		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
-		}
-	}
+	// TODO: Change for only STARS scenarios
+	// for id, controller := range controlPositions {
+	// 	if controller.ERAMFacility && controller.FacilityIdentifier == "" {
+	// 		e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
+	// 	}
+	// }
 
 	if !checkScratchpad(ar.Scratchpad) {
 		e.ErrorString("%s: invalid scratchpad", ar.Scratchpad)

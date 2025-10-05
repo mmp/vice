@@ -502,6 +502,7 @@ type NASFlightPlan struct {
 	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
+	PerceivedAssigned     int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
 	InterimAlt            int
 	InterimType           int
 	AltitudeBlock         [2]int
