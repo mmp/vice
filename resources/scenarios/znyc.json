@@ -1,0 +1,600 @@
+{
+    "artcc": "ZNY",
+    "area": "Area C (North)",
+    "name": "ZNYC",
+    "airports": {
+        "KEWR": {
+            "departure_controller": "Liberty Departure (North)",
+            "departure_routes": {
+                "22R": {
+                    "NEION,HAAYS,GAYEL,COATE": {
+                        "cleared_altitude": 16000,
+                        "sid": "EWR5",
+                        "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho N040.58.37.300,W074.26.36.725/a10000",
+                        "handoff_controller": "ZNY 36 Sparta"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "UAL"
+                        }
+                    ],
+                    "altitude": 38000,
+                    "destination": "KORD",
+                    "exit": "COATE",
+                    "route": "COATE Q436 EMMMA WYNDE2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "long",
+                            "icao": "UAL"
+                        },
+                        {
+                            "fleet": "long",
+                            "icao": "FDX"
+                        },
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KLAX",
+                    "exit": "COATE",
+                    "route": "COATE Q436 HERBA JHW DJB J60 ASHEN KG63M BAYLI KK54G FRACA KK45A KENTO KA36U BUKKO KA30O HIPPI GABBL HLYWD1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "long",
+                            "icao": "UAL"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KDEN",
+                    "exit": "COATE",
+                    "route": "COATE Q436 RAAKK Q438 RUBYY DBQ J84 OBH BRWRY LAWGR3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KSLC",
+                    "exit": "COATE",
+                    "route": "COATE Q436 RAAKK Q440 HUFFR DKOTA DDY NORDK6"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "POE"
+                        }
+                    ],
+                    "altitude": 22000,
+                    "destination": "CYTZ",
+                    "exit": "COATE",
+                    "route": "COATE LAAYK Q436 MTCAF ULW WOZEE KAXOL KAXOL2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 22000,
+                    "destination": "KSYR",
+                    "exit": "NEION",
+                    "route": "NEION J223 CORDS CFB V29 SYR"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 20000,
+                    "destination": "KBUF",
+                    "exit": "NEION",
+                    "route": "NEION J223 CORDS ULW BENEE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        },
+                        {
+                            "icao": "JZA"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "CYYZ",
+                    "exit": "GAYEL",
+                    "route": "GAYEL Q818 WOZEE LINNG3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "long",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 36000,
+                    "destination": "KSFO",
+                    "exit": "GAYEL",
+                    "route": "GAYEL Q818 WOZEE NOSIK JUVAG DLH FAR KP09Y BIL KU90O REO HOLLR LEGGS BDEGA3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "long",
+                            "icao": "FDX"
+                        },
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 38000,
+                    "destination": "KSEA",
+                    "exit": "GAYEL",
+                    "route": "GAYEL Q818 WOZEE Q917 SSM J140 FAR J36 MLP GLASR1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "altitude": 34000,
+                    "destination": "KMSP",
+                    "exit": "GAYEL",
+                    "route": "GAYEL Q818 WOZEE NOSIK Q812 ZOHAN CEWDA MUSCL3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "long",
+                            "icao": "UAL"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "RJTT",
+                    "exit": "GAYEL",
+                    "route": "GAYEL Q812 SYR TULEG YYB 5000N/08300W 5500N/08900W 6000N/10000W 6300N/11000W 6400N/12000W 6500N/13500W CHAPO 6400N/15000W 6200N/16000W NAYLD R220 NANDY NATES R220 NIKLL R220 NOGAL R220 NANAC Y810 ESNIP Y810 AKRIT Y807 LALID Y807 MILIT Y807 POLIX"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "altitude": 30000,
+                    "destination": "KDTW",
+                    "exit": "GAYEL",
+                    "route": "GAYEL J95 CFB TRAAD JACCI FERRL2"
+                }
+            ],
+            "exit_categories": {
+                "COATE": "North",
+                "GAYEL": "North",
+                "HAAYS": "North",
+                "NEION": "North"
+            }
+        },
+        "KJFK": {
+            "departure_controller": "Liberty Departure (East)",
+            "departure_routes": {
+                "22R": {
+                    "DEEZZ": {
+                        "cleared_altitude": 19000,
+                        "sid": "JFK5",
+                        "waypoints": "KJFK-4L N040.31.23.949,W073.41.52.216/ho N040.54.51.723,W073.28.44.194/a17000",
+                        "handoff_controller": "ZNY 36 Sparta"
+                    }
+                }
+            },
+            "departures": [
+                {
+                  "airlines": [
+                    {
+                      "icao": "AAL",
+                      "types": [
+                        "A319",
+                        "A319"
+                      ]
+                    },
+                    {
+                      "icao": "RPA",
+                      "types": [
+                        "E75L"
+                      ]
+                    },
+                    {
+                      "icao": "EDV",
+                      "types": [
+                        "CRJ9",
+                        "CRJ9",
+                        "CRJ9"
+                      ]
+                    },
+                    {
+                      "icao": "JBU",
+                      "types": [
+                        "BCS3",
+                        "BCS3",
+                        "BCS3"
+                      ]
+                    }
+                  ],
+                  "destination": "KORD",
+                  "altitude": [
+                    30000,
+                    32000,
+                    34000,
+                    36000,
+                    38000
+                  ],
+                  "exit": "DEEZZ",
+                  "route": "DEEZZ CANDR J60 DANNR RAV Q62 WATSN WATSN4"
+                },
+                {
+                  "airlines": [
+                    {
+                      "icao": "RPA",
+                      "types": [
+                        "E75L",
+                        "E75L"
+                      ]
+                    },
+                    {
+                      "icao": "EDV",
+                      "types": [
+                        "CRJ9",
+                        "CRJ9",
+                        "CRJ9",
+                        "CRJ9",
+                        "CRJ9"
+                      ]
+                    }
+                  ],
+                  "destination": "KCLE",
+                  "altitude": [
+                    30000,
+                    32000,
+                    34000,
+                    36000,
+                    38000
+                  ],
+                  "exit": "DEEZZ",
+                  "route": "DEEZZ CANDR J60 PSB UPPRR TRYBE4"
+                },
+                {
+                  "airlines": [
+                    {
+                      "icao": "RPA",
+                      "types": [
+                        "E75L",
+                        "E75L",
+                        "E75L",
+                        "E75L"
+                      ]
+                    },
+                    {
+                      "icao": "EDV",
+                      "types": [
+                        "CRJ9"
+                      ]
+                    },
+                    {
+                      "icao": "DAL",
+                      "types": [
+                        "B752"
+                      ]
+                    },
+                    {
+                      "icao": "JBU",
+                      "types": [
+                        "BCS3",
+                        "BCS3"
+                      ]
+                    }
+                  ],
+                  "destination": "KPIT",
+                  "altitude": [
+                    26000,
+                    28000,
+                    30000
+                  ],
+                  "exit": "DEEZZ",
+                  "route": "DEEZZ CANDR J60 PSB HAYNZ7"
+                },
+                {
+                  "airlines": [
+                    {
+                      "icao": "DAL",
+                      "types": [
+                        "BCS1",
+                        "A319",
+                        "BCS1"
+                      ]
+                    },
+                    {
+                      "icao": "SCX",
+                      "types": [
+                        "B738"
+                      ]
+                    }
+                  ],
+                  "destination": "KMSP",
+                  "altitude": [
+                    30000,
+                    32000,
+                    34000,
+                    36000,
+                    38000
+                  ],
+                  "exit": "DEEZZ",
+                  "route": "DEEZZ CANDR J60 DJB J34 VIO KAMMA KKILR3"
+                }
+              ],
+            "exit_categories": {
+                "DEEZZ": "North"
+            }
+        }
+    },
+    "control_positions": {
+        "ZNY 08 BRNAN": {
+            "frequency": 124775,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "08"
+        },
+        "ZNY 09 Westminster": {
+            "frequency": 134325,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "09"
+        },
+        "ZNY 10 Harrisburg": {
+            "frequency": 133475,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "10"
+        },
+        "ZNY 25 Modena": {
+            "frequency": 135450,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "25"
+        },
+        "ZNY 26 Lancaster": {
+            "frequency": 120025,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "26"
+        },
+        "ZNY 27 Middletown": {
+            "frequency": 120025,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "27"
+        },
+        "ZNY 39 PARKE": {
+            "frequency": 132100,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "38"
+        },
+        "ZNY 42 East Texas": {
+            "frequency": 127175,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "42"
+        },
+        "ZNY 55 Yardley": {
+            "frequency": 134600,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "55"
+        },
+        "ZNY 56 Kennedy": {
+            "frequency": 125325,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "56"
+        },
+        "ZNY 68 DIXIE": {
+            "frequency": 132100,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "68"
+        },
+        "ZNY 34 Elmira": {
+            "frequency": 132175,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "34"
+        },
+        "ZNY 35 Huguenot": {
+            "frequency": 132600,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "35"
+        },
+        "ZNY 36 Sparta": {
+            "frequency": 133150,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "36"
+        },
+        "ZNY 49 Stony Fork": {
+            "frequency": 121320,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "49"
+        },
+        "ZNY 50 Binghamton": {
+            "frequency": 133350,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "50"
+        },
+        "ZNY 51 Lake Henry": {
+            "frequency": 134450,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "51"
+        },
+        "ZNY 72 Selinsgrove": {
+            "frequency": 127725,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "72"
+        },
+        "ZNY 73 Philpsburg": {
+            "frequency": 132875,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "73"
+        },
+        "ZNY 74 Broadway": {
+            "frequency": 132150,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "74"
+        },
+        "ZNY 75 Milton": {
+            "frequency": 128570,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "75"
+        },
+        "ZNY 91 Williamsport": {
+            "frequency": 134800,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "91"
+        },
+        "ZNY 92 Pottstown": {
+            "frequency": 124625,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "92"
+        },
+        "ZNY 93 Swissdale": {
+            "frequency": 123625,
+            "eram_facility": true,
+            "radio_name": "New York center",
+            "sector_id": "93"
+        },
+        "Liberty Departure (North)": {
+            "frequency": 118170,
+            "radio_name": "New York departure",
+            "sector_id": "5T",
+            "facility": "N90",
+            "facility_id": "NNN"
+        },
+        "Liberty Departure (East)": {
+            "frequency": 126800,
+            "radio_name": "New York departure",
+            "sector_id": "5E",
+            "facility": "N90",
+            "facility_id": "NNN"
+        },
+        "ZDC 32 Gordonsville": {
+            "frequency": 133725,
+            "radio_name": "Washington center",
+            "sector_id": "32",
+            "facility_id": "W",
+            "eram_facility": true,
+            "facility": "ZDC"
+        }
+    },
+    "fixes": {
+        "_EWR4_22Ra": "N040.38.28.969,W074.10.11.993"
+    },
+    "default_scenario": "ZNY Sector 36",
+    "scenarios": {
+        "ZNY Sector 36": {
+            "solo_controller": "ZNY 36 Sparta",
+            "controllers": [
+                "ZNY 34 Elmira",
+                "ZNY 35 Huguenot",
+                "ZNY 36 Sparta",
+                "ZNY 49 Stony Fork",
+                "ZNY 50 Binghamton",
+                "ZNY 51 Lake Henry",
+                "ZNY 56 Kennedy",
+                "ZNY 75 Milton",
+                "Liberty Departure (North)",
+                "Liberty Departure (East)"
+            ],
+            "default_maps": [ "BASE MAP", "LOW SECTOR" ],
+            "default_map_group": "ZNYMAP",
+            "departure_runways": [
+                {
+                    "airport": "KEWR",
+                    "rate": 25,
+                    "runway": "22R"
+                },
+                {
+                    "airport": "KJFK",
+                    "rate": 6,
+                    "runway": "22R"
+                }
+            ],
+            "wind": {
+                "direction": 230,
+                "speed": 10
+            }
+        }
+    },
+    "stars_config": {
+        "center": "N041.02.01.961,W074.10.44.018",
+        "range": 70,
+        "stars_maps": [
+            "BASE MAP",
+            "HIGH SECTOR",
+            "LOW SECTOR",
+            "HIGH AIRWAY",
+            "LOW AIRWAY",
+            "APCH BDRY",
+            "3NM BDRY",
+            "MIA",
+            "HPAS",
+            "MIL",
+            "MOA",
+            "STARS",
+            "ZNY IAP",
+            "CLASS B",
+            "MVA",
+            "N90 RVM",
+            "N90 LIB RVM",
+            "PHL-W RVM",
+            "PHL-E RVM",
+            "MINOR RVM",
+            "EWR RVM",
+            "LGA RVM",
+            "JFK CFG",
+            "ISP RVM",
+            "ABE RVM",
+            "AVP RVM",
+            "BGM RVM",
+            "ELM RVM",
+            "MDT RVM",
+            "WRI RVM"
+        ],
+        "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst"
+    }
+}
