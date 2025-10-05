@@ -7070,10 +7070,10 @@
       {
         "waypoints": "SERFR N036.26.57.475,W121.39.48.290/ho NRRLI/a20000+/s280 WWAVS/a15000-19000/s280 EPICK/a10000-15000/s280 FOLET/a8000+/s240 EDDYY/a6000/s240",
         "cruise_altitude": 32000,
-        "route": "SERFR N036.26.57.475,W121.39.48.290/ho NRRLI/a20000/s280 WWAVS/a15000/s280 EPICK/a10000/s280 FOLET/a8000/s240 EDDYY/a6000/s240",
+        "route": "SERFR4",
         "initial_controller": "OAK_14_CTR",
-        "initial_altitude": 30000,
-        "initial_speed": 320,
+        "initial_altitude": 28000,
+        "initial_speed": 300,
 		"scratchpad": "SF1",
         "expect_approach": null,
         "airlines": {
@@ -8027,7 +8027,7 @@
       "scope_char": "A",
       "sector_id": "1A"
     },
-	"SUU_APP": {
+	"SUU_S_APP": {
       "frequency": 119900,
       "radio_name": "Travis Approach",
 	  "facility_id": "1",
@@ -8037,7 +8037,8 @@
 	"FAT_F_APP": {
       "frequency": 119600,
       "radio_name": "Fresno Approach",
-      "sector_id": "1F"
+      "sector_id": "1F",
+	  "facility_id": "3"
     },
     "OAK_14_CTR": {
       "frequency": 134550,
@@ -8208,7 +8209,7 @@
       "sector_id": "2S"
 	}
   },
-  "default_scenario": "Area B - SFOW (DEP 01s)",
+  "default_scenario": "Area C - OAKW",
   "fixes": {
     "_SJC": "37.362452,-121.929188",
     "_SJC12L": "N037.22.30.068,W121.56.22.443",
@@ -8272,881 +8273,10 @@
     "_SNS13": "N036.40.03.657,W121.36.33.969",
     "SNSD": "N036.40.11.759,W121.34.06.670"
   },
-  "name": "KSFO",
+  "name": "NCT",
+  "magnetic_adjustment": 13,
   "primary_airport": "KSFO",
   "scenarios": {
-    "Area A - SJCW": {
-      "airspace": {
-        "SJC_M_APP": ["SJC_W_FLOW"],
-        "SJC_S_APP": ["SJC_W_FLOW"],
-        "SJC_L_APP": ["SJC_W_FLOW"],
-        "SJC_T_DEP": ["SJC_W_FLOW"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KSJC",
-          "runway": "30L"
-        },
-        {
-          "airport": "KSJC",
-          "runway": "30R"
-        },
-        {
-          "airport": "KMRY",
-          "runway": "28L"
-        },
-        {
-          "airport": "KSNS",
-          "runway": "31"
-        },
-		{
-          "airport": "KPAO",
-          "runway": "31"
-        }
-      ],
-      "arrivals": {
-        "BRINY2": {
-          "KSJC": 1
-        },
-        "BRIXX4": {
-          "KSJC": 5
-        },
-        "RAZRR5": {
-          "KSJC": 5
-        },
-        "RISTI1.TIPRE": {
-          "KSJC": 1
-        },
-        "RISTI1.ORRCA": {
-          "KSJC": 1
-        },
-        "SILCN6": {
-          "KSJC": 7
-        },
-        "SAT.EAST": {
-          "KMRY": 2
-        },
-        "SAT.SOUTH": {
-          "KMRY": 2,
-          "KSNS": 2
-        },
-		"PYE3": {
-          "KPAO": 2
-        }
-      },
-      "solo_controller": "SJC_M_APP",
-      "multi_controllers": {
-          "default" : {
-              "SJC_M_APP": {
-                "primary": true,
-                "departures": ["KSNS"],
-                  "arrivals": ["BRINY2", "RAZRR5","SILCN6","SAT.EAST","SAT.SOUTH"]
-              },
-              "SJC_S_APP": {
-                  "backup": "SJC_M_APP",
-                  "departures": ["KMRY"]
-              },
-              "SJC_L_APP": {
-                  "backup": "SJC_M_APP",
-				  "arrivals": ["BRIXX4", "RISTI1.TIPRE", "RISTI1.ORRCA", "PYE3"]
-              },
-              "SJC_T_DEP": {
-                  "backup": "SJC_L_APP",
-                  "departures": ["KSJC","KPAO"]
-              }
-          }
-        },
-      "controllers": [
-        "SJC_TWR",
-        "SMF_P_APP",
-		"FAT_F_APP",
-        "MRY_TWR",
-		"PAO_TWR",
-		"SNS_TWR",
-		"OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_44_CTR",
-		"OAK_35_CTR",
-		"OAK_29_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT901S" ],
-      "departure_runways": [
-        {
-          "airport": "KSJC",
-          "rate": 10,
-          "runway": "30R"
-        },
-        {
-          "airport": "KSJC",
-          "rate": 2,
-          "runway": "30L"
-        },
-        {
-          "airport": "KMRY",
-          "rate": 3,
-          "runway": "28L"
-        },
-        {
-          "airport": "KSNS",
-          "rate": 3,
-          "runway": "31"
-        },
-		{
-          "airport": "KPAO",
-          "rate": 2,
-          "runway": "31"
-        }
-      ],
-      "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area A - SJCE/SFOW": {
-      "airspace": {
-        "SJC_M_APP": ["SJC_E_FLOW"],
-        "SJC_S_APP": ["SJC_E_FLOW"],
-        "SJC_L_APP": ["SJC_E_FLOW"],
-        "SJC_T_DEP": ["SJC_E_FLOW"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KSJC",
-          "runway": "12L"
-        },
-        {
-          "airport": "KSJC",
-          "runway": "12R"
-        },
-        {
-          "airport": "KMRY",
-          "runway": "10R"
-        },
-        {
-          "airport": "KSNS",
-          "runway": "31"
-        },
-		{
-          "airport": "KPAO",
-          "runway": "31"
-        }
-      ],
-      "arrivals": {
-        "BRINY2": {
-          "KSJC": 2
-        },
-        "RAZRR5": {
-          "KSJC": 5
-        },
-        "RISTI1.TIPRE": {
-          "KSJC": 2
-        },
-        "RISTI1.ORRCA": {
-          "KSJC": 2
-        },
-        "FRLON2": {
-          "KSJC": 5
-        },
-        "SILCN6": {
-          "KSJC": 5
-        },
-        "SAT.EAST": {
-          "KMRY": 2
-        },
-        "SAT.SOUTH": {
-          "KMRY": 2,
-          "KSNS": 2
-        },
-		"PYE3": {
-          "KPAO": 2
-        }
-      },
-      "solo_controller": "SJC_M_APP",
-      "multi_controllers": {
-          "default" : {
-              "SJC_M_APP": {
-              "primary": true,
-              "departures": ["KSNS"],
-              "arrivals": ["BRINY2","FRLON2", "RAZRR5", "RISTI1.TIPRE", "RISTI1.ORRCA", "SILCN6","SAT.EAST","SAT.SOUTH"]
-              },
-              "SJC_S_APP": {
-                  "backup": "SJC_M_APP",
-                  "departures": ["KMRY"]
-              },
-              "SJC_L_APP": {
-                  "backup": "SJC_M_APP",
-				  "arrivals": ["PYE3"],
-				  "departures": ["KPAO"]
-              },
-              "SJC_T_DEP": {
-                  "backup": "SJC_L_APP",
-                  "departures": ["KSJC"]
-              }
-          }
-        },
-      "controllers": [
-        "SJC_TWR",
-		"MRY_TWR",
-		"PAO_TWR",
-		"SNS_TWR",
-        "SMF_P_APP",
-		"FAT_F_APP",
-		"OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_29_CTR",
-		"OAK_44_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-        {
-          "airport": "KSJC",
-          "rate": 2,
-          "runway": "12R.BMRNG"
-        },
-        {
-          "airport": "KSJC",
-          "rate": 10,
-          "runway": "12L.BMRNG"
-        },
-        {
-          "airport": "KMRY",
-          "rate": 3,
-          "runway": "10R"
-        },
-        {
-          "airport": "KSNS",
-          "rate": 2,
-          "runway": "31"
-        },
-		{
-          "airport": "KPAO",
-          "rate": 2,
-          "runway": "13"
-        }
-      ],
-      "wind": {
-        "direction": 120,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-	"Area A - SJCE/SFOE": {
-      "airspace": {
-        "SJC_M_APP": ["SJC_E_FLOW"],
-        "SJC_S_APP": ["SJC_E_FLOW"],
-        "SJC_L_APP": ["SJC_E_FLOW"],
-        "SJC_T_DEP": ["SJC_E_FLOW"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KSJC",
-          "runway": "12L"
-        },
-        {
-          "airport": "KSJC",
-          "runway": "12R"
-        },
-        {
-          "airport": "KMRY",
-          "runway": "10R"
-        },
-        {
-          "airport": "KSNS",
-          "runway": "31"
-        },
-		{
-          "airport": "KPAO",
-          "runway": "31"
-        }
-      ],
-      "arrivals": {
-        "BRINY2": {
-          "KSJC": 2
-        },
-        "RAZRR5": {
-          "KSJC": 5
-        },
-        "RISTI1.TIPRE": {
-          "KSJC": 2
-        },
-        "RISTI1.ORRCA": {
-          "KSJC": 2
-        },
-        "FRLON2": {
-          "KSJC": 5
-        },
-        "SILCN6": {
-          "KSJC": 5
-        },
-        "SAT.EAST": {
-          "KMRY": 2
-        },
-        "SAT.SOUTH": {
-          "KMRY": 2,
-          "KSNS": 2
-        },
-		"PYE3": {
-          "KPAO": 2
-        }
-      },
-      "solo_controller": "SJC_M_APP",
-      "multi_controllers": {
-          "default" : {
-              "SJC_M_APP": {
-              "primary": true,
-              "departures": ["KSNS"],
-              "arrivals": ["BRINY2", "FRLON2", "RAZRR5", "RISTI1.TIPRE", "RISTI1.ORRCA", "SILCN6","SAT.EAST","SAT.SOUTH"]
-              },
-              "SJC_S_APP": {
-                  "backup": "SJC_M_APP",
-                  "departures": ["KMRY"]
-              },
-              "SJC_L_APP": {
-                  "backup": "SJC_M_APP",
-				  "departures": ["KPAO"],
-				  "arrivals": ["PYE3"]
-              },
-              "SJC_T_DEP": {
-                  "backup": "SJC_L_APP",
-                  "departures": ["KSJC"]
-              }
-          }
-        },
-      "controllers": [
-        "SJC_TWR",
-		"MRY_TWR",
-		"PAO_TWR",
-		"SNS_TWR",
-        "SMF_P_APP",
-		"FAT_F_APP",
-		"OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_29_CTR",
-		"OAK_44_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-        {
-          "airport": "KSJC",
-          "rate": 2,
-          "runway": "12R.ALMDN"
-        },
-        {
-          "airport": "KSJC",
-          "rate": 10,
-          "runway": "12L.ALMDN"
-        },
-        {
-          "airport": "KMRY",
-          "rate": 3,
-          "runway": "10R"
-        },
-        {
-          "airport": "KSNS",
-          "rate": 2,
-          "runway": "31"
-        },
-		{
-          "airport": "KPAO",
-          "rate": 2,
-          "runway": "13"
-        }
-      ],
-      "wind": {
-        "direction": 120,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area B - SFOW (RWYS 28)": {
-      "airspace": {
-        "SFO_B_APP": ["SFO_W_FLOW"],
-        "SFO_Z_APP": ["SFO_W_FLOW"],
-        "SFO_F_APP": ["SFO_W_FLOW"],
-        "SFO_G_APP": ["SFO_W_FLOW"],
-        "SFO_N_APP": ["SFO_W_FLOW"]
-      },
-      "center": "N037.40.38.772,W122.00.31.448",
-      "arrival_runways": [
-        {
-          "airport": "KSFO",
-          "runway": "28L"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "28R"
-        },
-		{
-          "airport": "KOAK",
-          "runway": "30"
-        },
-		{
-          "airport": "KSJC",
-          "runway": "30L"
-        },
-		{
-          "airport": "KSQL",
-          "runway": "30"
-        }
-      ],
-      "arrivals": {
-        "RISTI1.TIPRE": {
-          "KSFO": 1
-        },
-        "RISTI1.ORRCA": {
-          "KSFO": 1
-        },
-        "BDEGA4": {
-          "KSFO": 10
-        },
-        "DYAMD5": {
-          "KSFO": 10
-        },
-         "PIRAT3": {
-          "KSFO": 5,
-		  "KOAK": 3
-        },
-        "SERFR4": {
-          "KSFO": 11
-        },
-		 "YOSEM3": {
-          "KSFO": 0
-        },
-		"PYE3": {
-		 "KSQL": 2
-		},
-		"BRIXX4.AB": {
-          "KSJC": 3
-        },
-		"SJC OCEANIC.AB": {
-          "KSJC": 2
-        }
-      },
-      "solo_controller": "SFO_B_APP",
-      "multi_controllers": {
-          "default" : {
-            "SFO_B_APP": {
-              "primary": true,
-                "arrivals": ["BDEGA4","PYE3", "PIRAT3", "BRIXX4.AB", "SJC OCEANIC.AB"]
-            },
-            "SFO_Z_APP": {
-                "backup": "SFO_B_APP",
-                "arrivals": ["RISTI1.TIPRE","RISTI1.ORRCA","DYAMD5", "YOSEM3"]
-            },
-            "SFO_F_APP": {
-                "backup": "SFO_W_APP"
-            },
-            "SFO_G_APP": {
-              "backup": "SFO_B_APP",
-              "arrivals": ["SERFR4"]
-            },
-            "SFO_N_APP": {
-                "backup": "SFO_Z_APP"
-            },
-            "SFO_W_APP": {
-              "backup": "SFO_B_APP",
-			  "departures": ["KSQL"]
-            }
-          }
-        },
-      "controllers": [
-        "SFO_TWR",
-		"SQL_TWR",
-        "SMF_P_APP",
-        "SJC_T_DEP",
-        "SJC_M_APP",
-        "OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_44_CTR",
-		"OAK_35_CTR",
-		"OAK_29_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT901S" ],
-      "departure_runways": [
-		{
-			"airport": "KSQL",
-			"rate": 2,
-			"runway": "30"
-		}
-      ],
-      "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area B - SFOW (DEP 01s)": {
-      "airspace": {
-        "SFO_B_APP": ["SFO_W_FLOW"],
-        "SFO_Z_APP": ["SFO_W_FLOW"],
-        "SFO_F_APP": ["SFO_W_FLOW"],
-        "SFO_G_APP": ["SFO_W_FLOW"],
-        "SFO_N_APP": ["SFO_W_FLOW"],
-        "SFO_W_APP": ["SFO_W_FLOW"]
-      },
-      "center": "N037.40.38.772,W122.00.31.448",
-      "arrival_runways": [
-        {
-          "airport": "KSFO",
-          "runway": "28L"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "28R"
-        },
-		{
-          "airport": "KOAK",
-          "runway": "30"
-        },
-		{
-          "airport": "KSJC",
-          "runway": "30L"
-        },
-		{
-          "airport": "KSQL",
-          "runway": "30"
-        }
-      ],
-      "arrivals": {
-        "RISTI1.TIPRE": {
-          "KSFO": 1
-        },
-        "RISTI1.ORRCA": {
-          "KSFO": 1
-        },
-        "BDEGA4": {
-          "KSFO": 10
-        },
-        "DYAMD5": {
-          "KSFO": 12
-        },
-        "PIRAT3": {
-          "KSFO": 5,
-		  "KOAK": 3
-        },
-        "SERFR4": {
-          "KSFO": 12
-        },
-		 "YOSEM3": {
-          "KSFO": 0
-        },
-		"PYE3": {
-		 "KSQL": 2
-		},
-		"BRIXX4.AB": {
-          "KSJC": 3
-        },
-		"SJC OCEANIC.AB": {
-          "KSJC": 2
-        }
-      },
-      "solo_controller": "SFO_B_APP",
-      "multi_controllers": {
-          "default" : {
-            "SFO_B_APP": {
-              "primary": true,
-                "arrivals": ["BDEGA4","PYE3", "PIRAT3", "BRIXX4.AB", "SJC OCEANIC.AB"]
-            },
-            "SFO_Z_APP": {
-                "backup": "SFO_B_APP",
-                "arrivals": ["RISTI1.TIPRE","RISTI1.ORRCA","DYAMD5","YOSEM3"]
-            },
-            "SFO_F_APP": {
-                "backup": "SFO_W_APP"
-            },
-            "SFO_G_APP": {
-              "backup": "SFO_B_APP",
-              "arrivals": ["SERFR4"]
-            },
-            "SFO_N_APP": {
-                "backup": "SFO_Z_APP"
-            },
-            "SFO_W_APP": {
-              "backup": "SFO_B_APP",
-			  "departures": ["KSQL"]
-            }
-          }
-        },
-      "controllers": [
-        "SFO_TWR",
-		"SQL_TWR",
-        "SMF_P_APP",
-        "SJC_T_DEP",
-        "SJC_M_APP",
-        "OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_44_CTR",
-		"OAK_29_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT901S" ],
-      "departure_runways": [
-		{
-			"airport": "KSQL",
-			"rate": 2,
-			"runway": "30"
-		}
-      ],
-      "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area B - SFOE": {
-      "airspace": {
-        "SFO_B_APP": ["SFO_E_FLOW"],
-        "SFO_Z_APP": ["SFO_E_FLOW"],
-        "SFO_F_APP": ["SFO_E_FLOW"],
-        "SFO_G_APP": ["SFO_E_FLOW"],
-        "SFO_N_APP": ["SFO_E_FLOW"],
-        "SFO_W_APP": ["SFO_E_FLOW"]
-      },
-      "center": "N037.37.08.796,W122.22.27.006",
-      "arrival_runways": [
-        {
-          "airport": "KSFO",
-          "runway": "10L"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "10R"
-        }
-      ],
-      "arrivals": {
-        "RISTI1.TIPRE": {
-          "KSFO": 5
-        },
-        "RISTI1.ORRCA": {
-          "KSFO": 5
-        },
-        "PYE3.SFOE": {
-          "KSFO": 5
-        },
-        "ALWYS3": {
-          "KSFO": 5
-        },
-        "BDEGA4": {
-          "KSFO": 5
-        },
-        "PIRAT3": {
-          "KSFO": 5
-        },
-        "SERFR4": {
-          "KSFO": 5
-        }
-      },
-      "solo_controller": "SFO_B_APP",
-      "multi_controllers": {
-          "default" : {
-            "SFO_B_APP": {
-              "primary": true,
-                "arrivals": [ "BDEGA4", "PIRAT3"]
-            },
-            "SFO_Z_APP": {
-                "backup": "SFO_B_APP",
-                "arrivals": ["RISTI1.TIPRE","RISTI1.ORRCA","ALWYS3"]
-            },
-            "SFO_F_APP": {
-                "backup": "SFO_W_APP",
-                "arrivals": ["PYE3.SFOE"]
-            },
-            "SFO_G_APP": {
-              "backup": "SFO_B_APP",
-              "arrivals": [ "SERFR4"]
-            },
-            "SFO_N_APP": {
-                "backup": "SFO_Z_APP"
-            },
-            "SFO_W_APP": {
-              "backup": "SFO_B_APP",
-			  "departures": ["KSQL"]
-            }
-          }
-        },
-      "controllers": [
-        "SFO_TWR",
-		"SQL_TWR",
-        "OAK_Y_APP",
-		"OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_44_CTR",
-		"OAK_29_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-		{
-			"airport": "KSQL",
-			"rate": 2,
-			"runway": "12"
-		}
-      ],
-      "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area B - SFOE (RWYS 19/10)": {
-      "airspace": {
-        "SFO_B_APP": ["SFO_E_FLOW"],
-        "SFO_Z_APP": ["SFO_E_FLOW"],
-        "SFO_F_APP": ["SFO_E_FLOW"],
-        "SFO_G_APP": ["SFO_E_FLOW"],
-        "SFO_N_APP": ["SFO_E_FLOW"],
-        "SFO_W_APP": ["SFO_E_FLOW"]
-      },
-      "center": "N037.40.38.772,W122.00.31.448",
-      "arrival_runways": [
-        {
-          "airport": "KSFO",
-          "runway": "19L"
-        },
-        {
-          "airport": "KSFO",
-          "runway": "19R"
-        }
-      ],
-      "arrivals": {
-        "RISTI1.TIPRE": {
-          "KSFO": 5
-        },
-        "RISTI1.ORRCA": {
-          "KSFO": 5
-        },
-        "ALWYS3": {
-          "KSFO": 5
-        },
-        "PIRAT3": {
-          "KSFO": 5
-        },
-        "STLER4": {
-          "KSFO": 5
-        },
-        "WWAVS2": {
-          "KSFO": 5
-        }
-      },
-      "solo_controller": "SFO_B_APP",
-      "multi_controllers": {
-          "default" : {
-            "SFO_B_APP": {
-              "primary": true,
-                "arrivals": ["STLER4", "PIRAT3"]
-            },
-            "SFO_Z_APP": {
-                "backup": "SFO_B_APP",
-                "arrivals": ["RISTI1.TIPRE","RISTI1.ORRCA","ALWYS3"]
-            },
-            "SFO_F_APP": {
-                "backup": "SFO_W_APP"
-            },
-            "SFO_G_APP": {
-              "backup": "SFO_B_APP",
-              "arrivals": ["WWAVS2"]
-            },
-            "SFO_N_APP": {
-                "backup": "SFO_Z_APP"
-            },
-            "SFO_W_APP": {
-              "backup": "SFO_B_APP",
-			  "departures": ["KSQL"]
-            }
-          }
-        },
-      "controllers": [
-        "SFO_TWR",
-		"SQL_TWR",
-        "SMF_P_APP",
-        "SJC_T_DEP",
-        "SJC_M_APP",
-		"OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_29_CTR",
-		"OAK_44_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-		{
-			"airport": "KSQL",
-			"rate": 2,
-			"runway": "12"
-		}
-      ],
-      "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
-    },
     "Area C - OAKW": {
       "airspace": {
         "OAK_Y_APP": ["OAK_W_FLOW"],
@@ -9429,7 +8559,7 @@
         "SFO_U_DEP": ["AREADCOMBW"],
         "SFO_R_DEP": ["AREADCOMBW"]
       },
-      "center": "N037.40.38.772,W122.00.31.448",
+      "center": "KSFO",
 	  "arrival_runways": [
         {
           "airport": "KOAK",
@@ -9537,7 +8667,7 @@
         "SFO_U_DEP": ["AREADCOMBW"],
         "SFO_R_DEP": ["AREADCOMBW"]
       },
-      "center": "N037.37.08.796,W122.22.27.006",
+      "center": "KSFO",
 	  "arrival_runways": [
         {
           "airport": "KOAK",
@@ -9629,7 +8759,7 @@
       }
     },
     "Area D - SFOW/OAKW (01's/28R/30)": {
-      "center": "N037.37.08.796,W122.22.27.006",
+      "center": "KSFO",
 	  "arrival_runways": [
         {
           "airport": "KOAK",
@@ -9746,7 +8876,7 @@
         "SFO_U_DEP": ["AREADCOMBW"],
         "SFO_R_DEP": ["AREADCOMBW"]
       },
-      "center": "N037.40.38.772,W122.00.31.448",
+      "center": "KSFO",
 	  "inbound_rates": {
 	  "VNYRD1.RGOOD": {
           "overflights": 3
@@ -9836,7 +8966,7 @@
         "SFO_U_DEP": ["AREADCOMBW"],
         "SFO_R_DEP": ["AREADCOMBW"]
       },
-      "center": "N037.37.08.796,W122.22.27.006",
+      "center": "KSFO",
 	  "inbound_rates": {
 	  "REBAS1.RGOOD": {
           "overflights": 3
@@ -9917,347 +9047,6 @@
       ],
       "wind": {
         "direction": 360,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area E - SMFN": {
-      "airspace": {
-        "SMF_E_APP": ["SMF"],
-        "SMF_P_APP": ["SMF"]
-      },
-      "center": "N038.41.41.010,W121.35.27.420",
-      "arrival_runways": [
-        {
-          "airport": "KSMF",
-          "runway": "35R"
-        },
-        {
-          "airport": "KSMF",
-          "runway": "35L"
-        },
-        {
-          "airport": "KSAC",
-          "runway": "2"
-        }
-      ],
-      "arrivals": {
-        "CCR2": {
-          "KSMF": 5
-        },
-        "SLMMR5": {
-          "KSMF": 5
-        },
-        "SUUTR4": {
-          "KSMF": 5
-        },
-        "TUDOR2": {
-          "KSMF": 5
-        },
-        "SAT.EAST": {
-          "KSAC": 5
-        }
-      },
-      "solo_controller": "SMF_P_APP",
-      "multi_controllers": {
-          "default" : {
-            "SMF_E_APP": {
-              "backup": "SMF_P_APP",
-              "departures": ["KSMF"],
-              "arrivals": ["SLMMR5","TUDOR2"]
-          },
-            "SMF_P_APP": {
-              "primary": true,
-              "departures": ["KSAC"],
-              "arrivals": ["CCR2","SUUTR4","SAT.EAST"]
-            }
-        }
-        },
-      "controllers": [
-        "SMF_TWR",
-        "SAC_TWR",
-        "OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_44_CTR",
-		"OAK_29_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-        {
-          "airport": "KSMF",
-          "rate": 5,
-          "runway": "35L"
-        },
-        {
-          "airport": "KSMF",
-          "rate": 5,
-          "runway": "35R"
-        },
-        {
-          "airport": "KSAC",
-          "rate": 5,
-          "runway": "2"
-        }
-      ],
-      "wind": {
-        "direction": 170,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area E - SMFS": {
-      "airspace": {
-        "SMF_E_APP": ["SMF"],
-        "SMF_P_APP": ["SMF"]
-      },
-      "center": "N038.41.41.010,W121.35.27.420",
-      "arrival_runways": [
-        {
-          "airport": "KSMF",
-          "runway": "17L"
-        },
-        {
-          "airport": "KSMF",
-          "runway": "17R"
-        },
-        {
-          "airport": "KSAC",
-          "runway": "2"
-        }
-      ],
-      "arrivals": {
-        "CCR2": {
-          "KSMF": 5
-        },
-        "SLMMR5": {
-          "KSMF": 5
-        },
-        "SUUTR4": {
-          "KSMF": 5
-        },
-        "TUDOR2": {
-          "KSMF": 5
-        },
-        "SAT.EAST": {
-          "KSAC": 5
-        }
-      },
-      "solo_controller": "SMF_P_APP",
-      "multi_controllers": {
-          "default" : {
-            "SMF_E_APP": {
-              "backup": "SMF_P_APP",
-              "arrivals": ["SLMMR5","TUDOR2"]
-          },
-            "SMF_P_APP": {
-              "primary": true,
-              "departures": ["KSMF","KSAC"],
-                "arrivals": ["CCR2","SUUTR4","SAT.EAST"]
-            }
-        }
-        },
-      "controllers": [
-        "SMF_TWR",
-        "SAC_TWR",
-        "OAK_14_CTR",
-		"OAK_11_CTR",
-		"OAK_15_CTR",
-		"OAK_10_CTR",
-		"OAK_45_CTR",
-		"OAK_42_CTR",
-		"OAK_46_CTR",
-		"OAK_41_CTR",
-		"OAK_16_CTR",
-		"OAK_44_CTR",
-		"OAK_29_CTR",
-		"OAK_35_CTR",
-		"OAK_22_CTR",
-		"OAK_34_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-        {
-          "airport": "KSMF",
-          "rate": 5,
-          "runway": "17R"
-        },
-        {
-          "airport": "KSMF",
-          "rate": 5,
-          "runway": "17L"
-        },
-        {
-          "airport": "KSAC",
-          "rate": 5,
-          "runway": "2"
-        }
-      ],
-      "wind": {
-        "direction": 300,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-	"Area R - RNOS": {
-      "airspace": {
-        "RNO_N_APP": ["RNO"],
-        "RNO_S_APP": ["RNO"]
-      },
-      "center": "N039.30.02.252,W119.46.13.251",
-      "arrival_runways": [
-        {
-          "airport": "KRNO",
-          "runway": "17R"
-        },
-        {
-          "airport": "KRNO",
-          "runway": "17L"
-        }
-      ],
-      "arrivals": {
-        "ANAHO2": {
-          "KRNO": 2
-        },
-        "KLUBS1": {
-          "KRNO": 5
-        },
-        "WINRZ1": {
-          "KRNO": 5
-        },
-        "ORRCA1": {
-          "KRNO": 2
-        },
-        "RYANN2": {
-          "KRNO": 1
-        },
-        "SCOLA1": {
-          "KRNO": 5
-        }
-      },
-      "solo_controller": "RNO_S_APP",
-      "multi_controllers": {
-          "default" : {
-            "RNO_N_APP": {
-              "backup": "RNO_S_APP",
-              "arrivals": ["ANAHO2","KLUBS1","WINRZ1"]
-          },
-            "RNO_S_APP": {
-              "primary": true,
-                "departures": ["KRNO"],
-                "arrivals": ["ORRCA1","RYANN2","SCOLA1"]
-            }
-        }
-        },
-      "controllers": [
-        "RNO_TWR",
-		"RNO_N_APP",
-		"NFL_APP",
-        "OAK_45_CTR",
-		"OAK_46_CTR",
-		"OAK_44_CTR"
-      ],
-      "default_maps": [ "RVMNCT901S" ],
-      "departure_runways": [
-        {
-          "airport": "KRNO",
-          "rate": 5,
-          "runway": "17L"
-        },
-        {
-          "airport": "KRNO",
-          "rate": 5,
-          "runway": "17R"
-        }
-      ],
-      "wind": {
-        "direction": 300,
-        "gust": 5,
-        "speed": 10
-      }
-    },
-    "Area R - RNON": {
-      "airspace": {
-        "RNO_N_APP": ["RNO"],
-        "RNO_S_APP": ["RNO"]
-      },
-      "center": "N039.30.02.252,W119.46.13.251",
-      "arrival_runways": [
-        {
-          "airport": "KRNO",
-          "runway": "35R"
-        },
-        {
-          "airport": "KRNO",
-          "runway": "35L"
-        }
-      ],
-      "arrivals": {
-        "EELZA4": {
-          "KRNO": 5
-        },
-        "ORRCA.TARVR1": {
-          "KRNO": 2
-        },
-		"SLEAT.TARVR1": {
-          "KRNO": 2
-        },
-		"KENNO.TARVR1": {
-          "KRNO": 2
-        },
-		"MVA.TARVR1": {
-          "KRNO": 2
-        },
-        "WADOL4": {
-          "KRNO": 5
-        }
-      },
-      "solo_controller": "RNO_S_APP",
-      "multi_controllers": {
-          "default" : {
-            "RNO_N_APP": {
-              "backup": "RNO_S_APP",
-              "departures": ["KRNO"],
-              "arrivals": ["EELZA4","WADOL4"]
-          },
-            "RNO_S_APP": {
-              "primary": true,
-                "arrivals": ["ORRCA.TARVR1", "SLEAT.TARVR1", "KENNO.TARVR1", "MVA.TARVR1"]
-            }
-        }
-        },
-      "controllers": [
-        "RNO_TWR",
-		"RNO_S_APP",
-		"NFL_APP",
-        "OAK_45_CTR",
-		"OAK_46_CTR",
-		"OAK_44_CTR"
-      ],
-      "default_maps": [ "RVMNCT902S" ],
-      "departure_runways": [
-        {
-          "airport": "KRNO",
-          "rate": 5,
-          "runway": "35R"
-        },
-        {
-          "airport": "KRNO",
-          "rate": 5,
-          "runway": "35L"
-        }
-      ],
-      "wind": {
-        "direction": 300,
         "gust": 5,
         "speed": 10
       }
@@ -10562,6 +9351,16 @@
      ]
   },
       "filters": {
+  "quicklook": [
+  		{
+         "id": "Q81",
+         "description": "TOGA-SUTRO QUICKLOOK",
+         "type": "polygon",
+         "floor": 5000,
+         "ceiling": 21000,
+         "vertices": ["N037.22.54.060,W122.08.24.135", "N037.29.06.002,W122.09.55.184", "N037.33.05.737,W122.02.52.787", "N037.28.43.370,W121.43.03.544", "N037.13.01.732,W121.21.35.178", "N037.02.07.276,W121.34.16.063", "N037.08.08.287,W121.54.11.431"]
+        }
+	],
   "inhibit_ca": [
     {
         "id": "SFONOCA",
@@ -10611,7 +9410,35 @@
   "ceiling": 9500,
   "vertices": ["N036.38.52.122,W121.54.18.929","N036.32.57.456,W121.58.21.425","N036.30.18.827,W121.44.01.442","N036.37.44.213,W121.43.51.170"]
 }
-]
+],
+"arrival_acquisition": [
+        {
+          "id": "ACQ",
+          "description": "NCT AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N035.36.36.826,W121.24.53.728 N035.31.38.190,W122.24.56.063 N036.57.57.117,W124.02.02.140 N038.25.54.908,W123.11.06.897 N039.49.38.681,W121.55.53.878 N040.43.53.189,W118.26.18.652 N038.50.36.744,W117.52.26.099 N038.01.06.879,W119.06.15.979 N036.20.39.134,W118.40.44.815",
+          "floor": 0,
+          "ceiling": 27000
+        }
+    ],
+	"secondary_drop": [
+        {
+          "id": "sdropCA",
+          "description": "drop region California",
+          "type": "polygon",
+          "vertices": "N037.49.14.415,W122.57.32.810 N038.23.23.585,W121.55.03.808 N038.35.28.147,W121.52.51.231 N039.01.42.763,W122.02.42.350 N039.24.57.985,W122.00.57.348 N039.38.36.426,W121.35.05.584 N039.37.45.875,W121.02.04.502 N037.53.18.243,W120.00.51.196 N037.52.43.499,W120.15.41.061 N037.04.10.350,W119.47.10.435 N037.02.50.768,W119.59.48.958 N036.56.37.906,W120.04.41.524 N036.34.33.902,W119.57.14.051 N036.37.38.459,W120.10.41.052 N036.10.20.700,W121.12.09.464 N036.01.55.493,W121.22.22.172 N035.55.27.813,W122.08.27.540 N036.07.04.772,W122.46.45.331 N036.51.34.546,W123.12.33.140 N037.13.56.856,W123.01.22.397",
+          "floor": 0,
+          "ceiling": 40000
+        },
+		{
+          "id": "sdropNV",
+          "description": "drop region NV",
+          "type": "polygon",
+          "vertices": "N038.50.19.084,W119.59.16.384 N039.06.22.708,W120.03.56.810 N039.26.37.178,W120.21.04.663 N039.54.52.822,W120.23.52.315 N040.18.39.671,W119.38.18.147 N039.49.36.924,W118.59.01.497 N039.11.09.987,W118.55.36.190 N038.49.08.579,W119.15.27.877 N038.41.25.876,W119.42.54.563",
+          "floor": 0,
+          "ceiling": 40000
+        }
+      ]
       },
 "airspace_awareness": [
 	{

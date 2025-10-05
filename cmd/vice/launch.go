@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -46,6 +47,13 @@ type NewSimConfiguration struct {
 	// UI state
 	newSimType       int32
 	connectionConfig server.SimConnectionConfiguration
+
+	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR
+	airportMETAR    map[string][]wx.METAR
+	metarAirports   []string
+	fetchMETARError error
+	fetchingMETAR   bool
+	metarGeneration int
 }
 
 func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
@@ -90,14 +98,59 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	}
 	c.GroupName = groupName
 
-	if c.Scenario, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
+	if c.ScenarioConfig, ok = groupConfig.ScenarioConfigs[scenarioName]; !ok {
 		if scenarioName != "" {
 			c.lg.Errorf("%s: scenario not found in group %s", scenarioName, c.GroupName)
 		}
 		scenarioName = groupConfig.DefaultScenario
-		c.Scenario = groupConfig.ScenarioConfigs[scenarioName]
+		c.ScenarioConfig = groupConfig.ScenarioConfigs[scenarioName]
 	}
 	c.ScenarioName = scenarioName
+
+	c.fetchMETAR()
+
+	c.updateStartTimeForRunways()
+}
+
+func (c *NewSimConfiguration) fetchMETAR() {
+	c.mu.Lock(c.lg)
+	defer c.mu.Unlock(c.lg)
+
+	if c.ScenarioConfig == nil || c.selectedServer == nil {
+		c.fetchingMETAR = false
+		return
+	}
+
+	airports := c.ScenarioConfig.AllAirports()
+	if slices.Equal(c.metarAirports, airports) {
+		// No need to refetch
+		return
+	}
+
+	c.airportMETAR = nil
+	c.fetchMETARError = nil
+	c.fetchingMETAR = true
+	c.metarGeneration++
+	currentGeneration := c.metarGeneration
+
+	c.mgr.GetMETAR(c.selectedServer, airports, func(metars map[string][]wx.METAR, err error) {
+		c.mu.Lock(c.lg)
+		defer c.mu.Unlock(c.lg)
+
+		if currentGeneration != c.metarGeneration {
+			return
+		}
+
+		c.fetchingMETAR = false
+
+		if err != nil {
+			c.fetchMETARError = err
+		} else {
+			c.airportMETAR = metars
+			c.metarAirports = airports
+			c.updateStartTimeForRunways()
+		}
+	})
 }
 
 const (
@@ -117,6 +170,11 @@ func (c *NewSimConfiguration) ShowRatesWindow() bool {
 func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 	if err := c.mgr.UpdateRemoteSims(); err != nil {
 		c.lg.Warnf("UpdateRemoteSims: %v", err)
+	}
+
+	// Fetch weather data lazily when needed
+	if err := c.mgr.UpdateAvailableWX(c.selectedServer); err != nil {
+		c.lg.Warnf("UpdateAvailableWX: %v", err)
 	}
 
 	if c.displayError != nil {
@@ -202,51 +260,123 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
 			imgui.TableSetupColumn("ARTCC")
-			imgui.TableSetupColumn("ATCT/TRACON")
+			imgui.TableSetupColumn("TRACON/AREA")
 			imgui.TableSetupColumn("Scenario")
 			imgui.TableHeadersRow()
 			imgui.TableNextRow()
 
 			// ARTCCs
-			artccs := make(map[string]interface{})
-			allTRACONs := util.SortedMapKeys(c.selectedServer.GetConfigs())
-			for _, tracon := range allTRACONs {
-				artccs[av.DB.TRACONs[tracon].ARTCC] = nil
+			configsByFacility := c.selectedServer.GetConfigs()
+			allFacilities := util.SortedMapKeys(configsByFacility)
+			facilityInfo := make(map[string]*server.Configuration, len(configsByFacility))
+			for facility, groups := range configsByFacility {
+				for _, cfg := range groups {
+					facilityInfo[facility] = cfg
+					break
+				}
 			}
+
+			selectedARTCC := ""
+			if info := facilityInfo[c.TRACONName]; info != nil && info.ARTCC != "" {
+				selectedARTCC = info.ARTCC
+			} else if traconInfo, ok := av.DB.TRACONs[c.TRACONName]; ok {
+				selectedARTCC = traconInfo.ARTCC
+			} else if c.TRACONName != "" {
+				selectedARTCC = c.TRACONName
+			}
+
+			artccs := make(map[string]interface{})
+			for facility, info := range facilityInfo {
+				if info == nil {
+					continue
+				}
+				artcc := info.ARTCC
+				if artcc == "" {
+					if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+						artcc = traconInfo.ARTCC
+					} else {
+						artcc = facility
+					}
+				}
+				artccs[artcc] = nil
+			}
+
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, artcc := range util.SortedMapKeys(artccs) {
-					label := fmt.Sprintf("%s (%s)", artcc, strings.ReplaceAll(av.DB.ARTCCs[artcc].Name, " Center", ""))
-					if imgui.SelectableBoolV(label, artcc == av.DB.TRACONs[c.TRACONName].ARTCC, 0, imgui.Vec2{}) &&
-						artcc != av.DB.TRACONs[c.TRACONName].ARTCC {
-						// a new ARTCC was chosen; reset the TRACON to the first one with that ARTCC
-						idx := slices.IndexFunc(allTRACONs, func(tracon string) bool { return artcc == av.DB.TRACONs[tracon].ARTCC })
-						c.SetTRACON(allTRACONs[idx])
+					name := av.DB.ARTCCs[artcc].Name
+					name = strings.TrimSuffix(name, " ARTCC")
+					name = strings.TrimSuffix(name, " Center")
+					name = strings.TrimSpace(name)
+					if name == "" {
+						name = artcc
+					}
+					label := fmt.Sprintf("%s (%s)", artcc, name)
+					if imgui.SelectableBoolV(label, artcc == selectedARTCC, 0, imgui.Vec2{}) && artcc != selectedARTCC {
+						idx := slices.IndexFunc(allFacilities, func(facility string) bool {
+							if info := facilityInfo[facility]; info != nil {
+								return info.ARTCC == artcc
+							}
+							if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+								return traconInfo.ARTCC == artcc
+							}
+							return facility == artcc
+						})
+						if idx >= 0 {
+							c.SetTRACON(allFacilities[idx])
+						}
 					}
 				}
 			}
 			imgui.EndChild()
 
-			// TRACONs for selected ARTCC
-			imgui.TableNextColumn()
-			if imgui.BeginChildStrV("tracons", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
-				for _, tracon := range allTRACONs {
-					if av.DB.TRACONs[tracon].ARTCC != av.DB.TRACONs[c.TRACONName].ARTCC {
-						continue
-					}
-					name := strings.TrimSuffix(av.DB.TRACONs[tracon].Name, " TRACON")
+			facilityLabel := func(facility string, info *server.Configuration) string {
+				if info != nil && info.Area != "" {
+					name := info.Area
+					name = strings.TrimSuffix(name, " ARTCC")
+					name = strings.TrimSuffix(name, " Center")
+					name = strings.TrimSpace(name)
+					return fmt.Sprintf("%s %s", facility, name)
+				}
+				if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+					name := strings.TrimSuffix(traconInfo.Name, " TRACON")
 					name = strings.TrimSuffix(name, " ATCT/TRACON")
 					name = strings.TrimSuffix(name, " Tower")
-					label := fmt.Sprintf("%s (%s)", tracon, name)
-					if imgui.SelectableBoolV(label, tracon == c.TRACONName, 0, imgui.Vec2{}) && tracon != c.TRACONName {
-						// TRACON selected
-						c.SetTRACON(tracon)
+					name = strings.TrimSpace(name)
+					return fmt.Sprintf("%s (%s)", facility, name)
+				}
+				return facility
+			}
+
+			// TRACONs or areas for selected ARTCC
+			imgui.TableNextColumn()
+			if imgui.BeginChildStrV("tracons/ areas", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
+				for _, facility := range allFacilities {
+					info := facilityInfo[facility]
+					if info == nil {
+						continue
+					}
+					artcc := info.ARTCC
+
+					if artcc == "" {
+						if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+							artcc = traconInfo.ARTCC
+						} else {
+							artcc = facility
+						}
+					}
+					if selectedARTCC != "" && artcc != selectedARTCC {
+						continue
+					}
+					label := facilityLabel(facility, info)
+					if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
+						c.SetTRACON(facility)
 					}
 				}
 			}
 			imgui.EndChild()
 
-			// Scenarios for the tracon
+			// Scenarios for the tracon or area
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, groupName := range util.SortedMapKeys(c.selectedTRACONConfigs) {
@@ -263,13 +393,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.EndTable()
 		}
 
-		if sc := c.Scenario.SplitConfigurations; sc.Len() > 1 {
-			if imgui.BeginComboV("Split", c.Scenario.SelectedSplit, imgui.ComboFlagsHeightLarge) {
+		if sc := c.ScenarioConfig.SplitConfigurations; sc.Len() > 1 {
+			if imgui.BeginComboV("Split", c.ScenarioConfig.SelectedSplit, imgui.ComboFlagsHeightLarge) {
 				for _, split := range sc.Splits() {
-					if imgui.SelectableBoolV(split, split == c.Scenario.SelectedSplit, 0, imgui.Vec2{}) {
+					if imgui.SelectableBoolV(split, split == c.ScenarioConfig.SelectedSplit, 0, imgui.Vec2{}) {
 						var err error
-						c.Scenario.SelectedSplit = split
-						c.Scenario.SelectedController, err = sc.GetPrimaryController(split)
+						c.ScenarioConfig.SelectedSplit = split
+						c.ScenarioConfig.SelectedController, err = sc.GetPrimaryController(split)
 						if err != nil {
 							c.lg.Errorf("unable to find primary controller: %v", err)
 						}
@@ -279,137 +409,132 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			}
 		}
 
-		if imgui.BeginTableV("scenario", 2, 0, imgui.Vec2{tableScale * 600, 0}, 0.) {
-			if c.newSimType == NewSimCreateRemote {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text("Name:")
-				imgui.TableNextColumn()
-				imgui.Text(c.NewSimName)
+		if c.newSimType == NewSimCreateRemote {
+			imgui.Text("Name: " + c.NewSimName)
+		}
+
+		fmtPosition := func(id string) string {
+			if tracon := c.selectedTRACONConfigs[c.GroupName]; tracon != nil {
+				if ctrl, ok := tracon.ControlPositions[id]; ok {
+					id += " (" + ctrl.Position + ")"
+				}
+			}
+			return id
+		}
+
+		if len(c.ScenarioConfig.ArrivalRunways) > 0 {
+			var a []string
+			for _, rwy := range c.ScenarioConfig.ArrivalRunways {
+				a = append(a, rwy.Airport+"/"+rwy.Runway)
+			}
+			sort.Strings(a)
+			base := "Landing: "
+			for len(a) > 0 {
+				const max = 5 // per line
+				if len(a) > max {
+					imgui.Text(base + strings.Join(a[:max], ", "))
+					base = "    "
+					a = a[max:]
+				} else {
+					imgui.Text(base + strings.Join(a, ", "))
+					break
+				}
+			}
+		}
+
+		imgui.Text("Control Position: " + fmtPosition(c.ScenarioConfig.SelectedController))
+
+		imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
+		if c.AllowInstructorRPO {
+			imgui.Text("Sign in as:")
+			var curPos int32 // 0 -> primaryController
+			if c.connectionConfig.Position == "INS" {
+				curPos = 1
+			} else if c.connectionConfig.Position == "RPO" {
+				curPos = 2
+			}
+			if imgui.RadioButtonIntPtr(c.ScenarioConfig.SelectedController, &curPos, 0) {
+				c.connectionConfig.Position = "" // default: server will sort it out
+			}
+			if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
+				c.connectionConfig.Position = "INS"
+			}
+			if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
+				c.connectionConfig.Position = "RPO"
 			}
 
-			fmtPosition := func(id string) string {
-				if tracon := c.selectedTRACONConfigs[c.GroupName]; tracon != nil {
-					if ctrl, ok := tracon.ControlPositions[id]; ok {
-						id += " (" + ctrl.Position + ")"
-					}
+			// Allow instructor mode for regular controllers when not signing in as dedicated instructor/RPO
+			if c.connectionConfig.Position == "" {
+				imgui.Checkbox("Also sign in as Instructor", &c.Instructor)
+			}
+		}
+
+		if c.newSimType == NewSimCreateRemote {
+			imgui.Checkbox("Require Password", &c.RequirePassword)
+			if c.RequirePassword {
+				imgui.InputTextWithHint("Password", "", &c.Password, 0, nil)
+				if c.Password == "" {
+					imgui.SameLine()
+					imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
+					imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
+					imgui.PopStyleColor()
 				}
-				return id
+			}
+		}
+
+		// Show TTS disable option if the server supports TTS
+		if c.selectedServer.HaveTTS {
+			imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
+			// Also update configs for both joining remote sims and creating new sims
+			c.connectionConfig.DisableTextToSpeech = config.DisableTextToSpeech
+			c.NewSimConfiguration.DisableTextToSpeech = config.DisableTextToSpeech
+		}
+
+		imgui.Checkbox("Ensure last two characters in callsigns are unique",
+			&c.NewSimConfiguration.EnforceUniqueCallsignSuffix)
+
+		// Lock for accessing METAR variables
+		c.mu.Lock(c.lg)
+		defer c.mu.Unlock(c.lg)
+
+		if c.fetchingMETAR {
+			imgui.Text("METAR: Fetching...")
+		} else if c.fetchMETARError != nil {
+			imgui.Text("METAR error: " + c.fetchMETARError.Error())
+		} else if len(c.airportMETAR) > 0 {
+			metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
+			slices.Sort(metarAirports)
+			if idx := slices.Index(metarAirports, c.ScenarioConfig.PrimaryAirport); idx > 0 {
+				// Move primary to the front
+				metarAirports = slices.Delete(metarAirports, idx, idx+1)
+				metarAirports = slices.Insert(metarAirports, 0, c.ScenarioConfig.PrimaryAirport)
 			}
 
-			if len(c.Scenario.ArrivalRunways) > 0 {
-				var a []string
-				for _, rwy := range c.Scenario.ArrivalRunways {
-					a = append(a, rwy.Airport+"/"+rwy.Runway)
-				}
-				sort.Strings(a)
-				base := "Landing: "
-				for len(a) > 0 {
+			metar := c.airportMETAR[metarAirports[0]]
+			TimePicker("Simulation start date/time", &c.NewSimConfiguration.StartTime,
+				c.selectedServer.AvailableWX, metar, &ui.fixedFont.Ifont)
+
+			imgui.SameLine()
+			if imgui.Button(renderer.FontAwesomeIconRedo) {
+				c.updateStartTimeForRunways()
+			}
+
+			tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+			if imgui.BeginTableV("metar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 800, 0}, 0.) {
+				for i, ap := range metarAirports {
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
-					const max = 5 // per line
-					if len(a) > max {
-						imgui.Text(base + strings.Join(a[:max], ", "))
-						base = "    "
-						a = a[max:]
-					} else {
-						imgui.Text(base + strings.Join(a, ", "))
-						break
+					if i == 0 {
+						imgui.Text("METAR:")
 					}
-				}
-			}
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Control Position:")
-			imgui.TableNextColumn()
-			imgui.Text(fmtPosition(c.Scenario.SelectedController))
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
-			if c.AllowInstructorRPO {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Text("Sign in as:")
-				imgui.TableNextColumn()
-				var curPos int32 // 0 -> primaryController
-				if c.connectionConfig.Position == "INS" {
-					curPos = 1
-				} else if c.connectionConfig.Position == "RPO" {
-					curPos = 2
-				}
-				if imgui.RadioButtonIntPtr(c.Scenario.SelectedController, &curPos, 0) {
-					c.connectionConfig.Position = "" // default: server will sort it out
-				}
-				if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
-					c.connectionConfig.Position = "INS"
-				}
-				if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
-					c.connectionConfig.Position = "RPO"
-				}
-
-				// Allow instructor mode for regular controllers when not signing in as dedicated instructor/RPO
-				if c.connectionConfig.Position == "" {
-					imgui.TableNextRow()
 					imgui.TableNextColumn()
-					imgui.TableNextColumn()
-					imgui.Checkbox("Also sign in as Instructor", &c.Instructor)
+					imgui.PushFont(&ui.fixedFont.Ifont)
+					metar := wx.METARForTime(c.airportMETAR[ap], c.NewSimConfiguration.StartTime)
+					imgui.Text(metar.Raw)
+					imgui.PopFont()
 				}
+				imgui.EndTable()
 			}
-
-			if c.newSimType == NewSimCreateRemote {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Checkbox("Require Password", &c.RequirePassword)
-				if c.RequirePassword {
-					imgui.TableNextColumn()
-					imgui.InputTextWithHint("Password", "", &c.Password, 0, nil)
-					if c.Password == "" {
-						imgui.SameLine()
-						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-						imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
-						imgui.PopStyleColor()
-					}
-				}
-			}
-
-			// Show TTS disable option if the server supports TTS
-			if c.selectedServer != nil && c.selectedServer.HaveTTS {
-				imgui.TableNextRow()
-				imgui.TableNextColumn()
-				imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
-				// Also update configs for both joining remote sims and creating new sims
-				c.connectionConfig.DisableTextToSpeech = config.DisableTextToSpeech
-				c.NewSimConfiguration.DisableTextToSpeech = config.DisableTextToSpeech
-			}
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Checkbox("Ensure last two characters in callsigns are unique",
-				&c.NewSimConfiguration.EnforceUniqueCallsignSuffix)
-
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text("Wind:")
-
-			imgui.TableNextColumn()
-			wind := c.Scenario.AverageWind
-
-			var dir string
-			if wind.Direction == 0 {
-				dir = "Variable"
-			} else {
-				dir = fmt.Sprintf("%03d", int(wind.Direction+5)/10*10)
-			}
-
-			if wind.Gust > wind.Speed {
-				imgui.Text(fmt.Sprintf("%s at %.0f gust %.0f", dir, wind.Speed, wind.Gust))
-			} else {
-				imgui.Text(fmt.Sprintf("%s at %.0f", dir, wind.Speed))
-			}
-
-			imgui.EndTable()
 		}
 	} else {
 		// Join remote
@@ -516,8 +641,8 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	// Check rate limits and clamp if necessary
 	const rateLimit = 100.0
 	rateClamped := false
-	if !c.Scenario.LaunchConfig.CheckRateLimits(rateLimit) {
-		c.Scenario.LaunchConfig.ClampRates(rateLimit)
+	if !c.ScenarioConfig.LaunchConfig.CheckRateLimits(rateLimit) {
+		c.ScenarioConfig.LaunchConfig.ClampRates(rateLimit)
 		rateClamped = true
 	}
 
@@ -528,10 +653,10 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 		imgui.PopStyleColor()
 	}
 
-	drawDepartureUI(&c.Scenario.LaunchConfig, p)
-	drawVFRDepartureUI(&c.Scenario.LaunchConfig, p)
-	drawArrivalUI(&c.Scenario.LaunchConfig, p)
-	drawOverflightUI(&c.Scenario.LaunchConfig, p)
+	drawDepartureUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawVFRDepartureUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawArrivalUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawOverflightUI(&c.ScenarioConfig.LaunchConfig, p)
 	return false
 }
 
@@ -1553,4 +1678,47 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 	imgui.End()
 
 	return show
+}
+
+func (c *NewSimConfiguration) updateStartTimeForRunways() {
+	if c.ScenarioConfig == nil || c.selectedServer == nil || c.airportMETAR == nil {
+		return
+	}
+
+	airports := c.ScenarioConfig.AllAirports()
+	if len(airports) == 0 {
+		return
+	}
+	var ap string
+	if slices.Contains(airports, c.ScenarioConfig.PrimaryAirport) {
+		ap = c.ScenarioConfig.PrimaryAirport
+	} else {
+		ap = airports[0]
+	}
+
+	// Get runway headings for the selected airport
+	var sumRunwayVecs [2]float32
+	if dbap, ok := av.DB.Airports[ap]; ok {
+		for _, rwy := range dbap.Runways {
+			if slices.ContainsFunc(c.ScenarioConfig.DepartureRunways, func(r sim.DepartureRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+			if slices.ContainsFunc(c.ScenarioConfig.ArrivalRunways, func(r sim.ArrivalRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+		}
+	}
+	avgRwyHeading := math.VectorHeading(sumRunwayVecs)
+	avgRwyMagneticHeading := avgRwyHeading + c.ScenarioConfig.MagneticVariation
+
+	// Use wx.SampleMETAR to pick an appropriate time
+	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
+		if sampledMETAR := wx.SampleMETAR(apMETAR, c.selectedServer.AvailableWX, avgRwyMagneticHeading); sampledMETAR != nil {
+			c.StartTime = sampledMETAR.Time.UTC()
+		}
+	}
 }

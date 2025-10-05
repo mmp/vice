@@ -33,7 +33,7 @@ type State struct {
 	Tracks map[av.ADSBCallsign]*Track
 
 	// Unassociated ones, including unsupported DBs
-	UnassociatedFlightPlans []*STARSFlightPlan
+	UnassociatedFlightPlans []*NASFlightPlan
 
 	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
 
@@ -60,19 +60,20 @@ type State struct {
 	InboundFlows     map[string]*av.InboundFlow
 	LaunchConfig     LaunchConfig
 
-	Center                   math.Point2LL
-	Range                    float32
-	ScenarioDefaultVideoMaps []string
-	UserRestrictionAreas     []av.RestrictionArea
+	Center                    math.Point2LL
+	Range                     float32
+	ScenarioDefaultVideoMaps  []string
+	ScenarioDefaultVideoGroup string
+	UserRestrictionAreas      []av.RestrictionArea
 
-	STARSFacilityAdaptation STARSFacilityAdaptation
+	FacilityAdaptation FacilityAdaptation
 
 	TRACON            string
 	MagneticVariation float32
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	WX *wx.WeatherModel
+	METAR map[string]wx.METAR
 
 	TotalIFR, TotalVFR int
 
@@ -106,7 +107,7 @@ type ReleaseDeparture struct {
 	Exit                string
 }
 
-func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, lg *log.Logger) *State {
+func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model, metar map[string][]wx.METAR, lg *log.Logger) *State {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
@@ -125,25 +126,31 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		InboundFlows:     config.InboundFlows,
 		LaunchConfig:     config.LaunchConfig,
 
-		Center:                   config.Center,
-		Range:                    config.Range,
-		ScenarioDefaultVideoMaps: config.DefaultMaps,
+		Center:                    config.Center,
+		Range:                     config.Range,
+		ScenarioDefaultVideoMaps:  config.DefaultMaps,
+		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 
-		STARSFacilityAdaptation: deep.MustCopy(config.STARSFacilityAdaptation),
+		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
 
 		TRACON:            config.TRACON,
 		MagneticVariation: config.MagneticVariation,
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
-
-		WX: wx.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), startTime,
-			config.NmPerLongitude, config.MagneticVariation, config.Wind, lg),
+		METAR:             make(map[string]wx.METAR),
 
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        startTime,
 
 		Instructors: make(map[string]bool),
+	}
+
+	// Grab initial METAR for each airport
+	for ap, m := range metar {
+		if len(m) > 0 {
+			ss.METAR[ap] = m[0]
+		}
 	}
 
 	if manifest != nil {
@@ -179,7 +186,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	// Add the TFR restriction areas
 	for _, tfr := range config.TFRs {
 		ra := av.RestrictionAreaFromTFR(tfr)
-		ss.STARSFacilityAdaptation.RestrictionAreas = append(ss.STARSFacilityAdaptation.RestrictionAreas, ra)
+		ss.FacilityAdaptation.RestrictionAreas = append(ss.FacilityAdaptation.RestrictionAreas, ra)
 	}
 
 	for _, callsign := range config.VirtualControllers {
@@ -209,7 +216,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 			ss.DepartureAirports[name] = nil
 
 			ap := av.DB.Airports[name]
-			windDir := ss.WX.LookupWind(ap.Location, float32(ap.Elevation)).Direction
+			windDir := model.Lookup(ap.Location, float32(ap.Elevation), startTime).WindDirection()
 			if rwy, _ := ap.SelectBestRunway(windDir, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
 			} else {
@@ -240,14 +247,14 @@ func (ss *State) GetStateForController(tcp string) *State {
 	state.UserTCP = tcp
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
 		state.ControllerVideoMaps = config.VideoMapNames
 		state.ControllerDefaultVideoMaps = config.DefaultMaps
 		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
 	} else {
-		state.ControllerVideoMaps = ss.STARSFacilityAdaptation.VideoMapNames
+		state.ControllerVideoMaps = ss.FacilityAdaptation.VideoMapNames
 		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
-		state.ControllerMonitoredBeaconCodeBlocks = ss.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
+		state.ControllerMonitoredBeaconCodeBlocks = ss.FacilityAdaptation.MonitoredBeaconCodeBlocks
 	}
 
 	return &state
@@ -336,7 +343,7 @@ func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
 				return false
 			}
 
-			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					// It'll be in a STARS coordination list
 					return false
@@ -349,7 +356,7 @@ func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
 func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep ReleaseDeparture) bool {
-			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
+			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
 				if slices.Contains(cl.Airports, dep.DepartureAirport) {
 					return true
 				}
@@ -359,14 +366,14 @@ func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 }
 
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center
@@ -409,14 +416,14 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp *STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
+		func(fp *NASFlightPlan) bool { return fp.AssignedSquawk == sq }) {
 		return true
 	}
 
 	return false
 }
 
-func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
+func (ss *State) FindMatchingFlightPlan(s string) *NASFlightPlan {
 	n := -1
 	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
 		n = pn
@@ -469,6 +476,24 @@ func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
 	return nil, false
 }
 
+func (ss *State) GetTrackByFLID(flid string) (*Track, bool) {
+	for i, trk := range ss.Tracks {
+		if !trk.IsAssociated() {
+			continue
+		}
+		if trk.FlightPlan.CID == flid {
+			return ss.Tracks[i], true
+		}
+		if trk.ADSBCallsign == av.ADSBCallsign(flid) {
+			return ss.Tracks[i], true
+		}
+		if sq, err := av.ParseSquawk(flid); err != nil && trk.FlightPlan.AssignedSquawk == sq {
+			return ss.Tracks[i], true
+		}
+	}
+	return nil, false
+}
+
 func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 	for i, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
@@ -481,7 +506,7 @@ func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 
 // FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
 // FIXME FIXME FIXME
-func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
+func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
 	for _, trk := range ss.Tracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			return trk.FlightPlan
@@ -493,6 +518,34 @@ func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
 		}
 	}
 	return nil
+}
+
+// Returns all aircraft that match the given suffix. If instructor, returns
+// all matching aircraft; otherwise only ones under the current
+// controller's control are considered for matching.
+func (ss *State) TracksFromACIDSuffix(suffix string) []*Track {
+	match := func(trk *Track) bool {
+		if trk.IsUnassociated() {
+			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
+		} else {
+			fp := trk.FlightPlan
+			if !strings.HasSuffix(string(fp.ACID), suffix) {
+				return false
+			}
+
+			if fp.ControllingController == ss.UserTCP || ss.AreInstructorOrRPO(ss.UserTCP) {
+				return true
+			}
+
+			// Hold for release aircraft still in the list
+			if ss.ResolveController(trk.FlightPlan.TrackingController) == ss.UserTCP &&
+				trk.FlightPlan.ControllingController == "" {
+				return true
+			}
+			return false
+		}
+	}
+	return slices.Collect(util.FilterSeq(maps.Values(ss.Tracks), match))
 }
 
 func (ss *State) IsExternalController(tcp string) bool {

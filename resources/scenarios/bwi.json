@@ -556,7 +556,7 @@
           "destination": "KATL",
           "exit": "FLASK",
           "route": "FLASK OZZZI1",
-          "scratchpad": "TCL"
+          "scratchpad": "CLH"
         },
 		{
           "airlines": [
@@ -573,7 +573,7 @@
           "destination": "KFLL",
           "exit": "RRSIN",
           "route": "RRSIN GSO Q83 JEVED Q97 PRMUS CUUDA3",
-          "scratchpad": "TJD"
+          "scratchpad": "JDB"
         },
 		{
           "airlines": [
@@ -623,7 +623,7 @@
           "destination": "KMIA",
           "exit": "RRSIN",
           "route": "RRSIN GSO Q83 JEVED Q97 DEBRL CSTAL2",
-          "scratchpad": "TJD"
+          "scratchpad": "JDB"
         },
 		{
           "airlines": [
@@ -648,7 +648,7 @@
           "destination": "KCHS",
           "exit": "RRSIN",
           "route": "RRSIN GSO OBNEE OSPRI7",
-          "scratchpad": "TJD"
+          "scratchpad": "JDB"
         },
 				{
           "airlines": [
@@ -662,7 +662,7 @@
           "destination": "KSAV",
           "exit": "RRSIN",
           "route": "RRSIN GSO CTF CANTR PLZZZ",
-          "scratchpad": "TJD"
+          "scratchpad": "JDB"
         },
 		{
           "airlines": [
@@ -688,7 +688,7 @@
           "destination": "KMCO",
           "exit": "RRSIN",
           "route": "RRSIN GSO Q75 SLOJO Q103 EMCET Q69 ISUZO Q93 GIPPL Q85 LPERD GTOUT1",
-          "scratchpad": "TJD"
+          "scratchpad": "JDB"
         },
 		{
           "airlines": [
@@ -885,7 +885,7 @@
           "destination": "KIAH",
           "exit": "MAULS",
           "route": "MAULS Q40 AEX GESNR1",
-		  "scratchpad": "TCL"
+		  "scratchpad": "CLH"
         },
 		{
           "airlines": [
@@ -916,7 +916,7 @@
           "destination": "KAUS",
           "exit": "MAULS",
           "route": "MAULS Q40 AEX IAH LUKKN WLEEE7",
-		  "scratchpad": "TCL"
+		  "scratchpad": "CLH"
         },
 		{
           "airlines": [
@@ -1049,7 +1049,7 @@
           "destination": "KLAX",
           "exit": "MAULS",
           "route": "MAULS KI45S ARG OKM CIM TBC JASSE Q90 DNERO ANJLL4",
-		  "scratchpad": "TCL"
+		  "scratchpad": "CLH"
         },
 		{
           "airlines": [
@@ -1071,7 +1071,7 @@
           "destination": "KSAN",
           "exit": "MAULS",
           "route": "MAULS Q40 BFOLO FIBER MEI MHZ EIC J4 ABI EWM J4 SSO J50 GBN J2 HOGGZ LUCKI1",
-		  "scratchpad": "TCL"
+		  "scratchpad": "CLH"
         },
         {
           "airlines": [
@@ -1181,7 +1181,7 @@
           "destination": "MMUN",
           "exit": "RRSIN",
           "route": " RRSIN GSO Q75 ENEME EVANZ Q109 KNOST M219 NAVVL L465 SHARQ UM463 WALKY UB879 NOSAT",
-          "scratchpad": "TJD"
+          "scratchpad": "JDB"
         },
 		{
           "airlines": [
@@ -1343,13 +1343,48 @@
       }
     ]
   },
+  "ARLFT2": {
+      "overflights": [
+      {
+        "airlines": [
+             {
+              "departure_airport": "KRIV",
+              "arrival_airport": "KDOV",
+              "icao": "GTI"
+            },
+            {
+              "departure_airport": "KORD",
+              "arrival_airport": "KDOV",
+              "icao": "CKS"
+            },
+			{
+              "departure_airport": "KORD",
+              "arrival_airport": "KDOV",
+              "icao": "GTI"
+            },
+			{
+              "departure_airport": "KMEM",
+              "arrival_airport": "KDOV",
+              "icao": "FDX",
+			  "fleet": "long"
+            }
+          ],
+        "initial_altitude": 22000,
+        "initial_controller": "ZDC_05_CTR",
+        "initial_speed": 280,
+		"scratchpad": "DOV",
+        "waypoints": "KEESH/ho BUBBI/a15000-18000 MRB/a13000 WOOLY SWANN BROSS ENO ARLFT/delete"
+      }
+    ]
+  },
   "DEALE3/MIIDY3": {
     "arrivals": [
       {
         "spawn": "LAFLN",
         "star": "MIIDY3",
         "initial_controller": "ZDC_51_CTR",
-        "initial_altitude": 11000,
+        "initial_altitude": 18000,
+		"assigned_altitude": 11000,
         "initial_speed": 280,
         "expect_approach": null,
         "scratchpad": "MDY",
@@ -1399,7 +1434,7 @@
         }
       },
 	  {
-        "waypoints": "LAFLN BILIT/a11000/ho DEALE/a10000/s280",
+        "waypoints": "LAFLN N038.47.02.277,W075.37.03.056/ho BILIT/a11000 DEALE/a10000/s280",
 		"runway_waypoints": {
           "KDCA": {
             "1": "DEALE/a10000/s280 YUCKK/a10000 TIRZA/a8000- HITEK/a7000/delete",
@@ -1409,6 +1444,7 @@
         "star": "DEALE3",
         "initial_controller": "ZDC_51_CTR",
         "initial_altitude": 19000,
+		"assigned_altitude": 11000,
         "initial_speed": 280,
         "expect_approach": null,
         "scratchpad": "DLE",
@@ -1955,16 +1991,17 @@
   "SKILS5": {
     "arrivals": [
       {
-        "waypoints": "SHILO SKILS/a12000/ho BAL/a10000/s250 EYESS",
+        "waypoints": "N039.51.19.701,W076.48.21.379 SHILO/ho SKILS/a12000 BAL/a10000/s250 EYESS",
 		"runway_waypoints": {
           "KDCA": {
-            "1": "EYESS FELTY HITEK CAVDI/delete",
-            "19": "EYESS EDDWD MEGGS NAYES/delete"
+            "1": "EYESS BRUNC FELTY/a6000 HITEK CAVDI/delete",
+            "19": "EYESS EDDWD MEGGS/a6000 NAYES/delete"
           }
         },
         "star": "SKILS5",
         "initial_controller": "NY_A1_CTR",
-        "initial_altitude": 15000,
+        "initial_altitude": 19000,
+		"assigned_altitude": 12000,
         "initial_speed": 280,
         "expect_approach": null,
         "scratchpad": "SKL",
@@ -2006,13 +2043,20 @@
   "CLIPR3": {
     "arrivals": [
       {
-        "star": "CLIPR3",
-	"spawn": "NUGGY",
+        "waypoints": "NUGGY TROYZ/ho BELAY TRISH CLIPR/a12000 BAL/a10000/s250 EYESS",
+		"runway_waypoints": {
+          "KDCA": {
+            "1": "EYESS BRUNC FELTY/a6000 HITEK CAVDI/delete",
+            "19": "EYESS EDDWD MEGGS/a6000 NAYES/delete"
+          }
+        },
+		"star": "CLIPR3",
         "initial_controller": "NY_A1_CTR",
-        "initial_altitude": 15000,
+        "initial_altitude": 17000,
+		"assigned_altitude": 12000,
         "initial_speed": 280,
         "expect_approach": null,
-        "scratchpad": "SKL",
+        "scratchpad": "CLP",
         "airlines": {
           "KDCA": [
             {
@@ -2370,6 +2414,11 @@
       "radio_name": "Potomac Approach",
       "sector_id": "1S"
     },
+	"BWI_Z_APP": {
+      "frequency": 132770,
+      "radio_name": "Potomac Approach",
+      "sector_id": "1Z"
+    },
 	"DCA_E_APP": {
       "frequency": 124200,
       "radio_name" : "Potomac Approach",
@@ -2426,32 +2475,43 @@
       "radio_name": "Baltimore Tower",
       "sector_id": "12"
     },
+	"MTN_TWR": {
+      "frequency": 121300,
+      "radio_name": "Martin Tower",
+      "sector_id": "13"
+    },
+	"DOV_APP": {
+      "frequency": 132420,
+      "radio_name": "Dover Approach",
+	  "facility_id": "4",
+      "sector_id": "1N"
+    },
 	"ZDC_05_CTR": {
       "frequency": 133550,
       "radio_name": "Washington Center",
-      "facility_id": "C",
+      "facility_id": "W",
       "eram_facility": true,
-      "sector_id": "C05"
+      "sector_id": "W05"
     },
     "ZDC_32_CTR": {
       "frequency": 133725,
       "radio_name": "Washington Center",
-      "sector_id": "C32",
-      "facility_id": "C",
+      "sector_id": "W32",
+      "facility_id": "W",
       "eram_facility": true
     },
     "ZDC_17_CTR": {
       "frequency": 125450,
       "radio_name": "Washington Center",
-      "sector_id": "C17",
-      "facility_id": "C",
+      "sector_id": "W17",
+      "facility_id": "W",
       "eram_facility": true
     },
     "ZDC_51_CTR": {
       "frequency": 120975,
       "radio_name": "Washington Center",
-      "sector_id": "C51",
-      "facility_id": "C",
+      "sector_id": "W51",
+      "facility_id": "W",
       "eram_facility": true
     },
 	"NY_A1_CTR": {
@@ -2462,209 +2522,17 @@
       "sector_id": "N26"
     }
   },
-  "default_scenario": "CHP - BWI West",
+  "default_scenario": "CHP - BWI North",
   "name": "BWI",
   "primary_airport": "KBWI",
   "scenarios": {
-    "CHP - BWI South": {
-      "arrival_runways": [
-        {
-          "airport": "KBWI",
-          "runway": "15R"
-        },
-		{
-          "airport": "KBWI",
-          "runway": "15L"
-        },
-		{
-          "airport": "KDCA",
-          "runway": "19"
-        }
-      ],
-	  "inbound_rates": {
-        "ANTHM5": {
-          "KBWI": 15
-        },
-		"RAVNN8.15R": {
-          "KBWI": 15
-        },
-		"DEALE3/MIIDY3": {
-          "KBWI": 10,
-		  "KDCA": 10
-        },
-		"TRISH4.NUGGY": {
-          "KBWI": 7
-        },
-		"TRISH4.DRRES": {
-          "KBWI": 3
-        },
-		"CLIPR3": {
-          "KDCA": 15
-        },
-		"SKILS5": {
-          "KDCA": 5
-        },
-		"JERES2/MCRAY2": {
-          "overflights": 10
-        }
-      },
-      "solo_controller": "BWI_S_APP",
-	  "multi_controllers": {
-        "default": {
-            "BWI_S_APP": {"primary": true, "inbound_flows": ["RAVNN8.15R"]},
-			"BWI_B_APP": {"backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"]},
-            "BWI_G_APP": {"backup": "BWI_S_APP", "departures": [ "KBWI/CONLE5", "KBWI/DUKPN1" ]},
-			"BWI_W_APP": {"backup": "BWI_B_APP", "departures": [ "KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2" ]},
-			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2"]},
-			"BWI_N_APP": {"backup": "BWI_S_APP"},
-			"BWI_P_APP": {"backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"]}
-        }
-      },
-      "controllers": [
-        "BWI_W_TWR",
-        "BWI_E_TWR",
-		"BWI_B_APP",
-		"BWI_H_APP",
-		"BWI_W_APP",
-		"BWI_G_APP",
-		"BWI_P_APP",
-		"BWI_N_APP",
-		"BWI_S_APP",
-		"DCA_K_DEP",
-		"DCA_L_DEP",
-		"DCA_Y_DEP",
-		"DCA_E_APP",
-		"DCA_D_APP",
-		"IAD_M_APP",
-		"IAD_A_DEP",
-		"IAD_N_APP",
-		"ZDC_05_CTR",
-		"ZDC_17_CTR",
-		"ZDC_32_CTR",
-		"ZDC_51_CTR"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KBWI",
-          "rate": 15,
-          "runway": "15R"
-        },
-		{
-          "airport": "KDCA",
-          "rate": 10,
-          "runway": "19"
-        }
-      ],
-      "wind": {
-        "direction": 230,
-        "speed": 10
-      },
-      "default_maps": [
-        "CHP Approaches",
-        "CHP Base"
-      ]
-    },
-	"CHP - BWI North": {
-      "arrival_runways": [
-        {
-          "airport": "KBWI",
-          "runway": "33L"
-        },
-		{
-          "airport": "KBWI",
-          "runway": "33R"
-        },
-		{
-          "airport": "KDCA",
-          "runway": "1"
-        }
-      ],
-	  "inbound_rates": {
-        "ANTHM5": {
-          "KBWI": 15
-        },
-		"RAVNN8.33L": {
-          "KBWI": 15
-        },
-		"DEALE3/MIIDY3": {
-          "KBWI": 10,
-		  "KDCA": 10
-        },
-		"TRISH4.NUGGY": {
-          "KBWI": 7
-        },
-		"TRISH4.DRRES": {
-          "KBWI": 3
-        },
-		"CLIPR3": {
-          "KDCA": 15
-        },
-		"SKILS5": {
-          "KDCA": 5
-        },
-		"JERES2/MCRAY2": {
-          "overflights": 10
-        }
-      },
-      "solo_controller": "BWI_S_APP",
-	  "multi_controllers": {
-        "default": {
-            "BWI_S_APP": {"primary": true, "inbound_flows": ["RAVNN8.33L"]},
-			"BWI_B_APP": {"backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"]},
-            "BWI_G_APP": {"backup": "BWI_S_APP", "departures": [ "KBWI/CONLE5", "KBWI/DUKPN1" ]},
-			"BWI_W_APP": {"backup": "BWI_B_APP", "departures": [ "KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2" ]},
-			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2"]},
-			"BWI_N_APP": {"backup": "BWI_S_APP"},
-			"BWI_P_APP": {"backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"]}
-        }
-      },
-      "controllers": [
-        "BWI_W_TWR",
-        "BWI_E_TWR",
-		"BWI_B_APP",
-		"BWI_H_APP",
-		"BWI_W_APP",
-		"BWI_G_APP",
-		"BWI_P_APP",
-		"BWI_N_APP",
-		"BWI_S_APP",
-		"DCA_K_DEP",
-		"DCA_L_DEP",
-		"DCA_Y_DEP",
-		"DCA_E_APP",
-		"DCA_D_APP",
-		"IAD_M_APP",
-		"IAD_A_DEP",
-		"IAD_N_APP",
-		"ZDC_05_CTR",
-		"ZDC_17_CTR",
-		"ZDC_32_CTR",
-		"ZDC_51_CTR"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KBWI",
-          "rate": 15,
-          "runway": "33L"
-        },
-		{
-          "airport": "KDCA",
-          "rate": 10,
-          "runway": "1"
-        }
-      ],
-      "wind": {
-        "direction": 340,
-        "speed": 10
-      },
-      "default_maps": [
-        "CHP Approaches",
-        "CHP Base"
-      ]
-    },
     "CHP - BWI West": {
       "arrival_runways": [
         {
+          "airport": "KBWI",
+          "runway": "33L"
+        },
+		{
           "airport": "KBWI",
           "runway": "28"
         },
@@ -2698,6 +2566,9 @@
         },
 		"JERES2/MCRAY2": {
           "overflights": 10
+        },
+		"ARLFT2": {
+          "overflights": 1
         }
       },
       "solo_controller": "BWI_S_APP",
@@ -2707,7 +2578,7 @@
 			"BWI_B_APP": {"backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"]},
             "BWI_G_APP": {"backup": "BWI_S_APP", "departures": [ "KBWI/CONLE5", "KBWI/DUKPN1" ]},
 			"BWI_W_APP": {"backup": "BWI_B_APP", "departures": [ "KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2" ]},
-			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2"]},
+			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"]},
 			"BWI_N_APP": {"backup": "BWI_S_APP"},
 			"BWI_P_APP": {"backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"]}
         }
@@ -2715,6 +2586,7 @@
       "controllers": [
         "BWI_W_TWR",
         "BWI_E_TWR",
+		"MTN_TWR",
 		"BWI_B_APP",
 		"BWI_H_APP",
 		"BWI_W_APP",
@@ -2722,6 +2594,7 @@
 		"BWI_P_APP",
 		"BWI_N_APP",
 		"BWI_S_APP",
+		"BWI_Z_APP",
 		"DCA_K_DEP",
 		"DCA_L_DEP",
 		"DCA_Y_DEP",
@@ -2730,6 +2603,7 @@
 		"IAD_M_APP",
 		"IAD_A_DEP",
 		"IAD_N_APP",
+		"DOV_APP",
 		"ZDC_05_CTR",
 		"ZDC_17_CTR",
 		"ZDC_32_CTR",
@@ -2753,6 +2627,214 @@
       },
       "default_maps": [
 		"CHP Approaches",
+		"CHP Base"
+      ]
+    },
+	"CHP - BWI North": {
+      "arrival_runways": [
+        {
+          "airport": "KBWI",
+          "runway": "33L"
+        },
+		{
+          "airport": "KBWI",
+          "runway": "33R"
+        },
+		{
+          "airport": "KDCA",
+          "runway": "1"
+        }
+      ],
+      "inbound_rates": {
+        "ANTHM5": {
+          "KBWI": 15
+        },
+		"RAVNN8.33L": {
+          "KBWI": 15
+        },
+		"DEALE3/MIIDY3": {
+          "KBWI": 10,
+		  "KDCA": 10
+        },
+		"TRISH4.NUGGY": {
+          "KBWI": 7
+        },
+		"TRISH4.DRRES": {
+          "KBWI": 3
+        },
+		"CLIPR3": {
+          "KDCA": 15
+        },
+		"SKILS5": {
+          "KDCA": 5
+        },
+		"JERES2/MCRAY2": {
+          "overflights": 10
+        },
+		"ARLFT2": {
+          "overflights": 1
+        }
+      },
+      "solo_controller": "BWI_S_APP",
+	  "multi_controllers": {
+        "default": {
+            "BWI_S_APP": {"primary": true, "inbound_flows": ["RAVNN8.33L"]},
+			"BWI_B_APP": {"backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"]},
+            "BWI_G_APP": {"backup": "BWI_S_APP", "departures": [ "KBWI/CONLE5", "KBWI/DUKPN1" ]},
+			"BWI_W_APP": {"backup": "BWI_B_APP", "departures": [ "KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2" ]},
+			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"]},
+			"BWI_N_APP": {"backup": "BWI_S_APP"},
+			"BWI_P_APP": {"backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"]}
+        }
+      },
+      "controllers": [
+        "BWI_W_TWR",
+        "BWI_E_TWR",
+		"MTN_TWR",
+		"BWI_B_APP",
+		"BWI_H_APP",
+		"BWI_W_APP",
+		"BWI_G_APP",
+		"BWI_P_APP",
+		"BWI_N_APP",
+		"BWI_S_APP",
+		"BWI_Z_APP",
+		"DCA_K_DEP",
+		"DCA_L_DEP",
+		"DCA_Y_DEP",
+		"DCA_E_APP",
+		"DCA_D_APP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_N_APP",
+		"DOV_APP",
+		"ZDC_05_CTR",
+		"ZDC_17_CTR",
+		"ZDC_32_CTR",
+		"ZDC_51_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBWI",
+          "rate": 15,
+          "runway": "28"
+        },
+		{
+          "airport": "KDCA",
+          "rate": 10,
+          "runway": "1"
+        }
+      ],
+      "wind": {
+        "direction": 310,
+        "speed": 10
+      },
+      "default_maps": [
+        "CHP Approaches",
+		"CHP Base"
+      ]
+    },
+	"CHP - BWI South": {
+      "arrival_runways": [
+        {
+          "airport": "KBWI",
+          "runway": "15R"
+        },
+		{
+          "airport": "KBWI",
+          "runway": "10"
+        },
+		{
+          "airport": "KDCA",
+          "runway": "19"
+        }
+      ],
+      "inbound_rates": {
+        "ANTHM5": {
+          "KBWI": 15
+        },
+		"RAVNN8.10": {
+          "KBWI": 15
+        },
+		"DEALE3/MIIDY3": {
+          "KBWI": 10,
+		  "KDCA": 10
+        },
+		"TRISH4.NUGGY": {
+          "KBWI": 7
+        },
+		"TRISH4.DRRES": {
+          "KBWI": 3
+        },
+		"CLIPR3": {
+          "KDCA": 15
+        },
+		"SKILS5": {
+          "KDCA": 5
+        },
+		"JERES2/MCRAY2": {
+          "overflights": 10
+        },
+		"ARLFT2": {
+          "overflights": 1
+        }
+      },
+      "solo_controller": "BWI_S_APP",
+	  "multi_controllers": {
+        "default": {
+            "BWI_S_APP": {"primary": true, "inbound_flows": ["RAVNN8.10"]},
+			"BWI_B_APP": {"backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"]},
+            "BWI_G_APP": {"backup": "BWI_S_APP", "departures": [ "KBWI/CONLE5", "KBWI/DUKPN1" ]},
+			"BWI_W_APP": {"backup": "BWI_B_APP", "departures": [ "KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2" ]},
+			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"]},
+			"BWI_N_APP": {"backup": "BWI_S_APP"},
+			"BWI_P_APP": {"backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"]}
+        }
+      },
+      "controllers": [
+       "BWI_W_TWR",
+        "BWI_E_TWR",
+		"MTN_TWR",
+		"BWI_B_APP",
+		"BWI_H_APP",
+		"BWI_W_APP",
+		"BWI_G_APP",
+		"BWI_P_APP",
+		"BWI_N_APP",
+		"BWI_S_APP",
+		"BWI_Z_APP",
+		"DCA_K_DEP",
+		"DCA_L_DEP",
+		"DCA_Y_DEP",
+		"DCA_E_APP",
+		"DCA_D_APP",
+		"IAD_M_APP",
+		"IAD_A_DEP",
+		"IAD_N_APP",
+		"DOV_APP",
+		"ZDC_05_CTR",
+		"ZDC_17_CTR",
+		"ZDC_32_CTR",
+		"ZDC_51_CTR"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KBWI",
+          "rate": 15,
+          "runway": "15R"
+        },
+		{
+          "airport": "KDCA",
+          "rate": 10,
+          "runway": "19"
+        }
+      ],
+      "wind": {
+        "direction": 310,
+        "speed": 10
+      },
+      "default_maps": [
+        "CHP Approaches",
 		"CHP Base"
       ]
     },
@@ -2792,6 +2874,9 @@
         },
 		"JERES2/MCRAY2": {
           "overflights": 10
+        },
+		"ARLFT2": {
+          "overflights": 1
         }
       },
       "solo_controller": "BWI_S_APP",
@@ -2801,7 +2886,7 @@
 			"BWI_B_APP": {"backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"]},
             "BWI_G_APP": {"backup": "BWI_S_APP", "departures": [ "KBWI/CONLE5", "KBWI/DUKPN1" ]},
 			"BWI_W_APP": {"backup": "BWI_B_APP", "departures": [ "KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2" ]},
-			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2"]},
+			"BWI_H_APP": {"backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"]},
 			"BWI_N_APP": {"backup": "BWI_S_APP"},
 			"BWI_P_APP": {"backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"]}
         }
@@ -2809,6 +2894,7 @@
       "controllers": [
        "BWI_W_TWR",
         "BWI_E_TWR",
+		"MTN_TWR",
 		"BWI_B_APP",
 		"BWI_H_APP",
 		"BWI_W_APP",
@@ -2816,6 +2902,7 @@
 		"BWI_P_APP",
 		"BWI_N_APP",
 		"BWI_S_APP",
+		"BWI_Z_APP",
 		"DCA_K_DEP",
 		"DCA_L_DEP",
 		"DCA_Y_DEP",
@@ -2824,6 +2911,7 @@
 		"IAD_M_APP",
 		"IAD_A_DEP",
 		"IAD_N_APP",
+		"DOV_APP",
 		"ZDC_05_CTR",
 		"ZDC_17_CTR",
 		"ZDC_32_CTR",
@@ -2833,7 +2921,7 @@
         {
           "airport": "KBWI",
           "rate": 15,
-          "runway": "10"
+          "runway": "15R"
         },
 		{
           "airport": "KDCA",
@@ -2853,6 +2941,36 @@
   },
   "stars_config": {
     "center": "KBWI",
+	"controller_configs": {
+      "1S": {
+		"flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 17000,
+            "vertices": "N039.02.31.707,W076.48.36.183 N039.08.37.401,W077.12.30.805 N039.11.54.468,W077.14.27.480 N039.09.03.795,W077.20.02.920 N039.15.33.645,W077.16.16.190 N039.22.29.546,W077.15.24.719 N039.22.43.265,W076.43.04.011 N039.08.43.168,W076.43.57.625 N039.07.51.450,W076.49.42.485"
+          },
+		  {
+            "type": "polygon",
+            "ceiling": 14000,
+            "vertices": "N039.09.01.873,W076.38.58.522 N039.03.38.421,W076.49.19.826 N038.47.32.160,W076.32.15.626 N038.35.24.508,W076.31.42.529 N038.38.48.414,W075.51.36.249 N038.41.25.409,W075.44.02.651 N038.42.03.477,W075.39.48.867 N038.51.50.737,W075.49.34.218 N038.58.14.435,W075.52.17.503 N039.07.03.069,W075.44.08.391 N039.12.08.819,W075.45.38.177 N039.16.18.112,W075.50.29.919 N039.20.38.461,W075.51.48.389 N039.29.50.565,W075.58.29.472"
+          },
+		  {
+            "type": "polygon",
+            "ceiling": 11000,
+            "vertices": "N039.22.37.841,W077.16.14.047 N039.29.00.550,W077.15.34.552 N039.33.21.365,W077.11.35.874 N039.52.30.453,W077.09.30.877 N039.53.20.125,W076.32.35.621 N039.48.59.556,W076.13.17.003 N039.41.25.176,W075.52.49.775 N039.34.17.423,W075.57.54.810 N039.33.00.793,W076.01.11.685 N039.28.40.925,W075.58.05.330 N039.09.38.471,W076.36.39.133 N039.15.34.030,W076.43.04.890 N039.22.17.063,W076.43.04.231"
+          }
+        ]
+      },
+	  "1H": {
+		"flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 17000,
+            "vertices": "N039.17.14.197,W077.15.33.782 N039.06.07.575,W077.20.26.431 N039.04.08.867,W077.45.15.682 N039.07.45.628,W077.49.05.269 N039.13.16.289,W078.00.01.593 N039.14.36.708,W078.09.41.945 N039.30.16.204,W078.04.09.389 N039.32.05.862,W078.00.06.756 N039.34.49.324,W077.40.12.213 N039.41.30.847,W077.21.10.321 N039.32.13.840,W077.11.32.523 N039.29.02.500,W077.15.21.533"
+          }
+        ]
+      }
+    },
     "coordination_fixes": {
        "ANTHM": [
         {
@@ -2958,14 +3076,42 @@
             "ceiling": 5000
         }
 	],
+	"inhibit_msaw": [
+		{
+			"id": "IADMSAW",
+			"description": "IAD MSAW SUPRESS",
+			"type": "polygon",
+			"floor": 0,
+			"ceiling": 2500,
+			"vertices": "N038.53.00.267,W077.26.31.864 N038.55.08.203,W077.33.55.656 N038.59.32.135,W077.32.44.245 N039.00.42.860,W077.25.41.629 N039.00.35.774,W077.23.13.121 N038.52.25.578,W077.23.51.710"
+		},
+		{
+			"id": "BWIMSAW",
+			"description": "BWI MSAW SUPRESS",
+			"type": "circle",
+			"center": "KBWI",
+			"radius": 5,
+			"floor": 0,
+			"ceiling": 2500
+		},
+		{
+			"id": "DCAMSAW",
+			"description": "DCA MSAW SUPRESS",
+			"type": "circle",
+			"center": "KDCA",
+			"radius": 5,
+			"floor": 0,
+			"ceiling": 2500
+		}
+	],
 	"arrival_acquisition": [
         {
           "id": "ACQ",
           "description": "CHP AUTO-ACQUISITION",
           "type": "polygon",
-          "vertices": "N039.20.29.589,W078.29.20.668 N039.42.17.951,W078.20.27.639 N039.55.32.441,W077.08.16.307 N039.56.25.601,W076.17.17.548 N039.43.32.397,W075.46.40.140 N039.29.07.183,W075.37.12.916 N038.43.09.491,W075.26.51.941 N038.28.23.100,W076.33.48.790 N038.21.55.626,W076.55.37.316 N038.44.29.252,W077.00.22.824 N039.03.33.217,W077.20.42.636 N039.00.56.373,W077.49.05.077 N039.13.55.015,W078.26.49.881 N039.20.29.589,W078.29.20.668",
+          "vertices": "N038.27.11.771,W075.50.51.315 N038.20.32.926,W078.20.06.298 N039.44.06.194,W078.28.44.963 N040.00.59.051,W077.34.53.939 N040.22.26.978,W077.13.46.885 N040.27.27.729,W075.58.19.255 N040.00.37.394,W075.17.10.435 N039.35.59.033,W074.42.47.752 N038.45.55.755,W075.04.06.835 N038.31.27.863,W075.20.35.934",
           "floor": 0,
-          "ceiling": 17000
+          "ceiling": 23000
         }
     ]
       },
@@ -2974,18 +3120,18 @@
       "COLIN": "AME",
 	  "SCOOB": "AME",
 	  "RAMAY": "FXR",
-	  "RRSIN": "TJD",
-	  "MELTN": "TJD",
-	  "FLASK": "TCL",
+	  "RRSIN": "JDB",
+	  "MELTN": "JDB",
+	  "FLASK": "CLH",
 	  "JERES.N": "JS2",
 	  "BUFFR.N": "BFR",
 	  "JERES.S": "JS2",
 	  "BUFFR.S": "BFR",
-	  "MAULS": "TCL",
+	  "MAULS": "CLH",
 	  "OTTTO": "FXO",
-	  "MCRAY": "L78",
+	  "MCRAY": "MCR",
 	  "GLANC": "SCR",
-	  "SWANN": "SOK",
+	  "SWANN": "SWN",
 	  "AGARD": "DKA"
     },
 	"significant_points": {

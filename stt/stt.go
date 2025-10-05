@@ -15,7 +15,6 @@ import (
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -264,7 +263,7 @@ func runOutput(text string, client *client.ControlClient, lg *log.Logger) {
 		if !ok {
 			// trim until first number
 			callsign = trimFunc(callsign)
-			matching := stars.TracksFromACIDSuffix(client, callsign)
+			matching := client.State.TracksFromACIDSuffix(callsign)
 			if len(matching) == 1 {
 				callsign = string(matching[0].ADSBCallsign)
 			}

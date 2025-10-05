@@ -1,5 +1,5 @@
-// pkg/client/client.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// client/client.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package client
@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/gorilla/websocket"
 	"github.com/vmihailenco/msgpack/v5"
@@ -65,7 +66,8 @@ type ControlClient struct {
 type Server struct {
 	*RPCClient
 
-	HaveTTS bool
+	HaveTTS     bool
+	AvailableWX []util.TimeInterval
 
 	name        string
 	configs     map[string]map[string]*server.Configuration
@@ -125,7 +127,7 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 
 		case <-time.After(5 * time.Second):
 			if !util.DebuggerIsRunning() {
-				return server.ErrRPCTimeout
+				return fmt.Errorf("%s: %w", serviceMethod, server.ErrRPCTimeout)
 			}
 		}
 	}
@@ -190,7 +192,7 @@ func NewControlClient(ss sim.State, controllerToken string, wsURL string, client
 		cc.speechWs, cc.speechCh = initializeSpeechWebsocket(controllerToken, wsURL, lg)
 	}
 
-	cc.SessionStats.SignOnTime = time.Now()
+	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
 	return cc
 }
@@ -263,7 +265,7 @@ func (c *ControlClient) Disconnect() {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	if err := c.client.callWithTimeout("Sim.SignOff", c.controllerToken, nil); err != nil {
+	if err := c.client.callWithTimeout(server.SignOffRPC, c.controllerToken, nil); err != nil {
 		c.lg.Errorf("Error signing off from sim: %v", err)
 	}
 	if c.speechWs != nil {
@@ -322,7 +324,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		c.lastUpdateRequest = time.Now()
 
 		var update sim.StateUpdate
-		c.updateCall = makeStateUpdateRPCCall(c.client.Go("Sim.GetStateUpdate", c.controllerToken, &update, nil), &update,
+		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
 				d := time.Since(c.updateCall.IssueTime)
 				c.lastUpdateLatency = d
@@ -504,7 +506,7 @@ func (c *ControlClient) StringIsSPC(s string) bool {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	return av.StringIsSPC(s) || slices.Contains(c.State.STARSFacilityAdaptation.CustomSPCs, s)
+	return av.StringIsSPC(s) || slices.Contains(c.State.FacilityAdaptation.CustomSPCs, s)
 }
 
 func (c *ControlClient) RadioIsActive() bool {
@@ -538,6 +540,41 @@ func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	return c.lastTransmissionCallsign
 }
 
+func (c *ControlClient) GetPrecipURL(t time.Time, callback func(url string, nextTime time.Time, err error)) {
+	args := server.PrecipURLArgs{
+		TRACON: c.State.TRACON,
+		Time:   t,
+	}
+	var result server.PrecipURL
+	c.addCall(makeRPCCall(c.client.Go(server.GetPrecipURLRPC, args, &result, nil),
+		func(err error) {
+			if callback != nil {
+				callback(result.URL, result.NextTime, err)
+			}
+		}))
+}
+
+func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, error)) {
+	spec := server.GetAtmosArgs{
+		TRACON: c.State.TRACON,
+		Time:   t,
+	}
+	var result server.GetAtmosResult
+	c.addCall(makeRPCCall(c.client.Go(server.GetAtmosGridRPC, spec, &result, nil),
+		func(err error) {
+			if callback != nil {
+				if result.AtmosByPointSOA != nil {
+					callback(result.AtmosByPointSOA.ToAOS().GetGrid(), err)
+				} else {
+					callback(nil, err)
+				}
+			}
+		}))
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Server
+
 type serverConnection struct {
 	Server *Server
 	Err    error
@@ -557,6 +594,15 @@ func (s *Server) setRunningSims(rs map[string]*server.RemoteSim) {
 
 func (s *Server) GetRunningSims() map[string]*server.RemoteSim {
 	return s.runningSims
+}
+
+func (s *Server) UpdateAvailableWX() error {
+	if len(s.AvailableWX) > 0 {
+		// Already fetched
+		return nil
+	}
+
+	return s.callWithTimeout(server.GetAvailableWXRPC, 0, &s.AvailableWX)
 }
 
 func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
@@ -584,7 +630,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 		} else {
 			var cr server.ConnectResult
 			start := time.Now()
-			if err := client.callWithTimeout("SimManager.Connect", server.ViceRPCVersion, &cr); err != nil {
+			if err := client.callWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
@@ -611,7 +657,7 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		return
 	}
 
-	err = client.callWithTimeout("SimManager.Broadcast", &server.SimBroadcastMessage{
+	err = client.callWithTimeout(server.BroadcastRPC, &server.SimBroadcastMessage{
 		Password: password,
 		Message:  msg,
 	}, nil)
@@ -620,3 +666,4 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		lg.Errorf("broadcast error: %v", err)
 	}
 }
+

@@ -977,7 +977,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.12.1/Vice-v0.12.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.1 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.12.2/Vice-v0.12.2-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.2 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -986,7 +986,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.12.1/Vice-v0.12.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.1 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.12.2/Vice-v0.12.2-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.2 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1104,7 +1104,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </ul>
                   </li>
                   <li>"inhibit_ca_volumes" in "stars_config" has moved to "inhibit_ca" under the "filters".</li>
-                  <li>For airspace volumes, the "name" field was renamed to "labal" (and can be no more than 7 characters).
+                  <li>For airspace volumes, the "name" field was renamed to "label" (and can be no more than 7 characters).
                     Added a "description" field for a longer description of it.</li>
                   <li>Added support "ssr_codes" to specify beacon code pool for local flight plans.</li>
                   <li>Magnetic grid now includes Alaska.</li>
@@ -6352,8 +6352,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Object</td>
                 <td><p>Information about all of the controllers that are used
                 in the scenarios in the group.  Each member specifies a
-                controller with the corresponding callsign.  For each
-                controller, the following members should be specified:</p>
+                controller for the named position/sector.  For each
+                position, the following members should be specified:</p>
                   <ul>
                     <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
                     <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
@@ -8218,18 +8218,140 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
 
             <p>Video maps are specified separately from the rest of the configuration since they require fairly large files and are not generally edited by hand.
               Two utilities are available to generate maps for <i>vice</i> from other formats:</p>
+
+            <h4 id="fe-video-maps-crc2vice">crc2vice</h4>
+            <p><code>crc2vice</code> extracts video maps from installed CRC ARTCCs and converts them to <i>vice</i>'s internal format.</p>
+
+            <p>Usage:</p>
             <ul>
-              <li>They can be generated from CRC video maps using the <i>crc2vice</i> utility program, which is available from the
-                <a href="https://github.com/mmp/crc2vice/releases">crc2vice releases</a> page.  See
-                its <a href="https://github.com/mmp/crc2vice/blob/master/README.md">README</a>
-                file for information about how to use it.</li>
-              <li>They can be generated from the FAA's DAT video map file format using <i>dat2vice</i>, which is available from the 
-                <a href="https://github.com/mmp/dat2vice/releases">dat2vice releases</a> page.  See
-                its <a href="https://github.com/mmp/dat2vice/blob/master/README.md">README</a> for more information.
+              <li>Open a command prompt and go to your <code>%AppData%\Local\CRC</code> directory.</li>
+              <li>Run <code>crc2vice</code> and give it the name of an installed ARTCC (e.g.,
+                <code>crc2vice ZNY</code>). You can see which ARTCCs are installed by examining the
+                <code>ARTCCs</code> folder there.</li>
+              <li>Two files will be written, one containing the video map details
+                (e.g., <code>ZNY-videomaps.gob</code>) and one with information about the
+                individual maps (e.g., <code>ZNY-manifest.gob</code>). You can then either copy
+                both files to the <code>resources/videomaps</code> folder in your <code>%AppData/Local/Vice</code>
+                directory, or can use the <code>-videomap</code> command-line option to <i>vice</i>;
+                if you use <code>-videomap</code>, only provide it with the path to the
+                <code>ZXX-videomaps.gob</code> file. It will look for the <code>ZXX-manifest.gob</code> file
+                in the same folder.</li>
             </ul>
 
-        </section><!--//section-->
+            <h4 id="fe-video-maps-dat2vice">dat2vice</h4>
+            <p><code>dat2vice</code>  extracts video maps from the FAA DAT video map file format and converts them to <i>vice</i>'s internal format.</p>
 
+            <p><code>dat2vice</code> takes a <i>manifest</i> file that specifies the filenames of the DAT
+               files to convert as well as additional information about each one:</p>
+
+            <ul>
+              <li><code>"filename"</code> is a string giving the path to the DAT file</li>
+              <li><code>"brightness"</code> (<i>optional</i>, 0 by default): should be either 0 or 1, with 0 signifying map group A, and 1 signifying map brightness group B.</li>
+              <li><code>"label"</code> gives the label that should be used for the map on the STARS DCB</li>
+              <li><code>"title"</code> gives the full name of the map, as is used in <i>vice</i> scenario definition files.</li>
+              <li><code>"number"</code> gives the integer map number associated with the map.</li>
+              <li><code>"color"</code> (<i>optional</i>): gives which map color to use (1-8).</li>
+              <li><code>"category"</code> (<i>optional</i>): number from -1 to 9 giving the map category. 0 is the default if not specified.
+                <ul>
+                  <li>-1: no category</li>
+                  <li>0: Geographic maps</li>
+                  <li>1: Controlled airspace</li>
+                  <li>2: Runway extensions</li>
+                  <li>3: Danger areas</li>
+                  <li>4: Aerodromes</li>
+                  <li>5: General aviation</li>
+                  <li>6: SIDs/STARs</li>
+                  <li>7: Military</li>
+                  <li>8: Geographic points</li>
+                  <li>9: Processing areas</li>
+                </ul>
+              </li>
+              <li><code>"radius"</code> (<i>optional</i>) if specified, gives a radius in nautical miles beyond which extra data in the map is culled.</li>
+            </ul>
+
+            <p>For brightness group 0, the map colors are these RGB values:</p>
+            <table style="margin: auto;">
+              <tr>
+                <td>140, 140, 140</td>
+                <td>0, 255, 255</td>
+                <td>255, 0, 255</td>
+                <td>238, 201, 0</td>
+                <td>238, 106, 80</td>
+                <td>162, 205, 90</td>
+                <td>218, 165, 32</td>
+                <td>72, 118, 255</td>
+              </tr>
+              <tr>
+                <td style="text-align:center;">1</td>
+                <td style="text-align:center;">2</td>
+                <td style="text-align:center;">3</td>
+                <td style="text-align:center;">4</td>
+                <td style="text-align:center;">5</td>
+                <td style="text-align:center;">6</td>
+                <td style="text-align:center;">7</td>
+                <td style="text-align:center;">8</td>
+              </tr>
+            </table>
+
+            <p>Here are the map colors for brightness group 1:</p>
+            <table style="margin: auto;">
+              <tr>
+                <td>140, 140, 140</td>
+                <td>132, 112, 255</td>
+                <td>118, 238, 198</td>
+                <td>237, 145, 33</td>
+                <td>218, 112, 214</td>
+                <td>238, 180, 180</td>
+                <td>50, 205, 50</td>
+                <td>255, 106, 106</td>
+              </tr>
+              <tr>
+                <td style="text-align:center;">1</td>
+                <td style="text-align:center;">2</td>
+                <td style="text-align:center;">3</td>
+                <td style="text-align:center;">4</td>
+                <td style="text-align:center;">5</td>
+                <td style="text-align:center;">6</td>
+                <td style="text-align:center;">7</td>
+                <td style="text-align:center;">8</td>
+              </tr>
+            </table>
+
+            <p>Here is an example manifest file:</p>
+            <pre><code class="language-json">[
+    {
+        "filename": "xyz001sgp.dat",
+        "brightness": 0,
+        "label": "XYZ RNAV",
+        "title": "XYZ RNAV APPROACHES",
+        "number": 1
+    },
+    {
+        "filename": "xyz012smvagp.dat",
+        "brightness": 1,
+        "label": "XYZ MVA",
+        "title": "XYZ AREA MVAS",
+        "color": 3,
+        "number": 12,
+        "radius": 60
+    }
+]</code></pre>
+
+            <p>Given a manifest file, run <code>dat2vice</code> like this, giving it the filename for
+               the manifest file and the facility identifier for the maps:</p>
+            <pre><code>&gt; dat2vice manifest.json ZXX</code></pre>
+
+            <p>You can also specify a culling radius via the <code>-radius</code> command-line option:</p>
+            <pre><code>&gt; dat2vice -radius 40 manifest.json ZXX</code></pre>
+
+            <p>If <code>-radius</code> is given and per-map <code>"radius"</code> values are present, the per-map
+               value takes precedence.</p>
+
+            <p>If successful, <code>dat2vice</code> will generate two files in the current directory,
+               <code>ZXX-manifest.gob</code> and <code>ZXX-videomaps.gob.zst</code>. These can then be used
+               in <i>vice</i> scenarios.</p>
+
+        </section><!--//section-->
 
         </article>
 

@@ -44,7 +44,7 @@ func (m *model) IsMultilingual() bool {
 
 func (m *model) Languages() []string {
 	result := make([]string, 0, whisperlow.Whisper_lang_max_id())
-	for i := 0; i < whisperlow.Whisper_lang_max_id(); i++ {
+	for i := range whisperlow.Whisper_lang_max_id() {
 		str := whisperlow.Whisper_lang_str(i)
 		if m.ctx.Whisper_lang_id(str) >= 0 {
 			result = append(result, str)

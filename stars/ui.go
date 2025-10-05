@@ -13,12 +13,17 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
+
+var _ panes.UIDrawer = (*STARSPane)(nil)
+
+func (sp *STARSPane) DisplayName() string { return "STARS" }
 
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	ps := sp.currentPrefs()
@@ -368,7 +373,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				imgui.Text(ap)
 			}
 
-			cl := util.DuplicateSlice(c.State.STARSFacilityAdaptation.CoordinationLists)
+			cl := util.DuplicateSlice(c.State.FacilityAdaptation.CoordinationLists)
 			slices.SortFunc(cl, func(a, b sim.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
 
 			for _, list := range cl {
@@ -384,7 +389,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if aa := c.State.STARSFacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
+	if aa := c.State.FacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
 		if imgui.CollapsingHeaderBoolPtr("Airspace Awareness", nil) {
 			if imgui.BeginTableV("awareness", 4, tableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Fix")

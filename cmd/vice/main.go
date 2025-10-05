@@ -114,8 +114,8 @@ func main() {
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
 			for _, sg := range sgs {
-				if sg.STARSFacilityAdaptation.VideoMapFile != "" {
-					videoMaps[sg.STARSFacilityAdaptation.VideoMapFile] = nil
+				if sg.FacilityAdaptation.VideoMapFile != "" {
+					videoMaps[sg.FacilityAdaptation.VideoMapFile] = nil
 				}
 			}
 		}
@@ -302,6 +302,15 @@ func main() {
 		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
+					// Determine if this is a STARS or ERAM scenario
+					_, isSTARSSim := av.DB.TRACONs[c.State.TRACON]
+
+					// Rebuild the display hierarchy with the appropriate pane
+					config.RebuildDisplayRootForSim(isSTARSSim)
+
+					// Reactivate the display hierarchy
+					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
+
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
 				}
 				uiResetControlClient(c, plat, lg)

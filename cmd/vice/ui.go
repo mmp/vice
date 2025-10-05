@@ -35,6 +35,7 @@ import (
 var (
 	ui struct {
 		font           *renderer.Font
+		fixedFont      *renderer.Font
 		aboutFont      *renderer.Font
 		aboutFontSmall *renderer.Font
 
@@ -86,9 +87,10 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
 
-	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
-	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 18})
-	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 14})
+	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
+	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize + 2 /* better match regular size */})
+	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 18})
+	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 14})
 	ui.eventsSubscription = es.Subscribe()
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
@@ -909,7 +911,10 @@ func (m *MessageModalClient) Buttons() []ModalDialogButton {
 }
 
 func (m *MessageModalClient) Draw() int {
-	text, _ := util.WrapText(m.message, 80, 0, true)
+	text, _ := util.TextWrapConfig{
+		ColumnLimit: 80,
+		WrapAll:     true,
+	}.Wrap(m.message)
 	imgui.Text("\n\n" + text + "\n\n")
 	return -1
 }
@@ -939,7 +944,10 @@ func (e *ErrorModalClient) Draw() int {
 		imgui.Image(imgui.TextureID(ui.sadTowerTextureID), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
-		text, _ := util.WrapText(e.message, 80, 0, true)
+		text, _ := util.TextWrapConfig{
+			ColumnLimit: 80,
+			WrapAll:     true,
+		}.Wrap(e.message)
 		imgui.Text("\n\n" + text)
 
 		imgui.EndTable()
@@ -1083,8 +1091,8 @@ func uiDrawKeyboardWindow(c *client.ControlClient, config *Config, platform plat
 
 	imgui.Separator()
 
-	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono", Size: config.UIFontSize})
-	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono Italic", Size: config.UIFontSize})
+	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize})
+	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMonoItalic, Size: config.UIFontSize})
 
 	// Tighten up the line spacing
 	spc := style.ItemSpacing()
@@ -1368,11 +1376,11 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Separator()
 
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := renderer.AvailableFontSizes("Roboto Regular")
+		sizes := renderer.AvailableFontSizes(renderer.RobotoRegular)
 		for _, size := range sizes {
 			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
 				config.UIFontSize = size
-				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
+				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
 			}
 		}
 		imgui.EndCombo()
@@ -1535,13 +1543,13 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndGroup()
 	}
 
-	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+	for pane := range config.AllPanes() {
 		if draw, ok := pane.(panes.UIDrawer); ok {
 			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}
 		}
-	})
+	}
 
 	imgui.End()
 }

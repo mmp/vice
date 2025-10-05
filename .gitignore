@@ -16,10 +16,10 @@ Vice.App/
 icon.iconset/
 icon.icns
 vice-logs/
+vice
 vice.exe
 vice.zip
 vice.slog
-resources/speech/
 SDL2.dll
 __debug_*
 manifest.json

@@ -15,7 +15,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 
@@ -158,7 +157,14 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		errorsCh:          make(chan error),
 	}
 
-	sizes, err := util.ListGCSBucketObjects("vice-resources")
+	gcs, err := util.MakeGCSClient("vice-resources", util.GCSClientConfig{})
+	if err != nil {
+		status.errorsCh <- fmt.Errorf("failed to create GCS client: %w", err)
+		close(status.doneCh)
+		return status, 0
+	}
+
+	sizes, err := gcs.List("")
 	if err != nil {
 		// If for some reason we can't list the bucket contents, at least
 		// populate sizes with bogus sizes for the items in the manifest so
@@ -187,7 +193,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 
 			fullPath := filepath.Join(resourcesDir, filename)
 
-			return maybeDownload(filename, fullPath, hash)
+			return maybeDownload(gcs, filename, fullPath, hash)
 		})
 	}
 
@@ -204,7 +210,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 	return status, totalSize
 }
 
-func maybeDownload(filename, fullPath, hash string) error {
+func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string) error {
 	// Check if file exists and has correct hash
 	if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == hash {
 		return nil
@@ -212,37 +218,26 @@ func maybeDownload(filename, fullPath, hash string) error {
 
 	os.Remove(fullPath) // ignore errors; it may not exist
 
-	// Download the file
-	url := "https://storage.googleapis.com/vice-resources/" + hash
-	resp, err := http.Get(url)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("%s: failed to download: status %d", filename, resp.StatusCode)
-	}
-
 	// Create directory if needed
 	if err := os.MkdirAll(filepath.Dir(fullPath), 0755); err != nil {
-		return fmt.Errorf("%s: failed to create file's directory: %v", filename, err)
+		return fmt.Errorf("%s: failed to create file's directory: %w", filename, err)
 	}
 
-	// Write file
+	reader, err := gcs.GetReader(hash)
+	if err != nil {
+		return fmt.Errorf("%s: failed to download: %w", filename, err)
+	}
+	defer reader.Close()
+
 	f, err := os.Create(fullPath)
 	if err != nil {
-		return fmt.Errorf("%s: failed to create: %v", filename, err)
+		return fmt.Errorf("%s: failed to create: %w", filename, err)
 	}
+	defer f.Close()
 
-	_, err = io.Copy(f, resp.Body)
+	_, err = io.Copy(f, reader)
 	if err != nil {
-		f.Close()
-		return fmt.Errorf("%s: failed to write: %v", filename, err)
-	}
-
-	if err := f.Close(); err != nil {
-		return fmt.Errorf("%s: failed write: %v", filename, err)
+		return fmt.Errorf("%s: failed to write: %w", filename, err)
 	}
 
 	return nil

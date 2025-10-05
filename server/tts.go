@@ -17,6 +17,7 @@ import (
 	"net/rpc"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -73,6 +74,7 @@ type GoogleTTSProvider struct {
 	voicesCh   chan []string
 	errCh      chan error
 	voices     []sim.Voice
+	voicesMu   sync.RWMutex
 	lg         *log.Logger
 }
 
@@ -153,10 +155,14 @@ func (g *GoogleTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
 		defer close(vch)
 		defer close(errch)
 
+		g.voicesMu.RLock()
 		if len(g.voices) > 0 {
-			vch <- g.voices
+			voices := g.voices
+			g.voicesMu.RUnlock()
+			vch <- voices
 			return
 		}
+		g.voicesMu.RUnlock()
 
 		if g.httpClient == nil || g.voicesCh == nil {
 			errch <- ErrTTSUnavailable
@@ -186,12 +192,15 @@ func (g *GoogleTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
 		}
 
 		// Convert string slice to Voice slice
+		g.voicesMu.Lock()
 		g.voices = make([]sim.Voice, len(voices))
 		for i, v := range voices {
 			g.voices[i] = sim.Voice(v)
 		}
+		voicesCopy := g.voices
+		g.voicesMu.Unlock()
 
-		vch <- g.voices
+		vch <- voicesCopy
 	}()
 
 	return fut
@@ -347,7 +356,7 @@ func (r *RemoteTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
 		if r.cachedVoices == nil {
 			// Fetch voices from remote server
 			var voices []sim.Voice
-			if err := r.callWithTimeout("SimManager.GetAllVoices", struct{}{}, &voices); err != nil {
+			if err := r.callWithTimeout(GetAllVoicesRPC, struct{}{}, &voices); err != nil {
 				errch <- err
 				return
 			}
@@ -372,7 +381,7 @@ func (r *RemoteTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 		defer close(errch)
 
 		var mp3 []byte
-		if err := r.callWithTimeout("SimManager.TextToSpeech", &TTSRequest{
+		if err := r.callWithTimeout(TextToSpeechRPC, &TTSRequest{
 			Voice: voice,
 			Text:  text,
 		}, &mp3); err != nil {

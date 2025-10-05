@@ -14,7 +14,6 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
-	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -24,6 +23,7 @@ import (
 	"github.com/mmp/vice/sim"
 
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/davecgh/go-spew/spew"
@@ -117,7 +117,11 @@ func (c CommandMode) PreviewString(sp *STARSPane) string {
 	case CommandModeDrawRoute:
 		return "DRAWROUTE"
 	case CommandModeDrawWind:
-		return "WIND " + strconv.Itoa(sp.windDrawAltitude)
+		if sp.atmosGrid != nil {
+			return "WIND " + strconv.Itoa(int(sp.atmosGrid.AltitudeForIndex(sp.windDrawAltitudeIndex)))
+		} else {
+			return "WIND"
+		}
 	case CommandModeRange:
 		return "RANGE"
 	case CommandModePlaceCenter:
@@ -365,19 +369,21 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			}
 
 		case imgui.KeyUpArrow:
-			if sp.commandMode == CommandModeDrawWind {
-				sp.windDrawAltitude = min(17000, sp.windDrawAltitude+1000)
+			if sp.commandMode == CommandModeDrawWind && sp.atmosGrid != nil {
+				sp.windDrawAltitudeIndex++
+				sp.windDrawAltitudeIndex = min(sp.windDrawAltitudeIndex, sp.atmosGrid.Res[2]-1)
 			}
 
 		case imgui.KeyDownArrow:
-			if sp.commandMode == CommandModeDrawWind {
-				sp.windDrawAltitude = max(0, sp.windDrawAltitude-1000)
+			if sp.commandMode == CommandModeDrawWind && sp.atmosGrid != nil {
+				sp.windDrawAltitudeIndex--
+				sp.windDrawAltitudeIndex = max(sp.windDrawAltitudeIndex, 0)
 			}
 		}
 	}
 }
 
-func lookupFlightPlan(ctx *panes.Context, s string) (*sim.STARSFlightPlan, *sim.Track) {
+func lookupFlightPlan(ctx *panes.Context, s string) (*sim.NASFlightPlan, *sim.Track) {
 	sq, err := av.ParseSquawk(s)
 	if err != nil {
 		sq = av.Squawk(0)
@@ -404,7 +410,7 @@ func lookupFlightPlan(ctx *panes.Context, s string) (*sim.STARSFlightPlan, *sim.
 }
 
 func lookupTrackACIDBeacon(ctx *panes.Context, tracks []sim.Track, s string) *sim.Track {
-	if trk, ok := ctx.GetTrackByACID(sim.ACID(s)); ok {
+	if trk, ok := ctx.Client.State.GetTrackByACID(sim.ACID(s)); ok {
 		return trk
 	}
 
@@ -565,7 +571,17 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 		case ".WIND":
 			sp.setCommandMode(ctx, CommandModeDrawWind)
-			sp.windDrawAltitude = av.DB.Airports[ctx.Client.State.PrimaryAirport].Elevation / 1000 * 1000
+			if sp.atmosGrid == nil {
+				ctx.Client.GetAtmosGrid(ctx.Client.State.SimTime,
+					func(ag *wx.AtmosGrid, err error) {
+						if err != nil {
+							ctx.Lg.Errorf("%v", err)
+						} else {
+							sp.atmosGrid = ag
+						}
+					})
+			}
+			sp.windDrawAltitudeIndex = 0
 			return
 
 		case ".VFR":
@@ -713,7 +729,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					return
 				}
 
-				var spec sim.STARSFlightPlanSpecifier
+				var spec sim.FlightPlanSpecifier
 				spec.QuickFlightPlan.Set(true)
 				spec.ACID.Set(acid)
 				spec.SquawkAssignment.Set(sq.String())
@@ -933,7 +949,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// 5-85: delete VFR FP from VFR list
 			fps := ctx.Client.State.UnassociatedFlightPlans
 			if n, err := strconv.Atoi(cmd); err == nil { // line number
-				if idx := slices.IndexFunc(fps, func(fp *sim.STARSFlightPlan) bool {
+				if idx := slices.IndexFunc(fps, func(fp *sim.NASFlightPlan) bool {
 					return fp.ListIndex == n && fp.ListIndex != sim.UnsetSTARSListIndex && fp.Rules == av.FlightRulesVFR
 				}); idx != -1 {
 					sp.deleteFlightPlan(ctx, fps[idx].ACID)
@@ -941,7 +957,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				} else {
 					status.err = ErrSTARSIllegalTrack
 				}
-			} else if idx := slices.IndexFunc(fps, func(fp *sim.STARSFlightPlan) bool {
+			} else if idx := slices.IndexFunc(fps, func(fp *sim.NASFlightPlan) bool {
 				return fp.ACID == sim.ACID(cmd) && fp.Rules == av.FlightRulesVFR
 			}); idx != -1 {
 				sp.deleteFlightPlan(ctx, fps[idx].ACID)
@@ -1510,7 +1526,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 				if clearHistory {
 					// 6-81 clear point out history
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.PointOutHistory.Set(nil)
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
 					status.clear = true
@@ -1818,7 +1834,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
 				} else {
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.PilotReportedAltitude.Set(0)
 					if isSecondary {
 						spec.SecondaryScratchpad.Set("")
@@ -1884,7 +1900,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSNoFlight
 				} else {
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.HoldState.Set(!trk.FlightPlan.HoldState)
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
@@ -1913,7 +1929,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
 			if trk := lookupTrack(ctx, tracks, cmd[2:]); trk != nil && trk.IsAssociated() {
-				var spec sim.STARSFlightPlanSpecifier
+				var spec sim.FlightPlanSpecifier
 				spec.DisableCA.Set(!trk.FlightPlan.DisableCA)
 				spec.MCISuppressedCode.Set(av.Squawk(0)) // 7-18: this clears the MCI inhibit code
 				sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
@@ -2026,7 +2042,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				status.err = ErrSTARSCommandFormat
 			} else if idx <= 0 {
 				status.err = ErrSTARSIllegalMap
-			} else if slices.ContainsFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Id == idx }) {
+			} else if slices.ContainsFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Id == idx }) {
 				// Valid map index.
 				_, vis := ps.VideoMapVisible[idx]
 				if (vis && op == "T") || op == "I" {
@@ -2460,13 +2476,6 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		}
 
-		instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
-		if ctx.Client.RadioIsActive() && !instructorRPO {
-			// Ignore the command but leave the entered text; don't allow issuing
-			// the command until the readback is complete.
-			return
-		}
-
 		// Otherwise looks like an actual control instruction .
 		suffix, cmds, ok := strings.Cut(cmd, " ")
 		if !ok {
@@ -2474,7 +2483,14 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmds = cmd
 		}
 
-		matching := TracksFromACIDSuffix(ctx.Client, suffix)
+		instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
+		if ctx.Client.RadioIsActive() && !instructorRPO && cmds != "X" {
+			// Don't allow issuing commands during pilot transmissions unless
+			// it's an instructor/RPO or the command is "X" to delete an aircraft.
+			return
+		}
+
+		matching := ctx.Client.State.TracksFromACIDSuffix(suffix)
 		if len(matching) > 1 {
 			status.err = ErrSTARSAmbiguousACID
 			return
@@ -2485,7 +2501,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			trk = matching[0]
 		} else if len(matching) == 0 && sp.tgtGenDefaultCallsign(ctx) != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
-			trk, _ = ctx.GetTrackByCallsign(sp.tgtGenDefaultCallsign(ctx))
+			trk, _ = ctx.Client.State.GetTrackByCallsign(sp.tgtGenDefaultCallsign(ctx))
 			// But now we're going to run all of the given input as commands.
 			cmds = cmd
 		}
@@ -2531,7 +2547,9 @@ func (sp *STARSPane) displayQLStatus(ctx *panes.Context) (status CommandStatus) 
 		}
 		status.output += ty + " QUICKLOOK REGIONS\n"
 		slices.Sort(regions)
-		out, _ := util.WrapText(strings.Join(regions, " "), 32, 0, false)
+		out, _ := util.TextWrapConfig{
+			ColumnLimit: 32,
+		}.Wrap(strings.Join(regions, " "))
 		status.output += out
 	}
 
@@ -2941,13 +2959,13 @@ func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign av.ADSBCal
 	state := sp.TrackState[callsign]
 	state.UseGlobalLeaderLine = dir != nil
 
-	var spec sim.STARSFlightPlanSpecifier
+	var spec sim.FlightPlanSpecifier
 	spec.GlobalLeaderLineDirection.Set(dir)
-	trk, _ := ctx.GetTrackByCallsign(callsign)
+	trk, _ := ctx.Client.State.GetTrackByCallsign(callsign)
 	sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
 }
 
-func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCallsign, spec sim.STARSFlightPlanSpecifier) {
+func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserTCP)
 	}
@@ -2958,7 +2976,7 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 	ctx.Client.AssociateFlightPlan(callsign, spec,
 		func(err error) {
 			if err == nil {
-				if trk, ok := ctx.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
+				if trk, ok := ctx.Client.State.GetTrackByCallsign(callsign); ok && trk.IsAssociated() {
 					sp.previewAreaOutput = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
 			} else {
@@ -2968,7 +2986,7 @@ func (sp *STARSPane) associateFlightPlan(ctx *panes.Context, callsign av.ADSBCal
 }
 
 func (sp *STARSPane) activateFlightPlan(ctx *panes.Context, trackCallsign av.ADSBCallsign, fpACID sim.ACID,
-	spec *sim.STARSFlightPlanSpecifier) {
+	spec *sim.FlightPlanSpecifier) {
 	ctx.Client.ActivateFlightPlan(trackCallsign, fpACID, spec,
 		func(err error) { sp.displayError(err, ctx, "") })
 }
@@ -2993,7 +3011,7 @@ func (sp *STARSPane) suspendFlightPlan(ctx *panes.Context, trk *sim.Track) (stat
 		func(mci CAAircraft) bool { return mci.ADSBCallsigns[0] == trk.ADSBCallsign }) {
 		status.err = ErrSTARSIllegalTrack
 	} else {
-		var spec sim.STARSFlightPlanSpecifier
+		var spec sim.FlightPlanSpecifier
 		spec.Suspended.Set(true)
 		spec.CoastSuspendIndex.Set(sp.CoastSuspendIndex % 100)
 		if trk.FlightPlan.Rules == av.FlightRulesIFR {
@@ -3097,7 +3115,7 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.Track, cod
 	} else {
 		sfp := trk.FlightPlan
 		if code == "" {
-			var spec sim.STARSFlightPlanSpecifier
+			var spec sim.FlightPlanSpecifier
 
 			if sfp.MCISuppressedCode != av.Squawk(0) {
 				// clear suppression
@@ -3113,7 +3131,7 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.Track, cod
 		} else if sq, err := av.ParseSquawk(code); err != nil {
 			status.err = ErrSTARSIllegalValue // TODO: what should this be?
 		} else {
-			var spec sim.STARSFlightPlanSpecifier
+			var spec sim.FlightPlanSpecifier
 
 			if sfp.MCISuppressedCode == sq { // entered same code; clear suppression
 				spec.MCISuppressedCode.Set(av.Squawk(0))
@@ -3155,7 +3173,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			} else if cmd == "*" {
 				// Display parent aircraft flight plan
-				if trk, ok := ctx.GetTrackByCallsign(ghost.ADSBCallsign); ok && trk.IsAssociated() {
+				if trk, ok := ctx.Client.State.GetTrackByCallsign(ghost.ADSBCallsign); ok && trk.IsAssociated() {
 					status.output = sp.formatFlightPlan(ctx, trk.FlightPlan, trk)
 				}
 				status.clear = true
@@ -3284,7 +3302,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					return
 				} else if trk.IsAssociated() && trk.Squawk != trk.FlightPlan.AssignedSquawk {
 					// 5-147: change ABC to RBC for track in mismatch
-					spec := sim.STARSFlightPlanSpecifier{}
+					spec := sim.FlightPlanSpecifier{}
 					spec.ACID.Set(trk.FlightPlan.ACID)
 					spec.ImplicitSquawkAssignment.Set(trk.Squawk)
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
@@ -3491,7 +3509,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				}
 
 				if sim.IsValidACID(cmd[1:]) && trk.IsAssociated() {
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.ACID.Set(sim.ACID(cmd[1:]))
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
@@ -3503,7 +3521,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
 				} else {
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.Scratchpad.Set("")
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
@@ -3513,7 +3531,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
 				} else {
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.SecondaryScratchpad.Set("")
 					sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 					status.clear = true
@@ -3539,7 +3557,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					status.err = ErrSTARSIllegalFunctionAlertActive
 				} else {
 					state.SPCAcknowledged = false
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					if cmd == trk.FlightPlan.SPCOverride { // matches, so turn it off
 						spec.SPCOverride.Set("")
 					} else { // set it to something new
@@ -3563,7 +3581,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				return
 			} else if cmd == "Y" && trk.IsUnassociated() {
 				// 5-145: create quick ACID flight plan
-				var spec sim.STARSFlightPlanSpecifier
+				var spec sim.FlightPlanSpecifier
 				spec.QuickFlightPlan.Set(true)
 				spec.Rules.Set(av.FlightRulesIFR)
 				spec.TypeOfFlight.Set(av.FlightTypeOverflight)
@@ -3679,7 +3697,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if trk.FlightPlan.AssignedSquawk != strk.Squawk {
 						status.err = ErrSTARSIllegalTrack
 					} else {
-						var spec sim.STARSFlightPlanSpecifier
+						var spec sim.FlightPlanSpecifier
 						spec.Suspended.Set(false)
 						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 						status.clear = true
@@ -3841,7 +3859,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			case "M":
 				if cmd == "" && trk.IsAssociated() {
 					// 5-167 toggle display of mode-c altitude
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					inhibit := !trk.FlightPlan.InhibitModeCAltitudeDisplay
 					spec.InhibitModeCAltitudeDisplay.Set(inhibit)
 					if trk.Mode == av.TransponderModeAltitude && !inhibit {
@@ -3942,7 +3960,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 						status.err = ErrSTARSIllegalTrack
 					} else {
-						var spec sim.STARSFlightPlanSpecifier
+						var spec sim.FlightPlanSpecifier
 						spec.PointOutHistory.Set(nil)
 						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* no display */)
 						status.clear = true
@@ -4019,7 +4037,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if trk.IsUnassociated() {
 						status.err = ErrSTARSIllegalTrack
 					} else {
-						var spec sim.STARSFlightPlanSpecifier
+						var spec sim.FlightPlanSpecifier
 						spec.DisableMSAW.Set(!trk.FlightPlan.DisableMSAW) // toggle
 						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 						status.clear = true
@@ -4035,7 +4053,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if trk.IsUnassociated() {
 						status.err = ErrSTARSIllegalTrack
 					} else {
-						var spec sim.STARSFlightPlanSpecifier
+						var spec sim.FlightPlanSpecifier
 						spec.PilotReportedAltitude.Set(0)
 						spec.Scratchpad.Set("")
 						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
@@ -4066,7 +4084,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 					if trk.IsUnassociated() {
 						status.err = ErrSTARSNoFlight
 					} else {
-						var spec sim.STARSFlightPlanSpecifier
+						var spec sim.FlightPlanSpecifier
 						spec.HoldState.Set(!trk.FlightPlan.HoldState)
 						sp.modifyFlightPlan(ctx, trk.FlightPlan.ACID, spec, false /* don't display fp */)
 						status.clear = true
@@ -4087,7 +4105,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				fp := trk.FlightPlan
 				if fp.TrackingController == ctx.UserTCP {
 					// Owned track, so we'll modify the flight plan so this applies for all controllers
-					spec := sim.STARSFlightPlanSpecifier{}
+					spec := sim.FlightPlanSpecifier{}
 					if !fp.InhibitACTypeDisplay && ctx.Now.Before(fp.ForceACTypeDisplayEndTime) {
 						// It's currently visible; extend the time
 						// TODO: make the times adaptable
@@ -4127,7 +4145,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				} else {
 					sfp := trk.FlightPlan
 
-					var spec sim.STARSFlightPlanSpecifier
+					var spec sim.FlightPlanSpecifier
 					spec.DisableCA.Set(!sfp.DisableCA)
 					spec.MCISuppressedCode.Set(av.Squawk(0)) // 7-18: this clears the MCI inhibit code
 
@@ -4162,9 +4180,9 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 
 		case CommandModeTargetGen, CommandModeTargetGenLock:
 			instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
-			if ctx.Client.RadioIsActive() && !instructorRPO {
-				// Ignore the command but leave the entered text; don't allow issuing
-				// the command until the readback is complete.
+			if ctx.Client.RadioIsActive() && !instructorRPO && cmd != "X" {
+				// Don't allow issuing commands during pilot transmissions unless
+				// it's an instructor/RPO or the command is "X" to delete an aircraft.
 				return
 			}
 
@@ -4737,7 +4755,7 @@ func (sp *STARSPane) displayError(err error, ctx *panes.Context, acid sim.ACID) 
 			if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok && trk.IsAssociated() {
 				sp.previewAreaOutput += "\nFLIGHT ACTIVE AT " + trk.FlightPlan.TrackingController
 			} else if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.STARSFlightPlan) bool {
+				func(fp *sim.NASFlightPlan) bool {
 					return fp.ACID == acid
 				}); idx != -1 {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
@@ -4789,7 +4807,7 @@ func (sp *STARSPane) parseQuickLookPositions(ctx *panes.Context, s string) ([]Qu
 // returns the controller responsible for the aircraft given its altitude
 // and route.
 func calculateAirspace(ctx *panes.Context, acid sim.ACID) (string, error) {
-	trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(acid)) // HAX conflates callsign/ACID
+	trk, ok := ctx.Client.State.GetTrackByCallsign(av.ADSBCallsign(acid)) // HAX conflates callsign/ACID
 	if !ok || !trk.IsAssociated() {
 		return "", ErrSTARSIllegalFlight
 	}
@@ -4934,7 +4952,7 @@ func (sp *STARSPane) tryGetClosestGhost(ghosts []*av.GhostTrack, mousePosition [
 	return ghost, distance
 }
 
-func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.STARSFlightPlanSpecifier) {
+func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
 		spec.TrackingController.Set(ctx.UserTCP)
 	}
@@ -4954,7 +4972,7 @@ func (sp *STARSPane) createFlightPlan(ctx *panes.Context, spec sim.STARSFlightPl
 		})
 }
 
-func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec sim.STARSFlightPlanSpecifier, display bool) {
+func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec sim.FlightPlanSpecifier, display bool) {
 	if !spec.ACID.IsSet {
 		spec.ACID.Set(acid)
 	}
@@ -4981,32 +4999,4 @@ func (sp *STARSPane) modifyFlightPlan(ctx *panes.Context, acid sim.ACID, spec si
 				sp.displayError(err, ctx, acid)
 			}
 		})
-}
-
-// Returns all aircraft that match the given suffix. If instructor is true,
-// returns all matching aircraft; otherwise only ones under the current
-// controller's control are considered for matching.
-func TracksFromACIDSuffix(client *client.ControlClient, suffix string) []*sim.Track {
-	match := func(trk *sim.Track) bool {
-		if trk.IsUnassociated() {
-			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
-		} else {
-			fp := trk.FlightPlan
-			if !strings.HasSuffix(string(fp.ACID), suffix) {
-				return false
-			}
-
-			if fp.ControllingController == client.State.UserTCP || client.State.AreInstructorOrRPO(client.State.UserTCP) {
-				return true
-			}
-
-			// Hold for release aircraft still in the list
-			if client.State.ResolveController(trk.FlightPlan.TrackingController) == client.State.UserTCP &&
-				trk.FlightPlan.ControllingController == "" {
-				return true
-			}
-			return false
-		}
-	}
-	return slices.Collect(util.FilterSeq(maps.Values(client.State.Tracks), match))
 }

@@ -9,14 +9,17 @@ import (
 	"net/http"
 	"net/http/pprof"
 	"os"
+	"path/filepath"
+	"slices"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
+	"golang.org/x/sync/errgroup"
 )
 
 var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local files")
-var nWorkers = flag.Int("nworkers", 32, "Number of worker goroutines for concurrent uploads")
+var nWorkers = flag.Int("nworkers", 16, "Number of worker goroutines for concurrent uploads")
 var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
 var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
 
@@ -26,7 +29,7 @@ func main() {
 	flag.Parse()
 
 	usage := func() {
-		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|wx|hrrr]...\nwhere [flags] may be:\n")
+		fmt.Fprintf(os.Stderr, "usage: wxingest [flags] [metar|precip|atmos]...\nwhere [flags] may be:\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -48,27 +51,39 @@ func main() {
 	if *dryRun {
 		sb = &DryRunBackend{g: sb}
 	}
+	// Wrap with tracking backend to track bytes uploaded/downloaded
+	sb = NewTrackingBackend(sb)
 	defer sb.Close()
 
 	launchHTTPServer()
 
+	var eg errgroup.Group
 	if len(flag.Args()) == 0 {
-		ingestMETAR(sb)
-		ingestWX(sb)
-		ingestHRRR(sb)
+		eg.Go(func() error { return ingestMETAR(sb) })
+		eg.Go(func() error { return ingestPrecip(sb) })
+		eg.Go(func() error { return ingestHRRR(sb) })
 	} else {
 		for _, a := range flag.Args() {
 			switch strings.ToLower(a) {
 			case "metar":
-				ingestMETAR(sb)
-			case "wx":
-				ingestWX(sb)
-			case "hrrr":
-				ingestHRRR(sb)
+				eg.Go(func() error { return ingestMETAR(sb) })
+			case "precip":
+				eg.Go(func() error { return ingestPrecip(sb) })
+			case "atmos":
+				eg.Go(func() error { return ingestHRRR(sb) })
 			default:
 				usage()
 			}
 		}
+	}
+
+	if err := eg.Wait(); err != nil {
+		LogError("%v", err)
+	}
+
+	// Report the total bytes transferred
+	if tb, ok := sb.(*TrackingBackend); ok {
+		tb.ReportStats()
 	}
 }
 
@@ -96,16 +111,38 @@ func LogFatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func EnqueueObjects(sb StorageBackend, base string, ch chan<- string) error {
-	objs, err := sb.List(base)
-	if err == nil {
-		LogInfo("%s: found %d objects", base, len(objs))
-		for name := range objs {
-			ch <- name
+func generateManifest(sb StorageBackend, prefix string) error {
+	LogInfo("%s: updating consolidated manifest", prefix)
+
+	paths, err := sb.List(prefix + "/")
+	if err != nil {
+		return err
+	}
+
+	var manifest []string
+	for path := range paths {
+		// Remove prefix and exclude existing manifests
+		relativePath := strings.TrimPrefix(path, prefix+"/")
+		if !strings.HasSuffix(relativePath, "manifest.msgpack.zst") {
+			manifest = append(manifest, relativePath)
 		}
 	}
-	close(ch)
-	return err
+	slices.Sort(manifest)
+
+	tm, err := util.TransposeStrings(manifest) // for better compressibility
+	if err != nil {
+		return err
+	}
+
+	manifestPath := filepath.Join(prefix, "manifest.msgpack.zst")
+	n, err := sb.StoreObject(manifestPath, tm)
+	if err != nil {
+		return err
+	}
+
+	LogInfo("Stored %d items in consolidated %s (%s)", len(manifest), manifestPath, util.ByteCount(n))
+
+	return nil
 }
 
 func launchHTTPServer() {
@@ -122,6 +159,5 @@ func launchHTTPServer() {
 		go http.Serve(listener, mux)
 	} else {
 		fmt.Fprintf(os.Stderr, "Unable to start HTTP server: %v", err)
-		os.Exit(1)
 	}
 }

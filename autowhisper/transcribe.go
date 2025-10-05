@@ -3,7 +3,6 @@ package autowhisper
 import (
 	"errors"
 	"fmt"
-	"io"
 	"math"
 	"runtime"
 	"strings"
@@ -29,88 +28,6 @@ type Options struct {
 	MaxTokensPerSegment uint
 }
 
-// TranscribeFile loads the model at modelPath, reads the WAV at audioPath,
-// converts it to 16 kHz mono if needed, and returns the full transcription text.
-//
-// Requirements:
-// - audioPath must be a WAV file. Other formats should be converted upstream.
-func TranscribeFile(modelPath, audioPath string, opts Options) (string, error) {
-	// Load model
-	model, err := whisper.New(modelPath)
-	if err != nil {
-		return "", err
-	}
-	defer model.Close()
-
-	// Create context
-	ctx, err := model.NewContext()
-	if err != nil {
-		return "", err
-	}
-
-	// Configure context
-	if opts.Threads > 0 {
-		ctx.SetThreads(uint(opts.Threads))
-	} else {
-		ctx.SetThreads(uint(runtime.NumCPU()))
-	}
-	ctx.SetTranslate(opts.Translate)
-	ctx.SetSplitOnWord(opts.SplitOnWord)
-	ctx.SetTokenTimestamps(opts.TokenTimestamps)
-	if opts.MaxTokensPerSegment > 0 {
-		ctx.SetMaxTokensPerSegment(opts.MaxTokensPerSegment)
-	}
-	if strings.TrimSpace(opts.InitialPrompt) != "" {
-		ctx.SetInitialPrompt(opts.InitialPrompt)
-	}
-
-	// Language selection
-	lang := strings.TrimSpace(opts.Language)
-	if lang == "" {
-		lang = "auto"
-	}
-	if lang != "auto" {
-		if err := ctx.SetLanguage(lang); err != nil {
-			return "", err
-		}
-	}
-
-	// Load audio and convert to 16k mono []float32
-	pcm, err := ReadWavAsFloat32Mono16k(audioPath)
-	if err != nil {
-		return "", err
-	}
-	if len(pcm) == 0 {
-		return "", errors.New("empty audio after conversion")
-	}
-
-	// Process
-	if err := ctx.Process(pcm, nil, nil, nil); err != nil {
-		return "", err
-	}
-
-	// Collect segments
-	var b strings.Builder
-	for {
-		seg, err := ctx.NextSegment()
-		if err != nil {
-			if errors.Is(err, fmt.Errorf("%w", err)) { // keep linter happy; io.EOF checked below via string
-				// no-op
-			}
-		}
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				break
-			}
-			return "", err
-		}
-		if b.Len() > 0 {
-			b.WriteByte(' ')
-		}
-		b.WriteString(seg.Text)
-	}
-	return strings.TrimSpace(b.String()), nil
-}
 
 // TranscribePCM16 takes raw PCM16 samples (interleaved if stereo), automatically converts
 // them to 16 kHz mono, and returns the transcription text.

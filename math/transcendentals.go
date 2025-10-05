@@ -15,7 +15,7 @@
 package math
 
 import (
-	gomath "math"
+	"math"
 )
 
 func Sin(x float32) float32 {
@@ -33,7 +33,7 @@ func SinCos(xFull float32) [2]float32 {
 	const twoOverPi = float32(0.636619746685028076171875)
 
 	scaled := xFull * twoOverPi
-	kReal := float32(gomath.Floor(float64(scaled)))
+	kReal := float32(math.Floor(float64(scaled)))
 	k := int(kReal)
 
 	// Reduced range version of x
@@ -146,11 +146,11 @@ func FastExp(x float32) float32 {
 }
 
 func SafeASin(a float32) float32 {
-	return float32(gomath.Asin(float64(Clamp(a, -1, 1))))
+	return float32(math.Asin(float64(Clamp(a, -1, 1))))
 }
 
 func SafeACos(a float32) float32 {
-	return float32(gomath.Acos(float64(Clamp(a, -1, 1))))
+	return float32(math.Acos(float64(Clamp(a, -1, 1))))
 }
 
 // Tan computes tan(x) for a single float32 value, via syrah/FixedVectorMath.h:206
@@ -331,4 +331,77 @@ func Atan2(y, x float32) float32 {
 	}
 
 	return offset + atanArg
+}
+
+// rangeReduceLog performs range reduction for logarithm computation
+// Ported from syrah/FixedVectorMath.h:457
+func rangeReduceLog(input float32) (reduced float32, exponent int) {
+	// Extract the bits from the input
+	inputBits := FloatToBits(input)
+
+	// Extract biased exponent and add 1 (as in syrah)
+	biasedExponent := int((inputBits >> 23) & 0xFF)
+	offsetExponent := biasedExponent + 1
+	exponent = offsetExponent - 127
+
+	// Set the exponent to 126 (biased -1) to get a value in [0.5, 1)
+	// This matches syrah's exponent_neg1 = (126 << 23)
+	reducedBits := (inputBits & 0x807FFFFF) | (126 << 23)
+	reduced = BitsToFloat(reducedBits)
+
+	return reduced, exponent
+}
+
+// Log computes the natural logarithm (ln) for a single float32 value
+// Ported from syrah/FixedVectorMath.h:495
+func Log(x float32) float32 {
+	// Handle special cases
+	if math.IsNaN(float64(x)) {
+		return float32(math.NaN())
+	}
+	if x == 0 {
+		return float32(math.Inf(-1))
+	}
+	if x < 0 {
+		return float32(math.NaN())
+	}
+	if math.IsInf(float64(x), 1) {
+		return float32(math.Inf(1))
+	}
+
+	// Perform range reduction
+	reduced, exponent := rangeReduceLog(x)
+
+	// Polynomial coefficients for log approximation
+	const c1 = 0.50000095367431640625
+	const c2 = 0.33326041698455810546875
+	const c3 = 0.2519190013408660888671875
+	const c4 = 0.17541764676570892333984375
+	const c5 = 0.3424419462680816650390625
+	const c6 = -0.599632322788238525390625
+	const c7 = 1.98442304134368896484375
+	const c8 = -2.4899270534515380859375
+	const c9 = 1.7491014003753662109375
+
+	// Compute the polynomial approximation
+	// The approximation uses x1 = 1 - reduced
+	x1 := 1 - reduced
+
+	// Compute polynomial using Horner's method
+	poly := x1*c9 + c8
+	poly = x1*poly + c7
+	poly = x1*poly + c6
+	poly = x1*poly + c5
+	poly = x1*poly + c4
+	poly = x1*poly + c3
+	poly = x1*poly + c2
+	poly = x1*poly + c1
+	poly = x1*poly + 1
+
+	// Combine with the exponent adjustment: log(x) = log(reduced * 2^exponent) = log(reduced) + exponent * log(2)
+	// The polynomial approximates -log(reduced)/x1, so we multiply by -x1
+	const ln2 = 0.6931471805599453
+	result := -x1*poly + float32(exponent)*ln2
+
+	return result
 }

@@ -244,10 +244,10 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		if strings.HasPrefix(string(callsign), "__") { // unsupported fp
 			acid := sim.ACID(strings.TrimPrefix(string(callsign), "__"))
 			if !slices.ContainsFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.STARSFlightPlan) bool { return fp.ACID == acid }) {
+				func(fp *sim.NASFlightPlan) bool { return fp.ACID == acid }) {
 				delete(sp.TrackState, callsign)
 			}
-		} else if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
+		} else if _, ok := ctx.Client.State.GetTrackByCallsign(callsign); !ok {
 			delete(sp.TrackState, callsign)
 		}
 	}
@@ -272,13 +272,13 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 	// Filter out any removed aircraft from the CA and MCI lists
 	sp.CAAircraft = util.FilterSliceInPlace(sp.CAAircraft, func(ca CAAircraft) bool {
-		_, a := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-		_, b := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
+		_, a := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+		_, b := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[1])
 		return a && b
 	})
 	sp.MCIAircraft = util.FilterSliceInPlace(sp.MCIAircraft, func(ca CAAircraft) bool {
-		_, a := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-		_, b := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
+		_, a := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+		_, b := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[1])
 		return a && b
 	})
 
@@ -436,7 +436,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
 
 		// Check MSAW suppression filters
-		msawFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitMSAW
+		msawFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitMSAW
 		if msawFilter.Inside(state.track.Location, alt) {
 			state.MSAW = false
 			continue
@@ -463,7 +463,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.CurrentTime()
-	fa := ctx.Client.State.STARSFacilityAdaptation
+	fa := ctx.Client.State.FacilityAdaptation
 	if sp.radarMode(fa.RadarSites) == RadarModeFused {
 		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {
 			return
@@ -526,7 +526,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []sim.Track) {
 	ps := sp.currentPrefs()
-	fa := ctx.Client.State.STARSFacilityAdaptation
+	fa := ctx.Client.State.FacilityAdaptation
 
 	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
 		func(f sim.FilterRegion) bool {
@@ -599,7 +599,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 
 		if trk.IsUnassociated() {
 			// See if a position symbol override applies. Note that this may be overridden in code following shortly.
-			fa := ctx.Client.State.STARSFacilityAdaptation
+			fa := ctx.Client.State.FacilityAdaptation
 			for _, r := range fa.UntrackedPositionSymbolOverrides.CodeRanges {
 				if trk.Squawk >= r[0] && trk.Squawk <= r[1] { // ranges are inclusive
 					positionSymbol = fa.UntrackedPositionSymbolOverrides.Symbol
@@ -1009,7 +1009,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	}
 
 	inCAInhibitFilter := func(trk *sim.Track) bool {
-		nocaFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitCA
+		nocaFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitCA
 		state := sp.TrackState[trk.ADSBCallsign]
 		return nocaFilter.Inside(state.track.Location, int(state.track.TransponderAltitude))
 	}
@@ -1017,8 +1017,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	nmPerLongitude := ctx.NmPerLongitude
 	caConflict := func(callsigna, callsignb av.ADSBCallsign) bool {
 		// No CA if we don't have proper mode-C altitude for both.
-		trka, oka := ctx.GetTrackByCallsign(callsigna)
-		trkb, okb := ctx.GetTrackByCallsign(callsignb)
+		trka, oka := ctx.Client.State.GetTrackByCallsign(callsigna)
+		trkb, okb := ctx.Client.State.GetTrackByCallsign(callsignb)
 		if !oka || !okb {
 			return false
 		}
@@ -1062,8 +1062,8 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 
 	// Assume that the second one is the untracked one.
 	mciConflict := func(callsigna, callsignb av.ADSBCallsign) bool {
-		trka, oka := ctx.GetTrackByCallsign(callsigna)
-		trkb, okb := ctx.GetTrackByCallsign(callsignb)
+		trka, oka := ctx.Client.State.GetTrackByCallsign(callsigna)
+		trkb, okb := ctx.Client.State.GetTrackByCallsign(callsignb)
 		if !oka || !okb {
 			return false
 		}

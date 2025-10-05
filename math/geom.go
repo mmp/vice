@@ -5,7 +5,9 @@
 package math
 
 import (
+	"iter"
 	gomath "math"
+	"slices"
 	"sort"
 )
 
@@ -44,8 +46,12 @@ func Extent2DFromPoints(pts [][2]float32) Extent2D {
 // Extent2DFromP2LLs returns an Extent2D that bounds all of the provided
 // points.
 func Extent2DFromP2LLs(pts []Point2LL) Extent2D {
+	return Extent2DFromSeq(slices.Values(pts))
+}
+
+func Extent2DFromSeq(it iter.Seq[Point2LL]) Extent2D {
 	e := EmptyExtent2D()
-	for _, p := range pts {
+	for p := range it {
 		for d := 0; d < 2; d++ {
 			if p[d] < e.P0[d] {
 				e.P0[d] = p[d]

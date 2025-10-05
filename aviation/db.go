@@ -734,7 +734,7 @@ func parseMVAs() map[string][]MVA {
 				panic(err)
 			}
 
-			zr, err := zstd.NewReader(r)
+			zr, err := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 			if err != nil {
 				panic(err)
 			}

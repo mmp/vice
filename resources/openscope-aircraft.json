@@ -10912,6 +10912,47 @@
     }
   },
   {
+    "name": "Embraer ERJ140",
+    "icao": "E140",
+    "engines": {
+      "number": 2,
+      "type": "J"
+    },
+    "weightClass": "L",
+    "category": {
+      "srs": 3,
+      "lahso": 7,
+      "cwt": "G"
+    },
+    "ceiling": 37000,
+    "rate": {
+      "climb": 2500,
+      "descent": 2200,
+      "accelerate": 5.9,
+      "decelerate": 3
+    },
+    "runway": {
+      "takeoff": 1.58,
+      "landing": 1.13
+    },
+    "speed": {
+      "min": 110,
+      "landing": 130,
+      "cruise": 445,
+      "cruiseM": 0.76,
+      "max": 470,
+      "maxM": 0.78
+    },
+    "capability": {
+      "ils": true,
+      "fix": true
+    },
+    "turn": {
+      "maxBankAngle": 25,
+      "maxBankRate": 5
+    }
+  },
+  {
     "name": "Embraer RJ145",
     "icao": "E145",
     "engines": {

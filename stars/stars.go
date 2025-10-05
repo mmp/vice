@@ -27,6 +27,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 )
@@ -82,8 +83,8 @@ type STARSPane struct {
 	OldPrefsSelectedPreferenceSet *int          `json:"SelectedPreferenceSet,omitempty"`
 	OldPrefsPreferenceSets        []Preferences `json:"PreferenceSets,omitempty"`
 
-	allVideoMaps []sim.VideoMap
-	dcbVideoMaps []*sim.VideoMap
+	allVideoMaps []radar.ClientVideoMap
+	dcbVideoMaps []*radar.ClientVideoMap
 
 	weatherRadar radar.WeatherRadar
 
@@ -233,7 +234,8 @@ type STARSPane struct {
 		AirspaceColor    *[3]float32
 	}
 
-	windDrawAltitude int
+	atmosGrid             *wx.AtmosGrid
+	windDrawAltitudeIndex int
 
 	// We keep a pool of each type so that we don't need to allocate a new
 	// object each time we generate a datablock.
@@ -382,8 +384,6 @@ func NewSTARSPane() *STARSPane {
 	return &STARSPane{}
 }
 
-func (sp *STARSPane) DisplayName() string { return "STARS" }
-
 func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
@@ -411,8 +411,6 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	}
 
 	sp.events = eventStream.Subscribe()
-
-	sp.weatherRadar.Activate(r, lg)
 
 	sp.lastTrackUpdate = time.Time{} // force immediate update at start
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -445,10 +443,9 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 }
 
 func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	sp.DisplayRequestedAltitude = client.State.STARSFacilityAdaptation.FDB.DisplayRequestedAltitude
+	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.FDB.DisplayRequestedAltitude
 
 	sp.initPrefsForLoadedSim(ss, pl)
-	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
 
 	sp.makeMaps(client, ss, lg)
 	sp.makeSignificantPoints(ss)
@@ -478,10 +475,10 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 
 	sp.resetPrefsForNewSim(ss, pl)
 
-	sp.weatherRadar.UpdateCenter(sp.currentPrefs().DefaultCenter)
-
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
+
+	sp.atmosGrid = nil
 
 	// nil these out rather than clearing them so that they are rebuilt
 	// from scratch.
@@ -495,7 +492,8 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
-	addMap := func(vm sim.VideoMap) {
+	// Helper to add a ClientVideoMap directly (for airspace volumes)
+	addMap := func(vm radar.ClientVideoMap) {
 		for i := range 999 {
 			// See if id is available
 			id := (vm.Id + i) % 1000
@@ -516,20 +514,30 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	}
 
 	// First grab the video maps needed for the DCB
-	sp.allVideoMaps = util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
+	dcbMaps := util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
 		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
 	})
+
+	// Convert to ClientVideoMaps for rendering
+	sp.allVideoMaps = radar.BuildClientVideoMaps(dcbMaps)
 	for _, vm := range sp.allVideoMaps {
 		usedIds[vm.Id] = nil
 	}
 
 	// Now make a second pass through the maps and add all of the ones that
 	// don't have a conflicting ID with an existing map.
+	var additionalMaps []sim.VideoMap
 	for _, vm := range vmf.Maps {
 		if _, ok := usedIds[vm.Id]; !ok {
-			sp.allVideoMaps = append(sp.allVideoMaps, vm)
+			additionalMaps = append(additionalMaps, vm)
 			usedIds[vm.Id] = nil
 		}
+	}
+
+	// Convert and append the additional maps
+	if len(additionalMaps) > 0 {
+		clientMaps := radar.BuildClientVideoMaps(additionalMaps)
+		sp.allVideoMaps = append(sp.allVideoMaps, clientMaps...)
 	}
 
 	drawAirspace := func(a av.AirspaceVolume, cb *renderer.CommandBuffer) {
@@ -568,11 +576,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		}
 
 		// Add a map with all of them
-		vm := sim.VideoMap{
-			Label:    label,
-			Name:     name,
-			Id:       asIdx,
-			Category: VideoMapProcessingAreas,
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    label,
+				Name:     name,
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
 		}
 		asIdx++
 		for _, f := range filt {
@@ -581,32 +591,36 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		addMap(vm)
 
 		for _, f := range filt {
-			vm := sim.VideoMap{
-				Label:    strings.ToUpper(f.Id),
-				Name:     strings.ToUpper(f.Description),
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
 			}
 			asIdx++
 			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
 			addMap(vm)
 		}
 	}
-	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.STARSFacilityAdaptation.Filters.InhibitCA)
-	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.STARSFacilityAdaptation.Filters.InhibitMSAW)
-	addAirspaceVolumes("ARRACQ", "ARRIVAL ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalAcquisition)
-	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.ArrivalDrop)
-	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.STARSFacilityAdaptation.Filters.DepartureAcquisition)
-	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.STARSFacilityAdaptation.Filters.SecondaryDrop)
-	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.STARSFacilityAdaptation.Filters.SurfaceTracking)
-	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.STARSFacilityAdaptation.Filters.Quicklook)
+	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitCA)
+	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitMSAW)
+	addAirspaceVolumes("ARRACQ", "ARRIVAL ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.ArrivalAcquisition)
+	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.FacilityAdaptation.Filters.ArrivalDrop)
+	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.DepartureAcquisition)
+	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
+	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
+	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.FacilityAdaptation.Filters.Quicklook)
 
 	// MVAs
-	mvas := sim.VideoMap{
-		Label:    ss.TRACON + " MVA",
-		Name:     "ALL MINIMUM VECTORING ALTITUDES",
-		Id:       asIdx,
-		Category: VideoMapProcessingAreas,
+	mvas := radar.ClientVideoMap{
+		VideoMap: sim.VideoMap{
+			Label:    ss.TRACON + " MVA",
+			Name:     "ALL MINIMUM VECTORING ALTITUDES",
+			Id:       asIdx,
+			Category: VideoMapProcessingAreas,
+		},
 	}
 	ld := renderer.GetLinesDrawBuilder()
 	for _, mva := range av.DB.MVAs[ss.TRACON] {
@@ -626,11 +640,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 				continue
 			}
 
-			amap := sim.VideoMap{
-				Label:    name,
-				Name:     name + " CLASS " + class,
-				Id:       asIdx,
-				Category: VideoMapProcessingAreas,
+			amap := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    name,
+					Name:     name + " CLASS " + class,
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
 			}
 			for _, asp := range airspace {
 				drawAirspace(asp, &amap.CommandBuffer)
@@ -645,15 +661,17 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 
 	// Radar maps
 	radarIndex := 801
-	for _, name := range util.SortedMapKeys(ss.STARSFacilityAdaptation.RadarSites) {
-		sm := sim.VideoMap{
-			Label:    name + "RCM",
-			Name:     name + " RADAR COVERAGE MAP",
-			Id:       radarIndex,
-			Category: VideoMapProcessingAreas,
+	for _, name := range util.SortedMapKeys(ss.FacilityAdaptation.RadarSites) {
+		sm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    name + "RCM",
+				Name:     name + " RADAR COVERAGE MAP",
+				Id:       radarIndex,
+				Category: VideoMapProcessingAreas,
+			},
 		}
 
-		site := ss.STARSFacilityAdaptation.RadarSites[name]
+		site := ss.FacilityAdaptation.RadarSites[name]
 		ld := renderer.GetLinesDrawBuilder()
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.PrimaryRange), 360)
 		ld.AddLatLongCircle(site.Position, ss.NmPerLongitude, float32(site.SecondaryRange), 360)
@@ -675,11 +693,13 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 			if len(label) > 7 {
 				label = label[:7]
 			}
-			sm := sim.VideoMap{
-				Label:    label,
-				Name:     name + rwy + " ATPA APPROACH VOLUME",
-				Id:       atpaIndex,
-				Category: VideoMapProcessingAreas,
+			sm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    label,
+					Name:     name + rwy + " ATPA APPROACH VOLUME",
+					Id:       atpaIndex,
+					Category: VideoMapProcessingAreas,
+				},
 			}
 
 			ld := renderer.GetLinesDrawBuilder()
@@ -698,7 +718,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
 	for _, name := range ss.ControllerVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, nil)
@@ -707,7 +727,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 }
 
 func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.STARSFacilityAdaptation.VideoMapFile
+	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
 	} else {
@@ -955,13 +975,13 @@ func (sp *STARSPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTra
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []sim.VideoMap
+	var draw []radar.ClientVideoMap
 	for _, vm := range sp.allVideoMaps {
 		if _, ok := ps.VideoMapVisible[vm.Id]; ok {
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b sim.VideoMap) int { return a.Id - b.Id })
+	slices.SortFunc(draw, func(a, b radar.ClientVideoMap) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
 		brite := util.Select(vm.Group == 0, ps.Brightness.VideoGroupA, ps.Brightness.VideoGroupB)
@@ -1302,7 +1322,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 }
 
 func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
-	sp.significantPoints = util.DuplicateMap(ss.STARSFacilityAdaptation.SignificantPoints)
+	sp.significantPoints = util.DuplicateMap(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)
@@ -1509,8 +1529,8 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 				if ca.Acknowledged {
 					return false
 				}
-				trk0, ok0 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok0 := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk1, ok1 := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				if !ok0 || !ok1 {
 					return false
 				}
@@ -1523,7 +1543,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 				if ca.Acknowledged {
 					return false
 				}
-				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && !trk0.FlightPlan.DisableCA &&
 					ctx.Now.Before(ca.SoundEnd)
 			})

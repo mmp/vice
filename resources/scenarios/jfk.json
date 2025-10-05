@@ -611,8 +611,8 @@
         "I3L": { "cifp_id": "I13L" },
         "I4L": { "cifp_id": "I4L" },
         "I4R": { "cifp_id": "I4R" },
-        "R1L": { "cifp_id": "RZ31L" },
-        "R1R": { "cifp_id": "RZ31R" },
+        "R1L": { "cifp_id": "RY31L" },
+        "R1R": { "cifp_id": "RY31R" },
         "R2L": { "cifp_id": "RX22L" },
         "R2R": { "cifp_id": "R22R" },
         "R3L": {
@@ -9092,12 +9092,12 @@
       }
     ]
   },
-  "NELIE3": {
+  "NELIE4": {
     "arrivals": [
       {
-        "spawn": "ORW",
+        "spawn": "YANTC",
         "cruise_altitude": 22000,
-        "star": "NELIE3",
+        "star": "NELIE4",
         "initial_controller": "BOS_E_CTR",
         "initial_altitude": 6000,
         "assigned_altitude": 5000,
@@ -11019,7 +11019,7 @@
           "KHVN": 0,
           "KISP": 0
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0
         },
         "OWENZ": {
@@ -11040,7 +11040,7 @@
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KISP", "KHVN" ],
-                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                    "arrivals": [ "NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
                     "backup": "JFK_G_APP"
@@ -11164,7 +11164,7 @@
           "KHVN": 0,
           "KISP": 0
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0
         },
         "OWENZ": {
@@ -11185,7 +11185,7 @@
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KISP", "KHVN" ],
-                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                    "arrivals": [ "NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
                     "backup": "JFK_G_APP"
@@ -11305,7 +11305,7 @@
           "KHVN": 0,
           "KISP": 0
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0
         },
         "OWENZ": {
@@ -11326,7 +11326,7 @@
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KISP", "KHVN" ],
-                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                    "arrivals": [ "NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
                     "backup": "JFK_K_APP"
@@ -11467,7 +11467,7 @@
           "KHVN": 0,
           "KISP": 0
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0
         },
         "OWENZ": {
@@ -11488,7 +11488,7 @@
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KISP", "KHVN" ],
-                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                    "arrivals": [ "NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
                     "backup": "JFK_G_APP"
@@ -11607,7 +11607,7 @@
           "KHVN": 0,
           "KISP": 0
         },
-        "NELIE3": {
+        "NELIE4": {
           "KISP": 0
         },
         "OWENZ": {
@@ -11628,7 +11628,7 @@
                 "ISP_APP": {
                     "backup": "JFK_G_APP",
                     "departures": [ "KISP", "KHVN" ],
-                    "arrivals": [ "NELIE3", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
+                    "arrivals": [ "NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)" ]
                 },
                 "JFK_A_APP": {
                     "backup": "JFK_G_APP"

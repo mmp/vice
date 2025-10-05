@@ -89,7 +89,7 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
-	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
+	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.FlightStripPrinter, Size: fsp.FontSize}); fsp.font == nil {
 		fsp.font = renderer.GetDefaultFont()
 	}
 	if fsp.addedPlans == nil {
@@ -131,7 +131,7 @@ func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
 	return start
 }
 
-func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
+func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, tcp string) {
 	if _, ok := fsp.addedPlans[fp.ACID]; ok {
 		// We've seen it before.
 		return
@@ -231,9 +231,11 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 }
 
-func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
-
 func (fsp *FlightStripPane) Hide() bool { return fsp.HideFlightStrips }
+
+var _ UIDrawer = (*FlightStripPane)(nil)
+
+func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
 	show := !fsp.HideFlightStrips
