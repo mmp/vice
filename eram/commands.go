@@ -251,7 +251,8 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			}
 			fp = sim.FlightPlanSpecifier{}
 			fp.InterimAlt.Set(0)
-
+			ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+			status.bigOutput = fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		} else if len(fields) == 2 {
 			var err error
 			var ok bool
@@ -635,7 +636,12 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		}
 	case "QQ": // TODO: Check for proper controller. Same format as the other dont have control error
 		fields := strings.Fields(cmd)
-		if len(fields) == 1 {
+		if len(fields) == 0 {
+			fp := sim.FlightPlanSpecifier{}
+			fp.InterimAlt.Set(0)
+			ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+			status.bigOutput = fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+		} else if len(fields) == 1 {
 			fp, err := parseOneFlightPlan("ALT_I", fields[0], nil)
 			if err != nil {
 				status.err = err
