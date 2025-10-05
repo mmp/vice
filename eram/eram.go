@@ -61,7 +61,8 @@ type ERAMPane struct {
 
 	systemFont [11]*renderer.Font
 
-	allVideoMaps []radar.ClientVideoMap
+	allVideoMaps  []radar.ERAMVideoMap
+	videoMapLabel string
 
 	InboundPointOuts  map[string]string
 	OutboundPointOuts map[string]string
@@ -185,16 +186,16 @@ func (ep *ERAMPane) Hide() bool {
 }
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	ep.makeMaps(client, ss, lg)
 	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
+	ep.makeMaps(client, ss, lg)
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	ep.makeMaps(client, ss, lg)
 	if ep.prefSet == nil {
 		ep.prefSet = &PrefrenceSet{}
 	}
 	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
+	ep.makeMaps(client, ss, lg)
 }
 
 // Custom text characters. Some of these are not for all fonts. Size 11 has everything.
@@ -286,8 +287,8 @@ func (inp inputText) String() string {
 func (inp *inputText) displayError(ps *Preferences, err error) {
 	if err != nil {
 		errMsg := inputText{}
-		errMsg.Add(xMark, renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
-		errMsg.AddBasic(ps, err.Error())
+		errMsg.Add(xMark+" ", renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
+		errMsg.AddBasic(ps, strings.ToUpper(err.Error()))
 		*inp = errMsg
 	}
 }
@@ -323,7 +324,8 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.bigOutput.displayError(ps, status.err)
 			} else if status.bigOutput != "" {
 				ep.bigOutput.displaySuccess(ps, status.bigOutput)
-
+			} else if status.output != "" {
+				ep.smallOutput.Set(ps, status.output)
 			}
 		case imgui.KeyEscape:
 			// Clear the input
@@ -403,59 +405,61 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	transforms.LoadLatLongViewingMatrices(cb)
 
 	cb.LineWidth(1, ctx.DPIScale)
-	var draw []radar.ClientVideoMap
+	var draw []radar.ERAMVideoMap
 	for _, vm := range ep.allVideoMaps {
-		if _, ok := ps.VideoMapVisible[vm.Name]; ok {
+		if _, ok := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]; ok {
 
 			draw = append(draw, vm)
 		}
 	}
-	slices.SortFunc(draw, func(a, b radar.ClientVideoMap) int { return a.Id - b.Id })
 
 	for _, vm := range draw {
-		cidx := math.Clamp(vm.Color-1, 0, numMapColors-1)
-		color := mapColors[vm.Group][cidx] // TODO: change this out for custom brightnesses.
-
+		color := renderer.RGB{R: .953, G: .953, B: .953}.Scale(float32(ps.VideoMapBrightness[vm.BcgName]) / 100)
 		cb.SetRGB(color)
 		cb.Call(vm.CommandBuffer)
 	}
 }
 
 func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
+	ps := ep.currentPrefs()
 	vmf, err := ep.getVideoMapLibrary(ss, client)
+	// fmt.Println(vmf.ERAMMapGroups, "VMFOKAY")
 	if err != nil {
 		lg.Errorf("%v", err)
 		return
 	}
-	usedIds := make(map[int]interface{})
 
-	// Filter the maps needed for this controller
-	filteredMaps := util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
-		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
-	})
+	maps := vmf.ERAMMapGroups[ep.currentPrefs().VideoMapGroup]
 
-	// Convert to ClientVideoMaps for rendering
-	ep.allVideoMaps = radar.BuildClientVideoMaps(filteredMaps)
-	for _, vm := range ep.allVideoMaps {
-		usedIds[vm.Id] = nil
+	for _, eramMap := range maps.Maps {
+		if ps.VideoMapBrightness[eramMap.BcgName] == 0 { // If the brightness is not set, default it to 12
+			ps.VideoMapBrightness[eramMap.BcgName] = 12
+		}
 	}
 
-	ps := ep.currentPrefs()
+	// Convert to ClientVideoMaps for rendering
+	ep.allVideoMaps = radar.BuildERAMClientVideoMaps(maps.Maps)
+
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
 	}
 	for k := range ps.VideoMapVisible {
 		delete(ps.VideoMapVisible, k)
 	}
+
+	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2)
+	ep.videoMapLabel = strings.Replace(ep.videoMapLabel, " ", "\n", 1)
+
 	for _, name := range ss.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == name }); idx != -1 {
-			ps.VideoMapVisible[ep.allVideoMaps[idx].Name] = nil
+		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ERAMVideoMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
+
+			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
 		}
 	}
 }
 
 func (ep *ERAMPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
-	filename := ss.STARSFacilityAdaptation.VideoMapFile
+	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
 	}
@@ -468,4 +472,18 @@ func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 
 func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Enable experimental ERAM support", &ep.ERAMOptIn)
+}
+
+func combine(x, y string) string {
+	x = strings.TrimSpace(x)
+	y = strings.TrimSpace(y)
+
+	if x == "" {
+		return y
+	}
+	if y == "" {
+		return x
+	}
+	return x + " " + y
+
 }

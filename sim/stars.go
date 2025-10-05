@@ -82,8 +82,25 @@ type VideoMap struct {
 
 // This should match VideoMapLibrary in dat2vice
 type VideoMapLibrary struct {
-	Maps []VideoMap
+	Maps          []VideoMap
+	ERAMMapGroups ERAMMapGroups
 }
+
+type ERAMMap struct {
+	BcgName    string
+	LabelLine1 string
+	LabelLine2 string
+	Name       string
+	Lines      [][]math.Point2LL
+}
+
+type ERAMMapGroup struct {
+	Maps       []ERAMMap
+	LabelLine1 string
+	LabelLine2 string
+}
+
+type ERAMMapGroups map[string]ERAMMapGroup
 
 // VideoMapManifest stores which maps are available in a video map file and
 // is also able to provide the video map file's hash.
@@ -95,6 +112,10 @@ type VideoMapManifest struct {
 
 func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
+
+	if strings.Contains(filename, "eram") {
+		return // ERAM manifest not here
+	}
 
 	manifest, err := LoadVideoMapManifest(filename)
 	if err != nil {
@@ -156,8 +177,26 @@ func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
 }
 
 func (v VideoMapManifest) HasMap(s string) bool {
-	_, ok := v.names[s]
-	return ok
+	for i, m := range v.names {
+		if i == s {
+			return true
+		}
+		if names, ok := m.([]string); ok {
+			if slices.Contains(names, s) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (v VideoMapManifest) HasMapGroup(s string) bool {
+	for i := range v.names {
+		if i == s {
+			return true
+		}
+	}
+	return false
 }
 
 // Hash returns a hash of the underlying video map file (i.e., not the manifest!)
@@ -203,8 +242,17 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 		if zr != nil {
 			_ = zr.Reset(br)
 		}
-		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
-			return nil, err
+		if strings.Contains(path, "eram") {
+			if vmf.ERAMMapGroups == nil {
+				vmf.ERAMMapGroups = make(ERAMMapGroups)
+			}
+			if err := gob.NewDecoder(r).Decode(&vmf.ERAMMapGroups); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
+				return nil, err
+			}
 		}
 	}
 
@@ -261,19 +309,20 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
-type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness"`
-	ForceQLToSelf       bool                              `json:"force_ql_self"`
-	AllowLongScratchpad bool                              `json:"allow_long_scratchpad"`
-	VideoMapNames       []string                          `json:"stars_maps"`
+type FacilityAdaptation struct {
+	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness" scope:"stars"`
+	ForceQLToSelf       bool                              `json:"force_ql_self" scope:"stars"`
+	AllowLongScratchpad bool                              `json:"allow_long_scratchpad" scope:"stars"`
+	VideoMapNames       []string                          `json:"stars_maps" scope:"stars"`
+	ERAMMapNames        map[string][]string               `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                 `json:"map_labels"`
 	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	RadarSites          map[string]*av.RadarSite          `json:"radar_sites"`
+	RadarSites          map[string]*av.RadarSite          `json:"radar_sites" scope:"stars"`
 	Center              math.Point2LL                     `json:"-"`
 	CenterString        string                            `json:"center"`
 	Range               float32                           `json:"range"`
-	Scratchpads         map[string]string                 `json:"scratchpads"`
-	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
+	Scratchpads         map[string]string                 `json:"scratchpads" scope:"stars"`
+	SignificantPoints   map[string]SignificantPoint       `json:"significant_points" scope:"stars"`
 	Altimeters          []string                          `json:"altimeters"`
 
 	// Airpsace filters
@@ -287,7 +336,7 @@ type STARSFacilityAdaptation struct {
 		SecondaryDrop        FilterRegions `json:"secondary_drop"`
 		SurfaceTracking      FilterRegions `json:"surface_tracking"`
 		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
-	} `json:"filters"`
+	} `json:"filters" scope:"stars"` //Should this be STARS or justy parts of it?
 
 	MonitoredBeaconCodeBlocksString  *string
 	MonitoredBeaconCodeBlocks        []av.Squawk
@@ -295,25 +344,25 @@ type STARSFacilityAdaptation struct {
 		CodeRangesString string         `json:"beacon_codes"`
 		CodeRanges       [][2]av.Squawk // inclusive
 		Symbol           string         `json:"symbol"`
-	} `json:"untracked_position_symbol_overrides"`
+	} `json:"untracked_position_symbol_overrides" scope:"stars"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
-	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
-	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
-	KeepLDB           bool                          `json:"keep_ldb"`
-	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
+	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes" scope:"stars"`
+	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
+	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
+	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
 
-	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes"`
+	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
 
-	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
-	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
-	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
+	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration" scope:"stars"`
+	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only" scope:"stars"`
+	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration" scope:"stars"`
 
 	FlightPlan struct {
 		QuickACID          string            `json:"quick_acid"`
 		ACIDExpansions     map[string]string `json:"acid_expansions"`
 		ModifyAfterDisplay bool              `json:"modify_after_display"`
-	} `json:"flight_plan"`
+	} `json:"flight_plan" scope:"stars"`
 
 	PDB struct {
 		ShowScratchpad2   bool `json:"show_scratchpad2"`
@@ -321,40 +370,40 @@ type STARSFacilityAdaptation struct {
 		ShowAircraftType  bool `json:"show_aircraft_type"`
 		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
 		DisplayCustomSPCs bool `json:"display_custom_spcs"`
-	} `json:"pdb"`
+	} `json:"pdb" scope:"stars"`
 
 	FDB struct {
 		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
 		Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
-	} `json:"fdb"`
+	} `json:"fdb" scope:"stars"`
 
 	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
 		DisplayExitFix1    bool `json:"display_exit_fix_1"`
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"scratchpad1"`
+	} `json:"scratchpad1" scope:"stars"`
 
 	CustomSPCs []string `json:"custom_spcs"`
 
-	CoordinationLists []CoordinationList `json:"coordination_lists"`
+	CoordinationLists []CoordinationList `json:"coordination_lists" scope:"stars"`
 	VFRList           struct {
 		Format string `json:"format"`
-	} `json:"vfr_list"`
+	} `json:"vfr_list" scope:"stars"`
 	TABList struct {
 		Format string `json:"format"`
-	} `json:"tab_list"`
+	} `json:"tab_list" scope:"stars"`
 	CoastSuspendList struct {
 		Format string `json:"format"`
-	} `json:"coast_suspend_list"`
+	} `json:"coast_suspend_list" scope:"stars"`
 	MCISuppressionList struct {
 		Format string `json:"format"`
-	} `json:"mci_suppression_list"`
+	} `json:"mci_suppression_list" scope:"stars"`
 	TowerList struct {
 		Format string `json:"format"`
-	} `json:"tower_list"`
-	RestrictionAreas []av.RestrictionArea `json:"restriction_areas"`
-	UseLegacyFont    bool                 `json:"use_legacy_font"`
+	} `json:"tower_list" scope:"stars"`
+	RestrictionAreas []av.RestrictionArea `json:"restriction_areas" scope:"stars"`
+	UseLegacyFont    bool                 `json:"use_legacy_font" scope:"stars"`
 }
 
 type FilterRegion struct {
@@ -708,7 +757,6 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 	}
 	if spec.InterimAlt.IsSet {
 		fp.InterimAlt = spec.InterimAlt.Get()
-		fmt.Println("Interim altitude:", fp.InterimAlt)
 	}
 	if spec.InterimType.IsSet {
 		interimType := spec.InterimType.Get()
@@ -839,7 +887,7 @@ const (
 	LocalNonEnroute
 )
 
-func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string, e *util.ErrorLogger) {
+func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
@@ -1114,7 +1162,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 	e.Pop()
 }
 
-func (fa STARSFacilityAdaptation) CheckScratchpad(sp string) bool {
+func (fa FacilityAdaptation) CheckScratchpad(sp string) bool {
 	lc := len([]rune(sp))
 
 	// 5-148

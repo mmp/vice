@@ -205,9 +205,9 @@ type NewSimConfiguration struct {
 	MultiControllers   av.SplitConfiguration
 	SignOnPositions    map[string]*av.Controller
 
-	TFRs                    []av.TFR
-	STARSFacilityAdaptation STARSFacilityAdaptation
-	IsLocal                 bool
+	TFRs               []av.TFR
+	FacilityAdaptation FacilityAdaptation
+	IsLocal            bool
 
 	EnforceUniqueCallsignSuffix bool
 
@@ -218,6 +218,7 @@ type NewSimConfiguration struct {
 	Center            math.Point2LL
 	Range             float32
 	DefaultMaps       []string
+	DefaultMapGroup   string
 	Airspace          av.Airspace
 
 	TTSProvider TTSProvider
@@ -237,7 +238,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		CIDAllocator: NewCIDAllocator(),
 
-		LocalCodePool: av.MakeLocalSquawkCodePool(config.STARSFacilityAdaptation.SSRCodes),
+		LocalCodePool: av.MakeLocalSquawkCodePool(config.FacilityAdaptation.SSRCodes),
 
 		VFRReportingPoints: config.VFRReportingPoints,
 
@@ -1399,7 +1400,7 @@ func (s *Sim) requestRandomFlightFollowing() error {
 			continue
 		}
 
-		for tcp, cc := range s.State.STARSFacilityAdaptation.ControllerConfigs {
+		for tcp, cc := range s.State.FacilityAdaptation.ControllerConfigs {
 			tcp = s.State.ResolveController(tcp)
 			if !s.isActiveHumanController(tcp) {
 				continue
@@ -1533,7 +1534,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
-	filters := s.State.STARSFacilityAdaptation.Filters
+	filters := s.State.FacilityAdaptation.Filters
 	return !filters.SurfaceTracking.Inside(ac.Position(), int(ac.Altitude()))
 }
 

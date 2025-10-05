@@ -114,8 +114,8 @@ func main() {
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
 			for _, sg := range sgs {
-				if sg.STARSFacilityAdaptation.VideoMapFile != "" {
-					videoMaps[sg.STARSFacilityAdaptation.VideoMapFile] = nil
+				if sg.FacilityAdaptation.VideoMapFile != "" {
+					videoMaps[sg.FacilityAdaptation.VideoMapFile] = nil
 				}
 			}
 		}

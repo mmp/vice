@@ -56,6 +56,7 @@ var ( // TODO: Change to actual colors, but these STARS ones will suffice for no
 	menuOutlineColor              = renderer.RGB{1, .761, 0}
 	toolbarHoveredOutlineColor    = renderer.RGB{.953, .953, .953}
 	eramGray                      = renderer.RGB{.78, .78, .78}
+	eramDarkGray                  = renderer.RGB{.404, .404, .404}
 )
 
 type toolbarFlags int
@@ -133,7 +134,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarChecklist
 		}
 		ep.drawToolbarFullButton(ctx, "COMMAND\nMENUS", 0, scale, false, false)
-		if ep.drawToolbarFullButton(ctx, "VIDEOMAP", 0, scale, false, false) { // Change to ERAM adapted name MANDATORY (This will probably be the hardest)
+		if ep.drawToolbarFullButton(ctx, ep.videoMapLabel, 0, scale, false, false) { // Change to ERAM adapted name MANDATORY (This will probably be the hardest)
 			ep.activeToolbarMenu = toolbarVideomap
 		}
 		ep.drawToolbarFullButton(ctx, fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1]), 0, scale, false, false)
@@ -194,7 +195,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
-		main := "VIDEOMAP"
+		main := ep.videoMapLabel
 		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom button color for VIDEOMAP
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
@@ -202,25 +203,34 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			resetButtonPosDefault(ctx, scale)
 			delete(toolbarDrawState.customButton, main)
 		}
-		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
+		ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
-		for i, vm := range ep.allVideoMaps {
-			_, vis := ps.VideoMapVisible[vm.Name]
+		second := ctx.Keyboard.KeyAlt()
+		for i := 0; i < 40; i++ {
+			if second && i == 0 {
+				i = 20
+			}
+			var vm radar.ERAMVideoMap
+			if i < len(ep.allVideoMaps) {
+				vm = ep.allVideoMaps[i]
+			}
+			label := vm.LabelLine1 + "\n" + vm.LabelLine2
+			_, vis := ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)]
 			nextRow := false
-			if i == 11 {
+			if (i == 10 && !second) || (i == 30 && second) {
 				nextRow = true
 				toolbarDrawState.offsetBottom = true // Offset the next row
 			}
-			if i == 22 {
+			if (i == 20 && !second) || i == 42 {
 				break
 			}
 
-			if ep.drawToolbarFullButton(ctx, vm.Label, 0, scale, vis, nextRow) {
-				if vm.Label != "" {
+			if ep.drawToolbarFullButton(ctx, label, 0, scale, vis, nextRow) {
+				if label != "" {
 					if vis {
-						delete(ps.VideoMapVisible, vm.Name)
+						delete(ps.VideoMapVisible, combine(vm.LabelLine1, vm.LabelLine2))
 					} else {
-						ps.VideoMapVisible[vm.Name] = nil
+						ps.VideoMapVisible[combine(vm.LabelLine1, vm.LabelLine2)] = nil
 					}
 				}
 			}
@@ -232,9 +242,12 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	case toolbarBright, toolbarMapBright:
 		toolbarDrawState.customButton = make(map[string]renderer.RGB)
+		mapb := ep.activeToolbarMenu == toolbarMapBright
 		if ep.activeToolbarMenu == toolbarBright {
 			toolbarDrawState.customButton["MAP\nBRIGHT"] = toolbarButtonColor
 			toolbarDrawState.customButton["CPDLC"] = toolbarButtonColor
+		} else {
+			toolbarDrawState.customButton["MAP\nBRIGHT"] = toolbarActiveButtonColor
 		}
 
 		ps := ep.currentPrefs()
@@ -242,6 +255,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			t := toolbarDrawState.lightToolbar
 			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
 		}
+
 		drawButtonSamePosition(ctx, "BRIGHT")
 		if ep.drawToolbarFullButton(ctx, "BRIGHT", 0, scale, false, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -251,9 +265,21 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		p0 := toolbarDrawState.buttonCursor // For outline
 
 		if ep.drawToolbarFullButton(ctx, "MAP\nBRIGHT", 0, scale, false, false) {
-			// ep.activeToolbarMenu = util.Select(ep.activeToolbarMenu == toolbarBright, toolbarMapBright, toolbarBright)
+			ep.activeToolbarMenu = util.Select(ep.activeToolbarMenu == toolbarBright, toolbarMapBright, toolbarBright)
 		}
-		// e0 := toolbarDrawState.buttonCursor
+		var e0 [2]float32
+		if mapb { // mapbright starts drawing outline
+			e0 = toolbarDrawState.buttonCursor
+			// Pre-activate occlusion so underlying buttons drawn afterward ignore input inside the overlay area
+			btnSz := buttonSize(buttonFull, scale)
+			cols, rows := float32(10), float32(2)
+			e2Approx := [2]float32{e0[0] + cols*(btnSz[0]+3), e0[1] - rows*(btnSz[1]+3)}
+			e1Approx := [2]float32{e2Approx[0], e0[1]}
+			e3Approx := [2]float32{e0[0], e2Approx[1]}
+			toolbarDrawState.occlusionActive = true
+			toolbarDrawState.occlusionExtent = math.Extent2DFromPoints([][2]float32{e0, e1Approx, e2Approx, e3Approx})
+		}
+
 		if ep.drawToolbarFullButton(ctx, "CPDLC", 0, scale, false, false) {
 			// handle CPDLC
 		}
@@ -344,6 +370,44 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("OUTAGE\n%d", ps.Brightness.Outage), 0, scale, false, false) {
 			handleClick(&ps.Brightness.Outage, 0, 100, 2)
 		}
+		var e1, e2, e3 [2]float32
+		if mapb {
+
+			if toolbarDrawState.lightToolbar2 != [4][2]float32{} {
+				t := toolbarDrawState.lightToolbar2
+				ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+			}
+
+			// Build buttons for current group's video maps without reloading the library each frame
+			toolbarDrawState.buttonCursor = e0
+			maps := ep.allVideoMaps
+			// Overlay buttons should receive input even if occlusion is active
+			toolbarDrawState.processingOcclusion = true
+			for i, vm := range maps {
+				label := fmt.Sprintf("%s\n%d", vm.BcgName, ps.VideoMapBrightness[vm.BcgName])
+				if i == 10 {
+					toolbarDrawState.buttonCursor = [2]float32{e0[0], e0[1] - buttonSize(buttonFull, scale)[1] - 2}
+					// toolbarDrawState.offsetBottom = true
+					// toolbarDrawState.noTearoff = true
+				}
+				if ep.drawToolbarMainButton(ctx, label, 0, scale, false, false) {
+					brightness := ps.VideoMapBrightness[vm.BcgName]
+					handleClick(&brightness, 0, 100, 2)
+					ps.VideoMapBrightness[vm.BcgName] = brightness
+				}
+				if i == 19 {
+					e2 = toolbarDrawState.buttonCursor
+					e2[1] -= buttonSize(buttonFull, scale)[1] + 1
+					e1 = [2]float32{e2[0], e0[1]}
+					e3 = [2]float32{e0[0], e2[1]}
+					toolbarDrawState.lightToolbar2 = [4][2]float32{e0, e1, e2, e3}
+					break
+				}
+
+			}
+			toolbarDrawState.processingOcclusion = false
+			toolbarDrawState.buttonCursor = p0
+		}
 
 		p1 := [2]float32{p2[0], p0[1]}
 		p3 := [2]float32{p0[0], p2[1]}
@@ -371,9 +435,18 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		// 	e3 := [2]float32{e0[0], e2[1]}
 		// 	ep.drawMenuOutline(ctx, e0, e1, e2, e3)
 		// } else {
+		if mapb {
+			p0, p1, p2, p3 = e0, e1, e2, e3
+		}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
-		// }
 
+		// Record occlusion so underlying toolbar buttons don't eat hover/clicks
+		if mapb {
+			toolbarDrawState.occlusionActive = true
+			// Build the occlusion extent from the MAP BRIGHT submenu quad
+			oc := math.Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
+			toolbarDrawState.occlusionExtent = oc
+		}
 	case toolbarViews:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
@@ -384,7 +457,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarMain
 			resetButtonPosDefault(ctx, scale)
 		}
-		toolbarDrawState.buttonCursor[1] = ep.buttonVerticalOffset(ctx)
+		ep.buttonVerticalOffset(ctx)
 		p0 := toolbarDrawState.buttonCursor
 		if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, false, false) {
 			// handle ALTIM SET
@@ -526,6 +599,7 @@ func (ep *ERAMPane) drawToolbarMainButton(ctx *panes.Context, text string, flag 
 	sz := buttonSize(buttonFull, buttonScale)
 	pushed := ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, nextRow) // Draw full button. Only change row for the tearoff button
 	moveToolbarCursor(buttonFull, sz, ctx, nextRow)
+	toolbarDrawState.buttonCursor[0] += 2 // Add some space between buttons; maybe we need more?
 	return pushed
 }
 
@@ -541,6 +615,7 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 
 	if toolbarDrawState.offsetBottom && (text == "" || toolbarDrawState.noTearoff) { // Only offset for the first button (the tearoff)
 		ep.offsetFullButton(ctx)
+		toolbarDrawState.buttonCursor[0] += 3 // Add the padding
 		toolbarDrawState.offsetBottom = false
 	}
 
@@ -561,6 +636,15 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	mouseDownInside := toolbarDrawState.mouseDownPos != nil &&
 		ext.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) &&
 		!hasFlag(flags, buttonDisabled)
+
+	if toolbarDrawState.occlusionActive && !toolbarDrawState.processingOcclusion {
+		if mouse != nil && toolbarDrawState.occlusionExtent.Inside(mouse.Pos) {
+			mouseInside = false
+		}
+		if toolbarDrawState.mouseDownPos != nil && toolbarDrawState.occlusionExtent.Inside([2]float32{toolbarDrawState.mouseDownPos[0], toolbarDrawState.mouseDownPos[1]}) {
+			mouseDownInside = false
+		}
+	}
 
 	var buttonColor, textColor renderer.RGB
 
@@ -700,11 +784,17 @@ var toolbarDrawState struct {
 	offsetBottom    bool
 	noTearoff       bool // For objects like "BUTTON" and "BCKGRD" in the brightness menu that don't have a tearoff button
 	lightToolbar    [4][2]float32
+	lightToolbar2   [4][2]float32
 	masterToolbar   bool
 
 	customButton map[string]renderer.RGB // Custom button colors for the toolbar
 
 	lastHold time.Time
+
+	// Input occlusion handling so only the topmost overlay handles hover/click
+	occlusionActive     bool
+	occlusionExtent     math.Extent2D
+	processingOcclusion bool
 }
 
 func init() {
@@ -716,6 +806,8 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 
 	toolbarDrawState.cb = cb
 	toolbarDrawState.mouse = ctx.Mouse
+	toolbarDrawState.occlusionActive = false
+	toolbarDrawState.processingOcclusion = false
 	if toolbarDrawState.buttonPositions == nil {
 		toolbarDrawState.buttonPositions = make(map[string][2]float32)
 	}
@@ -849,8 +941,9 @@ func cleanButtonName(name string) string {
 	return name
 }
 
-func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) float32 {
-	return ctx.PaneExtent.Height() - mainButtonPosition(ep.toolbarButtonScale(ctx))[1]
+func (ep *ERAMPane) buttonVerticalOffset(ctx *panes.Context) {
+	toolbarDrawState.buttonCursor[1] = ctx.PaneExtent.Height() - mainButtonPosition(ep.toolbarButtonScale(ctx))[1]
+	toolbarDrawState.buttonCursor[0] += 1
 }
 
 func (ep *ERAMPane) checkNextRow(nextRow bool, sz [2]float32, ctx *panes.Context) {
@@ -864,7 +957,7 @@ func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float3
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	color := ep.currentPrefs().Brightness.Border.ScaleRGB(menuOutlineColor)
-	toolbarDrawState.cb.LineWidth(2, ctx.DPIScale)
+	toolbarDrawState.cb.LineWidth(3, ctx.DPIScale)
 	ld.AddLine(p0, p1, color)
 	ld.AddLine(p1, p2, color)
 	ld.AddLine(p2, p3, color)
@@ -876,7 +969,7 @@ func (ep *ERAMPane) drawMenuOutline(ctx *panes.Context, p0, p1, p2, p3 [2]float3
 func (ep *ERAMPane) drawLightToolbar(p0, p1, p2, p3 [2]float32) {
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	trid.AddQuad(p0, p1, p2, p3, eramGray)
+	trid.AddQuad(p0, p1, p2, p3, eramDarkGray)
 	trid.GenerateCommands(toolbarDrawState.cb)
 }
 

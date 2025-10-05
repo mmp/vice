@@ -436,7 +436,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
 
 		// Check MSAW suppression filters
-		msawFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitMSAW
+		msawFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitMSAW
 		if msawFilter.Inside(state.track.Location, alt) {
 			state.MSAW = false
 			continue
@@ -463,7 +463,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.CurrentTime()
-	fa := ctx.Client.State.STARSFacilityAdaptation
+	fa := ctx.Client.State.FacilityAdaptation
 	if sp.radarMode(fa.RadarSites) == RadarModeFused {
 		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {
 			return
@@ -526,7 +526,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 
 func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []sim.Track) {
 	ps := sp.currentPrefs()
-	fa := ctx.Client.State.STARSFacilityAdaptation
+	fa := ctx.Client.State.FacilityAdaptation
 
 	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
 		func(f sim.FilterRegion) bool {
@@ -599,7 +599,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 
 		if trk.IsUnassociated() {
 			// See if a position symbol override applies. Note that this may be overridden in code following shortly.
-			fa := ctx.Client.State.STARSFacilityAdaptation
+			fa := ctx.Client.State.FacilityAdaptation
 			for _, r := range fa.UntrackedPositionSymbolOverrides.CodeRanges {
 				if trk.Squawk >= r[0] && trk.Squawk <= r[1] { // ranges are inclusive
 					positionSymbol = fa.UntrackedPositionSymbolOverrides.Symbol
@@ -1009,7 +1009,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	}
 
 	inCAInhibitFilter := func(trk *sim.Track) bool {
-		nocaFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitCA
+		nocaFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitCA
 		state := sp.TrackState[trk.ADSBCallsign]
 		return nocaFilter.Inside(state.track.Location, int(state.track.TransponderAltitude))
 	}

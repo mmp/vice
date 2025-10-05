@@ -16,6 +16,8 @@ type Preferences struct {
 
 	CurrentCenter math.Point2LL
 
+	VideoMapGroup string // ZNYMAP, AREAA, AREAB, etc
+
 	AltitudeFilters []float32 // find out the different targets
 
 	// QuickLookPositions []QuickLookPositiosn // find out more about this
@@ -33,6 +35,8 @@ type Preferences struct {
 	RDBSize     int // CRR datablocks
 	LDBSize     int
 	OutageSize  int
+
+	VideoMapBrightness map[string]int
 }
 
 const numSavedPreferenceSets = 10
@@ -141,7 +145,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.OutageSize = 1
 
 	prefs.VideoMapVisible = make(map[string]interface{})
-
+	prefs.VideoMapBrightness = make(map[string]int)
 	return &prefs
 }
 
@@ -151,6 +155,8 @@ func (ep *ERAMPane) initPrefsForLoadedSim(ss sim.State) *Preferences {
 	p := makeDefaultPreferences()
 	p.Center = ss.GetInitialCenter()
 	p.CurrentCenter = p.Center
+	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+	p.Range = ss.Range
 	return p
 }
 

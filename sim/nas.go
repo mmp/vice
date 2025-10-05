@@ -108,7 +108,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 			return f.Inside(ac.Position(), int(ac.Altitude()))
 		}
 
-		filters := s.State.STARSFacilityAdaptation.Filters
+		filters := s.State.FacilityAdaptation.Filters
 
 		drop := func() bool {
 			if ac.TypeOfFlight == av.FlightTypeArrival && inVolumes(filters.ArrivalDrop) {

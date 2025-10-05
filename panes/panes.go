@@ -91,7 +91,7 @@ type Context struct {
 	UserTCP            string
 	NmPerLongitude     float32
 	MagneticVariation  float32
-	FacilityAdaptation *sim.STARSFacilityAdaptation
+	FacilityAdaptation *sim.FacilityAdaptation
 
 	// Full display size, including the menu and status bar.
 	displaySize [2]float32

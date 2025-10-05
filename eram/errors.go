@@ -2,6 +2,7 @@ package eram
 
 import (
 	"errors"
+	"fmt"
 	"net/rpc"
 
 	"github.com/mmp/vice/log"
@@ -12,8 +13,8 @@ type ERAMError struct {
 	error
 }
 
-func NewERAMError(msg string) *ERAMError {
-	return &ERAMError{errors.New(msg)}
+func NewERAMError(msg string, args ...any) *ERAMError {
+	return &ERAMError{errors.New(fmt.Sprintf(msg, args...))}
 }
 
 var ( // TODO: Get actual error messages for this
@@ -24,6 +25,9 @@ var ( // TODO: Get actual error messages for this
 	ErrERAMIllegalValue    = NewERAMError("ILLEGAL VALUE")
 	ErrERAMIllegalAirport  = NewERAMError("ILLEGAL AIRPORT")
 	ErrIllegalUserAction   = NewERAMError("ILLEGAL USER ACTION")
+	ErrERAMMapUnavailable  = NewERAMError("MAP UNAVAILABLE")
+	ErrERAMMessageTooLong  = NewERAMError("MESSAGE TOO LONG")
+	ErrERAMSectorNotActive = NewERAMError("SECTOR NOT ACTIVE")
 )
 
 var eramErrorRemap = map[error]*ERAMError{}
