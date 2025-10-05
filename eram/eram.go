@@ -51,47 +51,51 @@ var mapColors [2][numMapColors]renderer.RGB = [2][numMapColors]renderer.RGB{
 }
 
 type ERAMPane struct {
-	ERAMPreferenceSets map[string]*PrefrenceSet
-	prefSet            *PrefrenceSet
-	TrackState         map[av.ADSBCallsign]*TrackState
+	ERAMPreferenceSets map[string]*PrefrenceSet        `json:"PreferenceSets,omitempty"`
+	prefSet            *PrefrenceSet                   `json:"-"`
+	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
+	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
 
-	ERAMOptIn bool
+	ERAMOptIn bool `json:"-"`
 
-	events *sim.EventsSubscription
+	events *sim.EventsSubscription `json:"-"`
 
-	systemFont [11]*renderer.Font
+	systemFont [11]*renderer.Font `json:"-"`
 
-	allVideoMaps  []radar.ERAMVideoMap
-	videoMapLabel string
+	allVideoMaps    []radar.ERAMVideoMap `json:"-"`
+	videoMapLabel   string               `json:"-"`
+	currentFacility string               `json:"-"`
 
-	InboundPointOuts  map[string]string
-	OutboundPointOuts map[string]string
+	InboundPointOuts  map[string]string `json:"-"`
+	OutboundPointOuts map[string]string `json:"-"`
 
 	// Output and input text for the command line interface.
-	smallOutput inputText
-	bigOutput   inputText
-	Input       inputText
+	smallOutput inputText `json:"-"`
+	bigOutput   inputText `json:"-"`
+	Input       inputText `json:"-"`
 
-	activeToolbarMenu int
-	toolbarVisible    bool
+	activeToolbarMenu int  `json:"-"`
+	toolbarVisible    bool `json:"-"`
 
-	lastTrackUpdate time.Time
+	lastTrackUpdate time.Time `json:"-"`
 
-	fdbArena util.ObjectArena[fullDatablock]
-	ldbArena util.ObjectArena[limitedDatablock]
+	fdbArena util.ObjectArena[fullDatablock]    `json:"-"`
+	ldbArena util.ObjectArena[limitedDatablock] `json:"-"`
 
-	repositionLargeInput  bool
-	repositionSmallOutput bool
-	timeSinceRepo         time.Time
+	repositionLargeInput  bool      `json:"-"`
+	repositionSmallOutput bool      `json:"-"`
+	timeSinceRepo         time.Time `json:"-"`
 
-	velocityTime int // 0, 1, 4, or 8 minutes
+	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
 
-	dbLastAlternateTime time.Time // Alternates every 6 seconds
-	dbAlternate         bool
+	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
+	dbAlternate         bool      `json:"-"`
 
-	targetGenLastCallsign av.ADSBCallsign
+	targetGenLastCallsign av.ADSBCallsign `json:"-"`
 
-	aircraftFixCoordinates map[string]aircraftFixCoordinates
+	aircraftFixCoordinates map[string]aircraftFixCoordinates `json:"-"`
+
+	prefrencesVisible bool `json:"-"`
 }
 
 func NewERAMPane() *ERAMPane {
@@ -121,7 +125,12 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	ep.initializeFonts(r, pl)
 
 	// Activate weather radar, events
-	ep.prefSet = &PrefrenceSet{}
+	if ep.prefSet == nil {
+		ep.prefSet = &PrefrenceSet{}
+	}
+	if ep.ERAMPreferenceSets == nil {
+		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
+	}
 }
 
 func init() {
@@ -186,16 +195,57 @@ func (ep *ERAMPane) Hide() bool {
 }
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
+	ep.ensurePrefSetForSim(ss)
 	ep.makeMaps(client, ss, lg)
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	if ep.prefSet == nil {
-		ep.prefSet = &PrefrenceSet{}
-	}
-	ep.prefSet.Current = *ep.initPrefsForLoadedSim(ss)
+	ep.ensurePrefSetForSim(ss)
 	ep.makeMaps(client, ss, lg)
+}
+
+// ensurePrefSetForSim initializes the ERAM preference set if needed and
+// resets transient fields for a newly-loaded or reset Sim. Called from
+// both LoadedSim and ResetSim so that preferences are ready before use.
+func (ep *ERAMPane) ensurePrefSetForSim(ss sim.State) {
+	// Ensure map of saved preference sets exists
+	if ep.ERAMPreferenceSets == nil {
+		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
+	}
+
+	key := ss.TRACON // For ERAM scenarios, TRACON holds the ARTCC identifier
+	ep.currentFacility = key
+
+	// Retrieve or create the preference set for this facility
+	if ps, ok := ep.ERAMPreferenceSets[key]; ok && ps != nil {
+		ep.prefSet = ps
+	} else {
+		ep.prefSet = &PrefrenceSet{Current: *ep.initPrefsForLoadedSim(ss)}
+		ep.ERAMPreferenceSets[key] = ep.prefSet
+	}
+
+	// Ensure map fields exist
+	if ep.prefSet.Current.VideoMapVisible == nil {
+		ep.prefSet.Current.VideoMapVisible = make(map[string]interface{})
+	}
+	if ep.prefSet.Current.VideoMapBrightness == nil {
+		ep.prefSet.Current.VideoMapBrightness = make(map[string]int)
+	}
+
+	// Update sim-dependent fields if they aren't set
+	if ep.prefSet.Current.CurrentCenter.IsZero() {
+		ep.prefSet.Current.Center = ss.GetInitialCenter()
+		ep.prefSet.Current.CurrentCenter = ep.prefSet.Current.Center
+	}
+	if ep.prefSet.Current.VideoMapGroup == "" {
+		ep.prefSet.Current.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+	}
+	if ep.prefSet.Current.ARTCC == "" {
+		ep.prefSet.Current.ARTCC = ss.TRACON
+	}
+	if ep.prefSet.Current.Range == 0 {
+		ep.prefSet.Current.Range = ss.Range
+	}
 }
 
 // Custom text characters. Some of these are not for all fonts. Size 11 has everything.
@@ -432,7 +482,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 	maps := vmf.ERAMMapGroups[ep.currentPrefs().VideoMapGroup]
 
 	for _, eramMap := range maps.Maps {
-		if ps.VideoMapBrightness[eramMap.BcgName] == 0 { // If the brightness is not set, default it to 12
+		if _, ok := ps.VideoMapBrightness[eramMap.BcgName]; !ok { // Only set default if missing
 			ps.VideoMapBrightness[eramMap.BcgName] = 12
 		}
 	}
@@ -442,9 +492,6 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 
 	if ps.VideoMapVisible == nil {
 		ps.VideoMapVisible = make(map[string]interface{})
-	}
-	for k := range ps.VideoMapVisible {
-		delete(ps.VideoMapVisible, k)
 	}
 
 	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2)
@@ -472,6 +519,108 @@ func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 
 func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Enable experimental ERAM support", &ep.ERAMOptIn)
+	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.CollapsingHeaderBoolPtr("Preferences", nil) {
+		if ep.prefSet == nil {
+			return
+		}
+		if imgui.BeginTableV("Saved Preferences", 4, tableFlags, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumn("Name")
+			imgui.TableSetupColumn("Save ")
+			imgui.TableSetupColumn("Load ")
+			imgui.TableSetupColumn("Delete ")
+			imgui.TableHeadersRow()
+			// Only show rows that match current ARTCC and map group
+			currentARTCC := ep.currentFacility
+			currentGroup := ep.prefSet.Current.VideoMapGroup
+			saved := ep.prefSet.Saved[:]
+			for i, pref := range saved {
+				if pref == nil {
+					// Keep nil until user saves; we'll use tempSavedNames[i] for input binding
+				}
+				// Ensure all widgets in this row have unique IDs by pushing a per-row ID
+				imgui.PushIDInt(int32(i))
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				// If slot contains a pref for a different ARTCC/group, hide its name
+				existingName := ""
+				if pref != nil && pref.ARTCC == currentARTCC && pref.VideoMapGroup == currentGroup {
+					existingName = pref.Name
+				}
+				// Bind to a stable per-row temp string; show existing name as hint
+				imgui.InputTextWithHint("##name", existingName, &ep.tempSavedNames[i], imgui.InputTextFlagsNone, nil)
+				imgui.TableNextColumn()
+				if imgui.Button("Save") {
+					// Determine the name to save under
+					saveName := strings.TrimSpace(ep.tempSavedNames[i])
+					if saveName == "" && pref != nil {
+						saveName = pref.Name
+					}
+					if saveName != "" { // Only save when we have a non-empty name
+						// Copy current preferences into this slot and set the saved name
+						cp := ep.prefSet.Current
+						// Store plain name; scope via ARTCC and VideoMapGroup fields
+						cp.Name = saveName
+						cp.ARTCC = currentARTCC
+						// Deep copy map fields so saved prefs are not mutated later
+						if cp.VideoMapVisible != nil {
+							cp.VideoMapVisible = cloneStringAnyMap(cp.VideoMapVisible)
+						}
+						if cp.VideoMapBrightness != nil {
+							cp.VideoMapBrightness = cloneStringIntMap(cp.VideoMapBrightness)
+						}
+						ep.prefSet.Saved[i] = &cp
+						ep.tempSavedNames[i] = ""
+					}
+				}
+				imgui.TableNextColumn()
+				if imgui.Button("Load") {
+					if pref != nil && pref.ARTCC == currentARTCC && pref.VideoMapGroup == currentGroup {
+						ep.prefSet.Current = *pref
+						// Clone map fields so editing current doesn't mutate saved copy
+						if pref.VideoMapVisible != nil {
+							ep.prefSet.Current.VideoMapVisible = cloneStringAnyMap(pref.VideoMapVisible)
+						}
+						if pref.VideoMapBrightness != nil {
+							ep.prefSet.Current.VideoMapBrightness = cloneStringIntMap(pref.VideoMapBrightness)
+						}
+					}
+				}
+				imgui.TableNextColumn()
+				if imgui.Button("Delete") {
+					ep.prefSet.Saved[i] = nil
+					ep.tempSavedNames[i] = ""
+				}
+				imgui.PopID()
+			}
+			imgui.EndTable()
+		}
+	}
+}
+
+// cloneStringAnyMap returns a shallow copy of map[string]interface{}
+func cloneStringAnyMap(src map[string]interface{}) map[string]interface{} {
+	if src == nil {
+		return nil
+	}
+	dst := make(map[string]interface{}, len(src))
+	for k, v := range src {
+		dst[k] = v
+	}
+	return dst
+}
+
+// cloneStringIntMap returns a copy of map[string]int
+func cloneStringIntMap(src map[string]int) map[string]int {
+	if src == nil {
+		return nil
+	}
+	dst := make(map[string]int, len(src))
+	for k, v := range src {
+		dst[k] = v
+	}
+	return dst
 }
 
 func combine(x, y string) string {

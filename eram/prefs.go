@@ -11,6 +11,9 @@ type Preferences struct {
 
 	Name string
 
+	// ARTCC facility identifier for which this preference set applies (e.g., ZNY)
+	ARTCC string
+
 	Center math.Point2LL
 	Range  float32
 
@@ -44,7 +47,9 @@ const numSavedPreferenceSets = 10
 type PrefrenceSet struct {
 	Current  Preferences
 	Selected *int
-	Saved    [numSavedPreferenceSets]*Preferences
+	// Saved preference slots (10). Some slots may be nil. Each stored
+	// Preferences includes ARTCC and VideoMapGroup so we can filter rows.
+	Saved [numSavedPreferenceSets]*Preferences
 }
 
 type CommonPreferences struct {
@@ -156,6 +161,7 @@ func (ep *ERAMPane) initPrefsForLoadedSim(ss sim.State) *Preferences {
 	p.Center = ss.GetInitialCenter()
 	p.CurrentCenter = p.Center
 	p.VideoMapGroup = ss.ScenarioDefaultVideoGroup
+	p.ARTCC = ss.TRACON
 	p.Range = ss.Range
 	return p
 }
