@@ -400,7 +400,7 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 
 	// Get the state for the controller
 	state := session.sim.State.GetStateForController(config.Position)
-	
+
 	var initialUpdate sim.StateUpdate
 	session.sim.GetStateUpdate(config.Position, &initialUpdate)
 	initialUpdate.Apply(state, nil)
