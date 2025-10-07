@@ -1001,7 +1001,7 @@
                     "cruise_altitude": 35000,
                     "star": "PUCKY1",
                     "route": "/. PUCKY1",
-                    "initial_controller": "ZNY 49 Stony Fork",
+                    "initial_controller": "ZBW Kingston 20",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "airlines": {
@@ -1234,6 +1234,14 @@
             "facility_id": "W",
             "eram_facility": true,
             "facility": "ZDC"
+        },
+        "ZBW Kingston 20": {
+            "frequency": 125575,
+            "radio_name": "Boston center",
+            "sector_id": "20",
+            "facility_id": "B",
+            "eram_facility": true,
+            "facility": "ZBW"
         }
     },
     "fixes": {
@@ -1264,11 +1272,6 @@
             ],
             "default_map_group": "ZNYMAP",
             "departure_runways": [
-                {
-                    "airport": "KEWR",
-                    "rate": 25,
-                    "runway": "22R"
-                },
                 {
                     "airport": "KJFK",
                     "rate": 6,
