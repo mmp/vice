@@ -146,6 +146,7 @@ func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
 
+	scopeExtent := ctx.PaneExtent
 	ps := ep.currentPrefs()
 
 	tracks := ep.visibleTracks(ctx)
@@ -157,13 +158,14 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// ctr := UserCenter
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
+	scopeExtend := ctx.PaneExtent
 
 	// Following are the draw functions. They are listed in the best of my ability
 
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
-	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
-	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	scopeExtent = ep.drawtoolbar(ctx, transforms, cb)
+	cb.SetScissorBounds(scopeExtend, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
 	ep.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
@@ -197,11 +199,13 @@ func (ep *ERAMPane) Hide() bool {
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(ss)
 	ep.makeMaps(client, ss, lg)
+	ep.lastTrackUpdate = time.Time{}
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(ss)
 	ep.makeMaps(client, ss, lg)
+	ep.lastTrackUpdate = time.Time{}
 }
 
 // ensurePrefSetForSim initializes the ERAM preference set if needed and

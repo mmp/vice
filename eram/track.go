@@ -142,6 +142,10 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	ep.lastTrackUpdate = now
 	for _, trk := range tracks {
 		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil {
+			state = &TrackState{}
+			ep.TrackState[trk.ADSBCallsign] = state
+		}
 
 		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
 			// Get the first track for tentative tracks but then don't
