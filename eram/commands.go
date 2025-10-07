@@ -123,6 +123,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	}
 	prefix := fieldsFull[0]
 	cmd := strings.Join(fieldsFull[1:], " ")
+	if strings.HasPrefix(original, "//") {
+		cmd = strings.TrimPrefix(original, "//")
+		cmd = strings.TrimSpace(cmd)
+		prefix = "//"
+	}
 
 	switch prefix {
 	case "MR": // Map request
