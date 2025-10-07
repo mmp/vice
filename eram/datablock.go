@@ -435,25 +435,28 @@ func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 	var offset [2]float32
 	switch dir {
 	case math.North:
+		offset[0] = 5
 		offset[1] = 40
 	case math.NorthEast:
-		offset[1] = 30
+		offset[0] = 10
+		offset[1] = 40
 	case math.NorthWest:
 		offset[0] = -80
 		offset[1] = 25
 	case math.East:
-		offset[1] = 25
+		offset[1] = 35
 	case math.West:
 		offset[0] = -80
 		offset[1] = 25
 	case math.SouthEast:
-		offset[1] = 20
+		offset[1] = 15
+		offset[0] = 10
 	case math.South:
 		offset[0] = 4
 		offset[1] = 16
 	case math.SouthWest:
 		offset[0] = -80
-		offset[1] = 25
+		offset[1] = 15
 	}
 	return offset
 }

@@ -365,7 +365,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 		case imgui.KeyG:
 			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
 				big := ctx.Mouse.Pos
-				big[1] -= 38 
+				big[1] -= 38
 				ps.commandBigPosition = big
 				ps.commandSmallPosition = [2]float32{big[0] + 390, big[1]}
 			}
