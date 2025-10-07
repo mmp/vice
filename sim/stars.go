@@ -757,7 +757,6 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 	}
 	if spec.InterimAlt.IsSet {
 		fp.InterimAlt = spec.InterimAlt.Get()
-		fmt.Println("Interim altitude:", fp.InterimAlt)
 	}
 	if spec.InterimType.IsSet {
 		interimType := spec.InterimType.Get()
