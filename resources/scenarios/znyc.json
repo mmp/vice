@@ -1220,7 +1220,7 @@
             "facility": "N90",
             "facility_id": "N"
         },
-        "N90 - ROBER": {
+        "N90 ROBER": {
             "frequency": 125700,
             "radio_name": "New York approach",
             "sector_id": "2K",
@@ -1255,7 +1255,8 @@
                 "ZNY 56 Kennedy",
                 "ZNY 75 Milton",
                 "Liberty Departure (North)",
-                "Liberty Departure (East)"
+                "Liberty Departure (East)",
+                "N90 ROBER"
             ],
             "default_maps": [
                 "BASE MAP",
