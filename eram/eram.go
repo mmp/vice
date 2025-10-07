@@ -362,6 +362,13 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	input := ep.Input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
+		case imgui.KeyG:
+			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
+				big := ctx.Mouse.Pos
+				big[1] -= 38 
+				ps.commandBigPosition = big
+				ps.commandSmallPosition = [2]float32{big[0] + 390, big[1]}
+			}
 		case imgui.KeyBackspace:
 			if len(ep.Input) > 0 {
 				ep.Input = ep.Input[:len(ep.Input)-1]
