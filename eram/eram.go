@@ -97,7 +97,7 @@ type ERAMPane struct {
 
 	prefrencesVisible bool `json:"-"`
 
-	scopeDraw          struct {
+	scopeDraw struct {
 		arrivals    map[string]map[int]bool               // group->index
 		approaches  map[string]map[string]bool            // airport->approach
 		departures  map[string]map[string]map[string]bool // airport->runway->exit
@@ -287,6 +287,14 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss sim.State) {
 	}
 	if ep.prefSet.Current.Range == 0 {
 		ep.prefSet.Current.Range = ss.Range
+	}
+
+	def := makeDefaultPreferences()
+	if ep.prefSet.Current.commandBigPosition == ([2]float32{}) {
+		ep.prefSet.Current.commandBigPosition = def.commandBigPosition
+	}
+	if ep.prefSet.Current.commandSmallPosition == ([2]float32{}) {
+		ep.prefSet.Current.commandSmallPosition = def.commandSmallPosition
 	}
 }
 
