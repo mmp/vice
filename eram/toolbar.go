@@ -122,7 +122,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			ep.activeToolbarMenu = toolbarFont
 		}
 		if ep.drawToolbarFullButton(ctx, "DB\nFIELDS", 0, scale, false, false) {
-			ep.activeToolbarMenu = toolbarDBFields
+			// ep.activeToolbarMenu = toolbarDBFields
 		}
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("VECTOR\n%d", ep.velocityTime), 0, scale, false, false) {
 			handleMultiplicativeClick(&ep.velocityTime, 0, 8, 2)
