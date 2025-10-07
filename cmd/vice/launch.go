@@ -372,6 +372,18 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 						if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
 							c.SetTRACON(facility)
 						}
+						if facility == c.TRACONName {
+							groups := configsByFacility[facility]
+							for _, groupName := range util.SortedMapKeys(groups) {
+								groupLabel := "  " + groupName
+								selected := groupName == c.GroupName
+								if imgui.SelectableBoolV(groupLabel, selected, 0, imgui.Vec2{}) {
+									if groupName != c.GroupName {
+										c.SetScenario(groupName, groups[groupName].DefaultScenario)
+									}
+								}
+							}
+						}
 						continue
 					}
 
