@@ -291,7 +291,12 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
             a := util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
             dbWriteText(db.fieldE[:], a, color, false)
         } else {
-            dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color, false)
+			middle := " "
+			airportCode, ok := ctx.Client.State.FacilityAdaptation.AirportCodes[trk.FlightPlan.ExitFix]
+			if ok {
+				middle = airportCode
+			}
+            dbWriteText(db.fieldE[:], fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed)), color, false)
         }
 
 		return db

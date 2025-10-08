@@ -358,6 +358,8 @@ type FacilityAdaptation struct {
 	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only" scope:"stars"`
 	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration" scope:"stars"`
 
+	AirportCodes map[string]string `json:"airport_codes" scope:"eram"`
+
 	FlightPlan struct {
 		QuickACID          string            `json:"quick_acid"`
 		ACIDExpansions     map[string]string `json:"acid_expansions"`
