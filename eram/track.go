@@ -332,14 +332,8 @@ func (ep *ERAMPane) leaderLineDirection(ctx *panes.Context, trk sim.Track) *math
 	state := ep.TrackState[trk.ADSBCallsign]
 	dir := state.leaderLineDirection
 	if dir == nil {
-		dbType := ep.datablockType(ctx, trk)
-		if dbType == FullDatablock {
-			direction := math.CardinalOrdinalDirection(math.NorthEast)
-			dir = &direction
-		} else {
-			direction := math.CardinalOrdinalDirection(math.East)
-			dir = &direction
-		}
+		direction := math.CardinalOrdinalDirection(math.NorthEast)
+		dir = &direction
 		state.leaderLineDirection = dir
 	}
 	return state.leaderLineDirection

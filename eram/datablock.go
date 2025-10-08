@@ -185,7 +185,7 @@ type limitedDatablock struct {
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-
+	dir = math.CardinalOrdinalDirection(math.East) // Always east or west for LDBs (west not simulated)
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
@@ -221,38 +221,6 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	}
 	pt[1] += float32(font.Size)
 	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
-}
-
-// drawLimitedDatablock renders a placeholder limited datablock for the provided
-// track using the standard ERAM datablock colour. The actual field contents are
-// intentionally minimal and should be expanded in the future.
-func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
-	transforms radar.ScopeTransformations, td *renderer.TextDrawBuilder,
-	sb *strings.Builder) {
-
-	state := ep.TrackState[trk.ADSBCallsign]
-	if state == nil {
-		return
-	}
-
-	var db limitedDatablock
-	c := ERAMYellow
-
-	// TODO: design the exact fields for ERAM limited datablocks.
-	dbWriteText(db.line0[:], trk.ADSBCallsign.String(), c, false)
-	if trk.TransponderAltitude != 0 {
-		alt := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-		dbWriteText(db.line1[:], alt, c, false)
-	}
-
-	start := transforms.WindowFromLatLongP(state.track.Location)
-	dir := ep.leaderLineDirection(ctx, trk)
-	end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(*dir), ctx.DrawPixelScale))
-	font := ep.ERAMFont(3)
-	brightness := ep.datablockBrightness(state)
-	halfSeconds := ctx.Now.UnixMilli() / 500
-
-	db.draw(td, end, font, sb, brightness, *dir, halfSeconds)
 }
 
 func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
