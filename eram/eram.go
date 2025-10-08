@@ -57,6 +57,7 @@ type ERAMPane struct {
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
 
 	ERAMOptIn bool `json:"-"`
+	DisableERAMtoRadio bool `json:"-"`
 
 	events *sim.EventsSubscription `json:"-"`
 
