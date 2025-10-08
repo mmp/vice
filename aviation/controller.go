@@ -37,6 +37,10 @@ func (c Controller) Id() string {
 	return c.FacilityIdentifier + c.TCP
 }
 
+func (c Controller) ERAMID() string { // For display 
+	return c.FacilityIdentifier + c.TCP
+}
+
 // split -> config
 type SplitConfigurationSet map[string]SplitConfiguration
 

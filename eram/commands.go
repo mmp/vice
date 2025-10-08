@@ -763,7 +763,7 @@ func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string,
 	}
 
 	for _, control := range ctx.Client.State.Controllers {
-		if control.Id() == controller {
+		if control.ERAMID() == controller {
 			return control, nil
 		}
 	}
