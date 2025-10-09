@@ -22,10 +22,7 @@ func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 
 }
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
-	if runtime.GOOS == "darwin" {
-		return ep.systemFont[0] // Smaller size for macOS
-	}
-	return ep.systemFont[1]
+	return ep.systemFont[0]
 }
 
 func (ep *ERAMPane) ERAMInputFont() *renderer.Font {
