@@ -325,12 +325,14 @@ func (inp *inputText) Set(ps *Preferences, str string) {
 	inp.Clear()
 	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
 	location := [2]float32{0, 0}                           // Default location
+	str = formatInput(str)
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
 }
 
 func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
+	str = formatInput(str)
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
@@ -342,11 +344,18 @@ func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
 
 // No formatting needed
 func (inp *inputText) AddBasic(ps *Preferences, str string) {
+	str = formatInput(str)
 	color := ps.Brightness.Text.ScaleRGB(toolbarTextColor) // Default white text color
 	location := [2]float32{0, 0}
 	for _, char := range str {
 		*inp = append(*inp, inputChar{char: char, color: color, location: location})
 	}
+}
+
+func formatInput(str string) (string) {
+	output := strings.ReplaceAll(str,"`", "y")
+	output = strings.ReplaceAll(output, "~", "z")
+	return output
 }
 
 // When formatting the text for the wraparound in tools.go, some newline characters are added in. inputText.formatWrap handles these newline
