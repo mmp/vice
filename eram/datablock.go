@@ -298,7 +298,14 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 			}
             dbWriteText(db.fieldE[:], fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed)), color, false)
         }
-
+		// Get line 4 (if applicable)
+		if ps.Line4Type == Line4Destination {
+			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+			dbWriteText(db.line4[:], trk.FlightPlan.ArrivalAirport, line4Color, false)
+		} else if ps.Line4Type == Line4Type {
+			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+			dbWriteText(db.line4[:], trk.FlightPlan.AircraftType, line4Color, false)
+		}
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
