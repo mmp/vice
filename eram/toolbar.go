@@ -590,7 +590,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "TYPE", 0, scale, false, false) {
 			// handle TYPE
 		}
-		if ep.drawToolbarFullButton(ctx, "FDB LDR", 0, scale, false, false) {
+		if ep.drawToolbarFullButton(ctx, "FDB LDR\n1", 0, scale, false, false) {
 			// handle FDB LDR
 		}
 		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
