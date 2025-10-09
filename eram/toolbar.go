@@ -353,7 +353,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("ON-FREQ\n%d", ps.Brightness.ONFREQ), 0, scale, false, false) {
 			handleClick(&ps.Brightness.ONFREQ, 0, 100, 2)
 		}
-		text = util.Select(ps.Brightness.Line4 > 0, fmt.Sprintf("LINE 4\n%d", ps.Brightness.Line4-20), "LINE 4\n=")
+		text = util.Select(ps.Brightness.Line4 > 0, fmt.Sprintf("LINE 4\n%d", ps.Brightness.Line4*-1), "LINE 4\n=")
 		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
 			handleClick(&ps.Brightness.Line4, 0, 20, 1)
 		}
@@ -584,11 +584,19 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarHoldButton(ctx, "SPEED", 0, scale, false, false) {
 			// handle SPEED
 		}
-		if ep.drawToolbarFullButton(ctx, "DEST", 0, scale, false, false) {
-			// handle DEST
+		if ep.drawToolbarFullButton(ctx, "DEST", 0, scale, ps.Line4Type == Line4Destination, false) {
+			if ps.Line4Type == Line4Destination {
+				ps.Line4Type = Line4None
+			} else {
+				ps.Line4Type = Line4Destination
+			}
 		}
-		if ep.drawToolbarFullButton(ctx, "TYPE", 0, scale, false, false) {
-			// handle TYPE
+		if ep.drawToolbarFullButton(ctx, "TYPE", 0, scale, ps.Line4Type == Line4Type, false) {
+			if ps.Line4Type == Line4Type {
+				ps.Line4Type = Line4None
+			} else {
+				ps.Line4Type = Line4Type
+			}
 		}
 		if ep.drawToolbarFullButton(ctx, "FDB LDR\n1", 0, scale, false, false) {
 			// handle FDB LDR

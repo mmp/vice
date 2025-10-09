@@ -1141,6 +1141,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport),
+		ArrivalAirport:   ac.FlightPlan.ArrivalAirport,
 		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
@@ -1153,7 +1154,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 		Scratchpad:          arr.Scratchpad,
 		SecondaryScratchpad: arr.SecondaryScratchpad,
-
 		AircraftCount: 1,
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
@@ -1314,6 +1314,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:], ac.FlightPlan.DepartureAirport),
 		ExitFix:          shortExit,
+		ArrivalAirport:   ac.FlightPlan.ArrivalAirport,
 		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
@@ -1403,6 +1404,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		ACID:             ACID(ac.ADSBCallsign),
 		EntryFix:         "", // TODO
 		ExitFix:          "", // TODO
+		ArrivalAirport:   ac.FlightPlan.ArrivalAirport,
 		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
