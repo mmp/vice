@@ -635,7 +635,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		ps := sp.currentPrefs()
 		if trk.Mode != av.TransponderModeStandby {
 			mci := !ps.DisableMCIWarnings && slices.ContainsFunc(sp.MCIAircraft, func(mci CAAircraft) bool {
-				trk0, ok := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
+				trk0, ok := ctx.Client.State.GetTrackByCallsign(mci.ADSBCallsigns[0])
 				return ok && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode != trk.Squawk &&
 					mci.ADSBCallsigns[1] == trk.ADSBCallsign
 			})
@@ -1003,7 +1003,7 @@ func (sp *STARSPane) getGhostDatablock(ctx *panes.Context, ghost *av.GhostTrack,
 	var db ghostDatablock
 
 	state := sp.TrackState[ghost.ADSBCallsign]
-	trk, ok := ctx.GetTrackByCallsign(ghost.ADSBCallsign)
+	trk, ok := ctx.Client.State.GetTrackByCallsign(ghost.ADSBCallsign)
 	cwt := ""
 	if ok && trk.IsAssociated() {
 		cwt = trk.FlightPlan.CWTCategory
@@ -1311,7 +1311,7 @@ func (sp *STARSPane) haveActiveWarnings(ctx *panes.Context, trk sim.Track) bool 
 			}) ||
 		slices.ContainsFunc(sp.MCIAircraft,
 			func(ca CAAircraft) bool {
-				trk0, ok := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk0, ok := ctx.Client.State.GetTrackByCallsign(ca.ADSBCallsigns[0])
 				return ok && ca.ADSBCallsigns[0] == trk.ADSBCallsign &&
 					trk0.Squawk != sfp.MCISuppressedCode
 			}) {
@@ -1355,8 +1355,8 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 				if mci.ADSBCallsigns[0] != trk.ADSBCallsign && mci.ADSBCallsigns[1] != trk.ADSBCallsign {
 					return false
 				}
-				trk0, ok0 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(mci.ADSBCallsigns[1])
+				trk0, ok0 := ctx.Client.State.GetTrackByCallsign(mci.ADSBCallsigns[0])
+				trk1, ok1 := ctx.Client.State.GetTrackByCallsign(mci.ADSBCallsigns[1])
 
 				if ok0 && ok1 && trk0.IsAssociated() && trk0.FlightPlan.MCISuppressedCode == trk1.Squawk {
 					return false
