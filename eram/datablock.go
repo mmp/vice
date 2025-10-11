@@ -324,9 +324,9 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
 	currentAltitude := state.track.TransponderAltitude
 	assignedAltitude := track.FlightPlan.AssignedAltitude
-	// if assignedAltitude == 0 {
-	// 	fmt.Println(track.ADSBCallsign, "has no assigned altitude")
-	// }
+	if assignedAltitude == 0 && track.FlightPlan.PerceivedAssigned != 0 {
+		assignedAltitude = track.FlightPlan.PerceivedAssigned
+	}
 	interimAltitude := track.FlightPlan.InterimAlt
 	formatCurrent := av.FormatScopeAltitude(currentAltitude)
 	formatAssigned := av.FormatScopeAltitude(assignedAltitude)
