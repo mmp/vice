@@ -202,12 +202,12 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		if imgui.BeginTableV("server", 2, 0, imgui.Vec2{tableScale * 500, 0}, 0.) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
-			imgui.Text("Server type:")
+			imgui.Text("Sim options:")
 
 			origType := c.newSimType
 
 			imgui.TableNextColumn()
-			if imgui.RadioButtonIntPtr("Create single-controller", &c.newSimType, NewSimCreateLocal) &&
+			if imgui.RadioButtonIntPtr("Create local single-controller sim", &c.newSimType, NewSimCreateLocal) &&
 				origType != NewSimCreateLocal {
 				c.selectedServer = c.mgr.LocalServer
 				c.SetTRACON(*c.defaultTRACON)
@@ -217,7 +217,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.TableNextColumn()
-			if imgui.RadioButtonIntPtr("Create multi-controller", &c.newSimType, NewSimCreateRemote) &&
+			if imgui.RadioButtonIntPtr("Create multi-controller sim on public vice server", &c.newSimType, NewSimCreateRemote) &&
 				origType != NewSimCreateRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.SetTRACON(*c.defaultTRACON)
@@ -234,7 +234,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					c.newSimType = NewSimCreateRemote
 				}
 			}
-			if imgui.RadioButtonIntPtr("Join multi-controller", &c.newSimType, NewSimJoinRemote) &&
+			if imgui.RadioButtonIntPtr("Join multi-controller sim on public vice server", &c.newSimType, NewSimJoinRemote) &&
 				origType != NewSimJoinRemote {
 				c.selectedServer = c.mgr.RemoteServer
 				c.displayError = nil
