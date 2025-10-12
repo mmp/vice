@@ -238,9 +238,12 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 	var vmf VideoMapLibrary
 	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
 		// Try the old format, just an array of maps
-		_, _ = br.Seek(0, io.SeekStart)
+		// Create a new reader to avoid racing with the zstd decoder goroutine
+		br = bytes.NewReader(contents)
 		if zr != nil {
 			_ = zr.Reset(br)
+		} else {
+			r = br
 		}
 		if strings.Contains(path, "eram") {
 			if vmf.ERAMMapGroups == nil {
@@ -357,6 +360,8 @@ type FacilityAdaptation struct {
 	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration" scope:"stars"`
 	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only" scope:"stars"`
 	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration" scope:"stars"`
+
+	AirportCodes map[string]string `json:"airport_codes" scope:"eram"`
 
 	FlightPlan struct {
 		QuickACID          string            `json:"quick_acid"`
@@ -483,6 +488,7 @@ type NASFlightPlan struct {
 	CID                   string
 	EntryFix              string
 	ExitFix               string
+	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this. 
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time

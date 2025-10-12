@@ -20,7 +20,7 @@ func NewERAMError(msg string, args ...any) *ERAMError {
 var ( // TODO: Get actual error messages for this
 	ErrCommandFormat       = NewERAMError("FORMAT")
 	ErrERAMAmbiguousACID   = NewERAMError("AMB ACID")
-	ErrERAMIllegalACID     = NewERAMError("ILLEGAL ACID")
+	ErrERAMIllegalACID     = NewERAMError("ILL CID")
 	ErrERAMIllegalPosition = NewERAMError("ILLEGAL POSITION")
 	ErrERAMIllegalValue    = NewERAMError("ILLEGAL VALUE")
 	ErrERAMIllegalAirport  = NewERAMError("ILLEGAL AIRPORT")

@@ -93,7 +93,15 @@ type CommonPreferences struct {
 		DBFEL      radar.Brightness
 		Outage     radar.Brightness
 	}
+
+	Line4Type int 
 }
+
+const (
+	Line4None = iota
+	Line4Destination
+	Line4Type
+)
 
 func makeDefaultPreferences() *Preferences {
 	var prefs Preferences

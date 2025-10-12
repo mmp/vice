@@ -185,7 +185,7 @@ type limitedDatablock struct {
 func (db limitedDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-
+	dir = math.CardinalOrdinalDirection(math.East) // Always east or west for LDBs (west not simulated)
 	lines := []dbLine{
 		dbMakeLine(dbChopTrailing(db.line0[:])),
 		dbMakeLine(dbChopTrailing(db.line1[:])),
@@ -221,38 +221,6 @@ func (db fullDatablock) draw(td *renderer.TextDrawBuilder, pt [2]float32,
 	}
 	pt[1] += float32(font.Size)
 	dbDrawLines(lines, td, pt, font, sb, brightness, dir, halfSeconds)
-}
-
-// drawLimitedDatablock renders a placeholder limited datablock for the provided
-// track using the standard ERAM datablock colour. The actual field contents are
-// intentionally minimal and should be expanded in the future.
-func (ep *ERAMPane) drawLimitedDatablock(ctx *panes.Context, trk sim.Track,
-	transforms radar.ScopeTransformations, td *renderer.TextDrawBuilder,
-	sb *strings.Builder) {
-
-	state := ep.TrackState[trk.ADSBCallsign]
-	if state == nil {
-		return
-	}
-
-	var db limitedDatablock
-	c := ERAMYellow
-
-	// TODO: design the exact fields for ERAM limited datablocks.
-	dbWriteText(db.line0[:], trk.ADSBCallsign.String(), c, false)
-	if trk.TransponderAltitude != 0 {
-		alt := fmt.Sprintf("%03d", int(trk.TransponderAltitude+50)/100)
-		dbWriteText(db.line1[:], alt, c, false)
-	}
-
-	start := transforms.WindowFromLatLongP(state.track.Location)
-	dir := ep.leaderLineDirection(ctx, trk)
-	end := math.Add2f(start, math.Scale2f(ep.leaderLineVector(*dir), ctx.DrawPixelScale))
-	font := ep.ERAMFont(3)
-	brightness := ep.datablockBrightness(state)
-	halfSeconds := ctx.Now.UnixMilli() / 500
-
-	db.draw(td, end, font, sb, brightness, *dir, halfSeconds)
 }
 
 func (ep *ERAMPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
@@ -294,15 +262,50 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffTrackController != "" {
-			a := util.Select(ep.dbAlternate, fmt.Sprintf("H-%v", trk.FlightPlan.HandoffTrackController), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-			dbWriteText(db.fieldE[:], a, color, true)
-		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
-			a := util.Select(ep.dbAlternate, fmt.Sprintf("O-%v", trk.FlightPlan.TrackingController), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-			dbWriteText(db.fieldE[:], a, color, false)
-		} else {
-			dbWriteText(db.fieldE[:], fmt.Sprintf(" %v", int(state.track.Groundspeed)), color, false)
+            ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffTrackController]
+            var controller string
+            if ok {
+                controller = ctrl.ERAMID()
+                if len(controller) == 2 {
+                    controller = "-" + controller
+                }
+            } else {
+                controller = trk.FlightPlan.HandoffTrackController
+            }
+            if len(controller) == 2 {
+                controller = "-" + controller
+            }
+            a := util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
+            dbWriteText(db.fieldE[:], a, color, true)
+        } else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
+            ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]
+            var controller string
+            if ok {
+                controller = ctrl.ERAMID()
+                if len(controller) == 2 {
+                    controller = "-" + controller
+                }
+            } else {
+                controller = trk.FlightPlan.TrackingController
+            }
+            a := util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
+            dbWriteText(db.fieldE[:], a, color, false)
+        } else {
+			middle := " "
+			airportCode, ok := ctx.Client.State.FacilityAdaptation.AirportCodes[trk.FlightPlan.ExitFix]
+			if ok {
+				middle = airportCode
+			}
+            dbWriteText(db.fieldE[:], fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed)), color, false)
+        }
+		// Get line 4 (if applicable)
+		if ps.Line4Type == Line4Destination {
+			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+			dbWriteText(db.line4[:], trk.FlightPlan.ArrivalAirport, line4Color, false)
+		} else if ps.Line4Type == Line4Type {
+			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)
+			dbWriteText(db.line4[:], trk.FlightPlan.AircraftType, line4Color, false)
 		}
-
 		return db
 	case EnhancedLimitedDatablock:
 		return ep.ldbArena.AllocClear()
@@ -435,25 +438,28 @@ func datablockOffset(dir math.CardinalOrdinalDirection) [2]float32 {
 	var offset [2]float32
 	switch dir {
 	case math.North:
+		offset[0] = 5
 		offset[1] = 40
 	case math.NorthEast:
-		offset[1] = 30
+		offset[0] = 10
+		offset[1] = 40
 	case math.NorthWest:
 		offset[0] = -80
 		offset[1] = 25
 	case math.East:
-		offset[1] = 25
+		offset[1] = 35
 	case math.West:
 		offset[0] = -80
 		offset[1] = 25
 	case math.SouthEast:
-		offset[1] = 20
+		offset[1] = 15
+		offset[0] = 10
 	case math.South:
 		offset[0] = 4
 		offset[1] = 16
 	case math.SouthWest:
 		offset[0] = -80
-		offset[1] = 25
+		offset[1] = 15
 	}
 	return offset
 }

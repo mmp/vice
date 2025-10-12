@@ -123,6 +123,11 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	}
 	prefix := fieldsFull[0]
 	cmd := strings.Join(fieldsFull[1:], " ")
+	if strings.HasPrefix(original, "//") {
+		cmd = strings.TrimPrefix(original, "//")
+		cmd = strings.TrimSpace(cmd)
+		prefix = "//"
+	}
 
 	switch prefix {
 	case "MR": // Map request
@@ -389,6 +394,8 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB
 				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				state.DisplayJRing = false 
+				state.DisplayReducedJRing = false
 			}
 		case 2: // leader line & handoffs
 			if len(fields[0]) == 1 && unicode.IsDigit(rune(original[0])) { // leader line
@@ -491,6 +498,9 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 			}
 		})
 	// Send aircraft commands if an ERAM command is entered
+	if ep.DisableERAMtoRadio {
+		return
+	}
 	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set
 		var cmd string
 		state := ep.TrackState[trk.ADSBCallsign]
@@ -545,7 +555,7 @@ func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix stri
 		}
 	})
 	trk, _ := ctx.Client.State.GetTrackByACID(acid)
-	if trk != nil {
+	if !ep.DisableERAMtoRadio && trk != nil {
 		cmd := "D" + fix
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 	}
@@ -721,6 +731,8 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB
 				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
+				state.DisplayJRing = false 
+				state.DisplayReducedJRing = false
 				return
 			}
 		case 1:
@@ -758,7 +770,7 @@ func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string,
 	}
 
 	for _, control := range ctx.Client.State.Controllers {
-		if control.Id() == controller {
+		if control.ERAMID() == controller {
 			return control, nil
 		}
 	}

@@ -67,6 +67,8 @@ const (
 	buttonDisabled
 	buttonUnsupported
 	buttonBoth
+
+	buttonHold
 )
 
 var menuButtons []string = []string{"DRAW", "ATC\nTOOLS", "AB\nSETTING",
@@ -173,11 +175,11 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			handleClick(&ps.ToolbarSize, 1, 2, 1) // Handle click for Toolbar size
 		}
 		toolbarDrawState.offsetBottom = true // Offset the next row
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("RDB\n%v", ps.RDBSize), 0, scale, false, true) {
-			handleClick(&ps.RDBSize, 1, 5, 1) // Handle click for RDB size
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LDB\n%v", ps.RDBSize), 0, scale, false, true) {
+			handleClick(&ps.LDBSize, 1, 5, 1) // Handle click for RDB size
 		}
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("LDB\n%v", ps.LDBSize), 0, scale, false, false) {
-			handleClick(&ps.LDBSize, 1, 5, 1) // Handle click for LDB size
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("RDB\n%v", ps.LDBSize), 0, scale, false, false) {
+			handleClick(&ps.RDBSize, 1, 5, 1) // Handle click for LDB size
 		}
 
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("OUTAGE\n%v", ps.OutageSize), 0, scale, false, false) {
@@ -189,7 +191,6 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		p3 := [2]float32{p0[0], p2[1]}
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
-
 	case toolbarVideomap:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
@@ -352,7 +353,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarMainButton(ctx, fmt.Sprintf("ON-FREQ\n%d", ps.Brightness.ONFREQ), 0, scale, false, false) {
 			handleClick(&ps.Brightness.ONFREQ, 0, 100, 2)
 		}
-		text = util.Select(ps.Brightness.Line4 > 0, fmt.Sprintf("SATCOM\n%d", ps.Brightness.Line4-20), "SATCOM\n=")
+		text = util.Select(ps.Brightness.Line4 > 0, fmt.Sprintf("LINE 4\n%d", ps.Brightness.Line4*-1), "LINE 4\n=")
 		if ep.drawToolbarMainButton(ctx, text, 0, scale, false, false) {
 			handleClick(&ps.Brightness.Line4, 0, 20, 1)
 		}
@@ -552,6 +553,92 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		p3 := [2]float32{p0[0], p2[1]}
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
+	case toolbarDBFields:
+		toolbarDrawState.customButton["FDB LDR"] = renderer.RGB{0, .82, 0}
+		toolbarDrawState.customButton["NONADSB"] = renderer.RGB{0, .82, 0}
+		toolbarDrawState.customButton["BCAST\nFLID"] = eramGray
+		toolbarDrawState.customButton["PORTAL\nFENCE"] = eramGray
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		main := "DB\nFIELDS"
+		toolbarDrawState.customButton[main] = toolbarActiveButtonColor // Set the custom
+		drawButtonSamePosition(ctx, main)
+		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+			delete(toolbarDrawState.customButton, main)
+		}
+
+		p0 := toolbarDrawState.buttonCursor
+		if ep.drawToolbarHoldButton(ctx, "NON-\nRVSM", 0, scale, false, false) {
+			// handle NON-RVSM
+		}
+		if ep.drawToolbarHoldButton(ctx, "VRI", 0, scale, false, false) {
+			// handle VRI
+		}
+		if ep.drawToolbarHoldButton(ctx, "CODE", 0, scale, false, false) {
+			// handle CODE
+		}
+		if ep.drawToolbarHoldButton(ctx, "SPEED", 0, scale, false, false) {
+			// handle SPEED
+		}
+		if ep.drawToolbarFullButton(ctx, "DEST", 0, scale, ps.Line4Type == Line4Destination, false) {
+			if ps.Line4Type == Line4Destination {
+				ps.Line4Type = Line4None
+			} else {
+				ps.Line4Type = Line4Destination
+			}
+		}
+		if ep.drawToolbarFullButton(ctx, "TYPE", 0, scale, ps.Line4Type == Line4Type, false) {
+			if ps.Line4Type == Line4Type {
+				ps.Line4Type = Line4None
+			} else {
+				ps.Line4Type = Line4Type
+			}
+		}
+		if ep.drawToolbarFullButton(ctx, "FDB LDR\n1", 0, scale, false, false) {
+			// handle FDB LDR
+		}
+		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
+			// handle BCAST FLD
+		}
+		if ep.drawToolbarFullButton(ctx, "PORTAL\nFENCE", 0, scale, false, false) {
+			// handle PORTAL FENCE
+		}
+		toolbarDrawState.offsetBottom = true
+		if ep.drawToolbarFullButton(ctx, "NON-\nADS-B", 0, scale, false, true) {
+			// handle NON-ADS-B
+		}
+		if ep.drawToolbarFullButton(ctx, "NONADSB\n90", 0, scale, false, false) {
+			// handle NONADSB 90
+		}
+		if ep.drawToolbarFullButton(ctx, "SAT\nCOMM", 0, scale, false, false) {
+			// handle SAT COMM
+		}
+		if ep.drawToolbarFullButton(ctx, "TFM\nREROUTE", 0, scale, false, false) {
+			// handle TFM REROUTE
+		}
+		if ep.drawToolbarFullButton(ctx, "CRR\nRDB", 0, scale, false, false) {
+			// handle CRR RDB
+		}
+		if ep.drawToolbarFullButton(ctx, "STA\nRDB", 0, scale, false, false) {
+			// handle STA RDB
+		}
+		if ep.drawToolbarFullButton(ctx, "DELAY\nRDB", 0, scale, false, false) {
+			// handle DELAY RDB
+		}
+		if ep.drawToolbarFullButton(ctx, "DELAY\nFORMAT", 0, scale, false, false) {
+			// handle DELAY FORMAT
+		}
+		p2 := oppositeSide(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
+		p2 = oppositeHorizontal(p2, buttonSize(buttonTearoff, scale))
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 	}
 
 	return paneExtent
@@ -589,6 +676,25 @@ func (ep *ERAMPane) drawToolbarFullButton(ctx *panes.Context, text string, flag 
 	moveToolbarCursor(buttonTearoff, sz, ctx, nextRow)
 	sz = buttonSize(buttonFull, buttonScale)
 	pressed := ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag}, buttonScale, pushedIn, false) // Draw full button. Only change row for the tearoff button
+	moveToolbarCursor(buttonFull, sz, ctx, nextRow)
+	// Button spacing
+	toolbarDrawState.buttonCursor[0] += 2 // Add some space between buttons
+	return pressed
+}
+
+// Same as above, however will only return true if constantly being held down. (For some "DB FIELDS" buttons)
+func (ep *ERAMPane) drawToolbarHoldButton(ctx *panes.Context, text string, flag toolbarFlags, buttonScale float32, pushedIn, nextRow bool) bool { // Do I need to return a bool here?
+	sz := buttonSize(buttonTearoff, buttonScale)
+	ep.checkNextRow(nextRow, sz, ctx) // Check if we need to move to the next row
+	if !toolbarDrawState.noTearoff {
+		ep.drawToolbarButton(ctx, "", []toolbarFlags{buttonTearoff, flag}, buttonScale, pushedIn, nextRow) // Draw tearoff button
+		if nextRow {
+			nextRow = false
+		}
+	}
+	moveToolbarCursor(buttonTearoff, sz, ctx, nextRow)
+	sz = buttonSize(buttonFull, buttonScale)
+	pressed := ep.drawToolbarButton(ctx, text, []toolbarFlags{buttonFull, flag, buttonHold}, buttonScale, pushedIn, false) // Draw full button. Only change row for the tearoff button
 	moveToolbarCursor(buttonFull, sz, ctx, nextRow)
 	// Button spacing
 	toolbarDrawState.buttonCursor[0] += 2 // Add some space between buttons
@@ -661,6 +767,8 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	if !disabled && !unsupported && hasFlag(flags, buttonFull) {
 		if mouseInside && mouseDownInside {
 			pushedIn = true // Maybe this needs to be toggled? TODO: Find this out.
+		} else if hasFlag(flags, buttonHold) {
+			pushedIn = false
 		}
 		if pushedIn {
 			buttonColor = toolbarActiveButtonColor
@@ -709,6 +817,14 @@ func (ep *ERAMPane) drawToolbarButton(ctx *panes.Context, text string, flags []t
 	trid.GenerateCommands(toolbarDrawState.cb)
 	ld.GenerateCommands(toolbarDrawState.cb)
 	td.GenerateCommands(toolbarDrawState.cb)
+
+	if hasFlag(flags, buttonHold) && mouse != nil {
+		if mouseInside && mouseDownInside {
+			return true
+		} else {
+			return false
+		}
+	}
 	if mouse != nil && mouseInside && mouseDownInside {
 		now := time.Now()
 		if toolbarDrawState.mouseYetReleased {
@@ -933,7 +1049,7 @@ func (ep *ERAMPane) offsetFullButton(ctx *panes.Context) {
 
 // Turns any button with dynamic fields into a main name. (eg. Range 300 -> Range)
 func cleanButtonName(name string) string {
-	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR"}
+	weirdNames := []string{"RANGE", "ALT LIM", "VECTOR", "FDB LDR", "NONADSB"}
 	firstLine := strings.Split(name, "\n")[0]
 	if slices.Contains(weirdNames, firstLine) {
 		return firstLine
