@@ -971,7 +971,9 @@ func (nav *Nav) atmosClimbFactor(wxs wx.Sample, lg *log.Logger) float32 {
 		// TODO: chase down these NaNs
 		lg.Warnf("NaN climb factor. Sample: %#v", wxs)
 	}
-	return max(0, tempFactor*altFactor*humidityFactor)
+
+	// Ad-hoc clamp and softening to reduce effect at high temperatures.
+	return max(0.5, math.Sqrt(tempFactor*altFactor*humidityFactor))
 }
 
 // mbToPressureAltitude converts pressure in millibars to pressure altitude in feet
