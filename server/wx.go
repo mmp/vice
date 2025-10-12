@@ -587,6 +587,9 @@ func (r *ResourcesWXProvider) GetAtmosGrid(tracon string, tGet time.Time) (*wx.A
 	<-r.initDone
 
 	atmosByTime, err := r.getAtmosByTime(tracon)
+	if err != nil {
+		return nil, time.Time{}, time.Time{}, err
+	}
 
 	// Find the time at or before the requested time as well as the next
 	// time where we have atmos data. At some point we might want to start

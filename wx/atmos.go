@@ -254,10 +254,10 @@ func convertSOALevelsToStacks[K comparable](levels [NumSampleLevels]AtmosLevelsS
 	return stacks, nil
 }
 
-func (at AtmosByPoint) ToSOA() (AtmosByPointSOA, error) {
+func (ap AtmosByPoint) ToSOA() (AtmosByPointSOA, error) {
 	soa := AtmosByPointSOA{}
 
-	pts := slices.Collect(maps.Keys(at.SampleStacks))
+	pts := slices.Collect(maps.Keys(ap.SampleStacks))
 	slices.SortFunc(pts, func(a, b math.Point2LL) int {
 		if a[0] < b[0] {
 			return -1
@@ -277,7 +277,7 @@ func (at AtmosByPoint) ToSOA() (AtmosByPointSOA, error) {
 	}
 
 	var err error
-	soa.Levels, err = convertStacksToSOALevels(at.SampleStacks, pts)
+	soa.Levels, err = convertStacksToSOALevels(ap.SampleStacks, pts)
 	return soa, err
 }
 
@@ -392,8 +392,8 @@ func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
 	return nil
 }
 
-func (at AtmosByPoint) GetGrid() *AtmosGrid {
-	return MakeAtmosGrid(at.SampleStacks)
+func (ap AtmosByPoint) GetGrid() *AtmosGrid {
+	return MakeAtmosGrid(ap.SampleStacks)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -654,19 +654,19 @@ func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sam
 }
 
 // Average returns the averaged location and atmospheric data across all sample stacks
-func (a *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
-	if len(a.SampleStacks) == 0 {
+func (ap *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
+	if len(ap.SampleStacks) == 0 {
 		return math.Point2LL{}, nil
 	}
 
 	// Calculate average location
 	var avgLat, avgLong float32
-	for location := range a.SampleStacks {
+	for location := range ap.SampleStacks {
 		avgLong += float32(location[0])
 		avgLat += float32(location[1])
 	}
-	avgLat /= float32(len(a.SampleStacks))
-	avgLong /= float32(len(a.SampleStacks))
+	avgLat /= float32(len(ap.SampleStacks))
+	avgLong /= float32(len(ap.SampleStacks))
 	avgLoc := math.Point2LL{avgLong, avgLat}
 
 	// Initialize averaged sample stack
@@ -676,7 +676,7 @@ func (a *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 	for level := range NumSampleLevels {
 		var avgUComponent, avgVComponent, avgTemperature, avgDewpoint, avgHeight float32
 
-		for _, stack := range a.SampleStacks {
+		for _, stack := range ap.SampleStacks {
 			sample := stack.Levels[level]
 			avgUComponent += sample.UComponent
 			avgVComponent += sample.VComponent
@@ -686,11 +686,11 @@ func (a *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 		}
 
 		avgStack.Levels[level] = AtmosSample{
-			UComponent:  avgUComponent / float32(len(a.SampleStacks)),
-			VComponent:  avgVComponent / float32(len(a.SampleStacks)),
-			Temperature: avgTemperature / float32(len(a.SampleStacks)),
-			Dewpoint:    avgDewpoint / float32(len(a.SampleStacks)),
-			Height:      avgHeight / float32(len(a.SampleStacks)),
+			UComponent:  avgUComponent / float32(len(ap.SampleStacks)),
+			VComponent:  avgVComponent / float32(len(ap.SampleStacks)),
+			Temperature: avgTemperature / float32(len(ap.SampleStacks)),
+			Dewpoint:    avgDewpoint / float32(len(ap.SampleStacks)),
+			Height:      avgHeight / float32(len(ap.SampleStacks)),
 		}
 	}
 
