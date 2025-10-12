@@ -3906,6 +3906,12 @@
                 }
             },
             "solo_controller": "PHX_F_APP",
+			"multi_controllers": {
+                "default": {
+                    "PHX_F_APP": {"primary": true, "arrivals": ["HYDRR1_FE", "PINNG1_FE"]},
+					"PHX_V_APP": {"backup": "PHX_F_APP", "arrivals": ["BRUSR1_FE", "EAGUL6_FE"] }
+                }
+            },
             "controllers": [
                 "PHX_A_APP",
 				"PHX_B_APP",
@@ -3961,6 +3967,12 @@
                 }
             },
             "solo_controller": "PHX_F_APP",
+			"multi_controllers": {
+                "default": {
+                    "PHX_F_APP": {"primary": true, "arrivals": ["HYDRR1_FW", "PINNG1_FW"]},
+					"PHX_V_APP": {"backup": "PHX_F_APP", "arrivals": ["BRUSR1_FW", "EAGUL6_FW"] }
+                }
+            },
             "controllers": [
                 "PHX_A_APP",
 				"PHX_B_APP",
