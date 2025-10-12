@@ -33,7 +33,7 @@ in the following replaced with the directory where you installed `SDL2-devel`:
   * `CGO_CPPFLAGS`: `'-I INSTALL/SDL2-2.24.0/x86_64-w64-mingw32/include'`
   * `CGO_LDFLAGS`: `'-L INSTALL/SDL2-2.24.0/x86_64-w64-mingw32/lib'`
 
-To build *vice*, run the command `go build -ldflags -H=windowsgui -o ./vice.exe . `
+To build *vice*, run the command `go build -ldflags -H=windowsgui -o ./vice.exe ./cmd/vice`
 from a command shell in the repository directory.
 
 ## Mac OSX
@@ -42,13 +42,13 @@ If you have [homebrew](https://brew.sh) installed, running `brew
 install sdl2` will install SDL2. Otherwise consult your package manager
 documentation or install [SDL](https://www.libsdl.org) from source.
 
-From a command shell in the repositoiry directory `go build -o vice` to
+From a command shell in the repositoiry directory `go build -o vice ./cmd/vice` to
 build a *vice* executable.
 
 ## Linux
 
 On Ubuntu, `sudo apt install xorg-dev libsdl2-dev` will install the necessary libraries.
-Then, from a command shell in the repositoiry directory `go build -o vice` to
+Then, from a command shell in the repositoiry directory `go build -o vice ./cmd/vice` to
 build a *vice* executable.
 
 ## Docker
