@@ -238,9 +238,12 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 	var vmf VideoMapLibrary
 	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
 		// Try the old format, just an array of maps
-		_, _ = br.Seek(0, io.SeekStart)
+		// Create a new reader to avoid racing with the zstd decoder goroutine
+		br = bytes.NewReader(contents)
 		if zr != nil {
 			_ = zr.Reset(br)
+		} else {
+			r = br
 		}
 		if strings.Contains(path, "eram") {
 			if vmf.ERAMMapGroups == nil {
