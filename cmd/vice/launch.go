@@ -470,7 +470,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			sort.Strings(a)
 			base := "Landing: "
 			for len(a) > 0 {
-				const max = 5 // per line
+				const max = 7 // per line
 				if len(a) > max {
 					imgui.Text(base + strings.Join(a[:max], ", "))
 					base = "    "
@@ -484,32 +484,34 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 		imgui.Text("Control Position: " + fmtPosition(c.ScenarioConfig.SelectedController))
 
-		imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
-		if c.AllowInstructorRPO {
-			imgui.Text("Sign in as:")
-			var curPos int32 // 0 -> primaryController
-			if c.connectionConfig.Position == "INS" {
-				curPos = 1
-			} else if c.connectionConfig.Position == "RPO" {
-				curPos = 2
-			}
-			if imgui.RadioButtonIntPtr(c.ScenarioConfig.SelectedController, &curPos, 0) {
-				c.connectionConfig.Position = "" // default: server will sort it out
-			}
-			if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
-				c.connectionConfig.Position = "INS"
-			}
-			if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
-				c.connectionConfig.Position = "RPO"
-			}
-
-			// Allow instructor mode for regular controllers when not signing in as dedicated instructor/RPO
-			if c.connectionConfig.Position == "" {
-				imgui.Checkbox("Also sign in as Instructor", &c.Instructor)
-			}
-		}
-
 		if c.newSimType == NewSimCreateRemote {
+			// Various extras only for remote sims
+			imgui.Checkbox("Allow Instructor/RPO Sign-ins", &c.AllowInstructorRPO)
+
+			if c.AllowInstructorRPO {
+				imgui.Text("Sign in as:")
+				var curPos int32 // 0 -> primaryController
+				if c.connectionConfig.Position == "INS" {
+					curPos = 1
+				} else if c.connectionConfig.Position == "RPO" {
+					curPos = 2
+				}
+				if imgui.RadioButtonIntPtr(c.ScenarioConfig.SelectedController, &curPos, 0) {
+					c.connectionConfig.Position = "" // default: server will sort it out
+				}
+				if imgui.RadioButtonIntPtr("Instructor", &curPos, 1) {
+					c.connectionConfig.Position = "INS"
+				}
+				if imgui.RadioButtonIntPtr("RPO", &curPos, 2) {
+					c.connectionConfig.Position = "RPO"
+				}
+
+				// Allow instructor mode for regular controllers when not signing in as dedicated instructor/RPO
+				if c.connectionConfig.Position == "" {
+					imgui.Checkbox("Also sign in as Instructor", &c.Instructor)
+				}
+			}
+
 			imgui.Checkbox("Require Password", &c.RequirePassword)
 			if c.RequirePassword {
 				imgui.InputTextWithHint("Password", "", &c.Password, 0, nil)
