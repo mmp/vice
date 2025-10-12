@@ -354,7 +354,7 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 	}
 }
 
-func formatInput(str string) (string) {
+func formatInput(str string) string {
 	output := strings.ReplaceAll(str, "`", "y")
 	output = strings.ReplaceAll(output, "~", "z")
 	return output

@@ -94,7 +94,7 @@ type CommonPreferences struct {
 		Outage     radar.Brightness
 	}
 
-	Line4Type int 
+	Line4Type int
 }
 
 const (

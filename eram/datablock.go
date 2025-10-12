@@ -262,42 +262,42 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.col1[:], util.Select(trk.FlightPlan.TrackingController == ctx.UserTCP, "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffTrackController != "" {
-            ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffTrackController]
-            var controller string
-            if ok {
-                controller = ctrl.ERAMID()
-                if len(controller) == 2 {
-                    controller = "-" + controller
-                }
-            } else {
-                controller = trk.FlightPlan.HandoffTrackController
-            }
-            if len(controller) == 2 {
-                controller = "-" + controller
-            }
-            a := util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-            dbWriteText(db.fieldE[:], a, color, true)
-        } else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
-            ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]
-            var controller string
-            if ok {
-                controller = ctrl.ERAMID()
-                if len(controller) == 2 {
-                    controller = "-" + controller
-                }
-            } else {
-                controller = trk.FlightPlan.TrackingController
-            }
-            a := util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
-            dbWriteText(db.fieldE[:], a, color, false)
-        } else {
+			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffTrackController]
+			var controller string
+			if ok {
+				controller = ctrl.ERAMID()
+				if len(controller) == 2 {
+					controller = "-" + controller
+				}
+			} else {
+				controller = trk.FlightPlan.HandoffTrackController
+			}
+			if len(controller) == 2 {
+				controller = "-" + controller
+			}
+			a := util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
+			dbWriteText(db.fieldE[:], a, color, true)
+		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
+			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]
+			var controller string
+			if ok {
+				controller = ctrl.ERAMID()
+				if len(controller) == 2 {
+					controller = "-" + controller
+				}
+			} else {
+				controller = trk.FlightPlan.TrackingController
+			}
+			a := util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
+			dbWriteText(db.fieldE[:], a, color, false)
+		} else {
 			middle := " "
 			airportCode, ok := ctx.Client.State.FacilityAdaptation.AirportCodes[trk.FlightPlan.ExitFix]
 			if ok {
 				middle = airportCode
 			}
-            dbWriteText(db.fieldE[:], fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed)), color, false)
-        }
+			dbWriteText(db.fieldE[:], fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed)), color, false)
+		}
 		// Get line 4 (if applicable)
 		if ps.Line4Type == Line4Destination {
 			line4Color := (ps.Brightness.FDB - ps.Brightness.Line4).ScaleRGB(ERAMYellow)

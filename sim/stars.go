@@ -488,7 +488,7 @@ type NASFlightPlan struct {
 	CID                   string
 	EntryFix              string
 	ExitFix               string
-	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this. 
+	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this.
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time

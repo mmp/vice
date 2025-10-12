@@ -37,7 +37,7 @@ func (c Controller) Id() string {
 	return c.FacilityIdentifier + c.TCP
 }
 
-func (c Controller) ERAMID() string { // For display 
+func (c Controller) ERAMID() string { // For display
 	return c.FacilityIdentifier + c.TCP
 }
 

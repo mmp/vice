@@ -1154,9 +1154,9 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 
 		Scratchpad:          arr.Scratchpad,
 		SecondaryScratchpad: arr.SecondaryScratchpad,
-		AircraftCount: 1,
-		AircraftType:  ac.FlightPlan.AircraftType,
-		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+		AircraftCount:       1,
+		AircraftType:        ac.FlightPlan.AircraftType,
+		CWTCategory:         av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 
 		AssignedAltitude:  int(arr.AssignedAltitude),
 		PerceivedAssigned: assigned,

@@ -394,7 +394,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB
 				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
-				state.DisplayJRing = false 
+				state.DisplayJRing = false
 				state.DisplayReducedJRing = false
 			}
 		case 2: // leader line & handoffs
@@ -731,7 +731,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 				state := ep.TrackState[trk.ADSBCallsign]
 				state.eFDB = !state.eFDB
 				status.bigOutput = fmt.Sprintf("ACCEPT\nFORCED DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
-				state.DisplayJRing = false 
+				state.DisplayJRing = false
 				state.DisplayReducedJRing = false
 				return
 			}

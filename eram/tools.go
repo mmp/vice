@@ -442,7 +442,7 @@ func (ep *ERAMPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms ra
 
 	color := ep.ScaledRGBFromColorPickerRGB(*ep.IFPHelpers.AirspaceColor)
 	style := renderer.TextStyle{
-		Font:          	ep.systemFont[3],
+		Font:           ep.systemFont[3],
 		Color:          color,
 		DrawBackground: true, // default BackgroundColor is fine
 	}
