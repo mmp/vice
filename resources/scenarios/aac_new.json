@@ -5807,6 +5807,7 @@
         }
       },
       "solo_controller": "AAC_F_APP",
+      "multi_controllers": { "default": { "AAC_F_APP": { "primary": true, "inbound_flows": [ "BARTS_FINAL", "REELI_FINAL", "MAYES" ] } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",
@@ -5841,6 +5842,7 @@
         }
       },
       "solo_controller": "AAC_F_APP",
+      "multi_controllers": { "default": { "AAC_F_APP": { "primary": true, "inbound_flows": [ "BARTS_FINAL", "REELI_FINAL", "ATOKA_FINAL" ] } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",
@@ -5878,6 +5880,7 @@
         }
       },
       "solo_controller": "AAC_F_APP",
+      "multi_controllers": { "default": { "AAC_F_APP": { "primary": true, "inbound_flows": [ "BARTS_FINAL", "REELI_FINAL", "ATOKA_FINAL", "INTERNAL_FINAL" ] } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",
@@ -5912,6 +5915,7 @@
         }
       },
       "solo_controller": "AAC_F_APP",
+      "multi_controllers": { "default": { "AAC_F_APP": { "primary": true, "inbound_flows": [ "ATOKA_FINAL_6NM", "REELI_FINAL", "MAYES" ] } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",
@@ -5982,6 +5986,11 @@
         }
       },
       "solo_controller": "AAC_F_APP",
+      "multi_controllers": { "default": { "AAC_F_APP": { "primary": true,
+           "inbound_flows": [ "ATOKA_FINAL", "BARTS_FINAL", "REELI_FINAL", "MAYES_CWT_A", "MAYES_CWT_B",
+                              "MAYES_CWT_C", "MAYES_CWT_D", "MAYES_CWT_E_F_G", "MAYES_CWT_H_I", 
+                              "BARTS_CWT_A", "BARTS_CWT_B", "BARTS_CWT_C", "BARTS_CWT_D", "BARTS_CWT_E_F_G", "BARTS_CWT_H_I" ]
+                                                       } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",
@@ -6019,6 +6028,7 @@
         }
       },
       "solo_controller": "AAC_F_APP",
+      "multi_controllers": { "default": { "AAC_F_APP": { "primary": true, "inbound_flows": [ "ATOKA_STAGGER", "MAYES_STAGGER", "BARTS_STAGGER", "REELI_FINAL" ] } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",
@@ -6062,6 +6072,7 @@
         }
       },
     "solo_controller": "AAC_N_APP",
+    "multi_controllers": { "default": { "AAC_N_APP": { "primary": true, "inbound_flows": [ "SCAN" ] } } },
     "controllers": [
         "AAC_TWR",
 		    "4Y3_TWR",

@@ -4082,6 +4082,7 @@
         }
       },
       "solo_controller": "AAC_D_APP",
+      "multi_controllers": { "default": { "AAC_D_APP": { "primary": true, "departures": [ "KAAC" ], "inbound_flows": [ "OVERFLIGHTS" ] } } },
       "controllers": [
         "AAC_B_APP",
         "AAC_J_APP",
