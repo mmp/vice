@@ -1002,8 +1002,10 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 
 	// Important: do this after updating aircraft, controllers, etc.,
 	// so that they reflect any changes the events are flagging.
-	for _, e := range su.Events {
-		eventStream.Post(e)
+	if eventStream != nil {
+		for _, e := range su.Events {
+			eventStream.Post(e)
+		}
 	}
 }
 

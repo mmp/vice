@@ -56,7 +56,7 @@ type ERAMPane struct {
 	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
 
-	ERAMOptIn bool `json:"-"`
+	ERAMOptIn          bool `json:"-"`
 	DisableERAMtoRadio bool `json:"-"`
 
 	events *sim.EventsSubscription `json:"-"`
@@ -234,11 +234,13 @@ func (ep *ERAMPane) Hide() bool {
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(ss)
 	ep.makeMaps(client, ss, lg)
+	ep.lastTrackUpdate = time.Time{}
 }
 
 func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	ep.ensurePrefSetForSim(ss)
 	ep.makeMaps(client, ss, lg)
+	ep.lastTrackUpdate = time.Time{}
 
 	ep.scopeDraw.arrivals = nil
 	ep.scopeDraw.approaches = nil
@@ -353,7 +355,7 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 }
 
 func formatInput(str string) (string) {
-	output := strings.ReplaceAll(str,"`", "y")
+	output := strings.ReplaceAll(str, "`", "y")
 	output = strings.ReplaceAll(output, "~", "z")
 	return output
 }

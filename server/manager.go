@@ -401,6 +401,10 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 	// Get the state for the controller
 	state := session.sim.State.GetStateForController(config.Position)
 
+	var initialUpdate sim.StateUpdate
+	session.sim.GetStateUpdate(config.Position, &initialUpdate)
+	initialUpdate.Apply(state, nil)
+
 	*result = NewSimResult{
 		SimState:        state,
 		ControllerToken: token,
@@ -565,8 +569,14 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 		session.sim.Prespawn()
 	}
 
-	// Get the state after prespawn (if any) has completed
+	// Get the state after prespawn (if any) has completed; apply an initial update so tracks are present
 	state := session.sim.State.GetStateForController(initialTCP)
+	{
+		var initialUpdate sim.StateUpdate
+		session.sim.GetStateUpdate(initialTCP, &initialUpdate)
+		// Apply without posting events here; the client will handle event delivery after connect
+		initialUpdate.Apply(state, nil)
+	}
 
 	go func() {
 		defer sm.lg.CatchAndReportCrash()
