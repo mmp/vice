@@ -1118,7 +1118,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 	var assigned int
-	if s.State.TRACON == "" && arr.AssignedAltitude == 0 {
+	if _, ok := av.DB.ARTCCs[s.State.TRACON]; ok && arr.AssignedAltitude == 0 {
 		// Get the altitude from the route and waypoints if possible
 		wps := arr.Waypoints
 		lowestAlt := gomath.MaxInt
@@ -1158,7 +1158,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftType:  ac.FlightPlan.AircraftType,
 		CWTCategory:   av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
 
-		AssignedAltitude: assigned,
+		AssignedAltitude:  int(arr.AssignedAltitude),
+		PerceivedAssigned: assigned,
 	}
 
 	// VFRs don't go around since they aren't talking to us.

@@ -331,13 +331,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.EndChild()
 
 			facilityLabel := func(facility string, info *server.Configuration) string {
-				if info != nil && info.Area != "" {
-					name := info.Area
-					name = strings.TrimSuffix(name, " ARTCC")
-					name = strings.TrimSuffix(name, " Center")
-					name = strings.TrimSpace(name)
-					return fmt.Sprintf("%s %s", facility, name)
-				}
 				if traconInfo, ok := av.DB.TRACONs[facility]; ok {
 					name := strings.TrimSuffix(traconInfo.Name, " TRACON")
 					name = strings.TrimSuffix(name, " ATCT/TRACON")
@@ -345,10 +338,16 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					name = strings.TrimSpace(name)
 					return fmt.Sprintf("%s (%s)", facility, name)
 				}
+				if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
+					name := strings.TrimSuffix(artccInfo.Name, " ARTCC")
+					name = strings.TrimSuffix(name, " Center")
+					name = strings.TrimSpace(name)
+					return fmt.Sprintf("%s (%s)", facility, name)
+				}
 				return facility
 			}
 
-			// TRACONs or areas for selected ARTCC
+			// TRACONs or ARTCC areas for selected ARTCC
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("tracons/ areas", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, facility := range allFacilities {
@@ -357,7 +356,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 						continue
 					}
 					artcc := info.ARTCC
-
 					if artcc == "" {
 						if traconInfo, ok := av.DB.TRACONs[facility]; ok {
 							artcc = traconInfo.ARTCC
@@ -368,22 +366,64 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					if selectedARTCC != "" && artcc != selectedARTCC {
 						continue
 					}
-					label := facilityLabel(facility, info)
-					if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
-						c.SetTRACON(facility)
+
+					if _, isTRACON := av.DB.TRACONs[facility]; isTRACON {
+						label := facilityLabel(facility, info)
+						if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
+							c.SetTRACON(facility)
+						}
+						if facility == c.TRACONName {
+							groups := configsByFacility[facility]
+							for _, groupName := range util.SortedMapKeys(groups) {
+								groupLabel := "  " + groupName
+								selected := groupName == c.GroupName
+								if imgui.SelectableBoolV(groupLabel, selected, 0, imgui.Vec2{}) {
+									if groupName != c.GroupName {
+										c.SetScenario(groupName, groups[groupName].DefaultScenario)
+									}
+								}
+							}
+						}
+						continue
+					}
+
+					groups := configsByFacility[facility]
+					for _, groupName := range util.SortedMapKeys(groups) {
+						gcfg := groups[groupName]
+						area := strings.TrimSpace(gcfg.Area)
+						if area != "" {
+							area = strings.TrimSuffix(area, " ARTCC")
+							area = strings.TrimSuffix(area, " Center")
+						}
+						label := facility
+						if area != "" {
+							label = fmt.Sprintf("%s %s", facility, area)
+						} else {
+							label = facilityLabel(facility, info)
+						}
+
+						selected := facility == c.TRACONName && groupName == c.GroupName
+						if imgui.SelectableBoolV(label, selected, 0, imgui.Vec2{}) {
+							if facility != c.TRACONName {
+								c.SetTRACON(facility)
+							}
+							// Ensure selected group within ARTCC
+							if groupName != c.GroupName {
+								c.SetScenario(groupName, groups[groupName].DefaultScenario)
+							}
+						}
 					}
 				}
 			}
 			imgui.EndChild()
 
-			// Scenarios for the tracon or area
+			// Scenarios for the selected TRACON or area
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
-				for _, groupName := range util.SortedMapKeys(c.selectedTRACONConfigs) {
-					group := c.selectedTRACONConfigs[groupName]
+				if group := c.selectedTRACONConfigs[c.GroupName]; group != nil {
 					for _, name := range util.SortedMapKeys(group.ScenarioConfigs) {
 						if imgui.SelectableBoolV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-							c.SetScenario(groupName, name)
+							c.SetScenario(c.GroupName, name)
 						}
 					}
 				}
