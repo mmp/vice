@@ -56,7 +56,7 @@ type ERAMPane struct {
 	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
 	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
 
-	ERAMOptIn bool `json:"-"`
+	ERAMOptIn          bool `json:"-"`
 	DisableERAMtoRadio bool `json:"-"`
 
 	events *sim.EventsSubscription `json:"-"`
@@ -193,7 +193,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// ctr := UserCenter
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
 		ps.CurrentCenter, float32(ps.Range), 0)
-	scopeExtend := ctx.PaneExtent
 
 	// Following are the draw functions. They are listed in the best of my ability
 
@@ -356,7 +355,7 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 }
 
 func formatInput(str string) (string) {
-	output := strings.ReplaceAll(str,"`", "y")
+	output := strings.ReplaceAll(str, "`", "y")
 	output = strings.ReplaceAll(output, "~", "z")
 	return output
 }
