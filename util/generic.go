@@ -169,12 +169,31 @@ func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
 	return slices.Sorted(maps.Keys(m))
 }
 
-// DuplicateMap returns a newly allocated map
-// that stores copies of all the values in the given map.
-func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {
-	mnew := make(map[K]V, len(m))
-	maps.Copy(mnew, m)
-	return mnew
+func SortedMap[K constraints.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
+	return func(yield func(k K, v V) bool) {
+		sk := SortedMapKeys(m)
+		for k := range slices.Values(sk) {
+			if !yield(k, m[k]) {
+				return
+			}
+		}
+	}
+}
+
+func FirstSortedMapEntry[K constraints.Ordered, V any](m map[K]V) (K, V) {
+	if len(m) == 0 {
+		panic("empty map")
+	}
+
+	var first K
+	initial := true
+	for k := range m {
+		if initial || k < first {
+			first = k
+			initial = false
+		}
+	}
+	return first, m[first]
 }
 
 // ReduceSlice applies the provided reduction function to the given slice,

@@ -1137,8 +1137,7 @@ func (sm *SimManager) GetSimStatus() []simStatus {
 	defer sm.mu.Unlock(sm.lg)
 
 	var status []simStatus
-	for _, name := range util.SortedMapKeys(sm.simSessions) {
-		ss := sm.simSessions[name]
+	for name, ss := range util.SortedMap(sm.simSessions) {
 		status = append(status, simStatus{
 			Name:        name,
 			Config:      ss.scenario,

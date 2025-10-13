@@ -13,6 +13,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"os"
 	"slices"
@@ -910,13 +911,13 @@ func PrintCIFPRoutes(airport string) error {
 	}
 
 	fmt.Printf("STARs:\n")
-	for _, s := range util.SortedMapKeys(ap.STARs) {
-		ap.STARs[s].Print(s)
+	for name, star := range util.SortedMap(ap.STARs) {
+		star.Print(name)
 	}
 	fmt.Printf("\nApproaches:\n")
-	for _, appr := range util.SortedMapKeys(ap.Approaches) {
-		fmt.Printf("%-5s: ", appr)
-		for i, wp := range ap.Approaches[appr].Waypoints {
+	for name, appr := range util.SortedMap(ap.Approaches) {
+		fmt.Printf("%-5s: ", name)
+		for i, wp := range appr.Waypoints {
 			if i > 0 {
 				fmt.Printf("       ")
 			}
@@ -959,7 +960,7 @@ func (t *TFRCache) UpdateAsync(lg *log.Logger) {
 		return
 	}
 	t.ch = make(chan map[string]TFR)
-	go fetchTFRs(util.DuplicateMap(t.TFRs), t.ch, lg)
+	go fetchTFRs(maps.Clone(t.TFRs), t.ch, lg)
 }
 
 // Sync synchronizes the cache, adding any newly-downloaded TFRs.  It
@@ -987,8 +988,8 @@ func (t *TFRCache) TFRsForTRACON(tracon string, lg *log.Logger) []TFR {
 		return nil
 	} else {
 		var tfrs []TFR
-		for _, url := range util.SortedMapKeys(t.TFRs) {
-			if tfr := t.TFRs[url]; tfr.ARTCC == tr.ARTCC {
+		for _, tfr := range util.SortedMap(t.TFRs) {
+			if tfr.ARTCC == tr.ARTCC {
 				tfrs = append(tfrs, tfr)
 			}
 		}

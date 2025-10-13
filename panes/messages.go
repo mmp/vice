@@ -73,8 +73,8 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	mp.events = eventStream.Subscribe()
 
 	mp.alertAudioIndex = make(map[string]int)
-	for _, alert := range util.SortedMapKeys(audioAlerts) {
-		idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + audioAlerts[alert]))
+	for alert, path := range util.SortedMap(audioAlerts) {
+		idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + path))
 		if err != nil {
 			lg.Errorf("Error adding static audio effect: %v", err)
 		}
@@ -83,10 +83,7 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 
 	if _, ok := mp.alertAudioIndex[mp.AudioAlertSelection]; !ok { // Not available (or unset)
 		// Take the first one alphabetically.
-		for _, alert := range util.SortedMapKeys(audioAlerts) {
-			mp.AudioAlertSelection = alert
-			break
-		}
+		mp.AudioAlertSelection, _ = util.FirstSortedMapEntry(audioAlerts)
 	}
 }
 
@@ -113,7 +110,7 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Separator()
 	if imgui.BeginCombo("Audio alert", mp.AudioAlertSelection) {
-		for _, alert := range util.SortedMapKeys(audioAlerts) {
+		for alert := range util.SortedMap(audioAlerts) {
 			if imgui.SelectableBoolV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
 				mp.AudioAlertSelection = alert
 				p.PlayAudioOnce(mp.alertAudioIndex[alert])

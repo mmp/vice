@@ -439,12 +439,12 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 		DrawBackground: true}
 
 	if sp.scopeDraw.arrivals != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.arrivals[name] == nil {
 				continue
 			}
 
-			arrivals := ctx.Client.State.InboundFlows[name].Arrivals
+			arrivals := flow.Arrivals
 			for i, arr := range arrivals {
 				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
 					continue
@@ -453,9 +453,8 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 				radar.DrawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 				// Draw runway-specific waypoints
-				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
-					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
-						wp := arr.RunwayWaypoints[ap][rwy]
+				for _, rwys := range util.SortedMap(arr.RunwayWaypoints) {
+					for rwy, wp := range util.SortedMap(rwys) {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
@@ -498,8 +497,7 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 				continue
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
-			for _, name := range util.SortedMapKeys(ap.Approaches) {
-				appr := ap.Approaches[name]
+			for name, appr := range util.SortedMap(ap.Approaches) {
 				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
@@ -536,9 +534,9 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
-				for _, exit := range util.SortedMapKeys(exitRoutes) {
+				for exit, exitRoute := range util.SortedMap(exitRoutes) {
 					if sp.scopeDraw.departures[name][rwy][exit] {
-						radar.DrawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
+						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}
 				}
@@ -560,12 +558,12 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 		DrawBackground: true}
 
 	if sp.scopeDraw.overflights != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.overflights[name] == nil {
 				continue
 			}
 
-			overflights := ctx.Client.State.InboundFlows[name].Overflights
+			overflights := flow.Overflights
 			for i, of := range overflights {
 				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
 					continue

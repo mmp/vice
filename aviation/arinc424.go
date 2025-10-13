@@ -237,8 +237,8 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 
 				if line[40] == 'E' { // description code "end of airway"
 					a := Airway{Name: route}
-					for _, seq := range util.SortedMapKeys(airwayWIP) { // order by sequence number, just in case
-						a.Fixes = append(a.Fixes, airwayWIP[seq])
+					for _, airway := range util.SortedMap(airwayWIP) { // order by sequence number, just in case
+						a.Fixes = append(a.Fixes, airway)
 					}
 					airways[route] = append(airways[route], a)
 					clear(airwayWIP)

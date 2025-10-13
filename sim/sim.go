@@ -896,8 +896,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 	}
 
 	update.Tracks = make(map[av.ADSBCallsign]*Track)
-	for _, callsign := range util.SortedMapKeys(s.Aircraft) {
-		ac := s.Aircraft[callsign]
+	for callsign, ac := range util.SortedMap(s.Aircraft) {
 		if !s.isRadarVisible(ac) {
 			continue
 		}

@@ -11,6 +11,7 @@ import (
 	"image/color"
 	"image/gif"
 	"image/png"
+	"maps"
 	"os"
 	"slices"
 	"sort"
@@ -453,8 +454,7 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl pl
 
 func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
-	for _, name := range util.SortedMapKeys(ss.Airports) {
-		ap := ss.Airports[name]
+	for name, ap := range util.SortedMap(ss.Airports) {
 		for idx, pair := range ap.ConvergingRunways {
 			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
 				ConvergingRunways: pair,
@@ -686,8 +686,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	atpaIndex := 901
 	for _, name := range util.SortedMapKeys(ss.ArrivalAirports) {
 		ap := ss.Airports[name]
-		for _, rwy := range util.SortedMapKeys(ap.ATPAVolumes) {
-			vol := ap.ATPAVolumes[rwy]
+		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
 
 			label := "A" + name[1:] + rwy
 			if len(label) > 7 {
@@ -1158,8 +1157,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.S
 		cb.PolygonStipple(restrictionAreaStipple)
 	}
 
-	for _, idx := range util.SortedMapKeys(draw) {
-		ra := draw[idx]
+	for _, ra := range util.SortedMap(draw) {
 
 		ld.Reset()
 		trid.Reset()
@@ -1205,8 +1203,7 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.S
 	blinkDim := halfSeconds&1 == 0
 	color := ps.Brightness.VideoGroupB.ScaleRGB(renderer.RGB{1, 1, 0}) // always yellow
 
-	for _, idx := range util.SortedMapKeys(draw) {
-		ra := draw[idx]
+	for idx, ra := range util.SortedMap(draw) {
 		var text string
 		if !ra.HideId {
 			text = fmt.Sprintf("[%d]", idx)
@@ -1322,7 +1319,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 }
 
 func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
-	sp.significantPoints = util.DuplicateMap(ss.FacilityAdaptation.SignificantPoints)
+	sp.significantPoints = maps.Clone(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {
 		sp.significantPointsSlice = append(sp.significantPointsSlice, pt)

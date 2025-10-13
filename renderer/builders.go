@@ -697,8 +697,7 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	// draw order from the user, so drawing from two atlases where
 	// characters from different atlases overlap may not turn out as
 	// expected. We'll assume that's not worth worrying about...
-	for _, id := range util.SortedMapKeys(td.regular) {
-		regular := td.regular[id]
+	for id, regular := range util.SortedMap(td.regular) {
 		if len(regular.indices) == 0 {
 			continue
 		}

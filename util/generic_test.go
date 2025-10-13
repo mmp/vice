@@ -371,27 +371,6 @@ func TestSortedMapKeys(t *testing.T) {
 	}
 }
 
-func TestDuplicateMap(t *testing.T) {
-	original := map[string]int{
-		"a": 1,
-		"b": 2,
-		"c": 3,
-	}
-
-	duplicate := DuplicateMap(original)
-
-	// Check that the maps are equal
-	if !maps.Equal(original, duplicate) {
-		t.Error("DuplicateMap should create an identical map")
-	}
-
-	// Check that modifying the duplicate doesn't affect the original
-	duplicate["d"] = 4
-	if maps.Equal(original, duplicate) {
-		t.Error("Modifying duplicate should not affect original")
-	}
-}
-
 func TestMapContains(t *testing.T) {
 	m := map[string]int{
 		"a": 1,

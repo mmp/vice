@@ -469,7 +469,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.Pop()
 	}
 
-	for _, name := range util.SortedMapKeys(s.InboundFlowDefaultRates) {
+	for name := range util.SortedMap(s.InboundFlowDefaultRates) {
 		e.Push("Inbound flow " + name)
 		// Make sure the inbound flow has been defined
 		if flow, ok := sg.InboundFlows[name]; !ok {
@@ -1485,7 +1485,7 @@ func initializeSimConfigurations(sg *scenarioGroup,
 		// controller but we're gathering multi-controller here. Pick
 		// something valid in that case.
 		if _, ok := config.ScenarioConfigs[config.DefaultScenario]; !ok {
-			config.DefaultScenario = util.SortedMapKeys(config.ScenarioConfigs)[0]
+			config.DefaultScenario, _ = util.FirstSortedMapEntry(config.ScenarioConfigs)
 		}
 
 		if simConfigurations[facility] == nil {
@@ -1698,7 +1698,7 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 		}
 	}
 	var missing []string
-	for _, t := range util.SortedMapKeys(acTypes) {
+	for t := range util.SortedMap(acTypes) {
 		if av.DB.AircraftPerformance[t].Speed.V2 == 0 {
 			missing = append(missing, t)
 		}

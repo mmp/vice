@@ -462,8 +462,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		rewindDCBCursor(3+len(radarSites)+3, buttonScale)
 		dcbStartCaptureMouseRegion()
 
-		for _, id := range util.SortedMapKeys(radarSites) {
-			site := radarSites[id]
+		for id, site := range util.SortedMap(radarSites) {
 			label := " " + site.Char + " " + "\n" + id
 			selected := ps.RadarSiteSelected == id
 			if toggleButton(ctx, label, &selected, buttonFull, buttonScale) {

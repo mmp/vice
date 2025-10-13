@@ -83,8 +83,8 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
-				arrivals := c.State.InboundFlows[name].Arrivals
+			for name, flow := range util.SortedMap(c.State.InboundFlows) {
+				arrivals := flow.Arrivals
 				if len(arrivals) == 0 {
 					continue
 				}
@@ -150,8 +150,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 					if sp.scopeDraw.approaches[rwy.Airport] == nil {
 						sp.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
 					}
-					for _, name := range util.SortedMapKeys(ap.Approaches) {
-						appr := ap.Approaches[name]
+					for name, appr := range util.SortedMap(ap.Approaches) {
 						if appr.Runway == rwy.Runway {
 							imgui.TableNextRow()
 							imgui.TableNextColumn()
@@ -221,16 +220,15 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 					// we'll reverse-engineer that here so we can present
 					// them together in the UI.
 					routeToExit := make(map[string][]string)
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						exitRoute := ap.DepartureRoutes[rwy][exit]
+					for exit, exitRoute := range util.SortedMap(exitRoutes) {
 						r := exitRoute.Waypoints.Encode()
 						routeToExit[r] = append(routeToExit[r], exit)
 					}
 
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
+					for exit, exitRoute := range util.SortedMap(exitRoutes) {
 						// Draw the row only when we hit the first exit
 						// that uses the corresponding route route.
-						r := exitRoutes[exit].Waypoints.Encode()
+						r := exitRoute.Waypoints.Encode()
 						if routeToExit[r][0] != exit {
 							continue
 						}
@@ -280,8 +278,8 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
-				overflights := c.State.InboundFlows[name].Overflights
+			for name, flow := range util.SortedMap(c.State.InboundFlows) {
+				overflights := flow.Overflights
 				if len(overflights) == 0 {
 					continue
 				}

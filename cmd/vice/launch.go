@@ -83,9 +83,10 @@ func (c *NewSimConfiguration) SetTRACON(name string) {
 		c.selectedTRACONConfigs = configs[name]
 	}
 	c.TRACONName = name
-	c.GroupName = util.SortedMapKeys(c.selectedTRACONConfigs)[0]
+	var groupConfig *server.Configuration
+	c.GroupName, groupConfig = util.FirstSortedMapEntry(c.selectedTRACONConfigs)
 
-	c.SetScenario(c.GroupName, c.selectedTRACONConfigs[c.GroupName].DefaultScenario)
+	c.SetScenario(c.GroupName, groupConfig.DefaultScenario)
 }
 
 func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
@@ -93,8 +94,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	var groupConfig *server.Configuration
 	if groupConfig, ok = c.selectedTRACONConfigs[groupName]; !ok {
 		c.lg.Errorf("%s: group not found in TRACON %s", groupName, c.TRACONName)
-		groupName = util.SortedMapKeys(c.selectedTRACONConfigs)[0]
-		groupConfig = c.selectedTRACONConfigs[c.GroupName]
+		groupName, groupConfig = util.FirstSortedMapEntry(c.selectedTRACONConfigs)
 	}
 	c.GroupName = groupName
 
@@ -303,7 +303,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
-				for _, artcc := range util.SortedMapKeys(artccs) {
+				for artcc := range util.SortedMap(artccs) {
 					name := av.DB.ARTCCs[artcc].Name
 					name = strings.TrimSuffix(name, " ARTCC")
 					name = strings.TrimSuffix(name, " Center")
@@ -374,7 +374,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 						}
 						if facility == c.TRACONName {
 							groups := configsByFacility[facility]
-							for _, groupName := range util.SortedMapKeys(groups) {
+							for groupName := range util.SortedMap(groups) {
 								groupLabel := "  " + groupName
 								selected := groupName == c.GroupName
 								if imgui.SelectableBoolV(groupLabel, selected, 0, imgui.Vec2{}) {
@@ -388,8 +388,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					}
 
 					groups := configsByFacility[facility]
-					for _, groupName := range util.SortedMapKeys(groups) {
-						gcfg := groups[groupName]
+					for groupName, gcfg := range util.SortedMap(groups) {
 						area := strings.TrimSpace(gcfg.Area)
 						if area != "" {
 							area = strings.TrimSuffix(area, " ARTCC")
@@ -421,7 +420,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				if group := c.selectedTRACONConfigs[c.GroupName]; group != nil {
-					for _, name := range util.SortedMapKeys(group.ScenarioConfigs) {
+					for name := range util.SortedMap(group.ScenarioConfigs) {
 						if imgui.SelectableBoolV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
 							c.SetScenario(c.GroupName, name)
 						}
@@ -582,9 +581,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		// Join remote
 		rs, ok := runningSims[c.connectionConfig.RemoteSim]
 		if !ok || c.connectionConfig.RemoteSim == "" {
-			c.connectionConfig.RemoteSim = util.SortedMapKeys(runningSims)[0]
+			c.connectionConfig.RemoteSim, rs = util.FirstSortedMapEntry(runningSims)
 
-			rs = runningSims[c.connectionConfig.RemoteSim]
 			if _, ok := rs.CoveredPositions[rs.PrimaryController]; !ok {
 				// If the primary position isn't currently covered, make that the default selection.
 				c.connectionConfig.Position = rs.PrimaryController
@@ -601,8 +599,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.TableSetupColumn("Controllers")
 			imgui.TableHeadersRow()
 
-			for _, simName := range util.SortedMapKeys(runningSims) {
-				rs := runningSims[simName]
+			for simName, rs := range util.SortedMap(runningSims) {
 				if len(rs.AvailablePositions) == 0 {
 					// No open positions left; don't even offer it.
 					continue
@@ -648,7 +645,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 		// Handle the case of someone else signing in to the position
 		if _, ok := rs.AvailablePositions[c.connectionConfig.Position]; !ok {
-			c.connectionConfig.Position = util.SortedMapKeys(rs.AvailablePositions)[0]
+			c.connectionConfig.Position, _ = util.FirstSortedMapEntry(rs.AvailablePositions)
 		}
 
 		fmtPosition := func(id string) string {
@@ -659,7 +656,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		}
 
 		if imgui.BeginCombo("Position", fmtPosition(c.connectionConfig.Position)) {
-			for _, pos := range util.SortedMapKeys(rs.AvailablePositions) {
+			for pos := range util.SortedMap(rs.AvailablePositions) {
 				if pos[0] == '_' {
 					continue
 				}
@@ -769,17 +766,17 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		}
 		imgui.TableHeadersRow()
 
-		for _, airport := range util.SortedMapKeys(lc.DepartureRates) {
+		for airport := range util.SortedMap(lc.DepartureRates) {
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(airport)
 
 			imgui.PushIDStr(airport)
 			adrColumn := 0
-			for _, runway := range util.SortedMapKeys(lc.DepartureRates[airport]) {
+			for runway := range util.SortedMap(lc.DepartureRates[airport]) {
 				imgui.PushIDStr(runway)
 
-				for _, category := range util.SortedMapKeys(lc.DepartureRates[airport][runway]) {
+				for category := range util.SortedMap(lc.DepartureRates[airport][runway]) {
 					imgui.TableNextColumn()
 					rshort, _, _ := strings.Cut(runway, ".") // don't include extras in the UI
 					imgui.Text(rshort)
@@ -911,16 +908,16 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		}
 		imgui.TableHeadersRow()
 
-		for _, ap := range util.SortedMapKeys(numAirportFlows) {
+		for ap := range util.SortedMap(numAirportFlows) {
 			imgui.PushIDStr(ap)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
 			imgui.Text(ap)
 
 			aarCol := 0
-			for _, group := range util.SortedMapKeys(lc.InboundFlowRates) {
+			for group, aprates := range util.SortedMap(lc.InboundFlowRates) {
 				imgui.PushIDStr(group)
-				if rate, ok := lc.InboundFlowRates[group][ap]; ok {
+				if rate, ok := aprates[ap]; ok {
 					if aarCol > 0 && aarCol%aarColumns == 0 {
 						// Overflow
 						imgui.TableNextRow()
@@ -979,7 +976,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 		imgui.TableSetupColumn("Rate")
 		imgui.TableHeadersRow()
 
-		for _, group := range util.SortedMapKeys(overflightGroups) {
+		for group := range util.SortedMap(overflightGroups) {
 			imgui.PushIDStr(group)
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
@@ -1040,10 +1037,9 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 	lc := &LaunchControlWindow{client: client, lg: lg}
 
 	config := &client.State.LaunchConfig
-	for _, airport := range util.SortedMapKeys(config.DepartureRates) {
-		runwayRates := config.DepartureRates[airport]
-		for _, rwy := range util.SortedMapKeys(runwayRates) {
-			for _, category := range util.SortedMapKeys(runwayRates[rwy]) {
+	for airport, runwayRates := range util.SortedMap(config.DepartureRates) {
+		for rwy, rates := range util.SortedMap(runwayRates) {
+			for category := range util.SortedMap(rates) {
 				lc.departures = append(lc.departures, &LaunchDeparture{
 					LaunchAircraft: LaunchAircraft{Airport: airport},
 					Runway:         rwy,
@@ -1053,7 +1049,7 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 		}
 	}
 
-	for _, airport := range util.SortedMapKeys(config.VFRAirportRates) {
+	for airport := range util.SortedMap(config.VFRAirportRates) {
 		rwy := client.State.VFRRunways[airport]
 		lc.vfrDepartures = append(lc.vfrDepartures, &LaunchDeparture{
 			LaunchAircraft: LaunchAircraft{Airport: airport},
@@ -1061,8 +1057,8 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 		})
 	}
 
-	for _, group := range util.SortedMapKeys(config.InboundFlowRates) {
-		for ap := range config.InboundFlowRates[group] {
+	for group, apRates := range util.SortedMap(config.InboundFlowRates) {
+		for ap := range apRates {
 			lc.arrivalsOverflights = append(lc.arrivalsOverflights,
 				&LaunchArrivalOverflight{
 					LaunchAircraft: LaunchAircraft{Airport: ap},
