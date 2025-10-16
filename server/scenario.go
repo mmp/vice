@@ -107,6 +107,52 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.Pop()
 	}
 
+	// Auto-populate SplitConfigurations for single-controller scenarios
+	if s.SoloController != "" && len(s.SplitConfigurations) == 0 {
+		// Collect departure airports that don't have virtual controllers
+		// (airports with virtual controllers are handled by those
+		// controllers, not the human).
+		departures := make(map[string]bool)
+		for _, rwy := range s.DepartureRunways {
+			if ap, ok := sg.Airports[rwy.Airport]; ok && ap.DepartureController == "" {
+				departures[rwy.Airport] = true
+			}
+		}
+		departureList := slices.Collect(maps.Keys(departures))
+
+		// Collect inbound flows that have handoffs to human controllers.
+		var inboundFlows []string
+		for flowName := range s.InboundFlowDefaultRates {
+			if flow, ok := sg.InboundFlows[flowName]; ok {
+				// Check if this flow has arrivals or overflights with handoffs
+				hasHandoff := len(flow.Arrivals) > 0
+				if !hasHandoff {
+					// Check if any overflight has a human handoff
+					hasHandoff = slices.ContainsFunc(flow.Overflights, func(of av.Overflight) bool {
+						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool {
+							return wp.HumanHandoff
+						})
+					})
+				}
+				if hasHandoff {
+					inboundFlows = append(inboundFlows, flowName)
+				}
+			}
+		}
+
+		// Create the default split configuration
+		s.SplitConfigurations = av.SplitConfigurationSet{
+			"default": av.SplitConfiguration{
+				s.SoloController: &av.MultiUserController{
+					Primary:      true,
+					Departures:   departureList,
+					InboundFlows: inboundFlows,
+				},
+			},
+		}
+		s.DefaultSplit = "default"
+	}
+
 	for ctrl, vnames := range s.Airspace {
 		e.Push("airspace")
 
@@ -633,7 +679,7 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
+func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
 	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -881,7 +927,7 @@ func (sg *scenarioGroup) PostDeserialize(multiController bool, e *util.ErrorLogg
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg, simConfigurations, multiController, e)
+	initializeSimConfigurations(sg, simConfigurations, e)
 }
 
 func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
@@ -1414,8 +1460,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	e.Pop() // stars_config
 }
 
-func initializeSimConfigurations(sg *scenarioGroup,
-	simConfigurations map[string]map[string]*Configuration, multiController bool, e *util.ErrorLogger) {
+func initializeSimConfigurations(sg *scenarioGroup, simConfigurations map[string]map[string]*Configuration, e *util.ErrorLogger) {
 	facility := sg.TRACON
 	if facility == "" {
 		facility = sg.ARTCC
@@ -1456,38 +1501,19 @@ func initializeSimConfigurations(sg *scenarioGroup,
 			MagneticVariation:   sg.MagneticVariation,
 		}
 
-		if multiController {
-			if len(scenario.SplitConfigurations) == 0 {
-				// not a multi-controller scenario
-				continue
-			}
-			var err error
-			sc.SelectedController, err = scenario.SplitConfigurations.GetPrimaryController(scenario.DefaultSplit)
-			if err != nil {
-				e.Error(err)
-			}
-			sc.SelectedSplit = scenario.DefaultSplit
-		} else {
-			if scenario.SoloController == "" {
-				// multi-controller only
-				continue
-			}
-			sc.SelectedController = scenario.SoloController
+		// All scenarios now have SplitConfigurations (auto-populated if
+		// needed if they were defined as single-controller).
+		var err error
+		sc.SelectedController, err = scenario.SplitConfigurations.GetPrimaryController(scenario.DefaultSplit)
+		if err != nil {
+			e.Error(err)
 		}
+		sc.SelectedSplit = scenario.DefaultSplit
 
 		config.ScenarioConfigs[name] = sc
 	}
 
-	// Skip scenario groups that don't have any single/multi-controller
-	// scenarios, as appropriate.
 	if len(config.ScenarioConfigs) > 0 {
-		// The default scenario may be invalid; e.g. if it's single
-		// controller but we're gathering multi-controller here. Pick
-		// something valid in that case.
-		if _, ok := config.ScenarioConfigs[config.DefaultScenario]; !ok {
-			config.DefaultScenario, _ = util.FirstSortedMapEntry(config.ScenarioConfigs)
-		}
-
 		if simConfigurations[facility] == nil {
 			simConfigurations[facility] = make(map[string]*Configuration)
 		}
@@ -1536,7 +1562,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
-func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, extraVideoMapFilename string,
+func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string,
 	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest) {
 	start := time.Now()
 
@@ -1672,7 +1698,7 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
 			} else { // if tracon
-				sgroup.PostDeserialize(multiControllerOnly, e, simConfigurations, manifest)
+				sgroup.PostDeserialize(e, simConfigurations, manifest)
 			}
 
 			e.Pop()
@@ -1711,7 +1737,7 @@ func LoadScenarioGroups(multiControllerOnly bool, extraScenarioFilename string, 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _ := LoadScenarioGroups(false, scenarioFilename, videoMapFilename, &e, lg)
+	scenarioGroups, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, &e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}

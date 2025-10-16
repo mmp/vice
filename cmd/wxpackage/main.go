@@ -14,6 +14,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -63,9 +64,10 @@ func main() {
 
 	// Load scenarios to find active airports/TRACONs
 	var e util.ErrorLogger
-	scenarioGroups, _, _ := server.LoadScenarioGroups(true, "", "", &e, nil)
+	lg := log.New(false, "warn", "")
+	scenarioGroups, _, _ := server.LoadScenarioGroups("", "", &e, lg)
 	if e.HaveErrors() {
-		e.PrintErrors(nil)
+		e.PrintErrors(lg)
 		os.Exit(1)
 	}
 

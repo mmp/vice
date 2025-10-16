@@ -61,12 +61,11 @@ const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
 type ServerLaunchConfig struct {
-	Port                int // if 0, finds an open one
-	MultiControllerOnly bool
-	ExtraScenario       string
-	ExtraVideoMap       string
-	ServerAddress       string // address to use for remote TTS provider
-	IsLocal             bool
+	Port          int // if 0, finds an open one
+	ExtraScenario string
+	ExtraVideoMap string
+	ServerAddress string // address to use for remote TTS provider
+	IsLocal       bool
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
@@ -111,7 +110,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	}
 
 	scenarioGroups, simConfigurations, mapManifests :=
-		LoadScenarioGroups(config.MultiControllerOnly, config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
+		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger
 	}

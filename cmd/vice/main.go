@@ -107,8 +107,7 @@ func main() {
 		cliInit()
 
 		var e util.ErrorLogger
-		scenarioGroups, _, _ :=
-			server.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
@@ -166,7 +165,7 @@ func main() {
 		tracon, scenarioName := parts[0], parts[1]
 
 		var e util.ErrorLogger
-		scenarioGroups, configs, _ := server.LoadScenarioGroups(false, *scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, configs, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 			os.Exit(1)
@@ -222,12 +221,11 @@ func main() {
 	} else if *runServer {
 		cliInit()
 		server.LaunchServer(server.ServerLaunchConfig{
-			Port:                *serverPort,
-			MultiControllerOnly: true,
-			ExtraScenario:       *scenarioFilename,
-			ExtraVideoMap:       *videoMapFilename,
-			ServerAddress:       *serverAddress,
-			IsLocal:             false,
+			Port:          *serverPort,
+			ExtraScenario: *scenarioFilename,
+			ExtraVideoMap: *videoMapFilename,
+			ServerAddress: *serverAddress,
+			IsLocal:       false,
 		}, lg)
 	} else if *showRoutes != "" {
 		cliInit()
