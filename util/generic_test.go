@@ -8,50 +8,51 @@ import (
 	"maps"
 	"slices"
 	"testing"
+	"testing/synctest"
 	"time"
 )
 
 func TestTransientMap(t *testing.T) {
-	ts := NewTransientMap[int, int]()
-	ts.Add(1, 10, 250*time.Millisecond)
-	ts.Add(2, 20, 750*time.Millisecond)
+	synctest.Test(t, func(*testing.T) {
+		ts := NewTransientMap[int, int]()
+		ts.Add(1, 10, 250*time.Millisecond)
+		ts.Add(2, 20, 750*time.Millisecond)
 
-	// Should have both
-	if v, ok := ts.Get(1); !ok {
-		t.Errorf("transient set doesn't have expected entry")
-	} else if v != 10 {
-		t.Errorf("transient set didn't return expected value")
-	}
-	if v, ok := ts.Get(2); !ok {
-		t.Errorf("transient set doesn't have expected entry")
-	} else if v != 20 {
-		t.Errorf("transient set didn't return expected value")
-	}
+		// Should have both
+		if v, ok := ts.Get(1); !ok {
+			t.Errorf("transient set doesn't have expected entry")
+		} else if v != 10 {
+			t.Errorf("transient set didn't return expected value")
+		}
+		if v, ok := ts.Get(2); !ok {
+			t.Errorf("transient set doesn't have expected entry")
+		} else if v != 20 {
+			t.Errorf("transient set didn't return expected value")
+		}
 
-	// Note that after this point this test has the potential to be flaky,
-	// if the thread is not scheduled for ~250+ms; it's possible that more
-	// time will elapse than we think and thence some of the checks may not
-	// add up...
-	time.Sleep(500 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
+		synctest.Wait()
 
-	// Should just have 2
-	if _, ok := ts.Get(1); ok {
-		t.Errorf("transient set still has value that it shouldn't")
-	}
-	if v, ok := ts.Get(2); !ok {
-		t.Errorf("transient set doesn't have expected entry")
-	} else if v != 20 {
-		t.Errorf("transient set didn't return expected value")
-	}
+		// Should just have 2
+		if _, ok := ts.Get(1); ok {
+			t.Errorf("transient set still has value that it shouldn't")
+		}
+		if v, ok := ts.Get(2); !ok {
+			t.Errorf("transient set doesn't have expected entry")
+		} else if v != 20 {
+			t.Errorf("transient set didn't return expected value")
+		}
 
-	time.Sleep(250 * time.Millisecond)
+		time.Sleep(251 * time.Millisecond)
+		synctest.Wait()
 
-	if _, ok := ts.Get(1); ok {
-		t.Errorf("transient set still has value that it shouldn't")
-	}
-	if _, ok := ts.Get(2); ok {
-		t.Errorf("transient set still has value that it shouldn't")
-	}
+		if _, ok := ts.Get(1); ok {
+			t.Errorf("transient set still has value that it shouldn't")
+		}
+		if _, ok := ts.Get(2); ok {
+			t.Errorf("transient set still has value that it shouldn't")
+		}
+	})
 }
 
 func TestMapSlice(t *testing.T) {
