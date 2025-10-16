@@ -47,15 +47,13 @@ type AtmosSampleStack struct {
 	Levels [NumSampleLevels]AtmosSample
 }
 
-// The U-component represents the eastward wind component (positive values
-// indicate wind from west to east), and the V-component represents the
-// northward wind component (positive values indicate wind from South to
-// North); note that a) this is the opposite of than the aviation convention,
-// and b) that elsewhere in vice, working with nm-based coordinates, positive y
-// points South.
+// AtmosSample stores wind as velocity vectors (direction the air mass is moving).
+// UComponent is the eastward wind velocity in m/s (positive = moving east).
+// VComponent is the northward wind velocity in m/s (positive = moving north).
+// These match the standard GRIB2 UGRD/VGRD convention.
 type AtmosSample struct {
-	UComponent  float32 // eastward m/s
-	VComponent  float32 // northward m/s
+	UComponent  float32 // eastward velocity m/s
+	VComponent  float32 // northward velocity m/s
 	Temperature float32 // Kelvin
 	Dewpoint    float32 // Kelvin
 	Height      float32 // geopotential height (meters)
@@ -407,7 +405,8 @@ type AtmosGrid struct {
 }
 
 type WindSample struct {
-	// WindVec represents the force acting on an aircraft.
+	// WindVec is the wind velocity vector (direction air mass is moving) in nm/s.
+	// When added to aircraft velocity, it represents wind's effect on the aircraft.
 	WindVec [2]float32 // nm / s
 }
 
@@ -451,8 +450,9 @@ func MakeStandardSampleForAltitude(alt float32) Sample {
 }
 
 func (s WindSample) WindDirection() float32 {
-	// Because WindVec represents how the wind applies force to the
-	// aircraft, we need to spin it around to get its direction.
+	// WindVec is a velocity vector (direction air is moving). To report
+	// the meteorological "wind FROM" direction, we take the opposite of
+	// the direction the velocity vector points.
 	return math.OppositeHeading(math.VectorHeading(s.WindVec))
 }
 
@@ -545,19 +545,14 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 			s0, s1 := stack.Levels[idx], stack.Levels[idx+1]
 			t := (altm - s0.Height) / (s1.Height - s0.Height)
 
-			// Convert wind vector from m/s to nm/s since the nav code all
-			// works w.r.t nautical miles.  Further, negate the x component
-			// to account for the fact that the grib2 files follow
-			// meteorological conventions and give where the wind is coming
-			// from, while for sim purposes, we generally want the vector
-			// representing force on aircraft.  However, we do *not* negate
-			// y: we have one negation for that, but then need a second to
-			// account for the fact that in lat-long and the linearized nm
-			// coordinate system we do simulation in +y represents moving
-			// South, not North as it is in grib2. So those two cancel...
+			// Convert wind velocity from m/s to nm/s since the nav code all
+			// works w.r.t nautical miles. AtmosSample.UComponent/VComponent
+			// already store velocity vectors (direction air mass is moving),
+			// which is what we need for simulation - the wind velocity is
+			// added directly to the aircraft's velocity vector.
 			const meterToNm = 0.0005399568
-			v0 := [2]float32{-s0.UComponent * meterToNm, s0.VComponent * meterToNm}
-			v1 := [2]float32{-s1.UComponent * meterToNm, s1.VComponent * meterToNm}
+			v0 := [2]float32{s0.UComponent * meterToNm, s0.VComponent * meterToNm}
+			v1 := [2]float32{s1.UComponent * meterToNm, s1.VComponent * meterToNm}
 			gidx := ipg[0] + ipg[1]*g.Res[0] + z*g.Res[0]*g.Res[1]
 			g.Points[gidx].WindVec = math.Add2f(g.Points[gidx].WindVec, math.Lerp2f(t, v0, v1))
 
