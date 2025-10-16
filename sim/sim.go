@@ -843,7 +843,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				})
 			}
 		}
-	} else {
+	} else if tcp != "INS" {
 		s.lg.Errorf("GetStateUpdate called for non-human controller %s", tcp)
 	}
 
