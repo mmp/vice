@@ -1412,6 +1412,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 
 	if imgui.CollapsingHeaderBoolPtr("Scenario Files", nil) {
 		imgui.BeginGroup()
+		imgui.Text("For testing new scenarios, an additional scenario and/or video map file can be specified.")
+		imgui.Text("Note that vice must be restarted to reload scenarios after they are changed.")
+		imgui.Separator()
 		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
 		imgui.SameLine()
 		if imgui.Button("Select##scenario") {

@@ -65,7 +65,7 @@ func main() {
 	// Load scenarios to find active airports/TRACONs
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
-	scenarioGroups, _, _ := server.LoadScenarioGroups("", "", &e, lg)
+	scenarioGroups, _, _, _ := server.LoadScenarioGroups("", "", &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)

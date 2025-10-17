@@ -47,7 +47,7 @@ type ConnectionManager struct {
 }
 
 func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, lg *log.Logger,
-	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
+	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
@@ -57,7 +57,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 	}
 
 	// Launch local server
-	rpcPort, errorLogger := server.LaunchServerAsync(server.ServerLaunchConfig{
+	rpcPort, errorLogger, extraScenarioErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
 		ExtraScenario: additionalScenario,
 		ExtraVideoMap: additionalVideoMap,
 		ServerAddress: serverAddress,
@@ -84,7 +84,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 		}
 	}
 
-	return cm, errorLogger
+	return cm, errorLogger, extraScenarioErrors
 }
 
 func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlClient, error) {

@@ -1562,8 +1562,12 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 // continue on in the presence of errors; all errors will be printed and
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
+//
+// Returns: scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors
+// If the extra scenario file has errors, they are returned in extraScenarioErrors
+// and that scenario is not loaded, but execution continues.
 func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest, string) {
 	start := time.Now()
 
 	// First load the scenarios.
@@ -1603,11 +1607,16 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 	if e.HaveErrors() {
 		// Don't keep going since we'll likely crash in the following
-		return nil, nil, nil
+		return nil, nil, nil, ""
 	}
 
 	// Load the scenario specified on command line, if any.
+	// Store it separately so we can validate it with a separate error logger
+	var extraScenario *scenarioGroup
+	var extraScenarioFacility string
+	var extraScenarioErrors string
 	if extraScenarioFilename != "" {
+		var extraE util.ErrorLogger
 		fs := func() fs.FS {
 			if filepath.IsAbs(extraScenarioFilename) {
 				return util.RootFS{}
@@ -1615,14 +1624,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				return os.DirFS(".")
 			}
 		}()
-		s := loadScenarioGroup(fs, extraScenarioFilename, e)
+		s := loadScenarioGroup(fs, extraScenarioFilename, &extraE)
 		if s != nil {
-			// These are allowed to redefine an existing scenario.
 			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
-			if scenarioGroups[facility] == nil {
-				scenarioGroups[facility] = make(map[string]*scenarioGroup)
-			}
-			scenarioGroups[facility][s.Name] = s
 
 			// These may have an empty "video_map_file" member, which
 			// is automatically patched up here...
@@ -1630,10 +1634,22 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				if extraVideoMapFilename != "" {
 					s.FacilityAdaptation.VideoMapFile = extraVideoMapFilename
 				} else {
-					e.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
+					extraE.ErrorString("%s: no \"video_map_file\" in scenario and -videomap not specified",
 						extraScenarioFilename)
 				}
 			}
+
+			// Store the scenario for later validation (don't add to scenarioGroups yet)
+			if !extraE.HaveErrors() {
+				extraScenario = s
+				extraScenarioFacility = facility
+			}
+		}
+
+		// Capture any errors from the extra scenario
+		if extraE.HaveErrors() {
+			extraScenarioErrors = extraE.String()
+			lg.Warnf("Extra scenario file has errors and will not be loaded: %s", extraScenarioFilename)
 		}
 	}
 
@@ -1706,6 +1722,38 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		e.Pop()
 	}
 
+	// Validate the extra scenario separately with its own error logger
+	if extraScenario != nil {
+		var extraE util.ErrorLogger
+		extraE.Push("TRACON " + extraScenarioFacility)
+		extraE.Push("Scenario group " + extraScenario.Name)
+
+		// Make sure we have what we need in terms of video maps
+		fa := &extraScenario.FacilityAdaptation
+		if vf := fa.VideoMapFile; vf == "" {
+			extraE.ErrorString("no \"video_map_file\" specified")
+		} else if manifest, ok := mapManifests[vf]; !ok {
+			extraE.ErrorString("no manifest for video map %q found. Options: %s", vf,
+				strings.Join(util.SortedMapKeys(mapManifests), ", "))
+		} else {
+			extraScenario.PostDeserialize(&extraE, simConfigurations, manifest)
+		}
+
+		extraE.Pop()
+		extraE.Pop()
+
+		if extraE.HaveErrors() {
+			extraScenarioErrors = extraE.String()
+			lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", extraScenarioFilename)
+		} else {
+			// Only add to scenarioGroups if validation succeeded
+			if scenarioGroups[extraScenarioFacility] == nil {
+				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
+			}
+			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
+		}
+	}
+
 	// Walk all of the scenario groups to get all of the possible departing aircraft
 	// types to see where V2 is needed in the performance database..
 	acTypes := make(map[string]struct{})
@@ -1731,13 +1779,13 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
-	return scenarioGroups, simConfigurations, mapManifests
+	return scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors
 }
 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, &e, lg)
+	scenarioGroups, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, &e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}

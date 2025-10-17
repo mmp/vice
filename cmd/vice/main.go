@@ -107,7 +107,7 @@ func main() {
 		cliInit()
 
 		var e util.ErrorLogger
-		scenarioGroups, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
@@ -165,7 +165,7 @@ func main() {
 		tracon, scenarioName := parts[0], parts[1]
 
 		var e util.ErrorLogger
-		scenarioGroups, configs, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 			os.Exit(1)
@@ -296,7 +296,8 @@ func main() {
 
 		var mgr *client.ConnectionManager
 		var errorLogger util.ErrorLogger
-		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+		var extraScenarioErrors string
+		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
@@ -335,6 +336,11 @@ func main() {
 
 		if errorLogger.HaveErrors() {
 			ShowFatalErrorDialog(render, plat, lg, "%s", errorLogger.String())
+		}
+
+		// Show non-fatal dialog for extra scenario errors
+		if extraScenarioErrors != "" {
+			ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
 		}
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.

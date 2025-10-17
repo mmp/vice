@@ -72,26 +72,29 @@ func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
 	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
 	util.MonitorMemoryUsage(192 /* trigger MB */, 64 /* delta MB */, lg)
 
-	_, server, e := makeServer(config, lg)
+	_, server, e, extraScenarioErrors := makeServer(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
 	}
+	if extraScenarioErrors != "" {
+		lg.Warnf("Extra scenario file had errors:\n%s", extraScenarioErrors)
+	}
 	server()
 }
 
-func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.ErrorLogger) {
-	rpcPort, server, e := makeServer(config, lg)
+func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.ErrorLogger, string) {
+	rpcPort, server, e, extraScenarioErrors := makeServer(config, lg)
 	if e.HaveErrors() {
-		return 0, e
+		return 0, e, ""
 	}
 
 	go server()
 
-	return rpcPort, e
+	return rpcPort, e, extraScenarioErrors
 }
 
-func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger) {
+func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger, string) {
 	var listener net.Listener
 	var err error
 	var errorLogger util.ErrorLogger
@@ -99,20 +102,20 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	if config.Port == 0 {
 		if listener, err = net.Listen("tcp", ":0"); err != nil {
 			errorLogger.Error(err)
-			return 0, nil, errorLogger
+			return 0, nil, errorLogger, ""
 		}
 		rpcPort = listener.Addr().(*net.TCPAddr).Port
 	} else if listener, err = net.Listen("tcp", ":"+strconv.Itoa(config.Port)); err == nil {
 		rpcPort = config.Port
 	} else {
 		errorLogger.Error(err)
-		return 0, nil, errorLogger
+		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, simConfigurations, mapManifests :=
+	scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors :=
 		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
-		return 0, nil, errorLogger
+		return 0, nil, errorLogger, ""
 	}
 
 	serverFunc := func() {
@@ -145,5 +148,5 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		}
 	}
 
-	return rpcPort, serverFunc, errorLogger
+	return rpcPort, serverFunc, errorLogger, extraScenarioErrors
 }
