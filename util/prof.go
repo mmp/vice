@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/mmp/vice/log"
-	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 type Profiler struct {
@@ -103,15 +103,22 @@ func (p *Profiler) Cleanup() {
 func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 	const nhist = 10
 	var history []float64
+
+	proc, err := process.NewProcess(int32(os.Getpid()))
+	if err != nil {
+		lg.Errorf("Failed to create process monitor: %v", err)
+		return
+	}
+
 	go func() {
 		t := time.Tick(1 * time.Second)
 		for {
 			<-t
 
-			if usage, err := cpu.Percent(0, false); err != nil {
-				lg.Errorf("cpu.Percent: %v", err)
+			if usage, err := proc.CPUPercent(); err != nil {
+				lg.Errorf("process.CPUPercent: %v", err)
 			} else {
-				history = append(history, usage[0])
+				history = append(history, usage)
 				if n := len(history); n > nhist {
 					history = history[1:]
 
