@@ -1052,8 +1052,7 @@
                 }
             ],
             "wind": {
-                "direction": 70,
-                "speed": 10
+              "direction": "40-100"
             }
         },
         "KSBA 25/15": {
@@ -1156,8 +1155,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "speed": 8
+              "direction": "220-280"
             }
         }
     },

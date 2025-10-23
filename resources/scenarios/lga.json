@@ -1732,9 +1732,7 @@
         }
       ],
       "wind": {
-        "direction": 160,
-        "gust": 0,
-        "speed": 15
+        "direction": "115-175"
       }
     },
     "KLGA Depart 13 Land 4": {
@@ -1846,9 +1844,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "gust": 0,
-        "speed": 14
+        "direction": "85-145"
       }
     },
     "KLGA Depart 31 Land 22": {
@@ -1960,9 +1956,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "gust": 0,
-        "speed": 14
+        "direction": "265-325"
       }
     },
     "KLGA Depart 31 Land 4": {
@@ -2074,9 +2068,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "gust": 0,
-        "speed": 14
+        "direction": "295-355"
       }
     },
     "KLGA Depart 4 Land 31": {
@@ -2189,9 +2181,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "gust": 0,
-        "speed": 14
+        "direction": "355-55"
       }
     },
     "KLGA Final Land 4 Dep 13": {
@@ -2231,8 +2221,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 60,
-        "speed": 12
+        "direction": "10-70"
       }
     },
     "KLGA Final Land 4 Dep 31": {
@@ -2272,8 +2261,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 60,
-        "speed": 12
+        "direction": "10-70"
       }
     },
     "KLGA Final ILS13": {
@@ -2312,8 +2300,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 110,
-        "speed": 12
+        "direction": "100-160"
       }
     },
     "KLGA Final Land 22 Dep 13": {
@@ -2352,8 +2339,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 200,
-        "speed": 12
+        "direction": "190-250"
       }
     },
     "KLGA Final Land 22 Dep 31": {
@@ -2392,8 +2378,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 240,
-        "speed": 12
+        "direction": "190-250"
       }
     },
     "KLGA Final Land RNAV X 31": {
@@ -2432,8 +2417,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 350,
-        "speed": 12
+        "direction": "280-340"
       }
     },
     "KLGA Final Land LOC 31": {
@@ -2472,8 +2456,7 @@
       ],
       "range": 23,
       "wind": {
-        "direction": 320,
-        "speed": 12
+        "direction": "280-340"
       }
     }
   },

@@ -12839,9 +12839,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "gust": 15,
-        "speed": 5
+        "direction": "100-160"
       }
     }
   },

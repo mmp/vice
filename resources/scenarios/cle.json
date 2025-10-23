@@ -3954,8 +3954,7 @@
                                 }
                             ],
                             "wind": {
-                                "direction": 60,
-                                "speed": 10
+                              "direction": "30-90"
                             }
                         },
                         "KCLE Final South": {
@@ -3991,9 +3990,7 @@
                                 ],
                                 "default_maps": [ "CLE-001 (RY24)" ],
                                 "wind": {
-                                    "direction": 270,
-                                    "gust": 8,
-                                    "speed": 5
+                                  "direction": "210-270"
                                 }
                             },
                             "KCLE Feeder South": {
@@ -4029,9 +4026,7 @@
                                     ],
                                     "default_maps": [ "CLE-001 (RY24)" ],
                                     "wind": {
-                                        "direction": 270,
-                                        "gust": 8,
-                                        "speed": 5
+                                      "direction": "210-270"
                                     }
                                 },
                                 "KCLE Feeder North": {
@@ -4067,9 +4062,7 @@
                                         ],
                                         "default_maps": [ "CLE-003 (RY6)" ],
                                         "wind": {
-                                            "direction": 70,
-                                            "gust": 8,
-                                            "speed": 5
+                                          "direction": "30-90"
                                         }
                                     },
                             "KCLE Final North": {
@@ -4105,9 +4098,7 @@
                                     ],
                                     "default_maps": [ "CLE-003 (RY6)" ],
                                     "wind": {
-                                        "direction": 60,
-                                        "gust": 8,
-                                        "speed": 5
+                                      "direction": "30-90"
                                     }
                                 },
                         "KCLE South": {
@@ -4226,8 +4217,7 @@
                                 }
                             ],
                             "wind": {
-                                "direction": 280,
-                                "speed": 10
+                              "direction": "210-270"
                             }
                         }
                     },

@@ -1326,8 +1326,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "330-30"
       },
       "default_maps": [
         "JRV North",
@@ -1437,8 +1436,7 @@
         }
       ],
       "wind": {
-        "direction": 130,
-        "speed": 10
+        "direction": "150-210"
       },
       "default_maps": [
         "JRV South",

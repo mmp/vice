@@ -3987,8 +3987,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "35-95"
       }
     },
 	"Del Rey - LAE/SNAN": {
@@ -4101,8 +4100,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "35-95"
       }
     },
     "Del Rey - LAW/SNAS": {
@@ -4213,8 +4211,7 @@
         }
       ],
       "wind": {
-        "direction": 260,
-        "speed": 7
+        "direction": "215-275"
       }
     },
 	"Del Rey - LAW/SNAN": {
@@ -4323,8 +4320,7 @@
         }
       ],
       "wind": {
-        "direction": 260,
-        "speed": 7
+        "direction": "215-275"
       }
     },
     "Del Rey - Over Ocean": {
@@ -4374,8 +4370,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "220-280"
       }
     }
   },

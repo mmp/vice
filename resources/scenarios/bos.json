@@ -57715,8 +57715,7 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 10
+        "direction": "35-95"
       }
     },
     "BOS 4L/9+4R": {
@@ -57943,9 +57942,8 @@
         }
       ],
       "wind": {
-        "direction": 40,
-        "speed": 30
-	  }
+        "direction": "35-95"
+      }
     },
     "BOS 4R+15C/9": {
         "arrival_runways": [
@@ -58153,8 +58151,7 @@
           }
         ],
         "wind": {
-          "direction": 70,
-          "speed": 7
+          "direction": "35-95"
         }
       },
     "BOS 15/9": {
@@ -58343,8 +58340,7 @@
           }
         ],
         "wind": {
-          "direction": 170,
-          "speed": 20
+          "direction": "90-150"
         }
       },
     "BOS 27/33": {
@@ -58528,8 +58524,7 @@
           }
         ],
         "wind": {
-          "direction": 310,
-          "speed": 15
+          "direction": "280-340"
         }
     },
     "BOS 33/27": {
@@ -58725,8 +58720,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "speed": 15
+        "direction": "275-335"
       }
     },
     "BOS 22/15": {
@@ -58910,8 +58904,7 @@
           }
         ],
         "wind": {
-          "direction": 140,
-          "speed": 8
+          "direction": "140-200"
         }
     },
     "BOS 22/22": {
@@ -59095,8 +59088,7 @@
           }
         ],
         "wind": {
-          "direction": 290,
-          "speed": 15
+          "direction": "190-250"
         }
     },
     "BOS 27/22": {
@@ -59280,8 +59272,7 @@
           }
         ],
         "wind": {
-          "direction": 260,
-          "speed": 12
+          "direction": "185-245"
         }
     },
     "BOS 27+32/33": {
@@ -59471,8 +59462,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "speed": 17
+        "direction": "315-15"
       }
     },
     "BOS 33+32/27": {
@@ -59678,8 +59668,7 @@
           }
         ],
         "wind": {
-          "direction": 350,
-          "speed": 15
+          "direction": "290-350"
         }
     },
     "BOS FV 4L/4R ": {
@@ -59764,8 +59753,7 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 10
+        "direction": "25-85"
       }
     }
     },

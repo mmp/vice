@@ -914,8 +914,7 @@
         }
       ],
       "wind": {
-        "direction": 50,
-        "speed": 5
+        "direction": "20-80"
       }
     },
     "KGSO Runway 23L/23R, KINT Runway 15": {
@@ -988,8 +987,7 @@
         }
       ],
       "wind": {
-        "direction": 50,
-        "speed": 5
+        "direction": "200-260"
       }
     }
       },

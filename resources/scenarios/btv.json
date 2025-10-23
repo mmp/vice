@@ -332,8 +332,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "speed": 12
+        "direction": "120-180"
       },
       "default_maps": [
         "BTV MAIN"
@@ -412,8 +411,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "speed": 21
+        "direction": "300-0"
       },
       "default_maps": [
         "BTV MAIN"

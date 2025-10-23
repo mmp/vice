@@ -514,8 +514,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "speed": 8
+        "direction": "190-250"
       }
     },
     "KGSP Runway 4": {
@@ -565,8 +564,7 @@
         }
       ],
       "wind": {
-        "direction": 40,
-        "speed": 8
+        "direction": "10-70"
       }
     }
   },

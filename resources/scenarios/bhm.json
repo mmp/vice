@@ -842,8 +842,7 @@
         }
       ],
       "wind": {
-        "direction": 240,
-        "speed": 5
+        "direction": "210-270"
       }
     },
     "KBHM Runway 6": {
@@ -906,8 +905,7 @@
         }
       ],
       "wind": {
-        "direction": 60,
-        "speed": 5
+        "direction": "30-90"
       }
     }
   },

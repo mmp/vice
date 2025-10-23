@@ -11105,9 +11105,7 @@
         }
       ],
       "wind": {
-        "direction": 140,
-        "gust": 17,
-        "speed": 12
+        "direction": "100-160"
       }
     },
     "KJFK Depart 13R Land 13L/22L": {
@@ -11246,9 +11244,7 @@
         }
       ],
       "wind": {
-        "direction": 140,
-        "gust": 17,
-        "speed": 12
+        "direction": "125-185"
       }
     },
     "KJFK Depart 22R Land 22 L/R": {
@@ -11406,11 +11402,7 @@
         }
       ],
       "wind": {
-        "KJFK": "0/220/12, 1000/230/10, 3000/290/15, 10000/280/35",
-        "KHPN": "0/240/8, 1000/200/5, 3000/270/10, 10000/240/25",
-        "KLGA": "0/240/11, 1000/220/10, 3000/270/10, 10000/280/25",
-        "KACK": "0/200/7, 1000/240/30, 3000/260/30, 10000/240/40",
-        "KBDR": "0/210/10, 1000/220/15, 3000/240/20, 10000/270/30"
+        "direction": "200-240"
       }
     },
     "KJFK Depart 31L Land 31L/31R": {
@@ -11548,9 +11540,7 @@
         }
       ],
       "wind": {
-        "direction": 330,
-        "gust": 17,
-        "speed": 12
+        "direction": "280-340"
       }
     },
     "KJFK Depart 4L Land 4L/R": {
@@ -11688,9 +11678,7 @@
         }
       ],
       "wind": {
-        "direction": 30,
-        "gust": 25,
-        "speed": 19
+        "direction": "10-70"
       }
     },
     "KJFK Finals 4": {
@@ -11726,8 +11714,7 @@
       ],
       "default_maps": [ "JFK ARR/DEP RWY 4L/R" ],
       "wind": {
-        "direction": 260,
-        "speed": 9
+        "direction": "10-70"
       }
     },
     "KJFK Finals 13": {
@@ -11763,8 +11750,7 @@
       ],
       "default_maps": [ "JFK ARR/DEP RWY 13L/R" ],
       "wind": {
-        "direction": 260,
-        "speed": 9
+        "direction": "100-160"
       }
     },
     "KJFK Finals 22": {
@@ -11797,8 +11783,7 @@
       ],
       "default_maps": [ "JFK ARR/DEP RWY 22L/R" ],
       "wind": {
-        "direction": 260,
-        "speed": 9
+        "direction": "190-250"
       }
     },
     "KJFK Finals 31": {
@@ -11831,8 +11816,7 @@
       ],
       "default_maps": [ "JFK ARR/DEP RWY 31L/R" ],
       "wind": {
-        "direction": 260,
-        "speed": 9
+        "direction": "280-340"
       }
     }
   },

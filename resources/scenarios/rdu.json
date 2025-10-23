@@ -1812,8 +1812,7 @@
                 }
             ],
             "wind": {
-                "direction": 70,
-                "speed": 8
+              "direction": "20-80"
             }
         },
         "KRDU West": {
@@ -1875,8 +1874,7 @@
                 }
             ],
             "wind": {
-                "direction": 70,
-                "speed": 8
+              "direction": "200-260"
             }
         }
     },

@@ -290,8 +290,7 @@
         }
       ],
       "wind": {
-        "direction": 270,
-        "speed": 12
+        "direction": "250-310"
       },
       "default_maps": [
         "STARS-BIL_MVA__Minimum Vectoring Altitudes",
@@ -333,8 +332,7 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 9
+        "direction": "70-130"
       },
       "default_maps": [
         "STARS-BIL_MVA__Minimum Vectoring Altitudes",

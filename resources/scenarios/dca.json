@@ -4560,9 +4560,7 @@
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
-        "direction": 30,
-        "gust": 12,
-        "speed": 7
+        "direction": "330-30"
       },
       "departure_runways": [
         {
@@ -4648,9 +4646,7 @@
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "140-200"
       },
       "departure_runways": [
         {
@@ -4715,9 +4711,7 @@
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "140-200"
       }
     },
 	"MTV - LURAY DCA North": {
@@ -4770,9 +4764,7 @@
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
-        "direction": 320,
-        "gust": 12,
-        "speed": 7
+        "direction": "320-20"
       }
     },
 	"MTV - FLUKY South": {
@@ -4810,12 +4802,7 @@
 		"ZDC_20_CTR",
 		"ZDC_32_CTR"
       ],
-      "default_maps": [ "MTV South" ],
-      "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
-      }
+      "default_maps": [ "MTV South" ]
     },
 	"MTV - FLUKY North": {
       "inbound_rates": {
@@ -4852,12 +4839,7 @@
 		"ZDC_20_CTR",
 		"ZDC_32_CTR"
       ],
-      "default_maps": [ "MTV North" ],
-      "wind": {
-        "direction": 320,
-        "gust": 12,
-        "speed": 7
-      }
+      "default_maps": [ "MTV North" ]
     },
 	"MTV - KRANT/TYSON DCA South": {
       "arrival_runways": [
@@ -4909,9 +4891,7 @@
       ],
       "default_maps": [ "MTV South" ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "140-200"
       },
 	  "departure_runways": [
         {
@@ -4976,9 +4956,7 @@
       ],
       "default_maps": [ "MTV North" ],
       "wind": {
-        "direction": 320,
-        "gust": 12,
-        "speed": 7
+        "direction": "320-20"
       },
 	  "departure_runways": [
         {
@@ -5029,8 +5007,7 @@
     ],
     "default_maps": [ "MTV North" ],
     "wind": {
-      "direction": 20,
-      "speed": 5
+      "direction": "340-40"
     }
   },
   "MTV - DCA S Final": {
@@ -5069,9 +5046,8 @@
   ],
   "default_maps": [ "MTV South" ],
   "wind": {
-    "direction": 190,
-    "speed": 5
-  } 
+    "direction": "160-220"
+  }
 }
 },
 "stars_config": {

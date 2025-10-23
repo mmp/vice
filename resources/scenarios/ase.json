@@ -410,8 +410,7 @@
                 }
             ],
             "wind": {
-                "direction": 360,
-                "speed": 10
+              "direction": "205-265"
             }
         }
     },

@@ -44351,9 +44351,7 @@
                   }
                 ],
                 "wind": {
-                "direction": 280,
-                "gust": 2,
-                "speed": 1
+                  "direction": "235-295"
                 }
                 },
                 "A80 Combined (East)": {
@@ -44987,9 +44985,7 @@
                         }
                       ],
                       "wind": {
-                      "direction": 280,
-                      "gust": 2,
-                      "speed": 1
+                        "direction": "55-115"
                       }
                       },
                 "KATL West": {
@@ -45287,9 +45283,7 @@
                         }
                       ],
                       "wind": {
-                      "direction": 280,
-                      "gust": 2,
-                      "speed": 1
+                        "direction": "235-295"
                       }
                       },
             "KATL East": {
@@ -45617,10 +45611,8 @@
                   }
                 ],
                 "wind": {
-                "direction": 80,
-                "gust": 2,
-                "speed": 1
-                  }
+                  "direction": "55-115"
+                }
                 },
             "KATL West Final Trips": {
               "airspace": {
@@ -45671,8 +45663,7 @@
                 "ATL_CTR"
               ],
               "wind": {
-                "direction": 270,
-                "speed": 5
+                "direction": "240-300"
               }
             },
             "KATL West Final Duals": {
@@ -45720,8 +45711,7 @@
                 "ATL_CTR"
               ],
               "wind": {
-                "direction": 270,
-                "speed": 5
+                "direction": "235-295"
               }
             }
       }

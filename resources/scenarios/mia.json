@@ -5340,8 +5340,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "speed": 8
+        "direction": "60-120"
       }
     },
     "KMIA West (No Sats)": {
@@ -5450,8 +5449,7 @@
         }
       ],
       "wind": {
-        "direction": 290,
-        "speed": 8
+        "direction": "240-300"
       }
     },
     "KMIA East (Sats - Minor Errors)": {
@@ -5606,8 +5604,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "speed": 8
+        "direction": "60-120"
       }
     },
     "KMIA West (Sats - Minor Errors)": {
@@ -5766,8 +5763,7 @@
         }
       ],
       "wind": {
-        "direction": 290,
-        "speed": 8
+        "direction": "240-300"
       }
     }
   },

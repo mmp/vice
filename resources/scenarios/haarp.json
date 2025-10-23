@@ -553,8 +553,7 @@
             }
         ],
         "wind": {
-            "direction": 340,
-            "speed": 8
+          "direction": "280-340"
         }
     },
     "LGA - LGA + HPN S": {
@@ -632,8 +631,7 @@
             }
         ],
         "wind": {
-            "direction": 160,
-            "speed": 8
+          "direction": "280-340"
         }
     }
   },

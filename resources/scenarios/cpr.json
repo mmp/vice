@@ -360,8 +360,7 @@
                 }
             ],
             "wind": {
-                "direction": 240,
-                "speed": 11
+              "direction": "205-265"
             }
         },
         "Land East": {
@@ -418,8 +417,7 @@
                 }
             ],
             "wind": {
-                "direction": 50,
-                "speed": 10
+              "direction": "25-85"
             }
         }
     },

@@ -1227,8 +1227,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 6
+        "direction": "250-310"
       }
     },
     "PIT West (ARR 28L/R + 32)": {
@@ -1313,8 +1312,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 6
+        "direction": "255-315"
       }
     },
     "PIT East": {
@@ -1385,8 +1383,7 @@
         }
       ],
       "wind": {
-        "direction": 100,
-        "speed": 6
+        "direction": "80-140"
       }
     }
   },

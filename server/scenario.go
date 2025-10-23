@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
@@ -59,7 +60,7 @@ type scenario struct {
 	DefaultSplit        string                   `json:"default_split"`
 	VirtualControllers  []string                 `json:"controllers"`
 
-	_ any `json:"wind"` // FIXME: REMOVE
+	WindSpecifier *wx.WindSpecifier `json:"wind,omitempty"`
 
 	// Map from inbound flow names to a map from airport name to default rate,
 	// with "overflights" a special case to denote overflights
@@ -82,6 +83,15 @@ type scenario struct {
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
+
+	// Validate wind specifier if present
+	if s.WindSpecifier != nil {
+		e.Push("\"wind\"")
+		if err := s.WindSpecifier.Validate(); err != nil {
+			e.Error(err)
+		}
+		e.Pop()
+	}
 
 	// Temporary backwards-compatibility for inbound flows
 	if len(s.ArrivalGroupDefaultRates) > 0 {
@@ -1499,6 +1509,7 @@ func initializeSimConfigurations(sg *scenarioGroup, simConfigurations map[string
 			ArrivalRunways:      scenario.ArrivalRunways,
 			PrimaryAirport:      sg.PrimaryAirport,
 			MagneticVariation:   sg.MagneticVariation,
+			WindSpecifier:       scenario.WindSpecifier,
 		}
 
 		// All scenarios now have SplitConfigurations (auto-populated if
@@ -1880,6 +1891,7 @@ func CreateNewSimConfiguration(config *Configuration, scenarioGroup *scenarioGro
 		ReportingPoints:    scenarioGroup.ReportingPoints,
 		MagneticVariation:  scenarioGroup.MagneticVariation,
 		NmPerLongitude:     scenarioGroup.NmPerLongitude,
+		WindSpecifier:      scenario.WindSpecifier,
 		Center:             util.Select(scenario.Center.IsZero(), scenarioGroup.FacilityAdaptation.Center, scenario.Center),
 		Range:              util.Select(scenario.Range == 0, scenarioGroup.FacilityAdaptation.Range, scenario.Range),
 		DefaultMaps:        scenario.DefaultMaps,

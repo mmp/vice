@@ -1678,8 +1678,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "speed": 9
+        "direction": "140-200"
       }
     },
     "KOKC North": {
@@ -1741,8 +1740,7 @@
         }
       ],
       "wind": {
-        "direction": 320,
-        "speed": 9
+        "direction": "320-20"
       }
     }
   },

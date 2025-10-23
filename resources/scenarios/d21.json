@@ -3211,8 +3211,7 @@
                 }
             ],
             "wind": {
-                "direction": 360,
-                "speed": 8
+              "direction": "5-65"
             }
         },
         "North Flow (DTW ARR: 4R/4L/3R)": {
@@ -3345,8 +3344,7 @@
                 }
             ],
             "wind": {
-                "direction": 360,
-                "speed": 8
+              "direction": "5-65"
             }
         },
         "South Flow (DTW ARR: 22R/21L)": {
@@ -3473,8 +3471,7 @@
                 }
             ],
             "wind": {
-                "direction": 200,
-                "speed": 6
+              "direction": "185-245"
             }
         },
         "South Flow (DTW ARR: 22L/22R/21L)": {
@@ -3607,8 +3604,7 @@
                 }
             ],
             "wind": {
-                "direction": 200,
-                "speed": 6
+              "direction": "185-245"
             }
         },
         "West Flow (DTW ARR: 27L/27R)": {
@@ -3735,10 +3731,8 @@
                 }
             ],
             "wind": {
-                "direction": 270,
-                "speed": 21,
-                "gust": 29
-              }
+              "direction": "240-300"
+            }
         },
         "South Flow - DTW Final (ARR: 22R/21L)": {
                             "arrival_runways": [
@@ -3787,8 +3781,7 @@
                                 ],
                                 "default_maps": ["DTW-007 (SF-ARR FEEDER)", "DTW-013 (22R Z)", "DTW-017 (21L)"],
                                 "wind": {
-                                    "direction": 200,
-                                    "speed": 7
+                                  "direction": "185-245"
                                 }
                             },
         "North Flow - DTW Final (ARR: 4L/3R)": {
@@ -3838,8 +3831,7 @@
                                 ],
                                 "default_maps": ["DTW-009 (NF-ARR FEEDER)", "DTW-014 (4L Z)", "DTW-018 (3R)"],
                                 "wind": {
-                                    "direction": 70,
-                                    "speed": 12
+                                  "direction": "5-65"
                                 }
                             },
         "West Flow - DTW Final (ARR: 27L/27R)": {
@@ -3889,9 +3881,7 @@
                                 ],
                                 "default_maps": ["DTW-011 (WF-ARR FEEDER)", "DTW-019 (27R)", "DTW-020 (27L)"],
                                 "wind": {
-                                    "direction": 270,
-                                    "gust": 27,
-                                    "speed": 17
+                                  "direction": "240-300"
                                 }
                             }
     },

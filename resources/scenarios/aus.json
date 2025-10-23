@@ -1539,8 +1539,7 @@
 				}
 			],
 			"wind": {
-				"direction": 160,
-				"speed": 10
+			  "direction": "150-210"
 			}
 		},
 		"AUS TRACON North": {
@@ -1677,8 +1676,7 @@
 				}
 			],
 			"wind": {
-				"direction": 330,
-				"speed": 10
+			  "direction": "330-30"
 			}
 		}
 	},

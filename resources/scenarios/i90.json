@@ -2348,8 +2348,7 @@
                 }
             ],
             "wind": {
-                "direction": 200,
-                "speed": 7
+              "direction": "135-195"
             }
         },
         "I90 Consolidated SE": {
@@ -2606,8 +2605,7 @@
                 }
             ],
             "wind": {
-                "direction": 110,
-                "speed": 9
+              "direction": "105-165"
             }
         },
         "IAH Finals West": {
@@ -2658,8 +2656,7 @@
                 "IAH FINAL WEST FLOW ALT"
             ],
             "wind": {
-                "direction": 270,
-                "speed": 9
+              "direction": "235-295"
             }
         }
     },

@@ -2384,8 +2384,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "gust": 6
+                "direction": "230-290"
             }
         },
 		"Empire - West/LAE": {
@@ -2547,8 +2546,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "gust": 6
+                "direction": "230-290"
             }
         },
         "Springs - 31L": {
@@ -2586,8 +2584,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "gust": 6
+                "direction": "230-290"
             }
         },
         "Springs - 13R": {
@@ -2625,8 +2622,7 @@
                 }
             ],
             "wind": {
-                "direction": 100,
-                "gust": 12
+                "direction": "70-130"
             }
         },
         "Empire - East/LAE": {
@@ -2788,8 +2784,7 @@
                 }
             ],
             "wind": {
-                "direction": 30,
-                "gust": 9
+                "direction": "360-60"
             }
         },
 		"Empire - East/LAW": {
@@ -2952,8 +2947,7 @@
                 }
             ],
             "wind": {
-                "direction": 30,
-                "gust": 9
+                "direction": "10-50"
             }
         },
 		"Empire - Over Ocean": {
@@ -3059,8 +3053,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "gust": 5
+                "direction": "240-280"
             }
         }		
     },

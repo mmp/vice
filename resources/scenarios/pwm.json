@@ -286,8 +286,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 12
+        "direction": "260-320"
       },
       "default_maps": [
         "PWM MAIN",
@@ -321,8 +320,7 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 12
+        "direction": "80-140"
       },
       "default_maps": [
         "PWM MAIN",

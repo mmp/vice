@@ -2473,9 +2473,7 @@
         }
       ],
       "wind": {
-        "direction": 190,
-        "gust": 17,
-        "speed": 12
+        "direction": "210-270"
       }
     },
     "KISP Depart 6 Land 6": {
@@ -2634,9 +2632,7 @@
       }
     ],
     "wind": {
-      "direction": 100,
-      "gust": 17,
-      "speed": 12
+      "direction": "30-90"
     }
   },
   "KISP Depart 15R Land 15R": {
@@ -2796,9 +2792,7 @@
       }
     ],
     "wind": {
-      "direction": 150,
-      "gust": 17,
-      "speed": 12
+      "direction": "120-180"
     }
   },
   "KISP Depart 33L/R Land 33L/R": {
@@ -2957,9 +2951,7 @@
       }
     ],
     "wind": {
-      "direction": 330,
-      "gust": 17,
-      "speed": 12
+      "direction": "300-0"
     }
   }
   },

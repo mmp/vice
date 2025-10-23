@@ -981,8 +981,7 @@
         }
       ],
       "wind": {
-        "direction": 230,
-        "speed": 13
+        "direction": "200-260"
       }
     },
     "KIND Northeast": {
@@ -1090,8 +1089,7 @@
         }
       ],
       "wind": {
-        "direction": 50,
-        "speed": 13
+        "direction": "20-80"
       }
     },
     "KIND Northwest": {
@@ -1190,8 +1188,7 @@
         }
       ],
       "wind": {
-        "direction": 320,
-        "speed": 13
+        "direction": "290-350"
       }
     },
     "KIND Southeast": {
@@ -1290,8 +1287,7 @@
         }
       ],
       "wind": {
-        "direction": 140,
-        "speed": 13
+        "direction": "110-170"
       }
     }
   },

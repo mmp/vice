@@ -1583,8 +1583,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "340-40"
       }
     },
     "Milwaukee East Flow": {
@@ -1725,8 +1724,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "40-100"
       }
     },
     "Milwaukee West Flow": {
@@ -1867,8 +1865,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "220-280"
       }
     },
     "Milwaukee South Flow": {
@@ -2009,8 +2006,7 @@
         }
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "190-250"
       }
     },
     "Milwaukee 19R Finals": {
@@ -2045,8 +2041,7 @@
         "MKE RWY 19R"
       ],
       "wind": {
-        "direction": 200,
-        "speed": 10
+        "direction": "160-220"
       }
     },
     "Milwaukee 1L Finals": {
@@ -2084,8 +2079,7 @@
         "MKE RWY 1L"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "340-40"
       }
     }
   },

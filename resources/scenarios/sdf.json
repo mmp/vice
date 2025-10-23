@@ -707,9 +707,7 @@
       }
     ],
     "wind": {
-      "direction": 200,
-      "gust": 19,
-      "speed": 13
+      "direction": "140-200"
     }
   },
   "KSDF North": {
@@ -768,9 +766,7 @@
       }
     ],
       "wind": {
-          "direction": 330,
-          "gust": 19,
-          "speed": 13
+        "direction": "320-20"
       }
   }
 },

@@ -712,8 +712,7 @@
                 }
             ],
             "wind": {
-                "direction": 50,
-                "speed": 12
+              "direction": "35-95"
             }
         },
         "ABQ - West Flow": {
@@ -770,8 +769,7 @@
                 }
             ],
             "wind": {
-                "direction": 250,
-                "speed": 12
+              "direction": "215-275"
             }
         },
 		"ABQ - Northeast Flow": {
@@ -823,8 +821,7 @@
                 }
             ],
             "wind": {
-                "direction": 20,
-                "speed": 17
+              "direction": "0-60"
             }
         },
 		"ABQ - Southwest Flow": {
@@ -876,8 +873,7 @@
                 }
             ],
             "wind": {
-                "direction": 210,
-                "speed": 17
+              "direction": "180-240"
             }
         }
     },

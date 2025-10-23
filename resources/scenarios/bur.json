@@ -2053,8 +2053,7 @@
                 }
             ],
             "wind": {
-                "direction": 150,
-                "speed": 5
+              "direction": "85-145"
             }
         },
 		"Burbank - 08/15 LAE": {
@@ -2207,9 +2206,7 @@
                 }
             ],
             "wind": {
-                "direction": 100,
-                "gust": 18,
-                "speed": 11
+              "direction": "85-145"
             }
         },
         "Burbank - 26/33 LAW": {
@@ -2344,9 +2341,7 @@
                 }
             ],
             "wind": {
-                "direction": 300,
-                "gust": 28,
-                "speed": 15
+              "direction": "280-340"
             }
         },
 		"Burbank - 26/33 LAE": {
@@ -2493,9 +2488,7 @@
                 }
             ],
             "wind": {
-                "direction": 20,
-                "gust": 22,
-                "speed": 15
+              "direction": "280-340"
             }
         }
     },

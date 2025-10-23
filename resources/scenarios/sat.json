@@ -1195,8 +1195,7 @@
 				}
 			],
 			"wind": {
-				"direction": 30,
-				"speed": 9
+			  "direction": "55-115"
 			}
 		},
 		"SAT DEP 31L/R LAND 31L + 4": {
@@ -1337,8 +1336,7 @@
 				}
 			],
 			"wind": {
-				"direction": 330,
-				"speed": 10
+			  "direction": "290-350"
 			}
 		},
 		"SAT LAND/DEP 13R": {
@@ -1473,8 +1471,7 @@
 				}
 			],
 			"wind": {
-				"direction": 130,
-				"speed": 15
+			  "direction": "100-160"
 			}
 		},
 		"SAT LAND/DEP 31L": {
@@ -1593,8 +1590,7 @@
 				}
 			],
 			"wind": {
-				"direction": 310,
-				"speed": 15
+			  "direction": "280-340"
 			}
 		}
 	},

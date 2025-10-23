@@ -5365,8 +5365,7 @@
       ],
       "default_maps": [ "PHL West" ],
       "wind": {
-        "direction": 290,
-        "speed": 8
+        "direction": "190-250"
       }
     },
     "KPHL Depart 27L Land 27R/35": {
@@ -5436,9 +5435,7 @@
         }
       ],
       "wind": {
-        "direction": 290,
-        "gust": 17,
-        "speed": 12
+        "direction": "265-325"
       }
     },
     "KPHL Depart 9L Land 9R/17": {
@@ -5508,9 +5505,7 @@
         }
       ],
       "wind": {
-        "direction": 70,
-        "gust": 24,
-        "speed": 17
+        "direction": "85-145"
       }
     }
   },

@@ -1157,8 +1157,7 @@
                 }
             ],
             "wind": {
-                "direction": 120,
-                "speed": 14
+              "direction": "10-70"
             }
         },
 		"ANC 07/15": {
@@ -1227,8 +1226,7 @@
                 }
             ],
             "wind": {
-                "direction": 120,
-                "speed": 14
+              "direction": "55-115"
             }
         },
         "ANC 25/15": {
@@ -1285,8 +1283,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "speed": 8
+              "direction": "170-230"
             }
         },
 		"ANC Straight 33": {
@@ -1346,9 +1343,7 @@
                 }
             ],
             "wind": {
-                "direction": 320,
-                "speed": 20,
-				"gust": 5
+              "direction": "300-0"
             }
         }
     },

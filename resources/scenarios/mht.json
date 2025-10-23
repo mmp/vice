@@ -894,9 +894,7 @@
                 }
             ],
             "wind": {
-                "direction": 210,
-                "gust": 15,
-                "speed": 7
+              "direction": "160-220"
             }
         },
         "KMHT North": {
@@ -961,9 +959,7 @@
                 }
             ],
             "wind": {
-                "direction": 10,
-                "gust": 15,
-                "speed": 7
+              "direction": "340-40"
             }
         }
     },

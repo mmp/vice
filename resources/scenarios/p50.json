@@ -3610,8 +3610,7 @@
                 }
             ],
             "wind": {
-                "direction": 280,
-                "speed": 12
+              "direction": "225-285"
             }
         },
         "P50 - East": {
@@ -3710,8 +3709,7 @@
                 }
             ],
             "wind": {
-                "direction": 90,
-                "speed": 9
+              "direction": "45-105"
             }
         },
 		"P50 - NAA North": {
@@ -3793,8 +3791,7 @@
                 }
             ],
             "wind": {
-                "direction": 70,
-                "speed": 9
+              "direction": "275-335"
             }
         },
 		"P50 - NAA South": {
@@ -3876,8 +3873,7 @@
                 }
             ],
             "wind": {
-                "direction": 70,
-                "speed": 9
+              "direction": "180-240"
             }
         },
 		"PHX - Finals East": {
@@ -3937,8 +3933,7 @@
             ],
             "default_maps": ["PHX170 EFINSAT"],
             "wind": {
-                "direction": 70,
-                "speed": 12
+              "direction": "45-105"
             }
         },
 		"PHX - Finals West": {
@@ -3998,8 +3993,7 @@
             ],
             "default_maps": ["PHX171 WFINSAT"],
             "wind": {
-                "direction": 250,
-                "speed": 12
+              "direction": "225-285"
             }
         }
     },

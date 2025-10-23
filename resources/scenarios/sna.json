@@ -1676,8 +1676,7 @@
                 }
             ],
             "wind": {
-                "direction": 210,
-                "speed": 6
+              "direction": "170-230"
             }
         },
 		"Coast - SNAS/LAE": {
@@ -1780,8 +1779,7 @@
                 }
             ],
             "wind": {
-                "direction": 140,
-                "speed": 15
+              "direction": "170-230"
             }
         },
         "Coast - SNAN/LAXW": {
@@ -1888,9 +1886,7 @@
                 }
             ],
             "wind": {
-                "direction": 340,
-                "speed": 15,
-				"gust": 22
+              "direction": "350-50"
             }
         },
 		"Coast - SNAN/LAXE": {
@@ -1993,9 +1989,7 @@
                 }
             ],
             "wind": {
-                "direction": 70,
-                "speed": 15,
-				"gust": 22
+              "direction": "350-50"
             }
         },
 		"Coast - SNAS Finals": {
@@ -2050,8 +2044,7 @@
             ],
             "default_maps": ["400S CB LWSS SCT"],
             "wind": {
-                "direction": 210,
-                "speed": 9
+              "direction": "170-230"
             }
         }
     },

@@ -1136,8 +1136,7 @@
         }
       ],
       "wind": {
-        "direction": 190,
-        "speed": 12
+        "direction": "160-220"
       },
       "default_maps": [
         "ALB MAIN"
@@ -1209,8 +1208,7 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 12
+        "direction": "70-130"
       },
       "default_maps": [
         "ALB MAIN"
@@ -1282,8 +1280,7 @@
             }
         ],
         "wind": {
-            "direction": 240,
-            "speed": 11
+          "direction": "250-310"
         },
         "default_maps": [
             "ALB MAIN"
@@ -1355,8 +1352,7 @@
         }
       ],
       "wind": {
-        "direction": 360,
-        "speed": 12
+        "direction": "340-40"
       },
       "default_maps": [
         "ALB MAIN"
@@ -1386,8 +1382,7 @@
         "BOS_22_CTR"
       ],
       "wind": {
-        "direction": 360,
-        "speed": 12
+        "direction": "340-40"
       },
       "default_maps": [
         "ALB MAIN"
@@ -1417,8 +1412,7 @@
         "BOS_22_CTR"
       ],
       "wind": {
-        "direction": 210,
-        "speed": 12
+        "direction": "160-220"
       },
       "default_maps": [
         "ALB MAIN"
@@ -1448,8 +1442,7 @@
         "BOS_22_CTR"
       ],
       "wind": {
-        "direction": 110,
-        "speed": 12
+        "direction": "70-130"
       },
       "default_maps": [
         "ALB MAIN"
@@ -1479,8 +1472,7 @@
         "BOS_22_CTR"
       ],
       "wind": {
-        "direction": 260,
-        "speed": 12
+        "direction": "250-310"
       },
       "default_maps": [
         "ALB MAIN"

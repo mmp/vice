@@ -2653,9 +2653,7 @@
             ],
 
             "wind": {
-                "direction": 230,
-                "gust": 10,
-                "speed": 6
+              "direction": "185-245"
             }
         },
         "CFG2 (Depart 8L Land 1L/1R)": {
@@ -2798,9 +2796,7 @@
             ],
             
             "wind": {
-                "direction": 60,
-                "gust": 7,
-                "speed": 3
+              "direction": "0-60"
             }
         },
         "CFG3(Depart 1L/1R Land 1L/26L)": {
@@ -2921,9 +2917,7 @@
             ],
             
             "wind": {
-                "direction": 330,
-                "gust": 10,
-                "speed": 6
+              "direction": "320-20"
             }
         },
         "CFG4 (Depart 8L Land 19L/19R/8R)": {
@@ -3065,9 +3059,7 @@
             ],
             
             "wind": {
-                "direction": 110,
-                "gust": 7,
-                "speed": 3
+              "direction": "105-165"
             }
         }
        

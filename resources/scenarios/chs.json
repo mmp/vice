@@ -1678,8 +1678,7 @@
                 }
             ],
             "wind": {
-                "direction": 320,
-                "speed": 8
+              "direction": "320-20"
             }
         },
         "KCHS South": {
@@ -1743,8 +1742,7 @@
                 }
             ],
             "wind": {
-                "direction": 120,
-                "speed": 8
+              "direction": "140-200"
             }
         }
     },

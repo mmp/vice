@@ -6265,9 +6265,7 @@
         }
       ],
       "wind": {
-        "direction": 360,
-        "gust": 5,
-        "speed": 10
+        "direction": "270-330"
       }
     },
     "Area A - SJCE/SFOW": {
@@ -6431,9 +6429,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "gust": 5,
-        "speed": 10
+        "direction": "90-150"
       }
     },
 	"Area A - SFOW/SJCE/OAKE": {
@@ -6587,9 +6583,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "gust": 5,
-        "speed": 10
+        "direction": "90-150"
       }
     },
 	"Area A - SFOW/OAKE": {
@@ -6743,9 +6737,7 @@
         }
       ],
       "wind": {
-        "direction": 240,
-        "gust": 23,
-        "speed": 16
+        "direction": "350-50"
       }
     },
 	"Area A - SFOE": {
@@ -6899,9 +6891,7 @@
         }
       ],
       "wind": {
-        "direction": 120,
-        "gust": 5,
-        "speed": 10
+        "direction": "90-150"
       }
     }
   },

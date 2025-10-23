@@ -2229,9 +2229,7 @@
           }
         ],
         "wind": {
-          "direction": 200,
-          "gust": 15,
-          "speed": 7
+          "direction": "170-230"
         }
       },
       "KBNA North": {
@@ -2293,9 +2291,7 @@
           }
         ],
         "wind": {
-          "direction": 20,
-          "gust": 15,
-          "speed": 7
+          "direction": "350-50"
         }
       }
     },

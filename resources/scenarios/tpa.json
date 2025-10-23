@@ -2429,9 +2429,7 @@
         }
       ],
       "wind": {
-        "direction": 330,
-        "gust": 8,
-        "speed": 6
+        "direction": "340-40"
       }
     },
     "Final (N OPS)": {
@@ -2473,9 +2471,7 @@
       ],
       "default_maps": ["TPA-127S MID MAP"],
       "wind": {
-        "direction": 330,
-        "gust": 8,
-        "speed": 6
+        "direction": "340-40"
       }
     },
     "Multiplayer (S OPS)": {
@@ -2598,9 +2594,7 @@
         }
       ],
       "wind": {
-        "direction": 210,
-        "gust": 6,
-        "speed": 4
+        "direction": "160-220"
       }
     },
     "Final (S OPS)": {
@@ -2642,9 +2636,7 @@
       ],
       "default_maps": ["TPA-127S MID MAP"],
       "wind": {
-        "direction": 210,
-        "gust": 6,
-        "speed": 4
+        "direction": "160-220"
       }
     }
   },

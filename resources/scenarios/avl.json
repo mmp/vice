@@ -708,8 +708,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "speed": 5
+        "direction": "140-200"
       }
     },
     "KAVL Land and Depart Runway 35": {
@@ -766,8 +765,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "speed": 5
+        "direction": "320-20"
       }
     }
       },

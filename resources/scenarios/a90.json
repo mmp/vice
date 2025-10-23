@@ -7383,8 +7383,7 @@
             }
         ],
         "wind": {
-            "direction": 110,
-            "speed": 10
+          "direction": "25-85"
         }
         },
         "A90 Consolidated KBOS Land 27/22L Depart 22R KMHT South + Sat": {
@@ -7623,8 +7622,7 @@
             }
         ],
         "wind": {
-            "direction": 220,
-            "speed": 3
+          "direction": "205-265"
         }
         },
         "A90 Consolidated KBOS Land 27/32 Depart 33L KMHT South + Sat": {
@@ -7863,8 +7861,7 @@
             }
         ],
         "wind": {
-            "direction": 250,
-            "speed": 10
+          "direction": "275-335"
         }
         },
         "A90 Consolidated  KBOS Land 15R Depart 15R KMHT South + Sat": {
@@ -8095,8 +8092,7 @@
             }
         ],
         "wind": {
-            "direction": 110,
-            "speed": 10
+          "direction": "120-180"
         }
         },
         "A90 Consolidated KBOS Land 4R/L Dep 9 KMHT North": {
@@ -8199,8 +8195,7 @@
             }
         ],
         "wind": {
-            "direction": 20,
-            "speed": 10
+          "direction": "25-85"
         }
         },
         "A90 Consolidated KBOS Land 27/22L Depart 22R KMHT South": {
@@ -8304,8 +8299,7 @@
             }
         ],
         "wind": {
-            "direction": 220,
-            "speed": 3
+          "direction": "205-265"
         }
         },
         "A90 Consolidated  KBOS Land 27/32 Depart 33L KMHT South": {
@@ -8413,8 +8407,7 @@
             }
         ],
         "wind": {
-            "direction": 250,
-            "speed": 10
+          "direction": "255-315"
         }
         },
         "A90 Consolidated  KBOS Land 15R Depart 15R KMHT South": {
@@ -8518,8 +8511,7 @@
             }
         ],
         "wind": {
-            "direction": 110,
-            "speed": 10
+          "direction": "185-245"
         }
         }
     },

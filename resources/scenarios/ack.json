@@ -625,8 +625,7 @@
             }
         ],
         "wind": {
-            "direction": 110,
-            "speed": 10
+          "direction": "30-90"
         }
         },
         "KACK Departing 24 Landing 24": {
@@ -676,8 +675,7 @@
             }
         ],
         "wind": {
-            "direction": 110,
-            "speed": 10
+          "direction": "210-270"
         }
         }
     },

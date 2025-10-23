@@ -11807,9 +11807,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 7,
-        "speed": 5
+        "direction": "330-30"
       }
     },
     "N90 Combined. Coney: JFK Belmont: JFK": {
@@ -12450,9 +12448,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 7,
-        "speed": 5
+        "direction": "330-30"
       }
     },
     "N90 Combined. Coney: LGA Belmont: JFK": {
@@ -13103,9 +13099,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 7,
-        "speed": 5
+        "direction": "330-30"
       }
     },
     "N90 Combined. Coney: LGA Belmont: LGA": {
@@ -13756,9 +13750,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 7,
-        "speed": 5
+        "direction": "330-30"
       }
     }
   }

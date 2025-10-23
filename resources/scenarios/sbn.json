@@ -1340,8 +1340,7 @@
                 }
             ],
             "wind": {
-                "direction": 320,
-                "speed": 8
+              "direction": "330-30"
             }
         },
         "SBN - South Flow": {
@@ -1396,8 +1395,7 @@
                 }
             ],
             "wind": {
-                "direction": 120,
-                "speed": 8
+              "direction": "150-210"
             }
         },
         "SBN - East Flow": {
@@ -1452,8 +1450,7 @@
                 }
             ],
             "wind": {
-                "direction": 110,
-                "speed": 8
+              "direction": "60-120"
             }
         },
         "SBN - West Flow": {
@@ -1508,8 +1505,7 @@
                 }
             ],
             "wind": {
-                "direction": 290,
-                "speed": 8
+              "direction": "240-300"
             }
         }
     },

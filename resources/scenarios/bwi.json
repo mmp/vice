@@ -2622,8 +2622,7 @@
         }
       ],
       "wind": {
-        "direction": 300,
-        "speed": 10
+        "direction": "265-325"
       },
       "default_maps": [
 		"CHP Approaches",
@@ -2726,8 +2725,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "speed": 10
+        "direction": "285-345"
       },
       "default_maps": [
         "CHP Approaches",
@@ -2830,8 +2828,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "speed": 10
+        "direction": "105-165"
       },
       "default_maps": [
         "CHP Approaches",
@@ -2930,8 +2927,7 @@
         }
       ],
       "wind": {
-        "direction": 130,
-        "speed": 10
+        "direction": "95-155"
       },
       "default_maps": [
         "CHP Approaches",

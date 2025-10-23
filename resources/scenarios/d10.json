@@ -16851,9 +16851,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "135-195"
       },
       "vfr_rate_scale": 0
     },
@@ -17122,9 +17120,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "gust": 12,
-        "speed": 7
+        "direction": "315-15"
       },
       "vfr_rate_scale": 0
     },
@@ -17225,9 +17221,7 @@
         "RVMD10103S"
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "130-190"
       },
       "vfr_rate_scale": 0
     },
@@ -17328,9 +17322,7 @@
         "RVMD10102S"
       ],
       "wind": {
-        "direction": 345,
-        "gust": 12,
-        "speed": 7
+        "direction": "310-10"
       },
       "vfr_rate_scale": 0
     },
@@ -17423,9 +17415,7 @@
         "RVMD10102S"
       ],
       "wind": {
-        "direction": 345,
-        "gust": 12,
-        "speed": 7
+        "direction": "325-25"
       },
       "vfr_rate_scale": 0
     },
@@ -17518,9 +17508,7 @@
         "RVMD10103S"
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "145-205"
       },
       "vfr_rate_scale": 0
     },
@@ -17613,9 +17601,7 @@
         "RVMD10102S"
       ],
       "wind": {
-        "direction": 345,
-        "gust": 12,
-        "speed": 7
+        "direction": "325-25"
       },
       "vfr_rate_scale": 0
     },
@@ -17708,9 +17694,7 @@
         "RVMD10103S"
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "145-205"
       },
       "vfr_rate_scale": 0
     },
@@ -17807,9 +17791,7 @@
         "RVMD10011S"
       ],
       "wind": {
-        "direction": 328,
-        "gust": 39,
-        "speed": 29
+        "direction": "300-0"
       },
       "vfr_rate_scale": 0
     },
@@ -18008,9 +17990,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "135-195"
       },
       "vfr_rate_scale": 0
     },
@@ -18189,9 +18169,7 @@
         }
       ],
       "wind": {
-        "direction": 355,
-        "gust": 19,
-        "speed": 13
+        "direction": "325-25"
       },
       "vfr_rate_scale": 0
     },
@@ -18384,9 +18362,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "gust": 12,
-        "speed": 7
+        "direction": "325-25"
       },
       "vfr_rate_scale": 0
     },
@@ -18595,9 +18571,7 @@
         }
       ],
       "wind": {
-        "direction": 175,
-        "gust": 12,
-        "speed": 7
+        "direction": "130-190"
       },
       "vfr_rate_scale": 0
     },
@@ -18824,9 +18798,7 @@
         }
       ],
       "wind": {
-        "direction": 360,
-        "gust": 12,
-        "speed": 7
+        "direction": "325-25"
       },
       "vfr_rate_scale": 0
     },
@@ -19048,9 +19020,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "gust": 12,
-        "speed": 7
+        "direction": "325-25"
       },
       "vfr_rate_scale": 0
     },
@@ -19281,9 +19251,7 @@
         }
       ],
       "wind": {
-        "direction": 175,
-        "gust": 12,
-        "speed": 7
+        "direction": "130-190"
       },
       "vfr_rate_scale": 0
     },
@@ -19565,9 +19533,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "140-200"
       },
       "vfr_rate_scale": 0
     },
@@ -19854,9 +19820,7 @@
         }
       ],
       "wind": {
-        "direction": 355,
-        "gust": 12,
-        "speed": 7
+        "direction": "305-5"
       },
       "vfr_rate_scale": 0
     },
@@ -20053,9 +20017,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "gust": 12,
-        "speed": 7
+        "direction": "305-5"
       },
       "vfr_rate_scale": 0
     },
@@ -20281,9 +20243,7 @@
         }
       ],
       "wind": {
-        "direction": 355,
-        "gust": 12,
-        "speed": 7
+        "direction": "305-5"
       },
       "vfr_rate_scale": 0
     },
@@ -20506,9 +20466,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "gust": 12,
-        "speed": 7
+        "direction": "140-200"
       },
       "vfr_rate_scale": 0
     }

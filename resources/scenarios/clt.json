@@ -7159,8 +7159,7 @@
                             }
                         ],
                         "wind": {
-                            "direction": 180,
-                            "speed": 10
+                          "direction": "150-210"
                         }
                         },
                         "KCLT Land 36L/C/R Depart 36C/R": {
@@ -7250,8 +7249,7 @@
                                 }
                             ],
                             "wind": {
-                                "direction": 360,
-                                "speed": 10
+                              "direction": "330-30"
                             }
                         },
                         "KCLT 36L Final": {
@@ -7305,8 +7303,7 @@
                             ],
                             "default_maps": [ "CLT FINAL APPROACH COURSES NORTH", "CLT LOCAL AIRSPACE", "ARRIVAL RADAR NORTH" ],
                             "wind": {
-                                "direction": 360,
-                                "speed": 10
+                              "direction": "330-30"
                             }
                         },
                         "KCLT 36R Final": {
@@ -7357,8 +7354,7 @@
                             ],
                             "default_maps": [ "CLT FINAL APPROACH COURSES NORTH", "CLT LOCAL AIRSPACE", "ARRIVAL RADAR NORTH" ],
                             "wind": {
-                                "direction": 360,
-                                "speed": 10
+                              "direction": "330-30"
                             }
                         },
                         "KCLT North Final": {
@@ -7419,8 +7415,7 @@
                             ],
                             "default_maps": [ "CLT FINAL APPROACH COURSES NORTH", "CLT LOCAL AIRSPACE", "ARRIVAL RADAR NORTH" ],
                             "wind": {
-                                "direction": 360,
-                                "speed": 10
+                              "direction": "330-30"
                             }
                         },
                         "KCLT 18R Final": {
@@ -7460,8 +7455,7 @@
                             ],
                             "default_maps": [ "CLT TRACON EXTERNAL BOUNDARY", "NOISE 2NM/4NM LINES (SOUTH)", "CLT FINAL APPROACH COURSES SOUTH", "CLT LOCAL AIRSPACE", "ARRIVAL RADAR SOUTH" ],
                             "wind": {
-                                "direction": 180,
-                                "speed": 10
+                              "direction": "150-210"
                             }
                         },
                         "KCLT 18L Final": {
@@ -7498,8 +7492,7 @@
                             ],
                             "default_maps": [ "CLT TRACON EXTERNAL BOUNDARY", "NOISE 2NM/4NM LINES (SOUTH)", "CLT FINAL APPROACH COURSES SOUTH", "CLT LOCAL AIRSPACE", "ARRIVAL RADAR SOUTH" ],
                             "wind": {
-                                "direction": 180,
-                                "speed": 10
+                              "direction": "150-210"
                             }
                         },
                         "KCLT South Final": {
@@ -7545,8 +7538,7 @@
                             ],
                             "default_maps": [ "CLT TRACON EXTERNAL BOUNDARY", "NOISE 2NM/4NM LINES (SOUTH)", "CLT FINAL APPROACH COURSES SOUTH", "CLT LOCAL AIRSPACE", "ARRIVAL RADAR SOUTH" ],
                             "wind": {
-                                "direction": 180,
-                                "speed": 10
+                              "direction": "150-210"
                             }
                         }
                     },

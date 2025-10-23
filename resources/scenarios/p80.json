@@ -3528,8 +3528,7 @@
         }
       ],
       "wind": {
-        "direction": 300,
-        "speed": 5
+        "direction": "250-310"
       }
     },
     "KPDX East": {
@@ -3599,8 +3598,7 @@
         }
       ],
       "wind": {
-        "direction": 120,
-        "speed": 5
+        "direction": "70-130"
       }
     },
     "KPDX Final West": {
@@ -3640,8 +3638,7 @@
         "SEA_46_CTR"
       ],
       "wind": {
-        "direction": 250,
-        "speed": 5
+        "direction": "250-310"
       },
       "default_maps": ["RWY 28" ]
     },
@@ -3682,8 +3679,7 @@
         "SEA_46_CTR"
       ],
       "wind": {
-        "direction": 250,
-        "speed": 5
+        "direction": "70-130"
       },
       "default_maps": ["RWY 10" ]
     }

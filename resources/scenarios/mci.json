@@ -2651,8 +2651,7 @@
                 }
             ],
             "wind": {
-                "direction": 360,
-                "speed": 8
+              "direction": "340-40"
             }
         },
         "KMCI South": {
@@ -2756,8 +2755,7 @@
                 }
             ],
             "wind": {
-                "direction": 180,
-                "speed": 8
+              "direction": "160-220"
             }
         },
         "KMCI East": {
@@ -2852,8 +2850,7 @@
                 }
             ],
             "wind": {
-                "direction": 360,
-                "speed": 8
+              "direction": "240-300"
             }
         },
         "KMCI West": {
@@ -2948,8 +2945,7 @@
                 }
             ],
             "wind": {
-                "direction": 180,
-                "speed": 8
+              "direction": "240-300"
             }
         }
     },

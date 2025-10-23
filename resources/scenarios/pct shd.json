@@ -6917,8 +6917,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "320-20"
       },
       "default_maps": [
         "SHD Base",
@@ -7046,8 +7045,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "340-40"
       },
       "default_maps": [
         "SHD Base",
@@ -7174,8 +7172,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "175-235"
       },
       "default_maps": [
         "SHD Base",
@@ -7303,8 +7300,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "160-220"
       },
       "default_maps": [
         "SHD Base",
@@ -7432,8 +7428,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "145-205"
       },
       "default_maps": [
         "SHD Base",
@@ -7546,8 +7541,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "270-330"
       },
       "default_maps": [
         "SHD Base",
@@ -7621,8 +7615,7 @@
 		"BWI_W_APP"
       ],
       "wind": {
-        "direction": 320,
-        "speed": 10
+        "direction": "340-40"
       },
       "default_maps": [
         "SHD Base",
@@ -7692,8 +7685,7 @@
 		"BWI_W_APP"
       ],
       "wind": {
-        "direction": 320,
-        "speed": 10
+        "direction": "340-40"
       },
       "default_maps": [
         "SHD Base",
@@ -7767,8 +7759,7 @@
 		"BWI_W_APP"
       ],
       "wind": {
-        "direction": 160,
-        "speed": 8
+        "direction": "160-220"
       },
       "default_maps": [
         "SHD Base",
@@ -7842,8 +7833,7 @@
 		"BWI_W_APP"
       ],
       "wind": {
-        "direction": 160,
-        "speed": 8
+        "direction": "160-220"
       },
       "default_maps": [
         "SHD Base",

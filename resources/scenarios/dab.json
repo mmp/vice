@@ -600,8 +600,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "speed": 10
+        "direction": "40-100"
       }
     },
     "KDAB Depart 25L/R Land 25L/R": {
@@ -670,8 +669,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "speed": 10
+        "direction": "220-280"
       }
     }
   },

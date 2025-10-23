@@ -840,8 +840,7 @@
         }
       ],
       "wind": {
-        "direction": 250,
-        "speed": 10
+        "direction": "200-260"
       }
     },
     "BUF East": {
@@ -920,8 +919,7 @@
         }
       ],
       "wind": {
-        "direction": 50,
-        "speed": 10
+        "direction": "20-80"
       }
     }
   },

@@ -734,8 +734,7 @@
                     }
                 ],
                 "wind": {
-                    "direction": 160,
-                    "speed": 8
+                  "direction": "125-185"
                 }
             },
             "Land North": {
@@ -837,8 +836,7 @@
                     }
                 ],
                 "wind": {
-                    "direction": 340,
-                    "speed": 8
+                  "direction": "305-5"
                 }
             }
         },

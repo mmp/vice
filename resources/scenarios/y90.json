@@ -795,9 +795,7 @@
                 }
             ],
             "wind": {
-                "direction": 0,
-                "gust": 0,
-                "speed": 0
+              "direction": "345-45"
             }
         },
         "Y90 RWY 24/33": {
@@ -922,9 +920,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "gust": 10,
-                "speed": 5
+              "direction": "300-0"
             }
         }
     },

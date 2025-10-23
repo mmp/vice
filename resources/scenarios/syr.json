@@ -1941,9 +1941,7 @@
             }
           ],
           "wind": {
-            "direction": 280,
-            "gust": 12,
-            "speed": 8
+            "direction": "275-335"
           }
         },
         "SYR EAST": {
@@ -2083,9 +2081,7 @@
             }
           ],
           "wind": {
-            "direction": 100,
-            "gust": 12,
-            "speed": 8
+            "direction": "95-155"
           }
         }
       },

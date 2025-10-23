@@ -88,6 +88,7 @@ type SimScenarioConfiguration struct {
 	SplitConfigurations av.SplitConfigurationSet
 	PrimaryAirport      string
 	MagneticVariation   float32
+	WindSpecifier       *wx.WindSpecifier
 
 	LaunchConfig sim.LaunchConfig
 
@@ -449,6 +450,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		Description:                 description,
 		MagneticVariation:           sg.MagneticVariation,
 		NmPerLongitude:              sg.NmPerLongitude,
+		WindSpecifier:               sc.WindSpecifier,
 		Airports:                    sg.Airports,
 		Fixes:                       sg.Fixes,
 		PrimaryAirport:              sg.PrimaryAirport,

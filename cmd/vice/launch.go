@@ -1808,28 +1808,38 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 		ap = airports[0]
 	}
 
-	// Get runway headings for the selected airport
-	var sumRunwayVecs [2]float32
-	if dbap, ok := av.DB.Airports[ap]; ok {
-		for _, rwy := range dbap.Runways {
-			if slices.ContainsFunc(c.ScenarioConfig.DepartureRunways, func(r sim.DepartureRunway) bool {
-				return r.Airport == ap && r.Runway == rwy.Id
-			}) {
-				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
-			}
-			if slices.ContainsFunc(c.ScenarioConfig.ArrivalRunways, func(r sim.ArrivalRunway) bool {
-				return r.Airport == ap && r.Runway == rwy.Id
-			}) {
-				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
-			}
-		}
-	}
-	avgRwyHeading := math.VectorHeading(sumRunwayVecs)
-	avgRwyMagneticHeading := avgRwyHeading + c.ScenarioConfig.MagneticVariation
-
-	// Use wx.SampleMETAR to pick an appropriate time
+	// Use METAR sampling with wind specifier if available
 	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
-		if sampledMETAR := wx.SampleMETAR(apMETAR, c.selectedServer.AvailableWX, avgRwyMagneticHeading); sampledMETAR != nil {
+		var sampledMETAR *wx.METAR
+
+		if c.ScenarioConfig.WindSpecifier != nil {
+			// Use the scenario's wind specifier
+			sampledMETAR = wx.SampleMETARWithSpec(apMETAR, c.selectedServer.AvailableWX,
+				c.ScenarioConfig.WindSpecifier, c.ScenarioConfig.MagneticVariation)
+		} else {
+			// Fallback: calculate average runway heading and use that
+			var sumRunwayVecs [2]float32
+			if dbap, ok := av.DB.Airports[ap]; ok {
+				for _, rwy := range dbap.Runways {
+					if slices.ContainsFunc(c.ScenarioConfig.DepartureRunways, func(r sim.DepartureRunway) bool {
+						return r.Airport == ap && r.Runway == rwy.Id
+					}) {
+						sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+					}
+					if slices.ContainsFunc(c.ScenarioConfig.ArrivalRunways, func(r sim.ArrivalRunway) bool {
+						return r.Airport == ap && r.Runway == rwy.Id
+					}) {
+						sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+					}
+				}
+			}
+			avgRwyHeading := math.VectorHeading(sumRunwayVecs)
+			avgRwyMagneticHeading := avgRwyHeading + c.ScenarioConfig.MagneticVariation
+
+			sampledMETAR = wx.SampleMETAR(apMETAR, c.selectedServer.AvailableWX, avgRwyMagneticHeading)
+		}
+
+		if sampledMETAR != nil {
 			c.StartTime = sampledMETAR.Time.UTC()
 		}
 	}

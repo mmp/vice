@@ -829,8 +829,7 @@
         }
       ],
       "wind": {
-        "direction": 80,
-        "speed": 5
+        "direction": "45-105"
       }
     },
     "KSAV Depart 28/19 Land 28/19": {
@@ -885,8 +884,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 5
+        "direction": "225-285"
       }
     }
   },

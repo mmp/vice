@@ -633,8 +633,7 @@
                 }
             ],
             "wind": {
-                "direction": 20,
-                "speed": 10
+              "direction": "80-140"
             }
         },
         "GJT West Flow": {
@@ -681,8 +680,7 @@
                 }
             ],
             "wind": {
-                "direction": 20,
-                "speed": 10
+              "direction": "260-320"
             }
         }
     },

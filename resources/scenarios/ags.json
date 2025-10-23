@@ -482,8 +482,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "speed": 5
+        "direction": "75-135"
       }
     },
       "KAGS Land and Depart Runway 35/26": {
@@ -543,8 +542,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "speed": 5
+        "direction": "255-315"
       }
     }
       },

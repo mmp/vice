@@ -2405,8 +2405,7 @@
         }
       ],
       "wind": {
-        "direction": 160,
-        "speed": 5
+        "direction": "130-190"
       }
     },
     "KSEA North": {
@@ -2473,8 +2472,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 5
+        "direction": "310-10"
       }
     }
   },

@@ -739,9 +739,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "gust": 10,
-        "speed": 18
+        "direction": "210-270"
       }
     },
     "KABE Depart 6 Land 6": {
@@ -799,8 +797,7 @@
         }
       ],
       "wind": {
-        "direction": 80,
-        "speed": 14
+        "direction": "30-90"
       }
     }
   },

@@ -2839,8 +2839,7 @@
               }
             ],
             "wind": {
-              "direction": 340,
-              "speed": 6
+              "direction": "310-10"
             }
           },
           "OMA SOUTH": {
@@ -3063,8 +3062,7 @@
               }
             ],
             "wind": {
-              "direction": 140,
-              "speed": 9
+              "direction": "130-190"
             }
           },
           "LNK NORTH": {
@@ -3185,8 +3183,7 @@
               }
             ],
             "wind": {
-              "direction": 360,
-              "speed": 6
+              "direction": "325-25"
             }
           },
           "LNK SOUTH": {
@@ -3307,8 +3304,7 @@
               }
             ],
             "wind": {
-              "direction": 160,
-              "speed": 7
+              "direction": "145-205"
             }
           },
           "R90 NORTH": {
@@ -3727,8 +3723,7 @@
               }
             ],
             "wind": {
-              "direction": 340,
-              "speed": 12
+              "direction": "310-10"
             }
           },
           "R90 SOUTH": {
@@ -4147,8 +4142,7 @@
               }
             ],
             "wind": {
-              "direction": 150,
-              "speed": 9
+              "direction": "130-190"
             }
           },
           "OFF NORTH": {
@@ -4278,8 +4272,7 @@
               }
             ],
             "wind": {
-              "direction": 310,
-              "speed": 8
+              "direction": "280-340"
             }
           },
           "OFF SOUTH": {
@@ -4409,8 +4402,7 @@
               }
             ],
             "wind": {
-              "direction": 120,
-              "speed": 10
+              "direction": "280-340"
             }
           }
         },

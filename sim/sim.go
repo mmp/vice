@@ -215,6 +215,7 @@ type NewSimConfiguration struct {
 	MagneticVariation float32
 	NmPerLongitude    float32
 	StartTime         time.Time
+	WindSpecifier     *wx.WindSpecifier
 	Center            math.Point2LL
 	Range             float32
 	DefaultMaps       []string

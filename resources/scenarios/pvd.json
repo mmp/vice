@@ -2128,9 +2128,7 @@
 
           ],
           "wind": {
-            "direction": 240,
-            "gust": 8,
-            "speed": 4
+            "direction": "200-260"
           }
         },
 		"PVD RY23 HIGH WIND": {
@@ -2201,9 +2199,7 @@
 
           ],
           "wind": {
-            "direction": 240,
-            "gust": 36,
-            "speed": 29
+            "direction": "200-260"
           }
         },
         "PVD RY05": {
@@ -2250,9 +2246,7 @@
             }
           ],
           "wind": {
-            "direction": 50,
-            "gust": 7,
-            "speed": 5
+            "direction": "0-60"
           }
         },
 		"PVD/OQU PRACTICE (23+16) - AR & DR": {
@@ -2307,9 +2301,7 @@
             }
           ],
           "wind": {
-            "direction": 240,
-            "gust": 8,
-            "speed": 4
+            "direction": "200-260"
           }
         },
         "PVD/OQU PRACTICE (23+16) - DR ONLY": {
@@ -2363,9 +2355,7 @@
             }
           ],
           "wind": {
-            "direction": 240,
-            "gust": 8,
-            "speed": 4
+            "direction": "200-260"
           }
         },
 		"PVD/OQU PRACTICE (5+16)": {
@@ -2420,9 +2410,7 @@
             }
           ],
           "wind": {
-            "direction": 80,
-            "gust": 8,
-            "speed": 4
+            "direction": "20-80"
           }
         },
 		"PVD/OQU PRACTICE (5+34)": {
@@ -2480,9 +2468,7 @@
             }
           ],
           "wind": {
-            "direction": 360,
-            "gust": 8,
-            "speed": 4
+            "direction": "20-80"
           }
         }
       },

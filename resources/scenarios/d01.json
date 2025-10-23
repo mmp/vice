@@ -11583,8 +11583,7 @@
                 }
             ],
             "wind": {
-                "direction": 300,
-                "speed": 2
+              "direction": "315-15"
             }
         },
         "South Calm": {
@@ -11938,8 +11937,7 @@
                 }
             ],
             "wind": {
-                "direction": 160,
-                "speed": 4
+              "direction": "135-195"
             }
         },
         "North All": {
@@ -12293,8 +12291,7 @@
                 }
             ],
             "wind": {
-                "direction": 340,
-                "speed": 26
+              "direction": "310-10"
             }
         },
         "South All": {
@@ -12648,8 +12645,7 @@
                 }
             ],
             "wind": {
-                "direction": 150,
-                "speed": 31
+              "direction": "135-195"
             }
         },
         "West All": {
@@ -12995,8 +12991,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "speed": 28
+              "direction": "220-280"
             }
         },
         "East All": {
@@ -13342,8 +13337,7 @@
                 }
             ],
             "wind": {
-                "direction": 110,
-                "speed": 31
+              "direction": "50-110"
             }
         },
         "North and East": {
@@ -13701,8 +13695,7 @@
                 }
             ],
             "wind": {
-                "direction": 30,
-                "speed": 16
+              "direction": "350-50"
             }
         },
         "North and West": {
@@ -14060,8 +14053,7 @@
                 }
             ],
             "wind": {
-                "direction": 320,
-                "speed": 17
+              "direction": "280-340"
             }
         },
         "South and East": {
@@ -14419,8 +14411,7 @@
                 }
             ],
             "wind": {
-                "direction": 130,
-                "speed": 12
+              "direction": "105-165"
             }
         },
         "South and West": {
@@ -14778,8 +14769,7 @@
                 }
             ],
             "wind": {
-                "direction": 220,
-                "speed": 18
+              "direction": "165-225"
             }
         },
         "FR Land North": {
@@ -14859,8 +14849,7 @@
                 "DEN_X_APP"
             ],
             "wind": {
-                "direction": 320,
-                "speed": 3
+              "direction": "315-15"
             }
         },
 		"FR Land South": {
@@ -14940,8 +14929,7 @@
                 "DEN_X_APP"
             ],
             "wind": {
-                "direction": 190,
-                "speed": 3
+              "direction": "135-195"
             }
         },
 		"FR Land West": {
@@ -14987,8 +14975,7 @@
                 "DEN_X_APP"
             ],
             "wind": {
-                "direction": 270,
-                "speed": 36
+              "direction": "225-285"
             }
         },
 		"FR Land East": {
@@ -15034,8 +15021,7 @@
                 "DEN_X_APP"
             ],
             "wind": {
-                "direction": 80,
-                "speed": 31
+              "direction": "45-105"
             }
         },
 		"SR Land North": {
@@ -15201,8 +15187,7 @@
                 }
             ],
             "wind": {
-                "direction": 340,
-                "speed": 6
+              "direction": "270-330"
             }
         },
 		"SR Land South": {
@@ -15363,8 +15348,7 @@
                 }
             ],
             "wind": {
-                "direction": 160,
-                "speed": 4
+              "direction": "140-200"
             }
         }
     },

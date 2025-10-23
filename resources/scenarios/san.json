@@ -3757,9 +3757,7 @@
                 }
             ],
             "wind": {
-                "direction": 260,
-                "gust": 10,
-                "speed": 5
+              "direction": "240-300"
             }
         },
         "San Diego - East": {
@@ -3866,9 +3864,7 @@
                 }
             ],
             "wind": {
-                "direction": 90,
-                "gust": 24,
-                "speed": 15
+              "direction": "60-120"
             }
         },
 		"San Diego - 9/27 (ODO)": {
@@ -3981,8 +3977,7 @@
                 }
             ],
             "wind": {
-                "direction": 170,
-                "speed": 11
+              "direction": "150-210"
             }
         }
     },

@@ -160,6 +160,13 @@ func METARForTime(metar []METAR, t time.Time) METAR {
 // Given an average headings (e.g. runway directions) and a slice of valid time intervals,
 // randomly sample a METAR entry with wind that is compatible with the headings.
 func SampleMETAR(metar []METAR, intervals []util.TimeInterval, avgHdg float32) *METAR {
+	return SampleMatchingMETAR(metar, intervals, func(metar METAR) bool {
+		return metar.WindDir != nil && math.HeadingDifference(avgHdg, float32(*metar.WindDir)) < 30
+	})
+}
+
+// SampleMatchingMETAR randomly samples from METARs that match a predicate using reservoir sampling
+func SampleMatchingMETAR(metar []METAR, intervals []util.TimeInterval, match func(METAR) bool) *METAR {
 	var m *METAR
 	r := rand.Make()
 	n := float32(0)
@@ -170,9 +177,9 @@ func SampleMETAR(metar []METAR, intervals []util.TimeInterval, avgHdg float32) *
 		})
 
 		for idx < len(metar) && metar[idx].Time.Before(iv[1]) {
-			if metar[idx].WindDir != nil && math.HeadingDifference(avgHdg, float32(*metar[idx].WindDir)) < 30 {
+			if match(metar[idx]) {
 				n++
-				if r.Float32() < 1/n { // reservoir sampling
+				if r.Float32() < 1/n {
 					m = &metar[idx]
 				}
 			}

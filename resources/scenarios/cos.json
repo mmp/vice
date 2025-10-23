@@ -805,9 +805,7 @@
 				}
             ],
             "wind": {
-                "direction": 300,
-                "gust": 0,
-                "speed": 15
+              "direction": "320-20"
             }
         },
         "South VMC": {
@@ -870,9 +868,7 @@
 				}
             ],
             "wind": {
-                "direction": 170,
-                "gust": 5,
-                "speed": 10
+              "direction": "140-200"
             }
         }
     },

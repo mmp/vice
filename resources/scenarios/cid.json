@@ -609,8 +609,7 @@
                 }
             ],
             "wind": {
-                "direction": 270,
-                "speed": 10
+              "direction": "240-300"
             }
         },
         "CID - 9": {
@@ -674,8 +673,7 @@
                 }
             ],
             "wind": {
-                "direction": 90,
-                "speed": 10
+              "direction": "60-120"
             }
         }
     },

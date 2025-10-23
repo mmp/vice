@@ -930,8 +930,7 @@
             }
         ],
         "wind": {
-            "direction": 150,
-            "speed": 10
+          "direction": "95-155"
         }
     },
     "KPNS Depart 26 Land 35": {
@@ -986,8 +985,7 @@
         }
     ],
     "wind": {
-        "direction": 320,
-        "speed": 10
+      "direction": "275-335"
     }
 }
     },

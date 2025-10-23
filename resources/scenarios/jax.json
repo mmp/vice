@@ -4175,9 +4175,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "70-130"
       }
     },
     "KJAX East, No VITTS (N/S)": {
@@ -4402,9 +4400,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "70-130"
       }
     },
     "KJAX West, No VITTS": {
@@ -4628,9 +4624,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "250-310"
       }
     },
     "KJAX West, No VITTS (N/S)": {
@@ -4854,9 +4848,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "250-310"
       }
     },
     "KJAX West, VITTS": {
@@ -5111,9 +5103,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "250-310"
       }
     },
     "KJAX West, VITTS (N/S/V)": {
@@ -5368,9 +5358,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "250-310"
       }
     },
     "KJAX East, VITTS": {
@@ -5626,9 +5614,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "70-130"
       }
     },
     "KJAX East, VITTS (N/S/V)": {
@@ -5884,9 +5870,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 10,
-        "speed": 5
+        "direction": "70-130"
       }
     }
   },

@@ -11813,9 +11813,7 @@
         }
       ],
       "wind": {
-        "direction": 180,
-        "gust": 10,
-        "speed": 5
+        "direction": "145-205"
       }
     },
     "MCO North + Sat East": {
@@ -12088,9 +12086,7 @@
         }
       ],
       "wind": {
-        "direction": 360,
-        "gust": 15,
-        "speed": 5
+        "direction": "325-25"
       }
     },
     "MCO North DEP": {
@@ -12176,9 +12172,7 @@
         }
       ],
       "wind": {
-        "direction": 360,
-        "gust": 15,
-        "speed": 5
+        "direction": "325-25"
       }
     },
     "MCO South Final": {
@@ -12234,9 +12228,7 @@
         "MCO_L_APP"
       ],
       "wind": {
-        "direction": 170,
-        "gust": 8,
-        "speed": 5
+        "direction": "145-205"
       }
     },
     "MCO West Feeder South": {
@@ -12279,9 +12271,7 @@
         "MCO_G_APP"
       ],
       "wind": {
-        "direction": 170,
-        "gust": 8,
-        "speed": 5
+        "direction": "150-210"
       }
     },
     "MCO Combined Feeder South": {
@@ -12337,9 +12327,7 @@
         "MCO_G_APP"
       ],
       "wind": {
-        "direction": 170,
-        "gust": 8,
-        "speed": 5
+        "direction": "145-205"
       }
     },
     "MCO East Feeder South": {
@@ -12385,9 +12373,7 @@
         "MCO_G_APP"
       ],
       "wind": {
-        "direction": 170,
-        "gust": 8,
-        "speed": 5
+        "direction": "140-200"
       }
     },
     "MCO West Feeder North": {
@@ -12430,9 +12416,7 @@
         "MCO_G_APP"
       ],
       "wind": {
-        "direction": 360,
-        "gust": 8,
-        "speed": 5
+        "direction": "330-30"
       }
     },
     "MCO Combined Feeder North": {
@@ -12488,9 +12472,7 @@
         "MCO_G_APP"
       ],
       "wind": {
-        "direction": 360,
-        "gust": 8,
-        "speed": 5
+        "direction": "325-25"
       }
     },
     "MCO East Feeder North": {
@@ -12536,9 +12518,7 @@
         "MCO_G_APP"
       ],
       "wind": {
-        "direction": 360,
-        "gust": 8,
-        "speed": 5
+        "direction": "320-20"
       }
     },
     "MCO North Final": {
@@ -12591,9 +12571,7 @@
         "MCO_L_APP"
       ],
       "wind": {
-        "direction": 340,
-        "gust": 8,
-        "speed": 5
+        "direction": "325-25"
       }
     },
     "MCO South DEP": {
@@ -12674,9 +12652,7 @@
         }
       ],
       "wind": {
-        "direction": 170,
-        "gust": 15,
-        "speed": 5
+        "direction": "145-205"
       }
     }
   },

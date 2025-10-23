@@ -4800,9 +4800,7 @@
         }
       ],
       "wind": {
-        "direction": 290,
-        "gust": 25,
-        "speed": 17
+        "direction": "250-310"
       }
     },
     "Area B - SFOW (DEP 01s)": {
@@ -4957,9 +4955,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "gust": 10,
-        "speed": 9
+        "direction": "280-340"
       }
     },
     "Area B - SFOE": {
@@ -5084,9 +5080,7 @@
 		}
       ],
       "wind": {
-        "direction": 70,
-        "gust": 23,
-        "speed": 14
+        "direction": "70-130"
       }
     },
     "Area B - SFOE (RWYS 19/10)": {
@@ -5207,9 +5201,7 @@
 		}
       ],
       "wind": {
-        "direction": 90,
-        "gust": 23,
-        "speed": 14
+        "direction": "115-175"
       }
     }
   },

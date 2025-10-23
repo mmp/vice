@@ -1256,8 +1256,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "310-10"
       },
       "default_maps": [
         "S56 107 N Flow Base Map",
@@ -1318,8 +1317,7 @@
         }
       ],
       "wind": {
-        "direction": 340,
-        "speed": 10
+        "direction": "130-190"
       },
       "default_maps": [
         "S56 109 South Flow Base Map",

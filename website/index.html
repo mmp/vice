@@ -7627,34 +7627,28 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"wind"</td>
                 <td>Object</td>
-                <td>This specifies the current winds for the scenario.  Winds are included in the simulation and affect aircraft similarly to how they do in the real world. Two formats are supported:
+                <td>Specifies constraints for selecting wind conditions for the scenario. When a scenario is loaded, <i>vice</i> will randomly select historical weather data that matches the specified wind.
                   <ul>
-                    <li><b>Wind layers (recommended)</b>: Specify wind profiles at different locations with altitude-based layers.
+                    <li>"direction" (optional): Wind direction range in degrees. Ranges must be less than 180 degrees wide and can wrap through north (e.g., "340-20" for a 40-degree range).</li>
+                    <li>"speed" (optional): Wind speed constraint in knots. Formats:
                       <ul>
-                        <li>Format: <code>{"location": "alt/dir/spd,alt/dir/spd,..."}</code>, where "location" is one
-                          of the formats for <a href="#fe-locations">specifying locations</a> and one or more
-                          altitude-based wind measurements is provided.</li>
-                        <li>Each wind measurement: altitude (feet) / direction (heading) / speed (knots)</li>
-                        <li>For gusts, append 'g' and the gust speed (e.g., "12g17" for 12 knots gusting to 17)</li>
-                        <li>Variable winds: use direction 0</li>
-                        <li>Example: <code>{"KJFK": "0/220/12, 1000/230/10g15, 3000/290/15, 10000/280/35"}</code></li>
+                        <li>"N+": greater than N knots (e.g., "5+" for winds &gt; 5 knots)</li>
+                        <li>"N-": less than N knots (e.g., "10-" for winds &lt; 10 knots)</li>
+                        <li>"N-M": between N and M knots (e.g., "5-15" for 5-15 knots)</li>
                       </ul>
                     </li>
-                    <li><b>Simple format (legacy)</b>: A single wind configuration for all locations and altitudes.
-                      <ul>
-                        <li>"direction": the wind's direction, expressed as a number giving the heading.</li>
-                        <li>"speed": the wind speed in knots.</li>
-                        <li>"gust": if present, gives the wind gust speed.</li>
-                      </ul>
-                    </li>
-                  </ul>
+                    <li>"flight_rules" (optional): "VMC" for Visual Meteorological Conditions or "IMC" for Instrument Meteorological Conditions.</li>
+                    </ul>
+                  If no wind specifier is provided, vice will automatically select weather compatible with the scenario's runway configuration.
+                  <p>
                   The wind can be visualized in STARS by typing ".WIND" and pressing <code>[Enter]</code>.
-                  The wind direction and speed are shown using <a href="https://www.weather.gov/hfo/windbarbinfo">wind barbs</a>.
+                  The wind direction and speed are shown using arrows.
                   "WIND" and an altitude will be shown in the preview area; the altitude can be stepped up and down
                   using the up and down arrow keys. Pressing <code>[Escape]</code> clears the wind display.
                   <div class="text-center">
-                    <img src="wind-barbs.png" srcset="wind-barbs-2x.png 2x" width="257" height="161">
+                    <img src="wind-arrows.png" srcset="wind-arrows-2x.png 2x" width="204" height="170">
                   </div><br>
+                  </p>
                 </td>
               </tr>
             </tbody>

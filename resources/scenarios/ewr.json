@@ -9387,9 +9387,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
+        "direction": "190-250"
       }
     },
     "KEWR 22R Departure": {
@@ -9507,9 +9505,7 @@
         }
       ],
       "wind": {
-        "direction": 230,
-        "gust": 23,
-        "speed": 25
+        "direction": "190-250"
       }
     },
     "KEWR 4L Departure": {
@@ -9620,9 +9616,7 @@
         }
       ],
       "wind": {
-        "direction": 60,
-        "gust": 23,
-        "speed": 25
+        "direction": "10-70"
       }
     },
     "KEWR Depart 4L Land 4R": {
@@ -9787,9 +9781,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
+        "direction": "10-70"
       }
     },
     "KEWR Sat. Arrivals landing NE": {
@@ -9900,9 +9892,7 @@
         "EWR ARR/DEP"
       ],
       "wind": {
-        "direction": 60,
-        "gust": 13,
-        "speed": 7
+        "direction": "10-70"
       }
     },
     "KEWR Sat. Arrivals landing SW": {
@@ -10020,9 +10010,7 @@
         }
       ],
       "wind": {
-        "direction": 240,
-        "gust": 18,
-        "speed": 15
+        "direction": "190-250"
       }
     },
     "KEWR Land 22L - ARD": {
@@ -10089,9 +10077,7 @@
         "EWR ARR/DEP"
       ],
       "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
+        "direction": "190-250"
       }
     },
     "KEWR Land 22L - ARD/METRO": {
@@ -10207,9 +10193,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
+        "direction": "190-250"
       }
     },
     "KEWR Land 22L - South Side ARD/METRO/DEPARTURE": {
@@ -10341,9 +10325,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "gust": 13,
-        "speed": 7
+        "direction": "190-250"
       }
     },
     "KEWR Land 22L - NOA + FINAL": {
@@ -10445,9 +10427,7 @@
         }
       ],
       "wind": {
-        "direction": 230,
-        "gust": 23,
-        "speed": 25
+        "direction": "190-250"
       }
     },
     "KEWR Land 22L - NOA/MUGZY + FINAL": {
@@ -10573,9 +10553,7 @@
         }
       ],
       "wind": {
-        "direction": 230,
-        "gust": 23,
-        "speed": 25
+        "direction": "190-250"
       }
     },
     "KEWR Land 29 - NOA + FINAL": {
@@ -10635,9 +10613,7 @@
         "EWR ARR/DEP"
       ],
       "wind": {
-        "direction": 300,
-        "gust": 33,
-        "speed": 30
+        "direction": "260-320"
       }
     },
     "KEWR Land 4R - ARD + FINAL": {
@@ -10741,9 +10717,7 @@
         }
       ],
       "wind": {
-        "direction": 60,
-        "gust": 23,
-        "speed": 20
+        "direction": "10-70"
       }
     },
     "KEWR Land 4R - ARD/METRO + FINAL": {
@@ -10848,9 +10822,7 @@
         }
       ],
       "wind": {
-        "direction": 60,
-        "gust": 23,
-        "speed": 20
+        "direction": "10-70"
       }
     },
     "KEWR Land 4R - NOA": {
@@ -10910,9 +10882,7 @@
         "EWR ARR/DEP"
       ],
       "wind": {
-        "direction": 30,
-        "gust": 0,
-        "speed": 7
+        "direction": "10-70"
       }
     },
     "KEWR Land 4R - North Side NOA+MUGZY+DEP": {
@@ -11052,9 +11022,7 @@
         }
       ],
       "wind": {
-        "direction": 30,
-        "gust": 0,
-        "speed": 7
+        "direction": "10-70"
       }
     }
   },

@@ -278,8 +278,7 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "speed": 12
+        "direction": "300-0"
       },
       "default_maps": [
         "BGR MAIN"
@@ -340,8 +339,7 @@
         }
       ],
       "wind": {
-        "direction": 120,
-        "speed": 21
+        "direction": "120-180"
       },
       "default_maps": [
         "BGR MAIN"

@@ -13859,8 +13859,7 @@
 	  }
     ],
       "wind": {
-        "direction": 270,
-        "speed": 10
+        "direction": "215-275"
       }
     },
     "SCT - LAE SANW SNAN BUR26/33": {
@@ -14288,8 +14287,7 @@
 	  }
       ],
       "wind": {
-        "direction": 90,
-        "speed": 10
+        "direction": "35-95"
       }
     },
 	"SCT - Over Ocean": {
@@ -14530,8 +14528,7 @@
 	  }
       ],
       "wind": {
-        "direction": 90,
-        "speed": 10
+        "direction": "230-290"
       }
     }    
   },

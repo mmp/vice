@@ -427,8 +427,7 @@
                 }
             ],
             "wind": {
-                "direction": 100,
-                "speed": 10
+              "direction": "80-140"
             }
         },
         "KCYS Landing West": {
@@ -482,8 +481,7 @@
                 }
             ],
             "wind": {
-                "direction": 100,
-                "speed": 10
+              "direction": "260-320"
             }
         }
     },

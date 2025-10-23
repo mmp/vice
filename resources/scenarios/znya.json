@@ -1737,9 +1737,7 @@
                 }
             ],
             "wind": {
-                "direction": 140,
-                "gust": 24,
-                "speed": 16
+              "direction": "240-300"
             }
         }
     },

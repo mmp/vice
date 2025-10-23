@@ -3173,8 +3173,7 @@
         "201S LAAB LE SCT"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "35-95"
       }
     },
     "LAX - West Flow": {
@@ -3259,8 +3258,7 @@
         "200S LAAB LW SCT"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "215-275"
       }
     },
     "LAX - Over Ocean Flow": {
@@ -3333,8 +3331,7 @@
         "202S LAAB LO SCT"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "30-90"
       }
     },
     "LAX - Over Ocean Final": {
@@ -3391,8 +3388,7 @@
         "202S LAAB LO SCT"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "30-90"
       }
     },
     "LAX - West Final": {
@@ -3464,8 +3460,7 @@
         "200S LAAB LW SCT"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "215-275"
       }
     },
     "LAX - East Final": {
@@ -3536,8 +3531,7 @@
         "201S LAAB LE SCT"
       ],
       "wind": {
-        "direction": 20,
-        "speed": 10
+        "direction": "35-95"
       }
     }
   },

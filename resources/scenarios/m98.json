@@ -754,8 +754,7 @@
             }
           ],
           "wind": {
-            "direction": 120,
-            "speed": 7
+            "direction": "90-150"
           }
         },
         "MSP 12R/L/17": {
@@ -872,8 +871,7 @@
             }
           ],
           "wind": {
-            "direction": 140,
-            "speed": 7
+            "direction": "110-170"
           }
         },
         "MSP 30R/L": {
@@ -989,8 +987,7 @@
             }
           ],
           "wind": {
-            "direction": 310,
-            "speed": 7
+            "direction": "270-330"
           }
         },
         "MSP 30R/L/35": {
@@ -1111,8 +1108,7 @@
             }
           ],
           "wind": {
-            "direction": 310,
-            "speed": 7
+            "direction": "275-335"
           }
         },
         "MSP 30s/17": {
@@ -1229,8 +1225,7 @@
             }
           ],
           "wind": {
-            "direction": 240,
-            "speed": 5
+            "direction": "295-355"
           }
         }
       },
