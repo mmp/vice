@@ -1841,6 +1841,11 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 
 		if sampledMETAR != nil {
 			c.StartTime = sampledMETAR.Time.UTC()
+
+			// Set VFR launch rate to zero if selected weather is IMC
+			if !sampledMETAR.IsVMC() {
+				c.ScenarioConfig.LaunchConfig.VFRDepartureRateScale = 0
+			}
 		}
 	}
 }
