@@ -40,6 +40,10 @@ type ControlClient struct {
 	lastSpeechHoldTime       time.Time
 	awaitReadbackCallsign    av.ADSBCallsign
 	lastTransmissionCallsign av.ADSBCallsign
+	PTTRecording             bool
+	PTTCapture               bool
+	LastTranscription        string
+	LastCommand              string
 
 	lg *log.Logger
 	mu sync.Mutex
@@ -662,3 +666,4 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		lg.Errorf("broadcast error: %v", err)
 	}
 }
+

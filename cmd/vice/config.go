@@ -74,6 +74,9 @@ type ConfigNoSim struct {
 
 	ScenarioFile string
 	VideoMapFile string
+
+	UserPTTKey         imgui.Key
+	SelectedMicrophone string
 }
 
 type ConfigSim struct {
@@ -180,6 +183,7 @@ func getDefaultConfig() *Config {
 			Version:               server.ViceSerializeVersion,
 			WhatsNewIndex:         len(whatsNew),
 			NotifiedTargetGenMode: true, // don't warn for new installs
+			UserPTTKey:            imgui.KeySemicolon,
 			STARSPane:             stars.NewSTARSPane(),
 			ERAMPane:              eram.NewERAMPane(),
 			MessagesPane:          panes.NewMessagesPane(),
@@ -212,6 +216,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		if config.Version < 5 {
 			config.UserTCP = ""
 		}
+
 		if config.Version < 29 {
 			config.TFRCache = av.MakeTFRCache()
 		}

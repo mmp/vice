@@ -132,6 +132,44 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	if imgui.IsKeyPressedBool(imgui.KeyInsert) {
 		keyboard.Pressed[imgui.KeyInsert] = nil
 	}
+	// For PTT
+	if imgui.IsKeyPressedBool(imgui.KeySemicolon) {
+		keyboard.Pressed[imgui.KeySemicolon] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyComma) {
+		keyboard.Pressed[imgui.KeyComma] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftShift) {
+		keyboard.Pressed[imgui.KeyLeftShift] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightShift) {
+		keyboard.Pressed[imgui.KeyRightShift] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftCtrl) {
+		keyboard.Pressed[imgui.KeyLeftCtrl] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightCtrl) {
+		keyboard.Pressed[imgui.KeyRightCtrl] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftAlt) {
+		keyboard.Pressed[imgui.KeyLeftAlt] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightAlt) {
+		keyboard.Pressed[imgui.KeyRightAlt] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftSuper) {
+		keyboard.Pressed[imgui.KeyLeftSuper] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightSuper) {
+		keyboard.Pressed[imgui.KeyRightSuper] = nil
+	}
+	// F15-24
+	for i := 586; i <= 595; i++ {
+		if imgui.IsKeyPressedBool(imgui.Key(i)) {
+			keyboard.Pressed[imgui.Key(i)] = nil
+		}
+	}
+
 	for i := 0; i < 16; i++ { // 16 f-keys on the STARS keyboard
 		k := imgui.KeyF1 + imgui.Key(i)
 		if imgui.IsKeyPressedBool(k) {
