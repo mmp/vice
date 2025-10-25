@@ -46,17 +46,29 @@ func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
 }
 
 func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
-	var tm []string
-	if err := sb.ReadObject("precip/manifest.msgpack.zst", &tm); err != nil {
-		return nil, err
-	}
-	manifest, err := util.TransposeStrings(tm)
+	// List all monthly manifest files
+	manifests, err := sb.List("precip/manifest-")
 	if err != nil {
 		return nil, err
 	}
 
+	var allPaths []string
+	for manifestPath := range manifests {
+		var tm []string
+		if err := sb.ReadObject(manifestPath, &tm); err != nil {
+			return nil, fmt.Errorf("failed to read %s: %w", manifestPath, err)
+		}
+
+		manifest, err := util.TransposeStrings(tm)
+		if err != nil {
+			return nil, fmt.Errorf("failed to transpose %s: %w", manifestPath, err)
+		}
+
+		allPaths = append(allPaths, manifest...)
+	}
+
 	var times []time.Time
-	for _, relativePath := range manifest {
+	for _, relativePath := range allPaths {
 		// Parse paths like "PHL/2025-08-06T03:00:00Z.msgpack.zst" to extract timestamp
 		parts := strings.Split(relativePath, "/")
 		if len(parts) != 2 {

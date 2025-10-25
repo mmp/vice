@@ -14,6 +14,7 @@ import (
 	"runtime"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -23,6 +24,7 @@ import (
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
+	"golang.org/x/sync/errgroup"
 )
 
 func MakeWXProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
@@ -230,7 +232,7 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	go func() {
 		defer close(g.precipFetchDone)
 		var err error
-		g.precipTimes, err = g.fetchManifest("precip")
+		g.precipTimes, err = g.fetchMonthlyManifests("precip")
 		if err != nil {
 			g.lg.Errorf("%v", err)
 		}
@@ -239,7 +241,7 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	go func() {
 		defer close(g.atmosFetchDone)
 		var err error
-		g.atmosTimes, err = g.fetchManifest("atmos")
+		g.atmosTimes, err = g.fetchSingleManifest("atmos")
 		if err != nil {
 			g.lg.Errorf("%v", err)
 		}
@@ -275,52 +277,108 @@ func (g *GCSProvider) fetchCached(path string, result any) error {
 		return err
 	}
 
-	g.lg.Infof("%s: fetched in %s", path, time.Since(start))
+	g.lg.Infof("%s: fetched from GCS in %s", path, time.Since(start))
 
 	return util.CacheStoreObject("wx/"+path, result)
 }
 
-func (g *GCSProvider) fetchManifest(prefix string) (map[string][]time.Time, error) {
+func (g *GCSProvider) fetchSingleManifest(prefix string) (map[string][]time.Time, error) {
+	manifestPath := filepath.Join(prefix, "manifest.msgpack.zst")
+	if m, err := g.fetchAndParseManifest(manifestPath, prefix); err != nil {
+		return nil, err
+	} else {
+		// Sort times for each TRACON
+		for _, times := range m {
+			slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
+		}
+
+		runtime.GC()
+
+		return m, nil
+	}
+}
+
+func (g *GCSProvider) fetchAndParseManifest(path, prefix string) (map[string][]time.Time, error) {
 	var tr []string
-	if err := g.fetchCached(filepath.Join(prefix, "manifest.msgpack.zst"), &tr); err != nil {
+	if err := g.fetchCached(path, &tr); err != nil {
 		return nil, err
 	}
-	// Manifests are stored transposed, which makes them compress better..
+
 	manifest, err := util.TransposeStrings(tr)
 	if err != nil {
 		return nil, err
 	}
 
-	// Parse consolidated manifest - files are in format "TRACON/timestamp.msgpack.zst"
+	// Parse manifest - files are in format "TRACON/timestamp.msgpack.zst"
 	m := make(map[string][]time.Time)
-	buf := make([]byte, 0, 32) // Reusable buffer for TRACON strings
+	buf := make([]byte, 0, 32)
 	for _, relativePath := range manifest {
 		parts := strings.Split(relativePath, "/")
 		if len(parts) != 2 {
 			g.lg.Warnf("%s: invalid path in %s manifest", relativePath, prefix)
-			continue
-		}
-
-		if t, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst")); err != nil {
+		} else if t, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst")); err != nil {
 			g.lg.Warnf("%v", err)
-			continue
 		} else {
 			// Copy TRACON to buffer to break GC reference, then intern
-			buf = buf[:0] // Reset buffer but keep capacity
+			buf = buf[:0]
 			buf = append(buf, parts[0]...)
-			traconKey := string(buf) // Create new string from buffer
+			traconKey := string(buf)
 			m[traconKey] = append(m[traconKey], t.UTC())
 		}
 	}
+	return m, nil
+}
 
-	// They should already be sorted by time, but...
-	for _, times := range m {
+func (g *GCSProvider) fetchMonthlyManifests(prefix string) (map[string][]time.Time, error) {
+	// List all monthly manifest files
+	manifestPaths, err := g.gcsClient.List(prefix + "/manifest-")
+	if err != nil {
+		return nil, err
+	}
+
+	if len(manifestPaths) == 0 {
+		return nil, fmt.Errorf("no monthly manifests found in %s/", prefix)
+	}
+
+	g.lg.Infof("Found %d monthly %s manifests", len(manifestPaths), prefix)
+
+	// Fetch in parallel
+	manifest := make(map[string][]time.Time)
+	sem := make(chan struct{}, 16)
+	var mu sync.Mutex
+	var eg errgroup.Group
+
+	for path := range manifestPaths {
+		eg.Go(func() error {
+			sem <- struct{}{}
+			defer func() { <-sem }()
+
+			m, err := g.fetchAndParseManifest(path, prefix)
+			if err != nil {
+				return err
+			} else {
+				mu.Lock()
+				defer mu.Unlock()
+				for tracon, times := range m {
+					manifest[tracon] = append(manifest[tracon], times...)
+				}
+				return nil
+			}
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	// Sort times for each TRACON
+	for _, times := range manifest {
 		slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 	}
 
 	runtime.GC()
 
-	return m, nil
+	return manifest, nil
 }
 
 func (g *GCSProvider) getObject(path string, obj any) error {

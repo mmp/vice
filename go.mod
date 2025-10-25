@@ -23,9 +23,9 @@ require (
 	github.com/tosone/minimp3 v1.0.2
 	github.com/veandco/go-sdl2 v0.5.0-alpha.3.0.20220913133553-3c4862273074
 	github.com/vmihailenco/msgpack/v5 v5.4.1
-	golang.org/x/exp v0.0.0-20231127185646-65229373498e
+	golang.org/x/exp v0.0.0-20251017212417-90e834f514db
 	golang.org/x/oauth2 v0.30.0
-	golang.org/x/sync v0.14.0
+	golang.org/x/sync v0.17.0
 	google.golang.org/api v0.235.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
