@@ -320,6 +320,11 @@ func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb Storage
 	}
 
 	LogInfo("%s: downloaded %s to %s", hrrrpath, util.ByteCount(n), hf.Name())
+
+	if n < 32*1024*1024 {
+		return "", fmt.Errorf("%s: grib2 file appears truncated: length %d", hrrrpath, n)
+	}
+
 	return hf.Name(), nil
 }
 
