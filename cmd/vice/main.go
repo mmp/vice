@@ -13,10 +13,12 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -54,6 +56,19 @@ var (
 	runSim            = flag.String("runsim", "", "run specified scenario for 3600 update steps (format: ARTCC/TRACON/scenario)")
 )
 
+func setupSignalHandler(profiler *util.Profiler) {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-sigCh
+		fmt.Fprintln(os.Stderr, "Caught signal, cleaning up...")
+		profiler.Cleanup()
+		fmt.Fprintln(os.Stderr, "Cleanup complete, exiting")
+		os.Exit(0)
+	}()
+}
+
 func init() {
 	// OpenGL and friends require that all calls be made from the primary
 	// application thread, while by default, go allows the main thread to
@@ -80,6 +95,10 @@ func main() {
 		lg.Errorf("%v", err)
 	}
 	defer profiler.Cleanup()
+
+	if *cpuprofile != "" || *memprofile != "" {
+		setupSignalHandler(&profiler)
+	}
 
 	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
 		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))

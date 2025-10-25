@@ -7,7 +7,6 @@ package util
 import (
 	"fmt"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/pprof"
@@ -57,27 +56,6 @@ func CreateProfiler(cpu, mem string) (Profiler, error) {
 		if p.mem, err = os.Create(mem); err != nil {
 			return Profiler{}, fmt.Errorf("%s: unable to create memory profile file: %v", mem, err)
 		}
-	}
-
-	if p.cpu != nil || p.mem != nil {
-		// Catch ctrl-c and to write out the profile before exiting
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, os.Interrupt)
-
-		go func() {
-			<-sig
-			if p.cpu != nil {
-				pprof.StopCPUProfile()
-				p.cpu.Close()
-			}
-			if p.mem != nil {
-				if err := pprof.WriteHeapProfile(p.mem); err != nil {
-					fmt.Fprintf(os.Stderr, "%s: unable to write memory profile file: %v", mem, err)
-				}
-				p.mem.Close()
-			}
-			os.Exit(0)
-		}()
 	}
 
 	return p, nil

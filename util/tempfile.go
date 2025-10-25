@@ -6,10 +6,8 @@ package util
 
 import (
 	"os"
-	"os/signal"
 	"strings"
 	"sync"
-	"syscall"
 
 	"github.com/mmp/vice/log"
 )
@@ -23,14 +21,6 @@ func MakeTempFileRegistry(lg *log.Logger) *TempFileRegistry {
 	r := &TempFileRegistry{
 		paths: make(map[string]struct{}),
 	}
-
-	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
-	go func() {
-		<-sigCh
-		r.RemoveAll()
-		os.Exit(0)
-	}()
 
 	return r
 }

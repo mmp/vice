@@ -119,6 +119,7 @@ func ingestHRRR(sb StorageBackend) error {
 
 	tfr := util.MakeTempFileRegistry(nil)
 	defer tfr.RemoveAll()
+	registerCleanup(tfr.RemoveAll)
 
 	existing := listIngestedAtmos(sb)
 

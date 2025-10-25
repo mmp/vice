@@ -9,9 +9,12 @@ import (
 	"net/http"
 	"net/http/pprof"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
+	"syscall"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
@@ -22,6 +25,40 @@ var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local fi
 var nWorkers = flag.Int("nworkers", 16, "Number of worker goroutines for concurrent uploads")
 var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
 var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
+
+// Cleanup coordination for signal handlers
+var (
+	cleanupFuncs []func()
+	cleanupMu    sync.Mutex
+	exitOnce     sync.Once
+)
+
+func registerCleanup(f func()) {
+	cleanupMu.Lock()
+	defer cleanupMu.Unlock()
+	cleanupFuncs = append(cleanupFuncs, f)
+}
+
+func runAllCleanups() {
+	cleanupMu.Lock()
+	defer cleanupMu.Unlock()
+	for _, f := range cleanupFuncs {
+		f()
+	}
+}
+
+func setupSignalHandler() {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-sigCh
+		fmt.Fprintln(os.Stderr, "Caught signal, cleaning up...")
+		runAllCleanups()
+		fmt.Fprintln(os.Stderr, "Cleanup complete, exiting")
+		exitOnce.Do(func() { os.Exit(0) })
+	}()
+}
 
 func main() {
 	const bucketName = "vice-wx"
@@ -36,12 +73,15 @@ func main() {
 
 	av.InitDB()
 
+	setupSignalHandler()
+
 	if *profile {
 		prof, err := util.CreateProfiler("wxingest.cpu.prof", "wxingest.heap.prof")
 		if err != nil {
 			panic(err)
 		}
 		defer prof.Cleanup()
+		registerCleanup(prof.Cleanup)
 	}
 
 	sb, err := MakeGCSBackend(bucketName)
