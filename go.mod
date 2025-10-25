@@ -16,6 +16,7 @@ require (
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20230128161750-16b51f1632c6
+	github.com/mmp/squall v0.0.0-20251025032844-fe8e9cf2ed3f
 	github.com/ncruces/zenity v0.10.14
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/shirou/gopsutil v3.21.11+incompatible

@@ -21,6 +21,7 @@ import (
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
+	"github.com/mmp/squall"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -181,8 +182,8 @@ func ingestHRRR(sb StorageBackend) error {
 		path string
 		t    time.Time
 	}
-	const nTimeWorkers = 2
-	hrrrCh := make(chan downloadedHRRR, nTimeWorkers)
+	//nTimeWorkers := min(2, *nWorkers)
+	hrrrCh := make(chan downloadedHRRR)
 	eg.Go(func() error {
 		// Download HRRR files in a goroutine so that we can start
 		// downloading the next one after the one currently being
@@ -191,12 +192,13 @@ func ingestHRRR(sb StorageBackend) error {
 		for t := range tCh {
 			path, err := downloadHRRRForTime(t, tfr, hrrrsb)
 			if err != nil {
-				return err
-			}
-			select {
-			case hrrrCh <- downloadedHRRR{path: path, t: t}:
-			case <-ctx.Done():
-				return ctx.Err()
+				LogError("%v", err)
+			} else {
+				select {
+				case hrrrCh <- downloadedHRRR{path: path, t: t}:
+				case <-ctx.Done():
+					return ctx.Err()
+				}
 			}
 		}
 		return nil
@@ -204,7 +206,7 @@ func ingestHRRR(sb StorageBackend) error {
 
 	// Do two times at once to keep the CPU busy and avoid low
 	// utilization at the end when just a few TRACONs are left.
-	for range nTimeWorkers {
+	for range 1 { // nTimeWorkers {
 		eg.Go(func() error {
 			for hrrr := range hrrrCh {
 				LogInfo("Starting work on " + hrrr.t.Format(time.RFC3339))
@@ -332,6 +334,12 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, t
 	sb, hrrrsb StorageBackend) error {
 	defer tfr.RemoveAllPrefix(t.Format(time.RFC3339))
 
+	// Parse and filter the GRIB file once for all TRACONs
+	records, err := parseAndFilterGRIB2(gribPath)
+	if err != nil {
+		return err
+	}
+
 	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
 	sem := make(chan struct{}, *nWorkers)
@@ -341,7 +349,7 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, t
 				sem <- struct{}{}
 				defer func() { <-sem }()
 
-				n, err := ingestHRRRForTracon(gribPath, tracon, tfr, t, sb)
+				n, err := ingestHRRRForTracon(gribPath, records, tracon, tfr, t, sb)
 				if err == nil {
 					LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
 					atomic.AddInt64(&totalUploads, 1)
@@ -356,21 +364,36 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, t
 	return eg.Wait()
 }
 
-func ingestHRRRForTracon(gribPath string, tracon string, tfr *util.TempFileRegistry, t time.Time, sb StorageBackend) (int64, error) {
+func ingestHRRRForTracon(gribPath string, records []*squall.GRIB2, tracon string, tfr *util.TempFileRegistry, t time.Time, sb StorageBackend) (int64, error) {
 	pathPrefix := tracon + "-" + t.Format(time.RFC3339)
 	defer tfr.RemoveAllPrefix(pathPrefix)
 
+	// Run CSV-based approach (wgrib2)
 	f, err := gribToCSV(gribPath, tracon, pathPrefix, tfr)
 	if err != nil {
 		return 0, err
 	}
 
-	sf, err := sampleFieldFromCSV(tracon, f)
+	sfCSV, err := sampleFieldFromCSV(tracon, f)
 	if err != nil {
 		return 0, err
 	}
 
-	return uploadWeatherAtmos(sf, tracon, t, sb)
+	// Run GRIB2-based approach (go-grib2) with pre-parsed records
+	sfGRIB2, err := sampleFieldFromGRIB2(records, tracon, t)
+	if err != nil {
+		LogError("%s-%s: GRIB2 parsing failed: %v", tracon, t.Format(time.RFC3339), err)
+	} else {
+		// Compare the two results
+		if err := compareAtmosByPoint(sfCSV, sfGRIB2, tracon); err != nil {
+			LogError("%s-%s: Comparison failed:\n%v", tracon, t.Format(time.RFC3339), err)
+		} else {
+			LogInfo("%s-%s: CSV and GRIB2 parsing results match!", tracon, t.Format(time.RFC3339))
+		}
+	}
+
+	// Use CSV result for upload (maintain existing behavior)
+	return uploadWeatherAtmos(sfCSV, tracon, t, sb)
 }
 
 func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) (*os.File, error) {
@@ -444,6 +467,249 @@ func sampleFieldFromCSV(tracon string, f *os.File) (*wx.AtmosByPoint, error) {
 	}
 
 	return sf, nil
+}
+
+func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
+	f, err := os.Open(gribPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open GRIB2 file: %w", err)
+	}
+	defer f.Close()
+
+	records, err := squall.Read(f)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse GRIB2 file: %w", err)
+	}
+
+	LogInfo("%s: parsed %d total records", gribPath, len(records))
+	if len(records) > 0 {
+		for i := 0; i < min(5, len(records)); i++ {
+			r := records[i]
+			LogInfo("  Sample record %d: param=%s, level=%q, levelValue=%.1f, numPoints=%d",
+				i, r.Parameter.ShortName(), r.Level, r.LevelValue, r.NumPoints)
+		}
+	}
+
+	// Filter to only keep records we care about:
+	// - Parameters: UGRD, VGRD, TMP, DPT, HGT
+	// - Levels: isobaric levels that vice recognizes
+	filtered := util.FilterSlice(records, func(record *squall.GRIB2) bool {
+		// Check parameter
+		shortName := record.Parameter.ShortName()
+		if shortName != "UGRD" && shortName != "VGRD" && shortName != "TMP" && shortName != "DPT" && shortName != "HGT" {
+			return false
+		}
+
+		// Check if vice recognizes this level (squall provides levels already formatted as "50 mb", etc.)
+		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
+		if levelIndex == -1 {
+			LogInfo("  Rejected record: param=%s, level=%q, levelIndex=%d",
+				shortName, record.Level, levelIndex)
+		}
+		return levelIndex != -1
+	})
+
+	LogInfo("%s: filtered %d records to %d records", gribPath, len(records), len(filtered))
+
+	if len(filtered) > 0 {
+		LogInfo("  Filtered records by parameter:")
+		counts := make(map[string]int)
+		for _, r := range filtered {
+			counts[r.Parameter.ShortName()]++
+		}
+		for param, count := range counts {
+			LogInfo("    %s: %d records", param, count)
+		}
+	}
+
+	return filtered, nil
+}
+
+func sampleFieldFromGRIB2(records []*squall.GRIB2, tracon string, t time.Time) (*wx.AtmosByPoint, error) {
+	tspec, ok := av.DB.TRACONs[tracon]
+	if !ok {
+		return nil, fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
+	}
+	center, radius := tspec.Center(), tspec.Radius
+	nmPerLongitude := math.NMPerLongitudeAt(center)
+
+	at := wx.MakeAtmosByPoint()
+
+	var arena []wx.AtmosSampleStack
+	allocStack := func() *wx.AtmosSampleStack {
+		if len(arena) == 0 {
+			arena = make([]wx.AtmosSampleStack, 1024)
+		}
+		s := &arena[0]
+		arena = arena[1:]
+		return s
+	}
+
+	var totalPoints, filteredPoints, addedPoints int
+
+	for _, record := range records {
+		// Determine the item type
+		var itemType int
+		switch record.Parameter.ShortName() {
+		case "UGRD":
+			itemType = LineItemUDirection
+		case "VGRD":
+			itemType = LineItemVDirection
+		case "TMP":
+			itemType = LineItemTemperature
+		case "DPT":
+			itemType = LineItemDewpoint
+		case "HGT":
+			itemType = LineItemHeight
+		default:
+			panic("unexpected parameter: " + record.Parameter.ShortName())
+		}
+
+		// Get the level index (already validated during filtering)
+		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
+
+		if levelIndex == -1 {
+			LogError("GRIB2: param=%s, level=%q -> invalid levelIndex",
+				record.Parameter.ShortName(), record.Level)
+			continue
+		}
+
+		// Process each value in the record (squall uses parallel slices)
+		for i := range record.NumPoints {
+			totalPoints++
+			value := record.Data[i]
+
+			// Skip missing values
+			if value > 9e20 {
+				continue
+			}
+
+			lon := record.Longitudes[i]
+			if lon > 180 {
+				lon -= 360
+			}
+			pt := math.Point2LL{lon, record.Latitudes[i]}
+
+			// Check if point is within TRACON bounds
+			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d > radius {
+				filteredPoints++
+				continue
+			}
+
+			addedPoints++
+			stack, ok := at.SampleStacks[pt]
+			if !ok {
+				stack = allocStack()
+				at.SampleStacks[pt] = stack
+			}
+
+			switch itemType {
+			case LineItemUDirection:
+				stack.Levels[levelIndex].UComponent = value
+			case LineItemVDirection:
+				stack.Levels[levelIndex].VComponent = value
+			case LineItemTemperature:
+				stack.Levels[levelIndex].Temperature = value
+			case LineItemDewpoint:
+				stack.Levels[levelIndex].Dewpoint = value
+			case LineItemHeight:
+				stack.Levels[levelIndex].Height = value
+			}
+		}
+	}
+
+	LogInfo("GRIB2 %s-%s: processed %d records, %d total points, %d filtered by distance, %d added, %d unique locations",
+		tracon, t.Format(time.RFC3339), len(records), totalPoints, filteredPoints, addedPoints, len(at.SampleStacks))
+
+	return &at, nil
+}
+
+func compareAtmosByPoint(a, b *wx.AtmosByPoint, tracon string) error {
+	var differences []string
+
+	tspec, ok := av.DB.TRACONs[tracon]
+	if !ok {
+		panic(fmt.Sprintf("%s: unable to find bounds for TRACON", tracon))
+	}
+	center, radius := tspec.Center(), tspec.Radius
+	nmPerLongitude := math.NMPerLongitudeAt(center)
+
+	hasSample := func(stack map[math.Point2LL]*wx.AtmosSampleStack, pt math.Point2LL) (math.Point2LL, float32) {
+		closestDist := float32(999999)
+		var closest math.Point2LL
+		for ps := range stack {
+			if dist := math.NMDistance2LLFast(ps, pt, nmPerLongitude); dist < closestDist {
+				closest = ps
+				closestDist = dist
+			}
+		}
+		return closest, closestDist
+	}
+
+	// Check that both have the same set of points
+	const distLimit = 0.03 // the CSVs seem to be printed with 3 decimals of precision, so allow some slop...
+	for pt := range a.SampleStacks {
+		cdist := math.NMDistance2LLFast(center, pt, nmPerLongitude)
+		if pc, d := hasSample(b.SampleStacks, pt); d > distLimit && math.Abs(cdist-radius) > 1 {
+			differences = append(differences, fmt.Sprintf("point %v exists in first but not in second closest %v dist %.3f (dist %.2f rad %f)",
+				pt, pc, d, math.NMDistance2LLFast(center, pt, nmPerLongitude), radius))
+		}
+	}
+	for pt := range b.SampleStacks {
+		cdist := math.NMDistance2LLFast(center, pt, nmPerLongitude)
+		if pc, d := hasSample(a.SampleStacks, pt); d > distLimit && math.Abs(cdist-radius) > 0.1 {
+			differences = append(differences, fmt.Sprintf("point %v exists in second but not in first closest %v dist %.3f (dist %.2f rad %f)",
+				pt, pc, d, cdist, radius))
+		}
+	}
+
+	// Compare values at each point and level
+	const (
+		windTolerance        = 0.1 // m/s
+		temperatureTolerance = 0.1 // Kelvin
+		heightTolerance      = 1.0 // meters
+	)
+
+	for pt, stackA := range a.SampleStacks {
+		stackB, ok := b.SampleStacks[pt]
+		if !ok {
+			// Already warned above
+			continue
+		}
+
+		for level := range wx.NumSampleLevels {
+			sampleA := stackA.Levels[level]
+			sampleB := stackB.Levels[level]
+
+			if math.Abs(sampleA.UComponent-sampleB.UComponent) > windTolerance {
+				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): UComponent differs: %.4f vs %.4f",
+					pt, level, wx.IdFromLevelIndex(level), sampleA.UComponent, sampleB.UComponent))
+			}
+			if math.Abs(sampleA.VComponent-sampleB.VComponent) > windTolerance {
+				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): VComponent differs: %.4f vs %.4f",
+					pt, level, wx.IdFromLevelIndex(level), sampleA.VComponent, sampleB.VComponent))
+			}
+			if math.Abs(sampleA.Temperature-sampleB.Temperature) > temperatureTolerance {
+				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): Temperature differs: %.4f vs %.4f",
+					pt, level, wx.IdFromLevelIndex(level), sampleA.Temperature, sampleB.Temperature))
+			}
+			if math.Abs(sampleA.Dewpoint-sampleB.Dewpoint) > temperatureTolerance {
+				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): Dewpoint differs: %.4f vs %.4f",
+					pt, level, wx.IdFromLevelIndex(level), sampleA.Dewpoint, sampleB.Dewpoint))
+			}
+			if math.Abs(sampleA.Height-sampleB.Height) > heightTolerance {
+				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): Height differs: %.4f vs %.4f",
+					pt, level, wx.IdFromLevelIndex(level), sampleA.Height, sampleB.Height))
+			}
+		}
+	}
+
+	if len(differences) > 0 {
+		msg := fmt.Sprintf("Found %d differences:\n", len(differences))
+		return errors.New(msg + "\n" + strings.Join(differences, "\n"))
+	}
+
+	return nil
 }
 
 func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh chan<- []byte) error {
