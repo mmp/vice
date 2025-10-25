@@ -1,16 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io"
-	"iter"
 	"os"
-	"os/exec"
 	"slices"
-	"strconv"
 	"strings"
 	"sync/atomic"
 	"syscall"
@@ -92,15 +88,7 @@ func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
 
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
 func ingestHRRR(sb StorageBackend) error {
-	tmp := os.Getenv("WXINGEST_TMP")
-	if tmp == "" {
-		return errors.New("Must set WXINGEST_TMP environment variable for HRRR")
-	}
-	_ = os.RemoveAll(tmp)
-	if err := os.Mkdir(tmp, 0755); err != nil {
-		return err
-	}
-	if err := os.Chdir(tmp); err != nil {
+	if err := os.Chdir(os.TempDir()); err != nil {
 		return err
 	}
 
@@ -129,10 +117,10 @@ func ingestHRRR(sb StorageBackend) error {
 		LogInfo("Time interval with valid METAR/precip: %s - %s", iv[0], iv[1])
 	}
 
-	existing := listIngestedAtmos(sb)
-
 	tfr := util.MakeTempFileRegistry(nil)
 	defer tfr.RemoveAll()
+
+	existing := listIngestedAtmos(sb)
 
 	tCh := make(chan time.Time)
 	eg, ctx := errgroup.WithContext(context.Background())
@@ -182,8 +170,7 @@ func ingestHRRR(sb StorageBackend) error {
 		path string
 		t    time.Time
 	}
-	//nTimeWorkers := min(2, *nWorkers)
-	hrrrCh := make(chan downloadedHRRR)
+	hrrrCh := make(chan downloadedHRRR, 1) // buffer 1 to have the next one prefetched.
 	eg.Go(func() error {
 		// Download HRRR files in a goroutine so that we can start
 		// downloading the next one after the one currently being
@@ -204,19 +191,15 @@ func ingestHRRR(sb StorageBackend) error {
 		return nil
 	})
 
-	// Do two times at once to keep the CPU busy and avoid low
-	// utilization at the end when just a few TRACONs are left.
-	for range 1 { // nTimeWorkers {
-		eg.Go(func() error {
-			for hrrr := range hrrrCh {
-				LogInfo("Starting work on " + hrrr.t.Format(time.RFC3339))
-				if err := ingestHRRRForTime(hrrr.path, hrrr.t, existing[hrrr.t], tfr, sb, hrrrsb); err != nil {
-					return err
-				}
+	eg.Go(func() error {
+		for hrrr := range hrrrCh {
+			LogInfo("Starting work on " + hrrr.t.Format(time.RFC3339))
+			if err := ingestHRRRForTime(hrrr.path, hrrr.t, existing[hrrr.t], sb, hrrrsb); err != nil {
+				return err
 			}
-			return nil
-		})
-	}
+		}
+		return nil
+	})
 
 	if err := eg.Wait(); err != nil {
 		return err
@@ -290,8 +273,7 @@ func checkDiskSpace(path string, requiredGB int64) error {
 
 func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb StorageBackend) (string, error) {
 	// Check disk space before downloading
-	tmp := os.Getenv("WXINGEST_TMP")
-	if err := checkDiskSpace(tmp, 8); err != nil {
+	if err := checkDiskSpace(".", 2); err != nil {
 		return "", err
 	}
 
@@ -330,11 +312,9 @@ func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb Storage
 	return hf.Name(), nil
 }
 
-func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, tfr *util.TempFileRegistry,
-	sb, hrrrsb StorageBackend) error {
-	defer tfr.RemoveAllPrefix(t.Format(time.RFC3339))
+func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, sb, hrrrsb StorageBackend) error {
+	defer func() { _ = os.Remove(gribPath) }()
 
-	// Parse and filter the GRIB file once for all TRACONs
 	records, err := parseAndFilterGRIB2(gribPath)
 	if err != nil {
 		return err
@@ -349,7 +329,7 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, t
 				sem <- struct{}{}
 				defer func() { <-sem }()
 
-				n, err := ingestHRRRForTracon(gribPath, records, tracon, tfr, t, sb)
+				n, err := ingestHRRRForTracon(records, tracon, t, sb)
 				if err == nil {
 					LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
 					atomic.AddInt64(&totalUploads, 1)
@@ -364,109 +344,13 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, t
 	return eg.Wait()
 }
 
-func ingestHRRRForTracon(gribPath string, records []*squall.GRIB2, tracon string, tfr *util.TempFileRegistry, t time.Time, sb StorageBackend) (int64, error) {
-	pathPrefix := tracon + "-" + t.Format(time.RFC3339)
-	defer tfr.RemoveAllPrefix(pathPrefix)
-
-	// Run CSV-based approach (wgrib2)
-	f, err := gribToCSV(gribPath, tracon, pathPrefix, tfr)
+func ingestHRRRForTracon(records []*squall.GRIB2, tracon string, t time.Time, sb StorageBackend) (int64, error) {
+	sf, err := sampleFieldFromGRIB2(records, tracon, t)
 	if err != nil {
-		return 0, err
-	}
-
-	sfCSV, err := sampleFieldFromCSV(tracon, f)
-	if err != nil {
-		return 0, err
-	}
-
-	// Run GRIB2-based approach (go-grib2) with pre-parsed records
-	sfGRIB2, err := sampleFieldFromGRIB2(records, tracon, t)
-	if err != nil {
-		LogError("%s-%s: GRIB2 parsing failed: %v", tracon, t.Format(time.RFC3339), err)
+		return 0, fmt.Errorf("%s-%s: GRIB2 parsing failed: %w", tracon, t.Format(time.RFC3339), err)
 	} else {
-		// Compare the two results
-		if err := compareAtmosByPoint(sfCSV, sfGRIB2, tracon); err != nil {
-			LogError("%s-%s: Comparison failed:\n%v", tracon, t.Format(time.RFC3339), err)
-		} else {
-			LogInfo("%s-%s: CSV and GRIB2 parsing results match!", tracon, t.Format(time.RFC3339))
-		}
+		return uploadWeatherAtmos(sf, tracon, t, sb)
 	}
-
-	// Use CSV result for upload (maintain existing behavior)
-	return uploadWeatherAtmos(sfCSV, tracon, t, sb)
-}
-
-func gribToCSV(gribPath, tracon, pathPrefix string, tfr *util.TempFileRegistry) (*os.File, error) {
-	tspec, ok := av.DB.TRACONs[tracon]
-	if !ok {
-		return nil, fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
-	}
-	center, radius := tspec.Center(), tspec.Radius
-
-	bbox := math.BoundLatLongCircle(center, radius)
-
-	smallGribPath := pathPrefix + ".grib2"
-	cmd := exec.Command("wgrib2", gribPath, "-small_grib", fmt.Sprintf("%f:%f", bbox.P0[0], bbox.P1[0]), /* longitude */
-		fmt.Sprintf("%f:%f", bbox.P0[1], bbox.P1[1]) /* latitude */, smallGribPath)
-	tfr.RegisterPath(smallGribPath)
-
-	//LogInfo("Running " + cmd.String())
-	if err := cmd.Run(); err != nil {
-		return nil, err
-	}
-
-	cf, err := os.Create(pathPrefix + ".csv")
-	if err != nil {
-		return nil, err
-	}
-	tfr.RegisterPath(cf.Name())
-
-	cmd = exec.Command("wgrib2", smallGribPath, "-match", ":(UGRD|VGRD|TMP|DPT|HGT):", "-csv", cf.Name())
-	//LogInfo("Running " + cmd.String())
-	if err := cmd.Run(); err != nil {
-		cf.Close()
-		return nil, err
-	}
-
-	if err := cf.Sync(); err != nil {
-		cf.Close()
-		return nil, err
-	}
-
-	if _, err := cf.Seek(0, 0); err != nil {
-		return nil, err
-	}
-
-	return cf, nil
-}
-
-func sampleFieldFromCSV(tracon string, f *os.File) (*wx.AtmosByPoint, error) {
-	eg, ctx := errgroup.WithContext(context.Background())
-
-	// Read chunks of the file asynchronously and with double-buffering so
-	// that reads continue as processing is being performed.
-	freeBufCh := make(chan []byte, 1)
-	eg.Go(func() error {
-		freeBufCh <- make([]byte, 16*1024*1024)
-		freeBufCh <- make([]byte, 16*1024*1024)
-		return nil
-	})
-
-	readBufCh := make(chan []byte, 1)
-	eg.Go(func() error { return readCSV(ctx, f, freeBufCh, readBufCh) })
-
-	var sf *wx.AtmosByPoint
-	eg.Go(func() error {
-		var err error
-		sf, err = parseWindCSV(ctx, tracon, f.Name(), readBufCh, freeBufCh)
-		return err
-	})
-
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	return sf, nil
 }
 
 func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
@@ -547,31 +431,37 @@ func sampleFieldFromGRIB2(records []*squall.GRIB2, tracon string, t time.Time) (
 
 	var totalPoints, filteredPoints, addedPoints int
 
+	const (
+		recUnsetType = iota
+		recUDirection
+		recVDirection
+		recTemperature
+		recDewpoint
+		recHeight
+	)
+
 	for _, record := range records {
-		// Determine the item type
-		var itemType int
+		var recType int
 		switch record.Parameter.ShortName() {
 		case "UGRD":
-			itemType = LineItemUDirection
+			recType = recUDirection
 		case "VGRD":
-			itemType = LineItemVDirection
+			recType = recVDirection
 		case "TMP":
-			itemType = LineItemTemperature
+			recType = recTemperature
 		case "DPT":
-			itemType = LineItemDewpoint
+			recType = recDewpoint
 		case "HGT":
-			itemType = LineItemHeight
+			recType = recHeight
 		default:
-			panic("unexpected parameter: " + record.Parameter.ShortName())
+			return nil, errors.New("unexpected parameter: " + record.Parameter.ShortName())
 		}
 
 		// Get the level index (already validated during filtering)
 		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
 
 		if levelIndex == -1 {
-			LogError("GRIB2: param=%s, level=%q -> invalid levelIndex",
-				record.Parameter.ShortName(), record.Level)
-			continue
+			return nil, fmt.Errorf("GRIB2: param=%s, level=%q -> invalid levelIndex", record.Parameter.ShortName(), record.Level)
 		}
 
 		// Process each value in the record (squall uses parallel slices)
@@ -603,16 +493,16 @@ func sampleFieldFromGRIB2(records []*squall.GRIB2, tracon string, t time.Time) (
 				at.SampleStacks[pt] = stack
 			}
 
-			switch itemType {
-			case LineItemUDirection:
+			switch recType {
+			case recUDirection:
 				stack.Levels[levelIndex].UComponent = value
-			case LineItemVDirection:
+			case recVDirection:
 				stack.Levels[levelIndex].VComponent = value
-			case LineItemTemperature:
+			case recTemperature:
 				stack.Levels[levelIndex].Temperature = value
-			case LineItemDewpoint:
+			case recDewpoint:
 				stack.Levels[levelIndex].Dewpoint = value
-			case LineItemHeight:
+			case recHeight:
 				stack.Levels[levelIndex].Height = value
 			}
 		}
@@ -622,359 +512,6 @@ func sampleFieldFromGRIB2(records []*squall.GRIB2, tracon string, t time.Time) (
 		tracon, t.Format(time.RFC3339), len(records), totalPoints, filteredPoints, addedPoints, len(at.SampleStacks))
 
 	return &at, nil
-}
-
-func compareAtmosByPoint(a, b *wx.AtmosByPoint, tracon string) error {
-	var differences []string
-
-	tspec, ok := av.DB.TRACONs[tracon]
-	if !ok {
-		panic(fmt.Sprintf("%s: unable to find bounds for TRACON", tracon))
-	}
-	center, radius := tspec.Center(), tspec.Radius
-	nmPerLongitude := math.NMPerLongitudeAt(center)
-
-	hasSample := func(stack map[math.Point2LL]*wx.AtmosSampleStack, pt math.Point2LL) (math.Point2LL, float32) {
-		closestDist := float32(999999)
-		var closest math.Point2LL
-		for ps := range stack {
-			if dist := math.NMDistance2LLFast(ps, pt, nmPerLongitude); dist < closestDist {
-				closest = ps
-				closestDist = dist
-			}
-		}
-		return closest, closestDist
-	}
-
-	// Check that both have the same set of points
-	const distLimit = 0.03 // the CSVs seem to be printed with 3 decimals of precision, so allow some slop...
-	for pt := range a.SampleStacks {
-		cdist := math.NMDistance2LLFast(center, pt, nmPerLongitude)
-		if pc, d := hasSample(b.SampleStacks, pt); d > distLimit && math.Abs(cdist-radius) > 1 {
-			differences = append(differences, fmt.Sprintf("point %v exists in first but not in second closest %v dist %.3f (dist %.2f rad %f)",
-				pt, pc, d, math.NMDistance2LLFast(center, pt, nmPerLongitude), radius))
-		}
-	}
-	for pt := range b.SampleStacks {
-		cdist := math.NMDistance2LLFast(center, pt, nmPerLongitude)
-		if pc, d := hasSample(a.SampleStacks, pt); d > distLimit && math.Abs(cdist-radius) > 0.1 {
-			differences = append(differences, fmt.Sprintf("point %v exists in second but not in first closest %v dist %.3f (dist %.2f rad %f)",
-				pt, pc, d, cdist, radius))
-		}
-	}
-
-	// Compare values at each point and level
-	const (
-		windTolerance        = 0.1 // m/s
-		temperatureTolerance = 0.1 // Kelvin
-		heightTolerance      = 1.0 // meters
-	)
-
-	for pt, stackA := range a.SampleStacks {
-		stackB, ok := b.SampleStacks[pt]
-		if !ok {
-			// Already warned above
-			continue
-		}
-
-		for level := range wx.NumSampleLevels {
-			sampleA := stackA.Levels[level]
-			sampleB := stackB.Levels[level]
-
-			if math.Abs(sampleA.UComponent-sampleB.UComponent) > windTolerance {
-				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): UComponent differs: %.4f vs %.4f",
-					pt, level, wx.IdFromLevelIndex(level), sampleA.UComponent, sampleB.UComponent))
-			}
-			if math.Abs(sampleA.VComponent-sampleB.VComponent) > windTolerance {
-				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): VComponent differs: %.4f vs %.4f",
-					pt, level, wx.IdFromLevelIndex(level), sampleA.VComponent, sampleB.VComponent))
-			}
-			if math.Abs(sampleA.Temperature-sampleB.Temperature) > temperatureTolerance {
-				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): Temperature differs: %.4f vs %.4f",
-					pt, level, wx.IdFromLevelIndex(level), sampleA.Temperature, sampleB.Temperature))
-			}
-			if math.Abs(sampleA.Dewpoint-sampleB.Dewpoint) > temperatureTolerance {
-				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): Dewpoint differs: %.4f vs %.4f",
-					pt, level, wx.IdFromLevelIndex(level), sampleA.Dewpoint, sampleB.Dewpoint))
-			}
-			if math.Abs(sampleA.Height-sampleB.Height) > heightTolerance {
-				differences = append(differences, fmt.Sprintf("Point %v, Level %d (%s): Height differs: %.4f vs %.4f",
-					pt, level, wx.IdFromLevelIndex(level), sampleA.Height, sampleB.Height))
-			}
-		}
-	}
-
-	if len(differences) > 0 {
-		msg := fmt.Sprintf("Found %d differences:\n", len(differences))
-		return errors.New(msg + "\n" + strings.Join(differences, "\n"))
-	}
-
-	return nil
-}
-
-func readCSV(ctx context.Context, f *os.File, freeBufCh <-chan []byte, readBufCh chan<- []byte) error {
-	for {
-		var buf []byte
-		select {
-		case buf = <-freeBufCh:
-		case <-ctx.Done():
-			close(readBufCh)
-			return ctx.Err()
-		}
-
-		n, err := f.Read(buf)
-		if n == 0 && err == io.EOF {
-			close(readBufCh) // no more coming
-			return nil
-		} else if err != nil && err != io.EOF {
-			return err
-		} else {
-			select {
-			case readBufCh <- buf[:n]:
-			case <-ctx.Done():
-				close(readBufCh)
-				return ctx.Err()
-			}
-		}
-	}
-}
-
-func commaSplit(s []byte) iter.Seq[[]byte] {
-	return func(yield func([]byte) bool) {
-		for {
-			if idx := bytes.IndexByte(s, ','); idx != -1 {
-				if !yield(s[:idx]) { // don't include the comma
-					return
-				}
-				s = s[idx+1:]
-			} else {
-				yield(s)
-				return
-			}
-		}
-	}
-}
-
-var div10 = []float64{
-	1,
-	10,
-	100,
-	1000,
-	10000,
-	100000,
-	1000000,
-	10000000,
-	100000000,
-	1000000000,
-	10000000000,
-	100000000000,
-	1000000000000,
-}
-
-func atof(s []byte) float32 {
-	var neg, decimal bool
-	var ndec int
-	var digits int64
-	for _, ch := range s {
-		switch {
-		case ch == '-':
-			neg = true
-		case ch == '.':
-			decimal = true
-		case ch >= '0' && ch <= '9':
-			digits *= 10
-			digits += int64(ch - '0')
-			if decimal {
-				ndec++
-			}
-		case ch == 'e':
-			// Doh--scientific notation. punt
-			v, err := strconv.ParseFloat(string(s), 32)
-			if err != nil {
-				panic(err)
-			}
-			return float32(v)
-		default:
-			panic("bad string passed to atof: " + string(s))
-		}
-	}
-	vf := float64(digits)
-	if neg {
-		vf = -vf
-	}
-	if ndec > 0 {
-		vf /= div10[ndec]
-	}
-
-	return float32(vf)
-}
-
-const (
-	LineItemUnsetType = iota
-	LineItemUDirection
-	LineItemVDirection
-	LineItemTemperature
-	LineItemDewpoint
-	LineItemHeight
-)
-
-type LineItem struct {
-	Lat, Long, Value float32
-	Type             int
-	Level            int
-}
-
-func parseWindCSV(ctx context.Context, tracon, filename string, readBufCh <-chan []byte, freeBufCh chan<- []byte) (*wx.AtmosByPoint, error) {
-	bp := 0 // buf pos
-	var buf []byte
-
-	var getline func() []byte
-	getline = func() []byte {
-		if idx := bytes.IndexByte(buf[bp:], '\n'); idx != -1 {
-			line := buf[bp : bp+idx] // no \n
-			bp += idx + 1            // skip \n
-			return line
-		}
-
-		// reached the end without finding a newline
-		var accum []byte
-		if buf != nil {
-			accum = append(accum, buf[bp:]...) // copy!
-			freeBufCh <- buf
-		}
-
-		var ok bool
-		select {
-		case buf, ok = <-readBufCh:
-			break
-		case <-ctx.Done():
-			return nil
-		}
-
-		bp = 0
-		if !ok { // EOF
-			return accum
-		}
-		return append(accum, getline()...)
-	}
-
-	var arena []wx.AtmosSampleStack
-	allocStack := func() *wx.AtmosSampleStack {
-		if len(arena) == 0 {
-			arena = make([]wx.AtmosSampleStack, 1024)
-		}
-		s := &arena[0]
-		arena = arena[1:]
-		return s
-	}
-
-	at := wx.MakeAtmosByPoint()
-
-	tspec, ok := av.DB.TRACONs[tracon]
-	if !ok {
-		return nil, fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
-	}
-	center, radius := tspec.Center(), tspec.Radius
-	nmPerLongitude := math.NMPerLongitudeAt(center)
-
-	start := time.Now()
-	n, nbytes := 0, 0
-	for {
-		line := getline()
-		if len(line) == 0 {
-			elapsed := time.Since(start).Seconds()
-			LogInfo("%s: processed %d lines of HRRR CSV (%.2f M / sec, %.2f MB/s)", filename, n,
-				float64(n)/elapsed/(1024*1024), float64(nbytes)/elapsed/(1024*1024))
-
-			return &at, nil
-		}
-		if n%1000000 == 0 {
-			select {
-			case <-ctx.Done():
-				return nil, ctx.Err()
-			default:
-				break
-			}
-		}
-
-		n++
-		nbytes += len(line)
-		if item, err := parseHRRRLine(line); err != nil {
-			return nil, err
-		} else if item.Type != LineItemUnsetType {
-			pt := math.Point2LL{item.Long, item.Lat}
-			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d > radius {
-				// Skip this point
-				continue
-			}
-
-			stack, ok := at.SampleStacks[pt]
-			if !ok {
-				stack = allocStack()
-				at.SampleStacks[pt] = stack
-			}
-
-			switch item.Type {
-			case LineItemUDirection:
-				stack.Levels[item.Level].UComponent = item.Value
-			case LineItemVDirection:
-				stack.Levels[item.Level].VComponent = item.Value
-			case LineItemTemperature:
-				stack.Levels[item.Level].Temperature = item.Value
-			case LineItemDewpoint:
-				stack.Levels[item.Level].Dewpoint = item.Value
-			case LineItemHeight:
-				stack.Levels[item.Level].Height = item.Value
-			}
-		}
-	}
-}
-
-func parseHRRRLine(line []byte) (LineItem, error) {
-	var li LineItem
-	// "2025-08-06 03:00:00","2025-08-06 03:00:00","HGT","50 mb",-122.72,21.1381,20804.8
-	if line[43] != ',' {
-		return LineItem{}, fmt.Errorf("Found %q at 43 in %q", string(line[43]), line)
-	}
-	line = line[44:]
-
-	var record [5][]byte
-	i := 0
-	for r := range commaSplit(line) { // strings.SplitSeq(line, ",") {
-		if r[0] == '"' {
-			r = r[1 : len(r)-1]
-		}
-		record[i] = r
-		i++
-	}
-	if i != len(record) {
-		return LineItem{}, fmt.Errorf("Didn't find 5 records in line %q. OUT OF SPACE?", string(line))
-	}
-
-	level := wx.LevelIndexFromId(record[1])
-	if level == -1 {
-		// not a level we care about (cloud tops, etc.)
-		return LineItem{}, nil
-	}
-	li.Level = level
-
-	if bytes.Equal(record[0], []byte("UGRD")) {
-		li.Type = LineItemUDirection
-	} else if bytes.Equal(record[0], []byte("VGRD")) {
-		li.Type = LineItemVDirection
-	} else if bytes.Equal(record[0], []byte("TMP")) {
-		li.Type = LineItemTemperature
-	} else if bytes.Equal(record[0], []byte("DPT")) {
-		li.Type = LineItemDewpoint
-	} else if bytes.Equal(record[0], []byte("HGT")) {
-		li.Type = LineItemHeight
-	}
-
-	li.Lat = atof(record[3])
-	li.Long = atof(record[2])
-	li.Value = atof(record[4])
-
-	return li, nil
 }
 
 func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st StorageBackend) (int64, error) {
