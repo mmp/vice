@@ -72,15 +72,15 @@
           {
             "destination": "KPOU",
             "rate": 10,
-          "waypoints": "N040.40.08.120,W073.21.27.240/a1400 N040.35.41.249,W073.27.10.371/a1000/radius1 N040.34.31.073,W073.34.55.834/a300-500 N040.34.27.379,W073.49.10.845/a300-500 N040.32.26.406,W073.55.42.919/a300-500 N040.33.53.569,W074.00.19.555/a800-1100/radius1 N040.36.49.487,W074.02.52.622/a800-1100/radius1 N040.41.04.260,W074.01.51.868/a1100 N040.45.37.449,W074.00.22.192/a1000 N040.52.04.731,W073.56.24.585/a900 N040.58.21.837,W073.53.52.836/a1200 N041.07.32.197,W073.52.35.410/a1500-2500/radius3/land",
-          "name": "Shoreline to Northbound Hudson"
-        },
-        {
-          "destination": "KDXR",
-          "rate": 5,
-          "waypoints": "N040.49.24.179,W073.33.36.375/a1500-2500/radius3 N040.53.42.413,W073.38.18.641/a2000-2800/radius2 N040.58.13.432,W073.43.17.525/a2500-2800/radius2 N041.13.23.031,W073.35.34.368/radius3/a1500-2500/land",
-          "name": "North skirting the bravo"
-        }
+            "waypoints": "N040.40.08.120,W073.21.27.240/a1400 N040.35.41.249,W073.27.10.371/a1000/radius1 N040.34.31.073,W073.34.55.834/a300-500 N040.34.27.379,W073.49.10.845/a300-500 N040.32.26.406,W073.55.42.919/a300-500 N040.33.53.569,W074.00.19.555/a800-1100/radius1 N040.36.49.487,W074.02.52.622/a800-1100/radius1 N040.41.04.260,W074.01.51.868/a1100 N040.45.37.449,W074.00.22.192/a1000 N040.52.04.731,W073.56.24.585/a900 N040.58.21.837,W073.53.52.836/a1200 N041.07.32.197,W073.52.35.410/a1500-2500/radius3/land",
+            "name": "Shoreline to Northbound Hudson"
+          },
+          {
+            "destination": "KDXR",
+            "rate": 5,
+            "waypoints": "N040.49.24.179,W073.33.36.375/a1500-2500/radius3 N040.53.42.413,W073.38.18.641/a2000-2800/radius2 N040.58.13.432,W073.43.17.525/a2500-2800/radius2 N041.13.23.031,W073.35.34.368/radius3/a1500-2500/land",
+            "name": "North skirting the bravo"
+          }
         ]
       }
     },
@@ -1250,7 +1250,7 @@
           "DEEZZ": {
             "cleared_altitude": 17000,
             "sid": "DEEZZ5",
-            "handoff_controller": "5E", 
+            "handoff_controller": "5E",
             "waypoints": "KJFK-22R/ho _JFK5_4La _JFK5_4Lb/h010"
           },
           "DIXIE,WHITE": {
@@ -1768,7 +1768,7 @@
           "HAAYS": {
             "cleared_altitude": 12000,
             "sid": "LGA7",
-            "handoff_controller": "5T", 
+            "handoff_controller": "5T",
             "waypoints": "KLGA-31/ho _LGA7_WTSa _LGA7_WTSb/radius1 N040.58.55.935,W074.00.00.329/radius3/ph/tc"
           },
           "WHITE": {
@@ -2756,204 +2756,202 @@
   "inbound_flows": {
     "WRI DIXIE": {
       "overflights": [
-            {
-                "airlines": [
-                    { "icao": "N", "departure_airport": "KACY", "arrival_airport": "KISP" }
-                ],
-                "waypoints": "CYN N039.53.29.930,W074.21.07.547/ho WHITE DIXIE V16 JFK CCC/a2000/delete",
-                "initial_altitude": 4000,
-                "initial_speed": 170,
-                "assigned_altitude": 5000,
-                "description": "WRI DIXIE Overflights",
-                "initial_controller": "51Y"
-            }
+        {
+          "airlines": [{ "icao": "N", "departure_airport": "KACY", "arrival_airport": "KISP" }],
+          "waypoints": "CYN N039.53.29.930,W074.21.07.547/ho WHITE DIXIE V16 JFK CCC/a2000/delete",
+          "initial_altitude": 4000,
+          "initial_speed": 170,
+          "assigned_altitude": 5000,
+          "description": "WRI DIXIE Overflights",
+          "initial_controller": "51Y"
+        }
       ]
     },
-  "MIP4 LGA background 4": {
-    "arrivals": [
-      {
-        "waypoints":  "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 BENNG/a3000/clearapp",
-        "cruise_altitude": 35000,
-        "star": "MIP4",
-        "initial_controller": "1D",
-        "initial_altitude": 10000,
-        "initial_speed": 300,
-        "speed_restriction": 250,
-        "expect_approach": "I4",
-        "airlines": {
-          "KLGA": [
-            {
-              "airport": "KORD",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KORD",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KORD",
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "airport": "KORD",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KMDW",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KDTW",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KORD",
-              "icao": "SWA"
-            },
-            {
-              "airport": "KCVG",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KCVG",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KCLE",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KCLE",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KIND",
-              "icao": "EDV"
-            },
-            {
-              "airport": "KIND",
-              "icao": "RPA"
-            },
-            {
-              "airport": "KMSP",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KPIT",
-              "fleet": "short",
-              "icao": "DAL"
-            },
-            {
-              "airport": "KPIT",
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KPIT",
-              "fleet": "short",
-              "icao": "UAL"
-            }
-          ]
+    "MIP4 LGA background 4": {
+      "arrivals": [
+        {
+          "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 BENNG/a3000/clearapp",
+          "cruise_altitude": 35000,
+          "star": "MIP4",
+          "initial_controller": "1D",
+          "initial_altitude": 10000,
+          "initial_speed": 300,
+          "speed_restriction": 250,
+          "expect_approach": "I4",
+          "airlines": {
+            "KLGA": [
+              {
+                "airport": "KORD",
+                "fleet": "short",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KORD",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KORD",
+                "fleet": "short",
+                "icao": "UAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KMDW",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KDTW",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "SWA"
+              },
+              {
+                "airport": "KCVG",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KCVG",
+                "icao": "RPA"
+              },
+              {
+                "airport": "KCLE",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KCLE",
+                "icao": "RPA"
+              },
+              {
+                "airport": "KIND",
+                "icao": "EDV"
+              },
+              {
+                "airport": "KIND",
+                "icao": "RPA"
+              },
+              {
+                "airport": "KMSP",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KPIT",
+                "fleet": "short",
+                "icao": "DAL"
+              },
+              {
+                "airport": "KPIT",
+                "fleet": "short",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KPIT",
+                "fleet": "short",
+                "icao": "UAL"
+              }
+            ]
+          }
         }
-      }
-    ]
-  }
-  },
-  "stars_config": {
-  "center": "N040.45.26.477,W074.24.28.789",
-  "range": 60,
-  "pdb": { "hide_gs": true },
-  "fdb": { "display_requested_altitude": true },
-  "radar_sites": {
-    "EWR": {
-      "char": "E",
-      "position": "KEWR",
-      "elevation": 136,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "HPN": {
-      "char": "H",
-      "position": "KHPN",
-      "elevation": 708,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "ISP": {
-      "char": "I",
-      "position": "KISP",
-      "elevation": 185,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "JFK": {
-      "char": "J",
-      "position": "KJFK",
-      "elevation": 143,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
-    },
-    "SWF": {
-      "char": "S",
-      "position": "KSWF",
-      "elevation": 972,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 30,
-      "slope_angle": 0.175
+      ]
     }
   },
-      "force_ql_self": true,
-      "coordination_fixes": {
-        "MERIT": [
-          {
-              "type": "route",
-              "to": "ZBW",
-              "from": "ZNY"
-          }
+  "stars_config": {
+    "center": "N040.45.26.477,W074.24.28.789",
+    "range": 60,
+    "pdb": { "hide_gs": true },
+    "fdb": { "display_requested_altitude": true },
+    "radar_sites": {
+      "EWR": {
+        "char": "E",
+        "position": "KEWR",
+        "elevation": 136,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "HPN": {
+        "char": "H",
+        "position": "KHPN",
+        "elevation": 708,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "ISP": {
+        "char": "I",
+        "position": "KISP",
+        "elevation": 185,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "JFK": {
+        "char": "J",
+        "position": "KJFK",
+        "elevation": 143,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      },
+      "SWF": {
+        "char": "S",
+        "position": "KSWF",
+        "elevation": 972,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 30,
+        "slope_angle": 0.175
+      }
+    },
+    "force_ql_self": true,
+    "coordination_fixes": {
+      "MERIT": [
+        {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+        }
       ],
       "GREKI": [
-          {
-              "type": "route",
-              "to": "ZBW",
-              "from": "ZNY"
-          }
+        {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+        }
       ],
       "BAYYS": [
-          {
-              "type": "route",
-              "to": "ZBW",
-              "from": "ZNY"
-          }
+        {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+        }
       ],
       "BETTE": [
-          {
-              "type": "route",
-              "to": "ZBW",
-              "from": "ZNY"
-          }
+        {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+        }
       ],
       "HAPIE": [
-          {
-              "type": "route",
-              "to": "ZBW",
-              "from": "ZNY"
-          }
+        {
+          "type": "route",
+          "to": "ZBW",
+          "from": "ZNY"
+        }
       ]
-      },
+    },
     "airspace_awareness": [
       {
         "fixes": ["MERIT", "BAYYS", "GREKI"],
@@ -3068,57 +3066,88 @@
         "receiving_controller": "81B"
       }
     ],
-  "scratchpads": {
-    "BAYYS": "BAY",
-    "BIGGY": "BIG",
-    "BDR": "BDR",
-    "BREZY": "BRE",
-    "CMK": "CMK",
-    "COATE": "COA",
-    "DEEZZ": "DEZ",
-    "DIXIE": "DIX",
-    "ELIOT": "ELI",
-    "GAYEL": "GAY",
-    "GREKI": "GRE",
-    "HAAYS": "HAY",
-    "LANNA": "LAN",
-    "MERIT": "MER",
-    "NEION": "NEI",
-    "NEWEL": "NWL",
-    "PARKE": "PAR",
-    "RBV": "RBV",
-    "SOARS": "SOA",
-    "WHITE": "WHI",
-    "ZIMMZ": "ZIM"
-  },
-  "significant_points": {
-      "BAYYS": { },
-      "BIGGY": { },
-      "BREZY": { },
-      "COATE": { },
-      "DEEZZ": { },
-      "DIXIE": { },
-      "ELIOT": { },
-      "GAYEL": { },
-      "GREKI": { },
+    "scratchpads": {
+      "BAYYS": "BAY",
+      "BIGGY": "BIG",
+      "BDR": "BDR",
+      "BREZY": "BRE",
+      "CMK": "CMK",
+      "COATE": "COA",
+      "DEEZZ": "DEZ",
+      "DIXIE": "DIX",
+      "ELIOT": "ELI",
+      "GAYEL": "GAY",
+      "GREKI": "GRE",
+      "HAAYS": "HAY",
+      "LANNA": "LAN",
+      "MERIT": "MER",
+      "NEION": "NEI",
+      "NEWEL": "NWL",
+      "PARKE": "PAR",
+      "RBV": "RBV",
+      "SOARS": "SOA",
+      "WHITE": "WHI",
+      "ZIMMZ": "ZIM"
+    },
+    "significant_points": {
+      "BAYYS": {},
+      "BIGGY": {},
+      "BREZY": {},
+      "COATE": {},
+      "DEEZZ": {},
+      "DIXIE": {},
+      "ELIOT": {},
+      "GAYEL": {},
+      "GREKI": {},
       "HAAYS": { "short_name": "HAY" },
-      "LANNA": { },
-      "MERIT": { },
-      "NEION": { },
+      "LANNA": {},
+      "MERIT": {},
+      "NEION": {},
       "NEWEL": { "short_name": "NWL" },
-      "PARKE": { },
-      "RBV": {  },
-      "WHITE": { },
-      "ZIMMZ": { }
-  },
-  "stars_maps": [ "", "", "",
-                  "", "", "",
-                  "LIBERTY DEP", "CATSKILL AREA", "LGA-HPN ARR/DEP", "JFK ARR/DEP", "ISP ARR/DEP", "EWR ARR/DEP", "SWF/MSV", "POU/MGJ",
-                  "SAT GPS", "", "", "", "N90 TFR", "", "",
-                  "MVA", "JFK ARR/DEP RWY 4L/R", "JFK ARR/DEP RWY 13L/R", "JFK ARR/DEP RWY 22L/R", "JFK ARR/DEP RWY 31L/R",
-                  "", "", "", "", "", "", "Coast", "EOVM", "", ""
-  ],
-  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+      "PARKE": {},
+      "RBV": {},
+      "WHITE": {},
+      "ZIMMZ": {}
+    },
+    "stars_maps": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "LIBERTY DEP",
+      "CATSKILL AREA",
+      "LGA-HPN ARR/DEP",
+      "JFK ARR/DEP",
+      "ISP ARR/DEP",
+      "EWR ARR/DEP",
+      "SWF/MSV",
+      "POU/MGJ",
+      "SAT GPS",
+      "",
+      "",
+      "",
+      "N90 TFR",
+      "",
+      "",
+      "MVA",
+      "JFK ARR/DEP RWY 4L/R",
+      "JFK ARR/DEP RWY 13L/R",
+      "JFK ARR/DEP RWY 22L/R",
+      "JFK ARR/DEP RWY 31L/R",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "Coast",
+      "EOVM",
+      "",
+      ""
+    ],
+    "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   },
   "control_positions": {
     "Boston Center (Pawling 06)": {
@@ -3334,36 +3363,22 @@
       "multi_controllers": {
         "default": {
           "5E": {
-            "primary": true 
+            "primary": true
           },
           "5W": {
             "backup": "5E"
           },
           "5S": {
             "backup": "5W",
-            "inbound_flows": [ "WRI DIXIE" ]
+            "inbound_flows": ["WRI DIXIE"]
           },
           "5T": {
             "backup": "5E"
           }
         }
       },
-      "controllers": [
-        "5E",
-        "4N",
-        "1L",
-        "2J",
-        "C35",
-        "C36",
-        "C39",
-        "C51",
-        "C55",
-        "C56",
-        "C68",
-        "B06",
-        "B19"
-      ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "controllers": ["5E", "4N", "1L", "2J", "C35", "C36", "C39", "C51", "C55", "C56", "C68", "B06", "B19"],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3456,36 +3471,22 @@
       "multi_controllers": {
         "default": {
           "5E": {
-            "primary": true 
+            "primary": true
           },
           "5W": {
             "backup": "5E"
           },
           "5S": {
             "backup": "5W",
-            "inbound_flows": [ "WRI DIXIE" ]
+            "inbound_flows": ["WRI DIXIE"]
           },
           "5T": {
             "backup": "5E"
           }
         }
       },
-      "controllers": [
-        "5E",
-        "4N",
-        "1L",
-        "2J",
-        "C35",
-        "C36",
-        "C39",
-        "C51",
-        "C55",
-        "C56",
-        "C68",
-        "B06",
-        "B19"
-      ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "controllers": ["5E", "4N", "1L", "2J", "C35", "C36", "C39", "C51", "C55", "C56", "C68", "B06", "B19"],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3589,7 +3590,7 @@
         "B06",
         "B19"
       ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KJFK",
@@ -3709,7 +3710,7 @@
         "B06",
         "B19"
       ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3792,24 +3793,8 @@
     },
     "Liberty South JFK Owns Coney": {
       "solo_controller": "5S",
-      "controllers": [
-        "5E",
-        "5W",
-        "5S",
-        "5T",
-        "4N",
-        "1L",
-        "2J",
-        "C56",
-        "C68",
-        "C55",
-        "C35",
-        "C51",
-        "C39",
-        "B06",
-        "B19"
-      ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "controllers": ["5E", "5W", "5S", "5T", "4N", "1L", "2J", "C56", "C68", "C55", "C35", "C51", "C39", "B06", "B19"],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3889,24 +3874,8 @@
     },
     "Liberty South LGA Owns Coney": {
       "solo_controller": "5S",
-      "controllers": [
-        "5E",
-        "5W",
-        "5S",
-        "5T",
-        "4N",
-        "1L",
-        "2J",
-        "C56",
-        "C68",
-        "C55",
-        "C35",
-        "C51",
-        "C39",
-        "B06",
-        "B19"
-      ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "controllers": ["5E", "5W", "5S", "5T", "4N", "1L", "2J", "C56", "C68", "C55", "C35", "C51", "C39", "B06", "B19"],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -3998,7 +3967,7 @@
         "B06",
         "B19"
       ],
-      "default_maps": [ "LIBERTY DEP" ],
+      "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",

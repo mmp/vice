@@ -33,9 +33,7 @@
           "full_name": "Stadium Visual Runway 29",
           "runway": "29",
           "type": "Visual",
-          "waypoints": [
-            "TEB/a3000 GIMEE/a2500 HILOK/a1500-2000 SLIMR/a1500-2000 COPKO/a700 CHUMR/a500"
-          ]
+          "waypoints": ["TEB/a3000 GIMEE/a2500 HILOK/a1500-2000 SLIMR/a1500-2000 COPKO/a700 CHUMR/a500"]
         }
       },
       "approach_regions": {
@@ -53,9 +51,7 @@
           "reference_heading": 219,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "2L"
-          ]
+          "scratchpad_patterns": ["2L"]
         },
         "22R": {
           "heading_tolerance": 90,
@@ -71,9 +67,7 @@
           "reference_heading": 219,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "2R"
-          ]
+          "scratchpad_patterns": ["2R"]
         },
         "11": {
           "heading_tolerance": 90,
@@ -89,9 +83,7 @@
           "reference_heading": 108,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "11"
-          ]
+          "scratchpad_patterns": ["11"]
         },
         "4L": {
           "heading_tolerance": 90,
@@ -107,9 +99,7 @@
           "reference_heading": 39,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "4L"
-          ]
+          "scratchpad_patterns": ["4L"]
         },
         "4R": {
           "heading_tolerance": 90,
@@ -125,60 +115,34 @@
           "reference_heading": 39,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "4R"
-          ]
+          "scratchpad_patterns": ["4R"]
         }
       },
       "converging_runways": [
         {
-          "runways": [
-            "22L",
-            "11"
-          ],
-          "leader_directions": [
-            "S",
-            "E"
-          ],
+          "runways": ["22L", "11"],
+          "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
         },
         {
-          "runways": [
-            "4R",
-            "11"
-          ],
-          "leader_directions": [
-            "S",
-            "E"
-          ],
+          "runways": ["4R", "11"],
+          "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
         },
         {
-          "runways": [
-            "22R",
-            "11"
-          ],
-          "leader_directions": [
-            "S",
-            "E"
-          ],
+          "runways": ["22R", "11"],
+          "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
         },
         {
-          "runways": [
-            "4L",
-            "11"
-          ],
-          "leader_directions": [
-            "S",
-            "E"
-          ],
+          "runways": ["4L", "11"],
+          "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
@@ -1183,12 +1147,8 @@
           "length": 50,
           "left_width": 20000,
           "right_width": 20000,
-          "filtered_scratchpads": [
-            "VAP"
-          ],
-          "excluded_scratchpads": [
-            "I4L"
-          ],
+          "filtered_scratchpads": ["VAP"],
+          "excluded_scratchpads": ["I4L"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -1201,12 +1161,8 @@
           "length": 50,
           "left_width": 20000,
           "right_width": 20000,
-          "filtered_scratchpads": [
-            "VAP"
-          ],
-          "excluded_scratchpads": [
-            "I2R"
-          ],
+          "filtered_scratchpads": ["VAP"],
+          "excluded_scratchpads": ["I2R"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         }
@@ -2635,16 +2591,12 @@
         "I22": {
           "runway": "22",
           "type": "ILS",
-          "waypoints": [
-            "YOMAN/if/a3000 GREKO/faf/a1900"
-          ]
+          "waypoints": ["YOMAN/if/a3000 GREKO/faf/a1900"]
         },
         "I13": {
           "runway": "13",
           "type": "ILS",
-          "waypoints": [
-            "PAYMI/if/a2800 STEED/faf/a1900 COROR/a800"
-          ]
+          "waypoints": ["PAYMI/if/a2800 STEED/faf/a1900 COROR/a800"]
         },
         "R31": {
           "full_name": "RNAV X Runway 31",
@@ -2666,9 +2618,7 @@
           "full_name": "Localizer Runway 31",
           "runway": "31",
           "type": "ILS",
-          "waypoints": [
-            "QUENE/if/a1700 FABRY/faf/a1700"
-          ]
+          "waypoints": ["QUENE/if/a1700 FABRY/faf/a1700"]
         }
       },
       "departure_controller": "1L",
@@ -3070,9 +3020,7 @@
           "length": 40,
           "left_width": 30000,
           "right_width": 30000,
-          "filtered_scratchpads": [
-            "VAP"
-          ],
+          "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3085,9 +3033,7 @@
           "length": 30,
           "left_width": 30000,
           "right_width": 30000,
-          "filtered_scratchpads": [
-            "VAP"
-          ],
+          "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3100,9 +3046,7 @@
           "length": 40,
           "left_width": 30000,
           "right_width": 30000,
-          "filtered_scratchpads": [
-            "VAP"
-          ],
+          "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
@@ -3115,9 +3059,7 @@
           "length": 40,
           "left_width": 30000,
           "right_width": 30000,
-          "filtered_scratchpads": [
-            "VAP"
-          ],
+          "filtered_scratchpads": ["VAP"],
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         }
@@ -4955,130 +4897,96 @@
     "volumes": {
       "NOA_SW": [
         {
-          "boundaries": [
-            "NOA_SW_F2"
-          ],
+          "boundaries": ["NOA_SW_F2"],
           "lower": 6000,
           "upper": 6000
         },
         {
           "label_position": "N041.04.06.203,W074.26.58.286",
-          "boundaries": [
-            "NOA_SW_F3"
-          ],
+          "boundaries": ["NOA_SW_F3"],
           "lower": 5000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "NOA_SW_G3"
-          ],
+          "boundaries": ["NOA_SW_G3"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "NOA_SW_H3"
-          ],
+          "boundaries": ["NOA_SW_H3"],
           "lower": 5000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "NOA_SW_F4"
-          ],
+          "boundaries": ["NOA_SW_F4"],
           "lower": 5000,
           "upper": 6000
         }
       ],
       "NOA_NE": [
         {
-          "boundaries": [
-            "NOA_SW_F2"
-          ],
+          "boundaries": ["NOA_SW_F2"],
           "lower": 6000,
           "upper": 6000
         },
         {
           "label_position": "N040.55.58.190,W074.31.03.198",
-          "boundaries": [
-            "NOA_NE_F3"
-          ],
+          "boundaries": ["NOA_NE_F3"],
           "lower": 5000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_B3"
-          ],
+          "boundaries": ["YARDLEY_SW_B3"],
           "lower": 7000,
           "upper": 8000
         },
         {
           "label_position": "N040.57.19.036,W074.43.50.841",
-          "boundaries": [
-            "YARDLEY_SW_C2"
-          ],
+          "boundaries": ["YARDLEY_SW_C2"],
           "lower": 7000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_B4"
-          ],
+          "boundaries": ["YARDLEY_SW_B4"],
           "lower": 6000,
           "upper": 8000
         },
         {
           "label_position": "N040.50.26.060,W074.47.22.630",
-          "boundaries": [
-            "YARDLEY_SW_C4"
-          ],
+          "boundaries": ["YARDLEY_SW_C4"],
           "lower": 6000,
           "upper": 7000
         },
         {
           "label_position": "N041.03.44.189,W074.13.36.915",
-          "boundaries": [
-            "NOA_NE_G3"
-          ],
+          "boundaries": ["NOA_NE_G3"],
           "lower": 5000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "NOA_NE_F5"
-          ],
+          "boundaries": ["NOA_NE_F5"],
           "lower": 5000,
           "upper": 6000
         }
       ],
       "FINAL_VECTORS_22": [
         {
-          "boundaries": [
-            "FINALS_22_F4"
-          ],
+          "boundaries": ["FINALS_22_F4"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "FINALS_22_G5"
-          ],
+          "boundaries": ["FINALS_22_G5"],
           "lower": 3000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "FINALS_22_G6"
-          ],
+          "boundaries": ["FINALS_22_G6"],
           "lower": 0,
           "upper": 2500
         },
         {
-          "boundaries": [
-            "FINALS_22_G7"
-          ],
+          "boundaries": ["FINALS_22_G7"],
           "lower": 4000,
           "upper": 2500
         }
@@ -5086,643 +4994,469 @@
       "FINAL_VECTORS_4": [
         {
           "label_position": "N040.32.57.497,W074.33.15.941",
-          "boundaries": [
-            "FINAL_4_D6"
-          ],
+          "boundaries": ["FINAL_4_D6"],
           "lower": 4000,
           "upper": 4000
         },
         {
           "label_position": "N040.36.22.887,W074.25.10.290",
-          "boundaries": [
-            "FINAL_4_E5"
-          ],
+          "boundaries": ["FINAL_4_E5"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "FINAL_4_F6"
-          ],
+          "boundaries": ["FINAL_4_F6"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "FINAL_4_E7"
-          ],
+          "boundaries": ["FINAL_4_E7"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "FINAL_4_G7"
-          ],
+          "boundaries": ["FINAL_4_G7"],
           "lower": 0,
           "upper": 2500
         },
         {
-          "boundaries": [
-            "FINAL_4_F8"
-          ],
+          "boundaries": ["FINAL_4_F8"],
           "lower": 3000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "FINAL_4_E8"
-          ],
+          "boundaries": ["FINAL_4_E8"],
           "lower": 3000,
           "upper": 6000
         }
       ],
       "YARDLEY_SW": [
         {
-          "boundaries": [
-            "YARDLEY_SW_B3"
-          ],
+          "boundaries": ["YARDLEY_SW_B3"],
           "lower": 7000,
           "upper": 7000
         },
         {
           "label_position": "N040.57.33.826,W074.43.52.928",
-          "boundaries": [
-            "YARDLEY_SW_C2"
-          ],
+          "boundaries": ["YARDLEY_SW_C2"],
           "lower": 7000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_B4"
-          ],
+          "boundaries": ["YARDLEY_SW_B4"],
           "lower": 6000,
           "upper": 7000
         },
         {
           "label_position": "N040.50.04.307,W074.47.51.633",
-          "boundaries": [
-            "YARDLEY_SW_C4"
-          ],
+          "boundaries": ["YARDLEY_SW_C4"],
           "lower": 6000,
           "upper": 7000
         },
         {
           "label_position": "N040.46.09.790,W074.39.45.571",
-          "boundaries": [
-            "YARDLEY_SW_D4"
-          ],
+          "boundaries": ["YARDLEY_SW_D4"],
           "lower": 5000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_E5"
-          ],
+          "boundaries": ["YARDLEY_SW_E5"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_B7"
-          ],
+          "boundaries": ["YARDLEY_SW_B7"],
           "lower": 5000,
           "upper": 9000
         },
         {
           "label_position": "N040.24.04.180,W074.40.58.657",
-          "boundaries": [
-            "YARDLEY_SW_C7"
-          ],
+          "boundaries": ["YARDLEY_SW_C7"],
           "lower": 5000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_E6"
-          ],
+          "boundaries": ["YARDLEY_SW_E6"],
           "lower": 5000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_F6"
-          ],
+          "boundaries": ["YARDLEY_SW_F6"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_B8"
-          ],
+          "boundaries": ["YARDLEY_SW_B8"],
           "lower": 6000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_C8"
-          ],
+          "boundaries": ["YARDLEY_SW_C8"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_C9"
-          ],
+          "boundaries": ["YARDLEY_SW_C9"],
           "lower": 7000,
           "upper": 7000
         }
       ],
       "YARDLEY_NE": [
         {
-          "boundaries": [
-            "YARDLEY_SW_B7"
-          ],
+          "boundaries": ["YARDLEY_SW_B7"],
           "lower": 5000,
           "upper": 9000
         },
         {
           "label_position": "N040.24.30.629,W074.41.08.133",
-          "boundaries": [
-            "YARDLEY_SW_C7"
-          ],
+          "boundaries": ["YARDLEY_SW_C7"],
           "lower": 5000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_B8"
-          ],
+          "boundaries": ["YARDLEY_SW_B8"],
           "lower": 6000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_C8"
-          ],
+          "boundaries": ["YARDLEY_SW_C8"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_SW_C9"
-          ],
+          "boundaries": ["YARDLEY_SW_C9"],
           "lower": 7000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "YARDLEY_NE_E6"
-          ],
+          "boundaries": ["YARDLEY_NE_E6"],
           "lower": 5000,
           "upper": 7000
         },
         {
           "label_position": "N040.30.18.443,W074.22.00.721",
-          "boundaries": [
-            "YARDLEY_NE_F6"
-          ],
+          "boundaries": ["YARDLEY_NE_F6"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "YARDLEY_NE_E7"
-          ],
+          "boundaries": ["YARDLEY_NE_E7"],
           "lower": 7000,
           "upper": 7000
         }
       ],
       "DEP_SW": [
         {
-          "boundaries": [
-            "DEP_SW_F3"
-          ],
+          "boundaries": ["DEP_SW_F3"],
           "lower": 7000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "DEP_SW_F4"
-          ],
+          "boundaries": ["DEP_SW_F4"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "DEP_SW_F5"
-          ],
+          "boundaries": ["DEP_SW_F5"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_SW_G6"
-          ],
+          "boundaries": ["DEP_SW_G6"],
           "lower": 5000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "DEP_SW_F6"
-          ],
+          "boundaries": ["DEP_SW_F6"],
           "lower": 5000,
           "upper": 6000
         },
         {
           "label_position": "N040.55.18.681,W074.14.39.537",
-          "boundaries": [
-            "DEP_SW_E5"
-          ],
+          "boundaries": ["DEP_SW_E5"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_SW_E6"
-          ],
+          "boundaries": ["DEP_SW_E6"],
           "lower": 0,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_SW_D5"
-          ],
+          "boundaries": ["DEP_SW_D5"],
           "lower": 6000,
           "upper": 10000
         },
         {
           "label_position": "N040.43.00.001,W074.18.55.876",
-          "boundaries": [
-            "DEP_SW_D6"
-          ],
+          "boundaries": ["DEP_SW_D6"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_SW_C6"
-          ],
+          "boundaries": ["DEP_SW_C6"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_SW_C5"
-          ],
+          "boundaries": ["DEP_SW_C5"],
           "lower": 8000,
           "upper": 10000
         },
         {
           "label_position": "N040.54.52.396,W074.35.05.062",
-          "boundaries": [
-            "DEP_SW_B4"
-          ],
+          "boundaries": ["DEP_SW_B4"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_SW_C8"
-          ],
+          "boundaries": ["DEP_SW_C8"],
           "lower": 7000,
           "upper": 11000
         },
         {
-          "boundaries": [
-            "DEP_SW_D8"
-          ],
+          "boundaries": ["DEP_SW_D8"],
           "lower": 0,
           "upper": 11000
         },
         {
-          "boundaries": [
-            "DEP_SW_D9"
-          ],
+          "boundaries": ["DEP_SW_D9"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_SW_E8"
-          ],
+          "boundaries": ["DEP_SW_E8"],
           "lower": 0,
           "upper": 2500
         },
         {
           "label_position": "N040.48.32.324,W074.05.37.637",
-          "boundaries": [
-            "DEP_SW_F7"
-          ],
+          "boundaries": ["DEP_SW_F7"],
           "lower": 0,
           "upper": 1500
         },
         {
-          "boundaries": [
-            "DEP_SW_F7"
-          ],
+          "boundaries": ["DEP_SW_F7"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_SW_F8"
-          ],
+          "boundaries": ["DEP_SW_F8"],
           "lower": 5000,
           "upper": 6000
         }
       ],
       "DEP_NE": [
         {
-          "boundaries": [
-            "DEP_NE_F2"
-          ],
+          "boundaries": ["DEP_NE_F2"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "DEP_NE_F3"
-          ],
+          "boundaries": ["DEP_NE_F3"],
           "lower": 5000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "DEP_NE_G2"
-          ],
+          "boundaries": ["DEP_NE_G2"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_NE_G3"
-          ],
+          "boundaries": ["DEP_NE_G3"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_NE_H3"
-          ],
+          "boundaries": ["DEP_NE_H3"],
           "lower": 0,
           "upper": 2000
         },
         {
-          "boundaries": [
-            "DEP_NE_G4"
-          ],
+          "boundaries": ["DEP_NE_G4"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "DEP_NE_G5"
-          ],
+          "boundaries": ["DEP_NE_G5"],
           "lower": 0,
           "upper": 6000
         },
         {
           "label_position": "N040.54.41.369,W074.14.23.525",
-          "boundaries": [
-            "DEP_NE_E3"
-          ],
+          "boundaries": ["DEP_NE_E3"],
           "lower": 0,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_SW_D5"
-          ],
+          "boundaries": ["DEP_SW_D5"],
           "lower": 6000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_SW_C5"
-          ],
+          "boundaries": ["DEP_SW_C5"],
           "lower": 8000,
           "upper": 10000
         },
         {
           "label_position": "N040.54.52.396,W074.35.05.062",
-          "boundaries": [
-            "DEP_SW_B4"
-          ],
+          "boundaries": ["DEP_SW_B4"],
           "lower": 9000,
           "upper": 10000
         },
         {
           "label_position": "N040.46.05.835,W074.32.16.010",
-          "boundaries": [
-            "DEP_NE_C6"
-          ],
+          "boundaries": ["DEP_NE_C6"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_NE_C7"
-          ],
+          "boundaries": ["DEP_NE_C7"],
           "lower": 6000,
           "upper": 10000
         },
         {
           "label_position": "N040.36.12.189,W074.18.21.736",
-          "boundaries": [
-            "DEP_NE_D8"
-          ],
+          "boundaries": ["DEP_NE_D8"],
           "lower": 5000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_NE_D9"
-          ],
+          "boundaries": ["DEP_NE_D9"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_NE_E7"
-          ],
+          "boundaries": ["DEP_NE_E7"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_NE_E4"
-          ],
+          "boundaries": ["DEP_NE_E4"],
           "lower": 2000,
           "upper": 8000
         },
         {
           "label_position": "N040.57.00.785,W074.16.22.919",
-          "boundaries": [
-            "DEP_NE_F4"
-          ],
+          "boundaries": ["DEP_NE_F4"],
           "lower": 5000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_NE_D6"
-          ],
+          "boundaries": ["DEP_NE_D6"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "DEP_NE_E5"
-          ],
+          "boundaries": ["DEP_NE_E5"],
           "lower": 3000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_NE_D7"
-          ],
+          "boundaries": ["DEP_NE_D7"],
           "lower": 4000,
           "upper": 10000
         },
         {
           "label_position": "N040.48.46.387,W074.05.11.984",
-          "boundaries": [
-            "DEP_NE_G6"
-          ],
+          "boundaries": ["DEP_NE_G6"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_NE_F6"
-          ],
+          "boundaries": ["DEP_NE_F6"],
           "lower": 2500,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "DEP_NE_F6B"
-          ],
+          "boundaries": ["DEP_NE_F6B"],
           "lower": 2500,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_NE_E6"
-          ],
+          "boundaries": ["DEP_NE_E6"],
           "lower": 0,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "DEP_NE_G7"
-          ],
+          "boundaries": ["DEP_NE_G7"],
           "lower": 0,
           "upper": 3000
         }
       ],
       "METRO_SW": [
         {
-          "boundaries": [
-            "METRO_SW_D4"
-          ],
+          "boundaries": ["METRO_SW_D4"],
           "lower": 8000,
           "upper": 9000
         },
         {
           "label_position": "N040.55.10.070,W074.35.05.941",
-          "boundaries": [
-            "METRO_SW_E4"
-          ],
+          "boundaries": ["METRO_SW_E4"],
           "lower": 8000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "METRO_SW_B5"
-          ],
+          "boundaries": ["METRO_SW_B5"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "METRO_SW_C5"
-          ],
+          "boundaries": ["METRO_SW_C5"],
           "lower": 0,
           "upper": 5000
         },
         {
           "label_position": "N040.46.11.699,W074.48.28.465",
-          "boundaries": [
-            "METRO_SW_C5"
-          ],
+          "boundaries": ["METRO_SW_C5"],
           "lower": 8000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_SW_D5"
-          ],
+          "boundaries": ["METRO_SW_D5"],
           "lower": 0,
           "upper": 4000
         },
         {
           "label_position": "N040.46.28.673,W074.40.24.600",
-          "boundaries": [
-            "METRO_SW_D5"
-          ],
+          "boundaries": ["METRO_SW_D5"],
           "lower": 8000,
           "upper": 9000
         },
         {
           "label_position": "N040.32.38.120,W075.01.04.077",
-          "boundaries": [
-            "METRO_SW_A6"
-          ],
+          "boundaries": ["METRO_SW_A6"],
           "lower": 6000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_SW_B6"
-          ],
+          "boundaries": ["METRO_SW_B6"],
           "lower": 0,
           "upper": 9000
         },
         {
           "label_position": "N040.33.25.293,W074.39.41.616",
-          "boundaries": [
-            "METRO_SW_D6"
-          ],
+          "boundaries": ["METRO_SW_D6"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "METRO_SW_D6"
-          ],
+          "boundaries": ["METRO_SW_D6"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_SW_E7"
-          ],
+          "boundaries": ["METRO_SW_E7"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "METRO_SW_A7"
-          ],
+          "boundaries": ["METRO_SW_A7"],
           "lower": 5000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_SW_F9"
-          ],
+          "boundaries": ["METRO_SW_F9"],
           "lower": 3000,
           "upper": 4000
         }
@@ -5730,289 +5464,211 @@
       "METRO_NE": [
         {
           "label_position": "N040.55.37.152,W074.35.02.838",
-          "boundaries": [
-            "METRO_SW_E4"
-          ],
+          "boundaries": ["METRO_SW_E4"],
           "lower": 8000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "METRO_SW_B5"
-          ],
+          "boundaries": ["METRO_SW_B5"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "METRO_SW_C5"
-          ],
+          "boundaries": ["METRO_SW_C5"],
           "lower": 0,
           "upper": 5000
         },
         {
           "label_position": "N040.32.46.635,W075.01.12.537",
-          "boundaries": [
-            "METRO_SW_C5"
-          ],
+          "boundaries": ["METRO_SW_C5"],
           "lower": 8000,
           "upper": 9000
         },
         {
           "label_position": "N040.32.46.635,W075.01.12.537",
-          "boundaries": [
-            "METRO_SW_A6"
-          ],
+          "boundaries": ["METRO_SW_A6"],
           "lower": 6000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_SW_B6"
-          ],
+          "boundaries": ["METRO_SW_B6"],
           "lower": 0,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_SW_A7"
-          ],
+          "boundaries": ["METRO_SW_A7"],
           "lower": 5000,
           "upper": 9000
         },
         {
           "label_position": "N040.52.01.366,W074.39.58.095",
-          "boundaries": [
-            "METRO_NE_D4"
-          ],
+          "boundaries": ["METRO_NE_D4"],
           "lower": 8000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_NE_D5"
-          ],
+          "boundaries": ["METRO_NE_D5"],
           "lower": 4000,
           "upper": 4000
         },
         {
           "label_position": "N040.42.05.852,W074.40.17.706",
-          "boundaries": [
-            "METRO_NE_D5"
-          ],
+          "boundaries": ["METRO_NE_D5"],
           "lower": 8000,
           "upper": 9000
         },
         {
           "label_position": "N040.37.29.876,W074.38.56.737",
-          "boundaries": [
-            "METRO_NE_D6"
-          ],
+          "boundaries": ["METRO_NE_D6"],
           "lower": 4000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "METRO_NE_D6"
-          ],
+          "boundaries": ["METRO_NE_D6"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_NE_D7"
-          ],
+          "boundaries": ["METRO_NE_D7"],
           "lower": 0,
           "upper": 4000
         },
         {
           "label_position": "N040.34.51.618,W074.40.16.882",
-          "boundaries": [
-            "METRO_NE_D7"
-          ],
+          "boundaries": ["METRO_NE_D7"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "METRO_NE_E6"
-          ],
+          "boundaries": ["METRO_NE_E6"],
           "lower": 4000,
           "upper": 4000
         },
         {
           "label_position": "N040.33.22.313,W074.33.32.063",
-          "boundaries": [
-            "METRO_NE_E7"
-          ],
+          "boundaries": ["METRO_NE_E7"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "METRO_NE_E8"
-          ],
+          "boundaries": ["METRO_NE_E8"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "METRO_NE_D8"
-          ],
+          "boundaries": ["METRO_NE_D8"],
           "lower": 0,
           "upper": 4000
         }
       ],
       "ZEEBO_SW": [
         {
-          "boundaries": [
-            "ZEEBO_SW_C2"
-          ],
+          "boundaries": ["ZEEBO_SW_C2"],
           "lower": 6000,
           "upper": 7000
         },
         {
           "label_position": "N041.18.53.335,W074.30.07.937",
-          "boundaries": [
-            "ZEEBO_SW_F2"
-          ],
+          "boundaries": ["ZEEBO_SW_F2"],
           "lower": 5000,
           "upper": 5000
         },
         {
           "label_position": "N041.01.19.183,W074.51.51.822",
-          "boundaries": [
-            "ZEEBO_SW_C3"
-          ],
+          "boundaries": ["ZEEBO_SW_C3"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_F3"
-          ],
+          "boundaries": ["ZEEBO_SW_F3"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_D3"
-          ],
+          "boundaries": ["ZEEBO_SW_D3"],
           "lower": 0,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_E4"
-          ],
+          "boundaries": ["ZEEBO_SW_E4"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_B4"
-          ],
+          "boundaries": ["ZEEBO_SW_B4"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_B5"
-          ],
+          "boundaries": ["ZEEBO_SW_B5"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_C4"
-          ],
+          "boundaries": ["ZEEBO_SW_C4"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_C5"
-          ],
+          "boundaries": ["ZEEBO_SW_C5"],
           "lower": 0,
           "upper": 5000
         }
       ],
       "ZEEBO_NE": [
         {
-          "boundaries": [
-            "ZEEBO_SW_F2"
-          ],
+          "boundaries": ["ZEEBO_SW_F2"],
           "lower": 5000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_C2"
-          ],
+          "boundaries": ["ZEEBO_SW_C2"],
           "lower": 6000,
           "upper": 7000
         },
         {
           "label_position": "N041.01.10.106,W074.52.14.646",
-          "boundaries": [
-            "ZEEBO_SW_C3"
-          ],
+          "boundaries": ["ZEEBO_SW_C3"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_F3"
-          ],
+          "boundaries": ["ZEEBO_SW_F3"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_D3"
-          ],
+          "boundaries": ["ZEEBO_SW_D3"],
           "lower": 0,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_E4"
-          ],
+          "boundaries": ["ZEEBO_SW_E4"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_B4"
-          ],
+          "boundaries": ["ZEEBO_SW_B4"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_B5"
-          ],
+          "boundaries": ["ZEEBO_SW_B5"],
           "lower": 4000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_C4"
-          ],
+          "boundaries": ["ZEEBO_SW_C4"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "ZEEBO_NE_F4"
-          ],
+          "boundaries": ["ZEEBO_NE_F4"],
           "lower": 4000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "ZEEBO_SW_C5"
-          ],
+          "boundaries": ["ZEEBO_SW_C5"],
           "lower": 0,
           "upper": 5000
         }
@@ -6020,97 +5676,71 @@
       "MUGZY_SW": [
         {
           "label_position": "N041.04.21.982,W074.23.15.895",
-          "boundaries": [
-            "MUGZY_SW_E3"
-          ],
+          "boundaries": ["MUGZY_SW_E3"],
           "lower": 0,
           "upper": 4000
         },
         {
           "label_position": "N040.55.57.806,W074.12.55.936",
-          "boundaries": [
-            "MUGZY_SW_F3"
-          ],
+          "boundaries": ["MUGZY_SW_F3"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "MUGZY_SW_G4"
-          ],
+          "boundaries": ["MUGZY_SW_G4"],
           "lower": 2000,
           "upper": 2000
         },
         {
           "label_position": "N040.52.27.651,W074.03.54.118",
-          "boundaries": [
-            "MUGZY_SW_F4"
-          ],
+          "boundaries": ["MUGZY_SW_F4"],
           "lower": 1800,
           "upper": 2000
         },
         {
-          "boundaries": [
-            "MUGZY_SW_H4"
-          ],
+          "boundaries": ["MUGZY_SW_H4"],
           "lower": 2000,
           "upper": 2000
         }
       ],
       "MUGZY_NE": [
         {
-          "boundaries": [
-            "MUGZY_NE_F3"
-          ],
+          "boundaries": ["MUGZY_NE_F3"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "MUGZY_NE_E4"
-          ],
+          "boundaries": ["MUGZY_NE_E4"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "MUGZY_NE_E6"
-          ],
+          "boundaries": ["MUGZY_NE_E6"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "MUGZY_NE_E7"
-          ],
+          "boundaries": ["MUGZY_NE_E7"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "MUGZY_NE_F7"
-          ],
+          "boundaries": ["MUGZY_NE_F7"],
           "lower": 1500,
           "upper": 2000
         },
         {
-          "boundaries": [
-            "MUGZY_NE_G6"
-          ],
+          "boundaries": ["MUGZY_NE_G6"],
           "lower": 1500,
           "upper": 1500
         },
         {
-          "boundaries": [
-            "MUGZY_NE_F5"
-          ],
+          "boundaries": ["MUGZY_NE_F5"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "MUGZY_NE_F6"
-          ],
+          "boundaries": ["MUGZY_NE_F6"],
           "lower": 2000,
           "upper": 2000
         }
@@ -9286,44 +8916,26 @@
         "default": {
           "4P": {
             "primary": true,
-            "arrivals": [
-              "FQM3",
-              "PHLBO4",
-              "WRI",
-              "PHL"
-            ]
+            "arrivals": ["FQM3", "PHLBO4", "WRI", "PHL"]
           },
           "4A": {
-            "arrivals": [
-              "FLOSI4"
-            ],
+            "arrivals": ["FLOSI4"],
             "backup": "4P"
           },
           "4N": {
             "backup": "4P",
-            "departures": [
-              "KEWR",
-              "KTEB",
-              "KCDW",
-              "KMMU"
-            ]
+            "departures": ["KEWR", "KTEB", "KCDW", "KMMU"]
           },
           "4U": {
             "backup": "4P"
           },
           "4H": {
             "backup": "4U",
-            "arrivals": [
-              "JAIKE4",
-              "MAZIE"
-            ]
+            "arrivals": ["JAIKE4", "MAZIE"]
           },
           "4S": {
             "backup": "4U",
-            "arrivals": [
-              "COATE",
-              "LVZ4"
-            ]
+            "arrivals": ["COATE", "LVZ4"]
           },
           "4M": {
             "backup": "4P"
@@ -9361,9 +8973,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -9464,13 +9074,9 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "airspace": {
-        "4N": [
-          "DEP_SW"
-        ]
+        "4N": ["DEP_SW"]
       },
       "departure_runways": [
         {
@@ -9575,13 +9181,9 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "airspace": {
-        "4N": [
-          "DEP_NE"
-        ]
+        "4N": ["DEP_NE"]
       },
       "departure_runways": [
         {
@@ -9680,44 +9282,26 @@
         "default": {
           "4P": {
             "primary": true,
-            "arrivals": [
-              "FQM3",
-              "PHLBO4",
-              "WRI",
-              "PHL"
-            ]
+            "arrivals": ["FQM3", "PHLBO4", "WRI", "PHL"]
           },
           "4A": {
-            "arrivals": [
-              "FLOSI4"
-            ],
+            "arrivals": ["FLOSI4"],
             "backup": "4P"
           },
           "4N": {
             "backup": "4P",
-            "departures": [
-              "KEWR",
-              "KTEB",
-              "KCDW",
-              "KMMU"
-            ]
+            "departures": ["KEWR", "KTEB", "KCDW", "KMMU"]
           },
           "4U": {
             "backup": "4P"
           },
           "4H": {
             "backup": "4U",
-            "arrivals": [
-              "JAIKE4",
-              "MAZIE"
-            ]
+            "arrivals": ["JAIKE4", "MAZIE"]
           },
           "4S": {
             "backup": "4U",
-            "arrivals": [
-              "COATE",
-              "LVZ4"
-            ]
+            "arrivals": ["COATE", "LVZ4"]
           },
           "4M": {
             "backup": "4P"
@@ -9755,9 +9339,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -9825,11 +9407,7 @@
         }
       ],
       "airspace": {
-        "4U": [
-          "ZEEBO_NE",
-          "METRO_NE",
-          "MUGZY_NE"
-        ]
+        "4U": ["ZEEBO_NE", "METRO_NE", "MUGZY_NE"]
       },
       "arrivals": {
         "COATE": {
@@ -9888,20 +9466,14 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "wind": {
         "direction": "10-70"
       }
     },
     "KEWR Sat. Arrivals landing SW": {
       "airspace": {
-        "4U": [
-          "METRO_SW",
-          "ZEEBO_SW",
-          "MUGZY_SW"
-        ]
+        "4U": ["METRO_SW", "ZEEBO_SW", "MUGZY_SW"]
       },
       "arrival_runways": [
         {
@@ -9989,9 +9561,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10015,11 +9585,7 @@
     },
     "KEWR Land 22L - ARD": {
       "airspace": {
-        "4P": [
-          "NOA_SW",
-          "FINAL_VECTORS_22",
-          "YARDLEY_SW"
-        ]
+        "4P": ["NOA_SW", "FINAL_VECTORS_22", "YARDLEY_SW"]
       },
       "arrival_runways": [
         {
@@ -10073,21 +9639,14 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "wind": {
         "direction": "190-250"
       }
     },
     "KEWR Land 22L - ARD/METRO": {
       "airspace": {
-        "4P": [
-          "NOA_SW",
-          "FINAL_VECTORS_22",
-          "YARDLEY_SW",
-          "METRO_SW"
-        ]
+        "4P": ["NOA_SW", "FINAL_VECTORS_22", "YARDLEY_SW", "METRO_SW"]
       },
       "arrival_runways": [
         {
@@ -10167,9 +9726,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10198,13 +9755,7 @@
     },
     "KEWR Land 22L - South Side ARD/METRO/DEPARTURE": {
       "airspace": {
-        "4N": [
-          "NOA_SW",
-          "FINAL_VECTORS_22",
-          "YARDLEY_SW",
-          "METRO_SW",
-          "DEP_SW"
-        ]
+        "4N": ["NOA_SW", "FINAL_VECTORS_22", "YARDLEY_SW", "METRO_SW", "DEP_SW"]
       },
       "arrival_runways": [
         {
@@ -10289,9 +9840,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10330,10 +9879,7 @@
     },
     "KEWR Land 22L - NOA + FINAL": {
       "airspace": {
-        "4A": [
-          "NOA_SW",
-          "FINAL_VECTORS_22"
-        ]
+        "4A": ["NOA_SW", "FINAL_VECTORS_22"]
       },
       "arrival_runways": [
         {
@@ -10401,9 +9947,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10432,11 +9976,7 @@
     },
     "KEWR Land 22L - NOA/MUGZY + FINAL": {
       "airspace": {
-        "4A": [
-          "NOA_SW",
-          "FINAL_VECTORS_22",
-          "MUGZY_SW"
-        ]
+        "4A": ["NOA_SW", "FINAL_VECTORS_22", "MUGZY_SW"]
       },
       "arrival_runways": [
         {
@@ -10527,9 +10067,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10558,10 +10096,7 @@
     },
     "KEWR Land 29 - NOA + FINAL": {
       "airspace": {
-        "4A": [
-          "NOA_SW",
-          "FINAL_VECTORS_22"
-        ]
+        "4A": ["NOA_SW", "FINAL_VECTORS_22"]
       },
       "arrival_runways": [
         {
@@ -10609,9 +10144,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "wind": {
         "direction": "260-320"
       }
@@ -10632,11 +10165,7 @@
         }
       ],
       "airspace": {
-        "4P": [
-          "NOA_NE",
-          "YARDLEY_NE",
-          "FINAL_VECTORS_4"
-        ]
+        "4P": ["NOA_NE", "YARDLEY_NE", "FINAL_VECTORS_4"]
       },
       "arrivals": {
         "North": {
@@ -10696,9 +10225,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10762,12 +10289,7 @@
         }
       },
       "airspace": {
-        "4P": [
-          "NOA_NE",
-          "YARDLEY_NE",
-          "FINAL_VECTORS_4",
-          "METRO_NE"
-        ]
+        "4P": ["NOA_NE", "YARDLEY_NE", "FINAL_VECTORS_4", "METRO_NE"]
       },
       "solo_controller": "4P",
       "controllers": [
@@ -10801,9 +10323,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -10833,10 +10353,7 @@
         }
       ],
       "airspace": {
-        "4A": [
-          "NOA_NE",
-          "FINAL_VECTORS_4"
-        ]
+        "4A": ["NOA_NE", "FINAL_VECTORS_4"]
       },
       "arrivals": {
         "FLOSI4": {
@@ -10878,9 +10395,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "wind": {
         "direction": "10-70"
       }
@@ -10949,10 +10464,7 @@
         }
       },
       "airspace": {
-        "4N": [
-          "NOA_NE",
-          "FINAL_VECTORS_4"
-        ]
+        "4N": ["NOA_NE", "FINAL_VECTORS_4"]
       },
       "solo_controller": "4N",
       "controllers": [
@@ -10986,9 +10498,7 @@
         "21V",
         "51Y"
       ],
-      "default_maps": [
-        "EWR ARR/DEP"
-      ],
+      "default_maps": ["EWR ARR/DEP"],
       "departure_runways": [
         {
           "airport": "KEWR",
@@ -11081,19 +10591,13 @@
           "type": "route",
           "to": "N90",
           "from": "PHL",
-          "altitude": [
-            7000,
-            7000
-          ]
+          "altitude": [7000, 7000]
         },
         {
           "type": "route",
           "to": "N90",
           "from": "WRI",
-          "altitude": [
-            6000,
-            6000
-          ]
+          "altitude": [6000, 6000]
         }
       ],
       "MUGZY": [
@@ -11122,16 +10626,12 @@
       {
         "name": ".    TEB",
         "id": "A",
-        "airports": [
-          "KTEB"
-        ]
+        "airports": ["KTEB"]
       },
       {
         "name": ".    MMU",
         "id": "B",
-        "airports": [
-          "KMMU"
-        ]
+        "airports": ["KMMU"]
       }
     ],
     "filters": {

@@ -241,16 +241,12 @@
     "volumes": {
       "DAB_H_APP": [
         {
-          "boundaries": [
-            "DAB0110"
-          ],
+          "boundaries": ["DAB0110"],
           "lower": 0,
           "upper": 11000
         },
         {
-          "boundaries": [
-            "DAB050"
-          ],
+          "boundaries": ["DAB050"],
           "lower": 0,
           "upper": 5000
         }
@@ -258,196 +254,196 @@
     }
   },
   "inbound_flows": {
-  "DOMES": {
-    "arrivals": [
-      {
-        "waypoints": "ROCIT APEAK/ho DOMES EYORE",
-        "cruise_altitude": 9000,
-        "route": "/. DOMES EYORE",
-        "initial_controller": "MCO_B_APP",
-        "initial_altitude": 8000,
-        "assigned_altitude": 5000,
-        "initial_speed": 130,
-        "expect_approach": null,
-        "airlines": {
-          "KDAB": [
-            {
-              "icao": "ERU",
-              "airport": "KMLB"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KVRB"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KORL"
-            }
-          ]
+    "DOMES": {
+      "arrivals": [
+        {
+          "waypoints": "ROCIT APEAK/ho DOMES EYORE",
+          "cruise_altitude": 9000,
+          "route": "/. DOMES EYORE",
+          "initial_controller": "MCO_B_APP",
+          "initial_altitude": 8000,
+          "assigned_altitude": 5000,
+          "initial_speed": 130,
+          "expect_approach": null,
+          "airlines": {
+            "KDAB": [
+              {
+                "icao": "ERU",
+                "airport": "KMLB"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KVRB"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KORL"
+              }
+            ]
+          }
         }
-      }
-    ]
+      ]
+    },
+    "FOLUT": {
+      "arrivals": [
+        {
+          "waypoints": "BUNDE CODMO/ho FOLUT OMN",
+          "cruise_altitude": 9000,
+          "route": "/. FOLUT OMN",
+          "initial_controller": "JAX_N_APP",
+          "initial_altitude": 8000,
+          "assigned_altitude": 7000,
+          "initial_speed": 130,
+          "expect_approach": null,
+          "airlines": {
+            "KDAB": [
+              {
+                "icao": "ERU",
+                "airport": "KSAV"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KCHS"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KJAX"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KCRE"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KCRG"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KVLD"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KSSI"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "FONEX": {
+      "arrivals": [
+        {
+          "waypoints": "WEXUR IMEKE/ho FONEX OMN",
+          "cruise_altitude": 11000,
+          "route": "/. FONEX OMN",
+          "initial_controller": "JAX_N_APP",
+          "initial_altitude": 11000,
+          "assigned_altitude": 9000,
+          "initial_speed": 130,
+          "expect_approach": null,
+          "airlines": {
+            "KDAB": [
+              {
+                "icao": "ERU",
+                "airport": "KLCQ"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KPNS"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KTLH"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KGNV"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KOCF"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "KIZER": {
+      "arrivals": [
+        {
+          "waypoints": "WHOVL UDUZI/ho KIZER",
+          "cruise_altitude": 7000,
+          "route": "/. KIZER",
+          "initial_controller": "MCO_B_APP",
+          "initial_altitude": 6000,
+          "assigned_altitude": 5000,
+          "initial_speed": 130,
+          "expect_approach": null,
+          "airlines": {
+            "KDAB": [
+              {
+                "icao": "ERU",
+                "airport": "KPIE"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "ERU",
+                "airport": "KPGD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "TTHOR3": {
+      "arrivals": [
+        {
+          "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165",
+          "cruise_altitude": 36000,
+          "star": "TTHOR3",
+          "initial_controller": "JAX_30_CTR",
+          "initial_altitude": 17000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KDAB": [
+              {
+                "icao": "AAL",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KHVN"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KILG"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
-  "FOLUT": {
-    "arrivals": [
-      {
-        "waypoints": "BUNDE CODMO/ho FOLUT OMN",
-        "cruise_altitude": 9000,
-        "route": "/. FOLUT OMN",
-        "initial_controller": "JAX_N_APP",
-        "initial_altitude": 8000,
-        "assigned_altitude": 7000,
-        "initial_speed": 130,
-        "expect_approach": null,
-        "airlines": {
-          "KDAB": [
-            {
-              "icao": "ERU",
-              "airport": "KSAV"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KCHS"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KJAX"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KMYR"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KCRE"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KCRG"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KVLD"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KSSI"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "FONEX": {
-    "arrivals": [
-      {
-        "waypoints": "WEXUR IMEKE/ho FONEX OMN",
-        "cruise_altitude": 11000,
-        "route": "/. FONEX OMN",
-        "initial_controller": "JAX_N_APP",
-        "initial_altitude": 11000,
-        "assigned_altitude": 9000,
-        "initial_speed": 130,
-        "expect_approach": null,
-        "airlines": {
-          "KDAB": [
-            {
-              "icao": "ERU",
-              "airport": "KLCQ"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KPNS"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KTLH"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KGNV"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KOCF"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "KIZER": {
-    "arrivals": [
-      {
-        "waypoints": "WHOVL UDUZI/ho KIZER",
-        "cruise_altitude": 7000,
-        "route": "/. KIZER",
-        "initial_controller": "MCO_B_APP",
-        "initial_altitude": 6000,
-        "assigned_altitude": 5000,
-        "initial_speed": 130,
-        "expect_approach": null,
-        "airlines": {
-          "KDAB": [
-            {
-              "icao": "ERU",
-              "airport": "KPIE"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KSRQ"
-            },
-            {
-              "icao": "ERU",
-              "airport": "KPGD"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "TTHOR3": {
-    "arrivals": [
-      {
-        "waypoints": "WEEEK/a16000 TTHOR/a12000/ho BIKEZ/a12000/h165",
-        "cruise_altitude": 36000,
-        "star": "TTHOR3",
-        "initial_controller": "JAX_30_CTR",
-        "initial_altitude": 17000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KDAB": [
-            {
-              "icao": "AAL",
-              "airport": "KPHL"
-            },
-            {
-              "icao": "AAL",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "AAL",
-              "airport": "KCLT"
-            },
-            {
-              "icao": "DAL",
-              "airport": "KATL"
-            },
-            {
-              "icao": "VXP",
-              "airport": "KHVN"
-            },
-            {
-              "icao": "VXP",
-              "airport": "KILG"
-            }
-          ]
-        }
-      }
-    ]
-  }
-},
   "control_positions": {
     "JAX_30_CTR": {
       "frequency": 135925,
@@ -536,13 +532,13 @@
   "scenarios": {
     "KDAB Depart 7L/R Land 7L/R": {
       "airspace": {
-        "DAB_H_APP": [ "DAB_H_APP" ],
-        "DAB_M_APP": [ "DAB_H_APP" ],
-        "DAB_L_APP": [ "DAB_H_APP" ],
-        "DAB_N_APP": [ "DAB_H_APP" ],
-        "DAB_S_APP": [ "DAB_H_APP" ],
-        "DAB_E_APP": [ "DAB_H_APP" ],
-        "DAB_W_APP": [ "DAB_H_APP" ]
+        "DAB_H_APP": ["DAB_H_APP"],
+        "DAB_M_APP": ["DAB_H_APP"],
+        "DAB_L_APP": ["DAB_H_APP"],
+        "DAB_N_APP": ["DAB_H_APP"],
+        "DAB_S_APP": ["DAB_H_APP"],
+        "DAB_E_APP": ["DAB_H_APP"],
+        "DAB_W_APP": ["DAB_H_APP"]
       },
       "arrival_runways": [
         {
@@ -573,25 +569,18 @@
       },
       "solo_controller": "DAB_H_APP",
       "multi_controllers": {
-          "default" : {
-              "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
-              "DAB_M_APP": {"backup": "DAB_H_APP"},
-              "DAB_L_APP": {"backup": "DAB_H_APP"},
-              "DAB_N_APP": {"backup": "DAB_H_APP"},
-              "DAB_S_APP": {"backup": "DAB_H_APP"},
-              "DAB_E_APP": {"backup": "DAB_H_APP", "departures": ["KDAB"]},
-              "DAB_W_APP": {"backup": "DAB_H_APP"}
-          }
+        "default": {
+          "DAB_H_APP": { "primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"] },
+          "DAB_M_APP": { "backup": "DAB_H_APP" },
+          "DAB_L_APP": { "backup": "DAB_H_APP" },
+          "DAB_N_APP": { "backup": "DAB_H_APP" },
+          "DAB_S_APP": { "backup": "DAB_H_APP" },
+          "DAB_E_APP": { "backup": "DAB_H_APP", "departures": ["KDAB"] },
+          "DAB_W_APP": { "backup": "DAB_H_APP" }
+        }
       },
-      "controllers": [
-        "DAB_H_APP",
-        "DAB_N_TWR",
-        "DAB_S_TWR",
-        "JAX_30_CTR",
-        "MCO_B_APP",
-        "JAX_N_APP"
-      ],
-      "default_maps": [ "DAB EAST FLOW" ],
+      "controllers": ["DAB_H_APP", "DAB_N_TWR", "DAB_S_TWR", "JAX_30_CTR", "MCO_B_APP", "JAX_N_APP"],
+      "default_maps": ["DAB EAST FLOW"],
       "departure_runways": [
         {
           "airport": "KDAB",
@@ -605,13 +594,13 @@
     },
     "KDAB Depart 25L/R Land 25L/R": {
       "airspace": {
-        "DAB_H_APP": [ "DAB_H_APP" ],
-        "DAB_M_APP": [ "DAB_H_APP" ],
-        "DAB_L_APP": [ "DAB_H_APP" ],
-        "DAB_N_APP": [ "DAB_H_APP" ],
-        "DAB_S_APP": [ "DAB_H_APP" ],
-        "DAB_E_APP": [ "DAB_H_APP" ],
-        "DAB_W_APP": [ "DAB_H_APP" ]
+        "DAB_H_APP": ["DAB_H_APP"],
+        "DAB_M_APP": ["DAB_H_APP"],
+        "DAB_L_APP": ["DAB_H_APP"],
+        "DAB_N_APP": ["DAB_H_APP"],
+        "DAB_S_APP": ["DAB_H_APP"],
+        "DAB_E_APP": ["DAB_H_APP"],
+        "DAB_W_APP": ["DAB_H_APP"]
       },
       "arrival_runways": [
         {
@@ -642,25 +631,18 @@
       },
       "solo_controller": "DAB_H_APP",
       "multi_controllers": {
-          "default" : {
-              "DAB_H_APP": {"primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"]},
-              "DAB_M_APP": {"backup": "DAB_H_APP"},
-              "DAB_L_APP": {"backup": "DAB_H_APP"},
-              "DAB_N_APP": {"backup": "DAB_H_APP"},
-              "DAB_S_APP": {"backup": "DAB_H_APP"},
-              "DAB_E_APP": {"backup": "DAB_H_APP"},
-              "DAB_W_APP": {"backup": "DAB_H_APP", "departures": ["KDAB"]}
-          }
+        "default": {
+          "DAB_H_APP": { "primary": true, "arrivals": ["TTHOR3", "FONEX", "FOLUT", "KIZER", "DOMES"] },
+          "DAB_M_APP": { "backup": "DAB_H_APP" },
+          "DAB_L_APP": { "backup": "DAB_H_APP" },
+          "DAB_N_APP": { "backup": "DAB_H_APP" },
+          "DAB_S_APP": { "backup": "DAB_H_APP" },
+          "DAB_E_APP": { "backup": "DAB_H_APP" },
+          "DAB_W_APP": { "backup": "DAB_H_APP", "departures": ["KDAB"] }
+        }
       },
-      "controllers": [
-        "DAB_H_APP",
-        "DAB_N_TWR",
-        "DAB_S_TWR",
-        "JAX_30_CTR",
-        "MCO_B_APP",
-        "JAX_N_APP"
-      ],
-      "default_maps": [ "DAB WEST FLOW" ],
+      "controllers": ["DAB_H_APP", "DAB_N_TWR", "DAB_S_TWR", "JAX_30_CTR", "MCO_B_APP", "JAX_N_APP"],
+      "default_maps": ["DAB WEST FLOW"],
       "departure_runways": [
         {
           "airport": "KDAB",
@@ -674,114 +656,121 @@
     }
   },
   "stars_config": {
-  "center": "KDAB",
-  "coordination_fixes": {
-    "WEEEK": [
-         {
+    "center": "KDAB",
+    "coordination_fixes": {
+      "WEEEK": [
+        {
           "type": "route",
           "to": "DAB",
           "from": "ZJX"
-          }
+        }
       ],
       "FONEX": [
-          {
-              "type": "route",
-              "to": "DAB",
-              "from": "JAX"
-          }
+        {
+          "type": "route",
+          "to": "DAB",
+          "from": "JAX"
+        }
       ],
       "FOLUT": [
-          {
-              "type": "route",
-              "to": "DAB",
-              "from": "JAX"
-          }
+        {
+          "type": "route",
+          "to": "DAB",
+          "from": "JAX"
+        }
       ],
       "KIZER": [
-          {
-              "type": "route",
-              "to": "DAB",
-              "from": "F11"
-          }
+        {
+          "type": "route",
+          "to": "DAB",
+          "from": "F11"
+        }
       ],
       "ROCIT": [
-          {
-              "type": "route",
-              "to": "DAB",
-              "from": "F11"
-          }
+        {
+          "type": "route",
+          "to": "DAB",
+          "from": "F11"
+        }
       ]
-  },
-  "radar_sites": {
-    "DAB": {
-      "char": "D",
-      "position": "29.17264, -81.19219",
-      "elevation": 38,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
     },
-    "JAX": {
-      "char": "J",
-      "position": "30.49333, -81.69267",
-      "elevation": 40,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
+    "radar_sites": {
+      "DAB": {
+        "char": "D",
+        "position": "29.17264, -81.19219",
+        "elevation": 38,
+        "primary_range": 60,
+        "secondary_range": 60,
+        "silence_angle": 15,
+        "slope_angle": 0.175
+      },
+      "JAX": {
+        "char": "J",
+        "position": "30.49333, -81.69267",
+        "elevation": 40,
+        "primary_range": 60,
+        "secondary_range": 60,
+        "silence_angle": 15,
+        "slope_angle": 0.175
+      },
+      "MCO": {
+        "char": "O",
+        "position": "28.37483, -81.30463",
+        "elevation": 100,
+        "primary_range": 60,
+        "secondary_range": 60,
+        "silence_angle": 15,
+        "slope_angle": 0.175
+      },
+      "GNV": {
+        "char": "G",
+        "position": "29.41538, -82.23232",
+        "elevation": 155,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 15,
+        "slope_angle": 0.175
+      },
+      "NEN": {
+        "char": "W",
+        "position": "30.34593, -81.87403",
+        "elevation": 95,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 15,
+        "slope_angle": 0.175
+      },
+      "MLB": {
+        "char": "M",
+        "position": "28.08427, -80.79808",
+        "elevation": 22,
+        "primary_range": 250,
+        "secondary_range": 250,
+        "silence_angle": 15,
+        "slope_angle": 0.175
+      }
     },
-    "MCO": {
-      "char": "O",
-      "position": "28.37483, -81.30463",
-      "elevation": 100,
-      "primary_range": 60,
-      "secondary_range": 60,
-      "silence_angle": 15,
-      "slope_angle": 0.175
+    "scratchpads": {
+      "CRG": "ROY",
+      "MALET": "MAL",
+      "ROYES": "ROY"
     },
-    "GNV": {
-      "char": "G",
-      "position": "29.41538, -82.23232",
-      "elevation": 155,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
+    "significant_points": {
+      "CRG": {},
+      "MALET": {},
+      "ROYES": {}
     },
-    "NEN": {
-      "char": "W",
-      "position": "30.34593, -81.87403",
-      "elevation": 95,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    },
-    "MLB": {
-      "char": "M",
-      "position": "28.08427, -80.79808",
-      "elevation": 22,
-      "primary_range": 250,
-      "secondary_range": 250,
-      "silence_angle": 15,
-      "slope_angle": 0.175
-    }
-  },
-  "scratchpads": {
-    "CRG": "ROY",
-    "MALET": "MAL",
-    "ROYES": "ROY"
-  },
-  "significant_points": {
-      "CRG": { },
-      "MALET": { },
-      "ROYES": { }
-  },
-  "stars_maps": [
-      "DAB EAST FLOW", "DAB WEST FLOW", "DAB CLASS C", "DAB CLASS D", "DAB MVA", "FIN RNAV APPROACHES", "SATELLITE APPROACHES",
-      "RNAV", "SECTOR BOUNDARY"
-  ],
-  "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+    "stars_maps": [
+      "DAB EAST FLOW",
+      "DAB WEST FLOW",
+      "DAB CLASS C",
+      "DAB CLASS D",
+      "DAB MVA",
+      "FIN RNAV APPROACHES",
+      "SATELLITE APPROACHES",
+      "RNAV",
+      "SECTOR BOUNDARY"
+    ],
+    "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
   }
 }

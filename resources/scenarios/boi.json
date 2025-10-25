@@ -122,115 +122,115 @@
     }
   },
   "inbound_flows": {
-  "KOURT4": {
-    "arrivals": [
-      {
-        "spawn": "DERSO@0.2",
-        "star": "KOURT4",
-        "initial_controller": "SLC_17_CTR",
-        "initial_altitude": 15000,
-        "initial_speed": 260,
-        "expect_approach": null,
-        "airlines": {
-          "KBOI": [
-            {
-              "icao": "SWA",
-              "airport": "KDEN"
-            },
-            {
-              "icao": "UAL",
-              "airport": "KDEN"
-            }
-          ]
+    "KOURT4": {
+      "arrivals": [
+        {
+          "spawn": "DERSO@0.2",
+          "star": "KOURT4",
+          "initial_controller": "SLC_17_CTR",
+          "initial_altitude": 15000,
+          "initial_speed": 260,
+          "expect_approach": null,
+          "airlines": {
+            "KBOI": [
+              {
+                "icao": "SWA",
+                "airport": "KDEN"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KDEN"
+              }
+            ]
+          }
         }
-      }
-    ]
+      ]
+    },
+    "KYAAN4": {
+      "arrivals": [
+        {
+          "spawn": "DEVLE@0.8",
+          "star": "KYAAN4",
+          "initial_controller": "SLC_17_CTR",
+          "initial_altitude": 16000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBOI": [
+              {
+                "icao": "ASA",
+                "airport": "KSEA"
+              },
+              {
+                "icao": "QXE",
+                "airport": "KPDX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SADYL4": {
+      "arrivals": [
+        {
+          "spawn": "PELYT@0.5",
+          "star": "SADYL4",
+          "initial_controller": "SLC_17_CTR",
+          "initial_altitude": 21000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBOI": [
+              {
+                "icao": "SWA",
+                "airport": "KSJC"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KPHX"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KSFO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SPUUD4": {
+      "arrivals": [
+        {
+          "spawn": "ORYDA@0.9",
+          "star": "SPUUD4",
+          "initial_controller": "SLC_17_CTR",
+          "initial_altitude": 13000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KBOI": [
+              {
+                "icao": "UPS",
+                "airport": "KSDF"
+              },
+              {
+                "icao": "FDX",
+                "airport": "KMEM"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KSLC"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
-  "KYAAN4": {
-    "arrivals": [
-      {
-        "spawn": "DEVLE@0.8",
-        "star": "KYAAN4",
-        "initial_controller": "SLC_17_CTR",
-        "initial_altitude": 16000,
-        "initial_speed": 270,
-        "expect_approach": null,
-        "airlines": {
-          "KBOI": [
-            {
-              "icao": "ASA",
-              "airport": "KSEA"
-            },
-            {
-              "icao": "QXE",
-              "airport": "KPDX"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "SADYL4": {
-    "arrivals": [
-      {
-        "spawn": "PELYT@0.5",
-        "star": "SADYL4",
-        "initial_controller": "SLC_17_CTR",
-        "initial_altitude": 21000,
-        "initial_speed": 270,
-        "expect_approach": null,
-        "airlines": {
-          "KBOI": [
-            {
-              "icao": "SWA",
-              "airport": "KSJC"
-            },
-            {
-              "icao": "NKS",
-              "airport": "KLAS"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KPHX"
-            },
-            {
-              "icao": "UAL",
-              "airport": "KSFO"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "SPUUD4": {
-    "arrivals": [
-      {
-        "spawn": "ORYDA@0.9",
-        "star": "SPUUD4",
-        "initial_controller": "SLC_17_CTR",
-        "initial_altitude": 13000,
-        "initial_speed": 250,
-        "expect_approach": null,
-        "airlines": {
-          "KBOI": [
-            {
-              "icao": "UPS",
-              "airport": "KSDF"
-            },
-            {
-              "icao": "FDX",
-              "airport": "KMEM"
-            },
-            {
-              "icao": "DAL",
-              "airport": "KSLC"
-            }
-          ]
-        }
-      }
-    ]
-  }
-},
   "control_positions": {
     "BOI_TWR": {
       "frequency": 118100,
@@ -276,11 +276,7 @@
         }
       },
       "solo_controller": "BOI_APP",
-      "controllers": [
-        "BOI_TWR",
-        "BOI_APP",
-        "SLC_17_CTR"
-      ],
+      "controllers": ["BOI_TWR", "BOI_APP", "SLC_17_CTR"],
       "departure_runways": [
         {
           "airport": "KBOI",
@@ -291,10 +287,7 @@
       "wind": {
         "direction": "250-310"
       },
-      "default_maps": [
-        "BOI_002S - RWY 28 WEST FLOW",
-        "STARS-BOI_MVA__MVA"
-      ]
+      "default_maps": ["BOI_002S - RWY 28 WEST FLOW", "STARS-BOI_MVA__MVA"]
     },
     "Land East": {
       "arrival_runways": [
@@ -318,11 +311,7 @@
         }
       },
       "solo_controller": "BOI_APP",
-      "controllers": [
-        "BOI_TWR",
-        "BOI_APP",
-        "SLC_17_CTR"
-      ],
+      "controllers": ["BOI_TWR", "BOI_APP", "SLC_17_CTR"],
       "departure_runways": [
         {
           "airport": "KBOI",
@@ -333,10 +322,7 @@
       "wind": {
         "direction": "70-130"
       },
-      "default_maps": [
-        "BOI_001S - RWY 10 EAST FLOW",
-        "STARS-BOI_MVA__MVA"
-      ]
+      "default_maps": ["BOI_001S - RWY 10 EAST FLOW", "STARS-BOI_MVA__MVA"]
     }
   },
   "stars_config": {

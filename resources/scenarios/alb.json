@@ -1,10 +1,10 @@
 {
   "tracon": "ALB",
   "airports": {
-    "KGFL": { "vfr": {"random_routes":{"rate": 5}}},
-    "KPSF": { "vfr": {"random_routes":{"rate":5}}},
-    "KGBR": {"vfr": {"random_routes":{"rate":5}}},
-    "KAQW": {"vfr": {"random_routes":{"rate":5}}},
+    "KGFL": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPSF": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KGBR": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KAQW": { "vfr": { "random_routes": { "rate": 5 } } },
     "KALB": {
       "name": "ALB",
       "approaches": {
@@ -27,32 +27,32 @@
           "cifp_id": "R10"
         }
       },
-      "departure_routes":{
-        "1":{
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN":{
+      "departure_routes": {
+        "1": {
+          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7",
             "waypoints": "KALB-19/h011"
           }
         },
-        "19":{
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN":{
+        "19": {
+          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7",
             "waypoints": "KALB-1/h191"
           }
         },
-        "28":{
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN":{
+        "28": {
+          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
             "cleared_altitude": 4000,
             "sid": "ALB7",
             "waypoints": "KALB-10/h280"
           }
         },
-        "10":{
-          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN":{
+        "10": {
+          "PWL, SYR, GDM, PAYGE, ACOVE, CEDOR, IGN": {
             "cleared_altitude": 4000,
-            "sid":"ALB7",
+            "sid": "ALB7",
             "waypoints": "KALB-28/h110"
           }
         }
@@ -72,7 +72,7 @@
         {
           "airlines": [
             {
-                "icao": "EDV"
+              "icao": "EDV"
             }
           ],
           "destination": "KDTW",
@@ -81,169 +81,169 @@
           "scratchpad": "PAY"
         },
         {
-            "airlines": [
-                {
-                    "icao": "DAL"
-                }
-            ],
-            "destination": "KATL",
-            "exit": "ACOVE",
-            "route": "ACOVE DBABE Q448 PTW J48 MOL FLASK OZZZI1",
-            "scratchpad": "ACO"
+          "airlines": [
+            {
+              "icao": "DAL"
+            }
+          ],
+          "destination": "KATL",
+          "exit": "ACOVE",
+          "route": "ACOVE DBABE Q448 PTW J48 MOL FLASK OZZZI1",
+          "scratchpad": "ACO"
         },
         {
-            "airlines": [
-                {
-                    "icao": "JBU"
-                }
-            ],
-            "destination": "KMCO",
-            "exit": "PWL",
-            "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
-            "scratchpad": "PWL"
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "PWL",
+          "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "scratchpad": "PWL"
         },
         {
-            "airlines": [
-                {
-                    "icao": "JIA"
-                }
-            ],
-            "destination": "KDCA",
-            "exit": "PWL",
-            "route": "PWL BIZEX Q75 MXE CLIPR3",
-            "scratchpad": "PWL"
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "destination": "KDCA",
+          "exit": "PWL",
+          "route": "PWL BIZEX Q75 MXE CLIPR3",
+          "scratchpad": "PWL"
         },
         {
-            "airlines": [
-                {
-                    "icao": "RPA"
-                }
-            ],
-            "destination": "KORD",
-            "exit": "PAYGE",
-            "route": "PAYGE Q822 FNT WYNDE2",
-            "scratchpad": "PAY"
+          "airlines": [
+            {
+              "icao": "RPA"
+            }
+          ],
+          "destination": "KORD",
+          "exit": "PAYGE",
+          "route": "PAYGE Q822 FNT WYNDE2",
+          "scratchpad": "PAY"
         },
         {
-            "airlines": [
-                {
-                    "icao": "SWA"
-                }
-            ],
-            "destination": "KMCO",
-            "exit": "PWL",
-            "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
-            "scratchpad": "PWL"
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "PWL",
+          "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "scratchpad": "PWL"
         },
         {
-            "airlines": [
-                {
-                    "icao": "PDT"
-                }
-            ],
-            "destination": "KPHL",
-            "exit": "CEDOR",
-            "route": " CEDOR DNY LAAYK WLKES T455 FJC PTW",
-            "scratchpad": "CED"
+          "airlines": [
+            {
+              "icao": "PDT"
+            }
+          ],
+          "destination": "KPHL",
+          "exit": "CEDOR",
+          "route": " CEDOR DNY LAAYK WLKES T455 FJC PTW",
+          "scratchpad": "CED"
         },
         {
-            "airlines": [
-                {
-                    "icao": "SWA"
-                }
-            ],
-            "destination": "KBWI",
-            "exit": "PWL",
-            "route": "PWL BIZEX Q75 MXE V378 NUGGY TRISH4",
-            "scratchpad": "PWL"
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBWI",
+          "exit": "PWL",
+          "route": "PWL BIZEX Q75 MXE V378 NUGGY TRISH4",
+          "scratchpad": "PWL"
         },
         {
-            "airlines": [
-                {
-                    "icao": "EDV"
-                }
-            ],
-            "destination": "KLGA",
-            "exit": "IGN",
-            "route": "IGN V157 HAARP",
-            "scratchpad": "IGN"
+          "airlines": [
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "IGN",
+          "route": "IGN V157 HAARP",
+          "scratchpad": "IGN"
         },
         {
-            "airlines": [
-                {
-                    "icao": "EJA"
-                }
-            ],
-            "destination": "KMCO",
-            "exit": "PWL",
-            "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
-            "scratchpad": "PWL"
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "PWL",
+          "route": "PWL BIZEX Q75 GSO Q83 ROYCO Q85 LPERD SNFLD3",
+          "scratchpad": "PWL"
         },
         {
-            "airlines": [
-                {
-                    "icao": "EJA"
-                }
-            ],
-            "destination": "KBOS",
-            "exit": "GDM",
-            "route": "GDM T608 REVER",
-            "scratchpad": "GDM"
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KBOS",
+          "exit": "GDM",
+          "route": "GDM T608 REVER",
+          "scratchpad": "GDM"
         }
       ],
       "tower_list": 1
     },
-      "KSCH":{
-          "vfr": {
-            "random_routes":{
-              "rate":5
+    "KSCH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
+      "approaches": {
+        "I4": { "cifp_id": "I4" },
+        "R22": { "cifp_id": "R22" }
+      },
+      "departure_routes": {
+        "4": {
+          "PAYGE, MARIA, CAM": {
+            "cleared_altitude": 3000,
+            "waypoints": "KSCH-22/h010"
+          }
+        },
+        "22": {
+          "PAYGE, MARIA, CAM": {
+            "cleared_altitude": 3000,
+            "waypoints": "KSCH-4/h235"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
             }
-          },
-    "approaches": {
-      "I4": {"cifp_id": "I4"},
-      "R22": {"cifp_id": "R22"}
-    },
-    "departure_routes": {
-      "4": {
-        "PAYGE, MARIA, CAM": {
-          "cleared_altitude": 3000,
-          "waypoints": "KSCH-22/h010"
+          ],
+          "destination": "KPSM",
+          "exit": "CAM",
+          "route": "CAM CON PSM",
+          "scratchpad": "CAM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KRME",
+          "exit": "MARIA",
+          "route": "MARIA RME",
+          "scratchpad": "MAR"
         }
-      },
-      "22": {
-        "PAYGE, MARIA, CAM": {
-          "cleared_altitude": 3000,
-          "waypoints": "KSCH-4/h235"
-        }
-      }
-    },
-    "departures": [
-      {
-        "airlines": [
-          {
-            "icao": "N",
-            "fleet": "fastGA"
-          }
-        ],
-        "destination": "KPSM",
-        "exit": "CAM",
-        "route": "CAM CON PSM",
-        "scratchpad": "CAM"
-      },
-      {
-        "airlines": [
-          {
-            "icao": "N",
-            "fleet": "fastGA"
-          }
-        ],
-        "destination": "KRME",
-        "exit": "MARIA",
-        "route": "MARIA RME",
-        "scratchpad": "MAR"
-      }
-    ]
-  }
+      ]
+    }
   },
 
   "inbound_flows": {
@@ -258,46 +258,46 @@
           "expect_approach": null,
           "airlines": {
             "KALB": [
-                {
-                    "icao": "RPA",
-                    "airport": "KORD"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KMKE"
-                },
-                {
-                    "icao": "DAL",
-                    "airport": "KATL"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KLAS"
-                },
-                {
-                    "icao": "EDV",
-                    "airport": "KDTW"
-                },
-                {
-                                "icao": "AAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            }
+              {
+                "icao": "RPA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KMSP"
+              }
             ]
           }
         }
@@ -343,63 +343,63 @@
                 "airport": "KLGA"
               },
               {
-                 "icao": "UAL",
-                 "airport": "KIAD"
+                "icao": "UAL",
+                "airport": "KIAD"
               },
-                            {
-                                "icao": "UAL",
-                                "airport": "KEWR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLGA"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KMYR"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KSRQ"
-                            },
-                            {
-                                "icao": "JBU",
-                                "airport": "KFLL"
-                            },
-                            {
-                                "icao": "VXP",
-                                "airport": "KRDU"
-                            },
-                            {
-                              "icao": "N",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "AMF",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "CNS",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "N",
-                              "airport": "KBGR"
-                          }
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "N",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "AMF",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "N",
+                "airport": "KBGR"
+              }
             ]
           }
         }
       ]
     },
-    "CANAN_FINAL_NORTH":{
+    "CANAN_FINAL_NORTH": {
       "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 N42.29.46.3,W73.30.42.1/ho CIRRU",
@@ -439,63 +439,63 @@
                 "airport": "KLGA"
               },
               {
-                 "icao": "UAL",
-                 "airport": "KIAD"
+                "icao": "UAL",
+                "airport": "KIAD"
               },
-                            {
-                                "icao": "UAL",
-                                "airport": "KEWR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLGA"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KMYR"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KSRQ"
-                            },
-                            {
-                                "icao": "JBU",
-                                "airport": "KFLL"
-                            },
-                            {
-                                "icao": "VXP",
-                                "airport": "KRDU"
-                            },
-                            {
-                              "icao": "N",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "AMF",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "CNS",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "N",
-                              "airport": "KBGR"
-                          }
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "N",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "AMF",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "N",
+                "airport": "KBGR"
+              }
             ]
           }
         }
       ]
     },
-    "SYR_NORTH_FINALS":{
+    "SYR_NORTH_FINALS": {
       "arrivals": [
         {
           "waypoints": "SYR CASIL SHAHE/ho/h190/a4000",
@@ -507,54 +507,54 @@
           "airlines": {
             "KALB": [
               {
-                    "icao": "RPA",
-                    "airport": "KORD"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KMKE"
-                },
-                {
-                    "icao": "DAL",
-                    "airport": "KATL"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KLAS"
-                },
-                {
-                    "icao": "EDV",
-                    "airport": "KDTW"
-                },
-                {
-                                "icao": "AAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            }
+                "icao": "RPA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KMSP"
+              }
             ]
           }
         }
       ]
     },
-    "CANAN_FINAL_SOUTH":{
+    "CANAN_FINAL_SOUTH": {
       "arrivals": [
         {
-          "waypoints":"BOWAN CANAN/a4000 CIRRU/ho/h010",
+          "waypoints": "BOWAN CANAN/a4000 CIRRU/ho/h010",
           "route": "BOWAN CANAN/a4000 CIRRU/ho/h010",
           "initial_controller": "ALB_E_APP",
           "initial_altitude": 11000,
@@ -591,63 +591,63 @@
                 "airport": "KLGA"
               },
               {
-                 "icao": "UAL",
-                 "airport": "KIAD"
+                "icao": "UAL",
+                "airport": "KIAD"
               },
-                            {
-                                "icao": "UAL",
-                                "airport": "KEWR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLGA"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KMYR"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KSRQ"
-                            },
-                            {
-                                "icao": "JBU",
-                                "airport": "KFLL"
-                            },
-                            {
-                                "icao": "VXP",
-                                "airport": "KRDU"
-                            },
-                            {
-                              "icao": "N",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "AMF",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "CNS",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "N",
-                              "airport": "KBGR"
-                          }
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "N",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "AMF",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "N",
+                "airport": "KBGR"
+              }
             ]
           }
         }
       ]
     },
-    "SYR_FINAL_SOUTH":{
+    "SYR_FINAL_SOUTH": {
       "arrivals": [
         {
           "waypoints": "SYR CASIL SHAHE/ho/h010/a4000",
@@ -659,52 +659,52 @@
           "airlines": {
             "KALB": [
               {
-                    "icao": "RPA",
-                    "airport": "KORD"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KMKE"
-                },
-                {
-                    "icao": "DAL",
-                    "airport": "KATL"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KLAS"
-                },
-                {
-                    "icao": "EDV",
-                    "airport": "KDTW"
-                },
-                {
-                                "icao": "AAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            }
+                "icao": "RPA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KMSP"
+              }
             ]
           }
         }
       ]
     },
-    "CANAN_FINAL_EAST":{
-      "arrivals":[
+    "CANAN_FINAL_EAST": {
+      "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 CIRRU/ho/h280",
           "route": "BOWAN CANAN/a4000 CIRRU/ho/h280",
@@ -743,66 +743,66 @@
                 "airport": "KLGA"
               },
               {
-                 "icao": "UAL",
-                 "airport": "KIAD"
+                "icao": "UAL",
+                "airport": "KIAD"
               },
-                            {
-                                "icao": "UAL",
-                                "airport": "KEWR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLGA"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KMYR"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KSRQ"
-                            },
-                            {
-                                "icao": "JBU",
-                                "airport": "KFLL"
-                            },
-                            {
-                                "icao": "VXP",
-                                "airport": "KRDU"
-                            },
-                            {
-                              "icao": "N",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "AMF",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "CNS",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "N",
-                              "airport": "KBGR"
-                          }
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "N",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "AMF",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "N",
+                "airport": "KBGR"
+              }
             ]
           }
         }
       ]
     },
-    "SYR_FINAL_EAST":{
+    "SYR_FINAL_EAST": {
       "arrivals": [
         {
-          "waypoints":"SYR CASIL/ho/a4000",
+          "waypoints": "SYR CASIL/ho/a4000",
           "route": "SYR CASIL/ho/a4000",
           "initial_controller": "ALB_W_APP",
           "initial_altitude": 11000,
@@ -811,51 +811,51 @@
           "airlines": {
             "KALB": [
               {
-                    "icao": "RPA",
-                    "airport": "KORD"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KMKE"
-                },
-                {
-                    "icao": "DAL",
-                    "airport": "KATL"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KLAS"
-                },
-                {
-                    "icao": "EDV",
-                    "airport": "KDTW"
-                },
-                {
-                                "icao": "AAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            }
+                "icao": "RPA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KMSP"
+              }
             ]
           }
         }
       ]
     },
-    "CANAN_FINAL_WEST":{
+    "CANAN_FINAL_WEST": {
       "arrivals": [
         {
           "waypoints": "BOWAN CANAN/a4000 CIRRU GROUP/ho/h100",
@@ -895,63 +895,63 @@
                 "airport": "KLGA"
               },
               {
-                 "icao": "UAL",
-                 "airport": "KIAD"
+                "icao": "UAL",
+                "airport": "KIAD"
               },
-                            {
-                                "icao": "UAL",
-                                "airport": "KEWR"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KLGA"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KATL"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KMYR"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KSRQ"
-                            },
-                            {
-                                "icao": "JBU",
-                                "airport": "KFLL"
-                            },
-                            {
-                                "icao": "VXP",
-                                "airport": "KRDU"
-                            },
-                            {
-                              "icao": "N",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "AMF",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "CNS",
-                              "airport": "KPWM"
-                          },
-                          {
-                              "icao": "N",
-                              "airport": "KBGR"
-                          }
+              {
+                "icao": "UAL",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KLGA"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KMYR"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KSRQ"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KFLL"
+              },
+              {
+                "icao": "VXP",
+                "airport": "KRDU"
+              },
+              {
+                "icao": "N",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "AMF",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "CNS",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "N",
+                "airport": "KBGR"
+              }
             ]
           }
         }
       ]
     },
-    "SYR_FINAL_WEST":{
+    "SYR_FINAL_WEST": {
       "arrivals": [
         {
           "waypoints": "SYR CASIL OTOLE/ho/h100/a4000",
@@ -963,45 +963,45 @@
           "airlines": {
             "KALB": [
               {
-                    "icao": "RPA",
-                    "airport": "KORD"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KMKE"
-                },
-                {
-                    "icao": "DAL",
-                    "airport": "KATL"
-                },
-                {
-                    "icao": "SWA",
-                    "airport": "KLAS"
-                },
-                {
-                    "icao": "EDV",
-                    "airport": "KDTW"
-                },
-                {
-                                "icao": "AAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "UAL",
-                                "airport": "KORD"
-                            },
-                            {
-                                "icao": "SWA",
-                                "airport": "KLAS"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KMSP"
-                            }
+                "icao": "RPA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "UAL",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KLAS"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KMSP"
+              }
             ]
           }
         }
@@ -1038,11 +1038,11 @@
       "radio_name": "Albany Tower",
       "sector_id": "1T"
     },
-     "SCH_TWR": {
+    "SCH_TWR": {
       "frequency": 121300,
       "radio_name": "Schenectady Tower",
       "sector_id": "1S"
-     },
+    },
     "ALB_W_APP": {
       "frequency": 118050,
       "radio_name": "Albany Approach",
@@ -1086,7 +1086,7 @@
           "KALB": 10
         },
         "SYR": {
-            "KALB": 10
+          "KALB": 10
         },
         "HANAA": {
           "KSCH": 5
@@ -1094,35 +1094,22 @@
       },
       "solo_controller": "ALB_E_APP",
       "multi_controllers": {
-        "default":{
+        "default": {
           "ALB_E_APP": {
             "primary": true,
-            "arrivals": [
-              "CANAN", "HANAA"
-            ]
+            "arrivals": ["CANAN", "HANAA"]
           },
           "ALB_W_APP": {
             "backup": "ALB_E_APP",
-            "departures": [
-              "KALB", "KSCH"
-            ],
-            "arrivals": [
-              "SYR"
-            ]
+            "departures": ["KALB", "KSCH"],
+            "arrivals": ["SYR"]
           },
-          "ALB_F_APP":{
-            "backup":"ALB_E_APP"
+          "ALB_F_APP": {
+            "backup": "ALB_E_APP"
           }
         }
       },
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "SCH_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
       "departure_runways": [
         {
           "airport": "KALB",
@@ -1138,9 +1125,7 @@
       "wind": {
         "direction": "160-220"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     },
     "East": {
       "arrival_runways": [
@@ -1158,7 +1143,7 @@
           "KALB": 10
         },
         "SYR": {
-            "KALB": 10
+          "KALB": 10
         },
         "HANAA": {
           "KSCH": 5
@@ -1166,35 +1151,22 @@
       },
       "solo_controller": "ALB_E_APP",
       "multi_controllers": {
-        "default":{
+        "default": {
           "ALB_E_APP": {
             "primary": true,
-            "arrivals": [
-              "CANAN", "HANAA"
-            ]
+            "arrivals": ["CANAN", "HANAA"]
           },
           "ALB_W_APP": {
             "backup": "ALB_E_APP",
-            "departures": [
-              "KALB", "KSCH"
-            ],
-            "arrivals": [
-              "SYR"
-            ]
+            "departures": ["KALB", "KSCH"],
+            "arrivals": ["SYR"]
           },
-          "ALB_F_APP":{
-            "backup":"ALB_E_APP"
+          "ALB_F_APP": {
+            "backup": "ALB_E_APP"
           }
         }
       },
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "SCH_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
       "departure_runways": [
         {
           "airport": "KALB",
@@ -1210,82 +1182,65 @@
       "wind": {
         "direction": "70-130"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     },
     "West": {
-        "arrival_runways": [
-            {
-                "airport": "KALB",
-                "runway": "28"
-            },
-            {
-              "airport": "KSCH",
-              "runway": "22"
-            }
-        ],
-        "arrivals": {
-            "CANAN": {
-                "KALB": 10
-            },
-            "SYR": {
-                "KALB": 10
-            },
-            "HANAA": {
-              "KSCH": 5
-            }
+      "arrival_runways": [
+        {
+          "airport": "KALB",
+          "runway": "28"
         },
-        "solo_controller": "ALB_E_APP",
+        {
+          "airport": "KSCH",
+          "runway": "22"
+        }
+      ],
+      "arrivals": {
+        "CANAN": {
+          "KALB": 10
+        },
+        "SYR": {
+          "KALB": 10
+        },
+        "HANAA": {
+          "KSCH": 5
+        }
+      },
+      "solo_controller": "ALB_E_APP",
       "multi_controllers": {
-        "default":{
+        "default": {
           "ALB_E_APP": {
             "primary": true,
-            "arrivals": [
-              "CANAN", "HANAA"
-            ]
+            "arrivals": ["CANAN", "HANAA"]
           },
           "ALB_W_APP": {
             "backup": "ALB_E_APP",
-            "departures": [
-              "KALB", "KSCH"
-            ],
-            "arrivals": [
-              "SYR"
-            ]
+            "departures": ["KALB", "KSCH"],
+            "arrivals": ["SYR"]
           },
-          "ALB_F_APP":{
-            "backup":"ALB_E_APP"
+          "ALB_F_APP": {
+            "backup": "ALB_E_APP"
           }
         }
       },
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "SCH_TWR",
-        "BOS_22_CTR"
-      ],
-        "departure_runways": [
-            {
-                "airport" :"KALB",
-                "rate": 10,
-                "runway": "28"
-            },
-            {
-              "airport": "KSCH",
-              "rate": 5,
-              "runway": "22"
-            }
-        ],
-        "wind": {
-          "direction": "250-310"
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
+      "departure_runways": [
+        {
+          "airport": "KALB",
+          "rate": 10,
+          "runway": "28"
         },
-        "default_maps": [
-            "ALB MAIN"
-        ]
+        {
+          "airport": "KSCH",
+          "rate": 5,
+          "runway": "22"
+        }
+      ],
+      "wind": {
+        "direction": "250-310"
       },
+      "default_maps": ["ALB MAIN"]
+    },
     "North": {
       "arrival_runways": [
         {
@@ -1302,7 +1257,7 @@
           "KALB": 10
         },
         "SYR": {
-            "KALB": 10
+          "KALB": 10
         },
         "HANAA": {
           "KSCH": 5
@@ -1310,35 +1265,22 @@
       },
       "solo_controller": "ALB_E_APP",
       "multi_controllers": {
-        "default":{
+        "default": {
           "ALB_E_APP": {
             "primary": true,
-            "arrivals": [
-              "CANAN", "HANAA"
-            ]
+            "arrivals": ["CANAN", "HANAA"]
           },
           "ALB_W_APP": {
             "backup": "ALB_E_APP",
-            "departures": [
-              "KALB", "KSCH"
-            ],
-            "arrivals": [
-              "SYR"
-            ]
+            "departures": ["KALB", "KSCH"],
+            "arrivals": ["SYR"]
           },
-          "ALB_F_APP":{
-            "backup":"ALB_E_APP"
+          "ALB_F_APP": {
+            "backup": "ALB_E_APP"
           }
         }
       },
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "SCH_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
       "departure_runways": [
         {
           "airport": "KALB",
@@ -1354,9 +1296,7 @@
       "wind": {
         "direction": "340-40"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     },
     "North Flow Final": {
       "arrival_runways": [
@@ -1374,19 +1314,11 @@
         }
       },
       "solo_controller": "ALB_F_APP",
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
       "wind": {
         "direction": "340-40"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     },
     "South Flow Final": {
       "arrival_runways": [
@@ -1404,21 +1336,13 @@
         }
       },
       "solo_controller": "ALB_F_APP",
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
       "wind": {
         "direction": "160-220"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     },
-     "East Flow Final": {
+    "East Flow Final": {
       "arrival_runways": [
         {
           "airport": "KALB",
@@ -1434,19 +1358,11 @@
         }
       },
       "solo_controller": "ALB_F_APP",
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
       "wind": {
         "direction": "70-130"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     },
     "West Flow Final": {
       "arrival_runways": [
@@ -1464,19 +1380,11 @@
         }
       },
       "solo_controller": "ALB_F_APP",
-      "controllers": [
-         "ALB_E_APP",
-        "ALB_W_APP",
-        "ALB_F_APP",
-        "ALB_TWR",
-        "BOS_22_CTR"
-      ],
+      "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
       "wind": {
         "direction": "250-310"
       },
-      "default_maps": [
-        "ALB MAIN"
-      ]
+      "default_maps": ["ALB MAIN"]
     }
   },
   "stars_config": {

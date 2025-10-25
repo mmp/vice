@@ -272,12 +272,7 @@
         }
       },
       "solo_controller": "PWM_S_APP",
-      "controllers": [
-        "PWM_S_APP",
-        "PWM_L_APP",
-        "PWM_TWR",
-        "BOS_17_CTR"
-      ],
+      "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
           "airport": "KPWM",
@@ -288,10 +283,7 @@
       "wind": {
         "direction": "260-320"
       },
-      "default_maps": [
-        "PWM MAIN",
-        "PWM EVENT RWY 29"
-      ]
+      "default_maps": ["PWM MAIN", "PWM EVENT RWY 29"]
     },
     "Land East": {
       "arrival_runways": [
@@ -306,12 +298,7 @@
         }
       },
       "solo_controller": "PWM_S_APP",
-      "controllers": [
-        "PWM_S_APP",
-        "PWM_L_APP",
-        "PWM_TWR",
-        "BOS_17_CTR"
-      ],
+      "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
           "airport": "KPWM",
@@ -322,10 +309,7 @@
       "wind": {
         "direction": "80-140"
       },
-      "default_maps": [
-        "PWM MAIN",
-        "PWM EVENT RWY 11"
-      ]
+      "default_maps": ["PWM MAIN", "PWM EVENT RWY 11"]
     }
   },
   "stars_config": {
