@@ -17,12 +17,6 @@
           "type": "ILS",
           "full_name": "Sound Visual Runway 34 (SF)",
           "waypoints": ["HAARP/a3000 SHIPN/a2500 GREPT/a2000 CALFF/a2000 CLUBY/a2000/faf"]
-        },
-        "V34E": {
-          "runway": "34",
-          "type": "ILS",
-          "full_name": "Shoreline Visual Runway 34 (EF)",
-          "waypoints": ["ZONKO N041.02.02.744,W073.26.47.739/a2000 N040.58.40.637,W073.34.57.949 THEEO/a2000/faf"]
         }
       },
       "departure_routes": {

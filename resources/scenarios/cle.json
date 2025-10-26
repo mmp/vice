@@ -2389,12 +2389,12 @@
         }
       ]
     },
-    "CINAB": {
+    "GOSIC-FIVUM": {
       "arrivals": [
         {
-          "waypoints": "STURR CINAB/ho",
+          "waypoints": "GOSIC FIVUM/ho",
           "cruise_altitude": 18000,
-          "route": "STURR CINAB",
+          "route": "GOSIC FIVUM",
           "initial_controller": "CLE_66_CTR",
           "initial_altitude": 15000,
           "assigned_altitude": 15000,
@@ -3841,7 +3841,7 @@
         "ZZIPS1": {
           "KCAK": 3
         },
-        "CINAB": {
+        "GOSIC-FIVUM": {
           "KMFD": 2
         }
       },
@@ -3855,7 +3855,7 @@
           "CLE_R_DEP": { "backup": "CLE_D_DEP", "departures": ["KCLE/CAVVS4", "KCLE/KKIDS1", "KCLE/ZAAPA5"] },
           "CAK_E_APP": { "backup": "CLE_N_APP", "departures": ["KCAK"], "arrivals": ["ZZIPS1"] },
           "CAK_S_APP": { "backup": "CAK_E_APP", "arrivals": ["HUUVR1"] },
-          "MFD_W_APP": { "backup": "CAK_E_APP", "departures": ["KMFD"], "arrivals": ["CINAB"] }
+          "MFD_W_APP": { "backup": "CAK_E_APP", "departures": ["KMFD"], "arrivals": ["GOSIC-FIVUM"] }
         }
       },
       "controllers": ["CLE_66_CTR", "CLE_TWR", "DTW_F_APP", "BKL_TWR", "CGF_TWR", "MFD_TWR", "CAK_TWR"],
@@ -4076,7 +4076,7 @@
         "ZZIPS1": {
           "KCAK": 3
         },
-        "CINAB": {
+        "GOSIC-FIVUM": {
           "KMFD": 2
         }
       },
@@ -4090,7 +4090,7 @@
           "CLE_R_DEP": { "backup": "CLE_D_DEP", "departures": ["KCLE/CAVVS4", "KCLE/KKIDS1", "KCLE/ZAAPA5"] },
           "CAK_E_APP": { "backup": "CLE_N_APP", "departures": ["KCAK"], "arrivals": ["ZZIPS1"] },
           "CAK_S_APP": { "backup": "CAK_E_APP", "arrivals": ["HUUVR1"] },
-          "MFD_W_APP": { "backup": "CAK_E_APP", "departures": ["KMFD"], "arrivals": ["CINAB"] }
+          "MFD_W_APP": { "backup": "CAK_E_APP", "departures": ["KMFD"], "arrivals": ["GOSIC-FIVUM"] }
         }
       },
       "controllers": ["CLE_66_CTR", "CLE_TWR", "DTW_F_APP", "BKL_TWR", "CGF_TWR", "MFD_TWR", "CAK_TWR"],

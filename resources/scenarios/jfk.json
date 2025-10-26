@@ -319,7 +319,7 @@
           "altitude": 38000,
           "destination": "KBNA",
           "exit": "SOARS",
-          "route": "SOARS RONGE PWL BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
+          "route": "SOARS RONGE BASYE Q406 BWZ J6 HVQ HUGEN GROAT PASLY4"
         },
         {
           "airlines": [
@@ -609,8 +609,8 @@
         "I3L": { "cifp_id": "I13L" },
         "I4L": { "cifp_id": "I4L" },
         "I4R": { "cifp_id": "I4R" },
-        "R1L": { "cifp_id": "RY31L" },
-        "R1R": { "cifp_id": "RY31R" },
+        "R1L": { "cifp_id": "R31L" },
+        "R1R": { "cifp_id": "R31R" },
         "R2L": { "cifp_id": "RX22L" },
         "R2R": { "cifp_id": "R22R" },
         "R3L": {
@@ -5324,7 +5324,7 @@
     }
   },
   "inbound_flows": {
-    "CAMRN/LENDY8.Finals22": {
+    "CAMRN/PUCKY1.Finals22": {
       "arrivals": [
         {
           "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho/h40",
@@ -6099,7 +6099,7 @@
         }
       ]
     },
-    "CAMRN/LENDY8.Finals31": {
+    "CAMRN/PUCKY1.Finals31": {
       "arrivals": [
         {
           "waypoints": "CAMRN N040.15.12.510,W073.41.24.640/ho N040.19.46.880,W073.38.09.605/h40",
@@ -7652,56 +7652,18 @@
         }
       ]
     },
-    "DENNA3/LOVES2": {
+    "LOVES1": {
       "arrivals": [
         {
-          "spawn": "PWL",
-          "cruise_altitude": 15000,
-          "star": "DENNA3",
-          "initial_controller": "NY_B_CTR",
-          "initial_altitude": 8000,
-          "assigned_altitude": 5000,
-          "initial_speed": 250,
-          "speed_restriction": 250,
-          "description": "DENNA3",
-          "expect_approach": null,
-          "airlines": {
-            "KHVN": [
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KALB"
-              },
-              {
-                "icao": "N",
-                "fleet": "fastGA",
-                "airport": "KAVP"
-              },
-              {
-                "icao": "DPJ",
-                "airport": "KBUF"
-              },
-              {
-                "icao": "VXP",
-                "airport": "KBNA"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KBGR"
-              }
-            ]
-          }
-        },
-        {
-          "spawn": "PWL",
+          "spawn": "PAWLN",
           "cruise_altitude": 29000,
-          "star": "LOVES2",
+          "star": "LOVES1",
           "initial_controller": "NY_B_CTR",
           "initial_altitude": 8000,
           "assigned_altitude": 5000,
           "initial_speed": 250,
           "speed_restriction": 250,
-          "description": "LOVES2",
+          "description": "LOVES1",
           "expect_approach": null,
           "airlines": {
             "KISP": [
@@ -8040,18 +8002,18 @@
         }
       ]
     },
-    "LENDY8/IGN1": {
+    "PUCKY1": {
       "arrivals": [
         {
-          "spawn": "STW@0.3",
+          "spawn": "FUUEL",
           "cruise_altitude": 37000,
-          "star": "LENDY8",
+          "star": "PUCKY1",
           "initial_controller": "NY_C_CTR",
           "initial_altitude": 20000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "description": "LENDY8",
+          "description": "PUCKY1",
           "expect_approach": null,
           "airlines": {
             "KFRG": [
@@ -8463,15 +8425,15 @@
           }
         },
         {
-          "spawn": "LOLLY@0.5",
+          "spawn": "FUUEL",
           "cruise_altitude": 39000,
-          "star": "IGN1",
+          "star": "PUCKY1",
           "initial_controller": "NY_C_CTR",
           "initial_altitude": 19000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "description": "IGN1",
+          "description": "PUCKY1",
           "expect_approach": null,
           "airlines": {
             "KFRG": [
@@ -8563,16 +8525,16 @@
         }
       ]
     },
-    "LENDY8.Finals13": {
+    "PUCKY1.Finals13": {
       "arrivals": [
         {
           "waypoints": "LGA N040.42.02.048,W073.41.55.759 N040.30.44.604,W073.38.21.855/a8000/h180/ho",
           "cruise_altitude": 37000,
-          "star": "LENDY8",
+          "star": "PUCKY1",
           "initial_controller": "JFK_DEP",
           "initial_altitude": 13000,
           "initial_speed": 250,
-          "description": "LENDY8",
+          "description": "PUCKY1",
           "expect_approach": null,
           "airlines": {
             "KJFK": [
@@ -8961,6 +8923,54 @@
                 "icao": "CXA",
                 "types": ["B789"],
                 "airport": "ZSFZ"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "DENNA3": {
+      "arrivals": [
+        {
+          "spawn": "PWL",
+          "cruise_altitude": 15000,
+          "star": "DENNA3",
+          "initial_controller": "BOS_E_CTR",
+          "initial_altitude": 8000,
+          "assigned_altitude": 5000,
+          "initial_speed": 250,
+          "speed_restriction": 250,
+          "description": "DENNA3",
+          "expect_approach": null,
+          "airlines": {
+            "KHVN": [
+              {
+                "icao": "GPD",
+                "airport": "KBOS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LOVES1": {
+      "arrivals": [
+        {
+          "spawn": "PAWLN",
+          "cruise_altitude": 29000,
+          "star": "LOVES1",
+          "initial_controller": "BOS_E_CTR",
+          "initial_altitude": 8000,
+          "assigned_altitude": 5000,
+          "initial_speed": 250,
+          "speed_restriction": 250,
+          "description": "LOVES1",
+          "expect_approach": null,
+          "airlines": {
+            "KISP": [
+              {
+                "icao": "GPD",
+                "airport": "KBOS"
               }
             ]
           }
@@ -10886,12 +10896,14 @@
           "KISP": 0,
           "KHVN": 0
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KFRG": 0,
           "KJFK": 12
         },
-        "DENNA3/LOVES2": {
-          "KHVN": 0,
+        "DENNA3": {
+          "KHVN": 0
+        },
+        "LOVES1": {
           "KISP": 0
         },
         "NELIE4": {
@@ -10915,7 +10927,7 @@
           "ISP_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)"]
+            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
           },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -10923,7 +10935,7 @@
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KFRG"],
-            "arrivals": ["PARCH4", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG East)"]
+            "arrivals": ["PARCH4", "PUCKY1", "Intra-TRACON (JFK/FRG East)"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP"
@@ -11029,12 +11041,14 @@
           "KISP": 0,
           "KHVN": 0
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KFRG": 0,
           "KJFK": 12
         },
-        "DENNA3/LOVES2": {
-          "KHVN": 0,
+        "DENNA3": {
+          "KHVN": 0
+        },
+        "LOVES1": {
           "KISP": 0
         },
         "NELIE4": {
@@ -11053,12 +11067,12 @@
         "default": {
           "JFK_G_APP": {
             "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)"]
+            "arrivals": ["CAMRN5", "OWENZ", "PUCKY1", "Intra-TRACON (JFK/FRG West)"]
           },
           "ISP_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)"]
+            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
           },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -11168,12 +11182,14 @@
           "KISP": 0,
           "KHVN": 0
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KFRG": 0,
           "KJFK": 12
         },
-        "DENNA3/LOVES2": {
-          "KHVN": 0,
+        "DENNA3": {
+          "KHVN": 0
+        },
+        "LOVES1": {
           "KISP": 0
         },
         "NELIE4": {
@@ -11192,12 +11208,12 @@
         "default": {
           "JFK_G_APP": {
             "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)"]
+            "arrivals": ["CAMRN5", "OWENZ", "PUCKY1", "Intra-TRACON (JFK/FRG West)"]
           },
           "ISP_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)"]
+            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
           },
           "JFK_A_APP": {
             "backup": "JFK_K_APP"
@@ -11326,12 +11342,14 @@
           "KISP": 0,
           "KHVN": 0
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KFRG": 0,
           "KJFK": 12
         },
-        "DENNA3/LOVES2": {
-          "KHVN": 0,
+        "DENNA3": {
+          "KHVN": 0
+        },
+        "LOVES1": {
           "KISP": 0
         },
         "NELIE4": {
@@ -11350,12 +11368,12 @@
         "default": {
           "JFK_G_APP": {
             "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "LENDY8/IGN1", "Intra-TRACON (JFK/FRG West)"]
+            "arrivals": ["CAMRN5", "OWENZ", "PUCKY1", "Intra-TRACON (JFK/FRG West)"]
           },
           "ISP_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)"]
+            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
           },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -11464,12 +11482,14 @@
           "KISP": 0,
           "KHVN": 0
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KFRG": 0,
           "KJFK": 12
         },
-        "DENNA3/LOVES2": {
-          "KHVN": 0,
+        "DENNA3": {
+          "KHVN": 0
+        },
+        "LOVES1": {
           "KISP": 0
         },
         "NELIE4": {
@@ -11493,7 +11513,7 @@
           "ISP_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3/LOVES2", "Intra-TRACON (ISP/HVN)"]
+            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
           },
           "JFK_A_APP": {
             "backup": "JFK_G_APP"
@@ -11501,7 +11521,7 @@
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
             "departures": ["KFRG"],
-            "arrivals": ["LENDY8/IGN1", "PARCH4", "Intra-TRACON (JFK/FRG East)"]
+            "arrivals": ["PUCKY1", "PARCH4", "Intra-TRACON (JFK/FRG East)"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP"
@@ -11575,7 +11595,7 @@
         "CAMRN5.Finals13": {
           "KJFK": 19
         },
-        "LENDY8.Finals13": {
+        "PUCKY1.Finals13": {
           "KJFK": 7
         }
       },
@@ -11605,7 +11625,7 @@
         "CAMRN5.Finals13": {
           "KJFK": 19
         },
-        "LENDY8.Finals13": {
+        "PUCKY1.Finals13": {
           "KJFK": 7
         }
       },
@@ -11632,7 +11652,7 @@
         "PARCH4.Finals22": {
           "KJFK": 7
         },
-        "CAMRN/LENDY8.Finals22": {
+        "CAMRN/PUCKY1.Finals22": {
           "KJFK": 24
         }
       },
@@ -11659,7 +11679,7 @@
         "PARCH4.Finals31": {
           "KJFK": 7
         },
-        "CAMRN/LENDY8.Finals31": {
+        "CAMRN/PUCKY1.Finals31": {
           "KJFK": 29
         }
       },

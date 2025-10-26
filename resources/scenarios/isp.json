@@ -1627,7 +1627,7 @@
     }
   },
   "inbound_flows": {
-    "DENNA3/LOVES2": {
+    "DENNA3": {
       "arrivals": [
         {
           "spawn": "PWL",
@@ -1666,17 +1666,21 @@
               }
             ]
           }
-        },
+        }
+      ]
+    },
+    "LOVES1": {
+      "arrivals": [
         {
-          "spawn": "PWL",
+          "spawn": "PAWLN",
           "cruise_altitude": 29000,
-          "star": "LOVES2",
+          "star": "LOVES1",
           "initial_controller": "NY_B_CTR",
           "initial_altitude": 8000,
           "assigned_altitude": 5000,
           "initial_speed": 250,
           "speed_restriction": 250,
-          "description": "LOVES2",
+          "description": "LOVES1",
           "expect_approach": null,
           "airlines": {
             "KISP": [
@@ -2244,9 +2248,11 @@
         "ISP_B_APP": ["BEADS_HIGH"]
       },
       "arrivals": {
-        "DENNA3/LOVES2": {
-          "KHVN": 2,
+        "LOVES1": {
           "KISP": 12
+        },
+        "DENNA3": {
+          "KHVN": 2
         },
         "NELIE4": {
           "KISP": 5,
@@ -2323,7 +2329,7 @@
           },
           "ISP_R_APP": {
             "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "DENNA3/LOVES2"]
+            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1", "DENNA3"]
           }
         }
       },
@@ -2403,8 +2409,7 @@
         "ISP_B_APP": ["BEADS_HIGH"]
       },
       "arrivals": {
-        "DENNA3/LOVES2": {
-          "KHVN": 2,
+        "LOVES1": {
           "KISP": 12
         },
         "NELIE4": {
@@ -2482,7 +2487,7 @@
           },
           "ISP_R_APP": {
             "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "DENNA3/LOVES2"]
+            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1"]
           }
         }
       },
@@ -2562,8 +2567,7 @@
         "ISP_B_APP": ["BEADS_HIGH"]
       },
       "arrivals": {
-        "DENNA3/LOVES2": {
-          "KHVN": 2,
+        "LOVES1": {
           "KISP": 12
         },
         "NELIE4": {
@@ -2641,7 +2645,7 @@
           },
           "ISP_R_APP": {
             "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "DENNA3/LOVES2"]
+            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1"]
           }
         }
       },
@@ -2721,8 +2725,7 @@
         "ISP_B_APP": ["BEADS_HIGH"]
       },
       "arrivals": {
-        "DENNA3/LOVES2": {
-          "KHVN": 2,
+        "LOVES1": {
           "KISP": 12
         },
         "NELIE4": {
@@ -2800,7 +2803,7 @@
           },
           "ISP_R_APP": {
             "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "DENNA3/LOVES2"]
+            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1"]
           }
         }
       },

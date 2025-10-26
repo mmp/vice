@@ -799,12 +799,12 @@
         }
       ]
     },
-    "QERVO1": {
+    "QERVO2": {
       "arrivals": [
         {
           "spawn": "HOSAY",
           "cruise_altitude": 28000,
-          "star": "QERVO1",
+          "star": "QERVO2",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "initial_controller": "HOU_96_CTR",
@@ -832,7 +832,7 @@
         {
           "spawn": "HOSAY",
           "cruise_altitude": 28000,
-          "star": "QERVO1",
+          "star": "QERVO2",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "initial_controller": "HOU_96_CTR",
@@ -1091,7 +1091,7 @@
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO1": {
+        "QERVO2": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1103,7 +1103,7 @@
         "default": {
           "SAT_N_APP": {
             "primary": true,
-            "arrivals": ["QERVO1"],
+            "arrivals": ["QERVO2"],
             "departures": ["KSAT"]
           },
           "SAT_K_APP": {
@@ -1228,7 +1228,7 @@
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO1": {
+        "QERVO2": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1240,7 +1240,7 @@
         "default": {
           "SAT_N_APP": {
             "primary": true,
-            "arrivals": ["QERVO1"],
+            "arrivals": ["QERVO2"],
             "departures": ["KSAT", "KBAZ"]
           },
           "SAT_K_APP": {
@@ -1355,7 +1355,7 @@
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO1": {
+        "QERVO2": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1367,7 +1367,7 @@
         "default": {
           "SAT_N_APP": {
             "primary": true,
-            "arrivals": ["QERVO1"],
+            "arrivals": ["QERVO2"],
             "departures": ["KSAT"]
           },
           "SAT_K_APP": {
@@ -1488,7 +1488,7 @@
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO1": {
+        "QERVO2": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1500,7 +1500,7 @@
         "default": {
           "SAT_N_APP": {
             "primary": true,
-            "arrivals": ["QERVO1"],
+            "arrivals": ["QERVO2"],
             "departures": ["KSAT", "KBAZ"]
           },
           "SAT_K_APP": {

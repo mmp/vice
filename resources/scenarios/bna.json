@@ -1854,19 +1854,12 @@
     }
   },
   "inbound_flows": {
-    "CHSNE2": {
+    "CHSNE3": {
       "arrivals": [
         {
-          "waypoints": "CHSNE/a12000-19000/ho BAWLS/a9000+ JATGO OLNAH/a6000-11000/s250",
-          "runway_waypoints": {
-            "KBNA": {
-              "20L": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21",
-              "20R": "OLNAH/a6000-11000/s250 GDSTF/a6000+/s250 NUVOO/a6000+/s220 JOGLO/a5000/s210/flyover/h21",
-              "2L": "OLNAH/a6000-11000/s250 BGSTR/a4000 TUPIE/a4000/s210/flyover/h110",
-              "2R": "OLNAH/a6000-11000/s250 BGSTR/a4000 TUPIE/a4000/s210/flyover/h110"
-            }
-          },
-          "star": "CHSNE2",
+          "spawn": "KNEEY@0.5",
+          "cruise_altitude": 19000,
+          "star": "CHSNE3",
           "initial_controller": "MEM_42_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -1917,19 +1910,12 @@
         }
       ]
     },
-    "PASLY4": {
+    "PASLY5": {
       "arrivals": [
         {
-          "waypoints": "PASLY/a12000-20000/ho CARAP/a10000+ DAANG BODDY/a7000-12000/s250",
-          "runway_waypoints": {
-            "KBNA": {
-              "20L": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270",
-              "20R": "BODDY/a7000-12000/s250 MUUDD/a6000/s250/flyover/h270",
-              "2L": "BODDY/a7000-12000/s250 CLBTY/a6000+/s250 JABUN/a6000+ DRAND/a6000+/s220 ZODKA/a5000/s210/flyover/h201",
-              "2R": "BODDY/a7000-12000/s250 CLBTY/a6000+/s250 JABUN/a6000+ DRAND/a6000+/s220 ZODKA/a5000/s210/flyover/h201"
-            }
-          },
-          "star": "PASLY4",
+          "spawn": "PASLY",
+          "cruise_altitude": 20000,
+          "star": "PASLY5",
           "initial_controller": "MEM_40_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -1986,21 +1972,14 @@
         }
       ]
     },
-    "RYYMN2": {
+    "RYYMN3": {
       "arrivals": [
         {
-          "waypoints": "RYYMN/a11000-19000/ho PEKIE/a10000+ JONIL/a9000+ OBATE/a6000-12000/s250",
-          "runway_waypoints": {
-            "KBNA": {
-              "20L": "OBATE/a6000-12000/s250 YYALL/a4000 CULAR/a4000/s210/flyover/h110",
-              "20R": "OBATE/a6000-12000/s250 YYALL/a4000 CULAR/a4000/s210/flyover/h110",
-              "2L": "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200",
-              "2R": "OBATE/a6000-12000/s250 JNKNS/a6000+/s250 WAMAR/a5000/s210/flyover/h200"
-            }
-          },
-          "star": "RYYMN2",
+          "spawn": "RYYMN",
+          "cruise_altitude": 19000,
+          "star": "RYYMN3",
           "initial_controller": "MEM_41_CTR",
-          "initial_altitude": 14000,
+          "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
@@ -2041,19 +2020,12 @@
         }
       ]
     },
-    "SWFFT2": {
+    "SWFFT3": {
       "arrivals": [
         {
-          "waypoints": "SWFFT/a13000-20000/ho HIMAT/a10000+ WEMAL ADAAY/a8000-12000/s250",
-          "runway_waypoints": {
-            "KBNA": {
-              "20L": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21",
-              "20R": "ADAAY/a8000-12000/s250 BRETH/a6000+/s250 CORRA/a6000+/s220 HAKUM SIPPO/a5000/s210/flyover/h21",
-              "2L": "ADAAY/a8000-12000/s250 TEARS/a6000/s250/flyover/h292",
-              "2R": "ADAAY/a8000-12000/s250 TEARS/a6000/s250/flyover/h292"
-            }
-          },
-          "star": "SWFFT2",
+          "spawn": "SWFFT",
+          "cruise_altitude": 20000,
+          "star": "SWFFT3",
           "initial_controller": "MEM_60_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
@@ -2182,16 +2154,16 @@
         }
       ],
       "arrivals": {
-        "CHSNE2": {
+        "CHSNE3": {
           "KBNA": 10
         },
-        "PASLY4": {
+        "PASLY5": {
           "KBNA": 10
         },
-        "RYYMN2": {
+        "RYYMN3": {
           "KBNA": 10
         },
-        "SWFFT2": {
+        "SWFFT3": {
           "KBNA": 10
         }
       },
@@ -2202,8 +2174,8 @@
             "primary": true,
             "departures": ["KBNA/DANLS3", "KBNA/DRURY3", "KBNA/FLAME3", "KBNA/GDOGG3", "KBNA/HGGRD3", "KBNA/PARDN3"]
           },
-          "BNA_W_APP": { "backup": "BNA_X_DEP", "arrivals": ["RYYMN2", "CHSNE2"] },
-          "BNA_E_APP": { "backup": "BNA_W_APP", "arrivals": ["SWFFT2", "PASLY4"] },
+          "BNA_W_APP": { "backup": "BNA_X_DEP", "arrivals": ["RYYMN3", "CHSNE3"] },
+          "BNA_E_APP": { "backup": "BNA_W_APP", "arrivals": ["SWFFT3", "PASLY5"] },
           "BNA_Y_DEP": {
             "backup": "BNA_X_DEP",
             "departures": ["KBNA/CHADM3", "KBNA/EVVAN3", "KBNA/KRSTA3", "KBNA/TAZMO3", "KBNA/TIPPN3"]
@@ -2244,16 +2216,16 @@
         }
       ],
       "arrivals": {
-        "CHSNE2": {
+        "CHSNE3": {
           "KBNA": 10
         },
-        "PASLY4": {
+        "PASLY5": {
           "KBNA": 10
         },
-        "RYYMN2": {
+        "RYYMN3": {
           "KBNA": 10
         },
-        "SWFFT2": {
+        "SWFFT3": {
           "KBNA": 10
         }
       },
@@ -2264,8 +2236,8 @@
             "primary": true,
             "departures": ["KBNA/DANLS3", "KBNA/DRURY3", "KBNA/FLAME3", "KBNA/GDOGG3", "KBNA/HGGRD3", "KBNA/PARDN3"]
           },
-          "BNA_W_APP": { "backup": "BNA_X_DEP", "arrivals": ["RYYMN2", "CHSNE2"] },
-          "BNA_E_APP": { "backup": "BNA_W_APP", "arrivals": ["SWFFT2", "PASLY4"] },
+          "BNA_W_APP": { "backup": "BNA_X_DEP", "arrivals": ["RYYMN3", "CHSNE3"] },
+          "BNA_E_APP": { "backup": "BNA_W_APP", "arrivals": ["SWFFT3", "PASLY5"] },
           "BNA_Y_DEP": {
             "backup": "BNA_X_DEP",
             "departures": ["KBNA/CHADM3", "KBNA/EVVAN3", "KBNA/KRSTA3", "KBNA/TAZMO3", "KBNA/TIPPN3"]

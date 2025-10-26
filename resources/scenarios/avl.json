@@ -437,7 +437,7 @@
     "JONEB": {
       "arrivals": [
         {
-          "waypoints": "PITTY JAKIB/ho JONEB/a11000/h296",
+          "waypoints": "PITTY JAKIB/ho/a11000/h296",
           "route": "/. JONEB",
           "initial_controller": "ATL_CTR",
           "initial_altitude": 15000,

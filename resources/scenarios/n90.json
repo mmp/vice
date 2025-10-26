@@ -7762,10 +7762,10 @@
         }
       ]
     },
-    "DENNA3/LOVES2": {
+    "DENNA3": {
       "arrivals": [
         {
-          "waypoints": "ALB ATHOS PWL/ho LOVES/a6000 BDR",
+          "spawn": "PWL",
           "cruise_altitude": 15000,
           "star": "DENNA3",
           "initial_controller": "NY_36_CTR",
@@ -7807,17 +7807,21 @@
               }
             ]
           }
-        },
+        }
+      ]
+    },
+    "LOVES1": {
+      "arrivals": [
         {
-          "waypoints": "ALB ATHOS PWL/ho LOVES/a6000 BDR CCC",
+          "spawn": "PAWLN",
           "cruise_altitude": 29000,
-          "star": "LOVES2",
+          "star": "LOVES1",
           "initial_controller": "NY_36_CTR",
           "initial_altitude": 8000,
           "assigned_altitude": 5000,
           "initial_speed": 250,
           "speed_restriction": 250,
-          "description": "LOVES2",
+          "description": "LOVES1",
           "expect_approach": null,
           "airlines": {
             "KISP": [
@@ -8446,18 +8450,18 @@
         }
       ]
     },
-    "LENDY8/IGN1": {
+    "PUCKY1": {
       "arrivals": [
         {
-          "waypoints": "N040.56.09.863,W074.30.33.013 N040.55.09.974,W074.25.19.628/ho LENDY LGA",
+          "spawn": "FUUEL",
           "cruise_altitude": 37000,
-          "star": "LENDY8",
+          "star": "PUCKY1",
           "initial_controller": "NY_36_CTR",
           "initial_altitude": 20000,
           "assigned_altitude": 19000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "description": "LENDY8",
+          "description": "PUCKY1",
           "expect_approach": null,
           "airlines": {
             "KJFK": [
@@ -8537,71 +8541,6 @@
                 "icao": "WJA",
                 "fleet": "jfk",
                 "airport": "KCVG"
-              }
-            ]
-          }
-        },
-        {
-          "waypoints": "DOORE N040.58.27.742,W074.16.12.647/ho LENDY LGA",
-          "cruise_altitude": 39000,
-          "star": "IGN1",
-          "initial_controller": "NY_36_CTR",
-          "initial_altitude": 19000,
-          "assigned_altitude": 19000,
-          "initial_speed": 300,
-          "speed_restriction": 250,
-          "description": "IGN1",
-          "expect_approach": null,
-          "airlines": {
-            "KJFK": [
-              {
-                "icao": "ASA",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSP"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KORD"
-              },
-              {
-                "icao": "UPS",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "ACA",
-                "airport": "CYYC"
-              },
-              {
-                "icao": "ACA",
-                "fleet": "short",
-                "airport": "CYUL"
               }
             ]
           }
@@ -11683,6 +11622,14 @@
           "KHVN": 1,
           "KOXC": 1
         },
+        "DENNA3": {
+          "KBDR": 1,
+          "KHVN": 1,
+          "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
+        },
         "HUD4": {
           "KSWF": 1,
           "KPOU": 1
@@ -11711,10 +11658,9 @@
           "KJFK": 3,
           "KFRG": 1
         },
-        "DENNA3/LOVES2": {
+        "DENNA3": {
           "KHVN": 1,
           "KBDR": 1,
-          "KISP": 1,
           "KOXC": 1
         },
         "NELIE4": {
@@ -11757,7 +11703,7 @@
         "CAMRN5": {
           "KJFK": 12
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KJFK": 12
         },
         "PARCH3": {
@@ -11804,7 +11750,7 @@
           "SWF_APP": {
             "backup": "ISP_H_APP",
             "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3/LOVES2", "HUD4"]
+            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
           },
           "ISP_H_APP": {
             "backup": "JFK_G_APP",
@@ -11850,7 +11796,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "LENDY8/IGN1"]
+            "arrivals": ["PARCH3", "PUCKY1"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
@@ -12307,6 +12253,14 @@
           "KHVN": 1,
           "KOXC": 1
         },
+        "DENNA3": {
+          "KBDR": 1,
+          "KHVN": 1,
+          "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
+        },
         "HUD4": {
           "KSWF": 1,
           "KPOU": 1
@@ -12335,11 +12289,13 @@
           "KJFK": 3,
           "KFRG": 1
         },
-        "DENNA3/LOVES2": {
+        "DENNA3": {
           "KHVN": 1,
           "KBDR": 1,
-          "KISP": 1,
           "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -12381,7 +12337,7 @@
         "CAMRN5": {
           "KJFK": 12
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KJFK": 12
         },
         "PARCH3": {
@@ -12428,7 +12384,7 @@
           "SWF_APP": {
             "backup": "ISP_H_APP",
             "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3/LOVES2", "HUD4"]
+            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
           },
           "ISP_H_APP": {
             "backup": "JFK_G_APP",
@@ -12474,7 +12430,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "LENDY8/IGN1"]
+            "arrivals": ["PARCH3", "PUCKY1"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
@@ -12921,6 +12877,14 @@
           "KHVN": 1,
           "KOXC": 1
         },
+        "DENNA3": {
+          "KBDR": 1,
+          "KHVN": 1,
+          "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
+        },
         "HUD4": {
           "KSWF": 1,
           "KPOU": 1
@@ -12949,11 +12913,13 @@
           "KJFK": 3,
           "KFRG": 1
         },
-        "DENNA3/LOVES2": {
+        "DENNA3": {
           "KHVN": 1,
           "KBDR": 1,
-          "KISP": 1,
           "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -12995,7 +12961,7 @@
         "CAMRN5": {
           "KJFK": 12
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KJFK": 12
         },
         "PARCH3": {
@@ -13042,7 +13008,7 @@
           "SWF_APP": {
             "backup": "ISP_H_APP",
             "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3/LOVES2", "HUD4"]
+            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
           },
           "ISP_H_APP": {
             "backup": "JFK_G_APP",
@@ -13088,7 +13054,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "LENDY8/IGN1"]
+            "arrivals": ["PARCH3", "PUCKY1"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
@@ -13545,6 +13511,14 @@
           "KHVN": 1,
           "KOXC": 1
         },
+        "DENNA3": {
+          "KBDR": 1,
+          "KHVN": 1,
+          "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
+        },
         "HUD4": {
           "KSWF": 1,
           "KPOU": 1
@@ -13573,11 +13547,13 @@
           "KJFK": 3,
           "KFRG": 1
         },
-        "DENNA3/LOVES2": {
+        "DENNA3": {
           "KHVN": 1,
           "KBDR": 1,
-          "KISP": 1,
           "KOXC": 1
+        },
+        "LOVES1": {
+          "KISP": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -13619,7 +13595,7 @@
         "CAMRN5": {
           "KJFK": 12
         },
-        "LENDY8/IGN1": {
+        "PUCKY1": {
           "KJFK": 12
         },
         "PARCH3": {
@@ -13666,7 +13642,7 @@
           "SWF_APP": {
             "backup": "ISP_H_APP",
             "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3/LOVES2", "HUD4"]
+            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
           },
           "ISP_H_APP": {
             "backup": "JFK_G_APP",
@@ -13712,7 +13688,7 @@
           },
           "JFK_K_APP": {
             "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "LENDY8/IGN1"]
+            "arrivals": ["PARCH3", "PUCKY1"]
           },
           "JFK_M_APP": {
             "backup": "JFK_K_APP",
