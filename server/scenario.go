@@ -1788,7 +1788,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			missing = append(missing, t)
 		}
 	}
-	lg.Warnf("Missing V2 in performance database: %s", strings.Join(missing, ", "))
+	lg.Infof("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
 	return scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors
 }
