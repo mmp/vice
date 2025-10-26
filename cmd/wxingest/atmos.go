@@ -92,10 +92,11 @@ func ingestHRRR(sb StorageBackend) error {
 		return err
 	}
 
-	hrrrsb, err := MakeGCSBackend("high-resolution-rapid-refresh")
+	hrrrGCS, err := MakeGCSBackend("high-resolution-rapid-refresh")
 	if err != nil {
 		return err
 	}
+	hrrrsb := NewTrackingBackend(hrrrGCS)
 
 	// Get available METAR and precip data times to determine valid intervals
 	metarTimes, err := getAvailableMETARTimes(sb)
@@ -204,6 +205,11 @@ func ingestHRRR(sb StorageBackend) error {
 
 	if err := eg.Wait(); err != nil {
 		return err
+	}
+
+	// Merge HRRR transfer statistics into main backend
+	if mainTB, ok := sb.(*TrackingBackend); ok {
+		mainTB.MergeStats(hrrrsb)
 	}
 
 	return generateManifest(sb, "atmos")

@@ -287,6 +287,11 @@ func (t *TrackingBackend) Close() {
 	t.sb.Close()
 }
 
+func (t *TrackingBackend) MergeStats(other *TrackingBackend) {
+	t.up.Add(other.up.Load())
+	t.down.Add(other.down.Load())
+}
+
 func (t *TrackingBackend) ReportStats() {
 	upBytes := t.up.Load()
 	downBytes := t.down.Load()
