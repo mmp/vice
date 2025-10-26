@@ -658,11 +658,6 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 					rewriteError(err)
 					return nil
 				}
-			} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
-				if err := s.ContactController(tcp, sim.ACID(callsign), command[2:]); err != nil {
-					rewriteError(err)
-					return nil
-				}
 			} else if len(command) > 4 && command[:3] == "CSI" && !util.IsAllNumbers(command[3:]) {
 				// Cleared straight in approach.
 				if err := s.ClearedApproach(tcp, callsign, command[3:], true); err != nil {
@@ -702,6 +697,11 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 				}
 
 				if err := s.CrossFixAt(tcp, callsign, fix, ar, speed); err != nil {
+					rewriteError(err)
+					return nil
+				}
+			} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
+				if err := s.ContactController(tcp, sim.ACID(callsign), command[2:]); err != nil {
 					rewriteError(err)
 					return nil
 				}
