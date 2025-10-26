@@ -15,7 +15,7 @@ require (
 	github.com/iancoleman/orderedmap v0.3.0
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
-	github.com/mmp/earcut-go v0.0.0-20230128161750-16b51f1632c6
+	github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1
 	github.com/mmp/squall v0.0.0-20251026140246-12e6ef3d4269
 	github.com/ncruces/zenity v0.10.14
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
