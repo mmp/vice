@@ -53,6 +53,8 @@ type Waypoint struct {
 	SecondaryScratchpad      string               `json:",omitempty"`
 	ClearSecondaryScratchpad bool                 `json:",omitempty"`
 	TransferComms            bool                 `json:",omitempty"`
+	ClimbAltitude            *int                 `json:",omitempty"` // altitude in feet to climb to when passing waypoint
+	DescendAltitude          *int                 `json:",omitempty"` // altitude in feet to descend to when passing waypoint
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -134,6 +136,12 @@ func (wp Waypoint) LogValue() slog.Value {
 	}
 	if wp.TransferComms {
 		attrs = append(attrs, slog.Bool("transfer_comms", wp.TransferComms))
+	}
+	if wp.ClimbAltitude != nil {
+		attrs = append(attrs, slog.Int("climb_altitude", *wp.ClimbAltitude))
+	}
+	if wp.DescendAltitude != nil {
+		attrs = append(attrs, slog.Int("descend_altitude", *wp.DescendAltitude))
 	}
 
 	return slog.GroupValue(attrs...)
@@ -267,6 +275,12 @@ func (wa WaypointArray) Encode() string {
 		}
 		if w.TransferComms {
 			s += "/tc"
+		}
+		if w.ClimbAltitude != nil {
+			s += fmt.Sprintf("/c%d", *w.ClimbAltitude/100)
+		}
+		if w.DescendAltitude != nil {
+			s += fmt.Sprintf("/d%d", *w.DescendAltitude/100)
 		}
 
 		entries = append(entries, s)
@@ -915,6 +929,26 @@ func parseWaypoints(str string) (WaypointArray, error) {
 					} else {
 						wp.Heading = hdg
 					}
+				} else if f[0] == 'c' {
+					alt, err := strconv.Atoi(f[1:])
+					if err != nil {
+						return nil, fmt.Errorf("%s: error parsing altitude after /c: %v", f[1:], err)
+					}
+					if alt < 0 || alt > 600 {
+						return nil, fmt.Errorf("%s: climb altitude must be between 0 and 600 (in 100s of feet)", f)
+					}
+					altFeet := alt * 100
+					wp.ClimbAltitude = &altFeet
+				} else if f[0] == 'd' {
+					alt, err := strconv.Atoi(f[1:])
+					if err != nil {
+						return nil, fmt.Errorf("%s: error parsing altitude after /d: %v", f[1:], err)
+					}
+					if alt < 0 || alt > 600 {
+						return nil, fmt.Errorf("%s: descend altitude must be between 0 and 600 (in 100s of feet)", f)
+					}
+					altFeet := alt * 100
+					wp.DescendAltitude = &altFeet
 
 				} else {
 					return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
@@ -924,6 +958,10 @@ func parseWaypoints(str string) (WaypointArray, error) {
 
 		if wp.ProcedureTurn != nil && wp.ProcedureTurn.Type == PTUndefined {
 			return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
+		}
+
+		if wp.ClimbAltitude != nil && wp.DescendAltitude != nil {
+			return nil, fmt.Errorf("%s: cannot specify both /c and /d at the same waypoint", wp.Fix)
 		}
 
 		waypoints = append(waypoints, wp)

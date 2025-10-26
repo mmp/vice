@@ -2031,6 +2031,14 @@ func (nav *Nav) updateWaypoints(wxs wx.Sample, fp *av.FlightPlan, lg *log.Logger
 			nav.Speed.Restriction = &spd
 		}
 
+		if wp.ClimbAltitude != nil {
+			alt := float32(*wp.ClimbAltitude)
+			nav.AssignAltitude(alt, false)
+		} else if wp.DescendAltitude != nil {
+			alt := float32(*wp.DescendAltitude)
+			nav.AssignAltitude(alt, false)
+		}
+
 		if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Heading != nil {
 			// Controller-assigned heading
 			hdg := *nfa.Depart.Heading

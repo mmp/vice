@@ -6187,6 +6187,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 fixes before turning to the next fix, while they may turn early with fly-by fixes.</li>
               <li> <code>/ph</code><i>heading</i>: fly present heading (rounded to the nearest 5 degree increment) departing the fix.</li>
               <li> <code>/s</code><i>speed</i>: cross the fix at the given speed</li>
+              <li> <code>/c</code><i>altitude</i>: climb to the specified altitude (in 100s of feet, between 0 and 600) when passing the waypoint, as if the controller issued that instruction. Cannot be combined with <code>/d</code> at the same waypoint.</li>
+              <li> <code>/d</code><i>altitude</i>: descend to the specified altitude (in 100s of feet, between 0 and 600) when passing the waypoint, as if the controller issued that instruction. Cannot be combined with <code>/c</code> at the same waypoint.</li>
             </ul>
             <p>A number of specifiers are intended for ambient traffic that's not under the control for a human:</p>
             <ul>
