@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"os"
 	"slices"
 	"strings"
@@ -327,6 +328,9 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, s
 		return err
 	}
 
+	// Build grid once for all TRACONs
+	grid := buildGridFromGRIB2(records)
+
 	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
 	sem := make(chan struct{}, *nWorkers)
@@ -336,7 +340,13 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, s
 				sem <- struct{}{}
 				defer func() { <-sem }()
 
-				n, err := ingestHRRRForTracon(records, tracon, t, sb)
+				if *validateGrid {
+					if err := validateGridForTracon(grid, records, tracon); err != nil {
+						LogError("%s: grid validation failed: %v", tracon, err)
+					}
+				}
+
+				n, err := ingestHRRRForTracon(grid, records, tracon, t, sb)
 				if err == nil {
 					LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
 					atomic.AddInt64(&totalUploads, 1)
@@ -351,13 +361,12 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, s
 	return eg.Wait()
 }
 
-func ingestHRRRForTracon(records []*squall.GRIB2, tracon string, t time.Time, sb StorageBackend) (int64, error) {
-	sf, err := sampleFieldFromGRIB2(records, tracon, t)
+func ingestHRRRForTracon(grid *Grid, records []*squall.GRIB2, tracon string, t time.Time, sb StorageBackend) (int64, error) {
+	sf, err := sampleFieldFromGRIB2(grid, records, tracon, t)
 	if err != nil {
 		return 0, fmt.Errorf("%s-%s: GRIB2 parsing failed: %w", tracon, t.Format(time.RFC3339), err)
-	} else {
-		return uploadWeatherAtmos(sf, tracon, t, sb)
 	}
+	return uploadWeatherAtmos(sf, tracon, t, sb)
 }
 
 func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
@@ -416,15 +425,12 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	return filtered, nil
 }
 
-func sampleFieldFromGRIB2(records []*squall.GRIB2, tracon string, t time.Time) (*wx.AtmosByPoint, error) {
+func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t time.Time) (*wx.AtmosByPoint, error) {
 	tspec, ok := av.DB.TRACONs[tracon]
 	if !ok {
 		return nil, fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
 	}
 	center, radius := tspec.Center(), tspec.Radius
-	nmPerLongitude := math.NMPerLongitudeAt(center)
-
-	at := wx.MakeAtmosByPoint()
 
 	var arena []wx.AtmosSampleStack
 	allocStack := func() *wx.AtmosSampleStack {
@@ -436,87 +442,44 @@ func sampleFieldFromGRIB2(records []*squall.GRIB2, tracon string, t time.Time) (
 		return s
 	}
 
-	var totalPoints, filteredPoints, addedPoints int
+	at := wx.MakeAtmosByPoint()
+	processedPoints := 0
+	for ref := range grid.QueryCircle(center, radius) {
+		processedPoints++
 
-	const (
-		recUnsetType = iota
-		recUDirection
-		recVDirection
-		recTemperature
-		recDewpoint
-		recHeight
-	)
+		record := records[ref.RecordIdx]
+		value := record.Data[ref.PointIdx]
 
-	for _, record := range records {
-		var recType int
-		switch record.Parameter.ShortName() {
-		case "UGRD":
-			recType = recUDirection
-		case "VGRD":
-			recType = recVDirection
-		case "TMP":
-			recType = recTemperature
-		case "DPT":
-			recType = recDewpoint
-		case "HGT":
-			recType = recHeight
-		default:
-			return nil, errors.New("unexpected parameter: " + record.Parameter.ShortName())
-		}
-
-		// Get the level index (already validated during filtering)
+		// Get the level index (should already have been validated during filtering)
 		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
-
 		if levelIndex == -1 {
 			return nil, fmt.Errorf("GRIB2: param=%s, level=%q -> invalid levelIndex", record.Parameter.ShortName(), record.Level)
 		}
 
-		// Process each value in the record (squall uses parallel slices)
-		for i := range record.NumPoints {
-			totalPoints++
-			value := record.Data[i]
+		stack, ok := at.SampleStacks[ref.Location]
+		if !ok {
+			stack = allocStack()
+			at.SampleStacks[ref.Location] = stack
+		}
 
-			// Skip missing values
-			if value > 9e20 {
-				continue
-			}
-
-			lon := record.Longitudes[i]
-			if lon > 180 {
-				lon -= 360
-			}
-			pt := math.Point2LL{lon, record.Latitudes[i]}
-
-			// Check if point is within TRACON bounds
-			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d > radius {
-				filteredPoints++
-				continue
-			}
-
-			addedPoints++
-			stack, ok := at.SampleStacks[pt]
-			if !ok {
-				stack = allocStack()
-				at.SampleStacks[pt] = stack
-			}
-
-			switch recType {
-			case recUDirection:
-				stack.Levels[levelIndex].UComponent = value
-			case recVDirection:
-				stack.Levels[levelIndex].VComponent = value
-			case recTemperature:
-				stack.Levels[levelIndex].Temperature = value
-			case recDewpoint:
-				stack.Levels[levelIndex].Dewpoint = value
-			case recHeight:
-				stack.Levels[levelIndex].Height = value
-			}
+		switch record.Parameter.ShortName() {
+		case "UGRD":
+			stack.Levels[levelIndex].UComponent = value
+		case "VGRD":
+			stack.Levels[levelIndex].VComponent = value
+		case "TMP":
+			stack.Levels[levelIndex].Temperature = value
+		case "DPT":
+			stack.Levels[levelIndex].Dewpoint = value
+		case "HGT":
+			stack.Levels[levelIndex].Height = value
+		default:
+			return nil, errors.New("unexpected parameter: " + record.Parameter.ShortName())
 		}
 	}
 
-	LogInfo("GRIB2 %s-%s: processed %d records, %d total points, %d filtered by distance, %d added, %d unique locations",
-		tracon, t.Format(time.RFC3339), len(records), totalPoints, filteredPoints, addedPoints, len(at.SampleStacks))
+	LogInfo("GRIB2 %s-%s: processed %d points -> %d unique locations",
+		tracon, t.Format(time.RFC3339), processedPoints, len(at.SampleStacks))
 
 	return &at, nil
 }
@@ -539,4 +502,189 @@ func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st Stor
 	}
 
 	return st.StoreObject(path, soa)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Grid
+
+// GridCell represents a cell in the  grid using integer coordinates.
+type GridCell struct {
+	LatCell, LonCell int
+}
+
+// PointRef references a specific data point in the GRIB2 records.
+type PointRef struct {
+	RecordIdx int           // index in records slice
+	PointIdx  int           // index in record.Data slice
+	Location  math.Point2LL // cached location for quick access
+}
+
+// Grid divides the lat-lon space into uniform (w.r.t. degrees) cells.
+type Grid struct {
+	CellSize float32                 // cell size in degrees
+	Cells    map[GridCell][]PointRef // points in each cell
+}
+
+// NewGrid creates a new  grid with the specified cell size in degrees.
+// A cell size of 0.5° is approximately 30-35 nautical miles at mid-latitudes.
+func NewGrid(cellSize float32) *Grid {
+	return &Grid{
+		CellSize: cellSize,
+		Cells:    make(map[GridCell][]PointRef),
+	}
+}
+
+// cellForPoint returns the grid cell containing the given point.
+func (sg *Grid) cellForPoint(pt math.Point2LL) GridCell {
+	return GridCell{
+		LatCell: int(math.Floor(pt.Latitude() / sg.CellSize)),
+		LonCell: int(math.Floor(pt.Longitude() / sg.CellSize)),
+	}
+}
+
+// AddPoint adds a point reference to the  grid.
+func (sg *Grid) AddPoint(p math.Point2LL, recordIdx, pointIdx int) {
+	cell := sg.cellForPoint(p)
+	sg.Cells[cell] = append(sg.Cells[cell], PointRef{
+		RecordIdx: recordIdx,
+		PointIdx:  pointIdx,
+		Location:  p,
+	})
+}
+
+// QueryCircle returns an iterator over all points within radiusNM of center.
+// This performs a coarse grid-based filter followed by precise distance checking.
+// Panics if the query region spans the longitude wrap-around at ±180°.
+func (sg *Grid) QueryCircle(center math.Point2LL, radiusNM float32) iter.Seq[PointRef] {
+	// Convert radius from nautical miles to degrees for grid cell calculation
+	nmPerLongitude := math.NMPerLongitudeAt(center)
+	radiusDegLat := radiusNM / math.NMPerLatitude
+	radiusDegLon := radiusNM / nmPerLongitude
+
+	// Check for longitude wrap-around (±180°)
+	minLon := center.Longitude() - radiusDegLon
+	maxLon := center.Longitude() + radiusDegLon
+	if minLon < -180 || maxLon > 180 {
+		panic(fmt.Sprintf("QueryCircle: query region spans longitude boundary (center=%v, radius=%fnm, lon range=[%f, %f])",
+			center, radiusNM, minLon, maxLon))
+	}
+
+	// Compute bounding box in grid cells
+	centerCell := sg.cellForPoint(center)
+	cellRadiusLat := int(math.Ceil(radiusDegLat/sg.CellSize)) + 1 // +1 for safety margin
+	cellRadiusLon := int(math.Ceil(radiusDegLon/sg.CellSize)) + 1
+
+	return func(yield func(PointRef) bool) {
+		// Iterate over all grid cells that could contain points within radius
+		for latCell := centerCell.LatCell - cellRadiusLat; latCell <= centerCell.LatCell+cellRadiusLat; latCell++ {
+			for lonCell := centerCell.LonCell - cellRadiusLon; lonCell <= centerCell.LonCell+cellRadiusLon; lonCell++ {
+				cell := GridCell{LatCell: latCell, LonCell: lonCell}
+				if points, ok := sg.Cells[cell]; ok {
+					// Check each point in this cell
+					for _, ref := range points {
+						if d := math.NMDistance2LLFast(center, ref.Location, nmPerLongitude); d <= radiusNM {
+							if !yield(ref) {
+								return
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// PointCount returns the total number of points indexed in the grid.
+func (sg *Grid) PointCount() int {
+	total := 0
+	for _, points := range sg.Cells {
+		total += len(points)
+	}
+	return total
+}
+
+// buildGridFromGRIB2 constructs a  grid index from GRIB2 records.
+// This index can be reused across multiple TRACON queries.
+func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
+	grid := NewGrid(0.5) // 0.5 degrees ~ 30-35nm at mid-latitudes
+
+	for recIdx, record := range records {
+		for ptIdx := range record.NumPoints {
+			// Skip missing values
+			if squall.IsMissing(record.Data[ptIdx]) {
+				continue
+			}
+
+			lon := record.Longitudes[ptIdx]
+			if lon > 180 {
+				lon -= 360
+			}
+			pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
+
+			grid.AddPoint(pt, recIdx, ptIdx)
+		}
+	}
+
+	LogInfo("Built  grid: %d cells, %d points", len(grid.Cells), grid.PointCount())
+	return grid
+}
+
+// validateGridForTracon validates that QueryCircle returns exactly the
+// same points as an exhaustive search over all points in the records.
+func validateGridForTracon(grid *Grid, records []*squall.GRIB2, tracon string) error {
+	tspec, ok := av.DB.TRACONs[tracon]
+	if !ok {
+		return fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
+	}
+	center, radius := tspec.Center(), tspec.Radius
+	nmPerLongitude := math.NMPerLongitudeAt(center)
+
+	// Exhaustive approach: collect all points within radius
+	exhaustivePoints := make(map[PointRef]bool)
+	for recIdx, record := range records {
+		for ptIdx := range record.NumPoints {
+			if squall.IsMissing(record.Data[ptIdx]) {
+				continue
+			}
+
+			lon := record.Longitudes[ptIdx]
+			if lon > 180 {
+				lon -= 360
+			}
+			pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
+
+			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d <= radius {
+				exhaustivePoints[PointRef{RecordIdx: recIdx, PointIdx: ptIdx, Location: pt}] = true
+			}
+		}
+	}
+
+	// Grid approach: collect all points from QueryCircle
+	gridPoints := make(map[PointRef]bool)
+	for ref := range grid.QueryCircle(center, radius) {
+		gridPoints[ref] = true
+	}
+
+	// Compare the two sets
+	if len(exhaustivePoints) != len(gridPoints) {
+		return fmt.Errorf("%s: point count mismatch - exhaustive: %d, grid: %d",
+			tracon, len(exhaustivePoints), len(gridPoints))
+	}
+
+	// Check that all exhaustive points are in grid results
+	for pt := range exhaustivePoints {
+		if !gridPoints[pt] {
+			return fmt.Errorf("%s: exhaustive point missing from grid: %+v", tracon, pt)
+		}
+	}
+
+	// Check that all grid points are in exhaustive results
+	for pt := range gridPoints {
+		if !exhaustivePoints[pt] {
+			return fmt.Errorf("%s: grid point not in exhaustive results: %+v", tracon, pt)
+		}
+	}
+
+	LogInfo("%s: validation passed - %d points match exactly", tracon, len(exhaustivePoints))
+	return nil
 }
