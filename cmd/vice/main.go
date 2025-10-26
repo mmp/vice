@@ -480,7 +480,7 @@ func main() {
 				lg.Info("performance", "stats", stats)
 			}
 
-			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
+			if plat.ShouldStop() {
 				// Do this while we're still running the event loop.
 				saveSim := mgr.ClientIsLocal()
 				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
