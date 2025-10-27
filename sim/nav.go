@@ -1458,7 +1458,7 @@ func (nav *Nav) TargetAltitude(lg *log.Logger) (float32, float32) {
 				// Don't start the descent until (more or less) it's
 				// necessary. (But then go a little faster than we think we
 				// need to, to be safe.)
-				return c.Altitude, rate * 1.25
+				return c.Altitude, rate * 1.5
 			} else {
 				// Stay where we are for now.
 				return nav.FlightState.Altitude, 0
