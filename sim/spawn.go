@@ -1440,7 +1440,7 @@ func makeDepartureAircraft(ac *Aircraft, simTime time.Time, model *wx.Model, r *
 	d := DepartureAircraft{
 		ADSBCallsign:        ac.ADSBCallsign,
 		SpawnTime:           simTime,
-		ReadyDepartGateTime: simTime.Add(time.Duration(5+r.Intn(5)) * time.Minute),
+		ReadyDepartGateTime: simTime.Add(5 * time.Minute),
 	}
 
 	// Simulate out the takeoff roll and initial climb to figure out when
