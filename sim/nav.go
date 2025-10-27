@@ -896,8 +896,9 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, deltaKts floa
 		}
 
 		// Reduce descent rate as we approach target altitude
+		// BUT: Don't do this on final approach! Aircraft need to maintain glidepath to runway
 		altitudeRemaining := nav.FlightState.Altitude - targetAltitude
-		if altitudeRemaining < rateFadeAltDifference {
+		if altitudeRemaining < rateFadeAltDifference && !nav.Approach.PassedFAF {
 			descent *= max(altitudeRemaining/rateFadeAltDifference, 0.25)
 		}
 
@@ -905,6 +906,12 @@ func (nav *Nav) updateAltitude(targetAltitude, targetRate float32, deltaKts floa
 		maxRateChange := nav.Perf.Rate.Descent * rateMaxDeltaPercent
 		if nav.Altitude.Expedite {
 			maxRateChange *= 2
+		}
+
+		// After passing the FAF on approach, allow immediate descent rate changes
+		// to ensure aircraft can meet the runway altitude restriction
+		if nav.Approach.PassedFAF {
+			maxRateChange = math.Abs(-descent - nav.FlightState.AltitudeRate)
 		}
 
 		rateDiff := -descent - nav.FlightState.AltitudeRate
