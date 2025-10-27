@@ -598,15 +598,13 @@ func (s *Sim) spawnDepartures() {
 			if now.After(depState.NextIFRSpawn) {
 				if ac, err := s.makeNewIFRDeparture(airport, runway); ac != nil && err == nil {
 					s.addDepartureToPool(ac, runway, false /* not manual launch */)
-					r := scaleRate(depState.IFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-					depState.NextIFRSpawn = now.Add(randomWait(r, false, s.Rand))
+					depState.NextIFRSpawn = now.Add(randomWait(depState.IFRSpawnRate, false, s.Rand))
 				}
 			}
 			if now.After(depState.NextVFRSpawn) {
 				if ac, err := s.makeNewVFRDeparture(airport, runway); ac != nil && err == nil {
 					s.addDepartureToPool(ac, runway, false /* not manual launch */)
-					r := scaleRate(depState.VFRSpawnRate, s.State.LaunchConfig.DepartureRateScale)
-					depState.NextVFRSpawn = now.Add(randomWait(r, false, s.Rand))
+					depState.NextVFRSpawn = now.Add(randomWait(depState.VFRSpawnRate, false, s.Rand))
 				}
 			}
 		}
