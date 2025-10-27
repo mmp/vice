@@ -1792,6 +1792,27 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 		return *nav.Speed.Restriction, MaximumRate
 	}
 
+	// Regulatory requirement: slow to 250 kts when descending through 10,000 feet
+	// This must be checked BEFORE approach-cleared logic, as it's a hard speed limit
+	if nav.FlightState.Altitude >= 10000 && targetAltitude < 10000 && nav.FlightState.IAS > 250 {
+		// Consider slowing to 250; estimate how long until we'll reach 10k
+		dalt := nav.FlightState.Altitude - 10000
+		salt := dalt / (nav.Perf.Rate.Descent / 60) // seconds until we reach 10k
+
+		dspeed := nav.FlightState.IAS - 250
+		sspeed := dspeed / (nav.Perf.Rate.Decelerate / 2) // seconds to decelerate to 250
+
+		if salt <= sspeed {
+			// Time to slow down
+			return 250, MaximumRate
+		} else {
+			// Otherwise reduce in general but in any case don't speed up
+			// again.
+			ias, rate := nav.targetAltitudeIAS()
+			return min(ias, nav.FlightState.IAS), rate
+		}
+	}
+
 	// If fd != 0, we're flying an approach; absent controller speed
 	// restrictions (and inside 5 DME), maintain approach speed on final
 	// and only start transitioning to the landing reference speed in the
@@ -1816,25 +1837,6 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 		// Don't speed up if we're cleared and farther away
 		//lg.Debugf("speed: cleared approach but far away")
 		return nav.FlightState.IAS, MaximumRate
-	}
-
-	if nav.FlightState.Altitude >= 10000 && targetAltitude < 10000 && nav.FlightState.IAS > 250 {
-		// Consider slowing to 250; estimate how long until we'll reach 10k
-		dalt := nav.FlightState.Altitude - 10000
-		salt := dalt / (nav.Perf.Rate.Descent / 60) // seconds until we reach 10k
-
-		dspeed := nav.FlightState.IAS - 250
-		sspeed := dspeed / (nav.Perf.Rate.Decelerate / 2) // seconds to decelerate to 250
-
-		if salt <= sspeed {
-			// Time to slow down
-			return 250, MaximumRate
-		} else {
-			// Otherwise reduce in general but in any case don't speed up
-			// again.
-			ias, rate := nav.targetAltitudeIAS()
-			return min(ias, nav.FlightState.IAS), rate
-		}
 	}
 
 	// Nothing assigned by the controller or the route, so set a target
