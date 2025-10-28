@@ -679,7 +679,11 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 		if nav.Altitude.Cleared != nil {
 			alt = min(alt, *nav.Altitude.Cleared)
 		}
-		resp.Add("[at|] {alt} for {alt}", nav.FlightState.Altitude, alt)
+		if nav.FlightState.Altitude != alt {
+			resp.Add("[at|] {alt} for {alt}", nav.FlightState.Altitude, alt)
+		} else {
+			resp.Add("[at|] {alt}", nav.FlightState.Altitude)
+		}
 	} else {
 		resp.Add("[at|] {alt}", nav.FlightState.Altitude)
 	}
