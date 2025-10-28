@@ -785,7 +785,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			}
 
 			var heavySuper string
-			if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+			if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
 				if perf.WeightClass == "H" {
 					heavySuper = " heavy"
 				} else if perf.WeightClass == "J" {
