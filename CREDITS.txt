@@ -12,7 +12,7 @@ importantly:
 
 Many thanks also to:
 
-* inkyblackness for the Go bindings for imgui (github.com/inkyblackness/imgui-go)
+* @AllenDeng for the Go bindings for imgui (github.com/AllenDang/cimgui-go/imgui)
 * The go-gl team for Go bindings for OpenGL (github.com/go-gl/gl),
   glfw (github.com/go-gl/glfw), and for the mathgl matrix library
   (github.com/go-gl/mathgl).

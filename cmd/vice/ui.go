@@ -821,7 +821,7 @@ func (ns *NotifyTargetGenModalClient) Draw() int {
 // "about" dialog box
 
 func showAboutDialog() {
-	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings
+	flags := imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	imgui.BeginV("About vice...", &ui.showAboutDialog, flags)
 
 	imgui.Image(imgui.TextureID(ui.iconTextureID), imgui.Vec2{256, 256})
@@ -836,7 +836,7 @@ func showAboutDialog() {
 
 	imgui.PushFont(&ui.aboutFont.Ifont)
 	center("vice")
-	center(renderer.FontAwesomeIconCopyright + "2023 Matt Pharr")
+	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")
@@ -850,46 +850,17 @@ func showAboutDialog() {
 	imgui.Separator()
 
 	imgui.PushFont(&ui.aboutFontSmall.Ifont)
-	// We would very much like to use imgui.{Push,Pop}TextWrapPos()
-	// here, but for unclear reasons that makes the info window
-	// vertically maximized. So we hand-wrap the lines for the
-	// font we're using...
-	credits :=
-		`Additional credits:
-- Software Development: Xavier Caldwell,
-  Artem Dorofeev, Dennis Graiani, Ethan
-  Malimon, Neel P, Makoto Sakaguchi,
-  Michael Trokel, radarcontacto, Rick R,
-  Samuel Valencia, and Yi Zhang.
+	credits := `Additional credits:
+- Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse,
-  Adam Bolek, Brody Carty, Lucas Chan,
-  Aaron Flett, Ryan G, Thomas Halpin,
-  Jason Helkenberg, Trey Hensley, Austin
-  Jenkins, Ketan K, Mike K, Allison L,
-  Josh Lambert, Kayden Lambert, Mike LeGall,
-  Jonah Lefkoff, Jud Lopez, Ethan Malimon,
-  Jace Martin, Michael McConnell, Merry,
-  Yahya Nazimuddin, Justin Nguyen, Giovanni,
-  Andrew S, Logan S, Arya T, Nelson T,
-  Tyler Temerowski, Eli Thompson, Michael
-  Trokel, Samuel Valencia, Gavin Velicevic,
-  and Jackson Verdoorn.
-- Video maps: thanks to the ZAU, ZBW, ZDC,
-  ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
-  ZSE, and ZTL VATSIM ARTCCs and to the
-  FAA, from whence the original maps came.
-- Additionally: OpenScope for the aircraft
-  performance and airline databases,
-  ourairports.com for the airport database,
-  and for the FAA for being awesome about
-  providing the CIFP, MVA specifications,
-  and other useful aviation data digitally.
-- One more thing: see the file CREDITS.txt
-  in the vice source code distribution for
-  third-party software, fonts, sounds, etc.`
+- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Ethan Malimon, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
+- Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
+- One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
 
+	imgui.PushTextWrapPos()
 	imgui.Text(credits)
+	imgui.PopTextWrapPos()
 
 	imgui.PopFont()
 
