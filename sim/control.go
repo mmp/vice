@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"maps"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -1495,4 +1496,398 @@ func (s *Sim) processEnqueued() {
 			}
 			return true
 		})
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Aircraft command dispatch
+
+var ErrInvalidCommandSyntax = fmt.Errorf("invalid command syntax")
+
+type ControlCommandsResult struct {
+	RemainingInput string
+	Error          error
+}
+
+// RunAircraftControlCommands executes a space-separated string of control commands for an aircraft.
+// Returns the remaining unparsed input and any error that occurred.
+// This is the core command execution logic shared by the dispatcher and automated test code.
+func (s *Sim) RunAircraftControlCommands(tcp string, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
+	commands := strings.Fields(commandStr)
+
+	for i, command := range commands {
+		err := s.runOneControlCommand(tcp, callsign, command)
+		if err != nil {
+			return ControlCommandsResult{
+				RemainingInput: strings.Join(commands[i:], " "),
+				Error:          err,
+			}
+		}
+	}
+
+	return ControlCommandsResult{}
+}
+
+// runOneControlCommand executes a single control command for an aircraft.
+func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command string) error {
+	if len(command) == 0 {
+		return ErrInvalidCommandSyntax
+	}
+
+	// A###, C###, and D### all equivalently assign an altitude
+	if (command[0] == 'A' || command[0] == 'C' || command[0] == 'D') && len(command) > 1 && util.IsAllNumbers(command[1:]) {
+		alt, err := strconv.Atoi(command[1:])
+		if err != nil {
+			return err
+		}
+		if err := s.AssignAltitude(tcp, callsign, 100*alt, false); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	switch command[0] {
+	case 'A':
+		if command == "A" {
+			if err := s.AltitudeOurDiscretion(tcp, callsign); err != nil {
+				return err
+			}
+		} else {
+			components := strings.Split(command, "/")
+			if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+				return ErrInvalidCommandSyntax
+			}
+
+			fix := strings.ToUpper(components[0][1:])
+			approach := components[1][1:]
+			if err := s.AtFixCleared(tcp, callsign, fix, approach); err != nil {
+				return err
+			}
+		}
+
+	case 'C':
+		if command == "CAC" {
+			if err := s.CancelApproachClearance(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "CVS" {
+			if err := s.ClimbViaSID(tcp, callsign); err != nil {
+				return err
+			}
+		} else if len(command) > 4 && command[:3] == "CSI" && !util.IsAllNumbers(command[3:]) {
+			if err := s.ClearedApproach(tcp, callsign, command[3:], true); err != nil {
+				return err
+			}
+		} else if components := strings.Split(command, "/"); len(components) > 1 {
+			fix := components[0][1:]
+			var ar *av.AltitudeRestriction
+			speed := 0
+
+			for _, cmd := range components[1:] {
+				if len(cmd) == 0 {
+					return ErrInvalidCommandSyntax
+				}
+
+				var err error
+				if cmd[0] == 'A' && len(cmd) > 1 {
+					if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
+						return err
+					}
+					ar.Range[0] *= 100
+					ar.Range[1] *= 100
+				} else if cmd[0] == 'S' {
+					if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+						return err
+					}
+				} else {
+					return ErrInvalidCommandSyntax
+				}
+			}
+
+			if err := s.CrossFixAt(tcp, callsign, fix, ar, speed); err != nil {
+				return err
+			}
+		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
+			if err := s.ContactController(tcp, ACID(callsign), command[2:]); err != nil {
+				return err
+			}
+		} else if err := s.ClearedApproach(tcp, callsign, command[1:], false); err != nil {
+			return err
+		}
+
+	case 'D':
+		if command == "DVS" {
+			if err := s.DescendViaSTAR(tcp, callsign); err != nil {
+				return err
+			}
+		} else if components := strings.Split(command, "/"); len(components) > 1 && len(components[1]) > 1 {
+			fix := components[0][1:]
+
+			switch components[1][0] {
+			case 'D':
+				if err := s.DepartFixDirect(tcp, callsign, fix, components[1][1:]); err != nil {
+					return err
+				}
+			case 'H':
+				hdg, err := strconv.Atoi(components[1][1:])
+				if err != nil {
+					return err
+				}
+				if err := s.DepartFixHeading(tcp, callsign, fix, hdg); err != nil {
+					return err
+				}
+			default:
+				return ErrInvalidCommandSyntax
+			}
+		} else if len(command) >= 4 && len(command) <= 6 {
+			if err := s.DirectFix(tcp, callsign, command[1:]); err != nil {
+				return err
+			}
+		} else {
+			return ErrInvalidCommandSyntax
+		}
+
+	case 'E':
+		if command == "ED" {
+			if err := s.ExpediteDescent(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "EC" {
+			if err := s.ExpediteClimb(tcp, callsign); err != nil {
+				return err
+			}
+		} else if len(command) > 1 {
+			if err := s.ExpectApproach(tcp, callsign, command[1:]); err != nil {
+				return err
+			}
+		} else {
+			return ErrInvalidCommandSyntax
+		}
+
+	case 'F':
+		if command == "FC" {
+			if err := s.ContactTrackingController(tcp, ACID(callsign)); err != nil {
+				return err
+			}
+		} else {
+			return ErrInvalidCommandSyntax
+		}
+
+	case 'H':
+		if len(command) == 1 {
+			if err := s.AssignHeading(&HeadingArgs{
+				TCP:          tcp,
+				ADSBCallsign: callsign,
+				Present:      true,
+			}); err != nil {
+				return err
+			}
+		} else {
+			hdg, err := strconv.Atoi(command[1:])
+			if err != nil {
+				return err
+			}
+			if err := s.AssignHeading(&HeadingArgs{
+				TCP:          tcp,
+				ADSBCallsign: callsign,
+				Heading:      hdg,
+				Turn:         TurnClosest,
+			}); err != nil {
+				return err
+			}
+		}
+
+	case 'I':
+		if len(command) == 1 {
+			if err := s.InterceptLocalizer(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "ID" {
+			if err := s.Ident(tcp, callsign); err != nil {
+				return err
+			}
+		} else {
+			return ErrInvalidCommandSyntax
+		}
+
+	case 'L':
+		if l := len(command); l > 2 && command[l-1] == 'D' {
+			deg, err := strconv.Atoi(command[1 : l-1])
+			if err != nil {
+				return err
+			}
+			if err := s.AssignHeading(&HeadingArgs{
+				TCP:          tcp,
+				ADSBCallsign: callsign,
+				LeftDegrees:  deg,
+			}); err != nil {
+				return err
+			}
+		} else {
+			hdg, err := strconv.Atoi(command[1:])
+			if err != nil {
+				return err
+			}
+			if err := s.AssignHeading(&HeadingArgs{
+				TCP:          tcp,
+				ADSBCallsign: callsign,
+				Heading:      hdg,
+				Turn:         TurnLeft,
+			}); err != nil {
+				return err
+			}
+		}
+
+	case 'R':
+		if command == "RON" {
+			if err := s.ResumeOwnNavigation(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "RST" {
+			if err := s.RadarServicesTerminated(tcp, callsign); err != nil {
+				return err
+			}
+		} else if l := len(command); l > 2 && command[l-1] == 'D' {
+			deg, err := strconv.Atoi(command[1 : l-1])
+			if err != nil {
+				return err
+			}
+			if err := s.AssignHeading(&HeadingArgs{
+				TCP:          tcp,
+				ADSBCallsign: callsign,
+				RightDegrees: deg,
+			}); err != nil {
+				return err
+			}
+		} else {
+			hdg, err := strconv.Atoi(command[1:])
+			if err != nil {
+				return err
+			}
+			if err := s.AssignHeading(&HeadingArgs{
+				TCP:          tcp,
+				ADSBCallsign: callsign,
+				Heading:      hdg,
+				Turn:         TurnRight,
+			}); err != nil {
+				return err
+			}
+		}
+
+	case 'S':
+		if len(command) == 1 {
+			if err := s.AssignSpeed(tcp, callsign, 0, false); err != nil {
+				return err
+			}
+		} else if command == "SMIN" {
+			if err := s.MaintainSlowestPractical(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "SMAX" {
+			if err := s.MaintainMaximumForward(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "SS" {
+			if err := s.SaySpeed(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "SQS" {
+			if err := s.ChangeTransponderMode(tcp, callsign, av.TransponderModeStandby); err != nil {
+				return err
+			}
+		} else if command == "SQA" {
+			if err := s.ChangeTransponderMode(tcp, callsign, av.TransponderModeAltitude); err != nil {
+				return err
+			}
+		} else if command == "SQON" {
+			if err := s.ChangeTransponderMode(tcp, callsign, av.TransponderModeOn); err != nil {
+				return err
+			}
+		} else if len(command) == 6 && command[:2] == "SQ" {
+			sq, err := av.ParseSquawk(command[2:])
+			if err != nil {
+				return err
+			}
+			if err := s.ChangeSquawk(tcp, callsign, sq); err != nil {
+				return err
+			}
+		} else if command == "SH" {
+			if err := s.SayHeading(tcp, callsign); err != nil {
+				return err
+			}
+		} else if command == "SA" {
+			if err := s.SayAltitude(tcp, callsign); err != nil {
+				return err
+			}
+		} else {
+			kts, err := strconv.Atoi(command[1:])
+			if err != nil {
+				return err
+			}
+			if err := s.AssignSpeed(tcp, callsign, kts, false); err != nil {
+				return err
+			}
+		}
+
+	case 'T':
+		if command == "TO" {
+			if err := s.ContactTower(tcp, callsign); err != nil {
+				return err
+			}
+		} else if n := len(command); n > 2 {
+			if deg, err := strconv.Atoi(command[1 : n-1]); err == nil {
+				if command[n-1] == 'L' {
+					if err := s.AssignHeading(&HeadingArgs{
+						TCP:          tcp,
+						ADSBCallsign: callsign,
+						LeftDegrees:  deg,
+					}); err != nil {
+						return err
+					}
+					return nil
+				} else if command[n-1] == 'R' {
+					if err := s.AssignHeading(&HeadingArgs{
+						TCP:          tcp,
+						ADSBCallsign: callsign,
+						RightDegrees: deg,
+					}); err != nil {
+						return err
+					}
+					return nil
+				}
+			}
+
+			switch command[:2] {
+			case "TS":
+				kts, err := strconv.Atoi(command[2:])
+				if err != nil {
+					return err
+				}
+				if err := s.AssignSpeed(tcp, callsign, kts, true); err != nil {
+					return err
+				}
+
+			case "TA", "TC", "TD":
+				alt, err := strconv.Atoi(command[2:])
+				if err != nil {
+					return err
+				}
+				if err := s.AssignAltitude(tcp, callsign, 100*alt, true); err != nil {
+					return err
+				}
+
+			default:
+				return ErrInvalidCommandSyntax
+			}
+		} else {
+			return ErrInvalidCommandSyntax
+		}
+
+	case 'X':
+		s.DeleteAircraft(tcp, callsign)
+
+	default:
+		return ErrInvalidCommandSyntax
+	}
+
+	return nil
 }
