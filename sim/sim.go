@@ -469,6 +469,10 @@ func (s *Sim) signOn(tcp string, instructor bool, disableTextToSpeech bool) erro
 	s.State.Controllers[tcp] = s.SignOnPositions[tcp]
 	s.State.HumanControllers = append(s.State.HumanControllers, tcp)
 
+	if instructor {
+		s.Instructors[tcp] = true
+	}
+
 	if tcp == s.State.PrimaryController {
 		// The primary controller signed in so the sim will resume.
 		// Reset lastUpdateTime so that the next time Update() is
