@@ -361,6 +361,9 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 
 	ac.Nav.Check(s.lg)
 
+	// Log initial route for navigation debugging
+	LogRoute(string(ac.ADSBCallsign), s.State.SimTime, ac.Nav.Waypoints)
+
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
 		s.State.TotalIFR++
 	} else {

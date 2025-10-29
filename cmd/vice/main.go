@@ -54,6 +54,9 @@ var (
 	listMaps          = flag.String("listmaps", "", "path to a video map file to list maps of (e.g., resources/videomaps/ZNY-videomaps.gob.zst)")
 	listScenarios     = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
 	runSim            = flag.String("runsim", "", "run specified scenario for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	navLog            = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories  = flag.String("navlog-categories", "all", "navigation log categories (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
+	navLogCallsign    = flag.String("navlog-callsign", "", "filter navigation logs to only show this callsign (empty = show all)")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -199,6 +202,9 @@ func main() {
 
 		fmt.Printf("Running scenario: %s\n", *runSim)
 
+		// Initialize navigation logging if requested
+		sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
 		newSimConfig, err := server.CreateNewSimConfiguration(config, scenarioGroup, scenarioName)
 		if err != nil {
 			lg.Errorf("Failed to create simulation configuration: %v", err)
@@ -239,6 +245,10 @@ func main() {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
 		cliInit()
+
+		// Initialize navigation logging if requested
+		sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
 		server.LaunchServer(server.ServerLaunchConfig{
 			Port:          *serverPort,
 			ExtraScenario: *scenarioFilename,
@@ -305,6 +315,9 @@ func main() {
 		}
 
 		av.InitDB()
+
+		// Initialize navigation logging if requested
+		sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
 		// After we have plat and render
 		if configErr != nil {

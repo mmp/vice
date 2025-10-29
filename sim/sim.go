@@ -1502,7 +1502,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 
 	var alt *RadioTransmission
 	// Get the aircraft's target altitude from the navigation system
-	targetAlt, _ := ac.Nav.TargetAltitude(nil)
+	targetAlt, _ := ac.Nav.TargetAltitude()
 	currentAlt := ac.Altitude()
 
 	// Check if we're in a climb or descent (more than 100 feet difference)

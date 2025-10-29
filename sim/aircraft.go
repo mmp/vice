@@ -110,7 +110,7 @@ func (ac *Aircraft) Update(model *wx.Model, simTime time.Time, bravo *av.Airspac
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)))
 	}
 
-	passedWaypoint := ac.Nav.Update(model, &ac.FlightPlan, simTime, bravo, lg)
+	passedWaypoint := ac.Nav.Update(string(ac.ADSBCallsign), model, &ac.FlightPlan, simTime, bravo)
 	if passedWaypoint != nil {
 		lg.Debug("passed", slog.Any("waypoint", passedWaypoint))
 	}
@@ -214,11 +214,11 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) *RadioTransmission {
 }
 
 func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) (*RadioTransmission, error) {
-	return ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false, lg)
+	return ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string, lg *log.Logger) (*RadioTransmission, error) {
-	return ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true, lg)
+	return ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
 }
 
 func (ac *Aircraft) CancelApproachClearance() *RadioTransmission {
