@@ -2521,7 +2521,7 @@
     }
   },
   "default_scenario": "CHP - BWI North",
-  "name": "BWI",
+  "name": "Chesapeake Area",
   "primary_airport": "KBWI",
   "scenarios": {
     "CHP - BWI West": {

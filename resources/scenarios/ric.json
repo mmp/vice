@@ -1220,7 +1220,7 @@
     }
   },
   "default_scenario": "JRV - RIC North",
-  "name": "JRV",
+  "name": "James River Area",
   "primary_airport": "KRIC",
   "scenarios": {
     "JRV - RIC North": {

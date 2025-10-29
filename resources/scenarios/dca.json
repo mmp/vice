@@ -4477,7 +4477,7 @@
     "BWI": "BAL",
     "ALWYZ": "N38.59.00.660,W77.39.16.540"
   },
-  "name": "KDCA",
+  "name": "Mount Vernon Area",
   "primary_airport": "KDCA",
   "reporting_points": ["CAPSS", "HOYAS", "BAL", "EYESS", "DEALE", "SEPII", "FORGT", "TRUPS", "OOURR", "DFORT"],
   "scenarios": {

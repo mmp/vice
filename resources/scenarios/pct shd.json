@@ -6781,7 +6781,7 @@
     }
   },
   "default_scenario": "SHD - IAD North with 30",
-  "name": "SHD",
+  "name": "Shenandoah Area",
   "primary_airport": "KIAD",
   "scenarios": {
     "SHD - IAD North with 30": {
