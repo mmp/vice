@@ -335,6 +335,60 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 	return s
 }
 
+func (s *Sim) ReplayScenario(commandSpecs string, durationSpec string, lg *log.Logger) error {
+	// Parse replay duration
+	var maxUpdates int
+	var untilCallsign av.ADSBCallsign
+	if strings.HasPrefix(durationSpec, "until:") {
+		untilCallsign = av.ADSBCallsign(strings.TrimPrefix(durationSpec, "until:"))
+		maxUpdates = 7200 // 2 hours max
+		fmt.Printf("Running until aircraft %s completes (max %d seconds)\n", untilCallsign, maxUpdates)
+	} else {
+		var err error
+		maxUpdates, err = strconv.Atoi(durationSpec)
+		if err != nil {
+			return fmt.Errorf("invalid replay duration: %s", durationSpec)
+		}
+		fmt.Printf("Running for %d seconds\n", maxUpdates)
+	}
+
+	// Activate the sim to initialize eventStream and other runtime state
+	s.Activate(lg, nil, nil)
+
+	// Sign on as primary controller + instructor
+	tcp := s.State.PrimaryController
+	_, err := s.SignOn(tcp, true, false) // Sign on as instructor
+	if err != nil {
+		return fmt.Errorf("failed to sign on as controller %s: %w", tcp, err)
+	}
+
+	fmt.Printf("Signed on as instructor: %s\n", tcp)
+	fmt.Printf("Starting simulation with %d aircraft\n", len(s.Aircraft))
+
+	// Run simulation
+	startTime := time.Now()
+
+	for i := range maxUpdates {
+		s.Step(time.Second)
+
+		// Check if target aircraft completed
+		if untilCallsign != "" {
+			if _, exists := s.Aircraft[untilCallsign]; !exists {
+				fmt.Printf("Aircraft %s completed at %d seconds\n", untilCallsign, i+1)
+				break
+			}
+		}
+	}
+
+	elapsed := time.Since(startTime)
+	fmt.Printf("\nSimulation complete:\n")
+	fmt.Printf("  Duration: %d seconds simulated in %.2f seconds (%.1fx real-time)\n",
+		min(maxUpdates, len(s.Aircraft)), elapsed.Seconds(), float64(min(maxUpdates, len(s.Aircraft)))/elapsed.Seconds())
+	fmt.Printf("  Final aircraft count: %d\n", len(s.Aircraft))
+
+	return nil
+}
+
 func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Provider) {
 	s.lg = lg
 
@@ -468,10 +522,6 @@ func (s *Sim) signOn(tcp string, instructor bool, disableTextToSpeech bool) erro
 	}
 	s.State.Controllers[tcp] = s.SignOnPositions[tcp]
 	s.State.HumanControllers = append(s.State.HumanControllers, tcp)
-
-	if instructor {
-		s.Instructors[tcp] = true
-	}
 
 	if tcp == s.State.PrimaryController {
 		// The primary controller signed in so the sim will resume.

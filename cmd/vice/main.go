@@ -57,6 +57,8 @@ var (
 	navLog            = flag.Bool("navlog", false, "enable navigation logging")
 	navLogCategories  = flag.String("navlog-categories", "all", "navigation log categories (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
 	navLogCallsign    = flag.String("navlog-callsign", "", "filter navigation logs to only show this callsign (empty = show all)")
+	replayMode        = flag.Bool("replay", false, "replay scenario from saved config")
+	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -78,6 +80,27 @@ func init() {
 	// run on different hardware threads over the course of
 	// execution. Therefore, we must lock the main thread at startup time.
 	runtime.LockOSThread()
+}
+
+func replayScenario(lg *log.Logger) {
+	// Initialize navigation logging
+	sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
+	config, err := LoadOrMakeDefaultConfig(lg)
+	if err != nil {
+		lg.Errorf("Error loading config: %v", err)
+		os.Exit(1)
+	}
+
+	if config.Sim == nil {
+		lg.Errorf("No saved simulation found in config. Please configure a scenario in the UI first.")
+		os.Exit(1)
+	}
+
+	if err := config.Sim.ReplayScenario("", *replayDuration, lg); err != nil {
+		lg.Errorf("Scenario replay failed: %v", err)
+		os.Exit(1)
+	}
 }
 
 func main() {
@@ -241,6 +264,9 @@ func main() {
 		elapsed := time.Since(startTime)
 		fmt.Printf("Simulation complete: %d updates in %.2f seconds (%.1fx real-time)\n",
 			totalUpdates, elapsed.Seconds(), totalUpdates/elapsed.Seconds())
+	} else if *replayMode {
+		cliInit()
+		replayScenario(lg)
 	} else if *broadcastMessage != "" {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
