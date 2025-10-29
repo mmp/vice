@@ -1111,15 +1111,58 @@
           "airlines": {
             "KLAX": [
               {
-                "icao": "SWA",
+                "icao": "QFA",
+                "fleet": "lax",
+                "airport": "YSSY"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "FJI",
+                "fleet": "a359",
+                "airport": "NFFN"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "long",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "PHLI"
+              },
+              {
+                "icao": "ANZ",
+                "fleet": "long",
+                "airport": "NZAA"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "long",
+                "airport": "NZAA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b3xm",
                 "airport": "PHKO"
               },
               {
                 "icao": "SWA",
+                "fleet": "etops",
+                "airport": "PHKO"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "etops",
                 "airport": "PHTO"
               },
               {
                 "icao": "AAL",
+                "fleet": "a321",
                 "airport": "PHNL"
               },
               {
@@ -1134,22 +1177,13 @@
               },
               {
                 "icao": "UAL",
+                "fleet": "b3xm",
                 "airport": "PHKO"
               },
               {
                 "icao": "AFR",
                 "fleet": "long",
                 "airport": "NTAA"
-              },
-              {
-                "icao": "ANZ",
-                "fleet": "long",
-                "airport": "NZAA"
-              },
-              {
-                "icao": "FJI",
-                "fleet": "a359",
-                "airport": "NFFN"
               },
               {
                 "icao": "THT",
@@ -1300,15 +1334,58 @@
           "airlines": {
             "KLAX": [
               {
-                "icao": "SWA",
+                "icao": "QFA",
+                "fleet": "lax",
+                "airport": "YSSY"
+              },
+              {
+                "icao": "DAL",
+                "fleet": "b763",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "FJI",
+                "fleet": "a359",
+                "airport": "NFFN"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "long",
+                "airport": "PHNL"
+              },
+              {
+                "icao": "HAL",
+                "fleet": "A21N",
+                "airport": "PHLI"
+              },
+              {
+                "icao": "ANZ",
+                "fleet": "long",
+                "airport": "NZAA"
+              },
+              {
+                "icao": "AAL",
+                "fleet": "long",
+                "airport": "NZAA"
+              },
+              {
+                "icao": "UAL",
+                "fleet": "b3xm",
                 "airport": "PHKO"
               },
               {
                 "icao": "SWA",
+                "fleet": "etops",
+                "airport": "PHKO"
+              },
+              {
+                "icao": "SWA",
+                "fleet": "etops",
                 "airport": "PHTO"
               },
               {
                 "icao": "AAL",
+                "fleet": "a321",
                 "airport": "PHNL"
               },
               {
@@ -1323,22 +1400,13 @@
               },
               {
                 "icao": "UAL",
+                "fleet": "b3xm",
                 "airport": "PHKO"
               },
               {
                 "icao": "AFR",
                 "fleet": "long",
                 "airport": "NTAA"
-              },
-              {
-                "icao": "ANZ",
-                "fleet": "long",
-                "airport": "NZAA"
-              },
-              {
-                "icao": "FJI",
-                "fleet": "a359",
-                "airport": "NFFN"
               },
               {
                 "icao": "THT",
@@ -3023,6 +3091,16 @@
       "radio_name": "SoCal Approach",
       "sector_id": "4Y"
     },
+    "SNA_B_APP": {
+      "frequency": 125350,
+      "radio_name": "SoCal Approach",
+      "sector_id": "4B"
+    },
+    "SNA_R_APP": {
+      "frequency": 127200,
+      "radio_name": "SoCal Approach",
+      "sector_id": "4R"
+    },
     "SNA_T_APP": {
       "frequency": 121300,
       "radio_name": "SoCal Approach",
@@ -3032,6 +3110,21 @@
       "frequency": 127000,
       "radio_name": "SoCal Approach",
       "sector_id": "3N"
+    },
+    "ONT_P_APP": {
+      "frequency": 125500,
+      "radio_name": "SoCal Approach",
+      "sector_id": "3P"
+    },
+    "ONT_V_APP": {
+      "frequency": 134000,
+      "radio_name": "SoCal Approach",
+      "sector_id": "3V"
+    },
+    "ONT_I_APP": {
+      "frequency": 135400,
+      "radio_name": "SoCal Approach",
+      "sector_id": "3I"
     },
     "LAX_04_CTR": {
       "frequency": 125800,
@@ -3093,7 +3186,7 @@
     "_LAX": "33.942501,-118.407997",
     "_HHR": "N033.55.22.787,W118.20.05.886"
   },
-  "name": "KLAX",
+  "name": "Los Angeles Area",
   "primary_airport": "KLAX",
   "scenarios": {
     "LAX - East Flow": {
@@ -3171,7 +3264,8 @@
       ],
       "default_maps": ["201S LAAB LE SCT"],
       "wind": {
-        "direction": "35-95"
+        "direction": "30-120",
+        "speed": "10+"
       }
     },
     "LAX - West Flow": {
@@ -3254,7 +3348,8 @@
       ],
       "default_maps": ["200S LAAB LW SCT"],
       "wind": {
-        "direction": "215-275"
+        "direction": "200-360",
+        "speed": "10+"
       }
     },
     "LAX - Over Ocean Flow": {
@@ -3325,7 +3420,8 @@
       ],
       "default_maps": ["202S LAAB LO SCT"],
       "wind": {
-        "direction": "30-90"
+        "direction": "60-239",
+        "speed": "7+"
       }
     },
     "LAX - Over Ocean Final": {
@@ -3380,7 +3476,8 @@
       ],
       "default_maps": ["202S LAAB LO SCT"],
       "wind": {
-        "direction": "30-90"
+        "direction": "60-239",
+        "speed": "7+"
       }
     },
     "LAX - West Final": {
@@ -3450,7 +3547,8 @@
       ],
       "default_maps": ["200S LAAB LW SCT"],
       "wind": {
-        "direction": "215-275"
+        "direction": "200-360",
+        "speed": "10+"
       }
     },
     "LAX - East Final": {
@@ -3519,7 +3617,8 @@
       ],
       "default_maps": ["201S LAAB LE SCT"],
       "wind": {
-        "direction": "35-95"
+        "direction": "30-120",
+        "speed": "10+"
       }
     }
   },

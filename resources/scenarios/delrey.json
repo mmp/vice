@@ -3068,7 +3068,7 @@
         }
       ]
     },
-    "LEGOZ3": {
+    "LEGOZ4": {
       "overflights": [
         {
           "airlines": [
@@ -3870,7 +3870,7 @@
     "_LAX": "33.942501,-118.407997",
     "_HHR": "N033.55.22.787,W118.20.05.886"
   },
-  "name": "Del Rey",
+  "name": "Del Rey Area",
   "primary_airport": "KLAX",
   "scenarios": {
     "Del Rey - LAE/SNAS": {
@@ -3907,7 +3907,7 @@
         "TOPMM5": {
           "overflights": 4
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "overflights": 4
         }
       },
@@ -3919,7 +3919,7 @@
           "LAX_X_DEP": { "backup": "LAX_S_DEP", "inbound_flows": ["TOPMM5", "ZOOMM3/FRITR3.N"] },
           "LAX_K_DEP": {
             "backup": "LAX_X_DEP",
-            "inbound_flows": ["RUKKI1/BAUBB3.12", "OHSEA3/PCIFC3.12", "KARLB3/GOATZ2.E", "OLAAA2.E", "LEGOZ3"]
+            "inbound_flows": ["RUKKI1/BAUBB3.12", "OHSEA3/PCIFC3.12", "KARLB3/GOATZ2.E", "OLAAA2.E", "LEGOZ4"]
           }
         }
       },
@@ -3929,11 +3929,6 @@
         "BUR_X_APP",
         "BUR_W_APP",
         "BUR_V_APP",
-        "LAX_N_DEP",
-        "LAX_S_DEP",
-        "LAX_X_DEP",
-        "LAX_K_DEP",
-        "LAX_L_DEP",
         "LAX_D_APP",
         "LAX_F_APP",
         "LAX_U_APP",
@@ -3984,7 +3979,8 @@
         }
       ],
       "wind": {
-        "direction": "35-95"
+        "direction": "100-140",
+        "speed": "10+"
       }
     },
     "Del Rey - LAE/SNAN": {
@@ -4021,7 +4017,7 @@
         "TOPMM5": {
           "overflights": 4
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "overflights": 4
         }
       },
@@ -4033,7 +4029,7 @@
           "LAX_X_DEP": { "backup": "LAX_S_DEP", "inbound_flows": ["TOPMM5", "ZOOMM3/FRITR3.N"] },
           "LAX_K_DEP": {
             "backup": "LAX_X_DEP",
-            "inbound_flows": ["RUKKI1/BAUBB3.N", "OHSEA3/PCIFC3.N", "KARLB3/GOATZ2.E", "OLAAA2.E", "LEGOZ3"]
+            "inbound_flows": ["RUKKI1/BAUBB3.N", "OHSEA3/PCIFC3.N", "KARLB3/GOATZ2.E", "OLAAA2.E", "LEGOZ4"]
           }
         }
       },
@@ -4043,11 +4039,6 @@
         "BUR_X_APP",
         "BUR_W_APP",
         "BUR_V_APP",
-        "LAX_N_DEP",
-        "LAX_S_DEP",
-        "LAX_X_DEP",
-        "LAX_K_DEP",
-        "LAX_L_DEP",
         "LAX_D_APP",
         "LAX_F_APP",
         "LAX_U_APP",
@@ -4098,7 +4089,8 @@
         }
       ],
       "wind": {
-        "direction": "35-95"
+        "direction": "10-120",
+        "speed": "10+"
       }
     },
     "Del Rey - LAW/SNAS": {
@@ -4125,7 +4117,7 @@
         "ZOOMM3/FRITR3": {
           "overflights": 4
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "overflights": 4
         }
       },
@@ -4151,7 +4143,7 @@
           "LAX_X_DEP": { "backup": "LAX_S_DEP", "inbound_flows": ["ZOOMM3/FRITR3"] },
           "LAX_K_DEP": {
             "backup": "LAX_X_DEP",
-            "inbound_flows": ["OHSEA3/PCIFC3", "KARLB3/GOATZ2", "RUKKI1/BAUBB3", "LEGOZ3"]
+            "inbound_flows": ["OHSEA3/PCIFC3", "KARLB3/GOATZ2", "RUKKI1/BAUBB3", "LEGOZ4"]
           },
           "LAX_L_DEP": { "backup": "LAX_S_DEP", "departures": ["KHHR"] }
         }
@@ -4159,11 +4151,6 @@
       "controllers": [
         "BUR_M_APP",
         "BUR_V_APP",
-        "LAX_N_DEP",
-        "LAX_S_DEP",
-        "LAX_X_DEP",
-        "LAX_K_DEP",
-        "LAX_L_DEP",
         "LAX_D_APP",
         "LAX_F_APP",
         "LAX_U_APP",
@@ -4189,12 +4176,12 @@
       "departure_runways": [
         {
           "airport": "KLAX",
-          "rate": 30,
+          "rate": 25,
           "runway": "25R"
         },
         {
           "airport": "KLAX",
-          "rate": 30,
+          "rate": 25,
           "runway": "24L"
         },
         {
@@ -4224,7 +4211,8 @@
         }
       ],
       "wind": {
-        "direction": "215-275"
+        "direction": "220-290",
+        "speed": "10+"
       }
     },
     "Del Rey - LAW/SNAN": {
@@ -4254,7 +4242,7 @@
         "TOPMM5": {
           "overflights": 4
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "overflights": 4
         }
       },
@@ -4280,7 +4268,7 @@
           "LAX_X_DEP": { "backup": "LAX_S_DEP", "inbound_flows": ["ZOOMM3/FRITR3.N"] },
           "LAX_K_DEP": {
             "backup": "LAX_X_DEP",
-            "inbound_flows": ["OHSEA3/PCIFC3.N", "KARLB3/GOATZ2", "RUKKI1/BAUBB3.N", "LEGOZ3"]
+            "inbound_flows": ["OHSEA3/PCIFC3.N", "KARLB3/GOATZ2", "RUKKI1/BAUBB3.N", "LEGOZ4"]
           },
           "LAX_L_DEP": { "backup": "LAX_S_DEP", "departures": ["KHHR"], "inbound_flows": ["TOPMM5"] }
         }
@@ -4288,11 +4276,6 @@
       "controllers": [
         "BUR_M_APP",
         "BUR_V_APP",
-        "LAX_N_DEP",
-        "LAX_S_DEP",
-        "LAX_X_DEP",
-        "LAX_K_DEP",
-        "LAX_L_DEP",
         "LAX_D_APP",
         "LAX_F_APP",
         "LAX_U_APP",
@@ -4348,7 +4331,8 @@
         }
       ],
       "wind": {
-        "direction": "215-275"
+        "direction": "300-340",
+        "speed": "10+"
       }
     },
     "Del Rey - Over Ocean": {
@@ -4396,13 +4380,25 @@
         }
       ],
       "wind": {
-        "direction": "220-280"
+        "direction": "60-239",
+        "speed": "7+"
       }
     }
   },
   "stars_config": {
     "center": "N033.41.38.744,W118.21.53.717",
     "altimeters": ["KLAX", "KSMO", "KHHR", "KLGB"],
+    "controller_configs": {
+      "6S": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 13000,
+            "vertices": "N033.13.15.039,W118.29.36.159 N033.28.34.718,W118.46.45.221 N033.39.46.299,W118.46.10.834 N033.54.53.467,W118.57.12.897 N034.00.03.254,W118.56.32.111 N033.57.38.042,W118.37.41.096 N033.58.30.200,W118.22.22.474 N033.55.57.476,W118.19.28.478 N033.54.55.884,W118.18.36.622 N033.54.29.668,W118.17.11.423 N033.53.35.657,W118.14.46.074 N033.52.10.609,W118.12.10.700 N033.52.01.600,W118.15.02.087 N033.48.26.350,W118.20.40.411 N033.41.32.687,W118.20.22.091 N033.41.44.484,W118.22.57.795 N033.35.23.272,W118.21.31.607 N033.32.55.836,W118.19.43.282 N033.29.55.742,W118.12.24.598 N033.26.50.485,W118.07.28.159 N033.24.28.528,W118.07.38.322 N033.14.52.419,W118.14.59.313 N033.16.39.851,W118.25.14.410"
+          }
+        ]
+      }
+    },
     "coordination_fixes": {
       "ANJLL": [
         {

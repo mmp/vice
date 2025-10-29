@@ -2217,7 +2217,7 @@
     "_SNA_2L": "33.668238486375174,-117.87360497420696",
     "_BUR_8": "34.19795029665609,-118.36860365013969"
   },
-  "name": "KONT",
+  "name": "Empire Area",
   "primary_airport": "KONT",
   "scenarios": {
     "Empire - West/LAW": {
@@ -2384,7 +2384,8 @@
         }
       ],
       "wind": {
-        "direction": "230-290"
+        "direction": "200-350",
+        "speed": "10+"
       }
     },
     "Empire - West/LAE": {
@@ -2546,7 +2547,8 @@
         }
       ],
       "wind": {
-        "direction": "230-290"
+        "direction": "290-350",
+        "speed": "10+"
       }
     },
     "Springs - 31L": {
@@ -2577,7 +2579,8 @@
         }
       ],
       "wind": {
-        "direction": "230-290"
+        "direction": "290-350",
+        "speed": "10+"
       }
     },
     "Springs - 13R": {
@@ -2608,7 +2611,8 @@
         }
       ],
       "wind": {
-        "direction": "70-130"
+        "direction": "70-180",
+        "speed": "10+"
       }
     },
     "Empire - East/LAE": {
@@ -2777,7 +2781,8 @@
         }
       ],
       "wind": {
-        "direction": "360-60"
+        "direction": "30-150",
+        "speed": "10+"
       }
     },
     "Empire - East/LAW": {
@@ -2947,7 +2952,8 @@
         }
       ],
       "wind": {
-        "direction": "10-50"
+        "direction": "30-150",
+        "speed": "10+"
       }
     },
     "Empire - Over Ocean": {
@@ -3053,7 +3059,8 @@
         }
       ],
       "wind": {
-        "direction": "240-280"
+        "direction": "60-239",
+        "speed": "7+"
       }
     }
   },

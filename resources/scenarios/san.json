@@ -1825,12 +1825,12 @@
         }
       ]
     },
-    "LEGOZ3": {
+    "LEGOZ4": {
       "arrivals": [
         {
           "waypoints": "BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/h110/ho",
           "cruise_altitude": 24000,
-          "star": "LEGOZ3",
+          "star": "LEGOZ4",
           "initial_controller": "SNA_Y_APP",
           "initial_altitude": 13000,
           "initial_speed": 250,
@@ -1858,7 +1858,7 @@
         {
           "waypoints": "BRIKS/a13000- AVOLS/a11000/s250 PACIF/a5000/clearapp/ho",
           "cruise_altitude": 24000,
-          "star": "LEGOZ3",
+          "star": "LEGOZ4",
           "initial_controller": "SNA_Y_APP",
           "initial_altitude": 13000,
           "initial_speed": 250,
@@ -3497,7 +3497,7 @@
     }
   },
   "default_scenario": "San Diego - West",
-  "name": "KSAN",
+  "name": "San Diego Area",
   "primary_airport": "KSAN",
   "scenarios": {
     "San Diego - West": {
@@ -3555,7 +3555,7 @@
           "KCRQ": 2,
           "KMYF": 2
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "KCRQ": 3
         },
         "W291 NZY ARR": {
@@ -3579,7 +3579,7 @@
           "SAN_D_APP": {
             "backup": "SAN_E_APP",
             "departures": ["KCRQ"],
-            "arrivals": ["NORTH CRQ ARR", "LEGOZ3", "EAST SAT ARR"]
+            "arrivals": ["NORTH CRQ ARR", "LEGOZ4", "EAST SAT ARR"]
           },
           "SAN_M_APP": { "backup": "SAN_W_APP" }
         }
@@ -3629,7 +3629,8 @@
         }
       ],
       "wind": {
-        "direction": "240-300"
+        "direction": "210-350",
+        "speed": "10+"
       }
     },
     "San Diego - East": {
@@ -3674,7 +3675,7 @@
         "NORTH CRQ ARR": {
           "KCRQ": 3
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "KCRQ": 3
         },
         "W291 NZY ARR": {
@@ -3690,7 +3691,7 @@
           },
           "SAN_E_APP": { "departures": ["KSAN"], "backup": "SAN_W_APP", "arrivals": ["TOPGN2.IPL", "TOPGN2.MOMAR"] },
           "SAN_N_APP": { "backup": "SAN_W_APP", "arrivals": ["LAXX1/NORTH SAN ARR(E)"] },
-          "SAN_D_APP": { "backup": "SAN_W_APP", "arrivals": ["LEGOZ3", "EAST SAT ARR", "NORTH CRQ ARR"] },
+          "SAN_D_APP": { "backup": "SAN_W_APP", "arrivals": ["LEGOZ4", "EAST SAT ARR", "NORTH CRQ ARR"] },
           "SAN_Z_APP": { "backup": "SAN_W_APP", "departures": ["KNZY"], "inbound_flows": ["W291 NZY ARR"] },
           "SAN_M_APP": { "backup": "SAN_W_APP" }
         }
@@ -3729,7 +3730,8 @@
         }
       ],
       "wind": {
-        "direction": "60-120"
+        "direction": "30-150",
+        "speed": "10+"
       }
     },
     "San Diego - 9/27 (ODO)": {
@@ -3778,7 +3780,7 @@
         "NORTH CRQ ARR": {
           "KCRQ": 3
         },
-        "LEGOZ3": {
+        "LEGOZ4": {
           "KCRQ": 3
         },
         "W291 NZY ARR": {
@@ -3798,7 +3800,7 @@
             "arrivals": ["TOPGN2.IPL", "TOPGN2.MOMAR"]
           },
           "SAN_N_APP": { "backup": "SAN_W_APP", "arrivals": ["LAXX1/NORTH SAN ARR(E)"] },
-          "SAN_D_APP": { "backup": "SAN_W_APP", "arrivals": ["LEGOZ3", "EAST SAT ARR", "NORTH CRQ ARR"] },
+          "SAN_D_APP": { "backup": "SAN_W_APP", "arrivals": ["LEGOZ4", "EAST SAT ARR", "NORTH CRQ ARR"] },
           "SAN_Z_APP": {
             "backup": "SAN_W_APP",
             "departures": ["KSAN/ZZOOO4", "KNZY"],
@@ -3841,7 +3843,8 @@
         }
       ],
       "wind": {
-        "direction": "150-210"
+        "direction": "290-40",
+        "speed": "10+"
       }
     }
   },

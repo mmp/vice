@@ -13402,7 +13402,7 @@
     }
   },
   "default_scenario": "SCT - LAW SANW SNAS BUR8/15",
-  "name": "SCT",
+  "name": "SoCal Combined",
   "primary_airport": "KLAX",
   "scenarios": {
     "SCT - LAW SANW SNAS BUR8/15": {
@@ -13842,10 +13842,7 @@
           "rate": 1,
           "runway": "21"
         }
-      ],
-      "wind": {
-        "direction": "215-275"
-      }
+      ]
     },
     "SCT - LAE SANW SNAN BUR26/33": {
       "arrival_runways": [
@@ -14279,10 +14276,7 @@
           "rate": 1,
           "runway": "3"
         }
-      ],
-      "wind": {
-        "direction": "35-95"
-      }
+      ]
     },
     "SCT - Over Ocean": {
       "arrival_runways": [
@@ -14518,10 +14512,7 @@
           "rate": 0,
           "runway": "21"
         }
-      ],
-      "wind": {
-        "direction": "230-290"
-      }
+      ]
     }
   },
   "stars_config": {
