@@ -101,6 +101,9 @@ type Sim struct {
 	ttsVoices       []Voice
 	ttsVoicePool    []Voice
 	ttsVoicesFuture *TTSVoicesFuture
+
+	// Waypoint commands: commands to execute when aircraft pass specific fixes
+	waypointCommands map[string]map[string]string // tcp -> fix -> commands
 }
 
 type TTSProvider interface {
@@ -335,7 +338,34 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 	return s
 }
 
-func (s *Sim) ReplayScenario(commandSpecs string, durationSpec string, lg *log.Logger) error {
+func (s *Sim) SetWaypointCommands(tcp, commands string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if s.waypointCommands == nil {
+		s.waypointCommands = make(map[string]map[string]string)
+	}
+	delete(s.waypointCommands, tcp)
+	s.waypointCommands[tcp] = make(map[string]string)
+	if len(commands) != 0 {
+		s.Instructors[tcp] = true
+	}
+
+	for cmd := range strings.SplitSeq(commands, ",") {
+		cmd = strings.TrimSpace(cmd)
+		fix, cmds, ok := strings.Cut(cmd, ":")
+		if !ok {
+			return fmt.Errorf("missing ':' in waypoint command specifier %q", cmd)
+		}
+		if _, ok := av.DB.LookupWaypoint(fix); !ok {
+			return fmt.Errorf("%s: unknown fix", fix)
+		}
+		s.waypointCommands[tcp][fix] = cmds // TODO: validate the commands here (somehow)
+	}
+	return nil
+}
+
+func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *log.Logger) error {
 	// Parse replay duration
 	var maxUpdates int
 	var untilCallsign av.ADSBCallsign
@@ -361,6 +391,8 @@ func (s *Sim) ReplayScenario(commandSpecs string, durationSpec string, lg *log.L
 	if err != nil {
 		return fmt.Errorf("failed to sign on as controller %s: %w", tcp, err)
 	}
+
+	s.SetWaypointCommands(tcp, waypointCommands)
 
 	fmt.Printf("Signed on as instructor: %s\n", tcp)
 	fmt.Printf("Starting simulation with %d aircraft\n", len(s.Aircraft))
@@ -1259,6 +1291,29 @@ func (s *Sim) updateState() {
 			}
 
 			if passedWaypoint != nil {
+				for tcp, wpCommands := range s.waypointCommands {
+					if cmds, ok := wpCommands[passedWaypoint.Fix]; ok {
+						// Moderately hacky: the mutex is held when we get here, but then RunAircraftControlCommands
+						// will end up calling methods like Sim AssignAltitude that in turn need to acquire the mutex.
+						// So... we'll just unlock it for now and grab the lock again before we continue.
+						s.mu.Unlock(s.lg)
+
+						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
+						NavLog(string(callsign), s.State.SimTime, NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
+						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
+						result := s.RunAircraftControlCommands(tcp, callsign, cmds)
+						if result.Error != nil {
+							NavLog(string(callsign), s.State.SimTime, NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
+								result.RemainingInput)
+							s.lg.Errorf("Waypoint command execution failed: %v (remaining: %s)", result.Error, result.RemainingInput)
+						} else {
+							NavLog(string(callsign), s.State.SimTime, NavLogCommand, "aircraft=%s success", callsign)
+						}
+
+						s.mu.Lock(s.lg)
+					}
+				}
+
 				// Handoffs still happen for "unassociated" (to us) tracks
 				// when they're currently tracked by an external facility.
 				if passedWaypoint.HumanHandoff {

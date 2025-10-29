@@ -59,6 +59,7 @@ var (
 	navLogCallsign    = flag.String("navlog-callsign", "", "filter navigation logs to only show this callsign (empty = show all)")
 	replayMode        = flag.Bool("replay", false, "replay scenario from saved config")
 	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
+	waypointCommands  = flag.String("waypoint-commands", "", "waypoint commands in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -97,7 +98,7 @@ func replayScenario(lg *log.Logger) {
 		os.Exit(1)
 	}
 
-	if err := config.Sim.ReplayScenario("", *replayDuration, lg); err != nil {
+	if err := config.Sim.ReplayScenario(*waypointCommands, *replayDuration, lg); err != nil {
 		lg.Errorf("Scenario replay failed: %v", err)
 		os.Exit(1)
 	}
@@ -236,11 +237,16 @@ func main() {
 
 		s := sim.NewSim(*newSimConfig, nil /*manifest*/, lg)
 
-		state, err := s.SignOn(newSimConfig.PrimaryController, false, false)
+		// Sign on as instructor if waypoint commands are specified
+		instructor := *waypointCommands != ""
+		state, err := s.SignOn(newSimConfig.PrimaryController, instructor, false)
 		if err != nil {
 			lg.Errorf("Failed to sign in primary controller %s: %v", newSimConfig.PrimaryController, err)
 			os.Exit(1)
 		}
+
+		// Apply waypoint commands after signing on
+		s.SetWaypointCommands(newSimConfig.PrimaryController, *waypointCommands)
 
 		// Check launch configuration
 		fmt.Printf("Departure rates: %v\n", state.LaunchConfig.DepartureRates)
@@ -368,6 +374,11 @@ func main() {
 					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
 
 					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
+
+					// Apply waypoint commands if specified via command line (only for new clients)
+					if *waypointCommands != "" {
+						c.SetWaypointCommands(*waypointCommands)
+					}
 				}
 				uiResetControlClient(c, plat, lg)
 				controlClient = c
@@ -409,6 +420,10 @@ func main() {
 				panes.LoadedSim(config.DisplayRoot, client, client.State, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
+				// Apply waypoint commands if specified via command line
+				if *waypointCommands != "" {
+					client.SetWaypointCommands(*waypointCommands)
+				}
 			}
 		}
 

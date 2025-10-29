@@ -233,6 +233,13 @@ func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error
 	return err
 }
 
+func (c *ControlClient) SetWaypointCommands(commands string) {
+	c.addCall(makeRPCCall(c.client.Go(server.SetWaypointCommandsRPC, &server.SetWaypointCommandsArgs{
+		ControllerToken: c.controllerToken,
+		Commands:        commands,
+	}, nil, nil), nil))
+}
+
 func (c *ControlClient) CreateDeparture(airport, runway, category string, rules av.FlightRules, ac *sim.Aircraft,
 	callback func(error)) {
 	c.addCall(makeRPCCall(c.client.Go(server.CreateDepartureRPC, &server.CreateDepartureArgs{

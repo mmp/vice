@@ -602,6 +602,24 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	return nil
 }
 
+type SetWaypointCommandsArgs struct {
+	ControllerToken string
+	Commands        string
+}
+
+const SetWaypointCommandsRPC = "Sim.SetWaypointCommands"
+
+func (sd *dispatcher) SetWaypointCommands(args *SetWaypointCommandsArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	tcp, s, ok := sd.sm.LookupController(args.ControllerToken)
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+
+	return s.SetWaypointCommands(tcp, args.Commands)
+}
+
 type LaunchAircraftArgs struct {
 	ControllerToken string
 	Aircraft        sim.Aircraft
