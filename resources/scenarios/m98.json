@@ -10,6 +10,47 @@
         "30R": { "cifp_id": "I30R" },
         "I35": { "cifp_id": "IV35" }
       },
+      "approach_regions": {
+        "30L": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "near_half_width": 1.5,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 4,
+          "descent_altitude": 5300,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 500,
+          "reference_point": "N044.52.24.7,W093.12.04.4",
+          "reference_heading": 301,
+          "reference_length": 25,
+          "reference_altitude": 0
+        },
+        "35": {
+          "heading_tolerance": 90,
+          "near_distance": 5,
+          "near_half_width": 1.5,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 4,
+          "descent_altitude": 5300,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 500,
+          "reference_point": "N044.51.58.3,W093.14.12.0",
+          "reference_heading": 350,
+          "reference_length": 25,
+          "reference_altitude": 0
+        }
+      },
+      "converging_runways": [
+        {
+          "runways": ["30L", "35"],
+          "leader_directions": ["NE", "NW"],
+          "tie_symbol": "/",
+          "stagger_symbol": "0",
+          "tie_offset": 2.5
+        }
+      ],
       "departure_routes": {
         "12R": {
           "ONTIJ": {
@@ -593,7 +634,8 @@
     "MSP_H_APP": {
       "frequency": 135475,
       "radio_name": "Minneapolis Approach",
-      "sector_id": "1H"
+      "sector_id": "1H",
+      "default_airport": "KMSP"
     },
     "MSP_N_APP": {
       "frequency": 119300,
