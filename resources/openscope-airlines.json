@@ -12169,6 +12169,32 @@
     }
   },
   {
+    "icao": "bxr",
+    "name": "Redding Aero Enterprises",
+    "callsign": {
+      "name": "Boxer",
+      "callsignFormats": [
+        "###"
+      ]
+    },
+    "fleets": {
+      "default": [
+        [
+          "BE9L",
+          1
+        ],
+        [
+          "C208",
+          12
+        ],
+		[
+          "C402",
+          3
+        ]
+      ]
+    }
+  },
+  {
     "icao": "c",
     "name": "General Aviation Canada",
     "callsign": {

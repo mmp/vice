@@ -818,27 +818,27 @@
           "NTELL": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
+            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/flyover PORTE/a10000-/ho4Q UTOOB N037.16.58.721,W121.43.15.657/hoC11 N037.01.05.107,W120.27.04.877"
           },
           "KAYEX": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.08.46.506,W121.56.59.329/hoC11 KAYEX"
+            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/flyover PORTE/a10000-/ho4Q N037.08.46.506,W121.56.59.329/hoC11 KAYEX"
           },
           "KTINA": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.07.29.615,W122.02.28.864/hoC11 KTINA"
+            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/flyover PORTE/a10000-/ho4Q N037.07.29.615,W122.02.28.864/hoC11 KTINA"
           },
           "SUSEY": {
             "cleared_altitude": 19000,
             "sid": "SSTIK5",
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/s210/flyover PORTE/a10000-/ho4Q N037.05.50.134,W121.57.00.181/hoC11 SUSEY"
+            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SSTIK/flyover PORTE/a10000-/ho4Q N037.05.50.134,W121.57.00.181/hoC11 SUSEY"
           },
           "YYUNG": {
             "cleared_altitude": 19000,
             "sid": "SEGUL1",
-            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SEPDY/s210/flyover WAMMY/ho4Q SEGUL/a16000+/hoC14 CYPRS/a22000+ YYUNG"
+            "waypoints": "KSFO-19R N037.38.41.342,W122.21.37.265 SEPDY/flyover WAMMY/ho4Q SEGUL/a16000+/hoC14 CYPRS/a22000+ YYUNG"
           }
         },
         "1R": {
@@ -4405,26 +4405,6 @@
       "radio_name": "NorCal Departure",
       "sector_id": "4R"
     },
-    "SMF_P_APP": {
-      "frequency": 123700,
-      "radio_name": "NorCal Approach",
-      "sector_id": "5P"
-    },
-    "RNO_S_APP": {
-      "frequency": 119200,
-      "radio_name": "NorCal Approach",
-      "sector_id": "8S"
-    },
-    "SMF_E_APP": {
-      "frequency": 125400,
-      "radio_name": "NorCal Approach",
-      "sector_id": "5E"
-    },
-    "RNO_N_APP": {
-      "frequency": 126300,
-      "radio_name": "NorCal Approach",
-      "sector_id": "8N"
-    },
     "NFL_APP": {
       "frequency": 120850,
       "radio_name": "Navy Fallon Approach",
@@ -4615,11 +4595,19 @@
     }
   },
   "default_scenario": "Area B - SFOW (DEP 01s)",
-  "name": "KSFO",
+  "name": "NCT Area B",
   "primary_airport": "KSFO",
   "scenarios": {
     "Area B - SFOW (RWYS 28)": {
       "center": "KSFO",
+      "airspace": {
+        "SFO_G_APP": ["SFO_G_APP"],
+        "SFO_Z_APP": ["SFO_Z_APP (SFOW)"],
+        "SFO_N_APP": ["SFO_N_APP (SFOW)"],
+        "SFO_B_APP": ["SFO_B_APP (SFOW)"],
+        "SFO_F_APP": ["SFO_F_APP (SFOW)"],
+        "SFO_W_APP": ["SFO_W_APP (SFOW)"]
+      },
       "arrival_runways": [
         {
           "airport": "KSFO",
@@ -4712,9 +4700,12 @@
         "SFO_Q_DEP",
         "SFO_D_DEP",
         "SFO_F_DEP",
-        "SMF_P_APP",
+        "SJC_L_APP",
+        "SJC_S_APP",
         "SJC_T_DEP",
         "SJC_M_APP",
+        "SJC_L_APP",
+        "SJC_S_APP",
         "OAK_S_APP",
         "OAK_G_APP",
         "OAK_Y_APP",
@@ -4752,7 +4743,8 @@
         }
       ],
       "wind": {
-        "direction": "250-310"
+        "direction": "250-290",
+        "speed": "15+"
       }
     },
     "Area B - SFOW (DEP 01s)": {
@@ -4857,9 +4849,10 @@
         "SFO_Q_DEP",
         "SFO_D_DEP",
         "SFO_F_DEP",
-        "SMF_P_APP",
         "SJC_T_DEP",
         "SJC_M_APP",
+        "SJC_L_APP",
+        "SJC_S_APP",
         "OAK_S_APP",
         "OAK_G_APP",
         "OAK_Y_APP",
@@ -4907,7 +4900,8 @@
         }
       ],
       "wind": {
-        "direction": "280-340"
+        "direction": "250-340",
+        "speed": "10+"
       }
     },
     "Area B - SFOE": {
@@ -4992,9 +4986,10 @@
         "SFO_Q_DEP",
         "SFO_D_DEP",
         "SFO_F_DEP",
-        "SMF_P_APP",
         "SJC_T_DEP",
         "SJC_M_APP",
+        "SJC_L_APP",
+        "SJC_S_APP",
         "OAK_S_APP",
         "OAK_G_APP",
         "OAK_Y_APP",
@@ -5032,7 +5027,8 @@
         }
       ],
       "wind": {
-        "direction": "70-130"
+        "direction": "60-170",
+        "speed": "15+"
       }
     },
     "Area B - SFOE (RWYS 19/10)": {
@@ -5113,9 +5109,10 @@
         "SFO_Q_DEP",
         "SFO_D_DEP",
         "SFO_F_DEP",
-        "SMF_P_APP",
         "SJC_T_DEP",
         "SJC_M_APP",
+        "SJC_L_APP",
+        "SJC_S_APP",
         "OAK_S_APP",
         "OAK_G_APP",
         "OAK_Y_APP",
@@ -5153,7 +5150,8 @@
         }
       ],
       "wind": {
-        "direction": "115-175"
+        "direction": "60-170",
+        "speed": "15+"
       }
     }
   },
@@ -5368,27 +5366,9 @@
           "floor": 0,
           "ceiling": 27000
         }
-      ],
-      "secondary_drop": [
-        {
-          "id": "sdropCA",
-          "description": "drop region California",
-          "type": "polygon",
-          "vertices": "N037.49.14.415,W122.57.32.810 N038.23.23.585,W121.55.03.808 N038.35.28.147,W121.52.51.231 N039.01.42.763,W122.02.42.350 N039.24.57.985,W122.00.57.348 N039.38.36.426,W121.35.05.584 N039.37.45.875,W121.02.04.502 N037.53.18.243,W120.00.51.196 N037.52.43.499,W120.15.41.061 N037.04.10.350,W119.47.10.435 N037.02.50.768,W119.59.48.958 N036.56.37.906,W120.04.41.524 N036.34.33.902,W119.57.14.051 N036.37.38.459,W120.10.41.052 N036.10.20.700,W121.12.09.464 N036.01.55.493,W121.22.22.172 N035.55.27.813,W122.08.27.540 N036.07.04.772,W122.46.45.331 N036.51.34.546,W123.12.33.140 N037.13.56.856,W123.01.22.397",
-          "floor": 0,
-          "ceiling": 40000
-        },
-        {
-          "id": "sdropNV",
-          "description": "drop region Nevada",
-          "type": "polygon",
-          "vertices": "N038.50.19.084,W119.59.16.384 N039.06.22.708,W120.03.56.810 N039.26.37.178,W120.21.04.663 N039.54.52.822,W120.23.52.315 N040.18.39.671,W119.38.18.147 N039.49.36.924,W118.59.01.497 N039.11.09.987,W118.55.36.190 N038.49.08.579,W119.15.27.877 N038.41.25.876,W119.42.54.563",
-          "floor": 0,
-          "ceiling": 40000
-        }
       ]
     },
-    "coordination_lists": [{ "name": "SQL", "id": "22", "airports": ["KSQL"] }],
+    "coordination_lists": [{ "name": "San Carlos", "id": "22", "airports": ["KSQL"] }],
     "airspace_awareness": [
       {
         "fixes": ["NTELL", "KAYEX", "SUSEY", "KTINA", "JFREE", "VLREE", "TECKY"],

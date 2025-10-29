@@ -3084,6 +3084,87 @@
         {
           "airlines": [
             {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KSLC",
+          "route": "MOGEE Q124 SLOWN FLECC YUTES1",
+          "exit": "MOGEE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KSLC",
+          "route": "MOGEE Q124 SLOWN FLECC YUTES1",
+          "exit": "MOGEE.28RT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "altitude": 35000,
+          "destination": "KSLC",
+          "route": "MOGEE Q124 SLOWN FLECC YUTES1",
+          "exit": "MOGEE.28"
+        },
+        {
+          "airlines": [
+            {
               "icao": "JBU",
               "fleet": "long"
             },
@@ -4062,7 +4143,7 @@
     "BDEGA4.AD": {
       "overflights": [
         {
-          "waypoints": "BGGLO/a19000-23000/s280 N037.55.57.655,W122.40.56.625/ho2B LOZIT/a14000-16000/s280 BDEGA/a13000- CORKK/a11000/s250 BRIXX/a11000 N037.30.10.931,W122.18.05.284 N037.26.03.793,W122.08.43.937/a6000/s210 N037.28.57.515,W122.06.50.778/a4000 N037.31.31.543,W122.09.18.489 HEMAN/a3100 DUYET/a1800 KSFO-28L/a200/delete",
+          "waypoints": "BGGLO/a19000-23000/s280 N037.55.57.655,W122.40.56.625/ho2B LOZIT/a14000-16000/s280 BDEGA/a13000- CORKK/a11000/s250 BRIXX/a11000 N037.30.10.931,W122.18.05.284 N037.26.03.793,W122.08.43.937/a6000/s210/ho2W/ssspLFT N037.28.57.515,W122.06.50.778/a4000 N037.31.31.543,W122.09.18.489 HEMAN/a3100 DUYET/a1800 KSFO-28L/a200/delete",
           "initial_controller": "OAK_41_CTR",
           "initial_altitude": 19000,
           "initial_speed": 280,
@@ -6034,6 +6115,13 @@
       "scope_char": "A",
       "sector_id": "1A"
     },
+    "SUU_N_APP": {
+      "frequency": 126600,
+      "radio_name": "Travis Approach",
+      "facility_id": "1",
+      "scope_char": "N",
+      "sector_id": "1N"
+    },
     "SUU_S_APP": {
       "frequency": 119900,
       "radio_name": "Travis Approach",
@@ -6217,7 +6305,7 @@
     }
   },
   "default_scenario": "Area D - SFOW (L28/D01)",
-  "name": "NCTD",
+  "name": "NCT Area D",
   "primary_airport": "KSFO",
   "scenarios": {
     "Area D - SFOW (28/28 RT)": {
@@ -6332,7 +6420,8 @@
         }
       ],
       "wind": {
-        "direction": "250-310"
+        "direction": "250-290",
+        "speed": "15+"
       }
     },
     "Area D - SFOE": {
@@ -6438,7 +6527,8 @@
         }
       ],
       "wind": {
-        "direction": "70-130"
+        "direction": "60-170",
+        "speed": "15+"
       }
     },
     "Area D - SFOW (L28/D01)": {
@@ -6559,7 +6649,8 @@
         }
       ],
       "wind": {
-        "direction": "300-0"
+        "direction": "250-340",
+        "speed": "10+"
       }
     },
     "Area D - SFOW (28/28 SO)": {
@@ -6660,7 +6751,8 @@
         }
       ],
       "wind": {
-        "direction": "250-310"
+        "direction": "190-230",
+        "speed": "15+"
       }
     }
   },

@@ -6014,7 +6014,7 @@
     }
   },
   "default_scenario": "Area A - SFOW",
-  "name": "NCTA",
+  "name": "NCT Area A",
   "primary_airport": "KSJC",
   "scenarios": {
     "Area A - SFOW": {
@@ -6202,7 +6202,8 @@
         }
       ],
       "wind": {
-        "direction": "270-330"
+        "direction": "240-340",
+        "speed": "15+"
       }
     },
     "Area A - SJCE/SFOW": {
@@ -6376,7 +6377,8 @@
         }
       ],
       "wind": {
-        "direction": "90-150"
+        "direction": "180-220",
+        "speed": "10+"
       }
     },
     "Area A - SFOW/SJCE/OAKE": {
@@ -6540,7 +6542,8 @@
         }
       ],
       "wind": {
-        "direction": "90-150"
+        "direction": "180-240",
+        "speed": "18+"
       }
     },
     "Area A - SFOW/OAKE": {
@@ -6704,7 +6707,8 @@
         }
       ],
       "wind": {
-        "direction": "350-50"
+        "direction": "240-290",
+        "speed": "18+"
       }
     },
     "Area A - SFOE": {
@@ -6868,7 +6872,8 @@
         }
       ],
       "wind": {
-        "direction": "90-150"
+        "direction": "100-240",
+        "speed": "12+"
       }
     }
   },
@@ -7359,21 +7364,11 @@
           "floor": 0,
           "ceiling": 30000
         }
-      ],
-      "secondary_drop": [
-        {
-          "id": "sdropCA",
-          "description": "drop region California",
-          "type": "polygon",
-          "vertices": "N037.49.14.415,W122.57.32.810 N038.23.23.585,W121.55.03.808 N038.35.28.147,W121.52.51.231 N039.01.42.763,W122.02.42.350 N039.24.57.985,W122.00.57.348 N039.38.36.426,W121.35.05.584 N039.37.45.875,W121.02.04.502 N037.53.18.243,W120.00.51.196 N037.52.43.499,W120.15.41.061 N037.04.10.350,W119.47.10.435 N037.02.50.768,W119.59.48.958 N036.56.37.906,W120.04.41.524 N036.34.33.902,W119.57.14.051 N036.37.38.459,W120.10.41.052 N036.10.20.700,W121.12.09.464 N036.01.55.493,W121.22.22.172 N035.55.27.813,W122.08.27.540 N036.07.04.772,W122.46.45.331 N036.51.34.546,W123.12.33.140 N037.13.56.856,W123.01.22.397",
-          "floor": 0,
-          "ceiling": 40000
-        }
       ]
     },
     "coordination_lists": [
-      { "name": "PAO", "id": "P", "airports": ["KPAO"] },
-      { "name": "SNS", "id": "Y", "airports": ["KSNS"] }
+      { "name": "Palo Alto", "id": "P", "airports": ["KPAO"] },
+      { "name": "Salinas", "id": "Y", "airports": ["KSNS"] }
     ],
     "airspace_awareness": [
       {
