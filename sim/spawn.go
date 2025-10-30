@@ -1105,7 +1105,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	arr := arrivals[idx]
 
 	airline := rand.SampleSlice(s.Rand, arr.Airlines[arrivalAirport])
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
+	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, airline.Airport, arrivalAirport, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
 			arrivalAirport)
@@ -1216,14 +1216,14 @@ func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps a
 	return "" // never goes to a human
 }
 
-func (s *Sim) sampleAircraft(al av.AirlineSpecifier, lg *log.Logger) (*Aircraft, string) {
+func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport string, lg *log.Logger) (*Aircraft, string) {
 	// Collect all currently in-use or soon-to-be in-use callsigns.
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))
 	for _, fp := range s.STARSComputer.FlightPlans {
 		callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
 	}
 
-	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, lg)
+	actype, callsign := al.SampleAcTypeAndCallsign(s.Rand, callsigns, s.EnforceUniqueCallsignSuffix, departureAirport, arrivalAirport, lg)
 
 	if actype == "" {
 		return nil, ""
@@ -1295,7 +1295,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	dep := &ap.Departures[idx]
 
 	airline := rand.SampleSlice(s.Rand, dep.Airlines)
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
+	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, departureAirport, dep.Destination, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft for airline %+v at %q", airline,
 			departureAirport)
@@ -1389,7 +1389,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	of := rand.SampleSlice(s.Rand, overflights)
 
 	airline := rand.SampleSlice(s.Rand, of.Airlines)
-	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, s.lg)
+	ac, acType := s.sampleAircraft(airline.AirlineSpecifier, airline.DepartureAirport, airline.ArrivalAirport, s.lg)
 	if ac == nil {
 		return nil, fmt.Errorf("unable to sample a valid aircraft for overflight %+v in %q", airline, group)
 	}
@@ -1467,7 +1467,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 	depap, arrap := av.DB.Airports[depart], av.DB.Airports[arrive]
 	rwy := s.State.VFRRunways[depart]
 
-	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, s.lg)
+	ac, acType := s.sampleAircraft(av.AirlineSpecifier{ICAO: "N", Fleet: fleet}, depart, arrive, s.lg)
 	if ac == nil {
 		return nil, "", fmt.Errorf("unable to sample a valid aircraft")
 	}

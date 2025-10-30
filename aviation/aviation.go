@@ -203,8 +203,25 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"PSA5342": nil,
 }
 
+// cwtMaxRanges defines the maximum flight distances (in nautical miles)
+// for each CWT category (semi ad-hoc, but seems to work reasonably); 0 means no limit.
+var cwtMaxRanges = map[string]float32{
+	"A": 0,    // A380
+	"B": 0,    // Large widebody (B777, B787, A330, B747)
+	"C": 6500, // Medium widebody (B767, A300, DC-10)
+	"D": 5500, // Large widebody variants (A350-1000, B747SP, L-1011)
+	"E": 4500, // B757
+	"F": 3800, // Narrowbody jets (A320, B737)
+	"G": 2000, // Regional jets/turboprops (CRJ, ATR, Dash 8)
+	"H": 2000, // Light jets (Citation, Learjet)
+	"I": 1200, // Small aircraft (King Air, Baron)
+}
+
+// Though category C, these can go quite far, so don't prohibit them.
+var extraLongRange = []string{"A35K", "A359"}
+
 // currentCallsigns will be empty if we don't care about unique suffixes.
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, lg *log.Logger) (actype, callsign string) {
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, departureAirport, arrivalAirport string, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -212,14 +229,33 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 		return "", ""
 	}
 
-	// Sample according to fleet count
+	// Calculate flight distance to filter aircraft by CWT category
+	dep, arr := DB.Airports[departureAirport], DB.Airports[arrivalAirport]
+	flightDistance := math.NMDistance2LL(dep.Location, arr.Location)
+
+	// Sample according to fleet count, filtering by maximum distance for CWT category
 	acCount := 0
 	for _, ac := range a.Aircraft() {
+		// Filter based on flight distance and aircraft CWT category
+		if flightDistance > 0 && !slices.Contains(extraLongRange, ac.ICAO) {
+			if perf, ok := DB.AircraftPerformance[ac.ICAO]; ok {
+				if maxRange, ok := cwtMaxRanges[perf.Category.CWT]; ok {
+					// Check if flight distance exceeds category maximum (0 means no limit)
+					if maxRange > 0 && flightDistance > maxRange {
+						continue
+					}
+				}
+			}
+		}
+
 		// Reservoir sampling...
 		acCount += ac.Count
 		if r.Float32() < float32(ac.Count)/float32(acCount) {
 			actype = ac.ICAO
 		}
+	}
+	if actype == "" {
+		fmt.Printf("no luck %s -> %s %#v\n", departureAirport, arrivalAirport, a)
 	}
 
 	if _, ok := DB.AircraftPerformance[actype]; !ok {
