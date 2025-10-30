@@ -115,6 +115,10 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	for _, event := range ep.events.Get() {
 		switch event.Type {
 		case sim.AcceptedHandoffEvent:
+			thisCtrl := event.FromController != ctx.UserTCP && event.ToController == ctx.UserTCP
+			if !thisCtrl {
+				continue
+			}
 			state := ep.TrackState[av.ADSBCallsign(event.ACID)]
 			state.eFDB = true
 			state.OSectorEndTime = ctx.Client.CurrentTime().Add(30 * time.Second) // check this pls
