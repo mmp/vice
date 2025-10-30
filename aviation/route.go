@@ -1585,22 +1585,22 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	if len(of.Airlines) == 0 {
 		e.ErrorString("must specify at least one airline in \"airlines\"")
 	}
-	for _, al := range of.Airlines {
-		al.Check(e)
+	for i := range of.Airlines {
+		of.Airlines[i].Check(e)
 
-		if al.DepartureAirport == "" {
+		if of.Airlines[i].DepartureAirport == "" {
 			e.ErrorString("must specify \"departure_airport\"")
-		} else if _, ok := airports[al.DepartureAirport]; !ok {
-			if _, ok := DB.Airports[al.DepartureAirport]; !ok {
-				e.ErrorString("departure airport %q is unknown", al.DepartureAirport)
+		} else if _, ok := airports[of.Airlines[i].DepartureAirport]; !ok {
+			if _, ok := DB.Airports[of.Airlines[i].DepartureAirport]; !ok {
+				e.ErrorString("departure airport %q is unknown", of.Airlines[i].DepartureAirport)
 			}
 		}
 
-		if al.ArrivalAirport == "" {
+		if of.Airlines[i].ArrivalAirport == "" {
 			e.ErrorString("must specify \"arrival_airport\"")
-		} else if _, ok := airports[al.ArrivalAirport]; !ok {
-			if _, ok := DB.Airports[al.ArrivalAirport]; !ok {
-				e.ErrorString("arrival airport %q is unknown", al.ArrivalAirport)
+		} else if _, ok := airports[of.Airlines[i].ArrivalAirport]; !ok {
+			if _, ok := DB.Airports[of.Airlines[i].ArrivalAirport]; !ok {
+				e.ErrorString("arrival airport %q is unknown", of.Airlines[i].ArrivalAirport)
 			}
 		}
 	}

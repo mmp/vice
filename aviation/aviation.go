@@ -837,15 +837,15 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
-	for arrivalAirport, airlines := range ar.Airlines {
+	for arrivalAirport := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
-		if len(airlines) == 0 {
+		if len(ar.Airlines[arrivalAirport]) == 0 {
 			e.ErrorString("no \"airlines\" specified for arrivals to %q", arrivalAirport)
 		}
-		for _, al := range airlines {
-			al.Check(e)
-			if _, ok := DB.Airports[al.Airport]; !ok {
-				e.ErrorString("departure airport \"airport\" %q unknown", al.Airport)
+		for i := range ar.Airlines[arrivalAirport] {
+			ar.Airlines[arrivalAirport][i].Check(e)
+			if _, ok := DB.Airports[ar.Airlines[arrivalAirport][i].Airport]; !ok {
+				e.ErrorString("departure airport \"airport\" %q unknown", ar.Airlines[arrivalAirport][i].Airport)
 			}
 		}
 
