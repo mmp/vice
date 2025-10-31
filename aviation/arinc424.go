@@ -50,13 +50,26 @@ func printColumnHeader() {
 	fmt.Printf("\n")
 }
 
-func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
+type ARINC424Result struct {
+	Airports      map[string]FAAAirport
+	Navaids       map[string]Navaid
+	Fixes         map[string]Fix
+	Airways       map[string][]Airway
+	EnrouteHolds  map[string][]Hold
+	TerminalHolds map[string]map[string][]Hold
+}
+
+func ParseARINC424(r io.Reader) ARINC424Result {
 	start := time.Now()
 
-	airports := make(map[string]FAAAirport)
-	navaids := make(map[string]Navaid)
-	fixes := make(map[string]Fix)
-	airways := make(map[string][]Airway)
+	result := ARINC424Result{
+		Airports:      make(map[string]FAAAirport),
+		Navaids:       make(map[string]Navaid),
+		Fixes:         make(map[string]Fix),
+		Airways:       make(map[string][]Airway),
+		EnrouteHolds:  make(map[string][]Hold),
+		TerminalHolds: make(map[string]map[string][]Hold),
+	}
 	airwayWIP := make(map[string]AirwayFix)
 
 	parseLLDigits := func(d, m, s []byte) float32 {
@@ -173,14 +186,14 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 
 				name := strings.TrimSpace(string(line[93:123]))
 				if !empty(line[32:51]) {
-					navaids[id] = Navaid{
+					result.Navaids[id] = Navaid{
 						Id:       id,
 						Type:     util.Select(subsectionCode == ' ', "VOR", "NDB"),
 						Name:     name,
 						Location: parseLatLong(line[32:41], line[41:51]),
 					}
 				} else {
-					navaids[id] = Navaid{
+					result.Navaids[id] = Navaid{
 						Id:       id,
 						Type:     "DME",
 						Name:     name,
@@ -194,9 +207,25 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 			switch subsection {
 			case 'A': // enroute waypoint
 				id := strings.TrimSpace(string(line[13:18]))
-				fixes[id] = Fix{
+				result.Fixes[id] = Fix{
 					Id:       id,
 					Location: parseLatLong(line[32:41], line[41:51]),
+				}
+
+			case 'P': // holding patterns
+				hold, ok := parseHoldingPattern(line)
+				if ok {
+					regionCode := strings.TrimSpace(string(line[6:10]))
+					if regionCode == "ENRT" {
+						// Enroute hold
+						result.EnrouteHolds[hold.Fix] = append(result.EnrouteHolds[hold.Fix], hold)
+					} else {
+						// Terminal hold - regionCode is airport ICAO
+						if result.TerminalHolds[regionCode] == nil {
+							result.TerminalHolds[regionCode] = make(map[string][]Hold)
+						}
+						result.TerminalHolds[regionCode][hold.Fix] = append(result.TerminalHolds[regionCode][hold.Fix], hold)
+					}
 				}
 
 			case 'R': // enroute airway
@@ -240,11 +269,10 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 					for _, airway := range util.SortedMap(airwayWIP) { // order by sequence number, just in case
 						a.Fixes = append(a.Fixes, airway)
 					}
-					airways[route] = append(airways[route], a)
+					result.Airways[route] = append(result.Airways[route], a)
 					clear(airwayWIP)
 				}
 			}
-			// TODO: holding patterns, etc...
 
 		case 'H': // Heliports
 			subsection := line[12]
@@ -252,10 +280,10 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 			case 'C': // waypoint record
 				id := string(line[13:18])
 				location := parseLatLong(line[32:41], line[41:51])
-				if _, ok := fixes[id]; ok {
+				if _, ok := result.Fixes[id]; ok {
 					fmt.Printf("%s: repeats\n", id)
 				}
-				fixes[id] = Fix{Id: id, Location: location}
+				result.Fixes[id] = Fix{Id: id, Location: location}
 			}
 
 		case 'P': // Airports
@@ -266,7 +294,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 				location := parseLatLong(line[32:41], line[41:51])
 				elevation := parseInt(line[56:61])
 
-				airports[icao] = FAAAirport{
+				result.Airports[icao] = FAAAirport{
 					Id:        icao,
 					Elevation: elevation,
 					Location:  location,
@@ -280,44 +308,78 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 						 fmt.Printf("%s: repeats\n", id)
 					  }
 				*/
-				fixes[id] = Fix{Id: id, Location: location}
+				result.Fixes[id] = Fix{Id: id, Location: location}
 
 			case 'D': // SID 4.1.9
+				recs = matchingSSARecs(line, recs)
+				id := recs[0].id
+
+				// Extract holds from SID procedure records (HF/HA/HM)
+				for _, rec := range recs {
+					if hold, ok := extractHoldsFromSSA(rec, id, "SID"); ok {
+						if result.TerminalHolds[icao] == nil {
+							result.TerminalHolds[icao] = make(map[string][]Hold)
+						}
+						result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
+					}
+				}
 
 			case 'E': // STAR 4.1.9
 				recs = matchingSSARecs(line, recs)
 				id := recs[0].id
-				if star := parseSTAR(recs); star != nil {
-					if airports[icao].STARs == nil {
-						ap := airports[icao]
-						ap.STARs = make(map[string]STAR)
-						airports[icao] = ap
+
+				// Extract holds from STAR procedure records (HF/HA/HM)
+				for _, rec := range recs {
+					if hold, ok := extractHoldsFromSSA(rec, id, "STAR"); ok {
+						if result.TerminalHolds[icao] == nil {
+							result.TerminalHolds[icao] = make(map[string][]Hold)
+						}
+						result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
 					}
-					if _, ok := airports[icao].STARs[id]; ok {
+				}
+
+				if star := parseSTAR(recs); star != nil {
+					if result.Airports[icao].STARs == nil {
+						ap := result.Airports[icao]
+						ap.STARs = make(map[string]STAR)
+						result.Airports[icao] = ap
+					}
+					if _, ok := result.Airports[icao].STARs[id]; ok {
 						panic("already seen STAR id " + id)
 					}
 
-					airports[icao].STARs[id] = *star
+					result.Airports[icao].STARs[id] = *star
 				}
 
 			case 'F': // Approach 4.1.9
 				recs = matchingSSARecs(line, recs)
+				id := recs[0].id
+
+				// Extract holds from approach procedure records (HF/HA/HM)
+				for _, rec := range recs {
+					if hold, ok := extractHoldsFromSSA(rec, id, "IAP"); ok {
+						if result.TerminalHolds[icao] == nil {
+							result.TerminalHolds[icao] = make(map[string][]Hold)
+						}
+						result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
+					}
+				}
 
 				if appr := parseApproach(recs); appr != nil {
 					// Note: database.Airports isn't initialized yet but
 					// the CIFP file is sorted so we get the airports
 					// before the approaches..
-					if airports[icao].Approaches == nil {
-						ap := airports[icao]
+					if result.Airports[icao].Approaches == nil {
+						ap := result.Airports[icao]
 						ap.Approaches = make(map[string]Approach)
-						airports[icao] = ap
+						result.Airports[icao] = ap
 					}
 
-					if _, ok := airports[icao].Approaches[appr.Id]; ok {
+					if _, ok := result.Airports[icao].Approaches[appr.Id]; ok {
 						panic("already seen approach id " + appr.Id)
 					}
 
-					airports[icao].Approaches[appr.Id] = *appr
+					result.Airports[icao].Approaches[appr.Id] = *appr
 				}
 
 			case 'G': // runway records 4.1.10
@@ -337,7 +399,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 
 				displacedDistance := parseInt(line[71:75])
 
-				ap := airports[icao]
+				ap := result.Airports[icao]
 				ap.Runways = append(ap.Runways, Runway{
 					Id:                         rwy,
 					Heading:                    float32(parseInt(line[27:31])) / 10,
@@ -346,7 +408,16 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 					Elevation:                  parseInt(line[66:71]),
 					DisplacedThresholdDistance: float32(displacedDistance) * math.FeetToNauticalMiles,
 				})
-				airports[icao] = ap
+				result.Airports[icao] = ap
+
+			case 'P': // holding patterns
+				if hold, ok := parseHoldingPattern(line); ok {
+					// Terminal hold at airport
+					if result.TerminalHolds[icao] == nil {
+						result.TerminalHolds[icao] = make(map[string][]Hold)
+					}
+					result.TerminalHolds[icao][hold.Fix] = append(result.TerminalHolds[icao][hold.Fix], hold)
+				}
 			}
 		}
 
@@ -356,7 +427,7 @@ func ParseARINC424(r io.Reader) (map[string]FAAAirport, map[string]Navaid, map[s
 		fmt.Printf("parsed ARINC242 in %s\n", time.Since(start))
 	}
 
-	return airports, navaids, fixes, airways
+	return result
 }
 
 func tidyFAAApproachId(id string) string {
@@ -741,4 +812,158 @@ func parseApproach(recs []ssaRecord) *Approach {
 	}
 
 	return &appr
+}
+
+// parseHoldingPattern extracts a holding pattern from an ARINC-424 record
+func parseHoldingPattern(line []byte) (Hold, bool) {
+	// Validate record type - must be 'S' (Standard)
+	if line[0] != 'S' {
+		return Hold{}, false
+	}
+
+	// Check section code: 'E' (Enroute) or 'P' (Airport)
+	sectionCode := line[4]
+	if sectionCode != 'E' && sectionCode != 'P' {
+		return Hold{}, false
+	}
+
+	// Check subsection code: must be 'P' (Holding Pattern)
+	var subsectionCode byte
+	if sectionCode == 'E' {
+		subsectionCode = line[5]
+	} else {
+		// For airport section, subsection is at column 13 (0-indexed 12)
+		subsectionCode = line[12]
+	}
+	if subsectionCode != 'P' {
+		return Hold{}, false
+	}
+
+	// Ignore continuation records
+	continuation := line[38]
+	if continuation != '0' && continuation != '1' {
+		return Hold{}, false
+	}
+
+	var h Hold
+
+	// Fix identifier (columns 30-34)
+	h.Fix = strings.TrimSpace(string(line[29:34]))
+	if h.Fix == "" {
+		return Hold{}, false
+	}
+
+	// Inbound holding course (columns 40-43)
+	courseStr := string(line[39:43])
+	if strings.HasSuffix(courseStr, "T") {
+		// True bearing - store as-is per design decision
+		// Conversion to magnetic will be done at point of use
+		if !empty(line[39:42]) {
+			h.InboundCourse = float32(parseInt(line[39:42]))
+		}
+	} else if !empty(line[39:43]) {
+		h.InboundCourse = float32(parseInt(line[39:43])) / 10.0
+	}
+
+	// Turn direction (column 44)
+	switch line[43] {
+	case 'L':
+		h.TurnDirection = TurnLeft
+	case 'R':
+		h.TurnDirection = TurnRight
+	default:
+		return Hold{}, false // Turn direction is required
+	}
+
+	// Leg length (columns 45-47) - distance based
+	if !empty(line[44:47]) {
+		h.LegLength = float32(parseInt(line[44:47])) / 10.0
+	}
+
+	// Leg time (columns 48-49) - time based
+	if !empty(line[47:49]) {
+		h.LegTime = float32(parseInt(line[47:49])) / 10.0
+	}
+
+	// Minimum altitude (columns 50-54) and aximum altitude (columns 55-59)
+	if !empty(line[49:54]) {
+		h.MinimumAltitude = parseAltitude(line[49:54])
+	}
+	if !empty(line[54:59]) {
+		h.MaximumAltitude = parseAltitude(line[54:59])
+	}
+
+	// Holding speed (columns 60-62)
+	if !empty(line[59:62]) {
+		h.HoldingSpeed = parseInt(line[59:62])
+	}
+
+	// Name (columns 99-123)
+	h.Name = strings.TrimSpace(string(line[98:123]))
+
+	return h, true
+}
+
+// extractHoldsFromSSA extracts Hold records from procedure waypoints (HF, HA, HM path terminators)
+// procName is the procedure identifier (e.g., "ILS06", "CAMRN5")
+// procType is the procedure type (e.g., "IAP", "STAR", "SID")
+func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (Hold, bool) {
+	// Only extract from HF, HA, HM path terminators
+	if rec.pathAndTermination != "HF" && rec.pathAndTermination != "HA" && rec.pathAndTermination != "HM" {
+		return Hold{}, false
+	}
+
+	var h Hold
+	h.Fix = rec.fix
+	if h.Fix == "" {
+		return Hold{}, false
+	}
+
+	// Turn direction
+	if rec.turnDirection == 'R' {
+		h.TurnDirection = TurnRight
+	} else if rec.turnDirection == 'L' {
+		h.TurnDirection = TurnLeft
+	} else {
+		return Hold{}, false // Turn direction is required
+	}
+
+	// Inbound magnetic course (from outboundMagneticCourse field per ARINC-424)
+	if !empty(rec.outboundMagneticCourse) {
+		h.InboundCourse = float32(parseInt(rec.outboundMagneticCourse)) / 10.0
+	}
+
+	// Leg length or leg time (from routeDistance field)
+	if !empty(rec.routeDistance) {
+		if rec.routeDistance[0] == 'T' {
+			// Time-based: "T" followed by time in tenths of minutes
+			h.LegTime = float32(parseInt(rec.routeDistance[1:])) / 10.0
+		} else {
+			// Distance-based: nautical miles in tenths
+			h.LegLength = float32(parseInt(rec.routeDistance)) / 10.0
+		}
+	}
+
+	// Altitude restrictions
+	if !empty(rec.alt0) {
+		h.MinimumAltitude = parseAltitude(rec.alt0)
+	}
+	if !empty(rec.alt1) {
+		h.MaximumAltitude = parseAltitude(rec.alt1)
+	}
+
+	// Speed restriction
+	if !empty(rec.speed) {
+		h.HoldingSpeed = parseInt(rec.speed)
+	}
+
+	// Construct name from procedure information
+	h.Name = fmt.Sprintf("HOLD AT %s (%s/%s)", h.Fix, rec.icao, rec.id)
+
+	// Set procedure association (just the name, not the type)
+	if procName != "" {
+		h.Procedure = procName
+	}
+
+	return h, true
 }

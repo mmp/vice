@@ -1495,6 +1495,35 @@ type DMEArc struct {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Hold
+
+// TurnDirection specifies the direction of turns in a holding pattern
+type TurnDirection int
+
+const (
+	TurnLeft TurnDirection = iota
+	TurnRight
+)
+
+func (t TurnDirection) String() string {
+	return util.Select(t == TurnLeft, "L", "R")
+}
+
+// Hold represents a charted holding pattern from CIFP or HPF
+type Hold struct {
+	Fix             string        // Fix identifier where hold is located
+	InboundCourse   float32       // Inbound magnetic course to the fix (degrees)
+	TurnDirection   TurnDirection // L or R
+	LegLength       float32       // Distance-based leg length (nautical miles), 0 if time-based
+	LegTime         float32       // Time-based leg duration (minutes), 0 if distance-based
+	MinimumAltitude int           // Minimum altitude for hold (feet)
+	MaximumAltitude int           // Maximum altitude for hold (feet), 0 if no maximum
+	HoldingSpeed    int           // Speed limit in hold (knots), 0 if not specified
+	Name            string        // Descriptive name (e.g., "HOLDING JIMEE MIAMI")
+	Procedure       string        // Associated procedure (e.g., "ILS06 (IAP)", "CAMRN5 (STAR)", "ENROUTE HIGH")
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Airways
 
 type AirwayLevel int
