@@ -1523,6 +1523,16 @@ type Hold struct {
 	Procedure       string        // Associated procedure (e.g., "ILS06 (IAP)", "CAMRN5 (STAR)", "ENROUTE HIGH")
 }
 
+func (h Hold) DisplayName() string {
+	n := fmt.Sprintf("%s (%s", h.Fix, h.TurnDirection)
+	if h.LegLength != 0 {
+		n += fmt.Sprintf(", %.1f nm", h.LegLength)
+	} else if h.LegTime != 0 {
+		n += fmt.Sprintf(", %.1f min", h.LegTime)
+	}
+	return n + ")"
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Airways
 

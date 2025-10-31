@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/sim"
@@ -424,5 +425,71 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				imgui.EndTable()
 			}
 		}
+	}
+
+	// Holds section - show enroute and unassociated holds within 75nm
+	if imgui.CollapsingHeaderBoolPtr("Holds", nil) {
+		imgui.Text("Color:")
+		imgui.SameLine()
+		imgui.ColorEdit3V("Draw Color##6", sp.IFPHelpers.HoldsColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
+
+		candidateHolds := make(map[string]av.Hold)
+		ps := sp.currentPrefs()
+		ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
+		for fix, holds := range util.SortedMap(av.DB.EnrouteHolds) {
+			loc, _ := av.DB.LookupWaypoint(fix)
+			if dist := math.NMDistance2LL(ctr, loc); dist <= ps.Range {
+				for _, h := range holds {
+					// Only show holds that aren't part of procedures
+					// (holds with Procedure set are drawn with their procedures)
+					if h.Procedure == "" {
+						candidateHolds[h.DisplayName()] = h
+					}
+				}
+			}
+		}
+
+		if imgui.Checkbox("Draw all holds", &sp.scopeDraw.allHolds) && !sp.scopeDraw.allHolds {
+			clear(sp.scopeDraw.holds)
+		}
+
+		if sp.scopeDraw.allHolds {
+			sp.scopeDraw.holds = candidateHolds
+			imgui.BeginDisabled()
+		}
+
+		const ncol = 4
+		if imgui.BeginTableV("holds", ncol, tableFlags, imgui.Vec2{}, 0) {
+			if sp.scopeDraw.holds == nil {
+				sp.scopeDraw.holds = make(map[string]av.Hold)
+			}
+
+			// Display holds
+			i := 0
+			for name, hold := range util.SortedMap(candidateHolds) {
+				if i%ncol == 0 {
+					imgui.TableNextRow()
+				}
+				imgui.TableNextColumn()
+
+				_, enabled := sp.scopeDraw.holds[name]
+				enabled = enabled || sp.scopeDraw.allHolds
+				if imgui.Checkbox(name+"##hold", &enabled) {
+					if enabled {
+						sp.scopeDraw.holds[name] = hold
+					} else {
+						delete(sp.scopeDraw.holds, name)
+					}
+				}
+				i++
+			}
+
+			imgui.EndTable()
+		}
+
+		if sp.scopeDraw.allHolds {
+			imgui.EndDisabled()
+		}
+
 	}
 }

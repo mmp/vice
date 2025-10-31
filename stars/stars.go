@@ -224,6 +224,8 @@ type STARSPane struct {
 		departures  map[string]map[string]map[string]bool // airport->runway->exit
 		overflights map[string]map[int]bool               // group->index
 		airspace    map[string]map[string]bool            // ctrl -> volume name
+		holds       map[string]av.Hold                    // fix name -> Hold
+		allHolds    bool
 	}
 
 	// Instrument Flight Procedure (SIDs, STARs, IAPs etc) Helpers
@@ -233,6 +235,7 @@ type STARSPane struct {
 		DeparturesColor  *[3]float32
 		OverflightsColor *[3]float32
 		AirspaceColor    *[3]float32
+		HoldsColor       *[3]float32
 	}
 
 	atmosGrid             *wx.AtmosGrid
@@ -440,6 +443,10 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 		sp.IFPHelpers.AirspaceColor = &[3]float32{.1, .9, .1}
 	}
 
+	if sp.IFPHelpers.HoldsColor == nil {
+		sp.IFPHelpers.HoldsColor = &[3]float32{.9, .9, .1} // Yellow
+	}
+
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
@@ -487,6 +494,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 	sp.scopeDraw.departures = nil
 	sp.scopeDraw.overflights = nil
 	sp.scopeDraw.airspace = nil
+	sp.scopeDraw.holds = nil
 }
 
 func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
