@@ -46,6 +46,26 @@ func (l *LinesDrawBuilder) AddLine(p0, p1 [2]float32) {
 	l.indices = append(l.indices, idx, idx+1)
 }
 
+// AddDashedLine adds a dashed line from p0 to p1, where dashLength specifies
+// the length of each dash segment and dashStep specifies the total length
+// (dash + gap) before the next dash starts. The number of dashes drawn is returned.
+func (l *LinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32) int {
+	v := math.Sub2f(p1, p0)
+	totalLength := math.Length2f(v)
+	dir := math.Scale2f(v, 1/totalLength)
+	n := 0
+
+	for d := float32(0); d < totalLength; d += dashStep {
+		dashStart := math.Add2f(p0, math.Scale2f(dir, d))
+		dashEndDist := min(d+dashLength, totalLength)
+		dashEnd := math.Add2f(p0, math.Scale2f(dir, dashEndDist))
+		l.AddLine(dashStart, dashEnd)
+		n++
+	}
+
+	return n
+}
+
 // AddLineStrip adds multiple lines to the lines draw builder where each
 // line is given by a successive pair of points, a la GL_LINE_STRIP.
 func (l *LinesDrawBuilder) AddLineStrip(p [][2]float32) {
@@ -188,6 +208,13 @@ func (l *ColoredLinesDrawBuilder) Reset() {
 func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 	l.LinesDrawBuilder.AddLine(p0, p1)
 	l.color = append(l.color, color, color)
+}
+
+func (l *ColoredLinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32, color RGB) {
+	n := l.LinesDrawBuilder.AddDashedLine(p0, p1, dashLength, dashStep)
+	for range n {
+		l.color = append(l.color, color, color)
+	}
 }
 
 func (l *ColoredLinesDrawBuilder) AddLineLoop(color RGB, p [][2]float32) {
