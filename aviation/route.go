@@ -1533,6 +1533,22 @@ func (h Hold) DisplayName() string {
 	return n + ")"
 }
 
+// Speed returns the holding speed in knots for the given altitude.
+// If the hold has a published holding speed, that is returned.
+// Otherwise, standard holding speeds are applied based on altitude:
+// ≤6000 ft: 200 knots, ≤14000 ft: 230 knots, >14000 ft: 265 knots.
+func (h Hold) Speed(alt float32) float32 {
+	if h.HoldingSpeed > 0 {
+		return float32(h.HoldingSpeed)
+	} else if alt <= 6000 {
+		return 200
+	} else if alt <= 14000 {
+		return 230
+	} else {
+		return 265
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Airways
 
