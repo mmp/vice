@@ -163,3 +163,17 @@ func NormalizeHeading[T HeadingT](h T) T {
 func OppositeHeading[T HeadingT](h T) T {
 	return NormalizeHeading(h + 180)
 }
+
+// IsHeadingBetween checks if heading h is between h1 and h2 (clockwise from h1 to h2).
+// Returns true if h is in the clockwise arc from h1 to h2, inclusive of both endpoints.
+func IsHeadingBetween[T HeadingT](h, h1, h2 T) bool {
+	h = NormalizeHeading(h)
+	h1 = NormalizeHeading(h1)
+	h2 = NormalizeHeading(h2)
+
+	if h1 <= h2 {
+		return h >= h1 && h <= h2
+	} else {
+		return h >= h1 || h <= h2
+	}
+}
