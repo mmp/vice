@@ -149,18 +149,16 @@ func (g GCSBackend) ChanList(path string, ch chan<- string) error {
 
 	it := g.bucket.Objects(g.ctx, &query)
 	for {
-		select {
-		case <-g.ctx.Done():
-			return g.ctx.Err()
-		default:
-		}
-
 		if obj, err := it.Next(); err == iterator.Done {
 			return nil
 		} else if err != nil {
 			return err
 		} else if fpath.Clean(obj.Name) != path { // don't return the root ~folder
-			ch <- obj.Name
+			select {
+			case <-g.ctx.Done():
+				return g.ctx.Err()
+			case ch <- obj.Name:
+			}
 		}
 	}
 }
