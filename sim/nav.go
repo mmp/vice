@@ -1197,24 +1197,7 @@ func (nav *Nav) TargetHeading(wxs wx.Sample) (heading float32, turn TurnMethod, 
 		v = math.Scale2f(v, nav.FlightState.GS)
 
 		if nav.IsAirborne() {
-			// model where we'll actually end up, given the wind
-			wvec := wxs.WindVec
-			vp := math.Add2f(v, math.Scale2f(wvec, 3600))
-
-			// Find the deflection angle of how much the wind pushes us off course.
-			vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
-			deflection := math.Degrees(math.AngleBetween(vn, vpn))
-			// Get a signed angle: take the cross product and then (effectively)
-			// dot with (0,0,1) to figure out which way it goes
-			if vn[0]*vpn[1]-vn[1]*vpn[0] > 0 {
-				deflection = -deflection
-			}
-
-			// Turn into the wind; this is a bit of an approximation, since
-			// turning changes how much the wind affects the aircraft, but this
-			// should be minor since the aircraft's speed should be much
-			// greater than the wind speed...
-			hdg -= deflection
+			hdg -= wxs.Deflection(v)
 		}
 
 		// Incorporate magnetic variation in the final heading

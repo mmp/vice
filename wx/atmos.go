@@ -461,6 +461,32 @@ func (s WindSample) WindSpeed() float32 { // returns knots
 	return l * 3600 /* seconds -> hour */
 }
 
+// Deflection calculates the heading correction needed to compensate for wind.
+// Given a velocity vector v, it returns the deflection angle that should be
+// subtracted from the heading to fly into the wind.
+func (s WindSample) Deflection(v [2]float32) float32 {
+	wvec := s.WindVec
+	vp := math.Add2f(v, math.Scale2f(wvec, 3600))
+
+	vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
+	deflection := math.Degrees(math.AngleBetween(vn, vpn))
+	if vn[0]*vpn[1]-vn[1]*vpn[0] > 0 {
+		deflection = -deflection
+	}
+
+	return deflection
+}
+
+// Component calculates the wind component along a given course in knots.
+// Positive values indicate tailwind, negative values indicate headwind.
+func (s WindSample) Component(course float32) float32 {
+	courseVec := math.SinCos(math.Radians(course))
+	wvec := s.WindVec
+	windSpeed := math.Length2f(wvec) * 3600
+	windDir := math.Normalize2f(wvec)
+	return math.Dot(courseVec, windDir) * windSpeed
+}
+
 func (s Sample) String() string {
 	return fmt.Sprintf("Wind %03d at %d, temp %.1fC, dewpoint %.1fC (%.1f%% rel. humidity), pressure %.1f mb",
 		int(s.WindDirection()), int(s.WindSpeed()+0.5), s.Temperature, s.Dewpoint, s.RelativeHumidity(), s.Pressure)
