@@ -1310,7 +1310,6 @@ func (nav *Nav) ApproachHeading(wxs wx.Sample) (heading float32, turn TurnMethod
 		loc := ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wxs) {
-
 			nav.Approach.InterceptState = TurningToJoin
 			// The autopilot is doing this, so start the turn immediately;
 			// don't use EnqueueHeading. However, leave any deferred
@@ -1818,6 +1817,12 @@ func (nav *Nav) TargetSpeed(targetAltitude float32, fp *av.FlightPlan, wxs wx.Sa
 	return ias, rate
 }
 
+// ETA returns the estimated time in seconds until the aircraft will arrive at `p`, assuming it is flying direct.
+func (nav *Nav) ETA(p math.Point2LL) float32 {
+	dist := math.NMDistance2LLFast(nav.FlightState.Position, p, nav.FlightState.NmPerLongitude)
+	return dist / nav.FlightState.GS * 3600 // seconds
+}
+
 // Compute target airspeed for higher altitudes speed by lerping from 250
 // to cruise speed based on altitude.
 func (nav *Nav) targetAltitudeIAS() (float32, float32) {
@@ -1944,9 +1949,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 	passedWaypoint := false
 	if wp.FlyOver {
-		dist := math.NMDistance2LLFast(nav.FlightState.Position, wp.Location, nav.FlightState.NmPerLongitude)
-		eta := dist / nav.FlightState.GS * 3600 // in seconds
-		passedWaypoint = eta < 2
+		passedWaypoint = nav.ETA(wp.Location) < 2
 	} else {
 		passedWaypoint = nav.shouldTurnForOutbound(wp.Location, hdg, TurnClosest, wxs)
 	}
@@ -2065,8 +2068,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 // aircraft should start the turn to outbound to intercept the outbound
 // radial.
 func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMethod, wxs wx.Sample) bool {
-	dist := math.NMDistance2LL(nav.FlightState.Position, p)
-	eta := dist / nav.FlightState.GS * 3600 // in seconds
+	eta := nav.ETA(p)
 
 	// Always start the turn if we've almost passed the fix.
 	if eta < 2 {
@@ -2120,8 +2122,6 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 
 	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0, p1)
 	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
-	//fmt.Printf("initial dist %f eta %f ", initialDist, eta)
-	//defer fmt.Printf("\n")
 	if eta < 2 {
 		// Just in case, start the turn
 		return true
@@ -2129,7 +2129,6 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 
 	// As above, don't consider starting the turn if we're far away.
 	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
-	//fmt.Printf("turn angle %f ", turnAngle)
 	if turnAngle < eta {
 		return false
 	}
@@ -2140,7 +2139,6 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
 
 	n := int(1 + turnAngle)
-	//fmt.Printf("n sim %d: ", n)
 	for i := 0; i < n; i++ {
 		nav2.UpdateWithWeather("", wxs, nil, time.Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
@@ -3238,8 +3236,7 @@ func (fp *FlyRacetrackPT) GetHeading(nav *Nav, wxs wx.Sample) (float32, TurnMeth
 
 	switch fp.State {
 	case PTStateApproaching:
-		dist := math.NMDistance2LL(nav.FlightState.Position, fp.FixLocation)
-		eta := dist / nav.FlightState.GS * 3600 // in seconds
+		eta := nav.ETA(fp.FixLocation)
 		startTurn := false
 
 		switch fp.Entry {
