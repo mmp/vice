@@ -1511,24 +1511,23 @@ func (t TurnDirection) String() string {
 
 // Hold represents a charted holding pattern from CIFP or HPF
 type Hold struct {
-	Fix             string        // Fix identifier where hold is located
-	InboundCourse   float32       // Inbound magnetic course to the fix (degrees)
-	TurnDirection   TurnDirection // L or R
-	LegLength       float32       // Distance-based leg length (nautical miles), 0 if time-based
-	LegTime         float32       // Time-based leg duration (minutes), 0 if distance-based
-	MinimumAltitude int           // Minimum altitude for hold (feet)
-	MaximumAltitude int           // Maximum altitude for hold (feet), 0 if no maximum
-	HoldingSpeed    int           // Speed limit in hold (knots), 0 if not specified
-	Name            string        // Descriptive name (e.g., "HOLDING JIMEE MIAMI")
-	Procedure       string        // Associated procedure (e.g., "ILS06 (IAP)", "CAMRN5 (STAR)", "ENROUTE HIGH")
+	Fix             string  // Fix identifier where hold is located
+	InboundCourse   float32 // Inbound magnetic course to the fix
+	TurnDirection   TurnDirection
+	LegLengthNM     float32 // Distance-based leg length (nautical miles), 0 if time-based
+	LegMinutes      float32 // Time-based leg duration (minutes), 0 if distance-based
+	MinimumAltitude int     // Minimum altitude for hold (feet)
+	MaximumAltitude int     // Maximum altitude for hold (feet), 0 if no maximum
+	HoldingSpeed    int     // Speed limit in hold (knots), 0 if not specified
+	Procedure       string  // Associated procedure (e.g., "ILS06 (IAP)", "CAMRN5", "ENROUTE HIGH")
 }
 
 func (h Hold) DisplayName() string {
 	n := fmt.Sprintf("%s (%s", h.Fix, h.TurnDirection)
-	if h.LegLength != 0 {
-		n += fmt.Sprintf(", %.1f nm", h.LegLength)
-	} else if h.LegTime != 0 {
-		n += fmt.Sprintf(", %.1f min", h.LegTime)
+	if h.LegLengthNM != 0 {
+		n += fmt.Sprintf(", %.1f nm", h.LegLengthNM)
+	} else if h.LegMinutes != 0 {
+		n += fmt.Sprintf(", %.1f min", h.LegMinutes)
 	}
 	return n + ")"
 }

@@ -27,12 +27,11 @@ func TestParseHoldingPattern(t *testing.T) {
 				Fix:             "DPK",
 				InboundCourse:   258.1,
 				TurnDirection:   TurnLeft,
-				LegLength:       0,
-				LegTime:         1.0,
+				LegLengthNM:     0,
+				LegMinutes:      1.0,
 				MinimumAltitude: 4000,
 				MaximumAltitude: 0,
 				HoldingSpeed:    0,
-				Name:            "HOLD AT DPK (KJFK/I04R)",
 				Procedure:       "I04R",
 			},
 			wantOk: true,
@@ -45,12 +44,11 @@ func TestParseHoldingPattern(t *testing.T) {
 				Fix:             "DUFFY",
 				InboundCourse:   242.0,
 				TurnDirection:   TurnLeft,
-				LegLength:       0,
-				LegTime:         1.0,
+				LegLengthNM:     0,
+				LegMinutes:      1.0,
 				MinimumAltitude: 3000,
 				MaximumAltitude: 0,
 				HoldingSpeed:    0,
-				Name:            "HOLD AT DUFFY (KJFK/I04L)",
 				Procedure:       "I04L",
 			},
 			wantOk: true,
@@ -96,11 +94,10 @@ func holdsEqual(a, b Hold) bool {
 	return a.Fix == b.Fix &&
 		math.Abs(float64(a.InboundCourse-b.InboundCourse)) < epsilon &&
 		a.TurnDirection == b.TurnDirection &&
-		math.Abs(float64(a.LegLength-b.LegLength)) < epsilon &&
-		math.Abs(float64(a.LegTime-b.LegTime)) < epsilon &&
+		math.Abs(float64(a.LegLengthNM-b.LegLengthNM)) < epsilon &&
+		math.Abs(float64(a.LegMinutes-b.LegMinutes)) < epsilon &&
 		a.MinimumAltitude == b.MinimumAltitude &&
 		a.MaximumAltitude == b.MaximumAltitude &&
 		a.HoldingSpeed == b.HoldingSpeed &&
-		a.Name == b.Name &&
 		a.Procedure == b.Procedure
 }

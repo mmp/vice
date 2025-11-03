@@ -633,11 +633,11 @@ func parseHPF() map[string][]Hold {
 		// Parse leg length (nautical miles) or default to time-based
 		if h.legLengthDist != "" {
 			if dist, err := strconv.Atoi(h.legLengthDist); err == nil {
-				hold.LegLength = float32(dist)
+				hold.LegLengthNM = float32(dist)
 			}
 		} else {
 			// Default to 1 minute hold if no distance specified
-			hold.LegTime = 1.0
+			hold.LegMinutes = 1
 		}
 
 		if h.speedRange != "" {
@@ -661,12 +661,6 @@ func parseHPF() map[string][]Hold {
 
 		// HPF doesn't provide specific procedure names
 		hold.Procedure = ""
-
-		if h.chartType != "" {
-			hold.Name = "HPF " + h.chartType + " " + h.fixID
-		} else {
-			hold.Name = "HPF " + h.fixID
-		}
 
 		// Add to enroute holds (HPF doesn't provide airport associations for terminal holds)
 		enrouteHolds[h.fixID] = append(enrouteHolds[h.fixID], hold)

@@ -1092,10 +1092,10 @@ func (sp *STARSPane) drawHoldPattern(ctx *panes.Context, transforms radar.ScopeT
 	fixLoc, _ := av.DB.LookupWaypoint(hold.Fix)
 
 	// Default leg length/time if not specified
-	legLength := hold.LegLength
-	if legLength == 0 && hold.LegTime > 0 {
+	legLength := hold.LegLengthNM
+	if legLength == 0 && hold.LegMinutes > 0 {
 		// Approximate: assume 120 knots = 2 nm/minute
-		legLength = hold.LegTime * 2
+		legLength = hold.LegMinutes * 2
 	}
 	if legLength == 0 {
 		legLength = 4 // Default 4nm legs

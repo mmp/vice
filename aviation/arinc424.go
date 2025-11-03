@@ -877,12 +877,12 @@ func parseHoldingPattern(line []byte) (Hold, bool) {
 
 	// Leg length (columns 45-47) - distance based
 	if !empty(line[44:47]) {
-		h.LegLength = float32(parseInt(line[44:47])) / 10.0
+		h.LegLengthNM = float32(parseInt(line[44:47])) / 10.0
 	}
 
 	// Leg time (columns 48-49) - time based
 	if !empty(line[47:49]) {
-		h.LegTime = float32(parseInt(line[47:49])) / 10.0
+		h.LegMinutes = float32(parseInt(line[47:49])) / 10.0
 	}
 
 	// Minimum altitude (columns 50-54) and aximum altitude (columns 55-59)
@@ -897,9 +897,6 @@ func parseHoldingPattern(line []byte) (Hold, bool) {
 	if !empty(line[59:62]) {
 		h.HoldingSpeed = parseInt(line[59:62])
 	}
-
-	// Name (columns 99-123)
-	h.Name = strings.TrimSpace(string(line[98:123]))
 
 	return h, true
 }
@@ -937,10 +934,10 @@ func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (Hold, bool) 
 	if !empty(rec.routeDistance) {
 		if rec.routeDistance[0] == 'T' {
 			// Time-based: "T" followed by time in tenths of minutes
-			h.LegTime = float32(parseInt(rec.routeDistance[1:])) / 10.0
+			h.LegMinutes = float32(parseInt(rec.routeDistance[1:])) / 10.0
 		} else {
 			// Distance-based: nautical miles in tenths
-			h.LegLength = float32(parseInt(rec.routeDistance)) / 10.0
+			h.LegLengthNM = float32(parseInt(rec.routeDistance)) / 10.0
 		}
 	}
 
@@ -956,9 +953,6 @@ func extractHoldsFromSSA(rec ssaRecord, procName, procType string) (Hold, bool) 
 	if !empty(rec.speed) {
 		h.HoldingSpeed = parseInt(rec.speed)
 	}
-
-	// Construct name from procedure information
-	h.Name = fmt.Sprintf("HOLD AT %s (%s/%s)", h.Fix, rec.icao, rec.id)
 
 	// Set procedure association (just the name, not the type)
 	if procName != "" {
