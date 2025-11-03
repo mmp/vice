@@ -787,7 +787,7 @@ func TimePicker(label string, date *time.Time, intervals []util.TimeInterval, me
 	if imgui.Button(date.Format("2006-01-02 15:04")) {
 		imgui.OpenPopupStr(label + "_popup")
 	}
-	if imgui.BeginPopupV(label+"_popup", imgui.WindowFlagsNoMove|imgui.WindowFlagsNoResize) {
+	if imgui.BeginPopupV(label+"_popup", imgui.WindowFlagsNone) {
 		changed = drawTimePickerPopup(date, intervals, metars, metarIdx, monospaceFont) || changed
 		imgui.EndPopup()
 	}
