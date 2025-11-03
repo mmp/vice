@@ -95,9 +95,12 @@ func (d DryRunBackend) Delete(path string) error { return nil }
 func (d DryRunBackend) Close() {}
 
 type GCSBackend struct {
-	ctx    context.Context
-	client *storage.Client
-	bucket *storage.BucketHandle
+	ctx       context.Context
+	client    *storage.Client
+	bucket    *storage.BucketHandle
+	listOps   atomic.Int64
+	insertOps atomic.Int64
+	deleteOps atomic.Int64
 }
 
 func MakeGCSBackend(bucketName string) (StorageBackend, error) {
@@ -118,29 +121,41 @@ func MakeGCSBackend(bucketName string) (StorageBackend, error) {
 	}, nil
 }
 
-func (g GCSBackend) List(path string) (map[string]int64, error) {
+func (g *GCSBackend) List(path string) (map[string]int64, error) {
 	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
 		Prefix:     path,
 	}
 
-	m := make(map[string]int64)
 	it := g.bucket.Objects(g.ctx, &query)
+	pager := iterator.NewPager(it, 1000, "")
+
+	m := make(map[string]int64)
 	for {
-		if obj, err := it.Next(); err == iterator.Done {
-			break
-		} else if err != nil {
+		var objects []*storage.ObjectAttrs
+		pageToken, err := pager.NextPage(&objects)
+		if err != nil {
 			return nil, err
-		} else if fpath.Clean(obj.Name) != path { // don't return the root ~folder
-			m[obj.Name] = obj.Size
+		}
+
+		g.listOps.Add(1)
+
+		for _, obj := range objects {
+			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+				m[obj.Name] = obj.Size
+			}
+		}
+
+		if pageToken == "" {
+			break
 		}
 	}
 
 	return m, nil
 }
 
-func (g GCSBackend) ChanList(path string, ch chan<- string) error {
+func (g *GCSBackend) ChanList(path string, ch chan<- string) error {
 	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
@@ -148,26 +163,38 @@ func (g GCSBackend) ChanList(path string, ch chan<- string) error {
 	}
 
 	it := g.bucket.Objects(g.ctx, &query)
+	pager := iterator.NewPager(it, 1000, "")
+
 	for {
-		if obj, err := it.Next(); err == iterator.Done {
-			return nil
-		} else if err != nil {
+		var objects []*storage.ObjectAttrs
+		pageToken, err := pager.NextPage(&objects)
+		if err != nil {
 			return err
-		} else if fpath.Clean(obj.Name) != path { // don't return the root ~folder
-			select {
-			case <-g.ctx.Done():
-				return g.ctx.Err()
-			case ch <- obj.Name:
+		}
+
+		g.listOps.Add(1)
+
+		for _, obj := range objects {
+			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+				select {
+				case <-g.ctx.Done():
+					return g.ctx.Err()
+				case ch <- obj.Name:
+				}
 			}
+		}
+
+		if pageToken == "" {
+			return nil
 		}
 	}
 }
 
-func (g GCSBackend) OpenRead(path string) (io.ReadCloser, error) {
+func (g *GCSBackend) OpenRead(path string) (io.ReadCloser, error) {
 	return g.bucket.Object(path).NewReader(g.ctx)
 }
 
-func (g GCSBackend) ReadObject(path string, result any) error {
+func (g *GCSBackend) ReadObject(path string, result any) error {
 	r, err := g.OpenRead(path)
 	if err != nil {
 		return err
@@ -183,7 +210,9 @@ func (g GCSBackend) ReadObject(path string, result any) error {
 	return msgpack.NewDecoder(zr).Decode(result)
 }
 
-func (g GCSBackend) Store(path string, r io.Reader) (int64, error) {
+func (g *GCSBackend) Store(path string, r io.Reader) (int64, error) {
+	g.insertOps.Add(1)
+
 	objw := g.bucket.Object(path).NewWriter(g.ctx)
 	n, err := io.Copy(objw, r)
 	if err != nil {
@@ -192,7 +221,9 @@ func (g GCSBackend) Store(path string, r io.Reader) (int64, error) {
 	return n, objw.Close()
 }
 
-func (g GCSBackend) StoreObject(path string, object any) (int64, error) {
+func (g *GCSBackend) StoreObject(path string, object any) (int64, error) {
+	g.insertOps.Add(1)
+
 	objw := g.bucket.Object(path).NewWriter(g.ctx)
 	cw := &CountingWriter{Writer: objw}
 
@@ -211,14 +242,23 @@ func (g GCSBackend) StoreObject(path string, object any) (int64, error) {
 	return cw.N, nil
 }
 
-func (g GCSBackend) Delete(path string) error {
+func (g *GCSBackend) Delete(path string) error {
 	if !strings.HasPrefix(path, "scrape/") {
 		return errors.New("Can only delete from scrape/")
 	}
+	g.deleteOps.Add(1)
 	return g.bucket.Object(path).Delete(g.ctx)
 }
 
-func (g GCSBackend) Close() { g.client.Close() }
+func (g *GCSBackend) Close() { g.client.Close() }
+
+func (g *GCSBackend) ReportClassAOperations() {
+	list := g.listOps.Load()
+	insert := g.insertOps.Load()
+	del := g.deleteOps.Load()
+	cost := float32(list+insert+del) / 1000 * 0.005
+	LogInfo("GCS Class A operations: %d list, %d insert, %d delete, %d total (~$%.02f)", list, insert, del, list+insert+del, cost)
+}
 
 ///////////////////////////////////////////////////////////////////////////
 

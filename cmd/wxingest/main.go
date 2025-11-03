@@ -85,10 +85,11 @@ func main() {
 		registerCleanup(prof.Cleanup)
 	}
 
-	sb, err := MakeGCSBackend(bucketName)
+	gcsBackend, err := MakeGCSBackend(bucketName)
 	if err != nil {
 		LogFatal("%v", err)
 	}
+	sb := StorageBackend(gcsBackend)
 	if *dryRun {
 		sb = &DryRunBackend{g: sb}
 	}
@@ -125,6 +126,11 @@ func main() {
 	// Report the total bytes transferred
 	if tb, ok := sb.(*TrackingBackend); ok {
 		tb.ReportStats()
+	}
+
+	// Report GCS Class A operations
+	if gcb, ok := gcsBackend.(*GCSBackend); ok {
+		gcb.ReportClassAOperations()
 	}
 }
 
