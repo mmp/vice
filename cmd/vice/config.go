@@ -7,6 +7,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"iter"
 	"os"
@@ -194,6 +195,13 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 	lg.Infof("Loading config from: %s", fn)
 
 	config = getDefaultConfig()
+
+	defer func() {
+		if err := recover(); err != nil {
+			configErr = fmt.Errorf("%v", err)
+			lg.ReportCrash(err)
+		}
+	}()
 
 	if contents, err := os.ReadFile(fn); err == nil {
 		r := bytes.NewReader(contents)

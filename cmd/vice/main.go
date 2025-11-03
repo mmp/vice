@@ -353,7 +353,7 @@ func main() {
 
 		// After we have plat and render
 		if configErr != nil {
-			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
+			ShowErrorDialog(plat, lg, "Saved configuration file is corrupt. Discarding. (%v)", configErr)
 		}
 
 		config.Activate(render, plat, eventStream, lg)
