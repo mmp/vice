@@ -3079,7 +3079,7 @@
           "center": "KONT"
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ACQ",
           "description": "SCT AUTO-ACQUISITION",

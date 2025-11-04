@@ -1518,7 +1518,7 @@
           ]
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ACQ",
           "description": "JRV AUTO-ACQUISITION",

@@ -2427,7 +2427,7 @@
           "center": "N042.23.05.581,W071.00.43.615"
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ACQ",
           "description": "AUTO ACQUISITION",

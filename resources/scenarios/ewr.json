@@ -10538,7 +10538,7 @@
   },
   "stars_config": {
     "filters": {
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ewrack",
           "description": "ewr arrival acquisition all",

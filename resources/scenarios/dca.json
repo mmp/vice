@@ -5192,7 +5192,7 @@
           "ceiling": 17900
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ACQ",
           "description": "MTV AUTO-ACQUISITION",

@@ -614,9 +614,9 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	}
 	addAirspaceVolumes("CASU", "CA SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitCA)
 	addAirspaceVolumes("MSAWSU", "MSAW SUPPRESSION AREA ALL", ss.FacilityAdaptation.Filters.InhibitMSAW)
-	addAirspaceVolumes("ARRACQ", "ARRIVAL ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.ArrivalAcquisition)
+	addAirspaceVolumes("AUTOACQ", "AUTO ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.AutoAcquisition)
 	addAirspaceVolumes("ARRDEP", "ARRIVAL DROP AREA ALL", ss.FacilityAdaptation.Filters.ArrivalDrop)
-	addAirspaceVolumes("DEPACQ", "DEPARTURE ACQUISITION AREA ALL", ss.FacilityAdaptation.Filters.DepartureAcquisition)
+	addAirspaceVolumes("DEP", "DEPARTURE AREA ALL", ss.FacilityAdaptation.Filters.Departure)
 	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
 	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
 	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.FacilityAdaptation.Filters.Quicklook)

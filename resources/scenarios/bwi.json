@@ -3052,7 +3052,7 @@
           "ceiling": 2500
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ACQ",
           "description": "CHP AUTO-ACQUISITION",

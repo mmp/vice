@@ -59916,7 +59916,7 @@
           "ceiling": 700
         }
       ],
-      "departure_acquisition": [
+      "departure": [
         {
           "id": "BOD",
           "description": "BOS DEPARTURE FILTER FOR WHO",

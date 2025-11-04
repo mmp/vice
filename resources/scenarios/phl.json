@@ -5307,7 +5307,7 @@
           ]
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "phlack",
           "description": "phl arrival acquisition all",

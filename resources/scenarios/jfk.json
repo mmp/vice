@@ -12004,7 +12004,7 @@
           "center": "KHVN"
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "jfkacq",
           "description": "jfk arrival acquisition all",

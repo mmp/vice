@@ -4287,7 +4287,7 @@
           "center": "KPRC"
         }
       ],
-      "arrival_acquisition": [
+      "auto_acquisition": [
         {
           "id": "ACQ",
           "description": "P50 AUTO-ACQUISITION",

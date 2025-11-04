@@ -330,15 +330,15 @@ type FacilityAdaptation struct {
 
 	// Airpsace filters
 	Filters struct {
-		ArrivalAcquisition   FilterRegions `json:"arrival_acquisition"`
-		ArrivalDrop          FilterRegions `json:"arrival_drop"`
-		DepartureAcquisition FilterRegions `json:"departure_acquisition"`
-		InhibitCA            FilterRegions `json:"inhibit_ca"`
-		InhibitMSAW          FilterRegions `json:"inhibit_msaw"`
-		Quicklook            FilterRegions `json:"quicklook"`
-		SecondaryDrop        FilterRegions `json:"secondary_drop"`
-		SurfaceTracking      FilterRegions `json:"surface_tracking"`
-		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
+		AutoAcquisition FilterRegions `json:"auto_acquisition"`
+		ArrivalDrop     FilterRegions `json:"arrival_drop"`
+		Departure       FilterRegions `json:"departure"`
+		InhibitCA       FilterRegions `json:"inhibit_ca"`
+		InhibitMSAW     FilterRegions `json:"inhibit_msaw"`
+		Quicklook       FilterRegions `json:"quicklook"`
+		SecondaryDrop   FilterRegions `json:"secondary_drop"`
+		SurfaceTracking FilterRegions `json:"surface_tracking"`
+		VFRInhibit      FilterRegions `json:"vfr_inhibit"`
 	} `json:"filters" scope:"stars"` //Should this be STARS or justy parts of it?
 
 	MonitoredBeaconCodeBlocksString  *string
@@ -1039,8 +1039,8 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	if len(fa.Filters.ArrivalDrop) == 0 {
 		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 0, 500, controlledAirports)
 	}
-	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makePolygonAirportFilters("ACQ", "DEPARTURE ACQUISITION", 0.35, 0, 500, controlledAirports)
+	if len(fa.Filters.Departure) == 0 {
+		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.35, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
 		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, controlledAirports)
@@ -1049,7 +1049,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 0, 250, allAirports)
+		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 0, 200, allAirports)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
@@ -1066,9 +1066,9 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 			e.Pop()
 		}
 	}
-	checkFilter(fa.Filters.ArrivalAcquisition, "arrival_acquisition")
+	checkFilter(fa.Filters.AutoAcquisition, "auto_acquisition")
 	checkFilter(fa.Filters.ArrivalDrop, "arrival_drop")
-	checkFilter(fa.Filters.DepartureAcquisition, "departure_acquisition")
+	checkFilter(fa.Filters.Departure, "departure")
 	checkFilter(fa.Filters.InhibitCA, "inhibit_ca")
 	checkFilter(fa.Filters.InhibitMSAW, "inhibit_msaw")
 	checkFilter(fa.Filters.Quicklook, "quicklook")

@@ -7801,14 +7801,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Each member of this object defines a <a href="#fe-stars-filters">filter region</a> inside
                   which STARS applies special rules to aircraft. The following types of filters may be specified:
                   <ul>
-		    <li>"arrival_acquisition": when an arrival enters this filter region, its flight plan
+		    <li>"auto_acquisition": when an aircraft enters this filter region, its flight plan
                       associates (if available), even if it is still controlled by an external controller
                       and a handoff hasn't been initiated.</li>
 		    <li>"arrival_drop": when an arrival enters one of the specified filters, their flight
                       plan disassociates from the aircraft and is deleted. A default volume 3f 2nm radius up to 500' AGL
                       around each arrival airport is generated if no filters are specified.</li>
-		    <li>"departure_acquisition": when a departure exits one of the filter volumes, STARS attempts
-                      to find the flight plan corresponding to the beacon code the aircraft is squawking.
+		    <li>"departure": if a departing flight in a departure filter is squawking a code other than 1200
+                      and there is no flight plan for that squawk code, "WHO" is displayed in its datablock.
                       The default volumes are 3nm circles from ground level to 500' AGL around the airport.</li>
                     <li>"inhibit_ca": collision alerts are disabled for aircraft within the filter's volume.
                       These are especially useful around airports so that alerts aren't issued for aircraft

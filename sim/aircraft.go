@@ -34,6 +34,10 @@ type Aircraft struct {
 
 	FlightPlan   av.FlightPlan
 	TypeOfFlight av.TypeOfFlight
+	// For departures, after we first see them in the departure acquisition
+	// volume, we set a time a bit in the future for the flight plan to
+	// actually acquire to simulate the delay in that.
+	DepartureFPAcquisitionTime time.Time
 
 	Strip av.FlightStrip
 
@@ -63,8 +67,6 @@ type Aircraft struct {
 
 	// Who had control when the fp disassociated due to an arrival filter.
 	PreArrivalDropController string
-
-	InDepartureFilter bool
 
 	FirstSeen time.Time
 

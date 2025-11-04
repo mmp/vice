@@ -132,29 +132,42 @@ func (sc *STARSComputer) Update(s *Sim) {
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
 			associate := func() bool {
 				if ac.Mode == av.TransponderModeStandby {
+					// No beacon code, so can't acquire.
 					return false
 				}
 
-				if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil && fp.ManuallyCreated {
+				fp := sc.lookupFlightPlanBySquawk(ac.Squawk)
+				if fp == nil {
+					// No flight plan for the beacon code
+					return false
+				}
+
+				if inVolumes(filters.SurfaceTracking) {
+					// Still on the ground and not yet radar visible
+					return false
+				}
+
+				if fp.ManuallyCreated {
+					// Always associate manually-created flight plans automatically
 					return true
 				}
 
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					inFilter := inVolumes(filters.DepartureAcquisition)
-					if ac.InDepartureFilter && !inFilter {
-						// Left the departure filter-time to acquire
-						ac.InDepartureFilter = false
+					// Simulate delay in tagging up between the first time it's left the surface tracking filter.
+					if !ac.DepartureFPAcquisitionTime.IsZero() && s.State.SimTime.After(ac.DepartureFPAcquisitionTime) {
+						return true
+					} else if ac.DepartureFPAcquisitionTime.IsZero() {
+						ac.DepartureFPAcquisitionTime = s.State.SimTime.Add(8 * time.Second)
+					}
+					return false
+				} else { // arrival or overflight
+					if inVolumes(filters.AutoAcquisition) {
 						return true
 					}
-					ac.InDepartureFilter = inFilter
-				} else { // arrival or overflight
-					if fp := sc.lookupFlightPlanBySquawk(ac.Squawk); fp != nil &&
-						// Inbound handoff from an external facility
-						((fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController)) ||
-							// Virtual controller
-							s.State.IsLocalController(fp.TrackingController)) {
-						return true
-					} else if inVolumes(filters.ArrivalAcquisition) {
+					// Inbound handoff from an external facility
+					if (fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController)) ||
+						// Handoff to a virtual controller
+						s.State.IsLocalController(fp.TrackingController) {
 						return true
 					}
 				}
