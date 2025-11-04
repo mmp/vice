@@ -191,15 +191,16 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		imgui.SameLine()
 		imgui.ColorEdit3V("Draw Color##3", sp.IFPHelpers.DeparturesColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
-		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("departures", 6, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.departures == nil {
 				sp.scopeDraw.departures = make(map[string]map[string]map[string]bool)
 			}
 
 			imgui.TableSetupColumn("Draw")
 			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Exit")
+			imgui.TableSetupColumn("SID")
+			imgui.TableSetupColumn("Runways")
+			imgui.TableSetupColumn("Exits")
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
@@ -208,58 +209,81 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 					sp.scopeDraw.departures[airport] = make(map[string]map[string]bool)
 				}
 				ap := c.State.Airports[airport]
-
 				runwayRates := c.State.LaunchConfig.DepartureRates[airport]
+
+				// --- 1. Group by SID instead of runway ---
+				sidGroups := make(map[string]struct {
+					Runways      []string
+					Exits        []string
+					Descriptions []string
+				})
+
 				for _, rwy := range util.SortedMapKeys(runwayRates) {
 					if sp.scopeDraw.departures[airport][rwy] == nil {
 						sp.scopeDraw.departures[airport][rwy] = make(map[string]bool)
 					}
 
 					exitRoutes := ap.DepartureRoutes[rwy]
-
-					// Multiple routes may have the same waypoints, so
-					// we'll reverse-engineer that here so we can present
-					// them together in the UI.
-					routeToExit := make(map[string][]string)
 					for exit, exitRoute := range util.SortedMap(exitRoutes) {
-						r := exitRoute.Waypoints.Encode()
-						routeToExit[r] = append(routeToExit[r], exit)
-					}
-
-					for exit, exitRoute := range util.SortedMap(exitRoutes) {
-						// Draw the row only when we hit the first exit
-						// that uses the corresponding route route.
-						r := exitRoute.Waypoints.Encode()
-						if routeToExit[r][0] != exit {
-							continue
+						group := sidGroups[exitRoute.SID]
+						if !slices.Contains(group.Runways, rwy) {
+							group.Runways = append(group.Runways, rwy)
 						}
-
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						enabled := sp.scopeDraw.departures[airport][rwy][exit]
-						imgui.Checkbox("##enable-"+airport+"-"+rwy+"-"+exit, &enabled)
-						sp.scopeDraw.departures[airport][rwy][exit] = enabled
-
-						imgui.TableNextColumn()
-						imgui.Text(airport)
-						imgui.TableNextColumn()
-						rwyBase, _, _ := strings.Cut(rwy, ".")
-						imgui.Text(rwyBase)
-						imgui.TableNextColumn()
-						if len(routeToExit) == 1 {
-							// If we only saw a single departure route, no
-							// need to list all of the exits in the UI
-							// (there are often a lot of them!)
-							imgui.Text("(all)")
-						} else {
-							// List all of the exits that use this route.
-							imgui.Text(strings.Join(routeToExit[r], ", "))
+						if !slices.Contains(group.Exits, exit) {
+							group.Exits = append(group.Exits, exit)
 						}
-						imgui.TableNextColumn()
-						imgui.Text(exitRoutes[exit].Description)
+						if exitRoute.Description != "" && !slices.Contains(group.Descriptions, exitRoute.Description) {
+							group.Descriptions = append(group.Descriptions, exitRoute.Description)
+						}
+						sidGroups[exitRoute.SID] = group
 					}
 				}
+
+				// --- 2. Render each SID once ---
+				for _, sid := range util.SortedMapKeys(sidGroups) {
+					group := sidGroups[sid]
+
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+
+					// Combine checkbox across runways (one toggle per SID)
+					enabled := false
+					for _, rwy := range group.Runways {
+						for _, exit := range group.Exits {
+							if sp.scopeDraw.departures[airport][rwy][exit] {
+								enabled = true
+							}
+						}
+					}
+					imgui.Checkbox("##enable-"+airport+"-"+sid, &enabled)
+					for _, rwy := range group.Runways {
+						for _, exit := range group.Exits {
+							sp.scopeDraw.departures[airport][rwy][exit] = enabled
+						}
+					}
+
+					imgui.TableNextColumn()
+					imgui.Text(airport)
+
+					imgui.TableNextColumn()
+					imgui.Text(sid)
+
+					imgui.TableNextColumn()
+					rwys := []string{}
+					for _, r := range group.Runways {
+						rwyBase, _, _ := strings.Cut(r, ".")
+						rwys = append(rwys, rwyBase)
+					}
+					imgui.Text(strings.Join(rwys, ", "))
+
+					imgui.TableNextColumn()
+					imgui.Text(strings.Join(group.Exits, ", "))
+
+					imgui.TableNextColumn()
+					imgui.Text(strings.Join(group.Descriptions, " / "))
+				}
 			}
+
 			imgui.EndTable()
 		}
 	}
