@@ -687,7 +687,8 @@ func (f FixSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	} else if say, ok := sayFixMap[fix]; ok {
 		return say
 	} else {
-		return fix // #yolo
+		// All-caps tends to be read letter by letter, while this can sometimes be decent.
+		return util.StopShouting(fix) // #yolo
 	}
 }
 
