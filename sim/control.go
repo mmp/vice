@@ -952,11 +952,13 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 				ToController:   s.PointOuts[acid].FromController,
 				ACID:           acid,
 			})
-			if len(ac.NASFlightPlan.PointOutHistory) < 20 {
-				fp.PointOutHistory = append([]string{tcp}, fp.PointOutHistory...)
-			} else {
-				fp.PointOutHistory = fp.PointOutHistory[:19]
-				fp.PointOutHistory = append([]string{tcp}, fp.PointOutHistory...)
+			if ac.NASFlightPlan != nil {
+				if len(ac.NASFlightPlan.PointOutHistory) < 20 {
+					fp.PointOutHistory = append([]string{tcp}, fp.PointOutHistory...)
+				} else {
+					fp.PointOutHistory = fp.PointOutHistory[:19]
+					fp.PointOutHistory = append([]string{tcp}, fp.PointOutHistory...)
+				}
 			}
 
 			delete(s.PointOuts, acid)
