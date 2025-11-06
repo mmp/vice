@@ -376,10 +376,22 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 		case imgui.KeyDownArrow:
 			if sp.commandMode == CommandModeDrawWind && sp.atmosGrid != nil {
 				sp.windDrawAltitudeIndex--
-				sp.windDrawAltitudeIndex = max(sp.windDrawAltitudeIndex, 0)
+				sp.windDrawAltitudeIndex = max(sp.windDrawAltitudeIndex, sp.minWindDrawAltitudeIndex(ctx))
 			}
 		}
 	}
+}
+
+func (sp *STARSPane) minWindDrawAltitudeIndex(ctx *panes.Context) int {
+	if sp.atmosGrid != nil {
+		elev := av.DB.Airports[ctx.Client.State.PrimaryAirport].Elevation
+		for i := range sp.atmosGrid.Res[2] - 1 {
+			if sp.atmosGrid.AltitudeForIndex(i) >= float32(elev) {
+				return i
+			}
+		}
+	}
+	return 0
 }
 
 func lookupFlightPlan(ctx *panes.Context, s string) (*sim.NASFlightPlan, *sim.Track) {
@@ -577,10 +589,11 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 							ctx.Lg.Errorf("%v", err)
 						} else {
 							sp.atmosGrid = ag
+							sp.windDrawAltitudeIndex = sp.minWindDrawAltitudeIndex(ctx)
 						}
 					})
 			}
-			sp.windDrawAltitudeIndex = 0
+			sp.windDrawAltitudeIndex = sp.minWindDrawAltitudeIndex(ctx)
 			return
 
 		case ".VFR":
