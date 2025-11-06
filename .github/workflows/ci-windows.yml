@@ -124,7 +124,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          'Vice-${{ github.ref_name }}-installer.msi'
+          Vice-${{ github.ref_name }}-installer.msi
           dat2vice.exe
           crc2vice.exe
 
