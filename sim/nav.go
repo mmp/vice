@@ -663,9 +663,9 @@ func (nav *Nav) DepartureMessage() *RadioTransmission {
 	target := util.Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
 	if target != nil && *target-nav.FlightState.Altitude > 100 {
 		// one of the two should be set, but just in case...
-		return MakeContactTransmission("at {alt} climbing {alt}", nav.FlightState.Altitude, *target)
+		return MakeContactTransmission("[at|] {alt} climbing {alt}", nav.FlightState.Altitude, *target)
 	} else {
-		return MakeContactTransmission("at {alt}", nav.FlightState.Altitude)
+		return MakeContactTransmission("[at|] {alt}", nav.FlightState.Altitude)
 	}
 }
 
