@@ -113,12 +113,11 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.13.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.13.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.12.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.1">0.12.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.10">0.11.10</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.11.9">0.11.9</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-earlier">Earlier Releases</a></li>
 	    </ul>
 	  </li>
@@ -1010,7 +1009,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.0/Vice-v0.13.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.0 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.13.1/Vice-v0.13.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.1 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1019,7 +1018,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.0/Vice-v0.13.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.0 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.13.1/Vice-v0.13.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.1 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1046,6 +1045,12 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3 id="release-0.13.1">0.13.1 (6 November 2025)</h3>
+            <ul>
+              <li>Fix Windows installer build.</li>
+              <li>Bugfix: when an aircraft in a hold is given a heading, they now fly the heading directly.</li> 
+            </ul>
+            
             <h3 id="release-0.13.0">0.13.0 (5 November 2025)</h3>
             <ul>
               <li>Added initial support for ERAM 🎉🎉🎉 (Michael Trokel)
@@ -1211,6 +1216,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
             </ul>
 
+            <div id="release-earlier" class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
+
             <h3 id="release-0.11.10">0.11.10 (15 April 2025)</h3>
             <ul>
               <li>New scenarios: GTF (Merry), PCT SHD (Ketan K).</li>
@@ -1239,12 +1250,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </ul>
               </li>
             </ul>
-
-            <div class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
 
             <h3 id="release-0.11.9">0.11.9 (22 March 2025)</h3>
             <ul>
@@ -1370,7 +1375,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
             </ul>
 
-            <h3 id="release-earlier">0.11.6 (22 October 2024)</h3>
+            <h3 id="release-0.11.6">0.11.6 (22 October 2024)</h3>
             <ul>
               <li>New scenario: LGA HAARP (Tyler T).</li>
               <li>Scenario updates: CHS, F11 (Michael Knight), SCT, C90, MKE (Jud Lopez).</li>

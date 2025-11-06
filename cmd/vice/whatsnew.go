@@ -293,6 +293,7 @@ var whatsNew []string = []string{
 	`Added support for holds`,
 	`Single controller scenarios can now be run on the server, allowing RPO/Instructor sign ins for them`,
 	`Fixed bugs with flight plan acquisition filters`,
-	`Fixed issue with VNAV descent rates that meant that altitude restrictions were sometimes missed.`,
-	`Fixed bug where airport departure rates were not being correctly followed.`,
+	`Fixed issue with VNAV descent rates that meant that altitude restrictions were sometimes missed`,
+	`Fixed bug where airport departure rates were not being correctly followed`,
+	`Bugfix: when an aircraft in a hold is given a heading, they now fly the heading directly`,
 }
