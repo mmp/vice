@@ -784,7 +784,7 @@ func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
 			nIdle++
 		}
 	}
-	return nIdle > 10
+	return nIdle > 5
 }
 
 const GetSerializeSimRPC = "SimManager.GetSerializeSim"
