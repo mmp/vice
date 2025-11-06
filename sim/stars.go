@@ -1040,7 +1040,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.Departure) == 0 {
-		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.35, 0, 500, controlledAirports)
+		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.5, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
 		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, controlledAirports)

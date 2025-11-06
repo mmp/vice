@@ -130,13 +130,13 @@ func (sc *STARSComputer) Update(s *Sim) {
 			}
 			sc.FlightPlans = append(sc.FlightPlans, fp)
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
+			fp := sc.lookupFlightPlanBySquawk(ac.Squawk)
 			associate := func() bool {
 				if ac.Mode == av.TransponderModeStandby {
 					// No beacon code, so can't acquire.
 					return false
 				}
 
-				fp := sc.lookupFlightPlanBySquawk(ac.Squawk)
 				if fp == nil {
 					// No flight plan for the beacon code
 					return false
@@ -173,10 +173,16 @@ func (sc *STARSComputer) Update(s *Sim) {
 				}
 				return false
 			}()
+			alertMissingFP := func() bool {
+				if ac.Mode == av.TransponderModeStandby || ac.Squawk == 0o1200 || fp != nil {
+					return false
+				}
+				// Only do the expensive inVolumes checks if they're actually necessary.
+				return !ac.MissingFlightPlan && !inVolumes(filters.SurfaceTracking) && inVolumes(filters.Departure)
+			}()
+
 			if associate {
-				if fp := sc.takeFlightPlanBySquawk(ac.Squawk); fp == nil {
-					ac.MissingFlightPlan = true
-				} else {
+				if fp := sc.takeFlightPlanBySquawk(ac.Squawk); fp != nil {
 					// For multi-controller, resolve to the one covering the
 					// departure position based on who is signed in now.
 					fp.TrackingController = s.State.ResolveController(fp.TrackingController)
@@ -201,6 +207,8 @@ func (sc *STARSComputer) Update(s *Sim) {
 					sc.HoldForRelease = slices.DeleteFunc(sc.HoldForRelease,
 						func(ac2 *Aircraft) bool { return ac.ADSBCallsign == ac2.ADSBCallsign })
 				}
+			} else if alertMissingFP {
+				ac.MissingFlightPlan = true
 			}
 		}
 	}
