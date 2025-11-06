@@ -623,11 +623,12 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><p>Directs the aircraft to hold at the specified fix using a published holding pattern.
                         (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D</code><i>fix</i>
                         to add it and send them direct to it.)</p>
-                      <p>There are three ways to cause an aircraft to exit an approach:
+                      <p>There are three ways to cause an aircraft to exit a hold:
                         1. Clearing them for the approach, if the hold is part of an approach assigned to the aircraft.
-                        2. Assigning a heading.
-                        3. Giving "direct FIX".
-                        In all of these cases, the aircraft will finish flying the current lap in the hold before proceeding.
+                        2. Giving "direct FIX".
+                        3. Assigning a heading.
+                        In the first two, the aircraft will finish flying the current lap in the hold before proceeding;
+                        if a heading is given, they will turn to the heading directly. 
                       <p>
                     </td>
                     <td><code>HJIMEE</code></td>

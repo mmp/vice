@@ -2395,25 +2395,17 @@ func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) *RadioTransmission {
 		return MakeUnexpectedTransmission("unable. {hdg} isn't a valid heading", hdg)
 	}
 
-	if hold := nav.Heading.Hold; hold != nil {
-		// We'll finish our lap and then depart the holding fix on the heading.
-		hold.Cancel = true
-		fix := hold.Hold.Fix
-		nfa := NavFixAssignment{}
-		nfa.Depart.Heading = &hdg
-		nav.FixAssignments[fix] = nfa
-		return MakeReadbackTransmission("cancel the hold and depart {fix} heading {hdg}", fix, hdg)
-	}
+	cancelHold := util.Select(nav.Heading.Hold != nil, "cancel the hold, ", "")
 
 	nav.assignHeading(hdg, turn)
 
 	switch turn {
 	case TurnClosest:
-		return MakeReadbackTransmission("[heading|fly heading] {hdg}", hdg)
+		return MakeReadbackTransmission(cancelHold+"[heading|fly heading] {hdg}", hdg)
 	case TurnRight:
-		return MakeReadbackTransmission("[right heading|right|turn right] {hdg}", hdg)
+		return MakeReadbackTransmission(cancelHold+"[right heading|right|turn right] {hdg}", hdg)
 	case TurnLeft:
-		return MakeReadbackTransmission("[left heading|left|turn left] {hdg}", hdg)
+		return MakeReadbackTransmission(cancelHold+"[left heading|left|turn left] {hdg}", hdg)
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
 	}
