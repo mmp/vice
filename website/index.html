@@ -113,6 +113,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.13.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.12.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.1">0.12.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
@@ -1008,7 +1009,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.12.2/Vice-v0.12.2-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.2 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.13.0/Vice-v0.13.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.0 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1017,7 +1018,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.12.2/Vice-v0.12.2-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.12.2 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.13.0/Vice-v0.13.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.0 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1043,6 +1044,72 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.13.0">0.13.0 (5 November 2025)</h3>
+            <ul>
+              <li>Added initial support for ERAM 🎉🎉🎉 (Michael Trokel)
+                <ul>
+                  <li>Added ERAM scenarios: ZNY (Michael Trokel), ZLA (Ketan K), ZBW (Ryan G)</li>
+                  <li>A functioning toolbar with real videomaps, brightness (including map brightness), DEST & TYPE line 4 DB fields, and the master toolbar menu.</li>
+                  <li>Full and limited datablocks are simulated with line 4.</li>
+                  <li>Leader lines</li>
+                  <li>PTLs which can be extended using VECTOR or page up/down</li>
+                  <li>Many ERAM commands are simulated, including:</li>
+                  <li><code>QX</code> (drop track. Note: <code>QT</code> for initiate track is not simulated).</li>
+                  <li>Accept, recall, and send handoffs.</li>
+                  <li><code>QU</code> (including <code>QU /M</code>.)</li>
+                  <li>J rings, both 5nm and 3nm.</li>
+                  <li>Hard and temporary altitudes using QZ and QQ, respectively.</li>
+                  <li><code>//</code> for on frequency indicator</li>
+                  <li><code>MR</code> for geomaps</li>
+                  <li>ERAM menu in vice settings, which contains:</li>
+                  <li>Preference sets</li>
+                  <li>Toggle for mapping ERAM commands to radio commands.</li>
+                </ul>
+              </li>
+              <li>New scenario: SAT (Trey Hensley, Xavier Caldwell)</li>
+              <li>Scenario updates: PCT/DCA, CHP, RIC, NorCal, SoCal, P50 (Ketan K), JAX (Jud Lopez), D01 (Andrew S)</li>
+              <li>Control commands can be entered&mdash;but still not issued&mdash;during pilot readbacks</li>
+              <li>Wind/weather simulation is more accurate and based on historical real-world data
+                <ul>
+                  <li>Winds aloft are much more accurate, thanks to hourly wind data from the NOAA.
+                  <li>Added STARS <code>.WIND</code> command to visualize wind fields.</li>
+                  <li>VFR aircraft no longer launch in IMC</li>
+                  <li>Aircraft climb performance is now affected by weather (temperature, relative humidity, air pressure)</li>
+                </ul>
+              </li>
+              <li>Added support for holds
+                <ul>
+                  <li><code>H</code>fix to fly a published hold at a fix; see the <a href="#atc-commands">documentation</a> for how to specify arbitrary holds at fixes.</li>
+                  <li>To cancel a hold: clear them for the approach (if they're holding at an approach fix), give them a heading, or give them direct to a fix and the hold will be canceled.</li>
+                  <li>The available charted holds can be visualized via a new "Holds" section in the scenario "info" window.</li>
+                </ul>
+              </li>
+              <li>Single controller scenarios can now be run on the server, allowing RPO/Instructor sign ins for them.</li>
+              <li>Bug fixes:
+                <ul>
+                  <li>Fixed bugs with flight plan acquisition filters</li>
+                  <li>Fixed issue with VNAV descent rates that meant that altitude restrictions were sometimes missed.</li>
+                  <li>Fixed bug where airport departure rates were not being correctly followed.</li>
+                  <li>Fix CT instruction parsing after C/A/S instruction (Adam Engebretson).</li>
+                  <li>Prevent redundant altitutde assignment on arrivals (Adam Engebretson).</li>
+                  <li>Cleaned up formatting in the departure table (Ethan Malimon).</li> 
+                  <li>Fix crash with dropped tracks.</li>                  
+                  <li>The application on Windows is there again.</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Updated to Oct 30 2025 AIRAC.</li>
+                  <li>In STARS filters, "arrival_acquisition" has been renamed to "auto_acquisition" to better describe what it does.</li>
+                  <li>Added <code>/c</code>ALT and <code>/d</code>ALT route specifiers for virtual-controller issued climb and descend instructions in routes.</li>
+                  <li>"wind" has changed: now "direction", "speed" and "flight_rules" can be specified; vice will randomly pick WX that matches. Ex: <code>"wind": { "direction": "130-180", "speed": "5+", "flight_rules": "IMC" }</code>. "speed" and "flight_rules" are optional. If no "wind" is specified, WX is selected based on the primary runway orientations.</li>
+                  <li>Added crc2vice-eram command</li>
+                </ul>
+              </li>
+                
+              
+            </ul>
 
             <h3 id="release-0.12.2">0.12.2 (29 August 2025)</h3>
             <ul>
