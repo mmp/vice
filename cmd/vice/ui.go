@@ -992,9 +992,11 @@ var secondaryAcCommands = [][3]string{
 	[3]string{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
 	[3]string{"*T_deg*R", `"Turn _deg_ degrees right".`, "*T20R*"},
 	[3]string{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
+	[3]string{"*H_fix*", `"Hold at _fix_ (published hold)".`, "*HJIMEE*"},
+	[3]string{"*H_fix*/[opts]",
+		`"Hold at _fix_ (controller-specified)." Options: *L*/*R* (turns), *xxNM*/*xxM* (legs), *Rxxx* (radial, req'd).`, "*HJIMEE/L/5NM/R090*"},
 	[3]string{"*C_fix*/A_alt*/S_kts",
-		`"Cross _fix_ at _alt_ / _kts_ knots."
-Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
+		`"Cross _fix_ at _alt_ / _kts_ knots." Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ED*", `"Expedite descent"`, "*ED*"},
 	[3]string{"*EC*", `"Expedite climb"`, "*EC*"},
 	[3]string{"*SMIN*", `"Maintain slowest practical speed".`, "*SMIN*"},

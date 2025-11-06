@@ -27,3 +27,5 @@ manifest.json
 *.pprof
 scenario-test-*.txt
 dump*.txt
+wxingest
+wxscrape

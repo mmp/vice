@@ -618,6 +618,37 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>DLENDY/H180</code></td>
                   </tr>
                   <tr>
+                    <td><code>H</code><i>fix</i></td>
+                    <td><p>Directs the aircraft to hold at the specified fix using a published holding pattern.
+                        (The specified fix must be in the aircraft's flight plan; for one that is not, first give them <code>D</code><i>fix</i>
+                        to add it and send them direct to it.)</p>
+                      <p>There are three ways to cause an aircraft to exit an approach:
+                        1. Clearing them for the approach, if the hold is part of an approach assigned to the aircraft.
+                        2. Assigning a heading.
+                        3. Giving "direct FIX".
+                        In all of these cases, the aircraft will finish flying the current lap in the hold before proceeding.
+                      <p>
+                    </td>
+                    <td><code>HJIMEE</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>H</code><i>fix</i><code>/</code><i>option</i><code>/</code><i>option</i></td>
+                    <td><p>Directs the aircraft to hold at the specified fix using controller-specified holding parameters.
+                    (The specified fix must be in the aircraft's flight plan.)</p>
+                    <p>Options may be:</p>
+                    <ul>
+                      <li><code>L</code>: left turns</li>
+                      <li><code>R</code>: right turns (default)</li>
+                      <li><i>xx</i><code>NM</code>: <i>xx</i> nautical mile legs</li>
+                      <li><i>xx</i><code>M</code>: <i>xx</i> minute legs (default: 1 minute)</li>
+                      <li><code>R</code><i>xxx</i>: inbound course on the <i>xxx</i> radial to the fix (required)</li>
+                    </ul>
+                    <p>The radial option (<code>R</code><i>xxx</i>) is required for controller-specified holds.
+                    Multiple options of the same type (e.g., both L and R, or both distance and time legs) are not allowed.</p>
+                    </td>
+                    <td><code>HJIMEE/L/5NM/R090</code><br><code>HJIMEE/R270/2M</code></td>
+                  </tr>
+                  <tr>
                     <td><code>SH</code></td>
                     <td>Directs the aircraft to say its current heading.</td>
                     <td><code>SH</code></td>

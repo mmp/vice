@@ -1506,7 +1506,7 @@ const (
 )
 
 func (t TurnDirection) String() string {
-	return util.Select(t == TurnLeft, "L", "R")
+	return []string{"Left", "Right"}[int(t)]
 }
 
 // Hold represents a charted holding pattern from CIFP or HPF
@@ -1545,6 +1545,51 @@ func (h Hold) Speed(alt float32) float32 {
 		return 230
 	} else {
 		return 265
+	}
+}
+
+type HoldEntry int
+
+const (
+	HoldEntryDirect HoldEntry = iota
+	HoldEntryParallel
+	HoldEntryTeardrop
+)
+
+func (e HoldEntry) String() string {
+	return []string{"Direct", "Parallel", "Teardrop"}[int(e)]
+}
+
+func (h Hold) Entry(headingToFix float32) HoldEntry {
+	outboundCourse := math.OppositeHeading(h.InboundCourse)
+
+	// Dividing line is 70° from outbound on holding side This creates
+	// three sectors measured from the outbound course:
+	// - Parallel: 110° on holding side from outbound
+	// - Teardrop: 70° on non-holding side from outbound
+	// - Direct: remaining 180°
+	if h.TurnDirection == TurnRight {
+		// Right turns: holding side is clockwise from outbound
+		// Parallel sector: outbound to outbound+110°
+		// Teardrop sector: outbound-70° to outbound
+		if math.IsHeadingBetween(headingToFix, outboundCourse, outboundCourse+110) {
+			return HoldEntryParallel
+		} else if math.IsHeadingBetween(headingToFix, outboundCourse-70, outboundCourse) {
+			return HoldEntryTeardrop
+		} else {
+			return HoldEntryDirect
+		}
+	} else {
+		// Left turns: holding side is counter-clockwise from outbound
+		// Parallel sector: outbound-110° to outbound
+		// Teardrop sector: outbound to outbound+70°
+		if math.IsHeadingBetween(headingToFix, outboundCourse-110, outboundCourse) {
+			return HoldEntryParallel
+		} else if math.IsHeadingBetween(headingToFix, outboundCourse, outboundCourse+70) {
+			return HoldEntryTeardrop
+		} else {
+			return HoldEntryDirect
+		}
 	}
 }
 

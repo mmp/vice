@@ -191,6 +191,10 @@ func (ac *Aircraft) DirectFix(fix string) *RadioTransmission {
 	return ac.Nav.DirectFix(strings.ToUpper(fix))
 }
 
+func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) *RadioTransmission {
+	return ac.Nav.HoldAtFix(string(ac.ADSBCallsign), strings.ToUpper(fix), hold)
+}
+
 func (ac *Aircraft) DepartFixHeading(fix string, hdg int) *RadioTransmission {
 	return ac.Nav.DepartFixHeading(strings.ToUpper(fix), float32(hdg))
 }

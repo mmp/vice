@@ -1217,6 +1217,16 @@ func (s *Sim) DirectFix(tcp string, callsign av.ADSBCallsign, fix string) error 
 		})
 }
 
+func (s *Sim) HoldAtFix(tcp string, callsign av.ADSBCallsign, fix string, hold *av.Hold) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) *RadioTransmission {
+			return setTransmissionController(tcp, ac.HoldAtFix(fix, hold))
+		})
+}
+
 func (s *Sim) DepartFixDirect(tcp string, callsign av.ADSBCallsign, fixa string, fixb string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -1527,6 +1537,102 @@ func (s *Sim) RunAircraftControlCommands(tcp string, callsign av.ADSBCallsign, c
 	return ControlCommandsResult{}
 }
 
+// parseHold parses a hold command string in the format "FIX/[option]/[option]"
+// and returns the fix name and a controller-specified hold if options are present.
+// Returns (fixName, nil, true) if no options are specified (use published hold).
+// Returns (fixName, *Hold, true) if options are successfully parsed.
+// Returns ("", nil, false) if parsing fails.
+//
+// Options may be:
+// - L: left turns
+// - R: right turns
+// - xxNM: xx nautical mile legs
+// - xxM: xx minute legs
+// - Rxxx: inbound course on the xxx radial to the fix
+//
+// If options are specified, the Rxxx radial option is required.
+// Multiple options of the same type result in an error.
+func parseHold(command string) (string, *av.Hold, bool) {
+	fix, opts, ok := strings.Cut(command, "/")
+	fix = strings.ToUpper(fix)
+	if !ok {
+		// No options, use published hold
+		return fix, nil, true
+	}
+
+	// Controller-specified hold with defaults
+	hold := av.Hold{Fix: fix}
+	directionSet := false
+
+	for opt := range strings.SplitSeq(opts, "/") {
+		opt = strings.ToUpper(opt)
+
+		switch {
+		case opt == "L":
+			if directionSet {
+				// Redundantly specified
+				return "", nil, false
+			}
+			hold.TurnDirection = av.TurnLeft
+			directionSet = true
+
+		case opt == "R":
+			if directionSet {
+				// Redundantly specified
+				return "", nil, false
+			}
+			hold.TurnDirection = av.TurnRight
+			directionSet = true
+
+		case strings.HasSuffix(opt, "NM"):
+			if hold.LegLengthNM != 0 || hold.LegMinutes != 0 {
+				return "", nil, false
+			}
+			dist, err := strconv.ParseFloat(strings.TrimSuffix(opt, "NM"), 32)
+			if err != nil || dist <= 0 {
+				return "", nil, false
+			}
+			hold.LegLengthNM = float32(dist)
+
+		case strings.HasSuffix(opt, "M") && !strings.HasSuffix(opt, "NM"):
+			if hold.LegLengthNM != 0 || hold.LegMinutes != 0 {
+				return "", nil, false
+			}
+			time, err := strconv.ParseFloat(strings.TrimSuffix(opt, "M"), 32)
+			if err != nil || time <= 0 {
+				return "", nil, false
+			}
+			hold.LegMinutes = float32(time)
+
+		case strings.HasPrefix(opt, "R") && len(opt) > 1:
+			if hold.InboundCourse != 0 {
+				return "", nil, false
+			}
+			radial, err := strconv.Atoi(opt[1:])
+			if err != nil || radial <= 0 || radial > 360 {
+				return "", nil, false
+			}
+			hold.InboundCourse = float32(radial)
+
+		default:
+			return "", nil, false
+		}
+	}
+
+	// Radial is required for controller-specified holds
+	if hold.InboundCourse == 0 {
+		return "", nil, false
+	}
+	if !directionSet {
+		hold.TurnDirection = av.TurnRight
+	}
+	if hold.LegMinutes == 0 && hold.LegLengthNM == 0 {
+		hold.LegMinutes = 1
+	}
+
+	return fix, &hold, true
+}
+
 // runOneControlCommand executes a single control command for an aircraft.
 func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command string) error {
 	if len(command) == 0 {
@@ -1674,6 +1780,7 @@ func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command
 
 	case 'H':
 		if len(command) == 1 {
+			// Present heading
 			if err := s.AssignHeading(&HeadingArgs{
 				TCP:          tcp,
 				ADSBCallsign: callsign,
@@ -1681,17 +1788,21 @@ func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command
 			}); err != nil {
 				return err
 			}
-		} else {
-			hdg, err := strconv.Atoi(command[1:])
-			if err != nil {
-				return err
-			}
+		} else if hdg, err := strconv.Atoi(command[1:]); err == nil {
+			// Fly heading xxx
 			if err := s.AssignHeading(&HeadingArgs{
 				TCP:          tcp,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
 				Turn:         TurnClosest,
 			}); err != nil {
+				return err
+			}
+		} else {
+			// Hold at fix (published or controller-specified)
+			if fix, hold, ok := parseHold(command[1:]); !ok {
+				return ErrInvalidCommandSyntax
+			} else if err := s.HoldAtFix(tcp, callsign, fix, hold); err != nil {
 				return err
 			}
 		}
