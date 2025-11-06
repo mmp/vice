@@ -1224,6 +1224,9 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 	// Significant points
 	e.Push("\"significant_points\"")
+	if s.SignificantPoints == nil {
+		s.SignificantPoints = make(map[string]sim.SignificantPoint)
+	}
 	for name, sp := range s.SignificantPoints {
 		e.Push(name)
 
