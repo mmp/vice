@@ -302,8 +302,7 @@ func (c *ControlClient) DeleteRestrictionArea(idx int, callback func(error)) {
 func (c *ControlClient) GetVideoMapLibrary(filename string) (*sim.VideoMapLibrary, error) {
 	var vmf sim.VideoMapLibrary
 	err := c.client.callWithTimeout(server.GetVideoMapLibraryRPC, &server.VideoMapsArgs{
-		ControllerToken: c.controllerToken,
-		Filename:        filename,
+		Filename: filename,
 	}, &vmf)
 	return &vmf, err
 }
