@@ -136,7 +136,7 @@ func main() {
 
 func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports map[string]bool, startDate, endDate time.Time, outputDir string) error {
 	// Download the full METAR file
-	objectName := "METAR.msgpack.zst"
+	objectName := "METAR-flate.msgpack.zst"
 	r, err := bucket.Object(objectName).NewReader(ctx)
 	if err != nil {
 		return err
@@ -150,17 +150,23 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 	}
 	defer zr.Close()
 
-	var allMETAR map[string]wx.METARSOA
-	if err := msgpack.NewDecoder(zr).Decode(&allMETAR); err != nil {
+	var allMETARCompressed map[string][]byte
+	if err := msgpack.NewDecoder(zr).Decode(&allMETARCompressed); err != nil {
 		return err
 	}
 
 	// Filter to only active airports and optionally filter by date range
-	filteredMETAR := make(map[string]wx.METARSOA)
+	filteredMETAR := make(map[string][]byte)
 
-	for icao, metarSOA := range allMETAR {
+	for icao, compressed := range allMETARCompressed {
 		if !airports[icao] {
 			continue
+		}
+
+		// Decompress the METAR SOA
+		metarSOA, err := wx.DecompressMETARSOA(compressed)
+		if err != nil {
+			return fmt.Errorf("%s: failed to decompress METAR: %w", icao, err)
 		}
 
 		// Decode the METAR data to filter by date
@@ -178,12 +184,18 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 				return fmt.Errorf("%s METAR: %w", icao, err)
 			}
 
-			filteredMETAR[icao] = filteredSOA
+			// Compress the filtered METAR SOA
+			filteredCompressed, err := wx.CompressMETARSOA(filteredSOA)
+			if err != nil {
+				return fmt.Errorf("%s: failed to compress METAR: %w", icao, err)
+			}
+
+			filteredMETAR[icao] = filteredCompressed
 		}
 	}
 
 	// Write single METAR file for all airports
-	outputPath := filepath.Join(outputDir, "METAR.msgpack.zst")
+	outputPath := filepath.Join(outputDir, "METAR-flate.msgpack.zst")
 
 	f, err := os.Create(outputPath)
 	if err != nil {
@@ -268,7 +280,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 
 		// Extract timestamp from filename like "atmos/N90/2025-08-01T00:00:00Z.msgpack.zst"
 		filename := filepath.Base(obj.Name)
-		if filename == "manifest.msgpack.zst" {
+		if filename == "manifest-int64time.msgpack.zst" {
 			continue
 		}
 

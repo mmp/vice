@@ -188,8 +188,8 @@ func readZipMETAREntries(sb StorageBackend, path string) ([]FileMETAR, error) {
 func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 	LogInfo("Uploading METAR for %d airports", len(fmetar))
 
-	// Flatten out the METAR, sort by date, eliminate duplicates, and convert to SOA
-	metar := make(map[string]wx.METARSOA)
+	// Flatten out the METAR, sort by date, eliminate duplicates, convert to SOA and flate-compress.
+	metar := make(map[string][]byte)
 	for ap, fm := range fmetar {
 		var recs []wx.METAR
 		for _, m := range fm {
@@ -210,27 +210,36 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 			}
 		}
 
-		soa, err := wx.MakeMETARSOA(recs)
-		if err != nil {
+		compressMETAR := func(recs []wx.METAR) ([]byte, error) {
+			soa, err := wx.MakeMETARSOA(recs)
+			if err != nil {
+				return nil, err
+			}
+			if err := wx.CheckMETARSOA(soa, recs); err != nil {
+				return nil, err
+			}
+			return wx.CompressMETARSOA(soa)
+		}
+
+		var err error
+		if metar[ap], err = compressMETAR(recs); err != nil {
 			return err
 		}
-		if err := wx.CheckMETARSOA(soa, recs); err != nil {
-			return err
+
+		if ap == "KOKC" {
+			// Make fake METAR for KAAC based on KOKC
+			for i := range recs {
+				recs[i].ICAO = "KAAC"
+				recs[i].Raw = strings.ReplaceAll(recs[i].Raw, "KOKC", "KAAC")
+			}
+
+			if metar["KAAC"], err = compressMETAR(recs); err != nil {
+				return err
+			}
 		}
-
-		metar[ap] = soa
 	}
 
-	// Make fake METAR for KAAC based on KOKC
-	metar["KAAC"] = metar["KOKC"]
-	kaac := metar["KAAC"]
-	kaac.Raw = slices.Clone(kaac.Raw)
-	for i := range metar["KAAC"].Raw {
-		kaac.Raw[i] = strings.ReplaceAll(kaac.Raw[i], "KOKC", "KAAC")
-	}
-	metar["KAAC"] = kaac
-
-	nb, err := st.StoreObject("METAR.msgpack.zst", metar)
+	nb, err := st.StoreObject("METAR-flate.msgpack.zst", metar)
 	if err == nil {
 		LogInfo("Stored %s for %d airports' METAR", util.ByteCount(nb), len(metar))
 	}

@@ -775,8 +775,7 @@ func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *sim
 }
 
 type VideoMapsArgs struct {
-	ControllerToken string
-	Filename        string
+	Filename string
 }
 
 const GetVideoMapLibraryRPC = "Sim.GetVideoMapLibrary"
@@ -784,9 +783,6 @@ const GetVideoMapLibraryRPC = "Sim.GetVideoMapLibrary"
 func (sd *dispatcher) GetVideoMapLibrary(vm *VideoMapsArgs, vmf *sim.VideoMapLibrary) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if _, _, ok := sd.sm.LookupController(vm.ControllerToken); !ok {
-		return ErrNoSimForControllerToken
-	}
 	if v, err := sim.LoadVideoMapLibrary(vm.Filename); err == nil {
 		*vmf = *v
 		return nil

@@ -13,8 +13,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
-	"strings"
-	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -24,7 +22,6 @@ import (
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
-	"golang.org/x/sync/errgroup"
 )
 
 func MakeWXProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
@@ -181,14 +178,31 @@ func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosB
 ///////////////////////////////////////////////////////////////////////////
 // GCSProvider
 
+// decompressTimestamps decompresses flate-compressed, delta-encoded timestamps
+// and converts them to []time.Time
+func decompressTimestamps(compressed []byte) ([]time.Time, error) {
+	timestamps, err := wx.DecompressInt64Timestamps(compressed)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to time.Time
+	times := make([]time.Time, len(timestamps))
+	for i, ts := range timestamps {
+		times[i] = time.Unix(ts, 0).UTC()
+	}
+
+	return times, nil
+}
+
 type GCSProvider struct {
-	metar          map[string]wx.METARSOA
+	metar          map[string][]byte // Compressed METARSOA per airport
 	metarFetchDone chan struct{}
 
-	precipTimes     map[string][]time.Time
+	precipTimes     map[string][]byte // Compressed delta-encoded timestamps per TRACON
 	precipFetchDone chan struct{}
 
-	atmosTimes     map[string][]time.Time
+	atmosTimes     map[string][]byte // Compressed delta-encoded timestamps per TRACON
 	atmosFetchDone chan struct{}
 
 	validIntervals     []util.TimeInterval
@@ -232,7 +246,7 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	go func() {
 		defer close(g.precipFetchDone)
 		var err error
-		g.precipTimes, err = g.fetchMonthlyManifests("precip")
+		g.precipTimes, err = g.fetchSingleManifest("precip")
 		if err != nil {
 			g.lg.Errorf("%v", err)
 		}
@@ -259,9 +273,25 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	return g, nil
 }
 
-func (g *GCSProvider) fetchMETAR() (map[string]wx.METARSOA, error) {
-	var m map[string]wx.METARSOA
-	err := g.fetchCached("METAR.msgpack.zst", &m)
+// GetTraconTimes decompresses and returns the timestamps for a specific TRACON
+func (g *GCSProvider) GetTraconTimes(timesMap map[string][]byte, tracon string) ([]time.Time, bool) {
+	compressed, ok := timesMap[tracon]
+	if !ok {
+		return nil, false
+	}
+
+	times, err := decompressTimestamps(compressed)
+	if err != nil {
+		g.lg.Errorf("Failed to decompress timestamps for %s: %v", tracon, err)
+		return nil, false
+	}
+
+	return times, true
+}
+
+func (g *GCSProvider) fetchMETAR() (map[string][]byte, error) {
+	var m map[string][]byte
+	err := g.fetchCached("METAR-flate.msgpack.zst", &m)
 	return m, err
 }
 
@@ -282,101 +312,24 @@ func (g *GCSProvider) fetchCached(path string, result any) error {
 	return util.CacheStoreObject("wx/"+path, result)
 }
 
-func (g *GCSProvider) fetchSingleManifest(prefix string) (map[string][]time.Time, error) {
-	manifestPath := filepath.Join(prefix, "manifest.msgpack.zst")
-	if m, err := g.fetchAndParseManifest(manifestPath, prefix); err != nil {
-		return nil, err
-	} else {
-		// Sort times for each TRACON
-		for _, times := range m {
-			slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
-		}
-
-		runtime.GC()
-
-		return m, nil
-	}
-}
-
-func (g *GCSProvider) fetchAndParseManifest(path, prefix string) (map[string][]time.Time, error) {
-	var tr []string
-	if err := g.fetchCached(path, &tr); err != nil {
-		return nil, err
-	}
-
-	manifest, err := util.TransposeStrings(tr)
+func (g *GCSProvider) fetchSingleManifest(prefix string) (map[string][]byte, error) {
+	manifestPath := filepath.Join(prefix, "manifest-int64time.msgpack.zst")
+	m, err := g.fetchAndParseManifest(manifestPath, prefix)
 	if err != nil {
 		return nil, err
-	}
-
-	// Parse manifest - files are in format "TRACON/timestamp.msgpack.zst"
-	m := make(map[string][]time.Time)
-	buf := make([]byte, 0, 32)
-	for _, relativePath := range manifest {
-		parts := strings.Split(relativePath, "/")
-		if len(parts) != 2 {
-			g.lg.Warnf("%s: invalid path in %s manifest", relativePath, prefix)
-		} else if t, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst")); err != nil {
-			g.lg.Warnf("%v", err)
-		} else {
-			// Copy TRACON to buffer to break GC reference, then intern
-			buf = buf[:0]
-			buf = append(buf, parts[0]...)
-			traconKey := string(buf)
-			m[traconKey] = append(m[traconKey], t.UTC())
-		}
-	}
-	return m, nil
-}
-
-func (g *GCSProvider) fetchMonthlyManifests(prefix string) (map[string][]time.Time, error) {
-	// List all monthly manifest files
-	manifestPaths, err := g.gcsClient.List(prefix + "/manifest-")
-	if err != nil {
-		return nil, err
-	}
-
-	if len(manifestPaths) == 0 {
-		return nil, fmt.Errorf("no monthly manifests found in %s/", prefix)
-	}
-
-	g.lg.Infof("Found %d monthly %s manifests", len(manifestPaths), prefix)
-
-	// Fetch in parallel
-	manifest := make(map[string][]time.Time)
-	sem := make(chan struct{}, 16)
-	var mu sync.Mutex
-	var eg errgroup.Group
-
-	for path := range manifestPaths {
-		eg.Go(func() error {
-			sem <- struct{}{}
-			defer func() { <-sem }()
-
-			m, err := g.fetchAndParseManifest(path, prefix)
-			if err != nil {
-				return err
-			} else {
-				mu.Lock()
-				defer mu.Unlock()
-				for tracon, times := range m {
-					manifest[tracon] = append(manifest[tracon], times...)
-				}
-				return nil
-			}
-		})
-	}
-
-	if err := eg.Wait(); err != nil {
-		return nil, err
-	}
-
-	// Sort times for each TRACON
-	for _, times := range manifest {
-		slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 	}
 
 	runtime.GC()
+
+	return m, nil
+}
+
+func (g *GCSProvider) fetchAndParseManifest(path, prefix string) (map[string][]byte, error) {
+	// Manifest is a map[string][]byte where values are flate-compressed, delta-encoded Unix timestamps
+	var manifest map[string][]byte
+	if err := g.fetchCached(path, &manifest); err != nil {
+		return nil, err
+	}
 
 	return manifest, nil
 }
@@ -413,20 +366,25 @@ func (g *GCSProvider) collectTimeIntervals() ([]util.TimeInterval, error) {
 
 	// Arbitrarily, use PHL as the exemplar to see what we have data for.
 	var metar []time.Time
-	if phl, ok := g.metar["KPHL"]; !ok {
+	if phlCompressed, ok := g.metar["KPHL"]; !ok {
 		return nil, errors.New("KPHL not found in metar")
 	} else {
+		// Decompress the METAR data
+		phl, err := wx.DecompressMETARSOA(phlCompressed)
+		if err != nil {
+			return nil, fmt.Errorf("failed to decompress KPHL METAR: %w", err)
+		}
 		for _, m := range wx.DecodeMETARSOA(phl) {
 			metar = append(metar, m.Time.UTC())
 		}
 		slices.SortFunc(metar, func(a, b time.Time) int { return a.Compare(b) })
 	}
 
-	precip, ok := g.precipTimes["PHL"]
+	precip, ok := g.GetTraconTimes(g.precipTimes, "PHL")
 	if !ok {
 		return nil, errors.New("PHL not found in precipTimes")
 	}
-	atmos, ok := g.atmosTimes["PHL"]
+	atmos, ok := g.GetTraconTimes(g.atmosTimes, "PHL")
 	if !ok {
 		return nil, errors.New("PHL not found in atmosTimes")
 	}
@@ -437,10 +395,21 @@ func (g *GCSProvider) collectTimeIntervals() ([]util.TimeInterval, error) {
 func (g *GCSProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error) {
 	<-g.metarFetchDone
 
+	start := time.Now()
+	defer func() {
+		fmt.Printf("%v in %s\n", airports, time.Since(start))
+	}()
+
 	m := make(map[string]wx.METARSOA)
 	for _, ap := range airports {
-		if metar, ok := g.metar[ap]; ok {
-			m[ap] = metar
+		if compressed, ok := g.metar[ap]; ok {
+			// Decompress on-demand
+			soa, err := wx.DecompressMETARSOA(compressed)
+			if err != nil {
+				g.lg.Errorf("Failed to decompress METAR for %s: %v", ap, err)
+				continue
+			}
+			m[ap] = soa
 		}
 	}
 	return m, nil
@@ -449,7 +418,7 @@ func (g *GCSProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error
 func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Time, error) {
 	<-g.precipFetchDone
 
-	times, ok := g.precipTimes[tracon]
+	times, ok := g.GetTraconTimes(g.precipTimes, tracon)
 	if !ok {
 		return "", time.Time{}, errors.New(tracon + ": unknown TRACON")
 	}
@@ -477,7 +446,7 @@ func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, atmosTime time.Time, nextTime time.Time, err error) {
 	<-g.atmosFetchDone
 
-	times, ok := g.atmosTimes[tracon]
+	times, ok := g.GetTraconTimes(g.atmosTimes, tracon)
 	if !ok {
 		err = errors.New(tracon + ": unknown TRACON")
 		return
@@ -497,7 +466,7 @@ func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosB
 		atmos = &atmosSOA
 		atmosTime = times[idx].UTC()
 		if idx+1 < len(times) {
-			nextTime = times[idx+1].UTC()
+			nextTime = times[idx+1]
 		}
 	}
 	return
@@ -569,11 +538,22 @@ func (r *ResourcesWXProvider) loadMETAR() ([]time.Time, error) {
 	r.mu.Lock(r.lg)
 	defer r.mu.Unlock(r.lg)
 
-	rd := util.LoadResource("wx/METAR.msgpack.zst")
+	rd := util.LoadResource("wx/METAR-flate.msgpack.zst")
 	defer rd.Close()
 
-	if err := msgpack.NewDecoder(rd).Decode(&r.metar); err != nil {
+	// Load compressed METAR map
+	var compressedMETAR map[string][]byte
+	if err := msgpack.NewDecoder(rd).Decode(&compressedMETAR); err != nil {
 		return nil, err
+	}
+
+	// Decompress each airport's METAR SOA
+	for icao, compressed := range compressedMETAR {
+		metarSOA, err := wx.DecompressMETARSOA(compressed)
+		if err != nil {
+			return nil, fmt.Errorf("%s: failed to decompress METAR: %w", icao, err)
+		}
+		r.metar[icao] = metarSOA
 	}
 
 	var times []time.Time

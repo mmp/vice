@@ -1,6 +1,8 @@
 package wx
 
 import (
+	"bytes"
+	"compress/flate"
 	"encoding/json"
 	"fmt"
 	"slices"
@@ -11,6 +13,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 // This is as much of the METAR as we need at runtime.
@@ -375,4 +378,59 @@ func CheckMETARSOA(soa METARSOA, orig []METAR) error {
 	}
 
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Compression
+
+// CompressMETARSOA compresses a METARSOA object by msgpack-encoding it and
+// then compressing with flate. The compressed data can be stored in memory
+// and decompressed on-demand to reduce memory usage.
+func CompressMETARSOA(soa METARSOA) ([]byte, error) {
+	// First encode to msgpack
+	var buf bytes.Buffer
+	encoder := msgpack.NewEncoder(&buf)
+	if err := encoder.Encode(soa); err != nil {
+		return nil, fmt.Errorf("msgpack encode: %w", err)
+	}
+
+	// Then compress with flate
+	var compressed bytes.Buffer
+	writer, err := flate.NewWriter(&compressed, flate.BestCompression)
+	if err != nil {
+		return nil, fmt.Errorf("flate writer: %w", err)
+	}
+
+	if _, err := writer.Write(buf.Bytes()); err != nil {
+		writer.Close()
+		return nil, fmt.Errorf("flate write: %w", err)
+	}
+
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("flate close: %w", err)
+	}
+
+	return compressed.Bytes(), nil
+}
+
+// DecompressMETARSOA decompresses a METARSOA object that was compressed
+// with CompressMETARSOA.
+func DecompressMETARSOA(compressed []byte) (METARSOA, error) {
+	// First decompress with flate
+	reader := flate.NewReader(bytes.NewReader(compressed))
+	defer reader.Close()
+
+	var decompressed bytes.Buffer
+	if _, err := decompressed.ReadFrom(reader); err != nil {
+		return METARSOA{}, fmt.Errorf("flate decompress: %w", err)
+	}
+
+	// Then decode msgpack
+	var soa METARSOA
+	decoder := msgpack.NewDecoder(&decompressed)
+	if err := decoder.Decode(&soa); err != nil {
+		return METARSOA{}, fmt.Errorf("msgpack decode: %w", err)
+	}
+
+	return soa, nil
 }

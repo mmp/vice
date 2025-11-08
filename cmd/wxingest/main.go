@@ -10,11 +10,10 @@ import (
 	"net/http/pprof"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"slices"
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
@@ -158,38 +157,22 @@ func LogFatal(msg string, args ...any) {
 	os.Exit(1)
 }
 
-func generateManifest(sb StorageBackend, prefix string) error {
-	LogInfo("%s: updating consolidated manifest", prefix)
+// parseObjectPathTimestamp extracts TRACON and Unix timestamp from paths like "TRACON/2025-08-06T03:00:00Z.msgpack.zst"
+func parseObjectPathTimestamp(relativePath string) (tracon string, timestamp int64, err error) {
+	parts := strings.Split(relativePath, "/")
+	if len(parts) != 2 {
+		return "", 0, fmt.Errorf("unexpected path format: %s", relativePath)
+	}
 
-	paths, err := sb.List(prefix + "/")
+	tracon = parts[0]
+	timestampStr := strings.TrimSuffix(parts[1], ".msgpack.zst")
+
+	t, err := time.Parse(time.RFC3339, timestampStr)
 	if err != nil {
-		return err
+		return "", 0, fmt.Errorf("failed to parse timestamp: %w", err)
 	}
 
-	var manifest []string
-	for path := range paths {
-		// Remove prefix and exclude existing manifests
-		relativePath := strings.TrimPrefix(path, prefix+"/")
-		if !strings.HasSuffix(relativePath, "manifest.msgpack.zst") {
-			manifest = append(manifest, relativePath)
-		}
-	}
-	slices.Sort(manifest)
-
-	tm, err := util.TransposeStrings(manifest) // for better compressibility
-	if err != nil {
-		return err
-	}
-
-	manifestPath := filepath.Join(prefix, "manifest.msgpack.zst")
-	n, err := sb.StoreObject(manifestPath, tm)
-	if err != nil {
-		return err
-	}
-
-	LogInfo("Stored %d items in consolidated %s (%s)", len(manifest), manifestPath, util.ByteCount(n))
-
-	return nil
+	return tracon, t.Unix(), nil
 }
 
 func launchHTTPServer() {

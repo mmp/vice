@@ -70,7 +70,11 @@ func ingestPrecip(sb StorageBackend) error {
 		return err
 	}
 
-	return generateMonthlyManifests(sb, months)
+	if err := generateMonthlyManifests(sb, months); err != nil {
+		return err
+	}
+
+	return generateConsolidatedManifest(sb)
 }
 
 func processPrecip(sb StorageBackend, path string) (int64, string, error) {
@@ -141,7 +145,8 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 	for month := range months {
 		LogInfo("Generating manifest for %s", month)
 
-		var manifest []string
+		manifest := make(map[string][]byte)
+		timestampCounts := make(map[string]int)
 		var mu sync.Mutex
 		sem := make(chan struct{}, 16)
 		eg := errgroup.Group{}
@@ -157,13 +162,33 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 					return fmt.Errorf("failed to list files for %s: %w", prefix, err)
 				}
 
-				mu.Lock()
+				var timestamps []int64
 				for path := range files {
 					relativePath := strings.TrimPrefix(path, "precip/")
 					if !strings.Contains(relativePath, "manifest") {
-						manifest = append(manifest, relativePath)
+						_, ts, err := parseObjectPathTimestamp(relativePath)
+						if err != nil {
+							LogError("%s: %v", relativePath, err)
+							continue
+						}
+						timestamps = append(timestamps, ts)
 					}
 				}
+
+				if len(timestamps) == 0 {
+					return nil
+				}
+
+				// Sort and compress timestamps
+				slices.Sort(timestamps)
+				compressed, err := wx.CompressInt64Timestamps(timestamps)
+				if err != nil {
+					return fmt.Errorf("failed to compress timestamps for %s: %w", tracon, err)
+				}
+
+				mu.Lock()
+				manifest[tracon] = compressed
+				timestampCounts[tracon] = len(timestamps)
 				mu.Unlock()
 
 				return nil
@@ -173,27 +198,99 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 		if err := eg.Wait(); err != nil {
 			return err
 		}
-		LogInfo("Found %d precip objects", len(manifest))
 
-		if len(manifest) == 0 {
+		totalEntries := 0
+		for _, count := range timestampCounts {
+			totalEntries += count
+		}
+		LogInfo("Found %d precip objects for %s", totalEntries, month)
+
+		if totalEntries == 0 {
 			LogInfo("No files found for %s, skipping manifest", month)
 			continue
 		}
 
-		slices.Sort(manifest)
-		tm, err := util.TransposeStrings(manifest)
-		if err != nil {
-			return fmt.Errorf("failed to transpose manifest for %s: %w", month, err)
-		}
-
-		manifestPath := fmt.Sprintf("precip/manifest-%s.msgpack.zst", month)
-		n, err := sb.StoreObject(manifestPath, tm)
+		manifestPath := fmt.Sprintf("precip/manifest-int64time-%s.msgpack.zst", month)
+		n, err := sb.StoreObject(manifestPath, manifest)
 		if err != nil {
 			return fmt.Errorf("failed to store manifest for %s: %w", month, err)
 		}
 
-		LogInfo("Stored %d items in %s (%s)", len(manifest), manifestPath, util.ByteCount(n))
+		LogInfo("Stored %d items in %s (%s)", totalEntries, manifestPath, util.ByteCount(n))
 	}
 
+	return nil
+}
+
+func generateConsolidatedManifest(sb StorageBackend) error {
+	LogInfo("Generating consolidated precip manifest from monthly manifests")
+
+	// List all monthly manifest files
+	manifestCh := make(chan string)
+	go func() {
+		defer close(manifestCh)
+		if err := sb.ChanList("precip/manifest-int64time-", manifestCh); err != nil {
+			LogError("Failed to list monthly manifests: %v", err)
+		}
+	}()
+
+	// Merge timestamps from all monthly manifests
+	timestamps := make(map[string][]int64)
+	var mu sync.Mutex
+	eg := errgroup.Group{}
+	sem := make(chan struct{}, 16)
+
+	for path := range manifestCh {
+		eg.Go(func() error {
+			sem <- struct{}{}
+			defer func() { <-sem }()
+
+			var monthlyManifest map[string][]byte
+			if err := sb.ReadObject(path, &monthlyManifest); err != nil {
+				return fmt.Errorf("failed to read %s: %w", path, err)
+			}
+
+			// Decompress timestamps for each TRACON
+			for tracon, compressed := range monthlyManifest {
+				ts, err := wx.DecompressInt64Timestamps(compressed)
+				if err != nil {
+					return err
+				}
+
+				mu.Lock()
+				timestamps[tracon] = append(timestamps[tracon], ts...)
+				mu.Unlock()
+			}
+
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	// Sort and compress merged timestamps
+	consolidated := make(map[string][]byte)
+	totalEntries := 0
+
+	for tracon, timestamps := range timestamps {
+		slices.Sort(timestamps)
+		compressed, err := wx.CompressInt64Timestamps(timestamps)
+		if err != nil {
+			return err
+		}
+		consolidated[tracon] = compressed
+		totalEntries += len(timestamps)
+	}
+
+	// Store consolidated manifest
+	manifestPath := "precip/manifest-int64time.msgpack.zst"
+	n, err := sb.StoreObject(manifestPath, consolidated)
+	if err != nil {
+		return fmt.Errorf("failed to store consolidated manifest: %w", err)
+	}
+
+	LogInfo("Stored %d items in %s (%s) from monthly manifests", totalEntries, manifestPath, util.ByteCount(n))
 	return nil
 }
