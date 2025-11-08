@@ -1,5 +1,5 @@
 *~
-#*#
+\#*#
 *.vsess
 .DS_Store
 installer.wixobj
@@ -16,7 +16,7 @@ Vice.App/
 icon.iconset/
 icon.icns
 vice-logs/
-vice
+/vice
 vice.exe
 vice.zip
 vice.slog
@@ -27,5 +27,5 @@ manifest.json
 *.pprof
 scenario-test-*.txt
 dump*.txt
-wxingest
-wxscrape
+/wxingest
+/wxscrape
