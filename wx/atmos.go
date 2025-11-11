@@ -405,16 +405,71 @@ type AtmosGrid struct {
 }
 
 type WindSample struct {
-	// WindVec is the wind velocity vector (direction air mass is moving) in nm/s.
-	// When added to aircraft velocity, it represents wind's effect on the aircraft.
-	WindVec [2]float32 // nm / s
+	// windVec stores the wind velocity vector (direction air mass is moving) in nm/s.
+	// Quantized as int8 with scale factor 1800: int8 = round(component * 1800)
+	// Range: ±0.0705 nm/s per component (≈ ±254 knots)
+	windVec [2]int8
 }
 
 type Sample struct {
 	WindSample
-	Temperature float32 // Celsius
-	Dewpoint    float32 // Celsius
-	Pressure    float32 // millibars
+	// temperature in Celsius, stored directly as int8
+	temperature int8
+	// dewpoint in Celsius, stored directly as int8
+	dewpoint int8
+	// pressure in millibars, quantized as uint8
+	// uint8 = round((pressure - pressureMin) * pressureScale / (pressureMax - pressureMin))
+	pressure uint8
+}
+
+// Quantization constants
+const (
+	windVecScale = 1800.0 // scale factor for wind vector components
+	pressureMin  = 50.0   // minimum pressure in mb (high altitude)
+	pressureMax  = 1090.0 // maximum pressure in mb (below sea level, high pressure systems)
+)
+
+// WindVec returns the dequantized wind velocity vector in nm/s
+func (w WindSample) WindVec() [2]float32 {
+	return [2]float32{
+		float32(w.windVec[0]) / windVecScale,
+		float32(w.windVec[1]) / windVecScale,
+	}
+}
+
+// Temperature returns the temperature in Celsius
+func (s Sample) Temperature() float32 {
+	return float32(s.temperature)
+}
+
+// Dewpoint returns the dewpoint in Celsius
+func (s Sample) Dewpoint() float32 {
+	return float32(s.dewpoint)
+}
+
+// Pressure returns the pressure in millibars
+func (s Sample) Pressure() float32 {
+	return math.Lerp(float32(s.pressure)/255, pressureMin, pressureMax)
+}
+
+// MakeSample creates a Sample from float32 values, quantizing them appropriately.
+// Values are clamped to prevent overflow.
+func MakeSample(windVec [2]float32, temperature, dewpoint, pressure float32) Sample {
+	// Clamp wind vector components to int8 range after scaling
+	const maxWindComponent = 127.0 / windVecScale  // ≈ 0.0705 nm/s
+	const minWindComponent = -128.0 / windVecScale // ≈ -0.0711 nm/s
+
+	return Sample{
+		WindSample: WindSample{
+			windVec: [2]int8{
+				int8(math.Round(math.Clamp(windVec[0], minWindComponent, maxWindComponent) * windVecScale)),
+				int8(math.Round(math.Clamp(windVec[1], minWindComponent, maxWindComponent) * windVecScale)),
+			},
+		},
+		temperature: int8(math.Round(math.Clamp(temperature, -128, 127))),
+		dewpoint:    int8(math.Round(math.Clamp(dewpoint, -128, 127))),
+		pressure:    uint8(math.Round(math.Clamp((pressure-pressureMin)*255/(pressureMax-pressureMin), 0, 255))),
+	}
 }
 
 func MakeStandardSampleForAltitude(alt float32) Sample {
@@ -441,23 +496,18 @@ func MakeStandardSampleForAltitude(alt float32) Sample {
 	// Should be updated to handle stratosphere (above 36,089 ft) if
 	// higher altitudes become important in the future.
 
-	return Sample{
-		WindSample:  WindSample{}, // Calm wind
-		Temperature: temperature,
-		Dewpoint:    dewpoint,
-		Pressure:    pressure,
-	}
+	return MakeSample([2]float32{0, 0}, temperature, dewpoint, pressure)
 }
 
 func (s WindSample) WindDirection() float32 {
 	// WindVec is a velocity vector (direction air is moving). To report
 	// the meteorological "wind FROM" direction, we take the opposite of
 	// the direction the velocity vector points.
-	return math.OppositeHeading(math.VectorHeading(s.WindVec))
+	return math.OppositeHeading(math.VectorHeading(s.WindVec()))
 }
 
 func (s WindSample) WindSpeed() float32 { // returns knots
-	l := math.Length2f(s.WindVec)
+	l := math.Length2f(s.WindVec())
 	return l * 3600 /* seconds -> hour */
 }
 
@@ -465,7 +515,7 @@ func (s WindSample) WindSpeed() float32 { // returns knots
 // Given a velocity vector v, it returns the deflection angle that should be
 // subtracted from the heading to fly into the wind.
 func (s WindSample) Deflection(v [2]float32) float32 {
-	wvec := s.WindVec
+	wvec := s.WindVec()
 	vp := math.Add2f(v, math.Scale2f(wvec, 3600))
 
 	vn, vpn := math.Normalize2f(v), math.Normalize2f(vp)
@@ -481,7 +531,7 @@ func (s WindSample) Deflection(v [2]float32) float32 {
 // Positive values indicate tailwind, negative values indicate headwind.
 func (s WindSample) Component(course float32) float32 {
 	courseVec := math.SinCos(math.Radians(course))
-	wvec := s.WindVec
+	wvec := s.WindVec()
 	windSpeed := math.Length2f(wvec) * 3600
 	windDir := math.Normalize2f(wvec)
 	return math.Dot(courseVec, windDir) * windSpeed
@@ -489,23 +539,26 @@ func (s WindSample) Component(course float32) float32 {
 
 func (s Sample) String() string {
 	return fmt.Sprintf("Wind %03d at %d, temp %.1fC, dewpoint %.1fC (%.1f%% rel. humidity), pressure %.1f mb",
-		int(s.WindDirection()), int(s.WindSpeed()+0.5), s.Temperature, s.Dewpoint, s.RelativeHumidity(), s.Pressure)
+		int(s.WindDirection()), int(s.WindSpeed()+0.5), s.Temperature(), s.Dewpoint(), s.RelativeHumidity(), s.Pressure())
 }
 
 func (s Sample) RelativeHumidity() float32 {
 	// Magnus formula constants
 	// Use dewpoint to determine if we're dealing with ice or water
-	a := util.Select(s.Dewpoint > 0, float32(17.625), float32(21.875))
-	b := util.Select(s.Dewpoint > 0, float32(243.04), float32(265.5))
+	dewpoint := s.Dewpoint()
+	temperature := s.Temperature()
+
+	a := util.Select(dewpoint > 0, float32(17.625), float32(21.875))
+	b := util.Select(dewpoint > 0, float32(243.04), float32(265.5))
 
 	// Calculate saturation vapor pressure at dew point (neglecting 6.1094
 	// factor, which will cancel out in the division below).
-	vpDew := math.FastExp((a * s.Dewpoint) / (b + s.Dewpoint))
+	vpDew := math.FastExp((a * dewpoint) / (b + dewpoint))
 
 	// Saturation vapor pressure at temperature (also neglecting 6.1094 factor).
-	aTemp := util.Select(s.Temperature > 0, float32(17.625), float32(21.875))
-	bTemp := util.Select(s.Temperature > 0, float32(243.04), float32(265.5))
-	vpTemp := math.FastExp((aTemp * s.Temperature) / (bTemp + s.Temperature))
+	aTemp := util.Select(temperature > 0, float32(17.625), float32(21.875))
+	bTemp := util.Select(temperature > 0, float32(243.04), float32(265.5))
+	vpTemp := math.FastExp((aTemp * temperature) / (bTemp + temperature))
 
 	rh := 100 * (vpDew / vpTemp)
 
@@ -513,12 +566,11 @@ func (s Sample) RelativeHumidity() float32 {
 }
 
 func LerpSample(x float32, s0, s1 Sample) Sample {
-	return Sample{
-		WindSample:  WindSample{WindVec: math.Lerp2f(x, s0.WindVec, s1.WindVec)},
-		Temperature: math.Lerp(x, s0.Temperature, s1.Temperature),
-		Dewpoint:    math.Lerp(x, s0.Dewpoint, s1.Dewpoint),
-		Pressure:    math.Lerp(x, s0.Pressure, s1.Pressure),
-	}
+	windVec := math.Lerp2f(x, s0.WindVec(), s1.WindVec())
+	temperature := math.Lerp(x, s0.Temperature(), s1.Temperature())
+	dewpoint := math.Lerp(x, s0.Dewpoint(), s1.Dewpoint())
+	pressure := math.Lerp(x, s0.Pressure(), s1.Pressure())
+	return MakeSample(windVec, temperature, dewpoint, pressure)
 }
 
 func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid {
@@ -543,6 +595,13 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 
 	g.Points = make([]Sample, g.Res[0]*g.Res[1]*g.Res[2])
 	sumWt := make([]float32, g.Res[0]*g.Res[1]*g.Res[2])
+
+	// Accumulate in float32 arrays before quantization
+	numPoints := g.Res[0] * g.Res[1] * g.Res[2]
+	sumWindVec := make([][2]float32, numPoints)
+	sumTemperature := make([]float32, numPoints)
+	sumDewpoint := make([]float32, numPoints)
+	sumPressure := make([]float32, numPoints)
 
 	// In xy, we accumulate to the nearest sample in the grid; for
 	// z/altitude, we lerp along the non-uniform altitude spacing from the
@@ -580,24 +639,27 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 			v0 := [2]float32{s0.UComponent * meterToNm, s0.VComponent * meterToNm}
 			v1 := [2]float32{s1.UComponent * meterToNm, s1.VComponent * meterToNm}
 			gidx := ipg[0] + ipg[1]*g.Res[0] + z*g.Res[0]*g.Res[1]
-			g.Points[gidx].WindVec = math.Add2f(g.Points[gidx].WindVec, math.Lerp2f(t, v0, v1))
+			sumWindVec[gidx] = math.Add2f(sumWindVec[gidx], math.Lerp2f(t, v0, v1))
 
 			const kelvinToCelsius = -273.15
-			g.Points[gidx].Temperature += math.Lerp(t, s0.Temperature, s1.Temperature) + kelvinToCelsius
-			g.Points[gidx].Dewpoint += math.Lerp(t, s0.Dewpoint, s1.Dewpoint) + kelvinToCelsius
+			sumTemperature[gidx] += math.Lerp(t, s0.Temperature, s1.Temperature) + kelvinToCelsius
+			sumDewpoint[gidx] += math.Lerp(t, s0.Dewpoint, s1.Dewpoint) + kelvinToCelsius
 
 			p0, p1 := PressureFromLevelIndex(idx), PressureFromLevelIndex(idx+1)
-			g.Points[gidx].Pressure = math.Lerp(t, p0, p1)
+			sumPressure[gidx] += math.Lerp(t, p0, p1)
 
 			sumWt[gidx]++
 		}
 	}
 
+	// Normalize by weights and quantize to Sample
 	for i, wt := range sumWt {
 		if wt != 0 {
-			g.Points[i].WindVec = math.Scale2f(g.Points[i].WindVec, 1/wt)
-			g.Points[i].Temperature /= wt
-			g.Points[i].Dewpoint /= wt
+			windVec := math.Scale2f(sumWindVec[i], 1/wt)
+			temperature := sumTemperature[i] / wt
+			dewpoint := sumDewpoint[i] / wt
+			pressure := sumPressure[i] / wt
+			g.Points[i] = MakeSample(windVec, temperature, dewpoint, pressure)
 		}
 	}
 
@@ -646,7 +708,7 @@ func (g *AtmosGrid) Lookup(p math.Point2LL, alt float32) (Sample, bool) {
 	izg := int(math.Round(zg))
 	idx := ipg[0] + ipg[1]*g.Res[0] + izg*g.Res[0]*g.Res[1]
 
-	if g.Points[idx].Temperature == 0 {
+	if g.Points[idx].temperature == 0 && g.Points[idx].pressure == 0 {
 		// No samples hit this one during the splat phase
 		return Sample{}, false
 	}

@@ -963,10 +963,10 @@ func (nav *Nav) atmosClimbFactor(wxs wx.Sample) float32 {
 	}
 
 	// Temperature factor (only apply if above ISA)
-	pressureAltitude := mbToPressureAltitude(wxs.Pressure)
+	pressureAltitude := mbToPressureAltitude(wxs.Pressure())
 	isaTemp := 15 - (2 * pressureAltitude / 1000)
 	tempFactor := float32(1)
-	tempDeviation := wxs.Temperature - isaTemp
+	tempDeviation := wxs.Temperature() - isaTemp
 	if tempDeviation > 0 {
 		tempFactor = 1 + (tempCorrection * tempDeviation)
 	}
@@ -1063,7 +1063,7 @@ func (nav *Nav) updatePositionAndGS(wxs wx.Sample) {
 	// Further offset based on the wind
 	var windVector [2]float32
 	if nav.IsAirborne() {
-		windVector = wxs.WindVec
+		windVector = wxs.WindVec()
 	}
 
 	// Update the aircraft's state
