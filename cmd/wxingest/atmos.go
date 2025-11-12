@@ -597,30 +597,68 @@ func (sg *Grid) PointCount() int {
 	return total
 }
 
-// buildGridFromGRIB2 constructs a  grid index from GRIB2 records.
+// Merge merges another grid into this grid by appending all points from the other grid's cells.
+func (sg *Grid) Merge(other *Grid) {
+	for cell, points := range other.Cells {
+		sg.Cells[cell] = append(sg.Cells[cell], points...)
+	}
+}
+
+// buildGridFromGRIB2 constructs a grid index from GRIB2 records.
 // This index can be reused across multiple TRACON queries.
 func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
-	grid := NewGrid(0.5) // 0.5 degrees ~ 30-35nm at mid-latitudes
-
-	for recIdx, record := range records {
-		for ptIdx := range record.NumPoints {
-			// Skip missing values
-			if squall.IsMissing(record.Data[ptIdx]) {
-				continue
-			}
-
-			lon := record.Longitudes[ptIdx]
-			if lon > 180 {
-				lon -= 360
-			}
-			pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
-
-			grid.AddPoint(pt, recIdx, ptIdx)
-		}
+	numWorkers := *nWorkers
+	if numWorkers > len(records) {
+		numWorkers = len(records)
 	}
 
-	LogInfo("Built  grid: %d cells, %d points", len(grid.Cells), grid.PointCount())
-	return grid
+	// Partition records across workers
+	recordsPerWorker := (len(records) + numWorkers - 1) / numWorkers
+
+	partialGrids := make([]*Grid, numWorkers)
+	var eg errgroup.Group
+
+	for i := range numWorkers {
+		eg.Go(func() error {
+			grid := NewGrid(0.5) // 0.5 degrees ~ 30-35nm at mid-latitudes
+			start := i * recordsPerWorker
+			end := min(start+recordsPerWorker, len(records))
+
+			for recIdx := start; recIdx < end; recIdx++ {
+				record := records[recIdx]
+				for ptIdx := range record.NumPoints {
+					// Skip missing values
+					if squall.IsMissing(record.Data[ptIdx]) {
+						continue
+					}
+
+					lon := record.Longitudes[ptIdx]
+					if lon > 180 {
+						lon -= 360
+					}
+					pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
+
+					grid.AddPoint(pt, recIdx, ptIdx)
+				}
+			}
+
+			partialGrids[i] = grid
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		panic(err) // shouldn't happen in grid building
+	}
+
+	// Merge all partial grids
+	finalGrid := partialGrids[0]
+	for i := 1; i < len(partialGrids); i++ {
+		finalGrid.Merge(partialGrids[i])
+	}
+
+	LogInfo("Built grid: %d cells, %d points", len(finalGrid.Cells), finalGrid.PointCount())
+	return finalGrid
 }
 
 // validateGridForTracon validates that QueryCircle returns exactly the
