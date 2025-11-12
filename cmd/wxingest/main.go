@@ -22,6 +22,7 @@ import (
 var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local files")
 var nWorkers = flag.Int("nworkers", 16, "Number of worker goroutines for concurrent uploads")
 var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
+var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
 var validateGrid = flag.Bool("validate-grid", false, "Validate that HRRR grid returns same points as exhaustive search")
 
 // Cleanup coordination for signal handlers

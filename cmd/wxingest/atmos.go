@@ -9,6 +9,7 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"sync/atomic"
 	"syscall"
 	"time"
 
@@ -99,61 +100,12 @@ func ingestHRRR(sb StorageBackend) error {
 
 	existing := listIngestedAtmos(sb)
 
-	timesCh := timesToProcess(validIntervals, existing)
-
+	tCh := make(chan time.Time)
 	eg, ctx := errgroup.WithContext(context.Background())
-	for range *nWorkers {
-		eg.Go(func() error {
-			for {
-				var t timeToProcess
-				var ok bool
-				select {
-				case t, ok = <-timesCh:
-					if !ok {
-						return nil
-					}
-				case <-ctx.Done():
-					return ctx.Err()
-				}
-
-				path, err := downloadHRRRForTime(t.t, tfr, hrrrsb)
-				if err != nil {
-					LogError("%v", err)
-					continue
-				}
-				LogInfo("Starting work on " + t.t.Format(time.RFC3339))
-
-				if err := ingestHRRRForTime(path, t.t, t.tracons, sb, hrrrsb); err != nil {
-					LogError("%v", err)
-					continue
-				}
-			}
-		})
-	}
-
-	if err := eg.Wait(); err != nil {
-		return err
-	}
-
-	// Merge HRRR transfer statistics into main backend
-	if mainTB, ok := sb.(*TrackingBackend); ok {
-		mainTB.MergeStats(hrrrsb)
-	}
-
-	return generateAtmosManifest(sb)
-
-}
-
-type timeToProcess struct {
-	t       time.Time
-	tracons []string
-}
-
-func timesToProcess(validIntervals []util.TimeInterval, existing map[time.Time][]string) <-chan timeToProcess {
-	// Process all hours within valid day intervals
-	tCh := make(chan timeToProcess)
-	go func() {
+	eg.Go(func() error {
 		defer close(tCh)
+
+		// Process all hours within valid day intervals
 		for _, interval := range validIntervals {
 			start := interval[0].UTC()
 			end := interval[1].UTC()
@@ -177,12 +129,66 @@ func timesToProcess(validIntervals []util.TimeInterval, existing map[time.Time][
 				}
 				if len(missing) > 0 {
 					LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
-					tCh <- timeToProcess{t: t, tracons: missing}
+
+					select {
+					case tCh <- t:
+					case <-ctx.Done():
+						return ctx.Err()
+					}
+					if *hrrrQuick {
+						return nil
+					}
 				}
 			}
 		}
-	}()
-	return tCh
+		return nil
+	})
+
+	type downloadedHRRR struct {
+		path string
+		t    time.Time
+	}
+	hrrrCh := make(chan downloadedHRRR, 1) // buffer 1 to have the next one prefetched.
+	eg.Go(func() error {
+		// Download HRRR files in a goroutine so that we can start
+		// downloading the next one after the one currently being
+		// processed.
+		defer close(hrrrCh)
+		for t := range tCh {
+			path, err := downloadHRRRForTime(t, tfr, hrrrsb)
+			if err != nil {
+				LogError("%v", err)
+			} else {
+				select {
+				case hrrrCh <- downloadedHRRR{path: path, t: t}:
+				case <-ctx.Done():
+					return ctx.Err()
+				}
+			}
+		}
+		return nil
+	})
+
+	eg.Go(func() error {
+		for hrrr := range hrrrCh {
+			LogInfo("Starting work on " + hrrr.t.Format(time.RFC3339))
+			if err := ingestHRRRForTime(hrrr.path, hrrr.t, existing[hrrr.t], sb, hrrrsb); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	// Merge HRRR transfer statistics into main backend
+	if mainTB, ok := sb.(*TrackingBackend); ok {
+		mainTB.MergeStats(hrrrsb)
+	}
+
+	return generateAtmosManifest(sb)
 
 }
 
@@ -213,6 +219,11 @@ func generateAtmosManifest(sb StorageBackend) error {
 func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 	ingested := make(map[time.Time][]string) // which TRACONs have the data for the time
 
+	if *hrrrQuick {
+		// start at the beginning
+		return nil
+	}
+
 	// List all objects under atmos/ in one call
 	atmosPaths, err := sb.List("atmos/")
 	if err != nil {
@@ -242,7 +253,7 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 	return ingested
 }
 
-func checkDiskSpace(path string, requiredGB int) error {
+func checkDiskSpace(path string, requiredGB int64) error {
 	var stat syscall.Statfs_t
 	if err := syscall.Statfs(path, &stat); err != nil {
 		return fmt.Errorf("failed to check disk space for %s: %w", path, err)
@@ -250,7 +261,7 @@ func checkDiskSpace(path string, requiredGB int) error {
 
 	// Calculate available space in bytes
 	availableBytes := int64(stat.Bavail) * int64(stat.Bsize)
-	requiredBytes := int64(requiredGB) * 1024 * 1024 * 1024
+	requiredBytes := requiredGB * 1024 * 1024 * 1024
 
 	if availableBytes < requiredBytes {
 		return fmt.Errorf("insufficient disk space in %s: %.2f GB available, %d GB required",
@@ -262,7 +273,7 @@ func checkDiskSpace(path string, requiredGB int) error {
 
 func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb StorageBackend) (string, error) {
 	// Check disk space before downloading
-	if err := checkDiskSpace(".", (*nWorkers+2)/3 /* ~300 MB per HRRR */); err != nil {
+	if err := checkDiskSpace(".", 2); err != nil {
 		return "", err
 	}
 
@@ -301,7 +312,7 @@ func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb Storage
 	return hf.Name(), nil
 }
 
-func ingestHRRRForTime(gribPath string, t time.Time, missingTRACONs []string, sb, hrrrsb StorageBackend) error {
+func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, sb, hrrrsb StorageBackend) error {
 	defer func() { _ = os.Remove(gribPath) }()
 
 	records, err := parseAndFilterGRIB2(gribPath)
@@ -312,25 +323,34 @@ func ingestHRRRForTime(gribPath string, t time.Time, missingTRACONs []string, sb
 	// Build grid once for all TRACONs
 	grid := buildGridFromGRIB2(records)
 
+	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
-	for _, tracon := range missingTRACONs {
-		if *validateGrid {
-			if err := validateGridForTracon(grid, records, tracon); err != nil {
-				LogError("%s: grid validation failed: %v", tracon, err)
-			}
-		}
+	sem := make(chan struct{}, *nWorkers)
+	for _, tracon := range wx.AtmosTRACONs {
+		if !slices.Contains(existingTRACONs, tracon) {
+			eg.Go(func() error {
+				sem <- struct{}{}
+				defer func() { <-sem }()
 
-		n, err := ingestHRRRForTracon(grid, records, tracon, t, sb)
-		if err == nil {
-			LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
-			totalUploads++
-			totalUploadBytes += n
-		} else {
-			return err
+				if *validateGrid {
+					if err := validateGridForTracon(grid, records, tracon); err != nil {
+						LogError("%s: grid validation failed: %v", tracon, err)
+					}
+				}
+
+				n, err := ingestHRRRForTracon(grid, records, tracon, t, sb)
+				if err == nil {
+					LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
+					atomic.AddInt64(&totalUploads, 1)
+					atomic.AddInt64(&totalUploadBytes, n)
+				}
+
+				return err
+			})
 		}
 	}
 
-	return nil
+	return eg.Wait()
 }
 
 func ingestHRRRForTracon(grid *Grid, records []*squall.GRIB2, tracon string, t time.Time, sb StorageBackend) (int64, error) {
@@ -354,7 +374,7 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	}
 
 	LogInfo("%s: parsed %d total records", gribPath, len(records))
-	if false && len(records) > 0 {
+	if len(records) > 0 {
 		for i := 0; i < min(5, len(records)); i++ {
 			r := records[i]
 			LogInfo("  Sample record %d: param=%s, level=%q, levelValue=%.1f, numPoints=%d",
@@ -374,7 +394,7 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 
 		// Check if vice recognizes this level (squall provides levels already formatted as "50 mb", etc.)
 		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
-		if false && levelIndex == -1 {
+		if levelIndex == -1 {
 			LogInfo("  Rejected record: param=%s, level=%q, levelIndex=%d",
 				shortName, record.Level, levelIndex)
 		}
@@ -383,7 +403,7 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 
 	LogInfo("%s: filtered %d records to %d records", gribPath, len(records), len(filtered))
 
-	if false && len(filtered) > 0 {
+	if len(filtered) > 0 {
 		LogInfo("  Filtered records by parameter:")
 		counts := make(map[string]int)
 		for _, r := range filtered {
@@ -450,10 +470,8 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t 
 		}
 	}
 
-	if false {
-		LogInfo("GRIB2 %s-%s: processed %d points -> %d unique locations",
-			tracon, t.Format(time.RFC3339), processedPoints, len(at.SampleStacks))
-	}
+	LogInfo("GRIB2 %s-%s: processed %d points -> %d unique locations",
+		tracon, t.Format(time.RFC3339), processedPoints, len(at.SampleStacks))
 
 	return &at, nil
 }
@@ -468,6 +486,12 @@ func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st Stor
 	}
 
 	path := fmt.Sprintf("atmos/%s/%s.msgpack.zst", tracon, t.Format(time.RFC3339))
+
+	if *hrrrQuick {
+		// skip upload
+		var drb DryRunBackend
+		return drb.StoreObject(path, soa)
+	}
 
 	return st.StoreObject(path, soa)
 }
