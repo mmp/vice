@@ -1,3 +1,7 @@
+// wx/metar.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
 package wx
 
 import (
@@ -5,6 +9,9 @@ import (
 	"compress/flate"
 	"encoding/json"
 	"fmt"
+	"io"
+	"iter"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -13,6 +20,8 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
+
+	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
@@ -193,6 +202,7 @@ func SampleMatchingMETAR(metar []METAR, intervals []util.TimeInterval, match fun
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// METARSOA
 
 // Structure-of-arrays representation of an array of METAR objects
 // for better compressability.
@@ -287,7 +297,7 @@ func MakeMETARSOA(recs []METAR) (METARSOA, error) {
 	return soa, nil
 }
 
-func DecodeMETARSOA(soa METARSOA) []METAR {
+func (soa METARSOA) Decode() []METAR {
 	var m []METAR
 
 	reportTime := util.DeltaDecodeBytesSlice(soa.ReportTime)
@@ -331,8 +341,8 @@ func DecodeMETARSOA(soa METARSOA) []METAR {
 	return m
 }
 
-func CheckMETARSOA(soa METARSOA, orig []METAR) error {
-	check := DecodeMETARSOA(soa)
+func (soa METARSOA) Check(orig []METAR) error {
+	check := soa.Decode()
 
 	if len(orig) != len(check) {
 		return fmt.Errorf("Record count mismatch: %d - %d", len(orig), len(check))
@@ -382,55 +392,164 @@ func CheckMETARSOA(soa METARSOA, orig []METAR) error {
 
 ///////////////////////////////////////////////////////////////////////////
 // Compression
+//
+// METAR data uses a two-level compression strategy to optimize both file size
+// and runtime memory usage:
+//
+// Level 1 - Per-Airport Compression (flate):
+//   []METAR → METARSOA → msgpack → flate → compressedMETARSOA ([]byte)
+//
+//   Each airport's METAR data is independently compressed using flate after
+//   msgpack encoding. This allows individual airports to be decompressed
+//   on-demand without loading the entire dataset.
+//
+// Level 2 - Whole-File Compression (zstd):
+//   CompressedMETAR (map) → msgpack → zstd → file
+//
+//   The complete map of airport codes to compressed data is msgpack-encoded
+//   and then zstd-compressed for efficient storage and network transfer.
+//
+//   Use: LoadCompressedMETAR() / CompressedMETAR.Save()
+//
+// Canonical Usage Patterns:
+//
+//   Loading METAR files:
+//     metar, err := LoadCompressedMETAR(reader)  // from io.Reader
+//
+//   Accessing airport data:
+//     metar, err := metar.GetAirportMETAR("KJFK")      // []METAR for KJFK
+//
+//   Creating compressed data:
+//     metar.SetAirportMETAR("KJFK", metar)  // for single airport
+//
+//   Saving METAR files:
+//     err := metar.Save(writer)  // to io.Writer
+//
+// The two-level approach allows the system to:
+// - Load the entire METAR dataset efficiently (zstd at file level)
+// - Keep per-airport data compressed in memory (flate per-airport)
+// - Decompress only the airports needed for a given scenario
 
-// CompressMETARSOA compresses a METARSOA object by msgpack-encoding it and
-// then compressing with flate. The compressed data can be stored in memory
-// and decompressed on-demand to reduce memory usage.
-func CompressMETARSOA(soa METARSOA) ([]byte, error) {
-	// First encode to msgpack
-	var buf bytes.Buffer
-	encoder := msgpack.NewEncoder(&buf)
-	if err := encoder.Encode(soa); err != nil {
-		return nil, fmt.Errorf("msgpack encode: %w", err)
-	}
+// compressedMETARSOA represents a compressed METARSOA for a single airport.
+// The data is msgpack-encoded and flate-compressed.
+type compressedMETARSOA []byte
 
-	// Then compress with flate
-	var compressed bytes.Buffer
-	writer, err := flate.NewWriter(&compressed, flate.BestCompression)
-	if err != nil {
-		return nil, fmt.Errorf("flate writer: %w", err)
-	}
-
-	if _, err := writer.Write(buf.Bytes()); err != nil {
-		writer.Close()
-		return nil, fmt.Errorf("flate write: %w", err)
-	}
-
-	if err := writer.Close(); err != nil {
-		return nil, fmt.Errorf("flate close: %w", err)
-	}
-
-	return compressed.Bytes(), nil
+// CompressedMETAR is a collection of compressed METAR data indexed by ICAO code.
+type CompressedMETAR struct {
+	m map[string]compressedMETARSOA
 }
 
-// DecompressMETARSOA decompresses a METARSOA object that was compressed
-// with CompressMETARSOA.
-func DecompressMETARSOA(compressed []byte) (METARSOA, error) {
-	// First decompress with flate
-	reader := flate.NewReader(bytes.NewReader(compressed))
-	defer reader.Close()
+// NewCompressedMETAR creates a new empty CompressedMETAR collection.
+func NewCompressedMETAR() CompressedMETAR {
+	return CompressedMETAR{m: make(map[string]compressedMETARSOA)}
+}
 
-	var decompressed bytes.Buffer
-	if _, err := decompressed.ReadFrom(reader); err != nil {
-		return METARSOA{}, fmt.Errorf("flate decompress: %w", err)
+// MarshalMsgpack implements custom msgpack encoding for CompressedMETAR.
+// This allows the unexported field 'm' to be properly serialized.
+func (cm CompressedMETAR) MarshalMsgpack() ([]byte, error) {
+	return msgpack.Marshal(cm.m)
+}
+
+// UnmarshalMsgpack implements custom msgpack decoding for CompressedMETAR.
+// This allows the unexported field 'm' to be properly deserialized.
+func (cm *CompressedMETAR) UnmarshalMsgpack(b []byte) error {
+	cm.m = make(map[string]compressedMETARSOA)
+	return msgpack.Unmarshal(b, &cm.m)
+}
+
+// LoadCompressedMETAR reads a complete compressed METAR file
+// The reader should be the zstd-compressed msgpack file.
+func LoadCompressedMETAR(r io.Reader) (CompressedMETAR, error) {
+	zr, err := zstd.NewReader(r)
+	if err != nil {
+		return CompressedMETAR{}, err
+	}
+	defer zr.Close()
+
+	var cm CompressedMETAR
+	if err := msgpack.NewDecoder(zr).Decode(&cm); err != nil {
+		return CompressedMETAR{}, err
 	}
 
-	// Then decode msgpack
+	return cm, nil
+}
+
+func (cm CompressedMETAR) Airports() iter.Seq[string] {
+	return maps.Keys(cm.m)
+}
+
+// GetAirportMETAR retrieves and decodes METAR data for a specific ICAO airport code.
+func (cm CompressedMETAR) GetAirportMETAR(icao string) ([]METAR, error) {
+	soa, err := cm.GetAirportMETARSOA(icao)
+	if err != nil {
+		return nil, err
+	}
+	return soa.Decode(), nil
+}
+
+func (cm CompressedMETAR) GetAirportMETARSOA(icao string) (METARSOA, error) {
+	compressed, ok := cm.m[icao]
+	if !ok {
+		return METARSOA{}, fmt.Errorf("%s not found in METAR data", icao)
+	}
+
+	fr := flate.NewReader(bytes.NewReader(compressed))
+	defer fr.Close()
+
 	var soa METARSOA
-	decoder := msgpack.NewDecoder(&decompressed)
-	if err := decoder.Decode(&soa); err != nil {
-		return METARSOA{}, fmt.Errorf("msgpack decode: %w", err)
+	if err := msgpack.NewDecoder(fr).Decode(&soa); err != nil {
+		return METARSOA{}, err
 	}
 
 	return soa, nil
+}
+
+func (cm CompressedMETAR) Len() int {
+	return len(cm.m)
+}
+
+func (cm CompressedMETAR) SetAirportMETAR(icao string, metar []METAR) error {
+	soa, err := MakeMETARSOA(metar)
+	if err != nil {
+		return err
+	}
+	if err := soa.Check(metar); err != nil {
+		return err
+	}
+
+	var buf bytes.Buffer
+	fw, err := flate.NewWriter(&buf, flate.BestCompression)
+	if err != nil {
+		return err
+	}
+	if err := msgpack.NewEncoder(fw).Encode(soa); err != nil {
+		return err
+	}
+	if err := fw.Close(); err != nil {
+		return err
+	}
+
+	cm.m[icao] = buf.Bytes()
+	return nil
+}
+
+// SaveMETAR writes a complete METAR file (METARFilename format).
+// The data should be a map of airport ICAO codes to compressed METARSOA data.
+// The writer will receive zstd-compressed msgpack data.
+func (cm CompressedMETAR) Save(w io.Writer) error {
+	zw, err := zstd.NewWriter(w, zstd.WithEncoderLevel(zstd.SpeedBestCompression))
+	if err != nil {
+		return fmt.Errorf("failed to create zstd writer: %w", err)
+	}
+	defer zw.Close()
+
+	if err := msgpack.NewEncoder(zw).Encode(cm); err != nil {
+		return fmt.Errorf("failed to encode METAR file: %w", err)
+	}
+
+	if err := zw.Close(); err != nil {
+		return fmt.Errorf("failed to close zstd writer: %w", err)
+	}
+
+	return nil
 }

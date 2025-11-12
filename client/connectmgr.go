@@ -309,7 +309,7 @@ func (cm *ConnectionManager) GetMETAR(srv *Server, airports []string, callback f
 			} else {
 				m := make(map[string][]wx.METAR)
 				for ap, soa := range soaMETAR {
-					m[ap] = wx.DecodeMETARSOA(soa)
+					m[ap] = soa.Decode()
 				}
 				callback(m, nil)
 			}

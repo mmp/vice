@@ -23,7 +23,6 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
-	"google.golang.org/api/iterator"
 )
 
 var (
@@ -134,83 +133,61 @@ func main() {
 	fmt.Printf("Weather package created successfully in %s\n", *outputDir)
 }
 
-func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports map[string]bool, startDate, endDate time.Time, outputDir string) error {
+func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports map[string]bool, start, end time.Time, outputDir string) error {
 	// Download the full METAR file
-	objectName := "METAR-flate.msgpack.zst"
-	r, err := bucket.Object(objectName).NewReader(ctx)
+	r, err := bucket.Object(wx.METARFilename).NewReader(ctx)
 	if err != nil {
 		return err
 	}
 	defer r.Close()
 
-	// Decompress and deserialize
-	zr, err := zstd.NewReader(r)
+	allMETAR, err := wx.LoadCompressedMETAR(r)
 	if err != nil {
-		return err
-	}
-	defer zr.Close()
-
-	var allMETARCompressed map[string][]byte
-	if err := msgpack.NewDecoder(zr).Decode(&allMETARCompressed); err != nil {
 		return err
 	}
 
 	// Filter to only active airports and optionally filter by date range
-	filteredMETAR := make(map[string][]byte)
+	filteredMETAR := wx.NewCompressedMETAR()
 
-	for icao, compressed := range allMETARCompressed {
+	for icao := range allMETAR.Airports() {
 		if !airports[icao] {
 			continue
 		}
 
-		// Decompress the METAR SOA
-		metarSOA, err := wx.DecompressMETARSOA(compressed)
+		metar, err := allMETAR.GetAirportMETAR(icao)
 		if err != nil {
-			return fmt.Errorf("%s: failed to decompress METAR: %w", icao, err)
+			return fmt.Errorf("%s: %w", icao, err)
 		}
 
-		// Decode the METAR data to filter by date
-		var filteredMETARs []wx.METAR
-		for _, metar := range wx.DecodeMETARSOA(metarSOA) {
-			if !metar.Time.Before(startDate) && !metar.Time.After(endDate) {
-				filteredMETARs = append(filteredMETARs, metar)
-			}
-		}
+		filtered := util.FilterSlice(metar, func(m wx.METAR) bool {
+			return !m.Time.Before(start) && !m.Time.After(end)
+		})
 
-		if len(filteredMETARs) > 0 {
-			// Re-encode the filtered METARs
-			filteredSOA, err := wx.MakeMETARSOA(filteredMETARs)
-			if err != nil {
-				return fmt.Errorf("%s METAR: %w", icao, err)
+		if len(filtered) > 0 {
+			if err := filteredMETAR.SetAirportMETAR(icao, filtered); err != nil {
+				return err
 			}
-
-			// Compress the filtered METAR SOA
-			filteredCompressed, err := wx.CompressMETARSOA(filteredSOA)
-			if err != nil {
-				return fmt.Errorf("%s: failed to compress METAR: %w", icao, err)
-			}
-
-			filteredMETAR[icao] = filteredCompressed
 		}
 	}
 
 	// Write single METAR file for all airports
-	outputPath := filepath.Join(outputDir, "METAR-flate.msgpack.zst")
+	outputPath := filepath.Join(outputDir, wx.METARFilename)
 
 	f, err := os.Create(outputPath)
 	if err != nil {
 		return err
-	} else if zw, err := zstd.NewWriter(f); err != nil {
-		return err
-	} else if err := msgpack.NewEncoder(zw).Encode(filteredMETAR); err != nil {
-		return err
-	} else if err := zw.Close(); err != nil {
-		return err
-	} else if err := f.Close(); err != nil {
+	}
+
+	if err := filteredMETAR.Save(f); err != nil {
+		f.Close()
+		return fmt.Errorf("failed to save METAR file: %w", err)
+	}
+
+	if err := f.Close(); err != nil {
 		return err
 	}
 
-	fmt.Printf("Wrote METAR data for %d airports\n", len(filteredMETAR))
+	fmt.Printf("Wrote METAR data for %d airports\n", filteredMETAR.Len())
 
 	return nil
 }
@@ -259,50 +236,55 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		return err
 	}
 
-	// List all atmos objects for this TRACON
-	prefix := "atmos/" + tracon + "/"
-	query := &storage.Query{
-		Prefix: prefix,
+	// Read the atmos manifest to see what's available.
+	manifestPath := wx.ManifestPath("atmos")
+	manifestReader, err := bucket.Object(manifestPath).NewReader(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to read manifest %s: %w", manifestPath, err)
 	}
-	it := bucket.Objects(ctx, query)
-	addedAny := false
-	objectCount := 0
+	manifest, err := wx.LoadManifest(manifestReader)
+	manifestReader.Close()
+	if err != nil {
+		return fmt.Errorf("failed to load manifest: %w", err)
+	}
 
-	for {
-		obj, err := it.Next()
-		if err == iterator.Done {
-			break
-		} else if err != nil {
-			return fmt.Errorf("failed to list objects with prefix %s: %w", prefix, err)
-		}
+	// Get timestamps for this TRACON from the manifest
+	allTimestamps, ok := manifest.GetTimestamps(tracon)
+	if !ok {
+		fmt.Printf("%s: no data in manifest, skipping\n", tracon)
+		return nil
+	}
 
-		objectCount++
-
-		// Extract timestamp from filename like "atmos/N90/2025-08-01T00:00:00Z.msgpack.zst"
-		filename := filepath.Base(obj.Name)
-		if filename == "manifest-int64time.msgpack.zst" {
-			continue
-		}
-
-		timestamp, err := time.Parse(time.RFC3339, strings.TrimSuffix(filename, ".msgpack.zst"))
-		if err != nil {
-			fmt.Printf("%s: %v\n", filename, err)
-			continue
-		}
-
+	// Filter timestamps by date range and check if we already have them
+	var timestampsToDownload []time.Time
+	for _, ts := range allTimestamps {
 		// Skip if outside date range
-		if timestamp.Before(startDate) || timestamp.After(endDate) {
+		if ts.Before(startDate) || ts.After(endDate) {
 			continue
 		}
 		// Skip if we already have data for this time
-		if _, ok := traconAtmos.SampleStacks[timestamp]; ok {
+		if _, ok := traconAtmos.SampleStacks[ts]; ok {
 			continue
 		}
+		timestampsToDownload = append(timestampsToDownload, ts)
+	}
+
+	if len(timestampsToDownload) == 0 {
+		fmt.Printf("%s: no new data to download (have %d entries already)\n", tracon, len(traconAtmos.SampleStacks))
+		return nil
+	}
+
+	fmt.Printf("%s: downloading %d atmos objects (have %d already, manifest has %d total)\n",
+		tracon, len(timestampsToDownload), len(traconAtmos.SampleStacks), len(allTimestamps))
+
+	// Download and process atmos data at each timestamp
+	for _, timestamp := range timestampsToDownload {
+		objectPath := wx.BuildObjectPath("atmos", tracon, timestamp)
 
 		// Download and process this atmos file
-		r, err := bucket.Object(obj.Name).NewReader(ctx)
+		r, err := bucket.Object(objectPath).NewReader(ctx)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to read %s: %w", objectPath, err)
 		}
 
 		// Decompress and deserialize
@@ -325,14 +307,9 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		atmos := atmosSOA.ToAOS()
 		_, avgStack := atmos.Average()
 		traconAtmos.SampleStacks[timestamp] = avgStack
-		addedAny = true
 	}
 
-	fmt.Printf("%s: found %d objects, processed %d new entries\n", tracon, objectCount, len(traconAtmos.SampleStacks))
-
-	if !addedAny {
-		return nil
-	}
+	fmt.Printf("%s: processed %d entries\n", tracon, len(traconAtmos.SampleStacks))
 
 	// Convert AtmosByTime to SOA format for storage
 	traconAtmosSOA, err := traconAtmos.ToSOA()

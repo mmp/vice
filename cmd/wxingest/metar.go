@@ -189,7 +189,7 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 	LogInfo("Uploading METAR for %d airports", len(fmetar))
 
 	// Flatten out the METAR, sort by date, eliminate duplicates, convert to SOA and flate-compress.
-	metar := make(map[string][]byte)
+	metar := wx.NewCompressedMETAR()
 	for ap, fm := range fmetar {
 		var recs []wx.METAR
 		for _, m := range fm {
@@ -210,19 +210,7 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 			}
 		}
 
-		compressMETAR := func(recs []wx.METAR) ([]byte, error) {
-			soa, err := wx.MakeMETARSOA(recs)
-			if err != nil {
-				return nil, err
-			}
-			if err := wx.CheckMETARSOA(soa, recs); err != nil {
-				return nil, err
-			}
-			return wx.CompressMETARSOA(soa)
-		}
-
-		var err error
-		if metar[ap], err = compressMETAR(recs); err != nil {
+		if err := metar.SetAirportMETAR(ap, recs); err != nil {
 			return err
 		}
 
@@ -233,15 +221,15 @@ func storeMETAR(st StorageBackend, fmetar map[string][]FileMETAR) error {
 				recs[i].Raw = strings.ReplaceAll(recs[i].Raw, "KOKC", "KAAC")
 			}
 
-			if metar["KAAC"], err = compressMETAR(recs); err != nil {
+			if err := metar.SetAirportMETAR("KAAC", recs); err != nil {
 				return err
 			}
 		}
 	}
 
-	nb, err := st.StoreObject("METAR-flate.msgpack.zst", metar)
+	nb, err := st.StoreObject(wx.METARFilename, metar)
 	if err == nil {
-		LogInfo("Stored %s for %d airports' METAR", util.ByteCount(nb), len(metar))
+		LogInfo("Stored %s for %d airports' METAR", util.ByteCount(nb), metar.Len())
 	}
 
 	return err

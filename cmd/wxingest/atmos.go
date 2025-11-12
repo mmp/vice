@@ -7,7 +7,6 @@ import (
 	"io"
 	"iter"
 	"os"
-	"path/filepath"
 	"slices"
 	"strings"
 	"sync/atomic"
@@ -24,26 +23,23 @@ import (
 )
 
 func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
-	var compressedMETAR map[string][]byte
-	if err := sb.ReadObject("METAR-flate.msgpack.zst", &compressedMETAR); err != nil {
+	r, err := sb.OpenRead(wx.METARFilename)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Close()
+
+	compressedMETAR, err := wx.LoadCompressedMETAR(r)
+	if err != nil {
 		return nil, err
 	}
 
-	phlCompressed, ok := compressedMETAR["KPHL"]
-	if !ok {
-		return nil, fmt.Errorf("KPHL not found in METAR data")
-	}
-
-	phlMETAR, err := wx.DecompressMETARSOA(phlCompressed)
+	metar, err := compressedMETAR.GetAirportMETAR("KPHL")
 	if err != nil {
-		return nil, fmt.Errorf("failed to decompress KPHL METAR: %w", err)
+		return nil, err
 	}
 
-	decoded := wx.DecodeMETARSOA(phlMETAR)
-	times := make([]time.Time, 0, len(decoded))
-	for _, metar := range decoded {
-		times = append(times, metar.Time.UTC())
-	}
+	times := util.MapSlice(metar, func(m wx.METAR) time.Time { return m.Time.UTC() })
 
 	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
 
@@ -51,33 +47,19 @@ func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
 }
 
 func getAvailablePrecipTimes(sb StorageBackend) ([]time.Time, error) {
-	// Read consolidated precip manifest
-	var consolidatedManifest map[string][]byte
-	if err := sb.ReadObject("precip/manifest-int64time.msgpack.zst", &consolidatedManifest); err != nil {
+	var rawManifest wx.RawManifest
+	if err := sb.ReadObject(wx.ManifestPath("precip"), &rawManifest); err != nil {
 		return nil, err
 	}
 
-	var timestamps []int64
-	// Decompress and collect all timestamps from all TRACONs
-	for _, compressed := range consolidatedManifest {
-		ts, err := wx.DecompressInt64Timestamps(compressed)
-		if err != nil {
-			return nil, err
-		}
-		timestamps = append(timestamps, ts...)
-	}
+	manifest := wx.MakeManifest(rawManifest)
 
-	// Sort and remove duplicates
-	slices.Sort(timestamps)
-	timestamps = slices.Compact(timestamps)
+	// All timestamps from all TRACONs, then sort and remove duplicates
+	allTimes := manifest.GetAllTimestamps()
+	slices.SortFunc(allTimes, func(a, b time.Time) int { return a.Compare(b) })
+	allTimes = slices.CompactFunc(allTimes, func(a, b time.Time) bool { return a.Equal(b) })
 
-	// Convert to time.Time
-	times := make([]time.Time, 0, len(timestamps))
-	for _, ts := range timestamps {
-		times = append(times, time.Unix(ts, 0).UTC())
-	}
-
-	return times, nil
+	return allTimes, nil
 }
 
 // NOAA high-resolution rapid refresh: https://rapidrefresh.noaa.gov/hrrr/
@@ -206,59 +188,30 @@ func ingestHRRR(sb StorageBackend) error {
 		mainTB.MergeStats(hrrrsb)
 	}
 
-	return generateAtmosManifest(sb, "atmos")
+	return generateAtmosManifest(sb)
 
 }
 
-func generateAtmosManifest(sb StorageBackend, prefix string) error {
-	LogInfo("%s: updating consolidated manifest", prefix)
+func generateAtmosManifest(sb StorageBackend) error {
+	LogInfo("Updating consolidated atmos manifest")
 
-	paths, err := sb.List(prefix + "/")
+	paths, err := sb.List("atmos/")
 	if err != nil {
 		return err
 	}
 
-	// Collect timestamps per TRACON
-	timestampsByTracon := make(map[string][]int64)
-	for path := range paths {
-		// Remove prefix and exclude existing manifests
-		relativePath := strings.TrimPrefix(path, prefix+"/")
-		if !strings.Contains(relativePath, "manifest") {
-			tracon, timestamp, err := parseObjectPathTimestamp(relativePath)
-			if err != nil {
-				LogError("%s: %v", relativePath, err)
-				continue
-			}
-
-			timestampsByTracon[tracon] = append(timestampsByTracon[tracon], timestamp)
-		}
-	}
-
-	// Sort, delta-encode, and flate-compress timestamps for each TRACON's
-	// manifest is a map[string][]byte where the value is compressed
-	// delta-encoded timestamps.
-	manifest := make(map[string][]byte)
-	for tracon, times := range timestampsByTracon {
-		slices.Sort(times)
-		compressed, err := wx.CompressInt64Timestamps(times)
-		if err != nil {
-			return fmt.Errorf("failed to compress timestamps for %s: %w", tracon, err)
-		}
-		manifest[tracon] = compressed
-	}
-
-	manifestPath := filepath.Join(prefix, "manifest-int64time.msgpack.zst")
-	n, err := sb.StoreObject(manifestPath, manifest)
+	manifest, err := wx.GenerateManifestWithPrefix(paths, "atmos")
 	if err != nil {
 		return err
 	}
 
-	totalEntries := 0
-	for _, times := range timestampsByTracon {
-		totalEntries += len(times)
+	manifestPath := wx.ManifestPath("atmos")
+	n, err := sb.StoreObject(manifestPath, manifest.RawManifest())
+	if err != nil {
+		return err
 	}
 
-	LogInfo("Stored %d items in consolidated %s (%s)", totalEntries, manifestPath, util.ByteCount(n))
+	LogInfo("Stored %d items in consolidated %s (%s)", manifest.TotalEntries(), manifestPath, util.ByteCount(n))
 
 	return nil
 }
@@ -280,25 +233,18 @@ func listIngestedAtmos(sb StorageBackend) map[time.Time][]string {
 
 	// Parse all paths in a single pass
 	for path := range atmosPaths {
-		if path == "atmos/manifest-int64time.msgpack.zst" {
+		if strings.Contains(path, "manifest") {
 			continue
 		}
 
 		// Parse paths like atmos/BOI/2025-07-27T18:00:00Z.msgpack.zst
-		parts := strings.Split(strings.TrimPrefix(path, "atmos/"), "/")
-		if len(parts) != 2 {
-			LogError("%s: malformed path", path)
-			continue
-		}
-
-		tracon := parts[0]
-
-		tm, err := time.Parse(time.RFC3339, strings.TrimSuffix(parts[1], ".msgpack.zst"))
+		tracon, timestamp, err := wx.ParseWeatherObjectPath(strings.TrimPrefix(path, "atmos/"))
 		if err != nil {
-			LogError("%s", err)
+			LogError("%s: %v", path, err)
 			continue
 		}
 
+		tm := time.Unix(timestamp, 0).UTC()
 		ingested[tm] = append(ingested[tm], tracon)
 	}
 

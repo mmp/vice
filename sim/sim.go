@@ -279,7 +279,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 			lg.Errorf("%v", err)
 		} else {
 			for ap, msoa := range apmetar {
-				metar := wx.DecodeMETARSOA(msoa)
+				metar := msoa.Decode()
 				idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
 					return m.Time.Compare(t)
 				})

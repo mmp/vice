@@ -13,7 +13,6 @@ import (
 	"strings"
 	"sync"
 	"syscall"
-	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
@@ -155,24 +154,6 @@ func LogError(msg string, args ...any) {
 func LogFatal(msg string, args ...any) {
 	log.Printf("FATAL "+msg, args...)
 	os.Exit(1)
-}
-
-// parseObjectPathTimestamp extracts TRACON and Unix timestamp from paths like "TRACON/2025-08-06T03:00:00Z.msgpack.zst"
-func parseObjectPathTimestamp(relativePath string) (tracon string, timestamp int64, err error) {
-	parts := strings.Split(relativePath, "/")
-	if len(parts) != 2 {
-		return "", 0, fmt.Errorf("unexpected path format: %s", relativePath)
-	}
-
-	tracon = parts[0]
-	timestampStr := strings.TrimSuffix(parts[1], ".msgpack.zst")
-
-	t, err := time.Parse(time.RFC3339, timestampStr)
-	if err != nil {
-		return "", 0, fmt.Errorf("failed to parse timestamp: %w", err)
-	}
-
-	return tracon, t.Unix(), nil
 }
 
 func launchHTTPServer() {
