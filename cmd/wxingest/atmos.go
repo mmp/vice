@@ -439,8 +439,8 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t 
 	for ref := range grid.QueryCircle(center, radius) {
 		processedPoints++
 
-		record := records[ref.RecordIdx]
-		value := record.Data[ref.PointIdx]
+		record := records[ref.RecordIdx()]
+		value := record.Data[ref.PointIdx()]
 
 		// Get the level index (should already have been validated during filtering)
 		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
@@ -508,9 +508,29 @@ type GridCell struct {
 
 // PointRef references a specific data point in the GRIB2 records.
 type PointRef struct {
-	RecordIdx int           // index in records slice
-	PointIdx  int           // index in record.Data slice
-	Location  math.Point2LL // cached location for quick access
+	RecordPointIdx uint32        // high 8 bits for the record index, low 24 for for the point index
+	Location       math.Point2LL // cached location for quick access
+}
+
+func MakePointRef(p math.Point2LL, recordIdx int, pointIdx int) PointRef {
+	if recordIdx > 255 {
+		panic(fmt.Sprintf("recordIdx %d > 255", recordIdx))
+	}
+	if pointIdx >= 1<<24 {
+		panic(fmt.Sprintf("pointIdx %d >= 1<<24", pointIdx))
+	}
+	return PointRef{
+		RecordPointIdx: uint32(recordIdx)<<24 | uint32(pointIdx),
+		Location:       p,
+	}
+}
+
+func (p PointRef) RecordIdx() int {
+	return int(p.RecordPointIdx >> 24)
+}
+
+func (p PointRef) PointIdx() int {
+	return int(p.RecordPointIdx & ((1 << 24) - 1))
 }
 
 // Grid divides the lat-lon space into uniform (w.r.t. degrees) cells.
@@ -539,11 +559,7 @@ func (sg *Grid) cellForPoint(pt math.Point2LL) GridCell {
 // AddPoint adds a point reference to the  grid.
 func (sg *Grid) AddPoint(p math.Point2LL, recordIdx, pointIdx int) {
 	cell := sg.cellForPoint(p)
-	sg.Cells[cell] = append(sg.Cells[cell], PointRef{
-		RecordIdx: recordIdx,
-		PointIdx:  pointIdx,
-		Location:  p,
-	})
+	sg.Cells[cell] = append(sg.Cells[cell], MakePointRef(p, recordIdx, pointIdx))
 }
 
 // QueryCircle returns an iterator over all points within radiusNM of center.
@@ -655,6 +671,7 @@ func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
 	finalGrid := partialGrids[0]
 	for i := 1; i < len(partialGrids); i++ {
 		finalGrid.Merge(partialGrids[i])
+		partialGrids[i] = nil
 	}
 
 	LogInfo("Built grid: %d cells, %d points", len(finalGrid.Cells), finalGrid.PointCount())
@@ -686,7 +703,7 @@ func validateGridForTracon(grid *Grid, records []*squall.GRIB2, tracon string) e
 			pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
 
 			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d <= radius {
-				exhaustivePoints[PointRef{RecordIdx: recIdx, PointIdx: ptIdx, Location: pt}] = true
+				exhaustivePoints[MakePointRef(pt, recIdx, ptIdx)] = true
 			}
 		}
 	}
