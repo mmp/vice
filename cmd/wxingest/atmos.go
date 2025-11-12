@@ -613,11 +613,35 @@ func (sg *Grid) PointCount() int {
 	return total
 }
 
-// Merge merges another grid into this grid by appending all points from the other grid's cells.
-func (sg *Grid) Merge(other *Grid) {
-	for cell, points := range other.Cells {
-		sg.Cells[cell] = append(sg.Cells[cell], points...)
+// MergeAll merges multiple grids into a single grid with preallocated slices.
+// This is more efficient than sequential merges as it counts total points per cell
+// first, then allocates exactly the right amount of space.
+func MergeAll(grids []*Grid) *Grid {
+	if len(grids) == 0 {
+		return NewGrid(0.5)
+	} else if len(grids) == 1 {
+		return grids[0]
 	}
+
+	cellCounts := make(map[GridCell]int)
+	for _, grid := range grids {
+		for cell, points := range grid.Cells {
+			cellCounts[cell] += len(points)
+		}
+	}
+
+	result := NewGrid(grids[0].CellSize)
+	for i, grid := range grids {
+		for cell, points := range grid.Cells {
+			if result.Cells[cell] == nil {
+				result.Cells[cell] = make([]PointRef, 0, cellCounts[cell])
+			}
+			result.Cells[cell] = append(result.Cells[cell], points...)
+		}
+		grids[i] = nil // throw the GC a bone
+	}
+
+	return result
 }
 
 // buildGridFromGRIB2 constructs a grid index from GRIB2 records.
@@ -667,12 +691,8 @@ func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
 		panic(err) // shouldn't happen in grid building
 	}
 
-	// Merge all partial grids
-	finalGrid := partialGrids[0]
-	for i := 1; i < len(partialGrids); i++ {
-		finalGrid.Merge(partialGrids[i])
-		partialGrids[i] = nil
-	}
+	// Merge all partial grids at once with preallocation
+	finalGrid := MergeAll(partialGrids)
 
 	LogInfo("Built grid: %d cells, %d points", len(finalGrid.Cells), finalGrid.PointCount())
 	return finalGrid
