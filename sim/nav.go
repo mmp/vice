@@ -3013,7 +3013,7 @@ func (nav *Nav) clearedApproach(airport string, id string, straightIn bool) (*Ra
 		return MakeUnexpectedTransmission("unable. We haven't been told to expect an approach"),
 			ErrClearedForUnexpectedApproach
 	}
-	if nav.Approach.AssignedId != id {
+	if id != "" && nav.Approach.AssignedId != id {
 		return MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName),
 			ErrClearedForUnexpectedApproach
 	}
