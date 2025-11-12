@@ -374,7 +374,7 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	}
 
 	LogInfo("%s: parsed %d total records", gribPath, len(records))
-	if len(records) > 0 {
+	if false && len(records) > 0 {
 		for i := 0; i < min(5, len(records)); i++ {
 			r := records[i]
 			LogInfo("  Sample record %d: param=%s, level=%q, levelValue=%.1f, numPoints=%d",
@@ -394,7 +394,7 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 
 		// Check if vice recognizes this level (squall provides levels already formatted as "50 mb", etc.)
 		levelIndex := wx.LevelIndexFromId([]byte(record.Level))
-		if levelIndex == -1 {
+		if false && levelIndex == -1 {
 			LogInfo("  Rejected record: param=%s, level=%q, levelIndex=%d",
 				shortName, record.Level, levelIndex)
 		}
@@ -403,7 +403,7 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 
 	LogInfo("%s: filtered %d records to %d records", gribPath, len(records), len(filtered))
 
-	if len(filtered) > 0 {
+	if false && len(filtered) > 0 {
 		LogInfo("  Filtered records by parameter:")
 		counts := make(map[string]int)
 		for _, r := range filtered {
@@ -470,8 +470,10 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t 
 		}
 	}
 
-	LogInfo("GRIB2 %s-%s: processed %d points -> %d unique locations",
-		tracon, t.Format(time.RFC3339), processedPoints, len(at.SampleStacks))
+	if false {
+		LogInfo("GRIB2 %s-%s: processed %d points -> %d unique locations",
+			tracon, t.Format(time.RFC3339), processedPoints, len(at.SampleStacks))
+	}
 
 	return &at, nil
 }
