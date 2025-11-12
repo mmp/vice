@@ -364,6 +364,15 @@ loop:
 		isResponse := func(ps sim.PilotSpeech) bool { return ps.Callsign == c.awaitReadbackCallsign }
 		if idx := slices.IndexFunc(c.bufferedSpeech, isResponse); idx != -1 {
 			bs := c.bufferedSpeech[idx]
+			c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
+
+			// Handle empty MP3 (TTS error case)
+			if len(bs.MP3) == 0 {
+				c.lg.Warnf("Skipping speech for %s due to empty MP3 (TTS error)", bs.Callsign)
+				c.awaitReadbackCallsign = ""
+				return
+			}
+
 			if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
 				c.awaitReadbackCallsign = ""
 				c.playingSpeech = false
@@ -373,12 +382,19 @@ loop:
 				c.lastSpeechHoldTime = time.Now().Add(3 * time.Second / 2)
 			}); err == nil {
 				//fmt.Printf("play awaited speech %s at %s\n", bs.Callsign, time.Now().String())
-				c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
 				c.playingSpeech = true
 			}
 		}
 	} else {
 		bs := c.bufferedSpeech[0]
+		c.bufferedSpeech = c.bufferedSpeech[1:]
+
+		// Handle empty MP3 (TTS error case)
+		if len(bs.MP3) == 0 {
+			c.lg.Warnf("Skipping speech for %s due to empty MP3 (TTS error)", bs.Callsign)
+			return
+		}
+
 		if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
 			c.playingSpeech = false
 			c.holdSpeech = true
@@ -387,7 +403,6 @@ loop:
 			c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
 		}); err == nil {
 			//fmt.Printf("play random speech %s at %s\n", bs.Callsign, time.Now().String())
-			c.bufferedSpeech = c.bufferedSpeech[1:]
 			c.playingSpeech = true
 		}
 	}
