@@ -3747,7 +3747,11 @@
         "VFRE": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 7,
       "hold_for_release": true
     },
@@ -4191,7 +4195,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 7,
       "hold_for_release": true
     },
@@ -4646,7 +4654,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 4 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      },
       "tower_list": 8,
       "hold_for_release": true
     },
@@ -5102,7 +5114,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 9,
       "hold_for_release": true
     },
@@ -5583,7 +5599,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 10,
       "hold_for_release": true
     },
@@ -6064,7 +6084,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -6513,7 +6537,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -6864,7 +6892,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -7348,7 +7380,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -7829,7 +7865,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -8286,7 +8326,11 @@
         "HESPI": "East",
         "MCKLS": "East"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -8579,7 +8623,11 @@
         "VFRS": "West",
         "VFRW": "West"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -9004,7 +9052,11 @@
         "VFRS": "West",
         "VFRW": "West"
       },
-      "vfr": { "random_routes": { "rate": 12 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 12
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -9423,7 +9475,11 @@
         "VFRS": "VFR",
         "VFRW": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -9829,7 +9885,11 @@
         "VFRS": "VFR",
         "VFRW": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -10224,7 +10284,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -10606,7 +10670,11 @@
         "VFRS": "VFR",
         "VFRW": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -10991,7 +11059,11 @@
         "VFRE": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -11376,7 +11448,11 @@
         "VFRS": "VFR",
         "VFRN": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -11664,7 +11740,11 @@
         "VFRE": "VFR",
         "VFRW": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -12042,7 +12122,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -12330,7 +12414,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -12614,7 +12702,11 @@
         "SPA": "North",
         "VUZ": "West"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -12899,7 +12991,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -13281,7 +13377,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -13565,7 +13665,11 @@
         "SPA": "North",
         "VUZ": "West"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -13951,7 +14055,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -14241,7 +14349,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -14617,7 +14729,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -14905,7 +15021,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -15294,7 +15414,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -15680,7 +15804,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -16069,7 +16197,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -16501,7 +16633,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -16789,7 +16925,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -17077,7 +17217,11 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "tower_list": 11,
       "hold_for_release": true
     },
@@ -17214,7 +17358,11 @@
         "VFRS": "VFR"
       },
       "departure_controller": "OZR_APP",
-      "vfr": { "random_routes": { "rate": 10 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
     },
     "KAGS": {
       "departure_routes": {
@@ -17381,36 +17529,202 @@
         "VFRW": "VFR",
         "VFRS": "VFR"
       },
-      "vfr": { "random_routes": { "rate": 2 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      },
       "departure_controller": "AGS_W_APP"
     },
-    "KCNI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KJZP": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KAJR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KEBA": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHQU": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KBXG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KSBO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMHP": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMQW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCKF": { "vfr": { "random_routes": { "rate": 5 } } },
-    "16J": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KABY": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFZG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHDL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KDHN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTOI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPRN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KSEM": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMGM": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMXF": { "vfr": { "random_routes": { "rate": 5 } } },
-    "08A": { "vfr": { "random_routes": { "rate": 5 } } },
-    "1A9": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KALX": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KANB": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPYP": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KGAD": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRMG": { "vfr": { "random_routes": { "rate": 5 } } }
+    "KCNI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KJZP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KAJR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KEBA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHQU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KBXG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KSBO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMHP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMQW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCKF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "16J": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KABY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFZG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHDL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KDHN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTOI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPRN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KSEM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMGM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMXF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "08A": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "1A9": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KALX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KANB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPYP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KGAD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRMG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    }
   },
   "airspace": {
     "boundaries": {
@@ -31229,7 +31543,6 @@
                 "airport": "KTPA"
               }
             ],
-
             "KDBN": [
               {
                 "icao": "LXJ",
@@ -43182,538 +43495,945 @@
       ]
     },
     "coordination_lists": [
-      { "name": "FULTON COUNTY", "id": "FTY", "airports": ["KFTY"] },
-      { "name": "PEACHTREE DEKALB", "id": "PDK", "airports": ["KPDK"] },
-      { "name": "GWINNETT COUNTY", "id": "LZU", "airports": ["KLZU"] },
-      { "name": "COLUMBUS", "id": "CSG", "airports": ["KCSG"] },
-      { "name": "ATHENS", "id": "AHN", "airports": ["KAHN"] },
-      { "name": "MACON", "id": "MCN", "airports": ["KMCN"] }
+      {
+        "name": "FULTON COUNTY",
+        "id": "FTY",
+        "airports": ["KFTY"]
+      },
+      {
+        "name": "PEACHTREE DEKALB",
+        "id": "PDK",
+        "airports": ["KPDK"]
+      },
+      {
+        "name": "GWINNETT COUNTY",
+        "id": "LZU",
+        "airports": ["KLZU"]
+      },
+      {
+        "name": "COLUMBUS",
+        "id": "CSG",
+        "airports": ["KCSG"]
+      },
+      {
+        "name": "ATHENS",
+        "id": "AHN",
+        "airports": ["KAHN"]
+      },
+      {
+        "name": "MACON",
+        "id": "MCN",
+        "airports": ["KMCN"]
+      }
     ],
     "controller_configs": {
       "ATL_H_APP": {
-        "default_maps": ["TERMINAL ARRIVAL RADAR WEST"],
+        "default_maps": ["RVMA80001S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ZTL SECTORS ATL EAST",
-          "ZTL SECTORS ATL WEST",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH",
-          "ATLANTA WEST",
-          "DEPARTURE WEST WAYPOINT FIXES",
-          "DEPARTURE WEST WAYPOINT NAMES",
-          "DEPARTURE WEST DUAL TRACK"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80002S",
+          "RVMA80090S",
+          "RVMA80001S",
+          "RVMA80092S",
+          "RVMA80001S",
+          "RVMA80006S",
+          "RVMA80018S",
+          "RVMA80017S",
+          "RVMA80016S",
+          "RVMA80008S",
+          "",
+          "RVMA80024S",
+          "RVMA80026S",
+          "RVMA80171S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80002S",
+          "RVMA80005S",
+          "RVMA80020S",
+          "RVMA80007S",
+          "RVMA80019S",
+          "RVMA80009S",
+          "",
+          "RVMA80023S",
+          "RVMA80025S",
+          "RVMA80176S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_Y_APP": {
-        "default_maps": ["TERMINAL ARRIVAL RADAR WEST"],
+        "default_maps": ["RVMA80001S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ZTL SECTORS ATL EAST",
-          "ZTL SECTORS ATL WEST",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80002S",
+          "RVMA80090S",
+          "RVMA80001S",
+          "RVMA80092S",
+          "RVMA80001S",
+          "RVMA80006S",
+          "RVMA80018S",
+          "RVMA80017S",
+          "RVMA80016S",
+          "RVMA80008S",
+          "",
+          "RVMA80024S",
+          "RVMA80026S",
+          "RVMA80171S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80002S",
+          "RVMA80005S",
+          "RVMA80020S",
+          "RVMA80007S",
+          "RVMA80019S",
+          "RVMA80009S",
+          "",
+          "RVMA80023S",
+          "RVMA80025S",
+          "RVMA80176S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_L_APP": {
-        "default_maps": ["TERMINAL ARRIVAL RADAR WEST"],
+        "default_maps": ["RVMA80001S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ZTL SECTORS ATL EAST",
-          "ZTL SECTORS ATL WEST",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80002S",
+          "RVMA80090S",
+          "RVMA80001S",
+          "RVMA80092S",
+          "RVMA80001S",
+          "RVMA80006S",
+          "RVMA80018S",
+          "RVMA80017S",
+          "RVMA80016S",
+          "RVMA80008S",
+          "",
+          "RVMA80024S",
+          "RVMA80026S",
+          "RVMA80171S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80002S",
+          "RVMA80005S",
+          "RVMA80020S",
+          "RVMA80007S",
+          "RVMA80019S",
+          "RVMA80009S",
+          "",
+          "RVMA80023S",
+          "RVMA80025S",
+          "RVMA80176S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_D_APP": {
-        "default_maps": ["TERMINAL ARRIVAL RADAR WEST"],
+        "default_maps": ["RVMA80001S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ZTL SECTORS ATL EAST",
-          "ZTL SECTORS ATL WEST",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80002S",
+          "RVMA80090S",
+          "RVMA80001S",
+          "RVMA80092S",
+          "RVMA80001S",
+          "RVMA80006S",
+          "RVMA80018S",
+          "RVMA80017S",
+          "RVMA80016S",
+          "RVMA80008S",
+          "",
+          "RVMA80024S",
+          "RVMA80026S",
+          "RVMA80171S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80002S",
+          "RVMA80005S",
+          "RVMA80020S",
+          "RVMA80007S",
+          "RVMA80019S",
+          "RVMA80009S",
+          "",
+          "RVMA80023S",
+          "RVMA80025S",
+          "RVMA80176S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_O_APP": {
-        "default_maps": ["ARRIVAL RADAR WEST DUALS"],
+        "default_maps": ["FINAL_W BLANK"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "ARRIVAL RADAR WEST DUALS",
-          "ARRIVAL RADAR EAST DUALS"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80005S",
+          "RVMA80090S",
+          "RVMA80006S",
+          "RVMA80092S",
+          "RVMA80083S",
+          "RVMA80084S",
+          "RVMA80085S",
+          "RVMA80086S",
+          "RVMA80087S",
+          "RVMA80089S",
+          "RVMA80006S",
+          "RVMA80017S",
+          "RVMA80018S",
+          "RVMA80172S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80075S",
+          "RVMA80076S",
+          "RVMA80077S",
+          "RVMA80078S",
+          "RVMA80079S",
+          "RVMA80080S",
+          "RVMA80005S",
+          "RVMA80007S",
+          "RVMA80020S",
+          "RVMA80177S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_A_APP": {
-        "default_maps": ["ARRIVAL RADAR WEST DUALS"],
+        "default_maps": ["FINAL_W BLANK"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "ARRIVAL RADAR WEST DUALS",
-          "ARRIVAL RADAR EAST DUALS"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80005S",
+          "RVMA80090S",
+          "RVMA80006S",
+          "RVMA80092S",
+          "RVMA80083S",
+          "RVMA80084S",
+          "RVMA80085S",
+          "RVMA80086S",
+          "RVMA80087S",
+          "RVMA80089S",
+          "RVMA80006S",
+          "RVMA80017S",
+          "RVMA80018S",
+          "RVMA80172S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80075S",
+          "RVMA80076S",
+          "RVMA80077S",
+          "RVMA80078S",
+          "RVMA80079S",
+          "RVMA80080S",
+          "RVMA80005S",
+          "RVMA80007S",
+          "RVMA80020S",
+          "RVMA80177S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_V_APP": {
-        "default_maps": ["ARRIVAL RADAR WEST DUALS"],
+        "default_maps": ["FINAL_W BLANK"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES",
-          "RUNWAY 10 FINAL APPROACH COURSE",
-          "RUNWAY 28 FINAL APPROACH COURSE",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "RNAV (RNP) Z RUNWAY 28L/10 APPROACH",
-          "RNAV (RNP) Z RUNWAY 26R/28 APPROACH",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "ARRIVAL RADAR WEST DUALS",
-          "ARRIVAL RADAR EAST DUALS"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80005S",
+          "RVMA80090S",
+          "RVMA80006S",
+          "RVMA80092S",
+          "RVMA80083S",
+          "RVMA80084S",
+          "RVMA80085S",
+          "RVMA80086S",
+          "RVMA80087S",
+          "RVMA80089S",
+          "RVMA80006S",
+          "RVMA80017S",
+          "RVMA80018S",
+          "RVMA80172S",
+          "FINAL_E BLANK",
+          "RWY-8L",
+          "RWY-8R",
+          "RWY-9L",
+          "RWY-9R",
+          "",
+          "RVMA80075S",
+          "RVMA80076S",
+          "RVMA80077S",
+          "RVMA80078S",
+          "RVMA80079S",
+          "RVMA80080S",
+          "RVMA80005S",
+          "RVMA80007S",
+          "RVMA80020S",
+          "RVMA80177S",
+          "FINAL_W BLANK",
+          "RWY-26R",
+          "RWY-26L",
+          "RWY-27R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_N_DEP": {
-        "default_maps": ["DEPARTURE RADAR WEST"],
+        "default_maps": ["RVMA80031S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "DEPARTURE EAST WAYPOINT NAMES",
-          "DEPARTURE WEST WAYPOINT NAMES",
-          "DEPARTURE EAST WAYPOINT FIXES",
-          "DEPARTURE EAST WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "DEPARTURE RADAR WEST",
-          "DEPARTURE RADAR EAST",
-          "DEPARTURE EAST TRIP TRACKS",
-          "DEPARTURE WEST TRIP TRACKS",
-          "DEPARTURE EAST DUAL TRACKS",
-          "DEPARTURE WEST DUAL TRACK",
-          "DEPARTURE WEST DIVERGENCE LINES",
-          "DEPARTURE EAST DIVERGENCE LINES",
-          "DEPARTURE WEST DUAL N/S SPLIT",
-          "DEPARTURE EAST DUAL N/S SPLIT",
-          "DEPARTURE EAST TRIP SPLIT",
-          "DEPARTURE WEST TRIP SPLIT",
-          "WIGLE2 DEPARTURE OVERLAY",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80008S",
+          "RVMA80090S",
+          "RVMA80060S",
+          "RVMA80009S",
+          "RVMA80031S",
+          "RVMA80038S",
+          "RVMA80040S",
+          "RVMA80036S",
+          "RVMA80035S",
+          "",
+          "RVMA80044S",
+          "RVMA80046S",
+          "RVMA80047S",
+          "RVMA80060S",
+          "",
+          "RVMA80173S",
+          "DEP E BLANK FINAL",
+          "RWY-8L",
+          "RWY-9R",
+          "RVMA80032S",
+          "RVMA80037S",
+          "RVMA80039S",
+          "RVMA80034S",
+          "RVMA80035S",
+          "RVMA80042S",
+          "RVMA80041S",
+          "RVMA80061S",
+          "RVMA80106S",
+          "RVMA80048S",
+          "",
+          "RVMA80178S",
+          "DEP W BLANK FINAL",
+          "RWY-26R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_I_DEP": {
-        "default_maps": ["DEPARTURE RADAR WEST"],
+        "default_maps": ["RVMA80031S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "DEPARTURE EAST WAYPOINT NAMES",
-          "DEPARTURE WEST WAYPOINT NAMES",
-          "DEPARTURE EAST WAYPOINT FIXES",
-          "DEPARTURE EAST WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "DEPARTURE RADAR WEST",
-          "DEPARTURE RADAR EAST",
-          "DEPARTURE EAST TRIP TRACKS",
-          "DEPARTURE WEST TRIP TRACKS",
-          "DEPARTURE EAST DUAL TRACKS",
-          "DEPARTURE WEST DUAL TRACK",
-          "DEPARTURE WEST DIVERGENCE LINES",
-          "DEPARTURE EAST DIVERGENCE LINES",
-          "DEPARTURE WEST DUAL N/S SPLIT",
-          "DEPARTURE EAST DUAL N/S SPLIT",
-          "DEPARTURE EAST TRIP SPLIT",
-          "DEPARTURE WEST TRIP SPLIT",
-          "WIGLE2 DEPARTURE OVERLAY",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80008S",
+          "RVMA80090S",
+          "RVMA80060S",
+          "RVMA80009S",
+          "RVMA80031S",
+          "RVMA80038S",
+          "RVMA80040S",
+          "RVMA80036S",
+          "RVMA80035S",
+          "",
+          "RVMA80044S",
+          "RVMA80046S",
+          "RVMA80047S",
+          "RVMA80060S",
+          "",
+          "RVMA80173S",
+          "DEP E BLANK FINAL",
+          "RWY-8L",
+          "RWY-9R",
+          "RVMA80032S",
+          "RVMA80037S",
+          "RVMA80039S",
+          "RVMA80034S",
+          "RVMA80035S",
+          "RVMA80042S",
+          "RVMA80041S",
+          "RVMA80061S",
+          "RVMA80106S",
+          "RVMA80048S",
+          "",
+          "RVMA80178S",
+          "DEP W BLANK FINAL",
+          "RWY-26R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_S_DEP": {
-        "default_maps": ["DEPARTURE RADAR WEST"],
+        "default_maps": ["RVMA80031S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "DEPARTURE EAST WAYPOINT NAMES",
-          "DEPARTURE WEST WAYPOINT NAMES",
-          "DEPARTURE EAST WAYPOINT FIXES",
-          "DEPARTURE EAST WAYPOINT NAMES",
-          "ARRIVAL WEST DOWNWIND WAYPOINT NAMES",
-          "ARRIVAL EAST DOWNWIND WAYPOINT NAMES",
-          "DEPARTURE RADAR WEST",
-          "DEPARTURE RADAR EAST",
-          "DEPARTURE EAST TRIP TRACKS",
-          "DEPARTURE WEST TRIP TRACKS",
-          "DEPARTURE EAST DUAL TRACKS",
-          "DEPARTURE WEST DUAL TRACK",
-          "DEPARTURE WEST DIVERGENCE LINES",
-          "DEPARTURE EAST DIVERGENCE LINES",
-          "DEPARTURE WEST DUAL N/S SPLIT",
-          "DEPARTURE EAST DUAL N/S SPLIT",
-          "DEPARTURE EAST TRIP SPLIT",
-          "DEPARTURE WEST TRIP SPLIT",
-          "WIGLE2 DEPARTURE OVERLAY",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "TERMINAL ARRIVAL RADAR EAST",
-          "TERMINAL ARRIVAL RADAR WEST",
-          "ARRIVAL WEST WAYPOINT FIXES",
-          "ARRIVAL WEST WAYPOINT NAMES",
-          "ARRIVAL EAST WAYPOINT FIXES",
-          "ARRIVAL EAST STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80008S",
+          "RVMA80090S",
+          "RVMA80060S",
+          "RVMA80009S",
+          "RVMA80031S",
+          "RVMA80038S",
+          "RVMA80040S",
+          "RVMA80036S",
+          "RVMA80035S",
+          "",
+          "RVMA80044S",
+          "RVMA80046S",
+          "RVMA80047S",
+          "RVMA80060S",
+          "",
+          "RVMA80173S",
+          "DEP E BLANK FINAL",
+          "RWY-8L",
+          "RWY-9R",
+          "RVMA80032S",
+          "RVMA80037S",
+          "RVMA80039S",
+          "RVMA80034S",
+          "RVMA80035S",
+          "RVMA80042S",
+          "RVMA80041S",
+          "RVMA80061S",
+          "RVMA80106S",
+          "RVMA80048S",
+          "",
+          "RVMA80178S",
+          "DEP W BLANK FINAL",
+          "RWY-26R",
+          "RWY-27L"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_P_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
+        "default_maps": ["RVMA80028S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80060S",
+          "RVMA80090S",
+          "RVMA80092S",
+          "RVMA80106S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80135S",
+          "RVMA80029S",
+          "RVMA80170S",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "RVMA80062S",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80092S",
+          "RVMA80059S",
+          "RVMA80134S",
+          "",
+          "RVMA80175S"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_G_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
+        "default_maps": ["RVMA80028S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80060S",
+          "RVMA80090S",
+          "RVMA80092S",
+          "RVMA80106S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80135S",
+          "RVMA80029S",
+          "RVMA80170S",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "RVMA80062S",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80092S",
+          "RVMA80059S",
+          "RVMA80134S",
+          "",
+          "RVMA80175S"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_F_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
+        "default_maps": ["RVMA80028S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80060S",
+          "RVMA80090S",
+          "RVMA80092S",
+          "RVMA80106S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80135S",
+          "RVMA80029S",
+          "RVMA80170S",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "RVMA80062S",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80092S",
+          "RVMA80059S",
+          "RVMA80134S",
+          "",
+          "RVMA80175S"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_X_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
+        "default_maps": ["RVMA80028S"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80060S",
+          "RVMA80090S",
+          "RVMA80092S",
+          "RVMA80106S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80135S",
+          "RVMA80029S",
+          "RVMA80170S",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "RVMA80062S",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80092S",
+          "RVMA80059S",
+          "RVMA80134S",
+          "",
+          "RVMA80175S"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_Q_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80109S",
+          "RVMA80060S",
+          "RVMA80090S",
+          "RVMA80092S",
+          "RVMA80106S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80135S",
+          "RVMA80029S",
+          "RVMA80170S",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "RVMA80062S",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80092S",
+          "RVMA80059S",
+          "RVMA80134S",
+          "",
+          "RVMA80175S"
         ],
-        "center": "KATL",
+        "center": "N33.37.43.000,W084.25.48.000",
         "range": 60
       },
       "ATL_M_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80060S",
+          "RVMA80092S",
+          "RVMA80109S",
+          "RVMA80106S",
+          "RVMA80097S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80095S",
+          "RVMA80110S",
+          "RVMA80105S",
+          "RVMA80127S",
+          "RVMA80132S",
+          "RVMA80129S",
+          "RVMA80131S",
+          "RVMA80107S",
+          "",
+          "RVMA80091S",
+          "RVMA80029S",
+          "",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80097S",
+          "RVMA80096S",
+          "RVMA80111S",
+          "RVMA80106S",
+          "RVMA80104S",
+          "RVMA80128S",
+          "RVMA80130S",
+          "RVMA80098S",
+          "RVMA80030S",
+          "",
+          "RVMA80092S",
+          "",
+          "",
+          "",
+          ""
         ],
-        "center": "KMCN",
+        "center": "N32.41.34.000,W083.38.57.000",
         "range": 60
       },
       "ATL_W_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80060S",
+          "RVMA80092S",
+          "RVMA80109S",
+          "RVMA80106S",
+          "RVMA80097S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80095S",
+          "RVMA80110S",
+          "RVMA80105S",
+          "RVMA80127S",
+          "RVMA80132S",
+          "RVMA80129S",
+          "RVMA80131S",
+          "RVMA80107S",
+          "",
+          "RVMA80091S",
+          "RVMA80029S",
+          "",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80097S",
+          "RVMA80096S",
+          "RVMA80111S",
+          "RVMA80106S",
+          "RVMA80104S",
+          "RVMA80128S",
+          "RVMA80130S",
+          "RVMA80098S",
+          "RVMA80030S",
+          "",
+          "RVMA80092S",
+          "",
+          "",
+          "",
+          ""
         ],
-        "center": "KMCN",
+        "center": "N32.41.34.000,W083.38.57.000",
         "range": 60
       },
       "ATL_Z_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80060S",
+          "RVMA80128S",
+          "RVMA80109S",
+          "RVMA80106S",
+          "RVMA80129S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80095S",
+          "RVMA80105S",
+          "RVMA80127S",
+          "RVMA80132S",
+          "RVMA80129S",
+          "RVMA80131S",
+          "RVMA80107S",
+          "",
+          "RVMA80091S",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80097S",
+          "RVMA80096S",
+          "RVMA80106S",
+          "RVMA80104S",
+          "RVMA80128S",
+          "RVMA80130S",
+          "RVMA80098S",
+          "RVMA80030S",
+          "",
+          "RVMA80092S",
+          "",
+          "",
+          "",
+          ""
         ],
-        "center": "KCSG",
+        "center": "N32.30.58.000,W084.56.19.000",
         "range": 60
       },
       "ATL_R_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80060S",
+          "RVMA80128S",
+          "RVMA80109S",
+          "RVMA80106S",
+          "RVMA80129S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80095S",
+          "RVMA80105S",
+          "RVMA80127S",
+          "RVMA80132S",
+          "RVMA80129S",
+          "RVMA80131S",
+          "RVMA80107S",
+          "",
+          "RVMA80091S",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80097S",
+          "RVMA80096S",
+          "RVMA80106S",
+          "RVMA80104S",
+          "RVMA80128S",
+          "RVMA80130S",
+          "RVMA80098S",
+          "RVMA80030S",
+          "",
+          "RVMA80092S",
+          "",
+          "",
+          "",
+          ""
         ],
-        "center": "KCSG",
+        "center": "N32.30.58.000,W084.56.19.000",
         "range": 60
       },
       "ATL_E_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80060S",
+          "",
+          "RVMA80109S",
+          "RVMA80106S",
+          "RVMA80105S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80029S",
+          "",
+          "",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80091S",
+          "RVMA80059S",
+          "RVMA80174S"
         ],
-        "center": "KAHN",
+        "center": "N33.56.55.000,W083.19.33.000",
         "range": 60
       },
       "ATL_3E_APP": {
-        "default_maps": ["WEST SATELLITE RADAR/OUTERS"],
         "video_maps": [
-          "A80 MINIMUM VECTORING ALTITUDE",
-          "ATL CLASS B",
-          "WEST SATELLITE RADAR/OUTERS",
-          "EAST SATELLITE RADAR/OUTERS",
-          "ALL RNAV APPROACH T FIXES",
-          "A80 RNAV (GPS) APPROACHES",
-          "A80 CLASS D",
-          "A80 EMERGENCY OBSTRUCTION VIDEO MAP",
-          "PEACHTREE FINAL AIRSPACE",
-          "PDK RNAV (RNP) 21L",
-          "COUNTY BOUNDARIES",
-          "ZTL A80 40DME",
-          "PDK RNAV (RNP) 3R",
-          "SATELLITE STAR FIXES",
-          "SAT STAR WAYPOINT NAMES",
-          "SAT STAR WAYPOINT NAMES"
+          "RVMA80091S",
+          "RVMA80060S",
+          "",
+          "RVMA80109S",
+          "RVMA80106S",
+          "RVMA80105S",
+          "RVMA80028S",
+          "RVMA80060S",
+          "RVMA80067S",
+          "",
+          "RVMA80105S",
+          "RVMA80107S",
+          "RVMA80097S",
+          "",
+          "RVMA80053S",
+          "RVMA80055S",
+          "RVMA80058S",
+          "RVMA80029S",
+          "",
+          "",
+          "",
+          "",
+          "RVMA80027S",
+          "RVMA80065S",
+          "RVMA80066S",
+          "RVMA80104S",
+          "RVMA80106S",
+          "",
+          "RVMA80098S",
+          "RVMA80047S",
+          "RVMA80054S",
+          "RVMA80091S",
+          "RVMA80059S",
+          "RVMA80174S"
         ],
-        "center": "KAHN",
+        "center": "N33.56.55.000,W083.19.33.000",
         "range": 60
       }
     },
+    "video_map_file": "videomaps/A80-videomaps.gob.zst",
     "radar_sites": {
       "KATL": {
         "char": "A",
@@ -43836,7 +44556,6 @@
         }
       ]
     },
-    "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
     "airspace_awareness": [
       {
         "fixes": ["ALL"],
@@ -44314,63 +45033,63 @@
       ],
       "inbound_rates": {
         "BUKHD3": {
-          "KFTY": 2,
-          "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
-          "KRYY": 1,
-          "KHMP": 1,
-          "KPUJ": 1,
-          "KVPC": 1,
-          "KCCO": 1,
-          "6A2": 1,
-          "D73": 1
+          "KFTY": 1,
+          "KPDK": 1,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KHMP": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KCCO": 0,
+          "6A2": 0,
+          "D73": 0
         },
         "DEHAN3": {
           "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
+          "KMGE": 0,
+          "KLZU": 0,
           "KRYY": 1,
-          "KHMP": 1,
-          "KCVC": 1,
-          "KCTJ": 1,
-          "KCCO": 1,
-          "6A2": 1,
-          "KVPC": 1,
-          "KPUJ": 1,
-          "D73": 1
+          "KHMP": 0,
+          "KCVC": 0,
+          "KCTJ": 0,
+          "KCCO": 0,
+          "6A2": 0,
+          "KVPC": 0,
+          "KPUJ": 0,
+          "D73": 0
         },
         "SWTEE2": {
-          "KFTY": 2,
-          "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
-          "KRYY": 1,
-          "KVPC": 1,
-          "KPUJ": 1,
-          "KCVC": 1,
-          "D73": 1
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KVPC": 0,
+          "KPUJ": 0,
+          "KCVC": 0,
+          "D73": 0
         },
         "WRGNZ3": {
-          "KFTY": 2,
-          "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
-          "KRYY": 1,
-          "D73": 1,
-          "KPUJ": 1
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "D73": 0,
+          "KPUJ": 0
         },
         "CHPPR1": {
           "KATL": 15
         },
         "BOKRT3": {
-          "KFTY": 1,
-          "KPDK": 4,
-          "KMGE": 2,
-          "KLZU": 1,
-          "KRYY": 4,
-          "KPUJ": 1,
-          "KVPC": 1
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KPUJ": 0,
+          "KVPC": 0
         },
         "GLAVN1": {
           "KATL": 15
@@ -44388,96 +45107,114 @@
           "KATL": 15
         },
         "AHN Inbounds": {
-          "KAHN": 1,
-          "KWDR": 1,
-          "KGVL": 1,
-          "KJCA": 1,
-          "KCPP": 1
+          "KAHN": 0,
+          "KWDR": 0,
+          "KGVL": 0,
+          "KJCA": 0,
+          "KCPP": 0
         },
         "AHN Overflights": {
-          "KHMP": 1,
-          "KFFC": 1,
-          "6A2": 1,
-          "KCCO": 1,
-          "KMGE": 1,
-          "KRYY": 1,
-          "KPDK": 1,
-          "KLZU": 1,
-          "KCTJ": 1,
-          "KFTY": 1,
-          "KMLJ": 1,
-          "KDBN": 1,
-          "KWRB": 1,
-          "KMCN": 1,
-          "KPXE": 1,
-          "6A1": 1,
-          "KOPN": 1
+          "KHMP": 0,
+          "KFFC": 0,
+          "6A2": 0,
+          "KCCO": 0,
+          "KMGE": 0,
+          "KRYY": 0,
+          "KPDK": 0,
+          "KLZU": 0,
+          "KCTJ": 0,
+          "KFTY": 0,
+          "KMLJ": 0,
+          "KDBN": 0,
+          "KWRB": 0,
+          "KMCN": 0,
+          "KPXE": 0,
+          "6A1": 0,
+          "KOPN": 0
         },
         "MCN Inbounds": {
-          "KMCN": 1,
-          "KPXE": 1,
-          "6A1": 1,
-          "KMAC": 1,
-          "KMLJ": 1,
-          "53A": 1,
-          "KDBN": 1,
-          "KOPN": 1
+          "KMCN": 0,
+          "KPXE": 0,
+          "6A1": 0,
+          "KMAC": 0,
+          "KMLJ": 0,
+          "53A": 0,
+          "KDBN": 0,
+          "KOPN": 0
         },
         "MCN Overflights": {
-          "KHMP": 1,
-          "KFFC": 1,
-          "6A2": 1,
-          "KCCO": 1,
-          "KMGE": 1,
-          "KRYY": 1,
-          "KPDK": 1,
-          "KLZU": 1,
-          "KCTJ": 1,
-          "KFTY": 1,
-          "KLSF": 1,
-          "KPIM": 1,
-          "KLGC": 1,
-          "KAUO": 1,
-          "06A": 1
+          "KHMP": 0,
+          "KFFC": 0,
+          "6A2": 0,
+          "KCCO": 0,
+          "KMGE": 0,
+          "KRYY": 0,
+          "KPDK": 0,
+          "KLZU": 0,
+          "KCTJ": 0,
+          "KFTY": 0,
+          "KLSF": 0,
+          "KPIM": 0,
+          "KLGC": 0,
+          "KAUO": 0,
+          "06A": 0
         },
         "CSG Inbounds": {
-          "KCSG": 1,
-          "KLSF": 1,
-          "KPIM": 1,
-          "KLGC": 1,
-          "KAUO": 1,
-          "KEUF": 1
+          "KCSG": 0,
+          "KLSF": 0,
+          "KPIM": 0,
+          "KLGC": 0,
+          "KAUO": 0,
+          "KEUF": 0
         },
         "CSG Overflights": {
-          "KHMP": 1,
-          "KFFC": 1,
-          "6A2": 1,
-          "KCCO": 1,
-          "KMGE": 1,
-          "KRYY": 1,
-          "KPDK": 1,
-          "KLZU": 1,
-          "KCTJ": 1,
-          "KFTY": 1,
-          "KMLJ": 1,
-          "KDBN": 1,
-          "KWRB": 1,
-          "KMCN": 1,
-          "KPXE": 1,
-          "6A1": 1,
-          "KOPN": 1
+          "KHMP": 0,
+          "KFFC": 0,
+          "6A2": 0,
+          "KCCO": 0,
+          "KMGE": 0,
+          "KRYY": 0,
+          "KPDK": 0,
+          "KLZU": 0,
+          "KCTJ": 0,
+          "KFTY": 0,
+          "KMLJ": 0,
+          "KDBN": 0,
+          "KWRB": 0,
+          "KMCN": 0,
+          "KPXE": 0,
+          "6A1": 0,
+          "KOPN": 0
         }
       },
       "solo_controller": "ATL_H_APP",
       "multi_controllers": {
         "default": {
-          "ATL_H_APP": { "primary": true, "arrivals": ["JJEDI3"] },
-          "ATL_D_APP": { "backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"] },
-          "ATL_L_APP": { "backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"] },
-          "ATL_Y_APP": { "backup": "ATL_H_APP", "arrivals": ["HOBTT2"] },
-          "ATL_O_APP": { "backup": "ATL_H_APP" },
-          "ATL_V_APP": { "backup": "ATL_D_APP" },
-          "ATL_A_APP": { "backup": "ATL_L_APP" },
+          "ATL_H_APP": {
+            "primary": true,
+            "arrivals": ["JJEDI3"]
+          },
+          "ATL_D_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["GLAVN1", "CHPPR1"]
+          },
+          "ATL_L_APP": {
+            "backup": "ATL_D_APP",
+            "arrivals": ["ONDRE1", "OZZZI1"]
+          },
+          "ATL_Y_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["HOBTT2"]
+          },
+          "ATL_O_APP": {
+            "backup": "ATL_H_APP"
+          },
+          "ATL_V_APP": {
+            "backup": "ATL_D_APP"
+          },
+          "ATL_A_APP": {
+            "backup": "ATL_L_APP"
+          },
           "ATL_N_DEP": {
             "departures": [
               "KATL/CUTTN2",
@@ -44498,28 +45235,54 @@
             "backup": "ATL_S_DEP",
             "departures": ["KATL/KAJIN2", "KATL/PHIIL3", "KATL/GAIRY2", "KATL/JACCC2"]
           },
-          "ATL_P_APP": { "backup": "ATL_I_DEP", "departures": ["KPDK", "KLZU", "D73"], "arrivals": ["DEHAN3"] },
+          "ATL_P_APP": {
+            "backup": "ATL_I_DEP",
+            "departures": ["KPDK", "KLZU", "D73"],
+            "arrivals": ["DEHAN3"]
+          },
           "ATL_F_APP": {
             "backup": "ATL_P_APP",
             "departures": ["KFTY", "KRYY", "KMGE", "KPUJ", "KVPC", "KCTJ"],
             "arrivals": ["SWTEE2", "BUKHD3"]
           },
-          "ATL_X_APP": { "backup": "ATL_F_APP", "arrivals": ["BOKRT3"], "departures": ["KFFC", "KCCO"] },
-          "ATL_G_APP": { "backup": "ATL_X_APP", "arrivals": ["WRGNZ3"], "departures": ["KCVC", "KHMP", "6A2"] },
-          "ATL_Q_APP": { "backup": "ATL_G_APP" },
+          "ATL_X_APP": {
+            "backup": "ATL_F_APP",
+            "arrivals": ["BOKRT3"],
+            "departures": ["KFFC", "KCCO"]
+          },
+          "ATL_G_APP": {
+            "backup": "ATL_X_APP",
+            "arrivals": ["WRGNZ3"],
+            "departures": ["KCVC", "KHMP", "6A2"]
+          },
+          "ATL_Q_APP": {
+            "backup": "ATL_G_APP"
+          },
           "ATL_E_APP": {
             "backup": "ATL_G_APP",
             "departures": ["KAHN", "KWDR", "KGVL", "KJCA", "KCPP"],
             "arrivals": ["AHN Inbounds"]
           },
-          "ATL_3E_APP": { "backup": "ATL_E_APP", "arrivals": ["AHN Overflights"] },
+          "ATL_3E_APP": {
+            "backup": "ATL_E_APP",
+            "arrivals": ["AHN Overflights"]
+          },
           "ATL_M_APP": {
             "backup": "ATL_E_APP",
             "departures": ["KMCN", "KWRB", "KMLJ", "KOPN", "KACJ", "6A1", "53A", "KPXE", "KMAC", "KDBN"]
           },
-          "ATL_W_APP": { "backup": "ATL_M_APP", "arrivals": ["MCN Inbounds", "MCN Overflights"] },
-          "ATL_Z_APP": { "backup": "ATL_E_APP", "departures": ["KCSG", "KLSF", "KAUO", "KPIM", "KLGC", "06A", "KEUF"] },
-          "ATL_R_APP": { "backup": "ATL_Z_APP", "arrivals": ["CSG Inbounds", "CSG Overflights"] }
+          "ATL_W_APP": {
+            "backup": "ATL_M_APP",
+            "arrivals": ["MCN Inbounds", "MCN Overflights"]
+          },
+          "ATL_Z_APP": {
+            "backup": "ATL_E_APP",
+            "departures": ["KCSG", "KLSF", "KAUO", "KPIM", "KLGC", "06A", "KEUF"]
+          },
+          "ATL_R_APP": {
+            "backup": "ATL_Z_APP",
+            "arrivals": ["CSG Inbounds", "CSG Overflights"]
+          }
         }
       },
       "controllers": [
@@ -44561,192 +45324,192 @@
         },
         {
           "airport": "KFTY",
-          "rate": 4,
+          "rate": 0,
           "runway": "26"
         },
         {
           "airport": "KPDK",
-          "rate": 8,
+          "rate": 0,
           "runway": "21L"
         },
         {
           "airport": "KMGE",
-          "rate": 2,
+          "rate": 0,
           "runway": "29"
         },
         {
           "airport": "KRYY",
-          "rate": 2,
+          "rate": 0,
           "runway": "27"
         },
         {
           "airport": "KLZU",
-          "rate": 3,
+          "rate": 0,
           "runway": "25"
         },
         {
           "airport": "KPUJ",
-          "rate": 1,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KVPC",
-          "rate": 1,
+          "rate": 0,
           "runway": "19"
         },
         {
           "airport": "KCVC",
-          "rate": 1,
+          "rate": 0,
           "runway": "28"
         },
         {
           "airport": "KFFC",
-          "rate": 1,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KHMP",
-          "rate": 1,
+          "rate": 0,
           "runway": "24"
         },
         {
           "airport": "KCTJ",
-          "rate": 1,
+          "rate": 0,
           "runway": "35"
         },
         {
           "airport": "KWDR",
-          "rate": 1,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KAHN",
-          "rate": 1,
+          "rate": 0,
           "runway": "9"
         },
         {
           "airport": "KGVL",
-          "rate": 1,
+          "rate": 0,
           "runway": "11"
         },
         {
           "airport": "KWRB",
-          "rate": 1,
+          "rate": 0,
           "runway": "15"
         },
         {
           "airport": "KMCN",
-          "rate": 4,
+          "rate": 0,
           "runway": "5"
         },
         {
           "airport": "KCSG",
-          "rate": 4,
+          "rate": 0,
           "runway": "6"
         },
         {
           "airport": "KLSF",
-          "rate": 3,
+          "rate": 0,
           "runway": "15"
         },
         {
           "airport": "KAUO",
-          "rate": 3,
+          "rate": 0,
           "runway": "18"
         },
         {
           "airport": "KJCA",
-          "rate": 2,
+          "rate": 0,
           "runway": "17"
         },
         {
           "airport": "KMLJ",
-          "rate": 2,
+          "rate": 0,
           "runway": "10"
         },
         {
           "airport": "KOPN",
-          "rate": 3,
+          "rate": 0,
           "runway": "12"
         },
         {
           "airport": "KACJ",
-          "rate": 5,
+          "rate": 0,
           "runway": "5"
         },
         {
           "airport": "KPIM",
-          "rate": 4,
+          "rate": 0,
           "runway": "9"
         },
         {
           "airport": "KLGC",
-          "rate": 6,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "KCPP",
-          "rate": 5,
+          "rate": 0,
           "runway": "25"
         },
         {
           "airport": "6A1",
-          "rate": 3,
+          "rate": 0,
           "runway": "19"
         },
         {
           "airport": "D73",
-          "rate": 2,
+          "rate": 0,
           "runway": "21"
         },
         {
           "airport": "06A",
-          "rate": 1,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "53A",
-          "rate": 1,
+          "rate": 0,
           "runway": "36"
         },
         {
           "airport": "KPXE",
-          "rate": 1,
+          "rate": 0,
           "runway": "36"
         },
         {
           "airport": "KMAC",
-          "rate": 1,
+          "rate": 0,
           "runway": "10"
         },
         {
           "airport": "KDBN",
-          "rate": 2,
+          "rate": 0,
           "runway": "2"
         },
         {
           "airport": "KCCO",
-          "rate": 2,
+          "rate": 0,
           "runway": "15"
         },
         {
           "airport": "6A2",
-          "rate": 2,
+          "rate": 0,
           "runway": "14"
         },
         {
           "airport": "KEUF",
-          "rate": 2,
+          "rate": 0,
           "runway": "18"
         },
         {
           "airport": "KOZR",
-          "rate": 2,
+          "rate": 0,
           "runway": "6"
         },
         {
           "airport": "KAGS",
-          "rate": 2,
+          "rate": 0,
           "runway": "35"
         }
       ],
@@ -44976,63 +45739,63 @@
       ],
       "inbound_rates": {
         "BUKHD3": {
-          "KFTY": 2,
-          "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
-          "KRYY": 1,
-          "KHMP": 1,
-          "KPUJ": 1,
-          "KVPC": 1,
-          "KCCO": 1,
-          "6A2": 1,
-          "D73": 1
+          "KFTY": 1,
+          "KPDK": 1,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KHMP": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KCCO": 0,
+          "6A2": 0,
+          "D73": 0
         },
         "DEHAN3": {
           "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
+          "KMGE": 0,
+          "KLZU": 0,
           "KRYY": 1,
-          "KHMP": 1,
-          "KCVC": 1,
-          "KCTJ": 1,
-          "KCCO": 1,
-          "6A2": 1,
-          "KVPC": 1,
-          "KPUJ": 1,
-          "D73": 1
+          "KHMP": 0,
+          "KCVC": 0,
+          "KCTJ": 0,
+          "KCCO": 0,
+          "6A2": 0,
+          "KVPC": 0,
+          "KPUJ": 0,
+          "D73": 0
+        },
+        "SWTEE2": {
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KVPC": 0,
+          "KPUJ": 0,
+          "KCVC": 0,
+          "D73": 0
+        },
+        "WRGNZ3": {
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "D73": 0,
+          "KPUJ": 0
         },
         "CHPPR1": {
           "KATL": 15
         },
-        "SWTEE2": {
-          "KFTY": 2,
-          "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
-          "KRYY": 1,
-          "KVPC": 1,
-          "KPUJ": 1,
-          "KCVC": 1,
-          "D73": 1
-        },
-        "WRGNZ3": {
-          "KFTY": 2,
-          "KPDK": 4,
-          "KMGE": 1,
-          "KLZU": 2,
-          "KRYY": 1,
-          "D73": 1,
-          "KPUJ": 1
-        },
         "BOKRT3": {
-          "KFTY": 1,
-          "KPDK": 4,
-          "KMGE": 2,
-          "KLZU": 1,
-          "KRYY": 4,
-          "KPUJ": 1,
-          "KVPC": 1
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KPUJ": 0,
+          "KVPC": 0
         },
         "GLAVN1": {
           "KATL": 15
@@ -45050,96 +45813,114 @@
           "KATL": 15
         },
         "AHN Inbounds": {
-          "KAHN": 1,
-          "KWDR": 1,
-          "KGVL": 1,
-          "KJCA": 1,
-          "KCPP": 1
+          "KAHN": 0,
+          "KWDR": 0,
+          "KGVL": 0,
+          "KJCA": 0,
+          "KCPP": 0
         },
         "AHN Overflights": {
-          "KHMP": 1,
-          "KFFC": 1,
-          "6A2": 1,
-          "KCCO": 1,
-          "KMGE": 1,
-          "KRYY": 1,
-          "KPDK": 1,
-          "KLZU": 1,
-          "KCTJ": 1,
-          "KFTY": 1,
-          "KMLJ": 1,
-          "KDBN": 1,
-          "KWRB": 1,
-          "KMCN": 1,
-          "KPXE": 1,
-          "6A1": 1,
-          "KOPN": 1
+          "KHMP": 0,
+          "KFFC": 0,
+          "6A2": 0,
+          "KCCO": 0,
+          "KMGE": 0,
+          "KRYY": 0,
+          "KPDK": 0,
+          "KLZU": 0,
+          "KCTJ": 0,
+          "KFTY": 0,
+          "KMLJ": 0,
+          "KDBN": 0,
+          "KWRB": 0,
+          "KMCN": 0,
+          "KPXE": 0,
+          "6A1": 0,
+          "KOPN": 0
         },
         "MCN Inbounds": {
-          "KMCN": 1,
-          "KPXE": 1,
-          "6A1": 1,
-          "KMAC": 1,
-          "KMLJ": 1,
-          "53A": 1,
-          "KDBN": 1,
-          "KOPN": 1
+          "KMCN": 0,
+          "KPXE": 0,
+          "6A1": 0,
+          "KMAC": 0,
+          "KMLJ": 0,
+          "53A": 0,
+          "KDBN": 0,
+          "KOPN": 0
         },
         "MCN Overflights": {
-          "KHMP": 1,
-          "KFFC": 1,
-          "6A2": 1,
-          "KCCO": 1,
-          "KMGE": 1,
-          "KRYY": 1,
-          "KPDK": 1,
-          "KLZU": 1,
-          "KCTJ": 1,
-          "KFTY": 1,
-          "KLSF": 1,
-          "KPIM": 1,
-          "KLGC": 1,
-          "KAUO": 1,
-          "06A": 1
+          "KHMP": 0,
+          "KFFC": 0,
+          "6A2": 0,
+          "KCCO": 0,
+          "KMGE": 0,
+          "KRYY": 0,
+          "KPDK": 0,
+          "KLZU": 0,
+          "KCTJ": 0,
+          "KFTY": 0,
+          "KLSF": 0,
+          "KPIM": 0,
+          "KLGC": 0,
+          "KAUO": 0,
+          "06A": 0
         },
         "CSG Inbounds": {
-          "KCSG": 1,
-          "KLSF": 1,
-          "KPIM": 1,
-          "KLGC": 1,
-          "KAUO": 1,
-          "KEUF": 1
+          "KCSG": 0,
+          "KLSF": 0,
+          "KPIM": 0,
+          "KLGC": 0,
+          "KAUO": 0,
+          "KEUF": 0
         },
         "CSG Overflights": {
-          "KHMP": 1,
-          "KFFC": 1,
-          "6A2": 1,
-          "KCCO": 1,
-          "KMGE": 1,
-          "KRYY": 1,
-          "KPDK": 1,
-          "KLZU": 1,
-          "KCTJ": 1,
-          "KFTY": 1,
-          "KMLJ": 1,
-          "KDBN": 1,
-          "KWRB": 1,
-          "KMCN": 1,
-          "KPXE": 1,
-          "6A1": 1,
-          "KOPN": 1
+          "KHMP": 0,
+          "KFFC": 0,
+          "6A2": 0,
+          "KCCO": 0,
+          "KMGE": 0,
+          "KRYY": 0,
+          "KPDK": 0,
+          "KLZU": 0,
+          "KCTJ": 0,
+          "KFTY": 0,
+          "KMLJ": 0,
+          "KDBN": 0,
+          "KWRB": 0,
+          "KMCN": 0,
+          "KPXE": 0,
+          "6A1": 0,
+          "KOPN": 0
         }
       },
       "solo_controller": "ATL_H_APP",
       "multi_controllers": {
         "default": {
-          "ATL_H_APP": { "primary": true, "arrivals": ["JJEDI3"] },
-          "ATL_D_APP": { "backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"] },
-          "ATL_L_APP": { "backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"] },
-          "ATL_Y_APP": { "backup": "ATL_H_APP", "arrivals": ["HOBTT2"] },
-          "ATL_O_APP": { "backup": "ATL_H_APP" },
-          "ATL_V_APP": { "backup": "ATL_D_APP" },
-          "ATL_A_APP": { "backup": "ATL_L_APP" },
+          "ATL_H_APP": {
+            "primary": true,
+            "arrivals": ["JJEDI3"]
+          },
+          "ATL_D_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["GLAVN1", "CHPPR1"]
+          },
+          "ATL_L_APP": {
+            "backup": "ATL_D_APP",
+            "arrivals": ["ONDRE1", "OZZZI1"]
+          },
+          "ATL_Y_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["HOBTT2"]
+          },
+          "ATL_O_APP": {
+            "backup": "ATL_H_APP"
+          },
+          "ATL_V_APP": {
+            "backup": "ATL_D_APP"
+          },
+          "ATL_A_APP": {
+            "backup": "ATL_L_APP"
+          },
           "ATL_N_DEP": {
             "departures": [
               "KATL/CUTTN2",
@@ -45160,28 +45941,54 @@
             "backup": "ATL_S_DEP",
             "departures": ["KATL/POUNC2", "KATL/VRSTY3", "KATL/HAALO3", "KATL/BANNG3"]
           },
-          "ATL_P_APP": { "backup": "ATL_I_DEP", "departures": ["KPDK", "KLZU", "D73"], "arrivals": ["DEHAN3"] },
+          "ATL_P_APP": {
+            "backup": "ATL_I_DEP",
+            "departures": ["KPDK", "KLZU", "D73"],
+            "arrivals": ["DEHAN3"]
+          },
           "ATL_F_APP": {
             "backup": "ATL_P_APP",
             "departures": ["KFTY", "KRYY", "KMGE", "KPUJ", "KVPC", "KCTJ"],
             "arrivals": ["SWTEE2", "BUKHD3"]
           },
-          "ATL_X_APP": { "backup": "ATL_F_APP", "arrivals": ["BOKRT3"], "departures": ["KFFC", "KCCO"] },
-          "ATL_G_APP": { "backup": "ATL_X_APP", "arrivals": ["WRGNZ3"], "departures": ["KCVC", "KHMP", "6A2"] },
-          "ATL_Q_APP": { "backup": "ATL_G_APP" },
+          "ATL_X_APP": {
+            "backup": "ATL_F_APP",
+            "arrivals": ["BOKRT3"],
+            "departures": ["KFFC", "KCCO"]
+          },
+          "ATL_G_APP": {
+            "backup": "ATL_X_APP",
+            "arrivals": ["WRGNZ3"],
+            "departures": ["KCVC", "KHMP", "6A2"]
+          },
+          "ATL_Q_APP": {
+            "backup": "ATL_G_APP"
+          },
           "ATL_E_APP": {
             "backup": "ATL_G_APP",
             "departures": ["KAHN", "KWDR", "KGVL", "KJCA", "KCPP"],
             "arrivals": ["AHN Inbounds"]
           },
-          "ATL_3E_APP": { "backup": "ATL_E_APP", "arrivals": ["AHN Overflights"] },
+          "ATL_3E_APP": {
+            "backup": "ATL_E_APP",
+            "arrivals": ["AHN Overflights"]
+          },
           "ATL_M_APP": {
             "backup": "ATL_E_APP",
             "departures": ["KMCN", "KWRB", "KMLJ", "KOPN", "KACJ", "6A1", "53A", "KPXE", "KMAC", "KDBN"]
           },
-          "ATL_W_APP": { "backup": "ATL_M_APP", "arrivals": ["MCN Inbounds", "MCN Overflights"] },
-          "ATL_Z_APP": { "backup": "ATL_E_APP", "departures": ["KCSG", "KLSF", "KAUO", "KPIM", "KLGC", "06A", "KEUF"] },
-          "ATL_R_APP": { "backup": "ATL_Z_APP", "arrivals": ["CSG Inbounds", "CSG Overflights"] }
+          "ATL_W_APP": {
+            "backup": "ATL_M_APP",
+            "arrivals": ["MCN Inbounds", "MCN Overflights"]
+          },
+          "ATL_Z_APP": {
+            "backup": "ATL_E_APP",
+            "departures": ["KCSG", "KLSF", "KAUO", "KPIM", "KLGC", "06A", "KEUF"]
+          },
+          "ATL_R_APP": {
+            "backup": "ATL_Z_APP",
+            "arrivals": ["CSG Inbounds", "CSG Overflights"]
+          }
         }
       },
       "controllers": [
@@ -45223,192 +46030,192 @@
         },
         {
           "airport": "KFTY",
-          "rate": 4,
+          "rate": 0,
           "runway": "8"
         },
         {
           "airport": "KPDK",
-          "rate": 5,
+          "rate": 0,
           "runway": "3R"
         },
         {
           "airport": "KMGE",
-          "rate": 1,
+          "rate": 0,
           "runway": "11"
         },
         {
           "airport": "KRYY",
-          "rate": 1,
+          "rate": 0,
           "runway": "9"
         },
         {
           "airport": "KLZU",
-          "rate": 3,
+          "rate": 0,
           "runway": "7"
         },
         {
           "airport": "KPUJ",
-          "rate": 2,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KVPC",
-          "rate": 1,
+          "rate": 0,
           "runway": "19"
         },
         {
           "airport": "KCVC",
-          "rate": 1,
+          "rate": 0,
           "runway": "10"
         },
         {
           "airport": "KFFC",
-          "rate": 1,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KHMP",
-          "rate": 1,
+          "rate": 0,
           "runway": "24"
         },
         {
           "airport": "KCTJ",
-          "rate": 1,
+          "rate": 0,
           "runway": "35"
         },
         {
           "airport": "KWDR",
-          "rate": 2,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "KAHN",
-          "rate": 3,
+          "rate": 0,
           "runway": "9"
         },
         {
           "airport": "KGVL",
-          "rate": 2,
+          "rate": 0,
           "runway": "11"
         },
         {
           "airport": "KWRB",
-          "rate": 2,
+          "rate": 0,
           "runway": "15"
         },
         {
           "airport": "KMCN",
-          "rate": 4,
+          "rate": 0,
           "runway": "5"
         },
         {
           "airport": "KCSG",
-          "rate": 5,
+          "rate": 0,
           "runway": "6"
         },
         {
           "airport": "KLSF",
-          "rate": 3,
+          "rate": 0,
           "runway": "15"
         },
         {
           "airport": "KAUO",
-          "rate": 3,
+          "rate": 0,
           "runway": "18"
         },
         {
           "airport": "KJCA",
-          "rate": 1,
+          "rate": 0,
           "runway": "17"
         },
         {
           "airport": "KMLJ",
-          "rate": 2,
+          "rate": 0,
           "runway": "10"
         },
         {
           "airport": "KOPN",
-          "rate": 3,
+          "rate": 0,
           "runway": "12"
         },
         {
           "airport": "KACJ",
-          "rate": 2,
+          "rate": 0,
           "runway": "5"
         },
         {
           "airport": "KPIM",
-          "rate": 3,
+          "rate": 0,
           "runway": "9"
         },
         {
           "airport": "KLGC",
-          "rate": 1,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "KCPP",
-          "rate": 2,
+          "rate": 0,
           "runway": "7"
         },
         {
           "airport": "6A1",
-          "rate": 3,
+          "rate": 0,
           "runway": "1"
         },
         {
           "airport": "D73",
-          "rate": 1,
+          "rate": 0,
           "runway": "3"
         },
         {
           "airport": "06A",
-          "rate": 2,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "53A",
-          "rate": 3,
+          "rate": 0,
           "runway": "18"
         },
         {
           "airport": "KPXE",
-          "rate": 2,
+          "rate": 0,
           "runway": "18"
         },
         {
           "airport": "KMAC",
-          "rate": 2,
+          "rate": 0,
           "runway": "10"
         },
         {
           "airport": "KDBN",
-          "rate": 2,
+          "rate": 0,
           "runway": "2"
         },
         {
           "airport": "KCCO",
-          "rate": 2,
+          "rate": 0,
           "runway": "15"
         },
         {
           "airport": "6A2",
-          "rate": 1,
+          "rate": 0,
           "runway": "14"
         },
         {
           "airport": "KEUF",
-          "rate": 2,
+          "rate": 0,
           "runway": "18"
         },
         {
           "airport": "KOZR",
-          "rate": 2,
+          "rate": 0,
           "runway": "6"
         },
         {
           "airport": "KAGS",
-          "rate": 2,
+          "rate": 0,
           "runway": "35"
         }
       ],
@@ -45518,72 +46325,72 @@
       ],
       "inbound_rates": {
         "BUKHD3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "DEHAN3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "SWTEE2": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "WRGNZ3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "CHPPR1": {
           "KATL": 10
         },
         "BOKRT3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "GLAVN1": {
           "KATL": 10
@@ -45604,25 +46411,64 @@
       "solo_controller": "ATL_H_APP",
       "multi_controllers": {
         "default": {
-          "ATL_H_APP": { "primary": true, "arrivals": ["JJEDI3"] },
-          "ATL_D_APP": { "backup": "ATL_H_APP", "arrivals": ["GLAVN1", "CHPPR1"] },
-          "ATL_L_APP": { "backup": "ATL_D_APP", "arrivals": ["ONDRE1", "OZZZI1"] },
-          "ATL_Y_APP": { "backup": "ATL_H_APP", "arrivals": ["HOBTT2"] },
-          "ATL_O_APP": { "backup": "ATL_H_APP" },
-          "ATL_V_APP": { "backup": "ATL_D_APP" },
-          "ATL_A_APP": { "backup": "ATL_L_APP" },
-          "ATL_N_DEP": { "departures": ["KATL"], "backup": "ATL_H_APP" },
-          "ATL_S_DEP": { "backup": "ATL_N_DEP" },
-          "ATL_I_DEP": { "backup": "ATL_S_DEP" },
-          "ATL_P_APP": { "backup": "ATL_I_DEP", "departures": ["KPDK", "KLZU"], "arrivals": ["DEHAN3"] },
+          "ATL_H_APP": {
+            "primary": true,
+            "arrivals": ["JJEDI3"]
+          },
+          "ATL_D_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["GLAVN1", "CHPPR1"]
+          },
+          "ATL_L_APP": {
+            "backup": "ATL_D_APP",
+            "arrivals": ["ONDRE1", "OZZZI1"]
+          },
+          "ATL_Y_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["HOBTT2"]
+          },
+          "ATL_O_APP": {
+            "backup": "ATL_H_APP"
+          },
+          "ATL_V_APP": {
+            "backup": "ATL_D_APP"
+          },
+          "ATL_A_APP": {
+            "backup": "ATL_L_APP"
+          },
+          "ATL_N_DEP": {
+            "departures": ["KATL"],
+            "backup": "ATL_H_APP"
+          },
+          "ATL_S_DEP": {
+            "backup": "ATL_N_DEP"
+          },
+          "ATL_I_DEP": {
+            "backup": "ATL_S_DEP"
+          },
+          "ATL_P_APP": {
+            "backup": "ATL_I_DEP",
+            "departures": ["KPDK", "KLZU"],
+            "arrivals": ["DEHAN3"]
+          },
           "ATL_F_APP": {
             "backup": "ATL_P_APP",
             "departures": ["KFTY", "KRYY", "KMGE", "KPUJ", "KVPC", "KCTJ"],
             "arrivals": ["SWTEE2", "BUKHD3"]
           },
-          "ATL_X_APP": { "backup": "ATL_F_APP", "arrivals": ["BOKRT3"], "departures": ["KFFC"] },
-          "ATL_G_APP": { "backup": "ATL_X_APP", "arrivals": ["WRGNZ3"], "departures": ["KCVC", "KHMP"] },
-          "ATL_Q_APP": { "backup": "ATL_G_APP" }
+          "ATL_X_APP": {
+            "backup": "ATL_F_APP",
+            "arrivals": ["BOKRT3"],
+            "departures": ["KFFC"]
+          },
+          "ATL_G_APP": {
+            "backup": "ATL_X_APP",
+            "arrivals": ["WRGNZ3"],
+            "departures": ["KCVC", "KHMP"]
+          },
+          "ATL_Q_APP": {
+            "backup": "ATL_G_APP"
+          }
         }
       },
       "controllers": ["ATL_1_TWR", "ATL_CTR", "ATL_2_TWR", "ATL_3_TWR", "ATL_4_TWR", "ATL_5_TWR"],
@@ -45653,57 +46499,57 @@
         },
         {
           "airport": "KFTY",
-          "rate": 8,
+          "rate": 0,
           "runway": "26"
         },
         {
           "airport": "KPDK",
-          "rate": 8,
+          "rate": 0,
           "runway": "21L"
         },
         {
           "airport": "KMGE",
-          "rate": 8,
+          "rate": 0,
           "runway": "29"
         },
         {
           "airport": "KRYY",
-          "rate": 8,
+          "rate": 0,
           "runway": "27"
         },
         {
           "airport": "KLZU",
-          "rate": 8,
+          "rate": 0,
           "runway": "25"
         },
         {
           "airport": "KPUJ",
-          "rate": 8,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KVPC",
-          "rate": 8,
+          "rate": 0,
           "runway": "19"
         },
         {
           "airport": "KCVC",
-          "rate": 8,
+          "rate": 0,
           "runway": "28"
         },
         {
           "airport": "KFFC",
-          "rate": 8,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KHMP",
-          "rate": 8,
+          "rate": 0,
           "runway": "24"
         },
         {
           "airport": "KCTJ",
-          "rate": 8,
+          "rate": 0,
           "runway": "35"
         }
       ],
@@ -45813,69 +46659,69 @@
       ],
       "inbound_rates": {
         "BOKRT3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "BUKHD3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "DEHAN3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "SWTEE2": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "WRGNZ3": {
-          "KFTY": 10,
-          "KPDK": 10,
-          "KMGE": 10,
-          "KLZU": 10,
-          "KRYY": 10,
-          "KCVC": 10,
-          "KPUJ": 10,
-          "KVPC": 10,
-          "KFFC": 10,
-          "KHMP": 10,
-          "KCTJ": 10
+          "KFTY": 0,
+          "KPDK": 0,
+          "KMGE": 0,
+          "KLZU": 0,
+          "KRYY": 0,
+          "KCVC": 0,
+          "KPUJ": 0,
+          "KVPC": 0,
+          "KFFC": 0,
+          "KHMP": 0,
+          "KCTJ": 0
         },
         "CHPPR1 EAST": {
           "KATL": 10
@@ -45899,25 +46745,64 @@
       "solo_controller": "ATL_H_APP",
       "multi_controllers": {
         "default": {
-          "ATL_H_APP": { "primary": true, "arrivals": ["SITTH2"] },
-          "ATL_D_APP": { "backup": "ATL_H_APP", "arrivals": ["GLAVN1 EAST", "CHPPR1 EAST"] },
-          "ATL_L_APP": { "backup": "ATL_D_APP", "arrivals": ["ONDRE1 EAST", "OZZZI1 EAST"] },
-          "ATL_Y_APP": { "backup": "ATL_H_APP", "arrivals": ["GNDLF2"] },
-          "ATL_O_APP": { "backup": "ATL_H_APP" },
-          "ATL_V_APP": { "backup": "ATL_D_APP" },
-          "ATL_A_APP": { "backup": "ATL_L_APP" },
-          "ATL_N_DEP": { "departures": ["KATL"], "backup": "ATL_H_APP" },
-          "ATL_S_DEP": { "backup": "ATL_N_DEP" },
-          "ATL_I_DEP": { "backup": "ATL_S_DEP" },
-          "ATL_P_APP": { "backup": "ATL_I_DEP", "departures": ["KPDK", "KLZU"], "arrivals": ["DEHAN3"] },
+          "ATL_H_APP": {
+            "primary": true,
+            "arrivals": ["SITTH2"]
+          },
+          "ATL_D_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["GLAVN1 EAST", "CHPPR1 EAST"]
+          },
+          "ATL_L_APP": {
+            "backup": "ATL_D_APP",
+            "arrivals": ["ONDRE1 EAST", "OZZZI1 EAST"]
+          },
+          "ATL_Y_APP": {
+            "backup": "ATL_H_APP",
+            "arrivals": ["GNDLF2"]
+          },
+          "ATL_O_APP": {
+            "backup": "ATL_H_APP"
+          },
+          "ATL_V_APP": {
+            "backup": "ATL_D_APP"
+          },
+          "ATL_A_APP": {
+            "backup": "ATL_L_APP"
+          },
+          "ATL_N_DEP": {
+            "departures": ["KATL"],
+            "backup": "ATL_H_APP"
+          },
+          "ATL_S_DEP": {
+            "backup": "ATL_N_DEP"
+          },
+          "ATL_I_DEP": {
+            "backup": "ATL_S_DEP"
+          },
+          "ATL_P_APP": {
+            "backup": "ATL_I_DEP",
+            "departures": ["KPDK", "KLZU"],
+            "arrivals": ["DEHAN3"]
+          },
           "ATL_F_APP": {
             "backup": "ATL_P_APP",
             "departures": ["KFTY", "KRYY", "KMGE", "KPUJ", "KVPC", "KCTJ"],
             "arrivals": ["SWTEE2", "BUKHD3"]
           },
-          "ATL_X_APP": { "backup": "ATL_F_APP", "arrivals": ["BOKRT3"], "departures": ["KFFC"] },
-          "ATL_G_APP": { "backup": "ATL_X_APP", "arrivals": ["WRGNZ3"], "departures": ["KCVC", "KHMP"] },
-          "ATL_Q_APP": { "backup": "ATL_G_APP" }
+          "ATL_X_APP": {
+            "backup": "ATL_F_APP",
+            "arrivals": ["BOKRT3"],
+            "departures": ["KFFC"]
+          },
+          "ATL_G_APP": {
+            "backup": "ATL_X_APP",
+            "arrivals": ["WRGNZ3"],
+            "departures": ["KCVC", "KHMP"]
+          },
+          "ATL_Q_APP": {
+            "backup": "ATL_G_APP"
+          }
         }
       },
       "controllers": ["ATL_1_TWR", "ATL_CTR", "ATL_2_TWR", "ATL_3_TWR", "ATL_4_TWR", "ATL_5_TWR"],
@@ -45948,87 +46833,87 @@
         },
         {
           "airport": "KFTY",
-          "rate": 10,
+          "rate": 0,
           "runway": "8"
         },
         {
           "airport": "KPDK",
-          "rate": 10,
+          "rate": 0,
           "runway": "3R"
         },
         {
           "airport": "KMGE",
-          "rate": 10,
+          "rate": 0,
           "runway": "11"
         },
         {
           "airport": "KRYY",
-          "rate": 10,
+          "rate": 0,
           "runway": "9"
         },
         {
           "airport": "KLZU",
-          "rate": 10,
+          "rate": 0,
           "runway": "7"
         },
         {
           "airport": "KPUJ",
-          "rate": 10,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KPUJ",
-          "rate": 10,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "KVPC",
-          "rate": 10,
+          "rate": 0,
           "runway": "19"
         },
         {
           "airport": "KVPC",
-          "rate": 10,
+          "rate": 0,
           "runway": "1"
         },
         {
           "airport": "KCVC",
-          "rate": 10,
+          "rate": 0,
           "runway": "28"
         },
         {
           "airport": "KCVC",
-          "rate": 10,
+          "rate": 0,
           "runway": "10"
         },
         {
           "airport": "KFFC",
-          "rate": 10,
+          "rate": 0,
           "runway": "31"
         },
         {
           "airport": "KFFC",
-          "rate": 10,
+          "rate": 0,
           "runway": "13"
         },
         {
           "airport": "KHMP",
-          "rate": 10,
+          "rate": 0,
           "runway": "24"
         },
         {
           "airport": "KHMP",
-          "rate": 10,
+          "rate": 0,
           "runway": "6"
         },
         {
           "airport": "KCTJ",
-          "rate": 10,
+          "rate": 0,
           "runway": "35"
         },
         {
           "airport": "KCTJ",
-          "rate": 10,
+          "rate": 0,
           "runway": "17"
         }
       ],
