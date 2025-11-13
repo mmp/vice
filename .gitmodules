@@ -1,0 +1,4 @@
+[submodule "whisper.cpp"]
+	path = whisper.cpp
+	url = https://github.com/checkandmate1/whisper.cpp.git
+	branch = stt
