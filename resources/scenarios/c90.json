@@ -4417,7 +4417,7 @@
           "speed_restriction": 220,
           "star": "FYTTE7",
           "scratchpad": "I7R",
-          "waypoints": "SOOLU KURKK/ho VULCN HIMGO/h093"
+          "waypoints": "SOOLU KURKK/ho VULCN"
         }
       ]
     },
@@ -6486,9 +6486,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
     "KORD West KMDW 31R": {
@@ -6626,9 +6624,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
     "KORD West KMDW 31R KPWK 16": {
@@ -6803,9 +6799,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
     "KORD West KMDW 31R + Satellites": {
@@ -7077,9 +7071,7 @@
         }
       ],
       "wind": {
-        "direction": 270,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
     "KORD West KMDW 22L + Satellites": {
@@ -7371,9 +7363,7 @@
         }
       ],
       "wind": {
-        "direction": 270,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
     "KORD West KPWK 16": {
@@ -7533,9 +7523,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
     "KORD West KMDW 22L": {
@@ -7673,9 +7661,7 @@
         }
       ],
       "wind": {
-        "direction": 250,
-        "gust": 15,
-        "speed": 7
+        "direction": "235-295"
       }
     },
 
@@ -7776,9 +7762,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "35-95"
       }
     },
     "KORD 4's A Pair KMDW 4R": {
@@ -7893,9 +7877,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "35-95"
       }
     },
     "KORD 4's A Pair KMDW 4R PWK 16": {
@@ -8032,9 +8014,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "35-95"
       }
     },
     "KORD 4's A Pair KMDW 4R + Satellites": {
@@ -8260,9 +8240,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "35-95"
       }
     },
 
@@ -8367,9 +8345,7 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "gust": 15,
-        "speed": 7
+        "direction": "190-250"
       }
     },
     "KORD 22's A Pair KMDW 22L": {
@@ -8488,9 +8464,7 @@
         }
       ],
       "wind": {
-        "direction": 310,
-        "gust": 15,
-        "speed": 7
+        "direction": "190-250"
       }
     },
     "KORD 22's A Pair KMDW 22L KPWK 16": {
@@ -8646,9 +8620,7 @@
         }
       ],
       "wind": {
-        "direction": 240,
-        "gust": 30,
-        "speed": 25
+        "direction": "190-250"
       }
     },
     "KORD 22's A Pair KMDW 22L + Satellites": {
@@ -8913,9 +8885,7 @@
         }
       ],
       "wind": {
-        "direction": 240,
-        "gust": 30,
-        "speed": 25
+        "direction": "190-250"
       }
     },
 
@@ -9039,8 +9009,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "speed": 10
+        "direction": "65-125"
       }
     },
     "KORD East KMDW 4R": {
@@ -9178,8 +9147,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "speed": 10
+        "direction": "65-125"
       }
     },
     "KORD East KMDW 13L": {
@@ -9317,8 +9285,7 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 10
+        "direction": "65-125"
       }
     },
     "KORD East KMDW 4R + Satellites": {
@@ -9590,9 +9557,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 15,
-        "speed": 7
+        "direction": "65-125"
       }
     },
     "KORD East KMDW 13L + Satellites": {
@@ -9864,9 +9829,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 15,
-        "speed": 7
+        "direction": "65-125"
       }
     },
     "KORD East KPWK 16": {
@@ -10026,9 +9989,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 15,
-        "speed": 7
+        "direction": "65-125"
       }
     },
     "KMDW 31R": {
@@ -10072,8 +10033,7 @@
         }
       ],
       "wind": {
-        "direction": 320,
-        "speed": 10
+        "direction": "280-340"
       }
     },
     "KMDW 4R": {
@@ -10116,8 +10076,7 @@
         }
       ],
       "wind": {
-        "direction": 40,
-        "speed": 10
+        "direction": "10-70"
       }
     },
     "KMDW 13L": {
@@ -10160,8 +10119,7 @@
         }
       ],
       "wind": {
-        "direction": 130,
-        "speed": 10
+        "direction": "100-160"
       }
     },
     "KMDW 22L": {
@@ -10204,8 +10162,7 @@
         }
       ],
       "wind": {
-        "direction": 220,
-        "speed": 10
+        "direction": "190-250"
       }
     },
     "KORD West North Final (F)": {
@@ -10227,8 +10184,7 @@
       "controllers": ["Chicago Center (Sector 81)", "FARMM (Y)", "O'Hare South Tower"],
       "default_maps": ["C90 MAIN"],
       "wind": {
-        "direction": 250,
-        "speed": 2
+        "direction": "240-300"
       }
     },
     "KORD East North Final (F)": {
@@ -10250,8 +10206,7 @@
       "controllers": ["Chicago Center (Sector 81)", "FARMM (Y)", "O'Hare South Tower"],
       "default_maps": ["C90 MAIN"],
       "wind": {
-        "direction": 50,
-        "speed": 2
+        "direction": "60-120"
       }
     },
     "KORD West Center Final (Z)": {
@@ -10276,8 +10231,7 @@
       "controllers": ["Chicago Center (Sector 81)", "KUBBS (J)", "O'Hare South Tower"],
       "default_maps": ["C90 MAIN"],
       "wind": {
-        "direction": 250,
-        "speed": 2
+        "direction": "240-300"
       }
     },
     "KORD West Final Combined": {
@@ -10326,8 +10280,7 @@
       ],
       "default_maps": ["C90 MAIN"],
       "wind": {
-        "direction": 250,
-        "speed": 2
+        "direction": "245-305"
       }
     },
     "KORD West South Final (W)": {
@@ -10352,8 +10305,7 @@
       "controllers": ["Chicago Center (Sector 81)", "PLANO (X)", "O'Hare South Tower", "OKK (E)"],
       "default_maps": ["C90 MAIN"],
       "wind": {
-        "direction": 250,
-        "speed": 2
+        "direction": "250-310"
       }
     },
     "Satellites Only": {
@@ -10519,9 +10471,7 @@
         }
       ],
       "wind": {
-        "direction": 90,
-        "gust": 15,
-        "speed": 7
+        "direction": "60-120"
       }
     }
   },
