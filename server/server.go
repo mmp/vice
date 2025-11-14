@@ -69,8 +69,9 @@ type ServerLaunchConfig struct {
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
+	util.InitFlightRecorder(lg)
 	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
-	util.MonitorMemoryUsage(192 /* trigger MB */, 64 /* delta MB */, lg)
+	util.MonitorMemoryUsage(512 /* trigger MB */, 64 /* delta MB */, lg)
 
 	_, server, e, extraScenarioErrors := makeServer(config, lg)
 	if e.HaveErrors() {

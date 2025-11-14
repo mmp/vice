@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"runtime/pprof"
+	"runtime/trace"
 	"slices"
 	"sync"
 	"time"
@@ -78,6 +79,47 @@ func (p *Profiler) Cleanup() {
 	}
 }
 
+var flightRecorder *trace.FlightRecorder
+
+// InitFlightRecorder initializes the flight recorder to continuously record
+// the last 10 seconds of execution traces.
+func InitFlightRecorder(lg *log.Logger) {
+	cfg := trace.FlightRecorderConfig{
+		MinAge: 10 * time.Second,
+	}
+	flightRecorder = trace.NewFlightRecorder(cfg)
+	if err := flightRecorder.Start(); err != nil {
+		lg.Errorf("failed to start flight recorder: %v", err)
+		flightRecorder = nil
+		return
+	}
+	lg.Infof("Flight recorder started (recording last 10 seconds)")
+}
+
+// dumpFlightRecorder exports the last 10 seconds of trace data to a file.
+func dumpFlightRecorder(lg *log.Logger) {
+	if flightRecorder == nil {
+		lg.Warnf("flight recorder not initialized, skipping trace dump")
+		return
+	}
+
+	filename := fmt.Sprintf("trace_%d.trace", time.Now().Unix())
+	f, err := os.Create(filename)
+	if err != nil {
+		lg.Errorf("failed to create trace file: %v", err)
+		return
+	}
+	defer f.Close()
+
+	n, err := flightRecorder.WriteTo(f)
+	if err != nil {
+		lg.Errorf("failed to write flight recorder trace: %v", err)
+		return
+	}
+
+	lg.Warnf("trace written to %s (%d bytes)", filename, n)
+}
+
 func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 	const nhist = 10
 	var history []float64
@@ -104,16 +146,13 @@ func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 						lg.Warnf("Last %d ticks over %d utilization: %#v. Dumping", nhist, limit, history)
 
 						writeProfile("mutex", lg)
+						dumpFlightRecorder(lg)
 
 						filename := fmt.Sprintf("dump%d.txt", time.Now().Unix())
 						if f, err := os.Create(filename); err != nil {
 							lg.Errorf("failed to create dump file: %v", err)
 						} else {
 							fmt.Fprint(f, DumpHeldMutexes(lg))
-							fmt.Fprint(f, "\n")
-
-							pprof.Lookup("goroutine").WriteTo(f, 2)
-
 							f.Close()
 						}
 
