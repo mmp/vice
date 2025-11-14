@@ -33,20 +33,20 @@ import (
 const bucketName = "vice-wx"
 
 func main() {
-	var metar, wx, tfrs bool
+	var metar, precip, tfrs bool
 	if len(os.Args) == 1 {
-		metar, wx, tfrs = true, true, true
+		metar, precip, tfrs = true, true, true
 	} else {
 		for _, a := range os.Args[1:] {
 			switch strings.ToLower(a) {
 			case "metar":
 				metar = true
-			case "wx":
-				wx = true
+			case "precip":
+				precip = true
 			case "tfrs":
 				tfrs = true
 			default:
-				fmt.Fprintf(os.Stderr, "usage: wxscrape [metar|wx|tfrs]...\n")
+				fmt.Fprintf(os.Stderr, "usage: wxscrape [metar|precip|tfrs]...\n")
 				os.Exit(1)
 			}
 		}
@@ -71,8 +71,8 @@ func main() {
 	if metar {
 		go fetchMETAR(ctx, bucket)
 	}
-	if wx {
-		go fetchWX(ctx, bucket)
+	if precip {
+		go fetchPRECIP(ctx, bucket)
 	}
 	if tfrs {
 		go fetchTFRs(ctx, bucket)
@@ -228,17 +228,17 @@ func fetchAirportMETAR(ctx context.Context, bucket *storage.BucketHandle, ap str
 	return status
 }
 
-func fetchWX(ctx context.Context, bucket *storage.BucketHandle) {
+func fetchPRECIP(ctx context.Context, bucket *storage.BucketHandle) {
 	av.InitDB()
 
 	for tracon := range av.DB.TRACONs {
-		go fetchTraconWX(ctx, bucket, tracon)
+		go fetchTraconPrecip(ctx, bucket, tracon)
 	}
 }
 
-// fetchTraconWX runs asynchronously in a goroutine and fetches radar
+// fetchTraconPrecip runs asynchronously in a goroutine and fetches radar
 // images for a single TRACON and writes them to disk.
-func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon string) {
+func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon string) {
 	// Spread out the requests temporally
 	time.Sleep(time.Duration(rand.Intn(200)) * time.Second)
 
@@ -271,7 +271,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 	url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
 
 	for {
-		var haveWX bool
+		var havePrecip bool
 
 		tryFetch := func() Status {
 			resp, err := http.Get(url)
@@ -288,7 +288,7 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 			}
 
 			var status Status
-			haveWX, status = func() (bool, Status) {
+			havePrecip, status = func() (bool, Status) {
 				// Decode and see if there's anything there.
 				img, err := png.Decode(bytes.NewReader(b))
 				if err != nil {
@@ -360,18 +360,18 @@ func fetchTraconWX(ctx context.Context, bucket *storage.BucketHandle, tracon str
 		}
 
 		if doWithBackoff(tryFetch) {
-			LogInfo("Got WX for %s have WX %v", tracon, haveWX)
+			LogInfo("Got precip for %s have precip %v", tracon, havePrecip)
 
 			<-tick
 
-			if !haveWX {
+			if !havePrecip {
 				// No weather; sleep for 30 minutes rather than 5
 				for range 5 {
 					<-tick
 				}
 			}
 		} else {
-			LogError("%s: unable to fetch WX", tracon)
+			LogError("%s: unable to fetch precip", tracon)
 			<-tick
 		}
 	}
