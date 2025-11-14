@@ -304,6 +304,62 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 	}
 	imgui.Separator()
 
+	// Helper types and functions for facility data access and formatting
+	const indentSpaces = "  "
+
+	type areaInfo struct {
+		area       string
+		groupNames []string
+	}
+
+	type scenarioInfo struct {
+		groupName    string
+		scenarioName string
+		config       *server.SimScenarioConfiguration
+	}
+
+	getARTCCForFacility := func(facility string, info *server.Configuration) string {
+		if info != nil && info.ARTCC != "" {
+			return info.ARTCC
+		}
+		if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+			return traconInfo.ARTCC
+		}
+		return facility
+	}
+
+	trimFacilityName := func(name, facilityType string) string {
+		name = strings.TrimSpace(name)
+		switch facilityType {
+		case "TRACON":
+			name = strings.TrimSuffix(name, " TRACON")
+			name = strings.TrimSuffix(name, " ATCT/TRACON")
+			name = strings.TrimSuffix(name, " Tower")
+		case "ARTCC", "Area":
+			name = strings.TrimSuffix(name, " ARTCC")
+			name = strings.TrimSuffix(name, " Center")
+		}
+		return strings.TrimSpace(name)
+	}
+
+	formatFacilityLabel := func(facility string, info *server.Configuration) string {
+		if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+			name := trimFacilityName(traconInfo.Name, "TRACON")
+			if name == "" {
+				return facility
+			}
+			return fmt.Sprintf("%s (%s)", facility, name)
+		}
+		if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
+			name := trimFacilityName(artccInfo.Name, "ARTCC")
+			if name == "" {
+				return facility
+			}
+			return fmt.Sprintf("%s (%s)", facility, name)
+		}
+		return facility
+	}
+
 	if c.newSimType == NewSimCreateLocal || c.newSimType == NewSimCreateRemoteMulti || c.newSimType == NewSimCreateRemoteSingle {
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
@@ -315,7 +371,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.TableHeadersRow()
 			imgui.TableNextRow()
 
-			// ARTCCs
+			// Build facility data structures
 			configsByFacility := c.selectedServer.GetConfigs()
 			allFacilities := util.SortedMapKeys(configsByFacility)
 			facilityInfo := make(map[string]*server.Configuration, len(configsByFacility))
@@ -327,54 +383,33 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			}
 
 			selectedARTCC := ""
-			if info := facilityInfo[c.TRACONName]; info != nil && info.ARTCC != "" {
-				selectedARTCC = info.ARTCC
-			} else if traconInfo, ok := av.DB.TRACONs[c.TRACONName]; ok {
-				selectedARTCC = traconInfo.ARTCC
-			} else if c.TRACONName != "" {
-				selectedARTCC = c.TRACONName
+			if c.TRACONName != "" {
+				selectedARTCC = getARTCCForFacility(c.TRACONName, facilityInfo[c.TRACONName])
 			}
 
+			// Collect unique ARTCCs with matching scenarios
 			artccs := make(map[string]interface{})
 			for facility, info := range facilityInfo {
-				if info == nil {
+				if info == nil || !c.facilityHasMatchingScenarios(facility, configsByFacility) {
 					continue
 				}
-				// Only include ARTCCs that have at least one facility with matching scenarios
-				if !c.facilityHasMatchingScenarios(facility, configsByFacility) {
-					continue
-				}
-				artcc := info.ARTCC
-				if artcc == "" {
-					if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-						artcc = traconInfo.ARTCC
-					} else {
-						artcc = facility
-					}
-				}
+				artcc := getARTCCForFacility(facility, info)
 				artccs[artcc] = nil
 			}
 
+			// Column 1: ARTCC list
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for artcc := range util.SortedMap(artccs) {
-					name := av.DB.ARTCCs[artcc].Name
-					name = strings.TrimSuffix(name, " ARTCC")
-					name = strings.TrimSuffix(name, " Center")
-					name = strings.TrimSpace(name)
+					name := trimFacilityName(av.DB.ARTCCs[artcc].Name, "ARTCC")
 					if name == "" {
 						name = artcc
 					}
 					label := fmt.Sprintf("%s (%s)", artcc, name)
 					if imgui.SelectableBoolV(label, artcc == selectedARTCC, 0, imgui.Vec2{}) && artcc != selectedARTCC {
+						// Find first facility in this ARTCC
 						idx := slices.IndexFunc(allFacilities, func(facility string) bool {
-							if info := facilityInfo[facility]; info != nil {
-								return info.ARTCC == artcc
-							}
-							if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-								return traconInfo.ARTCC == artcc
-							}
-							return facility == artcc
+							return getARTCCForFacility(facility, facilityInfo[facility]) == artcc
 						})
 						if idx >= 0 {
 							c.SetTRACON(allFacilities[idx])
@@ -384,127 +419,64 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			}
 			imgui.EndChild()
 
-			facilityLabel := func(facility string, info *server.Configuration) string {
-				if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-					name := strings.TrimSuffix(traconInfo.Name, " TRACON")
-					name = strings.TrimSuffix(name, " ATCT/TRACON")
-					name = strings.TrimSuffix(name, " Tower")
-					name = strings.TrimSpace(name)
-					return fmt.Sprintf("%s (%s)", facility, name)
-				}
-				if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
-					name := strings.TrimSuffix(artccInfo.Name, " ARTCC")
-					name = strings.TrimSuffix(name, " Center")
-					name = strings.TrimSpace(name)
-					return fmt.Sprintf("%s (%s)", facility, name)
-				}
-				return facility
-			}
-
-			// TRACONs or ARTCC areas for selected ARTCC
+			// Column 2: TRACONs or ARTCC areas for selected ARTCC
 			imgui.TableNextColumn()
-			if imgui.BeginChildStrV("tracons/ areas", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("tracons/areas", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				for _, facility := range allFacilities {
 					info := facilityInfo[facility]
 					if info == nil {
 						continue
 					}
-					artcc := info.ARTCC
-					if artcc == "" {
-						if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-							artcc = traconInfo.ARTCC
-						} else {
-							artcc = facility
-						}
-					}
+					artcc := getARTCCForFacility(facility, info)
 					if selectedARTCC != "" && artcc != selectedARTCC {
 						continue
 					}
 
-					if _, isTRACON := av.DB.TRACONs[facility]; isTRACON {
-						// Check if any group in this TRACON has matching scenarios
-						groups := configsByFacility[facility]
-						hasAnyMatchingScenarios := false
-						for _, group := range groups {
-							if c.groupHasMatchingScenarios(group) {
-								hasAnyMatchingScenarios = true
-								break
-							}
-						}
-						if !hasAnyMatchingScenarios {
-							continue
-						}
-						label := facilityLabel(facility, info)
-						if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
-							c.SetTRACON(facility)
-						}
-						if facility == c.TRACONName {
-							groups := configsByFacility[facility]
-							for groupName, group := range util.SortedMap(groups) {
-								// Only show groups with matching scenarios
-								if !c.groupHasMatchingScenarios(group) {
-									continue
-								}
-								groupLabel := "  " + groupName
-								selected := groupName == c.GroupName
-								if imgui.SelectableBoolV(groupLabel, selected, 0, imgui.Vec2{}) {
-									if groupName != c.GroupName {
-										c.SetScenario(groupName, groups[groupName].DefaultScenario)
-									}
-								}
-							}
-						}
-						continue
-					}
-
+					// Build area/group structure for this facility
 					groups := configsByFacility[facility]
-					// Group by area
-					type areaInfo struct {
-						area       string
-						groupNames []string
-					}
+					_, isTRACON := av.DB.TRACONs[facility]
 					areaToGroups := make(map[string]*areaInfo)
+
 					for groupName, gcfg := range groups {
 						if !c.groupHasMatchingScenarios(gcfg) {
 							continue
 						}
-						area := strings.TrimSpace(gcfg.Area)
-						if area != "" {
-							area = strings.TrimSuffix(area, " ARTCC")
-							area = strings.TrimSuffix(area, " Center")
+						// For TRACONs, use groupName as area; for ARTCCs, use the Area field
+						area := groupName
+						if !isTRACON {
+							area = trimFacilityName(gcfg.Area, "Area")
 						}
 						if areaToGroups[area] == nil {
 							areaToGroups[area] = &areaInfo{area: area}
 						}
 						areaToGroups[area].groupNames = append(areaToGroups[area].groupNames, groupName)
 					}
+
 					if len(areaToGroups) == 0 {
 						continue
 					}
 
-					label := facilityLabel(facility, info)
+					// Display facility label
+					label := formatFacilityLabel(facility, info)
 					if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
 						c.SetTRACON(facility)
 					}
 
+					// Display sub-items (groups for TRACONs, areas for ARTCCs)
 					if facility == c.TRACONName {
-						// Sort areas for consistent display
 						sortedAreas := util.SortedMapKeys(areaToGroups)
 						sort.Strings(sortedAreas)
 						for _, areaKey := range sortedAreas {
-							info := areaToGroups[areaKey]
-							areaLabel := util.Select(info.area != "", "  "+info.area, "  "+info.groupNames[0])
-							// Selected if any group in this area is currently selected
-							selected := false
-							for _, gn := range info.groupNames {
-								if gn == c.GroupName {
-									selected = true
-									break
-								}
+							aInfo := areaToGroups[areaKey]
+							// For TRACONs, just show group names; for ARTCCs, show area names
+							itemLabel := indentSpaces + aInfo.area
+							if !isTRACON && aInfo.area == "" {
+								itemLabel = indentSpaces + aInfo.groupNames[0]
 							}
-							if imgui.SelectableBoolV(areaLabel, selected, 0, imgui.Vec2{}) {
-								// Select the first group in this area
-								firstGroup := info.groupNames[0]
+							// Check if any group in this area/item is selected
+							selected := slices.Contains(aInfo.groupNames, c.GroupName)
+							if imgui.SelectableBoolV(itemLabel, selected, 0, imgui.Vec2{}) {
+								firstGroup := aInfo.groupNames[0]
 								if firstGroup != c.GroupName {
 									c.SetScenario(firstGroup, groups[firstGroup].DefaultScenario)
 								}
@@ -515,32 +487,17 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			}
 			imgui.EndChild()
 
-			// Scenarios for the selected TRACON or area
+			// Column 3: Scenarios for the selected TRACON or area
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				selectedGroup := c.selectedTRACONConfigs[c.GroupName]
 				if selectedGroup != nil {
-					// Get the area of the selected group
-					selectedArea := strings.TrimSpace(selectedGroup.Area)
-					if selectedArea != "" {
-						selectedArea = strings.TrimSuffix(selectedArea, " ARTCC")
-						selectedArea = strings.TrimSuffix(selectedArea, " Center")
-					}
+					selectedArea := trimFacilityName(selectedGroup.Area, "Area")
 
 					// Collect all scenarios from groups with the same area
-					type scenarioInfo struct {
-						groupName    string
-						scenarioName string
-						config       *server.SimScenarioConfiguration
-					}
 					var allScenarios []scenarioInfo
 					for groupName, group := range c.selectedTRACONConfigs {
-						groupArea := strings.TrimSpace(group.Area)
-						if groupArea != "" {
-							groupArea = strings.TrimSuffix(groupArea, " ARTCC")
-							groupArea = strings.TrimSuffix(groupArea, " Center")
-						}
-						// Include scenarios from groups with matching area
+						groupArea := trimFacilityName(group.Area, "Area")
 						if groupArea == selectedArea {
 							for name, scenarioConfig := range group.ScenarioConfigs {
 								if c.scenarioMatchesFilter(scenarioConfig) {
@@ -554,12 +511,10 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 						}
 					}
 
-					// Sort scenarios by name
+					// Sort and display scenarios
 					sort.Slice(allScenarios, func(i, j int) bool {
 						return allScenarios[i].scenarioName < allScenarios[j].scenarioName
 					})
-
-					// Display all scenarios
 					for _, s := range allScenarios {
 						selected := s.groupName == c.GroupName && s.scenarioName == c.ScenarioName
 						if imgui.SelectableBoolV(s.scenarioName, selected, 0, imgui.Vec2{}) {
