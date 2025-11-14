@@ -252,6 +252,13 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 	fetchResolution := int(4 * tspec.Radius) // -> 0.5nm per pixel
 	bbox := math.BoundLatLongCircle(center, tspec.Radius)
 
+	area := "conus"
+	if tracon == "HCF" {
+		area = "hawaii"
+	} else if tracon == "A11" || tracon == "FAI" {
+		area = "alaska"
+	}
+
 	// The weather radar image comes via a WMS GetMap request from the NOAA.
 	//
 	// Relevant background:
@@ -265,10 +272,10 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 	params.Add("FORMAT", "image/png")
 	params.Add("WIDTH", fmt.Sprintf("%d", fetchResolution))
 	params.Add("HEIGHT", fmt.Sprintf("%d", fetchResolution))
-	params.Add("LAYERS", "conus_bref_qcd")
+	params.Add("LAYERS", area+"_bref_qcd")
 	params.Add("BBOX", fmt.Sprintf("%f,%f,%f,%f", bbox.P0[0], bbox.P0[1], bbox.P1[0], bbox.P1[1]))
 
-	url := "https://opengeo.ncep.noaa.gov/geoserver/conus/conus_bref_qcd/ows?" + params.Encode()
+	url := "https://opengeo.ncep.noaa.gov/geoserver/" + area + "/" + area + "_bref_qcd/ows?" + params.Encode()
 
 	for {
 		var havePrecip bool
