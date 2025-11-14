@@ -255,7 +255,13 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 		}
 	}
 	if actype == "" {
-		fmt.Printf("no luck %s -> %s %#v\n", departureAirport, arrivalAirport, a)
+		// Try again without considering range.
+		for _, ac := range a.Aircraft() {
+			acCount += ac.Count
+			if r.Float32() < float32(ac.Count)/float32(acCount) {
+				actype = ac.ICAO
+			}
+		}
 	}
 
 	if _, ok := DB.AircraftPerformance[actype]; !ok {
