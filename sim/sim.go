@@ -426,7 +426,7 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Provider) {
 	s.lg = lg
 
-	loadPronunciationsIfNeeded()
+	av.LoadPronunciationsIfNeeded()
 
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)
@@ -882,16 +882,16 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 			}
 
 			if e.RadioTransmissionType == av.RadioTransmissionContact {
-				var tr *RadioTransmission
+				var tr *av.RadioTransmission
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					tr = MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
+					tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
 				} else {
-					tr = MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
+					tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
 				}
 				events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
 				events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 			} else {
-				tr := MakeReadbackTransmission(", {callsign}"+heavySuper+". ", ac.ADSBCallsign)
+				tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", ac.ADSBCallsign)
 				events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
 				events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
 			}
@@ -1585,7 +1585,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		return "", "", 0, false
 	}
 
-	rt := MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
+	rt := av.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
 
 	rpdesc, rpdir, dist, isap := closestReportingPoint(ac)
 	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
@@ -1611,7 +1611,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 		}
 	}
 
-	var alt *RadioTransmission
+	var alt *av.RadioTransmission
 	// Get the aircraft's target altitude from the navigation system
 	targetAlt, _ := ac.Nav.TargetAltitude()
 	currentAlt := ac.Altitude()
@@ -1619,10 +1619,10 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 	// Check if we're in a climb or descent (more than 100 feet difference)
 	if currentAlt < targetAlt {
 		// Report current altitude and target altitude when climbing or descending
-		alt = MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
+		alt = av.MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
 	} else {
 		// Just report current altitude if we're level
-		alt = MakeContactTransmission("at {alt}", currentAlt)
+		alt = av.MakeContactTransmission("at {alt}", currentAlt)
 	}
 	earlyAlt := s.Rand.Bool()
 	if earlyAlt {
@@ -1684,7 +1684,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr RadioTransmission) {
+func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr av.RadioTransmission) {
 	tr.Validate(s.lg)
 
 	if tr.Controller == "" {
