@@ -14,6 +14,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -42,7 +43,7 @@ type Aircraft struct {
 	Strip av.FlightStrip
 
 	// State related to navigation.
-	Nav Nav
+	Nav nav.Nav
 
 	// Arrival-related state
 	STAR                string
@@ -172,19 +173,19 @@ func (ac *Aircraft) ExpediteClimb() *av.RadioTransmission {
 	return ac.Nav.ExpediteClimb()
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn TurnMethod) *av.RadioTransmission {
+func (ac *Aircraft) AssignHeading(heading int, turn nav.TurnMethod) *av.RadioTransmission {
 	return ac.Nav.AssignHeading(float32(heading), turn)
 }
 
 func (ac *Aircraft) TurnLeft(deg int) *av.RadioTransmission {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
-	ac.Nav.AssignHeading(hdg, TurnLeft)
+	ac.Nav.AssignHeading(hdg, nav.TurnLeft)
 	return av.MakeReadbackTransmission("[turn {num} degrees left|{num} to the left|{num} left]", deg)
 }
 
 func (ac *Aircraft) TurnRight(deg int) *av.RadioTransmission {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
-	ac.Nav.AssignHeading(hdg, TurnRight)
+	ac.Nav.AssignHeading(hdg, nav.TurnRight)
 	return av.MakeReadbackTransmission("[turn {num} degrees right|{num} to the right|{num} right]", deg)
 }
 
@@ -225,11 +226,11 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) *av.RadioTransmission {
 }
 
 func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) (*av.RadioTransmission, error) {
-	return ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
+	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string, lg *log.Logger) (*av.RadioTransmission, error) {
-	return ac.Nav.clearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
+	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
 }
 
 func (ac *Aircraft) CancelApproachClearance() *av.RadioTransmission {
@@ -301,7 +302,7 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 	}
 	ac.TypeOfFlight = av.FlightTypeArrival
 
-	nav := MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation, model,
+	nav := nav.MakeArrivalNav(ac.ADSBCallsign, arr, ac.FlightPlan, perf, nmPerLongitude, magneticVariation, model,
 		simTime, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
@@ -354,7 +355,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	ac.TypeOfFlight = av.FlightTypeDeparture
 
 	randomizeAltitudeRange := ac.FlightPlan.Rules == av.FlightRulesVFR
-	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
+	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, exitRoute.AssignedAltitude,
 		exitRoute.ClearedAltitude, exitRoute.SpeedRestriction, wp, randomizeAltitudeRange,
 		nmPerLongitude, magneticVariation, model, simTime, lg)
 	if nav == nil {
@@ -380,7 +381,7 @@ func (ac *Aircraft) InitializeVFRDeparture(ap *av.Airport, wps av.WaypointArray,
 
 	ac.TypeOfFlight = av.FlightTypeDeparture
 
-	nav := MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
+	nav := nav.MakeDepartureNav(ac.ADSBCallsign, ac.FlightPlan, perf, 0, /* assigned alt */
 		ac.FlightPlan.Altitude /* cleared alt */, 0 /* speed restriction */, wp,
 		randomizeAltitudeRange, nmPerLongitude, magneticVariation, model, simTime, lg)
 	if nav == nil {
@@ -408,7 +409,7 @@ func (ac *Aircraft) InitializeOverflight(of *av.Overflight, nmPerLongitude float
 	ac.FlightPlan.Route = of.Waypoints.RouteString()
 	ac.TypeOfFlight = av.FlightTypeOverflight
 
-	nav := MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
+	nav := nav.MakeOverflightNav(ac.ADSBCallsign, of, ac.FlightPlan, perf, nmPerLongitude,
 		magneticVariation, model, simTime, lg)
 	if nav == nil {
 		return fmt.Errorf("error initializing Nav")
@@ -510,7 +511,7 @@ func (ac *Aircraft) RouteIncludesFix(fix string) bool {
 }
 
 func (ac *Aircraft) DistanceToEndOfApproach() (float32, error) {
-	return ac.Nav.distanceToEndOfApproach()
+	return ac.Nav.DistanceToEndOfApproach()
 }
 
 func (ac *Aircraft) Waypoints() []av.Waypoint {

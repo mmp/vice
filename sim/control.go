@@ -15,6 +15,7 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
 )
 
@@ -1118,7 +1119,7 @@ type HeadingArgs struct {
 	Present      bool
 	LeftDegrees  int
 	RightDegrees int
-	Turn         TurnMethod
+	Turn         nav.TurnMethod
 }
 
 func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
@@ -1806,7 +1807,7 @@ func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command
 				TCP:          tcp,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         TurnClosest,
+				Turn:         nav.TurnClosest,
 			}); err != nil {
 				return err
 			}
@@ -1854,7 +1855,7 @@ func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command
 				TCP:          tcp,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         TurnLeft,
+				Turn:         nav.TurnLeft,
 			}); err != nil {
 				return err
 			}
@@ -1890,7 +1891,7 @@ func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command
 				TCP:          tcp,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
-				Turn:         TurnRight,
+				Turn:         nav.TurnRight,
 			}); err != nil {
 				return err
 			}

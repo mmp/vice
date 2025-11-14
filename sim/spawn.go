@@ -18,6 +18,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -362,7 +363,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 	ac.Nav.Check(s.lg)
 
 	// Log initial route for navigation debugging
-	LogRoute(string(ac.ADSBCallsign), s.State.SimTime, ac.Nav.Waypoints)
+	nav.LogRoute(string(ac.ADSBCallsign), s.State.SimTime, ac.Nav.Waypoints)
 
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
 		s.State.TotalIFR++
@@ -892,7 +893,7 @@ func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, cons
 				continue
 			}
 
-			if dist, err := ac.Nav.distanceToEndOfApproach(); err == nil && dist < 2.0 {
+			if dist, err := ac.Nav.DistanceToEndOfApproach(); err == nil && dist < 2.0 {
 				// Hold departure; the arrival's too close
 				//fmt.Printf("holding %s due to imminent arrival of %s\n", dep.ADSBCallsign, ac.ADSBCallsign)
 				return false

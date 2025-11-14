@@ -24,6 +24,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/renderer"
@@ -85,7 +86,7 @@ func init() {
 
 func replayScenario(lg *log.Logger) {
 	// Initialize navigation logging
-	sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
 	config, err := LoadOrMakeDefaultConfig(lg)
 	if err != nil {
@@ -227,7 +228,7 @@ func main() {
 		fmt.Printf("Running scenario: %s\n", *runSim)
 
 		// Initialize navigation logging if requested
-		sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
 		newSimConfig, err := server.CreateNewSimConfiguration(config, scenarioGroup, scenarioName)
 		if err != nil {
@@ -279,7 +280,7 @@ func main() {
 		cliInit()
 
 		// Initialize navigation logging if requested
-		sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
 		server.LaunchServer(server.ServerLaunchConfig{
 			Port:          *serverPort,
@@ -349,7 +350,7 @@ func main() {
 		av.InitDB()
 
 		// Initialize navigation logging if requested
-		sim.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
 		// After we have plat and render
 		if configErr != nil {

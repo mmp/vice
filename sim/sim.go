@@ -18,6 +18,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -1299,15 +1300,15 @@ func (s *Sim) updateState() {
 						s.mu.Unlock(s.lg)
 
 						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
-						NavLog(string(callsign), s.State.SimTime, NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
+						nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
 						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
 						result := s.RunAircraftControlCommands(tcp, callsign, cmds)
 						if result.Error != nil {
-							NavLog(string(callsign), s.State.SimTime, NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
+							nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
 								result.RemainingInput)
 							s.lg.Errorf("Waypoint command execution failed: %v (remaining: %s)", result.Error, result.RemainingInput)
 						} else {
-							NavLog(string(callsign), s.State.SimTime, NavLogCommand, "aircraft=%s success", callsign)
+							nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand, "aircraft=%s success", callsign)
 						}
 
 						s.mu.Lock(s.lg)
