@@ -574,6 +574,7 @@ type AircraftCommandsArgs struct {
 	ControllerToken string
 	Callsign        av.ADSBCallsign
 	Commands        string
+	Multiple        bool
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -591,6 +592,27 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	tcp, s, ok := sd.sm.LookupController(cmds.ControllerToken)
 	if !ok {
 		return ErrNoSimForControllerToken
+	}
+
+	callsign := cmds.Callsign
+
+	rewriteError := func(err error) {
+		result.RemainingInput = cmds.Commands
+		if err != nil {
+			result.ErrorMessage = err.Error()
+		}
+	}
+
+	if cmds.Multiple {
+		if err := s.PilotMixUp(tcp, callsign); err != nil {
+			rewriteError(err)
+		}
+		return nil // don't continue with the commands
+	} else if num := s.Rand.Intn(25); num == 0 { // 1/25 chance of a pilot mix-up
+		if err := s.PilotMixUp(tcp, callsign); err != nil {
+			rewriteError(err)
+		}
+		return nil // don't continue with the commands
 	}
 
 	execResult := s.RunAircraftControlCommands(tcp, cmds.Callsign, cmds.Commands)

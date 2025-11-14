@@ -823,10 +823,6 @@ func sayFlightNumber(id string) string {
 	if id[0] != '0' {
 		// No leading zeros, just do regular group form.
 		n, _ := strconv.Atoi(id)
-		if len(id) == 3 && id[0] == '9' {
-			// "United niner fifty" -> just say "United nine fifty"
-			return "nine " + groupForm(n-900)
-		}
 		return groupForm(n)
 	} else {
 		// Digits individually

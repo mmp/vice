@@ -2503,15 +2503,12 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		}
 
 		matching := ctx.TracksFromACIDSuffix(suffix)
-		if len(matching) > 1 {
-			status.err = ErrSTARSAmbiguousACID
-			return
-		}
 
 		var trk *sim.Track
-		if len(matching) == 1 {
+		multiple := len(matching) > 1
+		if len(matching) > 0 {
 			trk = matching[0]
-		} else if len(matching) == 0 && sp.tgtGenDefaultCallsign(ctx) != "" {
+		} else if sp.tgtGenDefaultCallsign(ctx) != "" {
 			// If a valid callsign wasn't given, try the last callsign used.
 			trk, _ = ctx.GetTrackByCallsign(sp.tgtGenDefaultCallsign(ctx))
 			// But now we're going to run all of the given input as commands.
@@ -2519,7 +2516,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		}
 
 		if trk != nil {
-			sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds)
+			sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds, multiple)
 			status.clear = true
 		} else {
 			status.err = ErrSTARSIllegalACID
@@ -2597,11 +2594,11 @@ func (sp *STARSPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	return sp.targetGenLastCallsign
 }
 
-func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
+func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string, multiple bool) {
 	sp.targetGenLastCallsign = callsign
 	prevMode := sp.commandMode
 
-	ctx.Client.RunAircraftCommands(callsign, cmds,
+	ctx.Client.RunAircraftCommands(callsign, cmds, multiple,
 		func(errStr string, remaining string) {
 			if errStr != "" {
 				sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
@@ -4199,7 +4196,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 
 			if len(cmd) > 0 {
-				sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
+				sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmd, false)
 				status.clear = true
 				return
 			}

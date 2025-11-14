@@ -120,6 +120,11 @@ func (ac *Aircraft) Update(model *wx.Model, simTime time.Time, bravo *av.Airspac
 	return passedWaypoint
 }
 
+func (ac *Aircraft) PilotMixUp() *RadioTransmission {
+	callsign := ac.ADSBCallsign
+	return MakeUnexpectedTransmission("sorry, was that for {callsign}?", callsign)
+}
+
 func (ac *Aircraft) GoAround() *RadioTransmission {
 	ac.GotContactTower = false
 	return ac.Nav.GoAround()
