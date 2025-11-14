@@ -426,8 +426,6 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Provider) {
 	s.lg = lg
 
-	av.LoadPronunciationsIfNeeded()
-
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)
 	}

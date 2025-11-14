@@ -12,6 +12,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
@@ -28,38 +29,38 @@ var (
 	sayAirlineMap map[string]string
 	saySIDMap     map[string]string
 	saySTARMap    map[string]string
+
+	pronunciationsOnce sync.Once
 )
 
-func LoadPronunciationsIfNeeded() {
-	if len(sayAirportMap) != 0 {
-		return
-	}
+func loadPronunciationsIfNeeded() {
+	pronunciationsOnce.Do(func() {
+		n := 0
+		report := func(file string, err error) {
+			fmt.Fprintf(os.Stderr, "%s: %v\n", file, err)
+			n++
+		}
 
-	n := 0
-	report := func(file string, err error) {
-		fmt.Fprintf(os.Stderr, "%s: %v\n", file, err)
-		n++
-	}
+		if err := json.Unmarshal(util.LoadResourceBytes("sayairport.json"), &sayAirportMap); err != nil {
+			report("sayairport.json", err)
+		}
+		if err := json.Unmarshal(util.LoadResourceBytes("sayairline.json"), &sayAirlineMap); err != nil {
+			report("sayairline.json", err)
+		}
+		if err := json.Unmarshal(util.LoadResourceBytes("sayfix.json"), &sayFixMap); err != nil {
+			report("sayfix.json", err)
+		}
+		if err := json.Unmarshal(util.LoadResourceBytes("saysid.json"), &saySIDMap); err != nil {
+			report("saysid.json", err)
+		}
+		if err := json.Unmarshal(util.LoadResourceBytes("saystar.json"), &saySTARMap); err != nil {
+			report("saystar.json", err)
+		}
 
-	if err := json.Unmarshal(util.LoadResourceBytes("sayairport.json"), &sayAirportMap); err != nil {
-		report("sayairport.json", err)
-	}
-	if err := json.Unmarshal(util.LoadResourceBytes("sayairline.json"), &sayAirlineMap); err != nil {
-		report("sayairline.json", err)
-	}
-	if err := json.Unmarshal(util.LoadResourceBytes("sayfix.json"), &sayFixMap); err != nil {
-		report("sayfix.json", err)
-	}
-	if err := json.Unmarshal(util.LoadResourceBytes("saysid.json"), &saySIDMap); err != nil {
-		report("saysid.json", err)
-	}
-	if err := json.Unmarshal(util.LoadResourceBytes("saystar.json"), &saySTARMap); err != nil {
-		report("saystar.json", err)
-	}
-
-	if n > 0 {
-		os.Exit(1)
-	}
+		if n > 0 {
+			os.Exit(1)
+		}
+	})
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -518,6 +519,7 @@ func (AirportSnippetFormatter) Written(arg any) string {
 var trailingParenRe = regexp.MustCompile(`^(.*) \([^)]+\)$`)
 
 func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	loadPronunciationsIfNeeded()
 	icao := arg.(string)
 	if opts, ok := sayAirportMap[icao]; ok && len(opts) > 0 {
 		ap, _ := rand.SampleSeq(r, slices.Values(opts))
@@ -677,6 +679,7 @@ func (FixSnippetFormatter) Written(arg any) string {
 }
 
 func (f FixSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	loadPronunciationsIfNeeded()
 	fix := arg.(string)
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
@@ -783,6 +786,7 @@ func (CallsignSnippetFormatter) Written(arg any) string {
 }
 
 func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	loadPronunciationsIfNeeded()
 	callsign := string(arg.(ADSBCallsign))
 
 	idx := strings.IndexAny(callsign, "0123456789")
@@ -879,6 +883,7 @@ func (s SIDSnippetFormatter) Written(arg any) string {
 }
 
 func (SIDSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	loadPronunciationsIfNeeded()
 	sid, num := trimNumber(arg.(string))
 	if say, ok := saySIDMap[sid]; ok {
 		return say + " " + sayDigit(num)
@@ -910,6 +915,7 @@ func (s STARSnippetFormatter) Written(arg any) string {
 }
 
 func (STARSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	loadPronunciationsIfNeeded()
 	star, num := trimNumber(arg.(string))
 	if say, ok := saySTARMap[star]; ok {
 		return say + " " + sayDigit(num)
@@ -1016,6 +1022,7 @@ func (AircraftTypeSnippetFormatter) Written(arg any) string {
 }
 
 func (AircraftTypeSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	loadPronunciationsIfNeeded()
 	ac := arg.(string)
 	if say, ok := sayACTypeMap[ac]; ok && len(say) > 0 {
 		s, _ := rand.SampleSeq(r, slices.Values(say))
