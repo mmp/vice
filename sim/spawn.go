@@ -1339,6 +1339,10 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		starsFp.TrackingController = ap.DepartureController
 		starsFp.ControllingController = ap.DepartureController
 		starsFp.InboundHandoffController = exitRoute.HandoffController
+	} else if exitRoute.DepartureController != "" && exitRoute.DepartureController != s.State.PrimaryController {
+		starsFp.TrackingController = exitRoute.DepartureController
+		starsFp.ControllingController = exitRoute.DepartureController
+		starsFp.InboundHandoffController = exitRoute.HandoffController
 	} else {
 		// human controller will be first
 		ctrl := s.State.PrimaryController
@@ -1362,7 +1366,10 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	}
 
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
-
+	// Check if the departure controller is a virtual controller
+	if slices.Contains(s.virtualControllers, starsFp.TrackingController) { // Automatically release them, as they are released to virtual controllers
+		ac.HoldForRelease = false
+	}
 	sq, err := s.ERAMComputer.CreateSquawk()
 	if err != nil {
 		return nil, err
