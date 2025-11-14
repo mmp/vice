@@ -531,6 +531,13 @@
     "Longitude": -111.3706,
     "Radius": 75
   },
+  "HCF": {
+    "Name": "Honolulu CERAP",
+    "ARTCC": "ZHN",
+    "Latitude": 21.3167,
+    "Longitude": -157.9172,
+    "Radius": 128
+  },
   "HLN": {
     "Name": "Helena TRACON",
     "ARTCC": "ZLC",
