@@ -1118,25 +1118,6 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	if err != nil {
 		return nil, err
 	}
-	var assigned int
-	if _, ok := av.DB.ARTCCs[s.State.TRACON]; ok && arr.AssignedAltitude == 0 {
-		// Get the altitude from the route and waypoints if possible
-		wps := arr.Waypoints
-		lowestAlt := gomath.MaxInt
-		for _, wp := range wps {
-			if wp.AltitudeRestriction == nil {
-				continue
-			}
-			if int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude)) < lowestAlt {
-				lowestAlt = int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude))
-			}
-		}
-		if lowestAlt != gomath.MaxInt {
-			assigned = lowestAlt
-		} else {
-			s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
-		}
-	}
 
 	starsFp := NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
@@ -1158,9 +1139,30 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		AircraftCount:       1,
 		AircraftType:        ac.FlightPlan.AircraftType,
 		CWTCategory:         av.DB.AircraftPerformance[ac.FlightPlan.AircraftType].Category.CWT,
+	}
 
-		AssignedAltitude:  int(arr.AssignedAltitude),
-		PerceivedAssigned: assigned,
+	// For ERAM set AssignedAltitude/PerceivedAltitude
+	if ctrl, ok := s.State.Controllers[s.State.PrimaryController]; ok && ctrl.ERAMFacility {
+		if _, ok := av.DB.ARTCCs[s.State.TRACON]; ok && arr.AssignedAltitude == 0 {
+			starsFp.AssignedAltitude = int(arr.AssignedAltitude)
+
+			// Get the altitude from the route and waypoints if possible
+			wps := arr.Waypoints
+			lowestAlt := gomath.MaxInt
+			for _, wp := range wps {
+				if wp.AltitudeRestriction == nil {
+					continue
+				}
+				if int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude)) < lowestAlt {
+					lowestAlt = int(wp.AltitudeRestriction.TargetAltitude(arr.InitialAltitude))
+				}
+			}
+			if lowestAlt != gomath.MaxInt {
+				starsFp.PerceivedAssigned = lowestAlt
+			} else {
+				s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+			}
+		}
 	}
 
 	// VFRs don't go around since they aren't talking to us.
