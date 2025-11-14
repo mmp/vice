@@ -458,8 +458,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					}
 
 					groups := configsByFacility[facility]
-					for groupName, gcfg := range util.SortedMap(groups) {
-						// Only show ARTCC areas with matching scenarios
+					// Group by area
+					type areaInfo struct {
+						area       string
+						groupNames []string
+					}
+					areaToGroups := make(map[string]*areaInfo)
+					for groupName, gcfg := range groups {
 						if !c.groupHasMatchingScenarios(gcfg) {
 							continue
 						}
@@ -468,17 +473,41 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 							area = strings.TrimSuffix(area, " ARTCC")
 							area = strings.TrimSuffix(area, " Center")
 						}
+						if areaToGroups[area] == nil {
+							areaToGroups[area] = &areaInfo{area: area}
+						}
+						areaToGroups[area].groupNames = append(areaToGroups[area].groupNames, groupName)
+					}
+					if len(areaToGroups) == 0 {
+						continue
+					}
 
-						label := util.Select(area != "", fmt.Sprintf("%s %s", facility, area), facilityLabel(facility, info))
+					label := facilityLabel(facility, info)
+					if imgui.SelectableBoolV(label, facility == c.TRACONName, 0, imgui.Vec2{}) && facility != c.TRACONName {
+						c.SetTRACON(facility)
+					}
 
-						selected := facility == c.TRACONName && groupName == c.GroupName
-						if imgui.SelectableBoolV(label, selected, 0, imgui.Vec2{}) {
-							if facility != c.TRACONName {
-								c.SetTRACON(facility)
+					if facility == c.TRACONName {
+						// Sort areas for consistent display
+						sortedAreas := util.SortedMapKeys(areaToGroups)
+						sort.Strings(sortedAreas)
+						for _, areaKey := range sortedAreas {
+							info := areaToGroups[areaKey]
+							areaLabel := util.Select(info.area != "", "  "+info.area, "  "+info.groupNames[0])
+							// Selected if any group in this area is currently selected
+							selected := false
+							for _, gn := range info.groupNames {
+								if gn == c.GroupName {
+									selected = true
+									break
+								}
 							}
-							// Ensure selected group within ARTCC
-							if groupName != c.GroupName {
-								c.SetScenario(groupName, groups[groupName].DefaultScenario)
+							if imgui.SelectableBoolV(areaLabel, selected, 0, imgui.Vec2{}) {
+								// Select the first group in this area
+								firstGroup := info.groupNames[0]
+								if firstGroup != c.GroupName {
+									c.SetScenario(firstGroup, groups[firstGroup].DefaultScenario)
+								}
 							}
 						}
 					}
@@ -489,14 +518,52 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			// Scenarios for the selected TRACON or area
 			imgui.TableNextColumn()
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
-				group := c.selectedTRACONConfigs[c.GroupName]
-				if group != nil {
-					for name, scenarioConfig := range util.SortedMap(group.ScenarioConfigs) {
-						// Filter scenarios based on newSimType
-						if c.scenarioMatchesFilter(scenarioConfig) {
-							if imgui.SelectableBoolV(name, name == c.ScenarioName, 0, imgui.Vec2{}) {
-								c.SetScenario(c.GroupName, name)
+				selectedGroup := c.selectedTRACONConfigs[c.GroupName]
+				if selectedGroup != nil {
+					// Get the area of the selected group
+					selectedArea := strings.TrimSpace(selectedGroup.Area)
+					if selectedArea != "" {
+						selectedArea = strings.TrimSuffix(selectedArea, " ARTCC")
+						selectedArea = strings.TrimSuffix(selectedArea, " Center")
+					}
+
+					// Collect all scenarios from groups with the same area
+					type scenarioInfo struct {
+						groupName    string
+						scenarioName string
+						config       *server.SimScenarioConfiguration
+					}
+					var allScenarios []scenarioInfo
+					for groupName, group := range c.selectedTRACONConfigs {
+						groupArea := strings.TrimSpace(group.Area)
+						if groupArea != "" {
+							groupArea = strings.TrimSuffix(groupArea, " ARTCC")
+							groupArea = strings.TrimSuffix(groupArea, " Center")
+						}
+						// Include scenarios from groups with matching area
+						if groupArea == selectedArea {
+							for name, scenarioConfig := range group.ScenarioConfigs {
+								if c.scenarioMatchesFilter(scenarioConfig) {
+									allScenarios = append(allScenarios, scenarioInfo{
+										groupName:    groupName,
+										scenarioName: name,
+										config:       scenarioConfig,
+									})
+								}
 							}
+						}
+					}
+
+					// Sort scenarios by name
+					sort.Slice(allScenarios, func(i, j int) bool {
+						return allScenarios[i].scenarioName < allScenarios[j].scenarioName
+					})
+
+					// Display all scenarios
+					for _, s := range allScenarios {
+						selected := s.groupName == c.GroupName && s.scenarioName == c.ScenarioName
+						if imgui.SelectableBoolV(s.scenarioName, selected, 0, imgui.Vec2{}) {
+							c.SetScenario(s.groupName, s.scenarioName)
 						}
 					}
 				}
