@@ -492,12 +492,20 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
 				selectedGroup := c.selectedTRACONConfigs[c.GroupName]
 				if selectedGroup != nil {
-					selectedArea := trimFacilityName(selectedGroup.Area, "Area")
+					// Use same area logic as column 2: for TRACONs, use group name; for ARTCCs, use Area field
+					_, isTRACON := av.DB.TRACONs[c.TRACONName]
+					selectedArea := c.GroupName
+					if !isTRACON {
+						selectedArea = trimFacilityName(selectedGroup.Area, "Area")
+					}
 
 					// Collect all scenarios from groups with the same area
 					var allScenarios []scenarioInfo
 					for groupName, group := range c.selectedTRACONConfigs {
-						groupArea := trimFacilityName(group.Area, "Area")
+						groupArea := groupName
+						if !isTRACON {
+							groupArea = trimFacilityName(group.Area, "Area")
+						}
 						if groupArea == selectedArea {
 							for name, scenarioConfig := range group.ScenarioConfigs {
 								if c.scenarioMatchesFilter(scenarioConfig) {
