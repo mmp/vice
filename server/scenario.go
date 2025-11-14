@@ -1095,11 +1095,6 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 		for tcp, config := range s.ControllerConfigs {
 			for _, name := range config.DefaultMaps {
-				if !slices.Contains(config.VideoMapNames, name) {
-					e.ErrorString("default map %q for %q is not included in the controller's "+
-						"\"video_maps\"", name, tcp)
-				}
-
 				if !manifest.HasMap(name) {
 					e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
 						name, tcp)
