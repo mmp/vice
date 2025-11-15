@@ -74,11 +74,12 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
-					RPCClient:   client,
-					HaveTTS:     cr.HaveTTS,
-					name:        "Local (Single controller)",
-					configs:     cr.Configurations,
-					runningSims: cr.RunningSims,
+					RPCClient:           client,
+					HaveTTS:             cr.HaveTTS,
+					AvailableWXByTRACON: cr.AvailableWXByTRACON,
+					name:                "Local (Single controller)",
+					configs:             cr.Configurations,
+					runningSims:         cr.RunningSims,
 				}
 			}
 		}
@@ -208,13 +209,6 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 			})
 	}
 	return nil
-}
-
-func (cm *ConnectionManager) UpdateAvailableWX(srv *Server) error {
-	if srv == nil {
-		return nil
-	}
-	return srv.UpdateAvailableWX()
 }
 
 func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfiguration, srv *Server, lg *log.Logger) error {

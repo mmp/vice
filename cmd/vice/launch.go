@@ -48,12 +48,14 @@ type NewSimConfiguration struct {
 	newSimType       newSimType
 	connectionConfig server.SimConnectionConfiguration
 
-	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR
+	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR/availableWXIntervals
 	airportMETAR    map[string][]wx.METAR
 	metarAirports   []string
 	fetchMETARError error
 	fetchingMETAR   bool
 	metarGeneration int
+
+	availableWXIntervals []util.TimeInterval
 }
 
 func MakeNewSimConfiguration(mgr *client.ConnectionManager, defaultTRACON *string, tfrCache *av.TFRCache, lg *log.Logger) *NewSimConfiguration {
@@ -129,6 +131,7 @@ func (c *NewSimConfiguration) fetchMETAR() {
 
 	c.airportMETAR = nil
 	c.fetchMETARError = nil
+	c.availableWXIntervals = nil
 	c.fetchingMETAR = true
 	c.metarGeneration++
 	currentGeneration := c.metarGeneration
@@ -149,8 +152,42 @@ func (c *NewSimConfiguration) fetchMETAR() {
 			c.airportMETAR = metars
 			c.metarAirports = airports
 			c.updateStartTimeForRunways()
+			c.computeAvailableWXIntervals()
 		}
 	})
+}
+
+func (c *NewSimConfiguration) computeAvailableWXIntervals() {
+	// Extract METAR times from all airports
+	var metarTimes []time.Time
+	for _, metars := range c.airportMETAR {
+		for _, m := range metars {
+			metarTimes = append(metarTimes, m.Time.UTC())
+		}
+	}
+	slices.SortFunc(metarTimes, func(a, b time.Time) int { return a.Compare(b) })
+
+	// Compute METAR intervals
+	var metarIntervals []util.TimeInterval
+	if len(metarTimes) > 0 {
+		metarIntervals = wx.METARIntervals(metarTimes)
+	}
+
+	// Get TRACON intervals from server
+	var traconIntervals []util.TimeInterval
+	if c.selectedServer != nil && c.selectedServer.AvailableWXByTRACON != nil {
+		if intervals, ok := c.selectedServer.AvailableWXByTRACON[c.TRACONName]; ok {
+			traconIntervals = intervals
+		}
+	}
+
+	if len(traconIntervals) == 0 {
+		// Just use the METAR.
+		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals)
+	} else {
+		// Intersect METAR intervals with TRACON intervals and align to midnight
+		c.availableWXIntervals = wx.MergeAndAlignToMidnight(metarIntervals, traconIntervals)
+	}
 }
 
 const (
@@ -221,11 +258,6 @@ func (c *NewSimConfiguration) scenarioMatchesFilter(scenarioConfig *server.SimSc
 func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 	if err := c.mgr.UpdateRemoteSims(); err != nil {
 		c.lg.Warnf("UpdateRemoteSims: %v", err)
-	}
-
-	// Fetch weather data lazily when needed
-	if err := c.mgr.UpdateAvailableWX(c.selectedServer); err != nil {
-		c.lg.Warnf("UpdateAvailableWX: %v", err)
 	}
 
 	if c.displayError != nil {
@@ -657,7 +689,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 			metar := c.airportMETAR[metarAirports[0]]
 			TimePicker("Simulation start date/time", &c.NewSimConfiguration.StartTime,
-				c.selectedServer.AvailableWX, metar, &ui.fixedFont.Ifont)
+				c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
 
 			imgui.SameLine()
 			if imgui.Button(renderer.FontAwesomeIconRedo) {
@@ -1844,7 +1876,7 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 
 		if c.ScenarioConfig.WindSpecifier != nil {
 			// Use the scenario's wind specifier
-			sampledMETAR = wx.SampleMETARWithSpec(apMETAR, c.selectedServer.AvailableWX,
+			sampledMETAR = wx.SampleMETARWithSpec(apMETAR, c.availableWXIntervals,
 				c.ScenarioConfig.WindSpecifier, c.ScenarioConfig.MagneticVariation)
 		} else {
 			// Fallback: calculate average runway heading and use that
@@ -1866,7 +1898,7 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			avgRwyHeading := math.VectorHeading(sumRunwayVecs)
 			avgRwyMagneticHeading := avgRwyHeading + c.ScenarioConfig.MagneticVariation
 
-			sampledMETAR = wx.SampleMETAR(apMETAR, c.selectedServer.AvailableWX, avgRwyMagneticHeading)
+			sampledMETAR = wx.SampleMETAR(apMETAR, c.availableWXIntervals, avgRwyMagneticHeading)
 		}
 
 		if sampledMETAR != nil {

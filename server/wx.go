@@ -7,10 +7,13 @@ package server
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"net"
 	"net/rpc"
 	"os"
+	"path/filepath"
 	"slices"
+	"strings"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -36,11 +39,11 @@ func MakeWXProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
 // RPCProvider
 
 type RPCProvider struct {
-	timeIntervals   []util.TimeInterval
-	timeIntervalsCh chan struct{}
-
 	metar          map[string]wx.METARSOA
 	requestedMETAR map[string]struct{}
+
+	timeIntervals map[string][]util.TimeInterval
+	intervalsDone chan struct{}
 
 	mu     util.LoggingMutex
 	client *rpc.Client
@@ -67,18 +70,21 @@ func MakeRPCProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) 
 	client := rpc.NewClientWithCodec(codec)
 
 	r := &RPCProvider{
-		timeIntervalsCh: make(chan struct{}),
-		metar:           make(map[string]wx.METARSOA),
-		requestedMETAR:  make(map[string]struct{}),
-		client:          client,
-		lg:              lg,
+		metar:          make(map[string]wx.METARSOA),
+		requestedMETAR: make(map[string]struct{}),
+		intervalsDone:  make(chan struct{}),
+		client:         client,
+		lg:             lg,
 	}
 
 	go func() {
-		defer close(r.timeIntervalsCh)
-		if err := r.callWithTimeout(GetTimeIntervalsRPC, struct{}{}, &r.timeIntervals); err != nil {
-			lg.Errorf("%v", err)
+		defer close(r.intervalsDone)
+		var intervals map[string][]util.TimeInterval
+		if err := r.callWithTimeout(GetTimeIntervalsRPC, struct{}{}, &intervals); err != nil {
+			lg.Errorf("GetTimeIntervals RPC failed: %v", err)
+			intervals = make(map[string][]util.TimeInterval)
 		}
+		r.timeIntervals = intervals
 	}()
 
 	return r, nil
@@ -99,8 +105,8 @@ func (r *RPCProvider) callWithTimeout(serviceMethod string, args any, reply any)
 	}
 }
 
-func (r *RPCProvider) GetAvailableTimeIntervals() []util.TimeInterval {
-	<-r.timeIntervalsCh
+func (r *RPCProvider) GetAvailableTimeIntervals() map[string][]util.TimeInterval {
+	<-r.intervalsDone
 	return r.timeIntervals
 }
 
@@ -186,8 +192,8 @@ type GCSProvider struct {
 	atmosManifest  *wx.Manifest
 	atmosFetchDone chan struct{}
 
-	validIntervals     []util.TimeInterval
-	validIntervalsDone chan struct{}
+	timeIntervals map[string][]util.TimeInterval
+	intervalsDone chan struct{}
 
 	gcsClient *util.GCSClient
 	lg        *log.Logger
@@ -195,10 +201,10 @@ type GCSProvider struct {
 
 func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	g := &GCSProvider{
-		metarFetchDone:     make(chan struct{}),
-		precipFetchDone:    make(chan struct{}),
-		atmosFetchDone:     make(chan struct{}),
-		validIntervalsDone: make(chan struct{}),
+		metarFetchDone:  make(chan struct{}),
+		precipFetchDone: make(chan struct{}),
+		atmosFetchDone:  make(chan struct{}),
+		intervalsDone:   make(chan struct{}),
 
 		lg: lg,
 	}
@@ -242,12 +248,8 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	}()
 
 	go func() {
-		defer close(g.validIntervalsDone)
-		var err error
-		g.validIntervals, err = g.collectTimeIntervals()
-		if err != nil {
-			g.lg.Errorf("%v", err)
-		}
+		defer close(g.intervalsDone)
+		g.timeIntervals = g.computeAllTimeIntervals()
 	}()
 
 	return g, nil
@@ -293,37 +295,42 @@ func (g *GCSProvider) getObject(path string, obj any) error {
 	return msgpack.NewDecoder(zr).Decode(obj)
 }
 
-func (g *GCSProvider) GetAvailableTimeIntervals() []util.TimeInterval {
-	<-g.validIntervalsDone
-	return g.validIntervals
+func (g *GCSProvider) GetAvailableTimeIntervals() map[string][]util.TimeInterval {
+	<-g.intervalsDone
+	return g.timeIntervals
 }
 
-func (g *GCSProvider) collectTimeIntervals() ([]util.TimeInterval, error) {
-	<-g.metarFetchDone
+func (g *GCSProvider) computeAllTimeIntervals() map[string][]util.TimeInterval {
 	<-g.precipFetchDone
 	<-g.atmosFetchDone
 
-	// Arbitrarily, use PHL as the exemplar to see what we have data for.
-	var metar []time.Time
-	phl, err := g.metar.GetAirportMETAR("KPHL")
-	if err != nil {
-		return nil, fmt.Errorf("failed to get KPHL METAR: %w", err)
-	}
-	for _, m := range phl {
-		metar = append(metar, m.Time.UTC())
-	}
-	slices.SortFunc(metar, func(a, b time.Time) int { return a.Compare(b) })
+	result := make(map[string][]util.TimeInterval)
 
-	precip, ok := g.precipManifest.GetTimestamps("PHL")
-	if !ok {
-		return nil, errors.New("PHL not found in precip manifest")
-	}
-	atmos, ok := g.atmosManifest.GetTimestamps("PHL")
-	if !ok {
-		return nil, errors.New("PHL not found in atmos manifest")
+	// Get all TRACONs from precip manifest
+	tracons := g.precipManifest.TRACONs()
+
+	for _, tracon := range tracons {
+		precipTimes, ok := g.precipManifest.GetTimestamps(tracon)
+		if !ok {
+			continue
+		}
+
+		atmosTimes, ok := g.atmosManifest.GetTimestamps(tracon)
+		if !ok {
+			continue
+		}
+
+		precipIntervals := wx.PrecipIntervals(precipTimes)
+		atmosIntervals := wx.AtmosIntervals(atmosTimes)
+		intervals := wx.MergeAndAlignToMidnight(precipIntervals, atmosIntervals)
+
+		if len(intervals) > 0 {
+			result[tracon] = intervals
+		}
 	}
 
-	return wx.FullDataDays(metar, precip, atmos), nil
+	g.lg.Infof("GCSProvider: computed time intervals for %d TRACONs", len(result))
+	return result
 }
 
 func (g *GCSProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error) {
@@ -406,7 +413,7 @@ func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosB
 type ResourcesWXProvider struct {
 	metar         map[string]wx.METARSOA     // airport -> METARSOA. Read-only after initialization.
 	atmosByTime   map[string]*wx.AtmosByTime // tracon -> AtmosByTime. Populated on-demand, protected by mu.
-	timeIntervals []util.TimeInterval
+	timeIntervals map[string][]util.TimeInterval
 
 	initDone chan struct{}
 	mu       util.LoggingMutex
@@ -432,31 +439,52 @@ func MakeResourcesWXProvider(lg *log.Logger) wx.Provider {
 }
 
 func (r *ResourcesWXProvider) loadWX() error {
-	metarTimes, err := r.loadMETAR()
+	_, err := r.loadMETAR()
 	if err != nil {
 		return err
 	}
 
-	// As elsewhere, arbitrarily use PHL to see when we do and do not have WX data.
-	phlAtmos, err := r.readAtmosByTime("PHL")
-	if err != nil {
-		return err
-	}
-	var atmosTimes []time.Time
-	for t := range phlAtmos.SampleStacks {
-		atmosTimes = append(atmosTimes, t)
-	}
-	slices.SortFunc(atmosTimes, func(a, b time.Time) int { return a.Compare(b) })
+	r.timeIntervals = r.computeAllTimeIntervals()
 
-	if len(metarTimes) > 0 && len(atmosTimes) > 0 {
-		r.timeIntervals = wx.FullDataDays(metarTimes, nil, atmosTimes)
-	} else {
-		r.lg.Warnf("Cannot compute time intervals: METAR times=%v, PHL atmos times=%v", metarTimes, atmosTimes)
-	}
-
-	r.lg.Infof("ResourcesWXProvider loaded: %d airports' METAR, time intervals: %v", len(r.metar), r.timeIntervals)
+	r.lg.Infof("ResourcesWXProvider loaded: %d airports' METAR, %d TRACONs with time intervals", len(r.metar), len(r.timeIntervals))
 
 	return nil
+}
+
+func (r *ResourcesWXProvider) computeAllTimeIntervals() map[string][]util.TimeInterval {
+	result := make(map[string][]util.TimeInterval)
+
+	// Discover available TRACONs by walking the resources
+	util.WalkResources("wx/atmos", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
+		if err != nil || d.IsDir() {
+			return nil
+		}
+
+		// Extract TRACON name from filename (e.g., "wx/atmos/PHL.msgpack.zst" -> "PHL")
+		filename := filepath.Base(path)
+		tracon := strings.TrimSuffix(filename, ".msgpack.zst")
+
+		atmosByTime, err := r.readAtmosByTime(tracon)
+		if err != nil {
+			r.lg.Warnf("Failed to load atmos for %s: %v", tracon, err)
+			return nil
+		}
+
+		var atmosTimes []time.Time
+		for t := range atmosByTime.SampleStacks {
+			atmosTimes = append(atmosTimes, t)
+		}
+		slices.SortFunc(atmosTimes, func(a, b time.Time) int { return a.Compare(b) })
+
+		intervals := wx.MergeAndAlignToMidnight(wx.AtmosIntervals(atmosTimes))
+		if len(intervals) > 0 {
+			result[tracon] = intervals
+		}
+
+		return nil
+	})
+
+	return result
 }
 
 func (r *ResourcesWXProvider) loadMETAR() ([]time.Time, error) {
@@ -503,9 +531,8 @@ func (r *ResourcesWXProvider) readAtmosByTime(tracon string) (*wx.AtmosByTime, e
 	return &atmosByTime, nil
 }
 
-func (r *ResourcesWXProvider) GetAvailableTimeIntervals() []util.TimeInterval {
+func (r *ResourcesWXProvider) GetAvailableTimeIntervals() map[string][]util.TimeInterval {
 	<-r.initDone
-
 	return r.timeIntervals
 }
 

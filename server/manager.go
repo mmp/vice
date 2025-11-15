@@ -632,9 +632,10 @@ func (r *NewSimResult) PruneForClient() {
 }
 
 type ConnectResult struct {
-	Configurations map[string]map[string]*Configuration
-	RunningSims    map[string]*RemoteSim
-	HaveTTS        bool
+	Configurations      map[string]map[string]*Configuration
+	RunningSims         map[string]*RemoteSim
+	HaveTTS             bool
+	AvailableWXByTRACON map[string][]util.TimeInterval
 }
 
 const ConnectRPC = "SimManager.Connect"
@@ -654,17 +655,8 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 
 	result.Configurations = sm.configs
 	result.HaveTTS = sm.tts != nil
+	result.AvailableWXByTRACON = sm.wxProvider.GetAvailableTimeIntervals()
 
-	return nil
-}
-
-const GetAvailableWXRPC = "SimManager.GetAvailableWX"
-
-func (sm *SimManager) GetAvailableWX(unused int, result *[]util.TimeInterval) error {
-	if sm.wxProvider == nil {
-		return ErrWeatherUnavailable
-	}
-	*result = sm.wxProvider.GetAvailableTimeIntervals()
 	return nil
 }
 
@@ -936,7 +928,7 @@ func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA
 
 const GetTimeIntervalsRPC = "SimManager.GetTimeIntervals"
 
-func (sm *SimManager) GetTimeIntervals(_ struct{}, result *[]util.TimeInterval) error {
+func (sm *SimManager) GetTimeIntervals(_ struct{}, result *map[string][]util.TimeInterval) error {
 	defer sm.lg.CatchAndReportCrash()
 
 	if sm.wxProvider == nil {

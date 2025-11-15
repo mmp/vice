@@ -62,8 +62,8 @@ type ControlClient struct {
 type Server struct {
 	*RPCClient
 
-	HaveTTS     bool
-	AvailableWX []util.TimeInterval
+	HaveTTS             bool
+	AvailableWXByTRACON map[string][]util.TimeInterval
 
 	name        string
 	configs     map[string]map[string]*server.Configuration
@@ -607,15 +607,6 @@ func (s *Server) GetRunningSims() map[string]*server.RemoteSim {
 	return s.runningSims
 }
 
-func (s *Server) UpdateAvailableWX() error {
-	if len(s.AvailableWX) > 0 {
-		// Already fetched
-		return nil
-	}
-
-	return s.callWithTimeout(server.GetAvailableWXRPC, 0, &s.AvailableWX)
-}
-
 func getClient(hostname string, lg *log.Logger) (*RPCClient, error) {
 	conn, err := net.Dial("tcp", hostname)
 	if err != nil {
@@ -647,11 +638,12 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
 				ch <- &serverConnection{
 					Server: &Server{
-						RPCClient:   client,
-						HaveTTS:     cr.HaveTTS,
-						name:        "Network (Multi-controller)",
-						configs:     cr.Configurations,
-						runningSims: cr.RunningSims,
+						RPCClient:           client,
+						HaveTTS:             cr.HaveTTS,
+						AvailableWXByTRACON: cr.AvailableWXByTRACON,
+						name:                "Network (Multi-controller)",
+						configs:             cr.Configurations,
+						runningSims:         cr.RunningSims,
 					},
 				}
 			}

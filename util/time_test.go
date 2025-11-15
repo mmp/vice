@@ -119,7 +119,7 @@ func TestIntersectIntervals(t *testing.T) {
 	}
 }
 
-func TestMergeIntervals(t *testing.T) {
+func TestIntersectAllIntervals(t *testing.T) {
 	baseTime := time.Date(2024, 1, 15, 0, 0, 0, 0, time.UTC)
 
 	a := []TimeInterval{
@@ -134,7 +134,7 @@ func TestMergeIntervals(t *testing.T) {
 		{baseTime.Add(2 * time.Hour), baseTime.Add(5 * time.Hour)},
 	}
 
-	result := MergeIntervals(a, b, c)
+	result := IntersectAllIntervals(a, b, c)
 
 	// The intersection should be from 2h to 3h
 	expected := []TimeInterval{

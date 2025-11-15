@@ -33,8 +33,9 @@ func (ti TimeInterval) Contains(t time.Time) bool {
 	return !t.Before(ti[0]) && !t.After(ti[1])
 }
 
-// MergeIntervals intersects multiple sets of TimeIntervals and returns the common intervals
-func MergeIntervals(intervals ...[]TimeInterval) []TimeInterval {
+// IntersectAllIntervals intersects multiple sets of TimeIntervals and returns the common intervals
+// where all input interval sets overlap.
+func IntersectAllIntervals(intervals ...[]TimeInterval) []TimeInterval {
 	if len(intervals) == 0 {
 		return nil
 	}

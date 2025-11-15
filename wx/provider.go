@@ -11,7 +11,10 @@ import (
 )
 
 type Provider interface {
-	GetAvailableTimeIntervals() []util.TimeInterval
+	// Returns a map from TRACON to available time intervals.
+	// For providers with precip data, intervals represent when both precip and atmos are available.
+	// For providers without precip data, intervals represent when atmos is available.
+	GetAvailableTimeIntervals() map[string][]util.TimeInterval
 
 	// Best effort, may not have it for all airports, but no error is returned for that.
 	GetMETAR(airports []string) (map[string]METARSOA, error)
@@ -22,30 +25,35 @@ type Provider interface {
 	GetAtmosGrid(tracon string, t time.Time) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
-func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {
-	const (
-		metarIntervalTolerance  = 75 * time.Minute
-		precipIntervalTolerance = 40 * time.Minute
-		atmosIntervalTolerance  = 65 * time.Minute
-	)
+const (
+	metarIntervalTolerance  = 75 * time.Minute
+	precipIntervalTolerance = 40 * time.Minute
+	atmosIntervalTolerance  = 65 * time.Minute
+)
 
-	var intervals [][]util.TimeInterval
+// METARIntervals converts METAR timestamps to time intervals suitable for weather data.
+func METARIntervals(times []time.Time) []util.TimeInterval {
+	return util.FindTimeIntervals(times, metarIntervalTolerance)
+}
 
-	if metar != nil {
-		intervals = append(intervals, util.FindTimeIntervals(metar, metarIntervalTolerance))
-	}
-	if precip != nil {
-		intervals = append(intervals, util.FindTimeIntervals(precip, precipIntervalTolerance))
-	}
-	if atmos != nil {
-		intervals = append(intervals, util.FindTimeIntervals(atmos, atmosIntervalTolerance))
-	}
+// PrecipIntervals converts precipitation timestamps to time intervals suitable for weather data.
+func PrecipIntervals(times []time.Time) []util.TimeInterval {
+	return util.FindTimeIntervals(times, precipIntervalTolerance)
+}
 
+// AtmosIntervals converts atmosphere timestamps to time intervals suitable for weather data.
+func AtmosIntervals(times []time.Time) []util.TimeInterval {
+	return util.FindTimeIntervals(times, atmosIntervalTolerance)
+}
+
+// MergeAndAlignToMidnight merges multiple sets of time intervals and aligns them to
+// full 24-hour periods starting and ending at midnight UTC (0000Z).
+func MergeAndAlignToMidnight(intervals ...[]util.TimeInterval) []util.TimeInterval {
 	if len(intervals) == 0 {
 		return nil
 	}
 
-	iv := util.MergeIntervals(intervals...)
+	iv := util.IntersectAllIntervals(intervals...)
 
 	iv = util.MapSlice(iv, func(ti util.TimeInterval) util.TimeInterval {
 		// Make sure we're in UTC.
@@ -70,4 +78,22 @@ func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {
 	})
 
 	return iv
+}
+
+// FullDataDays computes time intervals where all three data sources (METAR, precip, atmos)
+// have continuous coverage, aligned to full 24-hour periods at midnight UTC.
+func FullDataDays(metar, precip, atmos []time.Time) []util.TimeInterval {
+	var intervals [][]util.TimeInterval
+
+	if metar != nil {
+		intervals = append(intervals, METARIntervals(metar))
+	}
+	if precip != nil {
+		intervals = append(intervals, PrecipIntervals(precip))
+	}
+	if atmos != nil {
+		intervals = append(intervals, AtmosIntervals(atmos))
+	}
+
+	return MergeAndAlignToMidnight(intervals...)
 }
