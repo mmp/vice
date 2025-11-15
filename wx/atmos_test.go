@@ -161,12 +161,6 @@ func TestSampleAccessors(t *testing.T) {
 
 	s := MakeSample(windVec, float32(temp), float32(dewpoint), float32(pressure))
 
-	// Test WindDirection and WindSpeed
-	wv := s.WindVec()
-	if len(wv) != 2 {
-		t.Errorf("WindVec should have 2 components, got %d", len(wv))
-	}
-
 	// Test that accessors work
 	_ = s.Temperature()
 	_ = s.Dewpoint()

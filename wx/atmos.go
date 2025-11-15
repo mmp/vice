@@ -430,10 +430,10 @@ const (
 )
 
 // WindVec returns the dequantized wind velocity vector in nm/s
-func (w WindSample) WindVec() [2]float32 {
+func (s WindSample) WindVec() [2]float32 {
 	return [2]float32{
-		float32(w.windVec[0]) / windVecScale,
-		float32(w.windVec[1]) / windVecScale,
+		float32(s.windVec[0]) / windVecScale,
+		float32(s.windVec[1]) / windVecScale,
 	}
 }
 
