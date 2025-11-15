@@ -101,12 +101,14 @@ github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 h1:6E+4a0GO5zZEnZ
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=
 github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455 h1:/AxzYVHalM40bYBEfmj+SntTcHrATJxpXSyZGsXIVz0=
 github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455/go.mod h1:MkS9NR03VwHgqjtFN3J7r/aprTsePJeH8u2gk6wKBOs=
-github.com/mmp/earcut-go v0.0.0-20230128161750-16b51f1632c6 h1:SMEa77v8bN+MNfS39UllGSCv4dPUVfk/IRucA2PxJi0=
-github.com/mmp/earcut-go v0.0.0-20230128161750-16b51f1632c6/go.mod h1:XfYVUZbso7LBMWg+gjzI2hDDWclB13A9z/+KIPO4GBQ=
 github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1 h1:66v6hpjwL8B4BlXqjKYP5Jq6cEREybX6WEWNhVZJ7QU=
 github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1/go.mod h1:XfYVUZbso7LBMWg+gjzI2hDDWclB13A9z/+KIPO4GBQ=
 github.com/mmp/squall v0.0.0-20251026140246-12e6ef3d4269 h1:BT6/uMBJqLxsZuh8AvBcfxj53MkewLkzlqCzi3UZMAE=
 github.com/mmp/squall v0.0.0-20251026140246-12e6ef3d4269/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
+github.com/mmp/squall v0.0.0-20251026152418-bc419ee38b28 h1:uAEG19buBmkERtB3LMHL/rOPxgu5X0cTATiiRUgs0fQ=
+github.com/mmp/squall v0.0.0-20251026152418-bc419ee38b28/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
+github.com/mmp/squall v0.0.0-20251115001828-473aad92aceb h1:H1APegcSUM5LandZEGxrV4kAIT0+gHa9Vt7/phnomcY=
+github.com/mmp/squall v0.0.0-20251115001828-473aad92aceb/go.mod h1:5LrdlELOcESfNbncCQcU0AH1NcRS3rt6SPPAaO0WhG8=
 github.com/ncruces/zenity v0.10.14 h1:OBFl7qfXcvsdo1NUEGxTlZvAakgWMqz9nG38TuiaGLI=
 github.com/ncruces/zenity v0.10.14/go.mod h1:ZBW7uVe/Di3IcRYH0Br8X59pi+O6EPnNIOU66YHpOO4=
 github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 h1:KoWmjvw+nsYOo29YJK9vDA65RGE3NrOnUtO7a+RF9HU=

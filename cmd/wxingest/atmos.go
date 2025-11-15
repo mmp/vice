@@ -22,6 +22,13 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+func traconRegion(tracon string) string {
+	if tracon == "A11" || tracon == "FAI" {
+		return "alaska"
+	}
+	return "conus"
+}
+
 func getAvailableMETARTimes(sb StorageBackend) ([]time.Time, error) {
 	r, err := sb.OpenRead(wx.METARFilename)
 	if err != nil {
@@ -100,7 +107,11 @@ func ingestHRRR(sb StorageBackend) error {
 
 	existing := listIngestedAtmos(sb)
 
-	tCh := make(chan time.Time)
+	type timeWithMissing struct {
+		t       time.Time
+		missing []string
+	}
+	tCh := make(chan timeWithMissing)
 	eg, ctx := errgroup.WithContext(context.Background())
 	eg.Go(func() error {
 		defer close(tCh)
@@ -127,11 +138,20 @@ func ingestHRRR(sb StorageBackend) error {
 						missing = append(missing, tracon)
 					}
 				}
+
+				// Alaska HRRR data is only available every 3 hours (00Z, 03Z, 06Z, etc.)
+				// Filter out Alaska TRACONs if this time doesn't align with their schedule
+				if t.Hour()%3 != 0 {
+					missing = util.FilterSlice(missing, func(tracon string) bool {
+						return traconRegion(tracon) != "alaska"
+					})
+				}
+
 				if len(missing) > 0 {
 					LogInfo(fmt.Sprintf("Time %s: missing atmos for %s\n", t, strings.Join(missing, ", ")))
 
 					select {
-					case tCh <- t:
+					case tCh <- timeWithMissing{t: t, missing: missing}:
 					case <-ctx.Done():
 						return ctx.Err()
 					}
@@ -145,8 +165,10 @@ func ingestHRRR(sb StorageBackend) error {
 	})
 
 	type downloadedHRRR struct {
-		path string
-		t    time.Time
+		path          string
+		t             time.Time
+		region        string
+		targetTRACONs []string
 	}
 	hrrrCh := make(chan downloadedHRRR, 1) // buffer 1 to have the next one prefetched.
 	eg.Go(func() error {
@@ -154,15 +176,25 @@ func ingestHRRR(sb StorageBackend) error {
 		// downloading the next one after the one currently being
 		// processed.
 		defer close(hrrrCh)
-		for t := range tCh {
-			path, err := downloadHRRRForTime(t, tfr, hrrrsb)
-			if err != nil {
-				LogError("%v", err)
-			} else {
-				select {
-				case hrrrCh <- downloadedHRRR{path: path, t: t}:
-				case <-ctx.Done():
-					return ctx.Err()
+		for tw := range tCh {
+			// Group missing TRACONs by region
+			byRegion := make(map[string][]string)
+			for _, tracon := range tw.missing {
+				region := traconRegion(tracon)
+				byRegion[region] = append(byRegion[region], tracon)
+			}
+
+			// Process each region sequentially (memory constraint: one GRIB2 at a time)
+			for region, tracons := range byRegion {
+				path, err := downloadHRRRForTime(tw.t, region, tfr, hrrrsb)
+				if err != nil {
+					LogError("%v", err)
+				} else {
+					select {
+					case hrrrCh <- downloadedHRRR{path: path, t: tw.t, region: region, targetTRACONs: tracons}:
+					case <-ctx.Done():
+						return ctx.Err()
+					}
 				}
 			}
 		}
@@ -171,8 +203,8 @@ func ingestHRRR(sb StorageBackend) error {
 
 	eg.Go(func() error {
 		for hrrr := range hrrrCh {
-			LogInfo("Starting work on " + hrrr.t.Format(time.RFC3339))
-			if err := ingestHRRRForTime(hrrr.path, hrrr.t, existing[hrrr.t], sb, hrrrsb); err != nil {
+			LogInfo("Starting work on %s (%s region)", hrrr.t.Format(time.RFC3339), hrrr.region)
+			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.region, hrrr.targetTRACONs, sb, hrrrsb); err != nil {
 				return err
 			}
 		}
@@ -271,21 +303,26 @@ func checkDiskSpace(path string, requiredGB int64) error {
 	return nil
 }
 
-func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb StorageBackend) (string, error) {
+func downloadHRRRForTime(t time.Time, region string, tfr *util.TempFileRegistry, hrrrsb StorageBackend) (string, error) {
 	// Check disk space before downloading
 	if err := checkDiskSpace(".", 2); err != nil {
 		return "", err
 	}
 
 	// Download the grib2 file from the NOAA archive
-	hrrrpath := fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
+	var hrrrpath string
+	if region == "alaska" {
+		hrrrpath = fmt.Sprintf("hrrr.%d%02d%02d/alaska/hrrr.t%02dz.wrfprsf00.ak.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
+	} else {
+		hrrrpath = fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
+	}
 	hrrrr, err := hrrrsb.OpenRead(hrrrpath)
 	if err != nil {
 		return "", err
 	}
 	defer hrrrr.Close()
 
-	hf, err := os.Create(fmt.Sprintf("%s.grib2", t.Format(time.RFC3339)))
+	hf, err := os.Create(fmt.Sprintf("%s-%s.grib2", t.Format(time.RFC3339), region))
 	if err != nil {
 		return "", err
 	}
@@ -312,7 +349,7 @@ func downloadHRRRForTime(t time.Time, tfr *util.TempFileRegistry, hrrrsb Storage
 	return hf.Name(), nil
 }
 
-func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, sb, hrrrsb StorageBackend) error {
+func ingestHRRRForTime(gribPath string, t time.Time, region string, targetTRACONs []string, sb, hrrrsb StorageBackend) error {
 	defer func() { _ = os.Remove(gribPath) }()
 
 	records, err := parseAndFilterGRIB2(gribPath)
@@ -326,28 +363,27 @@ func ingestHRRRForTime(gribPath string, t time.Time, existingTRACONs []string, s
 	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
 	sem := make(chan struct{}, *nWorkers)
-	for _, tracon := range wx.AtmosTRACONs {
-		if !slices.Contains(existingTRACONs, tracon) {
-			eg.Go(func() error {
-				sem <- struct{}{}
-				defer func() { <-sem }()
 
-				if *validateGrid {
-					if err := validateGridForTracon(grid, records, tracon); err != nil {
-						LogError("%s: grid validation failed: %v", tracon, err)
-					}
+	for _, tracon := range targetTRACONs {
+		eg.Go(func() error {
+			sem <- struct{}{}
+			defer func() { <-sem }()
+
+			if *validateGrid {
+				if err := validateGridForTracon(grid, records, tracon); err != nil {
+					LogError("%s: grid validation failed: %v", tracon, err)
 				}
+			}
 
-				n, err := ingestHRRRForTracon(grid, records, tracon, t, sb)
-				if err == nil {
-					LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
-					atomic.AddInt64(&totalUploads, 1)
-					atomic.AddInt64(&totalUploadBytes, n)
-				}
+			n, err := ingestHRRRForTracon(grid, records, tracon, t, sb)
+			if err == nil {
+				LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
+				atomic.AddInt64(&totalUploads, 1)
+				atomic.AddInt64(&totalUploadBytes, n)
+			}
 
-				return err
-			})
-		}
+			return err
+		})
 	}
 
 	return eg.Wait()

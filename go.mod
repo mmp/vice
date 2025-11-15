@@ -11,12 +11,13 @@ require (
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/gorilla/websocket v1.5.3
+	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
 	github.com/iancoleman/orderedmap v0.3.0
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1
-	github.com/mmp/squall v0.0.0-20251026140246-12e6ef3d4269
+	github.com/mmp/squall v0.0.0-20251115001828-473aad92aceb
 	github.com/ncruces/zenity v0.10.14
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/shirou/gopsutil v3.21.11+incompatible
@@ -58,7 +59,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.2 // indirect
-	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.1 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
