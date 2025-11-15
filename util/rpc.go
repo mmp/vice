@@ -91,7 +91,7 @@ func MakeLoggingServerCodec(label string, c rpc.ServerCodec, lg *log.Logger) *Lo
 
 func (c *LoggingServerCodec) ReadRequestHeader(r *rpc.Request) error {
 	err := c.ServerCodec.ReadRequestHeader(r)
-	c.lg.Info("server: got rpc request", slog.String("label", c.label),
+	c.lg.Debug("server: got rpc request", slog.String("label", c.label),
 		slog.String("service_method", r.ServiceMethod), slog.Any("error", err))
 	return err
 }
@@ -122,11 +122,11 @@ func (c *LoggingServerCodec) ReadRequestBody(body any) error {
 }
 
 func (c *LoggingServerCodec) WriteResponse(r *rpc.Response, body any) error {
-	c.lg.Info("server: writing rpc response", slog.String("label", c.label),
+	c.lg.Debug("server: writing rpc response", slog.String("label", c.label),
 		slog.String("service_method", r.ServiceMethod),
 		slog.String("type", fmt.Sprintf("%T", body)))
 	err := c.ServerCodec.WriteResponse(r, body)
-	c.lg.Info("server: rpc response written", slog.String("label", c.label),
+	c.lg.Debug("server: rpc response written", slog.String("label", c.label),
 		slog.String("service_method", r.ServiceMethod),
 		slog.Any("error", err))
 	return err
