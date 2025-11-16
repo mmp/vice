@@ -47,6 +47,7 @@ type NewSimConfiguration struct {
 	// UI state
 	newSimType       newSimType
 	connectionConfig server.SimConnectionConfiguration
+	showAllMETAR     bool
 
 	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR/availableWXIntervals
 	airportMETAR    map[string][]wx.METAR
@@ -698,7 +699,14 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 			tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 			if imgui.BeginTableV("metar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 800, 0}, 0.) {
-				for i, ap := range metarAirports {
+				// Determine how many METARs to show
+				numToShow := len(metarAirports)
+				if !c.showAllMETAR && len(metarAirports) > 5 {
+					numToShow = 4
+				}
+
+				for i := range numToShow {
+					ap := metarAirports[i]
 					imgui.TableNextRow()
 					imgui.TableNextColumn()
 					if i == 0 {
@@ -711,6 +719,13 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 					imgui.PopFont()
 				}
 				imgui.EndTable()
+			}
+
+			// Show button if there are more than 5 METARs and we haven't clicked to show all
+			if !c.showAllMETAR && len(metarAirports) > 5 {
+				if imgui.Button("Show all METAR") {
+					c.showAllMETAR = true
+				}
 			}
 		}
 	} else {
