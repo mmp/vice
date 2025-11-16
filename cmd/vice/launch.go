@@ -1102,27 +1102,36 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 	imgui.Text("Overflights")
 	imgui.Text(fmt.Sprintf("Overall overflight rate: %d / hour", int(sumRates+0.5)))
 
+	ofColumns := min(3, len(overflightGroups))
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 	if lc.InboundFlowRateScale == 0 {
 		imgui.BeginDisabled()
 	}
-	if imgui.BeginTableV("overflights", 2, flags, imgui.Vec2{tableScale * 400, 0}, 0.) {
-		imgui.TableSetupColumn("Group")
-		imgui.TableSetupColumn("Rate")
+	if imgui.BeginTableV("overflights", int32(2*ofColumns), flags, imgui.Vec2{tableScale * float32(250*ofColumns), 0}, 0.) {
+		for range ofColumns {
+			imgui.TableSetupColumn("Group")
+			imgui.TableSetupColumn("Rate")
+		}
 		imgui.TableHeadersRow()
 
+		ofCol := 0
 		for group := range util.SortedMap(overflightGroups) {
 			imgui.PushIDStr(group)
-			imgui.TableNextRow()
+			if ofCol%ofColumns == 0 {
+				imgui.TableNextRow()
+			}
+
 			imgui.TableNextColumn()
 			imgui.Text(group)
 			imgui.TableNextColumn()
 			r := int32(lc.InboundFlowRates[group]["overflights"]*lc.InboundFlowRateScale + 0.5)
-			if imgui.InputIntV("##of", &r, 0, 120, 0) {
+			if imgui.InputIntV("##of-"+group, &r, 0, 120, 0) {
 				changed = true
 				lc.InboundFlowRates[group]["overflights"] = float32(r) / lc.InboundFlowRateScale
 			}
+			ofCol++
+
 			imgui.PopID()
 		}
 		imgui.EndTable()
