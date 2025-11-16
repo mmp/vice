@@ -53,7 +53,8 @@ import (
 // 43: WX rework (scrape, etc.)
 // 44: store pane instances and split positions separately, rather than the entire DisplayNode hierarchy
 // 45: Change STARSFacilityAdaptation to FacilityAdaptation
-const ViceSerializeVersion = 45
+// 46: Remove token from video map fetch RPC, misc wx updates
+const ViceSerializeVersion = 46
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
