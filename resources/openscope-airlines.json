@@ -14530,6 +14530,20 @@
       }
     },
     {
+      "icao": "stt",
+      "name": "Western Aircraft Inc",
+      "callsign": {
+        "name": "Sawtooth",
+        "callsignFormats": ["###", "####"]
+      },
+      "fleets": {
+        "default": [
+          ["PC24", 1],
+          ["PC12", 9]
+        ]
+      }
+    },
+    {
       "icao": "su",
       "name": "General Aviation Egypt",
       "callsign": {

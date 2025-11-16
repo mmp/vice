@@ -531,11 +531,11 @@
     "Longitude": -111.3706,
     "Radius": 75
   },
-  "HCF": {
-    "Name": "Honolulu CERAP",
+  "HNL": {
+    "Name": "Honolulu TRACON",
     "ARTCC": "ZHN",
-    "Latitude": 21.3167,
-    "Longitude": -157.9172,
+    "Latitude": 21.3209,
+    "Longitude": -157.9266,
     "Radius": 128
   },
   "HLN": {
@@ -810,6 +810,13 @@
     "Latitude": 32.3526,
     "Longitude": -88.7514,
     "Radius": 100
+  },
+  "OGG": {
+    "Name": "Maui TRACON",
+    "ARTCC": "ZHN",
+    "Latitude": 21.3209,
+    "Longitude": -157.9266,
+    "Radius": 128
   },
   "OKC": {
     "Name": "Oklahoma City TRACON",
