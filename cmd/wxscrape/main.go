@@ -253,7 +253,7 @@ func fetchTraconPrecip(ctx context.Context, bucket *storage.BucketHandle, tracon
 	bbox := math.BoundLatLongCircle(center, tspec.Radius)
 
 	area := "conus"
-	if tracon == "HCF" {
+	if tracon == "HCF" || tracon == "OGG" {
 		area = "hawaii"
 	} else if tracon == "A11" || tracon == "FAI" {
 		area = "alaska"
