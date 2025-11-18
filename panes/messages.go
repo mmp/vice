@@ -204,7 +204,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					event.WrittenText = strings.ToUpper(event.WrittenText[:1]) + event.WrittenText[1:]
 				}
 				msg = Message{contents: prefix + event.WrittenText,
-					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected,
+					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
 				}
 				if mp.ReadbackTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])

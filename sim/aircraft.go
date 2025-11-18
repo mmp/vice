@@ -74,6 +74,8 @@ type Aircraft struct {
 	RequestedFlightFollowing bool
 
 	Voice Voice
+
+	LastRadioTransmission time.Time
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
@@ -122,8 +124,7 @@ func (ac *Aircraft) Update(model *wx.Model, simTime time.Time, bravo *av.Airspac
 }
 
 func (ac *Aircraft) PilotMixUp() *av.RadioTransmission {
-	callsign := ac.ADSBCallsign
-	return av.MakeUnexpectedTransmission("sorry, was that for {callsign}?", callsign)
+	return av.MakeMixedUpTransmission("sorry, was that for {callsign}?", ac.ADSBCallsign)
 }
 
 func (ac *Aircraft) GoAround() *av.RadioTransmission {

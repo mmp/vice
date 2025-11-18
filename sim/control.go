@@ -1092,6 +1092,28 @@ func (s *Sim) ReleaseDeparture(tcp string, callsign av.ADSBCallsign) error {
 	}
 }
 
+func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	// Check if enough time has passed since the last pilot error globally
+	if s.State.SimTime.Sub(s.LastPilotError) <= s.PilotErrorInterval {
+		return false
+	}
+
+	// Check if we've recently communicated with this specific aircraft
+	if ac, ok := s.Aircraft[callsign]; ok {
+		// Don't trigger mix-up if we just communicated with this pilot
+		if !ac.LastRadioTransmission.IsZero() && s.State.SimTime.Sub(ac.LastRadioTransmission) < 20*time.Second {
+			return false
+		}
+	}
+
+	// Update the last error time and trigger the mix-up
+	s.LastPilotError = s.State.SimTime
+	return true
+}
+
 func (s *Sim) PilotMixUp(tcp string, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)

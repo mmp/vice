@@ -2516,7 +2516,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 		}
 
 		if trk != nil {
-			sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds, multiple)
+			sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds, multiple, false)
 			status.clear = true
 		} else {
 			status.err = ErrSTARSIllegalACID
@@ -2594,11 +2594,11 @@ func (sp *STARSPane) tgtGenDefaultCallsign(ctx *panes.Context) av.ADSBCallsign {
 	return sp.targetGenLastCallsign
 }
 
-func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string, multiple bool) {
+func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool) {
 	sp.targetGenLastCallsign = callsign
 	prevMode := sp.commandMode
 
-	ctx.Client.RunAircraftCommands(callsign, cmds, multiple,
+	ctx.Client.RunAircraftCommands(callsign, cmds, multiple, clickedTrack,
 		func(errStr string, remaining string) {
 			if errStr != "" {
 				sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
@@ -4196,7 +4196,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 			}
 
 			if len(cmd) > 0 {
-				sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmd, false)
+				sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmd, false, true)
 				status.clear = true
 				return
 			}

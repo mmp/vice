@@ -76,6 +76,9 @@ type Sim struct {
 	FutureOnCourse           []FutureOnCourse
 	FutureSquawkChanges      []FutureChangeSquawk
 
+	PilotErrorInterval time.Duration
+	LastPilotError     time.Time
+
 	lastSimUpdate  time.Time
 	updateTimeSlop time.Duration
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
@@ -227,6 +230,8 @@ type NewSimConfiguration struct {
 	DefaultMapGroup   string
 	Airspace          av.Airspace
 
+	PilotErrorInterval float32
+
 	TTSProvider TTSProvider
 	WXProvider  wx.Provider
 }
@@ -259,6 +264,9 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		ReportingPoints: config.ReportingPoints,
 
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+
+		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
+		LastPilotError:     time.Now(),
 
 		lastUpdateTime: time.Now(),
 
@@ -834,6 +842,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		consolidateRadioTransmissions := func(events []Event) []Event {
 			canConsolidate := func(a, b Event) bool {
 				return a.Type == RadioTransmissionEvent && b.Type == RadioTransmissionEvent &&
+					a.RadioTransmissionType != av.RadioTransmissionMixUp && b.RadioTransmissionType != av.RadioTransmissionMixUp &&
 					a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
 			}
 			lastRadio := -1
@@ -880,7 +889,8 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				}
 			}
 
-			if e.RadioTransmissionType == av.RadioTransmissionContact {
+			switch e.RadioTransmissionType {
+			case av.RadioTransmissionContact:
 				var tr *av.RadioTransmission
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
 					tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
@@ -889,7 +899,9 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 				}
 				events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
 				events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
-			} else {
+			case av.RadioTransmissionMixUp:
+				// No additional formatting for mix-up transmissions; the callsign is already in there.
+			default:
 				tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", ac.ADSBCallsign)
 				events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
 				events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
@@ -1688,6 +1700,10 @@ func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr av.Radi
 
 	if tr.Controller == "" {
 		tr.Controller = defaultTCP
+	}
+
+	if ac, ok := s.Aircraft[from]; ok {
+		ac.LastRadioTransmission = s.State.SimTime
 	}
 
 	s.eventStream.Post(Event{

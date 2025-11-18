@@ -1398,6 +1398,7 @@ const (
 	RadioTransmissionContact    // Messages initiated by the pilot
 	RadioTransmissionReadback   // Reading back an instruction
 	RadioTransmissionUnexpected // Something urgent or unusual
+	RadioTransmissionMixUp      // Pilot confused about who was being addressed
 )
 
 func (r RadioTransmissionType) String() string {
@@ -1408,6 +1409,8 @@ func (r RadioTransmissionType) String() string {
 		return "readback"
 	case RadioTransmissionUnexpected:
 		return "urgent"
+	case RadioTransmissionMixUp:
+		return "mixup"
 	default:
 		return "(unhandled type)"
 	}

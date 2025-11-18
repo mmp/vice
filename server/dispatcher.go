@@ -575,6 +575,7 @@ type AircraftCommandsArgs struct {
 	Callsign        av.ADSBCallsign
 	Commands        string
 	Multiple        bool
+	ClickedTrack    bool
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -608,7 +609,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			rewriteError(err)
 		}
 		return nil // don't continue with the commands
-	} else if num := s.Rand.Intn(25); num == 0 { // 1/25 chance of a pilot mix-up
+	} else if !cmds.ClickedTrack && s.ShouldTriggerPilotMixUp(callsign) {
 		if err := s.PilotMixUp(tcp, callsign); err != nil {
 			rewriteError(err)
 		}

@@ -671,6 +671,8 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		imgui.Checkbox("Ensure last two characters in callsigns are unique",
 			&c.NewSimConfiguration.EnforceUniqueCallsignSuffix)
 
+		imgui.SliderFloatV("Minimum interval between readback errors (minutes)", &c.PilotErrorInterval, 1, 30, "%.1f", imgui.SliderFlagsNone)
+
 		// Lock for accessing METAR variables
 		c.mu.Lock(c.lg)
 		defer c.mu.Unlock(c.lg)

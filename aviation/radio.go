@@ -103,6 +103,14 @@ func MakeUnexpectedTransmission(s string, args ...any) *RadioTransmission {
 	return rt
 }
 
+// MakeMixedUpTransmission creates a pilot transmission when the pilot is
+// confused about who is being addressed.
+func MakeMixedUpTransmission(s string, args ...any) *RadioTransmission {
+	rt := &RadioTransmission{Type: RadioTransmissionMixUp}
+	rt.Add(s, args...)
+	return rt
+}
+
 // Merge takes a separately-constructed RadioTransmission and merges its
 // contents with the current one.
 func (rt *RadioTransmission) Merge(r *RadioTransmission) {

@@ -133,6 +133,8 @@ type NewSimConfiguration struct {
 
 	EnforceUniqueCallsignSuffix bool
 
+	PilotErrorInterval float32
+
 	AllowInstructorRPO  bool
 	Instructor          bool
 	DisableTextToSpeech bool
@@ -149,7 +151,10 @@ type SimConnectionConfiguration struct {
 }
 
 func MakeNewSimConfiguration() NewSimConfiguration {
-	return NewSimConfiguration{NewSimName: rand.Make().AdjectiveNoun()}
+	return NewSimConfiguration{
+		NewSimName:         rand.Make().AdjectiveNoun(),
+		PilotErrorInterval: 3,
+	}
 }
 
 type RemoteSim struct {
@@ -443,6 +448,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		FacilityAdaptation:          deep.MustCopy(sg.FacilityAdaptation),
 		IsLocal:                     sm.local,
 		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+		PilotErrorInterval:          config.PilotErrorInterval,
 		DepartureRunways:            sc.DepartureRunways,
 		ArrivalRunways:              sc.ArrivalRunways,
 		VFRReportingPoints:          sg.VFRReportingPoints,
