@@ -115,3 +115,45 @@ func TestSampleWeighted(t *testing.T) {
 		}
 	}
 }
+
+func TestSampleWeightedFloat(t *testing.T) {
+	type item struct {
+		value  string
+		weight float64
+	}
+	items := []item{
+		{"low", 0.5},
+		{"medium", 1.0},
+		{"high", 2.5},
+		{"zero", 0.0},
+	}
+
+	counts := make(map[string]int)
+	n := 100000
+	r := Make()
+	r.Seed(6502)
+	for range n {
+		v, ok := SampleWeighted(r, items, func(i item) float64 { return i.weight })
+		if !ok {
+			t.Errorf("Unexpected failure of SampleWeighted with float weights")
+		} else {
+			counts[v.value]++
+		}
+	}
+
+	sum := 0.0
+	for _, item := range items {
+		sum += item.weight
+	}
+
+	for _, item := range items {
+		expected := int(item.weight * float64(n) / sum)
+		c := counts[item.value]
+		if item.weight == 0 && c != 0 {
+			t.Errorf("Expected 0 samples for zero weight. Got %d", c)
+		} else if item.weight > 0 && (c < expected-300 || c > expected+300) {
+			t.Errorf("Expected roughly %d samples for %s (weight %.1f). Got %d [%v]",
+				expected, item.value, item.weight, c, counts)
+		}
+	}
+}

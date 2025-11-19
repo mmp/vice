@@ -10,6 +10,8 @@ import (
 	"slices"
 	"strings"
 	"time"
+
+	"golang.org/x/exp/constraints"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -186,7 +188,7 @@ func SampleFiltered[T any](r *Rand, slice []T, pred func(T) bool) int {
 // SampleWeighted randomly samples an element from the given slice with the
 // probability of choosing each element proportional to the value returned
 // by the provided callback.
-func SampleWeighted[T any](r *Rand, slice []T, weight func(T) int) (T, bool) {
+func SampleWeighted[T any, W constraints.Integer | constraints.Float](r *Rand, slice []T, weight func(T) W) (T, bool) {
 	return SampleWeightedSeq(r, slices.Values(slice), weight)
 }
 
@@ -204,9 +206,9 @@ func SampleSeq[T any](r *Rand, it iter.Seq[T]) (sample T, ok bool) {
 	return
 }
 
-func SampleWeightedSeq[T any](r *Rand, it iter.Seq[T], weight func(T) int) (sample T, ok bool) {
+func SampleWeightedSeq[T any, W constraints.Integer | constraints.Float](r *Rand, it iter.Seq[T], weight func(T) W) (sample T, ok bool) {
 	// Weighted reservoir sampling...
-	sumWt := 0
+	var sumWt W
 	for v := range it {
 		w := weight(v)
 		if w == 0 {
