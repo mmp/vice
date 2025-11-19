@@ -5945,6 +5945,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 180,
+        "fuel_pounds": 42000
       }
     },
     {
@@ -5986,6 +5990,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 244,
+        "fuel_pounds": 52000
       }
     },
     {
@@ -6068,6 +6076,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 1.9
+      },
+      "capacity": {
+        "passengers": 480,
+        "fuel_pounds": 302000
       }
     },
     {
@@ -6315,6 +6327,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 160,
+        "fuel_pounds": 42000
       }
     },
     {
@@ -6356,6 +6372,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 180,
+        "fuel_pounds": 42000
       }
     },
     {
@@ -6398,6 +6418,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 236,
+        "fuel_pounds": 52000
       }
     },
     {
@@ -6439,6 +6463,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 2.1
+      },
+      "capacity": {
+        "passengers": 406,
+        "fuel_pounds": 251000
       }
     },
     {
@@ -6480,6 +6508,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 2.5
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 251000
       }
     },
     {
@@ -6562,6 +6594,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 2
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 251000
       }
     },
     {
@@ -6603,6 +6639,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 340000
       }
     },
     {
@@ -6644,6 +6684,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 430000
       }
     },
     {
@@ -6685,6 +6729,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 475,
+        "fuel_pounds": 430000
       }
     },
     {
@@ -6726,6 +6774,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 302000
       }
     },
     {
@@ -6767,6 +6819,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 2
+      },
+      "capacity": {
+        "passengers": 853,
+        "fuel_pounds": 560000
       }
     },
     {
@@ -7259,6 +7315,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 210,
+        "fuel_pounds": 46063
       }
     },
     {
@@ -7300,6 +7360,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 220,
+        "fuel_pounds": 46063
       }
     },
     {
@@ -7382,6 +7446,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 396,
+        "fuel_pounds": 368000
       }
     },
     {
@@ -7423,6 +7491,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 2.1
+      },
+      "capacity": {
+        "passengers": 550,
+        "fuel_pounds": 368000
       }
     },
     {
@@ -7464,6 +7536,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 3
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 223000
       }
     },
     {
@@ -7956,6 +8032,10 @@
       "turn": {
         "maxBankAngle": 30,
         "maxBankRate": 3.5
+      },
+      "capacity": {
+        "passengers": 189,
+        "fuel_pounds": 46063
       }
     },
     {
@@ -7997,6 +8077,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 189,
+        "fuel_pounds": 46063
       }
     },
     {
@@ -8038,6 +8122,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 220,
+        "fuel_pounds": 46063
       }
     },
     {
@@ -8284,6 +8372,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 239,
+        "fuel_pounds": 75500
       }
     },
     {
@@ -8325,6 +8417,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 289,
+        "fuel_pounds": 75500
       }
     },
     {
@@ -8366,6 +8462,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 290,
+        "fuel_pounds": 200000
       }
     },
     {
@@ -8407,6 +8507,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 351,
+        "fuel_pounds": 200000
       }
     },
     {
@@ -8448,6 +8552,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 375,
+        "fuel_pounds": 200000
       }
     },
     {
@@ -8489,6 +8597,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 440,
+        "fuel_pounds": 314000
       }
     },
     {
@@ -8530,6 +8642,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 550,
+        "fuel_pounds": 314000
       }
     },
     {
@@ -8571,6 +8687,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 3
+      },
+      "capacity": {
+        "passengers": 359,
+        "fuel_pounds": 223000
       }
     },
     {
@@ -8612,6 +8732,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 3
+      },
+      "capacity": {
+        "passengers": 420,
+        "fuel_pounds": 223000
       }
     },
     {
@@ -10007,6 +10131,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 50,
+        "fuel_pounds": 10500
       }
     },
     {
@@ -10048,6 +10176,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 78,
+        "fuel_pounds": 15000
       }
     },
     {
@@ -10089,6 +10221,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 90,
+        "fuel_pounds": 17000
       }
     },
     {
@@ -10130,6 +10266,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 104,
+        "fuel_pounds": 20000
       }
     },
     {
@@ -10294,6 +10434,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 380,
+        "fuel_pounds": 280000
       }
     },
     {
@@ -11032,6 +11176,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 78,
+        "fuel_pounds": 14000
       }
     },
     {
@@ -11073,6 +11221,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 114,
+        "fuel_pounds": 18500
       }
     },
     {
@@ -11114,6 +11266,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 114,
+        "fuel_pounds": 18500
       }
     },
     {
@@ -11155,6 +11311,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 146,
+        "fuel_pounds": 18500
       }
     },
     {
@@ -12386,6 +12546,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 410,
+        "fuel_pounds": 310000
       }
     },
     {
@@ -12468,6 +12632,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 172,
+        "fuel_pounds": 36000
       }
     },
     {
@@ -12509,6 +12677,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 172,
+        "fuel_pounds": 36000
       }
     },
     {
@@ -12591,6 +12763,10 @@
       "turn": {
         "maxBankAngle": 25,
         "maxBankRate": 5
+      },
+      "capacity": {
+        "passengers": 172,
+        "fuel_pounds": 36000
       }
     },
     {

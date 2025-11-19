@@ -191,6 +191,10 @@ type AircraftPerformance struct {
 		MaxBankAngle float32 `json:"maxBankAngle"`
 		MaxBankRate  float32 `json:"maxBankRate"`
 	}
+	Capacity struct {
+		Passengers int `json:"passengers"`
+		FuelPounds int `json:"fuel_pounds"`
+	} `json:"capacity"`
 }
 
 type Airline struct {
