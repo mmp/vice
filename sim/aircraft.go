@@ -218,10 +218,6 @@ func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lg *log.Logger) *a
 	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lg)
 }
 
-func (ac *Aircraft) AssignedApproach() string {
-	return ac.Nav.Approach.AssignedId
-}
-
 func (ac *Aircraft) AtFixCleared(fix, approach string) *av.RadioTransmission {
 	return ac.Nav.AtFixCleared(fix, approach)
 }
