@@ -122,6 +122,24 @@ func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	}
 }
 
+type TriggerEmergencyArgs struct {
+	ControllerToken string
+	EmergencyName   string
+}
+
+const TriggerEmergencyRPC = "Sim.TriggerEmergency"
+
+func (sd *dispatcher) TriggerEmergency(args *TriggerEmergencyArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	if _, s, ok := sd.sm.LookupController(args.ControllerToken); !ok {
+		return ErrNoSimForControllerToken
+	} else {
+		s.TriggerEmergency(args.EmergencyName)
+		return nil
+	}
+}
+
 const FastForwardRPC = "Sim.FastForward"
 
 func (sd *dispatcher) FastForward(token string, update *sim.StateUpdate) error {

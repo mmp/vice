@@ -1,0 +1,178 @@
+{
+  "emergencies": [
+    {
+      "name": "Landing Gear Retraction Failure",
+      "applicable_to": "departure",
+      "weight": 1.0,
+      "stages": [
+        {
+          "transmission": "we have a gear unsafe indication. We need to run some checklists.",
+          "stop_climb": true,
+          "request_delay_vectors": true,
+          "duration_minutes": [5, 10]
+        },
+        {
+          "transmission": "[we haven't resolved this|our gear situation is unresolved]",
+          "request_return": true
+        }
+      ]
+    },
+    {
+      "name": "Landing Gear Deployment Failure",
+      "applicable_to": "approach",
+      "weight": 1.5,
+      "stages": [
+        {
+          "transmission": "unable to extend landing gear",
+          "request_delay_vectors": true,
+          "duration_minutes": [7, 12]
+        },
+        {
+          "transmission": "manual gear extension in progress, request long runway"
+        }
+      ]
+    },
+    {
+      "name": "Minimum Fuel",
+      "applicable_to": "external",
+      "weight": 2.0,
+      "stages": [
+        {
+          "transmission": "minimum fuel",
+          "declare_emergency": true
+        }
+      ]
+    },
+    {
+      "name": "Hydraulic System Failure",
+      "weight": 1.0,
+      "applicable_to": "arrival,external",
+      "stages": [
+        {
+          "transmission": "hydraulic failure, [investigating|we need to run some checklists]",
+          "request_delay_vectors": true,
+          "duration_minutes": [4, 8]
+        },
+        {
+          "transmission": "hydraulic system still degraded",
+          "declare_emergency": true
+        }
+      ]
+    },
+    {
+      "name": "Flap Extension Issue",
+      "applicable_to": "arrival",
+      "weight": 1.5,
+      "stages": [
+        {
+          "transmission": "[we have a flap malfunction|looks like we've got a flap malfunction], we need to [run|go through] some checklists ",
+          "duration_minutes": [3, 6]
+        },
+        {
+          "transmission": "partial flap extension only, anticipate high speed approach"
+        }
+      ]
+    },
+    {
+      "name": "Slat Failure",
+      "applicable_to": "departure",
+      "weight": 0.8,
+      "stages": [
+        {
+          "transmission": "slat failure",
+          "request_return": true
+        }
+      ]
+    },
+    {
+      "name": "Engine Fire Warning",
+      "weight": 0.5,
+      "applicable_to": "arrival,external,departure",
+      "stages": [
+        {
+          "transmission": "engine fire warning",
+          "declare_emergency": true,
+          "request_return": true
+        }
+      ]
+    },
+    {
+      "name": "Cargo Smoke Indication",
+      "weight": 0.7,
+      "applicable_to": "arrival,departure",
+      "stages": [
+        {
+          "transmission": "cargo smoke indication, investigating",
+          "duration_minutes": [2, 4]
+        },
+        {
+          "transmission": "smoke warning persists, requesting priority approach"
+        }
+      ]
+    },
+    {
+      "name": "Medical Emergency",
+      "applicable_to": "arrival,external,approach,departure",
+      "stages": [
+        {
+          "transmission": "[we've got a|] [passenger|] medical emergency [on board|], request [EMTs|medical assistance] [on arrival|at the gate]",
+          "request_return": true
+        }
+      ]
+    },
+    {
+      "name": "Navigation Failure",
+      "weight": 1.0,
+      "applicable_to": "arrival,departure",
+      "stages": [
+        {
+          "transmission": "navigation failure, we need to troubleshoot this",
+          "request_delay_vectors": true,
+          "duration_minutes": [8, 15]
+        },
+        {
+          "transmission": "navigation restored"
+        }
+      ]
+    },
+    {
+      "name": "Bird Strike (ok)",
+      "applicable_to": "departure",
+      "weight": 1.5,
+      "stages": [
+        {
+          "transmission": "bird strike, checking systems",
+          "stop_climb": true,
+          "duration_minutes": [3, 6]
+        },
+        {
+          "transmission": "no apparent damage, continuing"
+        }
+      ]
+    },
+    {
+      "name": "Bird Strike (return)",
+      "applicable_to": "departure",
+      "weight": 1.5,
+      "stages": [
+        {
+          "transmission": "bird strike, we need to [run|go through] some checklists",
+          "stop_climb": true,
+          "duration_minutes": [3, 6]
+        }
+      ]
+    },
+    {
+      "name": "Engine Failure",
+      "weight": 0.3,
+      "applicable_to": "arrival,departure",
+      "stages": [
+        {
+          "transmission": "engine shutdown, single engine operation",
+          "declare_Emergency": true,
+          "request_return": true
+        }
+      ]
+    }
+  ]
+}

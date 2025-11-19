@@ -152,7 +152,7 @@ func (rt RadioTransmission) Spoken(r *rand.Rand) string {
 		result = append(result, s)
 	}
 
-	return strings.Join(result, " ")
+	return strings.Join(result, " ") + "."
 }
 
 // Written returns a string corresponding to how the transmission should be

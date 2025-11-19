@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
@@ -120,10 +121,16 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		return 0, nil, errorLogger, ""
 	}
 
+	// Load emergency types
+	emergencies := sim.LoadEmergencies(&errorLogger)
+	if errorLogger.HaveErrors() {
+		return 0, nil, errorLogger, ""
+	}
+
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, config.ServerAddress, config.IsLocal, lg)
+		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, emergencies, config.ServerAddress, config.IsLocal, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

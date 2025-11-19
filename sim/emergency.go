@@ -1,0 +1,521 @@
+// sim/emergency.go
+// Copyright(c) 2025 vice contributors, licensed under the GNU Public License, Version 3.
+// SPDX: GPL-3.0-only
+
+package sim
+
+import (
+	"maps"
+	"slices"
+	"strings"
+	"time"
+
+	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
+	"github.com/mmp/vice/util"
+)
+
+// Airlines that may use "pan-pan" when declaring an emergency--non-US airlines that operate to/from the United States
+var panPanAirlines = []string{
+	// North America
+	"ACA", // Air Canada
+	// Europe
+	"AFR", // Air France
+	"AUA", // Austrian Airlines
+	"AZA", // Alitalia (legacy)
+	"BAW", // British Airways
+	"DLH", // Lufthansa
+	"EIN", // Aer Lingus
+	"IBE", // Iberia
+	"ICE", // Icelandair
+	"ITY", // ITA Airways
+	"KLM", // KLM Royal Dutch Airlines
+	"LOT", // LOT Polish Airlines
+	"SAS", // Scandinavian Airlines
+	"SWR", // Swiss International Air Lines
+	"TAP", // TAP Air Portugal
+	"THY", // Turkish Airlines
+	"VIR", // Virgin Atlantic
+	// Asia-Pacific
+	"ANA", // All Nippon Airways
+	"ANZ", // Air New Zealand
+	"CAL", // China Airlines
+	"CPA", // Cathay Pacific
+	"CSN", // China Southern Airlines
+	"EVA", // EVA Air
+	"FJI", // Fiji Airways
+	"JAL", // Japan Airlines
+	"KAL", // Korean Air
+	"PAL", // Philippine Airlines
+	"QFA", // Qantas
+	"SIA", // Singapore Airlines
+	"THA", // Thai Airways
+	// Middle East
+	"ELY", // El Al
+	"ETD", // Etihad Airways
+	"QTR", // Qatar Airways
+	"SVA", // Saudia
+	"UAE", // Emirates
+	// Latin America
+	"AMX", // AeroMexico
+	"AVA", // Avianca
+	"CMP", // Copa Airlines
+	"LAN", // LATAM Airlines
+	"TAM", // LATAM Brasil
+	// Africa
+	"ETH", // Ethiopian Airlines
+	"RAM", // Royal Air Maroc
+}
+
+// Average passenger and fuel capacity by CWT category
+// Based on FAA JO 7110.126A Table A-1 and typical aircraft in each category
+var cwtAveragePassengers = map[string]int{
+	"A": 650, // Super (A388 only)
+	"B": 450, // Upper Heavy (widebody jets: 777, 787, A330, A340, A350)
+	"C": 320, // Lower Heavy (767, A310, DC10, MD11)
+	"D": 200, // Non-Pairwise Heavy (military/special, use lower heavy estimate)
+	"E": 240, // B757 category
+	"F": 180, // Upper Large (737, A320 family, E190)
+	"G": 70,  // Lower Large (regional jets: CRJ, E170/175, turboprops)
+	"H": 8,   // Upper Small (bizjets: Citations, Learjets, Gulfstream)
+	"I": 6,   // Lower Small (small props and very light jets)
+}
+
+var cwtFuelPounds = map[string]int{
+	"A": 560000, // Super (A388)
+	"B": 300000, // Upper Heavy (widebody jets)
+	"C": 230000, // Lower Heavy (767, DC10, MD11, A310)
+	"D": 200000, // Non-Pairwise Heavy (estimate based on military heavies)
+	"E": 75000,  // B757 category
+	"F": 45000,  // Upper Large (737, A320 family)
+	"G": 15000,  // Lower Large (regional jets, turboprops)
+	"H": 3000,   // Upper Small (bizjets)
+	"I": 500,    // Lower Small (small props)
+}
+
+// FutureEmergencyUpdate represents a scheduled emergency progression update.
+type FutureEmergencyUpdate struct {
+	ADSBCallsign av.ADSBCallsign
+	Time         time.Time
+}
+
+type EmergencyApplicability int
+
+const (
+	EmergencyApplicabilityDeparture EmergencyApplicability = 1 << iota
+	EmergencyApplicabilityArrival
+	EmergencyApplicabilityExternal
+	EmergencyApplicabilityApproach
+)
+
+func (ea EmergencyApplicability) String() string {
+	var parts []string
+	if ea&EmergencyApplicabilityDeparture != 0 {
+		parts = append(parts, "departure")
+	}
+	if ea&EmergencyApplicabilityArrival != 0 {
+		parts = append(parts, "arrival")
+	}
+	if ea&EmergencyApplicabilityExternal != 0 {
+		parts = append(parts, "external")
+	}
+	if ea&EmergencyApplicabilityApproach != 0 {
+		parts = append(parts, "approach")
+	}
+	if len(parts) == 0 {
+		return "none"
+	}
+	return strings.Join(parts, ",")
+}
+
+// Returns weight for this emergency type given the aircraft.
+// Returns 0 if not applicable.
+func (ea EmergencyApplicability) Applies(ac *Aircraft, humanController bool) bool {
+	if ac.IsDeparture() {
+		dist := math.NMDistance2LL(ac.Position(), ac.Nav.FlightState.DepartureAirportLocation)
+		return humanController && dist <= 15 && ea&EmergencyApplicabilityDeparture != 0
+	} else if ac.IsArrival() {
+		if humanController {
+			if ac.OnApproach(false /* ignore altitudes */) {
+				return ea&EmergencyApplicabilityApproach != 0
+			} else {
+				return ea&EmergencyApplicabilityArrival != 0
+			}
+		} else {
+			return ea&EmergencyApplicabilityExternal != 0
+		}
+	}
+	return false
+}
+
+type Emergency struct {
+	Name               string `json:"name"`
+	ApplicableToString string `json:"applicable_to"`
+	ApplicableTo       EmergencyApplicability
+	Weight             float32          `json:"weight"`
+	Stages             []EmergencyStage `json:"stages"`
+}
+
+// EmergencyStage represents a stage in an emergency's progression.
+type EmergencyStage struct {
+	Transmission        string `json:"transmission"`
+	DurationMinutes     [2]int `json:"duration_minutes"`
+	RequestReturn       bool   `json:"request_return"`
+	StopClimb           bool   `json:"stop_climb"`
+	RequestDelayVectors bool   `json:"request_delay_vectors"`
+	DeclareEmergency    bool   `json:"declare_emergency"`
+}
+
+// EmergencyState tracks the current state of an aircraft's emergency.
+type EmergencyState struct {
+	Emergency      *Emergency
+	CurrentStage   int
+	NextUpdateTime time.Time
+}
+
+// LoadEmergencies loads all emergency types from the emergencies.json resource file.
+// Any errors encountered during loading are reported via the ErrorLogger.
+func LoadEmergencies(e *util.ErrorLogger) []Emergency {
+	e.Push("File emergencies.json")
+	defer e.Pop()
+
+	r := util.LoadResource("emergencies.json")
+	defer r.Close()
+
+	var emap map[string][]Emergency // "emergencies": [ ... ]
+	if err := util.UnmarshalJSON(r, &emap); err != nil {
+		e.Error(err)
+		return nil
+	}
+	emergencies := emap["emergencies"]
+
+	if len(emergencies) == 0 {
+		e.ErrorString("No \"emergencies\" found")
+		return nil
+	}
+
+	namesSeen := make(map[string]struct{})
+	for i := range emergencies {
+		em := &emergencies[i] // so we can modify it...
+
+		if _, ok := namesSeen[em.Name]; ok {
+			e.ErrorString("Duplicate emergency name %q", em.Name)
+			continue
+		}
+		namesSeen[em.Name] = struct{}{}
+
+		e.Push(em.Name)
+
+		// Default weight to 1.0 if not specified
+		if em.Weight == 0 {
+			em.Weight = 1
+		}
+
+		if em.ApplicableToString == "" {
+			e.ErrorString("missing required field 'applicable_to'")
+		} else {
+			for typeStr := range strings.SplitSeq(em.ApplicableToString, ",") {
+				typeStr = strings.TrimSpace(typeStr)
+				switch typeStr {
+				case "departure":
+					em.ApplicableTo |= EmergencyApplicabilityDeparture
+				case "arrival":
+					em.ApplicableTo |= EmergencyApplicabilityArrival
+				case "external":
+					em.ApplicableTo |= EmergencyApplicabilityExternal
+				case "approach":
+					em.ApplicableTo |= EmergencyApplicabilityApproach
+				default:
+					e.ErrorString("invalid \"applicable_to\" value %q: must be one or more of \"departure\", \"arrival\", \"external\", \"approach\" (comma-separated)",
+						typeStr)
+				}
+			}
+		}
+
+		if len(em.Stages) == 0 {
+			e.ErrorString("no emergency \"stages\" defined")
+		}
+		for i, stage := range em.Stages {
+			// transmission is required unless request_return is true
+			if stage.Transmission == "" && !stage.RequestReturn {
+				e.ErrorString("stage %d missing required field \"transmission\"", i)
+			}
+			// duration_minutes is required for all stages except the last one
+			isLastStage := i == len(em.Stages)-1
+			if !isLastStage {
+				if stage.DurationMinutes[1] == 0 {
+					e.ErrorString("stage %d missing required field \"duration_minutes\"", i)
+				}
+				if stage.DurationMinutes[0] > stage.DurationMinutes[1] {
+					e.ErrorString("First value in \"duration_minutes\" cannot be greater than second")
+				}
+			}
+		}
+		e.Pop()
+	}
+
+	return emergencies
+}
+
+func (s *Sim) triggerEmergency(idx int) bool {
+	if len(s.State.Emergencies) == 0 {
+		s.lg.Warn("triggerEmergency: no emergency types loaded")
+		return false
+	}
+
+	em := &s.State.Emergencies[idx]
+
+	// Sample aircraft with weight 0 for non-human-controlled or existing emergencies
+	ac, ok := rand.SampleWeightedSeq(s.Rand, maps.Values(s.Aircraft), func(ac *Aircraft) float32 {
+		if ac.EmergencyState != nil {
+			return 0
+		}
+
+		humanController := false
+		if fp := ac.NASFlightPlan; fp != nil {
+			humanController = s.isActiveHumanController(fp.ControllingController)
+		}
+		return util.Select(em.ApplicableTo.Applies(ac, humanController), em.Weight, float32(0))
+	})
+	if !ok {
+		// No aircraft available for this emergency; if this was automatically-triggered based on
+		// time passage, we'll try again the next tick, selecting a new random emergency.
+		return false
+	}
+
+	ac.EmergencyState = &EmergencyState{Emergency: em}
+
+	s.lg.Info("emergency initiated", "callsign", string(ac.ADSBCallsign), "type", em.Name)
+
+	// Trigger the first stage immediately unless it's an external arrival that hasn't been handed
+	// off yet. Those trigger when controller contact happens in processEnququed.
+	if ac.IsAssociated() {
+		s.runEmergencyStage(ac)
+	} else {
+		// Mark as dormant until handoff; -1 signals the emergency should activate
+		// when the aircraft passes a HumanHandoff waypoint.
+		ac.EmergencyState.CurrentStage = -1
+	}
+	return true
+}
+
+func (s *Sim) updateEmergencies() {
+	// Process emergency progression updates
+	s.FutureEmergencyUpdates = util.FilterSliceInPlace(
+		s.FutureEmergencyUpdates,
+		func(feu FutureEmergencyUpdate) bool {
+			if !s.State.SimTime.After(feu.Time) {
+				return true // don't do anything but keep it
+			}
+
+			// Be mindful of aircraft having been being deleted.
+			if ac, ok := s.Aircraft[feu.ADSBCallsign]; ok {
+				s.runEmergencyStage(ac)
+			}
+			return false // in either case, remove it remove from the queue
+		})
+
+	if s.prespawn || s.State.SimTime.Before(s.NextEmergencyTime) {
+		return
+	}
+
+	if len(s.State.Emergencies) > 0 {
+		// Select a random emergency type
+		if s.triggerEmergency(s.Rand.Intn(len(s.State.Emergencies))) {
+			// Schedule next emergency if we were successful
+			if s.State.LaunchConfig.EmergencyAircraftRate > 0 {
+				s.NextEmergencyTime = s.State.SimTime.Add(randomWait(s.State.LaunchConfig.EmergencyAircraftRate, false, s.Rand))
+			}
+		}
+	}
+}
+
+func (s *Sim) enqueueEmergencyUpdate(callsign av.ADSBCallsign, t time.Time) {
+	s.FutureEmergencyUpdates = append(s.FutureEmergencyUpdates,
+		FutureEmergencyUpdate{
+			ADSBCallsign: callsign,
+			Time:         t,
+		})
+}
+
+// getSoulsOnBoard returns a realistic number of souls on board for the aircraft
+func getSoulsOnBoard(ac *Aircraft, rng *rand.Rand) int {
+	// Check if this is a cargo carrier -> no pax, just crew
+	cargoCarriers := []string{
+		"FDX", // FedEx
+		"UPS", // UPS
+		"DHL", // DHL
+		"DHK", // DHL Air
+		"DHX", // DHL International
+		"GTI", // Atlas Air (Amazon)
+		"ABX", // ABX Air (Amazon)
+		"ATN", // Air Transport International (Amazon)
+		"CKS", // Kalitta Air
+		"WGN", // Western Global
+		"CLX", // Cargolux
+		"GEC", // Lufthansa Cargo
+	}
+	if len(ac.ADSBCallsign) > 3 && slices.Contains(cargoCarriers, string(ac.ADSBCallsign[:3])) {
+		return 2 + rng.Intn(3) // 2-4 souls
+	}
+
+	// Check if we have specific data for this aircraft type from the database
+	acType := ac.FlightPlan.AircraftType
+	if perf, ok := av.DB.AircraftPerformance[acType]; ok && perf.Capacity.Passengers > 0 {
+		maxPax := perf.Capacity.Passengers
+		// Use 70-95% of capacity for a typical load; ignore crew (relatively negligible)
+		load := 0.7 + rng.Float32()*0.25
+		return int(float32(maxPax) * load)
+	}
+
+	// Fall back to CWT category average
+	if perf, ok := av.DB.AircraftPerformance[acType]; ok {
+		if avgPax, ok := cwtAveragePassengers[perf.Category.CWT]; ok {
+			load := 0.7 + rng.Float32()*0.25
+			return int(float32(avgPax) * load)
+		}
+	}
+
+	// Final fallback. "This should never happen..."
+	return 2
+}
+
+// getFuelRemaining returns realistic fuel remaining in pounds
+func getFuelRemaining(ac *Aircraft, rng *rand.Rand) int {
+	maxFuel := 10000 // fallback if we somehow don't find something better
+
+	// Check if we have specific data for this aircraft type from the database
+	perf := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
+	if perf.Capacity.FuelPounds > 0 {
+		maxFuel = perf.Capacity.FuelPounds
+	} else if avg, ok := cwtFuelPounds[perf.Category.CWT]; ok {
+		maxFuel = avg
+	}
+
+	if ac.IsArrival() {
+		// Arrivals should have roughly 2 hours of fuel remaining
+
+		// Guesstimate percentage fuel burned per hour of flight; assume it's proportional to
+		// aircraft size.
+		var percentBurnPerHour float32
+		switch perf.Category.CWT {
+		case "A", "B", "C":
+			percentBurnPerHour = .06
+		case "D", "E":
+			percentBurnPerHour = .12
+		case "F", "G", "H":
+			percentBurnPerHour = .15
+		case "I":
+			percentBurnPerHour = .25
+		}
+
+		twoHoursFuel := int(2 * percentBurnPerHour * float32(maxFuel))
+		// Add some variance ±10%
+		variance := 1 + 0.2*(rng.Float32()-0.1)
+		return int(float32(twoHoursFuel) * variance)
+	} else {
+		// Departures: estimate based on distance to destination
+		// For now, use 60-90% of max fuel as a reasonable range for departures
+		ratio := 0.6 + rng.Float32()*0.3
+		return int(float32(maxFuel) * ratio)
+	}
+}
+
+func (s *Sim) runEmergencyStage(ac *Aircraft) {
+	es := ac.EmergencyState
+
+	if es.CurrentStage >= len(es.Emergency.Stages) {
+		// Done with this emergency
+		ac.EmergencyState = nil
+		return
+	}
+
+	if ac.IsUnassociated() {
+		// This shouldn't happen
+		s.lg.Warnf("%s: unassociated aircraft in emergency state. clearing emergency", ac.ADSBCallsign)
+		ac.EmergencyState = nil
+		return
+	}
+
+	stage := es.Emergency.Stages[es.CurrentStage]
+
+	// Build transmission with various options
+	var transmission []string
+	var args []any
+
+	transmit := func(s string, a ...any) {
+		transmission = append(transmission, s)
+		args = append(args, a...)
+	}
+	// Start with pan-pan prefix for certain airlines when declaring emergency
+	if stage.DeclareEmergency {
+		if slices.ContainsFunc(panPanAirlines, func(airline string) bool {
+			return strings.HasPrefix(string(ac.ADSBCallsign), airline)
+		}) {
+			transmit("pan-pan, pan-pan, pan-pan")
+		} else {
+			transmit("[we are|] declaring an emergency")
+		}
+	}
+
+	transmit(stage.Transmission)
+
+	// Sometimes (50% chance) proactively include souls on board and fuel remaining
+	if stage.DeclareEmergency && s.Rand.Float32() < 0.5 {
+		souls := getSoulsOnBoard(ac, s.Rand)
+		fuel := getFuelRemaining(ac, s.Rand)
+		if fuel < 1000 {
+			fuel = (fuel + 50) / 100 * 100 // round to 100s of pounds
+		} else {
+			fuel = (fuel + 500) / 1000 * 1000 // round to thousands of pounds
+		}
+		transmit("[we have|] {num} souls on board and {num} pounds of fuel [remaining|]", souls, fuel)
+	}
+
+	// Handle stop_climb option
+	if stage.StopClimb {
+		currentAlt := int(ac.Altitude())
+		targetAlt, _ := ac.Nav.TargetAltitude()
+		assignedAlt := int(targetAlt)
+		if currentAlt+500 < assignedAlt {
+			// Find next 1000-foot altitude above current
+			stopAlt := ((currentAlt / 1000) + 1) * 1000
+
+			// Ensure stop altitude is at least 2,500 feet AGL, rounded up to nearest 1000
+			depElevation := int(ac.DepartureAirportElevation())
+			minAltAGL := depElevation + 2500
+			minAlt := ((minAltAGL + 999) / 1000) * 1000 // Round up to nearest 1000
+			stopAlt = max(stopAlt, minAlt)
+
+			if stopAlt < assignedAlt {
+				transmit("[stopping our climb|we're going to stop our climb|we're going to level off] at {alt}", stopAlt)
+			}
+		}
+	}
+
+	if stage.RequestReturn && ac.IsDeparture() {
+		transmit("[request|request immediate|we'd like to] return to {airport}", ac.FlightPlan.DepartureAirport)
+		ac.DivertToAirport(ac.FlightPlan.DepartureAirport)
+	}
+
+	if stage.RequestDelayVectors {
+		transmit("[we'd like|we'd like some|we could use some|requesting] delay vectors")
+	}
+
+	// Post the radio transmission
+	// Note: MakeContactTransmission automatically prepends controller position and callsign
+	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
+	controller := ac.NASFlightPlan.ControllingController
+	s.postRadioEvent(ac.ADSBCallsign, controller, *rt)
+
+	// Schedule next stage based on current stage's duration
+	es.CurrentStage++
+	if es.CurrentStage < len(es.Emergency.Stages) {
+		dur := stage.DurationMinutes
+		delay := time.Duration(dur[0]+s.Rand.Intn(dur[1]-dur[0]+1)) * time.Minute
+
+		es.NextUpdateTime = s.State.SimTime.Add(delay)
+		s.enqueueEmergencyUpdate(ac.ADSBCallsign, es.NextUpdateTime)
+	}
+}

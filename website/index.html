@@ -224,6 +224,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-vfr">VFR Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airspace">Controller Airspace</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenarios">Scenarios</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-emergencies">Emergencies</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-stars-videomaps">STARS and Video Maps</a>
 	    <ul class="submenu">
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-list-format">List Formatting</a></li>
@@ -7771,7 +7772,148 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             </tbody>
             </table>
           </section><!--//section-->
-          
+
+          <section class="docs-section" id="fe-emergencies">
+            <h2 class="section-heading">Emergencies</h2>
+
+            <p>
+              Emergency aircraft can be configured to randomly occur during simulation sessions.
+              The file <code>resources/emergencies.json</code> is used to store information about the
+              possible emergencies, including what phase of flight they apply to, what radio transmissions
+              pilots will make over the course of them, and what they will ask of ATC.
+              That file contains an array of emergency specifications, each with the following members:
+            </p>
+
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>name</td>
+                <td>String (required)</td>
+                <td>Human-readable name of the emergency, must be unique across other emergencies.</td>
+              </tr>
+              <tr>
+                <td>applicable_to</td>
+                <td>String (required)</td>
+                <td>Which phase(s) of flight the emergency applies to, should be one or more of <code>"departure"</code>, <code>"arrival"</code>, <code>"external"</code>, or <code>"approach"</code> (comma-separated for multiple).
+                  <ul>
+                    <li><code>"departure"</code>: Departures within 15nm of departure airport</li>
+                    <li><code>"arrival"</code>: Arrivals that have not been cleared for the approach</li>
+                    <li><code>"approach"</code>: Arrivals that have been cleared for the approach</li>
+                    <li><code>"external"</code>: Inbound arrivals that are handed off from an external facility (and presumed to have already declared an emergency).</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>weight</td>
+                <td>Number (optional)</td>
+                <td>Relative probability of this emergency occurring (default: 1.0). Higher values make the emergency happen more often.</td>
+              </tr>
+              <tr>
+                <td>stages</td>
+                <td>Array of objects</td>
+                <td>Defines how the emergency unfolds over time.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <p>
+              The emergency stages array in "stages" contains objects that define stages of the emergency.
+              For example, this allows aircraft to ask for vectors to troubleshoot before either resolving a situation
+              or going ahead and declaring an emergency. The objects have this structure:
+            </p>
+
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>transmission</td>
+                <td>String (required)</td>
+                <td>Radio transmission text.
+                  Multiple phraseology alternatives can be specified using bracket notation: <code>[option1|option2|option3]</code>;
+                  if this is used, one of the alternatives will be randomly selected when the transmission is made.
+                  For example: <code>"[we have a|we've got a] gear unsafe indication"</code> will randomly say either
+                  "we have a gear unsafe indication" or "we've got a gear unsafe indication".
+                  The transmission field may be omitted if <code>request_return</code> is true,
+                  in which case the transmission will consist only of the return-to-field request.</td>
+              </tr>
+              <tr>
+                <td>duration_minutes</td>
+                <td>Array of 2 integers (required except for last stage)</td>
+                <td>Range [min, max] for how long to remain in this stage before advancing to next stage. Not needed for the final stage since there is no next stage.</td>
+              </tr>
+              <tr>
+                <td>request_return</td>
+                <td>Boolean (optional)</td>
+                <td>If true, aircraft will request at this stage to return to their departure airport.
+                  An automatically-generated return request will be added at the end of any transmission specified for them.
+                </td>
+              </tr>
+              <tr>
+                <td>stop_climb</td>
+                <td>Boolean (optional)</td>
+                <td>If true and aircraft is climbing, adds a transmission notifying the controller that the aircraft will be stopping
+                  its climb. (The altitude used will be the next higher altitude that's a multiple of 1,000 feet.)</td>
+              </tr>
+              <tr>
+                <td>request_delay_vectors</td>
+                <td>Boolean (optional)</td>
+                <td>If true, a request for delay vectors will be added to the aircraft's transmission.</td>
+              </tr>
+              <tr>
+                <td>declare_emergency</td>
+                <td>Boolean (optional)</td>
+                <td>If true, the aircraft goes ahead and declares an emergency.</td>
+              </tr>
+            </tbody>
+            </table>
+
+            <p>Here is an example of an emergency with two stages: a departing aircraft will level off and ask for delay vectors.
+              After 5-10 minutes, it will request to return to the departure airport.
+            </p>
+            <pre>{
+  "name": "Landing Gear Retraction Failure",
+  "applicable_to": "departure",
+  "stages": [
+    {
+      "transmission": "we have a gear unsafe indication, requesting delay vectors to troubleshoot",
+      "stop_climb": true,
+      "duration_minutes": [5, 10]
+    },
+    {
+      "transmission": "gear situation unresolved",
+      "request_return": true
+    }
+  ]
+}</pre>
+
+            <p>Here is an example of an emergency that applies to multiple phases of flight:</p>
+            <pre>{
+  "name": "Medical Emergency",
+  "applicable_to": "arrival,departure,approach",
+  "stages": [
+    {
+      "transmission": "medical emergency, request EMTs at the gate",
+      "request_return": true
+    }
+  ]
+}
+}</pre>
+
+          </section><!--//section-->
+
           <section class="docs-section" id="fe-stars-videomaps">
             <h2 class="section-heading">STARS and Video Maps</h2>
 

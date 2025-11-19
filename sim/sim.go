@@ -75,6 +75,9 @@ type Sim struct {
 	FutureControllerContacts []FutureControllerContact
 	FutureOnCourse           []FutureOnCourse
 	FutureSquawkChanges      []FutureChangeSquawk
+	FutureEmergencyUpdates   []FutureEmergencyUpdate
+
+	NextEmergencyTime time.Time
 
 	PilotErrorInterval time.Duration
 	LastPilotError     time.Time
@@ -234,6 +237,8 @@ type NewSimConfiguration struct {
 
 	TTSProvider TTSProvider
 	WXProvider  wx.Provider
+
+	Emergencies []Emergency
 }
 
 func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
@@ -267,6 +272,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
 		LastPilotError:     time.Now(),
+
+		NextEmergencyTime: config.StartTime,
 
 		lastUpdateTime: time.Now(),
 
@@ -1489,6 +1496,9 @@ func (s *Sim) updateState() {
 		// Handle assorted deferred radio calls.
 		s.processEnqueued()
 
+		// Handle emergencies
+		s.updateEmergencies()
+
 		s.spawnAircraft()
 
 		s.ERAMComputer.Update(s)
@@ -1501,6 +1511,18 @@ func (s *Sim) RequestFlightFollowing() error {
 	defer s.mu.Unlock(s.lg)
 
 	return s.requestRandomFlightFollowing()
+}
+
+func (s *Sim) TriggerEmergency(name string) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	// Find the specified emergency type by name
+	if idx := slices.IndexFunc(s.State.Emergencies, func(em Emergency) bool { return em.Name == name }); idx == -1 {
+		s.lg.Error("triggerEmergency: emergency not found", "name", name)
+	} else {
+		s.triggerEmergency(idx)
+	}
 }
 
 func (s *Sim) requestRandomFlightFollowing() error {

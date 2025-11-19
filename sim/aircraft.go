@@ -1,4 +1,4 @@
-// pkg/sim/aircraft.go
+// sim/aircraft.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -74,6 +74,8 @@ type Aircraft struct {
 	RequestedFlightFollowing bool
 
 	Voice Voice
+
+	EmergencyState *EmergencyState
 
 	LastRadioTransmission time.Time
 }
@@ -693,4 +695,11 @@ func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
 	fp := ac.NASFlightPlan
 	ac.NASFlightPlan = nil
 	return fp
+}
+
+func (ac *Aircraft) DivertToAirport(ap string) {
+	ac.FlightPlan.ArrivalAirport = ap
+	ac.TypeOfFlight = av.FlightTypeArrival
+
+	ac.Nav.DivertToAirport(ap)
 }

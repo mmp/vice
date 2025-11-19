@@ -1501,10 +1501,17 @@ func (s *Sim) processEnqueued() {
 
 					s.postRadioEvent(c.ADSBCallsign, c.TCP, *rt)
 
+					// Activate pre-assigned external emergency; the transmission will be
+					// consolidated with the initial contact transmission.
+					_, human := s.humanControllers[ac.NASFlightPlan.ControllingController]
+					if human && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+						ac.EmergencyState.CurrentStage = 0
+						s.runEmergencyStage(ac)
+					}
+
 					// For departures handed off to virtual controllers,
 					// enqueue climbing them to cruise sending them direct
 					// to their first fix if they aren't already.
-					_, human := s.humanControllers[ac.NASFlightPlan.ControllingController]
 					if ac.IsDeparture() && !human {
 						s.enqueueDepartOnCourse(ac.ADSBCallsign)
 					}

@@ -719,5 +719,16 @@ func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string)
 	return &resp
 }
 
-///////////////////////////////////////////////////////////////////////////
-// Simulation
+func (nav *Nav) DivertToAirport(airport string) {
+	ap := av.DB.Airports[airport]
+
+	wp := av.Waypoint{
+		Fix:      airport,
+		Location: ap.Location,
+	}
+	nav.Waypoints = []av.Waypoint{wp}
+
+	nav.FlightState.ArrivalAirport = wp
+	nav.FlightState.ArrivalAirportLocation = ap.Location
+	nav.FlightState.ArrivalAirportElevation = float32(ap.Elevation)
+}

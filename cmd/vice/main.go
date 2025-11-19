@@ -156,6 +156,9 @@ func main() {
 		var e util.ErrorLogger
 		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 
+		// Check emergencies.json
+		sim.LoadEmergencies(&e)
+
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
 			for _, sg := range sgs {
@@ -236,6 +239,14 @@ func main() {
 			os.Exit(1)
 		}
 
+		var emergencyLogger util.ErrorLogger
+		emergencies := sim.LoadEmergencies(&emergencyLogger)
+		if emergencyLogger.HaveErrors() {
+			emergencyLogger.PrintErrors(lg)
+			os.Exit(1)
+		}
+
+		newSimConfig.Emergencies = emergencies
 		s := sim.NewSim(*newSimConfig, nil /*manifest*/, lg)
 
 		// Sign on as instructor if waypoint commands are specified

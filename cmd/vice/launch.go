@@ -849,6 +849,7 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	drawVFRDepartureUI(&c.ScenarioConfig.LaunchConfig, p)
 	drawArrivalUI(&c.ScenarioConfig.LaunchConfig, p)
 	drawOverflightUI(&c.ScenarioConfig.LaunchConfig, p)
+	drawEmergencyAircraftUI(&c.ScenarioConfig.LaunchConfig, p)
 	return false
 }
 
@@ -1160,6 +1161,11 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 	return
 }
 
+func drawEmergencyAircraftUI(lc *sim.LaunchConfig, p platform.Platform) {
+	imgui.SliderFloatV("Emergency Aircraft Rate (per hour)", &lc.EmergencyAircraftRate,
+		0, 20, "%.1f", imgui.SliderFlagsNone)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 type LaunchControlWindow struct {
@@ -1168,6 +1174,7 @@ type LaunchControlWindow struct {
 	vfrDepartures       []*LaunchDeparture
 	arrivalsOverflights []*LaunchArrivalOverflight
 	lg                  *log.Logger
+	selectedEmergency   int
 }
 
 type LaunchAircraft struct {
@@ -1749,6 +1756,29 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 			if changed {
 				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 			}
+		}
+	}
+
+	if etypes := lc.client.State.Emergencies; len(etypes) > 0 {
+		imgui.Text("Energency: ")
+		imgui.SameLine()
+
+		emergencyLabel := func(et sim.Emergency) string {
+			return et.Name + " (" + et.ApplicableTo.String() + ")"
+		}
+		imgui.SetNextItemWidth(300)
+		if imgui.BeginCombo("##emergency", emergencyLabel(etypes[lc.selectedEmergency])) {
+			for i, em := range etypes {
+				if imgui.SelectableBoolV(emergencyLabel(em), i == lc.selectedEmergency, 0, imgui.Vec2{}) {
+					lc.selectedEmergency = i
+				}
+			}
+			imgui.EndCombo()
+		}
+
+		imgui.SameLine()
+		if imgui.Button("Trigger") {
+			lc.client.TriggerEmergency(etypes[lc.selectedEmergency].Name)
 		}
 	}
 

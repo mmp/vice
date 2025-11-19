@@ -335,6 +335,13 @@ func (c *ControlClient) RequestFlightFollowing() {
 	c.addCall(makeRPCCall(c.client.Go(server.RequestFlightFollowingRPC, c.controllerToken, nil, nil), nil))
 }
 
+func (c *ControlClient) TriggerEmergency(emergencyName string) {
+	c.addCall(makeRPCCall(c.client.Go(server.TriggerEmergencyRPC, &server.TriggerEmergencyArgs{
+		ControllerToken: c.controllerToken,
+		EmergencyName:   emergencyName,
+	}, nil, nil), nil))
+}
+
 func (c *ControlClient) FastForward() {
 	var update sim.StateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.FastForwardRPC, c.controllerToken, &update, nil), &update, nil))

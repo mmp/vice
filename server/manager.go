@@ -50,6 +50,7 @@ type SimManager struct {
 	sessionsByToken  map[string]*controllerSession
 	mu               util.LoggingMutex
 	mapManifests     map[string]*sim.VideoMapManifest
+	emergencies      []sim.Emergency
 	startTime        time.Time
 	httpPort         int
 	websocketTXBytes atomic.Int64
@@ -298,13 +299,14 @@ func (ss *simSession) SignOff(tcp string, lg *log.Logger) {
 
 func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
-	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
+	emergencies []sim.Emergency, serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
 		scenarioGroups:  scenarioGroups,
 		configs:         simConfigurations,
 		simSessions:     make(map[string]*simSession),
 		sessionsByToken: make(map[string]*controllerSession),
 		mapManifests:    manifests,
+		emergencies:     emergencies,
 		startTime:       time.Now(),
 		tts:             makeTTSProvider(serverAddress, lg),
 		ttsUsageByIP:    make(map[string]*ttsUsageStats),
@@ -472,6 +474,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		SignOnPositions:             make(map[string]*av.Controller),
 		TTSProvider:                 sm.tts,
 		WXProvider:                  sm.wxProvider,
+		Emergencies:                 sm.emergencies,
 		StartTime:                   config.StartTime,
 	}
 

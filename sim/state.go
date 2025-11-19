@@ -59,6 +59,7 @@ type State struct {
 	ArrivalRunways   []ArrivalRunway
 	InboundFlows     map[string]*av.InboundFlow
 	LaunchConfig     LaunchConfig
+	Emergencies      []Emergency
 
 	Center                    math.Point2LL
 	Range                     float32
@@ -125,6 +126,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		ArrivalRunways:   config.ArrivalRunways,
 		InboundFlows:     config.InboundFlows,
 		LaunchConfig:     config.LaunchConfig,
+		Emergencies:      config.Emergencies,
 
 		Center:                    config.Center,
 		Range:                     config.Range,

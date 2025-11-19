@@ -111,6 +111,8 @@ type LaunchConfig struct {
 	ArrivalPushes               bool
 	ArrivalPushFrequencyMinutes int
 	ArrivalPushLengthMinutes    int
+
+	EmergencyAircraftRate float32 // Aircraft per hour
 }
 
 func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports map[string]*av.Airport,
@@ -125,6 +127,7 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
+		EmergencyAircraftRate:       2,
 	}
 
 	for icao, ap := range vfrAirports {
@@ -270,6 +273,14 @@ func (s *Sim) SetLaunchConfig(tcp string, lc LaunchConfig) error {
 
 	if lc.VFFRequestRate != s.State.LaunchConfig.VFFRequestRate {
 		s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
+	}
+
+	if lc.EmergencyAircraftRate != s.State.LaunchConfig.EmergencyAircraftRate {
+		if lc.EmergencyAircraftRate > 0 {
+			s.NextEmergencyTime = s.State.SimTime.Add(randomInitialWait(lc.EmergencyAircraftRate, s.Rand))
+		} else {
+			s.NextEmergencyTime = time.Time{} // zero time = disabled
+		}
 	}
 
 	s.lg.Info("Set launch config", slog.Any("launch_config", lc))
