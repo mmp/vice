@@ -973,8 +973,9 @@ func (sm *SimManager) GetPrecipURL(args PrecipURLArgs, result *PrecipURL) error 
 }
 
 type GetAtmosArgs struct {
-	TRACON string
-	Time   time.Time
+	TRACON         string
+	Time           time.Time
+	PrimaryAirport string
 }
 
 type GetAtmosResult struct {
@@ -998,7 +999,7 @@ func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) er
 	}
 
 	var err error
-	result.AtmosByPointSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time)
+	result.AtmosByPointSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.TRACON, args.Time, args.PrimaryAirport)
 	return err
 }
 

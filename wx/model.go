@@ -14,8 +14,9 @@ import (
 )
 
 type Model struct {
-	provider Provider
-	tracon   string
+	provider       Provider
+	tracon         string
+	primaryAirport string
 
 	grids     [2]*AtmosGrid
 	times     [2]time.Time
@@ -33,11 +34,12 @@ type AtmosResult struct {
 	Err             error
 }
 
-func MakeModel(provider Provider, tracon string, startTime time.Time, lg *log.Logger) *Model {
+func MakeModel(provider Provider, tracon string, primaryAirport string, startTime time.Time, lg *log.Logger) *Model {
 	m := &Model{
-		provider: provider,
-		tracon:   tracon,
-		lg:       lg,
+		provider:       provider,
+		tracon:         tracon,
+		primaryAirport: primaryAirport,
+		lg:             lg,
 	}
 	if _, ok := aviation.DB.TRACONs[tracon]; !ok {
 		return m
@@ -57,7 +59,7 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 
 	go func() {
 		defer close(ch)
-		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.tracon, t)
+		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.tracon, t, m.primaryAirport)
 		ch <- AtmosResult{
 			AtmosByPointSOA: atmos,
 			Time:            atmosTime,

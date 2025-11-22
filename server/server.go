@@ -55,7 +55,8 @@ import (
 // 44: store pane instances and split positions separately, rather than the entire DisplayNode hierarchy
 // 45: Change STARSFacilityAdaptation to FacilityAdaptation
 // 46: Remove token from video map fetch RPC, misc wx updates
-const ViceSerializeVersion = 46
+// 47: pass PrimaryAirport to GetAtmosGrid RPC
+const ViceSerializeVersion = 47
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

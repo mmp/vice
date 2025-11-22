@@ -258,7 +258,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		VFRReportingPoints: config.VFRReportingPoints,
 
-		wxModel: wx.MakeModel(config.WXProvider, config.TRACON, config.StartTime.UTC(), lg),
+		wxModel: wx.MakeModel(config.WXProvider, config.TRACON, config.PrimaryAirport, config.StartTime.UTC(), lg),
 		METAR:   make(map[string][]wx.METAR),
 
 		humanControllers: make(map[string]*humanController),
@@ -467,7 +467,7 @@ func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Prov
 
 	s.wxProvider = provider
 	if s.wxModel == nil {
-		s.wxModel = wx.MakeModel(provider, s.State.TRACON, s.State.SimTime, s.lg)
+		s.wxModel = wx.MakeModel(provider, s.State.TRACON, s.State.PrimaryAirport, s.State.SimTime, s.lg)
 	}
 }
 

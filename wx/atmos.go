@@ -781,3 +781,77 @@ func (ap *AtmosByPoint) Average() (math.Point2LL, *AtmosSampleStack) {
 
 	return avgLoc, avgStack
 }
+
+// MakeFallbackAtmosFromMETAR creates a simple AtmosByPointSOA from METAR wind data.
+// This is used as a fallback when actual atmospheric data is not available for a TRACON.
+// The resulting grid has a single point at the specified location with uniform wind
+// at all altitude levels based on the METAR surface wind.
+func MakeFallbackAtmosFromMETAR(metar METAR, location math.Point2LL) (*AtmosByPointSOA, error) {
+	// Get wind direction and speed from METAR
+	var windDir float32
+	if metar.WindDir != nil {
+		windDir = float32(*metar.WindDir)
+	} else {
+		// Variable winds - use zero wind
+		windDir = 0
+	}
+	windSpeed := float32(metar.WindSpeed)
+
+	// Convert wind direction and speed to U/V components
+	u, v := dirSpeedToUV(windDir, windSpeed)
+
+	// Use METAR temperature and dewpoint (convert to Kelvin)
+	tempK := metar.Temperature + 273.15
+	dewpointK := metar.Dewpoint + 273.15
+
+	// Create a sample stack with uniform wind at all levels
+	stack := &AtmosSampleStack{}
+	for i := range NumSampleLevels {
+		// Calculate height for this pressure level using ISA
+		pressure := PressureFromLevelIndex(i)
+		height := pressureToHeight(pressure)
+
+		// Adjust temperature for altitude using ISA lapse rate
+		// Only apply adjustment above surface level
+		altMeters := height
+		const lapseRate = -0.0065 // -6.5°C per 1000m
+		tempAdjust := lapseRate * altMeters
+		adjustedTempK := tempK + tempAdjust
+		adjustedDewpointK := dewpointK + tempAdjust
+
+		stack.Levels[i] = AtmosSample{
+			UComponent:  u,
+			VComponent:  v,
+			Temperature: adjustedTempK,
+			Dewpoint:    adjustedDewpointK,
+			Height:      height,
+		}
+	}
+
+	// Create AtmosByPoint with single point
+	ap := MakeAtmosByPoint()
+	ap.SampleStacks[location] = stack
+
+	// Convert to SOA format
+	soa, err := ap.ToSOA()
+	if err != nil {
+		return nil, err
+	}
+
+	return &soa, nil
+}
+
+// pressureToHeight converts pressure in millibars to geopotential height in meters
+// using the barometric formula for standard atmosphere.
+func pressureToHeight(pressure float32) float32 {
+	const seaLevelPressure = 1013.25
+	const seaLevelTempK = 288.15
+	const lapseRate = 0.0065 // K/m (positive for formula)
+
+	// Inverse of barometric formula: h = (T0/L) * (1 - (P/P0)^(R*L/(g*M)))
+	// where exponent = 1/5.25588 ≈ 0.190284
+	ratio := math.Pow(pressure/seaLevelPressure, 0.190284)
+	height := (seaLevelTempK / lapseRate) * (1 - ratio)
+
+	return height
+}

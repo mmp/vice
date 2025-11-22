@@ -567,8 +567,9 @@ func (c *ControlClient) GetPrecipURL(t time.Time, callback func(url string, next
 
 func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, error)) {
 	spec := server.GetAtmosArgs{
-		TRACON: c.State.TRACON,
-		Time:   t,
+		TRACON:         c.State.TRACON,
+		Time:           t,
+		PrimaryAirport: c.State.PrimaryAirport,
 	}
 	var result server.GetAtmosResult
 	c.addCall(makeRPCCall(c.client.Go(server.GetAtmosGridRPC, spec, &result, nil),

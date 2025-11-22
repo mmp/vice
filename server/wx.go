@@ -165,10 +165,11 @@ func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return result.URL, result.NextTime, nil
 }
 
-func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, time time.Time, nextTime time.Time, err error) {
+func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time, primaryAirport string) (atmos *wx.AtmosByPointSOA, time time.Time, nextTime time.Time, err error) {
 	args := GetAtmosArgs{
-		TRACON: tracon,
-		Time:   t,
+		TRACON:         tracon,
+		Time:           t,
+		PrimaryAirport: primaryAirport,
 	}
 	var result GetAtmosResult
 	if err = r.callWithTimeout(GetAtmosGridRPC, args, &result); err == nil {
@@ -375,12 +376,16 @@ func (g *GCSProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return url, nextTime, nil
 }
 
-func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosByPointSOA, atmosTime time.Time, nextTime time.Time, err error) {
+func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time, primaryAirport string) (atmos *wx.AtmosByPointSOA, atmosTime time.Time, nextTime time.Time, err error) {
 	<-g.atmosFetchDone
 
 	times, ok := g.atmosManifest.GetTimestamps(tracon)
 	if !ok {
-		err = errors.New(tracon + ": unknown TRACON")
+		// No atmos data for this TRACON - try to create fallback from METAR
+		atmos, err = g.createFallbackAtmos(primaryAirport, t)
+		if err != nil {
+			err = fmt.Errorf("%s: no atmos data and fallback failed: %w", tracon, err)
+		}
 		return
 	}
 
@@ -402,6 +407,29 @@ func (g *GCSProvider) GetAtmosGrid(tracon string, t time.Time) (atmos *wx.AtmosB
 		}
 	}
 	return
+}
+
+func (g *GCSProvider) createFallbackAtmos(primaryAirport string, t time.Time) (*wx.AtmosByPointSOA, error) {
+	<-g.metarFetchDone
+
+	metarSOA, err := g.metar.GetAirportMETARSOA(primaryAirport)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get METAR for %s: %w", primaryAirport, err)
+	}
+
+	return createFallbackAtmosFromMETARSOA(metarSOA, t, primaryAirport)
+}
+
+func createFallbackAtmosFromMETARSOA(metarSOA wx.METARSOA, t time.Time, primaryAirport string) (*wx.AtmosByPointSOA, error) {
+	metars := metarSOA.Decode()
+	if len(metars) == 0 {
+		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
+	}
+
+	metar := wx.METARForTime(metars, t)
+	ap := av.DB.Airports[primaryAirport]
+
+	return wx.MakeFallbackAtmosFromMETAR(metar, ap.Location)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -569,12 +597,17 @@ func (r *ResourcesWXProvider) getAtmosByTime(tracon string) (*wx.AtmosByTime, er
 	}
 }
 
-func (r *ResourcesWXProvider) GetAtmosGrid(tracon string, tGet time.Time) (*wx.AtmosByPointSOA, time.Time, time.Time, error) {
+func (r *ResourcesWXProvider) GetAtmosGrid(tracon string, tGet time.Time, primaryAirport string) (*wx.AtmosByPointSOA, time.Time, time.Time, error) {
 	<-r.initDone
 
 	atmosByTime, err := r.getAtmosByTime(tracon)
 	if err != nil {
-		return nil, time.Time{}, time.Time{}, err
+		// No atmos data for this TRACON - try to create fallback from METAR
+		atmos, fallbackErr := r.createFallbackAtmos(primaryAirport, tGet)
+		if fallbackErr != nil {
+			return nil, time.Time{}, time.Time{}, fmt.Errorf("%s: no atmos data and fallback failed: %w", tracon, fallbackErr)
+		}
+		return atmos, time.Time{}, time.Time{}, nil
 	}
 
 	// Find the time at or before the requested time as well as the next
@@ -613,4 +646,13 @@ func (r *ResourcesWXProvider) GetAtmosGrid(tracon string, tGet time.Time) (*wx.A
 	}
 
 	return &atmosByPointSOA, t0, t1, nil
+}
+
+func (r *ResourcesWXProvider) createFallbackAtmos(primaryAirport string, t time.Time) (*wx.AtmosByPointSOA, error) {
+	metarSOA, ok := r.metar[primaryAirport]
+	if !ok {
+		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
+	}
+
+	return createFallbackAtmosFromMETARSOA(metarSOA, t, primaryAirport)
 }

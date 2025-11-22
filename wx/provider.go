@@ -21,8 +21,10 @@ type Provider interface {
 
 	// Returns the item at-or-before the given time
 	GetPrecipURL(tracon string, t time.Time) (string, time.Time, error)
-	// Returns atmos, it's time, the time for the next one in the series.
-	GetAtmosGrid(tracon string, t time.Time) (*AtmosByPointSOA, time.Time, time.Time, error)
+	// Returns atmos, its time, the time for the next one in the series.
+	// If primaryAirport is non-empty and no atmos data is available, creates
+	// a fallback grid from the primary airport's METAR wind data.
+	GetAtmosGrid(tracon string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
 const (
