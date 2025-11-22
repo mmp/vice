@@ -2827,21 +2827,21 @@
   "control_positions": {
     "HCF_02_CTR": {
       "frequency": 126500,
-      "radio_name": "HCF Center",
+      "radio_name": "Honolulu Center",
       "facility_id": "J",
       "eram_facility": true,
       "sector_id": "J02"
     },
     "HCF_03_CTR": {
       "frequency": 124100,
-      "radio_name": "HCF Center",
+      "radio_name": "Honolulu Center",
       "facility_id": "I",
       "eram_facility": true,
       "sector_id": "I03"
     },
     "HCF_04_CTR": {
       "frequency": 119300,
-      "radio_name": "HCF Center",
+      "radio_name": "Honolulu Center",
       "facility_id": "F",
       "eram_facility": true,
       "sector_id": "F04"
@@ -2860,17 +2860,17 @@
     },
     "HCF_H_APP": {
       "frequency": 118300,
-      "radio_name": "HCF Approach",
+      "radio_name": "Honolulu Approach",
       "sector_id": "1H"
     },
     "HCF_L_APP": {
       "frequency": 124800,
-      "radio_name": "HCF Approach",
+      "radio_name": "Honolulu Approach",
       "sector_id": "1L"
     },
     "HCF_V_APP": {
       "frequency": 119100,
-      "radio_name": "HCF Approach",
+      "radio_name": "Honolulu Approach",
       "sector_id": "1V"
     },
     "JRF_TWR": {
