@@ -273,7 +273,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		PilotErrorInterval: time.Duration(config.PilotErrorInterval * float32(time.Minute)),
 		LastPilotError:     time.Now(),
 
-		NextEmergencyTime: config.StartTime,
+		NextEmergencyTime: util.Select(config.LaunchConfig.EmergencyAircraftRate > 0, config.StartTime, time.Time{}),
 
 		lastUpdateTime: time.Now(),
 

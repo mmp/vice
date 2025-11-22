@@ -316,7 +316,7 @@ func (s *Sim) updateEmergencies() {
 			return false // in either case, remove it remove from the queue
 		})
 
-	if s.prespawn || s.State.SimTime.Before(s.NextEmergencyTime) {
+	if s.prespawn || s.NextEmergencyTime.IsZero() || s.State.SimTime.Before(s.NextEmergencyTime) {
 		return
 	}
 

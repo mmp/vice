@@ -1760,7 +1760,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	}
 
 	if etypes := lc.client.State.Emergencies; len(etypes) > 0 {
-		imgui.Text("Energency: ")
+		imgui.Text("Emergency: ")
 		imgui.SameLine()
 
 		emergencyLabel := func(et sim.Emergency) string {
