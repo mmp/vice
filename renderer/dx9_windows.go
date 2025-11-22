@@ -245,24 +245,22 @@ func (r *DirectX9Renderer) UpdateTextureFromImages(texid uint32, pyramid []image
 		}
 
 		// Copy data, converting RGBA to BGRA
+		// Create a buffer with the converted data
 		srcPitch := nx * 4
+		dstData := make([]byte, ny*srcPitch)
 		for y := 0; y < ny; y++ {
-			srcRow := rgba.Pix[y*srcPitch : (y+1)*srcPitch]
-			dstOffset := y * int(rect.Pitch)
-
 			for x := 0; x < nx; x++ {
-				srcIdx := x * 4
-				dstIdx := dstOffset + x*4
+				srcIdx := y*srcPitch + x*4
+				dstIdx := y*srcPitch + x*4
 
 				// Convert RGBA to BGRA
-				r := srcRow[srcIdx]
-				g := srcRow[srcIdx+1]
-				b := srcRow[srcIdx+2]
-				a := srcRow[srcIdx+3]
-
-				rect.SetAllBytes(dstIdx, []byte{b, g, r, a})
+				dstData[dstIdx] = rgba.Pix[srcIdx+2]   // B
+				dstData[dstIdx+1] = rgba.Pix[srcIdx+1] // G
+				dstData[dstIdx+2] = rgba.Pix[srcIdx]   // R
+				dstData[dstIdx+3] = rgba.Pix[srcIdx+3] // A
 			}
 		}
+		rect.SetAllBytes(dstData, srcPitch)
 
 		tex.UnlockRect(uint(level))
 	}
@@ -312,7 +310,7 @@ func (r *DirectX9Renderer) ReadPixelRGBAs(x, y, width, height int) []uint8 {
 
 	// Create offscreen surface for readback
 	surface, err := r.device.CreateOffscreenPlainSurface(
-		desc.Width, desc.Height,
+		uint(desc.Width), uint(desc.Height),
 		desc.Format,
 		d3d9.POOL_SYSTEMMEM,
 		0,
@@ -343,21 +341,24 @@ func (r *DirectX9Renderer) ReadPixelRGBAs(x, y, width, height int) []uint8 {
 		return nil
 	}
 
+	// Note: LOCKED_RECT doesn't have a Bytes() method for reading
+	// We'll need to use unsafe pointer arithmetic to read the data
 	px := make([]uint8, 4*width*height)
 
+	// Get pointer to the locked data
+	dataPtr := lockedRect.PBits
 	for row := 0; row < height; row++ {
+		rowPtr := unsafe.Pointer(uintptr(dataPtr) + uintptr(row)*uintptr(lockedRect.Pitch))
 		for col := 0; col < width; col++ {
-			srcIdx := row*int(lockedRect.Pitch) + col*4
+			srcPtr := unsafe.Pointer(uintptr(rowPtr) + uintptr(col*4))
+			src := (*[4]uint8)(srcPtr)
 			dstIdx := (row*width + col) * 4
 
 			// Read BGRA, write RGBA
-			bytes := lockedRect.Bytes()
-			if srcIdx+3 < len(bytes) {
-				px[dstIdx+2] = bytes[srcIdx]   // B -> R
-				px[dstIdx+1] = bytes[srcIdx+1] // G -> G
-				px[dstIdx] = bytes[srcIdx+2]   // R -> B
-				px[dstIdx+3] = bytes[srcIdx+3] // A -> A
-			}
+			px[dstIdx] = src[2]   // R
+			px[dstIdx+1] = src[1] // G
+			px[dstIdx+2] = src[0] // B
+			px[dstIdx+3] = src[3] // A
 		}
 	}
 
@@ -413,10 +414,11 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 				projMatrix[j] = float()
 			}
 			// Convert from OpenGL column-major to D3D9 row-major
+			// d3d9.MATRIX is [16]float32 in row-major order
 			var d3dMatrix d3d9.MATRIX
 			for row := 0; row < 4; row++ {
 				for col := 0; col < 4; col++ {
-					d3dMatrix[row][col] = projMatrix[col*4+row]
+					d3dMatrix[row*4+col] = projMatrix[col*4+row]
 				}
 			}
 			r.device.SetTransform(d3d9.TS_PROJECTION, d3dMatrix)
@@ -430,17 +432,17 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 			var d3dMatrix d3d9.MATRIX
 			for row := 0; row < 4; row++ {
 				for col := 0; col < 4; col++ {
-					d3dMatrix[row][col] = viewMatrix[col*4+row]
+					d3dMatrix[row*4+col] = viewMatrix[col*4+row]
 				}
 			}
 			// Set as world transform (D3D9 separates world and view)
-			r.device.SetTransform(d3d9.TS_WORLD, d3dMatrix)
+			r.device.SetTransform(d3d9.TSWorldMatrix(0), d3dMatrix)
 			// Set identity view matrix
 			var identity d3d9.MATRIX
-			identity[0][0] = 1
-			identity[1][1] = 1
-			identity[2][2] = 1
-			identity[3][3] = 1
+			identity[0] = 1  // [0][0]
+			identity[5] = 1  // [1][1]
+			identity[10] = 1 // [2][2]
+			identity[15] = 1 // [3][3]
 			r.device.SetTransform(d3d9.TS_VIEW, identity)
 
 		case RendererClearRGBA:
