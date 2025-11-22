@@ -490,6 +490,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 
 			if stopAlt < assignedAlt {
 				transmit("[stopping our climb|we're going to stop our climb|we're going to level off] at {alt}", stopAlt)
+				ac.AssignAltitude(stopAlt, false) // discard readback
 			}
 		}
 	}
