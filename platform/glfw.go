@@ -2,6 +2,8 @@
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
+//go:build !windows
+
 // This a slightly modified version of the GLFW/SDL2 infrastructure from
 // imgui-go-examples, where the main addition is cursor handling
 // (backported from imgui's backends/imgui_impl_glfw.cpp), and some
@@ -488,6 +490,10 @@ func (g *glfwPlatform) StopMouseDeltaMode() {
 
 func (g *glfwPlatform) SetMousePosition(p [2]float32) {
 	g.window.SetCursorPos(float64(p[0]), float64(p[1]))
+}
+
+func (g *glfwPlatform) WindowHandle() uintptr {
+	return 0 // Not needed for OpenGL on non-Windows platforms
 }
 
 // Translation of ImGui_ImplGlfw_TranslateUntranslatedKey from imgui/backends/imgui_impl_glfw.cpp

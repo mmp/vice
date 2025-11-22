@@ -344,9 +344,9 @@ func main() {
 
 		imgui.CurrentPlatformIO().SetClipboardHandler(plat.GetClipboard())
 
-		render, err = renderer.NewOpenGL2Renderer(lg)
+		render, err = renderer.NewRenderer(plat.WindowHandle(), lg)
 		if err != nil {
-			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
+			panic(fmt.Sprintf("Unable to initialize renderer: %v", err))
 		}
 		renderer.FontsInit(render, plat)
 

@@ -133,4 +133,8 @@ type Platform interface {
 	// StopPlayAudio stops playback of the audio effect specified
 	// by the given identifier.
 	StopPlayAudio(id int)
+
+	// WindowHandle returns the native window handle (HWND on Windows, 0 on other platforms).
+	// This is needed for DirectX device creation.
+	WindowHandle() uintptr
 }

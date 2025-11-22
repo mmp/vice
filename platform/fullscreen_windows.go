@@ -2,6 +2,11 @@
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
+//go:build ignore
+// This file is disabled because Windows now uses SDL2/DirectX9 instead of GLFW/OpenGL.
+// The SDL2 platform in sdl2_windows.go has its own fullscreen implementation.
+// This file is kept for reference but not built.
+
 package platform
 
 import (
