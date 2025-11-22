@@ -9,7 +9,6 @@ package platform
 import (
 	"fmt"
 	gomath "math"
-	"unsafe"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -72,8 +71,8 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	io.SetBackendFlags(io.BackendFlags() | imgui.BackendFlagsHasMouseCursors)
 
 	// Get display bounds to set default window size
-	var displayBounds sdl.Rect
-	if err := sdl.GetDisplayBounds(0, &displayBounds); err == nil {
+	displayBounds, err := sdl.GetDisplayBounds(0)
+	if err == nil {
 		if config.InitialWindowSize[0] == 0 || config.InitialWindowSize[1] == 0 {
 			config.InitialWindowSize[0] = int(displayBounds.W) - 200
 			config.InitialWindowSize[1] = int(displayBounds.H) - 300
@@ -87,10 +86,9 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	}
 
 	// Create window
-	flags := uint32(sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE | sdl.WINDOW_ALLOW_HIGHDPI)
+	flags := sdl.WINDOW_SHOWN | sdl.WINDOW_RESIZABLE | sdl.WINDOW_ALLOW_HIGHDPI
 
 	var window *sdl.Window
-	var err error
 
 	numDisplays, _ := sdl.GetNumVideoDisplays()
 	if config.FullScreenMonitor >= numDisplays {
@@ -165,7 +163,7 @@ func (p *sdl2Platform) GetAllMonitorNames() []string {
 
 func (p *sdl2Platform) EnableFullScreen(fullscreen bool) {
 	if fullscreen {
-		p.window.SetFullscreen(sdl.WINDOW_FULLSCREEN_DESKTOP)
+		p.window.SetFullscreen(uint32(sdl.WINDOW_FULLSCREEN_DESKTOP))
 		p.config.StartInFullScreen = true
 	} else {
 		p.window.SetFullscreen(0)
@@ -488,10 +486,13 @@ func (p *sdl2Platform) GetKeyboard() *KeyboardState {
 }
 
 func (p *sdl2Platform) WindowHandle() uintptr {
-	info := &sdl.SysWMInfo{}
-	p.window.GetWMInfo(info)
-	// On Windows, the Win field contains the HWND
-	return uintptr(unsafe.Pointer(info.GetWindow()))
+	info, err := p.window.GetWMInfo()
+	if err != nil {
+		return 0
+	}
+	// On Windows, we need to get the HWND from the SysWMInfo
+	// The info.GetWindowsInfo() returns the Windows-specific info
+	return uintptr(info.GetWindowsInfo().Window)
 }
 
 // sdlKeyToImguiKey converts SDL keycodes to imgui keys
