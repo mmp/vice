@@ -56,7 +56,8 @@ import (
 // 45: Change STARSFacilityAdaptation to FacilityAdaptation
 // 46: Remove token from video map fetch RPC, misc wx updates
 // 47: pass PrimaryAirport to GetAtmosGrid RPC
-const ViceSerializeVersion = 47
+// 48: release bump
+const ViceSerializeVersion = 48
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
