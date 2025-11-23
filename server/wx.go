@@ -5,6 +5,7 @@
 package server
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -14,12 +15,14 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+	"golang.org/x/sync/errgroup"
 
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
@@ -439,9 +442,9 @@ func createFallbackAtmosFromMETARSOA(metarSOA wx.METARSOA, t time.Time, primaryA
 // information from the local resources directory (more or less intended
 // for offline use of vice).
 type ResourcesWXProvider struct {
-	metar         map[string]wx.METARSOA     // airport -> METARSOA. Read-only after initialization.
-	atmosByTime   map[string]*wx.AtmosByTime // tracon -> AtmosByTime. Populated on-demand, protected by mu.
-	timeIntervals map[string][]util.TimeInterval
+	compressedMETAR wx.CompressedMETAR
+	atmosByTime     map[string]*wx.AtmosByTime // tracon -> AtmosByTime. Populated on-demand, protected by mu.
+	timeIntervals   map[string][]util.TimeInterval
 
 	initDone chan struct{}
 	mu       util.LoggingMutex
@@ -450,7 +453,6 @@ type ResourcesWXProvider struct {
 
 func MakeResourcesWXProvider(lg *log.Logger) wx.Provider {
 	r := &ResourcesWXProvider{
-		metar:       make(map[string]wx.METARSOA),
 		atmosByTime: make(map[string]*wx.AtmosByTime),
 		initDone:    make(chan struct{}),
 		lg:          lg,
@@ -474,7 +476,7 @@ func (r *ResourcesWXProvider) loadWX() error {
 
 	r.timeIntervals = r.computeAllTimeIntervals()
 
-	r.lg.Infof("ResourcesWXProvider loaded: %d airports' METAR, %d TRACONs with time intervals", len(r.metar), len(r.timeIntervals))
+	r.lg.Infof("ResourcesWXProvider loaded: %d airports' METAR, %d TRACONs with time intervals", r.compressedMETAR.Len(), len(r.timeIntervals))
 
 	return nil
 }
@@ -492,7 +494,7 @@ func (r *ResourcesWXProvider) computeAllTimeIntervals() map[string][]util.TimeIn
 		filename := filepath.Base(path)
 		tracon := strings.TrimSuffix(filename, ".msgpack.zst")
 
-		atmosByTime, err := r.readAtmosByTime(tracon)
+		atmosByTime, err := r.readAtmosByTimeInternal(tracon)
 		if err != nil {
 			r.lg.Warnf("Failed to load atmos for %s: %v", tracon, err)
 			return nil
@@ -519,44 +521,91 @@ func (r *ResourcesWXProvider) loadMETAR() ([]time.Time, error) {
 	r.mu.Lock(r.lg)
 	defer r.mu.Unlock(r.lg)
 
-	rd := util.LoadResource("wx/" + wx.METARFilename)
-	defer rd.Close()
+	// Read the raw file without LoadResource's automatic decompression,
+	// since LoadCompressedMETAR handles zstd decompression itself.
+	f, err := fs.ReadFile(util.GetResourcesFS(), "wx/"+wx.METARFilename)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read METAR file: %w", err)
+	}
 
 	// Load compressed METAR map using canonical abstraction
-	compressedMETAR, err := wx.LoadCompressedMETAR(rd)
+	r.compressedMETAR, err = wx.LoadCompressedMETAR(bytes.NewReader(f))
 	if err != nil {
 		return nil, err
 	}
 
-	var times []time.Time
-	for icao := range compressedMETAR.Airports() {
-		metar, err := compressedMETAR.GetAirportMETAR(icao)
-		if err != nil {
-			return nil, fmt.Errorf("%s: failed to get METAR: %w", icao, err)
-		}
-		for _, m := range metar {
-			times = append(times, m.Time)
-		}
+	// Collect all airports first
+	var airports []string
+	for icao := range r.compressedMETAR.Airports() {
+		airports = append(airports, icao)
 	}
 
-	slices.SortFunc(times, func(a, b time.Time) int { return a.Compare(b) })
-	times = slices.Compact(times)
+	// Process in parallel with bounded concurrency
+	var mu sync.Mutex
+	var allTimes []time.Time
+	var eg errgroup.Group
+	eg.SetLimit(32)
 
-	return times, nil
+	for _, icao := range airports {
+		eg.Go(func() error {
+			metar, err := r.compressedMETAR.GetAirportMETAR(icao)
+			if err != nil {
+				return err
+			}
+			times := make([]time.Time, len(metar))
+			for i, m := range metar {
+				times[i] = m.Time
+			}
+
+			mu.Lock()
+			allTimes = append(allTimes, times...)
+			mu.Unlock()
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return nil, err
+	}
+
+	slices.SortFunc(allTimes, func(a, b time.Time) int { return a.Compare(b) })
+	allTimes = slices.Compact(allTimes)
+
+	return allTimes, nil
 }
 
-func (r *ResourcesWXProvider) readAtmosByTime(tracon string) (*wx.AtmosByTime, error) {
-	rd := util.LoadResource("wx/atmos/" + tracon + ".msgpack.zst")
-	defer rd.Close()
+// readAtmosByTimeInternal reads atmos data without waiting for init.
+// Used during initialization.
+func (r *ResourcesWXProvider) readAtmosByTimeInternal(tracon string) (*wx.AtmosByTime, error) {
+	path := "wx/atmos/" + tracon + ".msgpack.zst"
+
+	// Read the raw file to avoid panicking if it doesn't exist
+	f, err := fs.ReadFile(util.GetResourcesFS(), path)
+	if err != nil {
+		return nil, fmt.Errorf("atmos data not available for %s: %w", tracon, err)
+	}
+
+	// Decompress the zstd-compressed data
+	zr, err := zstd.NewReader(bytes.NewReader(f))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create zstd reader for %s: %w", tracon, err)
+	}
+	defer zr.Close()
 
 	var atmosTimesSOA wx.AtmosByTimeSOA
-	if err := msgpack.NewDecoder(rd).Decode(&atmosTimesSOA); err != nil {
+	if err := msgpack.NewDecoder(zr).Decode(&atmosTimesSOA); err != nil {
 		return nil, err
 	}
 
 	atmosByTime := atmosTimesSOA.ToAOS()
 
 	return &atmosByTime, nil
+}
+
+// readAtmosByTime reads atmos data after waiting for init to complete.
+func (r *ResourcesWXProvider) readAtmosByTime(tracon string) (*wx.AtmosByTime, error) {
+	<-r.initDone
+	return r.readAtmosByTimeInternal(tracon)
 }
 
 func (r *ResourcesWXProvider) GetAvailableTimeIntervals() map[string][]util.TimeInterval {
@@ -569,7 +618,7 @@ func (r *ResourcesWXProvider) GetMETAR(airports []string) (map[string]wx.METARSO
 
 	m := make(map[string]wx.METARSOA)
 	for _, icao := range airports {
-		if metarSOA, ok := r.metar[icao]; ok {
+		if metarSOA, err := r.compressedMETAR.GetAirportMETARSOA(icao); err == nil {
 			m[icao] = metarSOA
 		}
 	}
@@ -649,9 +698,9 @@ func (r *ResourcesWXProvider) GetAtmosGrid(tracon string, tGet time.Time, primar
 }
 
 func (r *ResourcesWXProvider) createFallbackAtmos(primaryAirport string, t time.Time) (*wx.AtmosByPointSOA, error) {
-	metarSOA, ok := r.metar[primaryAirport]
-	if !ok {
-		return nil, fmt.Errorf("no METAR data for %s", primaryAirport)
+	metarSOA, err := r.compressedMETAR.GetAirportMETARSOA(primaryAirport)
+	if err != nil {
+		return nil, err
 	}
 
 	return createFallbackAtmosFromMETARSOA(metarSOA, t, primaryAirport)
