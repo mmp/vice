@@ -408,12 +408,11 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 
 		switch cmd {
 		case RendererLoadProjectionMatrix:
-			// Read 16 floats
+			// Read 16 floats - stored in column-major order (OpenGL style)
 			for j := 0; j < 16; j++ {
 				projMatrix[j] = float()
 			}
-			// Convert from OpenGL column-major to D3D9 row-major
-			// d3d9.MATRIX is [16]float32 in row-major order
+			// Convert from OpenGL column-major to D3D9 row-major (transpose)
 			var d3dMatrix d3d9.MATRIX
 			for row := 0; row < 4; row++ {
 				for col := 0; col < 4; col++ {
@@ -423,11 +422,11 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 			r.device.SetTransform(d3d9.TS_PROJECTION, d3dMatrix)
 
 		case RendererLoadModelViewMatrix:
-			// Read 16 floats
+			// Read 16 floats - stored in column-major order (OpenGL style)
 			for j := 0; j < 16; j++ {
 				viewMatrix[j] = float()
 			}
-			// Convert from OpenGL column-major to D3D9 row-major
+			// Convert from OpenGL column-major to D3D9 row-major (transpose)
 			var d3dMatrix d3d9.MATRIX
 			for row := 0; row < 4; row++ {
 				for col := 0; col < 4; col++ {

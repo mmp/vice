@@ -454,35 +454,112 @@ func (p *sdl2Platform) SetMousePosition(pos [2]float32) {
 }
 
 func (p *sdl2Platform) GetMouse() *MouseState {
-	x, y, buttons := sdl.GetMouseState()
-	pos := [2]float32{float32(x), float32(y)}
+	io := imgui.CurrentIO()
+	pos := imgui.MousePos()
+	wx, wy := io.MouseWheelH(), io.MouseWheel()
 
-	// Apply mouse capture
-	if p.mouseCapture.Width() > 0 && p.mouseCapture.Height() > 0 && !p.mouseCapture.Inside(pos) {
-		pos = p.mouseCapture.ClosestPointInBox(pos)
-	}
-
-	state := &MouseState{
-		Pos: pos,
+	m := &MouseState{
+		Pos:      [2]float32{pos.X, pos.Y},
+		DeltaPos: [2]float32{},
+		Wheel:    [2]float32{wx, wy},
 	}
 
 	if p.mouseDeltaMode {
-		state.DeltaPos = p.mouseDelta
+		m.DeltaPos = p.mouseDelta
 	}
 
-	state.Down[MouseButtonPrimary] = (buttons & sdl.ButtonLMask()) != 0
-	state.Down[MouseButtonSecondary] = (buttons & sdl.ButtonRMask()) != 0
-	state.Down[MouseButtonTertiary] = (buttons & sdl.ButtonMMask()) != 0
+	for b := MouseButtonPrimary; b < MouseButtonCount; b++ {
+		m.Down[b] = imgui.IsMouseDown(b)
+		m.Released[b] = imgui.IsMouseReleased(b)
+		m.Clicked[b] = imgui.IsMouseClickedBool(b)
+		m.DoubleClicked[b] = imgui.IsMouseDoubleClicked(b)
+		m.Dragging[b] = imgui.IsMouseDraggingV(b, 0)
+		if m.Dragging[b] {
+			delta := imgui.MouseDragDeltaV(b, 0.)
+			m.DragDelta = [2]float32{delta.X, delta.Y}
+			imgui.ResetMouseDragDeltaV(b)
+		}
+	}
 
-	return state
+	return m
 }
 
 func (p *sdl2Platform) GetKeyboard() *KeyboardState {
-	return &KeyboardState{
-		Input:     p.inputCharacters,
+	keyboard := &KeyboardState{
 		Pressed:   make(map[imgui.Key]interface{}),
 		HeldFKeys: p.heldFKeys,
 	}
+
+	keyboard.Input = p.InputCharacters()
+
+	// Map \ to END for laptops (hacky...)
+	if len(keyboard.Input) > 0 {
+		for _, ch := range keyboard.Input {
+			if ch == '\\' {
+				keyboard.Input = ""
+				keyboard.Pressed[imgui.KeyEnd] = nil
+				break
+			}
+		}
+	}
+
+	if imgui.IsKeyPressedBool(imgui.KeyEnter) ||
+		imgui.IsKeyPressedBool(imgui.KeyKeypadEnter) {
+		keyboard.Pressed[imgui.KeyEnter] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyDownArrow) {
+		keyboard.Pressed[imgui.KeyDownArrow] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyUpArrow) {
+		keyboard.Pressed[imgui.KeyUpArrow] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftArrow) {
+		keyboard.Pressed[imgui.KeyLeftArrow] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightArrow) {
+		keyboard.Pressed[imgui.KeyRightArrow] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyHome) {
+		keyboard.Pressed[imgui.KeyHome] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyEnd) {
+		keyboard.Pressed[imgui.KeyEnd] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyBackspace) {
+		keyboard.Pressed[imgui.KeyBackspace] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyDelete) {
+		keyboard.Pressed[imgui.KeyDelete] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyEscape) {
+		keyboard.Pressed[imgui.KeyEscape] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyTab) {
+		keyboard.Pressed[imgui.KeyTab] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyPageUp) {
+		keyboard.Pressed[imgui.KeyPageUp] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyPageDown) {
+		keyboard.Pressed[imgui.KeyPageDown] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyG) {
+		keyboard.Pressed[imgui.KeyG] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyV) {
+		keyboard.Pressed[imgui.KeyV] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyInsert) {
+		keyboard.Pressed[imgui.KeyInsert] = nil
+	}
+	for i := 0; i < 16; i++ { // 16 f-keys on the STARS keyboard
+		k := imgui.KeyF1 + imgui.Key(i)
+		if imgui.IsKeyPressedBool(k) {
+			keyboard.Pressed[k] = nil
+		}
+	}
+
+	return keyboard
 }
 
 func (p *sdl2Platform) WindowHandle() uintptr {
