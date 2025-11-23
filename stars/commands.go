@@ -2965,9 +2965,6 @@ func (sp *STARSPane) updateQL(ctx *panes.Context, input string) (previewInput st
 }
 
 func (sp *STARSPane) setGlobalLeaderLine(ctx *panes.Context, callsign av.ADSBCallsign, dir *math.CardinalOrdinalDirection) {
-	state := sp.TrackState[callsign]
-	state.UseGlobalLeaderLine = dir != nil
-
 	var spec sim.FlightPlanSpecifier
 	spec.GlobalLeaderLineDirection.Set(dir)
 	trk, _ := ctx.GetTrackByCallsign(callsign)
