@@ -505,7 +505,6 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 			info := r.createdTextures[texid]
 			if info != nil && info.texture != nil {
 				r.device.SetTexture(0, info.texture)
-				textureEnabled = true
 				// Configure texture stage to modulate texture with vertex color
 				r.device.SetTextureStageState(0, d3d9.TSS_COLOROP, d3d9.TOP_MODULATE)
 				r.device.SetTextureStageState(0, d3d9.TSS_COLORARG1, d3d9.TA_TEXTURE)
@@ -517,7 +516,6 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 
 		case RendererDisableTexture:
 			r.device.SetTexture(0, nil)
-			textureEnabled = false
 			// Configure texture stage to use only vertex color (no texture sampling)
 			r.device.SetTextureStageState(0, d3d9.TSS_COLOROP, d3d9.TOP_SELECTARG1)
 			r.device.SetTextureStageState(0, d3d9.TSS_COLORARG1, d3d9.TA_DIFFUSE)
