@@ -113,8 +113,9 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.13.1</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.13.0</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.1">0.13.1</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.0">0.13.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.12.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.1">0.12.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
@@ -1015,7 +1016,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.1/Vice-v0.13.1-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.1 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.13.2/Vice-v0.13.2-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.2 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1024,7 +1025,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.1/Vice-v0.13.1-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.1 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.13.2/Vice-v0.13.2-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.2 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1051,6 +1052,31 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3 id="release-0.13.2">0.13.2 (22 November 2025)</h3>
+            <ul>
+              <li>Fixed crash affecting a number of scenarios (Adam E)</li>
+              <li>Fixed crash when the server can't be reached</li>
+              <li>Added pilot radio mishaps (Michael Trokel): where pilots occasionally respond with confusion to controller commands</li>
+              <li>Scenario updates A80, A90 (radarContacto), A80 (anguse), C90, DAB (Jud Lopez), M98 (Adam E.)</li>
+              <li>New scenarios: ZJX (Jud Lopez), HNL, OGG TRACONs (Ketan K)</li>
+              <li>Added emergency aircraft</li>
+              <li>WX: improved support for Alaska and Hawaii (now have wind for Alaska and are collecting precip radar for both now)</li>
+              <li>STARS:
+                <ul>
+                  <li>'C' command clears aircraft on the already-assigned approach 🎉</li>
+                  <li>Only flash WHO for aircraft in departure filter volumes</li>
+                  <li>Fixed crash with global leader lines.</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Virtual departure controllers ( @Michael Trokel | ZNY ): can assign specific virtual departure controllers for particular departure routes</li>
+                  <li>HCF "TRACON": HCF is now recognized as a TRACON</li>
+                  <li>Don't require controller "default_maps" to be in "video_maps"</li>
+                </ul>
+              </li>
+            </ul>
+            
             <h3 id="release-0.13.1">0.13.1 (6 November 2025)</h3>
             <ul>
               <li>Fix Windows installer build.</li>

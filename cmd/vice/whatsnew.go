@@ -296,4 +296,11 @@ var whatsNew []string = []string{
 	`Fixed issue with VNAV descent rates that meant that altitude restrictions were sometimes missed`,
 	`Fixed bug where airport departure rates were not being correctly followed`,
 	`Bugfix: when an aircraft in a hold is given a heading, they now fly the heading directly`,
+	`Fixed crash affecting a number of scenarios (Adam E)`,
+	`Fixed crash when the server can't be reached`,
+	`Added pilot radio mishaps (Michael Trokel): where pilots occasionally respond with confusion to controller commands`,
+	`Scenario updates A80, A90 (radarContacto), A80 (anguse), C90, DAB (Jud Lopez), M98 (Adam E.)`,
+	`New scenarios: ZJX (Jud Lopez), HNL, OGG TRACONs (Ketan K)`,
+	`Added emergency aircraft`,
+	`STARS: 'C' command clears aircraft on the already-assigned approach`,
 }
