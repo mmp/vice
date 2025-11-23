@@ -236,7 +236,7 @@ func (nav *Nav) AtFixCleared(fix, id string) *av.RadioTransmission {
 	if ap == nil {
 		return av.MakeUnexpectedTransmission("unable. We were never told to expect an approach")
 	}
-	if nav.Approach.AssignedId != id {
+	if id != "" && nav.Approach.AssignedId != id {
 		return av.MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
