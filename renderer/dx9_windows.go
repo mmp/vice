@@ -393,7 +393,6 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 	var projMatrix [16]float32
 	var viewMatrix [16]float32
 	var arrays arrayState
-	var textureEnabled bool
 	var bufferBase unsafe.Pointer
 	if len(cb.Buf) > 0 {
 		bufferBase = unsafe.Pointer(&cb.Buf[0])
@@ -466,7 +465,7 @@ func (r *DirectX9Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats 
 				Right:  x + w,
 				Bottom: y + h,
 			}
-			r.device.SetScissorRect(&rect)
+			r.device.SetScissorRect(rect)
 
 		case RendererViewport:
 			x := i32()
@@ -695,7 +694,7 @@ func (r *DirectX9Renderer) drawLines(bufferBase unsafe.Pointer, indices []int32,
 	r.device.DrawPrimitiveUP(
 		d3d9.PT_LINELIST,
 		uint(len(indices)/2),
-		unsafe.Pointer(&vertices[0]),
+		uintptr(unsafe.Pointer(&vertices[0])),
 		uint(unsafe.Sizeof(vertex{})),
 	)
 }
@@ -712,7 +711,7 @@ func (r *DirectX9Renderer) drawTriangles(bufferBase unsafe.Pointer, indices []in
 	r.device.DrawPrimitiveUP(
 		d3d9.PT_TRIANGLELIST,
 		uint(len(indices)/3),
-		unsafe.Pointer(&vertices[0]),
+		uintptr(unsafe.Pointer(&vertices[0])),
 		uint(unsafe.Sizeof(vertex{})),
 	)
 }
