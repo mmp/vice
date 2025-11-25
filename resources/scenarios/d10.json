@@ -5426,12 +5426,12 @@
           "ZERLU,TRRCH,HANUH,THHOR": {
             "cleared_altitude": 3000,
             "sid": "KUSSO1",
-            "waypoints": "_DTO_36R/h365"
+            "waypoints": "_DTO_36R/h5"
           },
           "NOBLY.PROP,TRISS.PROP,SOLDO.PROP,CLARE.PROP": {
             "cleared_altitude": 3000,
             "sid": "GARL6",
-            "waypoints": "_DTO_36R/h365"
+            "waypoints": "_DTO_36R/h5"
           },
           "PGLET,TYGGR,ROOOO,RBBIT": {
             "cleared_altitude": 3000,

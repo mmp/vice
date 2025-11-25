@@ -926,6 +926,8 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				} else if f[0] == 'h' { // after "ho" and "hilpt" check...
 					if hdg, err := strconv.Atoi(f[1:]); err != nil {
 						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else if hdg < 0 || hdg > 360 {
+						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
 					} else {
 						wp.Heading = hdg
 					}
