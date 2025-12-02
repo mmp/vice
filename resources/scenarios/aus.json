@@ -1824,7 +1824,7 @@
     ],
     "stars_maps": [
       "AUS BASE",
-      "AUS VFR",
+      "AUS 3NM MVA",
       "AUS CLASS C",
       "SF FINAL APP COURSE",
       "NF FINAL APP COURSE",
@@ -1842,7 +1842,8 @@
       "EDC CLASS D",
       "HYI FINALS",
       "HYI FINALS LABELS",
-      "GTU FINALS"
+      "GTU FINALS",
+      "AUS VFR"
     ],
     "video_map_file": "videomaps/ZHU-videomaps.gob.zst"
   },
