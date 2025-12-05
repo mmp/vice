@@ -7882,10 +7882,22 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Range [min, max] for how long to remain in this stage before advancing to next stage. Not needed for the final stage since there is no next stage.</td>
               </tr>
               <tr>
+                <td>checklists</td>
+                <td>Boolean (optional)</td>
+                <td>If true, the transmission will include a statement that the pilots will need some time to run through checklists.
+                </td>
+              </tr>
+              <tr>
                 <td>request_return</td>
                 <td>Boolean (optional)</td>
-                <td>If true, aircraft will request at this stage to return to their departure airport.
+                <td>If true, the aircraft will request at this stage to return to their departure airport.
                   An automatically-generated return request will be added at the end of any transmission specified for them.
+                </td>
+              </tr>
+              <tr>
+                <td>request_equipment</td>
+                <td>Boolean (optional)</td>
+                <td>If true, the aircraft will request emergency equipment to be standing by when they arrive.
                 </td>
               </tr>
               <tr>

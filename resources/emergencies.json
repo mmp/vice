@@ -1,19 +1,38 @@
 {
   "emergencies": [
     {
+      "name": "Electrical Failure",
+      "applicable_to": "departure",
+      "weight": 1.0,
+      "stages": [
+        {
+          "transmission": "[we have a|] electrical failure",
+          "stop_climb": true,
+          "checklists": true,
+          "request_delay_vectors": true,
+          "duration_minutes": [5, 10]
+        },
+        {
+          "request_return": true
+        }
+      ]
+    },
+    {
       "name": "Landing Gear Retraction Failure",
       "applicable_to": "departure",
       "weight": 1.0,
       "stages": [
         {
-          "transmission": "we have a gear unsafe indication. We need to run some checklists.",
+          "transmission": "[we have a gear unsafe indication|we had a landing gear issue on the takeoff and a hydraulic issue]",
           "stop_climb": true,
+          "checklists": true,
           "request_delay_vectors": true,
           "duration_minutes": [5, 10]
         },
         {
           "transmission": "[we haven't resolved this|our gear situation is unresolved]",
-          "request_return": true
+          "request_return": true,
+          "request_equipment": true
         }
       ]
     },
@@ -24,11 +43,13 @@
       "stages": [
         {
           "transmission": "unable to extend landing gear",
+          "checklists": true,
           "request_delay_vectors": true,
           "duration_minutes": [7, 12]
         },
         {
-          "transmission": "manual gear extension in progress, request long runway"
+          "transmission": "manual gear extension in progress, request long runway",
+          "request_equipment": true
         }
       ]
     },
@@ -49,7 +70,8 @@
       "applicable_to": "arrival,external",
       "stages": [
         {
-          "transmission": "hydraulic failure, [investigating|we need to run some checklists]",
+          "transmission": "hydraulic failure",
+          "checklists": true,
           "request_delay_vectors": true,
           "duration_minutes": [4, 8]
         },
@@ -65,11 +87,13 @@
       "weight": 1.5,
       "stages": [
         {
-          "transmission": "[we have a flap malfunction|looks like we've got a flap malfunction], we need to [run|go through] some checklists ",
+          "transmission": "[we have a flap malfunction|looks like we've got a flap malfunction]",
+          "checklists": true,
           "duration_minutes": [3, 6]
         },
         {
-          "transmission": "partial flap extension only, anticipate high speed approach"
+          "transmission": "partial flap extension only, anticipate high speed approach",
+          "request_equipment": true
         }
       ]
     },
@@ -90,8 +114,9 @@
       "applicable_to": "arrival,external,departure",
       "stages": [
         {
-          "transmission": "engine fire warning",
+          "transmission": "engine [|one|two] fire [|warning|indication]",
           "declare_emergency": true,
+          "request_equipment": true,
           "request_return": true
         }
       ]
@@ -127,7 +152,8 @@
       "applicable_to": "arrival,departure",
       "stages": [
         {
-          "transmission": "navigation failure, we need to troubleshoot this",
+          "transmission": "navigation failure",
+          "checklists": true,
           "request_delay_vectors": true,
           "duration_minutes": [8, 15]
         },
@@ -157,7 +183,8 @@
       "weight": 1.5,
       "stages": [
         {
-          "transmission": "bird strike, we need to [run|go through] some checklists",
+          "transmission": "bird strike",
+          "checklists": true,
           "stop_climb": true,
           "duration_minutes": [3, 6]
         }
@@ -170,7 +197,20 @@
       "stages": [
         {
           "transmission": "engine shutdown, single engine operation",
-          "declare_Emergency": true,
+          "declare_emergency": true,
+          "request_return": true
+        }
+      ]
+    },
+    {
+      "name": "Jet Pipe Overheat",
+      "weight": 0.5,
+      "applicable_to": "departure",
+      "stages": [
+        {
+          "transmission": "we had a jet pipe overheat",
+          "request_equipment": true,
+          "declare_emergency": true,
           "request_return": true
         }
       ]

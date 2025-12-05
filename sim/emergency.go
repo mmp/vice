@@ -163,6 +163,8 @@ type EmergencyStage struct {
 	DurationMinutes     [2]int `json:"duration_minutes"`
 	RequestReturn       bool   `json:"request_return"`
 	StopClimb           bool   `json:"stop_climb"`
+	Checklists          bool   `json:"checklists"`
+	RequestEquipment    bool   `json:"request_equipment"`
 	RequestDelayVectors bool   `json:"request_delay_vectors"`
 	DeclareEmergency    bool   `json:"declare_emergency"`
 }
@@ -455,7 +457,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 		}) {
 			transmit("pan-pan, pan-pan, pan-pan")
 		} else {
-			transmit("[we are|] declaring an emergency")
+			transmit("[mayday mayday mayday|]. [we are|] declaring an emergency")
 		}
 	}
 
@@ -474,7 +476,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	}
 
 	// Handle stop_climb option
-	if stage.StopClimb {
+	if ac.IsDeparture() && stage.StopClimb {
 		currentAlt := int(ac.Altitude())
 		targetAlt, _ := ac.Nav.TargetAltitude()
 		assignedAlt := int(targetAlt)
@@ -489,7 +491,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 			stopAlt = max(stopAlt, minAlt)
 
 			if stopAlt < assignedAlt {
-				transmit("[stopping our climb|we're going to stop our climb|we're going to level off] at {alt}", stopAlt)
+				transmit("[stopping our climb|we're going to stop at|we're going to level off at|leveling off at|maintaining] {alt}", stopAlt)
 				ac.AssignAltitude(stopAlt, false) // discard readback
 			}
 		}
@@ -502,6 +504,21 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 
 	if stage.RequestDelayVectors {
 		transmit("[we'd like|we'd like some|we could use some|requesting] delay vectors")
+		if s.Rand.Float32() < .15 {
+			if ac.IsDeparture() {
+				transmit("we'll let you know when we're ready to go back in")
+			} else {
+				transmit("we'll let you know when we're ready to go in")
+			}
+		}
+	}
+
+	if stage.Checklists {
+		transmit("[investigating|we need to run some checklists|we're gonna run through some checklists|we need some time to troubleshoot]")
+	}
+
+	if stage.RequestEquipment {
+		transmit("[we'd like equipment standing by|request ARFF waiting for us|roll the trucks for us]")
 	}
 
 	// Post the radio transmission
