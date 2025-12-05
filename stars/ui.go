@@ -27,8 +27,6 @@ var _ panes.UIDrawer = (*STARSPane)(nil)
 func (sp *STARSPane) DisplayName() string { return "STARS" }
 
 func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
-	ps := sp.currentPrefs()
-
 	imgui.Text("Font: ")
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("Default", &sp.FontSelection, fontDefault)
@@ -50,15 +48,18 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 		imgui.EndCombo()
 	}
 
-	imgui.Separator()
-	imgui.Text("Non-standard Audio Effects")
+	if sp.prefSet != nil { // Hacky workaround to crash if DrawUI runs with no active STARS Pane.
+		imgui.Separator()
+		imgui.Text("Non-standard Audio Effects")
 
-	// Only offer the non-standard ones to globally disable.
-	for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
-		imgui.Text("  ")
-		imgui.SameLine()
-		if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
-			sp.playOnce(p, i)
+		ps := sp.currentPrefs()
+		// Only offer the non-standard ones to globally disable.
+		for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
+			imgui.Text("  ")
+			imgui.SameLine()
+			if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
+				sp.playOnce(p, i)
+			}
 		}
 	}
 }
