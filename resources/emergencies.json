@@ -106,7 +106,8 @@
           "duration_minutes": [2, 4]
         },
         {
-          "transmission": "smoke warning persists, requesting priority approach"
+          "transmission": "smoke warning persists, requesting priority approach",
+          "request_return": true
         }
       ]
     },
