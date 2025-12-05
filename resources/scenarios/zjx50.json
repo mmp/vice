@@ -1055,9 +1055,11 @@
       ]
     }
   },
+  "magnetic_adjustment": -6.6,
   "stars_config": {
     "center": "N031.30.29.772,W082.17.03.623",
-    "range": 50000,
+    "range": 80,
+
     "stars_maps": [
       "BOUND",
       "ZJX LO",

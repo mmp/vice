@@ -885,6 +885,7 @@
     }
   },
   "default_scenario": "58 St. Augustine",
+  "magnetic_adjustment": -6.6,
   "scenarios": {
     "58 St. Augustine": {
       "solo_controller": "ZJX 58 St. Augustine",
