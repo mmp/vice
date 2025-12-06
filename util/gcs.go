@@ -62,7 +62,9 @@ func MakeGCSClient(bucket string, config GCSClientConfig) (*GCSClient, error) {
 	if config.Credentials == nil {
 		return &GCSClient{
 			httpClient: &http.Client{
-				Timeout: timeout,
+				Transport: &http.Transport{
+					ResponseHeaderTimeout: timeout,
+				},
 			},
 			bucket: bucket,
 			ctx:    ctx,
@@ -102,8 +104,17 @@ func MakeGCSClient(bucket string, config GCSClientConfig) (*GCSClient, error) {
 		}
 	}
 
-	httpClient := oauth2.NewClient(ctx, jwtConfig.TokenSource(ctx))
-	httpClient.Timeout = timeout
+	// Create a transport with ResponseHeaderTimeout so that large file downloads
+	// don't timeout, but slow/stalled connections still do.
+	baseTransport := &http.Transport{
+		ResponseHeaderTimeout: timeout,
+	}
+	httpClient := &http.Client{
+		Transport: &oauth2.Transport{
+			Source: jwtConfig.TokenSource(ctx),
+			Base:   baseTransport,
+		},
+	}
 
 	return &GCSClient{
 		httpClient:          httpClient,
