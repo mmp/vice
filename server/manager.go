@@ -17,6 +17,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"text/template"
 	"time"
@@ -58,6 +59,7 @@ type SimManager struct {
 	ttsUsageByIP     map[string]*ttsUsageStats
 	local            bool
 	wxProvider       wx.Provider
+	providersReady   chan struct{}
 	lg               *log.Logger
 }
 
@@ -308,21 +310,49 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 		mapManifests:    manifests,
 		emergencies:     emergencies,
 		startTime:       time.Now(),
-		tts:             makeTTSProvider(serverAddress, lg),
 		ttsUsageByIP:    make(map[string]*ttsUsageStats),
 		local:           isLocal,
+		providersReady:  make(chan struct{}),
 		lg:              lg,
 	}
 
-	var err error
-	sm.wxProvider, err = MakeWXProvider(serverAddress, lg)
-	if err != nil {
-		lg.Errorf("%v", err)
-	}
+	// Initialize TTS and WX providers asynchronously so the server can start
+	// accepting connections immediately. Callers that need providers will
+	// block in getProviders() until initialization completes (with timeout).
+	go sm.initRemoteProviders(serverAddress, lg)
 
 	sm.launchHTTPServer()
 
 	return sm
+}
+
+func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) {
+	defer close(sm.providersReady)
+
+	// Initialize TTS and WX providers in parallel since they're independent
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		sm.tts = makeTTSProvider(serverAddress, lg)
+	}()
+
+	go func() {
+		defer wg.Done()
+		sm.wxProvider, _ = MakeWXProvider(serverAddress, lg)
+	}()
+
+	wg.Wait()
+}
+
+func (sm *SimManager) getProviders() (sim.TTSProvider, wx.Provider) {
+	select {
+	case <-sm.providersReady:
+	case <-time.After(5 * time.Second):
+		sm.lg.Warn("Timed out waiting for providers to initialize")
+	}
+	return sm.tts, sm.wxProvider
 }
 
 func makeTTSProvider(serverAddress string, lg *log.Logger) sim.TTSProvider {
@@ -380,6 +410,8 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 const ConnectToSimRPC = "SimManager.ConnectToSim"
 
 func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *NewSimResult) error {
+	tts, _ := sm.getProviders()
+
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
@@ -416,7 +448,7 @@ func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *N
 	*result = NewSimResult{
 		SimState:        state,
 		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
+		SpeechWSPort:    util.Select(tts != nil, sm.httpPort, 0),
 	}
 	result.PruneForClient()
 
@@ -443,6 +475,7 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 	description := util.Select(sm.local, " "+config.ScenarioName,
 		"@"+config.NewSimName+": "+config.ScenarioName)
 
+	tts, wxp := sm.getProviders()
 	nsc := sim.NewSimConfiguration{
 		TFRs:                        config.TFRs,
 		TRACON:                      config.TRACONName,
@@ -472,8 +505,8 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		ControlPositions:            sg.ControlPositions,
 		VirtualControllers:          sc.VirtualControllers,
 		SignOnPositions:             make(map[string]*av.Controller),
-		TTSProvider:                 sm.tts,
-		WXProvider:                  sm.wxProvider,
+		TTSProvider:                 tts,
+		WXProvider:                  wxp,
 		Emergencies:                 sm.emergencies,
 		StartTime:                   config.StartTime,
 	}
@@ -543,7 +576,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	if session.name != "" {
 		lg = lg.With(slog.String("sim_name", session.name))
 	}
-	session.sim.Activate(lg, sm.tts, sm.wxProvider)
+	tts, wxp := sm.getProviders()
+	session.sim.Activate(lg, tts, wxp)
 
 	sm.mu.Lock(sm.lg)
 
@@ -623,7 +657,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	*result = NewSimResult{
 		SimState:        state,
 		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
+		SpeechWSPort:    util.Select(tts != nil, sm.httpPort, 0),
 	}
 	result.PruneForClient()
 
@@ -659,12 +693,14 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return err
 	}
 
+	tts, wxp := sm.getProviders()
+	result.HaveTTS = tts != nil
+	result.AvailableWXByTRACON = wxp.GetAvailableTimeIntervals()
+
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	result.Configurations = sm.configs
-	result.HaveTTS = sm.tts != nil
-	result.AvailableWXByTRACON = sm.wxProvider.GetAvailableTimeIntervals()
 
 	return nil
 }

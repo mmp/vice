@@ -306,7 +306,7 @@ type RemoteTTSProvider struct {
 func NewRemoteTTSProvider(serverAddress string, lg *log.Logger) (*RemoteTTSProvider, error) {
 	lg.Debugf("%s: connecting for TTS", serverAddress)
 	start := time.Now()
-	conn, err := net.DialTimeout("tcp", serverAddress, 5*time.Second)
+	conn, err := net.DialTimeout("tcp", serverAddress, 4*time.Second)
 	if err != nil {
 		lg.Warnf("%s: unable to connect: %v", serverAddress, err)
 		return nil, fmt.Errorf("unable to connect to TTS server: %w", err)
