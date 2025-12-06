@@ -424,6 +424,13 @@ func main() {
 			ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
 		}
 
+		// Show warning if server is unreachable and TTS is unavailable
+		if mgr.LocalServer != nil && !mgr.LocalServer.HaveTTS {
+			ShowErrorDialog(plat, lg,
+				"Unable to connect to vice server.\n\n"+
+					"Running in local-only mode without text-to-speech support.")
+		}
+
 		// After config.Activate(), if we have a loaded sim, get configured for it.
 		if config.Sim != nil && !*resetSim {
 			if client, err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
