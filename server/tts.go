@@ -303,10 +303,11 @@ type RemoteTTSProvider struct {
 }
 
 // NewRemoteTTSProvider creates a new RemoteTTSProvider that connects to the specified server
-func NewRemoteTTSProvider(serverAddress string, lg *log.Logger) (*RemoteTTSProvider, error) {
+func NewRemoteTTSProvider(ctx context.Context, serverAddress string, lg *log.Logger) (*RemoteTTSProvider, error) {
 	lg.Debugf("%s: connecting for TTS", serverAddress)
 	start := time.Now()
-	conn, err := net.DialTimeout("tcp", serverAddress, 4*time.Second)
+	var d net.Dialer
+	conn, err := d.DialContext(ctx, "tcp", serverAddress)
 	if err != nil {
 		lg.Warnf("%s: unable to connect: %v", serverAddress, err)
 		return nil, fmt.Errorf("unable to connect to TTS server: %w", err)

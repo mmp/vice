@@ -6,6 +6,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -28,10 +29,10 @@ import (
 	"github.com/vmihailenco/msgpack/v5"
 )
 
-func MakeWXProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
+func MakeWXProvider(ctx context.Context, serverAddress string, lg *log.Logger) (wx.Provider, error) {
 	if g, err := MakeGCSProvider(lg); err == nil {
 		return g, nil
-	} else if r, err := MakeRPCProvider(serverAddress, lg); err == nil {
+	} else if r, err := MakeRPCProvider(ctx, serverAddress, lg); err == nil {
 		return r, nil
 	} else {
 		return MakeResourcesWXProvider(lg), nil
@@ -53,13 +54,14 @@ type RPCProvider struct {
 	lg     *log.Logger
 }
 
-func MakeRPCProvider(serverAddress string, lg *log.Logger) (wx.Provider, error) {
+func MakeRPCProvider(ctx context.Context, serverAddress string, lg *log.Logger) (wx.Provider, error) {
 	lg.Debugf("%s: connecting for WX", serverAddress)
 	start := time.Now()
-	conn, err := net.DialTimeout("tcp", serverAddress, 4*time.Second)
+	var d net.Dialer
+	conn, err := d.DialContext(ctx, "tcp", serverAddress)
 	if err != nil {
 		lg.Warnf("%s: unable to connect: %v", serverAddress, err)
-		return nil, fmt.Errorf("unable to connect to TTS server: %w", err)
+		return nil, fmt.Errorf("unable to connect to WX server: %w", err)
 	}
 	lg.Debugf("%s: connected in %s", serverAddress, time.Since(start))
 

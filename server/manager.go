@@ -5,6 +5,7 @@
 package server
 
 import (
+	"context"
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
@@ -329,33 +330,34 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
 func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) {
 	defer close(sm.providersReady)
 
+	// Use a single context to control all provider initialization.
+	// This must complete before the client RPC timeout (5 seconds).
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
+
 	// Initialize TTS and WX providers in parallel since they're independent
 	var wg sync.WaitGroup
 	wg.Add(2)
 
 	go func() {
 		defer wg.Done()
-		sm.tts = makeTTSProvider(serverAddress, lg)
+		sm.tts = makeTTSProvider(ctx, serverAddress, lg)
 	}()
 
 	go func() {
 		defer wg.Done()
-		sm.wxProvider, _ = MakeWXProvider(serverAddress, lg)
+		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
 	}()
 
 	wg.Wait()
 }
 
 func (sm *SimManager) getProviders() (sim.TTSProvider, wx.Provider) {
-	select {
-	case <-sm.providersReady:
-	case <-time.After(5 * time.Second):
-		sm.lg.Warn("Timed out waiting for providers to initialize")
-	}
+	<-sm.providersReady
 	return sm.tts, sm.wxProvider
 }
 
-func makeTTSProvider(serverAddress string, lg *log.Logger) sim.TTSProvider {
+func makeTTSProvider(ctx context.Context, serverAddress string, lg *log.Logger) sim.TTSProvider {
 	// Try to create a Google TTS provider first
 	p, err := NewGoogleTTSProvider(lg)
 	if err == nil {
@@ -365,7 +367,7 @@ func makeTTSProvider(serverAddress string, lg *log.Logger) sim.TTSProvider {
 
 	// If Google TTS is not available (no credentials), try to connect to the remote server
 	lg.Infof("Google TTS unavailable: %v, attempting to use remote TTS provider at %s", err, serverAddress)
-	rp, err := NewRemoteTTSProvider(serverAddress, lg)
+	rp, err := NewRemoteTTSProvider(ctx, serverAddress, lg)
 	if err != nil {
 		lg.Errorf("Failed to connect to remote TTS provider: %v", err)
 		return nil
