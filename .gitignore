@@ -29,3 +29,6 @@ scenario-test-*.txt
 dump*.txt
 /wxingest
 /wxscrape
+CLAUDE.md
+/cdocs
+
