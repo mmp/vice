@@ -152,8 +152,8 @@ func (c *NewSimConfiguration) fetchMETAR() {
 		} else {
 			c.airportMETAR = metars
 			c.metarAirports = airports
-			c.updateStartTimeForRunways()
 			c.computeAvailableWXIntervals()
+			c.updateStartTimeForRunways()
 		}
 	})
 }
