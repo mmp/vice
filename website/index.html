@@ -204,6 +204,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-video-maps">Video Maps</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-preview-area">Preview Area</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-weather">Weather</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-vice-display">Vice-Specific</a></li>
 	    </ul>
 	  </li>
 
@@ -2632,10 +2633,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td><code>[MULTIFUNC]INC[SLEW]</code></td>
                     <td>Enables auto cursor home and sets the home position to be the slewed location on the radar scope.</td>
                   </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]I*</code></td>
+                    <td>Clears the preview area and returns the cursor to the home position.</td>
+                  </tr>
                 </tbody>
               </table>
 
-          </section>            
+          </section>
 
 	  <section class="docs-section" id="stars-quickref">
             <h2 class="section-heading">Quick Reference</h2>
@@ -2650,17 +2655,27 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   </tr>
                 </thead>
                 <tbody>
-                  <tr><td><code>[SLEW]</code></td><td><p>Any of the following that apply:</p>
+                  <tr><td><code>[SLEW]</code></td><td><p>Any of the following that apply (in order of precedence):</p>
                       <ul>
-                        <li>Accepts the <a href="#stars-track-ownership">handoff of an aircraft's track</a> from another controller.</li>
-                        <li>Acknowledge an alert for an aircraft such as a <a href="#stars-collision-alerts">collision alert (CA)</a>,
-                          <a href="#stars-msaw">minimum safe altitude warning (MSAW)</a>, or an alert due to the aircraft
-                          squawking a special purpose code (e.g., 7600 for loss of radio).</li>
-                        <li>Acknowledges a <a href="#stars-pointouts">point-out</a> from another controller.</li>
+                        <li>Accepts the <a href="#stars-track-ownership">handoff of an aircraft's track</a> from another controller (including redirected handoffs).</li>
                         <li>Cancels an outbound <a href="#stars-track-ownership">handoff</a> to another controller.</li>
+                        <li>Acknowledges a <a href="#stars-pointouts">point-out</a> from another controller.</li>
+                        <li>Recalls a point-out that you initiated.</li>
+                        <li>Clears the point-out color indication after a point-out has been acknowledged or rejected.</li>
+                        <li>Acknowledges an alert for an aircraft such as a <a href="#stars-collision-alerts">collision alert (CA)</a>,
+                          mode C intruder (MCI), <a href="#stars-msaw">minimum safe altitude warning (MSAW)</a>, or an alert due to the aircraft
+                          squawking a special purpose code (e.g., 7600 for loss of radio).</li>
+                        <li>Removes a full datablock forced by a special condition.</li>
+                        <li>For a track in beacon mismatch, updates the assigned beacon code to match the squawked code.</li>
+                        <li>For a suspended track, displays the flight plan in the preview area.</li>
+                        <li>Inhibits the duplicate beacon code indicator.</li>
+                        <li>Clears blinking indicators (e.g., after a rejected handoff).</li>
+                        <li>Returns the datablock to unowned color after an outbound handoff is accepted.</li>
+                        <li>For an owned track, displays the beacon readout (ACID, squawked code, assigned code) in the preview area.</li>
+                        <li>Toggles between the <a href="#stars-datablock-types">full and partial datablock</a> for an unowned track.</li>
                         <li>Clears a forced <a href="#stars-quicklook">quicklook</a> from another controller.</li>
-                        <li>Temporarily displays the aircraft's current groundspeed in the <a href="#stars-datablock-types">limited datablock</a>.</li>
-                        <li>Toggles between the <a href="#stars-datablock-types">full and limited datablock</a> for an unowned track.</li>
+                        <li>Inhibits the "no flight plan" alert for an unassociated track.</li>
+                        <li>For an unassociated track, temporarily displays the full <a href="#stars-datablock-types">limited datablock</a>.</li>
                       </ul>
                   </td></tr>
                   <tr><td><code>(CID)[SLEW]</code></td><td>Offers to handoff the
@@ -2926,12 +2941,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <td><code>[TERM CTRL][SLEW]</code> /<br><code>[TERM CTRL](FLT ID)</code></td>
+                    <td><code>[TERM CNTL][SLEW]</code> /<br><code>[TERM CNTL](FLT ID)</code></td>
                     <td>Drops the track of the specified aircraft.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[TERM CTRL]ALL</code></td>
+                    <td><code>[TERM CNTL]ALL</code></td>
                     <td>Drops the tracks of all aircraft under the controller's control.
                     </td>
                   </tr>
@@ -3271,6 +3286,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>The track has been <a href="#force-quicklook">force quicklooked</a> to the current controller by another controller.</li>
               <li>"Quick look all" has been enabled by the controller.</li>
               <li>The aircraft is squawking a special purpose code (e.g., 7700 for an emergency) or if it has an active safety alert (e.g., low altitude).</li>
+              <li>The aircraft's beacon code matches one being displayed via the <code>**####</code> command.</li>
+              <li>The "overflight full datablocks" option is enabled and the track is an overflight.</li>
             </ul>
             <p>Other than the commands related to modifying <a href="#flight-plans">Flight Plans</a> that can lead to changes
                in what entries are shown in the FDB, there is just one command to manage the FDB's contents:</p>
@@ -3580,8 +3597,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <tr>
                     <td><code>(TCP)</code>/<br> <code>[MULTIFUNC]Q(TCP)</code></td>
                     <td><p>Toggles quicklook for the specified control position. Multiple positions may be specified, separated by spaces.
-                      If a "+" is included after the control position,
-                      quicklook plus is toggled.</p>
+                      If a "+" is included after the control position, quicklook plus is toggled.</p>
                       <p>If the user's current TCP is entered, the currently-quicklooked positions and enabled/disabled regions
                       are shown in the preview area&mdash;here is an example:</p>
                       <img src="quicklook-summary.png" srcset="quicklook-summary-2x.png 2x" width="261" height="56">
@@ -3644,6 +3660,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td><code>**(TCP)[SLEW]</code></td>
                     <td>Force quicklook the slewed track to the identified controller. Multiple controller IDs may be specified,
                       separated by spaces. "ALL" forces quicklook to all controllers.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>**[SLEW]</code></td>
+                    <td>Force quicklooks the slewed track to the current controller (if enabled in the facility adaptation).
                     </td>
                   </tr>
                 </tbody>
@@ -3914,8 +3935,9 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td><code>*(####)</code></td>
                     <td>Create a "quick flight plan" with the specified beacon code.
                       The flight plan's ACID is automatically set with a predefined prefix that is followed
-                      by the given beacon code. <code>(RULES)</code> may optionally be given immediately after
-                      the beacon code.</td>
+                      by the given beacon code. A flight rules suffix may optionally be given immediately after
+                      the beacon code: <code>E</code> for enroute IFR, <code>V</code> for VFR, or <code>P</code> for VFR on top.
+                      If no suffix is given, a local non-enroute IFR flight plan is created.</td>
                   </tr>
                 </tbody>
               </table>
@@ -3944,7 +3966,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <code>(ASSIGNED ALT)</code>, and <code>(#/AC TYPE/EQ)</code>.</td>
                 </tr>
                   <tr>
-                    <td><code>Y[slew]</code></td>
+                    <td><code>Y[SLEW]</code></td>
                     <td>Creates a "quick ACID flight plan" with an automatically generated callsign and associates it
                       with the slewed track. The track's datablock is drawn in yellow until the track is slewed
                       a second time.</td>
@@ -4001,8 +4023,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <td>Deletes the VFR flight plan identified by the flight identifier.</td>
                 </tr>
                 <tr>
-                  <td><code></code></td>
-                  <td></td>
+                  <td><code>[TERM CNTL]ALL</code></td>
+                  <td>Deletes all flight plans controlled by the controller.</td>
                 </tr>
               </tbody>
             </table>
@@ -4287,6 +4309,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <td><code>[MULTIFUNC]Y(FLT ID)</code> / <br><code>[MULTIFUNC]Y[SLEW]</code> </td>
                   <td>Clears the pilot-reported altitude (and the scratchpad, if set) for the aircraft.</td>
                 </tr>
+                <tr>
+                  <td><code>[MULTIFUNC]M[SLEW]</code></td>
+                  <td>Toggles display of Mode-C altitude for the aircraft.</td>
+                </tr>
               </tbody>
             </table>
 
@@ -4368,7 +4394,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <img src="unsupported-datablock.png" srcset="unsupported-datablock-2x.png 2x" width="130" height="65">
               </div><br>
             <p>Unsupported datablocks may be repositioned back onto existing tracks or may be deleted
-              using <code>[TERM CTRL]</code> and slewing or entering its associated ACID.</p>
+              using <code>[TERM CNTL]</code> and slewing or entering its associated ACID.</p>
 
             <p>An unsupported datablock can also be created from a preexisting flight plan:</p>
             <table class="table table-bordered">
@@ -4568,10 +4594,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Enable/disable the PTL for a radar track. An error is issued if the aircraft
                     is already displaying a PTL due to PTL OWN or PTL ALL being enabled.</td>
                   </tr>
-                  <tr>
-                    <td><code>[MULTIFUNC]R</code></td>
-                    <td>Disable all individually-enabled PTLs.</td>
-                  </tr>
                 </tbody>
               </table>
             
@@ -4628,7 +4650,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <img src="minsep.png" srcset="minsep-2x.png 2x" width="371" height="106" class="img-fluid" alt="tpa ring">
             </div>
             <br>
-            <p>The following commands are available to create and minimum separation lines.</p>
+            <p>The following commands are available for minimum separation display.</p>
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -4639,11 +4661,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <tbody>
                   <tr>
                     <td><code>[MIN][SLEW][SLEW]</code></td>
-                    <td>Create an RBL between the two slewed aircraft.</td>
+                    <td>Display minimum separation between the two slewed aircraft.</td>
                   </tr>
                   <tr>
                     <td><code>[MIN]</code></td>
-                    <td>Create an RBL between the slewed aircraft and the fix <code>FIX</code>.</td>
+                    <td>Clear minimum separation display.</td>
                   </tr>
                 </tbody>
               </table>
@@ -5418,6 +5440,33 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>Note that the choice of RADAR mode affects <a href="#stars-track-symbols">which symbols are used for tracks in STARS</a>.
               Furthermore, in SINGLE and MULTI modes, radar tracks are only updated once every 5 seconds. In FUSION mode, they are
               updated once per second.</p>
+            <p>Keyboard commands can also be used to select the RADAR mode:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[SITE]+</code></td>
+                    <td>Set fused radar mode.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[SITE]△</code></td>
+                    <td>Set multi-radar mode.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[SITE](#)</code></td>
+                    <td>Select primary radar site by number.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[SITE](X)</code></td>
+                    <td>Select primary radar site by single-character identifier.</td>
+                  </tr>
+                </tbody>
+              </table>
 
             <h3 id="audio-alerts">Audio</h3>
 
@@ -5543,7 +5592,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   </tr>
                 </tbody>
               </table>
-              <p>GI text: general information text... TODO</p>
+              <p>The SSA list also includes the ATIS letter and GI (General Information) text, which can be set with the following commands:</p>
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -5558,13 +5607,18 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S*</code></td>
-                    <td>Clear ATIS
+                    <td><code>[MULTIFUNC]S(A)</code></td>
+                    <td>Set current ATIS where (A) is a letter from A to Z.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(A)</code></td>
-                    <td>Set current ATIS where (A) is a letter from A to Z.
+                    <td><code>[MULTIFUNC]S(A)(TEXT)</code></td>
+                    <td>Set the ATIS in the first line to (A) and the GI text to (TEXT)
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]S*</code></td>
+                    <td>Clear ATIS in the first line
                     </td>
                   </tr>
                   <tr>
@@ -5573,18 +5627,39 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(#)</code></td>
-                    <td>Clear corresponding line
+                    <td><code>[MULTIFUNC]S(#) (A)</code></td>
+                    <td>Set the ATIS in the given line
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]S(#) (A)*</code></td>
+                    <td>Set the ATIS in the given line and clear the line's GI text
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]S(#) (A) (TEXT)</code></td>
+                    <td>Set the ATIS in the given line and the line's GI text to (TEXT)
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]S(#) (TEXT)</code></td>
-                    <td>Set the corresponding line of GI text to (TEXT)
+                    <td>Set the given line of GI text to (TEXT)
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]S(A)(TEXT)</code></td>
-                    <td>Set the ATIS to (A) and the first line of GI text to (TEXT)
+                    <td><code>[MULTIFUNC]S(#)</code></td>
+                    <td>Clear ATIS and GI text given line
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]S(#) *</code></td>
+                    <td>Clear ATIS in given line
+                    </td>
+                  </tr>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]S(#) * (TEXT)</code></td>
+                    <td>Clear ATIS in given line and set GI text
                     </td>
                   </tr>
                 </tbody>
@@ -6050,6 +6125,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       is shown there.</td>
                   </tr>
                   <tr>
+                    <td><code>[WX]A</code></td>
+                    <td>Recall previously selected weather levels (toggles between current and previous weather display settings).</td>
+                  </tr>
+                  <tr>
                     <td><code>[WX]C</code></td>
                     <td>Clear weather display: don't show any levels of weather radar in the STARS window.</td>
                   </tr>
@@ -6064,6 +6143,32 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <tr>
                     <td><code>[WX](#)I</code></td>
                     <td>If # is between 1 and 6, disable (inhibit) display of the associated weather radar level.</td>
+                  </tr>
+                </tbody>
+              </table>
+
+            <h3 id="stars-vice-display">Vice-Specific Display Commands</h3>
+
+            <p><i>vice</i> provides a few additional display commands not found in the standard STARS system:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>.BOUNDS</code></td>
+                    <td>Toggle display of the TRACON boundary on the STARS scope.</td>
+                  </tr>
+                  <tr>
+                    <td><code>.ROUTE[SLEW]</code></td>
+                    <td>Display the filed route for the clicked aircraft, showing it as a line on the STARS scope.</td>
+                  </tr>
+                  <tr>
+                    <td><code>.ROUTE</code></td>
+                    <td>Clear the route display.</td>
                   </tr>
                 </tbody>
               </table>
@@ -8148,8 +8253,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"force_ql_self"</td>
                 <td>Boolean</td>
-                <td>Indicates whether controllers may
-                enter <code>**[SLEW]</code> to make a track appear yellow
+                <td>Indicates whether controllers may enter <code>**[SLEW]</code> to make a track appear yellow
                 on their own scope.</td>
               </tr>
               <tr>

@@ -7,7 +7,6 @@ package sim
 import (
 	"maps"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -423,31 +422,6 @@ func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
 	}
 
 	return false
-}
-
-func (ss *State) FindMatchingFlightPlan(s string) *NASFlightPlan {
-	n := -1
-	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
-		n = pn
-	}
-
-	sq := av.Squawk(0)
-	if ps, err := av.ParseSquawk(s); err == nil {
-		sq = ps
-	}
-
-	for _, fp := range ss.UnassociatedFlightPlans {
-		if fp.ACID == ACID(s) {
-			return fp
-		}
-		if fp.ListIndex != UnsetSTARSListIndex && n == fp.ListIndex {
-			return fp
-		}
-		if sq == fp.AssignedSquawk {
-			return fp
-		}
-	}
-	return nil
 }
 
 func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {

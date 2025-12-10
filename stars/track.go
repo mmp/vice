@@ -55,12 +55,13 @@ type TrackState struct {
 	ConeLength     float32
 	DisplayTPASize *bool // unspecified->system default if nil
 
-	DisplayATPAMonitor       *bool // unspecified->system default if nil
-	DisplayATPAWarnAlert     *bool // unspecified->system default if nil
-	IntrailDistance          float32
-	ATPAStatus               ATPAStatus
-	MinimumMIT               float32
-	ATPALeadAircraftCallsign av.ADSBCallsign
+	DisplayATPAMonitor        *bool // unspecified->system default if nil
+	DisplayATPAWarnAlert      *bool // unspecified->system default if nil
+	IntrailDistance           float32
+	InhibitDisplayInTrailDist bool
+	ATPAStatus                ATPAStatus
+	MinimumMIT                float32
+	ATPALeadAircraftCallsign  av.ADSBCallsign
 
 	POFlashingEndTime time.Time
 	UNFlashingEndTime time.Time
@@ -377,7 +378,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.TransferRejectedEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 				state.IFFlashing = true
-				sp.cancelHandoff(ctx, event.ACID)
+				ctx.Client.CancelHandoff(event.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			}
 
 		case sim.TransferAcceptedEvent:
@@ -401,13 +402,8 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	}
 
 	// Quick Look Positions.
-	for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
-		if trk.FlightPlan.TrackingController == quickLookPositions.Id {
-			return true
-		}
-	}
-
-	return false
+	_, ok := sp.currentPrefs().QuickLookTCPs[trk.FlightPlan.TrackingController]
+	return ok
 }
 
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
@@ -530,7 +526,8 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 
 	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
 		func(f sim.FilterRegion) bool {
-			return !slices.Contains(ps.DisabledQuicklookRegions, f.Id)
+			_, disabled := ps.DisabledQLRegions[f.Id]
+			return !disabled
 		})
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]

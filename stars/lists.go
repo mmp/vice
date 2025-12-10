@@ -344,13 +344,9 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	}
 
 	// ATIS/GI text. (Note that per 4-44 filter.All does not apply to GI text.)
-	if filter.Text.Main && (ps.ATIS != "" || ps.GIText[0] != "") {
-		pw = td.AddText(rewriteDelta(strings.Join([]string{ps.ATIS, ps.GIText[0]}, " ")), pw, listStyle)
-		newline()
-	}
-	for i := 1; i < len(ps.GIText); i++ {
-		if filter.Text.GI[i] && ps.GIText[i] != "" {
-			pw = td.AddText(rewriteDelta(ps.GIText[i]), pw, listStyle)
+	for i := range ps.GIText {
+		if filter.GIText[i] && (ps.ATIS[i] != "" || ps.GIText[i] != "") {
+			pw = td.AddText(ps.ATIS[i]+" "+rewriteDelta(ps.GIText[i]), pw, listStyle)
 			newline()
 		}
 	}
@@ -544,7 +540,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		}
 	}
 
-	if (filter.All || filter.QuickLookPositions) && (ps.QuickLookAll || len(ps.QuickLookPositions) > 0) {
+	if (filter.All || filter.QuickLookPositions) && (ps.QuickLookAll || len(ps.QuickLookTCPs) > 0) {
 		if ps.QuickLookAll {
 			if ps.QuickLookAllIsPlus {
 				pw = td.AddText("QL: ALL+", pw, listStyle)
@@ -552,9 +548,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 				pw = td.AddText("QL: ALL", pw, listStyle)
 			}
 		} else {
-			pos := util.MapSlice(ps.QuickLookPositions,
-				func(q QuickLookPosition) string { return q.String() })
-			pw = td.AddText("QL: "+strings.Join(pos, " "), pw, listStyle)
+			pw = td.AddText("QL: "+sp.qlPositionsString(), pw, listStyle)
 		}
 		newline()
 	}
@@ -970,8 +964,6 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, style
 
 	// Pre-compute the line data since it needs stateful processing
 	var lines []string
-	pairIndex := 0 // reset for each new airport
-	currentAirport := ""
 	for i, crda := range ps.CRDA.RunwayPairState {
 		var line strings.Builder
 		if !crda.Enabled {
@@ -981,16 +973,9 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, style
 		}
 
 		pair := sp.ConvergingRunways[i]
-		ap := pair.Airport
-		if ap != currentAirport {
-			currentAirport = ap
-			pairIndex = 1
-		}
-
-		line.WriteString(strconv.Itoa(pairIndex))
+		line.WriteString(strconv.Itoa(pair.Index))
 		line.WriteByte(' ')
-		pairIndex++
-		line.WriteString(ap + " ")
+		line.WriteString(pair.Airport + " ")
 		line.WriteString(pair.getRunwaysString())
 		if crda.Enabled {
 			for line.Len() < 16 {

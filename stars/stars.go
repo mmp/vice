@@ -159,8 +159,8 @@ type STARSPane struct {
 	// When VFR flight plans were first seen (used for sorting in VFR list)
 	VFRFPFirstSeen map[sim.ACID]time.Time
 
-	scopeClickHandler scopeClickHandlerFunc
-	activeSpinner     dcbSpinner
+	transientCommandHandlers []userCommand // handlers for next keyboard Enter or scope click
+	activeSpinner            dcbSpinner
 
 	savedMousePosition [2]float32
 	accumMouseDeltaY   float32
@@ -182,9 +182,6 @@ type STARSPane struct {
 
 	// The start of a RBL--one click received, waiting for the second.
 	wipRBL *STARSRangeBearingLine
-
-	// First point clicked for display bearing/range to significant point.
-	wipSignificantPoint *math.Point2LL
 
 	audioEffects     map[AudioType]int // to handle from Platform.AddPCM()
 	testAudioEndTime time.Time
@@ -250,8 +247,6 @@ type STARSPane struct {
 	ldbArena util.ObjectArena[limitedDatablock]
 	sdbArena util.ObjectArena[suspendedDatablock]
 }
-
-type scopeClickHandlerFunc func(*panes.Context, *STARSPane, []sim.Track, [2]float32, radar.ScopeTransformations) CommandStatus
 
 type PointOutControllers struct {
 	From, To string
@@ -324,6 +319,8 @@ type STARSConvergingRunways struct {
 
 type CRDARunwayState struct {
 	Enabled                 bool
+	Airport                 string
+	Runway                  string
 	LeaderLineDirection     *math.CardinalOrdinalDirection // nil -> unset
 	DrawCourseLines         bool
 	DrawQualificationRegion bool
@@ -469,7 +466,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 				ConvergingRunways: pair,
 				ApproachRegions: [2]*av.ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
 					ap.ApproachRegions[pair.Runways[1]]},
-				Airport: name[1:], // drop the leading "K"
+				Airport: name[1:], // drop the leading "K" (or "P")
 				Index:   idx + 1,  // 1-based
 			})
 		}
@@ -697,7 +694,6 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	for _, name := range util.SortedMapKeys(ss.ArrivalAirports) {
 		ap := ss.Airports[name]
 		for rwy, vol := range util.SortedMap(ap.ATPAVolumes) {
-
 			label := "A" + name[1:] + rwy
 			if len(label) > 7 {
 				label = label[:7]
@@ -1123,6 +1119,22 @@ func (sp *STARSPane) drawWIPRestrictionArea(ctx *panes.Context, transforms radar
 	}
 }
 
+func (sp *STARSPane) getRestrictionArea(ctx *panes.Context, idx int, userOnly bool) *av.RestrictionArea {
+	uras := ctx.Client.State.UserRestrictionAreas
+	if idx >= 1 && idx-1 < len(uras) && !uras[idx-1].Deleted {
+		return &uras[idx-1]
+	}
+
+	if !userOnly {
+		ras := ctx.FacilityAdaptation.RestrictionAreas
+		if !userOnly && idx >= 101 && idx-101 < len(ras) && !ras[idx-101].Deleted {
+			return &ras[idx-101]
+		}
+	}
+
+	return nil
+}
+
 func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	sp.drawWIPRestrictionArea(ctx, transforms, cb)
 
@@ -1133,8 +1145,12 @@ func (sp *STARSPane) drawRestrictionAreas(ctx *panes.Context, transforms radar.S
 			continue
 		}
 
-		if ra := getRestrictionAreaByIndex(ctx, idx); ra != nil {
-			draw[idx] = ra
+		uras := ctx.Client.State.UserRestrictionAreas
+		ras := ctx.FacilityAdaptation.RestrictionAreas
+		if idx >= 1 && idx-1 < len(uras) && !uras[idx-1].Deleted {
+			draw[idx] = &uras[idx-1]
+		} else if idx >= 101 && idx-101 < len(ras) && !ras[idx-101].Deleted {
+			draw[idx] = &ras[idx-101]
 		}
 	}
 
@@ -1480,6 +1496,32 @@ func (sp *STARSPane) setRadarModeFused() {
 	}
 }
 
+// Returns the cardinal-ordinal direction associated with the numbpad keys,
+// interpreting 5 as the center; (nil, true) is returned for '5' and
+// (nil, false) is returned for an invalid key.
+func (sp *STARSPane) numpadToDirection(key int) (*math.CardinalOrdinalDirection, bool) {
+	if key < 1 || key > 9 {
+		return nil, false
+	}
+	if key == 5 {
+		return nil, true
+	}
+	if sp.FlipNumericKeypad {
+		dirs := [9]math.CardinalOrdinalDirection{
+			math.NorthWest, math.North, math.NorthEast,
+			math.West, math.CardinalOrdinalDirection(-1), math.East,
+			math.SouthWest, math.South, math.SouthEast,
+		}
+		return &dirs[key-1], true
+	} else {
+		dirs := [9]math.CardinalOrdinalDirection{
+			math.SouthWest, math.South, math.SouthEast,
+			math.West, math.CardinalOrdinalDirection(-1), math.East,
+			math.NorthWest, math.North, math.NorthEast,
+		}
+		return &dirs[key-1], true
+	}
+}
 func (sp *STARSPane) initializeAudio(p platform.Platform, lg *log.Logger) {
 	if sp.audioEffects == nil {
 		sp.audioEffects = make(map[AudioType]int)
@@ -1789,4 +1831,40 @@ func captureEncodeFrames(ch chan *image.RGBA) {
 			return
 		}
 	}
+}
+
+func (sp *STARSPane) qlPositionsString() string {
+	ps := sp.currentPrefs()
+	tcps := slices.Collect(maps.Keys(ps.QuickLookTCPs))
+	sort.Slice(tcps, func(a, b int) bool {
+		aplus, bplus := ps.QuickLookTCPs[tcps[a]], ps.QuickLookTCPs[tcps[b]]
+		if aplus && !bplus {
+			return true
+		} else if bplus && !aplus {
+			return false
+		}
+		return tcps[a] < tcps[b]
+	})
+	for i := range tcps {
+		if ps.QuickLookTCPs[tcps[i]] {
+			tcps[i] += "+"
+		}
+	}
+
+	s := strings.Join(tcps, " ")
+	if len(s) > 32 {
+		// Split if the first line is too long
+		idx := strings.LastIndexByte(s[:32], ' ')
+		if idx != -1 {
+			s = s[:idx] + "\n" + s[idx+1:]
+		}
+		// If it can't fit into two lines, truncate and end with a +
+		if len(s) > 64 {
+			idx := strings.LastIndexByte(s[:64], ' ')
+			if idx != -1 {
+				s = s[:idx] + "+"
+			}
+		}
+	}
+	return s
 }

@@ -903,7 +903,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 			if state.DisplayATPAWarnAlert != nil && !*state.DisplayATPAWarnAlert {
 				formatDBText(db.field6[idx6][:], "*TPA", color, false)
 				idx6++
-			} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist {
+			} else if state.IntrailDistance != 0 && sp.currentPrefs().DisplayATPAInTrailDist && !state.InhibitDisplayInTrailDist {
 				distColor := color
 				if state.ATPAStatus == ATPAStatusWarning {
 					distColor = STARSATPAWarningColor
@@ -1101,8 +1101,7 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 		} else if ps.QuickLookAll && ps.QuickLookAllIsPlus {
 			// quick look all plus
 			color = STARSTrackedAircraftColor
-		} else if slices.ContainsFunc(ps.QuickLookPositions,
-			func(q QuickLookPosition) bool { return q.Id == sfp.TrackingController && q.Plus }) {
+		} else if ps.QuickLookTCPs[sfp.TrackingController] {
 			// individual quicklook plus controller
 			color = STARSTrackedAircraftColor
 		} else {
@@ -1162,7 +1161,7 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 		} else if state.DisplayFDB {
 			// For non-greened handoffs
 			return true
-		} else if trk.IsOverflight() && sp.currentPrefs().OverflightFullDatablocks { //Need a f7 + e
+		} else if trk.IsOverflight() && sp.currentPrefs().OverflightFullDatablocks {
 			// Overflights
 			return true
 		} else if sp.isQuicklooked(ctx, trk) {

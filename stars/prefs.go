@@ -85,8 +85,8 @@ type Preferences struct {
 	UseUserRangeRingsCenter bool `json:"RangeRingsUserCenter"`
 
 	// User-supplied text for the SSA list
-	ATIS   string
-	GIText [9]string
+	ATIS   [10]string `json:"ATISes"` /* rename after making array */
+	GIText [10]string
 
 	// If empty, then then MULTI or FUSED mode, depending on
 	// FusedRadarMode.  The custom JSON name is so we don't get errors
@@ -111,10 +111,10 @@ type Preferences struct {
 		Intrafacility bool
 	}
 
-	QuickLookAll             bool
-	QuickLookAllIsPlus       bool
-	QuickLookPositions       []QuickLookPosition
-	DisabledQuicklookRegions []string
+	QuickLookAll       bool
+	QuickLookAllIsPlus bool
+	QuickLookTCPs      map[string]bool // in map: is quicklooked; bool indicates QL+
+	DisabledQLRegions  map[string]interface{}
 
 	DisplayEmptyCoordinationLists bool
 
@@ -235,11 +235,7 @@ type CommonPreferences struct {
 			DisabledTerminal    bool
 			ActiveCRDAPairs     bool
 			WxHistory           bool
-
-			Text struct {
-				Main bool
-				GI   [9]bool
-			}
+			GIText              [10]bool
 		}
 	}
 	VFRList       BasicSTARSList
@@ -290,11 +286,11 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	p.RangeRingsUserCenter = p.DefaultCenter
 	p.UseUserRangeRingsCenter = false
 	p.Range = ss.GetInitialRange()
-	p.QuickLookPositions = nil
-	p.DisabledQuicklookRegions = nil
+	p.QuickLookTCPs = nil
+	p.DisabledQLRegions = nil
 
-	p.ATIS = ""
-	for i := range p.GIText {
+	for i := range p.ATIS {
+		p.ATIS[i] = ""
 		p.GIText[i] = ""
 	}
 
@@ -304,10 +300,14 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 
 	// Reset CRDA state
 	p.CRDA.RunwayPairState = nil
-	state := CRDARunwayPairState{}
-	// The first runway is enabled by default
-	state.RunwayState[0].Enabled = true
-	for range sp.ConvergingRunways {
+	for _, pair := range sp.ConvergingRunways {
+		state := CRDARunwayPairState{}
+		// The first runway is enabled by default
+		state.RunwayState[0].Enabled = true
+		state.RunwayState[0].Airport = pair.Airport
+		state.RunwayState[0].Runway = pair.Runways[0]
+		state.RunwayState[1].Airport = pair.Airport
+		state.RunwayState[1].Runway = pair.Runways[1]
 		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
 	}
 
@@ -392,9 +392,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.SSAList.Position = [2]float32{.05, .9}
 	prefs.SSAList.Filter.All = true
 
-	prefs.SSAList.Filter.Text.Main = true
-	for i := range prefs.SSAList.Filter.Text.GI {
-		prefs.SSAList.Filter.Text.GI[i] = true
+	for i := range prefs.SSAList.Filter.GIText {
+		prefs.SSAList.Filter.GIText[i] = true
 	}
 
 	prefs.TABList.Position = [2]float32{.05, .65}
@@ -566,9 +565,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 	}
 	if from < 27 {
-		p.SSAList.Filter.Text.Main = true
-		for i := range p.SSAList.Filter.Text.GI {
-			p.SSAList.Filter.Text.GI[i] = true
+		for i := range p.SSAList.Filter.GIText {
+			p.SSAList.Filter.GIText[i] = true
 		}
 		p.CoordinationLists = make(map[string]*CoordinationList)
 	}

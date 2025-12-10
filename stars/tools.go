@@ -812,6 +812,8 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 			}
 			ld.AddLineLoop(coneColor, pts[:])
 
+			// FIXME: per 6.21.10, if disabled but dwell is enabled and the track is being dwelled,
+			// then display the size after all.
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				textStyle := renderer.TextStyle{Font: font, Color: coneColor}
 
@@ -969,26 +971,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, sp *STARSPane) (m
 	return getLoc(0), getLoc(1)
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms radar.ScopeTransformations) (status CommandStatus) {
-	if sp.wipRBL == nil {
-		// this shouldn't happen, but let's not crash if it does...
-		return
-	}
-
-	rbl := *sp.wipRBL
-	sp.wipRBL = nil
-	if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms); trk != nil {
-		rbl.P[1].ADSBCallsign = trk.ADSBCallsign
-	} else {
-		rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
-	}
-	sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
-	status.clear = true
-	return
-}
-
-func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
+func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) CommandStatus {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
 	var closest *sim.SignificantPoint
@@ -1000,12 +983,9 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 		}
 	}
 
-	sp.wipSignificantPoint = nil
-	status.clear = true
-
 	if closest == nil {
 		// No significant points defined?
-		return
+		return CommandStatus{}
 	}
 
 	// Display a blinking square at the point
@@ -1026,9 +1006,8 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 
 		if sig.Description != "" {
 			return str + strings.ToUpper(sig.Description)
-		} else {
-			return str + sig.Name
 		}
+		return str + sig.Name
 	}
 
 	str := format(*closest)
@@ -1045,21 +1024,7 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 		}
 	}
 
-	status.output = str
-
-	return
-}
-
-func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms radar.ScopeTransformations) (status CommandStatus) {
-	if sp.wipSignificantPoint == nil {
-		status.clear = true
-		return
-	} else {
-		p1 := transforms.LatLongFromWindowP(pw)
-		return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
-			ctx.NmPerLongitude, ctx.MagneticVariation)
-	}
+	return CommandStatus{Output: str}
 }
 
 func (sp *STARSPane) drawScenarioHolds(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,

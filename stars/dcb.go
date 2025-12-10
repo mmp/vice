@@ -15,7 +15,6 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
@@ -226,12 +225,13 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 				sp.setCommandMode(ctx, CommandModeNone)
 			} else {
 				sp.commandMode = CommandModePlaceRangeRings
-				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
-					pw [2]float32, transforms radar.ScopeTransformations) CommandStatus {
-					ps.RangeRingsUserCenter = transforms.LatLongFromWindowP(pw)
-					ps.UseUserRangeRingsCenter = true
-					return CommandStatus{clear: true}
-				}
+				sp.installCommandHandlers(makeCommandHandlers(
+					"[POS]", func(sp *STARSPane, pos math.Point2LL) {
+						ps := sp.currentPrefs()
+						ps.RangeRingsUserCenter = pos
+						ps.UseUserRangeRingsCenter = true
+					},
+				))
 			}
 		}
 		toggleButton(ctx, "RR\nCNTR", &ps.UseUserRangeRingsCenter, maybeDisable(buttonHalfVertical), buttonScale)
@@ -607,13 +607,16 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 	}
 
 	if sp.commandMode == CommandModeGITextFilter {
-		rewindDCBCursor(2+1+len(ps.SSAList.Filter.Text.GI)/2+1, buttonScale)
+		rewindDCBCursor(2+len(ps.SSAList.Filter.GIText)/2+1, buttonScale)
 		dcbStartCaptureMouseRegion()
 
-		toggleButton(ctx, "MAIN", &ps.SSAList.Filter.Text.Main, buttonHalfVertical, buttonScale)
-		for i := range ps.SSAList.Filter.Text.GI {
-			toggleButton(ctx, fmt.Sprintf("GI %d", i+1), &ps.SSAList.Filter.Text.GI[i],
-				buttonHalfVertical, buttonScale)
+		for i := range ps.SSAList.Filter.GIText {
+			if i == 0 {
+				toggleButton(ctx, "MAIN", &ps.SSAList.Filter.GIText[0], buttonHalfVertical, buttonScale)
+			} else {
+				toggleButton(ctx, fmt.Sprintf("GI %d", i), &ps.SSAList.Filter.GIText[i],
+					buttonHalfVertical, buttonScale)
+			}
 		}
 		if selectButton(ctx, "DONE", buttonFull, buttonScale) {
 			sp.setCommandMode(ctx, CommandModeNone)
@@ -1079,16 +1082,16 @@ func (sp *STARSPane) drawDCBMouseDeltaButton(ctx *panes.Context, text string, co
 	active := sp.commandMode == commandMode
 	if drawDCBButton(ctx, text, flags, buttonScale, active) && !active {
 		sp.setCommandMode(ctx, commandMode)
-		sp.savedMousePosition = ctx.Mouse.Pos
+		savedMousePosition := ctx.Mouse.Pos
 		ctx.Platform.StartMouseDeltaMode()
 
-		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-			transforms radar.ScopeTransformations) CommandStatus {
-			sp.resetInputState(ctx)
-			ctx.Platform.StopMouseDeltaMode()
-			ctx.SetMousePosition(sp.savedMousePosition)
-			return CommandStatus{clear: true}
-		}
+		sp.installCommandHandlers(makeCommandHandlers(
+			"[POS]", func(sp *STARSPane, ctx *panes.Context, _ math.Point2LL) {
+				sp.resetInputState(ctx)
+				ctx.Platform.StopMouseDeltaMode()
+				ctx.SetMousePosition(savedMousePosition)
+			},
+		))
 
 		if start != nil {
 			start()
@@ -1121,19 +1124,20 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 		ctx.Platform.StartMouseDeltaMode()
 		sp.activeSpinner = spinner
 
-		sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-			transforms radar.ScopeTransformations) CommandStatus {
-			if spinner.ModeAfter() == CommandModeNone {
-				sp.resetInputState(ctx)
-				return CommandStatus{clear: true}
-			} else {
-				sp.commandMode = spinner.ModeAfter()
+		modeAfter := spinner.ModeAfter()
+		sp.installCommandHandlers(makeCommandHandlers(
+			"[POS]", func(sp *STARSPane, ctx *panes.Context, _ math.Point2LL) CommandStatus {
+				if modeAfter == CommandModeNone {
+					sp.resetInputState(ctx)
+					return CommandStatus{}
+				}
+				sp.commandMode = modeAfter
 				sp.activeSpinner = nil
 				sp.previewAreaInput = ""
-				sp.scopeClickHandler = nil
-				return CommandStatus{}
-			}
-		}
+				sp.transientCommandHandlers = nil
+				return CommandStatus{Clear: ClearNone}
+			},
+		))
 	}
 	if active && ctx.Mouse != nil {
 		if ctx.Mouse.Wheel[1] != 0 {
@@ -1326,7 +1330,7 @@ func (s *dcbLeaderLineDirectionSpinner) MouseDelta() float32 {
 func (s *dcbLeaderLineDirectionSpinner) KeyboardInput(text string) (CommandMode, error) {
 	if len(text) > 1 {
 		return CommandModeNone, ErrSTARSCommandFormat
-	} else if dir, ok := s.sp.numpadToDirection(text[0]); !ok || dir == nil /* entered 5 */ {
+	} else if dir, ok := s.sp.numpadToDirection(int(text[0] - '0')); !ok || dir == nil /* entered 5 */ {
 		return CommandModeNone, ErrSTARSCommandFormat
 	} else {
 		*s.d = *dir
