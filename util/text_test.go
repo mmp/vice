@@ -119,6 +119,52 @@ func TestHash(t *testing.T) {
 	}
 }
 
+func TestCutFunc(t *testing.T) {
+	tests := []struct {
+		input  string
+		before string
+		after  string
+		found  bool
+	}{
+		{"hello world", "hello", " world", true},
+		{"abc123def", "abc", "123def", true},
+		{"nospace", "nospace", "", false},
+		{"", "", "", false},
+		{" leading", "", " leading", true},
+	}
+
+	for _, tc := range tests {
+		before, after, found := CutFunc(tc.input, func(r rune) bool { return r == ' ' || (r >= '0' && r <= '9') })
+		if before != tc.before || after != tc.after || found != tc.found {
+			t.Errorf("CutFunc(%q): got (%q, %q, %v), want (%q, %q, %v)",
+				tc.input, before, after, found, tc.before, tc.after, tc.found)
+		}
+	}
+}
+
+func TestCutAtSpace(t *testing.T) {
+	tests := []struct {
+		input  string
+		before string
+		after  string
+	}{
+		{"hello world", "hello", " world"},
+		{"N123AP +HAI", "N123AP", " +HAI"},
+		{"nospace", "nospace", ""},
+		{"", "", ""},
+		{" leading", "", " leading"},
+		{"multiple  spaces", "multiple", "  spaces"},
+	}
+
+	for _, tc := range tests {
+		before, after := CutAtSpace(tc.input)
+		if before != tc.before || after != tc.after {
+			t.Errorf("CutAtSpace(%q): got (%q, %q), want (%q, %q)",
+				tc.input, before, after, tc.before, tc.after)
+		}
+	}
+}
+
 func TestEditDistance(t *testing.T) {
 	type test struct {
 		input     string

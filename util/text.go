@@ -310,3 +310,23 @@ func TransposeStrings(strs []string) ([]string, error) {
 	}
 	return r, nil
 }
+
+// Similar to strings.Cut, but cuts at the first rune where `f` return true;
+// note that the second returned string includes the cutpoint rune.
+func CutFunc(s string, f func(rune) bool) (string, string, bool) {
+	for i, ch := range s {
+		if f(ch) {
+			return s[:i], s[i:], true
+		}
+	}
+	return s, "", false
+}
+
+// CutAtSpace is like strings.Cut(s, " ") but preserves the space in the
+// second return value.
+func CutAtSpace(s string) (string, string) {
+	if idx := strings.IndexByte(s, ' '); idx >= 0 {
+		return s[:idx], s[idx:]
+	}
+	return s, ""
+}
