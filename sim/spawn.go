@@ -418,6 +418,10 @@ func (s *Sim) Prespawn() {
 
 	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 
+	if s.State.LaunchConfig.EmergencyAircraftRate > 0 {
+		s.NextEmergencyTime = s.State.SimTime.Add(randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
+	}
+
 	s.lg.Info("finished aircraft prespawn")
 	fmt.Printf("Prespawn in %s, rates: dep %f arrival %f overflight %f LaunchConfig %#v\n", time.Since(start),
 		s.State.LaunchConfig.TotalDepartureRate(), s.State.LaunchConfig.TotalArrivalRate(),
