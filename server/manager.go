@@ -209,7 +209,7 @@ func (ss *simSession) CullIdleControllers(sm *SimManager) {
 	}
 	ss.mu.Unlock(sm.lg)
 
-	// Sign off controllers without holding as.mu to avoid deadlock
+	// Sign off controllers without holding ss.mu to avoid deadlock
 	for _, token := range tokensToSignOff {
 		if err := sm.SignOff(token); err != nil {
 			sm.lg.Errorf("error signing off idle controller: %v", err)
@@ -628,8 +628,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	go func() {
 		defer sm.lg.CatchAndReportCrash()
 
-		for !sm.SimShouldExit(session.sim) {
-			// Terminate idle Sims after 4 hours, but not local Sims.
+		// Terminate idle Sims after 4 hours, but not local Sims.
+		for sm.local || session.sim.IdleTime() < simIdleLimit {
 			if !sm.local {
 				session.CullIdleControllers(sm)
 			}
@@ -808,23 +808,6 @@ func (sm *SimManager) lookupController(token string) (string, *sim.Sim, bool) {
 }
 
 const simIdleLimit = 4 * time.Hour
-
-func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
-	if sim.IdleTime() < simIdleLimit {
-		return false
-	}
-
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	nIdle := 0
-	for _, ss := range sm.simSessions {
-		if ss.sim.IdleTime() >= simIdleLimit {
-			nIdle++
-		}
-	}
-	return nIdle > 5
-}
 
 const GetSerializeSimRPC = "SimManager.GetSerializeSim"
 
