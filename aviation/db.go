@@ -154,6 +154,19 @@ func (d StaticDatabase) LookupWaypoint(f string) (math.Point2LL, bool) {
 	}
 }
 
+func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
+	if ap, ok := d.Airports[name]; ok {
+		return ap, true
+	} else if len(name) == 3 {
+		if ap, ok := d.Airports["K"+name]; ok {
+			return ap, true
+		} else if ap, ok := d.Airports["P"+name]; ok {
+			return ap, true
+		}
+	}
+	return FAAAirport{}, false
+}
+
 type AircraftPerformance struct {
 	Name string `json:"name"`
 	ICAO string `json:"icao"`
