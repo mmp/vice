@@ -287,6 +287,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			}
 
 		case imgui.KeyEscape:
+			sp.movingList = ""
 			if sp.activeSpinner != nil {
 				sp.setCommandMode(ctx, sp.activeSpinner.ModeAfter())
 			} else {
@@ -674,6 +675,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.previewAreaOutput = status.Output
 		}
 	}
+
 	if ctx.Mouse.Released[platform.MouseButtonTertiary] {
 		// 6.20 Toggle track highlight (implied)
 		// TODO? ILL FNCT if in p/o or h/o to us, ILL TRK if it's suspended
@@ -682,7 +684,17 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 				state.IsSelected = !state.IsSelected
 			}
 		}
-	} else if !ctx.Client.State.Paused {
+	}
+
+	if ctx.Mouse.Down[platform.MouseButtonTertiary] {
+		// 4.9.28: Show list frames when middle button held and not over a track
+		trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms)
+		sp.showListFrames = trk == nil
+	} else {
+		sp.showListFrames = false
+	}
+
+	if !ctx.Client.State.Paused {
 		switch sp.currentPrefs().DwellMode {
 		case DwellModeOff:
 			sp.dwellAircraft = ""

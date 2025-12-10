@@ -167,6 +167,12 @@ type STARSPane struct {
 
 	dwellAircraft     av.ADSBCallsign
 	drawRouteAircraft av.ADSBCallsign
+	showListFrames    bool
+
+	// For 4.9.27 list moving
+	movingList       string
+	movingListBounds math.Extent2D
+	movingListOffset [2]float32 // offset from cursor to list position when move started
 
 	drawRoutePoints []math.Point2LL
 
