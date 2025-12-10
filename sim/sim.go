@@ -898,18 +898,27 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 			switch e.RadioTransmissionType {
 			case av.RadioTransmissionContact:
+				csArg := av.CallsignArg{
+					Callsign:           ac.ADSBCallsign,
+					IsEmergency:        ac.EmergencyState != nil,
+					AlwaysFullCallsign: true,
+				}
 				var tr *av.RadioTransmission
 				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
+					tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
 				} else {
-					tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, ac.ADSBCallsign)
+					tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
 				}
 				events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
 				events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 			case av.RadioTransmissionMixUp:
 				// No additional formatting for mix-up transmissions; the callsign is already in there.
 			default:
-				tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", ac.ADSBCallsign)
+				csArg := av.CallsignArg{
+					Callsign:    ac.ADSBCallsign,
+					IsEmergency: ac.EmergencyState != nil,
+				}
+				tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
 				events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
 				events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
 			}

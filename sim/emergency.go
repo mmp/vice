@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"fmt"
 	"maps"
 	"slices"
 	"strings"
@@ -467,12 +468,27 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	if stage.DeclareEmergency && s.Rand.Float32() < 0.5 {
 		souls := getSoulsOnBoard(ac, s.Rand)
 		fuel := getFuelRemaining(ac, s.Rand)
-		if fuel < 1000 {
-			fuel = (fuel + 50) / 100 * 100 // round to 100s of pounds
+
+		// Sometimes report in tons instead of pounds (50% chance)
+		if s.Rand.Bool() {
+			// Convert to tons (1 ton = 2000 lbs)
+			tons := float64(fuel) / 2000
+			if tons < 10 {
+				// Use one decimal place for < 10 tons
+				tons = float64(int(tons*10+0.5)) / 10 // round to 1 decimal
+				transmit("[we have|] {num} souls on board and "+fmt.Sprintf("%.1f", tons)+" tons of fuel [remaining|]", souls)
+			} else {
+				// Use whole number for >= 10 tons
+				transmit("[we have|] {num} souls on board and {num} tons of fuel [remaining|]", souls, int(tons+0.5))
+			}
 		} else {
-			fuel = (fuel + 500) / 1000 * 1000 // round to thousands of pounds
+			if fuel < 1000 {
+				fuel = (fuel + 50) / 100 * 100 // round to 100s of pounds
+			} else {
+				fuel = (fuel + 500) / 1000 * 1000 // round to thousands of pounds
+			}
+			transmit("[we have|] {num} souls on board and {num} pounds of fuel [remaining|]", souls, fuel)
 		}
-		transmit("[we have|] {num} souls on board and {num} pounds of fuel [remaining|]", souls, fuel)
 	}
 
 	// Handle stop_climb option

@@ -126,7 +126,12 @@ func (ac *Aircraft) Update(model *wx.Model, simTime time.Time, bravo *av.Airspac
 }
 
 func (ac *Aircraft) PilotMixUp() *av.RadioTransmission {
-	return av.MakeMixedUpTransmission("sorry, was that for {callsign}?", ac.ADSBCallsign)
+	csArg := av.CallsignArg{
+		Callsign:           ac.ADSBCallsign,
+		IsEmergency:        ac.EmergencyState != nil,
+		AlwaysFullCallsign: true,
+	}
+	return av.MakeMixedUpTransmission("sorry, was that for {callsign}?", csArg)
 }
 
 func (ac *Aircraft) GoAround() *av.RadioTransmission {

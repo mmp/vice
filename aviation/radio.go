@@ -779,8 +779,16 @@ func (BasicNumberSnippetFormatter) Validate(arg any) error {
 
 type CallsignSnippetFormatter struct{}
 
+// CallsignArg provides additional context for formatting callsigns.
+type CallsignArg struct {
+	Callsign           ADSBCallsign
+	IsEmergency        bool
+	AlwaysFullCallsign bool
+}
+
 func (CallsignSnippetFormatter) Written(arg any) string {
-	callsign := string(arg.(ADSBCallsign))
+	ca := arg.(CallsignArg)
+	callsign := string(ca.Callsign)
 
 	idx := strings.IndexAny(callsign, "0123456789")
 	icao, fnum := callsign[:idx], callsign[idx:]
@@ -790,12 +798,18 @@ func (CallsignSnippetFormatter) Written(arg any) string {
 
 	cs := DB.Callsigns[icao] + " " + fnum
 
+	if ca.IsEmergency {
+		cs += " (emergency)"
+	}
+
 	return cs
 }
 
 func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	loadPronunciationsIfNeeded()
-	callsign := string(arg.(ADSBCallsign))
+
+	ca := arg.(CallsignArg)
+	callsign := string(ca.Callsign)
 
 	idx := strings.IndexAny(callsign, "0123456789")
 	icao, fnum := callsign[:idx], callsign[idx:]
@@ -827,7 +841,20 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 		tel = tel2
 	}
 
-	return tel + " " + sayFlightNumber(fnum) + suffix
+	// For non-emergency aircraft reading back instructions, 25% of the time
+	// skip the ICAO identifier and just say the flight number.
+	if !ca.IsEmergency && !ca.AlwaysFullCallsign && r.Float32() < 0.25 {
+		tel = ""
+	}
+
+	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
+
+	// For emergency aircraft, 50% of the time add "emergency aircraft" after callsign.
+	if ca.IsEmergency && r.Bool() {
+		result += " emergency aircraft"
+	}
+
+	return result
 }
 
 func sayFlightNumber(id string) string {
@@ -846,8 +873,8 @@ func sayFlightNumber(id string) string {
 }
 
 func (CallsignSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(ADSBCallsign); !ok {
-		return fmt.Errorf("expected *Aircraft arg, got %T", arg)
+	if _, ok := arg.(CallsignArg); !ok {
+		return fmt.Errorf("expected CallsignArg, got %T", arg)
 	}
 	return nil
 }
