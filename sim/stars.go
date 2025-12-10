@@ -12,6 +12,7 @@ import (
 	"io"
 	"io/fs"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -692,6 +693,28 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 	}
 
 	return sfp, err
+}
+
+// Merge incorporates set fields from other into s. Fields set in other take precedence.
+func (s *FlightPlanSpecifier) Merge(other FlightPlanSpecifier) {
+	// Rather than have to handle each FlightPlanSpecifier individually, we get (sort of) fancy and
+	// use the reflect package to iterate over the members, check which are set through
+	// util.Optional, and copy those that are. This isn't necessarily super performant, but we don't
+	// need to do this too much.
+	sVal := reflect.ValueOf(s).Elem()
+	otherVal := reflect.ValueOf(other)
+	typ := otherVal.Type()
+
+	for i := range otherVal.NumField() {
+		otherField := otherVal.Field(i)
+		isSet := otherField.FieldByName("IsSet")
+		if !isSet.IsValid() || isSet.Kind() != reflect.Bool {
+			panic(fmt.Sprintf("FlightPlanSpecifier field %q is not a util.Optional", typ.Field(i).Name))
+		}
+		if isSet.Bool() {
+			sVal.Field(i).Set(otherField)
+		}
+	}
 }
 
 func assignCode(assignment util.Optional[string], planType NASFlightPlanType, rules av.FlightRules,
