@@ -460,7 +460,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.CurrentTime()
 	fa := ctx.Client.State.FacilityAdaptation
@@ -475,7 +475,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 	sp.lastTrackUpdate = now
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
@@ -493,7 +493,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 
 	// Check quicklook regions
-	sp.updateQuicklookRegionTracks(ctx, tracks)
+	sp.updateQuicklookRegionTracks(ctx)
 
 	// Update low altitude alerts now that we have updated tracks
 	sp.updateMSAWs(ctx)
@@ -503,7 +503,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	ps := sp.currentPrefs()
 	if now.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
 		sp.lastHistoryTrackUpdate = now
-		for _, trk := range tracks { // We only get radar tracks for visible aircraft
+		for _, trk := range sp.visibleTracks { // We only get radar tracks for visible aircraft
 			state := sp.TrackState[trk.ADSBCallsign]
 			if trk.IsTentative {
 				// No history tracks for tentative
@@ -520,11 +520,11 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		}
 	}
 
-	sp.updateCAAircraft(ctx, tracks)
-	sp.updateInTrailDistance(ctx, tracks)
+	sp.updateCAAircraft(ctx)
+	sp.updateInTrailDistance(ctx)
 }
 
-func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 	ps := sp.currentPrefs()
 	fa := ctx.Client.State.FacilityAdaptation
 
@@ -532,7 +532,7 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []si
 		func(f sim.FilterRegion) bool {
 			return !slices.Contains(ps.DisabledQuicklookRegions, f.Id)
 		})
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.IsUnassociated() || state.DisplayFDB {
@@ -577,8 +577,7 @@ func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 	}
 }
 
-func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	trackBuilder := renderer.GetColoredTrianglesDrawBuilder()
@@ -592,7 +591,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		positionSymbol := ""
@@ -678,7 +677,7 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms radar.ScopeTran
 	return size
 }
 
-func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*av.GhostTrack {
+func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
 
@@ -709,7 +708,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 
 			nmPerLongitude := ctx.NmPerLongitude
 			magneticVariation := ctx.MagneticVariation
-			for _, trk := range tracks {
+			for _, trk := range sp.visibleTracks {
 				if trk.IsUnassociated() {
 					continue
 				}
@@ -928,8 +927,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 	return pts
 }
 
-func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
 		// Don't draw if brightness == 0.
@@ -942,7 +940,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 	const historyTrackDiameter = 8
 	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		// In general, if the datablock isn't being drawn (e.g. due to
@@ -998,9 +996,9 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	return nil, false
 }
 
-func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {
 	tracked, untracked := make(map[av.ADSBCallsign]sim.Track), make(map[av.ADSBCallsign]sim.Track)
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() {
 			tracked[trk.ADSBCallsign] = trk
 		} else {
@@ -1158,12 +1156,12 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	}
 }
 
-func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context) {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
 	// Zero out the previous distance
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		state.IntrailDistance = 0
 		state.MinimumMIT = 0
@@ -1185,7 +1183,7 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Trac
 	// aircraft inside it and then mark the volume as completed.
 	handledVolumes := make(map[string]interface{})
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		vol := trk.ATPAVolume
 		if vol == nil {
 			continue
@@ -1195,7 +1193,7 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Trac
 		}
 
 		// Get all aircraft on approach to this runway
-		runwayAircraft := util.FilterSlice(tracks, func(trk sim.Track) bool {
+		runwayAircraft := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
 			if v := trk.ATPAVolume; v == nil || v.Id != vol.Id {
 				return false
 			}
@@ -1384,8 +1382,8 @@ func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.Track) bool {
 	return math.HeadingDifference(sa.TrackHeading(nmPerLongitude), sb.TrackHeading(nmPerLongitude)) >= 15
 }
 
-func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, dbs map[av.ADSBCallsign]datablock, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -1414,7 +1412,7 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs
 		}
 	}
 
-	draw(tracks)
+	draw(sp.visibleTracks)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)

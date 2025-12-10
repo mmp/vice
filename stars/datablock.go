@@ -437,14 +437,14 @@ func formatDBText(field []dbChar, s string, c renderer.RGB, flashing bool) int {
 	return len(s)
 }
 
-func (sp *STARSPane) getAllDatablocks(ctx *panes.Context, tracks []sim.Track) map[av.ADSBCallsign]datablock {
+func (sp *STARSPane) getAllDatablocks(ctx *panes.Context) map[av.ADSBCallsign]datablock {
 	sp.fdbArena.Reset()
 	sp.pdbArena.Reset()
 	sp.ldbArena.Reset()
 	sp.sdbArena.Reset()
 
 	m := make(map[av.ADSBCallsign]datablock)
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		color, brightness, _ := sp.trackDatablockColorBrightness(ctx, trk)
 		m[trk.ADSBCallsign] = sp.getDatablock(ctx, trk, trk.FlightPlan, color, brightness)
 	}
@@ -1183,8 +1183,8 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 	}
 }
 
-func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]datablock, ctx *panes.Context,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawDatablocks(dbs map[av.ADSBCallsign]datablock, ctx *panes.Context, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 
@@ -1195,7 +1195,7 @@ func (sp *STARSPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]
 	// Partition them by DB type so we can draw FDBs last
 	var ldbs, pdbs, sdbs, fdbs []sim.Track
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		if !sp.datablockVisible(ctx, trk) {
 			continue
 		}

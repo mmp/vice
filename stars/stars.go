@@ -91,6 +91,8 @@ type STARSPane struct {
 
 	targetGenLastCallsign av.ADSBCallsign
 
+	visibleTracks []sim.Track
+
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
 	wxHistoryDraw int
@@ -761,19 +763,9 @@ func (sp *STARSPane) Upgrade(from, to int) {
 
 func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	sp.processEvents(ctx)
+	sp.updateVisibleTracks(ctx)
 
-	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
-	// Sort the aircraft so that they are always drawn in the same order
-	// (go's map iterator randomization otherwise randomizes the order,
-	// which can cause shimmering when datablocks overlap (especially if
-	// one is selected). We'll go with alphabetical by callsign, with the
-	// selected aircraft, if any, always drawn last.
-	tracks := sp.visibleTracks(ctx)
-	sort.Slice(tracks, func(i, j int) bool {
-		return tracks[i].ADSBCallsign < tracks[j].ADSBCallsign
-	})
-
-	sp.updateRadarTracks(ctx, tracks)
+	sp.updateRadarTracks(ctx)
 	sp.autoReleaseDepartures(ctx)
 
 	ps := sp.currentPrefs()
@@ -781,7 +773,7 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Clear to background color
 	cb.ClearRGB(ps.Brightness.BackgroundContrast.ScaleRGB(STARSBackgroundColor))
 
-	sp.processKeyboardInput(ctx, tracks)
+	sp.processKeyboardInput(ctx)
 
 	ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
 	transforms := radar.GetScopeTransformations(ctx.PaneExtent, ctx.MagneticVariation, ctx.NmPerLongitude,
@@ -816,24 +808,24 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 
 	sp.drawRestrictionAreas(ctx, transforms, cb)
 
-	sp.drawSystemLists(ctx, tracks, ctx.PaneExtent, transforms, cb)
+	sp.drawSystemLists(ctx, ctx.PaneExtent, transforms, cb)
 
-	sp.drawHistoryTrails(ctx, tracks, transforms, cb)
+	sp.drawHistoryTrails(ctx, transforms, cb)
 
-	sp.drawPTLs(ctx, tracks, transforms, cb)
-	sp.drawRingsAndCones(ctx, tracks, transforms, cb)
-	sp.drawRBLs(ctx, tracks, transforms, cb)
+	sp.drawPTLs(ctx, transforms, cb)
+	sp.drawRingsAndCones(ctx, transforms, cb)
+	sp.drawRBLs(ctx, transforms, cb)
 	sp.drawMinSep(ctx, transforms, cb)
 
 	sp.drawHighlighted(ctx, transforms, cb)
 	sp.drawVFRAirports(ctx, transforms, cb)
 
-	dbs := sp.getAllDatablocks(ctx, tracks)
-	sp.drawLeaderLines(ctx, tracks, dbs, transforms, cb)
-	sp.drawTracks(ctx, tracks, transforms, cb)
-	sp.drawDatablocks(tracks, dbs, ctx, transforms, cb)
+	dbs := sp.getAllDatablocks(ctx)
+	sp.drawLeaderLines(ctx, dbs, transforms, cb)
+	sp.drawTracks(ctx, transforms, cb)
+	sp.drawDatablocks(dbs, ctx, transforms, cb)
 
-	ghosts := sp.getGhostTracks(ctx, tracks)
+	ghosts := sp.getGhostTracks(ctx)
 	sp.drawGhosts(ctx, ghosts, transforms, cb)
 
 	if ctx.Mouse != nil {
@@ -843,13 +835,13 @@ func (sp *STARSPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 		mouseOverDCB := !scopeExtent.Inside(math.Add2f(ctx.Mouse.Pos, ctx.PaneExtent.P0))
 		if !mouseOverDCB {
 			// DCB buttons handle their own click checks, etc.
-			sp.consumeMouseEvents(ctx, ghosts, transforms, tracks, cb)
+			sp.consumeMouseEvents(ctx, ghosts, transforms, cb)
 		}
 		sp.drawMouseCursor(ctx, mouseOverDCB, transforms, cb)
 	}
 	sp.handleCapture(ctx, transforms, cb)
 
-	sp.updateAudio(ctx, tracks)
+	sp.updateAudio(ctx)
 
 	// Do this at the end of drawing so that we hold on to the tracks we
 	// have for rendering the current frame.
@@ -1404,8 +1396,9 @@ func (sp *STARSPane) radarMode(radarSites map[string]*av.RadarSite) int {
 	}
 }
 
-func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
-	var tracks []sim.Track
+func (sp *STARSPane) updateVisibleTracks(ctx *panes.Context) {
+	sp.visibleTracks = sp.visibleTracks[:0]
+
 	ps := sp.currentPrefs()
 	single := sp.radarMode(ctx.FacilityAdaptation.RadarSites) == RadarModeSingle
 	now := ctx.Client.CurrentTime()
@@ -1434,7 +1427,7 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 		}
 
 		if visible {
-			tracks = append(tracks, *trk)
+			sp.visibleTracks = append(sp.visibleTracks, *trk)
 
 			// Is this the first we've seen it?
 			if state.FirstRadarTrackTime.IsZero() {
@@ -1443,7 +1436,15 @@ func (sp *STARSPane) visibleTracks(ctx *panes.Context) []sim.Track {
 		}
 	}
 
-	return tracks
+	// Per-aircraft stuff: tracks, datablocks, vector lines, range rings, ...
+	// Sort the aircraft so that they are always drawn in the same order
+	// (go's map iterator randomization otherwise randomizes the order,
+	// which can cause shimmering when datablocks overlap (especially if
+	// one is selected). We'll go with alphabetical by callsign, with the
+	// selected aircraft, if any, always drawn last.
+	sort.Slice(sp.visibleTracks, func(i, j int) bool {
+		return sp.visibleTracks[i].ADSBCallsign < sp.visibleTracks[j].ADSBCallsign
+	})
 }
 
 func (sp *STARSPane) radarSiteId(radarSites map[string]*av.RadarSite) string {
@@ -1510,7 +1511,7 @@ func (sp *STARSPane) playOnce(p platform.Platform, a AudioType) {
 
 const AlertAudioDuration = 5 * time.Second
 
-func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 	ps := sp.currentPrefs()
 
 	if !sp.testAudioEndTime.IsZero() && ctx.Now.After(sp.testAudioEndTime) {
@@ -1556,7 +1557,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 	updateContinuous(playCASound, AudioConflictAlert)
 
 	playMSAWSound := !ps.DisableMSAW && func() bool {
-		for _, trk := range tracks {
+		for _, trk := range sp.visibleTracks {
 			if trk.IsUnassociated() || trk.FlightPlan.DisableMSAW {
 				return false
 			}
@@ -1575,7 +1576,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context, tracks []sim.Track) {
 	// - [todo]: track is unassociated or is associated and was displaying FDB
 	// - [todo]: if unassociated, is on-screen or within an adapted distance
 	playSPCSound := func() bool {
-		for _, trk := range tracks {
+		for _, trk := range sp.visibleTracks {
 			state := sp.TrackState[trk.ADSBCallsign]
 			ok, _ := trk.Squawk.IsSPC()
 			if ok && !state.SPCAcknowledged && ctx.Now.Before(state.SPCSoundEnd) {

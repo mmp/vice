@@ -179,8 +179,7 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 	return result.String()
 }
 
-func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, paneExtent math.Extent2D,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2D, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -204,21 +203,20 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 
 	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), previewAreaColor, td)
 
-	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, listStyle, td, transforms, cb)
-	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), tracks, listStyle, td)
-	sp.drawTABList(ctx, normalizedToWindow(ps.TABList.Position), tracks, listStyle, td)
-	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), tracks, listStyle, td)
+	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), listStyle, td, transforms, cb)
+	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), listStyle, td)
+	sp.drawTABList(ctx, normalizedToWindow(ps.TABList.Position), listStyle, td)
+	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), listStyle, td)
 	sp.drawCoastList(ctx, normalizedToWindow(ps.CoastList.Position), listStyle, td)
 	sp.drawMapsList(ctx, normalizedToWindow(ps.VideoMapsList.Position), listStyle, td)
 	sp.drawRestrictionAreasList(ctx, normalizedToWindow(ps.RestrictionAreaList.Position), listStyle, td)
-	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), tracks, listStyle, td)
-	sp.drawMCISuppressionList(ctx, normalizedToWindow(ps.MCISuppressionList.Position), tracks, listStyle, td)
+	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), listStyle, td)
+	sp.drawMCISuppressionList(ctx, normalizedToWindow(ps.MCISuppressionList.Position), listStyle, td)
 
 	towerListAirports := ctx.Client.TowerListAirports()
 	for i, tl := range ps.TowerLists {
 		if tl.Visible && i < len(towerListAirports) {
-			sp.drawTowerList(ctx, normalizedToWindow(tl.Position), towerListAirports[i], tl.Lines,
-				tracks, listStyle, td)
+			sp.drawTowerList(ctx, normalizedToWindow(tl.Position), towerListAirports[i], tl.Lines, listStyle, td)
 		}
 	}
 
@@ -259,8 +257,8 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, color re
 	}
 }
 
-func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, listStyle renderer.TextStyle,
-	td *renderer.TextDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle renderer.TextStyle, td *renderer.TextDrawBuilder,
+	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
@@ -396,7 +394,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		// Active special purpose codes.
 		// those.
 		codes := make(map[string]interface{})
-		for _, trk := range tracks {
+		for _, trk := range sp.visibleTracks {
 			if ok, code := trk.Squawk.IsSPC(); ok {
 				codes[code] = nil
 			} else if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
@@ -609,8 +607,7 @@ func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]interface{} {
 	return dupes
 }
 
-func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.VFRList.Visible {
 		return
@@ -644,7 +641,7 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	})
 }
 
-func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
+func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.TABList.Visible {
@@ -709,7 +706,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	})
 }
 
-func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
+func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	// The alert list can't be hidden.
 	var text strings.Builder
@@ -723,7 +720,7 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 	var msaw []sim.Track
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
-		for _, trk := range tracks {
+		for _, trk := range sp.visibleTracks {
 			if sp.TrackState[trk.ADSBCallsign].MSAW && trk.IsAssociated() && !trk.FlightPlan.DisableMSAW {
 				msaw = append(msaw, trk)
 			}
@@ -964,7 +961,7 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 	})
 }
 
-func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
+func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.CRDAStatusList.Visible {
@@ -1014,7 +1011,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, track
 	})
 }
 
-func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
+func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle,
 	td *renderer.TextDrawBuilder) {
 	ps := sp.currentPrefs()
 	if !ps.MCISuppressionList.Visible {
@@ -1022,7 +1019,7 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, t
 	}
 
 	// Filter tracks with MCI suppression
-	mciTracks := util.FilterSlice(tracks, func(trk sim.Track) bool {
+	mciTracks := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
 		return trk.IsAssociated() && trk.FlightPlan.MCISuppressedCode != av.Squawk(0)
 	})
 
@@ -1041,8 +1038,8 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, t
 	})
 }
 
-func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, tracks []sim.Track,
-	style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder) {
 	stripK := func(airport string) string {
 		if len(airport) == 4 && airport[0] == 'K' {
 			return airport[1:]
@@ -1053,7 +1050,7 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 
 	loc := ctx.Client.State.Airports[airport].Location
 	m := make(map[float32]string)
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() && trk.ArrivalAirport == airport {
 			dist := math.NMDistance2LL(loc, trk.Location)
 			// We'll punt on the chance that two aircraft have the

@@ -214,7 +214,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -253,7 +253,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 			p1 := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			if wp.ADSBCallsign != "" {
 				if trk, ok := ctx.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
-					slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
+					slices.ContainsFunc(sp.visibleTracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
 					state := sp.TrackState[wp.ADSBCallsign]
 					drawRBL(state.track.Location, p1, len(sp.RangeBearingLines)+1, state.track.Groundspeed)
 				}
@@ -264,7 +264,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 	}
 
 	for i, rbl := range sp.RangeBearingLines {
-		if p0, p1 := rbl.GetPoints(ctx, tracks, sp); !p0.IsZero() && !p1.IsZero() {
+		if p0, p1 := rbl.GetPoints(ctx, sp); !p0.IsZero() && !p1.IsZero() {
 			gs := float32(0)
 
 			// If one but not both are tracks, get the groundspeed so we
@@ -285,7 +285,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 	// Remove stale ones that include aircraft that have landed, etc.
 	sp.RangeBearingLines = util.FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
-		p0, p1 := rbl.GetPoints(ctx, tracks, sp)
+		p0, p1 := rbl.GetPoints(ctx, sp)
 		return !p0.IsZero() && !p1.IsZero()
 	})
 
@@ -666,7 +666,7 @@ func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB 
 	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
 }
 
-func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -674,7 +674,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 	color := ps.Brightness.Lines.RGB()
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !state.HaveHeading() {
 			continue
@@ -711,8 +711,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -724,7 +723,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		// Format a radius/length for printing, ditching the ".0" if it's
@@ -958,7 +957,7 @@ type STARSRangeBearingLine struct {
 	}
 }
 
-func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Track, sp *STARSPane) (math.Point2LL, math.Point2LL) {
+func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, sp *STARSPane) (math.Point2LL, math.Point2LL) {
 	// Each line endpoint may be specified either by a track's
 	// position or by a fixed position.
 	getLoc := func(i int) math.Point2LL {
@@ -979,7 +978,7 @@ func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track
 
 	rbl := *sp.wipRBL
 	sp.wipRBL = nil
-	if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
+	if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms); trk != nil {
 		rbl.P[1].ADSBCallsign = trk.ADSBCallsign
 	} else {
 		rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)

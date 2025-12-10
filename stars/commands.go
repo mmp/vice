@@ -178,7 +178,7 @@ type CommandStatus struct {
 	err    error
 }
 
-func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 	if !ctx.HaveFocus || ctx.Keyboard == nil {
 		return
 	}
@@ -238,7 +238,7 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context, tracks []sim.Track
 			sp.setCommandMode(ctx, CommandModeMin)
 
 		case imgui.KeyEnter:
-			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput, tracks); status.err != nil {
+			if status := sp.executeSTARSCommand(ctx, sp.previewAreaInput); status.err != nil {
 				sp.displayError(status.err, ctx, "")
 			} else {
 				if status.clear {
@@ -471,7 +471,7 @@ func lookupSuspendedTrack(ctx *panes.Context, tracks []sim.Track, s string) *sim
 	return nil
 }
 
-func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks []sim.Track) (status CommandStatus) {
+func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string) (status CommandStatus) {
 	// If there's an active spinner, it gets keyboard input; we thus won't
 	// worry about the corresponding CommandModes in the following.
 	if sp.activeSpinner != nil {
@@ -657,7 +657,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			cmd = cmd[2:]
 
 			callsign, tcps, _ := strings.Cut(cmd, " ")
-			trk := lookupTrack(ctx, tracks, callsign)
+			trk := lookupTrack(ctx, sp.visibleTracks, callsign)
 			if trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsUnassociated() {
@@ -829,7 +829,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			status.clear = true
 		} else {
 			first, rest, _ := strings.Cut(cmd, " ")
-			if trk := lookupSuspendedTrack(ctx, tracks, first); trk == nil {
+			if trk := lookupSuspendedTrack(ctx, sp.visibleTracks, first); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsAssociated() && trk.FlightPlan.Suspended {
 				// 5-77 unsuspend flight plan
@@ -855,7 +855,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// 5-206 inhibit display of altitude for active suspended tracks
 			ps.DisplaySuspendedTrackAltitude = false
 			status.clear = true
-		} else if trk := lookupTrack(ctx, tracks, cmd); trk == nil {
+		} else if trk := lookupTrack(ctx, sp.visibleTracks, cmd); trk == nil {
 			status.err = ErrSTARSNoFlight
 		} else {
 			// 5-75 suspend flight plan
@@ -865,7 +865,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 	case CommandModeTerminateControl:
 		if cmd == "ALL" {
-			for _, trk := range tracks {
+			for _, trk := range sp.visibleTracks {
 				if (trk.IsAssociated() || trk.IsUnsupportedDB()) && trk.FlightPlan.TrackingController == ctx.UserTCP {
 					sp.deleteFlightPlan(ctx, trk.FlightPlan.ACID)
 				}
@@ -886,7 +886,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// Accept hand off of target closest to range rings center
 			var closest *sim.Track
 			var closestDistance float32
-			for _, trk := range tracks {
+			for _, trk := range sp.visibleTracks {
 				if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != ctx.UserTCP {
 					continue
 				}
@@ -907,7 +907,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 		case 1:
 			// Is it an ACID?
-			if trk := lookupTrack(ctx, tracks, f[0]); trk != nil {
+			if trk := lookupTrack(ctx, sp.visibleTracks, f[0]); trk != nil {
 				if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
 				} else {
@@ -944,7 +944,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			return
 
 		case 2:
-			if trk := lookupTrack(ctx, tracks, f[1]); trk == nil {
+			if trk := lookupTrack(ctx, sp.visibleTracks, f[1]); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if trk.IsUnassociated() {
 				status.err = ErrSTARSIllegalTrack
@@ -1145,7 +1145,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			// 5-178: modify rnav symbol, a/c type, eq suffix, or flight rules
 			if id, mod, ok := strings.Cut(cmd, " "); !ok {
 				status.err = ErrSTARSCommandFormat
-			} else if trk := lookupTrack(ctx, tracks, id); trk == nil || trk.IsUnassociated() {
+			} else if trk := lookupTrack(ctx, sp.visibleTracks, id); trk == nil || trk.IsUnassociated() {
 				status.err = ErrSTARSIllegalTrack
 			} else if spec, err := parseOneFlightPlan("RNAV,#/AC_TYPE/EQ,RULES", mod, nil); err != nil {
 				status.err = err
@@ -1225,7 +1225,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					}
 				} else if num, acid, ok := strings.Cut(cmd, " "); ok {
 					// L(#) (ACID) or L(##) (ACID)
-					if trk := lookupTrack(ctx, tracks, acid); trk != nil {
+					if trk := lookupTrack(ctx, sp.visibleTracks, acid); trk != nil {
 						if err := sp.setLeaderLine(ctx, *trk, num); err != nil {
 							status.err = err
 						} else {
@@ -1527,7 +1527,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 					cmd = cmd[1:]
 				}
 
-				trk := lookupTrack(ctx, tracks, cmd)
+				trk := lookupTrack(ctx, sp.visibleTracks, cmd)
 				if trk == nil {
 					status.err = ErrSTARSCommandFormat
 					return
@@ -1635,7 +1635,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				for _, f := range ctx.FacilityAdaptation.Filters.Quicklook {
 					ps.DisabledQuicklookRegions = append(ps.DisabledQuicklookRegions, f.Id)
 				}
-				sp.updateQuicklookRegionTracks(ctx, tracks)
+				sp.updateQuicklookRegionTracks(ctx)
 				status.clear = true
 				return
 			} else if id, op, _ := strings.Cut(cmd, " "); ctx.FacilityAdaptation.Filters.Quicklook.HaveId(id) {
@@ -1644,11 +1644,11 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				if enable {
 					ps.DisabledQuicklookRegions = slices.DeleteFunc(ps.DisabledQuicklookRegions,
 						func(s string) bool { return s == id })
-					sp.updateQuicklookRegionTracks(ctx, tracks)
+					sp.updateQuicklookRegionTracks(ctx)
 					status.clear = true
 				} else if inhibit {
 					ps.DisabledQuicklookRegions = append(ps.DisabledQuicklookRegions, id)
-					sp.updateQuicklookRegionTracks(ctx, tracks)
+					sp.updateQuicklookRegionTracks(ctx)
 					status.clear = true
 				} else {
 					status.err = ErrSTARSCommandFormat
@@ -1841,7 +1841,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			if len(f) == 1 {
 				// Y callsign -> clear scratchpad and reported altitude
 				// Y+ callsign -> secondary scratchpad..
-				if trk := lookupTrack(ctx, tracks, f[0]); trk == nil {
+				if trk := lookupTrack(ctx, sp.visibleTracks, f[0]); trk == nil {
 					status.err = ErrSTARSNoFlight
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
@@ -1863,7 +1863,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// as above, Y+ -> secondary scratchpad
 
 				// Either pilot alt or scratchpad entry
-				if trk := lookupTrack(ctx, tracks, f[0]); trk == nil {
+				if trk := lookupTrack(ctx, sp.visibleTracks, f[0]); trk == nil {
 					status.err = ErrSTARSNoFlight
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSIllegalTrack
@@ -1907,7 +1907,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				// 5-81 Toggle hold state
 				if _, id, ok := strings.Cut(cmd, " "); !ok {
 					status.err = ErrSTARSCommandFormat
-				} else if trk := lookupTrack(ctx, tracks, id); trk == nil {
+				} else if trk := lookupTrack(ctx, sp.visibleTracks, id); trk == nil {
 					status.err = ErrSTARSCommandFormat
 				} else if trk.IsUnassociated() {
 					status.err = ErrSTARSNoFlight
@@ -1940,7 +1940,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 
 	case CommandModeCollisionAlert:
 		if len(cmd) > 3 && cmd[:2] == "K " {
-			if trk := lookupTrack(ctx, tracks, cmd[2:]); trk != nil && trk.IsAssociated() {
+			if trk := lookupTrack(ctx, sp.visibleTracks, cmd[2:]); trk != nil && trk.IsAssociated() {
 				var spec sim.FlightPlanSpecifier
 				spec.DisableCA.Set(!trk.FlightPlan.DisableCA)
 				spec.MCISuppressedCode.Set(av.Squawk(0)) // 7-18: this clears the MCI inhibit code
@@ -1956,7 +1956,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 			f := strings.Fields(cmd[2:])
 			if len(f) != 1 && len(f) != 2 {
 				status.err = ErrSTARSCommandFormat
-			} else if trk := lookupTrack(ctx, tracks, f[0]); trk == nil {
+			} else if trk := lookupTrack(ctx, sp.visibleTracks, f[0]); trk == nil {
 				status.err = ErrSTARSNoFlight
 			} else if len(f) == 1 {
 				status = sp.updateMCISuppression(ctx, *trk, "")
@@ -2453,7 +2453,7 @@ func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string, tracks 
 				if _, err := strconv.Atoi(cmd); err == nil && len(cmd) < 4 /* else assume it's a beacon code */ {
 					// Given a line number that doesn't exist.
 					status.err = ErrSTARSIllegalLine
-				} else if trk := lookupTrack(ctx, tracks, cmd); trk != nil {
+				} else if trk := lookupTrack(ctx, sp.visibleTracks, cmd); trk != nil {
 					// There is such a flight but it's not in our release list.
 					if trk.HoldForRelease {
 						// It's in another controller's list
@@ -2848,7 +2848,7 @@ func trackRepositionSecondClickHandler(acid sim.ACID) scopeClickHandlerFunc {
 		transforms radar.ScopeTransformations) (status CommandStatus) {
 		// either associate with unassociated or make unsupported
 		// if clicked on associated:
-		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms); trk != nil {
 			if trk.IsAssociated() {
 				status.err = ErrSTARSIllegalTrack
 			} else {
@@ -3156,7 +3156,7 @@ func (sp *STARSPane) updateMCISuppression(ctx *panes.Context, trk sim.Track, cod
 func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, mousePosition [2]float32,
 	ghosts []*av.GhostTrack, transforms radar.ScopeTransformations, tracks []sim.Track) (status CommandStatus) {
 	// See if an aircraft was clicked
-	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms, tracks)
+	trk, trkDistance := sp.tryGetClosestTrack(ctx, mousePosition, transforms)
 	ghost, ghostDistance := sp.tryGetClosestGhost(ghosts, mousePosition, transforms)
 
 	ps := sp.currentPrefs()
@@ -4171,7 +4171,7 @@ func (sp *STARSPane) executeSTARSClickedCommand(ctx *panes.Context, cmd string, 
 				sp.MinSepAircraft[0] = trk.ADSBCallsign
 				sp.scopeClickHandler = func(ctx *panes.Context, sp *STARSPane, tracks []sim.Track,
 					pw [2]float32, transforms radar.ScopeTransformations) (status CommandStatus) {
-					if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
+					if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms); trk != nil {
 						sp.MinSepAircraft[1] = trk.ADSBCallsign
 						status.clear = true
 					} else {
@@ -4553,8 +4553,8 @@ func (sp *STARSPane) numpadToDirection(key byte) (*math.CardinalOrdinalDirection
 	}
 }
 
-func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTrack,
-	transforms radar.ScopeTransformations, tracks []sim.Track, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTrack, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
 	if ctx.Mouse == nil {
 		return
 	}
@@ -4614,7 +4614,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		}
 
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyControl() {
-			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
+			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
 				if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 					state.IsSelected = !state.IsSelected
 					return
@@ -4625,9 +4625,9 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		// If a scope click handler has been registered, give it the click.
 		var status CommandStatus
 		if sp.scopeClickHandler != nil {
-			status = sp.scopeClickHandler(ctx, sp, tracks, ctx.Mouse.Pos, transforms)
+			status = sp.scopeClickHandler(ctx, sp, sp.visibleTracks, ctx.Mouse.Pos, transforms)
 		} else {
-			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms, tracks)
+			status = sp.executeSTARSClickedCommand(ctx, sp.previewAreaInput, ctx.Mouse.Pos, ghosts, transforms, sp.visibleTracks)
 		}
 
 		if status.err != nil {
@@ -4645,7 +4645,7 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 		}
 	}
 	if ctx.Mouse.Released[platform.MouseButtonTertiary] {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
 			if state := sp.TrackState[trk.ADSBCallsign]; state != nil {
 				state.IsSelected = !state.IsSelected
 			}
@@ -4656,20 +4656,20 @@ func (sp *STARSPane) consumeMouseEvents(ctx *panes.Context, ghosts []*av.GhostTr
 			sp.dwellAircraft = ""
 
 		case DwellModeOn:
-			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
+			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
 				sp.dwellAircraft = trk.ADSBCallsign
 			} else {
 				sp.dwellAircraft = ""
 			}
 
 		case DwellModeLock:
-			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil {
+			if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil {
 				sp.dwellAircraft = trk.ADSBCallsign
 			}
 			// Otherwise leave sp.dwellAircraft as is
 		}
 	} else {
-		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms, tracks); trk != nil && !trk.IsUnsupportedDB() {
+		if trk, _ := sp.tryGetClosestTrack(ctx, ctx.Mouse.Pos, transforms); trk != nil && !trk.IsUnsupportedDB() {
 			td := renderer.GetTextDrawBuilder()
 			defer renderer.ReturnTextDrawBuilder(td)
 
@@ -4925,12 +4925,11 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 	return nil
 }
 
-func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations,
-	tracks []sim.Track) (*sim.Track, float32) {
+func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {
 	var trk *sim.Track
 	distance := float32(20) // in pixels; don't consider anything farther away
 
-	for _, t := range tracks {
+	for _, t := range sp.visibleTracks {
 		pw := transforms.WindowFromLatLongP(t.Location)
 		dist := math.Distance2f(pw, mousePosition)
 		if dist < distance {
