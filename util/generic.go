@@ -400,7 +400,7 @@ func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
 	return false
 }
 
-func SeqLookupFunc[T comparable](seq iter.Seq[T], check func(T) bool) (T, bool) {
+func SeqLookupFunc[T any](seq iter.Seq[T], check func(T) bool) (T, bool) {
 	for s := range seq {
 		if check(s) {
 			return s, true
