@@ -72,6 +72,10 @@ type Aircraft struct {
 	FirstSeen time.Time
 
 	RequestedFlightFollowing bool
+	// WaitingForGoAhead is set when a VFR aircraft has made an abbreviated
+	// flight following request ("approach, N123AB, VFR request") and is
+	// waiting for the controller to say "go ahead".
+	WaitingForGoAhead bool
 
 	Voice Voice
 

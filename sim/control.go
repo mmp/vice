@@ -1447,6 +1447,25 @@ func (s *Sim) RadarServicesTerminated(tcp string, callsign av.ADSBCallsign) erro
 		})
 }
 
+func (s *Sim) GoAhead(tcp string, callsign av.ADSBCallsign) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchVFRAircraftCommand(tcp, callsign,
+		func(tcp string, ac *Aircraft) *av.RadioTransmission {
+			if !ac.WaitingForGoAhead {
+				return nil
+			}
+
+			ac.WaitingForGoAhead = false
+
+			// Send the full flight following request
+			s.sendFullFlightFollowingRequest(ac, tcp)
+
+			return nil
+		})
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
@@ -1817,6 +1836,15 @@ func (s *Sim) runOneControlCommand(tcp string, callsign av.ADSBCallsign, command
 	case 'F':
 		if command == "FC" {
 			if err := s.ContactTrackingController(tcp, ACID(callsign)); err != nil {
+				return err
+			}
+		} else {
+			return ErrInvalidCommandSyntax
+		}
+
+	case 'G':
+		if command == "GA" {
+			if err := s.GoAhead(tcp, callsign); err != nil {
 				return err
 			}
 		} else {

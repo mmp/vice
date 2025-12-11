@@ -1033,6 +1033,7 @@ var secondaryAcCommands = [][3]string{
 	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
 	[3]string{"*A_alt*", `"Maintain _alt_`, "*A120*"},
 	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
+	[3]string{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
 }
 

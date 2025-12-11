@@ -1598,6 +1598,21 @@ func (s *Sim) possiblyRequestFlightFollowing() {
 func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 	ac.RequestedFlightFollowing = true
 
+	// About 30% of the time, make an abbreviated request and wait for "go ahead"
+	if s.Rand.Float32() < 0.3 {
+		ac.WaitingForGoAhead = true
+
+		rt := av.MakeContactTransmission("[VFR request|with a VFR request]")
+		rt.Type = av.RadioTransmissionContact
+
+		s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+	} else {
+		// Full flight following request
+		s.sendFullFlightFollowingRequest(ac, tcp)
+	}
+}
+
+func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp string) {
 	closestReportingPoint := func(ac *Aircraft) (string, string, float32, bool) {
 		var closest *av.VFRReportingPoint
 		dist := float32(1000000)
