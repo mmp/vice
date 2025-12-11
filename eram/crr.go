@@ -766,11 +766,11 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 
 	// Create a pane extent for the entire menu. If clicked outside, close the menu.
 	menuExtent := math.Extent2D{
-		P0: p3, 
-		P1: p1, 
+		P0: p3,
+		P1: p1,
 	}
 
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]){
+	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
 		if !menuExtent.Inside(mouse.Pos) {
 			ep.crrMenuOpen = false
 		}

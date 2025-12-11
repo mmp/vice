@@ -114,14 +114,14 @@ type ERAMPane struct {
 	}
 
 	// CRR state (session)
-	crrGroups         map[string]*CRRGroup                         `json:"-"`
-	crrMenuOpen       bool                                         `json:"-"`
-	crrFixRects       map[string]math.Extent2D                     `json:"-"`
-	crrLabelRects     map[string]math.Extent2D                     `json:"-"`
-	crrAircraftRects  map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
-	crrReposition     bool                                         `json:"-"`
-	crrRepoStart      time.Time                                    `json:"-"`
-	crrDragOffset     [2]float32                                   `json:"-"`
+	crrGroups        map[string]*CRRGroup                         `json:"-"`
+	crrMenuOpen      bool                                         `json:"-"`
+	crrFixRects      map[string]math.Extent2D                     `json:"-"`
+	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
+	crrAircraftRects map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
+	crrReposition    bool                                         `json:"-"`
+	crrRepoStart     time.Time                                    `json:"-"`
+	crrDragOffset    [2]float32                                   `json:"-"`
 }
 
 func NewERAMPane() *ERAMPane {
