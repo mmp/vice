@@ -14,6 +14,21 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
+// toUpper uppercases the input but preserves the lowercase
+// location symbol (w) so clicked locations display correctly in errors.
+func toUpper(s string) string {
+	s = strings.TrimSpace(s)
+	var b strings.Builder
+	for _, r := range s {
+		if string(r) == locationSymbol {
+			b.WriteRune(r)
+		} else {
+			b.WriteRune(unicode.ToUpper(r))
+		}
+	}
+	return b.String()
+}
+
 type CommandMode int
 
 func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.ScopeTransformations) {
@@ -310,6 +325,158 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		}
 		status.bigOutput = fmt.Sprintf("ACCEPT\nASSIGNED ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 		ep.modifyFlightPlan(ctx, fields[1], fp)
+	case "LF":
+		// CRR
+		// LF <location> <label> <acid>
+		// LF <label> <acid>
+		// Location may be entered with mouse or keyboard
+		originalFields := strings.Fields(original)
+		if len(originalFields) < 2 {
+			status.err = ErrCommandFormat
+			return
+		}
+		// Try location from embedded click
+		loc, haveLoc := tryExtractLocation(cmdLine)
+		args := strings.Fields(cmd)
+		var label string
+		var aircraftStr string
+
+		clickedLoc := haveLoc
+		if haveLoc {
+			if len(args) == 0 {
+				status.err = NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\n%s", strings.TrimSpace(original))
+				return
+			}
+			// If first token is the location symbol, skip it and use the next token as label
+			if args[0] == locationSymbol {
+				if len(args) >= 2 {
+					label = strings.ToUpper(args[1])
+					if len(args) >= 3 {
+						aircraftStr = strings.Join(args[2:], " ")
+					}
+					// keep clickedLoc = true
+					goto haveClickedLabel
+				}
+				status.err = NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\n%s", strings.TrimSpace(original))
+				return
+			}
+			if strings.HasPrefix(args[0], "//") {
+				// Typed location : LF //FIX <label> <aircraft>
+				clickedLoc = false
+				if len(args) >= 2 {
+					label = strings.ToUpper(args[1])
+					if len(args) >= 3 {
+						aircraftStr = strings.Join(args[2:], " ")
+					}
+				}
+			} else {
+				// Clicked location: LF <label> <aircraft>
+				label = strings.ToUpper(args[0])
+				if len(args) >= 2 {
+					aircraftStr = strings.Join(args[1:], " ")
+				}
+			}
+		haveClickedLabel:
+		} else if len(args) >= 1 && strings.HasPrefix(args[0], "//") {
+			if l, ok := parseCRRLocation(ctx, args[0]); ok {
+				loc = l
+				haveLoc = true
+				clickedLoc = false
+				if len(args) >= 2 {
+					label = strings.ToUpper(args[1])
+				}
+				if len(args) >= 3 {
+					aircraftStr = args[2]
+				}
+			}
+		}
+		if haveLoc {
+			// Label is mandatory for clicked locations and FRDs; only auto-derive for  fixes
+			if label == "" {
+				if len(args) >= 1 && strings.HasPrefix(args[0], "//") {
+					token := strings.TrimPrefix(args[0], "//")
+					token = strings.ToUpper(token)
+					// Only auto-derive label if it's a  fix
+					if _, ok := ctx.Client.State.Locate(token); ok && validCRRLabel(token) {
+						label = token
+					}
+				}
+			}
+			if !validCRRLabel(label) {
+				msg := "REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\n%s"
+				if label == "" {
+					msg = "REJECT - MESSAGE TOO SHORT\nCONT RANGE\n%s"
+				}
+				status.err = NewERAMError(msg, strings.TrimSpace(original))
+				return
+			}
+
+			// Clicked locations: must assign to existing group near clicked position; do not create
+			if clickedLoc {
+				g := ep.crrGroups[label]
+				if g == nil {
+					status.err = NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\n%s", toUpper(original))
+					return
+				}
+				nearest := ep.closestTrackToLL(ctx, loc, 5)
+				if nearest == nil {
+					status.err = NewERAMError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\n%s", toUpper(original))
+					return
+				}
+				g.Aircraft[nearest.ADSBCallsign] = struct{}{}
+				status.bigOutput = fmt.Sprintf("ACCEPT\nCRR UPDATED %s", g.Label)
+				return
+			}
+
+			// Typed locations: create new group (with validation above)
+			if ep.crrGroups == nil {
+				ep.crrGroups = make(map[string]*CRRGroup)
+			}
+			// Create group; if it already exists, reject
+			g, ok := ep.crrGroups[label]
+			if ok {
+				status.err = NewERAMError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\n%s", toUpper(original))
+				return
+			}
+			g = &CRRGroup{
+				Label:    label,
+				Location: loc,
+				Color:    ep.currentPrefs().CRR.SelectedColor,
+				Aircraft: make(map[av.ADSBCallsign]struct{}),
+			}
+			ep.crrGroups[label] = g
+			status.bigOutput = fmt.Sprintf("ACCEPT\nCRR GROUP %s CREATED", label)
+			if aircraftStr != "" {
+				for _, cs := range resolveAircraftTokens(ctx, aircraftStr) {
+					g.Aircraft[cs] = struct{}{}
+				}
+			}
+			return
+		}
+		// No location: LF <label> <acids> toggles membership
+		if len(args) >= 2 {
+			label = strings.ToUpper(args[0])
+			if !validCRRLabel(label) {
+				status.err = ErrCommandFormat
+				return
+			}
+			g := ep.crrGroups[label]
+			if g == nil {
+				status.err = ErrCommandFormat
+				return
+			}
+			for _, cs := range resolveAircraftTokens(ctx, args[1]) {
+				if _, ok := g.Aircraft[cs]; ok {
+					delete(g.Aircraft, cs)
+				} else {
+					g.Aircraft[cs] = struct{}{}
+				}
+			}
+			status.bigOutput = fmt.Sprintf("ACCEPT\nCRR UPDATED %s", label)
+			return
+		}
+		status.err = ErrCommandFormat
+		return
 	case "//":
 		cmd = strings.TrimPrefix(cmd, "//") // In case user types //FLID. The space is also acceptable
 		trk, ok := ctx.Client.State.GetTrackByFLID(cmd)
@@ -560,6 +727,21 @@ func (ep *ERAMPane) flightPlanDirect(ctx *panes.Context, acid sim.ACID, fix stri
 		ep.runAircraftCommands(ctx, trk.ADSBCallsign, cmd)
 	}
 	return nil
+}
+
+// closestTrackToLL returns the closest track to the given lat/long within maxNm.
+// Returns nil if no track is within that distance.
+func (ep *ERAMPane) closestTrackToLL(ctx *panes.Context, loc math.Point2LL, maxNm float32) *sim.Track {
+	var best *sim.Track
+	bestDist := maxNm
+	for _, t := range ctx.Client.State.Tracks {
+		d := math.NMDistance2LL(t.Location, loc)
+		if d <= bestDist {
+			bestDist = d
+			best = t
+		}
+	}
+	return best
 }
 
 func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller string) error {

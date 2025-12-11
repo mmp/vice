@@ -40,6 +40,21 @@ type Preferences struct {
 	OutageSize  int
 
 	VideoMapBrightness map[string]int
+
+	// CRR view preferences and configuration
+	CRR struct {
+		Visible       bool
+		ListMode      bool // true: list, false: panel
+		Opaque        bool
+		ShowBorder    bool
+		Lines         int
+		Font          int
+		Bright        int
+		SelectedColor CRRColor
+		ColorBright   map[CRRColor]int
+		Position      [2]float32
+		DisplayFixes  bool // ATC TOOLS overlay of CRR fixes
+	}
 }
 
 const numSavedPreferenceSets = 10
@@ -159,6 +174,26 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.VideoMapVisible = make(map[string]interface{})
 	prefs.VideoMapBrightness = make(map[string]int)
+
+	// CRR defaults
+	prefs.CRR.Visible = true
+	prefs.CRR.ListMode = true
+	prefs.CRR.Opaque = true
+	prefs.CRR.ShowBorder = true
+	prefs.CRR.Lines = 13
+	prefs.CRR.Font = 2
+	prefs.CRR.Bright = 90
+	prefs.CRR.SelectedColor = CRRGreen
+	prefs.CRR.ColorBright = map[CRRColor]int{
+		CRRGreen:   90,
+		CRRYellow:  90,
+		CRRMagenta: 90,
+		CRRCyan:    90,
+		CRRWhite:   90,
+		CRRAmber:   90,
+	}
+	prefs.CRR.Position = [2]float32{10, 600}
+	prefs.CRR.DisplayFixes = false
 	return &prefs
 }
 
