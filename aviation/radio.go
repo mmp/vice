@@ -41,6 +41,9 @@ func loadPronunciationsIfNeeded() {
 			n++
 		}
 
+		if err := json.Unmarshal(util.LoadResourceBytes("sayactype.json"), &sayACTypeMap); err != nil {
+			report("sayactype.json", err)
+		}
 		if err := json.Unmarshal(util.LoadResourceBytes("sayairport.json"), &sayAirportMap); err != nil {
 			report("sayairport.json", err)
 		}
