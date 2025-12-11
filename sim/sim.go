@@ -1643,16 +1643,16 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp string) {
 		return "", "", 0, false
 	}
 
-	rt := av.MakeContactTransmission("[we're a|] {actype}", ac.FlightPlan.AircraftType)
+	rt := av.MakeContactTransmission("[we're a|] {actype}, ", ac.FlightPlan.AircraftType)
 
 	rpdesc, rpdir, dist, isap := closestReportingPoint(ac)
 	if math.NMDistance2LL(ac.Position(), ac.DepartureAirportLocation()) < 2 {
-		rt.Add("departing {airport}", ac.FlightPlan.DepartureAirport)
+		rt.Add("departing {airport}, ", ac.FlightPlan.DepartureAirport)
 	} else if dist < 1 {
 		if isap {
-			rt.Add("overhead {airport}", rpdesc)
+			rt.Add("overhead {airport}, ", rpdesc)
 		} else {
-			rt.Add("overhead " + rpdesc)
+			rt.Add("overhead " + rpdesc + ", ")
 		}
 	} else {
 		nm := int(dist + 0.5)
@@ -1663,9 +1663,9 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp string) {
 			loc = strconv.Itoa(int(dist+0.5)) + " miles " + rpdir
 		}
 		if isap {
-			rt.Add(loc+" of {airport}", rpdesc)
+			rt.Add(loc+" of {airport}, ", rpdesc)
 		} else {
-			rt.Add(loc + " of " + rpdesc)
+			rt.Add(loc + " of " + rpdesc + ", ")
 		}
 	}
 
@@ -1677,10 +1677,10 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp string) {
 	// Check if we're in a climb or descent (more than 100 feet difference)
 	if currentAlt < targetAlt {
 		// Report current altitude and target altitude when climbing or descending
-		alt = av.MakeContactTransmission("[at|] {alt} for {alt}", currentAlt, targetAlt)
+		alt = av.MakeContactTransmission("[at|] {alt} for {alt}, ", currentAlt, targetAlt)
 	} else {
 		// Just report current altitude if we're level
-		alt = av.MakeContactTransmission("at {alt}", currentAlt)
+		alt = av.MakeContactTransmission("at {alt}, ", currentAlt)
 	}
 	earlyAlt := s.Rand.Bool()
 	if earlyAlt {
@@ -1689,7 +1689,7 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp string) {
 
 	if s.Rand.Bool() {
 		// Heading only sometimes
-		rt.Add(math.Compass(ac.Heading()) + "bound")
+		rt.Add(math.Compass(ac.Heading()) + "bound, ")
 	}
 
 	rt.Add("[looking for flight-following|request flight-following|request radar advisories|request advisories] to {airport}",

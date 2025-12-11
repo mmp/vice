@@ -165,7 +165,7 @@ func (rt RadioTransmission) Written(r *rand.Rand) string {
 
 	for i := range rt.Strings {
 		s := rt.Strings[i].Written(r, rt.Args[i])
-		result = append(result, s)
+		result = append(result, strings.TrimSuffix(strings.TrimSpace(s), ","))
 	}
 
 	return strings.Join(result, ", ")
