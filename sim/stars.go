@@ -324,6 +324,7 @@ type FacilityAdaptation struct {
 	RadarSites          map[string]*av.RadarSite          `json:"radar_sites" scope:"stars"`
 	Center              math.Point2LL                     `json:"-"`
 	CenterString        string                            `json:"center"`
+	MaxDistance         float32                           `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm)
 	Range               float32                           `json:"range"`
 	Scratchpads         map[string]string                 `json:"scratchpads" scope:"stars"`
 	SignificantPoints   map[string]SignificantPoint       `json:"significant_points" scope:"stars"`
