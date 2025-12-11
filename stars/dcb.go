@@ -903,22 +903,19 @@ func drawDCBButton(ctx *panes.Context, text string, flags dcbFlags, buttonScale 
 		topLeftBevelColor, bottomRightBevelColor = bottomRightBevelColor, topLeftBevelColor
 	}
 	// Draw the bevel via individual 1-pixel lines (note that down is negative y...)
-	// Top, with the right end pulled left
-	ld.AddLine(p0, p1, topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 0, -1), shiftp(p1, -1, -1), topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 0, -2), shiftp(p1, -2, -2), topLeftBevelColor)
-	// Left side with bottom end pulled up
-	ld.AddLine(p0, p3, topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 1, 0), shiftp(p3, 1, 1), topLeftBevelColor)
-	ld.AddLine(shiftp(p0, 2, 0), shiftp(p3, 2, 2), topLeftBevelColor)
-	// Right side with top pulled down
-	ld.AddLine(p1, p2, bottomRightBevelColor)
-	ld.AddLine(shiftp(p1, -1, -1), shiftp(p2, -1, 0), bottomRightBevelColor)
-	ld.AddLine(shiftp(p1, -2, -2), shiftp(p2, -2, 0), bottomRightBevelColor)
-	// Bottom with left end pulled right
-	ld.AddLine(p2, p3, bottomRightBevelColor)
-	ld.AddLine(shiftp(p2, 0, 1), shiftp(p3, 1, 1), bottomRightBevelColor)
-	ld.AddLine(shiftp(p2, 0, 2), shiftp(p3, 2, 2), bottomRightBevelColor)
+	// Scale bevel width for high-DPI displays
+	bevelWidth := int(3 * ctx.DrawPixelScale)
+	for i := range bevelWidth {
+		fi := float32(i)
+		// Top, with the right end pulled left
+		ld.AddLine(shiftp(p0, 0, -fi), shiftp(p1, -fi, -fi), topLeftBevelColor)
+		// Left side with bottom end pulled up
+		ld.AddLine(shiftp(p0, fi, 0), shiftp(p3, fi, fi), topLeftBevelColor)
+		// Right side with top pulled down
+		ld.AddLine(shiftp(p1, -fi, -fi), shiftp(p2, -fi, 0), bottomRightBevelColor)
+		// Bottom with left end pulled right
+		ld.AddLine(shiftp(p2, 0, fi), shiftp(p3, fi, fi), bottomRightBevelColor)
+	}
 
 	// Scissor to just the extent of the button. Note that we need to give
 	// this in window coordinates, not our local pane coordinates, so
