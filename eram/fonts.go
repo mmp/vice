@@ -12,14 +12,22 @@ import (
 
 func (ep *ERAMPane) ERAMFont(size int) *renderer.Font {
 	if runtime.GOOS == "darwin" {
-		return ep.systemFont[10] // Smaller size for macOS
+		if size == 1 {
+			return ep.systemFont[10] // Smaller size for macOS
+		}
+		return ep.systemFont[size-1]
 	}
 	if size == 4 {
 		size = 3 // Missing one font, so skip it for now
 	}
+	if size < 1 {
+		size = 1
+	}
+	if size > 3 {
+		size = 3
+	}
 	size -= 1
 	return ep.systemFont[size]
-
 }
 func (ep *ERAMPane) ERAMToolbarFont() *renderer.Font {
 	return ep.systemFont[0]

@@ -112,6 +112,16 @@ type ERAMPane struct {
 		OverflightsColor *[3]float32
 		AirspaceColor    *[3]float32
 	}
+
+	// CRR state (session)
+	crrGroups         map[string]*CRRGroup                         `json:"-"`
+	crrMenuOpen       bool                                         `json:"-"`
+	crrFixRects       map[string]math.Extent2D                     `json:"-"`
+	crrLabelRects     map[string]math.Extent2D                     `json:"-"`
+	crrAircraftRects  map[string]map[av.ADSBCallsign]math.Extent2D `json:"-"`
+	crrReposition     bool                                         `json:"-"`
+	crrRepoStart      time.Time                                    `json:"-"`
+	crrDragOffset     [2]float32                                   `json:"-"`
 }
 
 func NewERAMPane() *ERAMPane {
@@ -133,6 +143,18 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 
 	if ep.aircraftFixCoordinates == nil {
 		ep.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
+	}
+	if ep.crrGroups == nil {
+		ep.crrGroups = make(map[string]*CRRGroup)
+	}
+	if ep.crrFixRects == nil {
+		ep.crrFixRects = make(map[string]math.Extent2D)
+	}
+	if ep.crrLabelRects == nil {
+		ep.crrLabelRects = make(map[string]math.Extent2D)
+	}
+	if ep.crrAircraftRects == nil {
+		ep.crrAircraftRects = make(map[string]map[av.ADSBCallsign]math.Extent2D)
 	}
 
 	ep.events = es.Subscribe()
@@ -198,6 +220,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
+	ep.drawCRRFixes(ctx, transforms, cb)
 	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
@@ -207,10 +230,12 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTargets(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
+	ep.drawCRRDistances(ctx, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
 	// Draw views
+	ep.drawCRRView(ctx, transforms, cb)
 	ep.drawCommandInput(ctx, transforms, cb)
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 	ep.drawMasterMenu(ctx, cb)
@@ -297,6 +322,26 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss sim.State) {
 	}
 	if ep.prefSet.Current.commandSmallPosition == ([2]float32{}) {
 		ep.prefSet.Current.commandSmallPosition = def.commandSmallPosition
+	}
+	// Fill in CRR defaults if this preference set was created before CRR existed
+	if ep.prefSet.Current.CRR.ColorBright == nil {
+		ep.prefSet.Current.CRR.ColorBright = def.CRR.ColorBright
+	}
+	if ep.prefSet.Current.CRR.Font == 0 {
+		ep.prefSet.Current.CRR.Font = def.CRR.Font
+	}
+	if ep.prefSet.Current.CRR.Lines == 0 {
+		ep.prefSet.Current.CRR.Lines = def.CRR.Lines
+	}
+	if ep.prefSet.Current.CRR.Bright == 0 {
+		ep.prefSet.Current.CRR.Bright = def.CRR.Bright
+	}
+	if ep.prefSet.Current.CRR.Position == ([2]float32{}) {
+		ep.prefSet.Current.CRR.Position = def.CRR.Position
+	}
+	// If explicitly unset, start visible in new sessions
+	if !ep.prefSet.Current.CRR.Visible {
+		ep.prefSet.Current.CRR.Visible = def.CRR.Visible
 	}
 }
 
@@ -399,7 +444,7 @@ func (inp *inputText) displayError(ps *Preferences, err error) {
 	if err != nil {
 		errMsg := inputText{}
 		errMsg.Add(xMark+" ", renderer.RGB{1, 0, 0}, [2]float32{0, 0}) // TODO: Find actual red color
-		errMsg.AddBasic(ps, strings.ToUpper(err.Error()))
+		errMsg.AddBasic(ps, toUpper(err.Error()))
 		*inp = errMsg
 	}
 }

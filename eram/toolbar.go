@@ -106,7 +106,9 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		toolbarDrawState.customButton["VECTOR"] = renderer.RGB{0, .82, 0}
 		toolbarDrawState.customButton["DELETE\nTEAROFF"] = renderer.RGB{0, .804, .843}
 		ep.drawToolbarFullButton(ctx, "DRAW", 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "ATC\nTOOLS", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, "ATC\nTOOLS", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarATCTools
+		}
 		ep.drawToolbarFullButton(ctx, "AB\nSETTING", 0, scale, false, false)
 		var val = ep.currentPrefs().Range
 		var rangeStr string
@@ -144,6 +146,23 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, false, false) {
 			// ep.deleteTearoff = true
+		}
+	case toolbarATCTools:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		main := "ATC\nTOOLS"
+		toolbarDrawState.customButton[main] = toolbarActiveButtonColor
+		drawButtonSamePosition(ctx, main)
+		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+			delete(toolbarDrawState.customButton, main)
+		}
+		ps := ep.currentPrefs()
+		if ep.drawToolbarFullButton(ctx, "CRR\nFIX", 0, scale, false, false) {
+			ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 		}
 	case toolbarFont:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -491,8 +510,18 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		p1 := oppositeHorizontal(toolbarDrawState.buttonCursor, buttonSize(buttonFull, scale))
 		p1 = oppositeHorizontal(p1, buttonSize(buttonTearoff, scale))
 		// p1 := toolbarDrawState.buttonCursor
-		if ep.drawToolbarFullButton(ctx, "CRR", 0, scale, false, false) {
-			// handle CRR
+		ps := ep.currentPrefs()
+		crrActive := ps.CRR.Visible || ep.crrMenuOpen
+		if ep.drawToolbarFullButton(ctx, "CRR", 0, scale, crrActive, false) {
+			// Toggle visibility; when enabling, default to LIST mode and keep menu closed.
+			if ps.CRR.Visible {
+				ps.CRR.Visible = false
+				ep.crrMenuOpen = false
+			} else {
+				ps.CRR.Visible = true
+				ps.CRR.ListMode = true
+				ep.crrMenuOpen = false
+			}
 		}
 
 		toolbarDrawState.offsetBottom = true
