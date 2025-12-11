@@ -71,6 +71,11 @@ func imguiInit() *imgui.Context {
 	context := imgui.CreateContext()
 	imgui.CurrentIO().SetIniFilename("")
 
+	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
+	// clearing the shortcut keys that trigger it.
+	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
+	context.SetConfigNavWindowingKeyPrev(imgui.KeyChord(imgui.KeyNone))
+
 	// General imgui styling
 	style := imgui.CurrentStyle()
 	style.SetFrameRounding(2.)
