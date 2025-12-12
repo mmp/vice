@@ -496,3 +496,24 @@ func (ep *ERAMPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.Scop
 	ep.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 	ep.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 }
+
+func (ep *ERAMPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	if len(ep.drawRoutePoints) == 0 {
+		return
+	}
+
+	ld := renderer.GetLinesDrawBuilder()
+	defer renderer.ReturnLinesDrawBuilder(ld)
+
+	for i, pt := range ep.drawRoutePoints {
+		pwin := transforms.WindowFromLatLongP(pt)
+		ld.AddCircle(pwin, 10, 30)
+		if i+1 < len(ep.drawRoutePoints) {
+			ld.AddLine(pwin, transforms.WindowFromLatLongP(ep.drawRoutePoints[i+1]))
+		}
+	}
+	cb.LineWidth(1, ctx.DPIScale)
+	cb.SetRGB(renderer.RGB{1, .3, .3})
+	transforms.LoadWindowViewingMatrices(cb)
+	ld.GenerateCommands(cb)
+}
