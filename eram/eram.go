@@ -2,6 +2,7 @@ package eram
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -122,6 +123,10 @@ type ERAMPane struct {
 	crrReposition    bool                                         `json:"-"`
 	crrRepoStart     time.Time                                    `json:"-"`
 	crrDragOffset    [2]float32                                   `json:"-"`
+
+	commandMode       CommandMode     `json:"-"`
+	drawRouteAircraft av.ADSBCallsign `json:"-"`
+	drawRoutePoints   []math.Point2LL `json:"-"`
 }
 
 func NewERAMPane() *ERAMPane {
@@ -220,6 +225,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// Draw weather
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
+	ep.drawPlotPoints(ctx, transforms, cb)
 	ep.drawCRRFixes(ctx, transforms, cb)
 	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
@@ -271,6 +277,10 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl plat
 	ep.scopeDraw.departures = nil
 	ep.scopeDraw.overflights = nil
 	ep.scopeDraw.airspace = nil
+
+	ep.commandMode = CommandModeNone
+	ep.drawRoutePoints = nil
+	ep.drawRouteAircraft = ""
 }
 
 // ensurePrefSetForSim initializes the ERAM preference set if needed and
@@ -476,7 +486,21 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ps.commandSmallPosition = [2]float32{big[0] + 390, big[1]}
 			}
 		case imgui.KeyBackspace:
-			if len(ep.Input) > 0 {
+			if ep.commandMode == CommandModeDrawRoute {
+				if n := len(ep.drawRoutePoints); n > 0 {
+					ep.drawRoutePoints = ep.drawRoutePoints[:n-1]
+					if len(ep.drawRoutePoints) > 0 {
+						var cb []string
+						for _, p := range ep.drawRoutePoints {
+							cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
+						}
+						ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
+						ep.smallOutput.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+					} else {
+						ep.smallOutput.Set(ps, "DRAWROUTE")
+					}
+				}
+			} else if len(ep.Input) > 0 {
 				ep.Input = ep.Input[:len(ep.Input)-1]
 			}
 		case imgui.KeyEnter:
@@ -496,6 +520,11 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.repositionLargeInput = false
 				ep.repositionSmallOutput = false
 			} else {
+				if ep.commandMode == CommandModeDrawRoute {
+					ep.commandMode = CommandModeNone
+					ep.drawRoutePoints = nil
+					ep.smallOutput.Clear()
+				}
 				ep.Input.Clear()
 				ep.bigOutput.Clear()
 			}
