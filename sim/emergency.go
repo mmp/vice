@@ -534,7 +534,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	}
 
 	if stage.RequestEquipment {
-		transmit("[we'd like equipment standing by|request ARFF waiting for us|roll the trucks for us]")
+		transmit("[we'd like equipment standing by|request ARFF waiting for us|roll the trucks for us|we're gonna need the trucks by the runway]")
 	}
 
 	// Post the radio transmission

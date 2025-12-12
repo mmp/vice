@@ -214,6 +214,19 @@
           "request_return": true
         }
       ]
+    },
+    {
+      "name": "Pitch Trim Runway",
+      "weight": 0.5,
+      "applicable_to": "departure",
+      "stages": [
+        {
+          "transmission": "we have a [pitch trim runaway|runaway trim]",
+          "declare_emergency": true,
+          "request_equipment": true,
+          "request_return": true
+        }
+      ]
     }
   ]
 }
