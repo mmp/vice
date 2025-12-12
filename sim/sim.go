@@ -1495,7 +1495,7 @@ func (s *Sim) updateState() {
 
 			// Cull far-away aircraft
 
-			if math.NMDistance2LL(ac.Position(), s.State.Center) > util.Select(s.State.FacilityAdaptation.MaxDistance>0, s.State.FacilityAdaptation.MaxDistance, 125) {
+			if math.NMDistance2LL(ac.Position(), s.State.Center) > util.Select(s.State.FacilityAdaptation.MaxDistance > 0, s.State.FacilityAdaptation.MaxDistance, 125) {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}
