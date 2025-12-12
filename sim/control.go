@@ -1530,6 +1530,9 @@ func (s *Sim) processEnqueued() {
 				if ac, ok := s.Aircraft[oc.ADSBCallsign]; ok {
 					s.lg.Info("departing on course", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 						slog.Int("final_altitude", ac.FlightPlan.Altitude))
+						// Clear temporary altitude 
+					s.State.Tracks[ac.ADSBCallsign].FlightPlan.InterimAlt = 0
+					s.State.Tracks[ac.ADSBCallsign].FlightPlan.InterimType = 0
 					ac.DepartOnCourse(s.lg)
 				}
 				return false
