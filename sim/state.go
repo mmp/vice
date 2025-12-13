@@ -21,6 +21,22 @@ import (
 
 const serverCallsign = "__SERVER__"
 
+// ControllerPosition identifies a controller position in either STARS or ERAM.
+// For STARS, this is the TCP (Terminal Control Position) like "2K" or "4P".
+// For ERAM, this is the sector identifier like "N56" or "W05".
+// This is the generic type used throughout the codebase for any controller position.
+type ControllerPosition string
+
+// TCP is an alias for ControllerPosition, provided for clarity in STARS-specific code.
+// Use TCP when the code is explicitly STARS-related; use ControllerPosition for
+// code that handles both STARS and ERAM controllers.
+type TCP = ControllerPosition
+
+// TCW is a Terminal Controller Workstation identifier - a physical display and keyboard.
+// A TCW can control zero, one, or more positions. This is STARS-specific; ERAM does
+// not have the same consolidation model.
+type TCW string
+
 // State serves two purposes: first, the Sim object holds one to organize
 // assorted information about the world state that it updates as part of
 // the simulation. Second, an instance of it is given to clients when they
@@ -44,12 +60,12 @@ type State struct {
 	ReleaseDepartures []ReleaseDeparture
 
 	// Signed in human controllers + virtual controllers
-	Controllers      map[string]*av.Controller
-	HumanControllers []string
+	Controllers      map[ControllerPosition]*av.Controller
+	HumanControllers []ControllerPosition
 
-	PrimaryController string
+	PrimaryController ControllerPosition
 	MultiControllers  av.SplitConfiguration
-	UserTCP           string
+	UserTCP           ControllerPosition
 	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
 	GenerationIndex int
@@ -99,7 +115,7 @@ type State struct {
 type ReleaseDeparture struct {
 	ADSBCallsign        av.ADSBCallsign
 	DepartureAirport    string
-	DepartureController string
+	DepartureController ControllerPosition
 	Released            bool
 	Squawk              av.Squawk
 	ListIndex           int
@@ -116,10 +132,10 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
 
-		Controllers:       make(map[string]*av.Controller),
-		PrimaryController: config.PrimaryController,
+		Controllers:       make(map[ControllerPosition]*av.Controller),
+		PrimaryController: ControllerPosition(config.PrimaryController),
 		MultiControllers:  config.MultiControllers,
-		UserTCP:           serverCallsign,
+		UserTCP:           ControllerPosition(serverCallsign),
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
@@ -161,13 +177,13 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	if len(config.ControllerAirspace) > 0 {
 		ss.Airspace = make(map[string]map[string][]av.ControllerAirspaceVolume)
 		if config.IsLocal {
-			ss.Airspace[ss.PrimaryController] = make(map[string][]av.ControllerAirspaceVolume)
+			ss.Airspace[string(ss.PrimaryController)] = make(map[string][]av.ControllerAirspaceVolume)
 			// Take all the airspace
 			for _, vnames := range config.ControllerAirspace {
 				for _, vname := range vnames {
 					// Remap from strings provided in the scenario to the
 					// actual volumes defined in the scenario group.
-					ss.Airspace[ss.PrimaryController][vname] = config.Airspace.Volumes[vname]
+					ss.Airspace[string(ss.PrimaryController)][vname] = config.Airspace.Volumes[vname]
 				}
 			}
 		} else {
@@ -192,7 +208,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 
 	for _, callsign := range config.VirtualControllers {
 		// Filter out any that are actually human-controlled positions.
-		if callsign == ss.PrimaryController {
+		if callsign == string(ss.PrimaryController) {
 			continue
 		}
 		if ss.MultiControllers != nil {
@@ -202,7 +218,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		}
 
 		if ctrl, ok := config.ControlPositions[callsign]; ok {
-			ss.Controllers[callsign] = ctrl
+			ss.Controllers[ControllerPosition(callsign)] = ctrl
 		} else {
 			lg.Errorf("%s: controller not found in ControlPositions??", callsign)
 		}
@@ -245,7 +261,7 @@ func (ss *State) GetStateForController(tcp string) *State {
 	// World state to improve responsiveness don't actually affect the
 	// server.)
 	state := deep.MustCopy(*ss)
-	state.UserTCP = tcp
+	state.UserTCP = ControllerPosition(tcp)
 
 	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
 	if config, ok := ss.FacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
@@ -291,7 +307,7 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 
 	for pos := range ss.MultiControllers {
 		rid, _ := ss.MultiControllers.ResolveController(pos, func(id string) bool {
-			_, ok := ss.Controllers[id]
+			_, ok := ss.Controllers[ControllerPosition(id)]
 			return ok // active
 		})
 		if rid == id { // The position resolves to us.
@@ -304,19 +320,19 @@ func (ss *State) GetConsolidatedPositions(id string) []string {
 	return cons
 }
 
-func (ss *State) ResolveController(tcp string) string {
-	if _, ok := ss.Controllers[tcp]; ok {
+func (ss *State) ResolveController(pos ControllerPosition) ControllerPosition {
+	if _, ok := ss.Controllers[pos]; ok {
 		// The easy case: the controller is already signed in
-		return tcp
+		return pos
 	}
 
 	if len(ss.MultiControllers) > 0 {
-		mtcp, err := ss.MultiControllers.ResolveController(tcp,
+		mtcp, err := ss.MultiControllers.ResolveController(string(pos),
 			func(multiTCP string) bool {
-				return slices.Contains(ss.HumanControllers, multiTCP)
+				return slices.Contains(ss.HumanControllers, ControllerPosition(multiTCP))
 			})
 		if err == nil {
-			return mtcp
+			return ControllerPosition(mtcp)
 		}
 	}
 
@@ -367,44 +383,44 @@ func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 }
 
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[string(ss.UserTCP)]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[string(ss.UserTCP)]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center
 }
 
-func (ss *State) FacilityFromController(callsign string) (string, bool) {
-	if controller := ss.Controllers[callsign]; controller != nil {
+func (ss *State) FacilityFromController(pos ControllerPosition) (string, bool) {
+	if controller := ss.Controllers[pos]; controller != nil {
 		if controller.Facility != "" {
 			return controller.Facility, true
 		} else if controller != nil {
 			return ss.TRACON, true
 		}
 	}
-	if slices.Contains(ss.HumanControllers, callsign) || callsign == ss.PrimaryController {
+	if slices.Contains(ss.HumanControllers, pos) || pos == ss.PrimaryController {
 		return ss.TRACON, true
 	}
-	if _, ok := ss.MultiControllers[callsign]; ok {
+	if _, ok := ss.MultiControllers[string(pos)]; ok {
 		return ss.TRACON, true
 	}
 
 	return "", false
 }
 
-func (ss *State) AreInstructorOrRPO(tcp string) bool {
+func (ss *State) AreInstructorOrRPO(pos ControllerPosition) bool {
 	// Check if they're marked as an instructor in the Instructors map (for regular controllers with instructor privileges)
-	if ss.Instructors[tcp] {
+	if ss.Instructors[string(pos)] {
 		return true
 	}
 	// Also check if they're signed in as a dedicated instructor/RPO position
-	ctrl, ok := ss.Controllers[tcp]
+	ctrl, ok := ss.Controllers[pos]
 	return ok && (ctrl.Instructor || ctrl.RPO)
 }
 
@@ -496,12 +512,12 @@ func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
 	return nil
 }
 
-func (ss *State) IsExternalController(tcp string) bool {
-	ctrl, ok := ss.Controllers[tcp]
+func (ss *State) IsExternalController(pos ControllerPosition) bool {
+	ctrl, ok := ss.Controllers[pos]
 	return ok && ctrl.FacilityIdentifier != ""
 }
 
-func (ss *State) IsLocalController(tcp string) bool {
-	ctrl, ok := ss.Controllers[tcp]
+func (ss *State) IsLocalController(pos ControllerPosition) bool {
+	ctrl, ok := ss.Controllers[pos]
 	return ok && ctrl.FacilityIdentifier == ""
 }

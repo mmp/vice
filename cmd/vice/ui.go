@@ -1312,8 +1312,8 @@ func (mp *MissingPrimaryModalClient) Opening() {}
 
 func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Sign in to " + mp.client.State.PrimaryController, action: func() bool {
-		err := mp.client.ChangeControlPosition(mp.client.State.PrimaryController, true)
+	b = append(b, ModalDialogButton{text: "Sign in to " + string(mp.client.State.PrimaryController), action: func() bool {
+		err := mp.client.ChangeControlPosition(string(mp.client.State.PrimaryController), true)
 		return err == nil
 	}})
 	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
@@ -1325,7 +1325,7 @@ func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
 }
 
 func (mp *MissingPrimaryModalClient) Draw() int {
-	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", is not signed in.\nThe simulation will be paused until that position is covered.")
+	imgui.Text("The primary controller, " + string(mp.client.State.PrimaryController) + ", is not signed in.\nThe simulation will be paused until that position is covered.")
 	return -1
 }
 

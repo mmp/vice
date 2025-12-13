@@ -261,8 +261,8 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)
 		dbWriteText(db.col1[:], util.Select(ctx.ControlsPosition(trk.FlightPlan.TrackingController), "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
-		if trk.FlightPlan.HandoffTrackController != "" {
-			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffTrackController]
+		if trk.FlightPlan.HandoffController != "" {
+			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffController]
 			var controller string
 			if ok {
 				controller = ctrl.ERAMID()
@@ -270,7 +270,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 					controller = "-" + controller
 				}
 			} else {
-				controller = trk.FlightPlan.HandoffTrackController
+				controller = string(trk.FlightPlan.HandoffController)
 			}
 			if len(controller) == 2 {
 				controller = "-" + controller
@@ -286,7 +286,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 					controller = "-" + controller
 				}
 			} else {
-				controller = trk.FlightPlan.TrackingController
+				controller = string(trk.FlightPlan.TrackingController)
 			}
 			a := util.Select(ep.dbAlternate, fmt.Sprintf("O%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
 			dbWriteText(db.fieldE[:], a, color, false)

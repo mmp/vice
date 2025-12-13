@@ -126,7 +126,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 			fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
 			if ac.TypeOfFlight == av.FlightTypeArrival {
 				// Record who had the track so they can still issue control instructions.
-				ac.PreArrivalDropController = fp.TrackingController
+				ac.PreArrivalDropTCP = fp.TrackingController
 			}
 			sc.FlightPlans = append(sc.FlightPlans, fp)
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
@@ -165,7 +165,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 						return true
 					}
 					// Inbound handoff from an external facility
-					if (fp.HandoffTrackController != "" && s.State.IsLocalController(fp.HandoffTrackController)) ||
+					if (fp.HandoffController != "" && s.State.IsLocalController(fp.HandoffController)) ||
 						// Handoff to a virtual controller
 						s.State.IsLocalController(fp.TrackingController) {
 						return true

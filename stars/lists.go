@@ -1107,7 +1107,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, paneExtent math.Exte
 			for line.Len() < 16 {
 				line.WriteByte(' ')
 			}
-			line.WriteString(ctx.UserTCP)
+			line.WriteString(string(ctx.UserTCP))
 		}
 		lines = append(lines, line.String())
 	}
@@ -1195,7 +1195,7 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, paneExtent math.Extent2D
 
 	if ctrl := ctx.Client.State.Controllers[ctx.UserTCP]; ctrl != nil {
 		signOnTime := ctx.Client.SessionStats.SignOnTime
-		s := ctx.UserTCP + " " + signOnTime.UTC().Format("1504") // TODO: initials
+		s := string(ctx.UserTCP) + " " + signOnTime.UTC().Format("1504") // TODO: initials
 		return sp.drawListText(ctx, paneExtent, &ps.SignOnList.Position, s,
 			style, td, "SIGN ON (TS)", ld)
 	}

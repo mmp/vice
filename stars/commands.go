@@ -808,14 +808,14 @@ func (sp *STARSPane) displayError(err error, ctx *panes.Context, acid sim.ACID) 
 		if err == ErrSTARSDuplicateACID {
 			sp.previewAreaOutput += " " + string(acid)
 			if trk, ok := ctx.Client.State.GetTrackByACID(acid); ok && trk.IsAssociated() {
-				sp.previewAreaOutput += "\nFLIGHT ACTIVE AT " + trk.FlightPlan.TrackingController
+				sp.previewAreaOutput += "\nFLIGHT ACTIVE AT " + string(trk.FlightPlan.TrackingController)
 			} else if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
 				func(fp *sim.NASFlightPlan) bool {
 					return fp.ACID == acid
 				}); idx != -1 {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
 				if fp.TrackingController != "" {
-					sp.previewAreaOutput += "\nFLIGHT INACTIVE AT " + fp.TrackingController
+					sp.previewAreaOutput += "\nFLIGHT INACTIVE AT " + string(fp.TrackingController)
 				}
 			}
 		}
@@ -907,7 +907,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 		} else if lc == 3 {
 			// ∆N4P for example. Must be a different facility.
 			for _, control := range ctx.Client.State.Controllers {
-				if control.TCP == id[1:] && control.FacilityIdentifier == string(id[0]) {
+				if control.SectorID == id[1:] && control.FacilityIdentifier == string(id[0]) {
 					return control
 				}
 			}
@@ -920,7 +920,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 
 		if tcp, err := calculateAirspace(ctx, acid); err != nil {
 			return nil
-		} else if ctrl, ok := ctx.Client.State.Controllers[tcp]; ok {
+		} else if ctrl, ok := ctx.Client.State.Controllers[sim.ControllerPosition(tcp)]; ok {
 			return ctrl
 		}
 	} else {
@@ -930,22 +930,22 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 
 			for _, control := range ctx.Client.State.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)
-					control.TCP[0] == userController.TCP[0] && // Same Sector?
-					control.TCP[1] == id[0] { // The actual controller
+					control.SectorID[0] == userController.SectorID[0] && // Same Sector?
+					control.SectorID[1] == id[0] { // The actual controller
 					return control
 				}
 			}
 		} else if lc == 2 {
 			// Must be a same sector || same facility.
 			for _, control := range ctx.Client.State.Controllers {
-				if control.TCP == id && control.FacilityIdentifier == "" {
+				if control.SectorID == id && control.FacilityIdentifier == "" {
 					return control
 				}
 			}
 		}
 
 		for _, control := range ctx.Client.State.Controllers {
-			if control.ERAMFacility && control.TCP == id {
+			if control.ERAMFacility && control.SectorID == id {
 				return control
 			}
 		}

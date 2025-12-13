@@ -1143,9 +1143,9 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
-		TrackingController:       arr.InitialController,
-		ControllingController:    arr.InitialController,
-		InboundHandoffController: s.getInboundHandoffController(arr.InitialController, group, ac.Nav.Waypoints),
+		TrackingController:       ControllerPosition(arr.InitialController),
+		ControllingController:    ControllerPosition(arr.InitialController),
+		InboundHandoffController: ControllerPosition(s.getInboundHandoffController(arr.InitialController, group, ac.Nav.Waypoints)),
 
 		Rules:        av.FlightRulesIFR,
 		TypeOfFlight: av.FlightTypeArrival,
@@ -1206,7 +1206,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 }
 
 func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps av.WaypointArray) string {
-	if tcp := s.State.ResolveController(initialTCP); initialTCP != "" && s.isActiveHumanController(tcp) {
+	if tcp := s.State.ResolveController(ControllerPosition(initialTCP)); initialTCP != "" && s.isActiveHumanController(string(tcp)) {
 		return initialTCP
 	} else if slices.ContainsFunc(wps, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
 		// Figure out which controller will (for starters) get the arrival
@@ -1215,7 +1215,7 @@ func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps a
 		// the actual handoff controller will be resolved later when the
 		// handoff happens, so that it can reflect which controllers are
 		// actually signed in at that point.
-		hoTCP := s.State.PrimaryController
+		hoTCP := string(s.State.PrimaryController)
 		if len(s.State.MultiControllers) > 0 {
 			var err error
 			hoTCP, err = s.State.MultiControllers.GetInboundController(group)
@@ -1226,7 +1226,7 @@ func (s *Sim) getInboundHandoffController(initialTCP string, group string, wps a
 			}
 
 			if hoTCP == "" {
-				hoTCP = s.State.PrimaryController
+				hoTCP = string(s.State.PrimaryController)
 			}
 		}
 		return hoTCP
@@ -1354,25 +1354,26 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 
 	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 
-	if ap.DepartureController != "" && ap.DepartureController != s.State.PrimaryController {
+	if ap.DepartureController != "" && ap.DepartureController != string(s.State.PrimaryController) {
 		// Starting out with a virtual controller; automatically release
 		// since there's no human to manually release.
-		starsFp.TrackingController = ap.DepartureController
-		starsFp.ControllingController = ap.DepartureController
-		starsFp.InboundHandoffController = exitRoute.HandoffController
+		starsFp.TrackingController = ControllerPosition(ap.DepartureController)
+		starsFp.ControllingController = ControllerPosition(ap.DepartureController)
+		starsFp.InboundHandoffController = ControllerPosition(exitRoute.HandoffController)
 		ac.HoldForRelease = false
-	} else if exitRoute.DepartureController != "" && exitRoute.DepartureController != s.State.PrimaryController {
+	} else if exitRoute.DepartureController != "" && exitRoute.DepartureController != string(s.State.PrimaryController) {
 		// Starting out with a virtual controller; automatically release.
-		starsFp.TrackingController = exitRoute.DepartureController
-		starsFp.ControllingController = exitRoute.DepartureController
-		starsFp.InboundHandoffController = exitRoute.HandoffController
+		starsFp.TrackingController = ControllerPosition(exitRoute.DepartureController)
+		starsFp.ControllingController = ControllerPosition(exitRoute.DepartureController)
+		starsFp.InboundHandoffController = ControllerPosition(exitRoute.HandoffController)
 		ac.HoldForRelease = false
 	} else {
 		// Human controller will be first
 		ctrl := s.State.PrimaryController
 		if len(s.State.MultiControllers) > 0 {
 			var err error
-			ctrl, err = s.State.MultiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
+			ctrlStr, err := s.State.MultiControllers.GetDepartureController(departureAirport, runway, exitRoute.SID)
+			ctrl = ControllerPosition(ctrlStr)
 			if err != nil {
 				s.lg.Error("unable to get departure controller", slog.Any("error", err),
 					slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
@@ -1435,9 +1436,9 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
 
-		TrackingController:       of.InitialController,
-		ControllingController:    of.InitialController,
-		InboundHandoffController: s.getInboundHandoffController(of.InitialController, group, ac.Nav.Waypoints),
+		TrackingController:       ControllerPosition(of.InitialController),
+		ControllingController:    ControllerPosition(of.InitialController),
+		InboundHandoffController: ControllerPosition(s.getInboundHandoffController(of.InitialController, group, ac.Nav.Waypoints)),
 
 		Rules:               av.FlightRulesIFR,
 		TypeOfFlight:        av.FlightTypeOverflight,

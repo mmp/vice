@@ -373,7 +373,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 		}
 		for _, pos := range util.SortedMapKeys(ep.scopeDraw.airspace) {
 			hdr := pos
-			if ctrl, ok := c.State.Controllers[pos]; ok {
+			if ctrl, ok := c.State.Controllers[sim.ControllerPosition(pos)]; ok {
 				hdr += " (" + ctrl.Position + ")"
 			}
 			if imgui.TreeNodeExStr(hdr) {

@@ -462,14 +462,15 @@ func main() {
 				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
 				id := controlClient.State.UserTCP
+				idStr := string(id)
 				if ctrl, ok := controlClient.State.Controllers[id]; ok {
-					id += " (" + ctrl.Position + ")"
+					idStr += " (" + ctrl.Position + ")"
 				}
 				stats := controlClient.SessionStats
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: stats.Departures + stats.IntraFacility,
 					TotalArrivals:   stats.Arrivals + stats.IntraFacility,
-					Position:        id,
+					Position:        idStr,
 					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)
 			}

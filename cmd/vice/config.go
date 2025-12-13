@@ -123,7 +123,7 @@ func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Pla
 			lg.Errorf("%v", err)
 		} else {
 			c.Sim = sim
-			c.UserTCP = client.State.UserTCP
+			c.UserTCP = string(client.State.UserTCP)
 		}
 	}
 

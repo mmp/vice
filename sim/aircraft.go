@@ -64,10 +64,10 @@ type Aircraft struct {
 	DepartureContactAltitude float32
 
 	// The controller who gave approach clearance
-	ApproachController string
+	ApproachTCP TCP
 
 	// Who had control when the fp disassociated due to an arrival filter.
-	PreArrivalDropController string
+	PreArrivalDropTCP TCP
 
 	FirstSeen time.Time
 
@@ -628,12 +628,12 @@ func (ac *Aircraft) WillDoAirwork() bool {
 		slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.AirworkRadius > 0 })
 }
 
-func (ac *Aircraft) transferTracks(from, to string) {
-	if ac.ApproachController == from {
-		ac.ApproachController = to
+func (ac *Aircraft) transferTracks(from, to ControllerPosition) {
+	if ac.ApproachTCP == from {
+		ac.ApproachTCP = to
 	}
-	if ac.PreArrivalDropController == from {
-		ac.PreArrivalDropController = to
+	if ac.PreArrivalDropTCP == from {
+		ac.PreArrivalDropTCP = to
 	}
 
 	if ac.IsUnassociated() {
@@ -641,8 +641,8 @@ func (ac *Aircraft) transferTracks(from, to string) {
 	}
 
 	sfp := ac.NASFlightPlan
-	if sfp.HandoffTrackController == from {
-		sfp.HandoffTrackController = to
+	if sfp.HandoffController == from {
+		sfp.HandoffController = to
 	}
 	if sfp.TrackingController == from {
 		sfp.TrackingController = to
@@ -652,7 +652,7 @@ func (ac *Aircraft) transferTracks(from, to string) {
 	}
 }
 
-func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryController string) {
+func (ac *Aircraft) handleControllerDisconnect(callsign ControllerPosition, primaryController ControllerPosition) {
 	if callsign == primaryController {
 		// Don't change anything; the sim will pause without the primary
 		// controller, so we might as well have all of the tracks and
@@ -664,13 +664,13 @@ func (ac *Aircraft) handleControllerDisconnect(callsign string, primaryControlle
 	}
 
 	sfp := ac.NASFlightPlan
-	if sfp.HandoffTrackController == callsign {
+	if sfp.HandoffController == callsign {
 		// Otherwise redirect handoffs to the primary controller. This is
 		// not a perfect solution; for an arrival, for example, we should
 		// re-resolve it based on the signed-in controllers, as is done in
 		// Sim updateState() for arrivals when they are first handed
 		// off. We don't have all of that information here, though...
-		sfp.HandoffTrackController = primaryController
+		sfp.HandoffController = primaryController
 	}
 
 	if sfp.ControllingController == callsign {
@@ -697,7 +697,7 @@ func (ac *Aircraft) IsAssociated() bool {
 func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
 	ac.NASFlightPlan = fp
-	ac.PreArrivalDropController = ""
+	ac.PreArrivalDropTCP = ""
 }
 
 func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {

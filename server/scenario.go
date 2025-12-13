@@ -203,7 +203,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 	addControllersFromWaypoints := func(route []av.Waypoint) {
 		for _, wp := range route {
-			addController(wp.TCPHandoff)
+			addController(wp.HandoffController)
 		}
 	}
 	// Make sure all of the controllers used in airspace awareness will be there.
@@ -854,7 +854,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
 			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
 		}
-		if ctrl.TCP == "" {
+		if ctrl.SectorID == "" {
 			e.ErrorString("no \"sector_id\" specified")
 		}
 		if ctrl.RadioName == "" {
@@ -868,13 +868,13 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 			if ctrl.FacilityIdentifier == "" {
 				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
 			}
-			if len(ctrl.TCP) < 2 {
+			if len(ctrl.SectorID) < 2 {
 				e.ErrorString("must specify both facility and numeric sector for center controller")
 			} else {
-				if !(ctrl.TCP[0] >= 'A' && ctrl.TCP[0] <= 'Z') {
+				if !(ctrl.SectorID[0] >= 'A' && ctrl.SectorID[0] <= 'Z') {
 					e.ErrorString("first character of center controller \"sector_id\" must be a letter")
 				}
-				if _, err := strconv.Atoi(ctrl.TCP[1:]); err != nil {
+				if _, err := strconv.Atoi(ctrl.SectorID[1:]); err != nil {
 					e.ErrorString("center controller \"sector_id\" must end with a number")
 				}
 			}
@@ -885,8 +885,8 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 			if ctrl.FacilityIdentifier == ctrl.Scope {
 				e.ErrorString("\"scope_char\" is redundant since it matches \"facility_id\"")
 			}
-			if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" && len(ctrl.TCP) > 0 &&
-				ctrl.Scope == string(ctrl.TCP[len(ctrl.TCP)-1]) {
+			if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" && len(ctrl.SectorID) > 0 &&
+				ctrl.Scope == string(ctrl.SectorID[len(ctrl.SectorID)-1]) {
 				e.ErrorString("\"scope_char\" is redundant since it matches the last character of a local controller's \"sector_id\"")
 			}
 		}
@@ -972,8 +972,8 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	}
 	rewriteWaypoints := func(wp av.WaypointArray) {
 		for _, w := range wp {
-			if w.TCPHandoff != "" {
-				rewrite(&w.TCPHandoff)
+			if w.HandoffController != "" {
+				rewrite(&w.HandoffController)
 			}
 		}
 	}

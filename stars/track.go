@@ -299,9 +299,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.AcknowledgedPointOutEvent:
 			if tcps, ok := sp.PointOuts[event.ACID]; ok {
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					if ctx.ControlsPosition(tcps.From) {
+					if ctx.ControlsPosition(sim.ControllerPosition(tcps.From)) {
 						state.POFlashingEndTime = time.Now().Add(5 * time.Second)
-					} else if ctx.ControlsPosition(tcps.To) {
+					} else if ctx.ControlsPosition(sim.ControllerPosition(tcps.To)) {
 						state.PointOutAcknowledged = true
 					}
 				}
@@ -312,7 +312,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			delete(sp.PointOuts, event.ACID)
 
 		case sim.RejectedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.ControlsPosition(tcps.From) {
+			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.ControlsPosition(sim.ControllerPosition(tcps.From)) {
 				sp.RejectedPointOuts[event.ACID] = nil
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.UNFlashingEndTime = time.Now().Add(5 * time.Second)
@@ -334,14 +334,14 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.OfferedHandoffEvent:
-			if ctx.ControlsPosition(event.ToController) {
+			if ctx.ControlsPosition(sim.ControllerPosition(event.ToController)) {
 				sp.playOnce(ctx.Platform, AudioInboundHandoff)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-				outbound := ctx.ControlsPosition(event.FromController) && !ctx.ControlsPosition(event.ToController)
-				inbound := !ctx.ControlsPosition(event.FromController) && ctx.ControlsPosition(event.ToController)
+				outbound := ctx.ControlsPosition(sim.ControllerPosition(event.FromController)) && !ctx.ControlsPosition(sim.ControllerPosition(event.ToController))
+				inbound := !ctx.ControlsPosition(sim.ControllerPosition(event.FromController)) && ctx.ControlsPosition(sim.ControllerPosition(event.ToController))
 				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
@@ -402,7 +402,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 	}
 
 	// Quick Look Positions.
-	_, ok := sp.currentPrefs().QuickLookTCPs[trk.FlightPlan.TrackingController]
+	_, ok := sp.currentPrefs().QuickLookTCPs[string(trk.FlightPlan.TrackingController)]
 	return ok
 }
 
@@ -631,7 +631,7 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransf
 					// For external facilities we use the facility id
 					positionSymbol = ctrl.FacilityIdentifier
 				} else {
-					positionSymbol = ctrl.TCP[len(ctrl.TCP)-1:]
+					positionSymbol = ctrl.SectorID[len(ctrl.SectorID)-1:]
 				}
 			}
 		}
@@ -982,7 +982,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	}
 
 	state := sp.TrackState[trk.ADSBCallsign]
-	vols := ctx.Client.ControllerAirspace(ctx.UserTCP)
+	vols := ctx.Client.ControllerAirspace(string(ctx.UserTCP))
 
 	inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
 	if state.EnteredOurAirspace && !inside {
@@ -1433,10 +1433,10 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		} else if ctx.ControlsPosition(sfp.TrackingController) {
 			// Tracked by us
 			return ps.LeaderLineDirection
-		} else if ctx.ControlsPosition(sfp.HandoffTrackController) {
+		} else if ctx.ControlsPosition(sfp.HandoffController) {
 			// Being handed off to us
 			return ps.LeaderLineDirection
-		} else if dir, ok := ps.ControllerLeaderLineDirections[sfp.TrackingController]; ok {
+		} else if dir, ok := ps.ControllerLeaderLineDirections[string(sfp.TrackingController)]; ok {
 			// Tracked by another controller for whom a direction was specified
 			return dir
 		} else if ps.OtherControllerLeaderLineDirection != nil {

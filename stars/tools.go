@@ -686,7 +686,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransfor
 		}
 		// We have it or it's an inbound handoff to us.
 		ourTrack := trk.IsAssociated() && (ctx.ControlsPosition(trk.FlightPlan.TrackingController) ||
-			ctx.ControlsPosition(trk.FlightPlan.HandoffTrackController))
+			ctx.ControlsPosition(trk.FlightPlan.HandoffController))
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}

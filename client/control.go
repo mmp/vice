@@ -228,7 +228,7 @@ func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error
 			KeepTracks:      keepTracks,
 		}, nil)
 	if err == nil {
-		c.State.UserTCP = tcp
+		c.State.UserTCP = sim.ControllerPosition(tcp)
 	}
 	return err
 }

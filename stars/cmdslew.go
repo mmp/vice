@@ -26,8 +26,8 @@ func init() {
 			if trk.IsAssociated() {
 				fp := trk.FlightPlan
 
-				if fp.HandoffTrackController != "" {
-					if ctx.ControlsPosition(fp.HandoffTrackController) {
+				if fp.HandoffController != "" {
+					if ctx.ControlsPosition(fp.HandoffController) {
 						// 5.1.3 Accept handoff (implied)
 						// 5.1.4 Take control of interfacility track (implied)
 						// 5.1.10 Accept inbound handoff
@@ -40,20 +40,20 @@ func init() {
 						// 5.1.19 Recall redirected handoff
 						ctx.Client.CancelHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
-					} else if ctx.ControlsPosition(fp.RedirectedHandoff.RedirectedTo) ||
-						ctx.ControlsPosition(fp.RedirectedHandoff.GetLastRedirector()) {
+					} else if ctx.ControlsPosition(sim.ControllerPosition(fp.RedirectedHandoff.RedirectedTo)) ||
+						ctx.ControlsPosition(sim.ControllerPosition(fp.RedirectedHandoff.GetLastRedirector())) {
 						ctx.Client.AcceptRedirectedHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
 					}
 				}
 
 				if tcps, ok := sp.PointOuts[fp.ACID]; ok {
-					if ctx.ControlsPosition(tcps.To) {
+					if ctx.ControlsPosition(sim.ControllerPosition(tcps.To)) {
 						// 6.12.2 Accept intrafacility pointout (implied)
 						// 6.12.8 Accept interfacility pointout (implied)
 						ctx.Client.AcknowledgePointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
-					} else if ctx.ControlsPosition(tcps.From) {
+					} else if ctx.ControlsPosition(sim.ControllerPosition(tcps.From)) {
 						// 6.12.4 Recall intrafacility pointout
 						// 6.12.9 Recall interfacility pointout
 						ctx.Client.RecallPointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })

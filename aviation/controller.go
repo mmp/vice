@@ -16,7 +16,7 @@ type Controller struct {
 	Position           string    // This is the key in the controllers map in JSON
 	RadioName          string    `json:"radio_name"`
 	Frequency          Frequency `json:"frequency"`
-	TCP                string    `json:"sector_id"`       // e.g. N56, 2J, ...
+	SectorID           string    `json:"sector_id"`       // e.g. N56, 2J, ...
 	Scope              string    `json:"scope_char"`      // Optional. If unset, facility id is used for external, last char of sector id for local.
 	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
@@ -32,13 +32,13 @@ func (c Controller) IsExternal() bool {
 
 func (c Controller) Id() string {
 	if c.ERAMFacility {
-		return c.TCP
+		return c.SectorID
 	}
-	return c.FacilityIdentifier + c.TCP
+	return c.FacilityIdentifier + c.SectorID
 }
 
 func (c Controller) ERAMID() string { // For display
-	return c.FacilityIdentifier + c.TCP
+	return c.FacilityIdentifier + c.SectorID
 }
 
 // split -> config

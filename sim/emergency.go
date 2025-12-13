@@ -277,7 +277,7 @@ func (s *Sim) triggerEmergency(idx int) bool {
 
 		humanController := false
 		if fp := ac.NASFlightPlan; fp != nil {
-			humanController = s.isActiveHumanController(fp.ControllingController)
+			humanController = s.isActiveHumanController(string(fp.ControllingController))
 		}
 		return util.Select(em.ApplicableTo.Applies(ac, humanController), em.Weight, float32(0))
 	})
@@ -541,7 +541,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	// Note: MakeContactTransmission automatically prepends controller position and callsign
 	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
 	controller := ac.NASFlightPlan.ControllingController
-	s.postRadioEvent(ac.ADSBCallsign, controller, *rt)
+	s.postRadioEvent(ac.ADSBCallsign, string(controller), *rt)
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++

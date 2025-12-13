@@ -115,7 +115,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	for _, event := range ep.events.Get() {
 		switch event.Type {
 		case sim.AcceptedHandoffEvent:
-			thisCtrl := !ctx.ControlsPosition(event.FromController) && ctx.ControlsPosition(event.ToController)
+			thisCtrl := !ctx.ControlsPosition(sim.ControllerPosition(event.FromController)) && ctx.ControlsPosition(sim.ControllerPosition(event.ToController))
 			if !thisCtrl {
 				continue
 			}
@@ -378,7 +378,7 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 		if ctx.ControlsPosition(fp.TrackingController) {
 			return FullDatablock
 		}
-		if trk.HandingOffTo(ctx.UserTCP) {
+		if trk.HandingOffTo(string(ctx.UserTCP)) {
 			return FullDatablock
 		}
 		if state.eFDB {

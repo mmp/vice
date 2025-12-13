@@ -253,7 +253,7 @@ func (c *ControlClient) Status() string {
 		stats := c.SessionStats
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d intrafacility %d overflights ]",
 			stats.Departures, stats.Arrivals, stats.IntraFacility, stats.Overflights)
-		return c.State.UserTCP + c.State.SimDescription + deparr
+		return string(c.State.UserTCP) + c.State.SimDescription + deparr
 	}
 }
 

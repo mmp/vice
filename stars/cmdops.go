@@ -34,7 +34,7 @@ func init() {
 		}
 
 		// If handoff is in progress TO user, redirect it instead
-		if ctx.ControlsPosition(fp.HandoffTrackController) || ctx.ControlsPosition(fp.RedirectedHandoff.RedirectedTo) {
+		if ctx.ControlsPosition(fp.HandoffController) || ctx.ControlsPosition(sim.ControllerPosition(fp.RedirectedHandoff.RedirectedTo)) {
 			ctx.Client.RedirectHandoff(fp.ACID, control.Id(), func(err error) { sp.displayError(err, ctx, "") })
 		} else {
 			ctx.Client.HandoffTrack(fp.ACID, control.Id(), func(err error) { sp.displayError(err, ctx, "") })
@@ -63,7 +63,7 @@ func init() {
 			}
 
 			acid := trk.FlightPlan.ACID
-			if ctx.ControlsPosition(trk.FlightPlan.HandoffTrackController) {
+			if ctx.ControlsPosition(trk.FlightPlan.HandoffController) {
 				// 5.1.10 Accept inbound handoff
 				ctx.Client.AcceptHandoff(acid, func(err error) { sp.displayError(err, ctx, "") })
 			} else {
@@ -80,7 +80,7 @@ func init() {
 		var closest *sim.Track
 		var closestDistance float32
 		for _, trk := range sp.visibleTracks {
-			if trk.IsUnassociated() || !ctx.ControlsPosition(trk.FlightPlan.HandoffTrackController) {
+			if trk.IsUnassociated() || !ctx.ControlsPosition(trk.FlightPlan.HandoffController) {
 				continue
 			}
 			ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
@@ -533,7 +533,7 @@ func init() {
 			if trk.IsUnassociated() {
 				return ErrSTARSNoFlight
 			}
-			if trk.FlightPlan.Suspended || trk.FlightPlan.HandoffTrackController != "" {
+			if trk.FlightPlan.Suspended || trk.FlightPlan.HandoffController != "" {
 				return ErrSTARSIllegalTrack
 			}
 
@@ -940,7 +940,7 @@ func init() {
 	// 5.7.3 Reposition active track's (or unsupported) Full data block (p. 5-191)
 	registerCommand(CommandModeTrackReposition, "[SLEW]",
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
-			if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != "" {
+			if trk.IsUnassociated() || trk.FlightPlan.HandoffController != "" {
 				return CommandStatus{}, ErrSTARSIllegalTrack
 			}
 
@@ -967,7 +967,7 @@ func init() {
 		})
 	registerCommand(CommandModeTrackReposition, "[TRK_ACID][POS]|[TRK_BCN][POS]|[TRK_INDEX][POS]",
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track, pos math.Point2LL) error {
-			if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != "" {
+			if trk.IsUnassociated() || trk.FlightPlan.HandoffController != "" {
 				return ErrSTARSIllegalTrack
 			}
 			ctx.Client.RepositionTrack(trk.FlightPlan.ACID, "", pos, func(err error) { sp.displayError(err, ctx, "") })
@@ -975,7 +975,7 @@ func init() {
 		})
 	registerCommand(CommandModeTrackReposition, "[TRK_ACID][SLEW]|[TRK_BCN][SLEW]|[TRK_INDEX][SLEW]",
 		func(sp *STARSPane, ctx *panes.Context, src, dst *sim.Track) error {
-			if src.IsUnassociated() || src.FlightPlan.HandoffTrackController != "" || dst.IsAssociated() {
+			if src.IsUnassociated() || src.FlightPlan.HandoffController != "" || dst.IsAssociated() {
 				return ErrSTARSIllegalTrack
 			}
 			ctx.Client.RepositionTrack(src.FlightPlan.ACID, dst.ADSBCallsign, math.Point2LL{},
@@ -1010,7 +1010,7 @@ func init() {
 
 func associateFlightPlan(sp *STARSPane, ctx *panes.Context, callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
-		spec.TrackingController.Set(ctx.UserTCP)
+		spec.TrackingController.Set(string(ctx.UserTCP))
 	}
 	if !spec.CoordinationTime.IsSet {
 		spec.CoordinationTime.Set(ctx.Now)
@@ -1030,7 +1030,7 @@ func associateFlightPlan(sp *STARSPane, ctx *panes.Context, callsign av.ADSBCall
 
 func createFlightPlan(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
-		spec.TrackingController.Set(ctx.UserTCP)
+		spec.TrackingController.Set(string(ctx.UserTCP))
 	}
 	if !spec.CoordinationTime.IsSet {
 		spec.CoordinationTime.Set(ctx.Now)
@@ -1134,7 +1134,7 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 	switch fp.TypeOfFlight {
 	case av.FlightTypeOverflight:
 		result += aircraftType + " "
-		result += fp.AssignedSquawk.String() + " " + fp.TrackingController + " "
+		result += fp.AssignedSquawk.String() + " " + string(fp.TrackingController) + " "
 		result += trkalt()
 		result += "\n"
 
@@ -1155,7 +1155,7 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 		if state == nil || state.FirstRadarTrackTime.IsZero() {
 			// Proposed departure
 			result += aircraftType + " "
-			result += fp.AssignedSquawk.String() + " " + fp.TrackingController + "\n"
+			result += fp.AssignedSquawk.String() + " " + string(fp.TrackingController) + "\n"
 
 			result += fmtfix(fp.EntryFix)
 			result += fmtfix(fp.ExitFix)
@@ -1179,7 +1179,7 @@ func formatFlightPlan(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, 
 	case av.FlightTypeArrival:
 		result += aircraftType + " "
 		result += fp.AssignedSquawk.String() + " "
-		result += fp.TrackingController + " "
+		result += string(fp.TrackingController) + " "
 		result += trkalt() + "\n"
 
 		result += fmtfix(fp.EntryFix)

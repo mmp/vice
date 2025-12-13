@@ -534,12 +534,12 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		switch len(fields) {
 		case 1:
 			cmd := fields[0]
-			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(ctx.UserTCP) {
+			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(string(ctx.UserTCP)) {
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.acceptHandoff(ctx, acid)
-			} else if ok && ctx.ControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffTrackController != "" { // Recall handoff
+			} else if ok && ctx.ControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" { // Recall handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.recallHandoff(ctx, acid)
@@ -891,12 +891,12 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		fields := strings.Fields(original)
 		switch len(fields) {
 		case 0:
-			if trk.HandingOffTo(ctx.UserTCP) {
+			if trk.HandingOffTo(string(ctx.UserTCP)) {
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.acceptHandoff(ctx, acid)
 				return
-			} else if ctx.ControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffTrackController != "" {
+			} else if ctx.ControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" {
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.recallHandoff(ctx, acid)

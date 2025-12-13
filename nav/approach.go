@@ -149,7 +149,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 					// takes priority for things like altitude, speed, etc.
 					nopt := navwp[idx].NoPT
 					humanHandoff := navwp[idx].HumanHandoff
-					tcpHandoff := navwp[idx].TCPHandoff
+					tcpHandoff := navwp[idx].HandoffController
 					clearapp := navwp[idx].ClearApproach
 
 					// Keep the waypoints up to but not including the match.
@@ -161,7 +161,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 
 					navwp[idx].NoPT = nopt
 					navwp[idx].HumanHandoff = humanHandoff
-					navwp[idx].TCPHandoff = tcpHandoff
+					navwp[idx].HandoffController = tcpHandoff
 					navwp[idx].ClearApproach = clearapp
 
 					// Update the deferred waypoints if present (as they're

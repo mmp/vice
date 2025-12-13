@@ -89,7 +89,7 @@ type Context struct {
 	Client *client.ControlClient
 
 	// from Client.State, here for convenience
-	UserTCP            string
+	UserTCP            sim.ControllerPosition
 	NmPerLongitude     float32
 	MagneticVariation  float32
 	FacilityAdaptation *sim.FacilityAdaptation
@@ -156,7 +156,7 @@ func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByACID(acid)
 }
 
-func (ctx *Context) ControlsPosition(pos string) bool {
+func (ctx *Context) ControlsPosition(pos sim.ControllerPosition) bool {
 	return pos == ctx.UserTCP
 }
 

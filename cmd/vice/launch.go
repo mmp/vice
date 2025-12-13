@@ -1350,7 +1350,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	ctrl := lc.client.State.LaunchConfig.Controller
 	if lc.client.State.MultiControllers != nil {
 		imgui.Text("Controlling controller: " + util.Select(ctrl == "", "(none)", ctrl))
-		if ctrl == lc.client.State.UserTCP {
+		if ctrl == string(lc.client.State.UserTCP) {
 			if imgui.Button("Release launch control") {
 				lc.client.TakeOrReturnLaunchControl(eventStream)
 			}
@@ -1361,7 +1361,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 		}
 	}
 
-	canLaunch := ctrl == lc.client.State.UserTCP || (lc.client.State.MultiControllers == nil && ctrl == "") ||
+	canLaunch := ctrl == string(lc.client.State.UserTCP) || (lc.client.State.MultiControllers == nil && ctrl == "") ||
 		lc.client.State.AreInstructorOrRPO(lc.client.State.UserTCP)
 	if canLaunch {
 		imgui.Text("Mode:")
@@ -1863,13 +1863,13 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 
 			// Sort 2-char before 3-char and then alphabetically
 			sorted := slices.Collect(maps.Keys(c.State.Controllers))
-			slices.SortFunc(sorted, func(a, b string) int {
+			slices.SortFunc(sorted, func(a, b sim.ControllerPosition) int {
 				if len(a) < len(b) {
 					return -1
 				} else if len(a) > len(b) {
 					return 1
 				} else {
-					return strings.Compare(a, b)
+					return strings.Compare(string(a), string(b))
 				}
 			})
 
@@ -1879,7 +1879,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Id())
 				imgui.TableNextColumn()
-				if slices.Contains(c.State.HumanControllers, ctrl.Id()) {
+				if slices.Contains(c.State.HumanControllers, sim.ControllerPosition(ctrl.Id())) {
 					sq := renderer.FontAwesomeIconCheckSquare
 					// Center the square in the column
 					// https://stackoverflow.com/a/66109051

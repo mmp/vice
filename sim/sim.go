@@ -405,12 +405,12 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 
 	// Sign on as primary controller + instructor
 	tcp := s.State.PrimaryController
-	_, err := s.SignOn(tcp, true, false) // Sign on as instructor
+	_, err := s.SignOn(string(tcp), true, false) // Sign on as instructor
 	if err != nil {
 		return fmt.Errorf("failed to sign on as controller %s: %w", tcp, err)
 	}
 
-	s.SetWaypointCommands(tcp, waypointCommands)
+	s.SetWaypointCommands(string(tcp), waypointCommands)
 
 	fmt.Printf("Signed on as instructor: %s\n", tcp)
 	fmt.Printf("Starting simulation with %d aircraft\n", len(s.Aircraft))
@@ -519,7 +519,7 @@ func (s *Sim) GetSerializeSim() Sim {
 
 	// Clean up so that the user can sign in when they reload.
 	for ctrl := range s.humanControllers {
-		delete(ss.State.Controllers, ctrl)
+		delete(ss.State.Controllers, ControllerPosition(ctrl))
 	}
 
 	return ss
@@ -556,7 +556,7 @@ func (s *Sim) signOn(tcp string, instructor bool, disableTextToSpeech bool) erro
 	if _, ok := s.humanControllers[tcp]; ok {
 		return ErrControllerAlreadySignedIn
 	}
-	if _, ok := s.State.Controllers[tcp]; ok {
+	if _, ok := s.State.Controllers[ControllerPosition(tcp)]; ok {
 		// Trying to sign in to a virtual position.
 		return av.ErrInvalidController
 	}
@@ -568,10 +568,10 @@ func (s *Sim) signOn(tcp string, instructor bool, disableTextToSpeech bool) erro
 		events:              s.eventStream.Subscribe(),
 		disableTextToSpeech: disableTextToSpeech,
 	}
-	s.State.Controllers[tcp] = s.SignOnPositions[tcp]
-	s.State.HumanControllers = append(s.State.HumanControllers, tcp)
+	s.State.Controllers[ControllerPosition(tcp)] = s.SignOnPositions[tcp]
+	s.State.HumanControllers = append(s.State.HumanControllers, ControllerPosition(tcp))
 
-	if tcp == s.State.PrimaryController {
+	if ControllerPosition(tcp) == s.State.PrimaryController {
 		// The primary controller signed in so the sim will resume.
 		// Reset lastUpdateTime so that the next time Update() is
 		// called for the sim, we don't try to run a ton of steps.
@@ -597,7 +597,7 @@ func (s *Sim) SignOff(tcp string) error {
 
 	// Drop track on controlled aircraft
 	for _, ac := range s.Aircraft {
-		ac.handleControllerDisconnect(tcp, s.State.PrimaryController)
+		ac.handleControllerDisconnect(ControllerPosition(tcp), s.State.PrimaryController)
 	}
 
 	if tcp == s.State.LaunchConfig.Controller {
@@ -608,10 +608,10 @@ func (s *Sim) SignOff(tcp string) error {
 	s.humanControllers[tcp].events.Unsubscribe()
 
 	delete(s.humanControllers, tcp)
-	delete(s.State.Controllers, tcp)
+	delete(s.State.Controllers, ControllerPosition(tcp))
 	delete(s.Instructors, tcp)
 	s.State.HumanControllers =
-		slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == tcp })
+		slices.DeleteFunc(s.State.HumanControllers, func(s ControllerPosition) bool { return s == ControllerPosition(tcp) })
 
 	s.eventStream.Post(Event{
 		Type:        StatusMessageEvent,
@@ -630,7 +630,7 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 
 	// Make sure we can successfully sign on before signing off from the
 	// current position. Preserve instructor status from the original controller.
-	wasInstructor := s.State.Controllers[fromTCP].Instructor
+	wasInstructor := s.State.Controllers[ControllerPosition(fromTCP)].Instructor
 	wasDisableTTS := s.humanControllers[fromTCP].disableTextToSpeech
 	if err := s.signOn(toTCP, wasInstructor, wasDisableTTS); err != nil {
 		return err
@@ -639,12 +639,12 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 	// Swap the event subscriptions so we don't lose any events pending on the old one.
 	s.humanControllers[toTCP].events.Unsubscribe()
 	s.humanControllers[toTCP] = s.humanControllers[fromTCP]
-	s.State.HumanControllers = append(s.State.HumanControllers, toTCP)
+	s.State.HumanControllers = append(s.State.HumanControllers, ControllerPosition(toTCP))
 
 	delete(s.humanControllers, fromTCP)
-	delete(s.State.Controllers, fromTCP)
+	delete(s.State.Controllers, ControllerPosition(fromTCP))
 	delete(s.Instructors, fromTCP)
-	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s string) bool { return s == fromTCP })
+	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s ControllerPosition) bool { return s == ControllerPosition(fromTCP) })
 
 	s.eventStream.Post(Event{
 		Type:        StatusMessageEvent,
@@ -653,9 +653,9 @@ func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) erro
 
 	for _, ac := range s.Aircraft {
 		if keepTracks {
-			ac.transferTracks(fromTCP, toTCP)
+			ac.transferTracks(ControllerPosition(fromTCP), ControllerPosition(toTCP))
 		} else {
-			ac.handleControllerDisconnect(fromTCP, s.State.PrimaryController)
+			ac.handleControllerDisconnect(ControllerPosition(fromTCP), ControllerPosition(s.State.PrimaryController))
 		}
 	}
 
@@ -822,8 +822,8 @@ type StateUpdate struct {
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
-	Controllers      map[string]*av.Controller
-	HumanControllers []string
+	Controllers      map[ControllerPosition]*av.Controller
+	HumanControllers []ControllerPosition
 
 	Time time.Time
 
@@ -873,7 +873,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		events = consolidateRadioTransmissions(hc.events.Get())
 
-		ctrl := s.State.Controllers[tcp]
+		ctrl := s.State.Controllers[ControllerPosition(tcp)]
 
 		// Add identifying info
 		for i, e := range events {
@@ -967,7 +967,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 
 		Controllers:      s.State.Controllers,
-		HumanControllers: slices.Collect(maps.Keys(s.humanControllers)),
+		HumanControllers: util.MapSlice(slices.Collect(maps.Keys(s.humanControllers)), func(s string) ControllerPosition { return ControllerPosition(s) }),
 
 		Time: s.State.SimTime,
 
@@ -1202,7 +1202,7 @@ func (s *Sim) Update() {
 		return
 	}
 
-	if !s.isActiveHumanController(s.State.PrimaryController) {
+	if !s.isActiveHumanController(string(s.State.PrimaryController)) {
 		// Pause the sim if the primary controller is gone
 		return
 	}
@@ -1257,23 +1257,23 @@ func (s *Sim) updateState() {
 		}
 
 		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil {
-			if fp.HandoffTrackController != "" && !s.isActiveHumanController(fp.HandoffTrackController) {
+			if fp.HandoffController != "" && !s.isActiveHumanController(string(fp.HandoffController)) {
 				// Automated accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedHandoffEvent,
-					FromController: fp.TrackingController,
-					ToController:   fp.HandoffTrackController,
+					FromController: string(fp.TrackingController),
+					ToController:   string(fp.HandoffController),
 					ACID:           fp.ACID,
 				})
 				s.lg.Debug("automatic handoff accept", slog.String("acid", string(fp.ACID)),
-					slog.String("from", fp.TrackingController),
-					slog.String("to", fp.HandoffTrackController))
+					slog.String("from", string(fp.TrackingController)),
+					slog.String("to", string(fp.HandoffController)))
 
-				fp.TrackingController = fp.HandoffTrackController
+				fp.TrackingController = fp.HandoffController
 				if s.State.IsLocalController(fp.TrackingController) {
 					fp.LastLocalController = fp.TrackingController
 				}
-				fp.HandoffTrackController = ""
+				fp.HandoffController = ""
 			}
 		}
 		delete(s.Handoffs, acid)
@@ -1352,15 +1352,15 @@ func (s *Sim) updateState() {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
-						s.handoffTrack(sfp, s.State.ResolveController(sfp.InboundHandoffController))
+						s.handoffTrack(sfp, string(s.State.ResolveController(sfp.InboundHandoffController)))
 					}
-				} else if passedWaypoint.TCPHandoff != "" {
+				} else if passedWaypoint.HandoffController != "" {
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
-						s.handoffTrack(sfp, passedWaypoint.TCPHandoff)
+						s.handoffTrack(sfp, passedWaypoint.HandoffController)
 					}
 				}
 
@@ -1369,7 +1369,7 @@ func (s *Sim) updateState() {
 					sfp := ac.NASFlightPlan
 
 					if passedWaypoint.ClearApproach {
-						ac.ApproachController = sfp.ControllingController
+						ac.ApproachTCP = sfp.ControllingController
 					}
 
 					if passedWaypoint.TransferComms {
@@ -1382,14 +1382,14 @@ func (s *Sim) updateState() {
 						// controller.
 						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 						// Make sure they've bought the handoff.
-						if ctrl != sfp.HandoffTrackController {
-							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						if ctrl != sfp.HandoffController {
+							s.enqueueControllerContact(ac.ADSBCallsign, string(ctrl), 0 /* no delay */)
 						}
 					}
 
 					// Update scratchpads if the waypoint has scratchpad commands
 					// Only update if aircraft is not controlled by a human
-					if !s.isActiveHumanController(sfp.ControllingController) {
+					if !s.isActiveHumanController(string(sfp.ControllingController)) {
 						if passedWaypoint.PrimaryScratchpad != "" {
 							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad
 						}
@@ -1405,9 +1405,9 @@ func (s *Sim) updateState() {
 					}
 
 					if passedWaypoint.PointOut != "" {
-						if ctrl, ok := s.State.Controllers[passedWaypoint.PointOut]; ok {
+						if ctrl, ok := s.State.Controllers[ControllerPosition(passedWaypoint.PointOut)]; ok {
 							// Don't do the point out if a human is controlling the aircraft.
-							if !s.isActiveHumanController(sfp.ControllingController) {
+							if !s.isActiveHumanController(string(sfp.ControllingController)) {
 								fromCtrl := s.State.Controllers[sfp.ControllingController]
 								s.pointOut(sfp.ACID, fromCtrl, ctrl)
 								break
@@ -1477,10 +1477,10 @@ func (s *Sim) updateState() {
 				}
 				if fp != nil {
 					tcp := s.State.ResolveController(fp.InboundHandoffController)
-					s.lg.Debug("contacting departure controller", slog.String("tcp", tcp))
+					s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
 					rt := ac.Nav.DepartureMessage()
-					s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+					s.postRadioEvent(ac.ADSBCallsign, string(tcp), *rt)
 
 					// Clear this out so we only send one contact message
 					ac.DepartureContactAltitude = 0
@@ -1556,14 +1556,14 @@ func (s *Sim) requestRandomFlightFollowing() error {
 			continue
 		}
 
-		for tcp, cc := range s.State.FacilityAdaptation.ControllerConfigs {
-			tcp = s.State.ResolveController(tcp)
-			if !s.isActiveHumanController(tcp) {
+		for tcpStr, cc := range s.State.FacilityAdaptation.ControllerConfigs {
+			tcp := s.State.ResolveController(ControllerPosition(tcpStr))
+			if !s.isActiveHumanController(string(tcp)) {
 				continue
 			}
 			for _, vol := range cc.FlightFollowingAirspace {
 				if vol.Inside(ac.Position(), int(ac.Altitude())) {
-					candidates[ac] = tcp // first come, first served
+					candidates[ac] = string(tcp) // first come, first served
 					break
 				}
 			}
@@ -1721,23 +1721,23 @@ func (s *Sim) goAround(ac *Aircraft) {
 	// we need some more functionality for specifying go around procedures
 	// in general.
 
-	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachController
+	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachTCP
 
-	sfp.ControllingController = s.State.ResolveController(ac.ApproachController)
+	sfp.ControllingController = s.State.ResolveController(ac.ApproachTCP)
 
 	rt := ac.GoAround()
 	rt.Type = av.RadioTransmissionUnexpected
-	s.postRadioEvent(ac.ADSBCallsign, ac.ApproachController /* FIXME: issue #540 */, *rt)
+	s.postRadioEvent(ac.ADSBCallsign, string(ac.ApproachTCP) /* FIXME: issue #540 */, *rt)
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {
-		sfp.HandoffTrackController = sfp.ControllingController
+		sfp.HandoffController = sfp.ControllingController
 
 		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,
 			ADSBCallsign:   ac.ADSBCallsign,
-			FromController: sfp.TrackingController,
-			ToController:   ac.ApproachController,
+			FromController: string(sfp.TrackingController),
+			ToController:   string(ac.ApproachTCP),
 		})
 	}
 }
@@ -1908,7 +1908,7 @@ func (t *Track) HandingOffTo(tcp string) bool {
 	}
 
 	sfp := t.FlightPlan
-	return sfp.HandoffTrackController == tcp &&
+	return sfp.HandoffController == ControllerPosition(tcp) &&
 		(!slices.Contains(sfp.RedirectedHandoff.Redirector, tcp) || // not a redirector
 			sfp.RedirectedHandoff.RedirectedTo == tcp) // redirected to
 }

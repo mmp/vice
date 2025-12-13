@@ -403,7 +403,7 @@ func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) 
 			connectionsByTCP: make(map[string]*connectionState),
 		}
 		pos := sim.State.PrimaryController
-		return sm.Add(session, result, pos, config.Instructor, true, config.DisableTextToSpeech)
+		return sm.Add(session, result, string(pos), config.Instructor, true, config.DisableTextToSpeech)
 	} else {
 		return ErrInvalidSSimConfiguration
 	}
@@ -570,7 +570,7 @@ func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
-	return sm.Add(session, result, sim.State.PrimaryController, false, false, false)
+	return sm.Add(session, result, string(sim.State.PrimaryController), false, false, false)
 }
 
 func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP string, instructor bool, prespawn bool, disableTextToSpeech bool) error {
@@ -780,7 +780,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error
 		rs := &RemoteSim{
 			GroupName:         ss.scenarioGroup,
 			ScenarioName:      ss.scenario,
-			PrimaryController: ss.sim.State.PrimaryController,
+			PrimaryController: string(ss.sim.State.PrimaryController),
 			RequirePassword:   ss.password != "",
 		}
 

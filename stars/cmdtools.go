@@ -656,7 +656,7 @@ func init() {
 		}
 
 		acid := trk.FlightPlan.ACID
-		if po, ok := sp.PointOuts[acid]; ok && ctx.ControlsPosition(po.To) {
+		if po, ok := sp.PointOuts[acid]; ok && ctx.ControlsPosition(sim.ControllerPosition(po.To)) {
 			// 5.1.11 Accept handoff of track in intrafacility pointout
 			ctx.Client.AcceptHandoff(acid, func(err error) { sp.displayError(err, ctx, "") })
 			return nil
@@ -732,7 +732,7 @@ func init() {
 	}
 	registerCommand(CommandModeNone, "[TCP1]|[TCP2]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string) (CommandStatus, error) {
-			if ctx.ControlsPosition(tcp) { // Display quick looked TCPs and quicklook regions
+			if ctx.ControlsPosition(sim.ControllerPosition(tcp)) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else { // Toggle quick look for another owner's tracks
 				if err := toggleQL(sp, ctx, ps, tcp); err != nil {
@@ -805,7 +805,7 @@ func init() {
 	// 6.13.16 Display quick looked TCPs and quicklook regions
 	registerCommand(CommandModeMultiFunc, "Q[QL_POSITIONS]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcps []string) (CommandStatus, error) {
-			if len(tcps) == 1 && ctx.ControlsPosition(tcps[0]) { // Display quick looked TCPs and quicklook regions
+			if len(tcps) == 1 && ctx.ControlsPosition(sim.ControllerPosition(tcps[0])) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else {
 				for _, tcp := range tcps {

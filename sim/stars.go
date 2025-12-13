@@ -498,10 +498,10 @@ type NASFlightPlan struct {
 
 	AssignedSquawk av.Squawk
 
-	TrackingController     string // Who has the radar track
-	ControllingController  string // Who has control; not necessarily the same as TrackingController
-	HandoffTrackController string // Handoff offered but not yet accepted
-	LastLocalController    string // (May be the current controller.)
+	TrackingController    ControllerPosition // Who has the radar track
+	ControllingController ControllerPosition // Who has control; not necessarily the same as TrackingController
+	HandoffController     ControllerPosition // Handoff offered but not yet accepted
+	LastLocalController   ControllerPosition // (May be the current controller.)
 
 	AircraftCount   int
 	AircraftType    string
@@ -550,7 +550,7 @@ type NASFlightPlan struct {
 
 	// First controller in the local facility to get the track: used both
 	// for /ho and for departures
-	InboundHandoffController string
+	InboundHandoffController ControllerPosition
 
 	CoordinationFix     string
 	ContainedFacilities []string
@@ -639,7 +639,7 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 		EquipmentSuffix: s.EquipmentSuffix.GetOr(""),
 
 		TypeOfFlight:       s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
-		TrackingController: s.TrackingController.GetOr(""),
+		TrackingController: ControllerPosition(s.TrackingController.GetOr("")),
 
 		AssignedAltitude:      s.AssignedAltitude.GetOr(0),
 		RequestedAltitude:     s.RequestedAltitude.GetOr(0),
@@ -815,7 +815,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 		fp.TypeOfFlight = spec.TypeOfFlight.Get()
 	}
 	if spec.TrackingController.IsSet {
-		fp.TrackingController = spec.TrackingController.Get()
+		fp.TrackingController = ControllerPosition(spec.TrackingController.Get())
 	}
 	if spec.AssignedAltitude.IsSet {
 		fp.AssignedAltitude = spec.AssignedAltitude.Get()
