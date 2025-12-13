@@ -156,6 +156,10 @@ func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByACID(acid)
 }
 
+func (ctx *Context) ControlsPosition(pos string) bool {
+	return pos == ctx.UserTCP
+}
+
 // Returns all aircraft that match the given suffix. If instructor, returns
 // all matching aircraft; otherwise only ones under the current
 // controller's control are considered for matching.
@@ -169,12 +173,12 @@ func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
 				return false
 			}
 
-			if fp.ControllingController == ctx.UserTCP || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			if ctx.ControlsPosition(fp.ControllingController) || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController) == ctx.UserTCP &&
+			if ctx.ControlsPosition(ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController)) &&
 				trk.FlightPlan.ControllingController == "" {
 				return true
 			}

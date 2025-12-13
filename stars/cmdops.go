@@ -34,7 +34,7 @@ func init() {
 		}
 
 		// If handoff is in progress TO user, redirect it instead
-		if fp.HandoffTrackController == ctx.UserTCP || fp.RedirectedHandoff.RedirectedTo == ctx.UserTCP {
+		if ctx.ControlsPosition(fp.HandoffTrackController) || ctx.ControlsPosition(fp.RedirectedHandoff.RedirectedTo) {
 			ctx.Client.RedirectHandoff(fp.ACID, control.Id(), func(err error) { sp.displayError(err, ctx, "") })
 		} else {
 			ctx.Client.HandoffTrack(fp.ACID, control.Id(), func(err error) { sp.displayError(err, ctx, "") })
@@ -63,7 +63,7 @@ func init() {
 			}
 
 			acid := trk.FlightPlan.ACID
-			if trk.FlightPlan.HandoffTrackController == ctx.UserTCP {
+			if ctx.ControlsPosition(trk.FlightPlan.HandoffTrackController) {
 				// 5.1.10 Accept inbound handoff
 				ctx.Client.AcceptHandoff(acid, func(err error) { sp.displayError(err, ctx, "") })
 			} else {
@@ -80,7 +80,7 @@ func init() {
 		var closest *sim.Track
 		var closestDistance float32
 		for _, trk := range sp.visibleTracks {
-			if trk.IsUnassociated() || trk.FlightPlan.HandoffTrackController != ctx.UserTCP {
+			if trk.IsUnassociated() || !ctx.ControlsPosition(trk.FlightPlan.HandoffTrackController) {
 				continue
 			}
 			ctr := util.Select(ps.UseUserRangeRingsCenter, ps.RangeRingsUserCenter, ps.DefaultCenter)
@@ -596,7 +596,7 @@ func init() {
 	// 5.4.8 Delete a TCP's flight plans (p. 5-86)
 	registerCommand(CommandModeTerminateControl, "ALL", func(sp *STARSPane, ctx *panes.Context) {
 		for _, trk := range sp.visibleTracks {
-			if (trk.IsAssociated() || trk.IsUnsupportedDB()) && trk.FlightPlan.TrackingController == ctx.UserTCP {
+			if (trk.IsAssociated() || trk.IsUnsupportedDB()) && ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
 				ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			}
 		}

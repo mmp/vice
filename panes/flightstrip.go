@@ -205,7 +205,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			}
 
 		case sim.HandoffControlEvent:
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fp.TrackingController != ctx.UserTCP {
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && !ctx.ControlsPosition(fp.TrackingController) {
 				remove(event.ACID)
 			}
 		}

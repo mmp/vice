@@ -81,7 +81,7 @@ func init() {
 
 	// 7.14 Inhibit an MSAW alert for a single track in MSAW system-wide (p. 7-26)
 	registerCommand(CommandModeMultiFunc, "Q[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
-		if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
+		if trk.IsUnassociated() || (!ctx.ControlsPosition(trk.FlightPlan.TrackingController) && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 			return ErrSTARSIllegalTrack
 		}
 
@@ -111,7 +111,7 @@ func init() {
 			if ps.DisableMCIWarnings {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
+			if trk.IsUnassociated() || (!ctx.ControlsPosition(trk.FlightPlan.TrackingController) && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 				return CommandStatus{}, ErrSTARSIllegalTrack
 			}
 
@@ -132,7 +132,7 @@ func init() {
 			if ps.DisableMCIWarnings {
 				return CommandStatus{}, ErrSTARSIllegalFunction
 			}
-			if trk.IsUnassociated() || (trk.FlightPlan.TrackingController != ctx.UserTCP && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
+			if trk.IsUnassociated() || (!ctx.ControlsPosition(trk.FlightPlan.TrackingController) && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 				return CommandStatus{}, ErrSTARSIllegalTrack
 			}
 
