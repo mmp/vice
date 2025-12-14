@@ -798,12 +798,12 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 				if len(id) > 1 && id[0] >= '0' && id[0] <= '9' {
 					id = id[1:]
 				}
-				formatDBText(db.field8[:], "PO"+id, color, false)
+				formatDBText(db.field8[:], "PO"+string(id), color, false)
 			} else if ctx.Now.Before(state.UNFlashingEndTime) {
 				formatDBText(db.field8[:], "UN", color, true)
 			} else if state.POFlashingEndTime.After(ctx.Now) {
 				formatDBText(db.field8[:], "PO", color, true)
-			} else if sfp.RedirectedHandoff.ShowRDIndicator(string(ctx.UserTCP), state.RDIndicatorEnd) {
+			} else if sfp.RedirectedHandoff.ShowRDIndicator(ctx.UserTCP, state.RDIndicatorEnd) {
 				formatDBText(db.field8[:], "RD", color, false)
 			}
 		}
@@ -1089,10 +1089,10 @@ func (sp *STARSPane) trackDatablockColorBrightness(ctx *panes.Context, trk sim.T
 			// we own the track
 			color = STARSTrackedAircraftColor
 		} else if ctx.ControlsPosition(sim.ControllerPosition(sfp.RedirectedHandoff.OriginalOwner)) ||
-			ctx.ControlsPosition(sim.ControllerPosition(sfp.RedirectedHandoff.RedirectedTo)) {
+			ctx.ControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
 			color = STARSTrackedAircraftColor
 		} else if ctx.ControlsPosition(sfp.HandoffController) &&
-			!slices.Contains(sfp.RedirectedHandoff.Redirector, string(ctx.UserTCP)) {
+			!slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.UserTCP) {
 			// flashing white if it's being handed off to us.
 			color = STARSTrackedAircraftColor
 		} else if state.OutboundHandoffAccepted {
@@ -1166,10 +1166,10 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 			return true
 		} else if sp.isQuicklooked(ctx, trk) {
 			return true
-		} else if ctx.ControlsPosition(sim.ControllerPosition(sfp.RedirectedHandoff.RedirectedTo)) {
+		} else if ctx.ControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
 			// Redirected to
 			return true
-		} else if slices.Contains(sfp.RedirectedHandoff.Redirector, string(ctx.UserTCP)) {
+		} else if slices.Contains(sfp.RedirectedHandoff.Redirector, ctx.UserTCP) {
 			// Had it but redirected it
 			return true
 		} else if trk.IsUnsupportedDB() {

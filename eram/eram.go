@@ -98,11 +98,11 @@ type ERAMPane struct {
 	prefrencesVisible bool `json:"-"`
 
 	scopeDraw struct {
-		arrivals    map[string]map[int]bool               // group->index
-		approaches  map[string]map[string]bool            // airport->approach
-		departures  map[string]map[string]map[string]bool // airport->runway->exit
-		overflights map[string]map[int]bool               // group->index
-		airspace    map[string]map[string]bool            // ctrl -> volume name
+		arrivals    map[string]map[int]bool                    // group->index
+		approaches  map[string]map[string]bool                 // airport->approach
+		departures  map[string]map[string]map[string]bool      // airport->runway->exit
+		overflights map[string]map[int]bool                    // group->index
+		airspace    map[sim.ControllerPosition]map[string]bool // ctrl -> volume name
 	}
 
 	IFPHelpers struct {

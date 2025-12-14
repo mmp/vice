@@ -190,7 +190,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 
 			prefix := ""
 			if ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
-				prefix = "[to " + event.ToController + "] "
+				prefix = "[to " + string(event.ToController) + "] "
 			}
 
 			var msg Message

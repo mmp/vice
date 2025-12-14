@@ -754,7 +754,7 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 		return ErrERAMIllegalPosition
 	}
 
-	ctx.Client.HandoffTrack(acid, control.Id(),
+	ctx.Client.HandoffTrack(acid, string(control.Id()),
 		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 
 	return nil

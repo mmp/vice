@@ -955,7 +955,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 	pos := make(map[string]*av.Controller)
 	for _, ctrl := range sg.ControlPositions {
-		id := ctrl.Id()
+		id := string(ctrl.Id())
 		if _, ok := pos[id]; ok {
 			e.ErrorString("%s: TCP / sector_id used for multiple \"control_positions\"", id)
 		}
@@ -967,7 +967,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			return
 		}
 		if ctrl, ok := sg.ControlPositions[*s]; ok {
-			*s = ctrl.Id()
+			*s = string(ctrl.Id())
 		}
 	}
 	rewriteWaypoints := func(wp av.WaypointArray) {

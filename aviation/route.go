@@ -384,14 +384,16 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 
 		if wp.PointOut != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.PointOut }) {
+				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == ControllerPosition(wp.PointOut) }) {
 				e.ErrorString("No controller found with id %q for point out", wp.PointOut)
 			}
 		}
 
 		if wp.HandoffController != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.HandoffController }) {
+				func(callsign string, ctrl *Controller) bool {
+					return ctrl.Id() == ControllerPosition(wp.HandoffController)
+				}) {
 				e.ErrorString("No controller found with id %q for handoff", wp.HandoffController)
 			}
 		}

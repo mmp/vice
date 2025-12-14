@@ -95,7 +95,7 @@ type Preferences struct {
 	FusedRadarMode    bool
 
 	// For tracked by other controllers
-	ControllerLeaderLineDirections map[string]math.CardinalOrdinalDirection
+	ControllerLeaderLineDirections map[av.ControllerPosition]math.CardinalOrdinalDirection
 	// If not specified in ControllerLeaderLineDirections...
 	OtherControllerLeaderLineDirection *math.CardinalOrdinalDirection
 	// Only set if specified by the user (and not used currently...)

@@ -272,8 +272,8 @@ type Event struct {
 	Type                  EventType
 	ADSBCallsign          av.ADSBCallsign
 	ACID                  ACID
-	FromController        string
-	ToController          string // For radio transmissions, the controlling controller.
+	FromController        ControllerPosition
+	ToController          ControllerPosition // For radio transmissions, the controlling controller.
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
@@ -302,10 +302,10 @@ func (e Event) LogValue() slog.Value {
 		attrs = append(attrs, slog.String("acid", string(e.ACID)))
 	}
 	if e.FromController != "" {
-		attrs = append(attrs, slog.String("from_controller", e.FromController))
+		attrs = append(attrs, slog.String("from_controller", string(e.FromController)))
 	}
 	if e.ToController != "" {
-		attrs = append(attrs, slog.String("to_controller", e.ToController))
+		attrs = append(attrs, slog.String("to_controller", string(e.ToController)))
 	}
 	if e.WrittenText != "" {
 		attrs = append(attrs, slog.String("written_text", e.WrittenText))

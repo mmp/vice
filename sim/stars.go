@@ -28,12 +28,12 @@ import (
 )
 
 type RedirectedHandoff struct {
-	OriginalOwner string   // Controller callsign
-	Redirector    []string // Controller callsign
-	RedirectedTo  string   // Controller callsign
+	OriginalOwner ControllerPosition   // Controller position
+	Redirector    []ControllerPosition // Redirecting controllers
+	RedirectedTo  ControllerPosition
 }
 
-func (rd *RedirectedHandoff) GetLastRedirector() string {
+func (rd *RedirectedHandoff) GetLastRedirector() ControllerPosition {
 	if length := len(rd.Redirector); length > 0 {
 		return rd.Redirector[length-1]
 	} else {
@@ -41,23 +41,23 @@ func (rd *RedirectedHandoff) GetLastRedirector() string {
 	}
 }
 
-func (rd *RedirectedHandoff) ShowRDIndicator(callsign string, RDIndicatorEnd time.Time) bool {
+func (rd *RedirectedHandoff) ShowRDIndicator(pos ControllerPosition, RDIndicatorEnd time.Time) bool {
 	// Show "RD" to the redirect target, last redirector until the RD is accepted.
 	// Show "RD" to the original owner up to 30 seconds after the RD is accepted.
-	return rd.RedirectedTo == callsign || rd.GetLastRedirector() == callsign ||
-		rd.OriginalOwner == callsign || time.Until(RDIndicatorEnd) > 0
+	return rd.RedirectedTo == pos || rd.GetLastRedirector() == pos ||
+		rd.OriginalOwner == pos || time.Until(RDIndicatorEnd) > 0
 }
 
-func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl string) bool {
+func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl ControllerPosition) bool {
 	// True if the 2nd redirector redirects back to the 1st redirector
 	return (len(rd.Redirector) == 1 || (len(rd.Redirector) > 1) && rd.Redirector[1] == ctrl) && octrl == rd.Redirector[0]
 }
 
 func (rd *RedirectedHandoff) AddRedirector(ctrl *av.Controller) {
-	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Id() {
+	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ControllerPosition(ctrl.Id()) {
 		// Don't append the same controller multiple times
 		// (the case in which the last redirector recalls and then redirects again)
-		rd.Redirector = append(rd.Redirector, ctrl.Id())
+		rd.Redirector = append(rd.Redirector, ControllerPosition(ctrl.Id()))
 	}
 }
 

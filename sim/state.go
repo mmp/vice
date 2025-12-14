@@ -21,11 +21,8 @@ import (
 
 const serverCallsign = "__SERVER__"
 
-// ControllerPosition identifies a controller position in either STARS or ERAM.
-// For STARS, this is the TCP (Terminal Control Position) like "2K" or "4P".
-// For ERAM, this is the sector identifier like "N56" or "W05".
-// This is the generic type used throughout the codebase for any controller position.
-type ControllerPosition string
+// ControllerPosition is an alias for av.ControllerPosition for convenience.
+type ControllerPosition = av.ControllerPosition
 
 // TCP is an alias for ControllerPosition, provided for clarity in STARS-specific code.
 // Use TCP when the code is explicitly STARS-related; use ControllerPosition for
@@ -66,7 +63,7 @@ type State struct {
 	PrimaryController ControllerPosition
 	MultiControllers  av.SplitConfiguration
 	UserTCP           ControllerPosition
-	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
+	Airspace          map[ControllerPosition]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
 
 	GenerationIndex int
 
@@ -175,26 +172,26 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	}
 
 	if len(config.ControllerAirspace) > 0 {
-		ss.Airspace = make(map[string]map[string][]av.ControllerAirspaceVolume)
+		ss.Airspace = make(map[ControllerPosition]map[string][]av.ControllerAirspaceVolume)
 		if config.IsLocal {
-			ss.Airspace[string(ss.PrimaryController)] = make(map[string][]av.ControllerAirspaceVolume)
+			ss.Airspace[ss.PrimaryController] = make(map[string][]av.ControllerAirspaceVolume)
 			// Take all the airspace
 			for _, vnames := range config.ControllerAirspace {
 				for _, vname := range vnames {
 					// Remap from strings provided in the scenario to the
 					// actual volumes defined in the scenario group.
-					ss.Airspace[string(ss.PrimaryController)][vname] = config.Airspace.Volumes[vname]
+					ss.Airspace[ss.PrimaryController][vname] = config.Airspace.Volumes[vname]
 				}
 			}
 		} else {
 			for ctrl, vnames := range config.ControllerAirspace {
-				if _, ok := ss.Airspace[ctrl]; !ok {
-					ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
+				if _, ok := ss.Airspace[ControllerPosition(ctrl)]; !ok {
+					ss.Airspace[ControllerPosition(ctrl)] = make(map[string][]av.ControllerAirspaceVolume)
 				}
 				for _, vname := range vnames {
 					// Remap from strings provided in the scenario to the
 					// actual volumes defined in the scenario group.
-					ss.Airspace[ctrl][vname] = config.Airspace.Volumes[vname]
+					ss.Airspace[ControllerPosition(ctrl)][vname] = config.Airspace.Volumes[vname]
 				}
 			}
 		}

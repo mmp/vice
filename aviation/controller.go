@@ -12,6 +12,12 @@ import (
 	"github.com/mmp/vice/util"
 )
 
+// ControllerPosition identifies a controller position in either STARS or ERAM.
+// For STARS, this is the TCP (Terminal Control Position) like "2K" or "4P".
+// For ERAM, this is the sector identifier like "N56" or "W05".
+// This is the generic type used throughout the codebase for any controller position.
+type ControllerPosition string
+
 type Controller struct {
 	Position           string    // This is the key in the controllers map in JSON
 	RadioName          string    `json:"radio_name"`
@@ -30,11 +36,11 @@ func (c Controller) IsExternal() bool {
 	return c.ERAMFacility || c.FacilityIdentifier != ""
 }
 
-func (c Controller) Id() string {
+func (c Controller) Id() ControllerPosition {
 	if c.ERAMFacility {
-		return c.SectorID
+		return ControllerPosition(c.SectorID)
 	}
-	return c.FacilityIdentifier + c.SectorID
+	return ControllerPosition(c.FacilityIdentifier + c.SectorID)
 }
 
 func (c Controller) ERAMID() string { // For display

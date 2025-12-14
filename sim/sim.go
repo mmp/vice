@@ -183,8 +183,8 @@ type Handoff struct {
 }
 
 type PointOut struct {
-	FromController string
-	ToController   string
+	FromController ControllerPosition
+	ToController   ControllerPosition
 	AcceptTime     time.Time
 }
 
@@ -720,7 +720,7 @@ func (s *Sim) GlobalMessage(tcp, message string) error {
 	s.eventStream.Post(Event{
 		Type:           GlobalMessageEvent,
 		WrittenText:    message,
-		FromController: tcp,
+		FromController: ControllerPosition(tcp),
 	})
 
 	return nil
@@ -812,7 +812,7 @@ func (s *Sim) GetAvailableCoveredPositions() (map[string]av.Controller, map[stri
 
 type GlobalMessage struct {
 	Message        string
-	FromController string
+	FromController ControllerPosition
 }
 
 type StateUpdate struct {
@@ -877,7 +877,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 
 		// Add identifying info
 		for i, e := range events {
-			if e.Type != RadioTransmissionEvent || e.ToController != tcp {
+			if e.Type != RadioTransmissionEvent || e.ToController != ControllerPosition(tcp) {
 				continue
 			}
 
@@ -927,7 +927,7 @@ func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
 		// Post TTS requests
 		if s.ttsProvider != nil {
 			for _, e := range events {
-				if e.Type != RadioTransmissionEvent || e.ToController != tcp {
+				if e.Type != RadioTransmissionEvent || e.ToController != ControllerPosition(tcp) {
 					continue
 				}
 
@@ -1261,8 +1261,8 @@ func (s *Sim) updateState() {
 				// Automated accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedHandoffEvent,
-					FromController: string(fp.TrackingController),
-					ToController:   string(fp.HandoffController),
+					FromController: fp.TrackingController,
+					ToController:   fp.HandoffController,
 					ACID:           fp.ACID,
 				})
 				s.lg.Debug("automatic handoff accept", slog.String("acid", string(fp.ACID)),
@@ -1284,7 +1284,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(po.ToController) {
+		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(string(po.ToController)) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -1295,7 +1295,7 @@ func (s *Sim) updateState() {
 				ACID:           acid,
 			})
 			s.lg.Debug("automatic pointout accept", slog.String("acid", string(acid)),
-				slog.String("by", po.ToController), slog.String("to", po.FromController))
+				slog.String("by", string(po.ToController)), slog.String("to", string(po.FromController)))
 
 			delete(s.PointOuts, acid)
 		}
@@ -1736,8 +1736,8 @@ func (s *Sim) goAround(ac *Aircraft) {
 		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,
 			ADSBCallsign:   ac.ADSBCallsign,
-			FromController: string(sfp.TrackingController),
-			ToController:   string(ac.ApproachTCP),
+			FromController: sfp.TrackingController,
+			ToController:   ac.ApproachTCP,
 		})
 	}
 }
@@ -1756,7 +1756,7 @@ func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr av.Radi
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
-		ToController:          tr.Controller,
+		ToController:          ControllerPosition(tr.Controller),
 		WrittenText:           tr.Written(s.Rand),
 		SpokenText:            tr.Spoken(s.Rand),
 		RadioTransmissionType: tr.Type,
@@ -1909,6 +1909,6 @@ func (t *Track) HandingOffTo(tcp string) bool {
 
 	sfp := t.FlightPlan
 	return sfp.HandoffController == ControllerPosition(tcp) &&
-		(!slices.Contains(sfp.RedirectedHandoff.Redirector, tcp) || // not a redirector
-			sfp.RedirectedHandoff.RedirectedTo == tcp) // redirected to
+		(!slices.Contains(sfp.RedirectedHandoff.Redirector, ControllerPosition(tcp)) || // not a redirector
+			sfp.RedirectedHandoff.RedirectedTo == ControllerPosition(tcp)) // redirected to
 }

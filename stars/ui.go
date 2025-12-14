@@ -347,7 +347,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		imgui.ColorEdit3V("Draw Color##5", sp.IFPHelpers.AirspaceColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if sp.scopeDraw.airspace == nil {
-			sp.scopeDraw.airspace = make(map[string]map[string]bool)
+			sp.scopeDraw.airspace = make(map[sim.TCP]map[string]bool)
 			for ctrl, sectors := range c.State.Airspace {
 				sp.scopeDraw.airspace[ctrl] = make(map[string]bool)
 				for _, sector := range util.SortedMapKeys(sectors) {
@@ -356,8 +356,8 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			}
 		}
 		for _, pos := range util.SortedMapKeys(sp.scopeDraw.airspace) {
-			hdr := pos
-			if ctrl, ok := c.State.Controllers[sim.ControllerPosition(pos)]; ok {
+			hdr := string(pos)
+			if ctrl, ok := c.State.Controllers[pos]; ok {
 				hdr += " (" + ctrl.Position + ")"
 			}
 			if imgui.TreeNodeExStr(hdr) {

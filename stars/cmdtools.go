@@ -576,7 +576,7 @@ func init() {
 				return ErrSTARSIllegalPosition
 			}
 
-			ctx.Client.PointOut(trk.FlightPlan.ACID, ctrl.Id(), func(err error) { sp.displayError(err, ctx, "") })
+			ctx.Client.PointOut(trk.FlightPlan.ACID, string(ctrl.Id()), func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
 
@@ -600,7 +600,7 @@ func init() {
 				fac := ctx.Client.State.Controllers[ctx.UserTCP].FacilityIdentifier
 				for _, ctrl := range ctx.Client.State.Controllers {
 					if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == fac {
-						ctx.Client.ForceQL(trk.FlightPlan.ACID, ctrl.Id(), func(err error) { sp.displayError(err, ctx, "") })
+						ctx.Client.ForceQL(trk.FlightPlan.ACID, string(ctrl.Id()), func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
 				tcps = strings.TrimPrefix(tcps, "ALL")
@@ -614,7 +614,7 @@ func init() {
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
-				ctx.Client.ForceQL(trk.FlightPlan.ACID, ctrl.Id(), func(err error) { sp.displayError(err, ctx, "") })
+				ctx.Client.ForceQL(trk.FlightPlan.ACID, string(ctrl.Id()), func(err error) { sp.displayError(err, ctx, "") })
 				tcps = tcps[2:]
 			} else {
 				// TCP without controller subset
@@ -622,7 +622,7 @@ func init() {
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
-				ctx.Client.ForceQL(trk.FlightPlan.ACID, ctrl.Id(), func(err error) { sp.displayError(err, ctx, "") })
+				ctx.Client.ForceQL(trk.FlightPlan.ACID, string(ctrl.Id()), func(err error) { sp.displayError(err, ctx, "") })
 				tcps = tcps[1:]
 
 				// Must be followed by a space if not at the end
@@ -723,10 +723,11 @@ func init() {
 		}
 
 		ps.QuickLookAll = false
-		if curPlus, enabled := ps.QuickLookTCPs[ctrl.Id()]; enabled && curPlus == plus {
-			delete(ps.QuickLookTCPs, ctrl.Id())
+		targetTCP := string(ctrl.Id())
+		if curPlus, enabled := ps.QuickLookTCPs[targetTCP]; enabled && curPlus == plus {
+			delete(ps.QuickLookTCPs, targetTCP)
 		} else {
-			ps.QuickLookTCPs[ctrl.Id()] = plus
+			ps.QuickLookTCPs[targetTCP] = plus
 		}
 		return nil
 	}

@@ -282,7 +282,7 @@ func (c *ControlClient) addCall(pc *pendingCall) {
 func (c *ControlClient) ControllerAirspace(id string) []av.ControllerAirspaceVolume {
 	var vols []av.ControllerAirspaceVolume
 	for _, pos := range c.State.GetConsolidatedPositions(id) {
-		for _, avol := range util.SortedMap(c.State.Airspace[pos]) {
+		for _, avol := range util.SortedMap(c.State.Airspace[sim.ControllerPosition(pos)]) {
 			vols = append(vols, avol...)
 		}
 	}

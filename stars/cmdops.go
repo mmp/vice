@@ -34,10 +34,10 @@ func init() {
 		}
 
 		// If handoff is in progress TO user, redirect it instead
-		if ctx.ControlsPosition(fp.HandoffController) || ctx.ControlsPosition(sim.ControllerPosition(fp.RedirectedHandoff.RedirectedTo)) {
-			ctx.Client.RedirectHandoff(fp.ACID, control.Id(), func(err error) { sp.displayError(err, ctx, "") })
+		if ctx.ControlsPosition(fp.HandoffController) || ctx.ControlsPosition(fp.RedirectedHandoff.RedirectedTo) {
+			ctx.Client.RedirectHandoff(fp.ACID, string(control.Id()), func(err error) { sp.displayError(err, ctx, "") })
 		} else {
-			ctx.Client.HandoffTrack(fp.ACID, control.Id(), func(err error) { sp.displayError(err, ctx, "") })
+			ctx.Client.HandoffTrack(fp.ACID, string(control.Id()), func(err error) { sp.displayError(err, ctx, "") })
 		}
 
 		return nil

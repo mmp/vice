@@ -228,7 +228,7 @@ type STARSPane struct {
 		approaches  map[string]map[string]bool            // airport->approach
 		departures  map[string]map[string]map[string]bool // airport->runway->exit
 		overflights map[string]map[int]bool               // group->index
-		airspace    map[string]map[string]bool            // ctrl -> volume name
+		airspace    map[sim.TCP]map[string]bool           // ctrl -> volume name
 		holds       map[string]av.Hold                    // fix name -> Hold
 		allHolds    bool
 	}
@@ -255,7 +255,7 @@ type STARSPane struct {
 }
 
 type PointOutControllers struct {
-	From, To string
+	From, To sim.TCP
 }
 
 const (

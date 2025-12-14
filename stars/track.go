@@ -354,7 +354,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					}
 				}
 				if outbound || inbound {
-					state.AcceptedHandoffSector = util.Select(outbound, event.ToController, event.FromController)
+					state.AcceptedHandoffSector = string(util.Select(outbound, event.ToController, event.FromController))
 					dur := time.Duration(ctx.FacilityAdaptation.HOSectorDisplayDuration) * time.Second
 					state.AcceptedHandoffDisplayEnd = time.Now().Add(dur)
 				}
@@ -1436,7 +1436,7 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		} else if ctx.ControlsPosition(sfp.HandoffController) {
 			// Being handed off to us
 			return ps.LeaderLineDirection
-		} else if dir, ok := ps.ControllerLeaderLineDirections[string(sfp.TrackingController)]; ok {
+		} else if dir, ok := ps.ControllerLeaderLineDirections[sfp.TrackingController]; ok {
 			// Tracked by another controller for whom a direction was specified
 			return dir
 		} else if ps.OtherControllerLeaderLineDirection != nil {

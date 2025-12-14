@@ -416,7 +416,7 @@ func (s *Sim) ModifyFlightPlan(tcp string, acid ACID, spec FlightPlanSpecifier) 
 			s.eventStream.Post(Event{
 				Type:                SetGlobalLeaderLineEvent,
 				ACID:                acid,
-				FromController:      tcp,
+				FromController:      ControllerPosition(tcp),
 				LeaderLineDirection: spec.GlobalLeaderLineDirection.Get(),
 			})
 		}
@@ -648,8 +648,8 @@ func (s *Sim) HandoffTrack(tcp string, acid ACID, toTCP string) error {
 func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP string) {
 	s.eventStream.Post(Event{
 		Type:           OfferedHandoffEvent,
-		FromController: string(fp.TrackingController),
-		ToController:   toTCP,
+		FromController: fp.TrackingController,
+		ToController:   ControllerPosition(toTCP),
 	})
 
 	fp.HandoffController = ControllerPosition(toTCP)
@@ -729,8 +729,8 @@ func (s *Sim) contactController(fromTCP string, sfp *NASFlightPlan, ac *Aircraft
 
 	s.eventStream.Post(Event{
 		Type:           HandoffControlEvent,
-		FromController: string(sfp.ControllingController),
-		ToController:   toTCP,
+		FromController: sfp.ControllingController,
+		ToController:   ControllerPosition(toTCP),
 		ACID:           sfp.ACID,
 	})
 
@@ -755,7 +755,7 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			if fp.HandoffController == ControllerPosition(tcp) {
 				return nil
 			}
-			if po, ok := s.PointOuts[fp.ACID]; ok && po.ToController == tcp {
+			if po, ok := s.PointOuts[fp.ACID]; ok && po.ToController == ControllerPosition(tcp) {
 				// Point out where the recipient decided to take it as a handoff instead.
 				return nil
 			}
@@ -765,8 +765,8 @@ func (s *Sim) AcceptHandoff(tcp string, acid ACID) error {
 			s.eventStream.Post(Event{
 				Type:           AcceptedHandoffEvent,
 				ACID:           fp.ACID,
-				FromController: string(fp.TrackingController),
-				ToController:   tcp,
+				FromController: fp.TrackingController,
+				ToController:   ControllerPosition(tcp),
 			})
 
 			previousTrackingController := fp.TrackingController
@@ -810,7 +810,7 @@ func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
 			if octrl, ok := s.State.Controllers[ControllerPosition(controller)]; !ok {
 				return av.ErrNoController
-			} else if octrl.Id() == tcp || octrl.Id() == string(ac.NASFlightPlan.TrackingController) {
+			} else if octrl.Id() == ControllerPosition(tcp) || octrl.Id() == ac.NASFlightPlan.TrackingController {
 				// Can't redirect to ourself and the controller who initiated the handoff
 				return av.ErrInvalidController
 			} else if ctrl, ok := s.State.Controllers[ControllerPosition(tcp)]; !ok {
@@ -826,15 +826,15 @@ func (s *Sim) RedirectHandoff(tcp string, acid ACID, controller string) error {
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
 			octrl := s.State.Controllers[ControllerPosition(controller)]
 			rh := &fp.RedirectedHandoff
-			rh.OriginalOwner = string(fp.TrackingController)
+			rh.OriginalOwner = fp.TrackingController
 			ctrl := s.State.Controllers[ControllerPosition(tcp)]
-			if rh.ShouldFallbackToHandoff(tcp, octrl.Id()) {
-				fp.HandoffController = ControllerPosition(rh.Redirector[0])
+			if rh.ShouldFallbackToHandoff(ControllerPosition(tcp), ControllerPosition(octrl.Id())) {
+				fp.HandoffController = rh.Redirector[0]
 				*rh = RedirectedHandoff{}
 				return nil
 			}
 			rh.AddRedirector(ctrl)
-			rh.RedirectedTo = octrl.Id()
+			rh.RedirectedTo = ControllerPosition(octrl.Id())
 
 			return nil
 		})
@@ -850,18 +850,18 @@ func (s *Sim) AcceptRedirectedHandoff(tcp string, acid ACID) error {
 		},
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
 			rh := &fp.RedirectedHandoff
-			if rh.RedirectedTo == tcp { // Accept
+			if rh.RedirectedTo == ControllerPosition(tcp) { // Accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedRedirectedHandoffEvent,
 					FromController: rh.OriginalOwner,
-					ToController:   tcp,
+					ToController:   ControllerPosition(tcp),
 					ACID:           acid,
 				})
 				fp.HandoffController = ""
 				fp.TrackingController = ControllerPosition(tcp)
 				fp.LastLocalController = ControllerPosition(tcp)
 				*rh = RedirectedHandoff{}
-			} else if rh.GetLastRedirector() == tcp { // Recall (only the last redirector is able to recall)
+			} else if rh.GetLastRedirector() == ControllerPosition(tcp) { // Recall (only the last redirector is able to recall)
 				if len(rh.Redirector) > 1 { // Multiple redirected handoff, recall & still show "RD"
 					rh.RedirectedTo = rh.Redirector[len(rh.Redirector)-1]
 				} else { // One redirect took place, clear the RD and show it as a normal handoff
@@ -886,8 +886,8 @@ func (s *Sim) ForceQL(tcp string, acid ACID, controller string) error {
 			octrl := s.State.Controllers[ControllerPosition(controller)]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
-				FromController: tcp,
-				ToController:   octrl.Id(),
+				FromController: ControllerPosition(tcp),
+				ToController:   ControllerPosition(octrl.Id()),
 				ACID:           acid,
 			})
 
@@ -922,15 +922,15 @@ func (s *Sim) PointOut(fromTCP string, acid ACID, toTCP string) error {
 func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 	s.eventStream.Post(Event{
 		Type:           PointOutEvent,
-		FromController: from.Id(),
-		ToController:   to.Id(),
+		FromController: ControllerPosition(from.Id()),
+		ToController:   ControllerPosition(to.Id()),
 		ACID:           acid,
 	})
 
 	acceptDelay := 4 + s.Rand.Intn(10)
 	s.PointOuts[acid] = PointOut{
-		FromController: from.Id(),
-		ToController:   to.Id(),
+		FromController: ControllerPosition(from.Id()),
+		ToController:   ControllerPosition(to.Id()),
 		AcceptTime:     s.State.SimTime.Add(time.Duration(acceptDelay) * time.Second),
 	}
 }
@@ -938,7 +938,7 @@ func (s *Sim) pointOut(acid ACID, from *av.Controller, to *av.Controller) {
 func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
-			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
+			if po, ok := s.PointOuts[acid]; !ok || po.ToController != ControllerPosition(tcp) {
 				return av.ErrNotPointedOutToMe
 			}
 
@@ -949,7 +949,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
 				Type:           AcknowledgedPointOutEvent,
-				FromController: tcp,
+				FromController: ControllerPosition(tcp),
 				ToController:   s.PointOuts[acid].FromController,
 				ACID:           acid,
 			})
@@ -970,7 +970,7 @@ func (s *Sim) AcknowledgePointOut(tcp string, acid ACID) error {
 func (s *Sim) RecallPointOut(tcp string, acid ACID) error {
 	return s.dispatchTrackedFlightPlanCommand(tcp, acid,
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
-			if po, ok := s.PointOuts[acid]; !ok || po.FromController != tcp {
+			if po, ok := s.PointOuts[acid]; !ok || po.FromController != ControllerPosition(tcp) {
 				return av.ErrNotPointedOutByMe
 			}
 			return nil
@@ -978,7 +978,7 @@ func (s *Sim) RecallPointOut(tcp string, acid ACID) error {
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) {
 			s.eventStream.Post(Event{
 				Type:           RecalledPointOutEvent,
-				FromController: tcp,
+				FromController: ControllerPosition(tcp),
 				ToController:   s.PointOuts[acid].ToController,
 				ACID:           acid,
 			})
@@ -990,7 +990,7 @@ func (s *Sim) RecallPointOut(tcp string, acid ACID) error {
 func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 	return s.dispatchFlightPlanCommand(tcp, acid,
 		func(tcp string, fp *NASFlightPlan, ac *Aircraft) error {
-			if po, ok := s.PointOuts[acid]; !ok || po.ToController != tcp {
+			if po, ok := s.PointOuts[acid]; !ok || po.ToController != ControllerPosition(tcp) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
@@ -1000,7 +1000,7 @@ func (s *Sim) RejectPointOut(tcp string, acid ACID) error {
 			// event since they are w.r.t. the original point out.
 			s.eventStream.Post(Event{
 				Type:           RejectedPointOutEvent,
-				FromController: tcp,
+				FromController: ControllerPosition(tcp),
 				ToController:   s.PointOuts[acid].FromController,
 				ACID:           acid,
 			})
@@ -1030,7 +1030,7 @@ func (s *Sim) SendRouteCoordinates(tcp string, acid ACID) error {
 		Type:         FixCoordinatesEvent,
 		ACID:         acid,
 		WaypointInfo: waypointPairs,
-		ToController: string(ctrl),
+		ToController: ctrl,
 	})
 	return nil
 }
