@@ -808,17 +808,20 @@
     "MHT_W_APP": {
       "frequency": 134750,
       "radio_name": "Boston Approach",
-      "sector_id": "1W"
+      "sector_id": "1W",
+      "default_airport": "KMHT"
     },
     "MHT_P_APP": {
       "frequency": 125825,
       "radio_name": "Boston Approach",
-      "sector_id": "1P"
+      "sector_id": "1P",
+      "default_airport": "KMHT"
     },
     "MHT_J_APP": {
       "frequency": 127350,
       "radio_name": "Boston Approach",
-      "sector_id": "1J"
+      "sector_id": "1J",
+      "default_airport": "KMHT"
     },
     "BOS_DEP": {
       "frequency": 133000,
@@ -864,14 +867,22 @@
           "KPSM": 10
         }
       },
-      "solo_controller": "MHT_Z_APP",
-      "multi_controllers": {
-        "default": {
-          "MHT_J_APP": { "primary": true, "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_P_APP": { "backup": "MHT_E_APP", "departures": ["KPSM"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MHT_E_APP": ["MHT_P_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "ENE": "MHT_E_APP",
+          "GDM": "MHT_W_APP",
+          "ROZZE2": "MHT_W_APP"
+        },
+        "departure_assignments": {
+          "KMHT": "MHT_J_APP",
+          "KPSM": "MHT_P_APP"
         }
       },
       "controllers": ["BOS_DEP", "MHT_TWR", "PSM_TWR", "BOS_37_CTR"],
@@ -924,14 +935,21 @@
           "KPSM": 10
         }
       },
-      "solo_controller": "MHT_Z_APP",
-      "multi_controllers": {
-        "default": {
-          "MHT_Z_APP": { "primary": true, "departures": ["KMHT"] },
-          "MHT_J_APP": { "backup": "MHT_Z_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_P_APP": { "backup": "MHT_E_APP", "departures": ["KPSM"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MHT_E_APP": ["MHT_P_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_J_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "ENE": "MHT_E_APP",
+          "GDM": "MHT_W_APP",
+          "ROZZE2": "MHT_W_APP"
+        },
+        "departure_assignments": {
+          "KMHT": "MHT_Z_APP",
+          "KPSM": "MHT_P_APP"
         }
       },
       "controllers": ["BOS_DEP", "MHT_TWR", "PSM_TWR", "BOS_37_CTR"],

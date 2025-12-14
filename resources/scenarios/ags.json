@@ -3,8 +3,12 @@
   "airports": {
     "KAGS": {
       "approaches": {
-        "I17": { "cifp_id": "I17" },
-        "I35": { "cifp_id": "I35" },
+        "I17": {
+          "cifp_id": "I17"
+        },
+        "I35": {
+          "cifp_id": "I35"
+        },
         "R17": {
           "full_name": "RNAV GPS Runway 17",
           "runway": "17",
@@ -35,8 +39,12 @@
             "HOMRU/iaf/hilpt/nopt180/a2100 WATEM/faf/a1700"
           ]
         },
-        "RY8": { "cifp_id": "RY8" },
-        "Z8": { "cifp_id": "RZ8" }
+        "RY8": {
+          "cifp_id": "RY8"
+        },
+        "Z8": {
+          "cifp_id": "RZ8"
+        }
       },
       "departure_routes": {
         "8": {
@@ -456,11 +464,21 @@
           "KAGS": 5
         }
       },
-      "solo_controller": "AGS_E_APP",
-      "multi_controllers": {
-        "default": {
-          "AGS_E_APP": { "primary": true, "arrivals": ["STWRT3", "STUGE3", "East"] },
-          "AGS_W_APP": { "backup": "AGS_E_APP", "arrivals": ["West", "South", "North"], "departures": ["KAGS"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AGS_E_APP": ["AGS_W_APP"]
+        },
+        "inbound_assignments": {
+          "East": "AGS_E_APP",
+          "North": "AGS_W_APP",
+          "STUGE3": "AGS_E_APP",
+          "STWRT3": "AGS_E_APP",
+          "South": "AGS_W_APP",
+          "West": "AGS_W_APP"
+        },
+        "departure_assignments": {
+          "KAGS": "AGS_W_APP"
         }
       },
       "controllers": ["AGS_TWR", "ATL_CTR", "JAX_CTR", "CAE_APP"],
@@ -511,11 +529,21 @@
           "KAGS": 5
         }
       },
-      "solo_controller": "AGS_E_APP",
-      "multi_controllers": {
-        "default": {
-          "AGS_E_APP": { "primary": true, "arrivals": ["STWRT3", "STUGE3", "East"] },
-          "AGS_W_APP": { "backup": "AGS_E_APP", "arrivals": ["West", "South", "North"], "departures": ["KAGS"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AGS_E_APP": ["AGS_W_APP"]
+        },
+        "inbound_assignments": {
+          "East": "AGS_E_APP",
+          "North": "AGS_W_APP",
+          "STUGE3": "AGS_E_APP",
+          "STWRT3": "AGS_E_APP",
+          "South": "AGS_W_APP",
+          "West": "AGS_W_APP"
+        },
+        "departure_assignments": {
+          "KAGS": "AGS_W_APP"
         }
       },
       "controllers": ["AGS_TWR", "ATL_CTR", "JAX_CTR", "CAE_APP"],

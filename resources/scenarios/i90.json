@@ -138,14 +138,30 @@
   "airports": {
     "KIAH": {
       "approaches": {
-        "I5R": { "cifp_id": "I15R" },
-        "I6L": { "cifp_id": "I26L" },
-        "I6R": { "cifp_id": "I26R" },
-        "I27": { "cifp_id": "I27" },
-        "I3R": { "cifp_id": "I33R" },
-        "I8L": { "cifp_id": "I8L" },
-        "I8R": { "cifp_id": "I8R" },
-        "I9": { "cifp_id": "I9" }
+        "I5R": {
+          "cifp_id": "I15R"
+        },
+        "I6L": {
+          "cifp_id": "I26L"
+        },
+        "I6R": {
+          "cifp_id": "I26R"
+        },
+        "I27": {
+          "cifp_id": "I27"
+        },
+        "I3R": {
+          "cifp_id": "I33R"
+        },
+        "I8L": {
+          "cifp_id": "I8L"
+        },
+        "I8R": {
+          "cifp_id": "I8R"
+        },
+        "I9": {
+          "cifp_id": "I9"
+        }
       },
       "departure_routes": {
         "15L": {
@@ -836,10 +852,18 @@
     },
     "KHOU": {
       "approaches": {
-        "I3R": { "cifp_id": "I13R" },
-        "I1L": { "cifp_id": "I31L" },
-        "I4": { "cifp_id": "I4" },
-        "R22": { "cifp_id": "R22" }
+        "I3R": {
+          "cifp_id": "I13R"
+        },
+        "I1L": {
+          "cifp_id": "I31L"
+        },
+        "I4": {
+          "cifp_id": "I4"
+        },
+        "R22": {
+          "cifp_id": "R22"
+        }
       },
       "departure_routes": {
         "22": {
@@ -1155,8 +1179,12 @@
     },
     "KSGR": {
       "approaches": {
-        "R17": { "cifp_id": "R17" },
-        "R35": { "cifp_id": "R35" }
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "R35": {
+          "cifp_id": "R35"
+        }
       },
       "departure_routes": {
         "17": {
@@ -1242,8 +1270,12 @@
     },
     "KGLS": {
       "approaches": {
-        "I14": { "cifp_id": "I14" },
-        "R32": { "cifp_id": "R32" }
+        "I14": {
+          "cifp_id": "I14"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        }
       },
       "departure_routes": {
         "14": {
@@ -2164,20 +2196,35 @@
           "KGLS": 1
         }
       },
-      "solo_controller": "I90_D_APP",
-      "multi_controllers": {
-        "default": {
-          "I90_D_APP": { "primary": true, "arrivals": ["WAPPL6", "CESAN4", "DOOBI2"] },
-          "I90_DEP": { "backup": "I90_D_APP", "departures": ["KIAH", "KHOU"] },
-          "I90_N_APP": { "backup": "I90_D_APP", "arrivals": ["DRLLR5", "MSCOT4"] },
-          "I90_X_APP": { "backup": "I90_N_APP", "arrivals": ["BELLR5", "KIDDZ4", "TKNIQ3", "TEJAS5"] },
-          "I90_G_APP": { "backup": "I90_X_APP", "arrivals": ["BAYYY5", "LINKK1"] },
-          "I90_B_APP": { "backup": "I90_DEP", "departures": ["KGLS"] },
-          "I90_P_APP": { "backup": "I90_DEP", "departures": ["KSGR"] },
-          "I90_A_APP": { "backup": "I90_D_APP" },
-          "I90_I_APP": { "backup": "I90_A_APP" },
-          "I90_O_APP": { "backup": "I90_I_APP" },
-          "I90_H_APP": { "backup": "I90_O_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "I90_A_APP": ["I90_I_APP"],
+          "I90_DEP": ["I90_B_APP", "I90_P_APP"],
+          "I90_D_APP": ["I90_A_APP", "I90_DEP", "I90_N_APP"],
+          "I90_I_APP": ["I90_O_APP"],
+          "I90_N_APP": ["I90_X_APP"],
+          "I90_O_APP": ["I90_H_APP"],
+          "I90_X_APP": ["I90_G_APP"]
+        },
+        "inbound_assignments": {
+          "BAYYY5": "I90_G_APP",
+          "BELLR5": "I90_X_APP",
+          "CESAN4": "I90_D_APP",
+          "DOOBI2": "I90_D_APP",
+          "DRLLR5": "I90_N_APP",
+          "KIDDZ4": "I90_X_APP",
+          "LINKK1": "I90_G_APP",
+          "MSCOT4": "I90_N_APP",
+          "TEJAS5": "I90_X_APP",
+          "TKNIQ3": "I90_X_APP",
+          "WAPPL6": "I90_D_APP"
+        },
+        "departure_assignments": {
+          "KGLS": "I90_B_APP",
+          "KHOU": "I90_DEP",
+          "KIAH": "I90_DEP",
+          "KSGR": "I90_P_APP"
         }
       },
       "controllers": [
@@ -2419,20 +2466,36 @@
           "KGLS": 1
         }
       },
-      "solo_controller": "I90_D_APP",
-      "multi_controllers": {
-        "default": {
-          "I90_D_APP": { "primary": true, "arrivals": ["WAPPL6", "CESAN4", "GESNR1", "SKNRD4"] },
-          "I90_DEP": { "backup": "I90_D_APP", "departures": ["KIAH", "KHOU"] },
-          "I90_N_APP": { "backup": "I90_D_APP", "arrivals": ["GUSHR3", "TTORO3"] },
-          "I90_X_APP": { "backup": "I90_N_APP", "arrivals": ["BELLR5", "KIDDZ4", "TKNIQ3", "HTOWN3"] },
-          "I90_G_APP": { "backup": "I90_X_APP", "arrivals": ["BAYYY5", "NNCEE2"] },
-          "I90_B_APP": { "backup": "I90_DEP", "departures": ["KGLS"] },
-          "I90_P_APP": { "backup": "I90_DEP", "departures": ["KSGR"] },
-          "I90_A_APP": { "backup": "I90_D_APP" },
-          "I90_I_APP": { "backup": "I90_A_APP" },
-          "I90_O_APP": { "backup": "I90_I_APP" },
-          "I90_H_APP": { "backup": "I90_O_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "I90_A_APP": ["I90_I_APP"],
+          "I90_DEP": ["I90_B_APP", "I90_P_APP"],
+          "I90_D_APP": ["I90_A_APP", "I90_DEP", "I90_N_APP"],
+          "I90_I_APP": ["I90_O_APP"],
+          "I90_N_APP": ["I90_X_APP"],
+          "I90_O_APP": ["I90_H_APP"],
+          "I90_X_APP": ["I90_G_APP"]
+        },
+        "inbound_assignments": {
+          "BAYYY5": "I90_G_APP",
+          "BELLR5": "I90_X_APP",
+          "CESAN4": "I90_D_APP",
+          "GESNR1": "I90_D_APP",
+          "GUSHR3": "I90_N_APP",
+          "HTOWN3": "I90_X_APP",
+          "KIDDZ4": "I90_X_APP",
+          "NNCEE2": "I90_G_APP",
+          "SKNRD4": "I90_D_APP",
+          "TKNIQ3": "I90_X_APP",
+          "TTORO3": "I90_N_APP",
+          "WAPPL6": "I90_D_APP"
+        },
+        "departure_assignments": {
+          "KGLS": "I90_B_APP",
+          "KHOU": "I90_DEP",
+          "KIAH": "I90_DEP",
+          "KSGR": "I90_P_APP"
         }
       },
       "controllers": [
@@ -2632,12 +2695,17 @@
           "KIAH": 10
         }
       },
-      "solo_controller": "I90_A_APP",
-      "multi_controllers": {
-        "default": {
-          "I90_A_APP": { "primary": true, "arrivals": ["FINALSNW"] },
-          "I90_I_APP": { "backup": "I90_A_APP", "arrivals": ["FINALSNE"] },
-          "I90_O_APP": { "backup": "I90_I_APP", "arrivals": ["FINALSSW", "FINALSSE"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "I90_A_APP": ["I90_I_APP"],
+          "I90_I_APP": ["I90_O_APP"]
+        },
+        "inbound_assignments": {
+          "FINALSNE": "I90_I_APP",
+          "FINALSNW": "I90_A_APP",
+          "FINALSSE": "I90_O_APP",
+          "FINALSSW": "I90_O_APP"
         }
       },
       "controllers": ["I90_D_APP", "I90_N_APP", "I90_X_APP", "I90_G_APP", "IAH_C_TWR"],

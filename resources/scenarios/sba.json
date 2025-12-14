@@ -1,19 +1,73 @@
 {
   "tracon": "SBA",
   "airports": {
-    "KIZA": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KLPC": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KPRB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCMA": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KOXR": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KDLO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KMIT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KSZP": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KIZA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KLPC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KPRB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KCMA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KOXR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KDLO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KMIT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KSZP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KSBA": {
       "approaches": {
-        "R7": { "cifp_id": "R7" },
-        "I7": { "cifp_id": "I7" },
-        "V25": { "cifp_id": "S25" },
+        "R7": {
+          "cifp_id": "R7"
+        },
+        "I7": {
+          "cifp_id": "I7"
+        },
+        "V25": {
+          "cifp_id": "S25"
+        },
         "V25T": {
           "runway": "25",
           "type": "RNAV",
@@ -191,11 +245,21 @@
       "tower_list": 1
     },
     "KSBP": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "R11": { "cifp_id": "R11" },
-        "I11": { "cifp_id": "I11" },
-        "R29": { "cifp_id": "R29" }
+        "R11": {
+          "cifp_id": "R11"
+        },
+        "I11": {
+          "cifp_id": "I11"
+        },
+        "R29": {
+          "cifp_id": "R29"
+        }
       },
       "departure_routes": {
         "11": {
@@ -313,11 +377,21 @@
       "hold_for_release": true
     },
     "KSMX": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "I12": { "cifp_id": "I12" },
-        "R12": { "cifp_id": "R12" },
-        "R30": { "cifp_id": "R30" }
+        "I12": {
+          "cifp_id": "I12"
+        },
+        "R12": {
+          "cifp_id": "R12"
+        },
+        "R30": {
+          "cifp_id": "R30"
+        }
       },
       "departure_routes": {
         "12": {
@@ -986,17 +1060,27 @@
           "KSMX": 1
         }
       },
-      "solo_controller": "SBA_H_APP",
-      "multi_controllers": {
-        "default": {
-          "SBA_H_APP": { "departures": ["KSBA"], "arrivals": ["PITBL2", "EAST SMX ARR"], "primary": true },
-          "SBA_I_APP": {
-            "backup": "SBA_R_APP",
-            "departures": ["KSBP"],
-            "arrivals": ["EAST SBP ARR", "NORTH SBP ARR", "NORTHWEST SBP ARR", "NORTH SMX ARR"]
-          },
-          "SBA_E_APP": { "backup": "SBA_H_APP", "arrivals": ["NORTHWEST SBA ARR", "NORTH SBA ARR"] },
-          "SBA_R_APP": { "backup": "SBA_H_APP", "departures": ["KSMX"], "arrivals": ["SOUTH SBP ARR"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SBA_H_APP": ["SBA_E_APP", "SBA_R_APP"],
+          "SBA_R_APP": ["SBA_I_APP"]
+        },
+        "inbound_assignments": {
+          "EAST SBP ARR": "SBA_I_APP",
+          "EAST SMX ARR": "SBA_H_APP",
+          "NORTH SBA ARR": "SBA_E_APP",
+          "NORTH SBP ARR": "SBA_I_APP",
+          "NORTH SMX ARR": "SBA_I_APP",
+          "NORTHWEST SBA ARR": "SBA_E_APP",
+          "NORTHWEST SBP ARR": "SBA_I_APP",
+          "PITBL2": "SBA_H_APP",
+          "SOUTH SBP ARR": "SBA_R_APP"
+        },
+        "departure_assignments": {
+          "KSBA": "SBA_H_APP",
+          "KSBP": "SBA_I_APP",
+          "KSMX": "SBA_R_APP"
         }
       },
       "controllers": [
@@ -1082,17 +1166,27 @@
           "KSMX": 1
         }
       },
-      "solo_controller": "SBA_H_APP",
-      "multi_controllers": {
-        "default": {
-          "SBA_H_APP": { "departures": ["KSBA"], "arrivals": ["PITBL2", "EAST SMX ARR"], "primary": true },
-          "SBA_I_APP": {
-            "backup": "SBA_R_APP",
-            "departures": ["KSBP"],
-            "arrivals": ["EAST SBP ARR", "NORTH SBP ARR", "NORTHWEST SBP ARR", "NORTH SMX ARR"]
-          },
-          "SBA_E_APP": { "backup": "SBA_H_APP", "arrivals": ["NORTHWEST SBA ARR", "NORTH SBA ARR"] },
-          "SBA_R_APP": { "backup": "SBA_H_APP", "departures": ["KSMX"], "arrivals": ["SOUTH SBP ARR"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SBA_H_APP": ["SBA_E_APP", "SBA_R_APP"],
+          "SBA_R_APP": ["SBA_I_APP"]
+        },
+        "inbound_assignments": {
+          "EAST SBP ARR": "SBA_I_APP",
+          "EAST SMX ARR": "SBA_H_APP",
+          "NORTH SBA ARR": "SBA_E_APP",
+          "NORTH SBP ARR": "SBA_I_APP",
+          "NORTH SMX ARR": "SBA_I_APP",
+          "NORTHWEST SBA ARR": "SBA_E_APP",
+          "NORTHWEST SBP ARR": "SBA_I_APP",
+          "PITBL2": "SBA_H_APP",
+          "SOUTH SBP ARR": "SBA_R_APP"
+        },
+        "departure_assignments": {
+          "KSBA": "SBA_H_APP",
+          "KSBP": "SBA_I_APP",
+          "KSMX": "SBA_R_APP"
         }
       },
       "controllers": [
@@ -1178,11 +1272,21 @@
       "SXC": {},
       "RZS": {},
       "FIM": {},
-      "KWANG": { "short_name": "KWG" },
-      "KPTIN": { "short_name": "KPT" },
-      "MISHN": { "short_name": "MIS" },
-      "GAUCH": { "short_name": "GAU" },
-      "HABUT": { "short_name": "HAB" },
+      "KWANG": {
+        "short_name": "KWG"
+      },
+      "KPTIN": {
+        "short_name": "KPT"
+      },
+      "MISHN": {
+        "short_name": "MIS"
+      },
+      "GAUCH": {
+        "short_name": "GAU"
+      },
+      "HABUT": {
+        "short_name": "HAB"
+      },
       "PRB": {}
     },
     "stars_maps": [

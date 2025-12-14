@@ -1,15 +1,45 @@
 {
   "tracon": "CID",
   "airports": {
-    "KMXO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KVTI": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KTZT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "C17": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KMXO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KVTI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KTZT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "C17": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KCID": {
       "approaches": {
-        "R9": { "cifp_id": "R9" },
-        "I27": { "cifp_id": "I27" },
-        "R27": { "cifp_id": "R27" },
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "I27": {
+          "cifp_id": "I27"
+        },
+        "R27": {
+          "cifp_id": "R27"
+        },
         "V9T": {
           "runway": "9",
           "type": "ILS",
@@ -255,10 +285,18 @@
       "tower_list": 1
     },
     "KIOW": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "R25": { "cifp_id": "R25" },
-        "R30": { "cifp_id": "R30" }
+        "R25": {
+          "cifp_id": "R25"
+        },
+        "R30": {
+          "cifp_id": "R30"
+        }
       },
       "departure_routes": {
         "25": {
@@ -571,15 +609,21 @@
           "KIOW": 2
         }
       },
-      "solo_controller": "CID_S_APP",
-      "multi_controllers": {
-        "default": {
-          "CID_S_APP": {
-            "departures": ["KIOW"],
-            "arrivals": ["WEST IOW ARR", "SOUTHEAST CID ARR", "WEST CID ARR"],
-            "primary": true
-          },
-          "CID_N_APP": { "backup": "CID_S_APP", "departures": ["KCID"], "arrivals": ["EAST CID ARR", "NORTH CID ARR"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CID_S_APP": ["CID_N_APP"]
+        },
+        "inbound_assignments": {
+          "EAST CID ARR": "CID_N_APP",
+          "NORTH CID ARR": "CID_N_APP",
+          "SOUTHEAST CID ARR": "CID_S_APP",
+          "WEST CID ARR": "CID_S_APP",
+          "WEST IOW ARR": "CID_S_APP"
+        },
+        "departure_assignments": {
+          "KCID": "CID_N_APP",
+          "KIOW": "CID_S_APP"
         }
       },
       "controllers": ["CID_TWR", "IOW_TWR", "CID_S_APP", "CID_N_APP", "CHI_56_CTR"],
@@ -628,15 +672,21 @@
           "KIOW": 2
         }
       },
-      "solo_controller": "CID_S_APP",
-      "multi_controllers": {
-        "default": {
-          "CID_S_APP": {
-            "departures": ["KCID", "KIOW"],
-            "arrivals": ["WEST CID ARR", "SOUTHEAST CID ARR", "WEST IOW ARR"],
-            "primary": true
-          },
-          "CID_N_APP": { "backup": "CID_S_APP", "arrivals": ["NORTH CID ARR", "EAST CID ARR"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CID_S_APP": ["CID_N_APP"]
+        },
+        "inbound_assignments": {
+          "EAST CID ARR": "CID_N_APP",
+          "NORTH CID ARR": "CID_N_APP",
+          "SOUTHEAST CID ARR": "CID_S_APP",
+          "WEST CID ARR": "CID_S_APP",
+          "WEST IOW ARR": "CID_S_APP"
+        },
+        "departure_assignments": {
+          "KCID": "CID_S_APP",
+          "KIOW": "CID_S_APP"
         }
       },
       "controllers": ["CID_TWR", "IOW_TWR", "CID_S_APP", "CID_N_APP", "CHI_56_CTR"],

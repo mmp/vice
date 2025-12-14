@@ -138,8 +138,15 @@ func (sc SplitConfiguration) GetInboundController(group string) (string, error) 
 }
 
 func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) (string, error) {
+	// First try to find a controller with a specific SID or runway match
 	for callsign, ctrl := range sc {
 		if ctrl.IsDepartureController(airport, runway, sid) {
+			return callsign, nil
+		}
+	}
+	// Fall back to airport-only match
+	for callsign, ctrl := range sc {
+		if ctrl.IsDepartureController(airport, "", "") {
 			return callsign, nil
 		}
 	}
@@ -157,8 +164,8 @@ func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
 			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
 				return true
 			}
-		} else { // no runway/SID, so only match airport
-			if ap == depAirport {
+		} else { // no runway/SID, so only match airport-only queries
+			if ap == depAirport && rwy == "" && sid == "" {
 				return true
 			}
 		}

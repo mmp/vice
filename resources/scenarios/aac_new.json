@@ -2941,7 +2941,9 @@
           "initial_speed": 260,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.43.23.567,W094.54.10.415/ho REELI/a11000/s250/h190",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -2970,7 +2972,6 @@
               "30": "N036.55.58.493,W094.56.27.332 4Y3"
             }
           },
-
           "airlines": {
             "KJKE": [
               {
@@ -3003,7 +3004,6 @@
               "28L": "PRIOR N036.45.38.410,W094.57.06.745 KAAC"
             }
           },
-
           "airlines": {
             "KAAC": [
               {
@@ -3112,7 +3112,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3132,7 +3134,9 @@
           "initial_speed": 260,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N035.26.29.859,W095.10.03.424/ho KILLR/a10000/s250/h010",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3203,7 +3207,9 @@
           "speed_restriction": 260,
           "initial_controller": "ZAE_OKC",
           "waypoints": "N035.42.28.333,W096.31.55.850/ho N035.43.03.613,W096.30.50.234/a15000 ATOKA/h055",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3316,7 +3322,9 @@
           "speed_restriction": 260,
           "initial_controller": "ZAE_OKC",
           "waypoints": "N036.48.46.304,W096.19.46.578/ho N036.47.00.739,W096.18.09.816/a15000 BARTS/h140",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3434,7 +3442,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3465,7 +3475,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -3624,7 +3633,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_S_APP",
           "waypoints": "N036.06.23.628,W095.45.51.113/ho N036.05.20.800,W095.38.45.942/a10000 N036.05.16.419,W095.37.56.257/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3655,7 +3666,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -3810,7 +3820,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_S_APP",
           "waypoints": "N036.05.27.529,W095.44.11.248/ho N036.04.40.934,W095.38.52.534/a10000 N036.04.34.960,W095.38.20.070/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3841,7 +3853,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -3999,7 +4010,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_S_APP",
           "waypoints": "N036.03.31.129,W095.56.16.538 N036.06.22.145,W095.51.22.379/ho N036.04.27.187,W095.38.55.803/a10000+ N036.04.21.927,W095.38.16.939/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4176,7 +4189,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.36.09.483,W095.03.52.086/ho REELI/a11000+ N036.32.33.259,W095.06.55.118/a6000/h190",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4209,7 +4224,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4267,7 +4284,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4325,7 +4344,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4383,7 +4404,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4441,7 +4464,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4503,7 +4528,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4570,7 +4597,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4626,7 +4655,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4673,7 +4704,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4750,7 +4783,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4799,7 +4834,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4857,7 +4894,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4915,7 +4954,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4973,7 +5014,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5031,7 +5074,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5093,7 +5138,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5160,7 +5207,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5216,7 +5265,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5263,7 +5314,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5340,7 +5393,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5390,7 +5445,9 @@
           "initial_controller": "AAC_S_APP",
           "scratchpad": "28L",
           "waypoints": "N036.06.23.628,W095.45.51.113/s210 N036.05.20.800,W095.38.45.942/a10000 N036.05.16.419,W095.37.56.257/a5000 N036.01.50.014,W095.13.32.411/s170 N036.03.55.739,W095.13.04.066/s170/h310/clearapp",
-          "expect_approach": { "KAAC": "R8L" },
+          "expect_approach": {
+            "KAAC": "R8L"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5421,7 +5478,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -5567,7 +5623,9 @@
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/s210/ho N036.15.36.515,W095.38.11.912/a10000 N036.15.30.418,W095.37.44.254/a8000/h100",
           "scratchpad": "28R",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5598,7 +5656,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -5746,7 +5803,9 @@
           "initial_controller": "AAC_S_APP",
           "scratchpad": "28L",
           "waypoints": "N036.02.22.602,W094.44.35.555/s170/clearapp CHAPP/a5000",
-          "expect_approach": { "KAAC": "R8L" },
+          "expect_approach": {
+            "KAAC": "R8L"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5777,7 +5836,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -5925,7 +5983,9 @@
           "assigned_altitude": 5000,
           "initial_controller": "AAC_B_APP",
           "waypoints": "N036.26.34.198,W095.56.21.207 N036.25.41.697,W095.51.46.686/h100/ho",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5945,7 +6005,9 @@
           "assigned_altitude": 5000,
           "initial_controller": "AAC_B_APP",
           "waypoints": "N036.23.43.841,W095.21.31.799 N036.25.30.258,W095.25.41.711/flyover N036.25.09.397,W095.26.21.179/h100/ho",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5965,7 +6027,9 @@
           "assigned_altitude": 5000,
           "initial_controller": "AAC_J_APP",
           "waypoints": "N035.55.28.665,W095.37.58.344 N035.55.41.642,W095.42.37.699/flyover/h060/ho",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -5987,7 +6051,9 @@
           "initial_speed": 210,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.15.35.156,W095.38.22.349 N036.15.21.382,W095.36.23.477/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -6005,7 +6071,9 @@
           "speed_restriction": 210,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.04.58.553,W095.40.47.561 N036.04.41.936,W095.38.52.095/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -6023,7 +6091,9 @@
           "speed_restriction": 210,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N035.50.34.327,W095.43.06.840 N035.50.31.979,W095.42.12.128/h090",
-          "expect_approach": { "KJKE": "I27" },
+          "expect_approach": {
+            "KJKE": "I27"
+          },
           "airlines": {
             "KJKE": [
               {
@@ -6041,7 +6111,9 @@
           "speed_restriction": 210,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.30.25.062,W095.19.53.746 N036.30.05.438,W095.19.24.605/h120",
-          "expect_approach": { "4Y3": "I30" },
+          "expect_approach": {
+            "4Y3": "I30"
+          },
           "airlines": {
             "4Y3": [
               {
@@ -6059,7 +6131,9 @@
           "speed_restriction": 210,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.18.52.992,W095.54.10.936 N036.19.19.675,W095.54.51.311/h310",
-          "expect_approach": { "KBRT": "I13" },
+          "expect_approach": {
+            "KBRT": "I13"
+          },
           "airlines": {
             "KBRT": [
               {
@@ -6077,7 +6151,9 @@
           "speed_restriction": 210,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.26.23.253,W095.46.02.402 N036.26.44.017,W095.46.24.402/h310",
-          "expect_approach": { "KBRT": "I13" },
+          "expect_approach": {
+            "KBRT": "I13"
+          },
           "airlines": {
             "KBRT": [
               {
@@ -6319,36 +6395,34 @@
           "KAAC": 2
         }
       },
-      "solo_controller": "AAC_N_APP",
-      "multi_controllers": {
-        "default": {
-          "AAC_N_APP": {
-            "primary": true,
-            "inbound_flows": ["REELI", "SGF.8", "SGF.6", "BARTS"]
-          },
-          "AAC_D_APP": {
-            "backup": "AAC_N_APP",
-            "departures": ["KAAC/28R.NE.J", "KAAC/28R.SW.J"],
-            "inbound_flows": []
-          },
-          "AAC_B_APP": {
-            "backup": "AAC_N_APP",
-            "arrivals": ["BARTS_LO", "INTERNAL_FINAL"],
-            "departures": ["4Y3", "KAAC/28R.NE.P"]
-          },
-          "AAC_J_APP": {
-            "backup": "AAC_S_APP",
-            "arrivals": ["KILLR_LO", "ATOKA_LO"],
-            "departures": ["KJKE", "KAAC/28R.SW.P", "4V4"]
-          },
-          "AAC_S_APP": {
-            "backup": "AAC_N_APP",
-            "arrivals": ["KILLR", "ATOKA"]
-          },
-          "AAC_F_APP": {
-            "backup": "AAC_N_APP",
-            "arrivals": ["MAYES"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_N_APP": ["AAC_B_APP", "AAC_D_APP", "AAC_F_APP", "AAC_S_APP"],
+          "AAC_S_APP": ["AAC_J_APP"]
+        },
+        "inbound_assignments": {
+          "ATOKA": "AAC_S_APP",
+          "ATOKA_LO": "AAC_J_APP",
+          "BARTS_LO": "AAC_B_APP",
+          "INTERNAL_FINAL": "AAC_B_APP",
+          "KILLR": "AAC_S_APP",
+          "KILLR_LO": "AAC_J_APP",
+          "MAYES": "AAC_F_APP",
+          "REELI": "AAC_N_APP",
+          "SGF.8": "AAC_N_APP",
+          "SGF.6": "AAC_N_APP",
+          "BARTS": "AAC_N_APP"
+        },
+        "departure_assignments": {
+          "4V4": "AAC_J_APP",
+          "4Y3": "AAC_B_APP",
+          "KAAC/28R.NE.J": "AAC_D_APP",
+          "KAAC/28R.NE.P": "AAC_B_APP",
+          "KAAC/28R.SW.J": "AAC_D_APP",
+          "KAAC/28R.SW.P": "AAC_J_APP",
+          "KJKE": "AAC_J_APP",
+          "KAAC": "AAC_N_APP"
         }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
@@ -6433,9 +6507,16 @@
           "KAAC": 10
         }
       },
-      "solo_controller": "AAC_F_APP",
-      "multi_controllers": {
-        "default": { "AAC_F_APP": { "primary": true, "inbound_flows": ["BARTS_FINAL", "REELI_FINAL", "MAYES"] } }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_F_APP": []
+        },
+        "inbound_assignments": {
+          "BARTS_FINAL": "AAC_F_APP",
+          "REELI_FINAL": "AAC_F_APP",
+          "MAYES": "AAC_F_APP"
+        }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
       "default_maps": ["BASE", "STARS"],
@@ -6461,9 +6542,16 @@
           "KAAC": 10
         }
       },
-      "solo_controller": "AAC_F_APP",
-      "multi_controllers": {
-        "default": { "AAC_F_APP": { "primary": true, "inbound_flows": ["BARTS_FINAL", "REELI_FINAL", "ATOKA_FINAL"] } }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_F_APP": []
+        },
+        "inbound_assignments": {
+          "BARTS_FINAL": "AAC_F_APP",
+          "REELI_FINAL": "AAC_F_APP",
+          "ATOKA_FINAL": "AAC_F_APP"
+        }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
       "default_maps": ["BASE", "STARS"],
@@ -6492,13 +6580,16 @@
           "KAAC": 3
         }
       },
-      "solo_controller": "AAC_F_APP",
-      "multi_controllers": {
-        "default": {
-          "AAC_F_APP": {
-            "primary": true,
-            "inbound_flows": ["BARTS_FINAL", "REELI_FINAL", "ATOKA_FINAL", "INTERNAL_FINAL"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_F_APP": []
+        },
+        "inbound_assignments": {
+          "BARTS_FINAL": "AAC_F_APP",
+          "REELI_FINAL": "AAC_F_APP",
+          "ATOKA_FINAL": "AAC_F_APP",
+          "INTERNAL_FINAL": "AAC_F_APP"
         }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
@@ -6525,9 +6616,16 @@
           "KAAC": 11
         }
       },
-      "solo_controller": "AAC_F_APP",
-      "multi_controllers": {
-        "default": { "AAC_F_APP": { "primary": true, "inbound_flows": ["ATOKA_FINAL_6NM", "REELI_FINAL", "MAYES"] } }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_F_APP": []
+        },
+        "inbound_assignments": {
+          "ATOKA_FINAL_6NM": "AAC_F_APP",
+          "REELI_FINAL": "AAC_F_APP",
+          "MAYES": "AAC_F_APP"
+        }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
       "default_maps": ["BASE", "STARS"],
@@ -6589,29 +6687,27 @@
           "KAAC": 0
         }
       },
-      "solo_controller": "AAC_F_APP",
-      "multi_controllers": {
-        "default": {
-          "AAC_F_APP": {
-            "primary": true,
-            "inbound_flows": [
-              "ATOKA_FINAL",
-              "BARTS_FINAL",
-              "REELI_FINAL",
-              "MAYES_CWT_A",
-              "MAYES_CWT_B",
-              "MAYES_CWT_C",
-              "MAYES_CWT_D",
-              "MAYES_CWT_E_F_G",
-              "MAYES_CWT_H_I",
-              "BARTS_CWT_A",
-              "BARTS_CWT_B",
-              "BARTS_CWT_C",
-              "BARTS_CWT_D",
-              "BARTS_CWT_E_F_G",
-              "BARTS_CWT_H_I"
-            ]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_F_APP": []
+        },
+        "inbound_assignments": {
+          "ATOKA_FINAL": "AAC_F_APP",
+          "BARTS_FINAL": "AAC_F_APP",
+          "REELI_FINAL": "AAC_F_APP",
+          "MAYES_CWT_A": "AAC_F_APP",
+          "MAYES_CWT_B": "AAC_F_APP",
+          "MAYES_CWT_C": "AAC_F_APP",
+          "MAYES_CWT_D": "AAC_F_APP",
+          "MAYES_CWT_E_F_G": "AAC_F_APP",
+          "MAYES_CWT_H_I": "AAC_F_APP",
+          "BARTS_CWT_A": "AAC_F_APP",
+          "BARTS_CWT_B": "AAC_F_APP",
+          "BARTS_CWT_C": "AAC_F_APP",
+          "BARTS_CWT_D": "AAC_F_APP",
+          "BARTS_CWT_E_F_G": "AAC_F_APP",
+          "BARTS_CWT_H_I": "AAC_F_APP"
         }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
@@ -6641,13 +6737,14 @@
           "KAAC": 0
         }
       },
-      "solo_controller": "AAC_F_APP",
-      "multi_controllers": {
-        "default": {
-          "AAC_F_APP": {
-            "primary": true,
-            "inbound_flows": ["ATOKA_STAGGER", "MAYES_STAGGER", "BARTS_STAGGER", "REELI_FINAL"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_F_APP": []
+        },
+        "inbound_assignments": {
+          "BARTS_STAGGER": "AAC_F_APP",
+          "REELI_FINAL": "AAC_F_APP"
         }
       },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
@@ -6683,8 +6780,15 @@
           "4Y3": 25
         }
       },
-      "solo_controller": "AAC_N_APP",
-      "multi_controllers": { "default": { "AAC_N_APP": { "primary": true, "inbound_flows": ["SCAN"] } } },
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_N_APP": []
+        },
+        "inbound_assignments": {
+          "SCAN": "AAC_N_APP"
+        }
+      },
       "controllers": ["AAC_TWR", "4Y3_TWR", "JKE_TWR", "SGF_APP", "ZAE_OKC", "ZAE_TUL"],
       "default_maps": ["BASE", "STARS"],
       "departure_runways": [],
@@ -6792,11 +6896,25 @@
       "display_exit_gate": true
     },
     "significant_points": {
-      "COLIN": { "short_name": "COL", "abbreviation": "C" },
-      "MAYES": { "short_name": "MAY", "abbreviation": "M" },
-      "NOBLE": { "short_name": "NOB", "abbreviation": "N" },
-      "SHAWN": { "short_name": "SHA", "abbreviation": "S" },
-      "SGF": { "abbreviation": "G" }
+      "COLIN": {
+        "short_name": "COL",
+        "abbreviation": "C"
+      },
+      "MAYES": {
+        "short_name": "MAY",
+        "abbreviation": "M"
+      },
+      "NOBLE": {
+        "short_name": "NOB",
+        "abbreviation": "N"
+      },
+      "SHAWN": {
+        "short_name": "SHA",
+        "abbreviation": "S"
+      },
+      "SGF": {
+        "abbreviation": "G"
+      }
     },
     "stars_maps": ["MVA", "BASE", "EAST", "ARSPC", "STARS", "TAA", "SID"],
     "video_map_file": "videomaps/aac-videomaps.gob.zst"

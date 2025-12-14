@@ -3,16 +3,36 @@
   "airports": {
     "KABQ": {
       "approaches": {
-        "I3": { "cifp_id": "I3" },
-        "I8": { "cifp_id": "I8" },
-        "RY3": { "cifp_id": "RY3" },
-        "RZ3": { "cifp_id": "RZ3" },
-        "RY8": { "cifp_id": "RY8" },
-        "RZ8": { "cifp_id": "RZ8" },
-        "RY1": { "cifp_id": "RY21" },
-        "RZ1": { "cifp_id": "RZ21" },
-        "RY6": { "cifp_id": "RY26" },
-        "RZ6": { "cifp_id": "RZ26" }
+        "I3": {
+          "cifp_id": "I3"
+        },
+        "I8": {
+          "cifp_id": "I8"
+        },
+        "RY3": {
+          "cifp_id": "RY3"
+        },
+        "RZ3": {
+          "cifp_id": "RZ3"
+        },
+        "RY8": {
+          "cifp_id": "RY8"
+        },
+        "RZ8": {
+          "cifp_id": "RZ8"
+        },
+        "RY1": {
+          "cifp_id": "RY21"
+        },
+        "RZ1": {
+          "cifp_id": "RZ21"
+        },
+        "RY6": {
+          "cifp_id": "RY26"
+        },
+        "RZ6": {
+          "cifp_id": "RZ26"
+        }
       },
       "departure_routes": {
         "3": {
@@ -395,33 +415,195 @@
       },
       "tower_list": 1
     },
-    "KAEG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KBRG": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KOMN": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KTCS": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSVC": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSJN": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KXNI": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KGUP": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KRQE": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KGNT": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KFMN": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KDRO": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KCEZ": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KPSO": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KLAM": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSAF": { "vfr": { "random_routes": { "rate": 4 } } },
-    "KSKX": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KLVS": { "vfr": { "random_routes": { "rate": 1 } } },
-    "0E0": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSXU": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSRR": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KROW": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KCVN": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KFSU": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KPRZ": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KTCC": { "vfr": { "random_routes": { "rate": 1 } } },
-    "E89": { "vfr": { "random_routes": { "rate": 1 } } }
+    "KAEG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KBRG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KOMN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KTCS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSVC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSJN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KXNI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KGUP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KRQE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KGNT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KFMN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KDRO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KCEZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KPSO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KLAM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSAF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      }
+    },
+    "KSKX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KLVS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "0E0": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSXU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSRR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KROW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KCVN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KFSU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KPRZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KTCC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "E89": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    }
   },
   "inbound_flows": {
     "BRRTO1": {
@@ -686,12 +868,21 @@
           "KABQ": 5
         }
       },
-      "solo_controller": "ABQ_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ABQ_N_APP": { "primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"] },
-          "ABQ_S_APP": { "backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4"] },
-          "ABQ_F_APP": { "backup": "ABQ_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ABQ_N_APP": ["ABQ_S_APP"],
+          "ABQ_S_APP": ["ABQ_F_APP"]
+        },
+        "inbound_assignments": {
+          "BRRTO1": "ABQ_S_APP",
+          "COLTR4": "ABQ_S_APP",
+          "LOWBO3": "ABQ_N_APP",
+          "LZZRD4": "ABQ_S_APP",
+          "SNDIA4": "ABQ_N_APP"
+        },
+        "departure_assignments": {
+          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_F_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -731,12 +922,21 @@
           "KABQ": 5
         }
       },
-      "solo_controller": "ABQ_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ABQ_N_APP": { "primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"] },
-          "ABQ_S_APP": { "backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4"] },
-          "ABQ_F_APP": { "backup": "ABQ_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ABQ_N_APP": ["ABQ_S_APP"],
+          "ABQ_S_APP": ["ABQ_F_APP"]
+        },
+        "inbound_assignments": {
+          "BRRTO1": "ABQ_S_APP",
+          "COLTR4": "ABQ_S_APP",
+          "LOWBO3": "ABQ_N_APP",
+          "LZZRD4": "ABQ_S_APP",
+          "SNDIA4": "ABQ_N_APP"
+        },
+        "departure_assignments": {
+          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -781,12 +981,21 @@
           "KABQ": 5
         }
       },
-      "solo_controller": "ABQ_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ABQ_N_APP": { "primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"] },
-          "ABQ_S_APP": { "backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4"] },
-          "ABQ_F_APP": { "backup": "ABQ_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ABQ_N_APP": ["ABQ_S_APP"],
+          "ABQ_S_APP": ["ABQ_F_APP"]
+        },
+        "inbound_assignments": {
+          "BRRTO1": "ABQ_S_APP",
+          "COLTR4": "ABQ_S_APP",
+          "LOWBO3": "ABQ_N_APP",
+          "LZZRD4": "ABQ_S_APP",
+          "SNDIA4": "ABQ_N_APP"
+        },
+        "departure_assignments": {
+          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -826,12 +1035,21 @@
           "KABQ": 5
         }
       },
-      "solo_controller": "ABQ_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ABQ_N_APP": { "primary": true, "arrivals": ["LOWBO3", "SNDIA4"], "departures": ["KABQ"] },
-          "ABQ_S_APP": { "backup": "ABQ_N_APP", "arrivals": ["BRRTO1", "COLTR4", "LZZRD4"] },
-          "ABQ_F_APP": { "backup": "ABQ_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ABQ_N_APP": ["ABQ_S_APP"],
+          "ABQ_S_APP": ["ABQ_F_APP"]
+        },
+        "inbound_assignments": {
+          "BRRTO1": "ABQ_S_APP",
+          "COLTR4": "ABQ_S_APP",
+          "LOWBO3": "ABQ_N_APP",
+          "LZZRD4": "ABQ_S_APP",
+          "SNDIA4": "ABQ_N_APP"
+        },
+        "departure_assignments": {
+          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_S_APP", "ABQ_16_CTR"],

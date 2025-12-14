@@ -1035,7 +1035,18 @@
   "default_scenario": "75",
   "scenarios": {
     "75": {
-      "solo_controller": "ZJX 75 Greencove",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZJX 75 Greencove": []
+        },
+        "inbound_assignments": {
+          "Northbound Overflights": "ZJX 75 Greencove",
+          "QUBEN2": "ZJX 75 Greencove",
+          "Southbound Overflights": "ZJX 75 Greencove",
+          "TTHOR3": "ZJX 75 Greencove"
+        }
+      },
       "controllers": [
         "ZJX 78 Lake City",
         "ZMA 02 Key West",
@@ -1118,7 +1129,18 @@
       ]
     },
     "75 (UH Online)": {
-      "solo_controller": "ZJX 75 Greencove",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZJX 75 Greencove": []
+        },
+        "inbound_assignments": {
+          "Northbound Overflights (UH)": "ZJX 75 Greencove",
+          "QUBEN2": "ZJX 75 Greencove",
+          "Southbound Overflights": "ZJX 75 Greencove",
+          "TTHOR3": "ZJX 75 Greencove"
+        }
+      },
       "controllers": [
         "ZJX 78 Lake City",
         "ZMA 02 Key West",
@@ -1224,7 +1246,6 @@
       "CAMAN",
       "GEO"
     ],
-
     "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
   }
 }

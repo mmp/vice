@@ -119,7 +119,11 @@
         "TAY": "West"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 12 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 12
+        }
+      }
     },
     "KJAX": {
       "atpa_volumes": {
@@ -695,7 +699,11 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 13 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 13
+        }
+      }
     },
     "KOCF": {
       "approaches": {
@@ -853,7 +861,11 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 25 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 25
+        }
+      }
     },
     "KGNV": {
       "approaches": {
@@ -1017,7 +1029,11 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 25 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 25
+        }
+      }
     },
     "KVQQ": {
       "approaches": {
@@ -1181,7 +1197,11 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 12 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 12
+        }
+      }
     },
     "KNIP": {
       "approaches": {
@@ -1372,7 +1392,11 @@
         "GNV": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 1 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
     },
     "KFHB": {
       "approaches": {
@@ -1530,7 +1554,11 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 20 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
     },
     "KNRB": {
       "approaches": {
@@ -1691,7 +1719,11 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 2 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
     },
     "KHEG": {
       "approaches": {
@@ -1834,33 +1866,187 @@
         "OCF": "South"
       },
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 6 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
     },
-    "KEVB": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KDED": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KVLD": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KORL": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KLEE": { "vfr": { "random_routes": { "rate": 6 } } },
-    "X60": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KCTY": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KLCQ": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KSSI": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KBQK": { "vfr": { "random_routes": { "rate": 6 } } },
-    "01J": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KTIX": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KTTS": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KXMR": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KBKV": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KCOF": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KMLB": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KLAL": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KSPG": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KPIE": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KGIF": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KFPY": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KJES": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KSVN": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KHXD": { "vfr": { "random_routes": { "rate": 6 } } }
+    "KEVB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KDED": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KVLD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KORL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KLEE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "X60": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCTY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KLCQ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KSSI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KBQK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "01J": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KTIX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KTTS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KXMR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KBKV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCOF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KMLB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KLAL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KSPG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KPIE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KGIF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KFPY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KJES": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KSVN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KHXD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    }
   },
   "airspace": {
     "boundaries": {
@@ -3792,27 +3978,32 @@
     "Radar North": {
       "frequency": 127000,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1N"
+      "sector_id": "1N",
+      "default_airport": "KJAX"
     },
     "Radar West": {
       "frequency": 127775,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1W"
+      "sector_id": "1W",
+      "default_airport": "KJAX"
     },
     "Radar East": {
       "frequency": 132775,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1E"
+      "sector_id": "1E",
+      "default_airport": "KJAX"
     },
     "Radar Arrival": {
       "frequency": 119000,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1R"
+      "sector_id": "1R",
+      "default_airport": "KJAX"
     },
     "Radar Final": {
       "frequency": 119850,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1J"
+      "sector_id": "1J",
+      "default_airport": "KJAX"
     },
     "Radar Satellite": {
       "frequency": 124900,
@@ -3823,22 +4014,26 @@
     "Radar Palatka": {
       "frequency": 121300,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1A"
+      "sector_id": "1A",
+      "default_airport": "KJAX"
     },
     "Radar Gainsville": {
       "frequency": 118175,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1G"
+      "sector_id": "1G",
+      "default_airport": "KJAX"
     },
     "Radar Dunnellon": {
       "frequency": 128675,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1D"
+      "sector_id": "1D",
+      "default_airport": "KJAX"
     },
     "Radar Vitts": {
       "frequency": 118600,
       "radio_name": "Jacksonville approach",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "default_airport": "KJAX"
     },
     "Jacksonville Tower": {
       "frequency": 118300,
@@ -3911,7 +4106,6 @@
       "location": "OCF"
     }
   ],
-
   "scenarios": {
     "KJAX East, No VITTS": {
       "arrival_runways": [
@@ -4007,46 +4201,38 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_E", "ESENT", "V159_S"]
-          },
-          "Radar West": {
-            "backup": "Radar Arrival",
-            "arrivals": ["TEBOW2", "ORLNOV"],
-            "departures": ["KVQQ", "KNIP", "KHEG"]
-          },
-          "Radar East": {
-            "backup": "Radar West",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA"]
-          },
-          "Radar Final": {
-            "backup": "Radar North"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KJAX/SAWGY3", "KJAX/EXBOX2", "KSGJ"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville"
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar West"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival", "Radar Final"],
+          "Radar Satellite": ["Radar North", "Radar Vitts"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar West": ["Radar East"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar North",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar North",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4204,46 +4390,37 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_E", "ESENT", "V159_S"]
-          },
-          "Radar West": {
-            "backup": "Radar Satellite",
-            "arrivals": ["TEBOW2", "ORLNOV"],
-            "departures": ["KVQQ", "KNIP", "KHEG"]
-          },
-          "Radar East": {
-            "backup": "Radar Satellite",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA"]
-          },
-          "Radar Final": {
-            "backup": "Radar Arrival"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KJAX/SAWGY3", "KJAX/EXBOX2", "KSGJ"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville"
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar Final"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival"],
+          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar North",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar Satellite",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4401,46 +4578,38 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_W", "ESENT"]
-          },
-          "Radar West": {
-            "backup": "Radar Arrival",
-            "arrivals": ["TEBOW2", "ORLNOV"],
-            "departures": ["KVQQ", "KNIP", "KHEG", "KJAX/SAWGY3", "KJAX/EXBOX2"]
-          },
-          "Radar East": {
-            "backup": "Radar West",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA", "V159_S"]
-          },
-          "Radar Final": {
-            "backup": "Radar North"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KSGJ"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville"
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar West"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival", "Radar Final"],
+          "Radar Satellite": ["Radar North", "Radar Vitts"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar West": ["Radar East"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar Arrival",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar West",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4598,46 +4767,37 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_W", "ESENT"]
-          },
-          "Radar West": {
-            "backup": "Radar Satellite",
-            "arrivals": ["TEBOW2", "ORLNOV"],
-            "departures": ["KVQQ", "KNIP", "KHEG", "KJAX/SAWGY3", "KJAX/EXBOX2"]
-          },
-          "Radar East": {
-            "backup": "Radar Satellite",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA", "V159_S"]
-          },
-          "Radar Final": {
-            "backup": "Radar Arrival"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KSGJ"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville"
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar Final"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival"],
+          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar Arrival",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar North",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4825,48 +4985,44 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_W", "ESENT"]
-          },
-          "Radar West": {
-            "backup": "Radar Arrival",
-            "arrivals": ["TEBOW2"],
-            "departures": ["KVQQ", "KNIP", "KHEG", "KJAX/SAWGY3", "KJAX/EXBOX2"]
-          },
-          "Radar East": {
-            "backup": "Radar West",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA", "V159_S"]
-          },
-          "Radar Final": {
-            "backup": "Radar North"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KSGJ"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville",
-            "arrivals": ["V537 East", "V537 West", "V441 South"]
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts",
-            "arrivals": ["ORL", "V441 North", "V159", "SHREK2"]
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar West"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival", "Radar Final"],
+          "Radar Satellite": ["Radar North", "Radar Vitts"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar West": ["Radar East"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar Arrival",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar North",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5054,48 +5210,43 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_W", "ESENT"]
-          },
-          "Radar West": {
-            "backup": "Radar Satellite",
-            "arrivals": ["TEBOW2"],
-            "departures": ["KVQQ", "KNIP", "KHEG", "KJAX/SAWGY3", "KJAX/EXBOX2"]
-          },
-          "Radar East": {
-            "backup": "Radar Satellite",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA", "V159_S"]
-          },
-          "Radar Final": {
-            "backup": "Radar Arrival"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KSGJ"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville",
-            "arrivals": ["V537 East", "V537 West", "V441 South"]
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts",
-            "arrivals": ["ORL", "V441 North", "V159", "SHREK2"]
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar Final"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival"],
+          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar Arrival",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar West",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5283,48 +5434,44 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_E", "ESENT", "V159_S"]
-          },
-          "Radar West": {
-            "backup": "Radar Arrival",
-            "arrivals": ["TEBOW2"],
-            "departures": ["KVQQ", "KNIP", "KHEG"]
-          },
-          "Radar East": {
-            "backup": "Radar West",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA"]
-          },
-          "Radar Final": {
-            "backup": "Radar North"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KSGJ", "KJAX/SAWGY3", "KJAX/EXBOX2"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville",
-            "arrivals": ["V537 East", "V537 West", "V441 South"]
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts",
-            "arrivals": ["ORL", "V159", "V441 North", "SHREK2"]
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar West"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival", "Radar Final"],
+          "Radar Satellite": ["Radar North", "Radar Vitts"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar West": ["Radar East"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar North",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar Satellite",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5512,48 +5659,43 @@
           "overflights": 2
         }
       },
-      "solo_controller": "Radar Satellite",
-      "multi_controllers": {
-        "default": {
-          "Radar North": {
-            "backup": "Radar Satellite",
-            "departures": ["KJAX/BRSTL1", "KJAX/CROSB2", "KJAX/JETIN2", "KFHB", "KNRB"],
-            "arrivals": ["LUNNI2_E", "ESENT", "V159_S"]
-          },
-          "Radar West": {
-            "backup": "Radar Satellite",
-            "arrivals": ["TEBOW2"],
-            "departures": ["KVQQ", "KNIP", "KHEG"]
-          },
-          "Radar East": {
-            "backup": "Radar Satellite",
-            "arrivals": ["QUBEN2", "OMN", "V51"]
-          },
-          "Radar Arrival": {
-            "backup": "Radar North",
-            "arrivals": ["MARQO3", "OHDEA2", "ALLMA"]
-          },
-          "Radar Final": {
-            "backup": "Radar Arrival"
-          },
-          "Radar Satellite": {
-            "primary": true,
-            "departures": ["KCRG", "KSGJ", "KJAX/SAWGY3", "KJAX/EXBOX2"]
-          },
-          "Radar Palatka": {
-            "backup": "Radar Gainsville",
-            "arrivals": ["V537 East", "V537 West", "V441 South"]
-          },
-          "Radar Gainsville": {
-            "backup": "Radar Vitts"
-          },
-          "Radar Dunnellon": {
-            "backup": "Radar Vitts",
-            "arrivals": ["ORL", "V159", "V441 North", "SHREK2"]
-          },
-          "Radar Vitts": {
-            "backup": "Radar Satellite"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Radar Arrival": ["Radar Final"],
+          "Radar Gainsville": ["Radar Palatka"],
+          "Radar North": ["Radar Arrival"],
+          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
+        },
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar North",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar Satellite",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
         }
       },
       "controllers": [

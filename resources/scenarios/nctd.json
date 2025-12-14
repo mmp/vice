@@ -1,42 +1,230 @@
 {
   "tracon": "NCT",
   "airports": {
-    "C83": { "vfr": { "random_routes": { "rate": 3 } } },
-    "CA74": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KSUU": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KCVH": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KGOO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "O69": { "vfr": { "random_routes": { "rate": 3 } } },
-    "1O3": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KHAF": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPVF": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KOAR": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KKIC": { "vfr": { "random_routes": { "rate": 3 } } },
-    "O88": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KLHM": { "vfr": { "random_routes": { "rate": 2 } } },
-    "A34": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KFLX": { "vfr": { "random_routes": { "rate": 2 } } },
-    "O02": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KMCE": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTVL": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KRHV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KLSN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCPU": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KAUN": { "vfr": { "random_routes": { "rate": 2 } } },
-    "O08": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KHES": { "vfr": { "random_routes": { "rate": 2 } } },
-    "KCIC": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KLVK": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KSNS": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCCR": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KSTS": { "vfr": { "random_routes": { "rate": 4 } } },
-    "KPAO": { "vfr": { "random_routes": { "rate": 10 } } },
+    "C83": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "CA74": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KSUU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KCVH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KGOO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "O69": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "1O3": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KHAF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPVF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KOAR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KKIC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "O88": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KLHM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "A34": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KFLX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "O02": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KMCE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTVL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KRHV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KLSN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCPU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KAUN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "O08": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KHES": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
+    "KCIC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KLVK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KSNS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KCCR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KSTS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      }
+    },
+    "KPAO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KSJC": {},
     "KSQL": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "Y30": { "cifp_id": "RY30" },
-        "Z30": { "cifp_id": "RZ30" }
+        "Y30": {
+          "cifp_id": "RY30"
+        },
+        "Z30": {
+          "cifp_id": "RZ30"
+        }
       },
       "departure_routes": {
         "30": {
@@ -111,19 +299,45 @@
     "KOAK": {
       "departure_runways_as_one": ["30,28L,28R", "12,10L,10R"],
       "approaches": {
-        "R0L": { "cifp_id": "R10L" },
-        "R0R": { "cifp_id": "R10R" },
-        "I12": { "cifp_id": "I12" },
-        "RY12": { "cifp_id": "RY12" },
-        "RZ12": { "cifp_id": "RZ12" },
-        "I8R": { "cifp_id": "I28R" },
-        "RY8R": { "cifp_id": "RY28R" },
-        "RZ8R": { "cifp_id": "RZ28R" },
-        "RY8L": { "cifp_id": "RY28L" },
-        "RZ8L": { "cifp_id": "RZ28L" },
-        "I30": { "cifp_id": "I30" },
-        "RY30": { "cifp_id": "RY30" },
-        "RZ30": { "cifp_id": "RZ30" }
+        "R0L": {
+          "cifp_id": "R10L"
+        },
+        "R0R": {
+          "cifp_id": "R10R"
+        },
+        "I12": {
+          "cifp_id": "I12"
+        },
+        "RY12": {
+          "cifp_id": "RY12"
+        },
+        "RZ12": {
+          "cifp_id": "RZ12"
+        },
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "RY8R": {
+          "cifp_id": "RY28R"
+        },
+        "RZ8R": {
+          "cifp_id": "RZ28R"
+        },
+        "RY8L": {
+          "cifp_id": "RY28L"
+        },
+        "RZ8L": {
+          "cifp_id": "RZ28L"
+        },
+        "I30": {
+          "cifp_id": "I30"
+        },
+        "RY30": {
+          "cifp_id": "RY30"
+        },
+        "RZ30": {
+          "cifp_id": "RZ30"
+        }
       },
       "departure_routes": {
         "28R": {
@@ -757,19 +971,49 @@
     "KSFO": {
       "departure_runways_as_one": ["28L,28R", "10L,10R", "19L,19R"],
       "approaches": {
-        "R0L": { "cifp_id": "R10L" },
-        "G0R": { "cifp_id": "RY10R", "full_name": "GLS Runway 10R" },
-        "R0R": { "cifp_id": "RZ10R" },
-        "I9L": { "cifp_id": "I19L" },
-        "R9L": { "cifp_id": "R19L" },
-        "G9L": { "cifp_id": "R19L", "full_name": "GLS Runway 19L" },
-        "R9R": { "cifp_id": "RY19R" },
-        "G9R": { "cifp_id": "RY19R", "full_name": "GLS Runway 19R" },
-        "I8L": { "cifp_id": "I28L" },
-        "R8L": { "cifp_id": "R28L" },
-        "GLL": { "cifp_id": "R28L", "full_name": "GLS Runway 28L" },
-        "I8R": { "cifp_id": "I28R" },
-        "Z8R": { "cifp_id": "RZ28R" },
+        "R0L": {
+          "cifp_id": "R10L"
+        },
+        "G0R": {
+          "cifp_id": "RY10R",
+          "full_name": "GLS Runway 10R"
+        },
+        "R0R": {
+          "cifp_id": "RZ10R"
+        },
+        "I9L": {
+          "cifp_id": "I19L"
+        },
+        "R9L": {
+          "cifp_id": "R19L"
+        },
+        "G9L": {
+          "cifp_id": "R19L",
+          "full_name": "GLS Runway 19L"
+        },
+        "R9R": {
+          "cifp_id": "RY19R"
+        },
+        "G9R": {
+          "cifp_id": "RY19R",
+          "full_name": "GLS Runway 19R"
+        },
+        "I8L": {
+          "cifp_id": "I28L"
+        },
+        "R8L": {
+          "cifp_id": "R28L"
+        },
+        "GLL": {
+          "cifp_id": "R28L",
+          "full_name": "GLS Runway 28L"
+        },
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "Z8R": {
+          "cifp_id": "RZ28R"
+        },
         "FMS": {
           "runway": "28R",
           "type": "RNAV",
@@ -779,8 +1023,13 @@
             "EDDYY/iaf/a6000+ SIDBY/iaf/a5000+ JANYY/if/a2500+ SAMML/faf/a1500+ N037.35.10.560,W122.17.31.800/a1200+"
           ]
         },
-        "Y8R": { "cifp_id": "RY28R" },
-        "GLR": { "cifp_id": "I28R", "full_name": "GLS Runway 28R" },
+        "Y8R": {
+          "cifp_id": "RY28R"
+        },
+        "GLR": {
+          "cifp_id": "I28R",
+          "full_name": "GLS Runway 28R"
+        },
         "TTR": {
           "runway": "28R",
           "type": "Visual",
@@ -2386,7 +2635,6 @@
           "route": "TIPRE Q126 RALEY Q126 KREYK KU60Q KD63S SHOOP KD66Y PECKS Q114 LEONG MZV BDF ROD APE MGW GIBBZ5",
           "exit": "TIPRE"
         },
-
         {
           "airlines": [
             {
@@ -3342,9 +3590,7 @@
         "N037.46.38.616,W122.07.16.953",
         "N037.44.03.255,W122.13.14.174",
         "N037.44.00.481,W122.12.59.452",
-
         "N037.37.09.798,W122.22.24.973",
-
         "N037.07.35.122,W122.13.11.839",
         "N036.59.54.108,W121.54.13.793",
         "N036.33.17.012,W121.41.55.841",
@@ -6347,28 +6593,21 @@
         }
       },
       "vfr_rate_scale": 0.7,
-      "solo_controller": "SFO_U_DEP",
-      "multi_controllers": {
-        "default": {
-          "SFO_U_DEP": {
-            "primary": true,
-            "departures": ["KOAK/COAST9", "KSFO/GNNRR3", "KOAK/NUEVO8", "KOAK/CNDEL5", "KSFO/WESLA5"]
-          },
-          "SFO_R_DEP": {
-            "backup": "SFO_U_DEP",
-            "departures": ["KOAK/OAK6", "KOAK/SILENT3", "KSFO/SNTNA2", "KSFO/TRUKN2"],
-            "inbound_flows": ["WNDSR2.AD"]
-          },
-          "SFO_Q_DEP": {
-            "backup": "SFO_U_DEP",
-            "inbound_flows": ["VNYRD1.RGOOD", "VNYRD1.SNORA", "LOUPE1.AD"]
-          },
-          "SFO_D_DEP": {
-            "backup": "SFO_R_DEP"
-          },
-          "SFO_F_DEP": {
-            "backup": "SFO_R_DEP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
+          "SFO_U_DEP": ["SFO_Q_DEP", "SFO_R_DEP"]
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_R_DEP",
+          "KSFO": "SFO_R_DEP"
+        },
+        "inbound_assignments": {
+          "WNDSR2.AD": "SFO_R_DEP",
+          "VNYRD1.RGOOD": "SFO_Q_DEP",
+          "VNYRD1.SNORA": "SFO_Q_DEP",
+          "LOUPE1.AD": "SFO_Q_DEP"
         }
       },
       "controllers": [
@@ -6457,24 +6696,20 @@
         }
       },
       "vfr_rate_scale": 0.5,
-      "solo_controller": "SFO_U_DEP",
-      "multi_controllers": {
-        "default": {
-          "SFO_U_DEP": {
-            "primary": true,
-            "departures": ["KSFO/SAHEY4", "KOAK/KATFH3", "KOAK/OAK6.O"]
-          },
-          "SFO_R_DEP": {
-            "backup": "SFO_U_DEP",
-            "departures": ["KOAK/OAK6", "KSFO/CIITY3", "KSFO/MOLEN9"],
-            "inbound_flows": ["REBAS1.RGOOD", "REBAS1.SNORA", "ALMDN4/OCEANIC.AD"]
-          },
-          "SFO_D_DEP": {
-            "backup": "SFO_R_DEP"
-          },
-          "SFO_F_DEP": {
-            "backup": "SFO_R_DEP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
+          "SFO_U_DEP": ["SFO_R_DEP"]
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_U_DEP",
+          "KSFO": "SFO_U_DEP"
+        },
+        "inbound_assignments": {
+          "REBAS1.RGOOD": "SFO_R_DEP",
+          "REBAS1.SNORA": "SFO_R_DEP",
+          "ALMDN4/OCEANIC.AD": "SFO_R_DEP"
         }
       },
       "controllers": [
@@ -6566,28 +6801,21 @@
         }
       },
       "vfr_rate_scale": 0.6,
-      "solo_controller": "SFO_U_DEP",
-      "multi_controllers": {
-        "default": {
-          "SFO_U_DEP": {
-            "primary": true,
-            "departures": ["KOAK/COAST9", "KOAK/NUEVO8", "KOAK/CNDEL5", "KSFO/SSTIK5", "KSFO/SEGUL1", "KSFO/GNNRR3"]
-          },
-          "SFO_R_DEP": {
-            "backup": "SFO_U_DEP",
-            "departures": ["KOAK/OAK6", "KOAK/SILENT3", "KSFO/TRUKN2", "KSFO/SNTNA2"],
-            "inbound_flows": ["WNDSR2.AD"]
-          },
-          "SFO_Q_DEP": {
-            "backup": "SFO_U_DEP",
-            "inbound_flows": ["VNYRD1.RGOOD", "VNYRD1.SNORA", "LOUPE1.AD"]
-          },
-          "SFO_D_DEP": {
-            "backup": "SFO_R_DEP"
-          },
-          "SFO_F_DEP": {
-            "backup": "SFO_R_DEP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
+          "SFO_U_DEP": ["SFO_Q_DEP", "SFO_R_DEP"]
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_U_DEP",
+          "KSFO": "SFO_U_DEP"
+        },
+        "inbound_assignments": {
+          "WNDSR2.AD": "SFO_R_DEP",
+          "VNYRD1.RGOOD": "SFO_Q_DEP",
+          "VNYRD1.SNORA": "SFO_Q_DEP",
+          "LOUPE1.AD": "SFO_Q_DEP"
         }
       },
       "controllers": [
@@ -6683,27 +6911,20 @@
         }
       },
       "vfr_rate_scale": 0.5,
-      "solo_controller": "SFO_U_DEP",
-      "multi_controllers": {
-        "default": {
-          "SFO_U_DEP": {
-            "primary": true,
-            "departures": ["KSFO/GNNRR3", "KSFO/WESLA5", "KOAK/QUAKE2"]
-          },
-          "SFO_R_DEP": {
-            "backup": "SFO_U_DEP",
-            "departures": ["KSFO/SNTNA2"]
-          },
-          "SFO_Q_DEP": {
-            "backup": "SFO_U_DEP",
-            "inbound_flows": ["VNYRD1.RGOOD", "VNYRD1.SNORA", "BMRNG4.AD"]
-          },
-          "SFO_D_DEP": {
-            "backup": "SFO_R_DEP"
-          },
-          "SFO_F_DEP": {
-            "backup": "SFO_R_DEP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
+          "SFO_U_DEP": ["SFO_Q_DEP", "SFO_R_DEP"]
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_U_DEP",
+          "KSFO": "SFO_R_DEP"
+        },
+        "inbound_assignments": {
+          "VNYRD1.RGOOD": "SFO_Q_DEP",
+          "VNYRD1.SNORA": "SFO_Q_DEP",
+          "BMRNG4.AD": "SFO_Q_DEP"
         }
       },
       "controllers": [
@@ -7599,8 +7820,6 @@
       "AVE": "AVE",
       "PRB": "PRB",
       "PXN": "PXN",
-      "OSI": "OSI",
-      "SJC": "SJC",
       "SNS": "SNS",
       "SHOEY": "SHY",
       "BSR": "BSR",
@@ -7614,52 +7833,80 @@
       "ALCOA": {},
       "ALTAM": {},
       "AVE": {},
-      "BARGR": { "short_name": "BRG" },
-      "BEBOP": { "short_name": "BEP" },
+      "BARGR": {
+        "short_name": "BRG"
+      },
+      "BEBOP": {
+        "short_name": "BEP"
+      },
       "BENNE": {},
       "BLKJK": {},
       "BSR": {},
       "CCR": {},
       "CINNY": {},
       "CRDDZ": {},
-      "DARBI": { "short_name": "DRB" },
-      "DEDHD": { "short_name": "DHD" },
+      "DARBI": {
+        "short_name": "DRB"
+      },
+      "DEDHD": {
+        "short_name": "DHD"
+      },
       "DUDES": {},
-      "EBAYE": { "short_name": "EBY" },
+      "EBAYE": {
+        "short_name": "EBY"
+      },
       "EGBER": {},
       "ENI": {},
       "FLW": {},
       "FMG": {},
       "FRA": {},
-      "FROGO": { "short_name": "FRG" },
-      "FUULL": { "short_name": "FLL" },
+      "FROGO": {
+        "short_name": "FRG"
+      },
+      "FUULL": {
+        "short_name": "FLL"
+      },
       "GRTFL": {},
       "GVO": {},
       "HAGRD": {},
       "HALLE": {},
       "HAMER": {},
       "HNW": {},
-      "HRNER": { "short_name": "HNR" },
+      "HRNER": {
+        "short_name": "HNR"
+      },
       "JAGWA": {},
       "JFREE": {},
       "KAYEX": {},
       "KTINA": {},
       "LIN": {},
       "LLC": {},
-      "LOSHN": { "short_name": "LSN" },
+      "LOSHN": {
+        "short_name": "LSN"
+      },
       "MACUS": {},
-      "MILKY": { "short_name": "MLK" },
+      "MILKY": {
+        "short_name": "MLK"
+      },
       "MOD": {},
       "MOGEE": {},
       "MQO": {},
       "MRLET": {},
       "MVA": {},
-      "NTELL": { "short_name": "NTL" },
+      "NTELL": {
+        "short_name": "NTL"
+      },
       "OAL": {},
-      "ORRCA": { "short_name": "ORC" },
+      "ORRCA": {
+        "short_name": "ORC"
+      },
       "OSI": {},
-      "PESKE": { "short_name": "PSK" },
-      "POGTE": { "short_name": "PGT" },
+      "PESKE": {
+        "short_name": "PSK"
+      },
+      "POGTE": {
+        "short_name": "PGT"
+      },
       "PRB": {},
       "PXN": {},
       "PYGOW": {},
@@ -7667,21 +7914,35 @@
       "RBL": {},
       "RZS": {},
       "SAC": {},
-      "SHOEY": { "short_name": "SHY" },
-      "SHOOP": { "short_name": "SHP" },
-      "SHUFL": { "short_name": "SHF" },
+      "SHOEY": {
+        "short_name": "SHY"
+      },
+      "SHOOP": {
+        "short_name": "SHP"
+      },
+      "SHUFL": {
+        "short_name": "SHF"
+      },
       "SJC": {},
       "SNS": {},
       "SNY": {},
-      "SUSEY": { "short_name": "KTA" },
+      "SUSEY": {
+        "short_name": "KTA"
+      },
       "SWR": {},
       "SXC": {},
       "SYRAH": {},
-      "TECKY": { "short_name": "TKY" },
-      "TIPRE": { "short_name": "TPR" },
+      "TECKY": {
+        "short_name": "TKY"
+      },
+      "TIPRE": {
+        "short_name": "TPR"
+      },
       "VLREE": {},
       "YERIN": {},
-      "YYUNG": { "short_name": "YNG" }
+      "YYUNG": {
+        "short_name": "YNG"
+      }
     },
     "stars_maps": [
       "RVMNCT903S",
@@ -7690,7 +7951,6 @@
       "RVMNCT905S",
       "RVMNCT904S",
       "RVMNCT967S",
-
       "RVMNCT901S",
       "RVMNCT903S",
       "RVMNCT905S",
@@ -7707,7 +7967,6 @@
       "RVMNCT943S",
       "RVMNCT945S",
       "",
-
       "RVMNCT902S",
       "RVMNCT904S",
       "RVMNCT906S",

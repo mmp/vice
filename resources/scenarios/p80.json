@@ -63,21 +63,51 @@
       },
       "departure_runways_as_one": ["28L,28R", "10L,10R"],
       "approaches": {
-        "I0L": { "cifp_id": "I10L" },
-        "I0R": { "cifp_id": "I10R" },
-        "I8L": { "cifp_id": "I28L" },
-        "I8R": { "cifp_id": "I28R" },
-        "X8L": { "cifp_id": "RX28L" },
-        "X8R": { "cifp_id": "RX28R" },
-        "Y0L": { "cifp_id": "RY10L" },
-        "Y0R": { "cifp_id": "RY10R" },
-        "Y8L": { "cifp_id": "RY28L" },
-        "Y8R": { "cifp_id": "RY28R" },
-        "Z0L": { "cifp_id": "RZ10L" },
-        "Z0R": { "cifp_id": "RZ10R" },
-        "Z8L": { "cifp_id": "RZ28L" },
-        "L21": { "cifp_id": "L21" },
-        "Z8R": { "cifp_id": "RZ28R" },
+        "I0L": {
+          "cifp_id": "I10L"
+        },
+        "I0R": {
+          "cifp_id": "I10R"
+        },
+        "I8L": {
+          "cifp_id": "I28L"
+        },
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "X8L": {
+          "cifp_id": "RX28L"
+        },
+        "X8R": {
+          "cifp_id": "RX28R"
+        },
+        "Y0L": {
+          "cifp_id": "RY10L"
+        },
+        "Y0R": {
+          "cifp_id": "RY10R"
+        },
+        "Y8L": {
+          "cifp_id": "RY28L"
+        },
+        "Y8R": {
+          "cifp_id": "RY28R"
+        },
+        "Z0L": {
+          "cifp_id": "RZ10L"
+        },
+        "Z0R": {
+          "cifp_id": "RZ10R"
+        },
+        "Z8L": {
+          "cifp_id": "RZ28L"
+        },
+        "L21": {
+          "cifp_id": "L21"
+        },
+        "Z8R": {
+          "cifp_id": "RZ28R"
+        },
         "CV0L": {
           "full_name": "Columbia Visual Runway 10L",
           "runway": "10L",
@@ -1882,22 +1912,34 @@
     },
     "KDLS": {
       "vfr": {
-        "random_routes": { "fleet": "GAturbine", "rate": 1 }
+        "random_routes": {
+          "fleet": "GAturbine",
+          "rate": 1
+        }
       }
     },
     "KTMK": {
       "vfr": {
-        "random_routes": { "fleet": "GAturbine", "rate": 1 }
+        "random_routes": {
+          "fleet": "GAturbine",
+          "rate": 1
+        }
       }
     },
     "KAST": {
       "vfr": {
-        "random_routes": { "fleet": "GAmultipiston", "rate": 1 }
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
       }
     },
     "KSLE": {
       "vfr": {
-        "random_routes": { "fleet": "GAmultipiston", "rate": 1 }
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
       },
       "departure_routes": {
         "31": {
@@ -1926,12 +1968,18 @@
     },
     "KYKM": {
       "vfr": {
-        "random_routes": { "fleet": "GAmultipiston", "rate": 1 }
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
       }
     },
     "KONP": {
       "vfr": {
-        "random_routes": { "fleet": "GAmultipiston", "rate": 1 }
+        "random_routes": {
+          "fleet": "GAmultipiston",
+          "rate": 1
+        }
       }
     },
     "KTTD": {
@@ -1994,9 +2042,15 @@
         ]
       },
       "approaches": {
-        "I3R": { "cifp_id": "I13R" },
-        "R3R": { "cifp_id": "R13R" },
-        "R1L": { "cifp_id": "R31L" }
+        "I3R": {
+          "cifp_id": "I13R"
+        },
+        "R3R": {
+          "cifp_id": "R13R"
+        },
+        "R1L": {
+          "cifp_id": "R31L"
+        }
       },
       "departure_routes": {
         "31L": {
@@ -5574,7 +5628,6 @@
       ]
     }
   },
-
   "control_positions": {
     "ZSE 6": {
       "frequency": 125800,
@@ -5718,21 +5771,27 @@
           "KPDX": 1
         }
       },
-      "solo_controller": "North (1N)",
-      "multi_controllers": {
-        "default": {
-          "North (1N)": {
-            "backup": "Hood (1D)",
-            "arrivals": ["HHOOD5West", "KRATR2West", "HELNS", "V112.W", "TOU", "V165.S"],
-            "departures": ["KPDX/LAVAA7", "KPDX/PTLD2.N"]
-          },
-          "Hood (1D)": {
-            "primary": true,
-            "arrivals": ["OCITY3West", "TMBERS3West", "Hawaii"],
-            "departures": ["KPDX/MINNE5", "KPDX/CASCD4", "KPDX/HRMNS6", "KPDX/WHAMY5", "KPDX/PTLD2.S", "KSLE"]
-          },
-          "Newburg (1V)": { "backup": "Hood (1D)", "departures": ["KHIO"] },
-          "Final (1F)": { "backup": "North (1N)" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Hood (1D)": ["Newburg (1V)", "North (1N)"],
+          "North (1N)": ["Final (1F)"]
+        },
+        "inbound_assignments": {
+          "HELNS": "North (1N)",
+          "HHOOD5West": "North (1N)",
+          "Hawaii": "Hood (1D)",
+          "KRATR2West": "North (1N)",
+          "OCITY3West": "Hood (1D)",
+          "TMBERS3West": "Hood (1D)",
+          "TOU": "North (1N)",
+          "V112.W": "North (1N)",
+          "V165.S": "North (1N)"
+        },
+        "departure_assignments": {
+          "KHIO": "Newburg (1V)",
+          "KPDX": "North (1N)",
+          "KSLE": "Hood (1D)"
         }
       },
       "controllers": [
@@ -5825,21 +5884,27 @@
           "KPDX": 1
         }
       },
-      "solo_controller": "North (1N)",
-      "multi_controllers": {
-        "default": {
-          "North (1N)": {
-            "backup": "Hood (1D)",
-            "arrivals": ["HHOOD5East", "KRATR2East", "V112.W", "V165.S", "HELNS", "TOU"],
-            "departures": ["KPDX/LAVAA7", "KPDX/PTLD2.N"]
-          },
-          "Hood (1D)": {
-            "primary": true,
-            "arrivals": ["OCITY3East", "TMBERS3East", "Hawaii"],
-            "departures": ["KPDX/MINNE5", "KPDX/CASCD4", "KPDX/HRMNS6", "KPDX/WHAMY5", "KPDX/PTLD2.S", "KSLE"]
-          },
-          "Newburg (1V)": { "backup": "Hood (1D)", "departures": ["KHIO"] },
-          "Final (1F)": { "backup": "North (1N)" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Hood (1D)": ["Newburg (1V)", "North (1N)"],
+          "North (1N)": ["Final (1F)"]
+        },
+        "inbound_assignments": {
+          "HELNS": "North (1N)",
+          "HHOOD5East": "North (1N)",
+          "Hawaii": "Hood (1D)",
+          "KRATR2East": "North (1N)",
+          "OCITY3East": "Hood (1D)",
+          "TMBERS3East": "Hood (1D)",
+          "TOU": "North (1N)",
+          "V112.W": "North (1N)",
+          "V165.S": "North (1N)"
+        },
+        "departure_assignments": {
+          "KHIO": "Newburg (1V)",
+          "KPDX": "North (1N)",
+          "KSLE": "Hood (1D)"
         }
       },
       "controllers": [
@@ -5905,7 +5970,17 @@
           "KPDX": 5
         }
       },
-      "solo_controller": "Final (1F)",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Final (1F)": []
+        },
+        "inbound_assignments": {
+          "HHOOD5West_Final": "Final (1F)",
+          "KRATR2West_Final": "Final (1F)",
+          "TMBERS3West_Final": "Final (1F)"
+        }
+      },
       "controllers": [
         "PDX Tower South",
         "PDX Tower North",
@@ -5946,7 +6021,17 @@
           "KPDX": 5
         }
       },
-      "solo_controller": "Final (1F)",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "Final (1F)": []
+        },
+        "inbound_assignments": {
+          "HHOOD5East_Final": "Final (1F)",
+          "KRATR2East_Final": "Final (1F)",
+          "TMBERS3East_Final": "Final (1F)"
+        }
+      },
       "controllers": [
         "PDX Tower South",
         "PDX Tower North",
@@ -6024,7 +6109,7 @@
       "YKM": "YKM",
       "PDT": "LVA",
       "LTJ": "LTJ",
-      "DSD": "DSD",
+      "DSD": "CSM",
       "EUG": "EUG",
       "ONP": "ONP",
       "UBG": "UBG",
@@ -6032,17 +6117,14 @@
       "OTH": "OTH",
       "OED": "OED",
       "LMT": "LMT",
-      "IMB": "IMB",
-      "KOATA": "KOA",
+      "IMB": "WMY",
+      "KOATA": "WMY",
       "SUNED": "LVA",
       "ARRIE": "ARI",
       "LAVAA": "LVA",
       "COUGA": "COU",
       "WHAMY": "WMY",
-      "KOATA": "WMY",
-      "IMB": "WMY",
       "CHISM": "CSM",
-      "DSD": "CSM",
       "PUHTS": "CSM",
       "SYNKR": "CSM",
       "JUDAH": "CSM",

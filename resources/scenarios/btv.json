@@ -311,7 +311,22 @@
           "KBTV": 10
         }
       },
-      "solo_controller": "BTV_W_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BTV_W_APP": []
+        },
+        "inbound_assignments": {
+          "LBNON Arrival Land 15": "BTV_W_APP",
+          "LBNON Arrival Land 33": "BTV_W_APP",
+          "RUT Arrival Land 15": "BTV_W_APP",
+          "RUT Arrival Land 33": "BTV_W_APP"
+        },
+        "departure_assignments": {
+          "KBTV": "BTV_W_APP",
+          "KPBG": "BTV_W_APP"
+        }
+      },
       "controllers": ["BTV_W_APP", "BTV_E_APP", "BTV_TWR", "BTV_F_APP", "BOS_37_CTR"],
       "departure_runways": [
         {
@@ -355,22 +370,20 @@
           "KBTV": 0
         }
       },
-      "solo_controller": "BTV_E_APP",
-      "multi_controllers": {
-        "default": {
-          "BTV_E_APP": {
-            "primary": true,
-            "departures": ["KBTV"],
-            "arrivals": ["LBNON Arrival Land 33", "LBNON Arrival Land 15"]
-          },
-          "BTV_F_APP": {
-            "backup": "BTV_E_APP"
-          },
-          "BTV_W_APP": {
-            "backup": "BTV_E_APP",
-            "arrivals": ["RUT Arrival Land 15", "RUT Arrival Land 33"],
-            "departures": ["KPBG"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BTV_E_APP": ["BTV_F_APP", "BTV_W_APP"]
+        },
+        "inbound_assignments": {
+          "LBNON Arrival Land 15": "BTV_E_APP",
+          "LBNON Arrival Land 33": "BTV_E_APP",
+          "RUT Arrival Land 15": "BTV_W_APP",
+          "RUT Arrival Land 33": "BTV_W_APP"
+        },
+        "departure_assignments": {
+          "KBTV": "BTV_E_APP",
+          "KPBG": "BTV_W_APP"
         }
       },
       "controllers": ["BTV_W_APP", "BTV_E_APP", "BTV_F_APP", "BTV_TWR", "BOS_37_CTR"],

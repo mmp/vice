@@ -896,17 +896,18 @@
           "KPNS": 10
         }
       },
-      "solo_controller": "PNS_E_APP",
-      "multi_controllers": {
-        "default": {
-          "PNS_E_APP": { "primary": true, "arrivals": ["CEW"], "departures": ["KPNS"] },
-          "PNS_W_APP": { "backup": "PNS_E_APP", "arrivals": ["SJI", "LOXLY"] },
-          "PNS_P_APP": { "backup": "PNS_E_APP" },
-          "PNS_K_APP": { "backup": "PNS_E_APP" },
-          "PNS_F_APP": { "backup": "PNS_E_APP" },
-          "PNS_Z_APP": { "backup": "PNS_E_APP" },
-          "PNS_S_APP": { "backup": "PNS_E_APP" },
-          "PNS_A_APP": { "backup": "PNS_E_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PNS_E_APP": ["PNS_A_APP", "PNS_F_APP", "PNS_K_APP", "PNS_P_APP", "PNS_S_APP", "PNS_W_APP", "PNS_Z_APP"]
+        },
+        "inbound_assignments": {
+          "CEW": "PNS_E_APP",
+          "LOXLY": "PNS_W_APP",
+          "SJI": "PNS_W_APP"
+        },
+        "departure_assignments": {
+          "KPNS": "PNS_E_APP"
         }
       },
       "controllers": [
@@ -951,17 +952,18 @@
           "KPNS": 10
         }
       },
-      "solo_controller": "PNS_E_APP",
-      "multi_controllers": {
-        "default": {
-          "PNS_E_APP": { "primary": true, "arrivals": ["CEW"], "departures": ["KPNS"] },
-          "PNS_W_APP": { "backup": "PNS_E_APP", "arrivals": ["SJI", "LOXLY"] },
-          "PNS_P_APP": { "backup": "PNS_E_APP" },
-          "PNS_K_APP": { "backup": "PNS_E_APP" },
-          "PNS_F_APP": { "backup": "PNS_E_APP" },
-          "PNS_Z_APP": { "backup": "PNS_E_APP" },
-          "PNS_S_APP": { "backup": "PNS_E_APP" },
-          "PNS_A_APP": { "backup": "PNS_E_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PNS_E_APP": ["PNS_A_APP", "PNS_F_APP", "PNS_K_APP", "PNS_P_APP", "PNS_S_APP", "PNS_W_APP", "PNS_Z_APP"]
+        },
+        "inbound_assignments": {
+          "CEW": "PNS_E_APP",
+          "LOXLY": "PNS_W_APP",
+          "SJI": "PNS_W_APP"
+        },
+        "departure_assignments": {
+          "KPNS": "PNS_E_APP"
         }
       },
       "controllers": [
@@ -1042,7 +1044,9 @@
       "JAYDI": {},
       "ORRTH": {},
       "PENCL": {},
-      "PENSI": { "short_name": "PSI" },
+      "PENSI": {
+        "short_name": "PSI"
+      },
       "ROMMY": {},
       "SARGE": {},
       "SJI": {},

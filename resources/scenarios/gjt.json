@@ -3,12 +3,19 @@
   "airports": {
     "KGJT": {
       "approaches": {
-        "I11": { "cifp_id": "I11" },
-        "RY11": { "cifp_id": "RY11" },
+        "I11": {
+          "cifp_id": "I11"
+        },
+        "RY11": {
+          "cifp_id": "RY11"
+        },
         "RZ11": {
           "cifp_id": "RZ11"
         },
-        "L29": { "cifp_id": "X29", "full_name": "LDA DME Runway 29" },
+        "L29": {
+          "cifp_id": "X29",
+          "full_name": "LDA DME Runway 29"
+        },
         "R29": {
           "cifp_id": "R29"
         }
@@ -591,7 +598,23 @@
           "KGJT": 3
         }
       },
-      "solo_controller": "GJT_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "GJT_APP": []
+        },
+        "inbound_assignments": {
+          "NORTH": "GJT_APP",
+          "NORTHEAST": "GJT_APP",
+          "NORTHWEST": "GJT_APP",
+          "SOUTHEAST": "GJT_APP",
+          "SOUTHWEST": "GJT_APP",
+          "WEST": "GJT_APP"
+        },
+        "departure_assignments": {
+          "KGJT": "GJT_APP"
+        }
+      },
       "controllers": ["DEN_11_CTR", "DEN_12_CTR", "GJT_TWR"],
       "default_maps": ["GJT BASE"],
       "departure_runways": [
@@ -632,7 +655,23 @@
           "KGJT": 3
         }
       },
-      "solo_controller": "GJT_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "GJT_APP": []
+        },
+        "inbound_assignments": {
+          "NORTH": "GJT_APP",
+          "NORTHEAST": "GJT_APP",
+          "NORTHWEST": "GJT_APP",
+          "SOUTHEAST": "GJT_APP",
+          "SOUTHWEST": "GJT_APP",
+          "WEST": "GJT_APP"
+        },
+        "departure_assignments": {
+          "KGJT": "GJT_APP"
+        }
+      },
       "controllers": ["DEN_11_CTR", "DEN_12_CTR", "GJT_TWR"],
       "default_maps": ["GJT BASE"],
       "departure_runways": [

@@ -1,17 +1,57 @@
 {
   "tracon": "N90",
   "airports": {
-    "KDXR": { "vfr": { "random_routes": { "rate": 15 } } },
-    "KBDR": { "vfr": { "random_routes": { "rate": 15 } } },
-    "KTEB": { "vfr": { "random_routes": { "rate": 20 } } },
-    "KPOU": { "vfr": { "random_routes": { "rate": 20 } } },
-    "KFRG": { "vfr": { "random_routes": { "rate": 20 } } },
+    "KDXR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 15
+        }
+      }
+    },
+    "KBDR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 15
+        }
+      }
+    },
+    "KTEB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
+    },
+    "KPOU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
+    },
+    "KFRG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
+    },
     "KHPN": {
-      "vfr": { "random_routes": { "rate": 20 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      },
       "approaches": {
-        "I16": { "cifp_id": "I16" },
-        "I34": { "cifp_id": "I34" },
-        "RY34": { "cifp_id": "RY34" },
+        "I16": {
+          "cifp_id": "I16"
+        },
+        "I34": {
+          "cifp_id": "I34"
+        },
+        "RY34": {
+          "cifp_id": "RY34"
+        },
         "V34S": {
           "runway": "34",
           "type": "ILS",
@@ -224,9 +264,15 @@
     },
     "KLGA": {
       "approaches": {
-        "I4": { "cifp_id": "I4" },
-        "I22": { "cifp_id": "I22" },
-        "L31": { "cifp_id": "L31" },
+        "I4": {
+          "cifp_id": "I4"
+        },
+        "I22": {
+          "cifp_id": "I22"
+        },
+        "L31": {
+          "cifp_id": "L31"
+        },
         "PVA": {
           "runway": "31",
           "type": "RNAV",
@@ -501,12 +547,19 @@
           "KLGA": 4
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": { "arrivals": ["HAARP4"], "primary": true },
-          "LGA_X_APP": { "backup": "LGA_V_APP", "arrivals": ["VALRE5", "BOUNO5", "RICED4"] },
-          "LGA_Y_APP": { "backup": "LGA_V_APP", "departures": ["KHPN"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_X_APP", "LGA_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BOUNO5": "LGA_X_APP",
+          "HAARP4": "LGA_V_APP",
+          "RICED4": "LGA_X_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KHPN": "LGA_Y_APP"
         }
       },
       "controllers": [
@@ -571,12 +624,19 @@
           "KLGA": 4
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": { "arrivals": ["HAARP4"], "primary": true },
-          "LGA_X_APP": { "backup": "LGA_V_APP", "arrivals": ["VALRE5", "BOUNO5", "RICED4"] },
-          "LGA_Y_APP": { "backup": "LGA_V_APP", "departures": ["KHPN"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_X_APP", "LGA_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BOUNO5": "LGA_X_APP",
+          "HAARP4": "LGA_V_APP",
+          "RICED4": "LGA_X_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KHPN": "LGA_Y_APP"
         }
       },
       "controllers": [

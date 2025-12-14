@@ -3,11 +3,21 @@
   "airports": {
     "KPIT": {
       "approaches": {
-        "I0L": { "cifp_id": "I10L" },
-        "I0R": { "cifp_id": "I10R" },
-        "I8L": { "cifp_id": "I28L" },
-        "I8R": { "cifp_id": "I28R" },
-        "I32": { "cifp_id": "I32" }
+        "I0L": {
+          "cifp_id": "I10L"
+        },
+        "I0R": {
+          "cifp_id": "I10R"
+        },
+        "I8L": {
+          "cifp_id": "I28L"
+        },
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "I32": {
+          "cifp_id": "I32"
+        }
       },
       "approach_regions": {
         "28C": {
@@ -75,7 +85,6 @@
           "tie_offset": 2.5
         }
       ],
-
       "departure_routes": {
         "28C": {
           "AIR": {
@@ -512,8 +521,12 @@
     },
     "KAGC": {
       "approaches": {
-        "I10": { "cifp_id": "I10" },
-        "I28": { "cifp_id": "I28" }
+        "I10": {
+          "cifp_id": "I10"
+        },
+        "I28": {
+          "cifp_id": "I28"
+        }
       },
       "departure_routes": {
         "28": {
@@ -723,7 +736,6 @@
       "tower_list": 1
     }
   },
-
   "airspace": {
     "boundaries": {
       "PITAPP0100": [
@@ -768,7 +780,6 @@
       ]
     }
   },
-
   "inbound_flows": {
     "DEMME5": {
       "arrivals": [
@@ -1080,17 +1091,20 @@
     "PIT_B_APP": {
       "frequency": 124150,
       "radio_name": "Pittsburgh Approach",
-      "sector_id": "1B"
+      "sector_id": "1B",
+      "default_airport": "KPIT"
     },
     "PIT_S_DEP": {
       "frequency": 119350,
       "radio_name": "Pittsburgh Departure",
-      "sector_id": "1S"
+      "sector_id": "1S",
+      "default_airport": "KPIT"
     },
     "PIT_N_DEP": {
       "frequency": 124750,
       "radio_name": "Pittsburgh Approach",
-      "sector_id": "1N"
+      "sector_id": "1N",
+      "default_airport": "KPIT"
     },
     "AGC_TWR": {
       "frequency": 121100,
@@ -1098,7 +1112,6 @@
       "sector_id": "1T"
     }
   },
-
   "default_scenario": "PIT West (ARR 28L/R)",
   "fixes": {
     "_PIT_10C": "N040.29.23.085,W080.14.45.882",
@@ -1114,11 +1127,9 @@
     "_AGC_10": "N040.21.15.814,W079.56.28.183",
     "KAGC": "N040.21.17.806,W079.55.36.575"
   },
-
   "name": "KPIT",
   "primary_airport": "KPIT",
   "reporting_points": ["ETG", "LEJOY", "AIR", "EARED", "CUTTA", "AIR"],
-
   "scenarios": {
     "PIT West (ARR 28L/R)": {
       "airspace": {
@@ -1132,7 +1143,10 @@
           "airport": "KPIT",
           "runway": "28R"
         },
-        { "airport": "KPIT", "runway": "28L" },
+        {
+          "airport": "KPIT",
+          "runway": "28L"
+        },
         {
           "airport": "KAGC",
           "runway": "28"
@@ -1161,13 +1175,24 @@
           "KAGC": 1
         }
       },
-      "solo_controller": "PIT_D_APP",
-      "multi_controllers": {
-        "default": {
-          "PIT_D_APP": { "primary": true, "arrivals": ["DEMME5", "FEWGA7", "NESTO", "WISKE"] },
-          "PIT_B_APP": { "backup": "PIT_D_APP", "arrivals": ["JESEY4", "HAYNZ7", "HOMEE"] },
-          "PIT_S_DEP": { "departures": ["KPIT/28C", "KAGC"], "backup": "PIT_D_APP" },
-          "PIT_N_DEP": { "departures": ["KPIT/28R"], "backup": "PIT_S_DEP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
+          "PIT_S_DEP": ["PIT_N_DEP"]
+        },
+        "inbound_assignments": {
+          "DEMME5": "PIT_D_APP",
+          "FEWGA7": "PIT_D_APP",
+          "HAYNZ7": "PIT_B_APP",
+          "HOMEE": "PIT_B_APP",
+          "JESEY4": "PIT_B_APP",
+          "NESTO": "PIT_D_APP",
+          "WISKE": "PIT_D_APP"
+        },
+        "departure_assignments": {
+          "KAGC": "PIT_S_DEP",
+          "KPIT": "PIT_S_DEP"
         }
       },
       "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
@@ -1241,13 +1266,24 @@
           "KAGC": 1
         }
       },
-      "solo_controller": "PIT_D_APP",
-      "multi_controllers": {
-        "default": {
-          "PIT_D_APP": { "primary": true, "arrivals": ["DEMME5", "FEWGA7", "NESTO", "WISKE"] },
-          "PIT_B_APP": { "backup": "PIT_D_APP", "arrivals": ["JESEY4", "HAYNZ7", "HOMEE"] },
-          "PIT_S_DEP": { "departures": ["KPIT/28C", "KAGC"], "backup": "PIT_D_APP" },
-          "PIT_N_DEP": { "departures": ["KPIT/28R"], "backup": "PIT_S_DEP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
+          "PIT_S_DEP": ["PIT_N_DEP"]
+        },
+        "inbound_assignments": {
+          "DEMME5": "PIT_D_APP",
+          "FEWGA7": "PIT_D_APP",
+          "HAYNZ7": "PIT_B_APP",
+          "HOMEE": "PIT_B_APP",
+          "JESEY4": "PIT_B_APP",
+          "NESTO": "PIT_D_APP",
+          "WISKE": "PIT_D_APP"
+        },
+        "departure_assignments": {
+          "KAGC": "PIT_S_DEP",
+          "KPIT": "PIT_S_DEP"
         }
       },
       "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
@@ -1308,13 +1344,21 @@
           "KPIT": 9
         }
       },
-      "solo_controller": "PIT_D_APP",
-      "multi_controllers": {
-        "default": {
-          "PIT_D_APP": { "primary": true, "arrivals": ["DEMME5", "FEWGA7"] },
-          "PIT_B_APP": { "backup": "PIT_D_APP", "arrivals": ["JESEY4", "HAYNZ7"] },
-          "PIT_S_DEP": { "departures": ["KPIT/14", "KAGC"], "backup": "PIT_D_APP" },
-          "PIT_N_DEP": { "departures": ["KPIT/10C"], "backup": "PIT_S_DEP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
+          "PIT_S_DEP": ["PIT_N_DEP"]
+        },
+        "inbound_assignments": {
+          "DEMME5": "PIT_D_APP",
+          "FEWGA7": "PIT_D_APP",
+          "HAYNZ7": "PIT_B_APP",
+          "JESEY4": "PIT_B_APP"
+        },
+        "departure_assignments": {
+          "KAGC": "PIT_S_DEP",
+          "KPIT": "PIT_S_DEP"
         }
       },
       "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
@@ -1341,7 +1385,6 @@
       }
     }
   },
-
   "stars_config": {
     "force_ql_self": true,
     "allow_long_scratchpad": true,

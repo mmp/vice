@@ -1,18 +1,74 @@
 {
   "tracon": "N90",
   "airports": {
-    "KBDR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPOU": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHPN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KACK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCDW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFOK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KJPX": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KBLM": { "vfr": { "random_routes": { "rate": 5 } } },
-    "39N": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KBDR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPOU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHPN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KACK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCDW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFOK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KJPX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KBLM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "39N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KHWV": {
       "vfr": {
-        "random_routes": { "rate": 5 }
+        "random_routes": {
+          "rate": 5
+        }
       }
     },
     "KFRG": {
@@ -23,10 +79,18 @@
           "type": "ILS",
           "waypoints": ["DPK FRIKK/iaf/faf/a1600+/hilpt/pta1400"]
         },
-        "R1": { "cifp_id": "R1" },
-        "R14": { "cifp_id": "RZ14" },
-        "R19": { "cifp_id": "R19" },
-        "R32": { "cifp_id": "R32" }
+        "R1": {
+          "cifp_id": "R1"
+        },
+        "R14": {
+          "cifp_id": "RZ14"
+        },
+        "R19": {
+          "cifp_id": "R19"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        }
       },
       "vfr": {
         "routes": [
@@ -212,9 +276,15 @@
     "KHVN": {
       "name": "New Haven",
       "approaches": {
-        "I2": { "cifp_id": "I2" },
-        "R2": { "cifp_id": "R2" },
-        "R20": { "cifp_id": "R20" }
+        "I2": {
+          "cifp_id": "I2"
+        },
+        "R2": {
+          "cifp_id": "R2"
+        },
+        "R20": {
+          "cifp_id": "R20"
+        }
       },
       "departure_routes": {
         "2": {
@@ -358,12 +428,24 @@
     "KISP": {
       "name": "MacArthur",
       "approaches": {
-        "R5R": { "cifp_id": "R15R" },
-        "I24": { "cifp_id": "I24" },
-        "R24": { "cifp_id": "R24" },
-        "R3L": { "cifp_id": "R33L" },
-        "I6": { "cifp_id": "I6" },
-        "R6": { "cifp_id": "R6" }
+        "R5R": {
+          "cifp_id": "R15R"
+        },
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "R24": {
+          "cifp_id": "R24"
+        },
+        "R3L": {
+          "cifp_id": "R33L"
+        },
+        "I6": {
+          "cifp_id": "I6"
+        },
+        "R6": {
+          "cifp_id": "R6"
+        }
       },
       "departure_routes": {
         "15R": {
@@ -602,17 +684,39 @@
     "KJFK": {
       "name": "Kennedy",
       "approaches": {
-        "I1L": { "cifp_id": "I31L" },
-        "I1R": { "cifp_id": "I31R" },
-        "I2L": { "cifp_id": "I22L" },
-        "I2R": { "cifp_id": "I22R" },
-        "I3L": { "cifp_id": "I13L" },
-        "I4L": { "cifp_id": "I4L" },
-        "I4R": { "cifp_id": "I4R" },
-        "R1L": { "cifp_id": "R31L" },
-        "R1R": { "cifp_id": "R31R" },
-        "R2L": { "cifp_id": "RX22L" },
-        "R2R": { "cifp_id": "R22R" },
+        "I1L": {
+          "cifp_id": "I31L"
+        },
+        "I1R": {
+          "cifp_id": "I31R"
+        },
+        "I2L": {
+          "cifp_id": "I22L"
+        },
+        "I2R": {
+          "cifp_id": "I22R"
+        },
+        "I3L": {
+          "cifp_id": "I13L"
+        },
+        "I4L": {
+          "cifp_id": "I4L"
+        },
+        "I4R": {
+          "cifp_id": "I4R"
+        },
+        "R1L": {
+          "cifp_id": "R31L"
+        },
+        "R1R": {
+          "cifp_id": "R31R"
+        },
+        "R2L": {
+          "cifp_id": "RX22L"
+        },
+        "R2R": {
+          "cifp_id": "R22R"
+        },
         "R3L": {
           "full_name": "RNAV Z Runway 13 Left",
           "runway": "13L",
@@ -625,8 +729,12 @@
           "type": "RNAV",
           "waypoints": ["ASALT/if/a3000/s210 NUCRI/faf/a2000 PEEBO/a921 MAYMA/a520"]
         },
-        "R4L": { "cifp_id": "RY4L" },
-        "R4R": { "cifp_id": "RY4R" },
+        "R4L": {
+          "cifp_id": "RY4L"
+        },
+        "R4R": {
+          "cifp_id": "RY4R"
+        },
         "BVA": {
           "full_name": "Belmont Visual Runway 22 Left",
           "runway": "22L",
@@ -2888,7 +2996,6 @@
           "DIXIE,WHITE.Props": {
             "sid": "LGA7",
             "cleared_altitude": 8000,
-            "sid": "LGA7",
             "handoff_controller": "JFK_DEP",
             "waypoints": "N040.51.10.513,W073.48.41.484 N040.54.23.090,W073.52.06.571 N040.49.33.655,W073.53.25.673/ho JFK"
           },
@@ -7658,7 +7765,7 @@
           "spawn": "PAWLN",
           "cruise_altitude": 29000,
           "star": "LOVES1",
-          "initial_controller": "NY_B_CTR",
+          "initial_controller": "BOS_E_CTR",
           "initial_altitude": 8000,
           "assigned_altitude": 5000,
           "initial_speed": 250,
@@ -7668,16 +7775,8 @@
           "airlines": {
             "KISP": [
               {
-                "icao": "JBU",
-                "airport": "KACY"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KPHL"
-              },
-              {
-                "icao": "DPJ",
-                "airport": "KPNE"
+                "icao": "GPD",
+                "airport": "KBOS"
               }
             ]
           }
@@ -8944,30 +9043,6 @@
           "expect_approach": null,
           "airlines": {
             "KHVN": [
-              {
-                "icao": "GPD",
-                "airport": "KBOS"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "LOVES1": {
-      "arrivals": [
-        {
-          "spawn": "PAWLN",
-          "cruise_altitude": 29000,
-          "star": "LOVES1",
-          "initial_controller": "BOS_E_CTR",
-          "initial_altitude": 8000,
-          "assigned_altitude": 5000,
-          "initial_speed": 250,
-          "speed_restriction": 250,
-          "description": "LOVES1",
-          "expect_approach": null,
-          "airlines": {
-            "KISP": [
               {
                 "icao": "GPD",
                 "airport": "KBOS"
@@ -10917,33 +10992,29 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "Intra-TRACON (JFK/FRG West)"]
-          },
-          "ISP_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KFRG"],
-            "arrivals": ["PARCH4", "PUCKY1", "Intra-TRACON (JFK/FRG East)"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP"
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP"],
+          "JFK_K_APP": ["JFK_M_APP"]
+        },
+        "inbound_assignments": {
+          "CAMRN5": "JFK_G_APP",
+          "DENNA3": "ISP_APP",
+          "Intra-TRACON (ISP/HVN)": "ISP_APP",
+          "Intra-TRACON (JFK/FRG East)": "JFK_K_APP",
+          "Intra-TRACON (JFK/FRG West)": "JFK_G_APP",
+          "LOVES1": "ISP_APP",
+          "NELIE4": "ISP_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH4": "JFK_K_APP",
+          "PUCKY1": "JFK_K_APP"
+        },
+        "departure_assignments": {
+          "KFRG": "JFK_K_APP",
+          "KHVN": "ISP_APP",
+          "KISP": "ISP_APP",
+          "KJFK": "JFK_DEP"
         }
       },
       "controllers": [
@@ -11062,33 +11133,29 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "PUCKY1", "Intra-TRACON (JFK/FRG West)"]
-          },
-          "ISP_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KFRG"],
-            "arrivals": ["PARCH4", "Intra-TRACON (JFK/FRG East)"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP"
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP"],
+          "JFK_K_APP": ["JFK_M_APP"]
+        },
+        "inbound_assignments": {
+          "CAMRN5": "JFK_G_APP",
+          "DENNA3": "ISP_APP",
+          "Intra-TRACON (ISP/HVN)": "ISP_APP",
+          "Intra-TRACON (JFK/FRG East)": "JFK_K_APP",
+          "Intra-TRACON (JFK/FRG West)": "JFK_G_APP",
+          "LOVES1": "ISP_APP",
+          "NELIE4": "ISP_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH4": "JFK_K_APP",
+          "PUCKY1": "JFK_G_APP"
+        },
+        "departure_assignments": {
+          "KFRG": "JFK_K_APP",
+          "KHVN": "ISP_APP",
+          "KISP": "ISP_APP",
+          "KJFK": "JFK_DEP"
         }
       },
       "controllers": [
@@ -11203,33 +11270,29 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "PUCKY1", "Intra-TRACON (JFK/FRG West)"]
-          },
-          "ISP_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_K_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KFRG"],
-            "arrivals": ["PARCH4", "Intra-TRACON (JFK/FRG East)"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP"
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_G_APP": ["ISP_APP", "JFK_DEP", "JFK_K_APP"],
+          "JFK_K_APP": ["JFK_A_APP", "JFK_M_APP"]
+        },
+        "inbound_assignments": {
+          "CAMRN5": "JFK_G_APP",
+          "DENNA3": "ISP_APP",
+          "Intra-TRACON (ISP/HVN)": "ISP_APP",
+          "Intra-TRACON (JFK/FRG East)": "JFK_K_APP",
+          "Intra-TRACON (JFK/FRG West)": "JFK_G_APP",
+          "LOVES1": "ISP_APP",
+          "NELIE4": "ISP_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH4": "JFK_K_APP",
+          "PUCKY1": "JFK_G_APP"
+        },
+        "departure_assignments": {
+          "KFRG": "JFK_K_APP",
+          "KHVN": "ISP_APP",
+          "KISP": "ISP_APP",
+          "KJFK": "JFK_DEP"
         }
       },
       "controllers": [
@@ -11363,33 +11426,29 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "PUCKY1", "Intra-TRACON (JFK/FRG West)"]
-          },
-          "ISP_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KFRG"],
-            "arrivals": ["PARCH4", "Intra-TRACON (JFK/FRG East)"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP"
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP"],
+          "JFK_K_APP": ["JFK_M_APP"]
+        },
+        "inbound_assignments": {
+          "CAMRN5": "JFK_G_APP",
+          "DENNA3": "ISP_APP",
+          "Intra-TRACON (ISP/HVN)": "ISP_APP",
+          "Intra-TRACON (JFK/FRG East)": "JFK_K_APP",
+          "Intra-TRACON (JFK/FRG West)": "JFK_G_APP",
+          "LOVES1": "ISP_APP",
+          "NELIE4": "ISP_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH4": "JFK_K_APP",
+          "PUCKY1": "JFK_G_APP"
+        },
+        "departure_assignments": {
+          "KFRG": "JFK_K_APP",
+          "KHVN": "ISP_APP",
+          "KISP": "ISP_APP",
+          "KJFK": "JFK_DEP"
         }
       },
       "controllers": [
@@ -11503,33 +11562,29 @@
           "KJFK": 12
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "Intra-TRACON (JFK/FRG West)"]
-          },
-          "ISP_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP", "KHVN"],
-            "arrivals": ["NELIE4", "DENNA3", "LOVES1", "Intra-TRACON (ISP/HVN)"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KFRG"],
-            "arrivals": ["PUCKY1", "PARCH4", "Intra-TRACON (JFK/FRG East)"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP"
-          },
-          "JFK_DEP": {
-            "backup": "JFK_K_APP",
-            "departures": ["KJFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_K_APP"],
+          "JFK_K_APP": ["JFK_DEP", "JFK_M_APP"]
+        },
+        "inbound_assignments": {
+          "CAMRN5": "JFK_G_APP",
+          "DENNA3": "ISP_APP",
+          "Intra-TRACON (ISP/HVN)": "ISP_APP",
+          "Intra-TRACON (JFK/FRG East)": "JFK_K_APP",
+          "Intra-TRACON (JFK/FRG West)": "JFK_G_APP",
+          "LOVES1": "ISP_APP",
+          "NELIE4": "ISP_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH4": "JFK_K_APP",
+          "PUCKY1": "JFK_K_APP"
+        },
+        "departure_assignments": {
+          "KFRG": "JFK_K_APP",
+          "KHVN": "ISP_APP",
+          "KISP": "ISP_APP",
+          "KJFK": "JFK_DEP"
         }
       },
       "controllers": [
@@ -11587,7 +11642,9 @@
           "runway": "4R"
         }
       ],
-      "airspace": { "JFK_A_APP": ["JFK_FINAL_4RL", "CAMRN_4RL"] },
+      "airspace": {
+        "JFK_A_APP": ["JFK_FINAL_4RL", "CAMRN_4RL"]
+      },
       "inbound_rates": {
         "PARCH4.Finals13": {
           "KJFK": 7
@@ -11599,7 +11656,17 @@
           "KJFK": 7
         }
       },
-      "solo_controller": "JFK_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_A_APP": []
+        },
+        "inbound_assignments": {
+          "PARCH4.Finals13": "JFK_A_APP",
+          "PUCKY1.Finals13": "JFK_A_APP",
+          "CAMRN5.Finals13": "JFK_A_APP"
+        }
+      },
       "controllers": ["BOS_E_CTR", "JFK_TWR", "JFK_G_APP", "JFK_DEP", "JFK_K_APP"],
       "default_maps": ["JFK ARR/DEP RWY 4L/R"],
       "wind": {
@@ -11617,7 +11684,9 @@
           "runway": "13R"
         }
       ],
-      "airspace": { "JFK_A_APP": ["JFK_FINAL_13RL", "CAMRN_13RL"] },
+      "airspace": {
+        "JFK_A_APP": ["JFK_FINAL_13RL", "CAMRN_13RL"]
+      },
       "inbound_rates": {
         "PARCH4.Finals13": {
           "KJFK": 7
@@ -11629,7 +11698,17 @@
           "KJFK": 7
         }
       },
-      "solo_controller": "JFK_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_A_APP": []
+        },
+        "inbound_assignments": {
+          "PARCH4.Finals13": "JFK_A_APP",
+          "PUCKY1.Finals13": "JFK_A_APP",
+          "CAMRN5.Finals13": "JFK_A_APP"
+        }
+      },
       "controllers": ["BOS_E_CTR", "JFK_TWR", "JFK_G_APP", "JFK_DEP", "JFK_K_APP"],
       "default_maps": ["JFK ARR/DEP RWY 13L/R"],
       "wind": {
@@ -11647,7 +11726,9 @@
           "runway": "22R"
         }
       ],
-      "airspace": { "JFK_A_APP": ["JFK_FINAL_22RL"] },
+      "airspace": {
+        "JFK_A_APP": ["JFK_FINAL_22RL"]
+      },
       "inbound_rates": {
         "PARCH4.Finals22": {
           "KJFK": 7
@@ -11656,7 +11737,16 @@
           "KJFK": 24
         }
       },
-      "solo_controller": "JFK_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_A_APP": []
+        },
+        "inbound_assignments": {
+          "CAMRN/PUCKY1.Finals22": "JFK_A_APP",
+          "PARCH4.Finals22": "JFK_A_APP"
+        }
+      },
       "controllers": ["BOS_E_CTR", "JFK_TWR", "JFK_G_APP", "JFK_DEP", "JFK_K_APP"],
       "default_maps": ["JFK ARR/DEP RWY 22L/R"],
       "wind": {
@@ -11674,7 +11764,9 @@
           "runway": "31R"
         }
       ],
-      "airspace": { "JFK_A_APP": ["JFK_FINAL_31RL"] },
+      "airspace": {
+        "JFK_A_APP": ["JFK_FINAL_31RL"]
+      },
       "inbound_rates": {
         "PARCH4.Finals31": {
           "KJFK": 7
@@ -11683,7 +11775,16 @@
           "KJFK": 29
         }
       },
-      "solo_controller": "JFK_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "JFK_A_APP": []
+        },
+        "inbound_assignments": {
+          "CAMRN/PUCKY1.Finals31": "JFK_A_APP",
+          "PARCH4.Finals31": "JFK_A_APP"
+        }
+      },
       "controllers": ["BOS_E_CTR", "JFK_TWR", "JFK_G_APP", "JFK_DEP", "JFK_K_APP"],
       "default_maps": ["JFK ARR/DEP RWY 31L/R"],
       "wind": {
@@ -11751,7 +11852,9 @@
         "vfr_codes": ["1200-1202"]
       }
     },
-    "pdb": { "hide_gs": true },
+    "pdb": {
+      "hide_gs": true
+    },
     "coordination_fixes": {
       "MERIT": [
         {
@@ -12058,7 +12161,9 @@
         "receiving_controller": "BOS_E_CTR"
       }
     ],
-    "scratchpad1": { "display_exit_fix": true },
+    "scratchpad1": {
+      "display_exit_fix": true
+    },
     "significant_points": {
       "ARD": {},
       "BAYYS": {},
@@ -12078,7 +12183,9 @@
       "FJC": {},
       "GAYEL": {},
       "GREKI": {},
-      "HAAYS": { "short_name": "HAY" },
+      "HAAYS": {
+        "short_name": "HAY"
+      },
       "HAPIE": {},
       "HTO": {},
       "HUO": {},
@@ -12087,7 +12194,9 @@
       "MAD": {},
       "MERIT": {},
       "NEION": {},
-      "NEWEL": { "short_name": "NWL" },
+      "NEWEL": {
+        "short_name": "NWL"
+      },
       "PARKE": {},
       "RBV": {},
       "RUUTH": {},

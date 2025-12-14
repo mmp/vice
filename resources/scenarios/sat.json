@@ -3,13 +3,31 @@
   "airports": {
     "KSAT": {
       "approaches": {
-        "I04": { "cifp_id": "I4" },
-        "I3R": { "cifp_id": "I13R" },
-        "I1L": { "cifp_id": "I31L" },
-        "R04": { "cifp_id": "RZ4", "full_name": "RNAV RNP Runway 04" },
-        "R3R": { "cifp_id": "RZ13R", "full_name": "RNAV RNP Runway 13R" },
-        "R22": { "cifp_id": "RX22", "full_name": "RNAV RNP Runway 22" },
-        "R1L": { "cifp_id": "RZ31L", "full_name": "RNAV RNP Runway 31L" }
+        "I04": {
+          "cifp_id": "I4"
+        },
+        "I3R": {
+          "cifp_id": "I13R"
+        },
+        "I1L": {
+          "cifp_id": "I31L"
+        },
+        "R04": {
+          "cifp_id": "RZ4",
+          "full_name": "RNAV RNP Runway 04"
+        },
+        "R3R": {
+          "cifp_id": "RZ13R",
+          "full_name": "RNAV RNP Runway 13R"
+        },
+        "R22": {
+          "cifp_id": "RX22",
+          "full_name": "RNAV RNP Runway 22"
+        },
+        "R1L": {
+          "cifp_id": "RZ31L",
+          "full_name": "RNAV RNP Runway 31L"
+        }
       },
       "departure_routes": {
         "13R": {
@@ -303,12 +321,24 @@
     "KBAZ": {
       "hold_for_release": true,
       "approaches": {
-        "R13": { "cifp_id": "R13" },
-        "R17": { "cifp_id": "R17" },
-        "R31": { "cifp_id": "R31" },
-        "R35": { "cifp_id": "R35" }
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        },
+        "R35": {
+          "cifp_id": "R35"
+        }
       },
-      "vfr": { "random_routes": { "rate": 6 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      },
       "departure_routes": {
         "31": {
           "ALISS": {
@@ -490,7 +520,11 @@
           "waypoints": ["CEPRO/iaf/a2700/lhilpt5nm WUKEN/faf/a2600+", "ZEGVI/iaf CEPRO/iaf/a2700 WUKEN/faf/a2600+"]
         }
       },
-      "vfr": { "random_routes": { "rate": 3 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      },
       "departure_routes": {
         "16": {
           "KHYI": {
@@ -587,8 +621,16 @@
     },
     "KSSF": {
       "hold_for_release": true,
-      "approaches": { "R32": { "cifp_id": "R32" } },
-      "vfr": { "random_routes": { "rate": 4 } },
+      "approaches": {
+        "R32": {
+          "cifp_id": "R32"
+        }
+      },
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      },
       "departure_routes": {
         "32": {
           "YODUH": {
@@ -641,12 +683,48 @@
         }
       ]
     },
-    "5C1": { "vfr": { "random_routes": { "rate": 1 } } },
-    "1T8": { "vfr": { "random_routes": { "rate": 1 } } },
-    "1T7": { "vfr": { "random_routes": { "rate": 1 } } },
-    "E70": { "vfr": { "random_routes": { "rate": 1 } } },
-    "74R": { "vfr": { "random_routes": { "rate": 1 } } },
-    "53T": { "vfr": { "random_routes": { "rate": 1 } } }
+    "5C1": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "1T8": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "1T7": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "E70": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "74R": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "53T": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    }
   },
   "inbound_flows": {
     "DNKIN1": {
@@ -1097,37 +1175,26 @@
           "KBAZ": 3
         }
       },
-      "solo_controller": "SAT_N_APP",
-      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
-      "multi_controllers": {
-        "default": {
-          "SAT_N_APP": {
-            "primary": true,
-            "arrivals": ["QERVO2"],
-            "departures": ["KSAT"]
-          },
-          "SAT_K_APP": {
-            "backup": "SAT_S_APP",
-            "departures": ["KSKF"]
-          },
-          "SAT_R_APP": {
-            "backup": "SAT_S_APP"
-          },
-          "SAT_S_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["CRVZA1"],
-            "departures": ["KSSF"]
-          },
-          "SAT_W_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["POPPO1", "DNKIN1"]
-          },
-          "SAT_Q_APP": {
-            "backup": "SAT_N_APP",
-            "departures": ["KBAZ"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAT_N_APP": ["SAT_Q_APP", "SAT_S_APP", "SAT_W_APP"],
+          "SAT_S_APP": ["SAT_K_APP", "SAT_R_APP"]
+        },
+        "inbound_assignments": {
+          "CRVZA1": "SAT_S_APP",
+          "DNKIN1": "SAT_W_APP",
+          "POPPO1": "SAT_W_APP",
+          "QERVO2": "SAT_N_APP"
+        },
+        "departure_assignments": {
+          "KBAZ": "SAT_Q_APP",
+          "KSAT": "SAT_N_APP",
+          "KSKF": "SAT_K_APP",
+          "KSSF": "SAT_S_APP"
         }
       },
+      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
       "default_maps": ["SAT BASE", "SAT 13 SPLIT"],
       "departure_runways": [
         {
@@ -1234,35 +1301,26 @@
           "KBAZ": 3
         }
       },
-      "solo_controller": "SAT_N_APP",
-      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
-      "multi_controllers": {
-        "default": {
-          "SAT_N_APP": {
-            "primary": true,
-            "arrivals": ["QERVO2"],
-            "departures": ["KSAT", "KBAZ"]
-          },
-          "SAT_K_APP": {
-            "backup": "SAT_S_APP"
-          },
-          "SAT_R_APP": {
-            "backup": "SAT_S_APP"
-          },
-          "SAT_S_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["CRVZA1", "DNKIN1"],
-            "departures": ["KSSF", "KSKF"]
-          },
-          "SAT_W_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["POPPO1"]
-          },
-          "SAT_L_APP": {
-            "backup": "SAT_S_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAT_N_APP": ["SAT_S_APP", "SAT_W_APP"],
+          "SAT_S_APP": ["SAT_K_APP", "SAT_L_APP", "SAT_R_APP"]
+        },
+        "inbound_assignments": {
+          "CRVZA1": "SAT_S_APP",
+          "DNKIN1": "SAT_S_APP",
+          "POPPO1": "SAT_W_APP",
+          "QERVO2": "SAT_N_APP"
+        },
+        "departure_assignments": {
+          "KBAZ": "SAT_N_APP",
+          "KSAT": "SAT_N_APP",
+          "KSKF": "SAT_S_APP",
+          "KSSF": "SAT_S_APP"
         }
       },
+      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
       "default_maps": ["SAT BASE", "SAT 31 SPLIT"],
       "departure_runways": [
         {
@@ -1361,37 +1419,26 @@
           "KBAZ": 3
         }
       },
-      "solo_controller": "SAT_N_APP",
-      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
-      "multi_controllers": {
-        "default": {
-          "SAT_N_APP": {
-            "primary": true,
-            "arrivals": ["QERVO2"],
-            "departures": ["KSAT"]
-          },
-          "SAT_K_APP": {
-            "backup": "SAT_S_APP",
-            "departures": ["KSKF"]
-          },
-          "SAT_R_APP": {
-            "backup": "SAT_S_APP"
-          },
-          "SAT_S_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["CRVZA1"],
-            "departures": ["KSSF"]
-          },
-          "SAT_W_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["POPPO1", "DNKIN1"]
-          },
-          "SAT_Q_APP": {
-            "backup": "SAT_N_APP",
-            "departures": ["KBAZ"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAT_N_APP": ["SAT_Q_APP", "SAT_S_APP", "SAT_W_APP"],
+          "SAT_S_APP": ["SAT_K_APP", "SAT_R_APP"]
+        },
+        "inbound_assignments": {
+          "CRVZA1": "SAT_S_APP",
+          "DNKIN1": "SAT_W_APP",
+          "POPPO1": "SAT_W_APP",
+          "QERVO2": "SAT_N_APP"
+        },
+        "departure_assignments": {
+          "KBAZ": "SAT_Q_APP",
+          "KSAT": "SAT_N_APP",
+          "KSKF": "SAT_K_APP",
+          "KSSF": "SAT_S_APP"
         }
       },
+      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
       "default_maps": ["SAT BASE", "SAT 13 SPLIT"],
       "departure_runways": [
         {
@@ -1494,35 +1541,26 @@
           "KBAZ": 3
         }
       },
-      "solo_controller": "SAT_N_APP",
-      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
-      "multi_controllers": {
-        "default": {
-          "SAT_N_APP": {
-            "primary": true,
-            "arrivals": ["QERVO2"],
-            "departures": ["KSAT", "KBAZ"]
-          },
-          "SAT_K_APP": {
-            "backup": "SAT_S_APP"
-          },
-          "SAT_R_APP": {
-            "backup": "SAT_S_APP"
-          },
-          "SAT_S_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["CRVZA1", "DNKIN1"],
-            "departures": ["KSSF", "KSKF"]
-          },
-          "SAT_W_APP": {
-            "backup": "SAT_N_APP",
-            "arrivals": ["POPPO1"]
-          },
-          "SAT_L_APP": {
-            "backup": "SAT_S_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAT_N_APP": ["SAT_S_APP", "SAT_W_APP"],
+          "SAT_S_APP": ["SAT_K_APP", "SAT_L_APP", "SAT_R_APP"]
+        },
+        "inbound_assignments": {
+          "CRVZA1": "SAT_S_APP",
+          "DNKIN1": "SAT_S_APP",
+          "POPPO1": "SAT_W_APP",
+          "QERVO2": "SAT_N_APP"
+        },
+        "departure_assignments": {
+          "KBAZ": "SAT_N_APP",
+          "KSAT": "SAT_N_APP",
+          "KSKF": "SAT_S_APP",
+          "KSSF": "SAT_S_APP"
         }
       },
+      "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
       "default_maps": ["SAT BASE", "SAT 31 SPLIT"],
       "departure_runways": [
         {

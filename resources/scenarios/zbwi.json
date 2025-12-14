@@ -304,7 +304,15 @@
   "default_scenario": "ZBW Danbury 19",
   "scenarios": {
     "ZBW Danbury 19": {
-      "solo_controller": "ZBW Danbury 19",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZBW Danbury 19": []
+        },
+        "inbound_assignments": {
+          "PARCH4-SEY": "ZBW Danbury 19"
+        }
+      },
       "controllers": [
         "ZBW Gardner 36",
         "ZNY Kennedy 56",
@@ -346,14 +354,17 @@
           "KJFK": 20
         }
       },
-      "wind": { "direction": "130-180", "speed": "5+", "flight_rules": "VMC" }
+      "wind": {
+        "direction": "130-180",
+        "speed": "5+",
+        "flight_rules": "VMC"
+      }
     }
   },
   "stars_config": {
     "center": "PVD",
     "range": 70,
     "stars_maps": ["TRACON"],
-
     "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst"
   }
 }

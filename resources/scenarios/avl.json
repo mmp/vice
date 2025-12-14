@@ -676,11 +676,21 @@
           "KAVL": 3
         }
       },
-      "solo_controller": "AVL_W_APP",
-      "multi_controllers": {
-        "default": {
-          "AVL_W_APP": { "primary": true, "arrivals": ["PUPDG", "BARRD"], "departures": ["KAVL"] },
-          "AVL_E_APP": { "backup": "AVL_W_APP", "arrivals": ["LEAVI", "JONEB", "TUSRE", "OBURY"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AVL_W_APP": ["AVL_E_APP"]
+        },
+        "inbound_assignments": {
+          "BARRD": "AVL_W_APP",
+          "JONEB": "AVL_E_APP",
+          "LEAVI": "AVL_E_APP",
+          "OBURY": "AVL_E_APP",
+          "PUPDG": "AVL_W_APP",
+          "TUSRE": "AVL_E_APP"
+        },
+        "departure_assignments": {
+          "KAVL": "AVL_W_APP"
         }
       },
       "controllers": ["AVL_TWR", "ATL_CTR", "TYS_APP", "GSP_APP", "TRI_APP"],
@@ -727,11 +737,21 @@
           "KAVL": 3
         }
       },
-      "solo_controller": "AVL_W_APP",
-      "multi_controllers": {
-        "default": {
-          "AVL_W_APP": { "primary": true, "arrivals": ["PUPDG", "BARRD"], "departures": ["KAVL"] },
-          "AVL_E_APP": { "backup": "AVL_W_APP", "arrivals": ["LEAVI", "JONEB", "TUSRE", "OBURY"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AVL_W_APP": ["AVL_E_APP"]
+        },
+        "inbound_assignments": {
+          "BARRD": "AVL_W_APP",
+          "JONEB": "AVL_E_APP",
+          "LEAVI": "AVL_E_APP",
+          "OBURY": "AVL_E_APP",
+          "PUPDG": "AVL_W_APP",
+          "TUSRE": "AVL_E_APP"
+        },
+        "departure_assignments": {
+          "KAVL": "AVL_W_APP"
         }
       },
       "controllers": ["AVL_TWR", "ATL_CTR", "TYS_APP", "GSP_APP", "TRI_APP"],

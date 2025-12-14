@@ -3,12 +3,24 @@
   "airports": {
     "KCLE": {
       "approaches": {
-        "I6L": { "cifp_id": "I6L" },
-        "I6R": { "cifp_id": "I6R" },
-        "R10": { "cifp_id": "R10" },
-        "I4L": { "cifp_id": "I24L" },
-        "I4R": { "cifp_id": "I24R" },
-        "I28": { "cifp_id": "I28" }
+        "I6L": {
+          "cifp_id": "I6L"
+        },
+        "I6R": {
+          "cifp_id": "I6R"
+        },
+        "R10": {
+          "cifp_id": "R10"
+        },
+        "I4L": {
+          "cifp_id": "I24L"
+        },
+        "I4R": {
+          "cifp_id": "I24R"
+        },
+        "I28": {
+          "cifp_id": "I28"
+        }
       },
       "departure_routes": {
         "6R": {
@@ -602,9 +614,15 @@
     },
     "KCGF": {
       "approaches": {
-        "R6": { "cifp_id": "R6" },
-        "I24": { "cifp_id": "I24" },
-        "R24": { "cifp_id": "R24" }
+        "R6": {
+          "cifp_id": "R6"
+        },
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "R24": {
+          "cifp_id": "R24"
+        }
       },
       "departure_routes": {
         "6": {
@@ -771,8 +789,12 @@
     },
     "KBKL": {
       "approaches": {
-        "R4R": { "cifp_id": "R24R" },
-        "I4R": { "cifp_id": "I24R" },
+        "R4R": {
+          "cifp_id": "R24R"
+        },
+        "I4R": {
+          "cifp_id": "I24R"
+        },
         "V6L": {
           "full_name": "Visual Approach Runway 6L",
           "runway": "6L",
@@ -960,8 +982,12 @@
     },
     "KMFD": {
       "approaches": {
-        "R14": { "cifp_id": "R14" },
-        "I32": { "cifp_id": "I32" }
+        "R14": {
+          "cifp_id": "R14"
+        },
+        "I32": {
+          "cifp_id": "I32"
+        }
       },
       "departure_routes": {
         "32": {
@@ -1021,10 +1047,18 @@
     },
     "KCAK": {
       "approaches": {
-        "I23": { "cifp_id": "I23" },
-        "I1": { "cifp_id": "I1" },
-        "I5": { "cifp_id": "I5" },
-        "I19": { "cifp_id": "I19" }
+        "I23": {
+          "cifp_id": "I23"
+        },
+        "I1": {
+          "cifp_id": "I1"
+        },
+        "I5": {
+          "cifp_id": "I5"
+        },
+        "I19": {
+          "cifp_id": "I19"
+        }
       },
       "departure_routes": {
         "1": {
@@ -3775,10 +3809,8 @@
     "_BRWNZ4_24R_FINAL": "N41.39.58.387,W81.32.07.173",
     "_ROLLN2_24R_FINAL": "N41.34.00.993,W81.28.26.780"
   },
-
   "name": "KCLE",
   "primary_airport": "KCLE",
-
   "scenarios": {
     "KCLE North": {
       "airspace": {
@@ -3845,17 +3877,29 @@
           "KMFD": 2
         }
       },
-      "solo_controller": "CLE_A_APP",
-      "multi_controllers": {
-        "default": {
-          "CLE_A_APP": { "primary": true, "arrivals": ["BRWNZ4", "TRYBE4", "ROKNN3", "ROLLN2"] },
-          "CLE_F_APP": { "backup": "CLE_A_APP" },
-          "CLE_D_DEP": { "departures": ["KCLE/GTLKE4", "KCLE/PFLYD1"], "backup": "CLE_A_APP" },
-          "CLE_N_APP": { "backup": "CLE_D_DEP", "departures": ["KCGF", "KBKL"] },
-          "CLE_R_DEP": { "backup": "CLE_D_DEP", "departures": ["KCLE/CAVVS4", "KCLE/KKIDS1", "KCLE/ZAAPA5"] },
-          "CAK_E_APP": { "backup": "CLE_N_APP", "departures": ["KCAK"], "arrivals": ["ZZIPS1"] },
-          "CAK_S_APP": { "backup": "CAK_E_APP", "arrivals": ["HUUVR1"] },
-          "MFD_W_APP": { "backup": "CAK_E_APP", "departures": ["KMFD"], "arrivals": ["GOSIC-FIVUM"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CAK_E_APP": ["CAK_S_APP", "MFD_W_APP"],
+          "CLE_A_APP": ["CLE_D_DEP", "CLE_F_APP"],
+          "CLE_D_DEP": ["CLE_N_APP", "CLE_R_DEP"],
+          "CLE_N_APP": ["CAK_E_APP"]
+        },
+        "inbound_assignments": {
+          "BRWNZ4": "CLE_A_APP",
+          "GOSIC-FIVUM": "MFD_W_APP",
+          "HUUVR1": "CAK_S_APP",
+          "ROKNN3": "CLE_A_APP",
+          "ROLLN2": "CLE_A_APP",
+          "TRYBE4": "CLE_A_APP",
+          "ZZIPS1": "CAK_E_APP"
+        },
+        "departure_assignments": {
+          "KBKL": "CLE_N_APP",
+          "KCAK": "CAK_E_APP",
+          "KCGF": "CLE_N_APP",
+          "KCLE": "CLE_R_DEP",
+          "KMFD": "MFD_W_APP"
         }
       },
       "controllers": ["CLE_66_CTR", "CLE_TWR", "DTW_F_APP", "BKL_TWR", "CGF_TWR", "MFD_TWR", "CAK_TWR"],
@@ -3915,7 +3959,18 @@
           "KCLE": 10
         }
       },
-      "solo_controller": "CLE_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CLE_F_APP": []
+        },
+        "inbound_assignments": {
+          "BRWNZ4_FINALS": "CLE_F_APP",
+          "ROKNN3_FINALS": "CLE_F_APP",
+          "ROLLN2_FINALS": "CLE_F_APP",
+          "TRYBE4_FINALS": "CLE_F_APP"
+        }
+      },
       "controllers": ["CLE_A_APP", "CLE_TWR", "DTW_F_APP", "CLE_66_CTR"],
       "default_maps": ["CLE-001 (RY24)"],
       "wind": {
@@ -3946,7 +4001,18 @@
           "KCLE": 10
         }
       },
-      "solo_controller": "CLE_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CLE_A_APP": []
+        },
+        "inbound_assignments": {
+          "BRWNZ4_FEEDERS": "CLE_A_APP",
+          "ROKNN3_FEEDERS": "CLE_A_APP",
+          "ROLLN2_FEEDERS": "CLE_A_APP",
+          "TRYBE4_FEEDERS": "CLE_A_APP"
+        }
+      },
       "controllers": ["CLE_F_APP", "CLE_TWR", "DTW_F_APP", "CLE_66_CTR"],
       "default_maps": ["CLE-001 (RY24)"],
       "wind": {
@@ -3977,7 +4043,18 @@
           "KCLE": 10
         }
       },
-      "solo_controller": "CLE_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CLE_A_APP": []
+        },
+        "inbound_assignments": {
+          "BRWNZ4_FEEDERN": "CLE_A_APP",
+          "ROKNN3_FEEDERN": "CLE_A_APP",
+          "ROLLN2_FEEDERN": "CLE_A_APP",
+          "TRYBE4_FEEDERN": "CLE_A_APP"
+        }
+      },
       "controllers": ["CLE_TWR", "DTW_F_APP", "CLE_66_CTR", "CLE_F_APP"],
       "default_maps": ["CLE-003 (RY6)"],
       "wind": {
@@ -4008,7 +4085,18 @@
           "KCLE": 10
         }
       },
-      "solo_controller": "CLE_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CLE_F_APP": []
+        },
+        "inbound_assignments": {
+          "BRWNZ4_FINALN": "CLE_F_APP",
+          "ROKNN3_FINALN": "CLE_F_APP",
+          "ROLLN2_FINALN": "CLE_F_APP",
+          "TRYBE4_FINALN": "CLE_F_APP"
+        }
+      },
       "controllers": ["CLE_A_APP", "CLE_TWR", "DTW_F_APP", "CLE_66_CTR"],
       "default_maps": ["CLE-003 (RY6)"],
       "wind": {
@@ -4080,17 +4168,29 @@
           "KMFD": 2
         }
       },
-      "solo_controller": "CLE_A_APP",
-      "multi_controllers": {
-        "default": {
-          "CLE_A_APP": { "primary": true, "arrivals": ["BRWNZ4", "TRYBE4", "ROKNN3", "ROLLN2"] },
-          "CLE_F_APP": { "backup": "CLE_A_APP" },
-          "CLE_D_DEP": { "departures": ["KCLE/GTLKE4", "KCLE/PFLYD1"], "backup": "CLE_A_APP" },
-          "CLE_N_APP": { "backup": "CLE_D_DEP", "departures": ["KCGF", "KBKL"] },
-          "CLE_R_DEP": { "backup": "CLE_D_DEP", "departures": ["KCLE/CAVVS4", "KCLE/KKIDS1", "KCLE/ZAAPA5"] },
-          "CAK_E_APP": { "backup": "CLE_N_APP", "departures": ["KCAK"], "arrivals": ["ZZIPS1"] },
-          "CAK_S_APP": { "backup": "CAK_E_APP", "arrivals": ["HUUVR1"] },
-          "MFD_W_APP": { "backup": "CAK_E_APP", "departures": ["KMFD"], "arrivals": ["GOSIC-FIVUM"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CAK_E_APP": ["CAK_S_APP", "MFD_W_APP"],
+          "CLE_A_APP": ["CLE_D_DEP", "CLE_F_APP"],
+          "CLE_D_DEP": ["CLE_N_APP", "CLE_R_DEP"],
+          "CLE_N_APP": ["CAK_E_APP"]
+        },
+        "inbound_assignments": {
+          "BRWNZ4": "CLE_A_APP",
+          "GOSIC-FIVUM": "MFD_W_APP",
+          "HUUVR1": "CAK_S_APP",
+          "ROKNN3": "CLE_A_APP",
+          "ROLLN2": "CLE_A_APP",
+          "TRYBE4": "CLE_A_APP",
+          "ZZIPS1": "CAK_E_APP"
+        },
+        "departure_assignments": {
+          "KBKL": "CLE_N_APP",
+          "KCAK": "CAK_E_APP",
+          "KCGF": "CLE_N_APP",
+          "KCLE": "CLE_D_DEP",
+          "KMFD": "MFD_W_APP"
         }
       },
       "controllers": ["CLE_66_CTR", "CLE_TWR", "DTW_F_APP", "BKL_TWR", "CGF_TWR", "MFD_TWR", "CAK_TWR"],
@@ -4215,7 +4315,12 @@
         }
       ]
     },
-    "airspace_awareness": [{ "fixes": ["ALL"], "receiving_controller": "CLE_66_CTR" }],
+    "airspace_awareness": [
+      {
+        "fixes": ["ALL"],
+        "receiving_controller": "CLE_66_CTR"
+      }
+    ],
     "center": "KCLE",
     "filters": {
       "inhibit_ca": [

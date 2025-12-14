@@ -132,7 +132,6 @@
         {
           "runways": ["27", "22L"],
           "leader_directions": ["W", "SW"],
-
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
@@ -6988,37 +6987,44 @@
     "BOS_N_APP": {
       "frequency": 118250,
       "radio_name": "Boston Approach",
-      "sector_id": "1R"
+      "sector_id": "1R",
+      "default_airport": "KPSM"
     },
     "BOS_S_APP": {
       "frequency": 120600,
       "radio_name": "Boston Approach",
-      "sector_id": "1M"
+      "sector_id": "1M",
+      "default_airport": "KPSM"
     },
     "BOS_F_APP": {
       "frequency": 126500,
       "radio_name": "Boston Approach",
-      "sector_id": "1F"
+      "sector_id": "1F",
+      "default_airport": "KPSM"
     },
     "BOS_I_APP": {
       "frequency": 119650,
       "radio_name": "Boston Approach",
-      "sector_id": "1I"
+      "sector_id": "1I",
+      "default_airport": "KPSM"
     },
     "BOS_B_APP": {
       "frequency": 124400,
       "radio_name": "Boston Approach",
-      "sector_id": "1B"
+      "sector_id": "1B",
+      "default_airport": "KPSM"
     },
     "BOS_U_APP": {
       "frequency": 127200,
       "radio_name": "Boston Approach",
-      "sector_id": "1U"
+      "sector_id": "1U",
+      "default_airport": "KPSM"
     },
     "BOS_L_APP": {
       "frequency": 124100,
       "radio_name": "Boston Approach",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "default_airport": "KPSM"
     },
     "BOS_37_CTR": {
       "frequency": 134700,
@@ -7087,47 +7093,56 @@
     "MHT_W_APP": {
       "frequency": 134750,
       "radio_name": "Boston Approach",
-      "sector_id": "1W"
+      "sector_id": "1W",
+      "default_airport": "KPSM"
     },
     "MHT_P_APP": {
       "frequency": 125825,
       "radio_name": "Boston Approach",
-      "sector_id": "1P"
+      "sector_id": "1P",
+      "default_airport": "KPSM"
     },
     "MHT_J_APP": {
       "frequency": 127350,
       "radio_name": "Boston Approach",
-      "sector_id": "1J"
+      "sector_id": "1J",
+      "default_airport": "KPSM"
     },
     "ACK_N_APP": {
       "frequency": 118200,
       "radio_name": "Boston Approach",
-      "sector_id": "1N"
+      "sector_id": "1N",
+      "default_airport": "KPSM"
     },
     "ACK_O_APP": {
       "frequency": 126300,
       "radio_name": "Boston Approach",
-      "sector_id": "1O"
+      "sector_id": "1O",
+      "default_airport": "KPSM"
     },
     "ACK_Y_APP": {
       "frequency": 119700,
       "radio_name": "Boston Approach",
-      "sector_id": "1Y"
+      "sector_id": "1Y",
+      "default_airport": "KPSM"
     },
     "ACK_S_APP": {
       "frequency": 133750,
       "radio_name": "Boston Approach",
-      "sector_id": "1S"
+      "sector_id": "1S",
+      "default_airport": "KPSM"
     },
     "ACK_DEP": {
       "frequency": 126100,
       "radio_name": "Boston Approach",
-      "sector_id": "1K"
+      "sector_id": "1K",
+      "default_airport": "KPSM"
     },
     "ACK_A_APP": {
       "frequency": 124050,
       "radio_name": "Boston Approach",
-      "sector_id": "1A"
+      "sector_id": "1A",
+      "default_airport": "KPSM"
     },
     "ACK_TWR": {
       "frequency": 118300,
@@ -7311,44 +7326,57 @@
           "KACK": 5
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": [
-              "JFUND2",
-              "OOSHN5",
-              "MANCH..LWRNC",
-              "MANCH..LWRNC.SAT",
-              "PSM..LWRNC",
-              "PSM..LWRNC.SAT",
-              "GDM.7K",
-              "GDM.9K"
-            ]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "BOS_B_APP": {
-            "backup": "BOS_N_APP",
-            "departures": ["KBED"],
-            "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]
-          },
-          "BOS_L_APP": { "backup": "BOS_S_APP" },
-          "BOS_U_APP": { "backup": "BOS_DEP", "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"] },
-          "MHT_Z_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_J_APP": { "backup": "MHT_Z_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_P_APP": { "backup": "MHT_E_APP", "departures": ["KPSM"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] },
-          "ACK_N_APP": { "arrivals": ["DEEPO2", "NEWBE3"], "backup": "BOS_DEP" },
-          "ACK_DEP": { "departures": ["KACK", "KMVY"], "backup": "ACK_N_APP" },
-          "ACK_O_APP": { "backup": "ACK_DEP" },
-          "ACK_Y_APP": { "backup": "ACK_O_APP" },
-          "ACK_S_APP": { "backup": "ACK_Y_APP" },
-          "ACK_A_APP": { "backup": "ACK_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ACK_DEP": ["ACK_O_APP"],
+          "ACK_N_APP": ["ACK_DEP"],
+          "ACK_O_APP": ["ACK_Y_APP"],
+          "ACK_S_APP": ["ACK_A_APP"],
+          "ACK_Y_APP": ["ACK_S_APP"],
+          "BOS_DEP": ["ACK_N_APP", "BOS_N_APP", "BOS_U_APP", "MHT_Z_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_B_APP", "BOS_F_APP", "BOS_S_APP"],
+          "BOS_S_APP": ["BOS_L_APP"],
+          "MHT_E_APP": ["MHT_P_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_J_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "DEEPO2": "ACK_N_APP",
+          "DREEM2.BED": "BOS_B_APP",
+          "DREEM2.BVY": "BOS_B_APP",
+          "DREEM2.LWM": "BOS_B_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.4K": "BOS_S_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "MANCH..LWRNC.SAT": "BOS_N_APP",
+          "NEWBE3": "ACK_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "PSM..LWRNC.SAT": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.3K": "BOS_U_APP",
+          "WOONS.5K": "BOS_U_APP",
+          "WOONS.7K": "BOS_U_APP",
+          "ZELKA2.BED": "BOS_B_APP",
+          "ZELKA2.BVY": "BOS_B_APP",
+          "ZELKA2.LWM": "BOS_B_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KBED": "BOS_B_APP",
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_Z_APP",
+          "KMVY": "ACK_DEP",
+          "KPSM": "MHT_P_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -7560,44 +7588,58 @@
           "KACK": 10
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": [
-              "JFUND2",
-              "OOSHN5",
-              "MANCH..LWRNC",
-              "MANCH..LWRNC.SAT",
-              "PSM..LWRNC",
-              "PSM..LWRNC.SAT",
-              "GDM.7K",
-              "GDM.9K"
-            ]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "BOS_B_APP": {
-            "backup": "BOS_N_APP",
-            "departures": ["KBED"],
-            "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]
-          },
-          "BOS_L_APP": { "backup": "BOS_S_APP" },
-          "BOS_U_APP": { "backup": "BOS_DEP", "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"] },
-          "MHT_J_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_P_APP": { "backup": "MHT_E_APP", "departures": ["KPSM"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] },
-          "ACK_N_APP": { "arrivals": ["DEEPO2", "NEWBE3"], "backup": "BOS_DEP" },
-          "ACK_DEP": { "departures": ["KACK", "KMVY"], "backup": "ACK_N_APP" },
-          "ACK_O_APP": { "backup": "ACK_DEP" },
-          "ACK_Y_APP": { "backup": "ACK_O_APP" },
-          "ACK_S_APP": { "backup": "ACK_Y_APP" },
-          "ACK_A_APP": { "backup": "ACK_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ACK_DEP": ["ACK_O_APP"],
+          "ACK_N_APP": ["ACK_DEP"],
+          "ACK_O_APP": ["ACK_Y_APP"],
+          "ACK_S_APP": ["ACK_A_APP"],
+          "ACK_Y_APP": ["ACK_S_APP"],
+          "BOS_DEP": ["ACK_N_APP", "BOS_N_APP", "BOS_U_APP", "MHT_J_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_B_APP", "BOS_F_APP", "BOS_S_APP"],
+          "BOS_S_APP": ["BOS_L_APP"],
+          "MHT_E_APP": ["MHT_P_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "DEEPO2": "ACK_N_APP",
+          "DREEM2.BED": "BOS_B_APP",
+          "DREEM2.BVY": "BOS_B_APP",
+          "DREEM2.LWM": "BOS_B_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.4K": "BOS_S_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "MANCH..LWRNC.SAT": "BOS_N_APP",
+          "NEWBE3": "ACK_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "PSM..LWRNC.SAT": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.3K": "BOS_U_APP",
+          "WOONS.5K": "BOS_U_APP",
+          "WOONS.7K": "BOS_U_APP",
+          "ZELKA2.BED": "BOS_B_APP",
+          "ZELKA2.BVY": "BOS_B_APP",
+          "ZELKA2.LWM": "BOS_B_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KBED": "BOS_B_APP",
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_J_APP",
+          "KMVY": "ACK_DEP",
+          "KPSM": "MHT_P_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -7809,44 +7851,58 @@
           "KACK": 10
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": [
-              "JFUND2",
-              "OOSHN5",
-              "MANCH..LWRNC",
-              "MANCH..LWRNC.SAT",
-              "PSM..LWRNC",
-              "PSM..LWRNC.SAT",
-              "GDM.7K",
-              "GDM.9K"
-            ]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "BOS_B_APP": {
-            "backup": "BOS_N_APP",
-            "departures": ["KBED"],
-            "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]
-          },
-          "BOS_L_APP": { "backup": "BOS_S_APP" },
-          "BOS_U_APP": { "backup": "BOS_DEP", "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"] },
-          "MHT_J_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_P_APP": { "backup": "MHT_E_APP", "departures": ["KPSM"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] },
-          "ACK_N_APP": { "arrivals": ["DEEPO2", "NEWBE3"], "backup": "BOS_DEP" },
-          "ACK_DEP": { "departures": ["KACK", "KMVY"], "backup": "ACK_N_APP" },
-          "ACK_O_APP": { "backup": "ACK_DEP" },
-          "ACK_Y_APP": { "backup": "ACK_O_APP" },
-          "ACK_S_APP": { "backup": "ACK_Y_APP" },
-          "ACK_A_APP": { "backup": "ACK_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ACK_DEP": ["ACK_O_APP"],
+          "ACK_N_APP": ["ACK_DEP"],
+          "ACK_O_APP": ["ACK_Y_APP"],
+          "ACK_S_APP": ["ACK_A_APP"],
+          "ACK_Y_APP": ["ACK_S_APP"],
+          "BOS_DEP": ["ACK_N_APP", "BOS_N_APP", "BOS_U_APP", "MHT_J_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_B_APP", "BOS_F_APP", "BOS_S_APP"],
+          "BOS_S_APP": ["BOS_L_APP"],
+          "MHT_E_APP": ["MHT_P_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "DEEPO2": "ACK_N_APP",
+          "DREEM2.BED": "BOS_B_APP",
+          "DREEM2.BVY": "BOS_B_APP",
+          "DREEM2.LWM": "BOS_B_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.4K": "BOS_S_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "MANCH..LWRNC.SAT": "BOS_N_APP",
+          "NEWBE3": "ACK_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "PSM..LWRNC.SAT": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.3K": "BOS_U_APP",
+          "WOONS.5K": "BOS_U_APP",
+          "WOONS.7K": "BOS_U_APP",
+          "ZELKA2.BED": "BOS_B_APP",
+          "ZELKA2.BVY": "BOS_B_APP",
+          "ZELKA2.LWM": "BOS_B_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KBED": "BOS_B_APP",
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_J_APP",
+          "KMVY": "ACK_DEP",
+          "KPSM": "MHT_P_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -8050,44 +8106,58 @@
           "KACK": 10
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": [
-              "JFUND2",
-              "OOSHN5",
-              "MANCH..LWRNC",
-              "MANCH..LWRNC.SAT",
-              "PSM..LWRNC",
-              "PSM..LWRNC.SAT",
-              "GDM.7K",
-              "GDM.9K"
-            ]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.4K", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "BOS_B_APP": {
-            "backup": "BOS_N_APP",
-            "departures": ["KBED"],
-            "arrivals": ["DREEM2.BED", "DREEM2.LWM", "DREEM2.BVY", "ZELKA2.BED", "ZELKA2.LWM", "ZELKA2.BVY"]
-          },
-          "BOS_L_APP": { "backup": "BOS_S_APP" },
-          "BOS_U_APP": { "backup": "BOS_DEP", "arrivals": ["WOONS.3K", "WOONS.5K", "WOONS.7K"] },
-          "MHT_J_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_P_APP": { "backup": "MHT_E_APP", "departures": ["KPSM"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] },
-          "ACK_N_APP": { "arrivals": ["DEEPO2", "NEWBE3"], "backup": "BOS_DEP" },
-          "ACK_DEP": { "departures": ["KACK", "KMVY"], "backup": "ACK_N_APP" },
-          "ACK_O_APP": { "backup": "ACK_DEP" },
-          "ACK_Y_APP": { "backup": "ACK_O_APP" },
-          "ACK_S_APP": { "backup": "ACK_Y_APP" },
-          "ACK_A_APP": { "backup": "ACK_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ACK_DEP": ["ACK_O_APP"],
+          "ACK_N_APP": ["ACK_DEP"],
+          "ACK_O_APP": ["ACK_Y_APP"],
+          "ACK_S_APP": ["ACK_A_APP"],
+          "ACK_Y_APP": ["ACK_S_APP"],
+          "BOS_DEP": ["ACK_N_APP", "BOS_N_APP", "BOS_U_APP", "MHT_J_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_B_APP", "BOS_F_APP", "BOS_S_APP"],
+          "BOS_S_APP": ["BOS_L_APP"],
+          "MHT_E_APP": ["MHT_P_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "DEEPO2": "ACK_N_APP",
+          "DREEM2.BED": "BOS_B_APP",
+          "DREEM2.BVY": "BOS_B_APP",
+          "DREEM2.LWM": "BOS_B_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.4K": "BOS_S_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "MANCH..LWRNC.SAT": "BOS_N_APP",
+          "NEWBE3": "ACK_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "PSM..LWRNC.SAT": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.3K": "BOS_U_APP",
+          "WOONS.5K": "BOS_U_APP",
+          "WOONS.7K": "BOS_U_APP",
+          "ZELKA2.BED": "BOS_B_APP",
+          "ZELKA2.BVY": "BOS_B_APP",
+          "ZELKA2.LWM": "BOS_B_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KBED": "BOS_B_APP",
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_J_APP",
+          "KMVY": "ACK_DEP",
+          "KPSM": "MHT_P_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -8194,21 +8264,34 @@
           "KMHT": 2
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true, "arrivals": ["WOONS.5K", "WOONS.7K"] },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": ["JFUND2", "OOSHN5", "MANCH..LWRNC", "PSM..LWRNC", "GDM.7K", "GDM.9K"]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "MHT_Z_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_J_APP": { "backup": "MHT_Z_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BOS_DEP": ["BOS_N_APP", "MHT_Z_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_F_APP", "BOS_S_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_J_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.5K": "BOS_DEP",
+          "WOONS.7K": "BOS_DEP"
+        },
+        "departure_assignments": {
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_Z_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR"],
@@ -8295,21 +8378,35 @@
           "KMHT": 2
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true, "arrivals": ["WOONS.5K", "WOONS.7K"] },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": ["JFUND2", "OOSHN5", "MANCH..LWRNC", "PSM..LWRNC", "GDM.7K", "GDM.9K"]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "MHT_J_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BOS_DEP": ["BOS_N_APP", "MHT_J_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_F_APP", "BOS_S_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.5K": "BOS_DEP",
+          "WOONS.7K": "BOS_DEP"
+        },
+        "departure_assignments": {
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_J_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -8400,21 +8497,35 @@
           "KMHT": 2
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true, "arrivals": ["WOONS.5K", "WOONS.7K"] },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": ["JFUND2", "OOSHN5", "MANCH..LWRNC", "PSM..LWRNC", "GDM.7K", "GDM.9K"]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "MHT_J_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BOS_DEP": ["BOS_N_APP", "MHT_J_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_F_APP", "BOS_S_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.5K": "BOS_DEP",
+          "WOONS.7K": "BOS_DEP"
+        },
+        "departure_assignments": {
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_J_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -8501,21 +8612,35 @@
           "KMHT": 2
         }
       },
-      "solo_controller": "BOS_DEP",
-      "multi_controllers": {
-        "default": {
-          "BOS_DEP": { "departures": ["KBOS"], "primary": true, "arrivals": ["WOONS.5K", "WOONS.7K"] },
-          "BOS_N_APP": {
-            "backup": "BOS_DEP",
-            "arrivals": ["JFUND2", "OOSHN5", "MANCH..LWRNC", "PSM..LWRNC", "GDM.7K", "GDM.9K"]
-          },
-          "BOS_S_APP": { "backup": "BOS_N_APP", "arrivals": ["ROBUC3", "FREDO.6K", "FREDO.8K"] },
-          "BOS_F_APP": { "backup": "BOS_N_APP" },
-          "BOS_I_APP": { "backup": "BOS_F_APP" },
-          "MHT_J_APP": { "backup": "BOS_DEP", "departures": ["KMHT"] },
-          "MHT_Z_APP": { "backup": "MHT_J_APP" },
-          "MHT_E_APP": { "backup": "MHT_Z_APP", "arrivals": ["ENE"] },
-          "MHT_W_APP": { "backup": "MHT_Z_APP", "arrivals": ["CON", "GDM", "ROZZE2"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BOS_DEP": ["BOS_N_APP", "MHT_J_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_N_APP": ["BOS_F_APP", "BOS_S_APP"],
+          "MHT_J_APP": ["MHT_Z_APP"],
+          "MHT_Z_APP": ["MHT_E_APP", "MHT_W_APP"]
+        },
+        "inbound_assignments": {
+          "CON": "MHT_W_APP",
+          "ENE": "MHT_E_APP",
+          "FREDO.6K": "BOS_S_APP",
+          "FREDO.8K": "BOS_S_APP",
+          "GDM": "MHT_W_APP",
+          "GDM.7K": "BOS_N_APP",
+          "GDM.9K": "BOS_N_APP",
+          "JFUND2": "BOS_N_APP",
+          "MANCH..LWRNC": "BOS_N_APP",
+          "OOSHN5": "BOS_N_APP",
+          "PSM..LWRNC": "BOS_N_APP",
+          "ROBUC3": "BOS_S_APP",
+          "ROZZE2": "MHT_W_APP",
+          "WOONS.5K": "BOS_DEP",
+          "WOONS.7K": "BOS_DEP"
+        },
+        "departure_assignments": {
+          "KBOS": "BOS_DEP",
+          "KMHT": "MHT_J_APP"
         }
       },
       "controllers": ["BOS_37_CTR", "BOS_E_TWR", "BOS_W_TWR", "MHT_TWR", "PSM_TWR"],
@@ -8616,13 +8741,21 @@
     "significant_points": {
       "ACK": {},
       "BAF": {},
-      "BLZZR": { "short_name": "BLZ" },
-      "BOGEY": { "short_name": "BOG" },
-      "BOSOX": { "short_name": "BOX" },
+      "BLZZR": {
+        "short_name": "BLZ"
+      },
+      "BOGEY": {
+        "short_name": "BOG"
+      },
+      "BOSOX": {
+        "short_name": "BOX"
+      },
       "BRUWN": {},
       "CAM": {},
       "CCC": {},
-      "CELTK": { "short_name": "FRI" },
+      "CELTK": {
+        "short_name": "FRI"
+      },
       "CLOWW": {},
       "CON": {},
       "DOLIE": {},
@@ -8630,21 +8763,43 @@
       "ENE": {},
       "FREDO": {},
       "HANNA": {},
-      "HYA": { "location": "KHYA" },
-      "HYLND": { "short_name": "LUR" },
-      "KEWB": { "short_name": "KEW" },
-      "LBSTA": { "abbreviation": "P" },
+      "HYA": {
+        "location": "KHYA"
+      },
+      "HYLND": {
+        "short_name": "LUR"
+      },
+      "KEWB": {
+        "short_name": "KEW"
+      },
+      "LBSTA": {
+        "abbreviation": "P"
+      },
       "LFV": {},
-      "MANCH": { "short_name": "MHT" },
+      "MANCH": {
+        "short_name": "MHT"
+      },
       "MVY": {},
-      "NELIE": { "short_name": "PRT" },
-      "PATSS": { "short_name": "PAT" },
-      "PEASE": { "short_name": "PSM" },
-      "POMPY": { "short_name": "PMP" },
+      "NELIE": {
+        "short_name": "PRT"
+      },
+      "PATSS": {
+        "short_name": "PAT"
+      },
+      "PEASE": {
+        "short_name": "PSM"
+      },
+      "POMPY": {
+        "short_name": "PMP"
+      },
       "PVC": {},
       "PVD": {},
-      "REVSS": { "short_name": "REV" },
-      "SSOXS": { "short_name": "SSO" },
+      "REVSS": {
+        "short_name": "REV"
+      },
+      "SSOXS": {
+        "short_name": "SSO"
+      },
       "STEVO": {},
       "WEEZE": {}
     },

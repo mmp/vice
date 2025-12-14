@@ -2167,21 +2167,32 @@
           "KBNA": 10
         }
       },
-      "solo_controller": "BNA_X_DEP",
-      "multi_controllers": {
-        "default": {
-          "BNA_X_DEP": {
-            "primary": true,
-            "departures": ["KBNA/DANLS3", "KBNA/DRURY3", "KBNA/FLAME3", "KBNA/GDOGG3", "KBNA/HGGRD3", "KBNA/PARDN3"]
-          },
-          "BNA_W_APP": { "backup": "BNA_X_DEP", "arrivals": ["RYYMN3", "CHSNE3"] },
-          "BNA_E_APP": { "backup": "BNA_W_APP", "arrivals": ["SWFFT3", "PASLY5"] },
-          "BNA_Y_DEP": {
-            "backup": "BNA_X_DEP",
-            "departures": ["KBNA/CHADM3", "KBNA/EVVAN3", "KBNA/KRSTA3", "KBNA/TAZMO3", "KBNA/TIPPN3"]
-          },
-          "BNA_F_APP": { "backup": "BNA_E_APP" },
-          "BNA_B_APP": { "backup": "BNA_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BNA_E_APP": ["BNA_F_APP"],
+          "BNA_W_APP": ["BNA_B_APP", "BNA_E_APP"],
+          "BNA_X_DEP": ["BNA_W_APP", "BNA_Y_DEP"]
+        },
+        "inbound_assignments": {
+          "CHSNE3": "BNA_W_APP",
+          "PASLY5": "BNA_E_APP",
+          "RYYMN3": "BNA_W_APP",
+          "SWFFT3": "BNA_E_APP"
+        },
+        "departure_assignments": {
+          "KBNA/CHADM3": "BNA_Y_DEP",
+          "KBNA/DANLS3": "BNA_X_DEP",
+          "KBNA/DRURY3": "BNA_X_DEP",
+          "KBNA/EVVAN3": "BNA_Y_DEP",
+          "KBNA/FLAME3": "BNA_X_DEP",
+          "KBNA/GDOGG3": "BNA_X_DEP",
+          "KBNA/HGGRD3": "BNA_X_DEP",
+          "KBNA/KRSTA3": "BNA_Y_DEP",
+          "KBNA/PARDN3": "BNA_X_DEP",
+          "KBNA/TAZMO3": "BNA_Y_DEP",
+          "KBNA/TIPPN3": "BNA_Y_DEP",
+          "KBNA": "BNA_X_DEP"
         }
       },
       "controllers": ["MEM_40_CTR", "MEM_41_CTR", "MEM_42_CTR", "MEM_60_CTR", "BNA_TWR"],
@@ -2229,21 +2240,32 @@
           "KBNA": 10
         }
       },
-      "solo_controller": "BNA_X_DEP",
-      "multi_controllers": {
-        "default": {
-          "BNA_X_DEP": {
-            "primary": true,
-            "departures": ["KBNA/DANLS3", "KBNA/DRURY3", "KBNA/FLAME3", "KBNA/GDOGG3", "KBNA/HGGRD3", "KBNA/PARDN3"]
-          },
-          "BNA_W_APP": { "backup": "BNA_X_DEP", "arrivals": ["RYYMN3", "CHSNE3"] },
-          "BNA_E_APP": { "backup": "BNA_W_APP", "arrivals": ["SWFFT3", "PASLY5"] },
-          "BNA_Y_DEP": {
-            "backup": "BNA_X_DEP",
-            "departures": ["KBNA/CHADM3", "KBNA/EVVAN3", "KBNA/KRSTA3", "KBNA/TAZMO3", "KBNA/TIPPN3"]
-          },
-          "BNA_F_APP": { "backup": "BNA_E_APP" },
-          "BNA_B_APP": { "backup": "BNA_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BNA_E_APP": ["BNA_F_APP"],
+          "BNA_W_APP": ["BNA_B_APP", "BNA_E_APP"],
+          "BNA_X_DEP": ["BNA_W_APP", "BNA_Y_DEP"]
+        },
+        "inbound_assignments": {
+          "CHSNE3": "BNA_W_APP",
+          "PASLY5": "BNA_E_APP",
+          "RYYMN3": "BNA_W_APP",
+          "SWFFT3": "BNA_E_APP"
+        },
+        "departure_assignments": {
+          "KBNA/CHADM3": "BNA_Y_DEP",
+          "KBNA/DANLS3": "BNA_X_DEP",
+          "KBNA/DRURY3": "BNA_X_DEP",
+          "KBNA/EVVAN3": "BNA_Y_DEP",
+          "KBNA/FLAME3": "BNA_X_DEP",
+          "KBNA/GDOGG3": "BNA_X_DEP",
+          "KBNA/HGGRD3": "BNA_X_DEP",
+          "KBNA/KRSTA3": "BNA_Y_DEP",
+          "KBNA/PARDN3": "BNA_X_DEP",
+          "KBNA/TAZMO3": "BNA_Y_DEP",
+          "KBNA/TIPPN3": "BNA_Y_DEP",
+          "KBNA": "BNA_X_DEP"
         }
       },
       "controllers": ["MEM_40_CTR", "MEM_41_CTR", "MEM_42_CTR", "MEM_60_CTR", "BNA_TWR"],

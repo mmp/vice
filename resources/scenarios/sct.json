@@ -4,24 +4,60 @@
     "KLAX": {
       "departure_runways_as_one": ["25L,25R", "24L,24R"],
       "approaches": {
-        "I6L": { "cifp_id": "I6L" },
-        "RY6L": { "cifp_id": "RY6L" },
-        "RZ6L": { "cifp_id": "RZ6L" },
-        "I6R": { "cifp_id": "I6R" },
-        "RY6R": { "cifp_id": "RY6R" },
-        "RZ6R": { "cifp_id": "RZ6R" },
-        "I7R": { "cifp_id": "I7R" },
-        "RY7R": { "cifp_id": "RY7R" },
-        "RZ7R": { "cifp_id": "RZ7R" },
-        "I4R": { "cifp_id": "I24R" },
-        "RY4R": { "cifp_id": "RY24R" },
-        "RZ4R": { "cifp_id": "RZ24R" },
-        "I4L": { "cifp_id": "I24L" },
-        "RY4L": { "cifp_id": "RY24L" },
-        "RZ4L": { "cifp_id": "RZ24L" },
-        "I5L": { "cifp_id": "I25L" },
-        "RY5L": { "cifp_id": "RY25L" },
-        "RZ5L": { "cifp_id": "RZ25L" }
+        "I6L": {
+          "cifp_id": "I6L"
+        },
+        "RY6L": {
+          "cifp_id": "RY6L"
+        },
+        "RZ6L": {
+          "cifp_id": "RZ6L"
+        },
+        "I6R": {
+          "cifp_id": "I6R"
+        },
+        "RY6R": {
+          "cifp_id": "RY6R"
+        },
+        "RZ6R": {
+          "cifp_id": "RZ6R"
+        },
+        "I7R": {
+          "cifp_id": "I7R"
+        },
+        "RY7R": {
+          "cifp_id": "RY7R"
+        },
+        "RZ7R": {
+          "cifp_id": "RZ7R"
+        },
+        "I4R": {
+          "cifp_id": "I24R"
+        },
+        "RY4R": {
+          "cifp_id": "RY24R"
+        },
+        "RZ4R": {
+          "cifp_id": "RZ24R"
+        },
+        "I4L": {
+          "cifp_id": "I24L"
+        },
+        "RY4L": {
+          "cifp_id": "RY24L"
+        },
+        "RZ4L": {
+          "cifp_id": "RZ24L"
+        },
+        "I5L": {
+          "cifp_id": "I25L"
+        },
+        "RY5L": {
+          "cifp_id": "RY25L"
+        },
+        "RZ5L": {
+          "cifp_id": "RZ25L"
+        }
       },
       "departure_routes": {
         "7L": {
@@ -2366,19 +2402,30 @@
         "IKAYE": "North/West",
         "MCKEY": "North/West",
         "DINTY": "North/West",
-        "SCTRR": "North/West",
         "STOKD": "North/West",
         "SPLNT": "North/West"
       },
       "tower_list": 1
     },
     "KHHR": {
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "approaches": {
-        "R7": { "cifp_id": "R7" },
-        "L25": { "cifp_id": "L25" },
-        "R25": { "cifp_id": "R25" },
-        "V25": { "cifp_id": "S25" }
+        "R7": {
+          "cifp_id": "R7"
+        },
+        "L25": {
+          "cifp_id": "L25"
+        },
+        "R25": {
+          "cifp_id": "R25"
+        },
+        "V25": {
+          "cifp_id": "S25"
+        }
       },
       "departure_routes": {
         "25": {
@@ -2428,17 +2475,29 @@
     },
     "KSNA": {
       "approaches": {
-        "I0R": { "cifp_id": "I20R" },
+        "I0R": {
+          "cifp_id": "I20R"
+        },
         "V0R": {
           "full_name": "Visual Runway 20R",
           "runway": "20R",
           "type": "Visual",
           "waypoints": ["SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040"]
         },
-        "D0R": { "cifp_id": "X20R", "full_name": "LDA Runway 20R" },
-        "Z0R": { "cifp_id": "RZ20R" },
-        "Z2L": { "cifp_id": "RZ2L" },
-        "L2L": { "cifp_id": "B2L", "full_name": "Localizer Back Course Runway 2L" },
+        "D0R": {
+          "cifp_id": "X20R",
+          "full_name": "LDA Runway 20R"
+        },
+        "Z0R": {
+          "cifp_id": "RZ20R"
+        },
+        "Z2L": {
+          "cifp_id": "RZ2L"
+        },
+        "L2L": {
+          "cifp_id": "B2L",
+          "full_name": "Localizer Back Course Runway 2L"
+        },
         "V2L": {
           "full_name": "Visual Runway 2L",
           "runway": "2L",
@@ -2855,11 +2914,21 @@
     },
     "KLGB": {
       "approaches": {
-        "I30": { "cifp_id": "I30" },
-        "R30": { "cifp_id": "RZ30" },
-        "R12": { "cifp_id": "R12" },
-        "R26R": { "cifp_id": "R26R" },
-        "RY30": { "cifp_id": "RY30" }
+        "I30": {
+          "cifp_id": "I30"
+        },
+        "R30": {
+          "cifp_id": "RZ30"
+        },
+        "R12": {
+          "cifp_id": "R12"
+        },
+        "R26R": {
+          "cifp_id": "R26R"
+        },
+        "RY30": {
+          "cifp_id": "RY30"
+        }
       },
       "departure_routes": {
         "30": {
@@ -2929,7 +2998,11 @@
           }
         }
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "departures": [
         {
           "airlines": [
@@ -3059,11 +3132,21 @@
     "KBUR": {
       "departure_runways_as_one": ["8,15", "26,33"],
       "approaches": {
-        "IY8": { "cifp_id": "IY8" },
-        "IZ8": { "cifp_id": "IZ8" },
-        "RZ8": { "cifp_id": "RZ8" },
-        "RY8": { "cifp_id": "RY8" },
-        "VOR8": { "cifp_id": "S8" },
+        "IY8": {
+          "cifp_id": "IY8"
+        },
+        "IZ8": {
+          "cifp_id": "IZ8"
+        },
+        "RZ8": {
+          "cifp_id": "RZ8"
+        },
+        "RY8": {
+          "cifp_id": "RY8"
+        },
+        "VOR8": {
+          "cifp_id": "S8"
+        },
         "RV5": {
           "full_name": "RNAV Visual Runway 15",
           "runway": "15",
@@ -3448,10 +3531,18 @@
     },
     "KVNY": {
       "departure_runways_as_one": ["16L,16R", "34L,34R"],
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "IYR": { "cifp_id": "IY16R" },
-        "IZR": { "cifp_id": "IZ16R" },
+        "IYR": {
+          "cifp_id": "IY16R"
+        },
+        "IZR": {
+          "cifp_id": "IZ16R"
+        },
         "V4L": {
           "full_name": "Visual Runway 34L",
           "runway": "34L",
@@ -3690,9 +3781,15 @@
       "hold_for_release": true
     },
     "KWHP": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "R12": { "cifp_id": "R12" },
+        "R12": {
+          "cifp_id": "R12"
+        },
         "RA2": {
           "full_name": "VOR A Runway 12",
           "runway": "12",
@@ -3793,12 +3890,24 @@
     },
     "KSAN": {
       "approaches": {
-        "R9": { "cifp_id": "R9" },
-        "RY7": { "cifp_id": "RY27" },
-        "RZ7": { "cifp_id": "RZ27" },
-        "IY9": { "cifp_id": "IY9" },
-        "IZ9": { "cifp_id": "IZ9" },
-        "L27": { "cifp_id": "L27" },
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "RY7": {
+          "cifp_id": "RY27"
+        },
+        "RZ7": {
+          "cifp_id": "RZ27"
+        },
+        "IY9": {
+          "cifp_id": "IY9"
+        },
+        "IZ9": {
+          "cifp_id": "IZ9"
+        },
+        "L27": {
+          "cifp_id": "L27"
+        },
         "V27": {
           "full_name": "Visual Runway 27",
           "runway": "27",
@@ -4062,7 +4171,6 @@
             {
               "icao": "ASA"
             },
-
             {
               "icao": "HAL",
               "fleet": "A21N"
@@ -5009,13 +5117,27 @@
     "KONT": {
       "departure_runways_as_one": ["26L,26R", "8L,8R"],
       "approaches": {
-        "I8L": { "cifp_id": "I8L" },
-        "I6L": { "cifp_id": "I26L" },
-        "I6R": { "cifp_id": "I26R" },
-        "Z8L": { "cifp_id": "RZ8L" },
-        "Z8R": { "cifp_id": "RZ8R" },
-        "Z6L": { "cifp_id": "RZ26L" },
-        "Z6R": { "cifp_id": "RZ26R" }
+        "I8L": {
+          "cifp_id": "I8L"
+        },
+        "I6L": {
+          "cifp_id": "I26L"
+        },
+        "I6R": {
+          "cifp_id": "I26R"
+        },
+        "Z8L": {
+          "cifp_id": "RZ8L"
+        },
+        "Z8R": {
+          "cifp_id": "RZ8R"
+        },
+        "Z6L": {
+          "cifp_id": "RZ26L"
+        },
+        "Z6R": {
+          "cifp_id": "RZ26R"
+        }
       },
       "departure_routes": {
         "26L": {
@@ -5420,9 +5542,15 @@
     },
     "KPSP": {
       "approaches": {
-        "RYL": { "cifp_id": "RY31L" },
-        "RZL": { "cifp_id": "RZ31L" },
-        "R3R": { "cifp_id": "RZ13R" }
+        "RYL": {
+          "cifp_id": "RY31L"
+        },
+        "RZL": {
+          "cifp_id": "RZ31L"
+        },
+        "R3R": {
+          "cifp_id": "RZ13R"
+        }
       },
       "departure_routes": {
         "31L": {
@@ -5693,8 +5821,12 @@
     },
     "KMYF": {
       "approaches": {
-        "I8R": { "cifp_id": "I28R" },
-        "R8R": { "cifp_id": "R28R" }
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "R8R": {
+          "cifp_id": "R28R"
+        }
       },
       "departure_routes": {
         "28R": {
@@ -6140,16 +6272,30 @@
           "route": "TNP TFD J50 ELP J183 FUSCO DILLO LAIKS3"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "hold_for_release": true
     },
     "KCRQ": {
       "approaches": {
-        "RZ4": { "cifp_id": "RZ24" },
-        "RX4": { "cifp_id": "RX24" },
-        "RZ6": { "cifp_id": "RZ6" },
-        "RY4": { "cifp_id": "RY24" },
-        "I4": { "cifp_id": "I24" }
+        "RZ4": {
+          "cifp_id": "RZ24"
+        },
+        "RX4": {
+          "cifp_id": "RX24"
+        },
+        "RZ6": {
+          "cifp_id": "RZ6"
+        },
+        "RY4": {
+          "cifp_id": "RY24"
+        },
+        "I4": {
+          "cifp_id": "I24"
+        }
       },
       "departure_routes": {
         "24": {
@@ -6386,13 +6532,22 @@
           "route": "NASNI NSD NSI/delete"
         }
       ],
-      "vfr": { "random_routes": { "rate": 3 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      },
       "hold_for_release": true
     },
     "KRNM": {
       "approaches": {
-        "R9": { "cifp_id": "R9" },
-        "RB": { "cifp_id": "RBNV", "runway": "27" }
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "RB": {
+          "cifp_id": "RBNV",
+          "runway": "27"
+        }
       },
       "departure_routes": {
         "27": {
@@ -6713,7 +6868,11 @@
           "route": "PADRZ2 EHF SHIMR LKV HAWKZ7"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "exit_categories": {
         "SLI": "Northwest",
         "IPL": "East",
@@ -6732,8 +6891,13 @@
     },
     "KSDM": {
       "approaches": {
-        "R8L": { "cifp_id": "R8L" },
-        "VORA": { "cifp_id": "VAOR", "runway": "26R" }
+        "R8L": {
+          "cifp_id": "R8L"
+        },
+        "VORA": {
+          "cifp_id": "VAOR",
+          "runway": "26R"
+        }
       },
       "departure_routes": {
         "8L": {
@@ -7160,7 +7324,11 @@
         "MALIT": "West",
         "JLI": "Northeast"
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -7170,7 +7338,11 @@
           "cifp_id": "R24"
         }
       },
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -7406,7 +7578,11 @@
           "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -7647,7 +7823,11 @@
           "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -7883,7 +8063,11 @@
           "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
@@ -8433,16 +8617,30 @@
           "route": "PMD TESEA SCTRR TROXX SILCN6"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
     "KSMO": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "R21": { "cifp_id": "R21" },
-        "RY3": { "cifp_id": "RY3" },
-        "RZ3": { "cifp_id": "RZ3" },
+        "R21": {
+          "cifp_id": "R21"
+        },
+        "RY3": {
+          "cifp_id": "RY3"
+        },
+        "RZ3": {
+          "cifp_id": "RZ3"
+        },
         "V21": {
           "full_name": "Visual Runway 21",
           "runway": "21",
@@ -8452,11 +8650,6 @@
       },
       "departure_routes": {
         "3": {
-          "CSTRO": {
-            "cleared_altitude": 6000,
-            "sid": "CHOII3",
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI HEYJO CSTRO"
-          },
           "CSTRO": {
             "cleared_altitude": 6000,
             "sid": "CHOII3",
@@ -8707,13 +8900,12 @@
         }
       ],
       "exit_categories": {
-        "SCTRR": "Northwest",
+        "SCTRR": "North",
         "STOKD": "Northwest",
         "LAS": "East",
         "MISEN": "East",
         "COREZ": "North",
         "CSTRO": "North",
-        "SCTRR": "North",
         "OTAYY": "South",
         "TCATE": "South",
         "CLEEE": "East",
@@ -8723,15 +8915,41 @@
       "hold_for_release": true
     },
     "KCMA": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "RY6": { "cifp_id": "RY26" },
-        "RZ6": { "cifp_id": "RZ26" }
+        "RY6": {
+          "cifp_id": "RY26"
+        },
+        "RZ6": {
+          "cifp_id": "RZ26"
+        }
       }
     },
-    "KOXR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KNTD": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPMD": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KOXR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KNTD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPMD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KRAL": {
       "approaches": {
         "I9": {
@@ -8887,30 +9105,140 @@
           "route": "PDZ EED TBC TXO UKW4"
         }
       ],
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "tower_list": 1,
       "hold_for_release": true
     },
     "KWJF": {
-      "vfr": { "random_routes": { "rate": 5 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
     },
-    "KEDW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KVCV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KNXP": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTNP": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTRM": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KIPL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KNJK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KBWC": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCLR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "L08": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KUDD": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KNUC": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KAVX": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KNSI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KREI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRIR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KAJO": { "vfr": { "random_routes": { "rate": 5 } } }
+    "KEDW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KVCV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KNXP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTNP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTRM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KIPL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KNJK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KBWC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCLR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "L08": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KUDD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KNUC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KAVX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KNSI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KREI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRIR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KAJO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    }
   },
   "inbound_flows": {
     "ANJLL4": {
@@ -12906,7 +13234,7 @@
     "ZIGGY8.HEC": {
       "arrivals": [
         {
-          "waypoints": "HEC BULGY/s280 DAWNA/a12000 ARRAN GAREY ZIGGY PETIS PDZ",
+          "waypoints": "HEC BULGY/s280 DAWNA/a12000 ARRAN GAREY/ho ZIGGY PETIS PDZ",
           "cruise_altitude": 32000,
           "star": "ZIGGY8",
           "initial_controller": "LAX_19_CTR",
@@ -13618,104 +13946,75 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "SCT_APP",
-      "multi_controllers": {
-        "default": {
-          "SCT_APP": {
-            "primary": true
-          },
-          "BUR_M_APP": {
-            "departures": ["KVNY", "KWHP"],
-            "arrivals": ["WEESL1", "FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3"],
-            "backup": "SCT_APP"
-          },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP",
-            "departures": ["KBUR"],
-            "arrivals": ["BOGET2"]
-          },
-          "BUR_W_APP": {
-            "backup": "BUR_V_APP",
-            "arrivals": ["SBAP2"]
-          },
-          "LAX_S_DEP": {
-            "backup": "SCT_APP",
-            "departures": ["KLAX/DOTSS2", "KLAX/LAXX1", "KLAX/OSHNN1", "KLAX/PNDAH2", "KLAX/ORCKA5"]
-          },
-          "LAX_N_DEP": {
-            "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GMN7", "KLAX/LADYJ4", "KLAX/SUMMR2", "KLAX/MOOOS2", "KLAX/MUELR4", "KSMO"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_S_DEP",
-            "arrivals": ["KARLB3/GOATZ2", "OHSEA3/PCIFC3", "RUKKI1/BAUBB3", "LEGOZ3"]
-          },
-          "LAX_D_APP": {
-            "backup": "SCT_APP"
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP"
-          },
-          "LAX_F_APP": {
-            "backup": "LAX_D_APP",
-            "arrivals": ["ANJLL4", "HLYWD1"]
-          },
-          "LAX_Z_APP": {
-            "arrivals": ["RYDRR2", "IRNMN2"],
-            "backup": "LAX_U_APP"
-          },
-          "ONT_N_APP": {
-            "backup": "SCT_APP",
-            "departures": ["KSBD"],
-            "arrivals": [
-              "JCKIE2",
-              "EMMLN1",
-              "ZIGGY8.LANDO",
-              "ZIGGY8.HEC",
-              "DSNEE6.LRSON",
-              "DSNEE6.DRTHI",
-              "SCBBY2.DEWWW",
-              "SIZLR4",
-              "THRNE4",
-              "SETER5"
-            ]
-          },
-          "PSP_S_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KPSP"],
-            "arrivals": ["RDBUL1"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT"]
-          },
-          "SNA_T_APP": {
-            "backup": "SCT_APP"
-          },
-          "SNA_Y_APP": {
-            "backup": "SNA_T_APP",
-            "departures": ["KSNA", "KLGB"],
-            "arrivals": ["OLAAA2"]
-          },
-          "SAN_W_APP": {
-            "backup": "SCT_APP",
-            "departures": ["KSAN", "KMYF", "KNZY", "KSDM"],
-            "arrivals": ["W291 NZY ARR"]
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP",
-            "arrivals": ["LUCKI1.HEELX", "LUCKI1.MOMAR", "CHASR2"],
-            "departures": ["KSEE"]
-          },
-          "SAN_N_APP": {
-            "backup": "SAN_E_APP",
-            "arrivals": ["COMIX2"]
-          },
-          "SAN_D_APP": {
-            "backup": "SAN_N_APP",
-            "arrivals": ["EAST SAN SAT ARR"],
-            "departures": ["KCRQ", "KRNM"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUR_M_APP": ["BUR_V_APP"],
+          "BUR_V_APP": ["BUR_W_APP"],
+          "LAX_D_APP": ["LAX_F_APP", "LAX_U_APP"],
+          "LAX_S_DEP": ["LAX_N_DEP", "LAX_X_DEP"],
+          "LAX_U_APP": ["LAX_Z_APP"],
+          "ONT_N_APP": ["ONT_P_APP"],
+          "ONT_P_APP": ["PSP_S_APP"],
+          "SAN_E_APP": ["SAN_N_APP"],
+          "SAN_N_APP": ["SAN_D_APP"],
+          "SAN_W_APP": ["SAN_E_APP"],
+          "SCT_APP": ["BUR_M_APP", "LAX_D_APP", "LAX_S_DEP", "ONT_N_APP", "SAN_W_APP", "SNA_T_APP"],
+          "SNA_T_APP": ["SNA_Y_APP"]
+        },
+        "inbound_assignments": {
+          "ANJLL4": "LAX_F_APP",
+          "BOGET2": "BUR_V_APP",
+          "CHASR2": "SAN_E_APP",
+          "COMIX2": "SAN_N_APP",
+          "DSNEE6.DRTHI": "ONT_N_APP",
+          "DSNEE6.LRSON": "ONT_N_APP",
+          "EAST SAN SAT ARR": "SAN_D_APP",
+          "EDWP4": "BUR_M_APP",
+          "EMMLN1": "ONT_N_APP",
+          "FERN7": "BUR_M_APP",
+          "HLYWD1": "LAX_F_APP",
+          "IRNMN2": "LAX_Z_APP",
+          "JANNY5/GUERA2": "BUR_M_APP",
+          "JCKIE2": "ONT_N_APP",
+          "KARLB3/GOATZ2": "LAX_X_DEP",
+          "LEGOZ3": "LAX_X_DEP",
+          "LUCKI1.HEELX": "SAN_E_APP",
+          "LUCKI1.MOMAR": "SAN_E_APP",
+          "OHSEA3/PCIFC3": "LAX_X_DEP",
+          "OLAAA2": "SNA_Y_APP",
+          "RDBUL1": "PSP_S_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "RUKKI1/BAUBB3": "LAX_X_DEP",
+          "RYDRR2": "LAX_Z_APP",
+          "SBAP2": "BUR_W_APP",
+          "SCBBY2.DEWWW": "ONT_N_APP",
+          "SETER5": "ONT_N_APP",
+          "SIZLR4": "ONT_N_APP",
+          "THRNE4": "ONT_N_APP",
+          "W291 NZY ARR": "SAN_W_APP",
+          "WEESL1": "BUR_M_APP",
+          "ZIGGY8.HEC": "ONT_N_APP",
+          "ZIGGY8.LANDO": "ONT_N_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_V_APP",
+          "KCRQ": "SAN_D_APP",
+          "KLAX": "LAX_S_DEP",
+          "KLGB": "SNA_Y_APP",
+          "KMYF": "SAN_W_APP",
+          "KNZY": "SAN_W_APP",
+          "KONT": "ONT_P_APP",
+          "KPSP": "PSP_S_APP",
+          "KRNM": "SAN_D_APP",
+          "KSAN": "SAN_W_APP",
+          "KSBD": "ONT_N_APP",
+          "KSDM": "SAN_W_APP",
+          "KSEE": "SAN_E_APP",
+          "KSMO": "LAX_N_DEP",
+          "KSNA": "SNA_Y_APP",
+          "KVNY": "BUR_M_APP",
+          "KWHP": "BUR_M_APP"
         }
       },
       "controllers": [
@@ -14049,104 +14348,75 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "SCT_APP",
-      "multi_controllers": {
-        "default": {
-          "SCT_APP": {
-            "primary": true
-          },
-          "BUR_M_APP": {
-            "departures": ["KVNY", "KWHP"],
-            "arrivals": ["WEESL1", "FERN7", "JANNY5/GUERA2", "EDWP4", "ROKKR3/IVINS2/BONJO3"],
-            "backup": "SCT_APP"
-          },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP",
-            "departures": ["KBUR", "KSMO"],
-            "arrivals": ["BOGET2"]
-          },
-          "BUR_W_APP": {
-            "backup": "BUR_V_APP",
-            "arrivals": ["SBAP2"]
-          },
-          "LAX_S_DEP": {
-            "backup": "SCT_APP",
-            "departures": ["KLAX/TRTON2", "KLAX/LAXX1", "KLAX/VTU8", "KHHR"]
-          },
-          "LAX_N_DEP": {
-            "backup": "LAX_S_DEP",
-            "departures": ["KLAX/GARDY4", "KLAX/WNNDY4", "KLAX/GMN7"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_S_DEP",
-            "arrivals": ["KARLB3/GOATZ2", "OHSEA3/PCIFC3", "RUKKI1/BAUBB3", "LEGOZ3"]
-          },
-          "LAX_D_APP": {
-            "backup": "SCT_APP"
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP"
-          },
-          "LAX_F_APP": {
-            "backup": "LAX_D_APP",
-            "arrivals": ["BRUEN2", "BIGBR3"]
-          },
-          "LAX_Z_APP": {
-            "arrivals": ["ZUUMA4"],
-            "backup": "LAX_U_APP"
-          },
-          "ONT_N_APP": {
-            "backup": "SCT_APP",
-            "departures": ["KSBD"],
-            "arrivals": [
-              "JCKIE2",
-              "EMMLN1",
-              "ZIGGY8.LANDO",
-              "ZIGGY8.HEC",
-              "ROOBY3.LRSON",
-              "ROOBY3.DRTHI",
-              "SCBBY2.DEWWW",
-              "SIZLR4",
-              "THRNE4",
-              "SETER5"
-            ]
-          },
-          "PSP_S_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KPSP"],
-            "arrivals": ["RDBUL1"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT"]
-          },
-          "SNA_T_APP": {
-            "backup": "SCT_APP"
-          },
-          "SNA_Y_APP": {
-            "backup": "SNA_T_APP",
-            "departures": ["KSNA", "KLGB"],
-            "arrivals": ["OLAAA2"]
-          },
-          "SAN_W_APP": {
-            "backup": "SCT_APP",
-            "departures": ["KSAN", "KMYF", "KNZY", "KSDM"],
-            "arrivals": ["W291 NZY ARR"]
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP",
-            "arrivals": ["LUCKI1.HEELX", "LUCKI1.MOMAR", "CHASR2"],
-            "departures": ["KSEE"]
-          },
-          "SAN_N_APP": {
-            "backup": "SAN_E_APP",
-            "arrivals": ["COMIX2"]
-          },
-          "SAN_D_APP": {
-            "backup": "SAN_N_APP",
-            "arrivals": ["EAST SAN SAT ARR"],
-            "departures": ["KCRQ", "KRNM"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUR_M_APP": ["BUR_V_APP"],
+          "BUR_V_APP": ["BUR_W_APP"],
+          "LAX_D_APP": ["LAX_F_APP", "LAX_U_APP"],
+          "LAX_S_DEP": ["LAX_N_DEP", "LAX_X_DEP"],
+          "LAX_U_APP": ["LAX_Z_APP"],
+          "ONT_N_APP": ["ONT_P_APP"],
+          "ONT_P_APP": ["PSP_S_APP"],
+          "SAN_E_APP": ["SAN_N_APP"],
+          "SAN_N_APP": ["SAN_D_APP"],
+          "SAN_W_APP": ["SAN_E_APP"],
+          "SCT_APP": ["BUR_M_APP", "LAX_D_APP", "LAX_S_DEP", "ONT_N_APP", "SAN_W_APP", "SNA_T_APP"],
+          "SNA_T_APP": ["SNA_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BIGBR3": "LAX_F_APP",
+          "BOGET2": "BUR_V_APP",
+          "BRUEN2": "LAX_F_APP",
+          "CHASR2": "SAN_E_APP",
+          "COMIX2": "SAN_N_APP",
+          "EAST SAN SAT ARR": "SAN_D_APP",
+          "EDWP4": "BUR_M_APP",
+          "EMMLN1": "ONT_N_APP",
+          "FERN7": "BUR_M_APP",
+          "JANNY5/GUERA2": "BUR_M_APP",
+          "JCKIE2": "ONT_N_APP",
+          "KARLB3/GOATZ2": "LAX_X_DEP",
+          "LEGOZ3": "LAX_X_DEP",
+          "LUCKI1.HEELX": "SAN_E_APP",
+          "LUCKI1.MOMAR": "SAN_E_APP",
+          "OHSEA3/PCIFC3": "LAX_X_DEP",
+          "OLAAA2": "SNA_Y_APP",
+          "RDBUL1": "PSP_S_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "ROOBY3.DRTHI": "ONT_N_APP",
+          "ROOBY3.LRSON": "ONT_N_APP",
+          "RUKKI1/BAUBB3": "LAX_X_DEP",
+          "SBAP2": "BUR_W_APP",
+          "SCBBY2.DEWWW": "ONT_N_APP",
+          "SETER5": "ONT_N_APP",
+          "SIZLR4": "ONT_N_APP",
+          "THRNE4": "ONT_N_APP",
+          "W291 NZY ARR": "SAN_W_APP",
+          "WEESL1": "BUR_M_APP",
+          "ZIGGY8.HEC": "ONT_N_APP",
+          "ZIGGY8.LANDO": "ONT_N_APP",
+          "ZUUMA4": "LAX_Z_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_V_APP",
+          "KCRQ": "SAN_D_APP",
+          "KHHR": "LAX_S_DEP",
+          "KLAX": "LAX_S_DEP",
+          "KLGB": "SNA_Y_APP",
+          "KMYF": "SAN_W_APP",
+          "KNZY": "SAN_W_APP",
+          "KONT": "ONT_P_APP",
+          "KPSP": "PSP_S_APP",
+          "KRNM": "SAN_D_APP",
+          "KSAN": "SAN_W_APP",
+          "KSBD": "ONT_N_APP",
+          "KSDM": "SAN_W_APP",
+          "KSEE": "SAN_E_APP",
+          "KSMO": "BUR_V_APP",
+          "KSNA": "SNA_Y_APP",
+          "KVNY": "BUR_M_APP",
+          "KWHP": "BUR_M_APP"
         }
       },
       "controllers": [
@@ -14379,50 +14649,41 @@
         }
       },
       "vfr_rate_scale": 0.2,
-      "solo_controller": "SCT_APP",
-      "multi_controllers": {
-        "default": {
-          "SCT_APP": {
-            "primary": true
-          },
-          "BUR_M_APP": {
-            "departures": ["KVNY", "KSMO", "KBUR"],
-            "arrivals": ["JANNY5/GUERA2"],
-            "backup": "SCT_APP"
-          },
-          "LAX_S_DEP": {
-            "backup": "SCT_APP",
-            "departures": ["KLAX"]
-          },
-          "LAX_X_DEP": {
-            "backup": "LAX_S_DEP",
-            "arrivals": ["KARLB3/GOATZ2"]
-          },
-          "LAX_U_APP": {
-            "backup": "SCT_APP",
-            "arrivals": ["ZUUMA4"]
-          },
-          "LAX_F_APP": {
-            "backup": "SCT_APP",
-            "arrivals": ["MDNYT2.ANJLL", "MDNYT2.SNSTT", "MDNYT2.HLYWD"]
-          },
-          "ONT_N_APP": {
-            "backup": "SCT_APP",
-            "departures": ["KSBD"],
-            "arrivals": ["JCKIE2", "ZIGGY8.LANDO", "ZIGGY8.HEC", "SCBBY2.DEWWW", "SETER5"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT"]
-          },
-          "SNA_Y_APP": {
-            "backup": "SCT_APP"
-          },
-          "SAN_E_APP": {
-            "backup": "SCT_APP",
-            "departures": ["KSAN", "KMYF", "KNZY", "KSEE", "KCRQ", "KSDM"],
-            "arrivals": ["CHASR2", "W291 NZY ARR"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_S_DEP": ["LAX_X_DEP"],
+          "ONT_N_APP": ["ONT_P_APP"],
+          "SCT_APP": ["BUR_M_APP", "LAX_F_APP", "LAX_S_DEP", "LAX_U_APP", "ONT_N_APP", "SAN_E_APP", "SNA_Y_APP"]
+        },
+        "inbound_assignments": {
+          "CHASR2": "SAN_E_APP",
+          "JANNY5/GUERA2": "BUR_M_APP",
+          "JCKIE2": "ONT_N_APP",
+          "KARLB3/GOATZ2": "LAX_X_DEP",
+          "MDNYT2.ANJLL": "LAX_F_APP",
+          "MDNYT2.HLYWD": "LAX_F_APP",
+          "MDNYT2.SNSTT": "LAX_F_APP",
+          "SCBBY2.DEWWW": "ONT_N_APP",
+          "SETER5": "ONT_N_APP",
+          "W291 NZY ARR": "SAN_E_APP",
+          "ZIGGY8.HEC": "ONT_N_APP",
+          "ZIGGY8.LANDO": "ONT_N_APP",
+          "ZUUMA4": "LAX_U_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_M_APP",
+          "KCRQ": "SAN_E_APP",
+          "KLAX": "LAX_S_DEP",
+          "KMYF": "SAN_E_APP",
+          "KNZY": "SAN_E_APP",
+          "KONT": "ONT_P_APP",
+          "KSAN": "SAN_E_APP",
+          "KSBD": "ONT_N_APP",
+          "KSDM": "SAN_E_APP",
+          "KSEE": "SAN_E_APP",
+          "KSMO": "BUR_M_APP",
+          "KVNY": "BUR_M_APP"
         }
       },
       "controllers": [
@@ -14786,9 +15047,21 @@
       ]
     },
     "coordination_lists": [
-      { "name": "PSP", "id": "Z", "airports": ["KPSP"] },
-      { "name": "LGB", "id": "V", "airports": ["KLGB"] },
-      { "name": "VNY", "id": "Y", "airports": ["KVNY"] }
+      {
+        "name": "PSP",
+        "id": "Z",
+        "airports": ["KPSP"]
+      },
+      {
+        "name": "LGB",
+        "id": "V",
+        "airports": ["KLGB"]
+      },
+      {
+        "name": "VNY",
+        "id": "Y",
+        "airports": ["KVNY"]
+      }
     ],
     "airspace_awareness": [
       {
@@ -14903,7 +15176,9 @@
       "CNERY": {},
       "COREZ": {},
       "CSTRO": {},
-      "CSTWY": { "short_name": "CWY" },
+      "CSTWY": {
+        "short_name": "CWY"
+      },
       "DAG": {},
       "DINTY": {},
       "EHF": {},

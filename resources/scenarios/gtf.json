@@ -170,7 +170,18 @@
           "KGTF": 5
         }
       },
-      "solo_controller": "GTF_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "GTF_APP": []
+        },
+        "inbound_assignments": {
+          "North": "GTF_APP"
+        },
+        "departure_assignments": {
+          "KGTF": "GTF_APP"
+        }
+      },
       "controllers": ["GTF_APP", "GTF_TWR", "SLC_03_CTR"],
       "departure_runways": [
         {

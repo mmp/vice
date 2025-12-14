@@ -873,12 +873,22 @@
           "KINT": 3
         }
       },
-      "solo_controller": "GSO_W_APP",
-      "multi_controllers": {
-        "default": {
-          "GSO_W_APP": { "primary": true, "arrivals": ["BROOK4", "TRAKS3N"], "departures": ["KINT"] },
-          "GSO_S_APP": { "backup": "GSO_W_APP", "arrivals": ["BLOCC2", "GANTS"] },
-          "GSO_E_APP": { "backup": "GSO_S_APP", "arrivals": ["HENBY3"], "departures": ["KGSO"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "GSO_S_APP": ["GSO_E_APP"],
+          "GSO_W_APP": ["GSO_S_APP"]
+        },
+        "inbound_assignments": {
+          "BLOCC2": "GSO_S_APP",
+          "BROOK4": "GSO_W_APP",
+          "GANTS": "GSO_S_APP",
+          "HENBY3": "GSO_E_APP",
+          "TRAKS3N": "GSO_W_APP"
+        },
+        "departure_assignments": {
+          "KGSO": "GSO_E_APP",
+          "KINT": "GSO_W_APP"
         }
       },
       "controllers": ["GSO_TWR", "ATL_CTR", "DC_CTR", "CLT_APP", "INT_TWR"],
@@ -940,12 +950,22 @@
           "KINT": 3
         }
       },
-      "solo_controller": "GSO_W_APP",
-      "multi_controllers": {
-        "default": {
-          "GSO_W_APP": { "primary": true, "arrivals": ["BROOK4", "TRAKS3S"], "departures": ["KINT"] },
-          "GSO_S_APP": { "backup": "GSO_W_APP", "arrivals": ["BLOCC2", "GANTS"] },
-          "GSO_E_APP": { "backup": "GSO_S_APP", "arrivals": ["HENBY3"], "departures": ["KGSO"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "GSO_S_APP": ["GSO_E_APP"],
+          "GSO_W_APP": ["GSO_S_APP"]
+        },
+        "inbound_assignments": {
+          "BLOCC2": "GSO_S_APP",
+          "BROOK4": "GSO_W_APP",
+          "GANTS": "GSO_S_APP",
+          "HENBY3": "GSO_E_APP",
+          "TRAKS3S": "GSO_W_APP"
+        },
+        "departure_assignments": {
+          "KGSO": "GSO_E_APP",
+          "KINT": "GSO_W_APP"
         }
       },
       "controllers": ["GSO_TWR", "ATL_CTR", "DC_CTR", "CLT_APP", "INT_TWR"],
@@ -1082,7 +1102,6 @@
       "TRIAD DEPARTURE",
       "TRAKS ARRIVAL"
     ],
-
     "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
   }
 }

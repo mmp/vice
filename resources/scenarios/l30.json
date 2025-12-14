@@ -4,24 +4,48 @@
     "KLAS": {
       "departure_runways_as_one": ["26R,19L,19R,1L,1R", "8L,8R"],
       "approaches": {
-        "Y6L": { "cifp_id": "IY26L" },
-        "Z6L": { "cifp_id": "IZ26L" },
-        "R6L": { "cifp_id": "R26L" },
-        "RZ9R": { "cifp_id": "RZ19R" },
-        "RZ9L": { "cifp_id": "RZ19L" },
-        "I1L": { "cifp_id": "I1L" },
-        "R1R": { "cifp_id": "R1R" },
-        "R8R": { "cifp_id": "R8R" },
+        "Y6L": {
+          "cifp_id": "IY26L"
+        },
+        "Z6L": {
+          "cifp_id": "IZ26L"
+        },
+        "R6L": {
+          "cifp_id": "R26L"
+        },
+        "RZ9R": {
+          "cifp_id": "RZ19R"
+        },
+        "RZ9L": {
+          "cifp_id": "RZ19L"
+        },
+        "I1L": {
+          "cifp_id": "I1L"
+        },
+        "R1R": {
+          "cifp_id": "R1R"
+        },
+        "R8R": {
+          "cifp_id": "R8R"
+        },
         "RV8R": {
           "full_name": "RNAV Visual Runway 8 Right",
           "runway": "8R",
           "type": "RNAV",
           "waypoints": ["YAGGR/if/a8000/s210 CEENA/a7000+ MNDRN/a6000+ POKKR/a5000+ PAYTT/a4600+/faf BHARP/a3800"]
         },
-        "RY9L": { "cifp_id": "RY19L" },
-        "RY9R": { "cifp_id": "RY19R" },
-        "IZ2": { "cifp_id": "IZ26R" },
-        "IY2": { "cifp_id": "IY26R" }
+        "RY9L": {
+          "cifp_id": "RY19L"
+        },
+        "RY9R": {
+          "cifp_id": "RY19R"
+        },
+        "IZ2": {
+          "cifp_id": "IZ26R"
+        },
+        "IY2": {
+          "cifp_id": "IY26R"
+        }
       },
       "approach_regions": {
         "1L": {
@@ -1472,8 +1496,12 @@
     },
     "KVGT": {
       "approaches": {
-        "I2L": { "cifp_id": "I12L" },
-        "R2R": { "cifp_id": "R12R" }
+        "I2L": {
+          "cifp_id": "I12L"
+        },
+        "R2R": {
+          "cifp_id": "R12R"
+        }
       },
       "departure_routes": {
         "7": {
@@ -2531,7 +2559,7 @@
           "KLAS": 10
         },
         "GAMES2": {
-          "KLAS": 1
+          "KHND": 2
         },
         "JAYSN3": {
           "KLAS": 1
@@ -2541,12 +2569,6 @@
         },
         "RNDRZ4": {
           "KLAS": 10
-        },
-        "GAMES2": {
-          "KHND": 2
-        },
-        "NTNDO1": {
-          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2561,30 +2583,28 @@
           "KHND": 1
         }
       },
-      "solo_controller": "LAS_F_APP",
-      "multi_controllers": {
-        "default": {
-          "LAS_F_APP": {
-            "primary": true
-          },
-          "LAS_D_DEP": { "departures": ["KLAS", "KVGT"], "backup": "LAS_F_APP" },
-          "LAS_M_DEP": {
-            "backup": "LAS_D_DEP"
-          },
-
-          "LAS_Y_APP": { "backup": "LAS_F_APP", "departures": ["KHND"], "arrivals": ["NTNDO1"] },
-          "LAS_L_APP": { "backup": "LAS_F_APP", "arrivals": ["RKSTR4", "CHOWW3", "WYLND1", "BOEGY2"] },
-
-          "LAS_G_APP": {
-            "backup": "LAS_F_APP",
-            "arrivals": ["GAMES2", "RNDRZ4", "COKTL4", "JAYSN3", "FLCHR1"]
-          },
-          "LAS_T_APP": {
-            "backup": "LAS_F_APP"
-          },
-          "LAS_K_APP": {
-            "backup": "LAS_F_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAS_D_DEP": ["LAS_M_DEP"],
+          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW3": "LAS_L_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3": "LAS_G_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS": "LAS_D_DEP",
+          "KVGT": "LAS_D_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
@@ -2626,7 +2646,6 @@
           "runway": "12R"
         }
       ],
-
       "wind": {
         "direction": "185-245"
       }
@@ -2662,7 +2681,7 @@
           "KLAS": 15
         },
         "GAMES2": {
-          "KLAS": 0
+          "KHND": 2
         },
         "JAYSN3": {
           "KLAS": 4
@@ -2672,12 +2691,6 @@
         },
         "RNDRZ4": {
           "KLAS": 15
-        },
-        "GAMES2": {
-          "KHND": 2
-        },
-        "NTNDO1": {
-          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2692,30 +2705,28 @@
           "KHND": 1
         }
       },
-      "solo_controller": "LAS_F_APP",
-      "multi_controllers": {
-        "default": {
-          "LAS_F_APP": {
-            "primary": true
-          },
-          "LAS_D_DEP": { "departures": ["KLAS", "KVGT"], "backup": "LAS_F_APP" },
-          "LAS_M_DEP": {
-            "backup": "LAS_D_DEP"
-          },
-
-          "LAS_Y_APP": { "backup": "LAS_F_APP", "departures": ["KHND"], "arrivals": ["NTNDO1"] },
-          "LAS_L_APP": { "backup": "LAS_F_APP", "arrivals": ["RKSTR4", "CHOWW3", "WYLND1", "BOEGY2"] },
-
-          "LAS_G_APP": {
-            "backup": "LAS_F_APP",
-            "arrivals": ["GAMES2", "RNDRZ4", "COKTL4", "JAYSN3", "FLCHR1"]
-          },
-          "LAS_T_APP": {
-            "backup": "LAS_F_APP"
-          },
-          "LAS_K_APP": {
-            "backup": "LAS_F_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAS_D_DEP": ["LAS_M_DEP"],
+          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW3": "LAS_L_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3": "LAS_G_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS": "LAS_D_DEP",
+          "KVGT": "LAS_D_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
@@ -2752,7 +2763,6 @@
           "runway": "7"
         }
       ],
-
       "wind": {
         "direction": "0-60"
       }
@@ -2788,7 +2798,7 @@
           "KLAS": 15
         },
         "GAMES2": {
-          "KLAS": 0
+          "KHND": 2
         },
         "JAYSN3": {
           "KLAS": 4
@@ -2798,12 +2808,6 @@
         },
         "RNDRZ4": {
           "KLAS": 15
-        },
-        "GAMES2": {
-          "KHND": 2
-        },
-        "NTNDO1": {
-          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2818,19 +2822,28 @@
           "KHND": 1
         }
       },
-      "solo_controller": "LAS_F_APP",
-      "multi_controllers": {
-        "default": {
-          "LAS_F_APP": {
-            "primary": true
-          },
-          "LAS_D_DEP": { "departures": ["KLAS", "KVGT"], "backup": "LAS_F_APP" },
-          "LAS_M_DEP": { "backup": "LAS_D_DEP" },
-          "LAS_Y_APP": { "backup": "LAS_F_APP", "arrivals": ["NTNDO1"], "departures": ["KHND"] },
-          "LAS_L_APP": { "backup": "LAS_F_APP", "arrivals": ["RKSTR4", "WYLND1", "BOEGY2"] },
-          "LAS_G_APP": { "backup": "LAS_F_APP", "arrivals": ["GAMES2", "RNDRZ4", "COKTL4", "JAYSN3", "FLCHR1"] },
-          "LAS_T_APP": { "backup": "LAS_F_APP" },
-          "LAS_K_APP": { "backup": "LAS_F_APP", "arrivals": ["CHOWW3"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAS_D_DEP": ["LAS_M_DEP"],
+          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW3": "LAS_K_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3": "LAS_G_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS": "LAS_D_DEP",
+          "KVGT": "LAS_D_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
@@ -2862,7 +2875,6 @@
           "runway": "30R"
         }
       ],
-
       "wind": {
         "direction": "320-20"
       }
@@ -2902,7 +2914,7 @@
           "KLAS": 15
         },
         "GAMES2": {
-          "KLAS": 0
+          "KHND": 2
         },
         "JAYSN3": {
           "KLAS": 4
@@ -2912,12 +2924,6 @@
         },
         "RNDRZ4": {
           "KLAS": 15
-        },
-        "GAMES2": {
-          "KHND": 2
-        },
-        "NTNDO1": {
-          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2932,30 +2938,28 @@
           "KHND": 1
         }
       },
-      "solo_controller": "LAS_F_APP",
-      "multi_controllers": {
-        "default": {
-          "LAS_F_APP": {
-            "primary": true
-          },
-          "LAS_D_DEP": { "departures": ["KLAS", "KVGT"], "backup": "LAS_F_APP" },
-          "LAS_M_DEP": {
-            "backup": "LAS_D_DEP"
-          },
-
-          "LAS_Y_APP": { "backup": "LAS_F_APP", "departures": ["KHND"], "arrivals": ["NTNDO1"] },
-          "LAS_L_APP": { "backup": "LAS_F_APP", "arrivals": ["RKSTR4", "CHOWW3", "WYLND1", "BOEGY2"] },
-
-          "LAS_G_APP": {
-            "backup": "LAS_F_APP",
-            "arrivals": ["GAMES2", "RNDRZ4", "JAYSN3", "COKTL4", "FLCHR1"]
-          },
-          "LAS_T_APP": {
-            "backup": "LAS_F_APP"
-          },
-          "LAS_K_APP": {
-            "backup": "LAS_F_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAS_D_DEP": ["LAS_M_DEP"],
+          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW3": "LAS_L_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3": "LAS_G_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS": "LAS_D_DEP",
+          "KVGT": "LAS_D_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
@@ -2987,7 +2991,6 @@
           "runway": "12R"
         }
       ],
-
       "wind": {
         "direction": "105-165"
       }

@@ -1,9 +1,27 @@
 {
   "tracon": "PWM",
   "airports": {
-    "KAUG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KLEW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRKD": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KAUG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KLEW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRKD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KPWM": {
       "name": "PWM",
       "approaches": {
@@ -271,7 +289,18 @@
           "KPWM": 10
         }
       },
-      "solo_controller": "PWM_S_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PWM_S_APP": []
+        },
+        "inbound_assignments": {
+          "West": "PWM_S_APP"
+        },
+        "departure_assignments": {
+          "KPWM": "PWM_S_APP"
+        }
+      },
       "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
@@ -297,7 +326,18 @@
           "KPWM": 10
         }
       },
-      "solo_controller": "PWM_S_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PWM_S_APP": []
+        },
+        "inbound_assignments": {
+          "East": "PWM_S_APP"
+        },
+        "departure_assignments": {
+          "KPWM": "PWM_S_APP"
+        }
+      },
       "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {

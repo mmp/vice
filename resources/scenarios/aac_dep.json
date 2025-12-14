@@ -3113,7 +3113,6 @@
               "30": "N036.55.58.493,W094.56.27.332 4Y3"
             }
           },
-
           "airlines": {
             "KJKE": [
               {
@@ -3409,7 +3408,6 @@
               "28L": "PRIOR N036.45.38.410,W094.57.06.745 KAAC"
             }
           },
-
           "airlines": {
             "KAAC": [
               {
@@ -3518,7 +3516,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -3719,7 +3719,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_OKC",
           "waypoints": "N036.39.22.486,W096.29.57.171/ho ADAMS BENIT BERRY",
-          "expect_approach": { "KBRT": "I13" },
+          "expect_approach": {
+            "KBRT": "I13"
+          },
           "airlines": {
             "KBRT": [
               {
@@ -3750,7 +3752,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -3767,7 +3768,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_OKC",
           "waypoints": "N036.51.03.455,W096.17.47.102/ho ADAMS BENIT BERRY",
-          "expect_approach": { "KBRT": "I13" },
+          "expect_approach": {
+            "KBRT": "I13"
+          },
           "airlines": {
             "KBRT": [
               {
@@ -3798,7 +3801,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -3815,7 +3817,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_OKC",
           "waypoints": "N036.47.03.609,W096.26.19.367/ho ADAMS BENIT BERRY",
-          "expect_approach": { "KBRT": "I13" },
+          "expect_approach": {
+            "KBRT": "I13"
+          },
           "airlines": {
             "KBRT": [
               {
@@ -3846,7 +3850,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -3867,7 +3870,9 @@
           "initial_speed": 280,
           "speed_restriction": 280,
           "initial_controller": "AAC_N_APP",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "waypoints": "N036.48.46.304,W096.19.46.578 N036.47.00.739,W096.18.09.816/a15000 BARTS N036.23.45.064,W095.55.15.948/a15000 N036.23.24.423,W095.54.58.068/a10000/s250 N036.17.08.814,W095.49.03.127 N036.15.20.695,W095.36.22.049/a10000/s250 N036.15.18.498,W095.36.00.324/a4000/s210 N036.12.17.292,W095.14.48.217 N036.08.44.212,W095.15.16.506 N036.07.21.265,W095.16.43.244/s170/clearapp GRAYY",
           "airlines": {
             "KAAC": [
@@ -3986,7 +3991,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.17.08.320,W095.49.04.390/ho N036.15.36.515,W095.38.11.912/a10000+ N036.15.30.418,W095.37.44.254/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4017,7 +4024,6 @@
               {
                 "airport": "KOKC",
                 "icao": "N",
-
                 "fleet": "GAjet"
               },
               {
@@ -4194,7 +4200,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_S_APP",
           "waypoints": "N036.03.31.129,W095.56.16.538 N036.06.22.145,W095.51.22.379/ho N036.04.27.187,W095.38.55.803/a10000+ N036.04.21.927,W095.38.16.939/a8000/h100",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4371,7 +4379,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.43.40.500,W094.53.36.687 N036.36.09.483,W095.03.52.086 REELI/a11000+ N036.32.33.259,W095.06.55.118/a8000 N036.18.28.506,W095.09.49.910/a8000 N036.17.18.345,W095.10.08.862/a6000 N036.16.19.541,W095.10.21.029/s210 N036.09.07.558,W095.11.55.264/delete",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4396,7 +4406,9 @@
           "initial_speed": 250,
           "initial_controller": "AAC_N_APP",
           "waypoints": "N036.43.40.500,W094.53.36.687 N036.36.09.483,W095.03.52.086 REELI/a11000 N036.32.33.259,W095.06.55.118/a11000 N036.18.28.506,W095.09.49.910/a8000 N036.17.18.345,W095.10.08.862/a6000 N036.16.19.541,W095.10.21.029/s210 N036.09.07.558,W095.11.55.264/delete",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4424,7 +4436,9 @@
           "initial_speed": 250,
           "initial_controller": "ZAE_TUL",
           "waypoints": "N036.02.10.133,W094.33.27.669/ho HOWRD GRAYY ADCOK",
-          "expect_approach": { "KAAC": "I8R" },
+          "expect_approach": {
+            "KAAC": "I8R"
+          },
           "airlines": {
             "KAAC": [
               {
@@ -4668,9 +4682,17 @@
           "overflights": 8
         }
       },
-      "solo_controller": "AAC_D_APP",
-      "multi_controllers": {
-        "default": { "AAC_D_APP": { "primary": true, "departures": ["KAAC"], "inbound_flows": ["OVERFLIGHTS"] } }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AAC_D_APP": []
+        },
+        "departure_assignments": {
+          "KAAC": "AAC_D_APP"
+        },
+        "inbound_assignments": {
+          "OVERFLIGHTS": "AAC_D_APP"
+        }
       },
       "controllers": [
         "AAC_B_APP",
@@ -4842,11 +4864,25 @@
       "display_exit_gate": true
     },
     "significant_points": {
-      "COLIN": { "short_name": "COL", "abbreviation": "C" },
-      "MAYES": { "short_name": "MAY", "abbreviation": "M" },
-      "NOBLE": { "short_name": "NOB", "abbreviation": "N" },
-      "SHAWN": { "short_name": "SHA", "abbreviation": "S" },
-      "SGF": { "abbreviation": "G" }
+      "COLIN": {
+        "short_name": "COL",
+        "abbreviation": "C"
+      },
+      "MAYES": {
+        "short_name": "MAY",
+        "abbreviation": "M"
+      },
+      "NOBLE": {
+        "short_name": "NOB",
+        "abbreviation": "N"
+      },
+      "SHAWN": {
+        "short_name": "SHA",
+        "abbreviation": "S"
+      },
+      "SGF": {
+        "abbreviation": "G"
+      }
     },
     "stars_maps": ["MVA", "BASE", "EAST", "ARSPC", "STARS", "TAA", "SID"],
     "video_map_file": "videomaps/aac-videomaps.gob.zst"

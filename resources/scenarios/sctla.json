@@ -1,49 +1,176 @@
 {
   "tracon": "SCT",
   "airports": {
-    "KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KVNY": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KWHP": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KEMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRIR": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KPOC": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KSMO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHHR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KLAX": {
-      "approaches": {
-        "I6L": { "cifp_id": "I6L" },
-        "RY6L": { "cifp_id": "RY6L" },
-        "RZ6L": { "cifp_id": "RZ6L" },
-        "I6R": { "cifp_id": "I6R" },
-        "RY6R": { "cifp_id": "RY6R" },
-        "RZ6R": { "cifp_id": "RZ6R" },
-        "I7R": { "cifp_id": "I7R" },
-        "RY7R": { "cifp_id": "RY7R" },
-        "RZ7R": { "cifp_id": "RZ7R" },
-        "I4R": { "cifp_id": "I24R" },
-        "RY4R": { "cifp_id": "RY24R" },
-        "RZ4R": { "cifp_id": "RZ24R" },
-        "I4L": { "cifp_id": "I24L" },
-        "RY4L": { "cifp_id": "RY24L" },
-        "RZ4L": { "cifp_id": "RZ24L" },
-        "I5L": { "cifp_id": "I25L" },
-        "RY5L": { "cifp_id": "RY25L" },
-        "RZ5L": { "cifp_id": "RZ25L" }
+    "KFUL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KAVX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRAL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTOA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KLGB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KVNY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KWHP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KEMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KCNO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KHMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRIR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KAJO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KPOC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KSMO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
       }
     },
     "KHHR": {
       "approaches": {
-        "L25": { "cifp_id": "L25" },
-        "R7": { "cifp_id": "R7" },
-        "R25": { "cifp_id": "R25" },
-        "V25": { "cifp_id": "S25" }
+        "L25": {
+          "cifp_id": "L25"
+        },
+        "R7": {
+          "cifp_id": "R7"
+        },
+        "R25": {
+          "cifp_id": "R25"
+        },
+        "V25": {
+          "cifp_id": "S25"
+        }
+      }
+    },
+    "KLAX": {
+      "approaches": {
+        "I6L": {
+          "cifp_id": "I6L"
+        },
+        "RY6L": {
+          "cifp_id": "RY6L"
+        },
+        "RZ6L": {
+          "cifp_id": "RZ6L"
+        },
+        "I6R": {
+          "cifp_id": "I6R"
+        },
+        "RY6R": {
+          "cifp_id": "RY6R"
+        },
+        "RZ6R": {
+          "cifp_id": "RZ6R"
+        },
+        "I7R": {
+          "cifp_id": "I7R"
+        },
+        "RY7R": {
+          "cifp_id": "RY7R"
+        },
+        "RZ7R": {
+          "cifp_id": "RZ7R"
+        },
+        "I4R": {
+          "cifp_id": "I24R"
+        },
+        "RY4R": {
+          "cifp_id": "RY24R"
+        },
+        "RZ4R": {
+          "cifp_id": "RZ24R"
+        },
+        "I4L": {
+          "cifp_id": "I24L"
+        },
+        "RY4L": {
+          "cifp_id": "RY24L"
+        },
+        "RZ4L": {
+          "cifp_id": "RZ24L"
+        },
+        "I5L": {
+          "cifp_id": "I25L"
+        },
+        "RY5L": {
+          "cifp_id": "RY25L"
+        },
+        "RZ5L": {
+          "cifp_id": "RZ25L"
+        }
       }
     }
   },
@@ -1329,7 +1456,6 @@
           "initial_altitude": 12000,
           "initial_speed": 250,
           "scratchpad": "I5L",
-          "expect_approach": "I5L",
           "expect_approach": null,
           "airlines": {
             "KLAX": [
@@ -3218,23 +3344,18 @@
           "KHHR": 4
         }
       },
-      "solo_controller": "LAX_D_APP",
-      "multi_controllers": {
-        "default": {
-          "LAX_D_APP": {
-            "primary": true
-          },
-          "LAX_F_APP": {
-            "backup": "LAX_D_APP",
-            "arrivals": ["BRUEN2", "BIGBR3", "EMMLN1"]
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_Z_APP"
-          },
-          "LAX_Z_APP": {
-            "backup": "LAX_F_APP",
-            "arrivals": ["ZUUMA4"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_D_APP": ["LAX_F_APP"],
+          "LAX_F_APP": ["LAX_Z_APP"],
+          "LAX_Z_APP": ["LAX_U_APP"]
+        },
+        "inbound_assignments": {
+          "BIGBR3": "LAX_F_APP",
+          "BRUEN2": "LAX_F_APP",
+          "EMMLN1": "LAX_F_APP",
+          "ZUUMA4": "LAX_Z_APP"
         }
       },
       "controllers": [
@@ -3301,24 +3422,19 @@
           "KLAX": 5
         }
       },
-      "solo_controller": "LAX_D_APP",
-      "multi_controllers": {
-        "default": {
-          "LAX_D_APP": {
-            "primary": true,
-            "arrivals": ["GOATZ2/OLAAA2"]
-          },
-          "LAX_F_APP": {
-            "backup": "LAX_D_APP",
-            "arrivals": ["ANJLL4", "HLYWD1"]
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_Z_APP"
-          },
-          "LAX_Z_APP": {
-            "backup": "LAX_F_APP",
-            "arrivals": ["RYDRR2", "IRNMN2"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_D_APP": ["LAX_F_APP"],
+          "LAX_F_APP": ["LAX_Z_APP"],
+          "LAX_Z_APP": ["LAX_U_APP"]
+        },
+        "inbound_assignments": {
+          "ANJLL4": "LAX_F_APP",
+          "GOATZ2/OLAAA2": "LAX_D_APP",
+          "HLYWD1": "LAX_F_APP",
+          "IRNMN2": "LAX_Z_APP",
+          "RYDRR2": "LAX_Z_APP"
         }
       },
       "controllers": [
@@ -3384,17 +3500,17 @@
           "KHHR": 3
         }
       },
-      "solo_controller": "LAX_F_APP",
-      "multi_controllers": {
-        "default": {
-          "LAX_F_APP": {
-            "primary": true,
-            "arrivals": ["MDNYT2.ANJLL", "MDNYT2.HLYWD", "MDNYT2.SNSTT", "EMMLN1"]
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_F_APP",
-            "arrivals": ["ZUUMA4"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_F_APP": ["LAX_U_APP"]
+        },
+        "inbound_assignments": {
+          "EMMLN1": "LAX_F_APP",
+          "MDNYT2.ANJLL": "LAX_F_APP",
+          "MDNYT2.HLYWD": "LAX_F_APP",
+          "MDNYT2.SNSTT": "LAX_F_APP",
+          "ZUUMA4": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3444,13 +3560,14 @@
           "KLAX": 5
         }
       },
-      "solo_controller": "LAX_U_APP",
-      "multi_controllers": {
-        "default": {
-          "LAX_U_APP": {
-            "primary": true,
-            "arrivals": ["ZUUMA4_FINAL", "MDNYT2_FINAL"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_U_APP": []
+        },
+        "inbound_assignments": {
+          "MDNYT2_FINAL": "LAX_U_APP",
+          "ZUUMA4_FINAL": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3507,17 +3624,15 @@
           "KHHR": 2
         }
       },
-      "solo_controller": "LAX_D_APP",
-      "multi_controllers": {
-        "default": {
-          "LAX_D_APP": {
-            "primary": true,
-            "arrivals": ["GOATZ2/OLAAA2_FINAL", "ANJLL4/HLYWD1.FINAL"]
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP",
-            "arrivals": ["IRNMN2/RYDRR2_FINAL"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_D_APP": ["LAX_U_APP"]
+        },
+        "inbound_assignments": {
+          "ANJLL4/HLYWD1.FINAL": "LAX_D_APP",
+          "GOATZ2/OLAAA2_FINAL": "LAX_D_APP",
+          "IRNMN2/RYDRR2_FINAL": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3577,17 +3692,15 @@
           "KLAX": 10
         }
       },
-      "solo_controller": "LAX_D_APP",
-      "multi_controllers": {
-        "default": {
-          "LAX_D_APP": {
-            "primary": true,
-            "arrivals": ["BRUEN2_FINAL", "BIGBR3_FINAL"]
-          },
-          "LAX_U_APP": {
-            "backup": "LAX_D_APP",
-            "arrivals": ["ZUUMA4_FINAL"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LAX_D_APP": ["LAX_U_APP"]
+        },
+        "inbound_assignments": {
+          "BIGBR3_FINAL": "LAX_D_APP",
+          "BRUEN2_FINAL": "LAX_D_APP",
+          "ZUUMA4_FINAL": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3875,13 +3988,23 @@
     },
     "significant_points": {
       "AVE": {},
-      "BEALE": { "short_name": "BEL" },
+      "BEALE": {
+        "short_name": "BEL"
+      },
       "CLEEE": {},
-      "CNERY": { "short_name": "CNR" },
-      "COREZ": { "short_name": "COZ" },
-      "CSTRO": { "short_name": "CTO" },
+      "CNERY": {
+        "short_name": "CNR"
+      },
+      "COREZ": {
+        "short_name": "COZ"
+      },
+      "CSTRO": {
+        "short_name": "CTO"
+      },
       "EHF": {},
-      "HAILO": { "short_name": "HAL" },
+      "HAILO": {
+        "short_name": "HAL"
+      },
       "LAS": {},
       "SCTRR": {}
     },

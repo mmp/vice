@@ -3,15 +3,33 @@
   "airports": {
     "KBHM": {
       "approaches": {
-        "I24": { "cifp_id": "I24" },
-        "Y24": { "cifp_id": "RY24" },
-        "Z24": { "cifp_id": "RZ24" },
-        "I6": { "cifp_id": "I6" },
-        "Z6": { "cifp_id": "RZ6" },
-        "Y6": { "cifp_id": "RY6" },
-        "G18": { "cifp_id": "R18" },
-        "G36": { "cifp_id": "R36" },
-        "I18": { "cifp_id": "L18" }
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "Y24": {
+          "cifp_id": "RY24"
+        },
+        "Z24": {
+          "cifp_id": "RZ24"
+        },
+        "I6": {
+          "cifp_id": "I6"
+        },
+        "Z6": {
+          "cifp_id": "RZ6"
+        },
+        "Y6": {
+          "cifp_id": "RY6"
+        },
+        "G18": {
+          "cifp_id": "R18"
+        },
+        "G36": {
+          "cifp_id": "R36"
+        },
+        "I18": {
+          "cifp_id": "L18"
+        }
       },
       "departure_routes": {
         "24": {
@@ -809,12 +827,23 @@
           "KBHM": 6
         }
       },
-      "solo_controller": "BHM_S_APP",
-      "multi_controllers": {
-        "default": {
-          "BHM_S_APP": { "primary": true, "arrivals": ["KIOSK24", "WANDS", "HERKO24"], "departures": ["KBHM"] },
-          "BHM_N_APP": { "backup": "BHM_S_APP", "arrivals": ["NULLS24", "SHIMS", "NESTS24", "DIODE24", "LYMPH24"] },
-          "BHM_F_APP": { "backup": "BHM_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BHM_S_APP": ["BHM_F_APP", "BHM_N_APP"]
+        },
+        "inbound_assignments": {
+          "DIODE24": "BHM_N_APP",
+          "HERKO24": "BHM_S_APP",
+          "KIOSK24": "BHM_S_APP",
+          "LYMPH24": "BHM_N_APP",
+          "NESTS24": "BHM_N_APP",
+          "NULLS24": "BHM_N_APP",
+          "SHIMS": "BHM_N_APP",
+          "WANDS": "BHM_S_APP"
+        },
+        "departure_assignments": {
+          "KBHM": "BHM_S_APP"
         }
       },
       "controllers": ["BHM_TWR", "ATL_CTR", "MEM_CTR"],
@@ -868,12 +897,23 @@
           "KBHM": 6
         }
       },
-      "solo_controller": "BHM_S_APP",
-      "multi_controllers": {
-        "default": {
-          "BHM_S_APP": { "primary": true, "arrivals": ["KIOSK6", "WANDS", "HERKO6"], "departures": ["KBHM"] },
-          "BHM_N_APP": { "backup": "BHM_S_APP", "arrivals": ["NULLS6", "SHIMS", "NESTS6", "DIODE6", "LYMPH6"] },
-          "BHM_F_APP": { "backup": "BHM_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BHM_S_APP": ["BHM_F_APP", "BHM_N_APP"]
+        },
+        "inbound_assignments": {
+          "DIODE6": "BHM_N_APP",
+          "HERKO6": "BHM_S_APP",
+          "KIOSK6": "BHM_S_APP",
+          "LYMPH6": "BHM_N_APP",
+          "NESTS6": "BHM_N_APP",
+          "NULLS6": "BHM_N_APP",
+          "SHIMS": "BHM_N_APP",
+          "WANDS": "BHM_S_APP"
+        },
+        "departure_assignments": {
+          "KBHM": "BHM_S_APP"
         }
       },
       "controllers": ["BHM_TWR", "ATL_CTR", "MEM_CTR"],
@@ -1003,7 +1043,9 @@
       "MEM": "MEM"
     },
     "significant_points": {
-      "ATL": { "location": "KATL" },
+      "ATL": {
+        "location": "KATL"
+      },
       "BNA": {},
       "CHEHA": {},
       "DAYVS": {},

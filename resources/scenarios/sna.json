@@ -1,20 +1,212 @@
 {
   "tracon": "SCT",
   "airports": {
-    "KFUL": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KAVX": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KRAL": { "vfr": { "random_routes": { "rate": 15 } } },
-    "KRIR": { "vfr": { "random_routes": { "rate": 15 } } },
-    "L18": { "vfr": { "random_routes": { "rate": 3 } } },
-    "CA89": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KHMT": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KLGB": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KFUL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KAVX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KRAL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 15
+        }
+      }
+    },
+    "KRIR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 15
+        }
+      }
+    },
+    "L18": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "CA89": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KHMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KAJO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KOKB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KLGB": {
+      "approaches": {
+        "I30": {
+          "cifp_id": "I30"
+        },
+        "R30": {
+          "cifp_id": "RZ30"
+        },
+        "R12": {
+          "cifp_id": "R12"
+        },
+        "R26R": {
+          "cifp_id": "R26R"
+        },
+        "RY30": {
+          "cifp_id": "RY30"
+        }
+      },
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KLGB",
+            "rate": 7,
+            "fleet": "GAsinglepiston",
+            "waypoints": "N033.49.28.190,W118.11.42.713/a1500-2500/radius1 N033.43.50.497,W118.11.27.112/a2500-3500/radius2 N033.41.55.292,W118.08.28.090/radius3/a2500-3500  N033.41.43.591,W118.04.58.580 N033.39.11.142,W118.04.00.270/radius3/a2500-3500 OSHNN/airwork30m8nm/a500-3500 N033.39.38.814,W118.03.07.481/a1500-3500/land",
+            "name": "LGB to Long Beach practice area"
+          }
+        ]
+      },
+      "departure_routes": {
+        "30": {
+          "AVRRY": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "waypoints": "KLGB-12/h180 FRITR/a5000+ DOTSS AREAE PEELR"
+          },
+          "CNERY": {
+            "assigned_altitude": 3000,
+            "sid": "FRITR3",
+            "waypoints": "KLGB-12/h180 FRITR/a5000+ DOTSS WIILD BLCKD/a25000+"
+          },
+          "BEALE,MISEN": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-12/h180 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+          }
+        },
+        "12": {
+          "AVRRY": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS AREAE PEELR"
+          },
+          "CNERY": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD BLCKD/a25000+"
+          },
+          "BEALE,MISEN": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-30/h121 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KPHX",
+          "exit": "CNERY",
+          "scratchpad": "FRT",
+          "route": "CNERY BLH HYDRR1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KDEN",
+          "exit": "AVRRY",
+          "scratchpad": "FRT",
+          "route": "AVRRY EED J236 TBC SHNPS TBARR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KABQ",
+          "exit": "AVRRY",
+          "scratchpad": "FRT",
+          "route": "AVRRY LANCY DRK KA27Q SJN BRRTO BRRTO1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "MISEN",
+          "scratchpad": "ZMM",
+          "route": "MISEN RNDRZ3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KMDW",
+          "exit": "BEALE",
+          "scratchpad": "ZMM",
+          "route": "BEALE J146 DICEE KD48S GLD KP60C PWE JALAP ENDEE6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KHOU",
+          "exit": "CNERY",
+          "scratchpad": "FRT",
+          "route": "CNERY BLH J169 KOFFA J169 TFD J50 SSO ELP J2 FST J138 SAT BELLR5"
+        }
+      ],
+      "hold_for_release": true
+    },
+    "KCNO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KTOA": {
       "vfr": {
-        "random_routes": { "rate": 7 },
+        "random_routes": {
+          "rate": 7
+        },
         "routes": [
           {
             "destination": "KTOA",
@@ -26,24 +218,42 @@
         ]
       },
       "approaches": {
-        "I9R": { "cifp_id": "I29R" },
-        "R9R": { "cifp_id": "R29R" },
-        "R1L": { "cifp_id": "R11L" }
+        "I9R": {
+          "cifp_id": "I29R"
+        },
+        "R9R": {
+          "cifp_id": "R29R"
+        },
+        "R1L": {
+          "cifp_id": "R11L"
+        }
       }
     },
     "KSNA": {
       "approaches": {
-        "I0R": { "cifp_id": "I20R" },
+        "I0R": {
+          "cifp_id": "I20R"
+        },
         "VR": {
           "full_name": "Visual Runway 20R",
           "runway": "20R",
           "type": "Visual",
           "waypoints": ["SAGER/a4000+ SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040"]
         },
-        "D0R": { "cifp_id": "X20R", "full_name": "LDA Runway 20R" },
-        "Z0R": { "cifp_id": "RZ20R" },
-        "R2L": { "cifp_id": "RZ2L" },
-        "L2L": { "cifp_id": "B2L", "full_name": "Localizer Back Course Runway 2L" },
+        "D0R": {
+          "cifp_id": "X20R",
+          "full_name": "LDA Runway 20R"
+        },
+        "Z0R": {
+          "cifp_id": "RZ20R"
+        },
+        "R2L": {
+          "cifp_id": "RZ2L"
+        },
+        "L2L": {
+          "cifp_id": "B2L",
+          "full_name": "Localizer Back Course Runway 2L"
+        },
         "V2L": {
           "full_name": "Visual Runway 2L",
           "runway": "2L",
@@ -481,141 +691,36 @@
         }
       ]
     },
-    "KLGB": {
-      "approaches": {
-        "I30": { "cifp_id": "I30" },
-        "R30": { "cifp_id": "RZ30" },
-        "R12": { "cifp_id": "R12" },
-        "R26R": { "cifp_id": "R26R" },
-        "RY30": { "cifp_id": "RY30" }
-      },
-      "vfr": {
-        "routes": [
-          {
-            "destination": "KLGB",
-            "rate": 7,
-            "fleet": "GAsinglepiston",
-            "waypoints": "N033.49.28.190,W118.11.42.713/a1500-2500/radius1 N033.43.50.497,W118.11.27.112/a2500-3500/radius2 N033.41.55.292,W118.08.28.090/radius3/a2500-3500  N033.41.43.591,W118.04.58.580 N033.39.11.142,W118.04.00.270/radius3/a2500-3500 OSHNN/airwork30m8nm/a500-3500 N033.39.38.814,W118.03.07.481/a1500-3500/land",
-            "name": "LGB to Long Beach practice area"
-          }
-        ]
-      },
-      "departure_routes": {
-        "30": {
-          "AVRRY": {
-            "assigned_altitude": 3000,
-            "sid": "FRITR3",
-            "waypoints": "KLGB-12/h180 FRITR/a5000+ DOTSS AREAE PEELR"
-          },
-          "CNERY": {
-            "assigned_altitude": 3000,
-            "sid": "FRITR3",
-            "waypoints": "KLGB-12/h180 FRITR/a5000+ DOTSS WIILD BLCKD/a25000+"
-          },
-          "BEALE,MISEN": {
-            "assigned_altitude": 3000,
-            "waypoints": "KLGB-12/h180 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
-          }
-        },
-        "12": {
-          "AVRRY": {
-            "assigned_altitude": 3000,
-            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS AREAE PEELR"
-          },
-          "CNERY": {
-            "assigned_altitude": 3000,
-            "waypoints": "KLGB-30/h121 FRITR/a5000+ DOTSS WIILD BLCKD/a25000+"
-          },
-          "BEALE,MISEN": {
-            "assigned_altitude": 3000,
-            "waypoints": "KLGB-30/h121 CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KPHX",
-          "exit": "CNERY",
-          "scratchpad": "FRT",
-          "route": "CNERY BLH HYDRR1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KDEN",
-          "exit": "AVRRY",
-          "scratchpad": "FRT",
-          "route": "AVRRY EED J236 TBC SHNPS TBARR4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KABQ",
-          "exit": "AVRRY",
-          "scratchpad": "FRT",
-          "route": "AVRRY LANCY DRK KA27Q SJN BRRTO BRRTO1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KLAS",
-          "exit": "MISEN",
-          "scratchpad": "ZMM",
-          "route": "MISEN RNDRZ3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KMDW",
-          "exit": "BEALE",
-          "scratchpad": "ZMM",
-          "route": "BEALE J146 DICEE KD48S GLD KP60C PWE JALAP ENDEE6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KHOU",
-          "exit": "CNERY",
-          "scratchpad": "FRT",
-          "route": "CNERY BLH J169 KOFFA J169 TFD J50 SSO ELP J2 FST J138 SAT BELLR5"
-        }
-      ],
-      "hold_for_release": true
-    },
     "KLAX": {
       "approaches": {
-        "I7R": { "cifp_id": "I7R" },
-        "I5L": { "cifp_id": "I25L" },
-        "I4R": { "cifp_id": "I24R" }
+        "I7R": {
+          "cifp_id": "I7R"
+        },
+        "I5L": {
+          "cifp_id": "I25L"
+        },
+        "I4R": {
+          "cifp_id": "I24R"
+        }
       }
     },
     "KONT": {
       "approaches": {
-        "I6L": { "cifp_id": "I26L" },
-        "R6L": { "cifp_id": "RZ26L" },
-        "R6R": { "cifp_id": "RZ26R" },
-        "R8L": { "cifp_id": "RZ8L" },
-        "R8R": { "cifp_id": "RZ8R" }
+        "I6L": {
+          "cifp_id": "I26L"
+        },
+        "R6L": {
+          "cifp_id": "RZ26L"
+        },
+        "R6R": {
+          "cifp_id": "RZ26R"
+        },
+        "R8L": {
+          "cifp_id": "RZ8L"
+        },
+        "R8R": {
+          "cifp_id": "RZ8R"
+        }
       }
     }
   },
@@ -2323,7 +2428,7 @@
     },
     "LAX_D_APP": {
       "frequency": 124900,
-      "radio_name": "SoCal Approach",
+      "radio_name": "Socal Approach",
       "sector_id": "2D"
     },
     "LAX_F_APP": {
@@ -2433,11 +2538,6 @@
       "frequency": 135400,
       "radio_name": "Socal Approach",
       "sector_id": "3I"
-    },
-    "LAX_D_APP": {
-      "frequency": 124900,
-      "radio_name": "Socal Approach",
-      "sector_id": "2D"
     },
     "LAX_TWR": {
       "frequency": 120950,
@@ -3055,7 +3155,6 @@
       "location": "VPLHP"
     }
   ],
-
   "default_scenario": "Coast - SNAS/LAXW",
   "name": "Coast Area",
   "primary_airport": "KSNA",
@@ -3136,31 +3235,26 @@
           "KLAX": 15
         }
       },
-      "solo_controller": "SNA_Y_APP",
-      "multi_controllers": {
-        "default": {
-          "SNA_T_APP": { "backup": "SNA_R_APP" },
-          "SNA_A_APP": {
-            "backup": "SNA_S_APP",
-            "inbound_flows": ["DSNEE6"]
-          },
-          "SNA_R_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KLGB"],
-            "inbound_flows": ["BAUBB3/RUKKI1/PCIFC3/OHSEA3"]
-          },
-          "SNA_B_APP": {
-            "backup": "SNA_R_APP",
-            "inbound_flows": ["LGB OCEANIC ARR"]
-          },
-          "SNA_S_APP": {
-            "backup": "SNA_Y_APP"
-          },
-          "SNA_Y_APP": {
-            "primary": true,
-            "departures": ["KSNA"],
-            "inbound_flows": ["OLAAA2", "GOATZ2/KALRB3", "LAXX1.MZB", "SANP4R", "LEGOZ4"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
+          "SNA_S_APP": ["SNA_A_APP"],
+          "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_Y_APP"
+        },
+        "inbound_assignments": {
+          "DSNEE6": "SNA_A_APP",
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "OLAAA2": "SNA_Y_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LAXX1.MZB": "SNA_Y_APP",
+          "SANP4R": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3261,32 +3355,25 @@
           "KSNA": 9
         }
       },
-      "solo_controller": "SNA_Y_APP",
-      "multi_controllers": {
-        "default": {
-          "SNA_T_APP": { "backup": "SNA_R_APP" },
-          "SNA_A_APP": {
-            "backup": "SNA_S_APP",
-            "inbound_flows": ["DSNEE6"]
-          },
-          "SNA_R_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KLGB"],
-            "inbound_flows": ["BAUBB3/RUKKI1/PCIFC3/OHSEA3"]
-          },
-          "SNA_B_APP": {
-            "backup": "SNA_R_APP",
-            "inbound_flows": ["LGB OCEANIC ARR"]
-          },
-          "SNA_S_APP": {
-            "backup": "SNA_Y_APP",
-            "inbound_flows": ["SANP4R"]
-          },
-          "SNA_Y_APP": {
-            "primary": true,
-            "departures": ["KSNA"],
-            "inbound_flows": ["OLAAA2.E", "GOATZ2/KALRB3", "LEGOZ4"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
+          "SNA_S_APP": ["SNA_A_APP"],
+          "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_Y_APP"
+        },
+        "inbound_assignments": {
+          "DSNEE6": "SNA_A_APP",
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "SANP4R": "SNA_S_APP",
+          "OLAAA2.E": "SNA_Y_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3408,31 +3495,26 @@
           "KLAX": 15
         }
       },
-      "solo_controller": "SNA_Y_APP",
-      "multi_controllers": {
-        "default": {
-          "SNA_T_APP": { "backup": "SNA_R_APP" },
-          "SNA_A_APP": {
-            "backup": "SNA_S_APP",
-            "departures": ["KSNA"]
-          },
-          "SNA_R_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KLGB"],
-            "inbound_flows": ["BAUBB3/RUKKI1/PCIFC3/OHSEA3 East"]
-          },
-          "SNA_B_APP": {
-            "backup": "SNA_R_APP",
-            "inbound_flows": ["LGB OCEANIC ARR"]
-          },
-          "SNA_S_APP": {
-            "backup": "SNA_Y_APP",
-            "inbound_flows": ["ROOBY3"]
-          },
-          "SNA_Y_APP": {
-            "primary": true,
-            "inbound_flows": ["OLAAA2", "GOATZ2/KALRB3", "LAXX1.MZB", "SANP4R", "LEGOZ4"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
+          "SNA_S_APP": ["SNA_A_APP"],
+          "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_A_APP"
+        },
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "ROOBY3": "SNA_S_APP",
+          "OLAAA2": "SNA_Y_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LAXX1.MZB": "SNA_Y_APP",
+          "SANP4R": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3533,28 +3615,25 @@
           "KSNA": 9
         }
       },
-      "solo_controller": "SNA_T_APP",
-      "multi_controllers": {
-        "default": {
-          "SNA_T_APP": { "backup": "SNA_R_APP" },
-          "SNA_A_APP": {
-            "backup": "SNA_S_APP",
-            "departures": ["KSNA"]
-          },
-          "SNA_R_APP": {
-            "backup": "SNA_Y_APP",
-            "departures": ["KLGB"],
-            "inbound_flows": ["BAUBB3/RUKKI1/PCIFC3/OHSEA3 East"]
-          },
-          "SNA_B_APP": {
-            "backup": "SNA_R_APP",
-            "inbound_flows": ["LGB OCEANIC ARR"]
-          },
-          "SNA_S_APP": {
-            "backup": "SNA_Y_APP",
-            "inbound_flows": ["ROOBY3"]
-          },
-          "SNA_Y_APP": { "primary": true, "inbound_flows": ["OLAAA2.E", "GOATZ2/KALRB3", "SANP4R", "LEGOZ4"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
+          "SNA_S_APP": ["SNA_A_APP"],
+          "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_A_APP"
+        },
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "ROOBY3": "SNA_S_APP",
+          "OLAAA2.E": "SNA_Y_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "SANP4R": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3619,7 +3698,16 @@
           "KSNA": 9
         }
       },
-      "solo_controller": "SNA_T_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SNA_T_APP": []
+        },
+        "inbound_assignments": {
+          "DSNEE6": "SNA_T_APP",
+          "OHSEA3.FINAL": "SNA_T_APP"
+        }
+      },
       "controllers": [
         "SNA_TWR",
         "LGB_TWR",
@@ -3974,7 +4062,13 @@
         }
       ]
     },
-    "coordination_lists": [{ "name": "LONG BEACH", "id": "V", "airports": ["KLGB"] }],
+    "coordination_lists": [
+      {
+        "name": "LONG BEACH",
+        "id": "V",
+        "airports": ["KLGB"]
+      }
+    ],
     "range": 30,
     "scratchpads": {
       "BEALE": "FIN",
@@ -4011,7 +4105,9 @@
       "CNERY": {},
       "COREZ": {},
       "CSTRO": {},
-      "CSTWY": { "short_name": "CWY" },
+      "CSTWY": {
+        "short_name": "CWY"
+      },
       "EHF": {},
       "IKAYE": {},
       "MISEN": {},

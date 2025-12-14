@@ -7836,36 +7836,27 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 </td>
               </tr>
               <tr>
-                <td>"multi_controllers"</td>
+                <td>"configuration"</td>
                 <td>Object</td>
-                <td>(<i>Optional</i>) If specified, this provides
-                information about the control positions that are available
-                  for multi-controller scenarios. Each member specifies a
-                  controller split configuration. Each configuration is
-                  then an object where each member specifies a
-                controller with the corresponding callsign.  For each
-                controller, the following members may be specified:
+                <td>Defines the controller consolidation hierarchy for this scenario.
+                  The following members are available:
                   <ul>
-                    <li>"inbound_flows": An optional array of strings
-                    specifying which inbound flows the controller is
-                      covering. (Used to determine where handoffs of inbound
-                    aircraft go.)</li>
-                    <li>"backup": Specifies another controller in "multi_controllers" that covers
-                    the controller's position if the controller is not
-                    signed in.</li>
-                    <li>"departures": An optional array of strings that
-                    determines which departing aircraft the controller is
-                    responsible for. Each string can be an airport name
-                    ("KJFK"), a slash-separated airport name and runway
+                    <li>"id": A short identifier (maximum 3 characters) for this configuration.</li>
+                    <li>"positions": An object that defines the consolidation hierarchy. Each key is a parent TCP,
+                    and its value is an array of TCPs that are consolidated into it.
+                    For example: <code>{"1A": ["1B", "1C"], "1C": ["1D"]}</code> means 1B and 1C are consolidated
+                      into 1A, and 1D is consolidated into 1C (and transitively into 1A).
+                      All positions that are covered by humans must be present exactly once in the consolidation hierarchy.
+                      All positions must eventually consolidate into a single <i>root</i> position; this 
+                      is the primary controller for the scenario.</li>
+                    <li>"inbound_assignments": An object that maps inbound flow names to the TCP
+                    that handles them. This determines where handoffs of inbound aircraft go.</li>
+                    <li>"departure_assignments": An object that maps from strings denoting departures
+                      to the TCP responsible for them. Each string can be an airport name
+                      ("KJFK"), a slash-separated airport name and runway
                       ("KJFK/22R"), or a slash-separated airport name and
                       SID ("KJFK/SKORR5"). It is not allowed to mix different
                       ways of specifying departures at a given airport.</li>
-                    <li>"primary": Boolean value that indicates that the
-                    controller is the primary controller. Must be given for
-                    exactly one controller. If no other controllers
-                      are signed in, the primary controller covers all
-                    of the other control positions. The simulation
-                    pauses if the primary controller's position is not covered </li>
                   </ul>
                 </td>
               </tr>
@@ -7873,11 +7864,6 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>"range"</td>
                 <td>Number</td>
                 <td>(<i>Optional</i>) If specified, gives the initial radar scope center range in nautical miles. This overrides the range given in the scenario group.</td>
-              </tr>
-              <tr>
-                <td>"solo_controller"</td>
-                <td>String</td>
-                <td>The control position to use for single-user. (This must be present in "control_positions" in the scenario group.)</td>
               </tr>
               <tr>
                 <td>"vfr_rate_scale"</td>

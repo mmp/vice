@@ -498,7 +498,6 @@
               "arrival_airport": "KORD",
               "icao": "UAL"
             },
-
             {
               "departure_airport": "KMCO",
               "arrival_airport": "KDTW",
@@ -519,7 +518,6 @@
               "arrival_airport": "KDTW",
               "icao": "UAL"
             },
-
             {
               "departure_airport": "KMCO",
               "arrival_airport": "KCMH",
@@ -540,7 +538,6 @@
               "arrival_airport": "KCMH",
               "icao": "UAL"
             },
-
             {
               "departure_airport": "KMCO",
               "arrival_airport": "KCVG",
@@ -561,7 +558,6 @@
               "arrival_airport": "KCVG",
               "icao": "UAL"
             },
-
             {
               "departure_airport": "KMCO",
               "arrival_airport": "KIND",
@@ -582,7 +578,6 @@
               "arrival_airport": "KIND",
               "icao": "UAL"
             },
-
             {
               "departure_airport": "KMCO",
               "arrival_airport": "KBNA",
@@ -961,7 +956,22 @@
   "default_scenario": "49 Moultrie + 50 Alma + 29 Waycross",
   "scenarios": {
     "49 Moultrie + 50 Alma + 29 Waycross": {
-      "solo_controller": "ZJX 50 Alma",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZJX 50 Alma": []
+        },
+        "inbound_assignments": {
+          "BAGGY3": "ZJX 50 Alma",
+          "CAMJO": "ZJX 50 Alma",
+          "DADES2": "ZJX 50 Alma",
+          "GRNCH5": "ZJX 50 Alma",
+          "LUBBR3": "ZJX 50 Alma",
+          "OHDEA2": "ZJX 50 Alma",
+          "SHRKS": "ZJX 50 Alma",
+          "TTHOR3": "ZJX 50 Alma"
+        }
+      },
       "controllers": [
         "ZJX 75 Greencove",
         "ZJX 33 Geneva",
@@ -1021,12 +1031,10 @@
           "airport": "KTPA",
           "runway": "19L"
         },
-
         {
           "airport": "KMCO",
           "runway": "36L"
         },
-
         {
           "airport": "KDAB",
           "runway": "7L"
@@ -1059,7 +1067,6 @@
   "stars_config": {
     "center": "N031.30.29.772,W082.17.03.623",
     "range": 80,
-
     "stars_maps": [
       "BOUND",
       "ZJX LO",
@@ -1080,7 +1087,6 @@
       "CAMAN",
       "GEO"
     ],
-
     "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
   }
 }

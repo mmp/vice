@@ -4,12 +4,24 @@
     "KOMA": {
       "name": "Eppley Airfield",
       "approaches": {
-        "14L": { "cifp_id": "I14L" },
-        "14R": { "cifp_id": "I14R" },
-        "I18": { "cifp_id": "I18" },
-        "32L": { "cifp_id": "I32L" },
-        "32R": { "cifp_id": "I32R" },
-        "I36": { "cifp_id": "I36" }
+        "14L": {
+          "cifp_id": "I14L"
+        },
+        "14R": {
+          "cifp_id": "I14R"
+        },
+        "I18": {
+          "cifp_id": "I18"
+        },
+        "32L": {
+          "cifp_id": "I32L"
+        },
+        "32R": {
+          "cifp_id": "I32R"
+        },
+        "I36": {
+          "cifp_id": "I36"
+        }
       },
       "departure_routes": {
         "14L": {
@@ -2654,19 +2666,25 @@
           "KOMA": 4
         }
       },
-      "solo_controller": "OMA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OMA_W_APP": { "primary": true, "arrivals": ["AANDY2", "HOWRY3.ONL", "HOWRY3.GRI", "TIMMO1"] },
-          "OMA_X_APP": {
-            "backup": "OMA_W_APP",
-            "arrivals": ["LANTK2.DABOY", "LANTK2.DSM", "MARWI4.LMN", "MARWI4.STJ"],
-            "departures": ["KOMA"]
-          },
-          "OMA_V_APP": { "backup": "OMA_X_APP" },
-          "OMA_O_APP": { "backup": "OMA_W_APP" },
-          "LNK_L_APP": { "backup": "OMA_W_APP" },
-          "LNK_F_APP": { "backup": "LNK_L_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LNK_L_APP": ["LNK_F_APP"],
+          "OMA_W_APP": ["LNK_L_APP", "OMA_O_APP", "OMA_X_APP"],
+          "OMA_X_APP": ["OMA_V_APP"]
+        },
+        "inbound_assignments": {
+          "AANDY2": "OMA_W_APP",
+          "HOWRY3.GRI": "OMA_W_APP",
+          "HOWRY3.ONL": "OMA_W_APP",
+          "LANTK2.DABOY": "OMA_X_APP",
+          "LANTK2.DSM": "OMA_X_APP",
+          "MARWI4.LMN": "OMA_X_APP",
+          "MARWI4.STJ": "OMA_X_APP",
+          "TIMMO1": "OMA_W_APP"
+        },
+        "departure_assignments": {
+          "KOMA": "OMA_X_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "LNK_L_APP", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -2882,22 +2900,25 @@
           "KOMA": 4
         }
       },
-      "solo_controller": "OMA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OMA_W_APP": {
-            "primary": true,
-            "arrivals": ["AANDY2", "HOWRY3.ONL", "HOWRY3.GRI", "TIMMO1"],
-            "departures": ["KOMA"]
-          },
-          "OMA_X_APP": {
-            "backup": "OMA_W_APP",
-            "arrivals": ["LANTK2.DABOY", "LANTK2.DSM", "MARWI4.LMN", "MARWI4.STJ"]
-          },
-          "OMA_V_APP": { "backup": "OMA_X_APP" },
-          "OMA_O_APP": { "backup": "OMA_W_APP" },
-          "LNK_L_APP": { "backup": "OMA_W_APP" },
-          "LNK_F_APP": { "backup": "LNK_L_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LNK_L_APP": ["LNK_F_APP"],
+          "OMA_W_APP": ["LNK_L_APP", "OMA_O_APP", "OMA_X_APP"],
+          "OMA_X_APP": ["OMA_V_APP"]
+        },
+        "inbound_assignments": {
+          "AANDY2": "OMA_W_APP",
+          "HOWRY3.GRI": "OMA_W_APP",
+          "HOWRY3.ONL": "OMA_W_APP",
+          "LANTK2.DABOY": "OMA_X_APP",
+          "LANTK2.DSM": "OMA_X_APP",
+          "MARWI4.LMN": "OMA_X_APP",
+          "MARWI4.STJ": "OMA_X_APP",
+          "TIMMO1": "OMA_W_APP"
+        },
+        "departure_assignments": {
+          "KOMA": "OMA_W_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "LNK_L_APP", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -3099,15 +3120,21 @@
           "KLNK": 2
         }
       },
-      "solo_controller": "LNK_L_APP",
-      "multi_controllers": {
-        "default": {
-          "LNK_L_APP": {
-            "primary": true,
-            "arrivals": ["LNK.KDEN", "LNK.KIAH", "LNK.KAIZ", "LNK.KSDL", "LNK.KJLN", "LNK.KORD"],
-            "departures": ["KLNK"]
-          },
-          "LNK_F_APP": { "backup": "LNK_L_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LNK_L_APP": ["LNK_F_APP"]
+        },
+        "inbound_assignments": {
+          "LNK.KAIZ": "LNK_L_APP",
+          "LNK.KDEN": "LNK_L_APP",
+          "LNK.KIAH": "LNK_L_APP",
+          "LNK.KJLN": "LNK_L_APP",
+          "LNK.KORD": "LNK_L_APP",
+          "LNK.KSDL": "LNK_L_APP"
+        },
+        "departure_assignments": {
+          "KLNK": "LNK_L_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "OMA_W_APP", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -3225,15 +3252,21 @@
           "KLNK": 2
         }
       },
-      "solo_controller": "LNK_L_APP",
-      "multi_controllers": {
-        "default": {
-          "LNK_L_APP": {
-            "primary": true,
-            "arrivals": ["LNK.KDEN", "LNK.KIAH", "LNK.KAIZ", "LNK.KSDL", "LNK.KJLN", "LNK.KORD"],
-            "departures": ["KLNK"]
-          },
-          "LNK_F_APP": { "backup": "LNK_L_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LNK_L_APP": ["LNK_F_APP"]
+        },
+        "inbound_assignments": {
+          "LNK.KAIZ": "LNK_L_APP",
+          "LNK.KDEN": "LNK_L_APP",
+          "LNK.KIAH": "LNK_L_APP",
+          "LNK.KJLN": "LNK_L_APP",
+          "LNK.KORD": "LNK_L_APP",
+          "LNK.KSDL": "LNK_L_APP"
+        },
+        "departure_assignments": {
+          "KLNK": "LNK_L_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "OMA_W_APP", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -3424,48 +3457,44 @@
           "KOFF": 1
         }
       },
-      "solo_controller": "OMA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OMA_W_APP": {
-            "primary": true,
-            "arrivals": [
-              "AANDY2",
-              "HOWRY3.ONL",
-              "HOWRY3.GRI",
-              "TIMMO1",
-              "OFF.OFK",
-              "OFF.OBH",
-              "OFF.GRI",
-              "OFF.PWE",
-              "OFF.ONL",
-              "OFF.TKO",
-              "OFF.HSI"
-            ]
-          },
-          "OMA_X_APP": {
-            "backup": "OMA_W_APP",
-            "arrivals": [
-              "LNK.KORD",
-              "LANTK2.DABOY",
-              "LANTK2.DSM",
-              "MARWI4.LMN",
-              "MARWI4.STJ",
-              "OFF.LMN",
-              "OFF.DSM",
-              "OFF.FOD",
-              "OFF.SUX"
-            ],
-            "departures": ["KOMA"]
-          },
-          "OMA_V_APP": { "backup": "OMA_X_APP" },
-          "OMA_O_APP": { "backup": "OMA_W_APP", "departures": ["KOFF"] },
-          "LNK_L_APP": {
-            "backup": "OMA_W_APP",
-            "arrivals": ["LNK.KDEN", "LNK.KIAH", "LNK.KAIZ", "LNK.KSDL", "LNK.KJLN"],
-            "departures": ["KLNK"]
-          },
-          "LNK_F_APP": { "backup": "LNK_L_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LNK_L_APP": ["LNK_F_APP"],
+          "OMA_W_APP": ["LNK_L_APP", "OMA_O_APP", "OMA_X_APP"],
+          "OMA_X_APP": ["OMA_V_APP"]
+        },
+        "inbound_assignments": {
+          "AANDY2": "OMA_W_APP",
+          "HOWRY3.GRI": "OMA_W_APP",
+          "HOWRY3.ONL": "OMA_W_APP",
+          "LANTK2.DABOY": "OMA_X_APP",
+          "LANTK2.DSM": "OMA_X_APP",
+          "LNK.KAIZ": "LNK_L_APP",
+          "LNK.KDEN": "LNK_L_APP",
+          "LNK.KIAH": "LNK_L_APP",
+          "LNK.KJLN": "LNK_L_APP",
+          "LNK.KORD": "OMA_X_APP",
+          "LNK.KSDL": "LNK_L_APP",
+          "MARWI4.LMN": "OMA_X_APP",
+          "MARWI4.STJ": "OMA_X_APP",
+          "OFF.DSM": "OMA_X_APP",
+          "OFF.FOD": "OMA_X_APP",
+          "OFF.GRI": "OMA_W_APP",
+          "OFF.HSI": "OMA_W_APP",
+          "OFF.LMN": "OMA_X_APP",
+          "OFF.OBH": "OMA_W_APP",
+          "OFF.OFK": "OMA_W_APP",
+          "OFF.ONL": "OMA_W_APP",
+          "OFF.PWE": "OMA_W_APP",
+          "OFF.SUX": "OMA_X_APP",
+          "OFF.TKO": "OMA_W_APP",
+          "TIMMO1": "OMA_W_APP"
+        },
+        "departure_assignments": {
+          "KLNK": "LNK_L_APP",
+          "KOFF": "OMA_O_APP",
+          "KOMA": "OMA_X_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -3878,48 +3907,44 @@
           "KOFF": 1
         }
       },
-      "solo_controller": "OMA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OMA_W_APP": {
-            "primary": true,
-            "arrivals": [
-              "AANDY2",
-              "HOWRY3.ONL",
-              "HOWRY3.GRI",
-              "TIMMO1",
-              "OFF.OFK",
-              "OFF.OBH",
-              "OFF.GRI",
-              "OFF.PWE",
-              "OFF.ONL",
-              "OFF.TKO",
-              "OFF.HSI"
-            ],
-            "departures": ["KOMA"]
-          },
-          "OMA_X_APP": {
-            "backup": "OMA_W_APP",
-            "arrivals": [
-              "LNK.KORD",
-              "LANTK2.DABOY",
-              "LANTK2.DSM",
-              "MARWI4.LMN",
-              "MARWI4.STJ",
-              "OFF.LMN",
-              "OFF.DSM",
-              "OFF.FOD",
-              "OFF.SUX"
-            ]
-          },
-          "OMA_V_APP": { "backup": "OMA_X_APP" },
-          "OMA_O_APP": { "backup": "OMA_W_APP", "departures": ["KOFF"] },
-          "LNK_L_APP": {
-            "backup": "OMA_W_APP",
-            "arrivals": ["LNK.KDEN", "LNK.KIAH", "LNK.KAIZ", "LNK.KSDL", "LNK.KJLN"],
-            "departures": ["KLNK"]
-          },
-          "LNK_F_APP": { "backup": "LNK_L_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LNK_L_APP": ["LNK_F_APP"],
+          "OMA_W_APP": ["LNK_L_APP", "OMA_O_APP", "OMA_X_APP"],
+          "OMA_X_APP": ["OMA_V_APP"]
+        },
+        "inbound_assignments": {
+          "AANDY2": "OMA_W_APP",
+          "HOWRY3.GRI": "OMA_W_APP",
+          "HOWRY3.ONL": "OMA_W_APP",
+          "LANTK2.DABOY": "OMA_X_APP",
+          "LANTK2.DSM": "OMA_X_APP",
+          "LNK.KAIZ": "LNK_L_APP",
+          "LNK.KDEN": "LNK_L_APP",
+          "LNK.KIAH": "LNK_L_APP",
+          "LNK.KJLN": "LNK_L_APP",
+          "LNK.KORD": "OMA_X_APP",
+          "LNK.KSDL": "LNK_L_APP",
+          "MARWI4.LMN": "OMA_X_APP",
+          "MARWI4.STJ": "OMA_X_APP",
+          "OFF.DSM": "OMA_X_APP",
+          "OFF.FOD": "OMA_X_APP",
+          "OFF.GRI": "OMA_W_APP",
+          "OFF.HSI": "OMA_W_APP",
+          "OFF.LMN": "OMA_X_APP",
+          "OFF.OBH": "OMA_W_APP",
+          "OFF.OFK": "OMA_W_APP",
+          "OFF.ONL": "OMA_W_APP",
+          "OFF.PWE": "OMA_W_APP",
+          "OFF.SUX": "OMA_X_APP",
+          "OFF.TKO": "OMA_W_APP",
+          "TIMMO1": "OMA_W_APP"
+        },
+        "departure_assignments": {
+          "KLNK": "LNK_L_APP",
+          "KOFF": "OMA_O_APP",
+          "KOMA": "OMA_W_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -4274,26 +4299,26 @@
           "KOFF": 1
         }
       },
-      "solo_controller": "OMA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OMA_O_APP": {
-            "primary": true,
-            "arrivals": [
-              "OFF.OFK",
-              "OFF.OBH",
-              "OFF.GRI",
-              "OFF.PWE",
-              "OFF.ONL",
-              "OFF.TKO",
-              "OFF.HSI",
-              "OFF.LMN",
-              "OFF.DSM",
-              "OFF.FOD",
-              "OFF.SUX"
-            ],
-            "departures": ["KOFF"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "OMA_O_APP": []
+        },
+        "inbound_assignments": {
+          "OFF.DSM": "OMA_O_APP",
+          "OFF.FOD": "OMA_O_APP",
+          "OFF.GRI": "OMA_O_APP",
+          "OFF.HSI": "OMA_O_APP",
+          "OFF.LMN": "OMA_O_APP",
+          "OFF.OBH": "OMA_O_APP",
+          "OFF.OFK": "OMA_O_APP",
+          "OFF.ONL": "OMA_O_APP",
+          "OFF.PWE": "OMA_O_APP",
+          "OFF.SUX": "OMA_O_APP",
+          "OFF.TKO": "OMA_O_APP"
+        },
+        "departure_assignments": {
+          "KOFF": "OMA_O_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "OMA_W_APP", "LNK_L_APP", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -4420,26 +4445,26 @@
           "KOFF": 1
         }
       },
-      "solo_controller": "OMA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OMA_O_APP": {
-            "primary": true,
-            "arrivals": [
-              "OFF.OFK",
-              "OFF.OBH",
-              "OFF.GRI",
-              "OFF.PWE",
-              "OFF.ONL",
-              "OFF.TKO",
-              "OFF.HSI",
-              "OFF.LMN",
-              "OFF.DSM",
-              "OFF.FOD",
-              "OFF.SUX"
-            ],
-            "departures": ["KOFF"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "OMA_O_APP": []
+        },
+        "inbound_assignments": {
+          "OFF.DSM": "OMA_O_APP",
+          "OFF.FOD": "OMA_O_APP",
+          "OFF.GRI": "OMA_O_APP",
+          "OFF.HSI": "OMA_O_APP",
+          "OFF.LMN": "OMA_O_APP",
+          "OFF.OBH": "OMA_O_APP",
+          "OFF.OFK": "OMA_O_APP",
+          "OFF.ONL": "OMA_O_APP",
+          "OFF.PWE": "OMA_O_APP",
+          "OFF.SUX": "OMA_O_APP",
+          "OFF.TKO": "OMA_O_APP"
+        },
+        "departure_assignments": {
+          "KOFF": "OMA_O_APP"
         }
       },
       "controllers": ["MSP_26_CTR", "MSP_27_CTR", "OMA_W_APP", "LNK_L_APP", "OMA_TWR", "OFF_TWR", "LNK_TWR"],
@@ -4601,22 +4626,32 @@
       "GRI": "GRI"
     },
     "significant_points": {
-      "DRABS": { "short_name": "DRB" },
+      "DRABS": {
+        "short_name": "DRB"
+      },
       "DSM": {},
       "EMP": {},
       "FOD": {},
       "GRI": {},
       "HSI": {},
-      "JALAP": { "short_name": "JLP" },
-      "KIDER": { "short_name": "KDR" },
-      "LJAYY": { "short_name": "LJY" },
+      "JALAP": {
+        "short_name": "JLP"
+      },
+      "KIDER": {
+        "short_name": "KDR"
+      },
+      "LJAYY": {
+        "short_name": "LJY"
+      },
       "LMN": {},
       "LNK": {},
       "MCI": {},
       "NOSCE": {},
       "OBH": {},
       "OFK": {},
-      "OGECA": { "short_name": "OGA" },
+      "OGECA": {
+        "short_name": "OGA"
+      },
       "ONL": {},
       "OVR": {},
       "PWE": {},

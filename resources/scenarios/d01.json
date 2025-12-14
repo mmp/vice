@@ -3,40 +3,105 @@
   "airports": {
     "KDEN": {
       "approaches": {
-        "I7": { "cifp_id": "I7" },
-        "RY7": { "cifp_id": "RY7" },
-        "RZ7": { "cifp_id": "RZ7" },
-        "I8": { "cifp_id": "I8" },
-        "RY8": { "cifp_id": "RY8" },
-        "I6L": { "cifp_id": "I16L" },
-        "RY6L": { "cifp_id": "RY16L" },
-        "RZ6L": { "cifp_id": "RZ16L" },
-        "I6R": { "cifp_id": "I16R" },
-        "RY6R": { "cifp_id": "RY16R" },
-        "RZ6R": { "cifp_id": "RZ16R" },
-        "I7L": { "cifp_id": "I17L" },
-        "RY7L": { "cifp_id": "RY17L" },
-        "RZ7L": { "cifp_id": "RZ17L" },
-        "I7R": { "cifp_id": "I17R" },
-        "RZ7R": { "cifp_id": "RY17R" },
-        "RZ7R": { "cifp_id": "RZ17R" },
-        "I25": { "cifp_id": "I25" },
-        "RY25": { "cifp_id": "RY25" },
-        "I26": { "cifp_id": "I26" },
-        "RY26": { "cifp_id": "RY26" },
-        "RZ26": { "cifp_id": "RZ26" },
-        "I4L": { "cifp_id": "I34L" },
-        "RY4L": { "cifp_id": "RY34L" },
-        "RZ4L": { "cifp_id": "RZ34L" },
-        "I4R": { "cifp_id": "I34R" },
-        "RY4R": { "cifp_id": "RY34R" },
-        "RZ4R": { "cifp_id": "RZ34R" },
-        "I5L": { "cifp_id": "I35L" },
-        "RY5L": { "cifp_id": "RY35L" },
-        "RZ5L": { "cifp_id": "RZ35L" },
-        "I5R": { "cifp_id": "I35R" },
-        "RY5R": { "cifp_id": "RY35R" },
-        "RZ5R": { "cifp_id": "RZ35R" }
+        "I7": {
+          "cifp_id": "I7"
+        },
+        "RY7": {
+          "cifp_id": "RY7"
+        },
+        "RZ7": {
+          "cifp_id": "RZ7"
+        },
+        "I8": {
+          "cifp_id": "I8"
+        },
+        "RY8": {
+          "cifp_id": "RY8"
+        },
+        "I6L": {
+          "cifp_id": "I16L"
+        },
+        "RY6L": {
+          "cifp_id": "RY16L"
+        },
+        "RZ6L": {
+          "cifp_id": "RZ16L"
+        },
+        "I6R": {
+          "cifp_id": "I16R"
+        },
+        "RY6R": {
+          "cifp_id": "RY16R"
+        },
+        "RZ6R": {
+          "cifp_id": "RZ16R"
+        },
+        "I7L": {
+          "cifp_id": "I17L"
+        },
+        "RY7L": {
+          "cifp_id": "RY17L"
+        },
+        "RZ7L": {
+          "cifp_id": "RZ17L"
+        },
+        "I7R": {
+          "cifp_id": "I17R"
+        },
+        "RZ7R": {
+          "cifp_id": "RZ17R"
+        },
+        "I25": {
+          "cifp_id": "I25"
+        },
+        "RY25": {
+          "cifp_id": "RY25"
+        },
+        "I26": {
+          "cifp_id": "I26"
+        },
+        "RY26": {
+          "cifp_id": "RY26"
+        },
+        "RZ26": {
+          "cifp_id": "RZ26"
+        },
+        "I4L": {
+          "cifp_id": "I34L"
+        },
+        "RY4L": {
+          "cifp_id": "RY34L"
+        },
+        "RZ4L": {
+          "cifp_id": "RZ34L"
+        },
+        "I4R": {
+          "cifp_id": "I34R"
+        },
+        "RY4R": {
+          "cifp_id": "RY34R"
+        },
+        "RZ4R": {
+          "cifp_id": "RZ34R"
+        },
+        "I5L": {
+          "cifp_id": "I35L"
+        },
+        "RY5L": {
+          "cifp_id": "RY35L"
+        },
+        "RZ5L": {
+          "cifp_id": "RZ35L"
+        },
+        "I5R": {
+          "cifp_id": "I35R"
+        },
+        "RY5R": {
+          "cifp_id": "RY35R"
+        },
+        "RZ5R": {
+          "cifp_id": "RZ35R"
+        }
       },
       "departure_routes": {
         "8": {
@@ -3085,13 +3150,23 @@
     },
     "KAPA": {
       "approaches": {
-        "RY7L": { "cifp_id": "RY17L" },
-        "RZ7L": { "cifp_id": "RZ17L" },
-        "I5R": { "cifp_id": "I35R" },
-        "R5R": { "cifp_id": "R35R" }
+        "RY7L": {
+          "cifp_id": "RY17L"
+        },
+        "RZ7L": {
+          "cifp_id": "RZ17L"
+        },
+        "I5R": {
+          "cifp_id": "I35R"
+        },
+        "R5R": {
+          "cifp_id": "R35R"
+        }
       },
       "vfr": {
-        "random_routes": { "rate": 10 }
+        "random_routes": {
+          "rate": 10
+        }
       },
       "departure_routes": {
         "35R": {
@@ -3546,9 +3621,15 @@
     },
     "KBJC": {
       "approaches": {
-        "R2L": { "cifp_id": "R12L" },
-        "I0R": { "cifp_id": "I30R" },
-        "R0R": { "cifp_id": "R30R" },
+        "R2L": {
+          "cifp_id": "R12L"
+        },
+        "I0R": {
+          "cifp_id": "I30R"
+        },
+        "R0R": {
+          "cifp_id": "R30R"
+        },
         "V0R": {
           "runway": "30R",
           "type": "RNAV",
@@ -3561,10 +3642,14 @@
           "full_name": "VOR Runway 30L",
           "waypoints": ["BIZEN/iaf/nopt180/hilpt/a7000/faf CANED/a6360"]
         },
-        "R0L": { "cifp_id": "R30L" }
+        "R0L": {
+          "cifp_id": "R30L"
+        }
       },
       "vfr": {
-        "random_routes": { "rate": 10 }
+        "random_routes": {
+          "rate": 10
+        }
       },
       "departure_routes": {
         "30R": {
@@ -3986,7 +4071,10 @@
         }
       },
       "vfr": {
-        "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+        "random_routes": {
+          "rate": 10,
+          "fleet": "GAsinglepiston"
+        }
       },
       "departure_routes": {
         "32": {
@@ -4384,18 +4472,39 @@
     },
     "KCFO": {
       "approaches": {
-        "I17": { "cifp_id": "I17" },
-        "I26": { "cifp_id": "I26" },
-        "I35": { "cifp_id": "I35" },
-        "L17": { "cifp_id": "L17" },
-        "L26": { "cifp_id": "L26" },
-        "L35": { "cifp_id": "L35" },
-        "R17": { "cifp_id": "L35" },
-        "R26": { "cifp_id": "L35" },
-        "R35": { "cifp_id": "L35" }
+        "I17": {
+          "cifp_id": "I17"
+        },
+        "I26": {
+          "cifp_id": "I26"
+        },
+        "I35": {
+          "cifp_id": "I35"
+        },
+        "L17": {
+          "cifp_id": "L17"
+        },
+        "L26": {
+          "cifp_id": "L26"
+        },
+        "L35": {
+          "cifp_id": "L35"
+        },
+        "R17": {
+          "cifp_id": "L35"
+        },
+        "R26": {
+          "cifp_id": "L35"
+        },
+        "R35": {
+          "cifp_id": "L35"
+        }
       },
       "vfr": {
-        "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+        "random_routes": {
+          "rate": 10,
+          "fleet": "GAsinglepiston"
+        }
       },
       "departure_routes": {
         "8": {
@@ -5097,13 +5206,24 @@
     },
     "KFNL": {
       "approaches": {
-        "I33": { "cifp_id": "I33" },
-        "L33": { "cifp_id": "L33" },
-        "R15": { "cifp_id": "R15" },
-        "R33": { "cifp_id": "R33" }
+        "I33": {
+          "cifp_id": "I33"
+        },
+        "L33": {
+          "cifp_id": "L33"
+        },
+        "R15": {
+          "cifp_id": "R15"
+        },
+        "R33": {
+          "cifp_id": "R33"
+        }
       },
       "vfr": {
-        "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+        "random_routes": {
+          "rate": 10,
+          "fleet": "GAsinglepiston"
+        }
       },
       "departure_routes": {
         "15": {
@@ -5501,15 +5621,30 @@
     },
     "KGXY": {
       "approaches": {
-        "I35": { "cifp_id": "I35" },
-        "L35": { "cifp_id": "L35" },
-        "R10": { "cifp_id": "R10" },
-        "R17": { "cifp_id": "R17" },
-        "R28": { "cifp_id": "R28" },
-        "R35": { "cifp_id": "R35" }
+        "I35": {
+          "cifp_id": "I35"
+        },
+        "L35": {
+          "cifp_id": "L35"
+        },
+        "R10": {
+          "cifp_id": "R10"
+        },
+        "R17": {
+          "cifp_id": "R17"
+        },
+        "R28": {
+          "cifp_id": "R28"
+        },
+        "R35": {
+          "cifp_id": "R35"
+        }
       },
       "vfr": {
-        "random_routes": { "rate": 10, "fleet": "GAsinglepiston" }
+        "random_routes": {
+          "rate": 10,
+          "fleet": "GAsinglepiston"
+        }
       },
       "departure_routes": {
         "17": {
@@ -6513,7 +6648,6 @@
                 "types": ["A319", "A320"],
                 "icao": "UAL"
               },
-
               {
                 "airport": "MMMY",
                 "icao": "VIV"
@@ -6842,7 +6976,6 @@
                 "types": ["B738", "B739", "B39M"],
                 "icao": "UAL"
               },
-
               {
                 "airport": "KCLE",
                 "icao": "SWA"
@@ -6856,7 +6989,6 @@
                 "airport": "KCMH",
                 "icao": "FFT"
               },
-
               {
                 "airport": "KCMH",
                 "types": ["B738", "B739", "B39M"],
@@ -11343,67 +11475,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_N_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -11642,67 +11756,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_N_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -11939,67 +12035,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_R_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -12236,67 +12314,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_R_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -12525,67 +12585,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_R_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -12814,67 +12856,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_N_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -13115,67 +13139,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_N_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -13416,67 +13422,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_S_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -13717,67 +13705,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_R_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -14018,67 +13988,49 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_I_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_I_APP": {
-            "primary": true,
-            "inbound_flows": ["SSKII4", "TBARR4", "LARKS3", "POWDR1"]
-          },
-          "DEN_H_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["FLATI5", "LONGZ4", "RAMMS8", "TOMSN9"]
-          },
-          "DEN_G_APP": {
-            "backup": "DEN_X_APP",
-            "inbound_flows": ["AALLE4", "LAWGR4", "LANDR3"]
-          },
-          "DEN_X_APP": {
-            "backup": "DEN_I_APP",
-            "inbound_flows": ["NIIXX4", "CLASH5", "DANDD1", "QUAIL1"]
-          },
-          "DEN_W_APP": {
-            "backup": "DEN_I_APP"
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP"
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_T_APP"
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_E_APP"
-          },
-          "DEN_L_DEP": {
-            "backup": "DEN_I_APP",
-            "departures": ["KDEN/ZIMMR3", "KDEN/CONNR7", "KDEN/COORZ6", "KDEN/BAYLR6"]
-          },
-          "DEN_N_DEP": {
-            "backup": "DEN_L_DEP",
-            "inbound_flows": ["BRNKO4", "PINNR3", "CYS Arrivals/Overflights"],
-            "departures": ["KDEN/CHUWY1", "KDEN/DDRTH1", "KDEN/HHOTH2", "KDEN/XXWNG1"]
-          },
-          "DEN_R_DEP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KDEN/EXTAN7", "KDEN/EMMYS8", "KDEN/EEONS8", "KDEN/EPKEE7", "KCFO"]
-          },
-          "DEN_S_DEP": {
-            "backup": "DEN_R_DEP",
-            "inbound_flows": ["DUNNN6", "ZOMBZ6", "COS Arrivals/Overflights"],
-            "departures": ["KDEN/SABTH2", "KDEN/SUDDZ1", "KDEN/SMMUR2", "KDEN/SLEEK2", "KDEN/DEN3", "KBKF"]
-          },
-          "DEN_D_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KFNL", "KGXY"]
-          },
-          "DEN_J_APP": {
-            "backup": "DEN_L_DEP",
-            "departures": ["KBJC"]
-          },
-          "DEN_A_APP": {
-            "backup": "DEN_J_APP",
-            "departures": ["KAPA"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_T_APP"],
+          "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
+          "DEN_J_APP": ["DEN_A_APP", "DEN_D_APP"],
+          "DEN_L_DEP": ["DEN_J_APP", "DEN_N_DEP", "DEN_R_DEP"],
+          "DEN_R_DEP": ["DEN_S_DEP"],
+          "DEN_T_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP"],
+          "DEN_X_APP": ["DEN_G_APP"]
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN": "DEN_L_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        },
+        "inbound_assignments": {
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "LARKS3": "DEN_I_APP",
+          "POWDR1": "DEN_I_APP",
+          "FLATI5": "DEN_H_APP",
+          "LONGZ4": "DEN_H_APP",
+          "RAMMS8": "DEN_H_APP",
+          "TOMSN9": "DEN_H_APP",
+          "AALLE4": "DEN_G_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LANDR3": "DEN_G_APP",
+          "NIIXX4": "DEN_X_APP",
+          "CLASH5": "DEN_X_APP",
+          "DANDD1": "DEN_X_APP",
+          "QUAIL1": "DEN_X_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "PINNR3": "DEN_N_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DUNNN6": "DEN_S_DEP",
+          "ZOMBZ6": "DEN_S_DEP",
+          "COS Arrivals/Overflights": "DEN_S_DEP"
         }
       },
       "controllers": [
@@ -14207,25 +14159,19 @@
           "KDEN": 10
         }
       },
-      "solo_controller": "DEN_W_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_W_APP": {
-            "primary": true,
-            "inbound_flows": ["Final-NW-Gates-LN", "Final-SSKII-LN"]
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP",
-            "inbound_flows": ["Final-NE-Gates-LN", "Final-CLASH-LN"]
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_W_APP",
-            "inbound_flows": ["Final-TBARR-LN"]
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP",
-            "inbound_flows": ["Final-NIIXX-LN"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP", "DEN_T_APP"]
+        },
+        "inbound_assignments": {
+          "Final-NW-Gates-LN": "DEN_W_APP",
+          "Final-SSKII-LN": "DEN_W_APP",
+          "Final-NE-Gates-LN": "DEN_E_APP",
+          "Final-CLASH-LN": "DEN_E_APP",
+          "Final-TBARR-LN": "DEN_T_APP",
+          "Final-NIIXX-LN": "DEN_O_APP"
         }
       },
       "controllers": [
@@ -14277,25 +14223,19 @@
           "KDEN": 10
         }
       },
-      "solo_controller": "DEN_W_APP",
-      "multi_controllers": {
-        "default": {
-          "DEN_W_APP": {
-            "primary": true,
-            "inbound_flows": ["Final-SW-Gates-LS", "Final-LONGZ-LS"]
-          },
-          "DEN_E_APP": {
-            "backup": "DEN_W_APP",
-            "inbound_flows": ["Final-SE-Gates-LS", "Final-LAWGR-LS"]
-          },
-          "DEN_T_APP": {
-            "backup": "DEN_W_APP",
-            "inbound_flows": ["Final-FLATI-LS"]
-          },
-          "DEN_O_APP": {
-            "backup": "DEN_E_APP",
-            "inbound_flows": ["Final-AALLE-LS"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_E_APP": ["DEN_O_APP"],
+          "DEN_W_APP": ["DEN_E_APP", "DEN_T_APP"]
+        },
+        "inbound_assignments": {
+          "Final-SW-Gates-LS": "DEN_W_APP",
+          "Final-LONGZ-LS": "DEN_W_APP",
+          "Final-SE-Gates-LS": "DEN_E_APP",
+          "Final-LAWGR-LS": "DEN_E_APP",
+          "Final-FLATI-LS": "DEN_T_APP",
+          "Final-AALLE-LS": "DEN_O_APP"
         }
       },
       "controllers": [
@@ -14343,7 +14283,20 @@
           "KDEN": 8
         }
       },
-      "solo_controller": "DEN_W_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_W_APP": []
+        },
+        "inbound_assignments": {
+          "Final-AALLE-LW": "DEN_W_APP",
+          "Final-CLASH-LW": "DEN_W_APP",
+          "Final-LAWGR-LW": "DEN_W_APP",
+          "Final-NIIXX-LW": "DEN_W_APP",
+          "Final-NW-Gates-LW": "DEN_W_APP",
+          "Final-SW-Gates-LW": "DEN_W_APP"
+        }
+      },
       "controllers": [
         "DEN_E_TWR",
         "DEN_W_TWR",
@@ -14389,7 +14342,20 @@
           "KDEN": 7
         }
       },
-      "solo_controller": "DEN_W_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_W_APP": []
+        },
+        "inbound_assignments": {
+          "Final-FLATI-LE": "DEN_W_APP",
+          "Final-LONGZ-LE": "DEN_W_APP",
+          "Final-NE-Gates-LE": "DEN_W_APP",
+          "Final-SE-Gates-LE": "DEN_W_APP",
+          "Final-SSKII-LE": "DEN_W_APP",
+          "Final-TBARR-LE": "DEN_W_APP"
+        }
+      },
       "controllers": [
         "DEN_E_TWR",
         "DEN_W_TWR",
@@ -14497,7 +14463,6 @@
         "ZOMBZ6": {
           "KAPA": 2
         },
-
         "CYS Arrivals/Overflights": {
           "KAPA": 1,
           "KBJC": 1,
@@ -14507,7 +14472,34 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_J_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_J_APP": []
+        },
+        "inbound_assignments": {
+          "BRNKO4": "DEN_J_APP",
+          "CYS Arrivals/Overflights": "DEN_J_APP",
+          "DANDD1": "DEN_J_APP",
+          "DUNNN6": "DEN_J_APP",
+          "LANDR3": "DEN_J_APP",
+          "LARKS3": "DEN_J_APP",
+          "PINNR3": "DEN_J_APP",
+          "POWDR1": "DEN_J_APP",
+          "QUAIL1": "DEN_J_APP",
+          "RAMMS8": "DEN_J_APP",
+          "TOMSN9": "DEN_J_APP",
+          "ZOMBZ6": "DEN_J_APP"
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_J_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_J_APP",
+          "KCFO": "DEN_J_APP",
+          "KFNL": "DEN_J_APP",
+          "KGXY": "DEN_J_APP"
+        }
+      },
       "controllers": [
         "DEN_I_APP",
         "DEN_H_APP",
@@ -14668,7 +14660,34 @@
           "KGXY": 1
         }
       },
-      "solo_controller": "DEN_J_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DEN_J_APP": []
+        },
+        "inbound_assignments": {
+          "BRNKO4": "DEN_J_APP",
+          "CYS Arrivals/Overflights": "DEN_J_APP",
+          "DANDD1": "DEN_J_APP",
+          "DUNNN6": "DEN_J_APP",
+          "LANDR3": "DEN_J_APP",
+          "LARKS3": "DEN_J_APP",
+          "PINNR3": "DEN_J_APP",
+          "POWDR1": "DEN_J_APP",
+          "QUAIL1": "DEN_J_APP",
+          "RAMMS8": "DEN_J_APP",
+          "TOMSN9": "DEN_J_APP",
+          "ZOMBZ6": "DEN_J_APP"
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_J_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_J_APP",
+          "KCFO": "DEN_J_APP",
+          "KFNL": "DEN_J_APP",
+          "KGXY": "DEN_J_APP"
+        }
+      },
       "controllers": [
         "DEN_I_APP",
         "DEN_H_APP",

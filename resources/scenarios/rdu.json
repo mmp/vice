@@ -1778,15 +1778,21 @@
           "KRDU": 10
         }
       },
-      "solo_controller": "RDU_E_APP",
-      "multi_controllers": {
-        "default": {
-          "RDU_E_APP": { "primary": true, "arrivals": ["TAQLE2", "BLOGS3"] },
-          "RDU_W_APP": { "backup": "RDU_E_APP", "arrivals": ["DMSTR2", "ALDAN4"] },
-          "RDU_N_DEP": { "backup": "RDU_W_APP", "departures": ["KRDU/5L"] },
-          "RDU_S_DEP": { "backup": "RDU_N_DEP", "departures": ["KRDU/5R"] },
-          "RDU_Y_APP": { "backup": "RDU_W_APP" },
-          "RDU_U_APP": { "backup": "RDU_E_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "RDU_E_APP": ["RDU_U_APP", "RDU_W_APP"],
+          "RDU_N_DEP": ["RDU_S_DEP"],
+          "RDU_W_APP": ["RDU_N_DEP", "RDU_Y_APP"]
+        },
+        "inbound_assignments": {
+          "ALDAN4": "RDU_W_APP",
+          "BLOGS3": "RDU_E_APP",
+          "DMSTR2": "RDU_W_APP",
+          "TAQLE2": "RDU_E_APP"
+        },
+        "departure_assignments": {
+          "KRDU": "RDU_N_DEP"
         }
       },
       "controllers": ["RDU_E_TWR", "RDU_W_TWR", "DC_9_CTR", "DC_20_CTR", "DC_32_CTR"],
@@ -1834,15 +1840,21 @@
           "KRDU": 10
         }
       },
-      "solo_controller": "RDU_E_APP",
-      "multi_controllers": {
-        "default": {
-          "RDU_E_APP": { "primary": true, "arrivals": ["TAQLE2", "BLOGS3"] },
-          "RDU_W_APP": { "backup": "RDU_E_APP", "arrivals": ["DMSTR2", "ALDAN4"] },
-          "RDU_N_DEP": { "backup": "RDU_W_APP", "departures": ["KRDU/23R"] },
-          "RDU_S_DEP": { "backup": "RDU_N_DEP", "departures": ["KRDU/23L"] },
-          "RDU_Y_APP": { "backup": "RDU_W_APP" },
-          "RDU_U_APP": { "backup": "RDU_E_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "RDU_E_APP": ["RDU_U_APP", "RDU_W_APP"],
+          "RDU_N_DEP": ["RDU_S_DEP"],
+          "RDU_W_APP": ["RDU_N_DEP", "RDU_Y_APP"]
+        },
+        "inbound_assignments": {
+          "ALDAN4": "RDU_W_APP",
+          "BLOGS3": "RDU_E_APP",
+          "DMSTR2": "RDU_W_APP",
+          "TAQLE2": "RDU_E_APP"
+        },
+        "departure_assignments": {
+          "KRDU": "RDU_N_DEP"
         }
       },
       "controllers": ["RDU_E_TWR", "RDU_W_TWR", "DC_9_CTR", "DC_20_CTR", "DC_32_CTR"],

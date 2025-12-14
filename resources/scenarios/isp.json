@@ -4,10 +4,18 @@
     "KISP": {
       "name": "MacArthur",
       "approaches": {
-        "R5R": { "cifp_id": "R15R" },
-        "I24": { "cifp_id": "I24" },
-        "R3L": { "cifp_id": "R33L" },
-        "I6": { "cifp_id": "I6" }
+        "R5R": {
+          "cifp_id": "R15R"
+        },
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "R3L": {
+          "cifp_id": "R33L"
+        },
+        "I6": {
+          "cifp_id": "I6"
+        }
       },
       "departure_routes": {
         "15R": {
@@ -245,12 +253,22 @@
     },
     "KHVN": {
       "name": "New Haven",
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "hold_for_release": true,
       "approaches": {
-        "I2": { "cifp_id": "I2" },
-        "R2": { "cifp_id": "R2" },
-        "R20": { "cifp_id": "R20" }
+        "I2": {
+          "cifp_id": "I2"
+        },
+        "R2": {
+          "cifp_id": "R2"
+        },
+        "R20": {
+          "cifp_id": "R20"
+        }
       },
       "departure_routes": {
         "2": {
@@ -394,12 +412,22 @@
     },
     "KBDR": {
       "name": "Bridgeport",
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "hold_for_release": true,
       "approaches": {
-        "R6": { "cifp_id": "R6" },
-        "R24": { "cifp_id": "R24" },
-        "R29": { "cifp_id": "R29" },
+        "R6": {
+          "cifp_id": "R6"
+        },
+        "R24": {
+          "cifp_id": "R24"
+        },
+        "R29": {
+          "cifp_id": "R29"
+        },
         "V11": {
           "full_name": "Visual Runway 11",
           "runway": "11",
@@ -564,10 +592,18 @@
     "KFOK": {
       "name": "Suffolk County",
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 8 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      },
       "approaches": {
-        "RG6": { "cifp_id": "R6" },
-        "RG24": { "cifp_id": "R24" },
+        "RG6": {
+          "cifp_id": "R6"
+        },
+        "RG24": {
+          "cifp_id": "R24"
+        },
         "V33": {
           "full_name": "Visual Runway 33",
           "runway": "33",
@@ -734,11 +770,21 @@
     "KOXC": {
       "name": "Waterbury",
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "approaches": {
-        "I36": { "cifp_id": "I36" },
-        "R36": { "cifp_id": "R36" },
-        "R18": { "cifp_id": "R18" }
+        "I36": {
+          "cifp_id": "I36"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        }
       },
       "departure_routes": {
         "36": {
@@ -878,12 +924,48 @@
       },
       "tower_list": 5
     },
-    "KACK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KDXR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "N69": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMMK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "21N": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KSNC": { "vfr": { "random_routes": { "rate": 5 } } }
+    "KACK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KDXR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "N69": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMMK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "21N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KSNC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    }
   },
   "airspace": {
     "boundaries": {
@@ -2299,38 +2381,34 @@
           "KOXC": 2
         }
       },
-      "solo_controller": "ISP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "ISP_H_APP": {
-            "primary": true,
-            "departures": ["KISP"],
-            "arrivals": ["Intra-TRACON Via JFK", "Intra-TRACON Via SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_B_APP",
-            "departures": ["KFOK"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KOXC", "KBDR"],
-            "arrivals": ["Intra-TRACON Via DENNA"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR"]
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1", "DENNA3"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ISP_B_APP": ["ISP_I_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
+          "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
+        },
+        "inbound_assignments": {
+          "DENNA3": "ISP_R_APP",
+          "Intra-TRACON Via BDR": "ISP_O_APP",
+          "Intra-TRACON Via CCC": "ISP_B_APP",
+          "Intra-TRACON Via CREAM": "ISP_B_APP",
+          "Intra-TRACON Via DENNA": "ISP_Z_APP",
+          "Intra-TRACON Via HFD": "ISP_O_APP",
+          "Intra-TRACON Via HTO": "ISP_B_APP",
+          "Intra-TRACON Via JFK": "ISP_H_APP",
+          "Intra-TRACON Via LOVES": "ISP_R_APP",
+          "Intra-TRACON Via MAD": "ISP_O_APP",
+          "Intra-TRACON Via SARDI": "ISP_H_APP",
+          "LOVES1": "ISP_R_APP",
+          "NELIE4": "ISP_B_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KFOK": "ISP_I_APP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2457,38 +2535,33 @@
           "KOXC": 2
         }
       },
-      "solo_controller": "ISP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "ISP_H_APP": {
-            "primary": true,
-            "departures": ["KISP"],
-            "arrivals": ["Intra-TRACON Via JFK", "Intra-TRACON Via SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_B_APP",
-            "departures": ["KFOK"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KOXC", "KBDR"],
-            "arrivals": ["Intra-TRACON Via DENNA"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR"]
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ISP_B_APP": ["ISP_I_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
+          "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
+        },
+        "inbound_assignments": {
+          "Intra-TRACON Via BDR": "ISP_O_APP",
+          "Intra-TRACON Via CCC": "ISP_B_APP",
+          "Intra-TRACON Via CREAM": "ISP_B_APP",
+          "Intra-TRACON Via DENNA": "ISP_Z_APP",
+          "Intra-TRACON Via HFD": "ISP_O_APP",
+          "Intra-TRACON Via HTO": "ISP_B_APP",
+          "Intra-TRACON Via JFK": "ISP_H_APP",
+          "Intra-TRACON Via LOVES": "ISP_R_APP",
+          "Intra-TRACON Via MAD": "ISP_O_APP",
+          "Intra-TRACON Via SARDI": "ISP_H_APP",
+          "LOVES1": "ISP_R_APP",
+          "NELIE4": "ISP_B_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KFOK": "ISP_I_APP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2615,38 +2688,33 @@
           "KOXC": 2
         }
       },
-      "solo_controller": "ISP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "ISP_H_APP": {
-            "primary": true,
-            "departures": ["KISP"],
-            "arrivals": ["Intra-TRACON Via JFK", "Intra-TRACON Via SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_B_APP",
-            "departures": ["KFOK"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KOXC", "KBDR"],
-            "arrivals": ["Intra-TRACON Via DENNA"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR"]
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ISP_B_APP": ["ISP_I_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
+          "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
+        },
+        "inbound_assignments": {
+          "Intra-TRACON Via BDR": "ISP_O_APP",
+          "Intra-TRACON Via CCC": "ISP_B_APP",
+          "Intra-TRACON Via CREAM": "ISP_B_APP",
+          "Intra-TRACON Via DENNA": "ISP_Z_APP",
+          "Intra-TRACON Via HFD": "ISP_O_APP",
+          "Intra-TRACON Via HTO": "ISP_B_APP",
+          "Intra-TRACON Via JFK": "ISP_H_APP",
+          "Intra-TRACON Via LOVES": "ISP_R_APP",
+          "Intra-TRACON Via MAD": "ISP_O_APP",
+          "Intra-TRACON Via SARDI": "ISP_H_APP",
+          "LOVES1": "ISP_R_APP",
+          "NELIE4": "ISP_B_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KFOK": "ISP_I_APP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2773,38 +2841,33 @@
           "KOXC": 2
         }
       },
-      "solo_controller": "ISP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "ISP_H_APP": {
-            "primary": true,
-            "departures": ["KISP"],
-            "arrivals": ["Intra-TRACON Via JFK", "Intra-TRACON Via SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["Intra-TRACON Via HTO", "Intra-TRACON Via CCC", "Intra-TRACON Via CREAM", "NELIE4"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_B_APP",
-            "departures": ["KFOK"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KOXC", "KBDR"],
-            "arrivals": ["Intra-TRACON Via DENNA"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via HFD", "Intra-TRACON Via MAD", "Intra-TRACON Via BDR"]
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_Z_APP",
-            "arrivals": ["Intra-TRACON Via LOVES", "LOVES1"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ISP_B_APP": ["ISP_I_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
+          "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
+        },
+        "inbound_assignments": {
+          "Intra-TRACON Via BDR": "ISP_O_APP",
+          "Intra-TRACON Via CCC": "ISP_B_APP",
+          "Intra-TRACON Via CREAM": "ISP_B_APP",
+          "Intra-TRACON Via DENNA": "ISP_Z_APP",
+          "Intra-TRACON Via HFD": "ISP_O_APP",
+          "Intra-TRACON Via HTO": "ISP_B_APP",
+          "Intra-TRACON Via JFK": "ISP_H_APP",
+          "Intra-TRACON Via LOVES": "ISP_R_APP",
+          "Intra-TRACON Via MAD": "ISP_O_APP",
+          "Intra-TRACON Via SARDI": "ISP_H_APP",
+          "LOVES1": "ISP_R_APP",
+          "NELIE4": "ISP_B_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KFOK": "ISP_I_APP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2853,24 +2916,24 @@
   },
   "stars_config": {
     "filters": {
-      "auto_acquisition": [
+      "inhibit_ca": [
         {
-          "id": "ispack",
-          "description": "isp arrival acquisition all",
-          "type": "polygon",
-          "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
+          "id": "ISPNOCA",
+          "description": "ISP CONFLICT SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 10000
-        }
-      ],
-      "secondary_drop": [
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KISP"
+        },
         {
-          "id": "secdrop",
-          "description": "drop region all",
-          "type": "polygon",
-          "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
+          "id": "HVNNOCA",
+          "description": "HVN CONFLICT SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 40000
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KHVN"
         }
       ]
     },
@@ -2946,35 +3009,31 @@
       }
     },
     "coordination_lists": [
-      { "name": "HVN.", "id": "A", "airports": ["KHVN"] },
-      { "name": "BDR.", "id": "B", "airports": ["KBDR"] },
-      { "name": "FOK.", "id": "C", "airports": ["KFOK"] },
-      { "name": "OXC.", "id": "D", "airports": ["KOXC"] }
+      {
+        "name": "HVN.",
+        "id": "A",
+        "airports": ["KHVN"]
+      },
+      {
+        "name": "BDR.",
+        "id": "B",
+        "airports": ["KBDR"]
+      },
+      {
+        "name": "FOK.",
+        "id": "C",
+        "airports": ["KFOK"]
+      },
+      {
+        "name": "OXC.",
+        "id": "D",
+        "airports": ["KOXC"]
+      }
     ],
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "ISPNOCA",
-          "description": "ISP CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KISP"
-        },
-        {
-          "id": "HVNNOCA",
-          "description": "HVN CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KHVN"
-        }
-      ]
-    },
     "force_ql_self": true,
-    "scratchpad1": { "display_exit_fix": true },
+    "scratchpad1": {
+      "display_exit_fix": true
+    },
     "significant_points": {
       "BAYYS": {},
       "BDR": {},
@@ -2990,7 +3049,9 @@
       "ELIOT": {},
       "GAYEL": {},
       "GREKI": {},
-      "HAAYS": { "short_name": "HAY" },
+      "HAAYS": {
+        "short_name": "HAY"
+      },
       "HAPIE": {},
       "HTO": {},
       "HUO": {},
@@ -2999,7 +3060,9 @@
       "MAD": {},
       "MERIT": {},
       "NEION": {},
-      "NEWEL": { "short_name": "NWL" },
+      "NEWEL": {
+        "short_name": "NWL"
+      },
       "PARKE": {},
       "RBV": {},
       "RUUTH": {},

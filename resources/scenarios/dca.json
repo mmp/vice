@@ -1,22 +1,92 @@
 {
   "tracon": "PCT",
   "airports": {
-    "KHWY": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KJYO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KOKV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFRR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCJR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRMN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFDK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KEZF": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KDMW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHGR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMRB": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KHWY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KJYO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KOKV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFRR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCJR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRMN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFDK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KEZF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KDMW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHGR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMRB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KDCA": {
       "departure_runways_as_one": ["33,1,4", "15,19,22"],
       "approaches": {
-        "ILS": { "cifp_id": "I1" },
-        "R1": { "cifp_id": "R1" },
+        "ILS": {
+          "cifp_id": "I1"
+        },
+        "R1": {
+          "cifp_id": "R1"
+        },
         "MTV": {
           "full_name": "Mount Vernon Visual Runway 1",
           "runway": "1",
@@ -25,8 +95,12 @@
             "N038.36.37.183,W077.00.45.675 KATRN/a2500 BADDN/a1600 N38.45.58.752,W77.01.59.893 N38.46.47.573,W77.02.05.959 N38.47.33.857,W77.02.00.680 N38.49.49.485,W77.02.03.166"
           ]
         },
-        "R15": { "cifp_id": "R15" },
-        "RZ9": { "cifp_id": "RZ19" },
+        "R15": {
+          "cifp_id": "R15"
+        },
+        "RZ9": {
+          "cifp_id": "RZ19"
+        },
         "RIV": {
           "full_name": "River Visual Runway 19",
           "runway": "19",
@@ -849,8 +923,12 @@
     },
     "KBWI": {
       "approaches": {
-        "I3L": { "cifp_id": "I33L" },
-        "I5R": { "cifp_id": "I15R" }
+        "I3L": {
+          "cifp_id": "I33L"
+        },
+        "I5R": {
+          "cifp_id": "I15R"
+        }
       },
       "tower_list": 1
     }
@@ -4397,12 +4475,14 @@
     "DCA_E_APP": {
       "frequency": 124200,
       "radio_name": "Potomac Approach",
-      "sector_id": "1E"
+      "sector_id": "1E",
+      "default_airport": "KDCA"
     },
     "DCA_D_APP": {
       "frequency": 128350,
       "radio_name": "Potomac Approach",
-      "sector_id": "1D"
+      "sector_id": "1D",
+      "default_airport": "KDCA"
     },
     "DCA_L_APP": {
       "frequency": 118675,
@@ -4425,7 +4505,8 @@
     "DCA_Y_DEP": {
       "frequency": 118950,
       "radio_name": "Potomac Departure",
-      "sector_id": "1Y"
+      "sector_id": "1Y",
+      "default_airport": "KDCA"
     },
     "DCA_K_DEP": {
       "frequency": 125650,
@@ -4436,12 +4517,14 @@
     "DCA_A_APP": {
       "frequency": 128000,
       "radio_name": "Potomac Approach",
-      "sector_id": "1A"
+      "sector_id": "1A",
+      "default_airport": "KDCA"
     },
     "DCA_R_APP": {
       "frequency": 125120,
       "radio_name": "Potomac Approach",
-      "sector_id": "1R"
+      "sector_id": "1R",
+      "default_airport": "KDCA"
     },
     "BWI_TWR": {
       "frequency": 119400,
@@ -4519,22 +4602,25 @@
           "KBWI": 10
         }
       },
-      "solo_controller": "DCA_J_APP",
-      "multi_controllers": {
-        "default": {
-          "DCA_J_APP": { "primary": true, "inbound_flows": ["CAPSS3"] },
-          "DCA_K_DEP": { "backup": "DCA_J_APP", "departures": ["KDCA/SOOKI5", "KDCA/DOCTR5", "KDCA/AMEEE1"] },
-          "DCA_Y_DEP": {
-            "backup": "DCA_K_DEP",
-            "departures": ["KDCA/SCRAM6", "KDCA/HORTO4", "KDCA/JDUBB4", "KDCA/WYNGS5", "KDCA/CLTCH3", "KDCA/REBLL5"]
-          },
-          "DCA_E_APP": { "backup": "DCA_J_APP", "inbound_flows": ["CLIPR3/SKILS5", "DEALE3.N"] },
-          "DCA_L_APP": { "backup": "DCA_Y_DEP", "inbound_flows": ["FRDMM6", "TRUPS5", "BUNZZ3/RNLDI4"] },
-          "DCA_D_APP": { "backup": "DCA_K_DEP", "inbound_flows": ["RAVNN8"] },
-          "DCA_F_APP": { "backup": "DCA_L_APP" },
-          "DCA_A_APP": { "backup": "DCA_K_DEP" },
-          "DCA_V_APP": { "backup": "DCA_J_APP" },
-          "DCA_R_APP": { "backup": "DCA_J_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_J_APP": ["DCA_E_APP", "DCA_K_DEP", "DCA_R_APP", "DCA_V_APP"],
+          "DCA_K_DEP": ["DCA_A_APP", "DCA_D_APP", "DCA_Y_DEP"],
+          "DCA_L_APP": ["DCA_F_APP"],
+          "DCA_Y_DEP": ["DCA_L_APP"]
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
+        },
+        "inbound_assignments": {
+          "CAPSS3": "DCA_J_APP",
+          "CLIPR3/SKILS5": "DCA_E_APP",
+          "DEALE3.N": "DCA_E_APP",
+          "FRDMM6": "DCA_L_APP",
+          "TRUPS5": "DCA_L_APP",
+          "BUNZZ3/RNLDI4": "DCA_L_APP",
+          "RAVNN8": "DCA_D_APP"
         }
       },
       "controllers": [
@@ -4608,22 +4694,24 @@
           "KBWI": 10
         }
       },
-      "solo_controller": "DCA_J_APP",
-      "multi_controllers": {
-        "default": {
-          "DCA_J_APP": { "primary": true, "arrivals": ["CAPSS3"] },
-          "DCA_K_DEP": { "backup": "DCA_J_APP", "departures": ["KDCA/SOOKI5", "KDCA/DOCTR5", "KDCA/AMEEE1"] },
-          "DCA_Y_DEP": {
-            "backup": "DCA_K_DEP",
-            "departures": ["KDCA/SCRAM6", "KDCA/HORTO4", "KDCA/JDUBB4", "KDCA/WYNGS5", "KDCA/CLTCH3", "KDCA/REBLL5"]
-          },
-          "DCA_E_APP": { "backup": "DCA_J_APP", "arrivals": ["CLIPR3/SKILS5", "DEALE3.S"] },
-          "DCA_L_APP": { "backup": "DCA_Y_DEP", "arrivals": ["FRDMM6", "TRUPS5"] },
-          "DCA_D_APP": { "backup": "DCA_K_DEP", "arrivals": ["RAVNN8"] },
-          "DCA_F_APP": { "backup": "DCA_L_APP" },
-          "DCA_A_APP": { "backup": "DCA_K_DEP" },
-          "DCA_V_APP": { "backup": "DCA_J_APP" },
-          "DCA_R_APP": { "backup": "DCA_J_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_J_APP": ["DCA_E_APP", "DCA_K_DEP", "DCA_R_APP", "DCA_V_APP"],
+          "DCA_K_DEP": ["DCA_A_APP", "DCA_D_APP", "DCA_Y_DEP"],
+          "DCA_L_APP": ["DCA_F_APP"],
+          "DCA_Y_DEP": ["DCA_L_APP"]
+        },
+        "inbound_assignments": {
+          "CAPSS3": "DCA_J_APP",
+          "CLIPR3/SKILS5": "DCA_E_APP",
+          "DEALE3.S": "DCA_E_APP",
+          "FRDMM6": "DCA_L_APP",
+          "RAVNN8": "DCA_D_APP",
+          "TRUPS5": "DCA_L_APP"
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
         }
       },
       "controllers": [
@@ -4682,7 +4770,18 @@
           "KDCA": 15
         }
       },
-      "solo_controller": "DCA_L_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_L_APP": []
+        },
+        "inbound_assignments": {
+          "BUNZZ3/RNLDI4": "DCA_L_APP",
+          "FRDMM6.LS": "DCA_L_APP",
+          "LURAY DEPARTURES.DCAS": "DCA_L_APP",
+          "TRUPS5.LS": "DCA_L_APP"
+        }
+      },
       "controllers": [
         "DCA_TWR",
         "BWI_S_APP",
@@ -4735,7 +4834,18 @@
           "KDCA": 15
         }
       },
-      "solo_controller": "DCA_L_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_L_APP": []
+        },
+        "inbound_assignments": {
+          "BUNZZ3/RNLDI4": "DCA_L_APP",
+          "FRDMM6.LN": "DCA_L_APP",
+          "LURAY DEPARTURES.DCAN": "DCA_L_APP",
+          "TRUPS5.LN": "DCA_L_APP"
+        }
+      },
       "controllers": [
         "DCA_TWR",
         "BWI_S_APP",
@@ -4775,7 +4885,17 @@
           "overflights": 20
         }
       },
-      "solo_controller": "DCA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_F_APP": []
+        },
+        "inbound_assignments": {
+          "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
+          "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
+          "FOXHL1/TERPZ8": "DCA_F_APP"
+        }
+      },
       "controllers": [
         "DCA_TWR",
         "BWI_S_APP",
@@ -4812,7 +4932,17 @@
           "overflights": 20
         }
       },
-      "solo_controller": "DCA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_F_APP": []
+        },
+        "inbound_assignments": {
+          "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
+          "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
+          "FOXHL1/TERPZ8": "DCA_F_APP"
+        }
+      },
       "controllers": [
         "DCA_TWR",
         "BWI_S_APP",
@@ -4856,18 +4986,17 @@
           "overflights": 10
         }
       },
-      "solo_controller": "DCA_K_DEP",
-      "multi_controllers": {
-        "default": {
-          "DCA_K_DEP": {
-            "primary": true,
-            "departures": ["KDCA/SOOKI5", "KDCA/DOCTR5", "KDCA/AMEEE1"],
-            "inbound_flows": ["JCOBY4", "CONLE5.S"]
-          },
-          "DCA_Y_DEP": {
-            "backup": "DCA_K_DEP",
-            "departures": ["KDCA/SCRAM6", "KDCA/HORTO4", "KDCA/JDUBB4", "KDCA/WYNGS5", "KDCA/CLTCH3", "KDCA/REBLL5"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_K_DEP": ["DCA_Y_DEP"]
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
+        },
+        "inbound_assignments": {
+          "JCOBY4": "DCA_K_DEP",
+          "CONLE5.S": "DCA_K_DEP"
         }
       },
       "controllers": [
@@ -4928,18 +5057,17 @@
           "overflights": 10
         }
       },
-      "solo_controller": "DCA_K_DEP",
-      "multi_controllers": {
-        "default": {
-          "DCA_K_DEP": {
-            "primary": true,
-            "departures": ["KDCA/SOOKI5", "KDCA/DOCTR5", "KDCA/AMEEE1"],
-            "inbound_flows": ["JCOBY4", "CONLE5.N"]
-          },
-          "DCA_Y_DEP": {
-            "backup": "DCA_K_DEP",
-            "departures": ["KDCA/SCRAM6", "KDCA/HORTO4", "KDCA/JDUBB4", "KDCA/WYNGS5", "KDCA/CLTCH3", "KDCA/REBLL5"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_K_DEP": ["DCA_Y_DEP"]
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
+        },
+        "inbound_assignments": {
+          "JCOBY4": "DCA_K_DEP",
+          "CONLE5.N": "DCA_K_DEP"
         }
       },
       "controllers": [
@@ -4999,7 +5127,17 @@
           "KDCA": 15
         }
       },
-      "solo_controller": "DCA_V_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_V_APP": []
+        },
+        "inbound_assignments": {
+          "FINAL_ND": "DCA_V_APP",
+          "FINAL_NNW": "DCA_V_APP",
+          "FINAL_NS": "DCA_V_APP"
+        }
+      },
       "controllers": [
         "DCA_J_APP",
         "DCA_E_APP",
@@ -5038,7 +5176,17 @@
           "KDCA": 15
         }
       },
-      "solo_controller": "DCA_V_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DCA_V_APP": []
+        },
+        "inbound_assignments": {
+          "FINAL_SE": "DCA_V_APP",
+          "FINAL_SNW": "DCA_V_APP",
+          "FINAL_SS": "DCA_V_APP"
+        }
+      },
       "controllers": [
         "DCA_J_APP",
         "DCA_E_APP",
@@ -5348,14 +5496,18 @@
     },
     "significant_points": {
       "AGARD": {},
-      "BUFFR": { "short_name": "BFR" },
+      "BUFFR": {
+        "short_name": "BFR"
+      },
       "DQO": {},
       "FLASK": {},
       "GLANC": {},
       "JERES": {},
       "MAULS": {},
       "MELTN": {},
-      "OTTTO": { "short_name": "OTO" },
+      "OTTTO": {
+        "short_name": "OTO"
+      },
       "RAMAY": {},
       "RRSIN": {},
       "SCOOB": {},

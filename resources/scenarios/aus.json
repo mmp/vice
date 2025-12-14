@@ -3,14 +3,34 @@
   "airports": {
     "KAUS": {
       "approaches": {
-        "I8L": { "cifp_id": "I18L" },
-        "I8R": { "cifp_id": "I18R" },
-        "I6L": { "cifp_id": "I36L" },
-        "I6R": { "cifp_id": "I36R" },
-        "R6L": { "cifp_id": "RZ36L", "full_name": "RNAV RNP Runway 36L" },
-        "R6R": { "cifp_id": "RZ36R", "full_name": "RNAV RNP Runway 36R" },
-        "R8R": { "cifp_id": "RZ18R", "full_name": "RNAV RNP Runway 18R" },
-        "R8L": { "cifp_id": "RZ18L", "full_name": "RNAV RNP Runway 18L" }
+        "I8L": {
+          "cifp_id": "I18L"
+        },
+        "I8R": {
+          "cifp_id": "I18R"
+        },
+        "I6L": {
+          "cifp_id": "I36L"
+        },
+        "I6R": {
+          "cifp_id": "I36R"
+        },
+        "R6L": {
+          "cifp_id": "RZ36L",
+          "full_name": "RNAV RNP Runway 36L"
+        },
+        "R6R": {
+          "cifp_id": "RZ36R",
+          "full_name": "RNAV RNP Runway 36R"
+        },
+        "R8R": {
+          "cifp_id": "RZ18R",
+          "full_name": "RNAV RNP Runway 18R"
+        },
+        "R8L": {
+          "cifp_id": "RZ18L",
+          "full_name": "RNAV RNP Runway 18L"
+        }
       },
       "departure_routes": {
         "18L": {
@@ -310,10 +330,18 @@
     "KHYI": {
       "hold_for_release": true,
       "approaches": {
-        "R13": { "cifp_id": "R13" },
-        "R31": { "cifp_id": "R31" }
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        }
       },
-      "vfr": { "random_routes": { "rate": 8 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      },
       "departure_routes": {
         "13": {
           "ZENZI": {
@@ -467,10 +495,18 @@
     "KGTU": {
       "hold_for_release": true,
       "approaches": {
-        "R11": { "cifp_id": "R11" },
-        "R29": { "cifp_id": "R29" }
+        "R11": {
+          "cifp_id": "R11"
+        },
+        "R29": {
+          "cifp_id": "R29"
+        }
       },
-      "vfr": { "random_routes": { "rate": 6 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      },
       "departure_routes": {
         "29": {
           "AMUSE": {
@@ -1455,20 +1491,29 @@
           "overflights": 2
         }
       },
-      "solo_controller": "AUS_W_APP",
-      "multi_controllers": {
-        "default": {
-          "AUS_W_APP": {
-            "primary": true,
-            "arrivals": ["DXEEE3S", "LAIKS3S", "OVERFLIGHTSW"],
-            "departures": ["KAUS/18R", "KHYI/13"]
-          },
-          "AUS_E_APP": {
-            "backup": "AUS_W_APP",
-            "arrivals": ["SEWZY6S", "WLEEE7S", "GABOO1", "TOAMY", "OVERFLIGHTSE"],
-            "departures": ["KAUS/18L", "KGTU/11"]
-          },
-          "AUS_F_APP": { "backup": "AUS_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AUS_W_APP": ["AUS_E_APP", "AUS_F_APP"]
+        },
+        "inbound_assignments": {
+          "DXEEE3S": "AUS_W_APP",
+          "GABOO1": "AUS_E_APP",
+          "LAIKS3S": "AUS_W_APP",
+          "OVERFLIGHTSE": "AUS_E_APP",
+          "OVERFLIGHTSW": "AUS_W_APP",
+          "SEWZY6S": "AUS_E_APP",
+          "TOAMY": "AUS_E_APP",
+          "WLEEE7S": "AUS_E_APP"
+        },
+        "departure_assignments": {
+          "KAUS/18L": "AUS_E_APP",
+          "KAUS/18R": "AUS_W_APP",
+          "KGTU/11": "AUS_E_APP",
+          "KHYI/13": "AUS_W_APP",
+          "KAUS": "AUS_W_APP",
+          "KGTU": "AUS_W_APP",
+          "KHYI": "AUS_W_APP"
         }
       },
       "controllers": [
@@ -1586,20 +1631,29 @@
           "overflights": 2
         }
       },
-      "solo_controller": "AUS_W_APP",
-      "multi_controllers": {
-        "default": {
-          "AUS_W_APP": {
-            "primary": true,
-            "arrivals": ["DXEEE3N", "LAIKS3N", "OVERFLIGHTSW"],
-            "departures": ["KAUS/36L", "KHYI/31", "KGTU/29"]
-          },
-          "AUS_E_APP": {
-            "backup": "AUS_W_APP",
-            "arrivals": ["SEWZY6N", "WLEEE7N", "GABOO1", "TOAMY", "OVERFLIGHTSE"],
-            "departures": ["KAUS/36R"]
-          },
-          "AUS_F_APP": { "backup": "AUS_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "AUS_W_APP": ["AUS_E_APP", "AUS_F_APP"]
+        },
+        "inbound_assignments": {
+          "DXEEE3N": "AUS_W_APP",
+          "GABOO1": "AUS_E_APP",
+          "LAIKS3N": "AUS_W_APP",
+          "OVERFLIGHTSE": "AUS_E_APP",
+          "OVERFLIGHTSW": "AUS_W_APP",
+          "SEWZY6N": "AUS_E_APP",
+          "TOAMY": "AUS_E_APP",
+          "WLEEE7N": "AUS_E_APP"
+        },
+        "departure_assignments": {
+          "KAUS/36L": "AUS_W_APP",
+          "KAUS/36R": "AUS_E_APP",
+          "KGTU/29": "AUS_W_APP",
+          "KHYI/31": "AUS_W_APP",
+          "KAUS": "AUS_W_APP",
+          "KGTU": "AUS_W_APP",
+          "KHYI": "AUS_W_APP"
         }
       },
       "controllers": [

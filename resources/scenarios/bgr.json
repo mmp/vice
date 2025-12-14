@@ -263,7 +263,21 @@
           "KBGR": 0
         }
       },
-      "solo_controller": "BGR_B_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BGR_B_APP": []
+        },
+        "inbound_assignments": {
+          "AUG Arrival Land North": "BGR_B_APP",
+          "AUG Arrival Land South": "BGR_B_APP",
+          "RANGY Arrival Land North": "BGR_B_APP",
+          "RANGY Arrival Land South": "BGR_B_APP"
+        },
+        "departure_assignments": {
+          "KBGR": "BGR_B_APP"
+        }
+      },
       "controllers": ["BGR_B_APP", "BGR_S_APP", "BGR_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
@@ -298,22 +312,19 @@
           "KBGR": 0
         }
       },
-      "solo_controller": "BGR_B_APP",
-      "multi_controllers": {
-        "default": {
-          "BGR_B_APP": {
-            "primary": true,
-            "departures": ["KBGR"],
-            "arrivals": [
-              "RANGY Arrival Land South",
-              "RANGY Arrival Land North",
-              "AUG Arrival Land South",
-              "AUG Arrival Land North"
-            ]
-          },
-          "BGR_S_APP": {
-            "backup": "BGR_B_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BGR_B_APP": ["BGR_S_APP"]
+        },
+        "inbound_assignments": {
+          "AUG Arrival Land North": "BGR_B_APP",
+          "AUG Arrival Land South": "BGR_B_APP",
+          "RANGY Arrival Land North": "BGR_B_APP",
+          "RANGY Arrival Land South": "BGR_B_APP"
+        },
+        "departure_assignments": {
+          "KBGR": "BGR_B_APP"
         }
       },
       "controllers": ["BGR_B_APP", "BGR_S_APP", "BGR_TWR", "BOS_17_CTR"],

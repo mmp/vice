@@ -1,31 +1,175 @@
 {
   "tracon": "PCT",
   "airports": {
-    "KHWY": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KJYO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KSBY": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFCI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KOPF": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPTB": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCHO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KGVE": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMFV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KWAL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KOXB": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KHWY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KJYO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KSBY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFCI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KOPF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPTB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCHO": {
+      "approaches": {
+        "I3": {
+          "cifp_id": "I3"
+        },
+        "R3": {
+          "cifp_id": "R3"
+        },
+        "RY1": {
+          "cifp_id": "RY21"
+        },
+        "RZ1": {
+          "cifp_id": "RZ21"
+        }
+      },
+      "departure_routes": {
+        "21": {
+          "GVE": {
+            "cleared_altitude": 4000,
+            "waypoints": "KCHO-3/h210"
+          }
+        },
+        "3": {
+          "GVE": {
+            "cleared_altitude": 4000,
+            "waypoints": "KCHO-21/h30"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "GVE",
+          "route": "GVE PROUD2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "RPA"
+            },
+            {
+              "icao": "EDV"
+            }
+          ],
+          "destination": "KLGA",
+          "exit": "GVE",
+          "route": "GVE PROUD2"
+        }
+      ],
+      "exit_categories": {
+        "GVE": "ALL"
+      },
+      "tower_list": 2,
+      "hold_for_release": true
+    },
+    "KGVE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMFV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KWAL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KOXB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KRIC": {
       "departure_runways_as_one": ["34,2"],
       "approaches": {
-        "I2": { "cifp_id": "I2" },
-        "RY2": { "cifp_id": "RY2" },
-        "RZ2": { "cifp_id": "RZ2" },
-        "I16": { "cifp_id": "I16" },
-        "RY6": { "cifp_id": "RY16" },
-        "RZ6": { "cifp_id": "RZ16" },
-        "I34": { "cifp_id": "I34" },
-        "RY4": { "cifp_id": "RY34" },
-        "RZ4": { "cifp_id": "RZ34" },
-        "RY0": { "cifp_id": "RY20" },
-        "RZ0": { "cifp_id": "RZ20" }
+        "I2": {
+          "cifp_id": "I2"
+        },
+        "RY2": {
+          "cifp_id": "RY2"
+        },
+        "RZ2": {
+          "cifp_id": "RZ2"
+        },
+        "I16": {
+          "cifp_id": "I16"
+        },
+        "RY6": {
+          "cifp_id": "RY16"
+        },
+        "RZ6": {
+          "cifp_id": "RZ16"
+        },
+        "I34": {
+          "cifp_id": "I34"
+        },
+        "RY4": {
+          "cifp_id": "RY34"
+        },
+        "RZ4": {
+          "cifp_id": "RZ34"
+        },
+        "RY0": {
+          "cifp_id": "RY20"
+        },
+        "RZ0": {
+          "cifp_id": "RZ20"
+        }
       },
       "departure_routes": {
         "2": {
@@ -615,61 +759,6 @@
         "HOUKY": "South"
       },
       "tower_list": 1
-    },
-    "KCHO": {
-      "approaches": {
-        "I3": { "cifp_id": "I3" },
-        "R3": { "cifp_id": "R3" },
-        "RY1": { "cifp_id": "RY21" },
-        "RZ1": { "cifp_id": "RZ21" }
-      },
-      "departure_routes": {
-        "21": {
-          "GVE": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-3/h210"
-          }
-        },
-        "3": {
-          "GVE": {
-            "cleared_altitude": 4000,
-            "waypoints": "KCHO-21/h30"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
-            },
-            {
-              "icao": "EDV"
-            }
-          ],
-          "destination": "KLGA",
-          "exit": "GVE",
-          "route": "GVE PROUD2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
-            },
-            {
-              "icao": "EDV"
-            }
-          ],
-          "destination": "KLGA",
-          "exit": "GVE",
-          "route": "GVE PROUD2"
-        }
-      ],
-      "exit_categories": {
-        "GVE": "ALL"
-      },
-      "tower_list": 2,
-      "hold_for_release": true
     }
   },
   "inbound_flows": {
@@ -1261,24 +1350,26 @@
           "KCHO": 2
         }
       },
-      "solo_controller": "RIC_L_APP",
-      "multi_controllers": {
-        "default": {
-          "RIC_L_APP": {
-            "primary": true,
-            "departures": ["KRIC/KALLI7", "KRIC/RVN"],
-            "inbound_flows": ["DUCXS5.NEAVL", "DUCXS5.KELCE", "SPIDR5", "POWTN5", "BNTLY RIC"]
-          },
-          "RIC_P_APP": {
-            "backup": "RIC_L_APP",
-            "departures": ["KRIC/LUCYL6", "KRIC/RVS", "KRIC/COLIN8"],
-            "inbound_flows": ["JAMIE RIC"]
-          },
-          "RIC_F_APP": { "backup": "RIC_L_APP" },
-          "RIC_E_APP": { "backup": "RIC_W_APP" },
-          "RIC_W_APP": { "backup": "RIC_P_APP" },
-          "CHO_E_APP": { "backup": "RIC_L_APP", "inbound_flows": ["CHO NORTH ARR N"] },
-          "CHO_W_APP": { "backup": "CHO_E_APP", "departures": ["KCHO"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CHO_E_APP": ["CHO_W_APP"],
+          "RIC_L_APP": ["CHO_E_APP", "RIC_F_APP", "RIC_P_APP"],
+          "RIC_P_APP": ["RIC_W_APP"],
+          "RIC_W_APP": ["RIC_E_APP"]
+        },
+        "departure_assignments": {
+          "KCHO": "CHO_W_APP",
+          "KRIC": "RIC_L_APP"
+        },
+        "inbound_assignments": {
+          "DUCXS5.NEAVL": "RIC_L_APP",
+          "DUCXS5.KELCE": "RIC_L_APP",
+          "SPIDR5": "RIC_L_APP",
+          "POWTN5": "RIC_L_APP",
+          "BNTLY RIC": "RIC_L_APP",
+          "JAMIE RIC": "RIC_P_APP",
+          "CHO NORTH ARR N": "CHO_E_APP"
         }
       },
       "controllers": [
@@ -1373,24 +1464,26 @@
           "KCHO": 2
         }
       },
-      "solo_controller": "RIC_L_APP",
-      "multi_controllers": {
-        "default": {
-          "RIC_L_APP": {
-            "primary": true,
-            "departures": ["KRIC/KALLI7", "KRIC/RVN"],
-            "inbound_flows": ["DUCXS5.NEAVL", "DUCXS5.KELCE", "SPIDR5", "POWTN5", "BNTLY RIC"]
-          },
-          "RIC_P_APP": {
-            "backup": "RIC_L_APP",
-            "departures": ["KRIC/LUCYL6", "KRIC/RVS", "KRIC/COLIN8"],
-            "inbound_flows": ["JAMIE RIC"]
-          },
-          "RIC_F_APP": { "backup": "RIC_L_APP" },
-          "RIC_E_APP": { "backup": "RIC_W_APP" },
-          "RIC_W_APP": { "backup": "RIC_P_APP" },
-          "CHO_E_APP": { "backup": "RIC_L_APP", "inbound_flows": ["CHO NORTH ARR S"] },
-          "CHO_W_APP": { "backup": "CHO_E_APP", "departures": ["KCHO"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CHO_E_APP": ["CHO_W_APP"],
+          "RIC_L_APP": ["CHO_E_APP", "RIC_F_APP", "RIC_P_APP"],
+          "RIC_P_APP": ["RIC_W_APP"],
+          "RIC_W_APP": ["RIC_E_APP"]
+        },
+        "departure_assignments": {
+          "KCHO": "CHO_W_APP",
+          "KRIC": "RIC_P_APP"
+        },
+        "inbound_assignments": {
+          "DUCXS5.NEAVL": "RIC_L_APP",
+          "DUCXS5.KELCE": "RIC_L_APP",
+          "SPIDR5": "RIC_L_APP",
+          "POWTN5": "RIC_L_APP",
+          "BNTLY RIC": "RIC_L_APP",
+          "JAMIE RIC": "RIC_P_APP",
+          "CHO NORTH ARR S": "CHO_E_APP"
         }
       },
       "controllers": [
@@ -1584,7 +1677,6 @@
       "PCT SFRA",
       "PCT VAirway"
     ],
-
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
   }
 }

@@ -1173,7 +1173,6 @@
             }
           ]
         },
-
         {
           "exit": "PHARA",
           "destination": "KBNA",
@@ -1647,14 +1646,21 @@
           "KOKC": 5
         }
       },
-      "solo_controller": "OKC_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OKC_W_APP": { "primary": true, "arrivals": ["CAMET3"] },
-          "OKC_S_APP": { "backup": "OKC_W_APP", "arrivals": ["YUCKS3", "GHOST3"], "departures": ["KOKC/17R"] },
-          "OKC_D_APP": { "backup": "OKC_W_APP", "arrivals": ["TSDEL3"], "departures": ["KOKC/17L"] },
-          "OKC_E_APP": { "backup": "OKC_D_APP", "arrivals": ["MURAH3"] },
-          "OKC_F_APP": { "backup": "OKC_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "OKC_D_APP": ["OKC_E_APP"],
+          "OKC_W_APP": ["OKC_D_APP", "OKC_F_APP", "OKC_S_APP"]
+        },
+        "inbound_assignments": {
+          "CAMET3": "OKC_W_APP",
+          "GHOST3": "OKC_S_APP",
+          "MURAH3": "OKC_E_APP",
+          "TSDEL3": "OKC_D_APP",
+          "YUCKS3": "OKC_S_APP"
+        },
+        "departure_assignments": {
+          "KOKC": "OKC_S_APP"
         }
       },
       "controllers": ["FTW_51_CTR", "KC_54_CTR", "OKC_TWR"],
@@ -1705,14 +1711,21 @@
           "KOKC": 5
         }
       },
-      "solo_controller": "OKC_W_APP",
-      "multi_controllers": {
-        "default": {
-          "OKC_W_APP": { "primary": true, "arrivals": ["CAMET3"], "departures": ["KOKC/35L"] },
-          "OKC_S_APP": { "backup": "OKC_W_APP", "arrivals": ["YUCKS3", "GHOST3"] },
-          "OKC_D_APP": { "backup": "OKC_W_APP", "arrivals": ["TSDEL3"] },
-          "OKC_E_APP": { "backup": "OKC_D_APP", "arrivals": ["MURAH3"], "departures": ["KOKC/35R"] },
-          "OKC_F_APP": { "backup": "OKC_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "OKC_D_APP": ["OKC_E_APP"],
+          "OKC_W_APP": ["OKC_D_APP", "OKC_F_APP", "OKC_S_APP"]
+        },
+        "inbound_assignments": {
+          "CAMET3": "OKC_W_APP",
+          "GHOST3": "OKC_S_APP",
+          "MURAH3": "OKC_E_APP",
+          "TSDEL3": "OKC_D_APP",
+          "YUCKS3": "OKC_S_APP"
+        },
+        "departure_assignments": {
+          "KOKC": "OKC_W_APP"
         }
       },
       "controllers": ["FTW_51_CTR", "KC_54_CTR", "OKC_TWR"],

@@ -704,30 +704,22 @@
           "KBDL": 18
         }
       },
-      "solo_controller": "BDL_B_APP",
-      "multi_controllers": {
-        "default": {
-          "BDL_B_APP": {
-            "primary": true,
-            "departures": ["KBDL"],
-            "arrivals": ["DPK3"]
-          },
-          "BDL_F_APP": {
-            "backup": "BDL_B_APP"
-          },
-          "BDL_H_APP": {
-            "backup": "BDL_B_APP",
-            "departures": ["KHFD"]
-          },
-          "BDL_W_APP": {
-            "backup": "BDL_B_APP",
-            "departures": ["KBAF", "KCEF"],
-            "arrivals": ["STELA1.Ga", "STELA1.Jets"]
-          },
-          "BDL_E_APP": {
-            "backup": "BDL_B_APP",
-            "departures": ["KORH"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BDL_B_APP": ["BDL_E_APP", "BDL_F_APP", "BDL_H_APP", "BDL_W_APP"]
+        },
+        "inbound_assignments": {
+          "DPK3": "BDL_B_APP",
+          "STELA1.Ga": "BDL_W_APP",
+          "STELA1.Jets": "BDL_W_APP"
+        },
+        "departure_assignments": {
+          "KBAF": "BDL_W_APP",
+          "KBDL": "BDL_B_APP",
+          "KCEF": "BDL_W_APP",
+          "KHFD": "BDL_H_APP",
+          "KORH": "BDL_E_APP"
         }
       },
       "controllers": [
@@ -821,30 +813,22 @@
           "KBDL": 15
         }
       },
-      "solo_controller": "BDL_B_APP",
-      "multi_controllers": {
-        "default": {
-          "BDL_B_APP": {
-            "primary": true,
-            "departures": ["KBDL"]
-          },
-          "BDL_F_APP": {
-            "backup": "BDL_B_APP"
-          },
-          "BDL_H_APP": {
-            "backup": "BDL_B_APP",
-            "departures": ["KHFD"],
-            "arrivals": ["DPK3"]
-          },
-          "BDL_W_APP": {
-            "backup": "BDL_B_APP",
-            "departures": ["KBAF", "KCEF"],
-            "arrivals": ["STELA1.Ga", "STELA1.Jets"]
-          },
-          "BDL_E_APP": {
-            "backup": "BDL_B_APP",
-            "departures": ["KORH"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BDL_B_APP": ["BDL_E_APP", "BDL_F_APP", "BDL_H_APP", "BDL_W_APP"]
+        },
+        "inbound_assignments": {
+          "DPK3": "BDL_H_APP",
+          "STELA1.Ga": "BDL_W_APP",
+          "STELA1.Jets": "BDL_W_APP"
+        },
+        "departure_assignments": {
+          "KBAF": "BDL_W_APP",
+          "KBDL": "BDL_B_APP",
+          "KCEF": "BDL_W_APP",
+          "KHFD": "BDL_H_APP",
+          "KORH": "BDL_E_APP"
         }
       },
       "controllers": [

@@ -1,20 +1,104 @@
 {
   "tracon": "PCT",
   "airports": {
-    "KMTN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KJYO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KAPG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFDK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KILG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "W29": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFME": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KGAI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCGS": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KESN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KDMW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMRB": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHGR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KOKV": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KMTN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KJYO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KAPG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFDK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KILG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "W29": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFME": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KGAI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCGS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KESN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KDMW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMRB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHGR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KOKV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KDCA": {
       "approaches": {
         "N": {
@@ -176,17 +260,39 @@
     },
     "KBWI": {
       "approaches": {
-        "I10": { "cifp_id": "I10" },
-        "I28": { "cifp_id": "I28" },
-        "I3L": { "cifp_id": "I33L" },
-        "I3R": { "cifp_id": "I33R" },
-        "I5L": { "cifp_id": "I15L" },
-        "I5R": { "cifp_id": "I15R" },
-        "RX3L": { "cifp_id": "RX33L" },
-        "RZ10": { "cifp_id": "RZ10" },
-        "RZ28": { "cifp_id": "RZ28" },
-        "RZ3L": { "cifp_id": "RZ33L" },
-        "RZ5R": { "cifp_id": "RZ15R" }
+        "I10": {
+          "cifp_id": "I10"
+        },
+        "I28": {
+          "cifp_id": "I28"
+        },
+        "I3L": {
+          "cifp_id": "I33L"
+        },
+        "I3R": {
+          "cifp_id": "I33R"
+        },
+        "I5L": {
+          "cifp_id": "I15L"
+        },
+        "I5R": {
+          "cifp_id": "I15R"
+        },
+        "RX3L": {
+          "cifp_id": "RX33L"
+        },
+        "RZ10": {
+          "cifp_id": "RZ10"
+        },
+        "RZ28": {
+          "cifp_id": "RZ28"
+        },
+        "RZ3L": {
+          "cifp_id": "RZ33L"
+        },
+        "RZ5R": {
+          "cifp_id": "RZ15R"
+        }
       },
       "departure_routes": {
         "15R": {
@@ -2380,37 +2486,44 @@
     "BWI_B_APP": {
       "frequency": 125525,
       "radio_name": "Potomac Approach",
-      "sector_id": "1B"
+      "sector_id": "1B",
+      "default_airport": "KDCA"
     },
     "BWI_H_APP": {
       "frequency": 133850,
       "radio_name": "Potomac Approach",
-      "sector_id": "1H"
+      "sector_id": "1H",
+      "default_airport": "KDCA"
     },
     "BWI_W_APP": {
       "frequency": 128700,
       "radio_name": "Potomac Approach",
-      "sector_id": "1W"
+      "sector_id": "1W",
+      "default_airport": "KDCA"
     },
     "BWI_G_APP": {
       "frequency": 124550,
       "radio_name": "Potomac Approach",
-      "sector_id": "1G"
+      "sector_id": "1G",
+      "default_airport": "KDCA"
     },
     "BWI_P_APP": {
       "frequency": 133750,
       "radio_name": "Potomac Approach",
-      "sector_id": "1P"
+      "sector_id": "1P",
+      "default_airport": "KDCA"
     },
     "BWI_N_APP": {
       "frequency": 119000,
       "radio_name": "Potomac Approach",
-      "sector_id": "1N"
+      "sector_id": "1N",
+      "default_airport": "KDCA"
     },
     "BWI_S_APP": {
       "frequency": 119700,
       "radio_name": "Potomac Approach",
-      "sector_id": "1S"
+      "sector_id": "1S",
+      "default_airport": "KDCA"
     },
     "BWI_Z_APP": {
       "frequency": 132770,
@@ -2569,16 +2682,32 @@
           "overflights": 1
         }
       },
-      "solo_controller": "BWI_S_APP",
-      "multi_controllers": {
-        "default": {
-          "BWI_S_APP": { "primary": true, "inbound_flows": ["RAVNN8.28"] },
-          "BWI_B_APP": { "backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"] },
-          "BWI_G_APP": { "backup": "BWI_S_APP", "departures": ["KBWI/CONLE5", "KBWI/DUKPN1"] },
-          "BWI_W_APP": { "backup": "BWI_B_APP", "departures": ["KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2"] },
-          "BWI_H_APP": { "backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"] },
-          "BWI_N_APP": { "backup": "BWI_S_APP" },
-          "BWI_P_APP": { "backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BWI_B_APP": ["BWI_W_APP"],
+          "BWI_G_APP": ["BWI_P_APP"],
+          "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
+          "BWI_W_APP": ["BWI_H_APP"]
+        },
+        "departure_assignments": {
+          "KBWI/CONLE5": "BWI_G_APP",
+          "KBWI/DUKPN1": "BWI_G_APP",
+          "KBWI/FOXHL1": "BWI_W_APP",
+          "KBWI/LINSE2": "BWI_W_APP",
+          "KBWI/TERPZ8": "BWI_W_APP",
+          "KBWI": "BWI_S_APP"
+        },
+        "inbound_assignments": {
+          "RAVNN8.28": "BWI_S_APP",
+          "TRISH4.NUGGY": "BWI_B_APP",
+          "TRISH4.DRRES": "BWI_B_APP",
+          "CLIPR3": "BWI_B_APP",
+          "SKILS5": "BWI_B_APP",
+          "ANTHM5": "BWI_H_APP",
+          "JERES2/MCRAY2": "BWI_H_APP",
+          "ARLFT2": "BWI_H_APP",
+          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -2669,16 +2798,32 @@
           "overflights": 1
         }
       },
-      "solo_controller": "BWI_S_APP",
-      "multi_controllers": {
-        "default": {
-          "BWI_S_APP": { "primary": true, "inbound_flows": ["RAVNN8.33L"] },
-          "BWI_B_APP": { "backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"] },
-          "BWI_G_APP": { "backup": "BWI_S_APP", "departures": ["KBWI/CONLE5", "KBWI/DUKPN1"] },
-          "BWI_W_APP": { "backup": "BWI_B_APP", "departures": ["KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2"] },
-          "BWI_H_APP": { "backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"] },
-          "BWI_N_APP": { "backup": "BWI_S_APP" },
-          "BWI_P_APP": { "backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BWI_B_APP": ["BWI_W_APP"],
+          "BWI_G_APP": ["BWI_P_APP"],
+          "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
+          "BWI_W_APP": ["BWI_H_APP"]
+        },
+        "departure_assignments": {
+          "KBWI/CONLE5": "BWI_G_APP",
+          "KBWI/DUKPN1": "BWI_G_APP",
+          "KBWI/FOXHL1": "BWI_W_APP",
+          "KBWI/LINSE2": "BWI_W_APP",
+          "KBWI/TERPZ8": "BWI_W_APP",
+          "KBWI": "BWI_S_APP"
+        },
+        "inbound_assignments": {
+          "RAVNN8.33L": "BWI_S_APP",
+          "TRISH4.NUGGY": "BWI_B_APP",
+          "TRISH4.DRRES": "BWI_B_APP",
+          "CLIPR3": "BWI_B_APP",
+          "SKILS5": "BWI_B_APP",
+          "ANTHM5": "BWI_H_APP",
+          "JERES2/MCRAY2": "BWI_H_APP",
+          "ARLFT2": "BWI_H_APP",
+          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -2769,16 +2914,32 @@
           "overflights": 1
         }
       },
-      "solo_controller": "BWI_S_APP",
-      "multi_controllers": {
-        "default": {
-          "BWI_S_APP": { "primary": true, "inbound_flows": ["RAVNN8.10"] },
-          "BWI_B_APP": { "backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"] },
-          "BWI_G_APP": { "backup": "BWI_S_APP", "departures": ["KBWI/CONLE5", "KBWI/DUKPN1"] },
-          "BWI_W_APP": { "backup": "BWI_B_APP", "departures": ["KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2"] },
-          "BWI_H_APP": { "backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"] },
-          "BWI_N_APP": { "backup": "BWI_S_APP" },
-          "BWI_P_APP": { "backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BWI_B_APP": ["BWI_W_APP"],
+          "BWI_G_APP": ["BWI_P_APP"],
+          "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
+          "BWI_W_APP": ["BWI_H_APP"]
+        },
+        "departure_assignments": {
+          "KBWI/CONLE5": "BWI_G_APP",
+          "KBWI/DUKPN1": "BWI_G_APP",
+          "KBWI/FOXHL1": "BWI_W_APP",
+          "KBWI/LINSE2": "BWI_W_APP",
+          "KBWI/TERPZ8": "BWI_W_APP",
+          "KBWI": "BWI_S_APP"
+        },
+        "inbound_assignments": {
+          "RAVNN8.10": "BWI_S_APP",
+          "TRISH4.NUGGY": "BWI_B_APP",
+          "TRISH4.DRRES": "BWI_B_APP",
+          "CLIPR3": "BWI_B_APP",
+          "SKILS5": "BWI_B_APP",
+          "ANTHM5": "BWI_H_APP",
+          "JERES2/MCRAY2": "BWI_H_APP",
+          "ARLFT2": "BWI_H_APP",
+          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -2865,16 +3026,32 @@
           "overflights": 1
         }
       },
-      "solo_controller": "BWI_S_APP",
-      "multi_controllers": {
-        "default": {
-          "BWI_S_APP": { "primary": true, "inbound_flows": ["RAVNN8.10"] },
-          "BWI_B_APP": { "backup": "BWI_S_APP", "inbound_flows": ["TRISH4.NUGGY", "TRISH4.DRRES", "CLIPR3", "SKILS5"] },
-          "BWI_G_APP": { "backup": "BWI_S_APP", "departures": ["KBWI/CONLE5", "KBWI/DUKPN1"] },
-          "BWI_W_APP": { "backup": "BWI_B_APP", "departures": ["KBWI/TERPZ8", "KBWI/FOXHL1", "KBWI/LINSE2"] },
-          "BWI_H_APP": { "backup": "BWI_W_APP", "inbound_flows": ["ANTHM5", "JERES2/MCRAY2", "ARLFT2"] },
-          "BWI_N_APP": { "backup": "BWI_S_APP" },
-          "BWI_P_APP": { "backup": "BWI_G_APP", "inbound_flows": ["DEALE3/MIIDY3"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BWI_B_APP": ["BWI_W_APP"],
+          "BWI_G_APP": ["BWI_P_APP"],
+          "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
+          "BWI_W_APP": ["BWI_H_APP"]
+        },
+        "departure_assignments": {
+          "KBWI/CONLE5": "BWI_G_APP",
+          "KBWI/DUKPN1": "BWI_G_APP",
+          "KBWI/FOXHL1": "BWI_W_APP",
+          "KBWI/LINSE2": "BWI_W_APP",
+          "KBWI/TERPZ8": "BWI_W_APP",
+          "KBWI": "BWI_S_APP"
+        },
+        "inbound_assignments": {
+          "RAVNN8.10": "BWI_S_APP",
+          "TRISH4.NUGGY": "BWI_B_APP",
+          "TRISH4.DRRES": "BWI_B_APP",
+          "CLIPR3": "BWI_B_APP",
+          "SKILS5": "BWI_B_APP",
+          "ANTHM5": "BWI_H_APP",
+          "JERES2/MCRAY2": "BWI_H_APP",
+          "ARLFT2": "BWI_H_APP",
+          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -3084,21 +3261,24 @@
     },
     "significant_points": {
       "AGARD": {},
-      "BUFFR": { "short_name": "BFR" },
+      "BUFFR": {
+        "short_name": "BFR"
+      },
       "DQO": {},
       "FLASK": {},
       "GLANC": {},
       "JERES": {},
       "MAULS": {},
       "MELTN": {},
-      "OTTTO": { "short_name": "FXO" },
+      "OTTTO": {
+        "short_name": "FXO"
+      },
       "RAMAY": {},
       "RRSIN": {},
       "SCOOB": {},
       "SWANN": {}
     },
     "stars_maps": ["CHP Approaches", "PCT MVA", "CHP SIDSTAR", "CHP Approaches"],
-
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
   }
 }

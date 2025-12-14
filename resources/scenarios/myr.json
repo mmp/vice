@@ -25,9 +25,15 @@
         }
       },
       "approaches": {
-        "I18": { "cifp_id": "I18" },
-        "L18": { "cifp_id": "L18" },
-        "R36": { "cifp_id": "R36" },
+        "I18": {
+          "cifp_id": "I18"
+        },
+        "L18": {
+          "cifp_id": "L18"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        },
         "V18": {
           "runway": "18",
           "full_name": "Visual Approach Runway 18",
@@ -233,9 +239,15 @@
         }
       },
       "approaches": {
-        "R23": { "cifp_id": "R23" },
-        "I23": { "cifp_id": "I23" },
-        "R5": { "cifp_id": "R5" },
+        "R23": {
+          "cifp_id": "R23"
+        },
+        "I23": {
+          "cifp_id": "I23"
+        },
+        "R5": {
+          "cifp_id": "R5"
+        },
         "V5": {
           "runway": "5",
           "full_name": "Visual Approach Runway 5",
@@ -347,17 +359,75 @@
       ],
       "tower_list": 2,
       "hold_for_release": true,
-      "vfr": { "random_routes": { "rate": 5 } }
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
     },
-    "KHYW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KGGE": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPHH": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KSUT": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMAO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFLO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMMT": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCKI": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMNI": { "vfr": { "random_routes": { "rate": 5 } } }
+    "KHYW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KGGE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPHH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KSUT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMAO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFLO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCKI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMNI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    }
   },
   "inbound_flows": {
     "CAE.fast": {
@@ -864,19 +934,26 @@
           "KCRE": 1
         }
       },
-      "solo_controller": "MYR_E_APP",
-      "multi_controllers": {
-        "default": {
-          "MYR_E_APP": {
-            "primary": true,
-            "arrivals": ["ILM.fast", "ILM.slow", "FAY"],
-            "departures": ["KCRE", "KMYR/East"]
-          },
-          "MYR_W_APP": {
-            "backup": "MYR_E_APP",
-            "departures": ["KMYR/West"],
-            "arrivals": ["CAE.fast", "CAE.slow", "FLO.slow", "FLO.fast", "UNJAM", "CHS.slow", "CHS.fast"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MYR_E_APP": ["MYR_W_APP"]
+        },
+        "inbound_assignments": {
+          "CAE.fast": "MYR_W_APP",
+          "CAE.slow": "MYR_W_APP",
+          "CHS.fast": "MYR_W_APP",
+          "CHS.slow": "MYR_W_APP",
+          "FAY": "MYR_E_APP",
+          "FLO.fast": "MYR_W_APP",
+          "FLO.slow": "MYR_W_APP",
+          "ILM.fast": "MYR_E_APP",
+          "ILM.slow": "MYR_E_APP",
+          "UNJAM": "MYR_W_APP"
+        },
+        "departure_assignments": {
+          "KCRE": "MYR_E_APP",
+          "KMYR": "MYR_E_APP"
         }
       },
       "controllers": [
@@ -958,19 +1035,26 @@
           "KCRE": 1
         }
       },
-      "solo_controller": "MYR_E_APP",
-      "multi_controllers": {
-        "default": {
-          "MYR_E_APP": {
-            "primary": true,
-            "arrivals": ["ILM.fast", "ILM.slow", "FAY"],
-            "departures": ["KCRE", "KMYR/East"]
-          },
-          "MYR_W_APP": {
-            "backup": "MYR_E_APP",
-            "departures": ["KMYR/West"],
-            "arrivals": ["CAE.fast", "CAE.slow", "FLO.slow", "FLO.fast", "UNJAM", "CHS.slow", "CHS.fast"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MYR_E_APP": ["MYR_W_APP"]
+        },
+        "inbound_assignments": {
+          "CAE.fast": "MYR_W_APP",
+          "CAE.slow": "MYR_W_APP",
+          "CHS.fast": "MYR_W_APP",
+          "CHS.slow": "MYR_W_APP",
+          "FAY": "MYR_E_APP",
+          "FLO.fast": "MYR_W_APP",
+          "FLO.slow": "MYR_W_APP",
+          "ILM.fast": "MYR_E_APP",
+          "ILM.slow": "MYR_E_APP",
+          "UNJAM": "MYR_W_APP"
+        },
+        "departure_assignments": {
+          "KCRE": "MYR_E_APP",
+          "KMYR": "MYR_E_APP"
         }
       },
       "controllers": [

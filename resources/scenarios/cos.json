@@ -3,16 +3,36 @@
   "airports": {
     "KCOS": {
       "approaches": {
-        "I7L": { "cifp_id": "I17L" },
-        "RY7L": { "cifp_id": "RY17L" },
-        "RZ7L": { "cifp_id": "RZ17L" },
-        "RY7R": { "cifp_id": "RY17R" },
-        "I5L": { "cifp_id": "I35L" },
-        "RY5L": { "cifp_id": "RY35L" },
-        "RZ5L": { "cifp_id": "RZ35L" },
-        "I5R": { "cifp_id": "I35R" },
-        "RY5R": { "cifp_id": "RY35R" },
-        "RZ5R": { "cifp_id": "RZ35R" }
+        "I7L": {
+          "cifp_id": "I17L"
+        },
+        "RY7L": {
+          "cifp_id": "RY17L"
+        },
+        "RZ7L": {
+          "cifp_id": "RZ17L"
+        },
+        "RY7R": {
+          "cifp_id": "RY17R"
+        },
+        "I5L": {
+          "cifp_id": "I35L"
+        },
+        "RY5L": {
+          "cifp_id": "RY35L"
+        },
+        "RZ5L": {
+          "cifp_id": "RZ35L"
+        },
+        "I5R": {
+          "cifp_id": "I35R"
+        },
+        "RY5R": {
+          "cifp_id": "RY35R"
+        },
+        "RZ5R": {
+          "cifp_id": "RZ35R"
+        }
       },
       "departure_routes": {
         "35L": {
@@ -771,7 +791,22 @@
           "KCOS": 2
         }
       },
-      "solo_controller": "COS_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "COS_APP": []
+        },
+        "inbound_assignments": {
+          "DEBERRY5": "COS_APP",
+          "DEN": "COS_APP",
+          "DEN.NW": "COS_APP",
+          "OZZZY5": "COS_APP"
+        },
+        "departure_assignments": {
+          "KCOS": "COS_APP",
+          "KFLY": "COS_APP"
+        }
+      },
       "controllers": ["COS_W_TWR", "COS_E_TWR", "COS_APP", "DEN_A_APP", "DEN_29_CTR", "PUB_APP"],
       "default_maps": ["COS NORTH"],
       "departure_runways": [
@@ -825,7 +860,22 @@
           "KCOS": 2
         }
       },
-      "solo_controller": "COS_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "COS_APP": []
+        },
+        "inbound_assignments": {
+          "DEBERRY5": "COS_APP",
+          "DEN": "COS_APP",
+          "DEN.NW": "COS_APP",
+          "OZZZY5": "COS_APP"
+        },
+        "departure_assignments": {
+          "KCOS": "COS_APP",
+          "KFLY": "COS_APP"
+        }
+      },
       "controllers": ["COS_W_TWR", "COS_E_TWR", "COS_APP", "DEN_A_APP", "DEN_29_CTR", "PUB_APP"],
       "default_maps": ["COS SOUTH"],
       "departure_runways": [

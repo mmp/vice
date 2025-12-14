@@ -4,7 +4,11 @@
   "name": "ZLAA",
   "airports": {
     "KLAX": {
-      "approaches": { "I4R": { "cifp_id": "I24R" } },
+      "approaches": {
+        "I4R": {
+          "cifp_id": "I24R"
+        }
+      },
       "departure_controller": "SoCal Departure (Malibu)",
       "departure_runways_as_one": ["25L,25R", "24L,24R"],
       "departure_routes": {
@@ -1112,17 +1116,23 @@
     },
     "KSNA": {
       "approaches": {
-        "Z0R": { "cifp_id": "RZ20R" }
+        "Z0R": {
+          "cifp_id": "RZ20R"
+        }
       }
     },
     "KHHR": {
       "approaches": {
-        "R25": { "cifp_id": "R25" }
+        "R25": {
+          "cifp_id": "R25"
+        }
       }
     },
     "KLGB": {
       "approaches": {
-        "I30": { "cifp_id": "I30" }
+        "I30": {
+          "cifp_id": "I30"
+        }
       }
     }
   },
@@ -1802,7 +1812,18 @@
   "magnetic_adjustment": 11,
   "scenarios": {
     "ZLA Sector 14 (West Flow)": {
-      "solo_controller": "ZLA Sector 14",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZLA Sector 14": []
+        },
+        "inbound_assignments": {
+          "HUULL2": "ZLA Sector 14",
+          "RUKKI1/BAUBB3": "ZLA Sector 14",
+          "RYDRR2.ELKEY": "ZLA Sector 14",
+          "RYDRR2.SNAXX": "ZLA Sector 14"
+        }
+      },
       "controllers": [
         "ZLA Sector 28",
         "ZLA Sector 13",

@@ -276,7 +276,21 @@
           "KBIL": 5
         }
       },
-      "solo_controller": "BIL_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BIL_APP": []
+        },
+        "inbound_assignments": {
+          "BGHRN3": "BIL_APP",
+          "CRAZI4": "BIL_APP",
+          "KUSTR3": "BIL_APP",
+          "YLSTN3": "BIL_APP"
+        },
+        "departure_assignments": {
+          "KBIL": "BIL_APP"
+        }
+      },
       "controllers": ["BIL_TWR", "BIL_APP", "SLC_17_CTR"],
       "departure_runways": [
         {
@@ -311,7 +325,21 @@
           "KBIL": 5
         }
       },
-      "solo_controller": "BIL_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BIL_APP": []
+        },
+        "inbound_assignments": {
+          "BGHRN3": "BIL_APP",
+          "CRAZI4": "BIL_APP",
+          "KUSTR3": "BIL_APP",
+          "YLSTN3": "BIL_APP"
+        },
+        "departure_assignments": {
+          "KBIL": "BIL_APP"
+        }
+      },
       "controllers": ["BIL_TWR", "BIL_APP", "SLC_17_CTR"],
       "departure_runways": [
         {

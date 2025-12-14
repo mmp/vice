@@ -958,7 +958,16 @@
   "default_scenario": "ZNY Sector 36",
   "scenarios": {
     "ZNY Sector 36": {
-      "solo_controller": "ZNY 36 Sparta",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZNY 36 Sparta": []
+        },
+        "inbound_assignments": {
+          "PUCKY1-JENNO": "ZNY 36 Sparta",
+          "PUCKY1-YODAA": "ZNY 36 Sparta"
+        }
+      },
       "controllers": [
         "ZNY 34 Elmira",
         "ZNY 35 Huguenot",

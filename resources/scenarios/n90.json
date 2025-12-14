@@ -434,14 +434,30 @@
     "KEWR": {
       "name": "Newark",
       "approaches": {
-        "I11": { "cifp_id": "I11" },
-        "I2L": { "cifp_id": "I22L" },
-        "I2R": { "cifp_id": "I22R" },
-        "I4L": { "cifp_id": "IZ4L" },
-        "I4R": { "cifp_id": "I4R" },
-        "R29": { "cifp_id": "RX29" },
-        "RY9": { "cifp_id": "RY29" },
-        "RZ9": { "cifp_id": "RZ29" }
+        "I11": {
+          "cifp_id": "I11"
+        },
+        "I2L": {
+          "cifp_id": "I22L"
+        },
+        "I2R": {
+          "cifp_id": "I22R"
+        },
+        "I4L": {
+          "cifp_id": "IZ4L"
+        },
+        "I4R": {
+          "cifp_id": "I4R"
+        },
+        "R29": {
+          "cifp_id": "RX29"
+        },
+        "RY9": {
+          "cifp_id": "RY29"
+        },
+        "RZ9": {
+          "cifp_id": "RZ29"
+        }
       },
       "approach_regions": {
         "22L": {
@@ -2366,10 +2382,18 @@
           "type": "ILS",
           "waypoints": ["DPK FRIKK/iaf/faf/a1600+/hilpt/pta1400"]
         },
-        "R1": { "cifp_id": "R1" },
-        "R14": { "cifp_id": "RZ14" },
-        "R19": { "cifp_id": "R19" },
-        "R32": { "cifp_id": "R32" }
+        "R1": {
+          "cifp_id": "R1"
+        },
+        "R14": {
+          "cifp_id": "RZ14"
+        },
+        "R19": {
+          "cifp_id": "R19"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        }
       },
       "departure_routes": {
         "1": {
@@ -2539,9 +2563,15 @@
     "KHVN": {
       "name": "New Haven",
       "approaches": {
-        "I2": { "cifp_id": "I2" },
-        "R2": { "cifp_id": "R2" },
-        "R20": { "cifp_id": "R20" }
+        "I2": {
+          "cifp_id": "I2"
+        },
+        "R2": {
+          "cifp_id": "R2"
+        },
+        "R20": {
+          "cifp_id": "R20"
+        }
       },
       "departure_routes": {
         "2": {
@@ -2685,12 +2715,24 @@
     "KISP": {
       "name": "MacArthur",
       "approaches": {
-        "R5R": { "cifp_id": "R15R" },
-        "I24": { "cifp_id": "I24" },
-        "R24": { "cifp_id": "R24" },
-        "R3L": { "cifp_id": "R33L" },
-        "I6": { "cifp_id": "I6" },
-        "R6": { "cifp_id": "R6" }
+        "R5R": {
+          "cifp_id": "R15R"
+        },
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "R24": {
+          "cifp_id": "R24"
+        },
+        "R3L": {
+          "cifp_id": "R33L"
+        },
+        "I6": {
+          "cifp_id": "I6"
+        },
+        "R6": {
+          "cifp_id": "R6"
+        }
       },
       "departure_routes": {
         "15R": {
@@ -2911,12 +2953,24 @@
     "KHPN": {
       "name": "Westchester",
       "approaches": {
-        "I16": { "cifp_id": "I16" },
-        "I34": { "cifp_id": "I34" },
-        "Y16": { "cifp_id": "RY16" },
-        "Y34": { "cifp_id": "RY34" },
-        "Z16": { "cifp_id": "RZ16" },
-        "Z34": { "cifp_id": "RZ34" }
+        "I16": {
+          "cifp_id": "I16"
+        },
+        "I34": {
+          "cifp_id": "I34"
+        },
+        "Y16": {
+          "cifp_id": "RY16"
+        },
+        "Y34": {
+          "cifp_id": "RY34"
+        },
+        "Z16": {
+          "cifp_id": "RZ16"
+        },
+        "Z34": {
+          "cifp_id": "RZ34"
+        }
       },
       "departure_routes": {
         "16": {
@@ -7246,7 +7300,7 @@
     "(ISPN) SEY V34 CREAM": {
       "arrivals": [
         {
-          "waypoints": "SEY/airwayV34 SUFOK/airwayV34 GARRD/airwayV34 BOROS/airwayV34 CREAM",
+          "waypoints": "SEY V34 BOROS/ho V34 CREAM",
           "cruise_altitude": 10000,
           "route": "/. CREAM HVN",
           "initial_controller": "PVD_APP",
@@ -7273,7 +7327,7 @@
     "(ISPN) T320 RICED KEYED": {
       "arrivals": [
         {
-          "waypoints": "MANTA/airwayT320 PLUME/airwayT320 SHERL/airwayT320 DUNEE/airwayT320 KOPPY/airwayT320 SARDI/airwayT320 RICED KEYED",
+          "waypoints": "MANTA T320 SHERL/ho T320 RICED KEYED",
           "cruise_altitude": 21000,
           "route": "/. T320 RICED KEYED",
           "initial_controller": "BOS_CTR",
@@ -9470,7 +9524,9 @@
   },
   "stars_config": {
     "center": "KLGA",
-    "pdb": { "hide_gs": true },
+    "pdb": {
+      "hide_gs": true
+    },
     "altimeters": ["KJFK", "KLGA", "KEWR", "KTEB", "KISP", "KHPN"],
     "coordination_fixes": {
       "FLOSI": [
@@ -10043,7 +10099,9 @@
       "ELIOT": {},
       "GAYEL": {},
       "GREKI": {},
-      "HAAYS": { "short_name": "HAY" },
+      "HAAYS": {
+        "short_name": "HAY"
+      },
       "HAPIE": {},
       "HFD": {},
       "HIDAL": {},
@@ -10057,7 +10115,9 @@
       "MERIT": {},
       "MOONI": {},
       "NEION": {},
-      "NEWEL": { "short_name": "NWL" },
+      "NEWEL": {
+        "short_name": "NWL"
+      },
       "PARKE": {},
       "PWL": {},
       "RBV": {},
@@ -11016,37 +11076,44 @@
     "ISP_H_APP": {
       "frequency": 134550,
       "radio_name": "New York Approach",
-      "sector_id": "3H"
+      "sector_id": "3H",
+      "default_airport": "KJFK"
     },
     "ISP_N_APP": {
       "frequency": 120050,
       "radio_name": "New York Approach",
-      "sector_id": "3N"
+      "sector_id": "3N",
+      "default_airport": "KJFK"
     },
     "ISP_R_APP": {
       "frequency": 133100,
       "radio_name": "New York Approach",
-      "sector_id": "3R"
+      "sector_id": "3R",
+      "default_airport": "KJFK"
     },
     "ISP_O_APP": {
       "frequency": 128625,
       "radio_name": "New York Approach",
-      "sector_id": "3O"
+      "sector_id": "3O",
+      "default_airport": "KJFK"
     },
     "ISP_Z_APP": {
       "frequency": 124075,
       "radio_name": "New York Approach",
-      "sector_id": "3Z"
+      "sector_id": "3Z",
+      "default_airport": "KJFK"
     },
     "ISP_I_APP": {
       "frequency": 118950,
       "radio_name": "New York Approach",
-      "sector_id": "3I"
+      "sector_id": "3I",
+      "default_airport": "KJFK"
     },
     "ISP_B_APP": {
       "frequency": 125975,
       "radio_name": "New York Approach",
-      "sector_id": "3B"
+      "sector_id": "3B",
+      "default_airport": "KJFK"
     },
     "PVD_APP": {
       "frequency": 123670,
@@ -11105,37 +11172,44 @@
     "EWR_A_APP": {
       "frequency": 120150,
       "radio_name": "New York approach",
-      "sector_id": "4A"
+      "sector_id": "4A",
+      "default_airport": "KJFK"
     },
     "EWR_DEP": {
       "frequency": 119200,
       "radio_name": "New York departure",
-      "sector_id": "4N"
+      "sector_id": "4N",
+      "default_airport": "KJFK"
     },
     "EWR_H_APP": {
       "frequency": 132800,
       "radio_name": "New York approach",
-      "sector_id": "4H"
+      "sector_id": "4H",
+      "default_airport": "KJFK"
     },
     "EWR_P_APP": {
       "frequency": 128550,
       "radio_name": "New York approach",
-      "sector_id": "4P"
+      "sector_id": "4P",
+      "default_airport": "KJFK"
     },
     "EWR_M_APP": {
       "frequency": 125550,
       "radio_name": "New York approach",
-      "sector_id": "4M"
+      "sector_id": "4M",
+      "default_airport": "KJFK"
     },
     "EWR_Q_APP": {
       "frequency": 125500,
       "radio_name": "New York approach",
-      "sector_id": "4Q"
+      "sector_id": "4Q",
+      "default_airport": "KJFK"
     },
     "EWR_S_APP": {
       "frequency": 123770,
       "radio_name": "New York approach",
-      "sector_id": "4S"
+      "sector_id": "4S",
+      "default_airport": "KJFK"
     },
     "EWR_TWR": {
       "frequency": 118300,
@@ -11146,32 +11220,38 @@
     "EWR_U_APP": {
       "frequency": 127600,
       "radio_name": "New York Approach",
-      "sector_id": "4U"
+      "sector_id": "4U",
+      "default_airport": "KJFK"
     },
     "NY_LE_DEP": {
       "frequency": 126800,
       "radio_name": "New York Departure",
-      "sector_id": "5E"
+      "sector_id": "5E",
+      "default_airport": "KJFK"
     },
     "SWF_APP": {
       "frequency": 132750,
       "radio_name": "New York Approach",
-      "sector_id": "5H"
+      "sector_id": "5H",
+      "default_airport": "KJFK"
     },
     "NY_LN_DEP": {
       "frequency": 118170,
       "radio_name": "New York Departure",
-      "sector_id": "5T"
+      "sector_id": "5T",
+      "default_airport": "KJFK"
     },
     "NY_LS_DEP": {
       "frequency": 124750,
       "radio_name": "New York Departure",
-      "sector_id": "5S"
+      "sector_id": "5S",
+      "default_airport": "KJFK"
     },
     "NY_LW_DEP": {
       "frequency": 120850,
       "radio_name": "New York Departure",
-      "sector_id": "5W"
+      "sector_id": "5W",
+      "default_airport": "KJFK"
     },
     "ABE_APP": {
       "frequency": 119650,
@@ -11288,32 +11368,38 @@
     "LGA_X_APP": {
       "frequency": 126400,
       "radio_name": "New York approach",
-      "sector_id": "1X"
+      "sector_id": "1X",
+      "default_airport": "KJFK"
     },
     "LGA_Y_DEP": {
       "frequency": 120550,
       "radio_name": "New York Departure",
-      "sector_id": "1Y"
+      "sector_id": "1Y",
+      "default_airport": "KJFK"
     },
     "LGA_V_APP": {
       "frequency": 120800,
       "radio_name": "New York approach",
-      "sector_id": "1V"
+      "sector_id": "1V",
+      "default_airport": "KJFK"
     },
     "LGA_D_APP": {
       "frequency": 127300,
       "radio_name": "New York approach",
-      "sector_id": "1D"
+      "sector_id": "1D",
+      "default_airport": "KJFK"
     },
     "LGA_F_APP": {
       "frequency": 127300,
       "radio_name": "New York approach",
-      "sector_id": "1F"
+      "sector_id": "1F",
+      "default_airport": "KJFK"
     },
     "LGA_DEP": {
       "frequency": 120400,
       "radio_name": "New York departure",
-      "sector_id": "1L"
+      "sector_id": "1L",
+      "default_airport": "KJFK"
     },
     "LGA_TWR": {
       "frequency": 118700,
@@ -11324,7 +11410,8 @@
     "JFK_A_APP": {
       "frequency": 132400,
       "radio_name": "New York approach",
-      "sector_id": "2A"
+      "sector_id": "2A",
+      "default_airport": "KJFK"
     },
     "JFK_G_APP": {
       "frequency": 128125,
@@ -11335,17 +11422,20 @@
     "JFK_K_APP": {
       "frequency": 125700,
       "radio_name": "New York approach",
-      "sector_id": "2K"
+      "sector_id": "2K",
+      "default_airport": "KJFK"
     },
     "JFK_M_APP": {
       "frequency": 118400,
       "radio_name": "New York approach",
-      "sector_id": "2S"
+      "sector_id": "2S",
+      "default_airport": "KJFK"
     },
     "JFK_DEP": {
       "frequency": 135900,
       "radio_name": "New York departure",
-      "sector_id": "2J"
+      "sector_id": "2J",
+      "default_airport": "KJFK"
     },
     "JFK_TWR": {
       "frequency": 119100,
@@ -11623,8 +11713,8 @@
           "KOXC": 1
         },
         "DENNA3": {
-          "KBDR": 1,
           "KHVN": 1,
+          "KBDR": 1,
           "KOXC": 1
         },
         "LOVES1": {
@@ -11657,11 +11747,6 @@
         "(JFK) ZIGGI": {
           "KJFK": 3,
           "KFRG": 1
-        },
-        "DENNA3": {
-          "KHVN": 1,
-          "KBDR": 1,
-          "KOXC": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -11744,133 +11829,78 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "SWF_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
-          },
-          "ISP_H_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP"],
-            "arrivals": ["(ISP) Q439 SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BDR1"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BOUNO5", "(ISP) T303 BELTT"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KBDR", "KOXC"],
-            "arrivals": ["(ISPN) DVANY T303 HFD"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KFOK", "KJPX"]
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": [
-              "NELIE4",
-              "(ISP) HFD T216 SALEM CCC",
-              "(ISP) SEY ORCHA CCC",
-              "(ISPN) T320 RICED KEYED",
-              "(ISPN) SEY V34 CREAM"
-            ]
-          },
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "PUCKY1"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP",
-            "departures": ["KFRG"]
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          },
-          "LGA_V_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_X_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["VALRE5", "NOBBI5"]
-          },
-          "LGA_Y_DEP": {
-            "backup": "LGA_V_APP",
-            "departures": ["KHPN", "KDXR"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          },
-          "EWR_P_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["FQM3", "PHLBO4"]
-          },
-          "EWR_DEP": {
-            "backup": "EWR_P_APP",
-            "departures": ["KEWR", "KMMU", "KTEB", "KCDW"]
-          },
-          "EWR_A_APP": {
-            "backup": "EWR_P_APP",
-            "arrivals": ["FLOSI4"]
-          },
-          "EWR_U_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_H_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["JAIKE4", "MAZIE"]
-          },
-          "EWR_S_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["COATE", "LVZ4"]
-          },
-          "EWR_M_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_Q_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "NY_LE_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LW_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LN_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LS_DEP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["(ISP) T224 JFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
+          "JFK_G_APP": [
+            "EWR_P_APP",
+            "ISP_H_APP",
+            "JFK_A_APP",
+            "JFK_DEP",
+            "JFK_K_APP",
+            "LGA_V_APP",
+            "NY_LE_DEP",
+            "NY_LN_DEP",
+            "NY_LS_DEP",
+            "NY_LW_DEP"
+          ],
+          "JFK_K_APP": ["JFK_M_APP"],
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP", "LGA_X_APP", "LGA_Y_DEP"]
+        },
+        "inbound_assignments": {
+          "(ISP) HFD T216 SALEM CCC": "ISP_B_APP",
+          "(ISP) Q439 SARDI": "ISP_H_APP",
+          "(ISP) SEY ORCHA CCC": "ISP_B_APP",
+          "(ISP) T224 JFK": "NY_LS_DEP",
+          "(ISP) T303 BELTT": "ISP_O_APP",
+          "(ISPN) DVANY T303 HFD": "ISP_Z_APP",
+          "(ISPN) SEY V34 CREAM": "ISP_B_APP",
+          "(ISPN) T320 RICED KEYED": "ISP_B_APP",
+          "(JFK) ZIGGI": "JFK_G_APP",
+          "BDR1": "ISP_R_APP",
+          "BOUNO5": "ISP_O_APP",
+          "CAMRN5": "JFK_G_APP",
+          "COATE": "EWR_S_APP",
+          "DENNA3": "SWF_APP",
+          "FLOSI4": "EWR_A_APP",
+          "FQM3": "EWR_P_APP",
+          "HAARP3": "LGA_V_APP",
+          "HUD4": "SWF_APP",
+          "JAIKE4": "EWR_H_APP",
+          "KORRY4": "LGA_D_APP",
+          "LOVES1": "SWF_APP",
+          "LVZ4": "EWR_S_APP",
+          "MAZIE": "EWR_H_APP",
+          "MIP4": "LGA_D_APP",
+          "NELIE4": "ISP_B_APP",
+          "NOBBI5": "LGA_X_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH3": "JFK_K_APP",
+          "PHLBO4": "EWR_P_APP",
+          "PUCKY1": "JFK_K_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KCDW": "EWR_DEP",
+          "KDXR": "LGA_Y_DEP",
+          "KEWR": "EWR_DEP",
+          "KFOK": "ISP_I_APP",
+          "KFRG": "JFK_M_APP",
+          "KHPN": "LGA_Y_DEP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KJFK": "JFK_DEP",
+          "KJPX": "ISP_I_APP",
+          "KLGA": "LGA_DEP",
+          "KMMU": "EWR_DEP",
+          "KOXC": "ISP_Z_APP",
+          "KPOU": "SWF_APP",
+          "KSWF": "SWF_APP",
+          "KTEB": "EWR_DEP"
         }
       },
       "controllers": [
@@ -12254,8 +12284,8 @@
           "KOXC": 1
         },
         "DENNA3": {
-          "KBDR": 1,
           "KHVN": 1,
+          "KBDR": 1,
           "KOXC": 1
         },
         "LOVES1": {
@@ -12288,14 +12318,6 @@
         "(JFK) ZIGGI": {
           "KJFK": 3,
           "KFRG": 1
-        },
-        "DENNA3": {
-          "KHVN": 1,
-          "KBDR": 1,
-          "KOXC": 1
-        },
-        "LOVES1": {
-          "KISP": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -12378,133 +12400,78 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "SWF_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
-          },
-          "ISP_H_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP"],
-            "arrivals": ["(ISP) Q439 SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BDR1"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BOUNO5", "(ISP) T303 BELTT"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KBDR", "KOXC"],
-            "arrivals": ["(ISPN) DVANY T303 HFD"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KFOK", "KJPX"]
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": [
-              "NELIE4",
-              "(ISP) HFD T216 SALEM CCC",
-              "(ISP) SEY ORCHA CCC",
-              "(ISPN) T320 RICED KEYED",
-              "(ISPN) SEY V34 CREAM"
-            ]
-          },
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "PUCKY1"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP",
-            "departures": ["KFRG"]
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          },
-          "LGA_V_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_X_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["VALRE5", "NOBBI5"]
-          },
-          "LGA_Y_DEP": {
-            "backup": "LGA_V_APP",
-            "departures": ["KHPN", "KDXR"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          },
-          "EWR_P_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["FQM3", "PHLBO4"]
-          },
-          "EWR_DEP": {
-            "backup": "EWR_P_APP",
-            "departures": ["KEWR", "KMMU", "KTEB", "KCDW"]
-          },
-          "EWR_A_APP": {
-            "backup": "EWR_P_APP",
-            "arrivals": ["FLOSI4"]
-          },
-          "EWR_U_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_H_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["JAIKE4", "MAZIE"]
-          },
-          "EWR_S_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["COATE", "LVZ4"]
-          },
-          "EWR_M_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_Q_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "NY_LE_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LW_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LN_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LS_DEP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["(ISP) T224 JFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
+          "JFK_G_APP": [
+            "EWR_P_APP",
+            "ISP_H_APP",
+            "JFK_A_APP",
+            "JFK_DEP",
+            "JFK_K_APP",
+            "LGA_V_APP",
+            "NY_LE_DEP",
+            "NY_LN_DEP",
+            "NY_LS_DEP",
+            "NY_LW_DEP"
+          ],
+          "JFK_K_APP": ["JFK_M_APP"],
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP", "LGA_X_APP", "LGA_Y_DEP"]
+        },
+        "inbound_assignments": {
+          "(ISP) HFD T216 SALEM CCC": "ISP_B_APP",
+          "(ISP) Q439 SARDI": "ISP_H_APP",
+          "(ISP) SEY ORCHA CCC": "ISP_B_APP",
+          "(ISP) T224 JFK": "NY_LS_DEP",
+          "(ISP) T303 BELTT": "ISP_O_APP",
+          "(ISPN) DVANY T303 HFD": "ISP_Z_APP",
+          "(ISPN) SEY V34 CREAM": "ISP_B_APP",
+          "(ISPN) T320 RICED KEYED": "ISP_B_APP",
+          "(JFK) ZIGGI": "JFK_G_APP",
+          "BDR1": "ISP_R_APP",
+          "BOUNO5": "ISP_O_APP",
+          "CAMRN5": "JFK_G_APP",
+          "COATE": "EWR_S_APP",
+          "DENNA3": "SWF_APP",
+          "FLOSI4": "EWR_A_APP",
+          "FQM3": "EWR_P_APP",
+          "HAARP3": "LGA_V_APP",
+          "HUD4": "SWF_APP",
+          "JAIKE4": "EWR_H_APP",
+          "KORRY4": "LGA_D_APP",
+          "LOVES1": "SWF_APP",
+          "LVZ4": "EWR_S_APP",
+          "MAZIE": "EWR_H_APP",
+          "MIP4": "LGA_D_APP",
+          "NELIE4": "ISP_B_APP",
+          "NOBBI5": "LGA_X_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH3": "JFK_K_APP",
+          "PHLBO4": "EWR_P_APP",
+          "PUCKY1": "JFK_K_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KCDW": "EWR_DEP",
+          "KDXR": "LGA_Y_DEP",
+          "KEWR": "EWR_DEP",
+          "KFOK": "ISP_I_APP",
+          "KFRG": "JFK_M_APP",
+          "KHPN": "LGA_Y_DEP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KJFK": "JFK_DEP",
+          "KJPX": "ISP_I_APP",
+          "KLGA": "LGA_DEP",
+          "KMMU": "EWR_DEP",
+          "KOXC": "ISP_Z_APP",
+          "KPOU": "SWF_APP",
+          "KSWF": "SWF_APP",
+          "KTEB": "EWR_DEP"
         }
       },
       "controllers": [
@@ -12878,8 +12845,8 @@
           "KOXC": 1
         },
         "DENNA3": {
-          "KBDR": 1,
           "KHVN": 1,
+          "KBDR": 1,
           "KOXC": 1
         },
         "LOVES1": {
@@ -12912,14 +12879,6 @@
         "(JFK) ZIGGI": {
           "KJFK": 3,
           "KFRG": 1
-        },
-        "DENNA3": {
-          "KHVN": 1,
-          "KBDR": 1,
-          "KOXC": 1
-        },
-        "LOVES1": {
-          "KISP": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -13002,133 +12961,78 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "SWF_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
-          },
-          "ISP_H_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP"],
-            "arrivals": ["(ISP) Q439 SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BDR1"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BOUNO5", "(ISP) T303 BELTT"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KBDR", "KOXC"],
-            "arrivals": ["(ISPN) DVANY T303 HFD"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KFOK", "KJPX"]
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": [
-              "NELIE4",
-              "(ISP) HFD T216 SALEM CCC",
-              "(ISP) SEY ORCHA CCC",
-              "(ISPN) T320 RICED KEYED",
-              "(ISPN) SEY V34 CREAM"
-            ]
-          },
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "PUCKY1"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP",
-            "departures": ["KFRG"]
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          },
-          "LGA_V_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_X_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["VALRE5", "NOBBI5"]
-          },
-          "LGA_Y_DEP": {
-            "backup": "LGA_V_APP",
-            "departures": ["KHPN", "KDXR"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          },
-          "EWR_P_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["FQM3", "PHLBO4"]
-          },
-          "EWR_DEP": {
-            "backup": "EWR_P_APP",
-            "departures": ["KEWR", "KMMU", "KTEB", "KCDW"]
-          },
-          "EWR_A_APP": {
-            "backup": "EWR_P_APP",
-            "arrivals": ["FLOSI4"]
-          },
-          "EWR_U_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_H_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["JAIKE4", "MAZIE"]
-          },
-          "EWR_S_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["COATE", "LVZ4"]
-          },
-          "EWR_M_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_Q_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "NY_LE_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LW_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LN_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LS_DEP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["(ISP) T224 JFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
+          "JFK_G_APP": [
+            "EWR_P_APP",
+            "ISP_H_APP",
+            "JFK_A_APP",
+            "JFK_DEP",
+            "JFK_K_APP",
+            "LGA_V_APP",
+            "NY_LE_DEP",
+            "NY_LN_DEP",
+            "NY_LS_DEP",
+            "NY_LW_DEP"
+          ],
+          "JFK_K_APP": ["JFK_M_APP"],
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP", "LGA_X_APP", "LGA_Y_DEP"]
+        },
+        "inbound_assignments": {
+          "(ISP) HFD T216 SALEM CCC": "ISP_B_APP",
+          "(ISP) Q439 SARDI": "ISP_H_APP",
+          "(ISP) SEY ORCHA CCC": "ISP_B_APP",
+          "(ISP) T224 JFK": "NY_LS_DEP",
+          "(ISP) T303 BELTT": "ISP_O_APP",
+          "(ISPN) DVANY T303 HFD": "ISP_Z_APP",
+          "(ISPN) SEY V34 CREAM": "ISP_B_APP",
+          "(ISPN) T320 RICED KEYED": "ISP_B_APP",
+          "(JFK) ZIGGI": "JFK_G_APP",
+          "BDR1": "ISP_R_APP",
+          "BOUNO5": "ISP_O_APP",
+          "CAMRN5": "JFK_G_APP",
+          "COATE": "EWR_S_APP",
+          "DENNA3": "SWF_APP",
+          "FLOSI4": "EWR_A_APP",
+          "FQM3": "EWR_P_APP",
+          "HAARP3": "LGA_V_APP",
+          "HUD4": "SWF_APP",
+          "JAIKE4": "EWR_H_APP",
+          "KORRY4": "LGA_D_APP",
+          "LOVES1": "SWF_APP",
+          "LVZ4": "EWR_S_APP",
+          "MAZIE": "EWR_H_APP",
+          "MIP4": "LGA_D_APP",
+          "NELIE4": "ISP_B_APP",
+          "NOBBI5": "LGA_X_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH3": "JFK_K_APP",
+          "PHLBO4": "EWR_P_APP",
+          "PUCKY1": "JFK_K_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KCDW": "EWR_DEP",
+          "KDXR": "LGA_Y_DEP",
+          "KEWR": "EWR_DEP",
+          "KFOK": "ISP_I_APP",
+          "KFRG": "JFK_M_APP",
+          "KHPN": "LGA_Y_DEP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KJFK": "JFK_DEP",
+          "KJPX": "ISP_I_APP",
+          "KLGA": "LGA_DEP",
+          "KMMU": "EWR_DEP",
+          "KOXC": "ISP_Z_APP",
+          "KPOU": "SWF_APP",
+          "KSWF": "SWF_APP",
+          "KTEB": "EWR_DEP"
         }
       },
       "controllers": [
@@ -13512,8 +13416,8 @@
           "KOXC": 1
         },
         "DENNA3": {
-          "KBDR": 1,
           "KHVN": 1,
+          "KBDR": 1,
           "KOXC": 1
         },
         "LOVES1": {
@@ -13546,14 +13450,6 @@
         "(JFK) ZIGGI": {
           "KJFK": 3,
           "KFRG": 1
-        },
-        "DENNA3": {
-          "KHVN": 1,
-          "KBDR": 1,
-          "KOXC": 1
-        },
-        "LOVES1": {
-          "KISP": 1
         },
         "NELIE4": {
           "KISP": 0,
@@ -13636,133 +13532,78 @@
           "KBDR": 1
         }
       },
-      "solo_controller": "JFK_G_APP",
-      "multi_controllers": {
-        "default": {
-          "SWF_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KPOU", "KSWF"],
-            "arrivals": ["DENNA3", "LOVES1", "HUD4"]
-          },
-          "ISP_H_APP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KISP"],
-            "arrivals": ["(ISP) Q439 SARDI"]
-          },
-          "ISP_N_APP": {
-            "backup": "ISP_H_APP"
-          },
-          "ISP_R_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BDR1"]
-          },
-          "ISP_O_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": ["BOUNO5", "(ISP) T303 BELTT"]
-          },
-          "ISP_Z_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KHVN", "KBDR", "KOXC"],
-            "arrivals": ["(ISPN) DVANY T303 HFD"]
-          },
-          "ISP_I_APP": {
-            "backup": "ISP_H_APP",
-            "departures": ["KFOK", "KJPX"]
-          },
-          "ISP_B_APP": {
-            "backup": "ISP_H_APP",
-            "arrivals": [
-              "NELIE4",
-              "(ISP) HFD T216 SALEM CCC",
-              "(ISP) SEY ORCHA CCC",
-              "(ISPN) T320 RICED KEYED",
-              "(ISPN) SEY V34 CREAM"
-            ]
-          },
-          "JFK_G_APP": {
-            "primary": true,
-            "arrivals": ["CAMRN5", "OWENZ", "(JFK) ZIGGI"]
-          },
-          "JFK_A_APP": {
-            "backup": "JFK_G_APP"
-          },
-          "JFK_K_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["PARCH3", "PUCKY1"]
-          },
-          "JFK_M_APP": {
-            "backup": "JFK_K_APP",
-            "departures": ["KFRG"]
-          },
-          "JFK_DEP": {
-            "backup": "JFK_G_APP",
-            "departures": ["KJFK"]
-          },
-          "LGA_V_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_X_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["VALRE5", "NOBBI5"]
-          },
-          "LGA_Y_DEP": {
-            "backup": "LGA_V_APP",
-            "departures": ["KHPN", "KDXR"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          },
-          "EWR_P_APP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["FQM3", "PHLBO4"]
-          },
-          "EWR_DEP": {
-            "backup": "EWR_P_APP",
-            "departures": ["KEWR", "KMMU", "KTEB", "KCDW"]
-          },
-          "EWR_A_APP": {
-            "backup": "EWR_P_APP",
-            "arrivals": ["FLOSI4"]
-          },
-          "EWR_U_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_H_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["JAIKE4", "MAZIE"]
-          },
-          "EWR_S_APP": {
-            "backup": "EWR_U_APP",
-            "arrivals": ["COATE", "LVZ4"]
-          },
-          "EWR_M_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "EWR_Q_APP": {
-            "backup": "EWR_P_APP"
-          },
-          "NY_LE_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LW_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LN_DEP": {
-            "backup": "JFK_G_APP"
-          },
-          "NY_LS_DEP": {
-            "backup": "JFK_G_APP",
-            "arrivals": ["(ISP) T224 JFK"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
+          "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
+          "JFK_G_APP": [
+            "EWR_P_APP",
+            "ISP_H_APP",
+            "JFK_A_APP",
+            "JFK_DEP",
+            "JFK_K_APP",
+            "LGA_V_APP",
+            "NY_LE_DEP",
+            "NY_LN_DEP",
+            "NY_LS_DEP",
+            "NY_LW_DEP"
+          ],
+          "JFK_K_APP": ["JFK_M_APP"],
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP", "LGA_X_APP", "LGA_Y_DEP"]
+        },
+        "inbound_assignments": {
+          "(ISP) HFD T216 SALEM CCC": "ISP_B_APP",
+          "(ISP) Q439 SARDI": "ISP_H_APP",
+          "(ISP) SEY ORCHA CCC": "ISP_B_APP",
+          "(ISP) T224 JFK": "NY_LS_DEP",
+          "(ISP) T303 BELTT": "ISP_O_APP",
+          "(ISPN) DVANY T303 HFD": "ISP_Z_APP",
+          "(ISPN) SEY V34 CREAM": "ISP_B_APP",
+          "(ISPN) T320 RICED KEYED": "ISP_B_APP",
+          "(JFK) ZIGGI": "JFK_G_APP",
+          "BDR1": "ISP_R_APP",
+          "BOUNO5": "ISP_O_APP",
+          "CAMRN5": "JFK_G_APP",
+          "COATE": "EWR_S_APP",
+          "DENNA3": "SWF_APP",
+          "FLOSI4": "EWR_A_APP",
+          "FQM3": "EWR_P_APP",
+          "HAARP3": "LGA_V_APP",
+          "HUD4": "SWF_APP",
+          "JAIKE4": "EWR_H_APP",
+          "KORRY4": "LGA_D_APP",
+          "LOVES1": "SWF_APP",
+          "LVZ4": "EWR_S_APP",
+          "MAZIE": "EWR_H_APP",
+          "MIP4": "LGA_D_APP",
+          "NELIE4": "ISP_B_APP",
+          "NOBBI5": "LGA_X_APP",
+          "OWENZ": "JFK_G_APP",
+          "PARCH3": "JFK_K_APP",
+          "PHLBO4": "EWR_P_APP",
+          "PUCKY1": "JFK_K_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KCDW": "EWR_DEP",
+          "KDXR": "LGA_Y_DEP",
+          "KEWR": "EWR_DEP",
+          "KFOK": "ISP_I_APP",
+          "KFRG": "JFK_M_APP",
+          "KHPN": "LGA_Y_DEP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KJFK": "JFK_DEP",
+          "KJPX": "ISP_I_APP",
+          "KLGA": "LGA_DEP",
+          "KMMU": "EWR_DEP",
+          "KOXC": "ISP_Z_APP",
+          "KPOU": "SWF_APP",
+          "KSWF": "SWF_APP",
+          "KTEB": "EWR_DEP"
         }
       },
       "controllers": [

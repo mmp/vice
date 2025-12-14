@@ -1,19 +1,59 @@
 {
   "tracon": "A11",
   "airports": {
-    "PABV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "PAAQ": { "vfr": { "random_routes": { "rate": 5 } } },
-    "PAGQ": { "vfr": { "random_routes": { "rate": 5 } } },
-    "PABG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "PAMR": { "vfr": { "random_routes": { "rate": 5 } } },
+    "PABV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PAAQ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PAGQ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PABG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PAMR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "PANC": {
       "departure_runways_as_one": ["7L,15"],
       "approaches": {
-        "I7L": { "cifp_id": "I7L" },
-        "R7R": { "cifp_id": "RZ7R" },
-        "I7R": { "cifp_id": "I7R" },
-        "I15": { "cifp_id": "I15" },
-        "R33": { "cifp_id": "R33" },
+        "I7L": {
+          "cifp_id": "I7L"
+        },
+        "R7R": {
+          "cifp_id": "RZ7R"
+        },
+        "I7R": {
+          "cifp_id": "I7R"
+        },
+        "I15": {
+          "cifp_id": "I15"
+        },
+        "R33": {
+          "cifp_id": "R33"
+        },
         "R25R": {
           "full_name": "RNAV M Runway 25R",
           "runway": "25R",
@@ -1124,16 +1164,23 @@
           "PANC": 10
         }
       },
-      "solo_controller": "ANC_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ANC_N_APP": {
-            "primary": true,
-            "departures": ["PANC/ANCH1", "PANC/NOEND4"],
-            "arrivals": ["KROTO5.TKA", "KROTO5.ROHHN"]
-          },
-          "ANC_S_APP": { "backup": "ANC_N_APP", "departures": ["PANC/FFITZ4"], "arrivals": ["NEELL7", "WITTI5"] },
-          "ANC_F_APP": { "backup": "ANC_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ANC_N_APP": ["ANC_S_APP"],
+          "ANC_S_APP": ["ANC_F_APP"]
+        },
+        "inbound_assignments": {
+          "KROTO5.ROHHN": "ANC_N_APP",
+          "KROTO5.TKA": "ANC_N_APP",
+          "NEELL7": "ANC_S_APP",
+          "WITTI5": "ANC_S_APP"
+        },
+        "departure_assignments": {
+          "PANC/ANCH1": "ANC_N_APP",
+          "PANC/FFITZ4": "ANC_S_APP",
+          "PANC/NOEND4": "ANC_N_APP",
+          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1177,16 +1224,23 @@
           "PANC": 10
         }
       },
-      "solo_controller": "ANC_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ANC_N_APP": {
-            "primary": true,
-            "departures": ["PANC/ANCH1"],
-            "arrivals": ["PTERS3", "KROTO5.TKA", "KROTO5.ROHHN"]
-          },
-          "ANC_S_APP": { "backup": "ANC_N_APP", "departures": ["PANC/POTTR3"], "arrivals": ["NEELL7", "WITTI5"] },
-          "ANC_F_APP": { "backup": "ANC_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ANC_N_APP": ["ANC_S_APP"],
+          "ANC_S_APP": ["ANC_F_APP"]
+        },
+        "inbound_assignments": {
+          "KROTO5.ROHHN": "ANC_N_APP",
+          "KROTO5.TKA": "ANC_N_APP",
+          "NEELL7": "ANC_S_APP",
+          "PTERS3": "ANC_N_APP",
+          "WITTI5": "ANC_S_APP"
+        },
+        "departure_assignments": {
+          "PANC/ANCH1": "ANC_N_APP",
+          "PANC/POTTR3": "ANC_S_APP",
+          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1228,16 +1282,22 @@
           "PANC": 15
         }
       },
-      "solo_controller": "ANC_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ANC_N_APP": {
-            "primary": true,
-            "departures": ["PANC/ANCH1"],
-            "arrivals": ["PTERS3", "KROTO5.TKA", "KROTO5.ROHHN"]
-          },
-          "ANC_S_APP": { "backup": "ANC_N_APP", "departures": ["PANC/FFITZ4"], "arrivals": ["NEELL7"] },
-          "ANC_F_APP": { "backup": "ANC_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ANC_N_APP": ["ANC_S_APP"],
+          "ANC_S_APP": ["ANC_F_APP"]
+        },
+        "inbound_assignments": {
+          "KROTO5.ROHHN": "ANC_N_APP",
+          "KROTO5.TKA": "ANC_N_APP",
+          "NEELL7": "ANC_S_APP",
+          "PTERS3": "ANC_N_APP"
+        },
+        "departure_assignments": {
+          "PANC/ANCH1": "ANC_N_APP",
+          "PANC/FFITZ4": "ANC_S_APP",
+          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1277,16 +1337,24 @@
           "PANC": 10
         }
       },
-      "solo_controller": "ANC_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ANC_N_APP": {
-            "primary": true,
-            "departures": ["PANC/ANCH1", "PANC/NOEND4"],
-            "arrivals": ["PTERS3", "KROTO5.TKA", "KROTO5.ROHHN"]
-          },
-          "ANC_S_APP": { "backup": "ANC_N_APP", "departures": ["PANC/FFITZ4"], "arrivals": ["NEELL7", "WITTI5"] },
-          "ANC_F_APP": { "backup": "ANC_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ANC_N_APP": ["ANC_S_APP"],
+          "ANC_S_APP": ["ANC_F_APP"]
+        },
+        "inbound_assignments": {
+          "KROTO5.ROHHN": "ANC_N_APP",
+          "KROTO5.TKA": "ANC_N_APP",
+          "NEELL7": "ANC_S_APP",
+          "PTERS3": "ANC_N_APP",
+          "WITTI5": "ANC_S_APP"
+        },
+        "departure_assignments": {
+          "PANC/ANCH1": "ANC_N_APP",
+          "PANC/FFITZ4": "ANC_S_APP",
+          "PANC/NOEND4": "ANC_N_APP",
+          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1324,15 +1392,31 @@
     },
     "significant_points": {
       "BGQ": {},
-      "MATTA": { "short_name": "MAT" },
-      "ELLAM": { "short_name": "ELM" },
-      "YESKA": { "short_name": "YSK" },
-      "SEWAR": { "short_name": "SEW" },
-      "NAPTO": { "short_name": "NAP" },
+      "MATTA": {
+        "short_name": "MAT"
+      },
+      "ELLAM": {
+        "short_name": "ELM"
+      },
+      "YESKA": {
+        "short_name": "YSK"
+      },
+      "SEWAR": {
+        "short_name": "SEW"
+      },
+      "NAPTO": {
+        "short_name": "NAP"
+      },
       "ENA": {},
-      "GASTO": { "short_name": "GST" },
-      "IVANN": { "short_name": "IVN" },
-      "TAGER": { "short_name": "TAG" }
+      "GASTO": {
+        "short_name": "GST"
+      },
+      "IVANN": {
+        "short_name": "IVN"
+      },
+      "TAGER": {
+        "short_name": "TAG"
+      }
     },
     "stars_maps": [
       "A11 RVM",

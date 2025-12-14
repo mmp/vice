@@ -888,7 +888,17 @@
   "magnetic_adjustment": -6.6,
   "scenarios": {
     "58 St. Augustine": {
-      "solo_controller": "ZJX 58 St. Augustine",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZJX 58 St. Augustine": []
+        },
+        "inbound_assignments": {
+          "Overflights": "ZJX 58 St. Augustine",
+          "SNFLD3": "ZJX 58 St. Augustine",
+          "TTHOR3": "ZJX 58 St. Augustine"
+        }
+      },
       "controllers": [
         "ZJX 78 Lake City",
         "ZMA 02 Key West",
@@ -990,7 +1000,6 @@
       "CAMAN",
       "GEO"
     ],
-
     "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
   }
 }

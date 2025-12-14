@@ -1,33 +1,155 @@
 {
   "tracon": "SCT",
   "airports": {
-    "KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRIR": { "vfr": { "random_routes": { "rate": 10 } } },
-    "L18": { "vfr": { "random_routes": { "rate": 5 } } },
-    "CA89": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTRM": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KUDD": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KBNG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KREI": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KEMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KFUL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KAVX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRAL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTOA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRIR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "L18": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "CA89": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTRM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KUDD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KBNG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KREI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KHMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KEMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KAJO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KOKB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KLGB": {
+      "approaches": {
+        "I30": {
+          "cifp_id": "I30"
+        },
+        "R12": {
+          "cifp_id": "R12"
+        },
+        "R6R": {
+          "cifp_id": "R26R"
+        }
+      }
+    },
+    "KCNO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KONT": {
       "departure_runways_as_one": ["26L,26R", "8L,8R"],
       "approaches": {
-        "I8L": { "cifp_id": "I8L" },
-        "I6L": { "cifp_id": "I26L" },
-        "I6R": { "cifp_id": "I26R" },
-        "Z8L": { "cifp_id": "RZ8L" },
-        "Z8R": { "cifp_id": "RZ8R" },
-        "Z6L": { "cifp_id": "RZ26L" },
-        "Z6R": { "cifp_id": "RZ26R" }
+        "I8L": {
+          "cifp_id": "I8L"
+        },
+        "I6L": {
+          "cifp_id": "I26L"
+        },
+        "I6R": {
+          "cifp_id": "I26R"
+        },
+        "Z8L": {
+          "cifp_id": "RZ8L"
+        },
+        "Z8R": {
+          "cifp_id": "RZ8R"
+        },
+        "Z6L": {
+          "cifp_id": "RZ26L"
+        },
+        "Z6R": {
+          "cifp_id": "RZ26R"
+        }
       },
       "departure_routes": {
         "26L": {
@@ -432,28 +554,35 @@
     },
     "KSNA": {
       "approaches": {
-        "Z0R": { "cifp_id": "RZ20R" },
-        "Z2L": { "cifp_id": "RZ2L" }
-      }
-    },
-    "KLGB": {
-      "approaches": {
-        "I30": { "cifp_id": "I30" },
-        "R12": { "cifp_id": "R12" },
-        "R6R": { "cifp_id": "R26R" }
+        "Z0R": {
+          "cifp_id": "RZ20R"
+        },
+        "Z2L": {
+          "cifp_id": "RZ2L"
+        }
       }
     },
     "KBUR": {
       "approaches": {
-        "IY8": { "cifp_id": "IY8" },
-        "IZ8": { "cifp_id": "IZ8" }
+        "IY8": {
+          "cifp_id": "IY8"
+        },
+        "IZ8": {
+          "cifp_id": "IZ8"
+        }
       }
     },
     "KSBD": {
       "approaches": {
-        "IZ6": { "cifp_id": "I6" },
-        "RY6": { "cifp_id": "RY6" },
-        "RX6": { "cifp_id": "RX6" },
+        "IZ6": {
+          "cifp_id": "I6"
+        },
+        "RY6": {
+          "cifp_id": "RY6"
+        },
+        "RX6": {
+          "cifp_id": "RX6"
+        },
         "R24": {
           "full_name": "RNAV Runway 24",
           "runway": "24",
@@ -578,9 +707,15 @@
     },
     "KPSP": {
       "approaches": {
-        "RYL": { "cifp_id": "RY31L" },
-        "RZL": { "cifp_id": "RZ31L" },
-        "R3R": { "cifp_id": "RZ13R" }
+        "RYL": {
+          "cifp_id": "RY31L"
+        },
+        "RZL": {
+          "cifp_id": "RZ31L"
+        },
+        "R3R": {
+          "cifp_id": "RZ13R"
+        }
       },
       "departure_routes": {
         "31L": {
@@ -2921,35 +3056,31 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "ONT_P_APP",
-      "multi_controllers": {
-        "default": {
-          "ONT_N_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KSBD"],
-            "inbound_flows": ["ZIGGY8", "JCKIE2"]
-          },
-          "ONT_V_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": ["SIZLR4", "SCBBY2/THRNE4.SNSTT", "SCBBY2.DEWWW", "THRNE4", "DSNEE6.LRSON", "DSNEE6.DRTHI"]
-          },
-          "ONT_I_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KONT/RAJEE4"],
-            "inbound_flows": ["KARLB3", "SBD OCEANIC"]
-          },
-          "ONT_P_APP": {
-            "primary": true,
-            "departures": ["KONT/SNSHN5", "KONT/POM1"]
-          },
-          "PSP_S_APP": {
-            "backup": "ONT_V_APP",
-            "inbound_flows": ["RDBUL1"]
-          },
-          "PSP_D_APP": {
-            "backup": "PSP_S_APP",
-            "departures": ["KPSP"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ONT_N_APP": ["ONT_V_APP"],
+          "ONT_P_APP": ["ONT_I_APP", "ONT_N_APP"],
+          "ONT_V_APP": ["PSP_S_APP"],
+          "PSP_S_APP": ["PSP_D_APP"]
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        },
+        "inbound_assignments": {
+          "ZIGGY8": "ONT_N_APP",
+          "JCKIE2": "ONT_N_APP",
+          "SIZLR4": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+          "SCBBY2.DEWWW": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "DSNEE6.LRSON": "ONT_V_APP",
+          "DSNEE6.DRTHI": "ONT_V_APP",
+          "KARLB3": "ONT_I_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3079,35 +3210,30 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "ONT_P_APP",
-      "multi_controllers": {
-        "default": {
-          "ONT_N_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KSBD"],
-            "inbound_flows": ["ZIGGY8", "JCKIE2"]
-          },
-          "ONT_V_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": ["SIZLR4", "SCBBY2/THRNE4.SNSTT", "SCBBY2.DEWWW", "THRNE4", "ROOBY3.LRSON", "ROOBY3.DRTHI"]
-          },
-          "ONT_I_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT/RAJEE4"],
-            "inbound_flows": ["KARLB3", "SBD OCEANIC"]
-          },
-          "ONT_P_APP": {
-            "primary": true,
-            "departures": ["KONT/SNSHN5", "KONT/POM1"]
-          },
-          "PSP_S_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": ["RDBUL1"]
-          },
-          "PSP_D_APP": {
-            "backup": "PSP_S_APP",
-            "departures": ["KPSP"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ONT_N_APP": ["ONT_I_APP", "ONT_V_APP", "PSP_S_APP"],
+          "ONT_P_APP": ["ONT_N_APP"],
+          "PSP_S_APP": ["PSP_D_APP"]
+        },
+        "departure_assignments": {
+          "KONT": "ONT_P_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        },
+        "inbound_assignments": {
+          "ZIGGY8": "ONT_N_APP",
+          "JCKIE2": "ONT_N_APP",
+          "SIZLR4": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+          "SCBBY2.DEWWW": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "ROOBY3.LRSON": "ONT_V_APP",
+          "ROOBY3.DRTHI": "ONT_V_APP",
+          "KARLB3": "ONT_I_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3179,17 +3305,17 @@
           "KPSP": 7
         }
       },
-      "solo_controller": "PSP_S_APP",
-      "multi_controllers": {
-        "default": {
-          "PSP_S_APP": {
-            "primary": true,
-            "inbound_flows": ["RDBUL1", "SIZLR4.SPRINGS"]
-          },
-          "PSP_D_APP": {
-            "backup": "PSP_S_APP",
-            "departures": ["KPSP"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PSP_S_APP": ["PSP_D_APP"]
+        },
+        "departure_assignments": {
+          "KPSP": "PSP_D_APP"
+        },
+        "inbound_assignments": {
+          "RDBUL1": "PSP_S_APP",
+          "SIZLR4.SPRINGS": "PSP_S_APP"
         }
       },
       "controllers": ["PSP_TWR", "ONT_V_APP", "PSP_D_APP", "LAX_09_CTR", "LAX_10_CTR", "LAX_19_CTR"],
@@ -3227,17 +3353,17 @@
           "KPSP": 7
         }
       },
-      "solo_controller": "PSP_S_APP",
-      "multi_controllers": {
-        "default": {
-          "PSP_S_APP": {
-            "primary": true,
-            "inbound_flows": ["RDBUL1", "SIZLR4.SPRINGS"]
-          },
-          "PSP_D_APP": {
-            "backup": "PSP_S_APP",
-            "departures": ["KPSP"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "PSP_S_APP": ["PSP_D_APP"]
+        },
+        "departure_assignments": {
+          "KPSP": "PSP_D_APP"
+        },
+        "inbound_assignments": {
+          "RDBUL1": "PSP_S_APP",
+          "SIZLR4.SPRINGS": "PSP_S_APP"
         }
       },
       "controllers": ["PSP_TWR", "ONT_V_APP", "PSP_D_APP", "LAX_09_CTR", "LAX_10_CTR", "LAX_19_CTR"],
@@ -3324,41 +3450,31 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "ONT_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ONT_N_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KSBD"],
-            "inbound_flows": ["ZIGGY8", "JCKIE2.E"]
-          },
-          "ONT_V_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": [
-              "SIZLR4",
-              "SCBBY2/THRNE4.SNSTT.E",
-              "SCBBY2.DEWWW.E",
-              "THRNE4",
-              "ROOBY3.LRSON",
-              "ROOBY3.DRTHI"
-            ]
-          },
-          "ONT_I_APP": {
-            "backup": "ONT_P_APP",
-            "departures": ["KONT"],
-            "inbound_flows": ["KARLB3", "SBD OCEANIC"]
-          },
-          "ONT_P_APP": {
-            "primary": true
-          },
-          "PSP_S_APP": {
-            "backup": "ONT_V_APP",
-            "inbound_flows": ["RDBUL1"]
-          },
-          "PSP_D_APP": {
-            "backup": "PSP_S_APP",
-            "departures": ["KPSP"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ONT_N_APP": ["ONT_V_APP"],
+          "ONT_P_APP": ["ONT_I_APP", "ONT_N_APP"],
+          "ONT_V_APP": ["PSP_S_APP"],
+          "PSP_S_APP": ["PSP_D_APP"]
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        },
+        "inbound_assignments": {
+          "ZIGGY8": "ONT_N_APP",
+          "JCKIE2.E": "ONT_N_APP",
+          "SIZLR4": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+          "SCBBY2.DEWWW.E": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "ROOBY3.LRSON": "ONT_V_APP",
+          "ROOBY3.DRTHI": "ONT_V_APP",
+          "KARLB3": "ONT_I_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3455,7 +3571,6 @@
         "JCKIE2.E": {
           "KONT": 6
         },
-
         "DSNEE6.LRSON": {
           "KSNA": 6,
           "KLGB": 2
@@ -3485,41 +3600,29 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "ONT_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ONT_N_APP": {
-            "primary": true,
-            "departures": ["KSBD"],
-            "inbound_flows": ["ZIGGY8", "JCKIE2.E"]
-          },
-          "ONT_V_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": [
-              "SIZLR4",
-              "SCBBY2/THRNE4.SNSTT.E",
-              "SCBBY2.DEWWW.E",
-              "THRNE4",
-              "DSNEE6.LRSON",
-              "DSNEE6.DRTHI"
-            ]
-          },
-          "ONT_I_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT"],
-            "inbound_flows": ["KARLB3", "SBD OCEANIC"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_N_APP"
-          },
-          "PSP_S_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": ["RDBUL1"]
-          },
-          "PSP_D_APP": {
-            "backup": "PSP_S_APP",
-            "departures": ["KPSP"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ONT_N_APP": ["ONT_I_APP", "ONT_P_APP", "ONT_V_APP", "PSP_S_APP"],
+          "PSP_S_APP": ["PSP_D_APP"]
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        },
+        "inbound_assignments": {
+          "ZIGGY8": "ONT_N_APP",
+          "JCKIE2.E": "ONT_N_APP",
+          "SIZLR4": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+          "SCBBY2.DEWWW.E": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "DSNEE6.LRSON": "ONT_V_APP",
+          "DSNEE6.DRTHI": "ONT_V_APP",
+          "KARLB3": "ONT_I_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3611,27 +3714,22 @@
           "KSBD": 1
         }
       },
-      "solo_controller": "ONT_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ONT_N_APP": {
-            "primary": true,
-            "departures": ["KSBD"],
-            "inbound_flows": ["ZIGGY8", "JCKIE2"]
-          },
-          "ONT_V_APP": {
-            "backup": "ONT_N_APP",
-            "inbound_flows": ["SCBBY2/THRNE4.SNSTT", "SCBBY2.DEWWW"]
-          },
-          "ONT_I_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT/RAJEE4"],
-            "inbound_flows": ["KARLB3", "SBD OCEANIC"]
-          },
-          "ONT_P_APP": {
-            "backup": "ONT_N_APP",
-            "departures": ["KONT/SNSHN5", "KONT/POM1"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ONT_N_APP": ["ONT_I_APP", "ONT_P_APP", "ONT_V_APP"]
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KSBD": "ONT_N_APP"
+        },
+        "inbound_assignments": {
+          "ZIGGY8": "ONT_N_APP",
+          "JCKIE2": "ONT_N_APP",
+          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+          "SCBBY2.DEWWW": "ONT_V_APP",
+          "KARLB3": "ONT_I_APP",
+          "SBD OCEANIC": "ONT_I_APP"
         }
       },
       "controllers": [
@@ -3731,19 +3829,55 @@
           "description": "ONT CONFLICT SUPPRESS",
           "type": "circle",
           "floor": 0,
-          "ceiling": 5000,
-          "radius": 12.4,
+          "ceiling": 4300,
+          "radius": 8,
           "center": "KONT"
+        },
+        {
+          "id": "PSPNOCA",
+          "description": "PSP CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 4000,
+          "radius": 11,
+          "center": "KPSP"
         }
       ],
-      "arrival_acquisition": [
+      "inhibit_msaw": [
         {
-          "id": "ACQ",
-          "description": "SCT AUTO-ACQUISITION",
-          "type": "polygon",
-          "vertices": "N035.12.54.426,W119.40.23.556 N035.06.12.985,W116.32.10.242 N034.20.04.650,W115.35.53.622 N034.01.19.458,W114.34.09.746 N033.07.48.209,W114.43.52.928 N033.02.32.009,W115.55.56.954 N032.17.44.355,W115.58.14.174 N032.13.07.156,W117.48.36.101 N032.52.08.274,W118.42.27.839 N032.55.25.135,W119.25.36.328 N034.53.19.424,W119.43.41.832 N035.12.54.426,W119.40.23.556",
+          "id": "PSPMSAW",
+          "description": "PSP MSAW SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 29000
+          "ceiling": 5500,
+          "radius": 3.4,
+          "center": "KPSP"
+        },
+        {
+          "id": "ONTMSAW",
+          "description": "ONT MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 4300,
+          "radius": 8,
+          "center": "KONT"
+        },
+        {
+          "id": "PDPMSAW",
+          "description": "PSP DP MSAW SUPPRESS",
+          "type": "polygon",
+          "vertices": "N033.49.35.921,W116.31.10.999 N033.54.38.457,W116.36.04.196 N033.58.33.276,W116.31.26.022 N034.03.00.876,W116.31.54.285 N034.03.16.531,W116.29.50.222 N033.58.56.787,W116.29.28.249 N033.58.06.140,W116.24.37.056 N033.56.01.074,W116.25.15.481 N033.57.16.125,W116.30.17.193 N033.54.34.914,W116.32.45.509 N033.50.17.724,W116.29.27.947",
+          "floor": 0,
+          "ceiling": 5500
+        },
+        {
+          "id": "SBDMSAW",
+          "description": "SBD MSAW SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 4300,
+          "radius": 4,
+          "center": "KSBD"
         }
       ]
     },
@@ -3868,68 +4002,17 @@
       "TNP": {}
     },
     "coordination_lists": [
-      { "name": ".    PALM SPRINGS", "id": "Z", "airports": ["KPSP"] },
-      { "name": ".    SAN BERNADINO", "id": "B", "airports": ["KSBD"] }
+      {
+        "name": ".    PALM SPRINGS",
+        "id": "Z",
+        "airports": ["KPSP"]
+      },
+      {
+        "name": ".    SAN BERNADINO",
+        "id": "B",
+        "airports": ["KSBD"]
+      }
     ],
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "ONTNOCA",
-          "description": "ONT CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 4300,
-          "radius": 8,
-          "center": "KONT"
-        },
-        {
-          "id": "PSPNOCA",
-          "description": "PSP CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 4000,
-          "radius": 11,
-          "center": "KPSP"
-        }
-      ],
-      "inhibit_msaw": [
-        {
-          "id": "PSPMSAW",
-          "description": "PSP MSAW SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 5500,
-          "radius": 3.4,
-          "center": "KPSP"
-        },
-        {
-          "id": "ONTMSAW",
-          "description": "ONT MSAW SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 4300,
-          "radius": 8,
-          "center": "KONT"
-        },
-        {
-          "id": "PDPMSAW",
-          "description": "PSP DP MSAW SUPPRESS",
-          "type": "polygon",
-          "vertices": "N033.49.35.921,W116.31.10.999 N033.54.38.457,W116.36.04.196 N033.58.33.276,W116.31.26.022 N034.03.00.876,W116.31.54.285 N034.03.16.531,W116.29.50.222 N033.58.56.787,W116.29.28.249 N033.58.06.140,W116.24.37.056 N033.56.01.074,W116.25.15.481 N033.57.16.125,W116.30.17.193 N033.54.34.914,W116.32.45.509 N033.50.17.724,W116.29.27.947",
-          "floor": 0,
-          "ceiling": 5500
-        },
-        {
-          "id": "SBDMSAW",
-          "description": "SBD MSAW SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 4300,
-          "radius": 4,
-          "center": "KSBD"
-        }
-      ]
-    },
     "stars_maps": [
       "701S FUS 3NM MVA SCT",
       "711S EOVM SCT",

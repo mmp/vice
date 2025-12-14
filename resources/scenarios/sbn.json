@@ -116,7 +116,6 @@
             "waypoints": "_SBN_27L/h270"
           }
         },
-
         "9R": {
           "OXI": {
             "cleared_altitude": 3000,
@@ -207,7 +206,6 @@
             "waypoints": "_SBN_9R/h090"
           }
         },
-
         "18": {
           "OXI": {
             "cleared_altitude": 3000,
@@ -969,25 +967,139 @@
       },
       "tower_list": 1
     },
-    "KEKM": { "vfr": { "random_routes": { "rate": 3 } } },
-    "C20": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KPPO": { "vfr": { "random_routes": { "rate": 3 } } },
-    "C65": { "vfr": { "random_routes": { "rate": 3 } } },
-    "C03": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KRCR": { "vfr": { "random_routes": { "rate": 3 } } },
-    "01A": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KRWN": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KGSH": { "vfr": { "random_routes": { "rate": 3 } } },
-    "C91": { "vfr": { "random_routes": { "rate": 3 } } },
-    "C62": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KIRS": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KOEB": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KRZL": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KVPZ": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KMGC": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KBEH": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KBIV": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KFPK": { "vfr": { "random_routes": { "rate": 3 } } }
+    "KEKM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "C20": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KPPO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "C65": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "C03": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KRCR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "01A": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KRWN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KGSH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "C91": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "C62": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KIRS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KOEB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KRZL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KVPZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KMGC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KBEH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KBIV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KFPK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    }
   },
   "airspace": {
     "boundaries": {
@@ -1303,11 +1415,19 @@
           "KSBN": 10
         }
       },
-      "solo_controller": "SBN_N_APP",
-      "multi_controllers": {
-        "default": {
-          "SBN_N_APP": { "primary": true, "arrivals": ["WEST.ord", "WEST"], "departures": ["KSBN"] },
-          "SBN_S_APP": { "backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SBN_N_APP": ["SBN_S_APP"]
+        },
+        "inbound_assignments": {
+          "EAST": "SBN_S_APP",
+          "SOUTH": "SBN_S_APP",
+          "WEST": "SBN_N_APP",
+          "WEST.ord": "SBN_N_APP"
+        },
+        "departure_assignments": {
+          "KSBN": "SBN_N_APP"
         }
       },
       "controllers": [
@@ -1358,11 +1478,19 @@
           "KSBN": 10
         }
       },
-      "solo_controller": "SBN_N_APP",
-      "multi_controllers": {
-        "default": {
-          "SBN_N_APP": { "primary": true, "arrivals": ["WEST.ord", "WEST"] },
-          "SBN_S_APP": { "backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"], "departures": ["KSBN"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SBN_N_APP": ["SBN_S_APP"]
+        },
+        "inbound_assignments": {
+          "EAST": "SBN_S_APP",
+          "SOUTH": "SBN_S_APP",
+          "WEST": "SBN_N_APP",
+          "WEST.ord": "SBN_N_APP"
+        },
+        "departure_assignments": {
+          "KSBN": "SBN_S_APP"
         }
       },
       "controllers": [
@@ -1413,11 +1541,19 @@
           "KSBN": 10
         }
       },
-      "solo_controller": "SBN_N_APP",
-      "multi_controllers": {
-        "default": {
-          "SBN_N_APP": { "primary": true, "arrivals": ["WEST.ord", "WEST"], "departures": ["KSBN"] },
-          "SBN_S_APP": { "backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SBN_N_APP": ["SBN_S_APP"]
+        },
+        "inbound_assignments": {
+          "EAST": "SBN_S_APP",
+          "SOUTH": "SBN_S_APP",
+          "WEST": "SBN_N_APP",
+          "WEST.ord": "SBN_N_APP"
+        },
+        "departure_assignments": {
+          "KSBN": "SBN_N_APP"
         }
       },
       "controllers": [
@@ -1468,11 +1604,19 @@
           "KSBN": 10
         }
       },
-      "solo_controller": "SBN_N_APP",
-      "multi_controllers": {
-        "default": {
-          "SBN_N_APP": { "primary": true, "arrivals": ["WEST.ord", "WEST"], "departures": ["KSBN"] },
-          "SBN_S_APP": { "backup": "SBN_N_APP", "arrivals": ["EAST", "SOUTH"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SBN_N_APP": ["SBN_S_APP"]
+        },
+        "inbound_assignments": {
+          "EAST": "SBN_S_APP",
+          "SOUTH": "SBN_S_APP",
+          "WEST": "SBN_N_APP",
+          "WEST.ord": "SBN_N_APP"
+        },
+        "departure_assignments": {
+          "KSBN": "SBN_N_APP"
         }
       },
       "controllers": [

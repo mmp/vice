@@ -1,36 +1,103 @@
 {
   "tracon": "OGG",
   "airports": {
-    "PHKO": { "vfr": { "random_routes": { "rate": 4 } } },
-    "PHJR": { "vfr": { "random_routes": { "rate": 7 } } },
-    "PHJH": { "vfr": { "random_routes": { "rate": 2 } } },
-    "PHHN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "PHUP": { "vfr": { "random_routes": { "rate": 4 } } },
-    "PHMU": { "vfr": { "random_routes": { "rate": 3 } } },
-    "PHNY": { "vfr": { "random_routes": { "rate": 10 } } },
-    "PHMK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "PHLU": { "vfr": { "random_routes": { "rate": 5 } } },
+    "PHKO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      }
+    },
+    "PHJR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "PHJH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 2
+        }
+      }
+    },
     "PHHN": {
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "approaches": {
-        "R8": { "cifp_id": "R8" },
-        "R26": { "cifp_id": "R26" }
+        "R8": {
+          "cifp_id": "R8"
+        },
+        "R26": {
+          "cifp_id": "R26"
+        }
+      }
+    },
+    "PHUP": {
+      "vfr": {
+        "random_routes": {
+          "rate": 4
+        }
+      }
+    },
+    "PHMU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "PHNY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "PHMK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "PHLU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
       }
     },
     "PHOG": {
       "approaches": {
-        "IY2": { "cifp_id": "IY2" },
-        "IZ2": { "cifp_id": "IZ2" },
-        "RY2": { "cifp_id": "RY2" },
-        "RZ2": { "cifp_id": "RZ2" },
+        "IY2": {
+          "cifp_id": "IY2"
+        },
+        "IZ2": {
+          "cifp_id": "IZ2"
+        },
+        "RY2": {
+          "cifp_id": "RY2"
+        },
+        "RZ2": {
+          "cifp_id": "RZ2"
+        },
         "SSV": {
           "full_name": "Smoke Stack Visual Runway 1",
           "runway": "2",
           "type": "Visual",
           "waypoints": ["N020.35.19.784,W156.28.37.218 N020.43.38.948,W156.29.14.351 N020.50.43.631,W156.28.08.708"]
         },
-        "R20": { "cifp_id": "R20" },
-        "R23": { "cifp_id": "R23" }
+        "R20": {
+          "cifp_id": "R20"
+        },
+        "R23": {
+          "cifp_id": "R23"
+        }
       },
       "departure_routes": {
         "2": {
@@ -2022,11 +2089,19 @@
           "PHOG": 2
         }
       },
-      "solo_controller": "HCF_S_APP",
-      "multi_controllers": {
-        "default": {
-          "HCF_S_APP": { "primary": true, "arrivals": ["CAMPS4.LNY.N", "V1.CAMPS4.N", "V2.CAMPS4.N"] },
-          "HCF_N_APP": { "backup": "HCF_S_APP", "arrivals": ["LNDHY1"], "departures": ["PHOG"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "HCF_S_APP": ["HCF_N_APP"]
+        },
+        "inbound_assignments": {
+          "CAMPS4.LNY.N": "HCF_S_APP",
+          "LNDHY1": "HCF_N_APP",
+          "V1.CAMPS4.N": "HCF_S_APP",
+          "V2.CAMPS4.N": "HCF_S_APP"
+        },
+        "departure_assignments": {
+          "PHOG": "HCF_N_APP"
         }
       },
       "controllers": ["OGG_TWR", "HCF_05_CTR", "HCF_03_CTR", "HCF_04_CTR"],
@@ -2075,15 +2150,19 @@
           "PHOG": 2
         }
       },
-      "solo_controller": "HCF_S_APP",
-      "multi_controllers": {
-        "default": {
-          "HCF_S_APP": {
-            "primary": true,
-            "arrivals": ["CAMPS4.LNY.S", "V1.CAMPS4.S", "V2.CAMPS4.S"],
-            "departures": ["PHOG"]
-          },
-          "HCF_N_APP": { "backup": "HCF_S_APP", "arrivals": ["OCEANIC SOUTH FLOW"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "HCF_S_APP": ["HCF_N_APP"]
+        },
+        "inbound_assignments": {
+          "CAMPS4.LNY.S": "HCF_S_APP",
+          "OCEANIC SOUTH FLOW": "HCF_N_APP",
+          "V1.CAMPS4.S": "HCF_S_APP",
+          "V2.CAMPS4.S": "HCF_S_APP"
+        },
+        "departure_assignments": {
+          "PHOG": "HCF_S_APP"
         }
       },
       "controllers": ["OGG_TWR", "HCF_05_CTR", "HCF_03_CTR", "HCF_04_CTR"],
@@ -2297,31 +2376,71 @@
       "PALAY": "PAL"
     },
     "significant_points": {
-      "APACK": { "short_name": "APA" },
-      "CLUTS": { "short_name": "CLU" },
-      "CODDY": { "short_name": "COD" },
-      "EBBER": { "short_name": "EBB" },
-      "FITES": { "short_name": "FIT" },
-      "KOLEA": { "short_name": "KOL" },
+      "APACK": {
+        "short_name": "APA"
+      },
+      "CLUTS": {
+        "short_name": "CLU"
+      },
+      "CODDY": {
+        "short_name": "COD"
+      },
+      "EBBER": {
+        "short_name": "EBB"
+      },
+      "FITES": {
+        "short_name": "FIT"
+      },
+      "KOLEA": {
+        "short_name": "KOL"
+      },
       "MKK": {},
-      "PULPS": { "short_name": "PUL" },
-      "ZIGIE": { "short_name": "ZIG" },
-      "KEAHI": { "short_name": "KEA" },
+      "PULPS": {
+        "short_name": "PUL"
+      },
+      "ZIGIE": {
+        "short_name": "ZIG"
+      },
+      "KEAHI": {
+        "short_name": "KEA"
+      },
       "UPP": {},
       "LNY": {},
-      "KATHS": { "short_name": "KAT" },
+      "KATHS": {
+        "short_name": "KAT"
+      },
       "LIH": {},
-      "LILIA": { "short_name": "LIL" },
-      "NONNI": { "short_name": "NON" },
-      "PUPPI": { "short_name": "PUP" },
+      "LILIA": {
+        "short_name": "LIL"
+      },
+      "NONNI": {
+        "short_name": "NON"
+      },
+      "PUPPI": {
+        "short_name": "PUP"
+      },
       "SOK": {},
-      "CARRP": { "short_name": "CAR" },
-      "CHOKO": { "short_name": "CHO" },
-      "DOVRR": { "short_name": "DOV" },
-      "KEOLA": { "short_name": "KEO" },
-      "KUCHI": { "short_name": "KUC" },
-      "GECKO": { "short_name": "GEC" },
-      "PALAY": { "short_name": "PAL" }
+      "CARRP": {
+        "short_name": "CAR"
+      },
+      "CHOKO": {
+        "short_name": "CHO"
+      },
+      "DOVRR": {
+        "short_name": "DOV"
+      },
+      "KEOLA": {
+        "short_name": "KEO"
+      },
+      "KUCHI": {
+        "short_name": "KUC"
+      },
+      "GECKO": {
+        "short_name": "GEC"
+      },
+      "PALAY": {
+        "short_name": "PAL"
+      }
     },
     "stars_maps": [
       "OGG TRACON",
@@ -2330,7 +2449,6 @@
       "OGG RVM__MAUI RADAR VEC MAP",
       "SPLIT__TRACON SPLITS",
       "COAST__COASTLINES",
-
       "ARWYS__AIRWAYS",
       "CTR__CENTER SPLITS",
       "OGG_FIX_ARR",
@@ -2347,7 +2465,6 @@
       "",
       "",
       "",
-
       "APRTS__AIRPORTS",
       "ZHN Airspace Classes",
       "",

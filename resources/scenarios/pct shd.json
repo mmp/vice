@@ -1,25 +1,105 @@
 {
   "tracon": "PCT",
   "airports": {
-    "KHWY": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KJYO": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KOKV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFRR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCJR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRMN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFDK": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KEZF": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KDMW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHGR": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMRB": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KHWY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KJYO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KOKV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFRR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCJR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRMN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFDK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KEZF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KDMW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHGR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMRB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KHEF": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "I6L": { "cifp_id": "I16L" },
-        "R6L": { "cifp_id": "R16L" },
-        "R6R": { "cifp_id": "R16R" },
-        "R4L": { "cifp_id": "R34L" },
-        "R4R": { "cifp_id": "R34R" }
+        "I6L": {
+          "cifp_id": "I16L"
+        },
+        "R6L": {
+          "cifp_id": "R16L"
+        },
+        "R6R": {
+          "cifp_id": "R16R"
+        },
+        "R4L": {
+          "cifp_id": "R34L"
+        },
+        "R4R": {
+          "cifp_id": "R34R"
+        }
       },
       "departure_routes": {
         "34R": {
@@ -273,21 +353,51 @@
     },
     "KIAD": {
       "approaches": {
-        "I1L": { "cifp_id": "I1L" },
-        "R1L": { "cifp_id": "RY1L" },
-        "I1C": { "cifp_id": "IC1" },
-        "R1C": { "cifp_id": "RY1C" },
-        "I1R": { "cifp_id": "I1R" },
-        "R1R": { "cifp_id": "RY1R" },
-        "I9L": { "cifp_id": "I19L" },
-        "R9L": { "cifp_id": "RY19L" },
-        "I9C": { "cifp_id": "IC19" },
-        "R9C": { "cifp_id": "RY19C" },
-        "I9R": { "cifp_id": "I19R" },
-        "R9R": { "cifp_id": "RY19R" },
-        "RY3": { "cifp_id": "RY30" },
-        "RZ3": { "cifp_id": "RZ30" },
-        "I12": { "cifp_id": "I12" },
+        "I1L": {
+          "cifp_id": "I1L"
+        },
+        "R1L": {
+          "cifp_id": "RY1L"
+        },
+        "I1C": {
+          "cifp_id": "IC1"
+        },
+        "R1C": {
+          "cifp_id": "RY1C"
+        },
+        "I1R": {
+          "cifp_id": "I1R"
+        },
+        "R1R": {
+          "cifp_id": "RY1R"
+        },
+        "I9L": {
+          "cifp_id": "I19L"
+        },
+        "R9L": {
+          "cifp_id": "RY19L"
+        },
+        "I9C": {
+          "cifp_id": "IC19"
+        },
+        "R9C": {
+          "cifp_id": "RY19C"
+        },
+        "I9R": {
+          "cifp_id": "I19R"
+        },
+        "R9R": {
+          "cifp_id": "RY19R"
+        },
+        "RY3": {
+          "cifp_id": "RY30"
+        },
+        "RZ3": {
+          "cifp_id": "RZ30"
+        },
+        "I12": {
+          "cifp_id": "I12"
+        },
         "V1L": {
           "full_name": "Visual Runway 1L",
           "runway": "1L",
@@ -2041,52 +2151,6 @@
                 "icao": "N",
                 "fleet": "fastGA",
                 "airport": "KPWM"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "PRTZL1": {
-      "arrivals": [
-        {
-          "waypoints": "PRTZL N039.58.31.601,W077.08.08.314/ho HYPER/s250",
-          "runway_waypoints": {
-            "KIAD": {
-              "19L": "HYPER/s250 PHATT/a9000/flyover/h230",
-              "19C": "HYPER/s250 PHATT/a9000/flyover/h230",
-              "19R": "HYPER/s250 PHATT/a9000/flyover/h230",
-              "1L": "HYPER/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191",
-              "1C": "HYPER/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
-              "1R": "HYPER/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
-              "30": "HYPER/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191"
-            }
-          },
-          "star": "PRTZL1",
-          "initial_controller": "NY_A1_CTR",
-          "initial_altitude": 14000,
-          "assigned_altitude": 9000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KIAD": [
-              {
-                "icao": "POE",
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "WUP",
-                "airport": "KBFA"
-              },
-              {
-                "icao": "N",
-                "fleet": "GAturbine",
-                "airport": "KSYR"
-              },
-              {
-                "icao": "N",
-                "fleet": "GAturbine",
-                "airport": "KTEB"
               }
             ]
           }
@@ -6845,27 +6909,29 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_M_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_M_APP": { "primary": true },
-          "IAD_A_DEP": {
-            "backup": "IAD_M_APP",
-            "departures": ["KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2"]
-          },
-          "IAD_T_DEP": {
-            "backup": "IAD_A_DEP",
-            "departures": ["KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6"]
-          },
-          "IAD_B_APP": { "backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"] },
-          "IAD_O_APP": { "backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"] },
-          "IAD_N_APP": { "backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT", "TIKEE4"] },
-          "IAD_E_APP": { "backup": "IAD_M_APP" },
-          "IAD_V_APP": { "backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.N"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP" },
-          "IAD_S_APP": { "backup": "IAD_U_APP" },
-          "IAD_X_APP": { "backup": "IAD_N_APP" },
-          "IAD_G_APP": { "backup": "IAD_M_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_A_DEP"
+        },
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "TIKEE4": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "WAYNZ1.N": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -6988,27 +7054,29 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_M_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_M_APP": { "primary": true },
-          "IAD_A_DEP": {
-            "backup": "IAD_M_APP",
-            "departures": ["KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2"]
-          },
-          "IAD_T_DEP": {
-            "backup": "IAD_A_DEP",
-            "departures": ["KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6"]
-          },
-          "IAD_B_APP": { "backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"] },
-          "IAD_O_APP": { "backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"] },
-          "IAD_N_APP": { "backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT", "TIKEE4"] },
-          "IAD_E_APP": { "backup": "IAD_M_APP" },
-          "IAD_V_APP": { "backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.N"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP" },
-          "IAD_S_APP": { "backup": "IAD_U_APP" },
-          "IAD_X_APP": { "backup": "IAD_N_APP" },
-          "IAD_G_APP": { "backup": "IAD_M_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_T_DEP"
+        },
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "TIKEE4": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "WAYNZ1.N": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7119,27 +7187,29 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_M_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_M_APP": { "primary": true },
-          "IAD_A_DEP": {
-            "backup": "IAD_M_APP",
-            "departures": ["KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2"]
-          },
-          "IAD_T_DEP": {
-            "backup": "IAD_A_DEP",
-            "departures": ["KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6"]
-          },
-          "IAD_B_APP": { "backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"] },
-          "IAD_O_APP": { "backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"] },
-          "IAD_N_APP": { "backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT", "TIKEE4"] },
-          "IAD_E_APP": { "backup": "IAD_M_APP" },
-          "IAD_V_APP": { "backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.S"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP" },
-          "IAD_S_APP": { "backup": "IAD_U_APP" },
-          "IAD_X_APP": { "backup": "IAD_N_APP" },
-          "IAD_G_APP": { "backup": "IAD_M_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_A_DEP"
+        },
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "TIKEE4": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "WAYNZ1.S": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7249,27 +7319,29 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_M_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_M_APP": { "primary": true },
-          "IAD_A_DEP": {
-            "backup": "IAD_M_APP",
-            "departures": ["KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2"]
-          },
-          "IAD_T_DEP": {
-            "backup": "IAD_A_DEP",
-            "departures": ["KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6"]
-          },
-          "IAD_B_APP": { "backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"] },
-          "IAD_O_APP": { "backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"] },
-          "IAD_N_APP": { "backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT", "TIKEE4"] },
-          "IAD_E_APP": { "backup": "IAD_M_APP" },
-          "IAD_V_APP": { "backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.S"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP" },
-          "IAD_S_APP": { "backup": "IAD_U_APP" },
-          "IAD_X_APP": { "backup": "IAD_N_APP" },
-          "IAD_G_APP": { "backup": "IAD_M_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_A_DEP"
+        },
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "TIKEE4": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "WAYNZ1.S": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7380,27 +7452,29 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_M_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_M_APP": { "primary": true },
-          "IAD_A_DEP": {
-            "backup": "IAD_M_APP",
-            "departures": ["KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2"]
-          },
-          "IAD_T_DEP": {
-            "backup": "IAD_A_DEP",
-            "departures": ["KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6"]
-          },
-          "IAD_B_APP": { "backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"] },
-          "IAD_O_APP": { "backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"] },
-          "IAD_N_APP": { "backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT", "TIKEE4"] },
-          "IAD_E_APP": { "backup": "IAD_M_APP" },
-          "IAD_V_APP": { "backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.S"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP" },
-          "IAD_S_APP": { "backup": "IAD_U_APP" },
-          "IAD_X_APP": { "backup": "IAD_N_APP" },
-          "IAD_G_APP": { "backup": "IAD_M_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_T_DEP"
+        },
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "TIKEE4": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "WAYNZ1.S": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7503,27 +7577,29 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_M_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_M_APP": { "primary": true },
-          "IAD_A_DEP": {
-            "backup": "IAD_M_APP",
-            "departures": ["KIAD/JCOBY4", "KIAD/JERES2", "KIAD/MCRAY2", "KIAD/WOOLY2"]
-          },
-          "IAD_T_DEP": {
-            "backup": "IAD_A_DEP",
-            "departures": ["KIAD/JDUBB4", "KIAD/RNLDI4", "KIAD/BUNZZ3", "KIAD/CLTCH3", "KIAD/SCRAM6"]
-          },
-          "IAD_B_APP": { "backup": "IAD_M_APP", "inbound_flows": ["CAVLR6"] },
-          "IAD_O_APP": { "backup": "IAD_B_APP", "departures": ["KHEF"], "inbound_flows": ["TRSTN4"] },
-          "IAD_N_APP": { "backup": "IAD_M_APP", "inbound_flows": ["GIBBZ5.MGW", "GIBBZ5.BURTT", "TIKEE4"] },
-          "IAD_E_APP": { "backup": "IAD_M_APP" },
-          "IAD_V_APP": { "backup": "IAD_M_APP", "inbound_flows": ["HYPER9", "PRTZL1", "WAYNZ1.N"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP" },
-          "IAD_S_APP": { "backup": "IAD_U_APP" },
-          "IAD_X_APP": { "backup": "IAD_N_APP" },
-          "IAD_G_APP": { "backup": "IAD_M_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_A_DEP"
+        },
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "TIKEE4": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "WAYNZ1.N": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7601,12 +7677,16 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_X_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_X_APP": { "primary": true, "inbound_flows": ["IADFE.N TRIPS"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP", "inbound_flows": ["IADFW.N TRIPS"] },
-          "IAD_S_APP": { "backup": "IAD_U_APP", "inbound_flows": ["IADFC.N TRIPS"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "inbound_assignments": {
+          "IADFE.N TRIPS": "IAD_X_APP",
+          "IADFW.N TRIPS": "IAD_U_APP",
+          "IADFC.N TRIPS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7668,12 +7748,16 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_X_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_X_APP": { "primary": true, "inbound_flows": ["IADFE.N DUALS"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP", "inbound_flows": ["IADFW.N DUALS"] },
-          "IAD_S_APP": { "backup": "IAD_U_APP", "inbound_flows": ["IADFC.N DUALS"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "inbound_assignments": {
+          "IADFE.N DUALS": "IAD_X_APP",
+          "IADFW.N DUALS": "IAD_U_APP",
+          "IADFC.N DUALS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7739,12 +7823,16 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_X_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_X_APP": { "primary": true, "inbound_flows": ["IADFE.S TRIPS"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP", "inbound_flows": ["IADFW.S TRIPS"] },
-          "IAD_S_APP": { "backup": "IAD_U_APP", "inbound_flows": ["IADFC.S TRIPS"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "inbound_assignments": {
+          "IADFE.S TRIPS": "IAD_X_APP",
+          "IADFW.S TRIPS": "IAD_U_APP",
+          "IADFC.S TRIPS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7810,12 +7898,16 @@
           "overflights": 20
         }
       },
-      "solo_controller": "IAD_X_APP",
-      "multi_controllers": {
-        "default": {
-          "IAD_X_APP": { "primary": true, "inbound_flows": ["IADFE.S DUALS"] },
-          "IAD_U_APP": { "backup": "IAD_X_APP", "inbound_flows": ["IADFW.S DUALS"] },
-          "IAD_S_APP": { "backup": "IAD_U_APP", "inbound_flows": ["IADFC.S DUALS"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"]
+        },
+        "inbound_assignments": {
+          "IADFE.S DUALS": "IAD_X_APP",
+          "IADFW.S DUALS": "IAD_U_APP",
+          "IADFC.S DUALS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -8062,14 +8154,18 @@
     },
     "significant_points": {
       "AGARD": {},
-      "BUFFR": { "short_name": "BFR" },
+      "BUFFR": {
+        "short_name": "BFR"
+      },
       "DQO": {},
       "FLASK": {},
       "GLANC": {},
       "JERES": {},
       "MAULS": {},
       "MELTN": {},
-      "OTTTO": { "short_name": "OTO" },
+      "OTTTO": {
+        "short_name": "OTO"
+      },
       "RAMAY": {},
       "RRSIN": {},
       "SCOOB": {},
@@ -8109,7 +8205,6 @@
       "PCT QAirway",
       "PCT VAirway"
     ],
-
     "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
   }
 }

@@ -337,7 +337,23 @@
           "KCPR": 4
         }
       },
-      "solo_controller": "CPR_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CPR_APP": []
+        },
+        "inbound_assignments": {
+          "DEN": "CPR_APP",
+          "JAC": "CPR_APP",
+          "MEM": "CPR_APP",
+          "NE-GA": "CPR_APP",
+          "SE-GA": "CPR_APP",
+          "SLC": "CPR_APP"
+        },
+        "departure_assignments": {
+          "KCPR": "CPR_APP"
+        }
+      },
       "controllers": ["CPR_TWR", "DEN_17_CTR"],
       "default_maps": ["CPR BASE"],
       "departure_runways": [
@@ -389,7 +405,23 @@
           "KCPR": 4
         }
       },
-      "solo_controller": "CPR_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CPR_APP": []
+        },
+        "inbound_assignments": {
+          "DEN": "CPR_APP",
+          "JAC": "CPR_APP",
+          "MEM": "CPR_APP",
+          "NE-GA": "CPR_APP",
+          "SE-GA": "CPR_APP",
+          "SLC": "CPR_APP"
+        },
+        "departure_assignments": {
+          "KCPR": "CPR_APP"
+        }
+      },
       "controllers": ["CPR_TWR", "DEN_17_CTR"],
       "default_maps": ["CPR BASE"],
       "departure_runways": [

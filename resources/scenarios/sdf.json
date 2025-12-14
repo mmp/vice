@@ -3,11 +3,21 @@
   "airports": {
     "KSDF": {
       "approaches": {
-        "I7L": { "cifp_id": "I17L" },
-        "I7R": { "cifp_id": "I17R" },
-        "I5L": { "cifp_id": "I35L" },
-        "I5R": { "cifp_id": "I35R" },
-        "R29": { "cifp_id": "RZ29" }
+        "I7L": {
+          "cifp_id": "I17L"
+        },
+        "I7R": {
+          "cifp_id": "I17R"
+        },
+        "I5L": {
+          "cifp_id": "I35L"
+        },
+        "I5R": {
+          "cifp_id": "I35R"
+        },
+        "R29": {
+          "cifp_id": "RZ29"
+        }
       },
       "approach_regions": {
         "35R": {
@@ -582,7 +592,8 @@
     "SDF_A_APP": {
       "frequency": 134150,
       "radio_name": "Louisville Approach",
-      "sector_id": "4A"
+      "sector_id": "4A",
+      "default_airport": "KSDF"
     },
     "SDF_I_APP": {
       "frequency": 132325,
@@ -593,22 +604,26 @@
     "SDF_E_APP": {
       "frequency": 135775,
       "radio_name": "Louisville Approach",
-      "sector_id": "4E"
+      "sector_id": "4E",
+      "default_airport": "KSDF"
     },
     "SDF_W_APP": {
       "frequency": 120300,
       "radio_name": "Louisville Approach",
-      "sector_id": "4W"
+      "sector_id": "4W",
+      "default_airport": "KSDF"
     },
     "SDF_D_DEP": {
       "frequency": 132075,
       "radio_name": "Louisville Departure",
-      "sector_id": "4D"
+      "sector_id": "4D",
+      "default_airport": "KSDF"
     },
     "SDF_B_DEP": {
       "frequency": 123675,
       "radio_name": "Louisville Departure",
-      "sector_id": "4B"
+      "sector_id": "4B",
+      "default_airport": "KSDF"
     }
   },
   "default_scenario": "KSDF South",
@@ -669,15 +684,20 @@
           "KSDF": 10
         }
       },
-      "solo_controller": "SDF_I_APP",
-      "multi_controllers": {
-        "default": {
-          "SDF_I_APP": { "primary": true, "arrivals": ["MBELL5"] },
-          "SDF_B_DEP": { "backup": "SDF_I_APP", "departures": ["KSDF"] },
-          "SDF_W_APP": { "backup": "SDF_I_APP" },
-          "SDF_A_APP": { "backup": "SDF_I_APP", "arrivals": ["DLAMP8", "LEDDL1"] },
-          "SDF_E_APP": { "backup": "SDF_W_APP" },
-          "SDF_D_DEP": { "backup": "SDF_B_DEP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SDF_B_DEP": ["SDF_D_DEP"],
+          "SDF_I_APP": ["SDF_A_APP", "SDF_B_DEP", "SDF_W_APP"],
+          "SDF_W_APP": ["SDF_E_APP"]
+        },
+        "inbound_assignments": {
+          "DLAMP8": "SDF_A_APP",
+          "LEDDL1": "SDF_A_APP",
+          "MBELL5": "SDF_I_APP"
+        },
+        "departure_assignments": {
+          "KSDF": "SDF_B_DEP"
         }
       },
       "controllers": ["IND_CTR", "CVG_APP", "SDF_E_TWR", "SDF_W_TWR"],
@@ -723,15 +743,20 @@
           "KSDF": 10
         }
       },
-      "solo_controller": "SDF_I_APP",
-      "multi_controllers": {
-        "default": {
-          "SDF_I_APP": { "primary": true, "arrivals": ["MBELL5"] },
-          "SDF_B_DEP": { "backup": "SDF_I_APP", "departures": ["KSDF"] },
-          "SDF_W_APP": { "backup": "SDF_I_APP" },
-          "SDF_A_APP": { "backup": "SDF_I_APP", "arrivals": ["DLAMP8", "LEDDL1"] },
-          "SDF_E_APP": { "backup": "SDF_W_APP" },
-          "SDF_D_DEP": { "backup": "SDF_B_DEP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SDF_B_DEP": ["SDF_D_DEP"],
+          "SDF_I_APP": ["SDF_A_APP", "SDF_B_DEP", "SDF_W_APP"],
+          "SDF_W_APP": ["SDF_E_APP"]
+        },
+        "inbound_assignments": {
+          "DLAMP8": "SDF_A_APP",
+          "LEDDL1": "SDF_A_APP",
+          "MBELL5": "SDF_I_APP"
+        },
+        "departure_assignments": {
+          "KSDF": "SDF_B_DEP"
         }
       },
       "controllers": ["IND_CTR", "CVG_APP", "SDF_E_TWR", "SDF_W_TWR"],
@@ -851,7 +876,9 @@
     },
     "significant_points": {
       "APALO": {},
-      "CRRGO": { "short_name": "CRG" },
+      "CRRGO": {
+        "short_name": "CRG"
+      },
       "SHIPR": {},
       "STREP": {}
     },

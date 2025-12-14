@@ -4,18 +4,42 @@
     "KSEA": {
       "name": "Seattle",
       "approaches": {
-        "I6C": { "cifp_id": "IC16" },
-        "I6L": { "cifp_id": "I16L" },
-        "I6R": { "cifp_id": "I16R" },
-        "I4C": { "cifp_id": "IC34" },
-        "I4L": { "cifp_id": "I34L" },
-        "I4R": { "cifp_id": "I34R" },
-        "Z6C": { "cifp_id": "RZ16C" },
-        "Z6L": { "cifp_id": "RZ16L" },
-        "Z6R": { "cifp_id": "RZ16R" },
-        "Z4C": { "cifp_id": "RZ34C" },
-        "Z4L": { "cifp_id": "RZ34L" },
-        "Z4R": { "cifp_id": "RZ34R" }
+        "I6C": {
+          "cifp_id": "IC16"
+        },
+        "I6L": {
+          "cifp_id": "I16L"
+        },
+        "I6R": {
+          "cifp_id": "I16R"
+        },
+        "I4C": {
+          "cifp_id": "IC34"
+        },
+        "I4L": {
+          "cifp_id": "I34L"
+        },
+        "I4R": {
+          "cifp_id": "I34R"
+        },
+        "Z6C": {
+          "cifp_id": "RZ16C"
+        },
+        "Z6L": {
+          "cifp_id": "RZ16L"
+        },
+        "Z6R": {
+          "cifp_id": "RZ16R"
+        },
+        "Z4C": {
+          "cifp_id": "RZ34C"
+        },
+        "Z4L": {
+          "cifp_id": "RZ34L"
+        },
+        "Z4R": {
+          "cifp_id": "RZ34R"
+        }
       },
       "departure_routes": {
         "16L": {
@@ -2373,15 +2397,22 @@
           "KSEA": 10
         }
       },
-      "solo_controller": "SEA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "SEA_W_APP": {
-            "primary": true,
-            "arrivals": ["CHINS5South", "GLASR2South", "SKYKO1South"],
-            "departures": ["KSEA"]
-          },
-          "SEA_E_APP": { "backup": "SEA_W_APP", "arrivals": ["HAWKZ7South", "JAWBN6South", "MARNR7South", "OLM2South"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SEA_W_APP": ["SEA_E_APP"]
+        },
+        "inbound_assignments": {
+          "CHINS5South": "SEA_W_APP",
+          "GLASR2South": "SEA_W_APP",
+          "HAWKZ7South": "SEA_E_APP",
+          "JAWBN6South": "SEA_E_APP",
+          "MARNR7South": "SEA_E_APP",
+          "OLM2South": "SEA_E_APP",
+          "SKYKO1South": "SEA_W_APP"
+        },
+        "departure_assignments": {
+          "KSEA": "SEA_W_APP"
         }
       },
       "controllers": ["SEA_TWR", "SEA_1_TWR", "BFI_TWR", "SEA_CTR"],
@@ -2439,15 +2470,22 @@
           "KSEA": 10
         }
       },
-      "solo_controller": "SEA_W_APP",
-      "multi_controllers": {
-        "default": {
-          "SEA_W_APP": {
-            "primary": true,
-            "arrivals": ["CHINS5North", "GLASR2North", "SKYKO1North"],
-            "departures": ["KSEA"]
-          },
-          "SEA_E_APP": { "backup": "SEA_W_APP", "arrivals": ["HAWKZ7North", "JAWBN6North", "MARNR7North", "OLM2North"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SEA_W_APP": ["SEA_E_APP"]
+        },
+        "inbound_assignments": {
+          "CHINS5North": "SEA_W_APP",
+          "GLASR2North": "SEA_W_APP",
+          "HAWKZ7North": "SEA_E_APP",
+          "JAWBN6North": "SEA_E_APP",
+          "MARNR7North": "SEA_E_APP",
+          "OLM2North": "SEA_E_APP",
+          "SKYKO1North": "SEA_W_APP"
+        },
+        "departure_assignments": {
+          "KSEA": "SEA_W_APP"
         }
       },
       "controllers": ["SEA_TWR", "SEA_1_TWR", "BFI_TWR", "SEA_CTR"],
@@ -2581,9 +2619,13 @@
       "ARRIE": "ARE"
     },
     "significant_points": {
-      "ARRIE": { "short_name": "ARE" },
+      "ARRIE": {
+        "short_name": "ARE"
+      },
       "AST": {},
-      "BANGR": { "short_name": "BGR" },
+      "BANGR": {
+        "short_name": "BGR"
+      },
       "BKE": {},
       "BTG": {},
       "CVO": {},
@@ -2592,21 +2634,31 @@
       "EPH": {},
       "EUG": {},
       "GEG": {},
-      "HAROB": { "short_name": "HRB" },
+      "HAROB": {
+        "short_name": "HRB"
+      },
       "HQM": {},
       "HUH": {},
-      "ISBRG": { "short_name": "IBG" },
-      "JEFPO": { "short_name": "JFO" },
+      "ISBRG": {
+        "short_name": "IBG"
+      },
+      "JEFPO": {
+        "short_name": "JFO"
+      },
       "LKV": {},
       "LTJ": {},
       "MLP": {},
       "MWH": {},
       "OLM": {},
-      "OZWLD": { "short_name": "OWD" },
+      "OZWLD": {
+        "short_name": "OWD"
+      },
       "PAE": {},
       "PDT": {},
       "SEA": {},
-      "SUMMA": { "short_name": "SMA" },
+      "SUMMA": {
+        "short_name": "SMA"
+      },
       "TOU": {},
       "YDC": {},
       "YVR": {},

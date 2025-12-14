@@ -4,18 +4,42 @@
     "KIND": {
       "name": "Indianapolis",
       "approaches": {
-        "I5L": { "cifp_id": "I5L" },
-        "R5L": { "cifp_id": "RY5L" },
-        "I5R": { "cifp_id": "I5R" },
-        "R5R": { "cifp_id": "RY5R" },
-        "I14": { "cifp_id": "I14" },
-        "R14": { "cifp_id": "RY14" },
-        "I3L": { "cifp_id": "I23L" },
-        "R3L": { "cifp_id": "RY23L" },
-        "I3R": { "cifp_id": "I23R" },
-        "R3R": { "cifp_id": "RY23R" },
-        "I32": { "cifp_id": "I32" },
-        "R32": { "cifp_id": "RY32" }
+        "I5L": {
+          "cifp_id": "I5L"
+        },
+        "R5L": {
+          "cifp_id": "RY5L"
+        },
+        "I5R": {
+          "cifp_id": "I5R"
+        },
+        "R5R": {
+          "cifp_id": "RY5R"
+        },
+        "I14": {
+          "cifp_id": "I14"
+        },
+        "R14": {
+          "cifp_id": "RY14"
+        },
+        "I3L": {
+          "cifp_id": "I23L"
+        },
+        "R3L": {
+          "cifp_id": "RY23L"
+        },
+        "I3R": {
+          "cifp_id": "I23R"
+        },
+        "R3R": {
+          "cifp_id": "RY23R"
+        },
+        "I32": {
+          "cifp_id": "I32"
+        },
+        "R32": {
+          "cifp_id": "RY32"
+        }
       },
       "departure_routes": {
         "5L": {
@@ -904,37 +928,23 @@
           "KIND": 6
         }
       },
-      "solo_controller": "IND_E_APP",
-      "multi_controllers": {
-        "default": {
-          "IND_E_APP": {
-            "primary": true,
-            "departures": ["KIND/MAREO5", "KIND/DAWNN1"]
-          },
-          "IND_W_APP": {
-            "backup": "IND_E_APP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
-          },
-          "IND_B_APP": {
-            "backup": "IND_E_APP",
-            "arrivals": ["JAKKS2", "KOLTS2", "SMUKE2"]
-          },
-          "IND_D_APP": {
-            "arrivals": ["GIIBS3", "SNKPT2"],
-            "backup": "IND_B_APP"
-          },
-          "IND_F_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_I_APP": {
-            "backup": "IND_F_APP"
-          },
-          "IND_S_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_N_APP": {
-            "backup": "IND_S_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IND_B_APP": ["IND_D_APP"],
+          "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
+          "IND_F_APP": ["IND_I_APP"],
+          "IND_S_APP": ["IND_N_APP"]
+        },
+        "inbound_assignments": {
+          "GIIBS3": "IND_D_APP",
+          "JAKKS2": "IND_B_APP",
+          "KOLTS2": "IND_B_APP",
+          "SMUKE2": "IND_B_APP",
+          "SNKPT2": "IND_D_APP"
+        },
+        "departure_assignments": {
+          "KIND": "IND_E_APP"
         }
       },
       "controllers": [
@@ -993,37 +1003,23 @@
           "KIND": 6
         }
       },
-      "solo_controller": "IND_E_APP",
-      "multi_controllers": {
-        "default": {
-          "IND_E_APP": {
-            "primary": true,
-            "departures": ["KIND/MAREO5", "KIND/DAWNN1"]
-          },
-          "IND_W_APP": {
-            "backup": "IND_E_APP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
-          },
-          "IND_B_APP": {
-            "backup": "IND_E_APP",
-            "arrivals": ["JAKKS2", "KOLTS2", "SMUKE2"]
-          },
-          "IND_D_APP": {
-            "arrivals": ["GIIBS3", "SNKPT2"],
-            "backup": "IND_B_APP"
-          },
-          "IND_F_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_I_APP": {
-            "backup": "IND_F_APP"
-          },
-          "IND_S_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_N_APP": {
-            "backup": "IND_S_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IND_B_APP": ["IND_D_APP"],
+          "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
+          "IND_F_APP": ["IND_I_APP"],
+          "IND_S_APP": ["IND_N_APP"]
+        },
+        "inbound_assignments": {
+          "GIIBS3": "IND_D_APP",
+          "JAKKS2": "IND_B_APP",
+          "KOLTS2": "IND_B_APP",
+          "SMUKE2": "IND_B_APP",
+          "SNKPT2": "IND_D_APP"
+        },
+        "departure_assignments": {
+          "KIND": "IND_W_APP"
         }
       },
       "controllers": [
@@ -1078,37 +1074,23 @@
           "KIND": 3
         }
       },
-      "solo_controller": "IND_E_APP",
-      "multi_controllers": {
-        "default": {
-          "IND_E_APP": {
-            "primary": true,
-            "departures": ["KIND/MAREO5", "KIND/DAWNN1"]
-          },
-          "IND_W_APP": {
-            "backup": "IND_E_APP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
-          },
-          "IND_B_APP": {
-            "backup": "IND_E_APP",
-            "arrivals": ["JAKKS2", "KOLTS2", "SMUKE2"]
-          },
-          "IND_D_APP": {
-            "arrivals": ["GIIBS3", "SNKPT2"],
-            "backup": "IND_B_APP"
-          },
-          "IND_F_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_I_APP": {
-            "backup": "IND_F_APP"
-          },
-          "IND_S_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_N_APP": {
-            "backup": "IND_S_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IND_B_APP": ["IND_D_APP"],
+          "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
+          "IND_F_APP": ["IND_I_APP"],
+          "IND_S_APP": ["IND_N_APP"]
+        },
+        "inbound_assignments": {
+          "GIIBS3": "IND_D_APP",
+          "JAKKS2": "IND_B_APP",
+          "KOLTS2": "IND_B_APP",
+          "SMUKE2": "IND_B_APP",
+          "SNKPT2": "IND_D_APP"
+        },
+        "departure_assignments": {
+          "KIND": "IND_E_APP"
         }
       },
       "controllers": [
@@ -1158,37 +1140,23 @@
           "KIND": 3
         }
       },
-      "solo_controller": "IND_E_APP",
-      "multi_controllers": {
-        "default": {
-          "IND_E_APP": {
-            "primary": true,
-            "departures": ["KIND/MAREO5", "KIND/DAWNN1"]
-          },
-          "IND_W_APP": {
-            "backup": "IND_E_APP",
-            "departures": ["KIND/OOM5", "KIND/MEARZ7", "KIND/ROCKY1"]
-          },
-          "IND_B_APP": {
-            "backup": "IND_E_APP",
-            "arrivals": ["JAKKS2", "KOLTS2", "SMUKE2"]
-          },
-          "IND_D_APP": {
-            "arrivals": ["GIIBS3", "SNKPT2"],
-            "backup": "IND_B_APP"
-          },
-          "IND_F_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_I_APP": {
-            "backup": "IND_F_APP"
-          },
-          "IND_S_APP": {
-            "backup": "IND_E_APP"
-          },
-          "IND_N_APP": {
-            "backup": "IND_S_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "IND_B_APP": ["IND_D_APP"],
+          "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
+          "IND_F_APP": ["IND_I_APP"],
+          "IND_S_APP": ["IND_N_APP"]
+        },
+        "inbound_assignments": {
+          "GIIBS3": "IND_D_APP",
+          "JAKKS2": "IND_B_APP",
+          "KOLTS2": "IND_B_APP",
+          "SMUKE2": "IND_B_APP",
+          "SNKPT2": "IND_D_APP"
+        },
+        "departure_assignments": {
+          "KIND": "IND_E_APP"
         }
       },
       "controllers": [

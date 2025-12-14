@@ -665,19 +665,21 @@
           "KLBO": 1
         }
       },
-      "solo_controller": "SGF_E_APP",
-      "multi_controllers": {
-        "default": {
-          "SGF_E_APP": {
-            "primary": true,
-            "arrivals": ["SE", "NE", "ORD", "NE"],
-            "departures": ["KSGF/EAST", "KLBO/EAST", "KLBO/WEST"]
-          },
-          "SGF_W_APP": {
-            "backup": "SGF_E_APP",
-            "departures": ["KSGF/WEST"],
-            "arrivals": ["SW", "DEN"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SGF_E_APP": ["SGF_W_APP"]
+        },
+        "inbound_assignments": {
+          "DEN": "SGF_W_APP",
+          "NE": "SGF_E_APP",
+          "ORD": "SGF_E_APP",
+          "SE": "SGF_E_APP",
+          "SW": "SGF_W_APP"
+        },
+        "departure_assignments": {
+          "KLBO": "SGF_E_APP",
+          "KSGF": "SGF_E_APP"
         }
       },
       "controllers": ["SGF_TWR", "SGF_W_APP", "SGF_E_APP", "KC_77_CTR", "MZU_APP", "LBO_TWR"],
@@ -744,19 +746,21 @@
           "KLBO": 2
         }
       },
-      "solo_controller": "SGF_E_APP",
-      "multi_controllers": {
-        "default": {
-          "SGF_E_APP": {
-            "primary": true,
-            "arrivals": ["SE", "NE", "ORD", "SE"],
-            "departures": ["KSGF/EAST", "KLBO/EAST", "KLBO/WEST"]
-          },
-          "SGF_W_APP": {
-            "backup": "SGF_E_APP",
-            "departures": ["KSGF/WEST"],
-            "arrivals": ["SW", "DEN"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SGF_E_APP": ["SGF_W_APP"]
+        },
+        "inbound_assignments": {
+          "DEN": "SGF_W_APP",
+          "NE": "SGF_E_APP",
+          "ORD": "SGF_E_APP",
+          "SE": "SGF_E_APP",
+          "SW": "SGF_W_APP"
+        },
+        "departure_assignments": {
+          "KLBO": "SGF_E_APP",
+          "KSGF": "SGF_E_APP"
         }
       },
       "controllers": ["SGF_TWR", "SGF_W_APP", "SGF_E_APP", "KC_77_CTR", "MZU_APP", "LBO_TWR"],

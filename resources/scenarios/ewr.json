@@ -2653,7 +2653,7 @@
             "sid": "LGA7",
             "waypoints": "KLGA-22/h360"
           },
-          "COATE,NEION,,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 5000,
             "sid": "LGA7",
             "waypoints": "KLGA-22/h40"
@@ -4347,23 +4347,6 @@
         "N040.45.12.126,W074.14.21.932",
         "N040.48.35.057,W074.24.14.699",
         "N040.54.09.934,W074.16.55.274"
-      ],
-      "DEP_NE_D8": [
-        "N040.37.10.265,W074.21.01.038",
-        "N040.37.03.660,W074.12.57.529",
-        "N040.34.17.409,W074.19.32.158",
-        "N040.37.10.265,W074.21.01.038"
-      ],
-      "DEP_NE_D9": [
-        "N040.34.17.409,W074.19.32.158",
-        "N040.38.35.464,W074.09.19.863",
-        "N040.31.42.104,W074.13.34.086",
-        "N040.31.21.903,W074.11.57.407",
-        "N040.24.26.413,W074.07.47.935",
-        "N040.23.02.025,W074.11.11.868",
-        "N040.23.00.075,W074.11.38.016",
-        "N040.21.50.517,W074.13.04.506",
-        "N040.34.17.409,W074.19.32.158"
       ],
       "DEP_NE_D8": [
         "N040.37.10.265,W074.21.01.038",
@@ -8609,7 +8592,8 @@
       "radio_name": "Allentown approach",
       "sector_id": "4A",
       "facility_id": "4",
-      "facility": "ABE"
+      "facility": "ABE",
+      "default_airport": "KEWR"
     },
     "BOS_CTR": {
       "frequency": 134700,
@@ -8661,7 +8645,8 @@
       "frequency": 132800,
       "radio_name": "Newark approach",
       "sector_id": "4H",
-      "facility": "N90"
+      "facility": "N90",
+      "default_airport": "KEWR"
     },
     "Yardley": {
       "frequency": 128550,
@@ -8674,7 +8659,8 @@
       "frequency": 125550,
       "radio_name": "Newark approach",
       "sector_id": "4M",
-      "facility": "N90"
+      "facility": "N90",
+      "default_airport": "KEWR"
     },
     "Final Vector 4": {
       "frequency": 125500,
@@ -8686,7 +8672,8 @@
       "frequency": 123770,
       "radio_name": "Newark approach",
       "sector_id": "4S",
-      "facility": "N90"
+      "facility": "N90",
+      "default_airport": "KEWR"
     },
     "Newark Tower": {
       "frequency": 118300,
@@ -8935,35 +8922,28 @@
           "KEWR": 0
         }
       },
-      "solo_controller": "4P",
-      "multi_controllers": {
-        "default": {
-          "4P": {
-            "primary": true,
-            "arrivals": ["FQM3", "PHLBO4", "WRI", "PHL"]
-          },
-          "4A": {
-            "arrivals": ["FLOSI4"],
-            "backup": "4P"
-          },
-          "4N": {
-            "backup": "4P",
-            "departures": ["KEWR", "KTEB", "KCDW", "KMMU"]
-          },
-          "4U": {
-            "backup": "4P"
-          },
-          "4H": {
-            "backup": "4U",
-            "arrivals": ["JAIKE4", "MAZIE"]
-          },
-          "4S": {
-            "backup": "4U",
-            "arrivals": ["COATE", "LVZ4"]
-          },
-          "4M": {
-            "backup": "4P"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4P": ["4A", "4M", "4N", "4U"],
+          "4U": ["4H", "4S"]
+        },
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4P",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -9066,7 +9046,18 @@
           "KLGA": 0
         }
       },
-      "solo_controller": "4N",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4N": []
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -9139,7 +9130,18 @@
       }
     },
     "KEWR 4L Departure": {
-      "solo_controller": "4N",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4N": []
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
+        }
+      },
       "arrival_runways": [
         {
           "airport": "KEWR",
@@ -9301,35 +9303,28 @@
           "KEWR": 0
         }
       },
-      "solo_controller": "4P",
-      "multi_controllers": {
-        "default": {
-          "4P": {
-            "primary": true,
-            "arrivals": ["FQM3", "PHLBO4", "WRI", "PHL"]
-          },
-          "4A": {
-            "arrivals": ["FLOSI4"],
-            "backup": "4P"
-          },
-          "4N": {
-            "backup": "4P",
-            "departures": ["KEWR", "KTEB", "KCDW", "KMMU"]
-          },
-          "4U": {
-            "backup": "4P"
-          },
-          "4H": {
-            "backup": "4U",
-            "arrivals": ["JAIKE4", "MAZIE"]
-          },
-          "4S": {
-            "backup": "4U",
-            "arrivals": ["COATE", "LVZ4"]
-          },
-          "4M": {
-            "backup": "4P"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4P": ["4A", "4M", "4N", "4U"],
+          "4U": ["4H", "4S"]
+        },
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4P",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -9458,7 +9453,22 @@
           "KLGA": 30
         }
       },
-      "solo_controller": "4U",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4U": []
+        },
+        "inbound_assignments": {
+          "COATE": "4U",
+          "JAIKE4 MUGZY NE": "4U",
+          "LVZ4": "4U",
+          "MAZIE MUGZY NE": "4U"
+        },
+        "departure_assignments": {
+          "KEWR": "4U",
+          "KTEB": "4U"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -9553,7 +9563,22 @@
           "KLGA": 0
         }
       },
-      "solo_controller": "4U",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4U": []
+        },
+        "inbound_assignments": {
+          "COATE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "LVZ4": "4U",
+          "MAZIE MUGZY SW": "4U"
+        },
+        "departure_assignments": {
+          "KEWR": "4U",
+          "KTEB": "4U"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -9631,7 +9656,18 @@
           "KEWR": 1
         }
       },
-      "solo_controller": "4P",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4P": []
+        },
+        "inbound_assignments": {
+          "FQM3": "4P",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -9718,7 +9754,24 @@
           "KLGA": 0
         }
       },
-      "solo_controller": "4P",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4P": []
+        },
+        "inbound_assignments": {
+          "FQM3": "4P",
+          "JAIKE4": "4P",
+          "MAZIE": "4P",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4P",
+          "KTEB": "4P"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -9832,7 +9885,26 @@
           "KLGA": 0
         }
       },
-      "solo_controller": "4N",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4N": []
+        },
+        "inbound_assignments": {
+          "FQM3": "4N",
+          "JAIKE4": "4N",
+          "MAZIE": "4N",
+          "PHL": "4N",
+          "PHLBO4": "4N",
+          "WRI": "4N"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -9939,7 +10011,20 @@
           "KLGA": 31
         }
       },
-      "solo_controller": "4A",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4A": []
+        },
+        "inbound_assignments": {
+          "FLOSI4": "4A",
+          "South": "4A"
+        },
+        "departure_assignments": {
+          "KEWR": "4A",
+          "KTEB": "4A"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10059,7 +10144,24 @@
           "KLGA": 0
         }
       },
-      "solo_controller": "4A",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4A": []
+        },
+        "inbound_assignments": {
+          "COATE": "4A",
+          "FLOSI4": "4A",
+          "JAIKE4 MUGZY SW": "4A",
+          "LVZ4": "4A",
+          "MAZIE MUGZY SW": "4A",
+          "South": "4A"
+        },
+        "departure_assignments": {
+          "KEWR": "4A",
+          "KTEB": "4A"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10136,7 +10238,16 @@
           "KEWR": 23
         }
       },
-      "solo_controller": "4A",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4A": []
+        },
+        "inbound_assignments": {
+          "FLOSI4": "4A",
+          "South29": "4A"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10217,7 +10328,23 @@
           "KTEB": 10
         }
       },
-      "solo_controller": "4P",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4P": []
+        },
+        "inbound_assignments": {
+          "North": "4P",
+          "PHL": "4P",
+          "PHL Prop": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4P",
+          "KTEB": "4P"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10315,7 +10442,24 @@
       "airspace": {
         "4P": ["NOA_NE", "YARDLEY_NE", "FINAL_VECTORS_4", "METRO_NE"]
       },
-      "solo_controller": "4P",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4P": []
+        },
+        "inbound_assignments": {
+          "JAIKE4": "4P",
+          "North": "4P",
+          "PHL": "4P",
+          "PHL Prop": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4P",
+          "KTEB": "4P"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10387,7 +10531,16 @@
           "KEWR": 15
         }
       },
-      "solo_controller": "4A",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4A": []
+        },
+        "inbound_assignments": {
+          "FLOSI4": "4A",
+          "FQM3": "4A"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10490,7 +10643,26 @@
       "airspace": {
         "4N": ["NOA_NE", "FINAL_VECTORS_4"]
       },
-      "solo_controller": "4N",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "4N": []
+        },
+        "inbound_assignments": {
+          "COATE": "4N",
+          "FLOSI4": "4N",
+          "FQM3": "4N",
+          "JAIKE4 MUGZY NE": "4N",
+          "LVZ4": "4N",
+          "MAZIE MUGZY NE": "4N"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
+        }
+      },
       "controllers": [
         "1L",
         "1D",
@@ -10562,24 +10734,33 @@
   },
   "stars_config": {
     "filters": {
-      "auto_acquisition": [
+      "inhibit_ca": [
         {
-          "id": "ewrack",
-          "description": "ewr arrival acquisition all",
-          "type": "polygon",
-          "vertices": "N039.59.17.304,W074.40.40.722 N040.09.54.978,W074.50.55.105 N040.15.00.260,W074.45.57.925 N040.17.49.038,W075.01.17.975 N040.32.08.059,W075.11.53.699 N040.38.56.352,W075.01.32.092 N040.58.53.876,W075.02.23.893 N041.06.00.681,W074.54.30.629 N041.12.05.372,W075.03.20.061 N041.21.21.747,W074.51.45.697 N041.25.10.716,W074.26.12.637 N041.31.28.192,W074.24.36.205 N041.22.08.645,W073.59.31.105 N041.11.11.003,W074.05.24.975 N040.59.51.870,W073.46.26.709 N040.31.23.358,W074.08.52.644 N040.23.12.558,W074.05.56.149",
+          "id": "EWRNOCA",
+          "description": "EWR CONFLICT SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 10000
-        }
-      ],
-      "secondary_drop": [
+          "ceiling": 3000,
+          "radius": 10,
+          "center": "KEWR"
+        },
         {
-          "id": "secdrop",
-          "description": "drop region all",
-          "type": "polygon",
-          "vertices": "N041.00.07.800,W074.38.34.022 N040.29.30.378,W074.38.30.260 N040.30.40.773,W074.08.21.800 N040.53.20.962,W073.55.34.899 N040.59.55.317,W073.46.12.344 N041.10.31.521,W074.08.26.414",
+          "id": "LGANOCA",
+          "description": "LGA CONFLICT SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 40000
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KLGA"
+        },
+        {
+          "id": "TEBNOCA",
+          "description": "TEB CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KTEB"
         }
       ]
     },
@@ -10658,37 +10839,6 @@
         "airports": ["KMMU"]
       }
     ],
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "EWRNOCA",
-          "description": "EWR CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 3000,
-          "radius": 10,
-          "center": "KEWR"
-        },
-        {
-          "id": "LGANOCA",
-          "description": "LGA CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KLGA"
-        },
-        {
-          "id": "TEBNOCA",
-          "description": "TEB CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KTEB"
-        }
-      ]
-    },
     "radar_sites": {
       "EWR": {
         "char": "E",
@@ -10761,9 +10911,6 @@
       "WHITE": "WHI",
       "ARD": "ARD",
       "ZIMMZ": "ZIM"
-    },
-    "pdb": {
-      "hide_gs": true
     },
     "significant_points": {
       "ARD": {},

@@ -2579,17 +2579,25 @@
           "KMKC": 1
         }
       },
-      "solo_controller": "MCI_E_APP",
-      "multi_controllers": {
-        "default": {
-          "MCI_E_APP": { "primary": true, "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"] },
-          "MCI_W_APP": { "backup": "MCI_E_APP", "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"] },
-          "MCI_A_APP": { "backup": "MCI_E_APP", "arrivals": ["MHOMS3", "RUDDH3"] },
-          "MCI_B_APP": { "backup": "MCI_A_APP", "arrivals": ["WUTNG3", "JSONN4"] },
-          "MCI_N_APP": { "backup": "MCI_E_APP", "departures": ["KSTJ"] },
-          "MCI_S_APP": { "backup": "MCI_E_APP", "departures": ["KMKC", "KOJC", "KIXD"] },
-          "MCI_F_APP": { "backup": "MCI_A_APP" },
-          "MCI_P_APP": { "backup": "MCI_F_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
+          "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
+          "MCI_F_APP": ["MCI_P_APP"]
+        },
+        "inbound_assignments": {
+          "JSONN4": "MCI_B_APP",
+          "MHOMS3": "MCI_A_APP",
+          "RUDDH3": "MCI_A_APP",
+          "WUTNG3": "MCI_B_APP"
+        },
+        "departure_assignments": {
+          "KIXD": "MCI_S_APP",
+          "KMCI": "MCI_E_APP",
+          "KMKC": "MCI_S_APP",
+          "KOJC": "MCI_S_APP",
+          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2671,17 +2679,25 @@
           "KMCI": 10
         }
       },
-      "solo_controller": "MCI_E_APP",
-      "multi_controllers": {
-        "default": {
-          "MCI_E_APP": { "primary": true, "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"] },
-          "MCI_W_APP": { "backup": "MCI_E_APP", "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"] },
-          "MCI_A_APP": { "backup": "MCI_E_APP", "arrivals": ["MHOMS3", "RUDDH3"] },
-          "MCI_B_APP": { "backup": "MCI_A_APP", "arrivals": ["WUTNG3", "JSONN4"] },
-          "MCI_N_APP": { "backup": "MCI_E_APP", "departures": ["KSTJ"] },
-          "MCI_S_APP": { "backup": "MCI_E_APP", "departures": ["KMKC", "KOJC", "KIXD"] },
-          "MCI_F_APP": { "backup": "MCI_A_APP" },
-          "MCI_P_APP": { "backup": "MCI_F_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
+          "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
+          "MCI_F_APP": ["MCI_P_APP"]
+        },
+        "inbound_assignments": {
+          "JSONN4": "MCI_B_APP",
+          "MHOMS3": "MCI_A_APP",
+          "RUDDH3": "MCI_A_APP",
+          "WUTNG3": "MCI_B_APP"
+        },
+        "departure_assignments": {
+          "KIXD": "MCI_S_APP",
+          "KMCI": "MCI_E_APP",
+          "KMKC": "MCI_S_APP",
+          "KOJC": "MCI_S_APP",
+          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2759,17 +2775,25 @@
           "KMCI": 10
         }
       },
-      "solo_controller": "MCI_E_APP",
-      "multi_controllers": {
-        "default": {
-          "MCI_E_APP": { "primary": true, "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"] },
-          "MCI_W_APP": { "backup": "MCI_E_APP", "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"] },
-          "MCI_A_APP": { "backup": "MCI_E_APP", "arrivals": ["MHOMS3", "RUDDH3"] },
-          "MCI_B_APP": { "backup": "MCI_A_APP", "arrivals": ["WUTNG3", "JSONN4"] },
-          "MCI_N_APP": { "backup": "MCI_E_APP", "departures": ["KSTJ"] },
-          "MCI_S_APP": { "backup": "MCI_E_APP", "departures": ["KMKC", "KOJC", "KIXD"] },
-          "MCI_F_APP": { "backup": "MCI_A_APP" },
-          "MCI_P_APP": { "backup": "MCI_F_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
+          "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
+          "MCI_F_APP": ["MCI_P_APP"]
+        },
+        "inbound_assignments": {
+          "JSONN4": "MCI_B_APP",
+          "MHOMS3": "MCI_A_APP",
+          "RUDDH3": "MCI_A_APP",
+          "WUTNG3": "MCI_B_APP"
+        },
+        "departure_assignments": {
+          "KIXD": "MCI_S_APP",
+          "KMCI": "MCI_W_APP",
+          "KMKC": "MCI_S_APP",
+          "KOJC": "MCI_S_APP",
+          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2842,17 +2866,25 @@
           "KMCI": 10
         }
       },
-      "solo_controller": "MCI_E_APP",
-      "multi_controllers": {
-        "default": {
-          "MCI_E_APP": { "primary": true, "departures": ["KMCI/LAKES5", "KMCI/RACER8", "KMCI/ROYAL1"] },
-          "MCI_W_APP": { "backup": "MCI_E_APP", "departures": ["KMCI/CHIEF9", "KMCI/TIFTO8", "KMCI/WLDCT6"] },
-          "MCI_A_APP": { "backup": "MCI_E_APP", "arrivals": ["MHOMS3", "RUDDH3"] },
-          "MCI_B_APP": { "backup": "MCI_A_APP", "arrivals": ["WUTNG3", "JSONN4"] },
-          "MCI_N_APP": { "backup": "MCI_E_APP", "departures": ["KSTJ"] },
-          "MCI_S_APP": { "backup": "MCI_E_APP", "departures": ["KMKC", "KOJC", "KIXD"] },
-          "MCI_F_APP": { "backup": "MCI_A_APP" },
-          "MCI_P_APP": { "backup": "MCI_F_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
+          "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
+          "MCI_F_APP": ["MCI_P_APP"]
+        },
+        "inbound_assignments": {
+          "JSONN4": "MCI_B_APP",
+          "MHOMS3": "MCI_A_APP",
+          "RUDDH3": "MCI_A_APP",
+          "WUTNG3": "MCI_B_APP"
+        },
+        "departure_assignments": {
+          "KIXD": "MCI_S_APP",
+          "KMCI": "MCI_E_APP",
+          "KMKC": "MCI_S_APP",
+          "KOJC": "MCI_S_APP",
+          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2962,14 +2994,18 @@
       "ICT": {},
       "KENTN": {},
       "OCTAM": {},
-      "PAOLA": { "short_name": "PAY" },
+      "PAOLA": {
+        "short_name": "PAY"
+      },
       "SGF": {},
       "SLN": {},
       "SPI": {},
       "STJ": {},
       "TIFTO": {},
       "TONCE": {},
-      "TWAIN": { "short_name": "TWN" },
+      "TWAIN": {
+        "short_name": "TWN"
+      },
       "WHITE": {}
     },
     "stars_maps": [

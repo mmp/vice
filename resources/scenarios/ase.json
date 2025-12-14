@@ -385,7 +385,20 @@
           "KASE": 5
         }
       },
-      "solo_controller": "ASE_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ASE_APP": []
+        },
+        "inbound_assignments": {
+          "HAREI": "ASE_APP",
+          "LAWSN": "ASE_APP",
+          "LOYYD": "ASE_APP"
+        },
+        "departure_assignments": {
+          "KASE": "ASE_APP"
+        }
+      },
       "controllers": ["ASE_TWR", "ASE_APP", "DEN_11_CTR"],
       "default_maps": ["ASE BASE"],
       "departure_runways": [

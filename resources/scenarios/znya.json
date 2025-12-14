@@ -1714,7 +1714,12 @@
   "default_scenario": "ZNY Sector 25",
   "scenarios": {
     "ZNY Sector 25": {
-      "solo_controller": "ZNY 25 Modena",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZNY 25 Modena": []
+        }
+      },
       "controllers": [
         "ZNY 09 Westminster",
         "ZNY 10 Harrisburg",

@@ -3,18 +3,43 @@
   "airports": {
     "KSLC": {
       "approaches": {
-        "I6L": { "cifp_id": "I16L" },
-        "R6L": { "cifp_id": "RZ16L" },
-        "I6R": { "cifp_id": "I16R" },
-        "R6R": { "cifp_id": "RZ16R" },
-        "I17": { "cifp_id": "I17" },
-        "RZ7": { "cifp_id": "RZ17" },
-        "I4L": { "cifp_id": "I34L" },
-        "R4L": { "cifp_id": "RZ34L" },
-        "I4R": { "cifp_id": "I34R" },
-        "R4R": { "cifp_id": "RY34R" },
-        "X35": { "full_name": "LDA Runway 35", "cifp_id": "X35" },
-        "RZ5": { "cifp_id": "RZ35" }
+        "I6L": {
+          "cifp_id": "I16L"
+        },
+        "R6L": {
+          "cifp_id": "RZ16L"
+        },
+        "I6R": {
+          "cifp_id": "I16R"
+        },
+        "R6R": {
+          "cifp_id": "RZ16R"
+        },
+        "I17": {
+          "cifp_id": "I17"
+        },
+        "RZ7": {
+          "cifp_id": "RZ17"
+        },
+        "I4L": {
+          "cifp_id": "I34L"
+        },
+        "R4L": {
+          "cifp_id": "RZ34L"
+        },
+        "I4R": {
+          "cifp_id": "I34R"
+        },
+        "R4R": {
+          "cifp_id": "RY34R"
+        },
+        "X35": {
+          "full_name": "LDA Runway 35",
+          "cifp_id": "X35"
+        },
+        "RZ5": {
+          "cifp_id": "RZ35"
+        }
       },
       "departure_routes": {
         "34L": {
@@ -1232,7 +1257,22 @@
           "KSLC": 10
         }
       },
-      "solo_controller": "SLC_K_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SLC_K_APP": []
+        },
+        "inbound_assignments": {
+          "CARTR1.N": "SLC_K_APP",
+          "JAZZZ1": "SLC_K_APP",
+          "QWENN6.BCE": "SLC_K_APP",
+          "QWENN6.MLF": "SLC_K_APP",
+          "YUTES1.N": "SLC_K_APP"
+        },
+        "departure_assignments": {
+          "KSLC": "SLC_K_APP"
+        }
+      },
       "controllers": [
         "SLC_C_TWR",
         "SLC_E_TWR",
@@ -1289,7 +1329,21 @@
           "KSLC": 10
         }
       },
-      "solo_controller": "SLC_K_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SLC_K_APP": []
+        },
+        "inbound_assignments": {
+          "CARTR1.S": "SLC_K_APP",
+          "PITTT1.E": "SLC_K_APP",
+          "PITTT1.S": "SLC_K_APP",
+          "YUTES1.S": "SLC_K_APP"
+        },
+        "departure_assignments": {
+          "KSLC": "SLC_K_APP"
+        }
+      },
       "controllers": [
         "SLC_C_TWR",
         "SLC_E_TWR",

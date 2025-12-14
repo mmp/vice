@@ -1,29 +1,131 @@
 {
   "tracon": "ABE",
   "airports": {
-    "KXLL": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KTTN": { "vfr": { "random_routes": { "rate": 6 } } },
-    "N40": { "vfr": { "random_routes": { "rate": 6 } } },
-    "N43": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KZER": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KHZL": { "vfr": { "random_routes": { "rate": 6 } } },
-    "22N": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KMPO": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KCKZ": { "vfr": { "random_routes": { "rate": 6 } } },
-    "1N7": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KCDW": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KRDG": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KCXY": { "vfr": { "random_routes": { "rate": 6 } } },
-    "KLNS": { "vfr": { "random_routes": { "rate": 6 } } },
-    "39N": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KXLL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KTTN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "N40": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "N43": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KZER": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KHZL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "22N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KMPO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCKZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "1N7": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCDW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KRDG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCXY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KLNS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "39N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
     "KABE": {
       "approaches": {
-        "I13": { "cifp_id": "I13" },
-        "I24": { "cifp_id": "I24" },
-        "I6": { "cifp_id": "L6" },
-        "R13": { "cifp_id": "R13" },
-        "R31": { "cifp_id": "R31" },
-        "R6": { "cifp_id": "R6" }
+        "I13": {
+          "cifp_id": "I13"
+        },
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "I6": {
+          "cifp_id": "L6"
+        },
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        },
+        "R6": {
+          "cifp_id": "R6"
+        }
       },
       "departure_routes": {
         "24": {
@@ -698,17 +800,20 @@
           "KABE": 14
         }
       },
-      "solo_controller": "ABE_APP",
-      "multi_controllers": {
-        "default": {
-          "ABE_APP": {
-            "primary": true
-          },
-          "ABE_DEP": {
-            "backup": "ABE_APP",
-            "inbound_flows": ["EWR", "PHL", "MDT/RDG", "ZNY Northwest", "ZNY Southwest"],
-            "departures": ["KABE"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ABE_APP": ["ABE_DEP"]
+        },
+        "departure_assignments": {
+          "KABE": "ABE_DEP"
+        },
+        "inbound_assignments": {
+          "EWR": "ABE_DEP",
+          "PHL": "ABE_DEP",
+          "MDT/RDG": "ABE_DEP",
+          "ZNY Northwest": "ABE_DEP",
+          "ZNY Southwest": "ABE_DEP"
         }
       },
       "controllers": ["ABE_TWR", "ABE_APP", "PHL_NA_APP", "EWR_APP", "AVP_S_APP", "MDT_SE_APP", "NY_D_CTR"],
@@ -748,17 +853,20 @@
           "KABE": 14
         }
       },
-      "solo_controller": "ABE_APP",
-      "multi_controllers": {
-        "default": {
-          "ABE_APP": {
-            "primary": true
-          },
-          "ABE_DEP": {
-            "backup": "ABE_APP",
-            "inbound_flows": ["EWR", "PHL", "MDT/RDG", "ZNY Northwest", "ZNY Southwest"],
-            "departures": ["KABE"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ABE_APP": ["ABE_DEP"]
+        },
+        "departure_assignments": {
+          "KABE": "ABE_DEP"
+        },
+        "inbound_assignments": {
+          "EWR": "ABE_DEP",
+          "PHL": "ABE_DEP",
+          "MDT/RDG": "ABE_DEP",
+          "ZNY Northwest": "ABE_DEP",
+          "ZNY Southwest": "ABE_DEP"
         }
       },
       "controllers": ["ABE_TWR", "ABE_APP", "PHL_NA_APP", "EWR_APP", "AVP_S_APP", "MDT_SE_APP", "NY_D_CTR"],
@@ -777,24 +885,15 @@
   },
   "stars_config": {
     "filters": {
-      "auto_acquisition": [
+      "inhibit_ca": [
         {
-          "id": "abearr",
-          "description": "abe arrival acquisition all",
-          "type": "polygon",
-          "vertices": "N040.24.00.843,W076.13.25.792 N040.50.29.905,W076.11.59.659 N041.01.35.278,W075.29.36.406 N041.00.54.450,W075.22.40.601 N041.20.05.035,W075.10.41.711 N041.14.15.038,W074.40.23.144 N040.57.45.856,W074.54.05.223 N040.28.34.636,W074.58.05.989 N040.24.11.513,W075.23.22.294 N040.17.36.582,W075.43.08.433",
+          "id": "ABENOCA",
+          "description": "ABE CONFLICT SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 10000
-        }
-      ],
-      "secondary_drop": [
-        {
-          "id": "secdrop",
-          "description": "drop region all",
-          "type": "polygon",
-          "vertices": "N040.24.00.843,W076.13.25.792 N040.50.29.905,W076.11.59.659 N041.01.35.278,W075.29.36.406 N041.00.54.450,W075.22.40.601 N041.20.05.035,W075.10.41.711 N041.14.15.038,W074.40.23.144 N040.57.45.856,W074.54.05.223 N040.28.34.636,W074.58.05.989 N040.24.11.513,W075.23.22.294 N040.17.36.582,W075.43.08.433",
-          "floor": 0,
-          "ceiling": 40000
+          "ceiling": 1200,
+          "radius": 7,
+          "center": "40.65236,-75.4404"
         }
       ]
     },
@@ -850,19 +949,6 @@
       ]
     },
     "center": "KABE",
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "ABENOCA",
-          "description": "ABE CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 7,
-          "center": "40.65236,-75.4404"
-        }
-      ]
-    },
     "radar_sites": {
       "ABE": {
         "char": "A",

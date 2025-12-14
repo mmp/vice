@@ -1,18 +1,90 @@
 {
   "tracon": "SCT",
   "airports": {
-    "KFUL": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRAL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KTOA": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KLGB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KEMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRIR": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KPOC": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KHHR": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KFUL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KAVX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRAL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KTOA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KLGB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KEMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KCNO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KHMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRIR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KAJO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KPOC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KHHR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KLAX": {
       "departure_controller": "LAX_N_DEP",
       "departure_routes": {
@@ -138,7 +210,6 @@
             },
             {
               "icao": "FDX",
-              "fleet": "b752",
               "fleet": "long"
             }
           ],
@@ -322,11 +393,21 @@
     "KBUR": {
       "departure_runways_as_one": ["8,15", "26,33"],
       "approaches": {
-        "IY8": { "cifp_id": "IY8" },
-        "IZ8": { "cifp_id": "IZ8" },
-        "RZ8": { "cifp_id": "RZ8" },
-        "RY8": { "cifp_id": "RY8" },
-        "VOR8": { "cifp_id": "S8" },
+        "IY8": {
+          "cifp_id": "IY8"
+        },
+        "IZ8": {
+          "cifp_id": "IZ8"
+        },
+        "RZ8": {
+          "cifp_id": "RZ8"
+        },
+        "RY8": {
+          "cifp_id": "RY8"
+        },
+        "VOR8": {
+          "cifp_id": "S8"
+        },
         "RV5": {
           "full_name": "RNAV Visual Runway 15",
           "runway": "15",
@@ -698,19 +779,37 @@
       "tower_list": 1
     },
     "KCMA": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "RY6": { "cifp_id": "RY26" },
-        "RZ6": { "cifp_id": "RZ26" }
+        "RY6": {
+          "cifp_id": "RY26"
+        },
+        "RZ6": {
+          "cifp_id": "RZ26"
+        }
       },
       "tower_list": 1
     },
     "KSMO": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "R21": { "cifp_id": "R21" },
-        "RY3": { "cifp_id": "RY3" },
-        "RZ3": { "cifp_id": "RZ3" },
+        "R21": {
+          "cifp_id": "R21"
+        },
+        "RY3": {
+          "cifp_id": "RY3"
+        },
+        "RZ3": {
+          "cifp_id": "RZ3"
+        },
         "V21": {
           "full_name": "Visual Runway 21",
           "runway": "21",
@@ -720,11 +819,6 @@
       },
       "departure_routes": {
         "3": {
-          "CSTRO": {
-            "cleared_altitude": 6000,
-            "sid": "CHOII3",
-            "waypoints": "TREKK/a4000+ DARTS CHOII/a7100+ YUMMI HEYJO CSTRO"
-          },
           "CSTRO": {
             "cleared_altitude": 6000,
             "sid": "CHOII3",
@@ -873,10 +967,18 @@
     },
     "KVNY": {
       "departure_runways_as_one": ["16L,16R", "34L,34R"],
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "IYR": { "cifp_id": "IY16R" },
-        "IZR": { "cifp_id": "IZ16R" },
+        "IYR": {
+          "cifp_id": "IY16R"
+        },
+        "IZR": {
+          "cifp_id": "IZ16R"
+        },
         "V4L": {
           "full_name": "Visual Runway 34L",
           "runway": "34L",
@@ -1048,9 +1150,15 @@
       "hold_for_release": true
     },
     "KWHP": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "R12": { "cifp_id": "R12" },
+        "R12": {
+          "cifp_id": "R12"
+        },
         "RA2": {
           "full_name": "VOR A Runway 12",
           "runway": "12",
@@ -1949,9 +2057,6 @@
           "KSMO": 2
         },
         "THRNE4": {
-          "KBUR": 7
-        },
-        "THRNE4": {
           "KVNY": 3
         },
         "WEESL1": {
@@ -1973,26 +2078,31 @@
           "overflights": 25
         }
       },
-      "solo_controller": "BUR_M_APP",
-      "multi_controllers": {
-        "default": {
-          "BUR_F_APP": {
-            "departures": ["KWHP"],
-            "backup": "BUR_M_APP",
-            "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
-          },
-          "BUR_M_APP": {
-            "primary": true,
-            "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3", "LADYJ4"]
-          },
-          "BUR_J_APP": { "backup": "BUR_X_APP" },
-          "BUR_V_APP": { "departures": ["KBUR", "KVNY/HARYS5", "KVNY/RSCO4"], "backup": "BUR_M_APP" },
-          "BUR_W_APP": {
-            "departures": ["KVNY/WLKKR5", "KVNY/CANOG3"],
-            "backup": "BUR_V_APP",
-            "inbound_flows": ["SBAP2"]
-          },
-          "BUR_X_APP": { "backup": "BUR_V_APP", "inbound_flows": ["THRNE4"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
+          "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
+          "BUR_X_APP": ["BUR_J_APP"]
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_V_APP",
+          "KVNY/CANOG3": "BUR_W_APP",
+          "KVNY/HARYS5": "BUR_V_APP",
+          "KVNY/RSCO4": "BUR_V_APP",
+          "KVNY/WLKKR5": "BUR_W_APP",
+          "KWHP": "BUR_F_APP",
+          "KVNY": "BUR_M_APP"
+        },
+        "inbound_assignments": {
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "EDWP4": "BUR_F_APP",
+          "WEESL1": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "LADYJ4": "BUR_M_APP",
+          "SBAP2": "BUR_W_APP",
+          "THRNE4": "BUR_X_APP"
         }
       },
       "controllers": [
@@ -2081,9 +2191,6 @@
           "KSMO": 2
         },
         "THRNE4": {
-          "KBUR": 7
-        },
-        "THRNE4": {
           "KVNY": 3
         },
         "WEESL1": {
@@ -2102,26 +2209,31 @@
           "overflights": 25
         }
       },
-      "solo_controller": "BUR_M_APP",
-      "multi_controllers": {
-        "default": {
-          "BUR_F_APP": {
-            "departures": ["KWHP"],
-            "backup": "BUR_M_APP",
-            "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
-          },
-          "BUR_M_APP": {
-            "primary": true,
-            "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3"]
-          },
-          "BUR_J_APP": { "backup": "BUR_X_APP", "inbound_flows": ["THRNE4"] },
-          "BUR_V_APP": { "departures": ["KBUR", "KVNY/HARYS5", "KVNY/RSCO4"], "backup": "BUR_M_APP" },
-          "BUR_W_APP": {
-            "departures": ["KVNY/WLKKR5", "KVNY/CANOG3"],
-            "backup": "BUR_V_APP",
-            "inbound_flows": ["SBAP2"]
-          },
-          "BUR_X_APP": { "backup": "BUR_V_APP", "departures": ["KSMO"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
+          "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
+          "BUR_X_APP": ["BUR_J_APP"]
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_V_APP",
+          "KSMO": "BUR_X_APP",
+          "KVNY/CANOG3": "BUR_W_APP",
+          "KVNY/HARYS5": "BUR_V_APP",
+          "KVNY/RSCO4": "BUR_V_APP",
+          "KVNY/WLKKR5": "BUR_W_APP",
+          "KWHP": "BUR_F_APP",
+          "KVNY": "BUR_M_APP"
+        },
+        "inbound_assignments": {
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "EDWP4": "BUR_F_APP",
+          "WEESL1": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "THRNE4": "BUR_J_APP",
+          "SBAP2": "BUR_W_APP"
         }
       },
       "controllers": [
@@ -2222,9 +2334,6 @@
           "KSMO": 2
         },
         "THRNE4": {
-          "KBUR": 7
-        },
-        "THRNE4": {
           "KVNY": 3
         },
         "WEESL1": {
@@ -2246,24 +2355,27 @@
           "overflights": 25
         }
       },
-      "solo_controller": "BUR_M_APP",
-      "multi_controllers": {
-        "default": {
-          "BUR_F_APP": {
-            "departures": ["KVNY", "KWHP", "KBUR"],
-            "backup": "BUR_M_APP",
-            "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
-          },
-          "BUR_M_APP": {
-            "primary": true,
-            "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3", "LADYJ4"]
-          },
-          "BUR_J_APP": { "backup": "BUR_X_APP" },
-          "BUR_V_APP": {
-            "backup": "BUR_M_APP"
-          },
-          "BUR_W_APP": { "backup": "BUR_V_APP", "inbound_flows": ["SBAP2"] },
-          "BUR_X_APP": { "backup": "BUR_V_APP", "inbound_flows": ["THRNE4"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
+          "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
+          "BUR_X_APP": ["BUR_J_APP"]
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_F_APP",
+          "KVNY": "BUR_F_APP",
+          "KWHP": "BUR_F_APP"
+        },
+        "inbound_assignments": {
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "EDWP4": "BUR_F_APP",
+          "WEESL1": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "LADYJ4": "BUR_M_APP",
+          "SBAP2": "BUR_W_APP",
+          "THRNE4": "BUR_X_APP"
         }
       },
       "controllers": [
@@ -2349,9 +2461,6 @@
           "KSMO": 2
         },
         "THRNE4": {
-          "KBUR": 7
-        },
-        "THRNE4": {
           "KVNY": 3
         },
         "WEESL1": {
@@ -2370,22 +2479,27 @@
           "overflights": 25
         }
       },
-      "solo_controller": "BUR_M_APP",
-      "multi_controllers": {
-        "default": {
-          "BUR_F_APP": {
-            "departures": ["KVNY", "KWHP", "KBUR"],
-            "backup": "BUR_M_APP",
-            "inbound_flows": ["JANNY5/GUERA2", "EDWP4", "WEESL1"]
-          },
-          "BUR_M_APP": {
-            "primary": true,
-            "inbound_flows": ["FERN7", "ROKKR3/IVINS2/BONJO3"]
-          },
-          "BUR_J_APP": { "backup": "BUR_X_APP", "inbound_flows": ["THRNE4"] },
-          "BUR_V_APP": { "backup": "BUR_M_APP" },
-          "BUR_W_APP": { "backup": "BUR_V_APP", "inbound_flows": ["SBAP2"] },
-          "BUR_X_APP": { "backup": "BUR_V_APP", "departures": ["KSMO"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
+          "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
+          "BUR_X_APP": ["BUR_J_APP"]
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_F_APP",
+          "KSMO": "BUR_X_APP",
+          "KVNY": "BUR_F_APP",
+          "KWHP": "BUR_F_APP"
+        },
+        "inbound_assignments": {
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "EDWP4": "BUR_F_APP",
+          "WEESL1": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "THRNE4": "BUR_J_APP",
+          "SBAP2": "BUR_W_APP"
         }
       },
       "controllers": [

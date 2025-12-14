@@ -14293,12 +14293,14 @@
     "D10_Q_DEP": {
       "frequency": 125125,
       "radio_name": "LONE STAR Departure",
-      "sector_id": "1Q"
+      "sector_id": "1Q",
+      "default_airport": "KDFW"
     },
     "D10_Z_DEP": {
       "frequency": 126475,
       "radio_name": "LONESTAR Departure",
-      "sector_id": "1Z"
+      "sector_id": "1Z",
+      "default_airport": "KDFW"
     },
     "D10_E_APP": {
       "default_airport": "KDFW",
@@ -14649,99 +14651,38 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_E_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_E_APP": {
-            "primary": true,
-            "arrivals": ["SEEVR4"]
-          },
-          "D10_W_APP": {
-            "backup": "D10_E_APP",
-            "arrivals": ["VKTRY2"]
-          },
-          "D10_A_APP": {
-            "backup": "D10_E_APP",
-            "arrivals": ["BEREE3"]
-          },
-          "D10_Y_APP": {
-            "backup": "D10_W_APP",
-            "arrivals": ["BOOVE7"]
-          },
-          "D10_L_DEP": {
-            "backup": "D10_E_APP",
-            "departures": ["KDFW/17R", "KDAL/13L", "KADS/16"]
-          },
-          "D10_Z_DEP": {
-            "backup": "D10_L_DEP",
-            "departures": ["KDFW/18L", "KDAL/13R", "KAFW/16L"]
-          },
-          "D10_Q_DEP": {
-            "backup": "D10_L_DEP"
-          },
-          "D10_G_APP": {
-            "backup": "D10_E_APP"
-          },
-          "D10_H_APP": {
-            "backup": "D10_W_APP"
-          },
-          "D10_J_APP": {
-            "backup": "D10_E_APP"
-          },
-          "D10_R_APP": {
-            "backup": "D10_H_APP"
-          },
-          "D10_V_APP": {
-            "backup": "D10_S_APP"
-          },
-          "D10_N_APP": {
-            "backup": "D10_E_APP",
-            "arrivals": ["TRUUK2_SF", "HIBIL3"],
-            "departures": ["KTKI/36"]
-          },
-          "D10_K_APP": {
-            "backup": "D10_N_APP"
-          },
-          "D10_F_APP": {
-            "backup": "D10_E_APP"
-          },
-          "D10_B_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["JFRYE5"]
-          },
-          "D10_M_APP": {
-            "backup": "D10_W_APP",
-            "arrivals": ["WESAT2"]
-          },
-          "D10_D_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["BACHR4"]
-          },
-          "D10_S_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["REDDN4", "REEKO3"]
-          },
-          "D10_U_APP": {
-            "backup": "D10_S_APP"
-          },
-          "D10_P_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["LIKES3_S"]
-          },
-          "D10_X_APP": {
-            "backup": "D10_M_APP"
-          },
-          "D10_T_APP": {
-            "backup": "D10_D_APP"
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_E_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_E_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_D_APP": ["D10_T_APP"],
+          "D10_E_APP": ["D10_A_APP", "D10_F_APP", "D10_G_APP", "D10_J_APP", "D10_L_DEP", "D10_N_APP", "D10_W_APP"],
+          "D10_H_APP": ["D10_R_APP"],
+          "D10_L_DEP": ["D10_Q_DEP", "D10_Z_DEP"],
+          "D10_M_APP": ["D10_B_APP", "D10_D_APP", "D10_P_APP", "D10_X_APP"],
+          "D10_N_APP": ["D10_K_APP", "D10_S_APP"],
+          "D10_S_APP": ["D10_U_APP", "D10_V_APP"],
+          "D10_W_APP": ["D10_H_APP", "D10_M_APP", "D10_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BACHR4": "D10_D_APP",
+          "BEREE3": "D10_A_APP",
+          "BOOVE7": "D10_Y_APP",
+          "HIBIL3": "D10_N_APP",
+          "JFRYE5": "D10_B_APP",
+          "LIKES3_S": "D10_P_APP",
+          "REDDN4": "D10_S_APP",
+          "REEKO3": "D10_S_APP",
+          "SEEVR4": "D10_E_APP",
+          "TRUUK2_SF": "D10_N_APP",
+          "VKTRY2": "D10_W_APP",
+          "WESAT2": "D10_M_APP"
+        },
+        "departure_assignments": {
+          "KADS": "D10_L_DEP",
+          "KAFW": "D10_Z_DEP",
+          "KDAL": "D10_Z_DEP",
+          "KDFW": "D10_Z_DEP",
+          "KTKI": "D10_N_APP"
         }
       },
       "controllers": [
@@ -14879,7 +14820,40 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_E_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_D_APP": ["D10_T_APP"],
+          "D10_E_APP": ["D10_A_APP", "D10_F_APP", "D10_G_APP", "D10_J_APP", "D10_L_DEP", "D10_N_APP", "D10_W_APP"],
+          "D10_H_APP": ["D10_R_APP"],
+          "D10_L_DEP": ["D10_Q_DEP", "D10_Z_DEP"],
+          "D10_M_APP": ["D10_B_APP", "D10_D_APP", "D10_P_APP", "D10_X_APP"],
+          "D10_N_APP": ["D10_K_APP", "D10_S_APP"],
+          "D10_S_APP": ["D10_U_APP", "D10_V_APP"],
+          "D10_W_APP": ["D10_H_APP", "D10_M_APP", "D10_Y_APP"]
+        },
+        "inbound_assignments": {
+          "BRDJE5": "D10_E_APP",
+          "CRIKT1": "D10_U_APP",
+          "DRYYE2": "D10_D_APP",
+          "HERBZ1": "D10_B_APP",
+          "JOVEM6": "D10_W_APP",
+          "LIKES3_N": "D10_D_APP",
+          "MNNDO4": "D10_S_APP",
+          "REEKO3": "D10_S_APP",
+          "SOCKK4": "D10_Y_APP",
+          "TRUUK2_NF": "D10_N_APP",
+          "WESAT2": "D10_P_APP",
+          "WHINY4": "D10_A_APP"
+        },
+        "departure_assignments": {
+          "KADS": "D10_L_DEP",
+          "KAFW": "D10_Z_DEP",
+          "KDAL": "D10_Z_DEP",
+          "KDFW": "D10_Z_DEP",
+          "KTKI": "D10_N_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -14896,100 +14870,6 @@
         "DFW_W1_TWR",
         "DFW_E3_TWR"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_E_APP": {
-            "primary": true,
-            "arrivals": ["BRDJE5"]
-          },
-          "D10_W_APP": {
-            "backup": "D10_E_APP",
-            "arrivals": ["JOVEM6"]
-          },
-          "D10_A_APP": {
-            "backup": "D10_E_APP",
-            "arrivals": ["WHINY4"]
-          },
-          "D10_Y_APP": {
-            "backup": "D10_W_APP",
-            "arrivals": ["SOCKK4"]
-          },
-          "D10_L_DEP": {
-            "backup": "D10_E_APP",
-            "departures": ["KDFW/35L", "KDAL/31R", "KADS/34"]
-          },
-          "D10_Z_DEP": {
-            "backup": "D10_L_DEP",
-            "departures": ["KDFW/36R", "KDAL/31L", "KAFW/34R"]
-          },
-          "D10_Q_DEP": {
-            "backup": "D10_L_DEP"
-          },
-          "D10_G_APP": {
-            "backup": "D10_E_APP"
-          },
-          "D10_H_APP": {
-            "backup": "D10_W_APP"
-          },
-          "D10_J_APP": {
-            "backup": "D10_E_APP"
-          },
-          "D10_R_APP": {
-            "backup": "D10_H_APP"
-          },
-          "D10_V_APP": {
-            "backup": "D10_S_APP"
-          },
-          "D10_N_APP": {
-            "backup": "D10_E_APP",
-            "arrivals": ["TRUUK2_NF"],
-            "departures": ["KTKI/36"]
-          },
-          "D10_K_APP": {
-            "backup": "D10_N_APP"
-          },
-          "D10_F_APP": {
-            "backup": "D10_E_APP"
-          },
-          "D10_B_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["HERBZ1"]
-          },
-          "D10_M_APP": {
-            "backup": "D10_W_APP"
-          },
-          "D10_D_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["LIKES3_N", "DRYYE2"]
-          },
-          "D10_S_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["REEKO3", "MNNDO4"]
-          },
-          "D10_U_APP": {
-            "backup": "D10_S_APP",
-            "arrivals": ["CRIKT1"]
-          },
-          "D10_P_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["WESAT2"]
-          },
-          "D10_X_APP": {
-            "backup": "D10_M_APP"
-          },
-          "D10_T_APP": {
-            "backup": "D10_D_APP"
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_E_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_E_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10140S"],
       "departure_runways": [
         {
@@ -15074,7 +14954,19 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_J_APP"],
+          "D10_J_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BEREE3.SOUTHFINAL_17C": "D10_J_APP",
+          "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
+          "SEEVR4.SOUTHFINALS_17L": "D10_H_APP",
+          "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -15092,31 +14984,6 @@
         "D10_E_APP",
         "D10_W_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["VKTRY2.SOUTHFINALS_18R", "BOOVE7.SOUTHFINALS_18R"]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["BEREE3.SOUTHFINAL_17C"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": ["SEEVR4.SOUTHFINALS_17L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10103S"],
       "wind": {
         "direction": "130-190"
@@ -15162,30 +15029,17 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["WHINY4.NORTHFINALS_35R"]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["BRDJE5.NORTHFINALS_35C"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": ["JOVEM6.NORTHFINALS_36L", "SOCKK4.NORTHFINALS_36L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_J_APP"],
+          "D10_J_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BRDJE5.NORTHFINALS_35C": "D10_J_APP",
+          "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
+          "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
+          "WHINY4.NORTHFINALS_35R": "D10_G_APP"
         }
       },
       "controllers": [
@@ -15242,30 +15096,17 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["WHINY4.NORTHFINALS_35C"]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["BRDJE5.NORTHFINALS_35C"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": ["JOVEM6.NORTHFINALS_36L", "SOCKK4.NORTHFINALS_36L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_J_APP"],
+          "D10_J_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BRDJE5.NORTHFINALS_35C": "D10_J_APP",
+          "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
+          "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
+          "WHINY4.NORTHFINALS_35C": "D10_G_APP"
         }
       },
       "controllers": [
@@ -15322,7 +15163,19 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_J_APP"],
+          "D10_J_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BEREE3.SOUTHFINAL_17C": "D10_J_APP",
+          "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
+          "SEEVR4.SOUTHFINALS_17C": "D10_H_APP",
+          "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -15340,31 +15193,6 @@
         "D10_E_APP",
         "D10_W_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["VKTRY2.SOUTHFINALS_18R", "BOOVE7.SOUTHFINALS_18R"]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["BEREE3.SOUTHFINAL_17C"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": ["SEEVR4.SOUTHFINALS_17C"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10103S"],
       "wind": {
         "direction": "145-205"
@@ -15402,30 +15230,17 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["WHINY4.NORTHFINALS_35R"]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["BRDJE5.NORTHFINALS_35R"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": ["JOVEM6.NORTHFINALS_36L", "SOCKK4.NORTHFINALS_36L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_J_APP"],
+          "D10_J_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BRDJE5.NORTHFINALS_35R": "D10_J_APP",
+          "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
+          "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
+          "WHINY4.NORTHFINALS_35R": "D10_G_APP"
         }
       },
       "controllers": [
@@ -15482,7 +15297,19 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_J_APP"],
+          "D10_J_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BEREE3.SOUTHFINAL_17L": "D10_J_APP",
+          "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
+          "SEEVR4.SOUTHFINALS_17L": "D10_H_APP",
+          "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -15500,31 +15327,6 @@
         "D10_E_APP",
         "D10_W_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["VKTRY2.SOUTHFINALS_18R", "BOOVE7.SOUTHFINALS_18R"]
-          },
-          "D10_J_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["BEREE3.SOUTHFINAL_17L"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_J_APP",
-            "arrivals": ["SEEVR4.SOUTHFINALS_17L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10103S"],
       "wind": {
         "direction": "145-205"
@@ -15570,26 +15372,16 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_G_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_G_APP": {
-            "primary": true,
-            "backup": "D10_G_APP",
-            "arrivals": ["BRDJE5.NORTHWEST_FINALS_31R", "WHINY4.NORTHWEST_FINALS_31R"]
-          },
-          "D10_H_APP": {
-            "backup": "D10_G_APP",
-            "arrivals": ["SOCKK4.NORTHWEST_FINALS_31L", "JOVEM6.NORTHWEST_FINALS_31L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_G_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_G_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_G_APP": ["D10_H_APP"]
+        },
+        "inbound_assignments": {
+          "BRDJE5.NORTHWEST_FINALS_31R": "D10_G_APP",
+          "JOVEM6.NORTHWEST_FINALS_31L": "D10_H_APP",
+          "SOCKK4.NORTHWEST_FINALS_31L": "D10_H_APP",
+          "WHINY4.NORTHWEST_FINALS_31R": "D10_G_APP"
         }
       },
       "controllers": [
@@ -15673,7 +15465,19 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_L_DEP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_L_DEP": ["D10_Z_DEP"]
+        },
+        "departure_assignments": {
+          "KADS": "D10_L_DEP",
+          "KAFW": "D10_Z_DEP",
+          "KDAL": "D10_L_DEP",
+          "KDFW": "D10_L_DEP",
+          "KTKI": "D10_L_DEP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -15695,26 +15499,6 @@
         "D10_D_APP",
         "D10_S_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_L_DEP": {
-            "primary": true,
-            "departures": ["KDFW/17R", "KDAL/13L", "KADS/16", "KTKI/18"]
-          },
-          "D10_Z_DEP": {
-            "backup": "D10_L_DEP",
-            "departures": ["KDFW/18L", "KDAL/13R", "KAFW/16L"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_L_DEP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_L_DEP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10119S", "RVMD10050S"],
       "departure_runways": [
         {
@@ -15848,17 +15632,17 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_L_DEP",
-      "multi_controllers": {
-        "default": {
-          "D10_L_DEP": {
-            "primary": true,
-            "departures": ["KDFW/35L", "KDAL/31R", "KADS/34", "KTKI/36"]
-          },
-          "D10_Z_DEP": {
-            "backup": "D10_L_DEP",
-            "departures": ["KDFW/36R", "KDAL/31L", "KAFW/34R"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_L_DEP": ["D10_Z_DEP"]
+        },
+        "departure_assignments": {
+          "KADS": "D10_L_DEP",
+          "KAFW": "D10_Z_DEP",
+          "KDAL": "D10_L_DEP",
+          "KDFW": "D10_L_DEP",
+          "KTKI": "D10_L_DEP"
         }
       },
       "controllers": [
@@ -16047,30 +15831,22 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_D_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_D_APP": {
-            "primary": true,
-            "departures": ["KAFW/34R", "KFTW/34", "KDTO/36R"],
-            "arrivals": ["HERBZ1", "TRUUK2_M_NORTH_NF", "WESAT2"]
-          },
-          "D10_M_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": ["REEKO3_MN_NF", "LIKES3_M_NORTH_NF"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": ["JOVEM6.AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_D_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_D_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_D_APP": ["D10_E_APP", "D10_M_APP"]
+        },
+        "inbound_assignments": {
+          "HERBZ1": "D10_D_APP",
+          "LIKES3_M_NORTH_NF": "D10_M_APP",
+          "REEKO3_MN_NF": "D10_M_APP",
+          "TRUUK2_M_NORTH_NF": "D10_D_APP",
+          "WESAT2": "D10_D_APP"
+        },
+        "departure_assignments": {
+          "KAFW": "D10_D_APP",
+          "KDTO": "D10_D_APP",
+          "KFTW": "D10_D_APP"
         }
       },
       "controllers": [
@@ -16227,31 +16003,22 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_D_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_D_APP": {
-            "primary": true,
-            "departures": ["KDTO/18L"],
-            "arrivals": ["TRUUK2_M_NORTH_SF", "WESAT2", "JFRYE5"]
-          },
-          "D10_M_APP": {
-            "backup": "D10_D_APP",
-            "departures": ["KAFW/16L", "KFTW/16"],
-            "arrivals": ["REEKO3_MN_SF", "LIKES3_M_NORTH_SF"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": ["BOOVE7.AUTO", "VKTRY2.AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_D_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_D_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_D_APP": ["D10_E_APP", "D10_M_APP"]
+        },
+        "inbound_assignments": {
+          "JFRYE5": "D10_D_APP",
+          "LIKES3_M_NORTH_SF": "D10_M_APP",
+          "REEKO3_MN_SF": "D10_M_APP",
+          "TRUUK2_M_NORTH_SF": "D10_D_APP",
+          "WESAT2": "D10_D_APP"
+        },
+        "departure_assignments": {
+          "KAFW": "D10_M_APP",
+          "KDTO": "D10_D_APP",
+          "KFTW": "D10_M_APP"
         }
       },
       "controllers": [
@@ -16422,7 +16189,27 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_M_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_M_APP": ["D10_D_APP", "D10_E_APP"]
+        },
+        "inbound_assignments": {
+          "DRYYE2": "D10_M_APP",
+          "LIKES3_N": "D10_M_APP",
+          "REEKO3_MS_NF": "D10_M_APP",
+          "SWVAY4_MS_NF_PROP": "D10_M_APP",
+          "TRUUK2_S_NORTH_NF": "D10_D_APP",
+          "WESAT2_MS_NF": "D10_D_APP"
+        },
+        "departure_assignments": {
+          "KFTW": "D10_M_APP",
+          "KFWS": "D10_M_APP",
+          "KGKY": "D10_M_APP",
+          "KGPM": "D10_M_APP",
+          "KNFW": "D10_M_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -16447,32 +16234,6 @@
         "D10_H_APP",
         "D10_J_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_D_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["TRUUK2_S_NORTH_NF", "WESAT2_MS_NF"]
-          },
-          "D10_M_APP": {
-            "primary": true,
-            "backup": "D10_D_APP",
-            "departures": ["KNFW/36", "KGKY/34", "KGPM/36", "KFWS/36L", "KFTW/34"],
-            "arrivals": ["REEKO3_MS_NF", "LIKES3_N", "DRYYE2", "SWVAY4_MS_NF_PROP"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_M_APP",
-            "arrivals": ["SOCKK4.AUTO", "JOVEM6.AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_M_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_M_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10122S"],
       "departure_runways": [
         {
@@ -16632,31 +16393,28 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_D_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_D_APP": {
-            "primary": true,
-            "departures": ["KAFW/34R", "KFTW/34", "KDTO/36R"],
-            "arrivals": ["HERBZ1", "TRUUK2_M_NORTH_NF", "WESAT2"]
-          },
-          "D10_M_APP": {
-            "backup": "D10_D_APP",
-            "departures": ["KNFW/36", "KGKY/34", "KGPM/36", "KFWS/36L"],
-            "arrivals": ["REEKO3_MS_NF", "LIKES3_N", "DRYYE2", "SWVAY4_MS_NF_PROP"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": ["SOCKK4.AUTO", "JOVEM6.AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_D_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_D_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_D_APP": ["D10_E_APP", "D10_M_APP"]
+        },
+        "inbound_assignments": {
+          "DRYYE2": "D10_M_APP",
+          "HERBZ1": "D10_D_APP",
+          "LIKES3_N": "D10_M_APP",
+          "REEKO3_MS_NF": "D10_M_APP",
+          "SWVAY4_MS_NF_PROP": "D10_M_APP",
+          "TRUUK2_M_NORTH_NF": "D10_D_APP",
+          "WESAT2": "D10_D_APP"
+        },
+        "departure_assignments": {
+          "KAFW": "D10_D_APP",
+          "KDTO": "D10_D_APP",
+          "KFTW": "D10_D_APP",
+          "KFWS": "D10_M_APP",
+          "KGKY": "D10_M_APP",
+          "KGPM": "D10_M_APP",
+          "KNFW": "D10_M_APP"
         }
       },
       "controllers": [
@@ -16836,7 +16594,30 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_D_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_D_APP": ["D10_E_APP", "D10_M_APP"]
+        },
+        "inbound_assignments": {
+          "BACHR4_MS_SF": "D10_M_APP",
+          "JFRYE5": "D10_D_APP",
+          "LIKES3_S": "D10_M_APP",
+          "REEKO3_MS_SF": "D10_M_APP",
+          "SWVAY4_MS_SF_PROP": "D10_M_APP",
+          "TRUUK2_M_NORTH_SF": "D10_D_APP",
+          "WESAT2": "D10_D_APP"
+        },
+        "departure_assignments": {
+          "KAFW": "D10_M_APP",
+          "KDTO": "D10_D_APP",
+          "KFTW": "D10_M_APP",
+          "KFWS": "D10_M_APP",
+          "KGKY": "D10_M_APP",
+          "KGPM": "D10_M_APP",
+          "KNFW": "D10_M_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -16861,32 +16642,6 @@
         "D10_H_APP",
         "D10_J_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_D_APP": {
-            "primary": true,
-            "departures": ["KDTO/18L"],
-            "arrivals": ["TRUUK2_M_NORTH_SF", "WESAT2", "JFRYE5"]
-          },
-          "D10_M_APP": {
-            "backup": "D10_D_APP",
-            "departures": ["KNFW/18", "KAFW/16L", "KFTW/16", "KGKY/16", "KGPM/18", "KFWS/18R"],
-            "arrivals": ["REEKO3_MS_SF", "LIKES3_S", "SWVAY4_MS_SF_PROP", "BACHR4_MS_SF"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_D_APP",
-            "arrivals": ["BOOVE7.AUTO", "VKTRY2.AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_D_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_D_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10123S"],
       "departure_runways": [
         {
@@ -17013,38 +16768,28 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_N_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_N_APP": {
-            "primary": true,
-            "arrivals": ["HIBIL3", "LOADS4_DN_SF", "SLANT3.JET", "SLANT3.PROP", "FINGR9.PROP", "TRUUK2_SF"],
-            "departures": ["KADS/16", "KTKI/18"]
-          },
-          "D10_S_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["BACHR4_DN_SF", "REDDN4_DN_SF", "SWVAY4_DN_SF_PROP"]
-          },
-          "D10_D_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["GREGS1_DN_SF_JET"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["BEREE3.AUTO", "SEEVR4.AUTO"]
-          },
-          "D10_L_DEP": {
-            "backup": "D10_S_APP",
-            "departures": ["KDAL/13R_AUTO", "KDAL/13L_AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_N_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_N_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_N_APP": ["D10_D_APP", "D10_E_APP", "D10_S_APP"],
+          "D10_S_APP": ["D10_L_DEP"]
+        },
+        "inbound_assignments": {
+          "BACHR4_DN_SF": "D10_S_APP",
+          "FINGR9.PROP": "D10_N_APP",
+          "GREGS1_DN_SF_JET": "D10_D_APP",
+          "HIBIL3": "D10_N_APP",
+          "LOADS4_DN_SF": "D10_N_APP",
+          "REDDN4_DN_SF": "D10_S_APP",
+          "SLANT3.JET": "D10_N_APP",
+          "SLANT3.PROP": "D10_N_APP",
+          "SWVAY4_DN_SF_PROP": "D10_S_APP",
+          "TRUUK2_SF": "D10_N_APP"
+        },
+        "departure_assignments": {
+          "KADS": "D10_N_APP",
+          "KDAL": "D10_L_DEP",
+          "KTKI": "D10_N_APP"
         }
       },
       "controllers": [
@@ -17269,7 +17014,29 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_N_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_N_APP": ["D10_D_APP", "D10_E_APP", "D10_S_APP"],
+          "D10_S_APP": ["D10_L_DEP"]
+        },
+        "inbound_assignments": {
+          "CRIKT1": "D10_N_APP",
+          "EESAT4_DN_NF": "D10_S_APP",
+          "FINGR9.PROP": "D10_N_APP",
+          "GREGS1_DN_NF_JET": "D10_D_APP",
+          "HERBZ1.DN_NF": "D10_D_APP",
+          "SWVAY4_DN_NF_PROP": "D10_S_APP",
+          "TRUUK2_NF": "D10_N_APP",
+          "YEAGR4_DN_NF_JET": "D10_S_APP",
+          "YEAGR4_DN_NF_PROP": "D10_S_APP"
+        },
+        "departure_assignments": {
+          "KADS": "D10_N_APP",
+          "KDAL": "D10_L_DEP",
+          "KTKI": "D10_N_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -17293,46 +17060,6 @@
         "D10_S_APP",
         "D10_M_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_N_APP": {
-            "primary": true,
-            "arrivals": ["CRIKT1", "FINGR9.PROP", "TRUUK2_NF"],
-            "departures": ["KADS/34", "KTKI/36"]
-          },
-          "D10_S_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": [
-              "SWVAY4_DN_NF_PROP",
-              "DRYYE2_DS_NF_AUTO",
-              "EESAT4_DN_NF",
-              "MNNDO4_DN_NF_AUTO",
-              "YEAGR4_DN_NF_JET",
-              "YEAGR4_DN_NF_PROP"
-            ]
-          },
-          "D10_D_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["GREGS1_DN_NF_JET", "HERBZ1.DN_NF"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["BRDJE5.AUTO", "WHINY4.AUTO"]
-          },
-          "D10_L_DEP": {
-            "backup": "D10_S_APP",
-            "departures": ["KDAL/31R_AUTO", "KDAL/31L_AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_N_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_N_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10122S"],
       "departure_runways": [
         {
@@ -17538,7 +17265,27 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_S_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_S_APP": ["D10_E_APP", "D10_L_DEP", "D10_N_APP"]
+        },
+        "inbound_assignments": {
+          "CRIKT1.DS_NF": "D10_N_APP",
+          "DRYYE2_DS_NF": "D10_S_APP",
+          "EESAT4_DS_NF": "D10_S_APP",
+          "HERBZ1.DS_NF": "D10_N_APP",
+          "MNNDO4": "D10_S_APP",
+          "REEKO3": "D10_S_APP",
+          "SLANT3.DS_NF_PROP": "D10_N_APP",
+          "SWVAY4_DS_NF_PROP": "D10_S_APP"
+        },
+        "departure_assignments": {
+          "KDAL": "D10_L_DEP",
+          "KLNC": "D10_S_APP",
+          "KRBD": "D10_S_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -17562,35 +17309,6 @@
         "D10_S_APP",
         "D10_M_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_S_APP": {
-            "primary": true,
-            "arrivals": ["DRYYE2_DS_NF", "EESAT4_DS_NF", "MNNDO4", "REEKO3", "SWVAY4_DS_NF_PROP"],
-            "departures": ["KRBD/31", "KLNC/31"]
-          },
-          "D10_N_APP": {
-            "backup": "D10_S_APP",
-            "arrivals": ["CRIKT1.DS_NF", "HERBZ1.DS_NF", "SLANT3.DS_NF_PROP"]
-          },
-          "D10_E_APP": {
-            "backup": "RPO",
-            "arrivals": ["BRDJE5.AUTO", "WHINY4.AUTO"]
-          },
-          "D10_L_DEP": {
-            "backup": "RPO",
-            "departures": ["KDAL/31R_AUTO", "KDAL/31L_AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_N_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_N_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10122S"],
       "departure_runways": [
         {
@@ -17716,7 +17434,34 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_N_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_N_APP": ["D10_D_APP", "D10_E_APP", "D10_S_APP"],
+          "D10_S_APP": ["D10_L_DEP"]
+        },
+        "inbound_assignments": {
+          "CRIKT1": "D10_N_APP",
+          "DRYYE2_DS_NF": "D10_S_APP",
+          "EESAT4_DS_NF": "D10_S_APP",
+          "FINGR9.PROP": "D10_N_APP",
+          "GREGS1_DN_NF_JET": "D10_D_APP",
+          "HERBZ1.DN_NF": "D10_D_APP",
+          "MNNDO4": "D10_S_APP",
+          "REEKO3": "D10_S_APP",
+          "SWVAY4_DS_NF_PROP": "D10_S_APP",
+          "TRUUK2_NF": "D10_N_APP",
+          "YEAGR4_NF_JET": "D10_S_APP",
+          "YEAGR4_NF_PROP": "D10_S_APP"
+        },
+        "departure_assignments": {
+          "KADS": "D10_N_APP",
+          "KDAL": "D10_L_DEP",
+          "KLNC": "D10_S_APP",
+          "KRBD": "D10_S_APP",
+          "KTKI": "D10_N_APP"
+        }
+      },
       "controllers": [
         "FTW_29_CTR",
         "FTW_32_CTR",
@@ -17740,48 +17485,6 @@
         "D10_S_APP",
         "D10_M_APP"
       ],
-      "multi_controllers": {
-        "default": {
-          "D10_N_APP": {
-            "primary": true,
-            "arrivals": ["CRIKT1", "FINGR9.PROP", "TRUUK2_NF"],
-            "departures": ["KADS/34", "KTKI/36"]
-          },
-          "D10_S_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": [
-              "SWVAY4_DS_NF_PROP",
-              "DRYYE2_DS_NF",
-              "EESAT4_DS_NF",
-              "MNNDO4",
-              "YEAGR4_NF_JET",
-              "YEAGR4_NF_PROP",
-              "REEKO3"
-            ],
-            "departures": ["KRBD/31", "KLNC/31"]
-          },
-          "D10_D_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["GREGS1_DN_NF_JET", "HERBZ1.DN_NF"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["BRDJE5.AUTO", "WHINY4.AUTO"]
-          },
-          "D10_L_DEP": {
-            "backup": "D10_S_APP",
-            "departures": ["KDAL/31R_AUTO", "KDAL/31L_AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_N_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_N_APP",
-            "arrivals": ["RPO"]
-          }
-        }
-      },
       "default_maps": ["RVMD10122S"],
       "departure_runways": [
         {
@@ -17922,43 +17625,31 @@
           "KDFW": 0
         }
       },
-      "solo_controller": "D10_N_APP",
-      "multi_controllers": {
-        "default": {
-          "D10_N_APP": {
-            "primary": true,
-            "arrivals": [
-              "HIBIL3",
-              "LOADS4",
-              "SLANT3.JET",
-              "SLANT3.PROP",
-              "FINGR9.PROP",
-              "TRUUK2_SF",
-              "GREGS1_DN_SF_JET"
-            ],
-            "departures": ["KADS/16", "KTKI/18"]
-          },
-          "D10_S_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["BACHR4_DS_SF", "REDDN4", "SWVAY4_DS_SF_PROP", "REEKO3"],
-            "departures": ["KRBD/13", "KLNC/13"]
-          },
-          "D10_E_APP": {
-            "backup": "D10_N_APP",
-            "arrivals": ["BEREE3.AUTO", "SEEVR4.AUTO"]
-          },
-          "D10_L_DEP": {
-            "backup": "D10_S_APP",
-            "departures": ["KDAL/13R_AUTO", "KDAL/13L_AUTO"]
-          },
-          "INSTRUCTOR": {
-            "backup": "D10_N_APP",
-            "arrivals": ["INSTRUCTOR"]
-          },
-          "RPO": {
-            "backup": "D10_N_APP",
-            "arrivals": ["RPO"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "D10_N_APP": ["D10_E_APP", "D10_S_APP"],
+          "D10_S_APP": ["D10_L_DEP"]
+        },
+        "inbound_assignments": {
+          "BACHR4_DS_SF": "D10_S_APP",
+          "FINGR9.PROP": "D10_N_APP",
+          "GREGS1_DN_SF_JET": "D10_N_APP",
+          "HIBIL3": "D10_N_APP",
+          "LOADS4": "D10_N_APP",
+          "REDDN4": "D10_S_APP",
+          "REEKO3": "D10_S_APP",
+          "SLANT3.JET": "D10_N_APP",
+          "SLANT3.PROP": "D10_N_APP",
+          "SWVAY4_DS_SF_PROP": "D10_S_APP",
+          "TRUUK2_SF": "D10_N_APP"
+        },
+        "departure_assignments": {
+          "KADS": "D10_N_APP",
+          "KDAL": "D10_L_DEP",
+          "KLNC": "D10_S_APP",
+          "KRBD": "D10_S_APP",
+          "KTKI": "D10_N_APP"
         }
       },
       "controllers": [

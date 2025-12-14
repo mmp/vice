@@ -3,12 +3,24 @@
   "airports": {
     "KSAV": {
       "approaches": {
-        "I1": { "cifp_id": "I1" },
-        "R1": { "cifp_id": "R1" },
-        "I10": { "cifp_id": "I10" },
-        "R10": { "cifp_id": "R10" },
-        "R19": { "cifp_id": "R19" },
-        "R28": { "cifp_id": "RZ28" }
+        "I1": {
+          "cifp_id": "I1"
+        },
+        "R1": {
+          "cifp_id": "R1"
+        },
+        "I10": {
+          "cifp_id": "I10"
+        },
+        "R10": {
+          "cifp_id": "R10"
+        },
+        "R19": {
+          "cifp_id": "R19"
+        },
+        "R28": {
+          "cifp_id": "RZ28"
+        }
       },
       "departure_routes": {
         "10": {
@@ -794,12 +806,20 @@
           "KSAV": 10
         }
       },
-      "solo_controller": "SAV_N_APP",
-      "multi_controllers": {
-        "default": {
-          "SAV_N_APP": { "primary": true, "arrivals": ["SOOOP", "PLZZZ"], "departures": ["KSAV"] },
-          "SAV_W_APP": { "backup": "SAV_N_APP", "arrivals": ["LOTTS"] },
-          "SAV_S_APP": { "backup": "SAV_W_APP", "arrivals": ["VIYAP"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAV_N_APP": ["SAV_W_APP"],
+          "SAV_W_APP": ["SAV_S_APP"]
+        },
+        "inbound_assignments": {
+          "LOTTS": "SAV_W_APP",
+          "PLZZZ": "SAV_N_APP",
+          "SOOOP": "SAV_N_APP",
+          "VIYAP": "SAV_S_APP"
+        },
+        "departure_assignments": {
+          "KSAV": "SAV_N_APP"
         }
       },
       "controllers": ["SAV_N_APP", "JAX_30_CTR", "SAV_TWR"],
@@ -845,12 +865,20 @@
           "KSAV": 10
         }
       },
-      "solo_controller": "SAV_N_APP",
-      "multi_controllers": {
-        "default": {
-          "SAV_N_APP": { "primary": true, "arrivals": ["SOOOP", "PLZZZ"] },
-          "SAV_W_APP": { "backup": "SAV_N_APP", "arrivals": ["LOTTS"], "departures": ["KSAV"] },
-          "SAV_S_APP": { "backup": "SAV_W_APP", "arrivals": ["VIYAP"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAV_N_APP": ["SAV_W_APP"],
+          "SAV_W_APP": ["SAV_S_APP"]
+        },
+        "inbound_assignments": {
+          "LOTTS": "SAV_W_APP",
+          "PLZZZ": "SAV_N_APP",
+          "SOOOP": "SAV_N_APP",
+          "VIYAP": "SAV_S_APP"
+        },
+        "departure_assignments": {
+          "KSAV": "SAV_W_APP"
         }
       },
       "controllers": ["SAV_N_APP", "JAX_30_CTR", "SAV_TWR"],

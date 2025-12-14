@@ -353,7 +353,6 @@
             }
           ]
         },
-
         {
           "exit": "DOLIE",
           "destination": "KAUS",
@@ -597,15 +596,22 @@
           "KACK": 10
         }
       },
-      "solo_controller": "ACK_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ACK_N_APP": { "arrivals": ["DEEPO2", "NEWBE3"], "primary": true },
-          "ACK_DEP": { "departures": ["KACK", "KMVY"], "backup": "ACK_N_APP" },
-          "ACK_O_APP": { "backup": "ACK_DEP" },
-          "ACK_Y_APP": { "backup": "ACK_O_APP" },
-          "ACK_S_APP": { "backup": "ACK_Y_APP" },
-          "ACK_A_APP": { "backup": "ACK_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ACK_DEP": ["ACK_O_APP"],
+          "ACK_N_APP": ["ACK_DEP"],
+          "ACK_O_APP": ["ACK_Y_APP"],
+          "ACK_S_APP": ["ACK_A_APP"],
+          "ACK_Y_APP": ["ACK_S_APP"]
+        },
+        "inbound_assignments": {
+          "DEEPO2": "ACK_N_APP",
+          "NEWBE3": "ACK_N_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KMVY": "ACK_DEP"
         }
       },
       "controllers": ["BOS_37_CTR"],
@@ -645,15 +651,22 @@
           "KACK": 10
         }
       },
-      "solo_controller": "ACK_N_APP",
-      "multi_controllers": {
-        "default": {
-          "ACK_N_APP": { "arrivals": ["DEEPO2", "NEWBE3"], "primary": true },
-          "ACK_DEP": { "departures": ["KACK", "KMVY"], "backup": "ACK_N_APP" },
-          "ACK_O_APP": { "backup": "ACK_DEP" },
-          "ACK_Y_APP": { "backup": "ACK_O_APP" },
-          "ACK_S_APP": { "backup": "ACK_Y_APP" },
-          "ACK_A_APP": { "backup": "ACK_S_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ACK_DEP": ["ACK_O_APP"],
+          "ACK_N_APP": ["ACK_DEP"],
+          "ACK_O_APP": ["ACK_Y_APP"],
+          "ACK_S_APP": ["ACK_A_APP"],
+          "ACK_Y_APP": ["ACK_S_APP"]
+        },
+        "inbound_assignments": {
+          "DEEPO2": "ACK_N_APP",
+          "NEWBE3": "ACK_N_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KMVY": "ACK_DEP"
         }
       },
       "controllers": ["BOS_37_CTR"],
@@ -854,11 +867,15 @@
       "BAF": {},
       "BLZZR": {},
       "BOGEY": {},
-      "BOSOX": { "short_name": "BOX" },
+      "BOSOX": {
+        "short_name": "BOX"
+      },
       "BRUWN": {},
       "CAM": {},
       "CCC": {},
-      "CELTK": { "short_name": "FRI" },
+      "CELTK": {
+        "short_name": "FRI"
+      },
       "CLOWW": {},
       "CON": {},
       "DOLIE": {},
@@ -866,21 +883,37 @@
       "ENE": {},
       "FREDO": {},
       "HANNA": {},
-      "HYA": { "location": "KHYA" },
-      "HYLND": { "short_name": "LUR" },
-      "KEWB": { "short_name": "KEW" },
+      "HYA": {
+        "location": "KHYA"
+      },
+      "HYLND": {
+        "short_name": "LUR"
+      },
+      "KEWB": {
+        "short_name": "KEW"
+      },
       "LBSTA": {},
       "LFV": {},
-      "MANCH": { "short_name": "MHT" },
+      "MANCH": {
+        "short_name": "MHT"
+      },
       "MVY": {},
-      "NELIE": { "short_name": "PRT" },
+      "NELIE": {
+        "short_name": "PRT"
+      },
       "PATSS": {},
-      "PEASE": { "short_name": "PSM" },
-      "POMPY": { "short_name": "PMP" },
+      "PEASE": {
+        "short_name": "PSM"
+      },
+      "POMPY": {
+        "short_name": "PMP"
+      },
       "PVC": {},
       "PVD": {},
       "REVSS": {},
-      "SSOXS": { "short_name": "SSO" },
+      "SSOXS": {
+        "short_name": "SSO"
+      },
       "STEVO": {},
       "SWANN": {},
       "WEEZE": {}

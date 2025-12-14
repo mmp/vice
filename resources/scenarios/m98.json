@@ -4,11 +4,21 @@
     "KMSP": {
       "name": "Minneapolis St. Paul Intl",
       "approaches": {
-        "12L": { "cifp_id": "I12L" },
-        "12R": { "cifp_id": "I12R" },
-        "30L": { "cifp_id": "I30L" },
-        "30R": { "cifp_id": "I30R" },
-        "I35": { "cifp_id": "IV35" }
+        "12L": {
+          "cifp_id": "I12L"
+        },
+        "12R": {
+          "cifp_id": "I12R"
+        },
+        "30L": {
+          "cifp_id": "I30L"
+        },
+        "30R": {
+          "cifp_id": "I30R"
+        },
+        "I35": {
+          "cifp_id": "IV35"
+        }
       },
       "approach_regions": {
         "30L": {
@@ -624,12 +634,14 @@
     "MSP_R_DEP": {
       "frequency": 124700,
       "radio_name": "Minneapolis Departure",
-      "sector_id": "1R"
+      "sector_id": "1R",
+      "default_airport": "KMSP"
     },
     "MSP_I_APP": {
       "frequency": 126350,
       "radio_name": "Minneapolis Approach",
-      "sector_id": "1I"
+      "sector_id": "1I",
+      "default_airport": "KMSP"
     },
     "MSP_H_APP": {
       "frequency": 135475,
@@ -640,17 +652,20 @@
     "MSP_N_APP": {
       "frequency": 119300,
       "radio_name": "Minneapolis Approach",
-      "sector_id": "1N"
+      "sector_id": "1N",
+      "default_airport": "KMSP"
     },
     "MSP_S_APP": {
       "frequency": 126350,
       "radio_name": "Minneapolis Approach",
-      "sector_id": "1S"
+      "sector_id": "1S",
+      "default_airport": "KMSP"
     },
     "MSP_E_APP": {
       "frequency": 126350,
       "radio_name": "Minneapolis Approach",
-      "sector_id": "1E"
+      "sector_id": "1E",
+      "default_airport": "KMSP"
     },
     "MSP_N_TWR": {
       "frequency": 123950,
@@ -714,15 +729,22 @@
           "KMSP": 7
         }
       },
-      "solo_controller": "MSP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "MSP_H_APP": { "primary": true, "arrivals": ["BLUEM4", "NITZR3", "TORGY3"] },
-          "MSP_I_APP": { "backup": "MSP_H_APP", "arrivals": ["BAINY3", "KKILR3", "MUSCL3"] },
-          "MSP_N_APP": { "backup": "MSP_I_APP" },
-          "MSP_S_APP": { "backup": "MSP_H_APP" },
-          "MSP_R_DEP": { "departures": ["KMSP"], "backup": "MSP_H_APP" },
-          "MSP_E_APP": { "backup": "MSP_H_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
+          "MSP_I_APP": ["MSP_N_APP"]
+        },
+        "inbound_assignments": {
+          "BAINY3": "MSP_I_APP",
+          "BLUEM4": "MSP_H_APP",
+          "KKILR3": "MSP_I_APP",
+          "MUSCL3": "MSP_I_APP",
+          "NITZR3": "MSP_H_APP",
+          "TORGY3": "MSP_H_APP"
+        },
+        "departure_assignments": {
+          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR"],
@@ -824,15 +846,22 @@
           "KMSP": 7
         }
       },
-      "solo_controller": "MSP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "MSP_H_APP": { "primary": true, "arrivals": ["BLUEM4", "NITZR3", "TORGY3"] },
-          "MSP_I_APP": { "backup": "MSP_H_APP", "arrivals": ["BAINY3", "KKILR3", "MUSCL3"] },
-          "MSP_N_APP": { "backup": "MSP_I_APP" },
-          "MSP_S_APP": { "backup": "MSP_H_APP" },
-          "MSP_R_DEP": { "departures": ["KMSP"], "backup": "MSP_H_APP" },
-          "MSP_E_APP": { "backup": "MSP_H_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
+          "MSP_I_APP": ["MSP_N_APP"]
+        },
+        "inbound_assignments": {
+          "BAINY3": "MSP_I_APP",
+          "BLUEM4": "MSP_H_APP",
+          "KKILR3": "MSP_I_APP",
+          "MUSCL3": "MSP_I_APP",
+          "NITZR3": "MSP_H_APP",
+          "TORGY3": "MSP_H_APP"
+        },
+        "departure_assignments": {
+          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR", "MSP_W_TWR"],
@@ -934,15 +963,22 @@
           "KMSP": 12
         }
       },
-      "solo_controller": "MSP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "MSP_H_APP": { "primary": true, "arrivals": ["BLUEM4", "NITZR3", "TORGY3"] },
-          "MSP_I_APP": { "backup": "MSP_H_APP", "arrivals": ["BAINY3", "KKILR3", "MUSCL3"] },
-          "MSP_N_APP": { "backup": "MSP_I_APP" },
-          "MSP_S_APP": { "backup": "MSP_H_APP" },
-          "MSP_R_DEP": { "departures": ["KMSP"], "backup": "MSP_H_APP" },
-          "MSP_E_APP": { "backup": "MSP_H_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
+          "MSP_I_APP": ["MSP_N_APP"]
+        },
+        "inbound_assignments": {
+          "BAINY3": "MSP_I_APP",
+          "BLUEM4": "MSP_H_APP",
+          "KKILR3": "MSP_I_APP",
+          "MUSCL3": "MSP_I_APP",
+          "NITZR3": "MSP_H_APP",
+          "TORGY3": "MSP_H_APP"
+        },
+        "departure_assignments": {
+          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR"],
@@ -1048,15 +1084,22 @@
           "KMSP": 12
         }
       },
-      "solo_controller": "MSP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "MSP_H_APP": { "primary": true, "arrivals": ["BLUEM4", "NITZR3", "TORGY3"] },
-          "MSP_I_APP": { "backup": "MSP_H_APP", "arrivals": ["BAINY3", "KKILR3", "MUSCL3"] },
-          "MSP_N_APP": { "backup": "MSP_I_APP" },
-          "MSP_S_APP": { "backup": "MSP_H_APP" },
-          "MSP_R_DEP": { "departures": ["KMSP"], "backup": "MSP_H_APP" },
-          "MSP_E_APP": { "backup": "MSP_H_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
+          "MSP_I_APP": ["MSP_N_APP"]
+        },
+        "inbound_assignments": {
+          "BAINY3": "MSP_I_APP",
+          "BLUEM4": "MSP_H_APP",
+          "KKILR3": "MSP_I_APP",
+          "MUSCL3": "MSP_I_APP",
+          "NITZR3": "MSP_H_APP",
+          "TORGY3": "MSP_H_APP"
+        },
+        "departure_assignments": {
+          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR", "MSP_W_TWR"],
@@ -1158,15 +1201,22 @@
           "KMSP": 12
         }
       },
-      "solo_controller": "MSP_H_APP",
-      "multi_controllers": {
-        "default": {
-          "MSP_H_APP": { "primary": true, "arrivals": ["BLUEM4", "NITZR3", "TORGY3"] },
-          "MSP_I_APP": { "backup": "MSP_H_APP", "arrivals": ["BAINY3", "KKILR3", "MUSCL3"] },
-          "MSP_N_APP": { "backup": "MSP_I_APP" },
-          "MSP_S_APP": { "backup": "MSP_H_APP" },
-          "MSP_R_DEP": { "departures": ["KMSP"], "backup": "MSP_H_APP" },
-          "MSP_E_APP": { "backup": "MSP_H_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
+          "MSP_I_APP": ["MSP_N_APP"]
+        },
+        "inbound_assignments": {
+          "BAINY3": "MSP_I_APP",
+          "BLUEM4": "MSP_H_APP",
+          "KKILR3": "MSP_I_APP",
+          "MUSCL3": "MSP_I_APP",
+          "NITZR3": "MSP_H_APP",
+          "TORGY3": "MSP_H_APP"
+        },
+        "departure_assignments": {
+          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR", "MSP_W_TWR"],

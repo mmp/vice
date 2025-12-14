@@ -3,10 +3,34 @@
   "area": "Area D (West)",
   "name": "ZNY Area D (West)",
   "airports": {
-    "KFRG": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KUNV": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRDG": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KIPT": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KFRG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KUNV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRDG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KIPT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KLGA": {
       "approaches": {
         "I22": {
@@ -847,7 +871,21 @@
   "default_scenario": "ZNY Area D Combined",
   "scenarios": {
     "ZNY Area D Combined": {
-      "solo_controller": "ZNY Selinsgrove 72",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZNY Selinsgrove 72": []
+        },
+        "inbound_assignments": {
+          "FQM3": "ZNY Selinsgrove 72",
+          "MIP4-ETG": "ZNY Selinsgrove 72",
+          "MIP4-PSB": "ZNY Selinsgrove 72",
+          "MIP4-SFK": "ZNY Selinsgrove 72",
+          "NABOR": "ZNY Selinsgrove 72",
+          "TRISH4": "ZNY Selinsgrove 72",
+          "WLKES": "ZNY Selinsgrove 72"
+        }
+      },
       "controllers": [
         "ZNY Kennedy 56",
         "ZNY Lancaster 26",
@@ -924,7 +962,11 @@
           "overflights": 20
         }
       },
-      "wind": { "direction": "130-180", "speed": "5+", "flight_rules": "VMC" }
+      "wind": {
+        "direction": "130-180",
+        "speed": "5+",
+        "flight_rules": "VMC"
+      }
     }
   },
   "stars_config": {
@@ -962,7 +1004,6 @@
       "MDT RVM",
       "WRI RVM"
     ],
-
     "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst"
   }
 }

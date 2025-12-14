@@ -13,7 +13,9 @@
         "I5": {
           "cifp_id": "I5"
         },
-        "I34": { "cifp_id": "I34" }
+        "I34": {
+          "cifp_id": "I34"
+        }
       },
       "departure_routes": {
         "23": {
@@ -70,8 +72,12 @@
     "KOQU": {
       "hold_for_release": true,
       "approaches": {
-        "I16": { "cifp_id": "I16" },
-        "R34": { "cifp_id": "R34" }
+        "I16": {
+          "cifp_id": "I16"
+        },
+        "R34": {
+          "cifp_id": "R34"
+        }
       },
       "departure_routes": {
         "16": {
@@ -79,19 +85,16 @@
             "cleared_altitude": 2000,
             "waypoints": "_OQU_16/h280"
           },
-
           "JUMPR": {
             "cleared_altitude": 2000,
             "waypoints": "_OQU_16/h160"
           }
         },
-
         "34": {
           "PUT": {
             "cleared_altitude": 2000,
             "waypoints": "_OQU_34/h340"
           },
-
           "JUMPR": {
             "cleared_altitude": 2000,
             "waypoints": "_OQU_34/h180"
@@ -130,50 +133,42 @@
     "KEWB": {
       "hold_for_release": true,
       "approaches": {},
-
       "departure_routes": {
         "23": {
           "PVD_PUT": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_23/h290"
           },
-
           "JUMPR": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_23/h220"
           }
         },
-
         "5": {
           "PVD_PUT": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_05/h290"
           },
-
           "JUMPR": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_05/h220"
           }
         },
-
         "32": {
           "PVD_PUT": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_32/h290"
           },
-
           "JUMPR": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_32/h220"
           }
         },
-
         "14": {
           "PVD_PUT": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_14/h290"
           },
-
           "JUMPR": {
             "cleared_altitude": 2000,
             "waypoints": "_EWB_14/h220"
@@ -302,7 +297,13 @@
       "overflights": [
         {
           "description": "NELIE3.FOK",
-          "airlines": [{ "icao": "EJA", "departure_airport": "KOKC", "arrival_airport": "KFOK" }],
+          "airlines": [
+            {
+              "icao": "EJA",
+              "departure_airport": "KOKC",
+              "arrival_airport": "KFOK"
+            }
+          ],
           "waypoints": "NELIE N041.51.56.670,W072.33.07.509/ho WIPOR/a11000/s280 ORW WANDI CCC",
           "cruise_altitude": 35000,
           "initial_altitude": 23000,
@@ -380,7 +381,13 @@
       "overflights": [
         {
           "description": "ORW.V374.MVY.ZBW",
-          "airlines": [{ "icao": "WUP", "departure_airport": "KHPN", "arrival_airport": "KMVY" }],
+          "airlines": [
+            {
+              "icao": "WUP",
+              "departure_airport": "KHPN",
+              "arrival_airport": "KMVY"
+            }
+          ],
           "waypoints": "N041.47.00.272,W072.51.48.361 ORW/ho/a15000+ LAFAY N041.25.51.173,W071.38.09.276/a11000/s280 MINNK FALMA MVY",
           "initial_altitude": 15000,
           "initial_controller": "C42",
@@ -388,7 +395,13 @@
         },
         {
           "description": "GON.V374.MVY.ZBW",
-          "airlines": [{ "icao": "CNS", "departure_airport": "KTEB", "arrival_airport": "KMVY" }],
+          "airlines": [
+            {
+              "icao": "CNS",
+              "departure_airport": "KTEB",
+              "arrival_airport": "KMVY"
+            }
+          ],
           "waypoints": "N041.18.21.077,W072.48.27.394 GON/a15000+/ho WACKY/a11000/s280 MINNK FALMA MVY",
           "initial_altitude": 15000,
           "initial_controller": "C42",
@@ -397,9 +410,21 @@
         {
           "description": "SEY.ARCAV.ZBW",
           "airlines": [
-            { "icao": "EJM", "departure_airport": "KPWM", "arrival_airport": "KISP" },
-            { "icao": "JRE", "departure_airport": "KPWM", "arrival_airport": "KHWV" },
-            { "icao": "EJM", "departure_airport": "KPWM", "arrival_airport": "KFOK" }
+            {
+              "icao": "EJM",
+              "departure_airport": "KPWM",
+              "arrival_airport": "KISP"
+            },
+            {
+              "icao": "JRE",
+              "departure_airport": "KPWM",
+              "arrival_airport": "KHWV"
+            },
+            {
+              "icao": "EJM",
+              "departure_airport": "KPWM",
+              "arrival_airport": "KFOK"
+            }
           ],
           "waypoints": "N041.41.14.903,W070.21.57.205 N041.33.17.506,W070.40.34.735/a16000+/ho N041.15.36.804,W071.21.26.004/a11000 SEY ARCAV ORCHA CCC",
           "initial_altitude": 18000,
@@ -409,9 +434,21 @@
         {
           "description": "FLAPE.MVY.ZBW",
           "airlines": [
-            { "icao": "XOJ", "departure_airport": "KRIC", "arrival_airport": "KMVY" },
-            { "icao": "JAS", "departure_airport": "KHEF", "arrival_airport": "KMVY" },
-            { "icao": "RPA", "departure_airport": "KLGA", "arrival_airport": "KMVY" }
+            {
+              "icao": "XOJ",
+              "departure_airport": "KRIC",
+              "arrival_airport": "KMVY"
+            },
+            {
+              "icao": "JAS",
+              "departure_airport": "KHEF",
+              "arrival_airport": "KMVY"
+            },
+            {
+              "icao": "RPA",
+              "departure_airport": "KLGA",
+              "arrival_airport": "KMVY"
+            }
           ],
           "waypoints": "N040.36.16.995,W072.19.32.048 N040.44.08.295,W072.00.24.774/a17000+/ho LIBBE/a11000/s280 FLAPE",
           "cruise_altitude": 35000,
@@ -2081,11 +2118,22 @@
           "KOQU": 0
         }
       },
-      "solo_controller": "1D",
-      "multi_controllers": {
-        "default": {
-          "1D": { "primary": true, "arrivals": ["GON", "JORDN", "JUMPR", "WIPOR", "PEAKE"] },
-          "1A": { "backup": "1D", "departures": ["KPVD", "KOQU", "KEWB"], "arrivals": [] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1D": ["1A"]
+        },
+        "inbound_assignments": {
+          "GON": "1D",
+          "JORDN": "1D",
+          "JUMPR": "1D",
+          "PEAKE": "1D",
+          "WIPOR": "1D"
+        },
+        "departure_assignments": {
+          "KEWB": "1A",
+          "KOQU": "1A",
+          "KPVD": "1A"
         }
       },
       "controllers": ["1A", "C18", "C32", "C34", "C42"],
@@ -2096,7 +2144,6 @@
           "rate": 0,
           "runway": "23"
         },
-
         {
           "airport": "KOQU",
           "rate": 0,
@@ -2144,11 +2191,22 @@
           "KOQU": 0
         }
       },
-      "solo_controller": "1D",
-      "multi_controllers": {
-        "default": {
-          "1D": { "primary": true, "arrivals": ["GON", "JORDN", "JUMPR", "WIPOR", "PEAKE"] },
-          "1A": { "backup": "1D", "departures": ["KPVD", "KOQU", "KEWB"], "arrivals": [] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1D": ["1A"]
+        },
+        "inbound_assignments": {
+          "GON": "1D",
+          "JORDN": "1D",
+          "JUMPR": "1D",
+          "PEAKE": "1D",
+          "WIPOR": "1D"
+        },
+        "departure_assignments": {
+          "KEWB": "1A",
+          "KOQU": "1A",
+          "KPVD": "1A"
         }
       },
       "controllers": ["1A", "C18", "C32", "C34", "C42"],
@@ -2159,7 +2217,6 @@
           "rate": 0,
           "runway": "23"
         },
-
         {
           "airport": "KOQU",
           "rate": 0,
@@ -2204,7 +2261,20 @@
           "KPVD": 3
         }
       },
-      "solo_controller": "1A",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1A": []
+        },
+        "inbound_assignments": {
+          "GON": "1A",
+          "JORDN": "1A",
+          "WIPOR": "1A"
+        },
+        "departure_assignments": {
+          "KPVD": "1A"
+        }
+      },
       "controllers": ["1A", "C32", "C42"],
       "default_maps": ["RVMPVD113S"],
       "departure_runways": [
@@ -2237,14 +2307,18 @@
           "KOQU": 10
         }
       },
-      "solo_controller": "1D",
-      "multi_controllers": {
-        "default": {
-          "1D": {
-            "primary": true,
-            "arrivals": ["PQ_OQU_2316_COMBINED", "PQ_PVD_2316_COMBINED"],
-            "departures": ["KOQU", "KPVD"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1D": []
+        },
+        "inbound_assignments": {
+          "PQ_OQU_2316_COMBINED": "1D",
+          "PQ_PVD_2316_COMBINED": "1D"
+        },
+        "departure_assignments": {
+          "KOQU": "1D",
+          "KPVD": "1D"
         }
       },
       "controllers": ["1H", "1J", "1N", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
@@ -2255,7 +2329,6 @@
           "rate": 0,
           "runway": "23"
         },
-
         {
           "airport": "KOQU",
           "rate": 0,
@@ -2285,11 +2358,18 @@
           "KOQU": 10
         }
       },
-      "solo_controller": "1D",
-      "multi_controllers": {
-        "default": {
-          "1D": { "primary": true, "arrivals": ["PQ_OQU_2316"], "departures": ["KOQU", "KPVD"] },
-          "1A": { "backup": "1D", "departures": [], "arrivals": ["PQ_PVD_2316"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1D": ["1A"]
+        },
+        "inbound_assignments": {
+          "PQ_OQU_2316": "1D",
+          "PQ_PVD_2316": "1A"
+        },
+        "departure_assignments": {
+          "KOQU": "1D",
+          "KPVD": "1D"
         }
       },
       "controllers": ["1A", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
@@ -2300,7 +2380,6 @@
           "rate": 0,
           "runway": "23"
         },
-
         {
           "airport": "KOQU",
           "rate": 0,
@@ -2330,11 +2409,18 @@
           "KOQU": 10
         }
       },
-      "solo_controller": "1A",
-      "multi_controllers": {
-        "default": {
-          "1D": { "backup": "1A", "arrivals": ["PQ_PVD_0516", "PQ_OQU_0516"], "departures": ["KPVD"] },
-          "1A": { "primary": true, "departures": ["KOQU"], "arrivals": [] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1A": ["1D"]
+        },
+        "inbound_assignments": {
+          "PQ_OQU_0516": "1D",
+          "PQ_PVD_0516": "1D"
+        },
+        "departure_assignments": {
+          "KOQU": "1A",
+          "KPVD": "1D"
         }
       },
       "controllers": ["1D", "1N", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
@@ -2345,7 +2431,6 @@
           "rate": 0,
           "runway": "5"
         },
-
         {
           "airport": "KOQU",
           "rate": 0,
@@ -2375,11 +2460,18 @@
           "KOQU": 10
         }
       },
-      "solo_controller": "1A",
-      "multi_controllers": {
-        "default": {
-          "1D": { "backup": "1A", "arrivals": [], "departures": ["KPVD"] },
-          "1A": { "primary": true, "departures": ["KOQU"], "arrivals": ["PQ_PVD_0534", "PQ_OQU_0534"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "1A": ["1D"]
+        },
+        "inbound_assignments": {
+          "PQ_OQU_0534": "1A",
+          "PQ_PVD_0534": "1A"
+        },
+        "departure_assignments": {
+          "KOQU": "1A",
+          "KPVD": "1D"
         }
       },
       "controllers": ["1D", "1N", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B", "BOS_1M", "BOS_1N", "BOS_1S"],
@@ -2390,7 +2482,6 @@
           "rate": 0,
           "runway": "5"
         },
-
         {
           "airport": "KOQU",
           "rate": 0,
@@ -2451,14 +2542,30 @@
       "JUMPR": "7TN"
     },
     "coordination_lists": [
-      { "name": ".     PVD D DEP", "id": "D", "airports": ["KPVD"] },
-      { "name": ".     EWB DEP", "id": "N", "airports": ["KEWB"] },
-      { "name": ".     OQU DEP", "id": "Q", "airports": ["KOQU"] }
+      {
+        "name": ".     PVD D DEP",
+        "id": "D",
+        "airports": ["KPVD"]
+      },
+      {
+        "name": ".     EWB DEP",
+        "id": "N",
+        "airports": ["KEWB"]
+      },
+      {
+        "name": ".     OQU DEP",
+        "id": "Q",
+        "airports": ["KOQU"]
+      }
     ],
     "significant_points": {
       "PUT": {},
-      "JUMPR": { "short_name": "7TN" },
-      "PEAKE": { "short_name": "DNE" }
+      "JUMPR": {
+        "short_name": "7TN"
+      },
+      "PEAKE": {
+        "short_name": "DNE"
+      }
     },
     "stars_maps": [
       "RVMPVD005S",

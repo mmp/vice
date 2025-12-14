@@ -1643,19 +1643,19 @@
           "KJZI": 3
         }
       },
-      "solo_controller": "CHS_W_APP",
-      "multi_controllers": {
-        "default": {
-          "CHS_W_APP": {
-            "primary": true,
-            "departures": ["KCHS/LGRHD3", "KCHS/STUNO1", "KJZI"],
-            "arrivals": ["BAGGY3", "OSPRI7"]
-          },
-          "CHS_E_APP": {
-            "backup": "CHS_W_APP",
-            "departures": ["KCHS/MLTRE3", "KCHS/PLMTO3", "KCHS/SWPFX3"],
-            "arrivals": ["AMYLU3"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CHS_W_APP": ["CHS_E_APP"]
+        },
+        "inbound_assignments": {
+          "AMYLU3": "CHS_E_APP",
+          "BAGGY3": "CHS_W_APP",
+          "OSPRI7": "CHS_W_APP"
+        },
+        "departure_assignments": {
+          "KCHS": "CHS_W_APP",
+          "KJZI": "CHS_W_APP"
         }
       },
       "controllers": ["JAX_72_CTR", "JAX_73_CTR", "JAX_74_CTR", "CHS_TWR", "JZI_TWR"],
@@ -1705,19 +1705,19 @@
           "KJZI": 3
         }
       },
-      "solo_controller": "CHS_W_APP",
-      "multi_controllers": {
-        "default": {
-          "CHS_W_APP": {
-            "primary": true,
-            "departures": ["KCHS/LGRHD3", "KCHS/STUNO1", "KJZI"],
-            "arrivals": ["BAGGY3", "OSPRI7"]
-          },
-          "CHS_E_APP": {
-            "backup": "CHS_W_APP",
-            "departures": ["KCHS/MLTRE3", "KCHS/PLMTO3", "KCHS/SWPFX3"],
-            "arrivals": ["AMYLU3"]
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "CHS_W_APP": ["CHS_E_APP"]
+        },
+        "inbound_assignments": {
+          "AMYLU3": "CHS_E_APP",
+          "BAGGY3": "CHS_W_APP",
+          "OSPRI7": "CHS_W_APP"
+        },
+        "departure_assignments": {
+          "KCHS": "CHS_W_APP",
+          "KJZI": "CHS_W_APP"
         }
       },
       "controllers": ["JAX_72_CTR", "JAX_73_CTR", "JAX_74_CTR", "CHS_TWR", "JZI_TWR"],
@@ -1800,7 +1800,13 @@
         }
       ]
     },
-    "coordination_lists": [{ "name": ".    JZI", "id": "J", "airports": ["KJZI"] }],
+    "coordination_lists": [
+      {
+        "name": ".    JZI",
+        "id": "J",
+        "airports": ["KJZI"]
+      }
+    ],
     "scratchpads": {
       "GIPPL": "LGR",
       "LGRHD": "LGR",

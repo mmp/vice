@@ -1,24 +1,102 @@
 {
   "tracon": "N90",
   "airports": {
-    "KFRG": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KDXR": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KOXC": { "vfr": { "random_routes": { "rate": 7 } } },
-    "11N": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KMMU": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KCDW": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KBDR": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KFWN": { "vfr": { "random_routes": { "rate": 3 } } },
-    "47N": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KMJX": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPOU": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KPNE": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KFRG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "KDXR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "KOXC": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "11N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KMMU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "KCDW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "KBDR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "KFWN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "47N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KMJX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPOU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
+    "KPNE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      }
+    },
     "KLGA": {
       "name": "LaGuardia",
       "approaches": {
-        "I4": { "cifp_id": "I4" },
-        "I22": { "cifp_id": "I22" },
-        "I13": { "cifp_id": "I13" },
+        "I4": {
+          "cifp_id": "I4"
+        },
+        "I22": {
+          "cifp_id": "I22"
+        },
+        "I13": {
+          "cifp_id": "I13"
+        },
         "R31": {
           "full_name": "RNAV X Runway 31",
           "runway": "31",
@@ -35,7 +113,9 @@
             "VARAZ/a4000+ PACHU/a3000+ SHAYY/a2500+/s180 GACAR/a2200+/s165 DRRYL/a1100+ KEYTH/a700+ DCTRK/a400+"
           ]
         },
-        "L31": { "cifp_id": "L31" }
+        "L31": {
+          "cifp_id": "L31"
+        }
       },
       "departure_routes": {
         "4": {
@@ -1635,24 +1715,18 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": {
-            "primary": true,
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
+        },
+        "inbound_assignments": {
+          "HAARP3": "LGA_V_APP",
+          "KORRY4": "LGA_D_APP",
+          "MIP4": "LGA_D_APP"
+        },
+        "departure_assignments": {
+          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -1738,24 +1812,18 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": {
-            "primary": true,
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
+        },
+        "inbound_assignments": {
+          "HAARP3": "LGA_V_APP",
+          "KORRY4": "LGA_D_APP",
+          "MIP4": "LGA_D_APP"
+        },
+        "departure_assignments": {
+          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -1841,24 +1909,18 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": {
-            "primary": true,
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
+        },
+        "inbound_assignments": {
+          "HAARP3": "LGA_V_APP",
+          "KORRY4": "LGA_D_APP",
+          "MIP4": "LGA_D_APP"
+        },
+        "departure_assignments": {
+          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -1944,24 +2006,18 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": {
-            "primary": true,
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
+        },
+        "inbound_assignments": {
+          "HAARP3": "LGA_V_APP",
+          "KORRY4": "LGA_D_APP",
+          "MIP4": "LGA_D_APP"
+        },
+        "departure_assignments": {
+          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -2047,24 +2103,18 @@
           "KLGA": 10
         }
       },
-      "solo_controller": "LGA_V_APP",
-      "multi_controllers": {
-        "default": {
-          "LGA_V_APP": {
-            "primary": true,
-            "arrivals": ["HAARP3"]
-          },
-          "LGA_D_APP": {
-            "backup": "LGA_V_APP",
-            "arrivals": ["KORRY4", "MIP4"]
-          },
-          "LGA_F_APP": {
-            "backup": "LGA_V_APP"
-          },
-          "LGA_DEP": {
-            "departures": ["KLGA"],
-            "backup": "LGA_V_APP"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
+        },
+        "inbound_assignments": {
+          "HAARP3": "LGA_V_APP",
+          "KORRY4": "LGA_D_APP",
+          "MIP4": "LGA_D_APP"
+        },
+        "departure_assignments": {
+          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -2148,7 +2198,16 @@
           "KLGA": 22
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-ILS4": "LGA_F_APP",
+          "Finals-HAARP-L4/D13": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2186,7 +2245,16 @@
           "KLGA": 22
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-ILS4": "LGA_F_APP",
+          "Finals-HAARP-L4/D31": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2224,7 +2292,16 @@
           "KLGA": 22
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-ILS13": "LGA_F_APP",
+          "Finals-HAARP-ILS13": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2261,7 +2338,16 @@
           "KLGA": 14
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-ILS22/D13": "LGA_F_APP",
+          "Finals-HAARP-ILS22": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2298,7 +2384,16 @@
           "KLGA": 22
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-ILS22/D31": "LGA_F_APP",
+          "Finals-HAARP-ILS22": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2335,7 +2430,16 @@
           "KLGA": 22
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-RX31": "LGA_F_APP",
+          "Finals-HAARP-RX31": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2372,7 +2476,16 @@
           "KLGA": 22
         }
       },
-      "solo_controller": "LGA_F_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "LGA_F_APP": []
+        },
+        "inbound_assignments": {
+          "Finals-EMPYR-LOC31": "LGA_F_APP",
+          "Finals-HAARP-LOC31": "LGA_F_APP"
+        }
+      },
       "controllers": [
         "JFK_APP",
         "EWR_APP",
@@ -2397,29 +2510,22 @@
   },
   "stars_config": {
     "filters": {
-      "auto_acquisition": [
+      "inhibit_ca": [
         {
-          "id": "lgaack",
-          "description": "lga arrival acquisition all",
-          "type": "polygon",
-          "vertices": "N040.41.52.023,W074.59.55.523 N040.33.41.910,W075.11.10.825 N040.17.05.106,W075.00.05.300 N040.13.56.540,W074.47.17.631 N040.08.34.627,W074.51.47.318 N039.55.54.277,W074.38.51.051 N040.11.32.825,W074.17.34.028 N040.22.11.172,W074.05.39.120 N040.20.40.864,W074.01.02.045 N040.38.55.281,W073.41.49.222 N040.55.56.872,W073.17.15.269 N041.11.12.885,W073.19.26.116 N041.25.28.623,W073.14.15.697 N041.37.50.407,W073.12.37.177 N041.39.54.909,W073.32.06.425 N041.33.00.354,W073.56.10.605 N041.14.13.445,W074.17.29.606 N041.07.24.602,W074.14.29.540 N040.57.05.276,W074.23.49.129 N040.43.39.223,W074.19.19.606 N040.39.19.259,W074.11.19.476 N040.33.39.190,W074.26.53.644",
+          "id": "LGANOCA",
+          "description": "LGA CONFLICT SUPPRESS",
+          "type": "circle",
           "floor": 0,
-          "ceiling": 10000
-        }
-      ],
-      "secondary_drop": [
-        {
-          "id": "secdrop",
-          "description": "drop region all",
-          "type": "polygon",
-          "vertices": "N040.22.50.599,W073.57.37.534 N040.32.40.977,W074.12.54.783 N040.56.59.041,W074.21.15.018 N041.33.08.703,W073.53.51.134 N041.37.02.644,W073.37.23.078 N041.36.35.507,W073.14.24.349 N041.24.06.817,W073.16.34.400 N041.13.34.237,W073.23.18.587 N040.54.14.754,W073.16.51.181 N040.48.17.053,W073.37.55.900",
-          "floor": 0,
-          "ceiling": 40000
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KLGA"
         }
       ]
     },
     "center": "KLGA",
-    "pdb": { "hide_gs": true },
+    "pdb": {
+      "hide_gs": true
+    },
     "coordination_fixes": {
       "MERIT": [
         {
@@ -2522,19 +2628,6 @@
     },
     "range": 60,
     "force_ql_self": true,
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "LGANOCA",
-          "description": "LGA CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KLGA"
-        }
-      ]
-    },
     "radar_sites": {
       "EWR": {
         "char": "E",
@@ -2615,11 +2708,15 @@
       "ELIOT": {},
       "GAYEL": {},
       "GREKI": {},
-      "HAAYS": { "short_name": "HAY" },
+      "HAAYS": {
+        "short_name": "HAY"
+      },
       "LANNA": {},
       "MERIT": {},
       "NEION": {},
-      "NEWEL": { "short_name": "NWL" },
+      "NEWEL": {
+        "short_name": "NWL"
+      },
       "PARKE": {},
       "SAX": {},
       "SBJ": {},

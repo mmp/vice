@@ -1,17 +1,83 @@
 {
   "tracon": "N90",
   "airports": {
-    "39N": { "vfr": { "random_routes": { "rate": 3 } } },
-    "47N": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KACK": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KBDR": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KBLM": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KCDW": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KFWN": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KJPX": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KMJX": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KPNE": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPOU": { "vfr": { "random_routes": { "rate": 5 } } },
+    "39N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "47N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KACK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KBDR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KBLM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KCDW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KFWN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KJPX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KMJX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 3
+        }
+      }
+    },
+    "KPNE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPOU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KIJD": {
       "vfr": {
         "routes": [
@@ -85,7 +151,11 @@
       }
     },
     "KMMU": {
-      "vfr": { "random_routes": { "rate": 7 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      },
       "departure_controller": "4N",
       "departure_routes": {
         "23": {
@@ -131,7 +201,11 @@
       }
     },
     "KHPN": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "departure_controller": "1Y",
       "departure_routes": {
         "16": {
@@ -1737,7 +1811,9 @@
     },
     "KLGA": {
       "approaches": {
-        "I4": { "cifp_id": "I4" }
+        "I4": {
+          "cifp_id": "I4"
+        }
       },
       "departure_routes": {
         "13.Coney": {
@@ -2757,7 +2833,13 @@
     "WRI DIXIE": {
       "overflights": [
         {
-          "airlines": [{ "icao": "N", "departure_airport": "KACY", "arrival_airport": "KISP" }],
+          "airlines": [
+            {
+              "icao": "N",
+              "departure_airport": "KACY",
+              "arrival_airport": "KISP"
+            }
+          ],
           "waypoints": "CYN N039.53.29.930,W074.21.07.547/ho WHITE DIXIE V16 JFK CCC/a2000/delete",
           "initial_altitude": 4000,
           "initial_speed": 170,
@@ -2865,8 +2947,12 @@
   "stars_config": {
     "center": "N040.45.26.477,W074.24.28.789",
     "range": 60,
-    "pdb": { "hide_gs": true },
-    "fdb": { "display_requested_altitude": true },
+    "pdb": {
+      "hide_gs": true
+    },
+    "fdb": {
+      "display_requested_altitude": true
+    },
     "radar_sites": {
       "EWR": {
         "char": "E",
@@ -3099,11 +3185,15 @@
       "ELIOT": {},
       "GAYEL": {},
       "GREKI": {},
-      "HAAYS": { "short_name": "HAY" },
+      "HAAYS": {
+        "short_name": "HAY"
+      },
       "LANNA": {},
       "MERIT": {},
       "NEION": {},
-      "NEWEL": { "short_name": "NWL" },
+      "NEWEL": {
+        "short_name": "NWL"
+      },
       "PARKE": {},
       "RBV": {},
       "WHITE": {},
@@ -3282,12 +3372,6 @@
       "facility_id": "5"
     },
     "Wilkes Barre Approach": {
-      "frequency": 126300,
-      "radio_name": "Wilkes Barre Approach",
-      "sector_id": "1E",
-      "facility_id": "7"
-    },
-    "Wilkes Barre Approach": {
       "frequency": 120950,
       "radio_name": "Wilkes Barre Approach",
       "sector_id": "1B",
@@ -3359,22 +3443,14 @@
   "primary_airport": "KEWR",
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
-      "solo_controller": "5E",
-      "multi_controllers": {
-        "default": {
-          "5E": {
-            "primary": true
-          },
-          "5W": {
-            "backup": "5E"
-          },
-          "5S": {
-            "backup": "5W",
-            "inbound_flows": ["WRI DIXIE"]
-          },
-          "5T": {
-            "backup": "5E"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5E": ["5T", "5W"],
+          "5W": ["5S"]
+        },
+        "inbound_assignments": {
+          "WRI DIXIE": "5S"
         }
       },
       "controllers": ["5E", "4N", "1L", "2J", "C35", "C36", "C39", "C51", "C55", "C56", "C68", "B06", "B19"],
@@ -3467,22 +3543,14 @@
       }
     },
     "Liberty Combined - LGA Owns Coney": {
-      "solo_controller": "5E",
-      "multi_controllers": {
-        "default": {
-          "5E": {
-            "primary": true
-          },
-          "5W": {
-            "backup": "5E"
-          },
-          "5S": {
-            "backup": "5W",
-            "inbound_flows": ["WRI DIXIE"]
-          },
-          "5T": {
-            "backup": "5E"
-          }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5E": ["5T", "5W"],
+          "5W": ["5S"]
+        },
+        "inbound_assignments": {
+          "WRI DIXIE": "5S"
         }
       },
       "controllers": ["5E", "4N", "1L", "2J", "C35", "C36", "C39", "C51", "C55", "C56", "C68", "B06", "B19"],
@@ -3570,7 +3638,12 @@
       }
     },
     "Liberty East": {
-      "solo_controller": "5E",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5E": []
+        }
+      },
       "controllers": [
         "5E",
         "5W",
@@ -3691,7 +3764,12 @@
       ]
     },
     "Liberty North": {
-      "solo_controller": "5T",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5T": []
+        }
+      },
       "controllers": [
         "5E",
         "5W",
@@ -3792,7 +3870,15 @@
       ]
     },
     "Liberty South JFK Owns Coney": {
-      "solo_controller": "5S",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5S": []
+        },
+        "inbound_assignments": {
+          "WRI DIXIE": "5S"
+        }
+      },
       "controllers": ["5E", "5W", "5S", "5T", "4N", "1L", "2J", "C56", "C68", "C55", "C35", "C51", "C39", "B06", "B19"],
       "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
@@ -3873,7 +3959,15 @@
       }
     },
     "Liberty South LGA Owns Coney": {
-      "solo_controller": "5S",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5S": []
+        },
+        "inbound_assignments": {
+          "WRI DIXIE": "5S"
+        }
+      },
       "controllers": ["5E", "5W", "5S", "5T", "4N", "1L", "2J", "C56", "C68", "C55", "C35", "C51", "C39", "B06", "B19"],
       "default_maps": ["LIBERTY DEP"],
       "departure_runways": [
@@ -3948,7 +4042,12 @@
       }
     },
     "Liberty West": {
-      "solo_controller": "5W",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "5W": []
+        }
+      },
       "controllers": [
         "5E",
         "5W",

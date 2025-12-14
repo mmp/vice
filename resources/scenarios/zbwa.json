@@ -238,7 +238,15 @@
   "default_scenario": "ZBW Gardner 36",
   "scenarios": {
     "ZBW Gardner 36": {
-      "solo_controller": "ZBW Gardner 36",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZBW Gardner 36": []
+        },
+        "inbound_assignments": {
+          "JFUND2-PONCT": "ZBW Gardner 36"
+        }
+      },
       "controllers": [
         "ZBW Gardner 36",
         "ZNY Kennedy 56",
@@ -273,14 +281,17 @@
           "KBOS": 20
         }
       },
-      "wind": { "direction": "130-180", "speed": "5+", "flight_rules": "VMC" }
+      "wind": {
+        "direction": "130-180",
+        "speed": "5+",
+        "flight_rules": "VMC"
+      }
     }
   },
   "stars_config": {
     "center": "GDM",
     "range": 70,
     "stars_maps": ["TRACON"],
-
     "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst"
   }
 }

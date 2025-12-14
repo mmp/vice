@@ -6,16 +6,36 @@
     "KDTW": {
       "name": "Detroit Metro",
       "approaches": {
-        "I4L": { "cifp_id": "IZ4L" },
-        "Y4L": { "cifp_id": "IY4L" },
-        "I4R": { "cifp_id": "I4R" },
-        "I3R": { "cifp_id": "I3R" },
-        "I1L": { "cifp_id": "I21L" },
-        "I2R": { "cifp_id": "IZ22R" },
-        "Y2R": { "cifp_id": "IY22R" },
-        "I2L": { "cifp_id": "I22L" },
-        "I7L": { "cifp_id": "I27L" },
-        "I7R": { "cifp_id": "I27R" }
+        "I4L": {
+          "cifp_id": "IZ4L"
+        },
+        "Y4L": {
+          "cifp_id": "IY4L"
+        },
+        "I4R": {
+          "cifp_id": "I4R"
+        },
+        "I3R": {
+          "cifp_id": "I3R"
+        },
+        "I1L": {
+          "cifp_id": "I21L"
+        },
+        "I2R": {
+          "cifp_id": "IZ22R"
+        },
+        "Y2R": {
+          "cifp_id": "IY22R"
+        },
+        "I2L": {
+          "cifp_id": "I22L"
+        },
+        "I7L": {
+          "cifp_id": "I27L"
+        },
+        "I7R": {
+          "cifp_id": "I27R"
+        }
       },
       "departure_routes": {
         "4R": {
@@ -2602,7 +2622,7 @@
     "OKLND1": {
       "arrivals": [
         {
-          "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS FAEGO RIPPY OKLND/a4000+/h272",
+          "waypoints": "COLTS/a36000- BOREK LOPVO ITPEG PICUP AXXIS FAEGO RIPPY OKLND/a4000+/h272/ho",
           "star": "OKLND1",
           "initial_controller": "CLE_48_CTR",
           "initial_altitude": 26000,
@@ -3157,20 +3177,36 @@
           "KDET": 2
         }
       },
-      "solo_controller": "DTW_F_APP",
-      "multi_controllers": {
-        "default": {
-          "DTW_F_APP": { "primary": true, "arrivals": ["CUUGR2", "WNGNT2"] },
-          "DTW_R_APP": { "backup": "DTW_F_APP", "arrivals": ["GRAYT2", "KKISS2"] },
-          "DTW_A_APP": { "backup": "DTW_F_APP" },
-          "DTW_H_APP": { "backup": "DTW_F_APP", "arrivals": ["CRAKN2", "KLYNK3"] },
-          "DTW_V_APP": { "backup": "DTW_R_APP", "arrivals": ["HAYLL3", "LECTR3"] },
-          "DTW_B_APP": { "backup": "DTW_A_APP" },
-          "DTW_E_DEP": { "backup": "DTW_F_APP", "departures": ["KDTW/3L"] },
-          "DTW_W_DEP": { "backup": "DTW_E_DEP", "departures": ["KDTW/4R"] },
-          "DTW_Y_APP": { "backup": "DTW_A_APP", "departures": ["KYIP"], "arrivals": ["PETTE2"] },
-          "DTW_D_APP": { "backup": "DTW_Y_APP", "departures": ["KDET"], "arrivals": ["FOREY2", "GIGGY2"] },
-          "DTW_P_APP": { "backup": "DTW_D_APP", "departures": ["KPTK"], "arrivals": ["RRALF3", "OKLND1"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": ["DTW_B_APP", "DTW_Y_APP"],
+          "DTW_D_APP": ["DTW_P_APP"],
+          "DTW_E_DEP": ["DTW_W_DEP"],
+          "DTW_F_APP": ["DTW_A_APP", "DTW_E_DEP", "DTW_H_APP", "DTW_R_APP"],
+          "DTW_R_APP": ["DTW_V_APP"],
+          "DTW_Y_APP": ["DTW_D_APP"]
+        },
+        "inbound_assignments": {
+          "CRAKN2": "DTW_H_APP",
+          "CUUGR2": "DTW_F_APP",
+          "FOREY2": "DTW_D_APP",
+          "GIGGY2": "DTW_D_APP",
+          "GRAYT2": "DTW_R_APP",
+          "HAYLL3": "DTW_V_APP",
+          "KKISS2": "DTW_R_APP",
+          "KLYNK3": "DTW_H_APP",
+          "LECTR3": "DTW_V_APP",
+          "OKLND1": "DTW_P_APP",
+          "PETTE2": "DTW_Y_APP",
+          "RRALF3": "DTW_P_APP",
+          "WNGNT2": "DTW_F_APP"
+        },
+        "departure_assignments": {
+          "KDET": "DTW_D_APP",
+          "KDTW": "DTW_E_DEP",
+          "KPTK": "DTW_P_APP",
+          "KYIP": "DTW_Y_APP"
         }
       },
       "controllers": ["DTW_SW_TWR", "DTW_NE_TWR", "YIP_TWR", "DET_TWR", "PTK_TWR", "CLE_A_APP", "CLE_48_CTR"],
@@ -3280,21 +3316,36 @@
           "KDET": 2
         }
       },
-      "solo_controller": "DTW_F_APP",
-      "multi_controllers": {
-        "default": {
-          "DTW_F_APP": { "primary": true, "arrivals": ["CUUGR2", "WNGNT2"] },
-          "DTW_R_APP": { "backup": "DTW_F_APP", "arrivals": ["GRAYT2", "KKISS2"] },
-          "DTW_A_APP": { "backup": "DTW_F_APP" },
-          "DTW_H_APP": { "backup": "DTW_F_APP", "arrivals": ["CRAKN2", "KLYNK3"] },
-          "DTW_V_APP": { "backup": "DTW_R_APP", "arrivals": ["HAYLL3", "LECTR3"] },
-          "DTW_B_APP": { "backup": "DTW_A_APP" },
-          "DTW_Z_APP": { "backup": "DTW_A_APP" },
-          "DTW_E_DEP": { "backup": "DTW_F_APP", "departures": ["KDTW/3L"] },
-          "DTW_W_DEP": { "backup": "DTW_E_DEP", "departures": ["KDTW/4R"] },
-          "DTW_Y_APP": { "backup": "DTW_A_APP", "departures": ["KYIP"], "arrivals": ["PETTE2"] },
-          "DTW_D_APP": { "backup": "DTW_Y_APP", "departures": ["KDET"], "arrivals": ["FOREY2", "GIGGY2"] },
-          "DTW_P_APP": { "backup": "DTW_D_APP", "departures": ["KPTK"], "arrivals": ["RRALF3", "OKLND1"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": ["DTW_B_APP", "DTW_Y_APP", "DTW_Z_APP"],
+          "DTW_D_APP": ["DTW_P_APP"],
+          "DTW_E_DEP": ["DTW_W_DEP"],
+          "DTW_F_APP": ["DTW_A_APP", "DTW_E_DEP", "DTW_H_APP", "DTW_R_APP"],
+          "DTW_R_APP": ["DTW_V_APP"],
+          "DTW_Y_APP": ["DTW_D_APP"]
+        },
+        "inbound_assignments": {
+          "CRAKN2": "DTW_H_APP",
+          "CUUGR2": "DTW_F_APP",
+          "FOREY2": "DTW_D_APP",
+          "GIGGY2": "DTW_D_APP",
+          "GRAYT2": "DTW_R_APP",
+          "HAYLL3": "DTW_V_APP",
+          "KKISS2": "DTW_R_APP",
+          "KLYNK3": "DTW_H_APP",
+          "LECTR3": "DTW_V_APP",
+          "OKLND1": "DTW_P_APP",
+          "PETTE2": "DTW_Y_APP",
+          "RRALF3": "DTW_P_APP",
+          "WNGNT2": "DTW_F_APP"
+        },
+        "departure_assignments": {
+          "KDET": "DTW_D_APP",
+          "KDTW": "DTW_E_DEP",
+          "KPTK": "DTW_P_APP",
+          "KYIP": "DTW_Y_APP"
         }
       },
       "controllers": [
@@ -3409,20 +3460,36 @@
           "KDET": 2
         }
       },
-      "solo_controller": "DTW_F_APP",
-      "multi_controllers": {
-        "default": {
-          "DTW_F_APP": { "primary": true, "arrivals": ["TPGUN2", "FERRL2"] },
-          "DTW_R_APP": { "backup": "DTW_F_APP", "arrivals": ["RKCTY2", "LAYKS2"] },
-          "DTW_A_APP": { "backup": "DTW_F_APP" },
-          "DTW_H_APP": { "backup": "DTW_F_APP", "arrivals": ["BONZZ2", "HTROD2"] },
-          "DTW_V_APP": { "backup": "DTW_R_APP", "arrivals": ["HANBL3", "VCTRZ2"] },
-          "DTW_B_APP": { "backup": "DTW_A_APP" },
-          "DTW_E_DEP": { "backup": "DTW_F_APP", "departures": ["KDTW/21R"] },
-          "DTW_W_DEP": { "backup": "DTW_E_DEP", "departures": ["KDTW/22L"] },
-          "DTW_Y_APP": { "backup": "DTW_A_APP", "departures": ["KYIP"], "arrivals": ["PETTE2"] },
-          "DTW_D_APP": { "backup": "DTW_Y_APP", "departures": ["KDET"], "arrivals": ["FOREY2", "GIGGY2"] },
-          "DTW_P_APP": { "backup": "DTW_D_APP", "departures": ["KPTK"], "arrivals": ["RRALF3", "OKLND1"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": ["DTW_B_APP", "DTW_Y_APP"],
+          "DTW_D_APP": ["DTW_P_APP"],
+          "DTW_E_DEP": ["DTW_W_DEP"],
+          "DTW_F_APP": ["DTW_A_APP", "DTW_E_DEP", "DTW_H_APP", "DTW_R_APP"],
+          "DTW_R_APP": ["DTW_V_APP"],
+          "DTW_Y_APP": ["DTW_D_APP"]
+        },
+        "inbound_assignments": {
+          "BONZZ2": "DTW_H_APP",
+          "FERRL2": "DTW_F_APP",
+          "FOREY2": "DTW_D_APP",
+          "GIGGY2": "DTW_D_APP",
+          "HANBL3": "DTW_V_APP",
+          "HTROD2": "DTW_H_APP",
+          "LAYKS2": "DTW_R_APP",
+          "OKLND1": "DTW_P_APP",
+          "PETTE2": "DTW_Y_APP",
+          "RKCTY2": "DTW_R_APP",
+          "RRALF3": "DTW_P_APP",
+          "TPGUN2": "DTW_F_APP",
+          "VCTRZ2": "DTW_V_APP"
+        },
+        "departure_assignments": {
+          "KDET": "DTW_D_APP",
+          "KDTW": "DTW_E_DEP",
+          "KPTK": "DTW_P_APP",
+          "KYIP": "DTW_Y_APP"
         }
       },
       "controllers": ["DTW_SW_TWR", "DTW_NE_TWR", "YIP_TWR", "DET_TWR", "PTK_TWR", "CLE_A_APP", "CLE_48_CTR"],
@@ -3532,21 +3599,36 @@
           "KDET": 2
         }
       },
-      "solo_controller": "DTW_F_APP",
-      "multi_controllers": {
-        "default": {
-          "DTW_F_APP": { "primary": true, "arrivals": ["TPGUN2", "FERRL2"] },
-          "DTW_R_APP": { "backup": "DTW_F_APP", "arrivals": ["RKCTY2", "LAYKS2"] },
-          "DTW_A_APP": { "backup": "DTW_F_APP" },
-          "DTW_H_APP": { "backup": "DTW_F_APP", "arrivals": ["BONZZ2", "HTROD2"] },
-          "DTW_V_APP": { "backup": "DTW_R_APP", "arrivals": ["HANBL3", "VCTRZ2"] },
-          "DTW_B_APP": { "backup": "DTW_A_APP" },
-          "DTW_Z_APP": { "backup": "DTW_A_APP" },
-          "DTW_E_DEP": { "backup": "DTW_F_APP", "departures": ["KDTW/21R"] },
-          "DTW_W_DEP": { "backup": "DTW_E_DEP", "departures": ["KDTW/22L"] },
-          "DTW_Y_APP": { "backup": "DTW_A_APP", "departures": ["KYIP"], "arrivals": ["PETTE2"] },
-          "DTW_D_APP": { "backup": "DTW_Y_APP", "departures": ["KDET"], "arrivals": ["FOREY2", "GIGGY2"] },
-          "DTW_P_APP": { "backup": "DTW_D_APP", "departures": ["KPTK"], "arrivals": ["RRALF3", "OKLND1"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": ["DTW_B_APP", "DTW_Y_APP", "DTW_Z_APP"],
+          "DTW_D_APP": ["DTW_P_APP"],
+          "DTW_E_DEP": ["DTW_W_DEP"],
+          "DTW_F_APP": ["DTW_A_APP", "DTW_E_DEP", "DTW_H_APP", "DTW_R_APP"],
+          "DTW_R_APP": ["DTW_V_APP"],
+          "DTW_Y_APP": ["DTW_D_APP"]
+        },
+        "inbound_assignments": {
+          "BONZZ2": "DTW_H_APP",
+          "FERRL2": "DTW_F_APP",
+          "FOREY2": "DTW_D_APP",
+          "GIGGY2": "DTW_D_APP",
+          "HANBL3": "DTW_V_APP",
+          "HTROD2": "DTW_H_APP",
+          "LAYKS2": "DTW_R_APP",
+          "OKLND1": "DTW_P_APP",
+          "PETTE2": "DTW_Y_APP",
+          "RKCTY2": "DTW_R_APP",
+          "RRALF3": "DTW_P_APP",
+          "TPGUN2": "DTW_F_APP",
+          "VCTRZ2": "DTW_V_APP"
+        },
+        "departure_assignments": {
+          "KDET": "DTW_D_APP",
+          "KDTW": "DTW_W_DEP",
+          "KPTK": "DTW_P_APP",
+          "KYIP": "DTW_Y_APP"
         }
       },
       "controllers": [
@@ -3661,20 +3743,36 @@
           "KDET": 2
         }
       },
-      "solo_controller": "DTW_F_APP",
-      "multi_controllers": {
-        "default": {
-          "DTW_F_APP": { "primary": true, "arrivals": ["TPGUN2", "FERRL2"] },
-          "DTW_R_APP": { "backup": "DTW_F_APP", "arrivals": ["GRAYT2", "KKISS2"] },
-          "DTW_H_APP": { "backup": "DTW_F_APP", "arrivals": ["CRAKN2", "KLYNK3"] },
-          "DTW_V_APP": { "backup": "DTW_R_APP", "arrivals": ["HANBL3", "VCTRZ2"] },
-          "DTW_A_APP": { "backup": "DTW_F_APP" },
-          "DTW_B_APP": { "backup": "DTW_A_APP" },
-          "DTW_E_DEP": { "backup": "DTW_F_APP", "departures": ["KDTW/27L"] },
-          "DTW_W_DEP": { "backup": "DTW_E_DEP", "departures": ["KDTW/27R"] },
-          "DTW_Y_APP": { "backup": "DTW_A_APP", "departures": ["KYIP"], "arrivals": ["PETTE2"] },
-          "DTW_D_APP": { "backup": "DTW_Y_APP", "departures": ["KDET"], "arrivals": ["FOREY2", "GIGGY2"] },
-          "DTW_P_APP": { "backup": "DTW_D_APP", "departures": ["KPTK"], "arrivals": ["RRALF3", "OKLND1"] }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": ["DTW_B_APP", "DTW_Y_APP"],
+          "DTW_D_APP": ["DTW_P_APP"],
+          "DTW_E_DEP": ["DTW_W_DEP"],
+          "DTW_F_APP": ["DTW_A_APP", "DTW_E_DEP", "DTW_H_APP", "DTW_R_APP"],
+          "DTW_R_APP": ["DTW_V_APP"],
+          "DTW_Y_APP": ["DTW_D_APP"]
+        },
+        "inbound_assignments": {
+          "CRAKN2": "DTW_H_APP",
+          "FERRL2": "DTW_F_APP",
+          "FOREY2": "DTW_D_APP",
+          "GIGGY2": "DTW_D_APP",
+          "GRAYT2": "DTW_R_APP",
+          "HANBL3": "DTW_V_APP",
+          "KKISS2": "DTW_R_APP",
+          "KLYNK3": "DTW_H_APP",
+          "OKLND1": "DTW_P_APP",
+          "PETTE2": "DTW_Y_APP",
+          "RRALF3": "DTW_P_APP",
+          "TPGUN2": "DTW_F_APP",
+          "VCTRZ2": "DTW_V_APP"
+        },
+        "departure_assignments": {
+          "KDET": "DTW_D_APP",
+          "KDTW": "DTW_E_DEP",
+          "KPTK": "DTW_P_APP",
+          "KYIP": "DTW_Y_APP"
         }
       },
       "controllers": ["DTW_SW_TWR", "DTW_NE_TWR", "YIP_TWR", "DET_TWR", "PTK_TWR", "CLE_A_APP", "CLE_48_CTR"],
@@ -3747,7 +3845,22 @@
           "KDTW": 5
         }
       },
-      "solo_controller": "DTW_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": []
+        },
+        "inbound_assignments": {
+          "BONZZ2_FINALS": "DTW_A_APP",
+          "FERRL2_FINALS": "DTW_A_APP",
+          "HANBL3_FINALS": "DTW_A_APP",
+          "HTROD2_FINALS": "DTW_A_APP",
+          "LAYKS2_FINALS": "DTW_A_APP",
+          "RKCTY2_FINALS": "DTW_A_APP",
+          "TPGUN2_FINALS": "DTW_A_APP",
+          "VCTRZ2_FINALS": "DTW_A_APP"
+        }
+      },
       "controllers": ["DTW_NE_TWR", "DTW_SW_TWR", "DTW_F_APP", "DTW_E_DEP", "CLE_48_CTR"],
       "default_maps": ["DTW-007 (SF-ARR FEEDER)", "DTW-013 (22R Z)", "DTW-017 (21L)"],
       "wind": {
@@ -3791,7 +3904,21 @@
           "KDTW": 5
         }
       },
-      "solo_controller": "DTW_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": []
+        },
+        "inbound_assignments": {
+          "CRAKN2_FINALN": "DTW_A_APP",
+          "CUUGR2_FINALN": "DTW_A_APP",
+          "GRAYT2_FINALN": "DTW_A_APP",
+          "KKISS2_FINALN": "DTW_A_APP",
+          "KLYNK3_FINALN": "DTW_A_APP",
+          "LECTR3_FINALN": "DTW_A_APP",
+          "WNGNT2_FINALN": "DTW_A_APP"
+        }
+      },
       "controllers": ["DTW_NE_TWR", "DTW_SW_TWR", "DTW_F_APP", "DTW_E_DEP", "CLE_48_CTR"],
       "default_maps": ["DTW-009 (NF-ARR FEEDER)", "DTW-014 (4L Z)", "DTW-018 (3R)"],
       "wind": {
@@ -3835,7 +3962,22 @@
           "KDTW": 5
         }
       },
-      "solo_controller": "DTW_A_APP",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "DTW_A_APP": []
+        },
+        "inbound_assignments": {
+          "CRAKN2_FINALW": "DTW_A_APP",
+          "FERRL2_FINALW": "DTW_A_APP",
+          "GRAYT2_FINALW": "DTW_A_APP",
+          "HANBL3_FINALW": "DTW_A_APP",
+          "KKISS2_FINALW": "DTW_A_APP",
+          "KLYNK3_FINALW": "DTW_A_APP",
+          "TPGUN2_FINALW": "DTW_A_APP",
+          "VCTRZ2_FINALW": "DTW_A_APP"
+        }
+      },
       "controllers": ["DTW_NE_TWR", "DTW_SW_TWR", "DTW_F_APP", "DTW_E_DEP", "CLE_48_CTR"],
       "default_maps": ["DTW-011 (WF-ARR FEEDER)", "DTW-019 (27R)", "DTW-020 (27L)"],
       "wind": {

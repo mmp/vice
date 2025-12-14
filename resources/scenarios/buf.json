@@ -3,15 +3,33 @@
   "airports": {
     "KBUF": {
       "approaches": {
-        "I23": { "cifp_id": "I23" },
-        "Y23": { "cifp_id": "RY23" },
-        "Z23": { "cifp_id": "RZ23" },
-        "I5": { "cifp_id": "I5" },
-        "Z5": { "cifp_id": "RZ5" },
-        "Y5": { "cifp_id": "RY5" },
-        "R14": { "cifp_id": "R14" },
-        "R32": { "cifp_id": "R32" },
-        "I32": { "cifp_id": "I32" }
+        "I23": {
+          "cifp_id": "I23"
+        },
+        "Y23": {
+          "cifp_id": "RY23"
+        },
+        "Z23": {
+          "cifp_id": "RZ23"
+        },
+        "I5": {
+          "cifp_id": "I5"
+        },
+        "Z5": {
+          "cifp_id": "RZ5"
+        },
+        "Y5": {
+          "cifp_id": "RY5"
+        },
+        "R14": {
+          "cifp_id": "R14"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        },
+        "I32": {
+          "cifp_id": "I32"
+        }
       },
       "departure_routes": {
         "23": {
@@ -297,13 +315,27 @@
     },
     "KIAG": {
       "approaches": {
-        "R6": { "cifp_id": "R6" },
-        "R0L": { "cifp_id": "R10L" },
-        "Z24": { "cifp_id": "RZ24" },
-        "Y24": { "cifp_id": "RY24" },
-        "Y8R": { "cifp_id": "IY28R" },
-        "Z8R": { "cifp_id": "IZ28R" },
-        "R8R": { "cifp_id": "R28R" }
+        "R6": {
+          "cifp_id": "R6"
+        },
+        "R0L": {
+          "cifp_id": "R10L"
+        },
+        "Z24": {
+          "cifp_id": "RZ24"
+        },
+        "Y24": {
+          "cifp_id": "RY24"
+        },
+        "Y8R": {
+          "cifp_id": "IY28R"
+        },
+        "Z8R": {
+          "cifp_id": "IZ28R"
+        },
+        "R8R": {
+          "cifp_id": "R28R"
+        }
       },
       "departure_routes": {
         "28R": {
@@ -798,19 +830,26 @@
           "KIAG": 1
         }
       },
-      "solo_controller": "BUF_E_APP",
-      "multi_controllers": {
-        "default": {
-          "BUF_E_APP": {
-            "primary": true,
-            "arrivals": ["EHMAN", "BENEE", "DKK VOR (South/East)", "BUF VOR", "JHW VOR", "JHW GA", "AIRCO GA"]
-          },
-          "BUF_W_APP": {
-            "backup": "BUF_E_APP",
-            "arrivals": ["DKK VOR (West)", "WOZEE"],
-            "departures": ["KBUF", "KIAG"]
-          },
-          "BUF_F_APP": { "backup": "BUF_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUF_E_APP": ["BUF_W_APP"],
+          "BUF_W_APP": ["BUF_F_APP"]
+        },
+        "inbound_assignments": {
+          "AIRCO GA": "BUF_E_APP",
+          "BENEE": "BUF_E_APP",
+          "BUF VOR": "BUF_E_APP",
+          "DKK VOR (South/East)": "BUF_E_APP",
+          "DKK VOR (West)": "BUF_W_APP",
+          "EHMAN": "BUF_E_APP",
+          "JHW GA": "BUF_E_APP",
+          "JHW VOR": "BUF_E_APP",
+          "WOZEE": "BUF_W_APP"
+        },
+        "departure_assignments": {
+          "KBUF": "BUF_W_APP",
+          "KIAG": "BUF_W_APP"
         }
       },
       "controllers": ["BUF_TWR", "IAG_TWR", "CLE_66_CTR", "CLE_66_CTR", "TOR_CTR"],
@@ -878,19 +917,26 @@
           "KBUF": 2
         }
       },
-      "solo_controller": "BUF_E_APP",
-      "multi_controllers": {
-        "default": {
-          "BUF_E_APP": {
-            "primary": true,
-            "arrivals": ["EHMAN", "BENEE", "DKK VOR (South/East)", "BUF VOR", "JHW VOR", "JHW GA", "AIRCO GA"]
-          },
-          "BUF_W_APP": {
-            "backup": "BUF_E_APP",
-            "arrivals": ["DKK VOR (West)", "WOZEE"],
-            "departures": ["KBUF", "KIAG"]
-          },
-          "BUF_F_APP": { "backup": "BUF_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "BUF_E_APP": ["BUF_W_APP"],
+          "BUF_W_APP": ["BUF_F_APP"]
+        },
+        "inbound_assignments": {
+          "AIRCO GA": "BUF_E_APP",
+          "BENEE": "BUF_E_APP",
+          "BUF VOR": "BUF_E_APP",
+          "DKK VOR (South/East)": "BUF_E_APP",
+          "DKK VOR (West)": "BUF_W_APP",
+          "EHMAN": "BUF_E_APP",
+          "JHW GA": "BUF_E_APP",
+          "JHW VOR": "BUF_E_APP",
+          "WOZEE": "BUF_W_APP"
+        },
+        "departure_assignments": {
+          "KBUF": "BUF_W_APP",
+          "KIAG": "BUF_W_APP"
         }
       },
       "controllers": ["BUF_TWR", "IAG_TWR", "CLE_66_CTR", "CLE_66_CTR", "TOR_CTR"],
@@ -989,7 +1035,12 @@
       "BUF-001 (5 FLOW)"
     ],
     "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
-    "airspace_awareness": [{ "fixes": ["ALL"], "receiving_controller": "CLE_66_CTR" }],
+    "airspace_awareness": [
+      {
+        "fixes": ["ALL"],
+        "receiving_controller": "CLE_66_CTR"
+      }
+    ],
     "center": "KBUF",
     "filters": {
       "inhibit_ca": [

@@ -4,7 +4,11 @@
   "name": "ZLAB",
   "airports": {
     "KLAX": {
-      "approaches": { "I4R": { "cifp_id": "I24R" } },
+      "approaches": {
+        "I4R": {
+          "cifp_id": "I24R"
+        }
+      },
       "departure_controller": "SoCal Departure (Manhattan)",
       "departure_runways_as_one": ["25L,25R", "24L,24R"],
       "departure_routes": {
@@ -1122,8 +1126,12 @@
     "KONT": {
       "departure_runways_as_one": ["26L,26R", "8L,8R"],
       "approaches": {
-        "I6L": { "cifp_id": "I26L" },
-        "I6R": { "cifp_id": "I26R" }
+        "I6L": {
+          "cifp_id": "I26L"
+        },
+        "I6R": {
+          "cifp_id": "I26R"
+        }
       },
       "departure_routes": {
         "26L": {
@@ -1440,7 +1448,9 @@
     },
     "KPSP": {
       "approaches": {
-        "R1L": { "cifp_id": "RY31L" }
+        "R1L": {
+          "cifp_id": "RY31L"
+        }
       }
     }
   },
@@ -1710,7 +1720,16 @@
   "magnetic_adjustment": 11,
   "scenarios": {
     "ZLA Sector 18 (West Flow)": {
-      "solo_controller": "ZLA Sector 18",
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "ZLA Sector 18": []
+        },
+        "inbound_assignments": {
+          "SIZLR4": "ZLA Sector 18",
+          "ZIGGY8": "ZLA Sector 18"
+        }
+      },
       "controllers": [
         "ZLA Sector 04",
         "ZLA Sector 12",

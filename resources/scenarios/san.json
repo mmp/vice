@@ -1,25 +1,463 @@
 {
   "tracon": "SCT",
   "airports": {
-    "KAVX": { "vfr": { "random_routes": { "rate": 10 } } },
-    "L18": { "vfr": { "random_routes": { "rate": 5 } } },
-    "L08": { "vfr": { "random_routes": { "rate": 5 } } },
-    "CA89": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KHMT": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KMYF": { "vfr": { "random_routes": { "rate": 40 } } },
-    "KCRQ": { "vfr": { "random_routes": { "rate": 20 } } },
-    "KSEE": { "vfr": { "random_routes": { "rate": 20 } } },
-    "KSDM": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KRNM": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KAVX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "L18": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "L08": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "CA89": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KOKB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KMYF": {
+      "approaches": {
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "R8R": {
+          "cifp_id": "R28R"
+        }
+      },
+      "departure_routes": {
+        "28R": {
+          "OCN,JLI,MZB": {
+            "cleared_altitude": 4000,
+            "waypoints": "KMYF-10L/h270"
+          },
+          "SLI": {
+            "cleared_altitude": 4000,
+            "sid": "CWARD2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+          },
+          "LAX": {
+            "cleared_altitude": 4000,
+            "sid": "CWARD2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+          },
+          "PADRZ.C": {
+            "cleared_altitude": 4000,
+            "sid": "CWARD2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
+          },
+          "PADRZ.P": {
+            "cleared_altitude": 4000,
+            "sid": "CWARD2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
+          },
+          "EHF": {
+            "cleared_altitude": 4000,
+            "sid": "PADRZ2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+          },
+          "OROSZ": {
+            "cleared_altitude": 4000,
+            "sid": "PADRZ2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
+          },
+          "IKAYE": {
+            "cleared_altitude": 4000,
+            "sid": "PADRZ2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ IKAYE"
+          },
+          "CHKNN": {
+            "cleared_altitude": 4000,
+            "sid": "PADRZ2",
+            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "OCN",
+          "destination": "KSBA",
+          "altitude": 6000,
+          "route": "OCN V23 LAX V299 VTU KWANG",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "JLI",
+          "destination": "KTEB",
+          "altitude": 37000,
+          "route": "JLI TRM PKE LANCY DRK INW J44 RSK KD54Y OVR DSM EVOTE CRL JHW LVZ5",
+          "airlines": [
+            {
+              "icao": "EJA",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "MZB",
+          "destination": "KSDL",
+          "altitude": 11000,
+          "route": "MZB V66 GBN V95 PXR",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PADRZ",
+          "destination": "KSBP",
+          "altitude": 18000,
+          "route": "PADRZ2 PADRZ SXC WEEZL RZS CADAB",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "PADRZ.C",
+          "destination": "KOXR",
+          "altitude": 8000,
+          "route": "CWARD2 PADRZ CWARD AVOLS V208 VTU",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ]
+        },
+        {
+          "exit": "SLI",
+          "destination": "KSNA",
+          "altitude": 8000,
+          "route": "CWARD2 SLI",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ]
+        },
+        {
+          "exit": "SLI",
+          "destination": "KSNA",
+          "altitude": 10000,
+          "route": "CWARD2 SLI",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "PADRZ.C",
+          "destination": "KCMA",
+          "altitude": 8000,
+          "route": "CWARD2 PADRZ CWARD AVOLS V208 VTU",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ]
+        },
+        {
+          "exit": "PADRZ.P",
+          "destination": "KSMX",
+          "altitude": 16000,
+          "route": "PADRZ2 PADRZ SXC WEEZL RZS",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            }
+          ]
+        },
+        {
+          "exit": "EHF",
+          "destination": "KMMH",
+          "altitude": 26000,
+          "route": "PADRZ2 EHF CANDA BIH",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "EHF",
+          "destination": "KRNO",
+          "altitude": 20000,
+          "route": "PADRZ2 EHF FMG",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "EHF",
+          "destination": "KCXP",
+          "route": "PADRZ2 EHF MARRI",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "GAturbine"
+            },
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "EHF",
+          "destination": "KMHR",
+          "altitude": 36000,
+          "route": "PADRZ2 EHF NURAY LIN",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        },
+        {
+          "exit": "IKAYE",
+          "destination": "KMRY",
+          "altitude": 34000,
+          "route": "PADRZ2 IKAYE TESEA SCTRR WIGGL",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ]
+        }
+      ],
+      "tower_list": 2,
+      "hold_for_release": true
+    },
+    "KCRQ": {
+      "approaches": {
+        "RZ4": {
+          "cifp_id": "RZ24"
+        },
+        "RX4": {
+          "cifp_id": "RX24"
+        },
+        "RZ6": {
+          "cifp_id": "RZ6"
+        },
+        "RY4": {
+          "cifp_id": "RY24"
+        },
+        "I4": {
+          "cifp_id": "I24"
+        }
+      },
+      "departure_routes": {
+        "24": {
+          "OCN": {
+            "cleared_altitude": 3000,
+            "waypoints": "KCRQ-6/h247"
+          },
+          "MZB": {
+            "cleared_altitude": 3000,
+            "waypoints": "KCRQ-6/h247"
+          },
+          "LAX": {
+            "cleared_altitude": 3000,
+            "sid": "CWARD2",
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
+          },
+          "SLI": {
+            "cleared_altitude": 3000,
+            "sid": "CWARD2",
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
+          },
+          "EHF": {
+            "cleared_altitude": 3000,
+            "sid": "PADRZ2",
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
+          },
+          "CHKNN": {
+            "cleared_altitude": 3000,
+            "sid": "PADRZ2",
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN"
+          },
+          "IKAYE": {
+            "cleared_altitude": 3000,
+            "sid": "PADRZ2",
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ IKAYE"
+          },
+          "MALIT": {
+            "cleared_altitude": 3000,
+            "sid": "PADRZ2",
+            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ SXC MALIT"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KEMT",
+          "exit": "OCN",
+          "route": "OCN V23 DANAH V363 POM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KTEB",
+          "exit": "JLI",
+          "route": "JLI TRM PKE LANCY DRK INW J44 RSK KD54Y OVR DSM EVOTE CRL JHW LVZ5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "PHNL",
+          "exit": "MALIT",
+          "route": "PADRZ2 MALIT FICKY R578 DEREC V21 LNY JULLE5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "CHKNN",
+          "route": "PADRZ2 CHKNN SEBBY YELAH MISEN RNDRZ2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "XOJ"
+            }
+          ],
+          "destination": "KSJC",
+          "exit": "IKAYE",
+          "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
+        }
+      ],
+      "exit_categories": {
+        "SLI": "Northwest",
+        "IPL": "East",
+        "MTBAL": "Northeast",
+        "SXC": "Northwest",
+        "EHF": "North",
+        "CHKNN": "North",
+        "OROSZ": "North",
+        "IKAYE": " Northwest",
+        "DINTY": "West",
+        "MALIT": "West",
+        "JLI": "Northeast",
+        "OCN": "Northwest"
+      },
+      "tower_list": 3,
+      "hold_for_release": true
+    },
+    "KSEE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
+    },
+    "KSDM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
+    "KRNM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      }
+    },
     "KSAN": {
       "approaches": {
-        "R9": { "cifp_id": "R9" },
-        "RY7": { "cifp_id": "RY27" },
-        "RZ7": { "cifp_id": "RZ27" },
-        "IY9": { "cifp_id": "IY9" },
-        "IZ9": { "cifp_id": "IZ9" },
-        "L27": { "cifp_id": "L27" },
+        "R9": {
+          "cifp_id": "R9"
+        },
+        "RY7": {
+          "cifp_id": "RY27"
+        },
+        "RZ7": {
+          "cifp_id": "RZ27"
+        },
+        "IY9": {
+          "cifp_id": "IY9"
+        },
+        "IZ9": {
+          "cifp_id": "IZ9"
+        },
+        "L27": {
+          "cifp_id": "L27"
+        },
         "V27": {
           "full_name": "Visual Runway 27",
           "runway": "27",
@@ -283,7 +721,6 @@
             {
               "icao": "ASA"
             },
-
             {
               "icao": "HAL",
               "fleet": "A21N"
@@ -1337,371 +1774,11 @@
           "route": "NASNI NSD NSI/delete"
         }
       ],
-      "vfr": { "random_routes": { "rate": 3 } },
-      "hold_for_release": true
-    },
-    "KMYF": {
-      "approaches": {
-        "I8R": { "cifp_id": "I28R" },
-        "R8R": { "cifp_id": "R28R" }
-      },
-      "departure_routes": {
-        "28R": {
-          "OCN,JLI,MZB": {
-            "cleared_altitude": 4000,
-            "waypoints": "KMYF-10L/h270"
-          },
-          "SLI": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
-          },
-          "LAX": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
-          },
-          "PADRZ.C": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
-          },
-          "PADRZ.P": {
-            "cleared_altitude": 4000,
-            "sid": "CWARD2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a6000+ PADRZ"
-          },
-          "EHF": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
-          },
-          "OROSZ": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN RIDDL TWINE OROSZ"
-          },
-          "IKAYE": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ IKAYE"
-          },
-          "CHKNN": {
-            "cleared_altitude": 4000,
-            "sid": "PADRZ2",
-            "waypoints": "KMYF-10L/h270 GYWNN/a8000+ PADRZ HFMNN CHKNN"
-          }
+      "vfr": {
+        "random_routes": {
+          "rate": 3
         }
       },
-      "departures": [
-        {
-          "exit": "OCN",
-          "destination": "KSBA",
-          "altitude": 6000,
-          "route": "OCN V23 LAX V299 VTU KWANG",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "JLI",
-          "destination": "KTEB",
-          "altitude": 37000,
-          "route": "JLI TRM PKE LANCY DRK INW J44 RSK KD54Y OVR DSM EVOTE CRL JHW LVZ5",
-          "airlines": [
-            {
-              "icao": "EJA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "MZB",
-          "destination": "KSDL",
-          "altitude": 11000,
-          "route": "MZB V66 GBN V95 PXR",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "PADRZ",
-          "destination": "KSBP",
-          "altitude": 18000,
-          "route": "PADRZ2 PADRZ SXC WEEZL RZS CADAB",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        {
-          "exit": "PADRZ.C",
-          "destination": "KOXR",
-          "altitude": 8000,
-          "route": "CWARD2 PADRZ CWARD AVOLS V208 VTU",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            }
-          ]
-        },
-        {
-          "exit": "SLI",
-          "destination": "KSNA",
-          "altitude": 8000,
-          "route": "CWARD2 SLI",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            }
-          ]
-        },
-        {
-          "exit": "SLI",
-          "destination": "KSNA",
-          "altitude": 10000,
-          "route": "CWARD2 SLI",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        {
-          "exit": "PADRZ.C",
-          "destination": "KCMA",
-          "altitude": 8000,
-          "route": "CWARD2 PADRZ CWARD AVOLS V208 VTU",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            }
-          ]
-        },
-        {
-          "exit": "PADRZ.P",
-          "destination": "KSMX",
-          "altitude": 16000,
-          "route": "PADRZ2 PADRZ SXC WEEZL RZS",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            }
-          ]
-        },
-        {
-          "exit": "EHF",
-          "destination": "KMMH",
-          "altitude": 26000,
-          "route": "PADRZ2 EHF CANDA BIH",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        {
-          "exit": "EHF",
-          "destination": "KRNO",
-          "altitude": 20000,
-          "route": "PADRZ2 EHF FMG",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        {
-          "exit": "EHF",
-          "destination": "KCXP",
-          "route": "PADRZ2 EHF MARRI",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "GAturbine"
-            },
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        {
-          "exit": "EHF",
-          "destination": "KMHR",
-          "altitude": 36000,
-          "route": "PADRZ2 EHF NURAY LIN",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        },
-        {
-          "exit": "IKAYE",
-          "destination": "KMRY",
-          "altitude": 34000,
-          "route": "PADRZ2 IKAYE TESEA SCTRR WIGGL",
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ]
-        }
-      ],
-      "tower_list": 2,
-      "hold_for_release": true
-    },
-    "KCRQ": {
-      "approaches": {
-        "RZ4": { "cifp_id": "RZ24" },
-        "RX4": { "cifp_id": "RX24" },
-        "RZ6": { "cifp_id": "RZ6" },
-        "RY4": { "cifp_id": "RY24" },
-        "I4": { "cifp_id": "I24" }
-      },
-      "departure_routes": {
-        "24": {
-          "OCN": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/h247"
-          },
-          "MZB": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/h247"
-          },
-          "MZB": {
-            "cleared_altitude": 3000,
-            "waypoints": "KCRQ-6/h247"
-          },
-          "LAX": {
-            "cleared_altitude": 3000,
-            "sid": "CWARD2",
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ CWARD/a12000- LAX"
-          },
-          "SLI": {
-            "cleared_altitude": 3000,
-            "sid": "CWARD2",
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ CWARD/a12000- MADOW SLI"
-          },
-          "EHF": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN RIDDL LANDO EHF"
-          },
-          "CHKNN": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ HFMNN CHKNN"
-          },
-          "IKAYE": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ IKAYE"
-          },
-          "MALIT": {
-            "cleared_altitude": 3000,
-            "sid": "PADRZ2",
-            "waypoints": "KCRQ-6/h247 GYWNN/a6000+ PADRZ SXC MALIT"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "N"
-            }
-          ],
-          "destination": "KEMT",
-          "exit": "OCN",
-          "route": "OCN V23 DANAH V363 POM"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "KTEB",
-          "exit": "JLI",
-          "route": "JLI TRM PKE LANCY DRK INW J44 RSK KD54Y OVR DSM EVOTE CRL JHW LVZ5"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "PHNL",
-          "exit": "MALIT",
-          "route": "PADRZ2 MALIT FICKY R578 DEREC V21 LNY JULLE5"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "KLAS",
-          "exit": "CHKNN",
-          "route": "PADRZ2 CHKNN SEBBY YELAH MISEN RNDRZ2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "XOJ"
-            }
-          ],
-          "destination": "KSJC",
-          "exit": "IKAYE",
-          "route": "PADRZ2 IKAYE TESEA SCTRR TROXX SILCN6"
-        }
-      ],
-      "exit_categories": {
-        "SLI": "Northwest",
-        "IPL": "East",
-        "MTBAL": "Northeast",
-        "SXC": "Northwest",
-        "EHF": "North",
-        "CHKNN": "North",
-        "OROSZ": "North",
-        "IKAYE": " Northwest",
-        "DINTY": "West",
-        "MALIT": "West",
-        "JLI": "Northeast",
-        "OCN": "Northwest"
-      },
-      "tower_list": 3,
       "hold_for_release": true
     }
   },
@@ -3562,26 +3639,28 @@
           "KNZY": 2
         }
       },
-      "solo_controller": "SAN_W_APP",
-      "multi_controllers": {
-        "default": {
-          "SAN_W_APP": {
-            "departures": ["KSAN/PADRZ2", "KSAN/BRDR7", "KSAN/CWARD2", "KSAN/RV", "KMYF"],
-            "primary": true
-          },
-          "SAN_Z_APP": {
-            "backup": "SAN_W_APP",
-            "departures": ["KSAN/ZZOOO4", "KNZY"],
-            "inbound_flows": ["W291 NZY ARR"]
-          },
-          "SAN_E_APP": { "backup": "SAN_W_APP", "arrivals": ["LUCKI1.MOMAR", "LUCKI1.HEELX", "SOUTHEAST MYF ARR"] },
-          "SAN_N_APP": { "backup": "SAN_W_APP", "arrivals": ["COMIX2", "LAXX1/V23 NORTH ARR(W)"] },
-          "SAN_D_APP": {
-            "backup": "SAN_E_APP",
-            "departures": ["KCRQ"],
-            "arrivals": ["NORTH CRQ ARR", "LEGOZ4", "EAST SAT ARR"]
-          },
-          "SAN_M_APP": { "backup": "SAN_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAN_E_APP": ["SAN_D_APP"],
+          "SAN_W_APP": ["SAN_E_APP", "SAN_M_APP", "SAN_N_APP", "SAN_Z_APP"]
+        },
+        "inbound_assignments": {
+          "COMIX2": "SAN_N_APP",
+          "EAST SAT ARR": "SAN_D_APP",
+          "LAXX1/V23 NORTH ARR(W)": "SAN_N_APP",
+          "LEGOZ4": "SAN_D_APP",
+          "LUCKI1.HEELX": "SAN_E_APP",
+          "LUCKI1.MOMAR": "SAN_E_APP",
+          "NORTH CRQ ARR": "SAN_D_APP",
+          "SOUTHEAST MYF ARR": "SAN_E_APP",
+          "W291 NZY ARR": "SAN_Z_APP"
+        },
+        "departure_assignments": {
+          "KCRQ": "SAN_D_APP",
+          "KMYF": "SAN_W_APP",
+          "KNZY": "SAN_Z_APP",
+          "KSAN": "SAN_W_APP"
         }
       },
       "controllers": [
@@ -3682,18 +3761,23 @@
           "KNZY": 2
         }
       },
-      "solo_controller": "SAN_W_APP",
-      "multi_controllers": {
-        "default": {
-          "SAN_W_APP": {
-            "arrivals": ["PLYYA2"],
-            "primary": true
-          },
-          "SAN_E_APP": { "departures": ["KSAN"], "backup": "SAN_W_APP", "arrivals": ["TOPGN2.IPL", "TOPGN2.MOMAR"] },
-          "SAN_N_APP": { "backup": "SAN_W_APP", "arrivals": ["LAXX1/NORTH SAN ARR(E)"] },
-          "SAN_D_APP": { "backup": "SAN_W_APP", "arrivals": ["LEGOZ4", "EAST SAT ARR", "NORTH CRQ ARR"] },
-          "SAN_Z_APP": { "backup": "SAN_W_APP", "departures": ["KNZY"], "inbound_flows": ["W291 NZY ARR"] },
-          "SAN_M_APP": { "backup": "SAN_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAN_W_APP": ["SAN_D_APP", "SAN_E_APP", "SAN_M_APP", "SAN_N_APP", "SAN_Z_APP"]
+        },
+        "inbound_assignments": {
+          "EAST SAT ARR": "SAN_D_APP",
+          "LEGOZ4": "SAN_D_APP",
+          "NORTH CRQ ARR": "SAN_D_APP",
+          "PLYYA2": "SAN_W_APP",
+          "TOPGN2.IPL": "SAN_E_APP",
+          "TOPGN2.MOMAR": "SAN_E_APP",
+          "W291 NZY ARR": "SAN_Z_APP"
+        },
+        "departure_assignments": {
+          "KNZY": "SAN_Z_APP",
+          "KSAN": "SAN_E_APP"
         }
       },
       "controllers": [
@@ -3787,26 +3871,23 @@
           "KNZY": 2
         }
       },
-      "solo_controller": "SAN_W_APP",
-      "multi_controllers": {
-        "default": {
-          "SAN_W_APP": {
-            "departures": ["KSAN/ECHHO2", "KSAN/BRDR7", "KSAN/RV", "KSAN/MMOTO2"],
-            "arrivals": ["PLYYA2"],
-            "primary": true
-          },
-          "SAN_E_APP": {
-            "backup": "SAN_W_APP",
-            "arrivals": ["TOPGN2.IPL", "TOPGN2.MOMAR"]
-          },
-          "SAN_N_APP": { "backup": "SAN_W_APP", "arrivals": ["LAXX1/NORTH SAN ARR(E)"] },
-          "SAN_D_APP": { "backup": "SAN_W_APP", "arrivals": ["LEGOZ4", "EAST SAT ARR", "NORTH CRQ ARR"] },
-          "SAN_Z_APP": {
-            "backup": "SAN_W_APP",
-            "departures": ["KSAN/ZZOOO4", "KNZY"],
-            "inbound_flows": ["W291 NZY ARR"]
-          },
-          "SAN_M_APP": { "backup": "SAN_W_APP" }
+      "configuration": {
+        "id": "STD",
+        "positions": {
+          "SAN_W_APP": ["SAN_D_APP", "SAN_E_APP", "SAN_M_APP", "SAN_N_APP", "SAN_Z_APP"]
+        },
+        "inbound_assignments": {
+          "EAST SAT ARR": "SAN_D_APP",
+          "LEGOZ4": "SAN_D_APP",
+          "NORTH CRQ ARR": "SAN_D_APP",
+          "PLYYA2": "SAN_W_APP",
+          "TOPGN2.IPL": "SAN_E_APP",
+          "TOPGN2.MOMAR": "SAN_E_APP",
+          "W291 NZY ARR": "SAN_Z_APP"
+        },
+        "departure_assignments": {
+          "KNZY": "SAN_Z_APP",
+          "KSAN": "SAN_Z_APP"
         }
       },
       "controllers": [
