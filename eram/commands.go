@@ -31,6 +31,11 @@ func toUpper(s string) string {
 
 type CommandMode int
 
+const (
+	CommandModeNone CommandMode = iota
+	CommandModeDrawRoute
+)
+
 func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.ScopeTransformations) {
 	mouse := ctx.Mouse
 	if mouse == nil {
@@ -73,9 +78,20 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		}
 	}
 
-	if mouse.Clicked[platform.MouseButtonPrimary] && ep.Input.String() != "" {
-		pos := transforms.LatLongFromWindowP(mouse.Pos)
-		ep.Input.AddLocation(ps, pos)
+	if mouse.Clicked[platform.MouseButtonPrimary] {
+		if ep.commandMode == CommandModeDrawRoute {
+			pos := transforms.LatLongFromWindowP(mouse.Pos)
+			ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
+			var cb []string
+			for _, p := range ep.drawRoutePoints {
+				cb = append(cb, strings.ReplaceAll(p.DMSString(), " ", ""))
+			}
+			ctx.Platform.GetClipboard().SetClipboard(strings.Join(cb, " "))
+			ep.smallOutput.Set(ps, fmt.Sprintf("DRAWROUTE: %d POINTS", len(ep.drawRoutePoints)))
+		} else if ep.Input.String() != "" {
+			pos := transforms.LatLongFromWindowP(mouse.Pos)
+			ep.Input.AddLocation(ps, pos)
+		}
 	}
 
 	// zoom
@@ -145,6 +161,13 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	}
 
 	switch prefix {
+	case ".DRAWROUTE":
+		ep.commandMode = CommandModeDrawRoute
+		ep.drawRoutePoints = nil
+		ps := ep.currentPrefs()
+		ep.smallOutput.Set(ps, "DRAWROUTE")
+		status.clear = true
+		return
 	case "MR": // Map request
 		fields := strings.Fields(cmd)
 		if len(fields) > 1 {
