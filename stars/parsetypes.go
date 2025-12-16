@@ -57,6 +57,7 @@ var typeParsers = []typeParser{
 	&beaconBlockParser{},
 	&tcp1Parser{},
 	&tcp2Parser{},
+	&tcwParser{},
 	&triTCPParser{},
 	&artccParser{},
 	&airportIdParser{},
@@ -443,6 +444,22 @@ func (h *triTCPParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandIn
 
 func (h *triTCPParser) GoType() reflect.Type { return reflect.TypeOf("") }
 func (h *triTCPParser) ConsumesClick() bool  { return false }
+
+// tcwParser parses two-character terminal display workstation IDs.
+// TCW is always 2 characters: digit 1-9 followed by letter A-Z
+type tcwParser struct{}
+
+func (h *tcwParser) Identifier() string { return "TCW" }
+
+func (h *tcwParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	if len(text) < 2 || !isNum(text[0]) || !isAlpha(text[1]) {
+		return nil, text, false, nil
+	}
+	return sim.TCW(text[:2]), text[2:], true, nil
+}
+
+func (h *tcwParser) GoType() reflect.Type { return reflect.TypeOf(sim.TCW("")) }
+func (h *tcwParser) ConsumesClick() bool  { return false }
 
 // artccParser parses ARTCC position identifiers (3 chars: letter + 2 digits, e.g., "Z90", or one letter, e.g. "C").
 type artccParser struct{}
