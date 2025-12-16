@@ -233,6 +233,13 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 						system:   true,
 					})
 			}
+
+		case sim.ErrorMessageEvent:
+			mp.messages = append(mp.messages,
+				Message{
+					contents: event.WrittenText,
+					error:    true,
+				})
 		}
 	}
 }
