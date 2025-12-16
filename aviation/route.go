@@ -158,6 +158,11 @@ func (wp *Waypoint) ETA(p math.Point2LL, gs float32, nmPerLongitude float32) tim
 
 type WaypointArray []Waypoint
 
+// HasHumanHandoff returns true if any waypoint has HumanHandoff set.
+func (wa WaypointArray) HasHumanHandoff() bool {
+	return slices.ContainsFunc(wa, func(wp Waypoint) bool { return wp.HumanHandoff })
+}
+
 func (wa WaypointArray) Encode() string {
 	var entries []string
 	for _, w := range wa {

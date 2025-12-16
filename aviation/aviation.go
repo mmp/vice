@@ -61,6 +61,46 @@ type InboundFlow struct {
 	Overflights []Overflight `json:"overflights"`
 }
 
+// HasHumanHandoff returns true if any arrival or overflight in the flow
+// has a waypoint with HumanHandoff set.
+func (f InboundFlow) HasHumanHandoff() bool {
+	for _, ar := range f.Arrivals {
+		if ar.Waypoints.HasHumanHandoff() {
+			return true
+		}
+		for _, rwys := range ar.RunwayWaypoints {
+			for _, wps := range rwys {
+				if wps.HasHumanHandoff() {
+					return true
+				}
+			}
+		}
+	}
+	for _, of := range f.Overflights {
+		if of.Waypoints.HasHumanHandoff() {
+			return true
+		}
+	}
+	return false
+}
+
+// InitialControllers returns a list of all initial controllers specified
+// for arrivals and overflights in this flow.
+func (f InboundFlow) InitialControllers() []string {
+	c := make(map[string]struct{})
+	for _, ar := range f.Arrivals {
+		if ar.InitialController != "" {
+			c[ar.InitialController] = struct{}{}
+		}
+	}
+	for _, of := range f.Overflights {
+		if of.InitialController != "" {
+			c[of.InitialController] = struct{}{}
+		}
+	}
+	return slices.Collect(maps.Keys(c))
+}
+
 type Arrival struct {
 	Waypoints       WaypointArray                       `json:"waypoints"`
 	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
