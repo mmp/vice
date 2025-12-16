@@ -773,7 +773,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 			}
 
 			// TODO: handle consolidation, etc.
-			if ctx.ControlsPosition(fp.TrackingController) {
+			if ctx.UserControlsPosition(fp.TrackingController) {
 				return true
 			}
 
@@ -786,7 +786,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 			}
 
 			ctrl := ctx.Client.State.ResolveController(fp.InboundHandoffController)
-			return ctx.ControlsPosition(ctrl)
+			return ctx.UserControlsPosition(ctrl)
 		})
 
 	// 2-92: default sort is by ACID
@@ -1250,7 +1250,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		// deleted from the list by the controller.
 		rel := util.FilterSlice(releaseDepartures,
 			func(dep sim.ReleaseDeparture) bool {
-				if !ctx.ControlsPosition(ctx.Client.State.ResolveController(dep.DepartureController)) {
+				if !ctx.UserControlsPosition(ctx.Client.State.ResolveController(dep.DepartureController)) {
 					return false
 				}
 

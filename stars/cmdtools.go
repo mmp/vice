@@ -35,7 +35,7 @@ func init() {
 
 	// 6.3.1 Toggle Predicted track line on/off for a single track (p. 6-13)
 	registerCommand(CommandModeMultiFunc, "R[SLEW]", func(sp *STARSPane, ctx *panes.Context, ps *Preferences, trk *sim.Track) error {
-		if ps.PTLAll || (ps.PTLOwn && trk.IsAssociated() && ctx.ControlsPosition(trk.FlightPlan.TrackingController)) {
+		if ps.PTLAll || (ps.PTLOwn && trk.IsAssociated() && ctx.UserControlsPosition(trk.FlightPlan.TrackingController)) {
 			return ErrSTARSIllegalTrack
 		}
 		if trk.IsAssociated() && !trk.FlightPlan.Location.IsZero() {
@@ -642,7 +642,7 @@ func init() {
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
 		}
-		if !ctx.FacilityAdaptation.ForceQLToSelf && !ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+		if !ctx.FacilityAdaptation.ForceQLToSelf && !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 			return ErrSTARSIllegalPosition
 		}
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -656,7 +656,7 @@ func init() {
 		}
 
 		acid := trk.FlightPlan.ACID
-		if po, ok := sp.PointOuts[acid]; ok && ctx.ControlsPosition(sim.ControllerPosition(po.To)) {
+		if po, ok := sp.PointOuts[acid]; ok && ctx.UserControlsPosition(sim.ControllerPosition(po.To)) {
 			// 5.1.11 Accept handoff of track in intrafacility pointout
 			ctx.Client.AcceptHandoff(acid, func(err error) { sp.displayError(err, ctx, "") })
 			return nil
@@ -681,7 +681,7 @@ func init() {
 	// 6.12.12 Clear pointout accept history and count for single track
 	registerCommand(CommandModeMultiFunc, "O* [TRK_ACID]|O* [TRK_BCN]|O* [TRK_INDEX]|O* [SLEW]",
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) error {
-			if trk.IsUnassociated() || (!ctx.ControlsPosition(trk.FlightPlan.TrackingController) && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
+			if trk.IsUnassociated() || (!ctx.UserControlsPosition(trk.FlightPlan.TrackingController) && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)) {
 				return ErrSTARSIllegalTrack
 			}
 
@@ -733,7 +733,7 @@ func init() {
 	}
 	registerCommand(CommandModeNone, "[TCP1]|[TCP2]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string) (CommandStatus, error) {
-			if ctx.ControlsPosition(sim.ControllerPosition(tcp)) { // Display quick looked TCPs and quicklook regions
+			if ctx.UserControlsPosition(sim.ControllerPosition(tcp)) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else { // Toggle quick look for another owner's tracks
 				if err := toggleQL(sp, ctx, ps, tcp); err != nil {
@@ -806,7 +806,7 @@ func init() {
 	// 6.13.16 Display quick looked TCPs and quicklook regions
 	registerCommand(CommandModeMultiFunc, "Q[QL_POSITIONS]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcps []string) (CommandStatus, error) {
-			if len(tcps) == 1 && ctx.ControlsPosition(sim.ControllerPosition(tcps[0])) { // Display quick looked TCPs and quicklook regions
+			if len(tcps) == 1 && ctx.UserControlsPosition(sim.ControllerPosition(tcps[0])) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else {
 				for _, tcp := range tcps {
@@ -862,7 +862,7 @@ func init() {
 		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track, direction int) error {
 			if direction/10 != direction%10 { // digits don't match
 				return ErrSTARSCommandFormat
-			} else if trk.IsUnassociated() || !ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+			} else if trk.IsUnassociated() || !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 				return ErrSTARSIllegalTrack
 			} else if dir, ok := sp.numpadToDirection(direction / 10); ok {
 				var spec sim.FlightPlanSpecifier
@@ -885,7 +885,7 @@ func init() {
 			fp := trk.FlightPlan
 			extendTime := ctx.Now.Add(5 * time.Second)
 
-			if ctx.ControlsPosition(fp.TrackingController) {
+			if ctx.UserControlsPosition(fp.TrackingController) {
 				// Owned track - modify the flight plan globally
 				spec := sim.FlightPlanSpecifier{}
 				if !fp.InhibitACTypeDisplay && ctx.Now.Before(fp.ForceACTypeDisplayEndTime) {
@@ -1200,7 +1200,7 @@ func init() {
 		if !ps.DisplayATPAWarningAlertCones {
 			return ErrSTARSIllegalFunction
 		}
-		if !trk.IsAssociated() || trk.ATPAVolume == nil || !ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+		if !trk.IsAssociated() || trk.ATPAVolume == nil || !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 			return ErrSTARSIllegalTrack
 		}
 

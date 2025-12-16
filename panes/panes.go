@@ -156,7 +156,7 @@ func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByACID(acid)
 }
 
-func (ctx *Context) ControlsPosition(pos sim.ControllerPosition) bool {
+func (ctx *Context) UserControlsPosition(pos sim.ControllerPosition) bool {
 	return pos == ctx.UserTCP
 }
 
@@ -173,12 +173,12 @@ func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
 				return false
 			}
 
-			if ctx.ControlsPosition(fp.ControllingController) || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			if ctx.UserControlsPosition(fp.ControllingController) || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.ControlsPosition(ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController)) &&
+			if ctx.UserControlsPosition(ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController)) &&
 				trk.FlightPlan.ControllingController == "" {
 				return true
 			}

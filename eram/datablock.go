@@ -259,7 +259,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)
-		dbWriteText(db.col1[:], util.Select(ctx.ControlsPosition(trk.FlightPlan.TrackingController), "", " R"), colColor, false)
+		dbWriteText(db.col1[:], util.Select(ctx.UserControlsPosition(trk.FlightPlan.TrackingController), "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffController != "" {
 			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffController]

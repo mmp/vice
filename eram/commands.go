@@ -324,7 +324,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.err = ErrERAMIllegalACID
 			return
 		}
-		if !ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+		if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 			status.err = ErrERAMIllegalACID // change error to NO CONTROL
 			return
 		}
@@ -562,7 +562,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.acceptHandoff(ctx, acid)
-			} else if ok && ctx.ControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" { // Recall handoff
+			} else if ok && ctx.UserControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" { // Recall handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.recallHandoff(ctx, acid)
@@ -577,7 +577,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 					return
 				}
 				// Toggle FDB display (only for non-owned tracks)
-				if ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+				if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 					status.err = NewERAMError("USER ACTION NOT ALLOWED ON A\nCONTROLLER FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
 					return
 				}
@@ -868,7 +868,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 			status.err = ErrCommandFormat
 		}
 	case "QX":
-		if !ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+		if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 			status.err = ErrERAMIllegalACID
 			// REJECT - NOT YOUR CONTROL \n DROP TRACK \n <cmd>
 			// There is also a seperate one if the tracking controller is a center:
@@ -919,7 +919,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.acceptHandoff(ctx, acid)
 				return
-			} else if ctx.ControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" {
+			} else if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) && trk.FlightPlan.HandoffController != "" {
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nRECALL HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.recallHandoff(ctx, acid)
@@ -929,7 +929,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 					status.err = ErrCommandFormat
 					return
 				}
-				if ctx.ControlsPosition(trk.FlightPlan.TrackingController) {
+				if ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
 					status.err = NewERAMError("USER ACTION NOT ALLOWED ON A\nCONTROLLED FLIGHT\nFORCED DATA BLK %s", trk.ADSBCallsign)
 					return
 				}
