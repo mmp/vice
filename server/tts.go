@@ -115,7 +115,7 @@ func NewGoogleTTSProvider(lg *log.Logger) (sim.TTSProvider, error) {
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			g.errCh <- fmt.Errorf("TTS ListVoices status: %d\n", resp.StatusCode)
+			g.errCh <- fmt.Errorf("TTS ListVoices status: %d", resp.StatusCode)
 			return
 		}
 
@@ -186,7 +186,6 @@ func (g *GoogleTTSProvider) GetAllVoices() sim.TTSVoicesFuture {
 		}
 
 		if len(voices) == 0 {
-			// This shouldn't happen, but...
 			errch <- errors.New("Unable to get voices from Google TTS")
 			return
 		}
