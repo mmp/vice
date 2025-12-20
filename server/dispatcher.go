@@ -5,9 +5,12 @@
 package server
 
 import (
+	"fmt"
+
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 type dispatcher struct {
@@ -16,7 +19,7 @@ type dispatcher struct {
 
 const GetStateUpdateRPC = "Sim.GetStateUpdate"
 
-func (sd *dispatcher) GetStateUpdate(token string, update *sim.StateUpdate) error {
+func (sd *dispatcher) GetStateUpdate(token string, update *SimStateUpdate) error {
 	// Most of the methods in this file are called from the RPC dispatcher,
 	// which spawns up goroutines as needed to handle requests, so if we
 	// want to catch and report panics, all of the methods need to start
@@ -34,34 +37,16 @@ func (sd *dispatcher) SignOff(token string, _ *struct{}) error {
 	return sd.sm.SignOff(token)
 }
 
-type ChangeControlPositionArgs struct {
-	ControllerToken string
-	TCP             string
-	KeepTracks      bool
-}
-
-const ChangeControlPositionRPC = "Sim.ChangeControlPosition"
-
-func (sd *dispatcher) ChangeControlPosition(cs *ChangeControlPositionArgs, _ *struct{}) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	if tcp, s, ok := sd.sm.LookupController(cs.ControllerToken); !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		return s.ChangeControlPosition(tcp, cs.TCP, cs.KeepTracks)
-	}
-}
-
 const TakeOrReturnLaunchControlRPC = "Sim.TakeOrReturnLaunchControl"
 
 func (sd *dispatcher) TakeOrReturnLaunchControl(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(token); !ok {
+	c := sd.sm.LookupController(token)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		return s.TakeOrReturnLaunchControl(tcp)
 	}
+	return c.sim.TakeOrReturnLaunchControl(c.tcw)
 }
 
 type SetSimRateArgs struct {
@@ -74,11 +59,11 @@ const SetSimRateRPC = "Sim.SetSimRate"
 func (sd *dispatcher) SetSimRate(r *SetSimRateArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(r.ControllerToken); !ok {
+	c := sd.sm.LookupController(r.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		return s.SetSimRate(tcp, r.Rate)
 	}
+	return c.sim.SetSimRate(c.tcw, r.Rate)
 }
 
 type SetLaunchConfigArgs struct {
@@ -91,11 +76,11 @@ const SetLaunchConfigRPC = "Sim.SetLaunchConfig"
 func (sd *dispatcher) SetLaunchConfig(lc *SetLaunchConfigArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(lc.ControllerToken); !ok {
+	c := sd.sm.LookupController(lc.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		return s.SetLaunchConfig(tcp, lc.Config)
 	}
+	return c.sim.SetLaunchConfig(c.tcw, lc.Config)
 }
 
 const TogglePauseRPC = "Sim.TogglePause"
@@ -103,11 +88,13 @@ const TogglePauseRPC = "Sim.TogglePause"
 func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(token); !ok {
+	c := sd.sm.LookupController(token)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		return s.TogglePause(tcp)
 	}
+	c.sim.TogglePause()
+	action := util.Select(c.sim.State.Paused, "paused", "unpaused")
+	return c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has %s the sim", c.tcw, c.initials, action))
 }
 
 const RequestFlightFollowingRPC = "Sim.RequestFlightFollowing"
@@ -115,11 +102,11 @@ const RequestFlightFollowingRPC = "Sim.RequestFlightFollowing"
 func (sd *dispatcher) RequestFlightFollowing(token string, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if _, s, ok := sd.sm.LookupController(token); !ok {
+	c := sd.sm.LookupController(token)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		return s.RequestFlightFollowing()
 	}
+	return c.sim.RequestFlightFollowing()
 }
 
 type TriggerEmergencyArgs struct {
@@ -132,28 +119,27 @@ const TriggerEmergencyRPC = "Sim.TriggerEmergency"
 func (sd *dispatcher) TriggerEmergency(args *TriggerEmergencyArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if _, s, ok := sd.sm.LookupController(args.ControllerToken); !ok {
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		s.TriggerEmergency(args.EmergencyName)
-		return nil
 	}
+	c.sim.TriggerEmergency(args.EmergencyName)
+	return nil
 }
 
 const FastForwardRPC = "Sim.FastForward"
 
-func (sd *dispatcher) FastForward(token string, update *sim.StateUpdate) error {
+func (sd *dispatcher) FastForward(token string, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(token); !ok {
+	c := sd.sm.LookupController(token)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.FastForward(tcp)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	c.sim.FastForward()
+	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has fast-forwarded the sim", c.tcw, c.initials))
+	c.GetStateUpdate(update)
+	return nil
 }
 
 type AssociateFlightPlanArgs struct {
@@ -164,18 +150,18 @@ type AssociateFlightPlanArgs struct {
 
 const AssociateFlightPlanRPC = "Sim.AssociateFlightPlan"
 
-func (sd *dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(it.ControllerToken); !ok {
+	c := sd.sm.LookupController(it.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.AssociateFlightPlan(it.Callsign, it.FlightPlanSpecifier)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.AssociateFlightPlan(c.tcw, it.Callsign, it.FlightPlanSpecifier)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type ActivateFlightPlanArgs struct {
@@ -187,18 +173,18 @@ type ActivateFlightPlanArgs struct {
 
 const ActivateFlightPlanRPC = "Sim.ActivateFlightPlan"
 
-func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(af.ControllerToken); !ok {
+	c := sd.sm.LookupController(af.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.ActivateFlightPlan(tcp, af.TrackCallsign, af.FpACID, af.FlightPlanSpecifier)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.ActivateFlightPlan(c.tcw, af.TrackCallsign, af.FpACID, af.FlightPlanSpecifier)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type CreateFlightPlanArgs struct {
@@ -208,18 +194,18 @@ type CreateFlightPlanArgs struct {
 
 const CreateFlightPlanRPC = "Sim.CreateFlightPlan"
 
-func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(cfp.ControllerToken); !ok {
+	c := sd.sm.LookupController(cfp.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.CreateFlightPlan(tcp, cfp.FlightPlanSpecifier)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.CreateFlightPlan(c.tcw, cfp.FlightPlanSpecifier)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type ModifyFlightPlanArgs struct {
@@ -230,18 +216,18 @@ type ModifyFlightPlanArgs struct {
 
 const ModifyFlightPlanRPC = "Sim.ModifyFlightPlan"
 
-func (sd *dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(mfp.ControllerToken); !ok {
+	c := sd.sm.LookupController(mfp.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.ModifyFlightPlan(tcp, mfp.ACID, mfp.FlightPlanSpecifier)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.ModifyFlightPlan(c.tcw, mfp.ACID, mfp.FlightPlanSpecifier)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type AircraftSpecifier struct {
@@ -258,18 +244,18 @@ type DeleteFlightPlanArgs ACIDSpecifier
 
 const DeleteFlightPlanRPC = "Sim.DeleteFlightPlan"
 
-func (sd *dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(dt.ControllerToken); !ok {
+	c := sd.sm.LookupController(dt.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.DeleteFlightPlan(tcp, dt.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.DeleteFlightPlan(c.tcw, dt.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type RepositionTrackArgs struct {
@@ -281,136 +267,136 @@ type RepositionTrackArgs struct {
 
 const RepositionTrackRPC = "Sim.RepositionTrack"
 
-func (sd *dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(rt.ControllerToken); !ok {
+	c := sd.sm.LookupController(rt.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.RepositionTrack(tcp, rt.ACID, rt.Callsign, rt.Position)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.RepositionTrack(c.tcw, rt.ACID, rt.Callsign, rt.Position)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type HandoffArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	ToTCP           string
+	ToPosition      sim.ControllerPosition
 }
 
 const HandoffTrackRPC = "Sim.HandoffTrack"
 
-func (sd *dispatcher) HandoffTrack(h *HandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) HandoffTrack(h *HandoffArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(h.ControllerToken); !ok {
+	c := sd.sm.LookupController(h.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.HandoffTrack(tcp, h.ACID, h.ToTCP)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.HandoffTrack(c.tcw, h.ACID, h.ToPosition)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 const RedirectHandoffRPC = "Sim.RedirectHandoff"
 
-func (sd *dispatcher) RedirectHandoff(h *HandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RedirectHandoff(h *HandoffArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(h.ControllerToken); !ok {
+	c := sd.sm.LookupController(h.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.RedirectHandoff(tcp, h.ACID, h.ToTCP)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.RedirectHandoff(c.tcw, h.ACID, h.ToPosition)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 const AcceptRedirectedHandoffRPC = "Sim.AcceptRedirectedHandoff"
 
-func (sd *dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
+	c := sd.sm.LookupController(po.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.AcceptRedirectedHandoff(tcp, po.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.AcceptRedirectedHandoff(c.tcw, po.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type AcceptHandoffArgs ACIDSpecifier
 
 const AcceptHandoffRPC = "Sim.AcceptHandoff"
 
-func (sd *dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(ah.ControllerToken); !ok {
+	c := sd.sm.LookupController(ah.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.AcceptHandoff(tcp, ah.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.AcceptHandoff(c.tcw, ah.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type CancelHandoffArgs ACIDSpecifier
 
 const CancelHandoffRPC = "Sim.CancelHandoff"
 
-func (sd *dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(ch.ControllerToken); !ok {
+	c := sd.sm.LookupController(ch.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.CancelHandoff(tcp, ch.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.CancelHandoff(c.tcw, ch.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type PointOutArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	Controller      string
+	ToPosition      sim.ControllerPosition
 }
 
 type ForceQLArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	Controller      string
+	ToPosition      sim.ControllerPosition
 }
 
 const ForceQLRPC = "Sim.ForceQL"
 
-func (sd *dispatcher) ForceQL(ql *ForceQLArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ForceQL(ql *ForceQLArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(ql.ControllerToken); !ok {
+	c := sd.sm.LookupController(ql.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.ForceQL(tcp, ql.ACID, ql.Controller)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.ForceQL(c.tcw, ql.ACID, ql.ToPosition)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type GlobalMessageArgs struct {
@@ -423,111 +409,111 @@ const GlobalMessageRPC = "Sim.GlobalMessage"
 func (sd *dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(gm.ControllerToken); !ok {
+	c := sd.sm.LookupController(gm.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		return s.GlobalMessage(tcp, gm.Message)
 	}
+	return c.sim.GlobalMessage(c.tcw, gm.Message)
 }
 
 const PointOutRPC = "Sim.PointOut"
 
-func (sd *dispatcher) PointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) PointOut(po *PointOutArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
+	c := sd.sm.LookupController(po.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.PointOut(tcp, po.ACID, po.Controller)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.PointOut(c.tcw, po.ACID, po.ToPosition)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 const AcknowledgePointOutRPC = "Sim.AcknowledgePointOut"
 
-func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
+	c := sd.sm.LookupController(po.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.AcknowledgePointOut(tcp, po.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.AcknowledgePointOut(c.tcw, po.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 const RecallPointOutRPC = "Sim.RecallPointOut"
 
-func (sd *dispatcher) RecallPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RecallPointOut(po *PointOutArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
+	c := sd.sm.LookupController(po.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.RecallPointOut(tcp, po.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.RecallPointOut(c.tcw, po.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 const RejectPointOutRPC = "Sim.RejectPointOut"
 
-func (sd *dispatcher) RejectPointOut(po *PointOutArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) RejectPointOut(po *PointOutArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(po.ControllerToken); !ok {
+	c := sd.sm.LookupController(po.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.RejectPointOut(tcp, po.ACID)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.RejectPointOut(c.tcw, po.ACID)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type HeldDepartureArgs AircraftSpecifier
 
 const ReleaseDepartureRPC = "Sim.ReleaseDeparture"
 
-func (sd *dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(hd.ControllerToken); !ok {
+	c := sd.sm.LookupController(hd.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.ReleaseDeparture(tcp, hd.Callsign)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.ReleaseDeparture(c.tcw, hd.Callsign)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type DeleteAircraftArgs AircraftSpecifier
 
 const DeleteAllAircraftRPC = "Sim.DeleteAllAircraft"
 
-func (sd *dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+	c := sd.sm.LookupController(da.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.DeleteAllAircraft(tcp)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.DeleteAllAircraft(c.tcw)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type DeleteAircraftListArgs struct {
@@ -537,16 +523,16 @@ type DeleteAircraftListArgs struct {
 
 const DeleteAircraftRPC = "Sim.DeleteAircraft"
 
-func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+	c := sd.sm.LookupController(da.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.DeleteAircraftSlice(tcp, da.Aircraft)
-		s.GetStateUpdate(tcp, update)
-		return err
 	}
+	err := c.sim.DeleteAircraftSlice(c.tcw, da.Aircraft)
+	c.GetStateUpdate(update)
+	return err
 }
 
 type SendRouteCoordinatesArgs struct {
@@ -556,16 +542,16 @@ type SendRouteCoordinatesArgs struct {
 
 const SendRouteCoordinatesRPC = "Sim.SendRouteCoordinates"
 
-func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(rca.ControllerToken); !ok {
+	c := sd.sm.LookupController(rca.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.SendRouteCoordinates(tcp, rca.ACID)
-		s.GetStateUpdate(tcp, update)
-		return err
 	}
+	err := c.sim.SendRouteCoordinates(c.tcw, rca.ACID)
+	c.GetStateUpdate(update)
+	return err
 }
 
 type FlightPlanDirectArgs struct {
@@ -576,16 +562,17 @@ type FlightPlanDirectArgs struct {
 
 const FlightPlanDirectRPC = "Sim.FlightPlanDirect"
 
-func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(da.ControllerToken); !ok {
+	c := sd.sm.LookupController(da.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.FlightPlanDirect(tcp, da.Fix, da.ACID)
-		s.GetStateUpdate(tcp, update)
-		return err
 	}
+	tcp := c.sim.State.PrimaryPositionForTCW(c.tcw)
+	err := c.sim.FlightPlanDirect(tcp, da.Fix, da.ACID)
+	c.GetStateUpdate(update)
+	return err
 }
 
 type AircraftCommandsArgs struct {
@@ -608,8 +595,8 @@ const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
 func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *AircraftCommandsResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	tcp, s, ok := sd.sm.LookupController(cmds.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(cmds.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
 	}
 
@@ -623,18 +610,18 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	}
 
 	if cmds.Multiple {
-		if err := s.PilotMixUp(tcp, callsign); err != nil {
+		if err := c.sim.PilotMixUp(c.tcw, callsign); err != nil {
 			rewriteError(err)
 		}
 		return nil // don't continue with the commands
-	} else if !cmds.ClickedTrack && s.ShouldTriggerPilotMixUp(callsign) {
-		if err := s.PilotMixUp(tcp, callsign); err != nil {
+	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
+		if err := c.sim.PilotMixUp(c.tcw, callsign); err != nil {
 			rewriteError(err)
 		}
 		return nil // don't continue with the commands
 	}
 
-	execResult := s.RunAircraftControlCommands(tcp, cmds.Callsign, cmds.Commands)
+	execResult := c.sim.RunAircraftControlCommands(c.tcw, cmds.Callsign, cmds.Commands)
 	result.RemainingInput = execResult.RemainingInput
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
@@ -653,12 +640,11 @@ const SetWaypointCommandsRPC = "Sim.SetWaypointCommands"
 func (sd *dispatcher) SetWaypointCommands(args *SetWaypointCommandsArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	tcp, s, ok := sd.sm.LookupController(args.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-
-	return s.SetWaypointCommands(tcp, args.Commands)
+	return c.sim.SetWaypointCommands(c.tcw, args.Commands)
 }
 
 type LaunchAircraftArgs struct {
@@ -672,11 +658,11 @@ const LaunchAircraftRPC = "Sim.LaunchAircraft"
 func (sd *dispatcher) LaunchAircraft(ls *LaunchAircraftArgs, _ *struct{}) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	_, s, ok := sd.sm.LookupController(ls.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(ls.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	s.LaunchAircraft(ls.Aircraft, ls.DepartureRunway)
+	c.sim.LaunchAircraft(ls.Aircraft, ls.DepartureRunway)
 	return nil
 }
 
@@ -693,16 +679,16 @@ const CreateDepartureRPC = "Sim.CreateDeparture"
 func (sd *dispatcher) CreateDeparture(da *CreateDepartureArgs, depAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	_, s, ok := sd.sm.LookupController(da.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(da.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
 	}
 	var ac *sim.Aircraft
 	var err error
 	if da.Rules == av.FlightRulesIFR {
-		ac, err = s.CreateIFRDeparture(da.Airport, da.Runway, da.Category)
+		ac, err = c.sim.CreateIFRDeparture(da.Airport, da.Runway, da.Category)
 	} else {
-		ac, err = s.CreateVFRDeparture(da.Airport)
+		ac, err = c.sim.CreateVFRDeparture(da.Airport)
 	}
 
 	if ac != nil && err == nil {
@@ -722,11 +708,11 @@ const CreateArrivalRPC = "Sim.CreateArrival"
 func (sd *dispatcher) CreateArrival(aa *CreateArrivalArgs, arrAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	_, s, ok := sd.sm.LookupController(aa.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(aa.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	ac, err := s.CreateArrival(aa.Group, aa.Airport)
+	ac, err := c.sim.CreateArrival(aa.Group, aa.Airport)
 	if err == nil {
 		*arrAc = *ac
 	}
@@ -743,11 +729,11 @@ const CreateOverflightRPC = "Sim.CreateOverflight"
 func (sd *dispatcher) CreateOverflight(oa *CreateOverflightArgs, ofAc *sim.Aircraft) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	_, s, ok := sd.sm.LookupController(oa.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(oa.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	ac, err := s.CreateOverflight(oa.Group)
+	ac, err := c.sim.CreateOverflight(oa.Group)
 	if err == nil {
 		*ofAc = *ac
 	}
@@ -762,7 +748,7 @@ type RestrictionAreaArgs struct {
 
 type CreateRestrictionAreaResultArgs struct {
 	Index       int
-	StateUpdate sim.StateUpdate
+	StateUpdate SimStateUpdate
 }
 
 const CreateRestrictionAreaRPC = "Sim.CreateRestrictionArea"
@@ -770,49 +756,49 @@ const CreateRestrictionAreaRPC = "Sim.CreateRestrictionArea"
 func (sd *dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *CreateRestrictionAreaResultArgs) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if tcp, s, ok := sd.sm.LookupController(ra.ControllerToken); !ok {
+	c := sd.sm.LookupController(ra.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else if i, err := s.CreateRestrictionArea(ra.RestrictionArea); err != nil {
-		return err
-	} else {
-		result.Index = i
-		s.GetStateUpdate(tcp, &result.StateUpdate)
-		return nil
 	}
+	i, err := c.sim.CreateRestrictionArea(ra.RestrictionArea)
+	if err != nil {
+		return err
+	}
+	result.Index = i
+	c.GetStateUpdate(&result.StateUpdate)
+	return nil
 }
 
 const UpdateRestrictionAreaRPC = "Sim.UpdateRestrictionArea"
 
-func (sd *dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	tcp, s, ok := sd.sm.LookupController(ra.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(ra.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.UpdateRestrictionArea(ra.Index, ra.RestrictionArea)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.UpdateRestrictionArea(ra.Index, ra.RestrictionArea)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 const DeleteRestrictionAreaRPC = "Sim.DeleteRestrictionArea"
 
-func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *sim.StateUpdate) error {
+func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *SimStateUpdate) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	tcp, s, ok := sd.sm.LookupController(ra.ControllerToken)
-	if !ok {
+	c := sd.sm.LookupController(ra.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		err := s.DeleteRestrictionArea(ra.Index)
-		if err == nil {
-			s.GetStateUpdate(tcp, update)
-		}
-		return err
 	}
+	err := c.sim.DeleteRestrictionArea(ra.Index)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }
 
 type VideoMapsArgs struct {
@@ -837,11 +823,55 @@ const GetAircraftDisplayStateRPC = "Sim.GetAircraftDisplayState"
 func (sd *dispatcher) GetAircraftDisplayState(as *AircraftSpecifier, state *sim.AircraftDisplayState) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	if _, s, ok := sd.sm.LookupController(as.ControllerToken); !ok {
+	c := sd.sm.LookupController(as.ControllerToken)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		var err error
-		*state, err = s.GetAircraftDisplayState(as.Callsign)
-		return err
 	}
+	var err error
+	*state, err = c.sim.GetAircraftDisplayState(as.Callsign)
+	return err
+}
+
+type ConsolidateTCPArgs struct {
+	ControllerToken string
+	ReceivingTCW    sim.TCW
+	SendingTCP      sim.TCP
+	Type            sim.ConsolidationType
+}
+
+const ConsolidateTCPRPC = "Sim.ConsolidateTCP"
+
+func (sd *dispatcher) ConsolidateTCP(args *ConsolidateTCPArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	err := c.sim.ConsolidateTCP(args.ReceivingTCW, args.SendingTCP, args.Type)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
+}
+
+type DeconsolidateTCPArgs struct {
+	ControllerToken string
+	TCP             sim.TCP // TCP to deconsolidate (optional - if empty, deconsolidate user's own TCP)
+}
+
+const DeconsolidateTCPRPC = "Sim.DeconsolidateTCP"
+
+func (sd *dispatcher) DeconsolidateTCP(args *DeconsolidateTCPArgs, update *SimStateUpdate) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	err := c.sim.DeconsolidateTCP(c.tcw, args.TCP)
+	if err == nil {
+		c.GetStateUpdate(update)
+	}
+	return err
 }

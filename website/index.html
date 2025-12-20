@@ -141,6 +141,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#redirecting-handoffs">Redirecting Handoffs</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#terminating-control">Terminating Control</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-pointouts">Point Outs</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#position-consolidation">Position Consolidation</a></li>
 	    </ul>
 	  </li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#track-information">Track Information</a>
@@ -2275,7 +2276,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </p>
 
             <p>Each controller in the terminal environment is responsible for at least one <i>terminal control position</i> (TCP).
-              (A single controller may cover multiple positions when multiple positions have been <i>consolidated</i>.)
+              (A single controller may cover multiple positions when multiple positions have been <a href="#position-consolidation"><i>consolidated</i></a>.)
               Each TCP is identified by three characters:</p>
               <ul>
                 <li>The first character gives the <i>facility</i>; more or less the TRACON or ATCT/TRACON where the position is located.</li>
@@ -2283,9 +2284,15 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <li>Finally, each area is split into <i>sector</i>s; these are denoted by the third character.</li>
               </ul>
             
-            <p>Consider for example the <code>N4P</code> TCP: the <code>N</code> indicates the 
+            <p>Consider for example the <code>N4P</code> TCP: the <code>N</code> indicates the
               N90 (New York) TRACON;  the <code>4</code> is for the fourth area (which is the Newark area)
               of N90; finally, the <code>P</code> is the Yardley sector of the Newark area.</p>
+
+            <p>Controllers interact with the STARS system via a <i>terminal controller workstation</i> (TCW), which
+              consists of a physical display and keyboard. Each TCW has an identifier that corresponds to a single TCP.
+              Normally a TCW is responsible for just that one TCP, but through <a href="#position-consolidation">consolidation</a>,
+              a TCW may be responsible for multiple TCPs. (In many scenarios, a controller will be responsible for
+              multiple TCPs.)</p>
 
             <p>Other controllers, both real and virtual, may be signed in when you're running a <i>vice</i> scenario.
               The list of controllers is available in the "Controllers" drop-down in the scenario information window.
@@ -3028,6 +3035,78 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>An inbound point out can be rejected by entering <code>UN[SLEW]</code>; a flashing "UN" is shown to the right of the datablock
               on the originator's scope in this case.
               </p>
+
+            <h3 id="position-consolidation">Position Consolidation</h3>
+
+            <p>It is possible to change which human controller is responsible for which terminal control positions (TCPs)
+              while a simulation is running&mdash;more specifically, which TCPs a terminal control workstation (TCW)
+              is responsible for. One way this happens is when a new controller connects to a sim at an unoccupied TCW.
+              Another way is through explicit STARS <i>consolidation</i> commands,
+              which allow one TCW (the <i>receiver</i>) takes over the responsibilities
+              of another position (the <i>sender</i>).</p>
+
+            <p>Consolidation operates at the level of terminal controller workstations (TCWs). Each TCW may have a <i>primary</i> TCP
+              (the one that matches its identifier) and may have zero or more <i>secondary</i> TCPs that have been consolidated into it.
+              (Instructors and RPOs may sit at a TCW with no TCPs assigned to it.)
+              The controller at a TCW can control aircraft assigned to any the TCPs it owns, whether primary or secondary.</p>
+
+            <p>There are two types of consolidation:</p>
+              <ul>
+                <li><b>Basic</b>: The receiving TCW takes control of <i>inactive</i> and <i>future</i> flights from the sender.
+                  Inactive flights are flight plans that are not yet associated with a radar track. Future flights are those
+                  that have not yet departed or entered the airspace.</li>
+                <li><b>Full</b>: The receiver takes control of <i>all</i> flights from the sender, including
+                  active flights that are currently being controlled.</li>
+              </ul>
+
+            <p>The following commands are available for consolidation. In these commands, the triangle character (∆)
+              can be entered to specify the current controller's TCW as the receiver. TCPs and TCWs are specified as 1 or 2 characters;
+              if only 1 character (the sector) is given, the current controller's facility (controller subset) is assumed
+              (e.g., a controller at 2G may specify 2K as either "K" or "2K", but must specify 3H as "3H".)</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width:30%">Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]C∆(TCP)</code></td>
+                    <td>Basic consolidation: consolidates inactive and future flights from the specified sender TCP to the current controller's TCW.
+                      Active flights remain at the sender's keyboard until handed off or coasted out.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]C(TCW)(TCP)</code></td>
+                    <td>Basic consolidation: consolidates inactive and future flights from the specified sender TCP to the specified receiver TCW.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]C∆(TCP)+</code></td>
+                    <td>Full consolidation: consolidates all flights (active, inactive, and future) from the specified sender TCP to the controller's TCW.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]C(TCW)(TCP)+</code></td>
+                    <td>Full consolidation: consolidates all flights from the specified sender TCP to the specified receiver TCW.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]C</code></td>
+                    <td>Deconsolidates the current controller's primary TCP, returning it to its default keyboard.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]C(TCP)</code></td>
+                    <td>Deconsolidates the specified secondary TCP, returning it to its default keyboard.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]D+</code></td>
+                    <td>Displays the current consolidation status in the Preview area. Shows which positions are consolidated
+                      and under which primary position. Basic consolidations are indicated with an asterisk (*) prefix.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>When positions are consolidated, the receiver's TCW gains responsibility for aircraft assigned to the sender TCP.
+              The receiver controller sees and controls these aircraft alongside those assigned to their primary TCP.
+              Note that aircraft tracks remain assigned to their original TCP; if the sender TCP is later deconsolidated
+              (returned to its own TCW), those tracks will be controlled by whoever is at the sender's TCW.</p>
 
           </section>
 

@@ -52,8 +52,7 @@ var (
 
 		newReleaseDialogChan chan *NewReleaseModalClient
 
-		launchControlWindow  *LaunchControlWindow
-		missingPrimaryDialog *ModalDialogBox
+		launchControlWindow *LaunchControlWindow
 
 		// Scenario routes to draw on the scope
 		showSettings      bool
@@ -133,11 +132,6 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 	} else {
 		ui.activeModalDialogs = append(ui.activeModalDialogs, d)
 	}
-}
-
-func uiCloseModalDialog(d *ModalDialogBox) {
-	ui.activeModalDialogs = util.FilterSliceInPlace(ui.activeModalDialogs,
-		func(m *ModalDialogBox) bool { return m != d })
 }
 
 func uiShowConnectDialog(mgr *client.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
@@ -294,8 +288,6 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.showScenarioInfo {
 			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
 		}
-
-		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
 
 		if ui.showLaunchControl {
 			if ui.launchControlWindow == nil {
@@ -474,7 +466,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 	next := ModalDialogButton{
 		text:     c.simConfig.UIButtonText(),
-		disabled: c.simConfig.OkDisabled(),
+		disabled: c.simConfig.OkDisabled(c.config),
 		action: func() bool {
 			if c.simConfig.ShowRatesWindow() {
 				client := &RatesModalClient{
@@ -485,7 +477,7 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
 			} else {
-				c.simConfig.displayError = c.simConfig.Start()
+				c.simConfig.displayError = c.simConfig.Start(c.config)
 				return c.simConfig.displayError == nil
 			}
 		},
@@ -532,9 +524,9 @@ func (r *RatesModalClient) Buttons() []ModalDialogButton {
 
 	ok := ModalDialogButton{
 		text:     "Create",
-		disabled: r.connectClient.simConfig.OkDisabled(),
+		disabled: r.connectClient.simConfig.OkDisabled(r.connectClient.config),
 		action: func() bool {
-			r.connectClient.simConfig.displayError = r.connectClient.simConfig.Start()
+			r.connectClient.simConfig.displayError = r.connectClient.simConfig.Start(r.connectClient.config)
 			return r.connectClient.simConfig.displayError == nil
 		},
 	}
@@ -1297,53 +1289,6 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	}
 
 	imgui.PopFont() // regular font
-}
-
-type MissingPrimaryModalClient struct {
-	mgr    *client.ConnectionManager
-	client *client.ControlClient
-}
-
-func (mp *MissingPrimaryModalClient) Title() string {
-	return "Missing Primary Controller"
-}
-
-func (mp *MissingPrimaryModalClient) Opening() {}
-
-func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Sign in to " + string(mp.client.State.PrimaryController), action: func() bool {
-		err := mp.client.ChangeControlPosition(string(mp.client.State.PrimaryController), true)
-		return err == nil
-	}})
-	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
-		mp.mgr.Disconnect()
-		uiCloseModalDialog(ui.missingPrimaryDialog)
-		return true
-	}})
-	return b
-}
-
-func (mp *MissingPrimaryModalClient) Draw() int {
-	imgui.Text("The primary controller, " + string(mp.client.State.PrimaryController) + ", is not signed in.\nThe simulation will be paused until that position is covered.")
-	return -1
-}
-
-func uiDrawMissingPrimaryDialog(mgr *client.ConnectionManager, c *client.ControlClient, p platform.Platform) {
-	if _, ok := c.State.Controllers[c.State.PrimaryController]; ok {
-		if ui.missingPrimaryDialog != nil {
-			uiCloseModalDialog(ui.missingPrimaryDialog)
-			ui.missingPrimaryDialog = nil
-		}
-	} else {
-		if ui.missingPrimaryDialog == nil {
-			ui.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{
-				mgr:    mgr,
-				client: c,
-			}, p)
-			uiShowModalDialog(ui.missingPrimaryDialog, true)
-		}
-	}
 }
 
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform) {

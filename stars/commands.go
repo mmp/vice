@@ -202,17 +202,16 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 		input = input[1:]
 	}
 
-	instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
 	if len(input) > 0 && input[0] == sp.TgtGenKey { // [TGT GEN]
 		sp.setCommandMode(ctx, CommandModeTargetGen)
-		if !instructorRPO {
+		if !ctx.TCWIsPrivileged(ctx.UserTCW) {
 			ctx.Client.HoldRadioTransmissions()
 		}
 		input = input[1:]
 	}
 
-	if !instructorRPO && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
-		if input != "" {
+	if sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
+		if !ctx.TCWIsPrivileged(ctx.UserTCW) && input != "" {
 			// As long as text is being entered, hold radio transmissions
 			// for the coming few seconds.
 			ctx.Client.HoldRadioTransmissions()
@@ -926,7 +925,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 	} else {
 		// Non ARTCC airspace-awareness handoffs
 		if lc == 1 { // Must be the same sector.
-			userController := *ctx.Client.State.Controllers[ctx.UserTCP]
+			userController := *ctx.UserController()
 
 			for _, control := range ctx.Client.State.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
 				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)

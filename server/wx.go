@@ -158,10 +158,10 @@ func (r *RPCProvider) GetMETAR(airports []string) (map[string]wx.METARSOA, error
 	return m, nil
 }
 
-func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Time, error) {
+func (r *RPCProvider) GetPrecipURL(facility string, t time.Time) (string, time.Time, error) {
 	args := PrecipURLArgs{
-		TRACON: tracon,
-		Time:   t,
+		Facility: facility,
+		Time:     t,
 	}
 	var result PrecipURL
 	if err := r.callWithTimeout(GetPrecipURLRPC, args, &result); err != nil {
@@ -170,9 +170,9 @@ func (r *RPCProvider) GetPrecipURL(tracon string, t time.Time) (string, time.Tim
 	return result.URL, result.NextTime, nil
 }
 
-func (r *RPCProvider) GetAtmosGrid(tracon string, t time.Time, primaryAirport string) (atmos *wx.AtmosByPointSOA, time time.Time, nextTime time.Time, err error) {
+func (r *RPCProvider) GetAtmosGrid(facility string, t time.Time, primaryAirport string) (atmos *wx.AtmosByPointSOA, time time.Time, nextTime time.Time, err error) {
 	args := GetAtmosArgs{
-		TRACON:         tracon,
+		Facility:       facility,
 		Time:           t,
 		PrimaryAirport: primaryAirport,
 	}

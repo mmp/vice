@@ -136,7 +136,7 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			return strconv.Itoa(fp.AircraftCount)
 		},
 		"OWNER": func(fp *sim.NASFlightPlan) string {
-			return fmt.Sprintf("%3s", fp.TrackingController)
+			return fmt.Sprintf("%3s", ctx.ResolveController(fp.TrackingController))
 		},
 		"REQ_ALT": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%03d", fp.RequestedAltitude/100)
@@ -195,7 +195,8 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2
 	}
 
 	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor)
-	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
+	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) &&
+		!ctx.TCWIsPrivileged(ctx.UserTCW) {
 		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
 	}
 
@@ -656,6 +657,24 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		newline()
 	}
 
+	if filter.All || filter.Consolidation {
+		// Display consolidation status per STARS manual 2-81
+		// Format: TCW CON: primary secondary secondary...
+		// Only show if the TCW actually owns positions (has a primary)
+		if cons := ctx.Client.State.GetUserConsolidation(); cons != nil && cons.PrimaryTCP != "" && len(cons.SecondaryTCPs) > 0 {
+			text := string(ctx.UserTCW) + " CON: " + string(cons.PrimaryTCP)
+			for _, sec := range cons.SecondaryTCPs {
+				prefix := ""
+				if sec.Type == sim.ConsolidationBasic {
+					prefix = "*"
+				}
+				text += " " + prefix + string(sec.TCP)
+			}
+			pw = td.AddText(text, pw, listStyle)
+			newline()
+		}
+	}
+
 	if filter.All || filter.DisabledTerminal {
 		// TODO: others?
 		if ps.CRDA.Disabled {
@@ -772,8 +791,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 				return false
 			}
 
-			// TODO: handle consolidation, etc.
-			if ctx.UserControlsPosition(fp.TrackingController) {
+			if ctx.UserOwnsFlightPlan(fp) {
 				return true
 			}
 
@@ -785,8 +803,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, s
 				return false
 			}
 
-			ctrl := ctx.Client.State.ResolveController(fp.InboundHandoffController)
-			return ctx.UserControlsPosition(ctrl)
+			return ctx.UserControlsPosition(fp.InboundHandoffController)
 		})
 
 	// 2-92: default sort is by ACID
@@ -1107,7 +1124,7 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, paneExtent math.Exte
 			for line.Len() < 16 {
 				line.WriteByte(' ')
 			}
-			line.WriteString(string(ctx.UserTCP))
+			line.WriteString(string(ctx.UserPrimaryPosition()))
 		}
 		lines = append(lines, line.String())
 	}
@@ -1193,9 +1210,13 @@ func (sp *STARSPane) drawSignOnList(ctx *panes.Context, paneExtent math.Extent2D
 		return math.Extent2D{}
 	}
 
-	if ctrl := ctx.Client.State.Controllers[ctx.UserTCP]; ctrl != nil {
+	if ctrl := ctx.UserController(); ctrl != nil {
 		signOnTime := ctx.Client.SessionStats.SignOnTime
-		s := string(ctx.UserTCP) + " " + signOnTime.UTC().Format("1504") // TODO: initials
+		initials := ctx.Client.SessionStats.Initials
+		if initials != "" {
+			initials = " " + initials
+		}
+		s := string(ctx.UserTCW) + initials + " " + signOnTime.UTC().Format("1504")
 		return sp.drawListText(ctx, paneExtent, &ps.SignOnList.Position, s,
 			style, td, "SIGN ON (TS)", ld)
 	}
@@ -1250,7 +1271,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		// deleted from the list by the controller.
 		rel := util.FilterSlice(releaseDepartures,
 			func(dep sim.ReleaseDeparture) bool {
-				if !ctx.UserControlsPosition(ctx.Client.State.ResolveController(dep.DepartureController)) {
+				if !ctx.UserControlsPosition(dep.DepartureController) {
 					return false
 				}
 

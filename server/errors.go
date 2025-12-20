@@ -18,12 +18,13 @@ var (
 	ErrInvalidCommandSyntax      = errors.New("Invalid command syntax")
 	ErrInvalidControllerToken    = errors.New("Invalid controller token")
 	ErrInvalidPassword           = errors.New("Invalid password")
-	ErrInvalidSSimConfiguration  = errors.New("Invalid SimConfiguration")
+	ErrInvalidSimConfiguration   = errors.New("Invalid SimConfiguration")
 	ErrNoNamedSim                = errors.New("No Sim with that name")
 	ErrNoSimForControllerToken   = errors.New("No Sim running for controller token")
 	ErrRPCTimeout                = errors.New("RPC call timed out")
 	ErrRPCVersionMismatch        = errors.New("Client and server RPC versions don't match")
 	ErrServerDisconnected        = errors.New("Server disconnected")
+	ErrTCWAlreadyOccupied        = errors.New("TCW is already occupied")
 	ErrWeatherUnavailable        = errors.New("Unable to reach weather server")
 )
 
@@ -71,6 +72,9 @@ var errorStringToError = map[string]error{
 	sim.ErrTrackIsBeingHandedOff.Error():        sim.ErrTrackIsBeingHandedOff,
 	sim.ErrTrackIsNotActive.Error():             sim.ErrTrackIsNotActive,
 	nav.ErrUnableCommand.Error():                nav.ErrUnableCommand,
+	sim.ErrTCPAlreadyConsolidated.Error():       sim.ErrTCPAlreadyConsolidated,
+	sim.ErrTCPNotConsolidated.Error():           sim.ErrTCPNotConsolidated,
+	sim.ErrTCWNotFound.Error():                  sim.ErrTCWNotFound,
 	sim.ErrUnknownAircraftType.Error():          sim.ErrUnknownAircraftType,
 	nav.ErrUnknownApproach.Error():              nav.ErrUnknownApproach,
 	sim.ErrUnknownController.Error():            sim.ErrUnknownController,
@@ -83,12 +87,13 @@ var errorStringToError = map[string]error{
 	ErrInvalidCommandSyntax.Error():      ErrInvalidCommandSyntax,
 	ErrInvalidControllerToken.Error():    ErrInvalidControllerToken,
 	ErrInvalidPassword.Error():           ErrInvalidPassword,
-	ErrInvalidSSimConfiguration.Error():  ErrInvalidSSimConfiguration,
+	ErrInvalidSimConfiguration.Error():   ErrInvalidSimConfiguration,
 	ErrNoNamedSim.Error():                ErrNoNamedSim,
 	ErrNoSimForControllerToken.Error():   ErrNoSimForControllerToken,
 	ErrRPCTimeout.Error():                ErrRPCTimeout,
 	ErrRPCVersionMismatch.Error():        ErrRPCVersionMismatch,
 	ErrServerDisconnected.Error():        ErrServerDisconnected,
+	ErrTCWAlreadyOccupied.Error():        ErrTCWAlreadyOccupied,
 }
 
 func TryDecodeError(e error) error {

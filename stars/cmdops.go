@@ -28,16 +28,17 @@ func init() {
 		}
 
 		fp := trk.FlightPlan
-		control := sp.lookupControllerForId(ctx, tcp, fp.ACID)
-		if control == nil {
+		ctrl := sp.lookupControllerForId(ctx, tcp, fp.ACID)
+		if ctrl == nil {
 			return ErrSTARSIllegalPosition
 		}
 
 		// If handoff is in progress TO user, redirect it instead
+		// Pass the original targetTCP so HandoffTrackController records the actual target position
 		if ctx.UserControlsPosition(fp.HandoffController) || ctx.UserControlsPosition(fp.RedirectedHandoff.RedirectedTo) {
-			ctx.Client.RedirectHandoff(fp.ACID, string(control.Id()), func(err error) { sp.displayError(err, ctx, "") })
+			ctx.Client.RedirectHandoff(fp.ACID, sim.TCP(ctrl.PositionId()), func(err error) { sp.displayError(err, ctx, "") })
 		} else {
-			ctx.Client.HandoffTrack(fp.ACID, string(control.Id()), func(err error) { sp.displayError(err, ctx, "") })
+			ctx.Client.HandoffTrack(fp.ACID, sim.TCP(ctrl.PositionId()), func(err error) { sp.displayError(err, ctx, "") })
 		}
 
 		return nil
@@ -596,7 +597,7 @@ func init() {
 	// 5.4.8 Delete a TCP's flight plans (p. 5-86)
 	registerCommand(CommandModeTerminateControl, "ALL", func(sp *STARSPane, ctx *panes.Context) {
 		for _, trk := range sp.visibleTracks {
-			if (trk.IsAssociated() || trk.IsUnsupportedDB()) && ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
+			if (trk.IsAssociated() || trk.IsUnsupportedDB()) && ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 				ctx.Client.DeleteFlightPlan(trk.FlightPlan.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			}
 		}
@@ -1010,7 +1011,7 @@ func init() {
 
 func associateFlightPlan(sp *STARSPane, ctx *panes.Context, callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
-		spec.TrackingController.Set(string(ctx.UserTCP))
+		spec.TrackingController.Set(ctx.UserPrimaryPosition())
 	}
 	if !spec.CoordinationTime.IsSet {
 		spec.CoordinationTime.Set(ctx.Now)
@@ -1030,7 +1031,7 @@ func associateFlightPlan(sp *STARSPane, ctx *panes.Context, callsign av.ADSBCall
 
 func createFlightPlan(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
 	if !spec.TrackingController.IsSet {
-		spec.TrackingController.Set(string(ctx.UserTCP))
+		spec.TrackingController.Set(ctx.UserPrimaryPosition())
 	}
 	if !spec.CoordinationTime.IsSet {
 		spec.CoordinationTime.Set(ctx.Now)

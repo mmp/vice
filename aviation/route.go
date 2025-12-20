@@ -33,8 +33,8 @@ type Waypoint struct {
 	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                     bool                 `json:"nopt,omitempty"`
 	HumanHandoff             bool                 `json:"human_handoff,omitempty"` // Handoff to human controller
-	HandoffController        string               `json:"tcp_handoff,omitempty"`   // Controller position for handoff
-	PointOut                 string               `json:"pointout,omitempty"`
+	HandoffController        ControllerPosition   `json:"tcp_handoff,omitempty"`   // Controller position for handoff
+	PointOut                 ControllerPosition   `json:"pointout,omitempty"`
 	ClearApproach            bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver                  bool                 `json:"flyover,omitempty"`
 	Delete                   bool                 `json:"delete,omitempty"`
@@ -90,10 +90,10 @@ func (wp Waypoint) LogValue() slog.Value {
 		attrs = append(attrs, slog.Bool("human_handoff", wp.HumanHandoff))
 	}
 	if wp.HandoffController != "" {
-		attrs = append(attrs, slog.String("tcp_handoff", wp.HandoffController))
+		attrs = append(attrs, slog.String("tcp_handoff", string(wp.HandoffController)))
 	}
 	if wp.PointOut != "" {
-		attrs = append(attrs, slog.String("pointout", wp.PointOut))
+		attrs = append(attrs, slog.String("pointout", string(wp.PointOut)))
 	}
 	if wp.ClearApproach {
 		attrs = append(attrs, slog.Bool("clear_approach", wp.ClearApproach))
@@ -215,10 +215,10 @@ func (wa WaypointArray) Encode() string {
 			s += "/ho"
 		}
 		if w.HandoffController != "" {
-			s += "/ho" + w.HandoffController
+			s += "/ho" + string(w.HandoffController)
 		}
 		if w.PointOut != "" {
-			s += "/po" + w.PointOut
+			s += "/po" + string(w.PointOut)
 		}
 		if w.ClearApproach {
 			s += "/clearapp"
@@ -333,7 +333,7 @@ func (wa WaypointArray) RouteString() string {
 	return strings.Join(r, " ")
 }
 
-func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller, checkScratchpads func(string) bool) {
+func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[ControllerPosition]*Controller, checkScratchpads func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	wa.checkBasics(e, controllers, checkScratchpads)
@@ -367,7 +367,7 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[stri
 	}
 }
 
-func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller, checkScratchpad func(string) bool) {
+func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[ControllerPosition]*Controller, checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	haveHO := false
@@ -389,15 +389,17 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 
 		if wp.PointOut != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == ControllerPosition(wp.PointOut) }) {
+				func(_ ControllerPosition, ctrl *Controller) bool {
+					return ctrl.PositionId() == wp.PointOut
+				}) {
 				e.ErrorString("No controller found with id %q for point out", wp.PointOut)
 			}
 		}
 
 		if wp.HandoffController != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool {
-					return ctrl.Id() == ControllerPosition(wp.HandoffController)
+				func(_ ControllerPosition, ctrl *Controller) bool {
+					return ctrl.PositionId() == ControllerPosition(wp.HandoffController)
 				}) {
 				e.ErrorString("No controller found with id %q for handoff", wp.HandoffController)
 			}
@@ -406,7 +408,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 		if wp.HumanHandoff {
 			haveHO = true
 
-			// Check if any subsequent waypoints have a TCPHandoff
+			// Check if any subsequent waypoints have a HandoffController
 			for _, wfut := range wa[i:] {
 				if wfut.HandoffController != "" {
 					e.ErrorString("Cannot have handoff to virtual controller after human handoff")
@@ -437,7 +439,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 	}
 }
 
-func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[string]*Controller,
+func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[ControllerPosition]*Controller,
 	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -461,7 +463,7 @@ func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, 
 	}
 }
 
-func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller, approachAssigned bool,
+func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControllerPosition]*Controller, approachAssigned bool,
 	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -480,7 +482,7 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Contr
 	}
 }
 
-func (wa WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[string]*Controller, checkScratchpads func(string) bool) {
+func (wa WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[ControllerPosition]*Controller, checkScratchpads func(string) bool) {
 	wa.checkBasics(e, ctrl, checkScratchpads)
 }
 
@@ -767,7 +769,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				if f == "ho" {
 					wp.HumanHandoff = true
 				} else if strings.HasPrefix(f, "ho") {
-					wp.HandoffController = f[2:]
+					wp.HandoffController = ControllerPosition(f[2:])
 				} else if f == "clearapp" {
 					wp.ClearApproach = true
 				} else if f == "flyover" {
@@ -831,7 +833,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						wp.Shift = float32(shift)
 					}
 				} else if len(f) > 2 && f[:2] == "po" {
-					wp.PointOut = f[2:]
+					wp.PointOut = ControllerPosition(f[2:])
 				} else if strings.HasPrefix(f, "spsp") {
 					wp.PrimaryScratchpad = f[4:]
 				} else if f == "cpsp" {
@@ -1662,7 +1664,7 @@ type Overflight struct {
 	InitialSpeed        float32                 `json:"initial_speed"`
 	AssignedSpeed       float32                 `json:"assigned_speed"`
 	SpeedRestriction    float32                 `json:"speed_restriction"`
-	InitialController   string                  `json:"initial_controller"`
+	InitialController   ControllerPosition      `json:"initial_controller"`
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
 	Description         string                  `json:"description"`
@@ -1676,7 +1678,7 @@ type OverflightAirline struct {
 }
 
 func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[string]*Controller, checkScratchpad func(string) bool,
+	airports map[string]*Airport, controlPositions map[ControllerPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {

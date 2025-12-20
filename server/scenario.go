@@ -37,7 +37,7 @@ type scenarioGroup struct {
 	FixesStrings       util.OrderedMap            `json:"fixes"`
 	Scenarios          map[string]*scenario       `json:"scenarios"`
 	DefaultScenario    string                     `json:"default_scenario"`
-	ControlPositions   map[string]*av.Controller  `json:"control_positions"`
+	ControlPositions   map[sim.TCP]*av.Controller `json:"control_positions"`
 	Airspace           av.Airspace                `json:"airspace"`
 	InboundFlows       map[string]*av.InboundFlow `json:"inbound_flows"`
 	VFRReportingPoints []av.VFRReportingPoint     `json:"vfr_reporting_points"`
@@ -54,24 +54,11 @@ type scenarioGroup struct {
 	FacilityAdaptation sim.FacilityAdaptation `json:"stars_config"`
 }
 
-// jsonConfiguration represents the new JSON configuration format.
-// It is converted to SplitConfigurationSet during post-deserialization.
-type jsonConfiguration struct {
-	Id                   string              `json:"id"`
-	Positions            map[string][]string `json:"positions"`
-	InboundAssignments   map[string]string   `json:"inbound_assignments"`
-	DepartureAssignments map[string]string   `json:"departure_assignments"`
-}
-
 type scenario struct {
-	// New format field - will be converted to legacy format
-	Configuration *jsonConfiguration `json:"configuration"`
+	// ControllerConfiguration defines the consolidation hierarchy for this scenario
+	ControllerConfiguration *sim.ControllerConfiguration `json:"configuration"`
 
-	// Legacy fields - populated from Configuration during post-deserialize
-	SoloController      string                   `json:"-"`
-	SplitConfigurations av.SplitConfigurationSet `json:"-"`
-	DefaultSplit        string                   `json:"-"`
-	VirtualControllers  []string                 `json:"controllers"`
+	VirtualControllers []sim.TCP `json:"controllers"`
 
 	WindSpecifier *wx.WindSpecifier `json:"wind,omitempty"`
 
@@ -81,7 +68,7 @@ type scenario struct {
 	// Temporary backwards compatibility
 	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
-	Airspace map[string][]string `json:"airspace"`
+	Airspace map[sim.TCP][]string `json:"airspace"`
 
 	DepartureRunways []sim.DepartureRunway `json:"departure_runways,omitempty"`
 	ArrivalRunways   []sim.ArrivalRunway   `json:"arrival_runways,omitempty"`
@@ -92,146 +79,6 @@ type scenario struct {
 	DefaultMaps     []string      `json:"default_maps"`
 	DefaultMapGroup string        `json:"default_map_group" scope:"eram"`
 	VFRRateScale    *float32      `json:"vfr_rate_scale"`
-}
-
-// convertConfigurationToLegacy converts the new JSON configuration format to the
-// legacy SplitConfigurationSet/SplitConfiguration/MultiUserController format.
-// It must be called after rewriteControllers has run, so sg.ControlPositions is keyed by TCP.
-func (s *scenario) convertConfigurationToLegacy(sg *scenarioGroup, e *util.ErrorLogger) {
-	if s.Configuration == nil {
-		e.ErrorString("\"configuration\" is required")
-		return
-	}
-
-	// Build a position name -> TCP lookup from the controllers
-	// (Each controller has its original Position stored)
-	positionToTCP := make(map[string]string)
-	for tcp, ctrl := range sg.ControlPositions {
-		positionToTCP[ctrl.Position] = tcp
-	}
-
-	// Helper to convert position name to TCP
-	toTCP := func(pos string) string {
-		if tcp, ok := positionToTCP[pos]; ok {
-			return tcp
-		}
-		// If not found, it might already be a TCP (or invalid)
-		return pos
-	}
-
-	// 1. Find the root position (the one that's a key but never a child)
-	children := make(map[string]bool)
-	for _, childList := range s.Configuration.Positions {
-		for _, child := range childList {
-			children[child] = true
-		}
-	}
-	var rootPosition string
-	for parent := range s.Configuration.Positions {
-		if !children[parent] {
-			if rootPosition != "" {
-				e.ErrorString("multiple root positions found in \"configuration\".\"positions\": %s and %s", rootPosition, parent)
-				return
-			}
-			rootPosition = parent
-		}
-	}
-	if rootPosition == "" {
-		e.ErrorString("no root position found in \"configuration\".\"positions\"")
-		return
-	}
-	s.SoloController = toTCP(rootPosition)
-
-	// 2. Build the SplitConfiguration by reversing the positions tree
-	config := make(av.SplitConfiguration)
-
-	// Add the root as primary
-	config[s.SoloController] = &av.MultiUserController{Primary: true}
-
-	// For each position, find its parent (which becomes the backup)
-	for parent, childList := range s.Configuration.Positions {
-		parentTCP := toTCP(parent)
-		for _, child := range childList {
-			childTCP := toTCP(child)
-			if config[childTCP] == nil {
-				config[childTCP] = &av.MultiUserController{}
-			}
-			config[childTCP].BackupController = parentTCP
-		}
-	}
-
-	// 3. Populate InboundFlows from InboundAssignments
-	// First, collect all inbound flows that have handoffs to human controllers
-	var allInboundFlows []string
-	for flowName := range s.InboundFlowDefaultRates {
-		if flow, ok := sg.InboundFlows[flowName]; ok {
-			// Check if this flow has arrivals or overflights with handoffs
-			hasHandoff := len(flow.Arrivals) > 0
-			if !hasHandoff {
-				// Check if any overflight has a human handoff
-				hasHandoff = slices.ContainsFunc(flow.Overflights, func(of av.Overflight) bool {
-					return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool {
-						return wp.HumanHandoff
-					})
-				})
-			}
-			if hasHandoff {
-				allInboundFlows = append(allInboundFlows, flowName)
-			}
-		}
-	}
-
-	// Apply explicit assignments
-	assignedFlows := make(map[string]bool)
-	for flow, pos := range s.Configuration.InboundAssignments {
-		tcp := toTCP(pos)
-		if config[tcp] == nil {
-			config[tcp] = &av.MultiUserController{}
-		}
-		config[tcp].InboundFlows = append(config[tcp].InboundFlows, flow)
-		assignedFlows[flow] = true
-	}
-
-	// Auto-populate unassigned flows to the primary controller
-	for _, flowName := range allInboundFlows {
-		if !assignedFlows[flowName] {
-			config[s.SoloController].InboundFlows = append(config[s.SoloController].InboundFlows, flowName)
-		}
-	}
-
-	// 4. Populate Departures from DepartureAssignments
-	// First, collect all departure airports that don't have virtual controllers
-	allDepartures := make(map[string]bool)
-	for _, rwy := range s.DepartureRunways {
-		if ap, ok := sg.Airports[rwy.Airport]; ok && ap.DepartureController == "" {
-			allDepartures[rwy.Airport] = true
-		}
-	}
-
-	// Apply explicit assignments
-	assignedDepartures := make(map[string]bool)
-	for dep, pos := range s.Configuration.DepartureAssignments {
-		tcp := toTCP(pos)
-		if config[tcp] == nil {
-			config[tcp] = &av.MultiUserController{}
-		}
-		config[tcp].Departures = append(config[tcp].Departures, dep)
-
-		// Track assigned airports (strip runway/SID if present)
-		airport, _, _ := strings.Cut(dep, "/")
-		assignedDepartures[airport] = true
-	}
-
-	// Auto-populate unassigned departure airports to the primary controller
-	for airport := range allDepartures {
-		if !assignedDepartures[airport] {
-			config[s.SoloController].Departures = append(config[s.SoloController].Departures, airport)
-		}
-	}
-
-	// 5. Create the SplitConfigurationSet with a single "default" split
-	s.SplitConfigurations = av.SplitConfigurationSet{"default": config}
-	s.DefaultSplit = "default"
 }
 
 func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manifest *sim.VideoMapManifest) {
@@ -246,8 +93,14 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.Pop()
 	}
 
+	// Validate configuration
+	if s.ControllerConfiguration == nil {
+		e.ErrorString("\"configuration\" is required")
+	} else {
+		s.ControllerConfiguration.Validate(sg.ControlPositions, e)
+	}
+
 	// Temporary backwards-compatibility for inbound flows
-	// (Must happen before convertConfigurationToLegacy so that it can access InboundFlowDefaultRates)
 	if len(s.ArrivalGroupDefaultRates) > 0 {
 		if len(s.InboundFlowDefaultRates) > 0 {
 			e.ErrorString("cannot specify both \"arrivals\" and \"inbound_rates\"")
@@ -257,21 +110,48 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	// Convert the new configuration format to legacy SplitConfigurations
-	s.convertConfigurationToLegacy(sg, e)
+	// Validate inbound flow assignments
+	if s.ControllerConfiguration != nil {
+		// Helper to check if a flow needs a human assignment:
+		// Either it has /ho waypoints, or it has an initial_controller that's a human position
+		humanPositions := s.ControllerConfiguration.AllPositions()
+		flowNeedsHumanAssignment := func(flow *av.InboundFlow) bool {
+			if flow.HasHumanHandoff() {
+				return true
+			}
+			for _, ctrl := range flow.InitialControllers() {
+				if slices.Contains(humanPositions, sim.TCP(ctrl)) {
+					return true
+				}
+			}
+			return false
+		}
+
+		for flowName := range s.ControllerConfiguration.InboundAssignments {
+			if _, ok := s.InboundFlowDefaultRates[flowName]; !ok {
+				e.ErrorString("inbound_assignments: flow %q is not in \"inbound_rates\"", flowName)
+			} else if flow, ok := sg.InboundFlows[flowName]; ok && !flowNeedsHumanAssignment(flow) {
+				e.ErrorString("inbound_assignments: flow %q has no human handoff and no human initial_controller but is in \"inbound_assignments\"", flowName)
+			}
+		}
+		// Check reverse: every flow with human handoffs or human initial_controller must have an assignment
+		for flowName := range s.InboundFlowDefaultRates {
+			if flow, ok := sg.InboundFlows[flowName]; ok && flowNeedsHumanAssignment(flow) {
+				if _, ok := s.ControllerConfiguration.InboundAssignments[flowName]; !ok {
+					e.ErrorString("inbound flow %q needs human controller but has no assignment in \"inbound_assignments\"", flowName)
+				}
+			}
+		}
+		// departure_assignments validation is done below, after activeAirportSIDs/Runways maps are built
+	}
 
 	for ctrl, vnames := range s.Airspace {
 		e.Push("airspace")
 
-		found := ctrl == s.SoloController
-		// Check multi-controller
-		for _, config := range s.SplitConfigurations {
-			if _, ok := config[ctrl]; ok {
-				found = true
-			}
-		}
+		// Verify controller is in configuration
+		found := s.ControllerConfiguration != nil && slices.Contains(s.ControllerConfiguration.AllPositions(), ctrl)
 		if !found {
-			e.ErrorString("Controller %q not used in in scenario", ctrl)
+			e.ErrorString("Controller %q not used in scenario", ctrl)
 		}
 		for _, vname := range vnames {
 			if _, ok := sg.Airspace.Volumes[vname]; !ok {
@@ -293,19 +173,19 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	})
 
 	// Add controllers to virtual controllers if not present
-	addController := func(tcp string) {
+	addController := func(tcp sim.TCP) {
 		if tcp != "" && !slices.Contains(s.VirtualControllers, tcp) {
 			s.VirtualControllers = append(s.VirtualControllers, tcp)
 		}
 	}
 	addControllersFromWaypoints := func(route []av.Waypoint) {
 		for _, wp := range route {
-			addController(wp.HandoffController)
+			addController(sim.TCP(wp.HandoffController))
 		}
 	}
 	// Make sure all of the controllers used in airspace awareness will be there.
 	for _, aa := range sg.FacilityAdaptation.AirspaceAwareness {
-		addController(aa.ReceivingController)
+		addController(sim.TCP(aa.ReceivingController))
 	}
 
 	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
@@ -372,10 +252,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.Pop()
 	}
 
-	if _, ok := sg.ControlPositions[s.SoloController]; s.SoloController != "" && !ok {
-		e.ErrorString("controller %q for \"solo_controller\" is unknown", s.SoloController)
-	}
-
 	// Figure out which airports/runways and airports/SIDs are used in the scenario.
 	activeAirportSIDs := make(map[string]map[string]interface{})
 	activeAirportRunways := make(map[string]map[string]interface{})
@@ -392,10 +268,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 			if ap.DepartureController != "" {
 				// Make sure it's in the control positions
-				if _, ok := sg.ControlPositions[ap.DepartureController]; !ok {
+				depCtrl := sim.TCP(ap.DepartureController)
+				if _, ok := sg.ControlPositions[depCtrl]; !ok {
 					e.ErrorString("controller %q for \"default_controller\" is unknown", ap.DepartureController)
-				} else if !slices.Contains(s.VirtualControllers, ap.DepartureController) {
-					s.VirtualControllers = append(s.VirtualControllers, ap.DepartureController)
+				} else if !slices.Contains(s.VirtualControllers, depCtrl) {
+					s.VirtualControllers = append(s.VirtualControllers, depCtrl)
 				}
 			} else {
 				// Only check for a human controller to be covering the track if there isn't
@@ -410,9 +287,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 							activeAirportRunways[rwy.Airport] = make(map[string]interface{})
 						}
 						if route.DepartureController != "" {
-							if _, ok := sg.ControlPositions[route.DepartureController]; !ok {
+							routeDepCtrl := sim.TCP(route.DepartureController)
+							if _, ok := sg.ControlPositions[routeDepCtrl]; !ok {
 								e.ErrorString("controller %q for departure route %q is unknown", route.DepartureController, fix)
-							} else if !slices.Contains(s.VirtualControllers, route.DepartureController) {
+							} else if !slices.Contains(s.VirtualControllers, routeDepCtrl) {
 								e.ErrorString("controller %q for departure route %q is not a virtual controller", route.DepartureController, fix)
 							}
 						}
@@ -426,6 +304,56 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.Pop()
 	}
 
+	// Validate departure_assignments - now that we have the activeAirportSIDs and activeAirportRunways maps
+	// Note: Unlike arrivals/overflights, departures are handed to humans by default.
+	// They only stay with virtual controllers if departure_controller is explicitly set.
+	// activeAirportSIDs already filters out airports with departure_controller set.
+	if s.ControllerConfiguration != nil {
+		haveDepartureSIDSpec := false
+		haveDepartureRunwaySpec := false
+
+		for spec := range s.ControllerConfiguration.DepartureAssignments {
+			ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
+			if sids, ok := activeAirportSIDs[ap]; !ok {
+				// Airport not in activeAirportSIDs means either:
+				// 1. It has a virtual DepartureController assigned, or
+				// 2. It's not a valid departure airport
+				if _, ok := activeDepartureAirports[ap]; !ok {
+					e.ErrorString("departure_assignments: airport %q is not departing aircraft in this scenario", ap)
+				}
+				// If it has a virtual controller, we skip it (human assignments don't apply)
+			} else if haveSIDRunway {
+				// If there's something after a slash, make sure it's either a valid SID or runway.
+				_, okSID := sids[sidRunway]
+				_, okRunway := activeAirportRunways[ap][sidRunway]
+				if !okSID && !okRunway {
+					e.ErrorString("departure_assignments: %q at airport %q is neither an active runway nor SID in this scenario", sidRunway, ap)
+				}
+
+				haveDepartureSIDSpec = haveDepartureSIDSpec || okSID
+				haveDepartureRunwaySpec = haveDepartureRunwaySpec || okRunway
+				if haveDepartureSIDSpec && haveDepartureRunwaySpec {
+					e.ErrorString("departure_assignments: cannot mix runways and SIDs as specifiers")
+				}
+			}
+		}
+
+		// Check reverse: every active departure airport (without a virtual controller) must have an assignment
+		for ap := range activeAirportSIDs {
+			hasAssignment := false
+			for spec := range s.ControllerConfiguration.DepartureAssignments {
+				assignAp, _, _ := strings.Cut(spec, "/")
+				if assignAp == ap {
+					hasAssignment = true
+					break
+				}
+			}
+			if !hasAssignment {
+				e.ErrorString("departure airport %q has no assignment in \"departure_assignments\"", ap)
+			}
+		}
+	}
+
 	// Do any active airports have CRDA?
 	haveCRDA := false
 	for ap := range activeAirports {
@@ -434,20 +362,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			break
 		}
 	}
-	if haveCRDA {
+	if haveCRDA && s.ControllerConfiguration != nil {
 		// Make sure all of the controllers involved have a valid default airport
-		if ctrl, ok := sg.ControlPositions[s.SoloController]; ok {
-			if ctrl.DefaultAirport == "" {
-				e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
-			} else {
-				// Validate that default airport exists
-				if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
-					e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
-				}
-			}
-		}
-		for _, callsign := range s.SplitConfigurations.Splits() {
-			if ctrl, ok := sg.ControlPositions[callsign]; ok {
+		for _, pos := range s.ControllerConfiguration.AllPositions() {
+			if ctrl, ok := sg.ControlPositions[pos]; ok {
 				if ctrl.DefaultAirport == "" {
 					e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
 				} else {
@@ -459,199 +377,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	// Various multi_controllers validations
-	if len(s.SplitConfigurations) > 0 {
-		if len(s.SplitConfigurations) == 1 && s.DefaultSplit == "" {
-			// Set the default split to be the single specified controller
-			// assignment.
-			for s.DefaultSplit = range s.SplitConfigurations {
-			}
-		} else if s.DefaultSplit == "" {
-			e.ErrorString("multiple splits specified in \"multi_controllers\" but no \"default_split\" specified")
-		} else if _, ok := s.SplitConfigurations[s.DefaultSplit]; !ok {
-			e.ErrorString("did not find \"default_split\" %q in \"multi_controllers\" splits", s.DefaultSplit)
-		}
-	}
-	for name, controllers := range s.SplitConfigurations {
-		primaryController := ""
-		e.Push("\"multi_controllers\": split \"" + name + "\"")
-
-		haveDepartureSIDSpec, haveDepartureRunwaySpec := false, false
-
-		for callsign, ctrl := range controllers {
-			e.Push(callsign)
-			if ctrl.Primary {
-				if primaryController != "" {
-					e.ErrorString("multiple controllers specified as \"primary\": %s %s",
-						primaryController, callsign)
-				} else {
-					primaryController = callsign
-				}
-			}
-
-			if _, ok := sg.ControlPositions[callsign]; !ok {
-				e.ErrorString("controller %q not defined in the scenario group's \"control_positions\"", callsign)
-			}
-
-			// Make sure any airports claimed for departures are valid
-			for _, airportSID := range ctrl.Departures {
-				ap, sidRunway, haveSIDRunway := strings.Cut(airportSID, "/")
-				if sids, ok := activeAirportSIDs[ap]; !ok {
-					e.ErrorString("airport %q is not departing aircraft in this scenario", ap)
-				} else if haveSIDRunway {
-					// If there's something after a slash, make sure it's
-					// either a valid SID or runway.
-					_, okSID := sids[sidRunway]
-					_, okRunway := activeAirportRunways[ap][sidRunway]
-					if !okSID && !okRunway {
-						e.ErrorString("%q at airport %q is neither an active runway or SID in this scenario", sidRunway, ap)
-					}
-
-					haveDepartureSIDSpec = haveDepartureSIDSpec || okSID
-					haveDepartureRunwaySpec = haveDepartureRunwaySpec || okRunway
-					if haveDepartureSIDSpec && haveDepartureRunwaySpec {
-						e.ErrorString("cannot use both runways and SIDs to specify the departure controller")
-					}
-				}
-			}
-
-			// Make sure all inbound flows are valid. Below we make sure all
-			// included arrivals have a controller.
-			for _, flow := range ctrl.InboundFlows {
-				if _, ok := s.InboundFlowDefaultRates[flow]; !ok {
-					e.ErrorString("inbound flow %q not found in scenario \"inbound_rates\"", flow)
-				} else if f, ok := sg.InboundFlows[flow]; !ok {
-					e.ErrorString("inbound flow %q not found in scenario group \"inbound_flows\"", flow)
-				} else {
-					// Is there a handoff to a human controller?
-					overflightHasHandoff := func(of av.Overflight) bool {
-						return slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff })
-					}
-					if len(f.Arrivals) == 0 && !slices.ContainsFunc(f.Overflights, overflightHasHandoff) {
-						// It's just overflights without handoffs
-						e.ErrorString("no inbound flows in %q have handoffs", flow)
-					}
-				}
-			}
-			e.Pop()
-		}
-		if primaryController == "" {
-			e.ErrorString("No controller in \"multi_controllers\" was specified as \"primary\"")
-		}
-
-		// Make sure each active departure config (airport and possibly
-		// SID or runway) has exactly one controller handling its departures.
-		// Uses the same fallback logic as GetDepartureController: first look
-		// for a specific match, then fall back to airport-only.
-		validateDep := func(active map[string]map[string]interface{}, checkSpec, checkAirport func(ctrl *av.MultiUserController, airport, spec string) bool) {
-			for airport, specs := range active {
-				for spec := range specs {
-					// First check for controllers with specific SID/runway assignments
-					controller := ""
-					for callsign, ctrl := range controllers {
-						if checkSpec(ctrl, airport, spec) {
-							if controller != "" {
-								e.ErrorString("both %s and %s expect to handle %s/%s departures",
-									controller, callsign, airport, spec)
-							}
-							controller = callsign
-						}
-					}
-					// If no specific match, fall back to airport-only entries
-					if controller == "" {
-						for callsign, ctrl := range controllers {
-							if checkAirport(ctrl, airport, spec) {
-								if controller != "" {
-									e.ErrorString("both %s and %s expect to handle %s/%s departures",
-										controller, callsign, airport, spec)
-								}
-								controller = callsign
-							}
-						}
-					}
-					if controller == "" {
-						e.ErrorString("no controller found that is covering %s/%s departures", airport, spec)
-					}
-				}
-			}
-		}
-		if haveDepartureSIDSpec {
-			validateDep(activeAirportSIDs,
-				func(ctrl *av.MultiUserController, airport, spec string) bool {
-					return ctrl.IsDepartureController(airport, "", spec)
-				},
-				func(ctrl *av.MultiUserController, airport, spec string) bool {
-					return ctrl.IsDepartureController(airport, "", "")
-				})
-		} else if haveDepartureRunwaySpec {
-			validateDep(activeAirportRunways,
-				func(ctrl *av.MultiUserController, airport, spec string) bool {
-					return ctrl.IsDepartureController(airport, spec, "")
-				},
-				func(ctrl *av.MultiUserController, airport, spec string) bool {
-					return ctrl.IsDepartureController(airport, "", "")
-				})
-		} else {
-			// Just airports
-			for airport := range activeDepartureAirports {
-				if sg.Airports[airport].DepartureController != "" {
-					// It's covered by a virtual controller
-					continue
-				}
-
-				controller := ""
-				for callsign, ctrl := range controllers {
-					if ctrl.IsDepartureController(airport, "", "") {
-						if controller != "" {
-							e.ErrorString("both %s and %s expect to handle %s departures",
-								controller, callsign, airport)
-						}
-						controller = callsign
-					}
-				}
-				if controller == "" {
-					e.ErrorString("no controller found that is covering %s departures", airport)
-				}
-			}
-		}
-
-		// Make sure all controllers are either the primary or have a path
-		// of backup controllers that eventually ends with the primary.
-		havePathToPrimary := make(map[string]interface{})
-		havePathToPrimary[primaryController] = nil
-		var followPathToPrimary func(callsign string, mc *av.MultiUserController, depth int) bool
-		followPathToPrimary = func(callsign string, mc *av.MultiUserController, depth int) bool {
-			if callsign == "" {
-				return false
-			}
-			if _, ok := havePathToPrimary[callsign]; ok {
-				return true
-			}
-			if depth == 0 || mc.BackupController == "" {
-				return false
-			}
-
-			bmc, ok := controllers[mc.BackupController]
-			if !ok {
-				e.ErrorString("Backup controller %q for %q is unknown",
-					mc.BackupController, callsign)
-				return false
-			}
-
-			if followPathToPrimary(mc.BackupController, bmc, depth-1) {
-				havePathToPrimary[callsign] = nil
-				return true
-			}
-			return false
-		}
-		for callsign, mc := range controllers {
-			if !followPathToPrimary(callsign, mc, 25) {
-				e.ErrorString("controller %q doesn't have a valid backup controller", callsign)
-			}
-		}
-		e.Pop()
-	}
-
 	for name := range util.SortedMap(s.InboundFlowDefaultRates) {
 		e.Push("Inbound flow " + name)
 		// Make sure the inbound flow has been defined
@@ -659,7 +384,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			e.ErrorString("inbound flow not found")
 		} else {
 			for _, ar := range flow.Arrivals {
-				addController(ar.InitialController)
+				addController(sim.TCP(ar.InitialController))
 				addControllersFromWaypoints(ar.Waypoints)
 				for _, rwys := range ar.RunwayWaypoints {
 					for _, rwyWps := range rwys {
@@ -668,7 +393,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				}
 			}
 			for _, of := range flow.Overflights {
-				addController(of.InitialController)
+				addController(sim.TCP(of.InitialController))
 				addControllersFromWaypoints(of.Waypoints)
 			}
 
@@ -710,39 +435,16 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				}
 			}
 
-			// For each multi-controller split, sure some controller covers the
-			// flow if there will be a handoff to a non-virtual controller.
-			hasHandoff := false
-			for _, ar := range flow.Arrivals {
-				if slices.ContainsFunc(ar.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
-					hasHandoff = true
-				}
-			}
-			for _, of := range flow.Overflights {
-				if slices.ContainsFunc(of.Waypoints, func(wp av.Waypoint) bool { return wp.HumanHandoff }) {
-					hasHandoff = true
-				}
-			}
-			if hasHandoff {
-				for split, controllers := range s.SplitConfigurations {
-					e.Push("\"multi_controllers\": split \"" + split + "\"")
-					count := 0
-					for _, mc := range controllers {
-						if slices.Contains(mc.InboundFlows, name) {
-							count++
-						}
-					}
-					if count == 0 {
-						e.ErrorString("no controller in \"multi_controllers\" has %q in their \"inbound_flows\"", name)
-					} else if count > 1 {
-						e.ErrorString("more than one controller in \"multi_controllers\" has this in their \"inbound_flows\"")
-					}
-					e.Pop()
-				}
-			}
 		}
 		e.Pop()
 	}
+
+	// Remove any human-allocatable positions from VirtualControllers.
+	// They may have been added from JSON or from InitialController/HandoffController in routes.
+	humanPositions := s.ControllerConfiguration.AllPositions()
+	s.VirtualControllers = slices.DeleteFunc(s.VirtualControllers, func(tcp sim.TCP) bool {
+		return slices.Contains(humanPositions, tcp)
+	})
 
 	for _, ctrl := range s.VirtualControllers {
 		if _, ok := sg.ControlPositions[ctrl]; !ok {
@@ -816,7 +518,7 @@ var (
 	reFixHeadingDistance = regexp.MustCompile(`^([\w-]{3,})@([\d]{3})/(\d+(\.\d+)?)$`)
 )
 
-func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations map[string]map[string]*Configuration,
+func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[string]map[string]*ScenarioCatalog,
 	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -969,7 +671,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 	}
 
 	for position, ctrl := range sg.ControlPositions {
-		e.Push("Controller " + position)
+		e.Push("Controller " + string(position))
 
 		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
 			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
@@ -1064,47 +766,53 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, simConfigurations 
 		e.Pop()
 	}
 
-	initializeSimConfigurations(sg, simConfigurations, e)
+	initializeSimConfigurations(sg, catalogs, e)
 }
 
 func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	// Grab the original keys before rewriting.
 	for position, ctrl := range sg.ControlPositions {
-		ctrl.Position = position
+		ctrl.Position = string(position)
 	}
 
-	pos := make(map[string]*av.Controller)
+	pos := make(map[sim.TCP]*av.Controller)
 	for _, ctrl := range sg.ControlPositions {
-		id := string(ctrl.Id())
+		id := sim.TCP(ctrl.PositionId())
 		if _, ok := pos[id]; ok {
 			e.ErrorString("%s: TCP / sector_id used for multiple \"control_positions\"", id)
 		}
 		pos[id] = ctrl
 	}
 
-	rewrite := func(s *string) {
+	rewriteString := func(s *string) {
+		if *s == "" {
+			return
+		}
+		if ctrl, ok := sg.ControlPositions[sim.TCP(*s)]; ok {
+			*s = string(ctrl.PositionId())
+		}
+	}
+	rewriteControllerPosition := func(s *sim.ControllerPosition) {
 		if *s == "" {
 			return
 		}
 		if ctrl, ok := sg.ControlPositions[*s]; ok {
-			*s = string(ctrl.Id())
+			*s = sim.TCP(ctrl.PositionId())
 		}
 	}
 	rewriteWaypoints := func(wp av.WaypointArray) {
 		for _, w := range wp {
 			if w.HandoffController != "" {
-				rewrite(&w.HandoffController)
+				rewriteControllerPosition(&w.HandoffController)
 			}
 		}
 	}
 
 	for _, s := range sg.Scenarios {
-		rewrite(&s.SoloController)
-
 		if len(s.Airspace) > 0 {
-			a := make(map[string][]string)
+			a := make(map[sim.TCP][]string)
 			for ctrl, vols := range s.Airspace {
-				rewrite(&ctrl)
+				rewriteControllerPosition(&ctrl)
 				a[ctrl] = vols
 			}
 			s.Airspace = a
@@ -1112,33 +820,46 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 		for _, rwy := range s.DepartureRunways {
 			if ap, ok := sg.Airports[rwy.Airport]; ok {
-				rewrite(&ap.DepartureController)
+				rewriteControllerPosition(&ap.DepartureController)
 			}
 		}
 
-		for name, config := range s.SplitConfigurations {
-			for callsign, ctrl := range config {
-				tcp := callsign
-				rewrite(&tcp)
-				rewrite(&ctrl.BackupController)
-
-				delete(config, callsign)
-				config[tcp] = ctrl
+		// Rewrite Configuration positions
+		if s.ControllerConfiguration != nil {
+			newPositions := make(map[sim.TCP][]sim.TCP)
+			for parent, children := range s.ControllerConfiguration.Positions {
+				rewriteControllerPosition(&parent)
+				newChildren := make([]sim.TCP, len(children))
+				for i, child := range children {
+					c := child
+					rewriteControllerPosition(&c)
+					newChildren[i] = c
+				}
+				newPositions[parent] = newChildren
 			}
-			s.SplitConfigurations[name] = config
+			s.ControllerConfiguration.Positions = newPositions
+
+			for flow, tcp := range s.ControllerConfiguration.InboundAssignments {
+				rewriteControllerPosition(&tcp)
+				s.ControllerConfiguration.InboundAssignments[flow] = tcp
+			}
+			for airport, tcp := range s.ControllerConfiguration.DepartureAssignments {
+				rewriteControllerPosition(&tcp)
+				s.ControllerConfiguration.DepartureAssignments[airport] = tcp
+			}
 		}
 
 		for i := range s.VirtualControllers {
-			rewrite(&s.VirtualControllers[i])
+			rewriteControllerPosition(&s.VirtualControllers[i])
 		}
 	}
 
 	for _, ap := range sg.Airports {
-		rewrite(&ap.DepartureController)
+		rewriteControllerPosition(&ap.DepartureController)
 
 		for _, exitroutes := range ap.DepartureRoutes {
 			for _, route := range exitroutes {
-				rewrite(&route.HandoffController)
+				rewriteControllerPosition(&route.HandoffController)
 				rewriteWaypoints(route.Waypoints)
 			}
 		}
@@ -1155,18 +876,19 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 	fa := &sg.FacilityAdaptation
 	for i := range fa.AirspaceAwareness {
-		rewrite(&fa.AirspaceAwareness[i].ReceivingController)
+		rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
 	}
 	for position, config := range fa.ControllerConfigs {
 		// Rewrite controller
 		delete(fa.ControllerConfigs, position)
-		rewrite(&position)
-		fa.ControllerConfigs[position] = config
+		p := string(position)
+		rewriteString(&p)
+		fa.ControllerConfigs[sim.ControllerPosition(p)] = config
 	}
 
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {
-			rewrite(&flow.Arrivals[i].InitialController)
+			rewriteControllerPosition(&flow.Arrivals[i].InitialController)
 			rewriteWaypoints(flow.Arrivals[i].Waypoints)
 			for _, rwyWps := range flow.Arrivals[i].RunwayWaypoints {
 				for _, wps := range rwyWps {
@@ -1175,7 +897,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			}
 		}
 		for i := range flow.Overflights {
-			rewrite(&flow.Overflights[i].InitialController)
+			rewriteControllerPosition(&flow.Overflights[i].InitialController)
 			rewriteWaypoints(flow.Overflights[i].Waypoints)
 		}
 	}
@@ -1227,7 +949,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 				}
 			}
 
-			if ctrl, ok := sg.ControlPositions[tcp]; !ok {
+			if ctrl, ok := sg.ControlPositions[sim.TCP(tcp)]; !ok {
 				e.ErrorString("Control position %q in \"controller_configs\" not defined in \"control_positions\"", tcp)
 			} else if ctrl.IsExternal() {
 				e.ErrorString("Control position %q in \"controller_configs\" is external and not in this TRACON.", tcp)
@@ -1509,7 +1231,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 				aa.AltitudeRange[0], aa.AltitudeRange[1])
 		}
 
-		if _, ok := sg.ControlPositions[aa.ReceivingController]; !ok {
+		if _, ok := sg.ControlPositions[sim.TCP(aa.ReceivingController)]; !ok {
 			e.ErrorString("%s: controller unknown", aa.ReceivingController)
 		}
 
@@ -1595,7 +1317,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	e.Pop() // stars_config
 }
 
-func initializeSimConfigurations(sg *scenarioGroup, simConfigurations map[string]map[string]*Configuration, e *util.ErrorLogger) {
+func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog, e *util.ErrorLogger) {
 	facility := sg.TRACON
 	if facility == "" {
 		facility = sg.ARTCC
@@ -1607,8 +1329,8 @@ func initializeSimConfigurations(sg *scenarioGroup, simConfigurations map[string
 		}
 	}
 
-	config := &Configuration{
-		ScenarioConfigs:  make(map[string]*SimScenarioConfiguration),
+	catalog := &ScenarioCatalog{
+		Scenarios:        make(map[string]*ScenarioSpec),
 		ControlPositions: sg.ControlPositions,
 		DefaultScenario:  sg.DefaultScenario,
 		Facility:         facility,
@@ -1627,33 +1349,25 @@ func initializeSimConfigurations(sg *scenarioGroup, simConfigurations map[string
 			func(cc *sim.STARSControllerConfig) bool { return len(cc.FlightFollowingAirspace) > 0 })
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
 			scenario.InboundFlowDefaultRates, haveVFRReportingRegions)
-		sc := &SimScenarioConfiguration{
-			SplitConfigurations: scenario.SplitConfigurations,
-			LaunchConfig:        lc,
-			DepartureRunways:    scenario.DepartureRunways,
-			ArrivalRunways:      scenario.ArrivalRunways,
-			PrimaryAirport:      sg.PrimaryAirport,
-			MagneticVariation:   sg.MagneticVariation,
-			WindSpecifier:       scenario.WindSpecifier,
+
+		spec := &ScenarioSpec{
+			ControllerConfiguration: scenario.ControllerConfiguration,
+			LaunchConfig:            lc,
+			DepartureRunways:        scenario.DepartureRunways,
+			ArrivalRunways:          scenario.ArrivalRunways,
+			PrimaryAirport:          sg.PrimaryAirport,
+			MagneticVariation:       sg.MagneticVariation,
+			WindSpecifier:           scenario.WindSpecifier,
 		}
 
-		// All scenarios now have SplitConfigurations (auto-populated if
-		// needed if they were defined as single-controller).
-		var err error
-		sc.SelectedController, err = scenario.SplitConfigurations.GetPrimaryController(scenario.DefaultSplit)
-		if err != nil {
-			e.Error(err)
-		}
-		sc.SelectedSplit = scenario.DefaultSplit
-
-		config.ScenarioConfigs[name] = sc
+		catalog.Scenarios[name] = spec
 	}
 
-	if len(config.ScenarioConfigs) > 0 {
-		if simConfigurations[facility] == nil {
-			simConfigurations[facility] = make(map[string]*Configuration)
+	if len(catalog.Scenarios) > 0 {
+		if catalogs[facility] == nil {
+			catalogs[facility] = make(map[string]*ScenarioCatalog)
 		}
-		simConfigurations[facility][sg.Name] = config
+		catalogs[facility][sg.Name] = catalog
 	}
 }
 
@@ -1699,16 +1413,16 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 //
-// Returns: scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors
+// Returns: scenarioGroups, catalogs, mapManifests, extraScenarioErrors
 // If the extra scenario file has errors, they are returned in extraScenarioErrors
 // and that scenario is not loaded, but execution continues.
 func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string,
-	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*Configuration, map[string]*sim.VideoMapManifest, string) {
+	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*sim.VideoMapManifest, string) {
 	start := time.Now()
 
 	// First load the scenarios.
 	scenarioGroups := make(map[string]map[string]*scenarioGroup)
-	simConfigurations := make(map[string]map[string]*Configuration)
+	catalogs := make(map[string]map[string]*ScenarioCatalog)
 
 	err := util.WalkResources("scenarios", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
 		if err != nil {
@@ -1850,7 +1564,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
 					strings.Join(util.SortedMapKeys(mapManifests), ", "))
 			} else { // if tracon
-				sgroup.PostDeserialize(e, simConfigurations, manifest)
+				sgroup.PostDeserialize(e, catalogs, manifest)
 			}
 
 			e.Pop()
@@ -1872,7 +1586,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			extraE.ErrorString("no manifest for video map %q found. Options: %s", vf,
 				strings.Join(util.SortedMapKeys(mapManifests), ", "))
 		} else {
-			extraScenario.PostDeserialize(&extraE, simConfigurations, manifest)
+			extraScenario.PostDeserialize(&extraE, catalogs, manifest)
 		}
 
 		extraE.Pop()
@@ -1915,7 +1629,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	}
 	lg.Infof("Missing V2 in performance database: %s", strings.Join(missing, ", "))
 
-	return scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors
+	return scenarioGroups, catalogs, mapManifests, extraScenarioErrors
 }
 
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
@@ -1940,14 +1654,14 @@ func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger)
 }
 
 // LookupScenario finds a scenario configuration by TRACON/scenario name
-func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[string]*scenarioGroup, configs map[string]map[string]*Configuration) (*Configuration, *scenarioGroup, error) {
+func LookupScenario(tracon, scenarioName string, scenarioGroups map[string]map[string]*scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog) (*ScenarioCatalog, *scenarioGroup, error) {
 	if groups, ok := scenarioGroups[tracon]; ok {
 		for _, group := range groups {
 			if _, ok := group.Scenarios[scenarioName]; ok {
-				if cfgs, ok := configs[tracon]; ok {
-					for _, cfg := range cfgs {
-						if cfg.ScenarioConfigs[scenarioName] != nil {
-							return cfg, group, nil
+				if facilityCatalogs, ok := catalogs[tracon]; ok {
+					for _, catalog := range facilityCatalogs {
+						if catalog.Scenarios[scenarioName] != nil {
+							return catalog, group, nil
 						}
 					}
 				}
@@ -1987,43 +1701,42 @@ func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.La
 }
 
 // CreateNewSimConfiguration creates a NewSimConfiguration from scenario components
-func CreateNewSimConfiguration(config *Configuration, scenarioGroup *scenarioGroup, scenarioName string) (*sim.NewSimConfiguration, error) {
+func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenarioGroup, scenarioName string) (*sim.NewSimConfiguration, error) {
 	scenario, ok := scenarioGroup.Scenarios[scenarioName]
 	if !ok {
 		return nil, fmt.Errorf("scenario %s not found in group", scenarioName)
 	}
 
-	simConfig := config.ScenarioConfigs[scenarioName]
+	simConfig := catalog.Scenarios[scenarioName]
 	if simConfig == nil {
 		return nil, fmt.Errorf("scenario configuration %s not found", scenarioName)
 	}
 
 	newSimConfig := &sim.NewSimConfiguration{
-		TRACON:             scenarioGroup.TRACON,
-		Description:        scenarioName,
-		LaunchConfig:       CreateLaunchConfig(scenario, scenarioGroup),
-		DepartureRunways:   simConfig.DepartureRunways,
-		ArrivalRunways:     simConfig.ArrivalRunways,
-		PrimaryAirport:     simConfig.PrimaryAirport,
-		Airports:           scenarioGroup.Airports,
-		Fixes:              scenarioGroup.Fixes,
-		VFRReportingPoints: scenarioGroup.VFRReportingPoints,
-		ControlPositions:   scenarioGroup.ControlPositions,
-		PrimaryController:  scenario.SoloController,
-		SignOnPositions:    scenarioGroup.ControlPositions,
-		InboundFlows:       scenarioGroup.InboundFlows,
-		FacilityAdaptation: deep.MustCopy(scenarioGroup.FacilityAdaptation),
-		ReportingPoints:    scenarioGroup.ReportingPoints,
-		MagneticVariation:  scenarioGroup.MagneticVariation,
-		NmPerLongitude:     scenarioGroup.NmPerLongitude,
-		WindSpecifier:      scenario.WindSpecifier,
-		Center:             util.Select(scenario.Center.IsZero(), scenarioGroup.FacilityAdaptation.Center, scenario.Center),
-		Range:              util.Select(scenario.Range == 0, scenarioGroup.FacilityAdaptation.Range, scenario.Range),
-		DefaultMaps:        scenario.DefaultMaps,
-		DefaultMapGroup:    scenario.DefaultMapGroup,
-		Airspace:           scenarioGroup.Airspace,
-		ControllerAirspace: scenario.Airspace,
-		VirtualControllers: scenario.VirtualControllers,
+		Facility:                scenarioGroup.TRACON,
+		Description:             scenarioName,
+		LaunchConfig:            CreateLaunchConfig(scenario, scenarioGroup),
+		DepartureRunways:        simConfig.DepartureRunways,
+		ArrivalRunways:          simConfig.ArrivalRunways,
+		PrimaryAirport:          simConfig.PrimaryAirport,
+		Airports:                scenarioGroup.Airports,
+		Fixes:                   scenarioGroup.Fixes,
+		VFRReportingPoints:      scenarioGroup.VFRReportingPoints,
+		ControlPositions:        scenarioGroup.ControlPositions,
+		ControllerConfiguration: scenario.ControllerConfiguration,
+		InboundFlows:            scenarioGroup.InboundFlows,
+		FacilityAdaptation:      deep.MustCopy(scenarioGroup.FacilityAdaptation),
+		ReportingPoints:         scenarioGroup.ReportingPoints,
+		MagneticVariation:       scenarioGroup.MagneticVariation,
+		NmPerLongitude:          scenarioGroup.NmPerLongitude,
+		WindSpecifier:           scenario.WindSpecifier,
+		Center:                  util.Select(scenario.Center.IsZero(), scenarioGroup.FacilityAdaptation.Center, scenario.Center),
+		Range:                   util.Select(scenario.Range == 0, scenarioGroup.FacilityAdaptation.Range, scenario.Range),
+		DefaultMaps:             scenario.DefaultMaps,
+		DefaultMapGroup:         scenario.DefaultMapGroup,
+		Airspace:                scenarioGroup.Airspace,
+		ControllerAirspace:      scenario.Airspace,
+		VirtualControllers:      scenario.VirtualControllers,
 	}
 
 	return newSimConfig, nil

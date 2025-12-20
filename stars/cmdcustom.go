@@ -157,8 +157,7 @@ func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) e
 		cmds = input
 	}
 
-	instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
-	if ctx.Client.RadioIsActive() && !instructorRPO && cmds != "X" {
+	if ctx.Client.RadioIsActive() && !ctx.TCWIsPrivileged(ctx.UserTCW) && cmds != "X" {
 		// Don't allow issuing commands during pilot transmissions unless
 		// it's an instructor/RPO or the command is "X" to delete an aircraft.
 		return nil
@@ -187,8 +186,7 @@ func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) e
 
 // targetGenClickCommand runs commands on clicked aircraft in target gen mode.
 func targetGenClickCommand(sp *STARSPane, ctx *panes.Context, cmd string, trk *sim.Track) error {
-	instructorRPO := ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP)
-	if ctx.Client.RadioIsActive() && !instructorRPO && cmd != "X" {
+	if ctx.Client.RadioIsActive() && !ctx.TCWIsPrivileged(ctx.UserTCW) && cmd != "X" {
 		// Don't allow issuing commands during pilot transmissions unless
 		// it's an instructor/RPO or the command is "X" to delete an aircraft.
 		return nil

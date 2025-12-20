@@ -182,14 +182,15 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
-			toUs := ctx.UserControlsPosition(sim.ControllerPosition(event.ToController))
+			toUs := ctx.UserControlsPosition(event.ToController)
 
-			if !toUs && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			privObs := ctx.TCWIsPrivileged(ctx.UserTCW) || ctx.TCWIsObserver(ctx.UserTCW)
+			if !toUs && !privObs {
 				break
 			}
 
 			prefix := ""
-			if ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			if privObs {
 				prefix = "[to " + string(event.ToController) + "] "
 			}
 
@@ -215,7 +216,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if !ctx.UserControlsPosition(sim.ControllerPosition(event.FromController)) {
+			if !ctx.UserControlsPosition(event.FromController) {
 				for _, line := range strings.Split(event.WrittenText, "\n") {
 					mp.messages = append(mp.messages, Message{contents: line, global: true})
 				}

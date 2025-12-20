@@ -629,14 +629,14 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	// MVAs
 	mvas := radar.ClientVideoMap{
 		VideoMap: sim.VideoMap{
-			Label:    ss.TRACON + " MVA",
+			Label:    ss.Facility + " MVA",
 			Name:     "ALL MINIMUM VECTORING ALTITUDES",
 			Id:       asIdx,
 			Category: VideoMapProcessingAreas,
 		},
 	}
 	ld := renderer.GetLinesDrawBuilder()
-	for _, mva := range av.DB.MVAs[ss.TRACON] {
+	for _, mva := range av.DB.MVAs[ss.Facility] {
 		ld.AddLineLoop(mva.ExteriorRing)
 		p := math.Extent2DFromPoints(mva.ExteriorRing).Center()
 		ld.AddNumber(p, 0.005, fmt.Sprintf("%d", mva.MinimumLimit/100))
@@ -953,7 +953,7 @@ func (sp *STARSPane) drawTRACONBoundary(ctx *panes.Context, transforms radar.Sco
 		return
 	}
 
-	tracon, ok := av.DB.TRACONs[ctx.Client.State.TRACON]
+	tracon, ok := av.DB.TRACONs[ctx.Client.State.Facility]
 	if !ok {
 		return
 	}

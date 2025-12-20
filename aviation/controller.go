@@ -1,16 +1,8 @@
-// pkg/aviation/controller.go
+// aviation/controller.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package aviation
-
-import (
-	"fmt"
-	"slices"
-	"strings"
-
-	"github.com/mmp/vice/util"
-)
 
 // ControllerPosition identifies a controller position in either STARS or ERAM.
 // For STARS, this is the TCP (Terminal Control Position) like "2K" or "4P".
@@ -28,15 +20,13 @@ type Controller struct {
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
 	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
 	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
-	Instructor         bool
-	RPO                bool
 }
 
 func (c Controller) IsExternal() bool {
 	return c.ERAMFacility || c.FacilityIdentifier != ""
 }
 
-func (c Controller) Id() ControllerPosition {
+func (c Controller) PositionId() ControllerPosition {
 	if c.ERAMFacility {
 		return ControllerPosition(c.SectorID)
 	}
@@ -45,134 +35,4 @@ func (c Controller) Id() ControllerPosition {
 
 func (c Controller) ERAMID() string { // For display
 	return c.FacilityIdentifier + c.SectorID
-}
-
-// split -> config
-type SplitConfigurationSet map[string]SplitConfiguration
-
-// callsign -> controller contig
-type SplitConfiguration map[string]*MultiUserController
-
-type MultiUserController struct {
-	Primary          bool     `json:"primary"`
-	BackupController string   `json:"backup"`
-	Departures       []string `json:"departures"`
-	Arrivals         []string `json:"arrivals"` // TEMPORARY for inbound flows transition
-	InboundFlows     []string `json:"inbound_flows"`
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfigurations
-
-func (sc SplitConfigurationSet) GetConfiguration(split string) (SplitConfiguration, error) {
-	if len(sc) == 1 {
-		// ignore split
-		for _, config := range sc {
-			return config, nil
-		}
-	}
-
-	config, ok := sc[split]
-	if !ok {
-		return nil, fmt.Errorf("%s: split not found", split)
-	}
-	return config, nil
-}
-
-func (sc SplitConfigurationSet) GetPrimaryController(split string) (string, error) {
-	configs, err := sc.GetConfiguration(split)
-	if err != nil {
-		return "", err
-	}
-
-	for callsign, mc := range configs {
-		if mc.Primary {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("No primary controller in split")
-}
-
-func (sc SplitConfigurationSet) Len() int {
-	return len(sc)
-}
-
-func (sc SplitConfigurationSet) Splits() []string {
-	return util.SortedMapKeys(sc)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// SplitConfiguration
-
-// ResolveController takes a controller callsign and returns the signed-in
-// controller that is responsible for that position (possibly just the
-// provided callsign).
-func (sc SplitConfiguration) ResolveController(id string, active func(id string) bool) (string, error) {
-	origId := id
-	i := 0
-	for {
-		if ctrl, ok := sc[id]; !ok {
-			return "", fmt.Errorf("%s: failed to find controller in MultiControllers", id)
-		} else if ctrl.Primary || active(id) {
-			return id, nil
-		} else {
-			id = ctrl.BackupController
-		}
-
-		i++
-		if i == 20 {
-			return "", fmt.Errorf("%s: unable to find controller backup", origId)
-		}
-	}
-}
-
-func (sc SplitConfiguration) GetInboundController(group string) (string, error) {
-	for callsign, ctrl := range sc {
-		if ctrl.IsInboundController(group) {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("%s: couldn't find inbound controller", group)
-}
-
-func (sc SplitConfiguration) GetDepartureController(airport, runway, sid string) (string, error) {
-	// First try to find a controller with a specific SID or runway match
-	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, runway, sid) {
-			return callsign, nil
-		}
-	}
-	// Fall back to airport-only match
-	for callsign, ctrl := range sc {
-		if ctrl.IsDepartureController(airport, "", "") {
-			return callsign, nil
-		}
-	}
-
-	return "", fmt.Errorf("%s/%s: couldn't find departure controller", airport, sid)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// MultiUserController
-
-func (c *MultiUserController) IsDepartureController(ap, rwy, sid string) bool {
-	for _, d := range c.Departures {
-		depAirport, depSIDRwy, ok := strings.Cut(d, "/")
-		if ok { // have a runway or SID
-			if ap == depAirport && (rwy == depSIDRwy || sid == depSIDRwy) {
-				return true
-			}
-		} else { // no runway/SID, so only match airport-only queries
-			if ap == depAirport && rwy == "" && sid == "" {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (c *MultiUserController) IsInboundController(group string) bool {
-	return slices.Contains(c.InboundFlows, group)
 }

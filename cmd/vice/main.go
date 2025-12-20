@@ -157,7 +157,7 @@ func main() {
 		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 
 		// Check emergencies.json
-		sim.LoadEmergencies(&e)
+		loadEmergencies(&e)
 
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
@@ -240,7 +240,7 @@ func main() {
 		}
 
 		var emergencyLogger util.ErrorLogger
-		emergencies := sim.LoadEmergencies(&emergencyLogger)
+		emergencies := loadEmergencies(&emergencyLogger)
 		if emergencyLogger.HaveErrors() {
 			emergencyLogger.PrintErrors(lg)
 			os.Exit(1)
@@ -251,14 +251,18 @@ func main() {
 
 		// Sign on as instructor if waypoint commands are specified
 		instructor := *waypointCommands != ""
-		state, err := s.SignOn(newSimConfig.PrimaryController, instructor, false)
+		rootController, _ := newSimConfig.ControllerConfiguration.RootPosition()
+		state, _, err := s.SignOn(sim.TCW(rootController), s.AllScenarioPositions())
 		if err != nil {
-			lg.Errorf("Failed to sign in primary controller %s: %v", newSimConfig.PrimaryController, err)
+			lg.Errorf("Failed to sign in root controller %s: %v", rootController, err)
 			os.Exit(1)
+		}
+		if instructor {
+			s.SetPrivilegedTCW(sim.TCW(rootController), true)
 		}
 
 		// Apply waypoint commands after signing on
-		s.SetWaypointCommands(newSimConfig.PrimaryController, *waypointCommands)
+		s.SetWaypointCommands(sim.TCW(rootController), *waypointCommands)
 
 		// Check launch configuration
 		fmt.Printf("Departure rates: %v\n", state.LaunchConfig.DepartureRates)
@@ -377,7 +381,7 @@ func main() {
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
-					_, isSTARSSim := av.DB.TRACONs[c.State.TRACON]
+					_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
 
 					// Rebuild the display hierarchy with the appropriate pane
 					config.RebuildDisplayRootForSim(isSTARSSim)
@@ -385,7 +389,7 @@ func main() {
 					// Reactivate the display hierarchy
 					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
 
-					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
+					panes.ResetSim(config.DisplayRoot, c, c.State.State, plat, lg)
 
 					// Apply waypoint commands if specified via command line (only for new clients)
 					if *waypointCommands != "" {
@@ -433,10 +437,10 @@ func main() {
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.
 		if config.Sim != nil && !*resetSim {
-			if client, err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
+			if client, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
-				panes.LoadedSim(config.DisplayRoot, client, client.State, plat, lg)
+				panes.LoadedSim(config.DisplayRoot, client, client.State.State, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
 				// Apply waypoint commands if specified via command line
@@ -461,16 +465,13 @@ func main() {
 			if controlClient == nil {
 				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
-				id := controlClient.State.UserTCP
-				idStr := string(id)
-				if ctrl, ok := controlClient.State.Controllers[id]; ok {
-					idStr += " (" + ctrl.Position + ")"
-				}
+				pos := controlClient.State.GetPositionsForTCW(controlClient.State.UserTCW)
+				posStr := strings.Join(util.MapSlice(pos, func(p sim.ControllerPosition) string { return string(p) }), ", ")
 				stats := controlClient.SessionStats
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: stats.Departures + stats.IntraFacility,
 					TotalArrivals:   stats.Arrivals + stats.IntraFacility,
-					Position:        idStr,
+					Position:        posStr,
 					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)
 			}

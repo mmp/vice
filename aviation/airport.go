@@ -32,8 +32,8 @@ type Airport struct {
 
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
-	DepartureController string `json:"departure_controller"`
-	HoldForRelease      bool   `json:"hold_for_release"`
+	DepartureController ControllerPosition `json:"departure_controller"`
+	HoldForRelease      bool               `json:"hold_for_release"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
 
@@ -185,7 +185,7 @@ func (a *ATPAVolume) GetRect(nmPerLongitude, magneticVariation float32) [4]math.
 }
 
 func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude float32,
-	magneticVariation float32, controlPositions map[string]*Controller, scratchpads map[string]string,
+	magneticVariation float32, controlPositions map[ControllerPosition]*Controller, scratchpads map[string]string,
 	facilityAirports map[string]*Airport, checkScratchpad func(string) bool, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -714,9 +714,9 @@ type ExitRoute struct {
 	Waypoints        WaypointArray `json:"waypoints"`
 	Description      string        `json:"description"`
 	// optional, control position to handoff to at a /ho
-	HandoffController string `json:"handoff_controller"`
+	HandoffController ControllerPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
-	DepartureController string `json:"departure_controller"`
+	DepartureController ControllerPosition `json:"departure_controller"`
 }
 
 type Departure struct {

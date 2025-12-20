@@ -28,9 +28,9 @@ type ConnectionManager struct {
 
 	serverRPCVersionMismatch bool
 
-	lastRemoteSimsUpdate  time.Time
-	updateRemoteSimsCall  *pendingCall
-	updateRemoteSimsError error
+	lastRunningSimsUpdate  time.Time
+	updateRunningSimsCall  *pendingCall
+	updateRunningSimsError error
 
 	// METAR fetch state
 	pendingMETARCall *pendingCall
@@ -78,7 +78,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 					HaveTTS:             cr.HaveTTS,
 					AvailableWXByTRACON: cr.AvailableWXByTRACON,
 					name:                "Local (Single controller)",
-					configs:             cr.Configurations,
+					catalogs:            cr.ScenarioCatalogs,
 					runningSims:         cr.RunningSims,
 				}
 			}
@@ -88,7 +88,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 	return cm, errorLogger, extraScenarioErrors
 }
 
-func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlClient, error) {
+func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.Logger) (*ControlClient, error) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}
@@ -99,13 +99,13 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlC
 	}
 
 	wsAddress := "localhost:" + strconv.Itoa(result.SpeechWSPort)
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 
 	if err := srv.callWithTimeout(server.NewSimRPC, config, &result); err != nil {
@@ -117,7 +117,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
 		return nil
 	}
 }
@@ -125,7 +125,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv
 // handleSuccessfulConnection handles the common logic for setting up a client
 // connection after a successful RPC call to create or join a sim
 func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResult, srv *Server,
-	disableTextToSpeech bool, lg *log.Logger) {
+	disableTextToSpeech bool, initials string, lg *log.Logger) {
 	if cm.client != nil {
 		cm.client.Disconnect()
 	}
@@ -140,7 +140,7 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
 		}
 	}
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 
@@ -179,26 +179,26 @@ func (cm *ConnectionManager) Disconnect() {
 	}
 }
 
-func (cm *ConnectionManager) UpdateRemoteSims() error {
-	if cm.updateRemoteSimsCall != nil && cm.updateRemoteSimsCall.CheckFinished(nil, nil) {
-		cm.updateRemoteSimsCall = nil
-		err := cm.updateRemoteSimsError
-		cm.updateRemoteSimsError = nil
+func (cm *ConnectionManager) UpdateRunningSims() error {
+	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished(nil, nil) {
+		cm.updateRunningSimsCall = nil
+		err := cm.updateRunningSimsError
+		cm.updateRunningSimsError = nil
 		return err
-	} else if time.Since(cm.lastRemoteSimsUpdate) > 2*time.Second &&
-		cm.RemoteServer != nil && cm.updateRemoteSimsCall == nil {
-		cm.lastRemoteSimsUpdate = time.Now()
+	} else if time.Since(cm.lastRunningSimsUpdate) > 2*time.Second &&
+		cm.RemoteServer != nil && cm.updateRunningSimsCall == nil {
+		cm.lastRunningSimsUpdate = time.Now()
 
-		var rs map[string]*server.RemoteSim
-		cm.updateRemoteSimsError = nil
-		cm.updateRemoteSimsCall = makeRPCCall(cm.RemoteServer.Go(server.GetRunningSimsRPC, 0, &rs, nil),
+		var rs map[string]*server.RunningSim
+		cm.updateRunningSimsError = nil
+		cm.updateRunningSimsCall = makeRPCCall(cm.RemoteServer.Go(server.GetRunningSimsRPC, 0, &rs, nil),
 			func(err error) {
 				if err == nil {
 					if cm.RemoteServer != nil {
 						cm.RemoteServer.setRunningSims(rs)
 					}
 				} else {
-					cm.updateRemoteSimsError = err
+					cm.updateRunningSimsError = err
 
 					// nil out the server if we've lost the connection; the
 					// main loop will attempt to reconnect.
@@ -211,7 +211,7 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 	return nil
 }
 
-func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfiguration, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 	if err := srv.callWithTimeout(server.ConnectToSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
@@ -222,7 +222,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfigurati
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
 		return nil
 	}
 }

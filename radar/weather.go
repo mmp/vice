@@ -19,7 +19,7 @@ import (
 // WeatherRadar provides functionality for fetching precipitation data
 // from the server and displaying it in radar scopes.
 type WeatherRadar struct {
-	tracon          string
+	facility        string
 	nextFetchTime   time.Time
 	fetchInProgress bool
 	precipCh        chan *wx.Precip
@@ -270,9 +270,9 @@ func (w *WeatherRadar) Draw(ctx *panes.Context, hist int, intensity float32, con
 	default:
 	}
 
-	traconChanged := w.tracon != ctx.Client.State.TRACON
-	if traconChanged {
-		w.tracon = ctx.Client.State.TRACON
+	facilityChanged := w.facility != ctx.Client.State.Facility
+	if facilityChanged {
+		w.facility = ctx.Client.State.Facility
 		w.fetchInProgress = false
 		w.nextFetchTime = time.Time{}
 		w.cb = [numWxHistory][NumWxLevels]*renderer.CommandBuffer{}

@@ -33,27 +33,27 @@ func init() {
 						// 5.1.10 Accept inbound handoff
 						ctx.Client.AcceptHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
-					} else if ctx.UserControlsPosition(fp.TrackingController) {
+					} else if ctx.UserOwnsFlightPlan(fp) {
 						// 5.1.2 Recall handoff (implied)
 						// 5.1.6 Recall redirected handoff
 						// 5.1.17 Recall handoff (p. 5-33)
 						// 5.1.19 Recall redirected handoff
 						ctx.Client.CancelHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
-					} else if ctx.UserControlsPosition(sim.ControllerPosition(fp.RedirectedHandoff.RedirectedTo)) ||
-						ctx.UserControlsPosition(sim.ControllerPosition(fp.RedirectedHandoff.GetLastRedirector())) {
+					} else if ctx.UserControlsPosition(fp.RedirectedHandoff.RedirectedTo) ||
+						ctx.UserControlsPosition(fp.RedirectedHandoff.GetLastRedirector()) {
 						ctx.Client.AcceptRedirectedHandoff(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
 					}
 				}
 
 				if tcps, ok := sp.PointOuts[fp.ACID]; ok {
-					if ctx.UserControlsPosition(sim.ControllerPosition(tcps.To)) {
+					if ctx.UserControlsPosition(tcps.To) {
 						// 6.12.2 Accept intrafacility pointout (implied)
 						// 6.12.8 Accept interfacility pointout (implied)
 						ctx.Client.AcknowledgePointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
 						return CommandStatus{}
-					} else if ctx.UserControlsPosition(sim.ControllerPosition(tcps.From)) {
+					} else if ctx.UserControlsPosition(tcps.From) {
 						// 6.12.4 Recall intrafacility pointout
 						// 6.12.9 Recall interfacility pointout
 						ctx.Client.RecallPointOut(fp.ACID, func(err error) { sp.displayError(err, ctx, "") })
@@ -169,7 +169,7 @@ func init() {
 				} else if _, ok := sp.ForceQLACIDs[fp.ACID]; ok {
 					delete(sp.ForceQLACIDs, fp.ACID)
 					return CommandStatus{}
-				} else if ctx.UserControlsPosition(fp.TrackingController) {
+				} else if ctx.UserOwnsFlightPlan(fp) {
 					// 6.13.3 Beacon readout - owned and associated track (implied)
 					rbc := util.Select(trk.Mode == av.TransponderModeStandby, "    ", trk.Squawk.String())
 					return CommandStatus{Output: string(fp.ACID) + " " + rbc + " " + fp.AssignedSquawk.String()}

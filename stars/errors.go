@@ -59,6 +59,9 @@ var (
 	ErrSTARSIllegalScratchpad          = NewSTARSError("ILL SCR")
 	ErrSTARSIllegalSector              = NewSTARSError("ILL SECTOR")
 	ErrSTARSIllegalText                = NewSTARSError("ILL TEXT")
+	ErrSTARSIllegalTCPDeconsolFirst    = NewSTARSError("ILL TCP - DECONSOL FIRST")
+	ErrSTARSIllegalTCPNotConsolidated  = NewSTARSError("ILL TCP - NOT CONSOLIDATED")
+	ErrSTARSIllegalTCW                 = NewSTARSError("ILL TCW")
 	ErrSTARSIllegalTrack               = NewSTARSError("ILL TRK")
 	ErrSTARSIllegalValue               = NewSTARSError("ILL VALUE")
 	ErrSTARSMultipleFlights            = NewSTARSError("MULTIPLE FLIGHT")
@@ -105,6 +108,11 @@ var starsErrorRemap = map[error]*STARSError{
 	nav.ErrNotClearedForApproach:        ErrSTARSIllegalValue,
 	nav.ErrNotFlyingRoute:               ErrSTARSIllegalValue,
 	sim.ErrNotLaunchController:          ErrSTARSIllegalTrack,
+	sim.ErrTCPAlreadyConsolidated:       ErrSTARSIllegalTCPDeconsolFirst,
+	sim.ErrTCPNotConsolidated:           ErrSTARSIllegalTCPNotConsolidated,
+	sim.ErrTCWIsConsolidated:            ErrSTARSIllegalPosition,
+	sim.ErrTCWNotFound:                  ErrSTARSIllegalTCW,
+	sim.ErrTCWNotVacant:                 ErrSTARSIllegalPosition,
 	sim.ErrTooManyRestrictionAreas:      ErrSTARSCapacity,
 	sim.ErrTrackIsActive:                ErrSTARSIllegalTrack,
 	sim.ErrTrackIsBeingHandedOff:        ErrSTARSIllegalTrack,

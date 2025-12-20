@@ -174,7 +174,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.err = ErrERAMMessageTooLong
 			return
 		}
-		vmf, err := ep.getVideoMapLibrary(ctx.Client.State, ctx.Client)
+		vmf, err := ep.getVideoMapLibrary(ctx.Client.State.State, ctx.Client)
 		if err != nil {
 			status.err = err
 			return
@@ -557,7 +557,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		switch len(fields) {
 		case 1:
 			cmd := fields[0]
-			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && trk.HandingOffTo(string(ctx.UserTCP)) {
+			if trk, ok := ctx.Client.State.GetTrackByFLID(cmd); ok && ctx.IsHandoffToUser(trk) {
 				// Accept handoff
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
@@ -777,7 +777,7 @@ func (ep *ERAMPane) handoffTrack(ctx *panes.Context, acid sim.ACID, controller s
 		return ErrERAMIllegalPosition
 	}
 
-	ctx.Client.HandoffTrack(acid, string(control.Id()),
+	ctx.Client.HandoffTrack(acid, control.PositionId(),
 		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 
 	return nil
@@ -914,7 +914,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 		fields := strings.Fields(original)
 		switch len(fields) {
 		case 0:
-			if trk.HandingOffTo(string(ctx.UserTCP)) {
+			if ctx.IsHandoffToUser(trk) {
 				acid := sim.ACID(trk.ADSBCallsign.String())
 				status.bigOutput = fmt.Sprintf("ACCEPT\nACCEPT HANDOFF\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID)
 				ep.acceptHandoff(ctx, acid)

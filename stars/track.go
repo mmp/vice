@@ -299,9 +299,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.AcknowledgedPointOutEvent:
 			if tcps, ok := sp.PointOuts[event.ACID]; ok {
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					if ctx.UserControlsPosition(sim.ControllerPosition(tcps.From)) {
+					if ctx.UserControlsPosition(tcps.From) {
 						state.POFlashingEndTime = time.Now().Add(5 * time.Second)
-					} else if ctx.UserControlsPosition(sim.ControllerPosition(tcps.To)) {
+					} else if ctx.UserControlsPosition(tcps.To) {
 						state.PointOutAcknowledged = true
 					}
 				}
@@ -312,7 +312,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			delete(sp.PointOuts, event.ACID)
 
 		case sim.RejectedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.UserControlsPosition(sim.ControllerPosition(tcps.From)) {
+			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.UserControlsPosition(tcps.From) {
 				sp.RejectedPointOuts[event.ACID] = nil
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.UNFlashingEndTime = time.Now().Add(5 * time.Second)
@@ -322,7 +322,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
-				if ctx.UserControlsPosition(fp.TrackingController) {
+				if ctx.UserOwnsFlightPlan(fp) {
 					if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 						state.DisplayFDB = true
 
@@ -334,14 +334,14 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.OfferedHandoffEvent:
-			if ctx.UserControlsPosition(sim.ControllerPosition(event.ToController)) {
+			if ctx.UserControlsPosition(event.ToController) {
 				sp.playOnce(ctx.Platform, AudioInboundHandoff)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-				outbound := ctx.UserControlsPosition(sim.ControllerPosition(event.FromController)) && !ctx.UserControlsPosition(sim.ControllerPosition(event.ToController))
-				inbound := !ctx.UserControlsPosition(sim.ControllerPosition(event.FromController)) && ctx.UserControlsPosition(sim.ControllerPosition(event.ToController))
+				outbound := ctx.UserControlsPosition(event.FromController) && !ctx.UserControlsPosition(event.ToController)
+				inbound := !ctx.UserControlsPosition(event.FromController) && ctx.UserControlsPosition(event.ToController)
 				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
@@ -401,14 +401,14 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 		return true
 	}
 
-	// Quick Look Positions.
-	_, ok := sp.currentPrefs().QuickLookTCPs[string(trk.FlightPlan.TrackingController)]
+	// Quick Look Positions - use OwningTCW to determine which tracks to show.
+	_, ok := sp.currentPrefs().QuickLookTCPs[string(ctx.PrimaryTCPForTCW(trk.FlightPlan.OwningTCW))]
 	return ok
 }
 
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	// See if there are any MVA issues
-	mvas := av.DB.MVAs[ctx.Client.State.TRACON]
+	mvas := av.DB.MVAs[ctx.Client.State.Facility]
 	for _, trk := range ctx.Client.State.Tracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !trk.MVAsApply {
@@ -623,14 +623,19 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransf
 			}
 		} else {
 			positionSymbol = "?"
-			if ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]; ok && ctrl != nil {
+			// Use the owning TCW's primary TCP to determine the position symbol.
+			tcp := ctx.PrimaryTCPForTCW(trk.FlightPlan.OwningTCW)
+			if tcp == "" && trk.FlightPlan.OwningTCW != "" {
+				// Owning TCW has no positions. Use its character id
+				positionSymbol = string(trk.FlightPlan.OwningTCW[1:])
+			} else if ctrl := ctx.Client.State.Controllers[tcp]; ctrl != nil {
 				if ctrl.Scope != "" {
 					// Explicitly specified scope_char overrides everything.
 					positionSymbol = ctrl.Scope
 				} else if ctrl.FacilityIdentifier != "" {
 					// For external facilities we use the facility id
 					positionSymbol = ctrl.FacilityIdentifier
-				} else {
+				} else if len(ctrl.SectorID) > 0 {
 					positionSymbol = ctrl.SectorID[len(ctrl.SectorID)-1:]
 				}
 			}
@@ -972,7 +977,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.Scop
 
 func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][2]int, bool) {
 	// Only report on ones that are tracked by us
-	if trk.IsAssociated() && !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) {
+	if trk.IsAssociated() && !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 		return nil, false
 	}
 
@@ -982,7 +987,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	}
 
 	state := sp.TrackState[trk.ADSBCallsign]
-	vols := ctx.Client.ControllerAirspace(string(ctx.UserTCP))
+	vols := ctx.Client.AirspaceForTCW(ctx.UserTCW)
 
 	inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
 	if state.EnteredOurAirspace && !inside {
@@ -1430,14 +1435,14 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
 			return *state.LeaderLineDirection
-		} else if ctx.UserControlsPosition(sfp.TrackingController) {
+		} else if ctx.UserOwnsFlightPlan(sfp) {
 			// Tracked by us
 			return ps.LeaderLineDirection
 		} else if ctx.UserControlsPosition(sfp.HandoffController) {
 			// Being handed off to us
 			return ps.LeaderLineDirection
-		} else if dir, ok := ps.ControllerLeaderLineDirections[sfp.TrackingController]; ok {
-			// Tracked by another controller for whom a direction was specified
+		} else if dir, ok := ps.ControllerLeaderLineDirections[ctx.PrimaryTCPForTCW(sfp.OwningTCW)]; ok {
+			// Owned by another controller for whom a direction was specified
 			return dir
 		} else if ps.OtherControllerLeaderLineDirection != nil {
 			// Tracked by another controller without a per-controller direction specified

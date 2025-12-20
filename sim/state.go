@@ -1,4 +1,4 @@
-// pkg/sim/state.go
+// sim/state.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -20,19 +20,6 @@ import (
 )
 
 const serverCallsign = "__SERVER__"
-
-// ControllerPosition is an alias for av.ControllerPosition for convenience.
-type ControllerPosition = av.ControllerPosition
-
-// TCP is an alias for ControllerPosition, provided for clarity in STARS-specific code.
-// Use TCP when the code is explicitly STARS-related; use ControllerPosition for
-// code that handles both STARS and ERAM controllers.
-type TCP = ControllerPosition
-
-// TCW is a Terminal Controller Workstation identifier - a physical display and keyboard.
-// A TCW can control zero, one, or more positions. This is STARS-specific; ERAM does
-// not have the same consolidation model.
-type TCW string
 
 // State serves two purposes: first, the Sim object holds one to organize
 // assorted information about the world state that it updates as part of
@@ -56,14 +43,15 @@ type State struct {
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 	ReleaseDepartures []ReleaseDeparture
 
-	// Signed in human controllers + virtual controllers
-	Controllers      map[ControllerPosition]*av.Controller
-	HumanControllers []ControllerPosition
+	// All controller positions for this scenario (both human-designated and virtual)
+	Controllers map[ControllerPosition]*av.Controller
 
-	PrimaryController ControllerPosition
-	MultiControllers  av.SplitConfiguration
-	UserTCP           ControllerPosition
-	Airspace          map[ControllerPosition]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
+	ConfigurationId              string // Short identifier for the configuration (from ControllerConfiguration.Id)
+	UserTCW                      TCW
+	CurrentConsolidation         map[TCW]*TCPConsolidation // Current position consolidation
+	ScenarioDefaultConsolidation PositionConsolidation     // Scenario's original hierarchy. Immutable after initialization.
+
+	Airspace map[ControllerPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
 	GenerationIndex int
 
@@ -81,7 +69,7 @@ type State struct {
 
 	FacilityAdaptation FacilityAdaptation
 
-	TRACON            string
+	Facility          string
 	MagneticVariation float32
 	NmPerLongitude    float32
 	PrimaryAirport    string
@@ -97,7 +85,8 @@ type State struct {
 
 	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
 
-	Instructors map[string]bool
+	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
+	Observers      map[TCW]bool // TCWs connected as observers (no position)
 
 	VideoMapLibraryHash []byte
 
@@ -120,7 +109,8 @@ type ReleaseDeparture struct {
 	Exit                string
 }
 
-func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model, metar map[string][]wx.METAR, lg *log.Logger) *State {
+func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model, metar map[string][]wx.METAR,
+	lg *log.Logger) *State {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
@@ -129,10 +119,11 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
 
-		Controllers:       make(map[ControllerPosition]*av.Controller),
-		PrimaryController: ControllerPosition(config.PrimaryController),
-		MultiControllers:  config.MultiControllers,
-		UserTCP:           ControllerPosition(serverCallsign),
+		Controllers:                  maps.Clone(config.ControlPositions),
+		ConfigurationId:              config.ControllerConfiguration.Id,
+		UserTCW:                      serverCallsign,
+		CurrentConsolidation:         make(map[TCW]*TCPConsolidation),
+		ScenarioDefaultConsolidation: config.ControllerConfiguration.Positions,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
@@ -147,7 +138,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 
 		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
 
-		TRACON:            config.TRACON,
+		Facility:          config.Facility,
 		MagneticVariation: config.MagneticVariation,
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
@@ -157,7 +148,8 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		SimDescription: config.Description,
 		SimTime:        startTime,
 
-		Instructors: make(map[string]bool),
+		PrivilegedTCWs: make(map[TCW]bool),
+		Observers:      make(map[TCW]bool),
 	}
 
 	// Grab initial METAR for each airport
@@ -173,26 +165,14 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 
 	if len(config.ControllerAirspace) > 0 {
 		ss.Airspace = make(map[ControllerPosition]map[string][]av.ControllerAirspaceVolume)
-		if config.IsLocal {
-			ss.Airspace[ss.PrimaryController] = make(map[string][]av.ControllerAirspaceVolume)
-			// Take all the airspace
-			for _, vnames := range config.ControllerAirspace {
-				for _, vname := range vnames {
-					// Remap from strings provided in the scenario to the
-					// actual volumes defined in the scenario group.
-					ss.Airspace[ss.PrimaryController][vname] = config.Airspace.Volumes[vname]
-				}
+		for ctrl, vnames := range config.ControllerAirspace {
+			if _, ok := ss.Airspace[ctrl]; !ok {
+				ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
 			}
-		} else {
-			for ctrl, vnames := range config.ControllerAirspace {
-				if _, ok := ss.Airspace[ControllerPosition(ctrl)]; !ok {
-					ss.Airspace[ControllerPosition(ctrl)] = make(map[string][]av.ControllerAirspaceVolume)
-				}
-				for _, vname := range vnames {
-					// Remap from strings provided in the scenario to the
-					// actual volumes defined in the scenario group.
-					ss.Airspace[ControllerPosition(ctrl)][vname] = config.Airspace.Volumes[vname]
-				}
+			for _, vname := range vnames {
+				// Remap from strings provided in the scenario to the
+				// actual volumes defined in the scenario group.
+				ss.Airspace[ctrl][vname] = config.Airspace.Volumes[vname]
 			}
 		}
 	}
@@ -203,21 +183,15 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		ss.FacilityAdaptation.RestrictionAreas = append(ss.FacilityAdaptation.RestrictionAreas, ra)
 	}
 
-	for _, callsign := range config.VirtualControllers {
-		// Filter out any that are actually human-controlled positions.
-		if callsign == string(ss.PrimaryController) {
-			continue
-		}
-		if ss.MultiControllers != nil {
-			if _, ok := ss.MultiControllers[callsign]; ok {
-				continue
-			}
-		}
-
-		if ctrl, ok := config.ControlPositions[callsign]; ok {
-			ss.Controllers[ControllerPosition(callsign)] = ctrl
-		} else {
-			lg.Errorf("%s: controller not found in ControlPositions??", callsign)
+	// Consolidate all positions to the root TCW
+	rootTCP, _ := ss.ScenarioDefaultConsolidation.RootPosition()
+	rootCons := &TCPConsolidation{PrimaryTCP: rootTCP}
+	ss.CurrentConsolidation[TCW(rootTCP)] = rootCons
+	for _, tcp := range ss.ScenarioDefaultConsolidation.AllPositions() {
+		if tcp != rootTCP {
+			rootCons.SecondaryTCPs = append(rootCons.SecondaryTCPs,
+				SecondaryTCP{TCP: tcp, Type: ConsolidationFull})
+			ss.CurrentConsolidation[TCW(tcp)] = &TCPConsolidation{}
 		}
 	}
 
@@ -251,29 +225,6 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	return ss
 }
 
-func (ss *State) GetStateForController(tcp string) *State {
-	// Make a deep copy so that if the server is running on the same
-	// system, that the client doesn't see updates until they're explicitly
-	// sent. (And similarly, that any speculative client changes to the
-	// World state to improve responsiveness don't actually affect the
-	// server.)
-	state := deep.MustCopy(*ss)
-	state.UserTCP = ControllerPosition(tcp)
-
-	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
-		state.ControllerVideoMaps = config.VideoMapNames
-		state.ControllerDefaultVideoMaps = config.DefaultMaps
-		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
-	} else {
-		state.ControllerVideoMaps = ss.FacilityAdaptation.VideoMapNames
-		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
-		state.ControllerMonitoredBeaconCodeBlocks = ss.FacilityAdaptation.MonitoredBeaconCodeBlocks
-	}
-
-	return &state
-}
-
 func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
@@ -299,43 +250,6 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-func (ss *State) GetConsolidatedPositions(id string) []string {
-	var cons []string
-
-	for pos := range ss.MultiControllers {
-		rid, _ := ss.MultiControllers.ResolveController(pos, func(id string) bool {
-			_, ok := ss.Controllers[ControllerPosition(id)]
-			return ok // active
-		})
-		if rid == id { // The position resolves to us.
-			cons = append(cons, pos)
-		}
-	}
-
-	slices.Sort(cons)
-
-	return cons
-}
-
-func (ss *State) ResolveController(pos ControllerPosition) ControllerPosition {
-	if _, ok := ss.Controllers[pos]; ok {
-		// The easy case: the controller is already signed in
-		return pos
-	}
-
-	if len(ss.MultiControllers) > 0 {
-		mtcp, err := ss.MultiControllers.ResolveController(string(pos),
-			func(multiTCP string) bool {
-				return slices.Contains(ss.HumanControllers, ControllerPosition(multiTCP))
-			})
-		if err == nil {
-			return ControllerPosition(mtcp)
-		}
-	}
-
-	return ss.PrimaryController
-}
-
 func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
 	return util.FilterSlice(ss.ReleaseDepartures,
 		func(dep ReleaseDeparture) bool {
@@ -346,7 +260,7 @@ func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
 			//if _, ok := ss.Aircraft[ac.ADSBCallsign]; !ok {
 			//return false
 			//}
-			return ss.ResolveController(dep.DepartureController) == ss.UserTCP
+			return ss.UserControlsPosition(dep.DepartureController)
 		})
 }
 
@@ -380,45 +294,17 @@ func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
 }
 
 func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[string(ss.UserTCP)]; ok && config.Range != 0 {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && config.Range != 0 {
 		return config.Range
 	}
 	return ss.Range
 }
 
 func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[string(ss.UserTCP)]; ok && !config.Center.IsZero() {
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && !config.Center.IsZero() {
 		return config.Center
 	}
 	return ss.Center
-}
-
-func (ss *State) FacilityFromController(pos ControllerPosition) (string, bool) {
-	if controller := ss.Controllers[pos]; controller != nil {
-		if controller.Facility != "" {
-			return controller.Facility, true
-		} else if controller != nil {
-			return ss.TRACON, true
-		}
-	}
-	if slices.Contains(ss.HumanControllers, pos) || pos == ss.PrimaryController {
-		return ss.TRACON, true
-	}
-	if _, ok := ss.MultiControllers[string(pos)]; ok {
-		return ss.TRACON, true
-	}
-
-	return "", false
-}
-
-func (ss *State) AreInstructorOrRPO(pos ControllerPosition) bool {
-	// Check if they're marked as an instructor in the Instructors map (for regular controllers with instructor privileges)
-	if ss.Instructors[string(pos)] {
-		return true
-	}
-	// Also check if they're signed in as a dedicated instructor/RPO position
-	ctrl, ok := ss.Controllers[pos]
-	return ok && (ctrl.Instructor || ctrl.RPO)
 }
 
 func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
@@ -448,8 +334,7 @@ func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
 
 func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
 	for i, trk := range ss.Tracks {
-		if trk.ADSBCallsign == callsign && trk.IsAssociated() &&
-			trk.FlightPlan.TrackingController == ss.UserTCP {
+		if trk.ADSBCallsign == callsign && trk.IsAssociated() && ss.UserControlsTrack(ss.Tracks[i]) {
 			return ss.Tracks[i], true
 		}
 	}
@@ -485,8 +370,7 @@ func (ss *State) GetTrackByFLID(flid string) (*Track, bool) {
 
 func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
 	for i, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
-			trk.FlightPlan.TrackingController == ss.UserTCP {
+		if trk.IsAssociated() && trk.FlightPlan.ACID == acid && ss.UserControlsTrack(ss.Tracks[i]) {
 			return ss.Tracks[i], true
 		}
 	}
@@ -509,12 +393,117 @@ func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
 	return nil
 }
 
+///////////////////////////////////////////////////////////////////////////
+// State methods for controller/consolidation management
+
+func (ss *State) GetStateForController(tcw TCW) *State {
+	// Make a deep copy so that if the server is running on the same
+	// system, that the client doesn't see updates until they're explicitly
+	// sent. (And similarly, that any speculative client changes to the
+	// World state to improve responsiveness don't actually affect the
+	// server.)
+	state := deep.MustCopy(*ss)
+
+	state.UserTCW = tcw
+
+	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
+	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(tcw)]; ok && len(config.VideoMapNames) > 0 {
+		state.ControllerVideoMaps = config.VideoMapNames
+		state.ControllerDefaultVideoMaps = config.DefaultMaps
+		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
+	} else {
+		state.ControllerVideoMaps = ss.FacilityAdaptation.VideoMapNames
+		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
+		state.ControllerMonitoredBeaconCodeBlocks = ss.FacilityAdaptation.MonitoredBeaconCodeBlocks
+	}
+
+	return &state
+}
+
 func (ss *State) IsExternalController(pos ControllerPosition) bool {
-	ctrl, ok := ss.Controllers[pos]
+	// Resolve consolidated positions to whoever currently controls them
+	resolved := ss.ResolveController(pos)
+	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier != ""
 }
 
 func (ss *State) IsLocalController(pos ControllerPosition) bool {
-	ctrl, ok := ss.Controllers[pos]
+	// Resolve consolidated positions to whoever currently controls them
+	resolved := ss.ResolveController(pos)
+	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier == ""
+}
+
+func (ss *State) TCWIsPrivileged(tcw TCW) bool {
+	return ss.PrivilegedTCWs[tcw]
+}
+
+func (ss *State) TCWIsObserver(tcw TCW) bool {
+	return ss.Observers[tcw]
+}
+
+func (ss *State) ResolveController(pos ControllerPosition) ControllerPosition {
+	// Check who actually controls this position via consolidation.
+	for _, cons := range ss.CurrentConsolidation {
+		if cons.ControlsPosition(pos) {
+			return cons.PrimaryTCP
+		}
+	}
+
+	return pos
+}
+
+func (ss *State) GetPositionsForTCW(tcw TCW) []ControllerPosition {
+	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
+		return cons.OwnedPositions()
+	}
+	return nil
+}
+
+// TCWControlsTrack returns true if the given TCW owns the track.
+// Track ownership is determined by the OwningTCW field, which is set when
+// the track is accepted/spawned and updated during full consolidation.
+func (ss *State) TCWControlsTrack(tcw TCW, track *Track) bool {
+	return track != nil && track.IsAssociated() && track.FlightPlan.OwningTCW == tcw
+}
+
+// TCWControlsPosition returns true if the given TCW controls the specified position
+// (either as primary or as a secondary position).
+func (ss *State) TCWControlsPosition(tcw TCW, pos ControllerPosition) bool {
+	cons, ok := ss.CurrentConsolidation[tcw]
+	return ok && cons.ControlsPosition(pos)
+}
+
+func (ss *State) TCWForPosition(pos ControllerPosition) TCW {
+	for tcw, cons := range ss.CurrentConsolidation {
+		if cons.ControlsPosition(pos) {
+			return tcw
+		}
+	}
+	return TCW(pos) // it may be a center or external controller, etc.
+}
+
+// PrimaryPositionForTCW returns the primary position for the given TCW.
+// Returns the TCW as position if no consolidation state exists or if Primary is empty.
+func (ss *State) PrimaryPositionForTCW(tcw TCW) ControllerPosition {
+	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
+		return cons.PrimaryTCP
+	}
+	return ControllerPosition(tcw)
+}
+
+// GetUserConsolidation returns the consolidation state for the current user's TCW.
+// Returns nil if no consolidation state exists.
+func (ss *State) GetUserConsolidation() *TCPConsolidation {
+	return ss.CurrentConsolidation[ss.UserTCW]
+}
+
+// UserControlsTrack returns true if the current user controls the given track.
+func (ss *State) UserControlsTrack(track *Track) bool {
+	return ss.TCWControlsTrack(ss.UserTCW, track)
+}
+
+// UserControlsPosition returns true if the current user controls the given position.
+func (ss *State) UserControlsPosition(pos ControllerPosition) bool {
+	return ss.TCWControlsPosition(ss.UserTCW, pos)
 }

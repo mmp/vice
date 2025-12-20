@@ -1468,7 +1468,7 @@ func (h *fpTCPParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInp
 	}
 
 	var spec sim.FlightPlanSpecifier
-	spec.TrackingController.Set(field)
+	spec.TrackingController.Set(sim.TCP(field))
 	return spec, remaining, true, nil
 }
 

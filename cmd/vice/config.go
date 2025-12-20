@@ -71,7 +71,8 @@ type ConfigNoSim struct {
 	NotifiedTargetGenMode  bool
 	DisableTextToSpeech    bool
 
-	UserTCP string
+	UserWorkstation    string
+	ControllerInitials string
 
 	ScenarioFile string
 	VideoMapFile string
@@ -117,13 +118,13 @@ func (c *Config) Save(lg *log.Logger) error {
 func (c *Config) SaveIfChanged(renderer renderer.Renderer, platform platform.Platform,
 	client *client.ControlClient, saveSim bool, lg *log.Logger) bool {
 	c.Sim = nil
-	c.UserTCP = ""
+	c.UserWorkstation = ""
 	if saveSim {
 		if sim, err := client.GetSerializeSim(); err != nil {
 			lg.Errorf("%v", err)
 		} else {
 			c.Sim = sim
-			c.UserTCP = string(client.State.UserTCP)
+			c.UserWorkstation = string(client.State.UserTCW)
 		}
 	}
 
@@ -218,7 +219,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 			config.DisplayRoot = nil
 		}
 		if config.Version < 5 {
-			config.UserTCP = ""
+			config.UserWorkstation = ""
 		}
 		if config.Version < 29 {
 			config.TFRCache = av.MakeTFRCache()

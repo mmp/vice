@@ -177,90 +177,6 @@ type EmergencyState struct {
 	NextUpdateTime time.Time
 }
 
-// LoadEmergencies loads all emergency types from the emergencies.json resource file.
-// Any errors encountered during loading are reported via the ErrorLogger.
-func LoadEmergencies(e *util.ErrorLogger) []Emergency {
-	e.Push("File emergencies.json")
-	defer e.Pop()
-
-	r := util.LoadResource("emergencies.json")
-	defer r.Close()
-
-	var emap map[string][]Emergency // "emergencies": [ ... ]
-	if err := util.UnmarshalJSON(r, &emap); err != nil {
-		e.Error(err)
-		return nil
-	}
-	emergencies := emap["emergencies"]
-
-	if len(emergencies) == 0 {
-		e.ErrorString("No \"emergencies\" found")
-		return nil
-	}
-
-	namesSeen := make(map[string]struct{})
-	for i := range emergencies {
-		em := &emergencies[i] // so we can modify it...
-
-		if _, ok := namesSeen[em.Name]; ok {
-			e.ErrorString("Duplicate emergency name %q", em.Name)
-			continue
-		}
-		namesSeen[em.Name] = struct{}{}
-
-		e.Push(em.Name)
-
-		// Default weight to 1.0 if not specified
-		if em.Weight == 0 {
-			em.Weight = 1
-		}
-
-		if em.ApplicableToString == "" {
-			e.ErrorString("missing required field 'applicable_to'")
-		} else {
-			for typeStr := range strings.SplitSeq(em.ApplicableToString, ",") {
-				typeStr = strings.TrimSpace(typeStr)
-				switch typeStr {
-				case "departure":
-					em.ApplicableTo |= EmergencyApplicabilityDeparture
-				case "arrival":
-					em.ApplicableTo |= EmergencyApplicabilityArrival
-				case "external":
-					em.ApplicableTo |= EmergencyApplicabilityExternal
-				case "approach":
-					em.ApplicableTo |= EmergencyApplicabilityApproach
-				default:
-					e.ErrorString("invalid \"applicable_to\" value %q: must be one or more of \"departure\", \"arrival\", \"external\", \"approach\" (comma-separated)",
-						typeStr)
-				}
-			}
-		}
-
-		if len(em.Stages) == 0 {
-			e.ErrorString("no emergency \"stages\" defined")
-		}
-		for i, stage := range em.Stages {
-			// transmission is required unless request_return is true
-			if stage.Transmission == "" && !stage.RequestReturn {
-				e.ErrorString("stage %d missing required field \"transmission\"", i)
-			}
-			// duration_minutes is required for all stages except the last one
-			isLastStage := i == len(em.Stages)-1
-			if !isLastStage {
-				if stage.DurationMinutes[1] == 0 {
-					e.ErrorString("stage %d missing required field \"duration_minutes\"", i)
-				}
-				if stage.DurationMinutes[0] > stage.DurationMinutes[1] {
-					e.ErrorString("First value in \"duration_minutes\" cannot be greater than second")
-				}
-			}
-		}
-		e.Pop()
-	}
-
-	return emergencies
-}
-
 func (s *Sim) triggerEmergency(idx int) bool {
 	if len(s.State.Emergencies) == 0 {
 		s.lg.Warn("triggerEmergency: no emergency types loaded")
@@ -269,17 +185,17 @@ func (s *Sim) triggerEmergency(idx int) bool {
 
 	em := &s.State.Emergencies[idx]
 
-	// Sample aircraft with weight 0 for non-human-controlled or existing emergencies
+	// Sample aircraft with weight 0 for virtual-controlled or existing emergencies
 	ac, ok := rand.SampleWeightedSeq(s.Rand, maps.Values(s.Aircraft), func(ac *Aircraft) float32 {
 		if ac.EmergencyState != nil {
 			return 0
 		}
 
-		humanController := false
+		humanAllocated := false
 		if fp := ac.NASFlightPlan; fp != nil {
-			humanController = s.isActiveHumanController(string(fp.ControllingController))
+			humanAllocated = !s.isVirtualController(fp.ControllingController)
 		}
-		return util.Select(em.ApplicableTo.Applies(ac, humanController), em.Weight, float32(0))
+		return util.Select(em.ApplicableTo.Applies(ac, humanAllocated), em.Weight, float32(0))
 	})
 	if !ok {
 		// No aircraft available for this emergency; if this was automatically-triggered based on
@@ -541,7 +457,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	// Note: MakeContactTransmission automatically prepends controller position and callsign
 	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
 	controller := ac.NASFlightPlan.ControllingController
-	s.postRadioEvent(ac.ADSBCallsign, string(controller), *rt)
+	s.postRadioEvent(ac.ADSBCallsign, controller, *rt)
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++

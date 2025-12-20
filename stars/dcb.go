@@ -512,7 +512,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		}
 
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
-			sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
+			sp.prefSet.ResetDefault(ctx.Client.State.State, ctx.Platform, sp)
 		}
 		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {
@@ -593,7 +593,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		toggleButton(ctx, "WX HIST", &ps.SSAList.Filter.WxHistory, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "QL", &ps.SSAList.Filter.QuickLookPositions, buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "TW OFF", &ps.SSAList.Filter.DisabledTerminal, buttonHalfVertical, buttonScale)
-		unsupportedButton(ctx, "CON/CPL", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "CON/CPL", &ps.SSAList.Filter.Consolidation, buttonHalfVertical, buttonScale)
 		unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
 		toggleButton(ctx, "CRDA", &ps.SSAList.Filter.ActiveCRDAPairs, buttonHalfVertical, buttonScale)
 		unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO

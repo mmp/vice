@@ -26,11 +26,6 @@ import (
 	"github.com/davecgh/go-spew/spew"
 )
 
-type humanController struct {
-	events              *EventsSubscription
-	disableTextToSpeech bool
-}
-
 type Sim struct {
 	State *State
 
@@ -38,9 +33,10 @@ type Sim struct {
 
 	Aircraft map[av.ADSBCallsign]*Aircraft
 
-	SignOnPositions    map[string]*av.Controller
-	humanControllers   map[string]*humanController
-	virtualControllers []string
+	ControlPositions     map[TCP]*av.Controller
+	VirtualControllers   []TCP
+	InboundAssignments   map[string]TCP // Inbound flow name -> TCP responsible
+	DepartureAssignments map[string]TCP // Departure specifier -> TCP responsible
 
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
@@ -86,6 +82,8 @@ type Sim struct {
 	updateTimeSlop time.Duration
 	lastUpdateTime time.Time // this is w.r.t. true wallclock time
 
+	pausedByServer bool // set by server when no humans are connected
+
 	lastControlCommandTime time.Time
 
 	prespawn                 bool
@@ -93,8 +91,6 @@ type Sim struct {
 
 	NextPushStart time.Time // both w.r.t. sim time
 	PushEnd       time.Time
-
-	Instructors map[string]bool
 
 	Rand *rand.Rand
 
@@ -104,14 +100,8 @@ type Sim struct {
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
 
-	ttsRequests     map[string][]ttsRequest
-	ttsProvider     TTSProvider
-	ttsVoices       []Voice
-	ttsVoicePool    []Voice
-	ttsVoicesFuture *TTSVoicesFuture
-
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
-	waypointCommands map[string]map[string]string // tcp -> fix -> commands
+	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands
 }
 
 type TTSProvider interface {
@@ -130,13 +120,6 @@ type TTSSpeechFuture struct {
 }
 
 type Voice string
-
-type ttsRequest struct {
-	callsign av.ADSBCallsign
-	ty       av.RadioTransmissionType
-	text     string
-	fut      TTSSpeechFuture
-}
 
 type AircraftDisplayState struct {
 	Spew        string // for debugging
@@ -197,7 +180,7 @@ type PilotSpeech struct {
 
 // NewSimConfiguration collects all of the information required to create a new Sim
 type NewSimConfiguration struct {
-	TRACON      string
+	Facility    string
 	Description string
 
 	Airports           map[string]*av.Airport
@@ -209,16 +192,13 @@ type NewSimConfiguration struct {
 	Fixes              map[string]math.Point2LL
 	VFRReportingPoints []av.VFRReportingPoint
 
-	ControlPositions   map[string]*av.Controller
-	PrimaryController  string
-	ControllerAirspace map[string][]string
-	VirtualControllers []string
-	MultiControllers   av.SplitConfiguration
-	SignOnPositions    map[string]*av.Controller
+	ControlPositions        map[TCP]*av.Controller
+	ControllerAirspace      map[TCP][]string
+	VirtualControllers      []TCP
+	ControllerConfiguration *ControllerConfiguration
 
 	TFRs               []av.TFR
 	FacilityAdaptation FacilityAdaptation
-	IsLocal            bool
 
 	EnforceUniqueCallsignSuffix bool
 
@@ -235,8 +215,7 @@ type NewSimConfiguration struct {
 
 	PilotErrorInterval float32
 
-	TTSProvider TTSProvider
-	WXProvider  wx.Provider
+	WXProvider wx.Provider
 
 	Emergencies []Emergency
 }
@@ -248,9 +227,11 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		DepartureState:   make(map[string]map[string]*RunwayLaunchState),
 		NextInboundSpawn: make(map[string]time.Time),
 
-		SignOnPositions: config.SignOnPositions,
+		ControlPositions:     config.ControlPositions,
+		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
+		DepartureAssignments: config.ControllerConfiguration.DepartureAssignments,
 
-		STARSComputer: makeSTARSComputer(config.TRACON),
+		STARSComputer: makeSTARSComputer(config.Facility),
 
 		CIDAllocator: NewCIDAllocator(),
 
@@ -258,10 +239,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		VFRReportingPoints: config.VFRReportingPoints,
 
-		wxModel: wx.MakeModel(config.WXProvider, config.TRACON, config.PrimaryAirport, config.StartTime.UTC(), lg),
+		wxModel: wx.MakeModel(config.WXProvider, config.Facility, config.PrimaryAirport, config.StartTime.UTC(), lg),
 		METAR:   make(map[string][]wx.METAR),
-
-		humanControllers: make(map[string]*humanController),
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
@@ -280,15 +259,13 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
 
-		Instructors:        make(map[string]bool),
-		virtualControllers: config.VirtualControllers,
+		VirtualControllers: config.VirtualControllers,
 
 		Rand: rand.Make(),
 
 		SquawkWarnedACIDs: make(map[ACID]interface{}),
 
-		ttsProvider: config.TTSProvider,
-		wxProvider:  config.WXProvider,
+		wxProvider: config.WXProvider,
 	}
 
 	if s.wxProvider != nil {
@@ -349,24 +326,25 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		}
 	}
 
-	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.TRACON].ARTCC, s.LocalCodePool)
+	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.Facility].ARTCC, s.LocalCodePool)
 
 	s.State = newState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
 
 	return s
 }
 
-func (s *Sim) SetWaypointCommands(tcp, commands string) error {
+func (s *Sim) SetWaypointCommands(tcw TCW, commands string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	tcp := s.State.PrimaryPositionForTCW(tcw)
 	if s.waypointCommands == nil {
-		s.waypointCommands = make(map[string]map[string]string)
+		s.waypointCommands = make(map[TCP]map[string]string)
 	}
 	delete(s.waypointCommands, tcp)
 	s.waypointCommands[tcp] = make(map[string]string)
 	if len(commands) != 0 {
-		s.Instructors[tcp] = true
+		s.State.PrivilegedTCWs[tcw] = true
 	}
 
 	for cmd := range strings.SplitSeq(commands, ",") {
@@ -401,18 +379,19 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 	}
 
 	// Activate the sim to initialize eventStream and other runtime state
-	s.Activate(lg, nil, nil)
+	s.Activate(lg, nil)
 
-	// Sign on as primary controller + instructor
-	tcp := s.State.PrimaryController
-	_, err := s.SignOn(string(tcp), true, false) // Sign on as instructor
+	// Sign on as root controller + instructor with all positions
+	tcw := TCW(s.ScenarioRootPosition())
+	_, _, err := s.SignOn(tcw, s.AllScenarioPositions())
 	if err != nil {
-		return fmt.Errorf("failed to sign on as controller %s: %w", tcp, err)
+		return fmt.Errorf("failed to sign on as controller %s: %w", tcw, err)
 	}
+	s.SetPrivilegedTCW(tcw, true) // Replay runs as instructor
 
-	s.SetWaypointCommands(string(tcp), waypointCommands)
+	s.SetWaypointCommands(tcw, waypointCommands)
 
-	fmt.Printf("Signed on as instructor: %s\n", tcp)
+	fmt.Printf("Signed on as instructor: %s\n", tcw)
 	fmt.Printf("Starting simulation with %d aircraft\n", len(s.Aircraft))
 
 	// Run simulation
@@ -439,14 +418,12 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 	return nil
 }
 
-func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Provider) {
+func (s *Sim) Activate(lg *log.Logger, provider wx.Provider) {
 	s.lg = lg
 
 	if s.eventStream == nil {
 		s.eventStream = NewEventStream(lg)
 	}
-	s.humanControllers = make(map[string]*humanController)
-	s.State.HumanControllers = nil
 
 	now := time.Now()
 	s.lastUpdateTime = now
@@ -456,18 +433,9 @@ func (s *Sim) Activate(lg *log.Logger, ttsProvider TTSProvider, provider wx.Prov
 		s.Rand = rand.Make()
 	}
 
-	s.ttsRequests = make(map[string][]ttsRequest)
-	s.ttsProvider = ttsProvider
-
-	if ttsProvider != nil {
-		vf := ttsProvider.GetAllVoices()
-		s.ttsVoicesFuture = &vf
-		s.ttsVoices = nil
-	}
-
 	s.wxProvider = provider
 	if s.wxModel == nil {
-		s.wxModel = wx.MakeModel(provider, s.State.TRACON, s.State.PrimaryAirport, s.State.SimTime, s.lg)
+		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.PrimaryAirport, s.State.SimTime, s.lg)
 	}
 }
 
@@ -475,60 +443,19 @@ func (s *Sim) Destroy() {
 	s.eventStream.Destroy()
 }
 
-// getRandomVoice returns a random voice from the voice pool, using the same
-// shuffling logic that was previously in GoogleTTSProvider
-func (s *Sim) getRandomVoice() (Voice, error) {
-	// If voices aren't loaded yet, try to get them from the channel
-	if vf := s.ttsVoicesFuture; vf != nil {
-		select {
-		case voices, ok := <-vf.VoicesCh:
-			if ok {
-				s.ttsVoices = voices
-				s.ttsVoicesFuture = nil
-			}
-			vf.VoicesCh = nil // stop checking
-		case err, ok := <-vf.ErrCh:
-			if ok {
-				s.ttsVoicesFuture = nil
-				return "", err
-			}
-			vf.ErrCh = nil
-		default:
-			// Channel not ready, voices still loading
-			return "", fmt.Errorf("voices not yet available")
-		}
-	}
-
-	if len(s.ttsVoices) == 0 {
-		return "", fmt.Errorf("no voices available")
-	}
-
-	// We have voices; update the pool we're handing out voices from if it's empty
-	if len(s.ttsVoicePool) == 0 {
-		s.ttsVoicePool = slices.Clone(s.ttsVoices)
-		rand.ShuffleSlice(s.ttsVoicePool, s.Rand)
-	}
-
-	v := s.ttsVoicePool[0]
-	s.ttsVoicePool = s.ttsVoicePool[1:]
-	return v, nil
+// Subscribe creates a new event subscription for this simulation.
+// The caller is responsible for calling Unsubscribe when done.
+func (s *Sim) Subscribe() *EventsSubscription {
+	return s.eventStream.Subscribe()
 }
 
 func (s *Sim) GetSerializeSim() Sim {
-	ss := *s
-
-	// Clean up so that the user can sign in when they reload.
-	for ctrl := range s.humanControllers {
-		delete(ss.State.Controllers, ControllerPosition(ctrl))
-	}
-
-	return ss
+	return *s
 }
 
 func (s *Sim) LogValue() slog.Value {
 	return slog.GroupValue(
 		slog.Any("state", s.State),
-		slog.Any("human_controllers", s.humanControllers),
 		slog.Any("departure_state", s.DepartureState),
 		slog.Any("next_inbound_spawn", s.NextInboundSpawn),
 		slog.Any("automatic_handoffs", s.Handoffs),
@@ -537,163 +464,39 @@ func (s *Sim) LogValue() slog.Value {
 		slog.Time("push_end", s.PushEnd))
 }
 
-func (s *Sim) SignOn(tcp string, instructor bool, disableTextToSpeech bool) (*State, error) {
-	s.mu.Lock(s.lg)
-	if err := s.signOn(tcp, instructor, disableTextToSpeech); err != nil {
-		s.mu.Unlock(s.lg)
-		return nil, err
-	}
-	s.mu.Unlock(s.lg)
-
-	state := s.State.GetStateForController(tcp)
-	var update StateUpdate
-	s.GetStateUpdate(tcp, &update)
-	update.Apply(state, s.eventStream)
-	return state, nil
-}
-
-func (s *Sim) signOn(tcp string, instructor bool, disableTextToSpeech bool) error {
-	if _, ok := s.humanControllers[tcp]; ok {
-		return ErrControllerAlreadySignedIn
-	}
-	if _, ok := s.State.Controllers[ControllerPosition(tcp)]; ok {
-		// Trying to sign in to a virtual position.
-		return av.ErrInvalidController
-	}
-	if _, ok := s.SignOnPositions[tcp]; !ok {
-		return av.ErrNoController
-	}
-
-	s.humanControllers[tcp] = &humanController{
-		events:              s.eventStream.Subscribe(),
-		disableTextToSpeech: disableTextToSpeech,
-	}
-	s.State.Controllers[ControllerPosition(tcp)] = s.SignOnPositions[tcp]
-	s.State.HumanControllers = append(s.State.HumanControllers, ControllerPosition(tcp))
-
-	if ControllerPosition(tcp) == s.State.PrimaryController {
-		// The primary controller signed in so the sim will resume.
-		// Reset lastUpdateTime so that the next time Update() is
-		// called for the sim, we don't try to run a ton of steps.
-		s.lastUpdateTime = time.Now()
-	}
-
-	s.eventStream.Post(Event{
-		Type:        StatusMessageEvent,
-		WrittenText: tcp + " has signed on.",
-	})
-	s.lg.Infof("%s: controller signed on", tcp)
-
-	return nil
-}
-
-func (s *Sim) SignOff(tcp string) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	if _, ok := s.humanControllers[tcp]; !ok {
-		return av.ErrNoController
-	}
-
-	// Drop track on controlled aircraft
-	for _, ac := range s.Aircraft {
-		ac.handleControllerDisconnect(ControllerPosition(tcp), s.State.PrimaryController)
-	}
-
-	if tcp == s.State.LaunchConfig.Controller {
-		// give up control of launches so someone else can take it.
-		s.State.LaunchConfig.Controller = ""
-	}
-
-	s.humanControllers[tcp].events.Unsubscribe()
-
-	delete(s.humanControllers, tcp)
-	delete(s.State.Controllers, ControllerPosition(tcp))
-	delete(s.Instructors, tcp)
-	s.State.HumanControllers =
-		slices.DeleteFunc(s.State.HumanControllers, func(s ControllerPosition) bool { return s == ControllerPosition(tcp) })
-
-	s.eventStream.Post(Event{
-		Type:        StatusMessageEvent,
-		WrittenText: tcp + " has signed off.",
-	})
-	s.lg.Infof("%s: controller signing off", tcp)
-
-	return nil
-}
-
-func (s *Sim) ChangeControlPosition(fromTCP, toTCP string, keepTracks bool) error {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	s.lg.Infof("%s: switching to %s", fromTCP, toTCP)
-
-	// Make sure we can successfully sign on before signing off from the
-	// current position. Preserve instructor status from the original controller.
-	wasInstructor := s.State.Controllers[ControllerPosition(fromTCP)].Instructor
-	wasDisableTTS := s.humanControllers[fromTCP].disableTextToSpeech
-	if err := s.signOn(toTCP, wasInstructor, wasDisableTTS); err != nil {
-		return err
-	}
-
-	// Swap the event subscriptions so we don't lose any events pending on the old one.
-	s.humanControllers[toTCP].events.Unsubscribe()
-	s.humanControllers[toTCP] = s.humanControllers[fromTCP]
-	s.State.HumanControllers = append(s.State.HumanControllers, ControllerPosition(toTCP))
-
-	delete(s.humanControllers, fromTCP)
-	delete(s.State.Controllers, ControllerPosition(fromTCP))
-	delete(s.Instructors, fromTCP)
-	s.State.HumanControllers = slices.DeleteFunc(s.State.HumanControllers, func(s ControllerPosition) bool { return s == ControllerPosition(fromTCP) })
-
-	s.eventStream.Post(Event{
-		Type:        StatusMessageEvent,
-		WrittenText: fromTCP + " has signed off.",
-	})
-
-	for _, ac := range s.Aircraft {
-		if keepTracks {
-			ac.transferTracks(ControllerPosition(fromTCP), ControllerPosition(toTCP))
-		} else {
-			ac.handleControllerDisconnect(ControllerPosition(fromTCP), ControllerPosition(s.State.PrimaryController))
-		}
-	}
-
-	return nil
-}
-
-func (s *Sim) TogglePause(tcp string) error {
+func (s *Sim) TogglePause() {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	s.State.Paused = !s.State.Paused
 	s.lastUpdateTime = time.Now() // ignore time passage...
 	s.lastControlCommandTime = time.Now()
-
-	s.eventStream.Post(Event{
-		Type:        GlobalMessageEvent,
-		WrittenText: tcp + " has " + util.Select(s.State.Paused, "paused", "unpaused") + " the sim",
-	})
-	return nil
 }
 
-func (s *Sim) FastForward(tcp string) error {
+// SetPausedByServer allows the server to pause/unpause the sim when
+// humans connect or disconnect.
+func (s *Sim) SetPausedByServer(paused bool) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	for i := 0; i < 15; i++ {
+	s.pausedByServer = paused
+	if !paused {
+		// Reset time so we don't try to catch up
+		s.lastUpdateTime = time.Now()
+	}
+}
+
+func (s *Sim) FastForward() {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	for range 15 {
 		s.State.SimTime = s.State.SimTime.Add(time.Second)
 		s.updateState()
 	}
 	s.updateTimeSlop = 0
 	s.lastUpdateTime = time.Now()
 	s.lastControlCommandTime = time.Now()
-
-	s.eventStream.Post(Event{
-		Type:        GlobalMessageEvent,
-		WrittenText: tcp + " has fast-forwarded the sim",
-	})
-	return nil
 }
 
 func (s *Sim) IdleTime() time.Duration {
@@ -702,7 +505,7 @@ func (s *Sim) IdleTime() time.Duration {
 	return time.Since(s.lastUpdateTime)
 }
 
-func (s *Sim) SetSimRate(tcp string, rate float32) error {
+func (s *Sim) SetSimRate(tcw TCW, rate float32) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -713,14 +516,14 @@ func (s *Sim) SetSimRate(tcp string, rate float32) error {
 	return nil
 }
 
-func (s *Sim) GlobalMessage(tcp, message string) error {
+func (s *Sim) GlobalMessage(tcw TCW, message string) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	s.eventStream.Post(Event{
 		Type:           GlobalMessageEvent,
 		WrittenText:    message,
-		FromController: ControllerPosition(tcp),
+		FromController: s.State.PrimaryPositionForTCW(tcw),
 	})
 
 	return nil
@@ -785,29 +588,52 @@ func (s *Sim) PostEvent(e Event) {
 	s.eventStream.Post(e)
 }
 
-func (s *Sim) ActiveControllers() []string {
+// GetStateForController returns a deep copy of the State for the given controller.
+func (s *Sim) GetStateForController(tcw TCW) *State {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return util.SortedMapKeys(s.humanControllers)
+	return s.State.GetStateForController(tcw)
 }
 
-func (s *Sim) GetAvailableCoveredPositions() (map[string]av.Controller, map[string]av.Controller) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	available := make(map[string]av.Controller)
-	covered := make(map[string]av.Controller)
-
-	for tcp, ctrl := range s.SignOnPositions {
-		if _, ok := s.humanControllers[tcp]; ok {
-			covered[tcp] = *ctrl
-		} else {
-			available[tcp] = *ctrl
+// GetDepartureController returns the TCP responsible for a departure given the
+// airport, runway, and SID. Checks in order: airport/SID, airport/runway, airport only.
+func (s *Sim) GetDepartureController(airport, runway, sid string) TCP {
+	if sid != "" {
+		if tcp, ok := s.DepartureAssignments[airport+"/"+sid]; ok {
+			return tcp
 		}
 	}
+	if runway != "" {
+		if tcp, ok := s.DepartureAssignments[airport+"/"+runway]; ok {
+			return tcp
+		}
+	}
+	if tcp, ok := s.DepartureAssignments[airport]; ok {
+		return tcp
+	}
+	return ""
+}
 
-	return available, covered
+// ScenarioRootPosition returns the root position from the scenario's default consolidation.
+func (s *Sim) ScenarioRootPosition() TCP {
+	if root, err := s.State.ScenarioDefaultConsolidation.RootPosition(); err != nil {
+		return ""
+	} else {
+		return root
+	}
+}
+
+// AllScenarioPositions returns all positions defined in the scenario's default consolidation.
+func (s *Sim) AllScenarioPositions() []TCP {
+	return s.State.ScenarioDefaultConsolidation.AllPositions()
+}
+
+// GetTrafficCounts returns the current IFR and VFR traffic counts.
+func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.State.TotalIFR, s.State.TotalVFR
 }
 
 type GlobalMessage struct {
@@ -822,8 +648,8 @@ type StateUpdate struct {
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
-	Controllers      map[ControllerPosition]*av.Controller
-	HumanControllers []ControllerPosition
+	Controllers          map[ControllerPosition]*av.Controller
+	CurrentConsolidation map[TCW]*TCPConsolidation
 
 	Time time.Time
 
@@ -840,134 +666,119 @@ type StateUpdate struct {
 	QuickFlightPlanIndex int
 }
 
-func (s *Sim) GetStateUpdate(tcp string, update *StateUpdate) {
+// consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same
+// aircraft and adds callsign/controller prefixes to contact transmissions.
+// This is called for both main event subscriptions and TTS event subscriptions.
+// Must be called with s.mu held.
+func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
+	// Consolidate consecutive radio transmissions from the same aircraft
+	consolidateRadioTransmissions := func(events []Event) []Event {
+		canConsolidate := func(a, b Event) bool {
+			return a.Type == RadioTransmissionEvent && b.Type == RadioTransmissionEvent &&
+				a.RadioTransmissionType != av.RadioTransmissionMixUp && b.RadioTransmissionType != av.RadioTransmissionMixUp &&
+				a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
+		}
+		lastRadio := -1
+		var c []Event
+		for _, e := range events {
+			if lastRadio != -1 && canConsolidate(e, c[lastRadio]) {
+				c[lastRadio].WrittenText += ", " + e.WrittenText
+				c[lastRadio].SpokenText += ", " + e.SpokenText
+				if e.RadioTransmissionType == av.RadioTransmissionUnexpected {
+					c[lastRadio].RadioTransmissionType = av.RadioTransmissionUnexpected
+				}
+			} else {
+				if e.Type == RadioTransmissionEvent {
+					lastRadio = len(c)
+				}
+				c = append(c, e)
+			}
+		}
+		return c
+	}
+
+	events = consolidateRadioTransmissions(events)
+
+	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
+	ctrl := s.State.Controllers[primaryTCP]
+
+	// Add identifying info to radio transmissions
+	for i, e := range events {
+		if e.Type != RadioTransmissionEvent || !s.State.TCWControlsPosition(tcw, e.ToController) {
+			continue
+		}
+
+		ac, ok := s.Aircraft[e.ADSBCallsign]
+		if !ok {
+			continue
+		}
+
+		var heavySuper string
+		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
+			if perf.WeightClass == "H" {
+				heavySuper = " heavy"
+			} else if perf.WeightClass == "J" {
+				heavySuper = " super"
+			}
+		}
+
+		switch e.RadioTransmissionType {
+		case av.RadioTransmissionContact:
+			csArg := av.CallsignArg{
+				Callsign:           ac.ADSBCallsign,
+				IsEmergency:        ac.EmergencyState != nil,
+				AlwaysFullCallsign: true,
+			}
+			var tr *av.RadioTransmission
+			if ac.TypeOfFlight == av.FlightTypeDeparture {
+				tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+			} else {
+				tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+			}
+			events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
+			events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
+		case av.RadioTransmissionMixUp:
+			// No additional formatting for mix-up transmissions; the callsign is already in there.
+		default:
+			csArg := av.CallsignArg{
+				Callsign:    ac.ADSBCallsign,
+				IsEmergency: ac.EmergencyState != nil,
+			}
+			tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
+			events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
+			events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
+		}
+	}
+
+	return events
+}
+
+// ConsolidateRadioEventsForTCW processes events for TTS, consolidating radio transmissions
+// and adding callsign/controller prefixes. This is the public API for the server
+// to process TTS events from a separate subscription.
+func (s *Sim) ConsolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.consolidateRadioEventsForTCW(tcw, events)
+}
+
+// GetStateUpdate populates update with the current simulation state.
+// If eventSub is provided, it retrieves events from that subscription.
+// The tcw parameter is used to filter and format radio transmission events.
+func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *StateUpdate) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	var events []Event
-	if hc, ok := s.humanControllers[tcp]; ok {
-		consolidateRadioTransmissions := func(events []Event) []Event {
-			canConsolidate := func(a, b Event) bool {
-				return a.Type == RadioTransmissionEvent && b.Type == RadioTransmissionEvent &&
-					a.RadioTransmissionType != av.RadioTransmissionMixUp && b.RadioTransmissionType != av.RadioTransmissionMixUp &&
-					a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
-			}
-			lastRadio := -1
-			var c []Event
-			for _, e := range events {
-				if lastRadio != -1 && canConsolidate(e, c[lastRadio]) {
-					c[lastRadio].WrittenText += ", " + e.WrittenText
-					c[lastRadio].SpokenText += ", " + e.SpokenText
-					if e.RadioTransmissionType == av.RadioTransmissionUnexpected {
-						c[lastRadio].RadioTransmissionType = av.RadioTransmissionUnexpected
-					}
-				} else {
-					if e.Type == RadioTransmissionEvent {
-						lastRadio = len(c)
-					}
-					c = append(c, e)
-				}
-			}
-			return c
-		}
-
-		events = consolidateRadioTransmissions(hc.events.Get())
-
-		ctrl := s.State.Controllers[ControllerPosition(tcp)]
-
-		// Add identifying info
-		for i, e := range events {
-			if e.Type != RadioTransmissionEvent || e.ToController != ControllerPosition(tcp) {
-				continue
-			}
-
-			ac, ok := s.Aircraft[e.ADSBCallsign]
-			if !ok {
-				fmt.Printf("%s: no ac found for radio transmission?", e.ADSBCallsign)
-				continue
-			}
-
-			var heavySuper string
-			if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
-				if perf.WeightClass == "H" {
-					heavySuper = " heavy"
-				} else if perf.WeightClass == "J" {
-					heavySuper = " super"
-				}
-			}
-
-			switch e.RadioTransmissionType {
-			case av.RadioTransmissionContact:
-				csArg := av.CallsignArg{
-					Callsign:           ac.ADSBCallsign,
-					IsEmergency:        ac.EmergencyState != nil,
-					AlwaysFullCallsign: true,
-				}
-				var tr *av.RadioTransmission
-				if ac.TypeOfFlight == av.FlightTypeDeparture {
-					tr = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
-				} else {
-					tr = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
-				}
-				events[i].WrittenText = tr.Written(s.Rand) + e.WrittenText
-				events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
-			case av.RadioTransmissionMixUp:
-				// No additional formatting for mix-up transmissions; the callsign is already in there.
-			default:
-				csArg := av.CallsignArg{
-					Callsign:    ac.ADSBCallsign,
-					IsEmergency: ac.EmergencyState != nil,
-				}
-				tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
-				events[i].WrittenText = e.WrittenText + tr.Written(s.Rand)
-				events[i].SpokenText = e.SpokenText + tr.Spoken(s.Rand)
-			}
-		}
-
-		// Post TTS requests
-		if s.ttsProvider != nil {
-			for _, e := range events {
-				if e.Type != RadioTransmissionEvent || e.ToController != ControllerPosition(tcp) {
-					continue
-				}
-
-				// Skip TTS generation if it's disabled for this controller
-				if hc, ok := s.humanControllers[tcp]; ok && hc.disableTextToSpeech {
-					continue
-				}
-
-				ac, ok := s.Aircraft[e.ADSBCallsign]
-				if !ok {
-					s.lg.Warnf("%s: no ac found for radio transmission?", e.ADSBCallsign)
-					continue
-				}
-
-				if ac.Voice == "" {
-					var err error
-					if ac.Voice, err = s.getRandomVoice(); err != nil {
-						s.lg.Warnf("TTS getRandomVoice: %v", err)
-						continue
-					}
-				}
-
-				fut := s.ttsProvider.TextToSpeech(ac.Voice, e.SpokenText)
-				s.ttsRequests[tcp] = append(s.ttsRequests[tcp], ttsRequest{
-					callsign: ac.ADSBCallsign,
-					ty:       e.RadioTransmissionType,
-					text:     e.SpokenText,
-					fut:      fut,
-				})
-			}
-		}
-	} else if tcp != "INS" {
-		s.lg.Errorf("GetStateUpdate called for non-human controller %s", tcp)
+	if eventSub != nil {
+		events = s.consolidateRadioEventsForTCW(tcw, eventSub.Get())
 	}
 
 	*update = StateUpdate{
 		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 
-		Controllers:      s.State.Controllers,
-		HumanControllers: util.MapSlice(slices.Collect(maps.Keys(s.humanControllers)), func(s string) ControllerPosition { return ControllerPosition(s) }),
+		Controllers:          s.State.Controllers,
+		CurrentConsolidation: s.State.CurrentConsolidation,
 
 		Time: s.State.SimTime,
 
@@ -1096,7 +907,7 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		if su.Controllers != nil {
 			state.Controllers = su.Controllers
 		}
-		state.HumanControllers = su.HumanControllers
+		state.CurrentConsolidation = su.CurrentConsolidation
 		state.ACFlightPlans = su.ACFlightPlans
 		state.UnassociatedFlightPlans = su.UnassociatedFlightPlans
 		state.ReleaseDepartures = su.ReleaseDepartures
@@ -1124,52 +935,13 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 	}
 }
 
-func (s *Sim) GetControllerSpeech(tcp string) []PilotSpeech {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	var speech []PilotSpeech
-
-	s.ttsRequests[tcp] = util.FilterSliceInPlace(s.ttsRequests[tcp], func(req ttsRequest) bool {
-		select {
-		case mp3, ok := <-req.fut.Mp3Ch:
-			if ok { // not closed
-				speech = append(speech, PilotSpeech{
-					Callsign: req.callsign,
-					Type:     req.ty,
-					Text:     req.text,
-					MP3:      mp3,
-				})
-				return false // remove it from the slice
-			}
-			req.fut.Mp3Ch = nil
-			return true
-		case err, ok := <-req.fut.ErrCh:
-			if ok {
-				s.lg.Warnf("TTS error for %s %q: %v", req.callsign, req.text, err)
-
-				speech = append(speech, PilotSpeech{
-					Callsign: req.callsign,
-					Type:     req.ty,
-					Text:     req.text,
-					// No MP3!
-				})
-
-				return false // remove it from the slice
-			}
-			req.fut.ErrCh = nil
-			return true
-		default:
-			return true
-		}
-	})
-
-	return speech
-}
-
-func (s *Sim) isActiveHumanController(tcp string) bool {
-	_, ok := s.humanControllers[tcp]
-	return ok
+// isVirtualController returns true if the given position is virtual
+// (i.e., simulated by the system rather than allocated to humans).
+// Virtual controllers auto-accept handoffs and pointouts.
+// Human-allocatable positions (from ControllerConfig) do NOT auto-accept,
+// regardless of whether a human is currently signed in.
+func (s *Sim) isVirtualController(pos ControllerPosition) bool {
+	return slices.Contains(s.VirtualControllers, pos)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1198,12 +970,7 @@ func (s *Sim) Update() {
 		}
 	}
 
-	if s.State.Paused {
-		return
-	}
-
-	if !s.isActiveHumanController(string(s.State.PrimaryController)) {
-		// Pause the sim if the primary controller is gone
+	if s.State.Paused || s.pausedByServer {
 		return
 	}
 
@@ -1257,7 +1024,7 @@ func (s *Sim) updateState() {
 		}
 
 		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil {
-			if fp.HandoffController != "" && !s.isActiveHumanController(string(fp.HandoffController)) {
+			if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
 				// Automated accept
 				s.eventStream.Post(Event{
 					Type:           AcceptedHandoffEvent,
@@ -1273,6 +1040,7 @@ func (s *Sim) updateState() {
 				if s.State.IsLocalController(fp.TrackingController) {
 					fp.LastLocalController = fp.TrackingController
 				}
+				fp.OwningTCW = s.State.TCWForPosition(fp.TrackingController)
 				fp.HandoffController = ""
 			}
 		}
@@ -1284,7 +1052,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil && !s.isActiveHumanController(string(po.ToController)) {
+		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil && s.isVirtualController(po.ToController) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -1330,7 +1098,7 @@ func (s *Sim) updateState() {
 						// Execute waypoint commands using the waypoint commands controller (typically an instructor)
 						nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand, "aircraft=%s fix=%s commands=%s", callsign, passedWaypoint.Fix, cmds)
 						s.lg.Infof("Waypoint commands: Aircraft %s passed %s, executing: %s", callsign, passedWaypoint.Fix, cmds)
-						result := s.RunAircraftControlCommands(tcp, callsign, cmds)
+						result := s.RunAircraftControlCommands(TCW(tcp), callsign, cmds)
 						if result.Error != nil {
 							nav.NavLog(string(callsign), s.State.SimTime, nav.NavLogCommand, "aircraft=%s error=%v remaining=%s", callsign, result.Error,
 								result.RemainingInput)
@@ -1352,7 +1120,7 @@ func (s *Sim) updateState() {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
-						s.handoffTrack(sfp, string(s.State.ResolveController(sfp.InboundHandoffController)))
+						s.handoffTrack(sfp, sfp.InboundHandoffController)
 					}
 				} else if passedWaypoint.HandoffController != "" {
 					sfp := ac.NASFlightPlan
@@ -1360,7 +1128,7 @@ func (s *Sim) updateState() {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
-						s.handoffTrack(sfp, passedWaypoint.HandoffController)
+						s.handoffTrack(sfp, TCP(passedWaypoint.HandoffController))
 					}
 				}
 
@@ -1383,13 +1151,13 @@ func (s *Sim) updateState() {
 						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 						// Make sure they've bought the handoff.
 						if ctrl != sfp.HandoffController {
-							s.enqueueControllerContact(ac.ADSBCallsign, string(ctrl), 0 /* no delay */)
+							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
 						}
 					}
 
 					// Update scratchpads if the waypoint has scratchpad commands
-					// Only update if aircraft is not controlled by a human
-					if !s.isActiveHumanController(string(sfp.ControllingController)) {
+					// Only update if aircraft is controlled by a virtual controller
+					if s.isVirtualController(sfp.ControllingController) {
 						if passedWaypoint.PrimaryScratchpad != "" {
 							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad
 						}
@@ -1405,9 +1173,9 @@ func (s *Sim) updateState() {
 					}
 
 					if passedWaypoint.PointOut != "" {
-						if ctrl, ok := s.State.Controllers[ControllerPosition(passedWaypoint.PointOut)]; ok {
-							// Don't do the point out if a human is controlling the aircraft.
-							if !s.isActiveHumanController(string(sfp.ControllingController)) {
+						if ctrl, ok := s.State.Controllers[TCP(passedWaypoint.PointOut)]; ok {
+							// Only do automatic point outs for virtual controllers
+							if s.isVirtualController(sfp.ControllingController) {
 								fromCtrl := s.State.Controllers[sfp.ControllingController]
 								s.pointOut(sfp.ACID, fromCtrl, ctrl)
 								break
@@ -1476,11 +1244,14 @@ func (s *Sim) updateState() {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}
 				if fp != nil {
-					tcp := s.State.ResolveController(fp.InboundHandoffController)
+					// Use the original InboundHandoffController position for the radio event,
+					// not the resolved position. This ensures TCWControlsPosition checks
+					// correctly match when the user has that position consolidated.
+					tcp := fp.InboundHandoffController
 					s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
 					rt := ac.Nav.DepartureMessage()
-					s.postRadioEvent(ac.ADSBCallsign, string(tcp), *rt)
+					s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
 
 					// Clear this out so we only send one contact message
 					ac.DepartureContactAltitude = 0
@@ -1494,8 +1265,8 @@ func (s *Sim) updateState() {
 			}
 
 			// Cull far-away aircraft
-
-			if math.NMDistance2LL(ac.Position(), s.State.Center) > util.Select(s.State.FacilityAdaptation.MaxDistance > 0, s.State.FacilityAdaptation.MaxDistance, 125) {
+			maxDist := util.Select(s.State.FacilityAdaptation.MaxDistance > 0, s.State.FacilityAdaptation.MaxDistance, 125)
+			if math.NMDistance2LL(ac.Position(), s.State.Center) > maxDist {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}
@@ -1536,7 +1307,7 @@ func (s *Sim) TriggerEmergency(name string) {
 }
 
 func (s *Sim) requestRandomFlightFollowing() error {
-	candidates := make(map[*Aircraft]string)
+	candidates := make(map[*Aircraft]TCP)
 
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() || ac.FlightPlan.Rules != av.FlightRulesVFR || ac.RequestedFlightFollowing || !ac.IsAirborne() {
@@ -1557,13 +1328,13 @@ func (s *Sim) requestRandomFlightFollowing() error {
 		}
 
 		for tcpStr, cc := range s.State.FacilityAdaptation.ControllerConfigs {
-			tcp := s.State.ResolveController(ControllerPosition(tcpStr))
-			if !s.isActiveHumanController(string(tcp)) {
+			tcp := s.State.ResolveController(TCP(tcpStr))
+			if s.isVirtualController(tcp) {
 				continue
 			}
 			for _, vol := range cc.FlightFollowingAirspace {
 				if vol.Inside(ac.Position(), int(ac.Altitude())) {
-					candidates[ac] = string(tcp) // first come, first served
+					candidates[ac] = tcp // first come, first served
 					break
 				}
 			}
@@ -1595,7 +1366,7 @@ func (s *Sim) possiblyRequestFlightFollowing() {
 	}
 }
 
-func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
+func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	ac.RequestedFlightFollowing = true
 
 	// About 30% of the time, make an abbreviated request and wait for "go ahead"
@@ -1612,7 +1383,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp string) {
 	}
 }
 
-func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp string) {
+func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 	closestReportingPoint := func(ac *Aircraft) (string, string, float32, bool) {
 		var closest *av.VFRReportingPoint
 		dist := float32(1000000)
@@ -1723,11 +1494,11 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachTCP
 
-	sfp.ControllingController = s.State.ResolveController(ac.ApproachTCP)
+	sfp.ControllingController = ac.ApproachTCP
 
 	rt := ac.GoAround()
 	rt.Type = av.RadioTransmissionUnexpected
-	s.postRadioEvent(ac.ADSBCallsign, string(ac.ApproachTCP) /* FIXME: issue #540 */, *rt)
+	s.postRadioEvent(ac.ADSBCallsign, ac.ApproachTCP /* FIXME: issue #540 */, *rt)
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {
@@ -1742,11 +1513,11 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr av.RadioTransmission) {
+func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP TCP, tr av.RadioTransmission) {
 	tr.Validate(s.lg)
 
 	if tr.Controller == "" {
-		tr.Controller = defaultTCP
+		tr.Controller = string(defaultTCP)
 	}
 
 	if ac, ok := s.Aircraft[from]; ok {
@@ -1756,7 +1527,7 @@ func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP string, tr av.Radi
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
-		ToController:          ControllerPosition(tr.Controller),
+		ToController:          TCP(tr.Controller),
 		WrittenText:           tr.Written(s.Rand),
 		SpokenText:            tr.Spoken(s.Rand),
 		RadioTransmissionType: tr.Type,
@@ -1900,15 +1671,4 @@ func (t *Track) IsArrival() bool {
 
 func (t *Track) IsOverflight() bool {
 	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeOverflight
-}
-
-func (t *Track) HandingOffTo(tcp string) bool {
-	if t.IsUnassociated() {
-		return false
-	}
-
-	sfp := t.FlightPlan
-	return sfp.HandoffController == ControllerPosition(tcp) &&
-		(!slices.Contains(sfp.RedirectedHandoff.Redirector, ControllerPosition(tcp)) || // not a redirector
-			sfp.RedirectedHandoff.RedirectedTo == ControllerPosition(tcp)) // redirected to
 }

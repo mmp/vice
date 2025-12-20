@@ -77,8 +77,6 @@ type Aircraft struct {
 	// waiting for the controller to say "go ahead".
 	WaitingForGoAhead bool
 
-	Voice Voice
-
 	EmergencyState *EmergencyState
 
 	LastRadioTransmission time.Time
@@ -626,64 +624,6 @@ func (ac *Aircraft) IsOverflight() bool {
 func (ac *Aircraft) WillDoAirwork() bool {
 	return ac.Nav.Airwork != nil ||
 		slices.ContainsFunc(ac.Nav.Waypoints, func(wp av.Waypoint) bool { return wp.AirworkRadius > 0 })
-}
-
-func (ac *Aircraft) transferTracks(from, to ControllerPosition) {
-	if ac.ApproachTCP == from {
-		ac.ApproachTCP = to
-	}
-	if ac.PreArrivalDropTCP == from {
-		ac.PreArrivalDropTCP = to
-	}
-
-	if ac.IsUnassociated() {
-		return
-	}
-
-	sfp := ac.NASFlightPlan
-	if sfp.HandoffController == from {
-		sfp.HandoffController = to
-	}
-	if sfp.TrackingController == from {
-		sfp.TrackingController = to
-	}
-	if sfp.ControllingController == from {
-		sfp.ControllingController = to
-	}
-}
-
-func (ac *Aircraft) handleControllerDisconnect(callsign ControllerPosition, primaryController ControllerPosition) {
-	if callsign == primaryController {
-		// Don't change anything; the sim will pause without the primary
-		// controller, so we might as well have all of the tracks and
-		// inbound handoffs waiting for them when they return.
-		return
-	}
-	if ac.IsUnassociated() {
-		return
-	}
-
-	sfp := ac.NASFlightPlan
-	if sfp.HandoffController == callsign {
-		// Otherwise redirect handoffs to the primary controller. This is
-		// not a perfect solution; for an arrival, for example, we should
-		// re-resolve it based on the signed-in controllers, as is done in
-		// Sim updateState() for arrivals when they are first handed
-		// off. We don't have all of that information here, though...
-		sfp.HandoffController = primaryController
-	}
-
-	if sfp.ControllingController == callsign {
-		if sfp.TrackingController == callsign {
-			// Drop track of aircraft that we control
-			sfp.TrackingController = ""
-			sfp.ControllingController = ""
-		} else {
-			// Another controller has the track but not yet control;
-			// just give them control
-			sfp.ControllingController = sfp.TrackingController
-		}
-	}
 }
 
 func (ac *Aircraft) IsUnassociated() bool {

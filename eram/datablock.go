@@ -259,12 +259,11 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
 		colColor := (ps.Brightness.FDB + ps.Brightness.Portal).ScaleRGB(ERAMYellow)
-		dbWriteText(db.col1[:], util.Select(ctx.UserControlsPosition(trk.FlightPlan.TrackingController), "", " R"), colColor, false)
+		dbWriteText(db.col1[:], util.Select(ctx.UserOwnsFlightPlan(trk.FlightPlan), "", " R"), colColor, false)
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 		if trk.FlightPlan.HandoffController != "" {
-			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.HandoffController]
 			var controller string
-			if ok {
+			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
 				controller = ctrl.ERAMID()
 				if len(controller) == 2 {
 					controller = "-" + controller
@@ -278,9 +277,8 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 			a := util.Select(ep.dbAlternate, fmt.Sprintf("H%v", controller), fmt.Sprintf(" %v", int(state.track.Groundspeed)))
 			dbWriteText(db.fieldE[:], a, color, true)
 		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
-			ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]
 			var controller string
-			if ok {
+			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
 				controller = ctrl.ERAMID()
 				if len(controller) == 2 {
 					controller = "-" + controller

@@ -493,7 +493,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				MenuBarHeight:      menuBarHeight,
 				KeyboardFocus:      &wm.focus,
 				Client:             controlClient,
-				UserTCP:            controlClient.State.UserTCP,
+				UserTCW:            controlClient.State.UserTCW,
 				NmPerLongitude:     controlClient.State.NmPerLongitude,
 				MagneticVariation:  controlClient.State.MagneticVariation,
 				FacilityAdaptation: &controlClient.State.FacilityAdaptation,

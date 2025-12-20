@@ -183,9 +183,8 @@ func (sc *STARSComputer) Update(s *Sim) {
 
 			if associate {
 				if fp := sc.takeFlightPlanBySquawk(ac.Squawk); fp != nil {
-					// For multi-controller, resolve to the one covering the
-					// departure position based on who is signed in now.
-					fp.TrackingController = s.State.ResolveController(fp.TrackingController)
+					fp.OwningTCW = s.State.TCWForPosition(fp.TrackingController)
+
 					if fp.ManuallyCreated {
 						// If an aircraft tagged up on a manually created
 						// FP, assume that they called and asked for flight

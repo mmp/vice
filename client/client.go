@@ -55,7 +55,7 @@ type ControlClient struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	State sim.State
+	State server.SimState
 }
 
 // This is the client-side representation of a server (perhaps could be better-named...)
@@ -66,8 +66,8 @@ type Server struct {
 	AvailableWXByTRACON map[string][]util.TimeInterval
 
 	name        string
-	configs     map[string]map[string]*server.Configuration
-	runningSims map[string]*server.RemoteSim
+	catalogs    map[string]map[string]*server.ScenarioCatalog
+	runningSims map[string]*server.RunningSim
 }
 
 type SessionStats struct {
@@ -77,14 +77,16 @@ type SessionStats struct {
 	Overflights   int
 
 	SignOnTime time.Time
+	Initials   string
 
 	seenCallsigns map[av.ADSBCallsign]interface{}
 }
 
-func (s *SessionStats) Update(ss *sim.State) {
-	for _, trk := range ss.Tracks {
+func (s *SessionStats) Update(ss *server.SimState) {
+	for i, trk := range ss.Tracks {
 		if fp := trk.FlightPlan; fp != nil {
-			if fp.TrackingController != ss.UserTCP {
+			// Use track ownership check (via OwningTCW).
+			if !ss.UserControlsTrack(ss.Tracks[i]) {
 				continue // not ours
 			}
 			if _, ok := s.seenCallsigns[trk.ADSBCallsign]; ok {
@@ -132,14 +134,14 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 type pendingCall struct {
 	Call      *rpc.Call
 	IssueTime time.Time
-	Callback  func(*sim.EventStream, *sim.State, error)
+	Callback  func(*sim.EventStream, *server.SimState, error)
 }
 
 func makeRPCCall(call *rpc.Call, callback func(error)) *pendingCall {
 	return &pendingCall{
 		Call:      call,
 		IssueTime: time.Now(),
-		Callback: func(es *sim.EventStream, state *sim.State, err error) {
+		Callback: func(es *sim.EventStream, state *server.SimState, err error) {
 			if callback != nil {
 				callback(err)
 			}
@@ -147,11 +149,11 @@ func makeRPCCall(call *rpc.Call, callback func(error)) *pendingCall {
 	}
 }
 
-func makeStateUpdateRPCCall(call *rpc.Call, update *sim.StateUpdate, callback func(error)) *pendingCall {
+func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callback func(error)) *pendingCall {
 	return &pendingCall{
 		Call:      call,
 		IssueTime: time.Now(),
-		Callback: func(es *sim.EventStream, state *sim.State, err error) {
+		Callback: func(es *sim.EventStream, state *server.SimState, err error) {
 			if err == nil {
 				update.Apply(state, es)
 			}
@@ -162,7 +164,7 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *sim.StateUpdate, callback fu
 	}
 }
 
-func (p *pendingCall) CheckFinished(es *sim.EventStream, state *sim.State) bool {
+func (p *pendingCall) CheckFinished(es *sim.EventStream, state *server.SimState) bool {
 	select {
 	case c := <-p.Call.Done:
 		if p.Callback != nil {
@@ -175,7 +177,7 @@ func (p *pendingCall) CheckFinished(es *sim.EventStream, state *sim.State) bool 
 	}
 }
 
-func NewControlClient(ss sim.State, controllerToken string, wsURL string, client *RPCClient, lg *log.Logger) *ControlClient {
+func NewControlClient(ss server.SimState, controllerToken string, wsURL string, initials string, client *RPCClient, lg *log.Logger) *ControlClient {
 	cc := &ControlClient{
 		controllerToken:   controllerToken,
 		client:            client,
@@ -189,6 +191,7 @@ func NewControlClient(ss sim.State, controllerToken string, wsURL string, client
 	}
 
 	cc.SessionStats.SignOnTime = ss.SimTime
+	cc.SessionStats.Initials = initials
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
 	return cc
 }
@@ -253,7 +256,7 @@ func (c *ControlClient) Status() string {
 		stats := c.SessionStats
 		deparr := fmt.Sprintf(" [ %d departures %d arrivals %d intrafacility %d overflights ]",
 			stats.Departures, stats.Arrivals, stats.IntraFacility, stats.Overflights)
-		return string(c.State.UserTCP) + c.State.SimDescription + deparr
+		return string(c.State.UserTCW) + c.State.SimDescription + deparr
 	}
 }
 
@@ -279,10 +282,10 @@ func (c *ControlClient) addCall(pc *pendingCall) {
 	c.pendingCalls = append(c.pendingCalls, pc)
 }
 
-func (c *ControlClient) ControllerAirspace(id string) []av.ControllerAirspaceVolume {
+func (c *ControlClient) AirspaceForTCW(tcw sim.TCW) []av.ControllerAirspaceVolume {
 	var vols []av.ControllerAirspaceVolume
-	for _, pos := range c.State.GetConsolidatedPositions(id) {
-		for _, avol := range util.SortedMap(c.State.Airspace[sim.ControllerPosition(pos)]) {
+	for _, pos := range c.State.GetPositionsForTCW(tcw) {
+		for _, avol := range util.SortedMap(c.State.Airspace[pos]) {
 			vols = append(vols, avol...)
 		}
 	}
@@ -294,32 +297,43 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		return
 	}
 
+	// Track if we need to call onErr after releasing the lock; calling it
+	// with the lock held is verboten since it may call Disconnect(), which
+	// also needs the lock.
+	var callbackErr error
+
 	c.mu.Lock()
-	defer c.mu.Unlock()
 
 	if c.updateCall != nil {
 		if c.updateCall.CheckFinished(eventStream, &c.State) {
 			c.updateCall = nil
 			c.SessionStats.Update(&c.State)
+			c.mu.Unlock()
 			return
 		}
-		checkTimeout(c.updateCall, eventStream, onErr)
+		callbackErr = checkTimeout(c.updateCall, eventStream)
 	}
 
 	c.updateSpeech(p)
 
-	c.checkPendingRPCs(eventStream, onErr)
+	if callbackErr == nil {
+		callbackErr = c.checkPendingRPCs(eventStream)
+	}
 
 	// Wait in seconds between update fetches; no less than 50ms
 	rate := math.Clamp(1/c.State.SimRate, 0.05, 1)
 	if d := time.Since(c.lastUpdateRequest); d > time.Duration(rate*float32(time.Second)) {
-		if c.updateCall != nil {
+		if c.updateCall != nil && !util.DebuggerIsRunning() {
 			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
+			c.mu.Unlock()
+			if callbackErr != nil && onErr != nil {
+				onErr(callbackErr)
+			}
 			return
 		}
 		c.lastUpdateRequest = time.Now()
 
-		var update sim.StateUpdate
+		var update server.SimStateUpdate
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
 				d := time.Since(c.updateCall.IssueTime)
@@ -330,6 +344,12 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 					c.lg.Debugf("World update response time %s", d)
 				}
 			})
+	}
+
+	c.mu.Unlock()
+
+	if callbackErr != nil && onErr != nil {
+		onErr(callbackErr)
 	}
 }
 
@@ -408,29 +428,27 @@ loop:
 	}
 }
 
-func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream, onErr func(error)) {
+func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) error {
 	c.pendingCalls = slices.DeleteFunc(c.pendingCalls,
 		func(call *pendingCall) bool { return call.CheckFinished(eventStream, &c.State) })
 
 	for _, call := range c.pendingCalls {
-		if checkTimeout(call, eventStream, onErr) {
-			break
+		if err := checkTimeout(call, eventStream); err != nil {
+			return err
 		}
 	}
+	return nil
 }
 
-func checkTimeout(call *pendingCall, eventStream *sim.EventStream, onErr func(error)) bool {
+func checkTimeout(call *pendingCall, eventStream *sim.EventStream) error {
 	if time.Since(call.IssueTime) > 5*time.Second && !util.DebuggerIsRunning() {
 		eventStream.Post(sim.Event{
 			Type:        sim.StatusMessageEvent,
 			WrittenText: "No response from server for over 5 seconds. Network connection may be lost.",
 		})
-		if onErr != nil {
-			onErr(server.ErrRPCTimeout)
-		}
-		return true
+		return server.ErrRPCTimeout
 	}
-	return false
+	return nil
 }
 
 func (c *ControlClient) Connected() bool {
@@ -553,8 +571,8 @@ func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 
 func (c *ControlClient) GetPrecipURL(t time.Time, callback func(url string, nextTime time.Time, err error)) {
 	args := server.PrecipURLArgs{
-		TRACON: c.State.TRACON,
-		Time:   t,
+		Facility: c.State.Facility,
+		Time:     t,
 	}
 	var result server.PrecipURL
 	c.addCall(makeRPCCall(c.client.Go(server.GetPrecipURLRPC, args, &result, nil),
@@ -567,7 +585,7 @@ func (c *ControlClient) GetPrecipURL(t time.Time, callback func(url string, next
 
 func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, error)) {
 	spec := server.GetAtmosArgs{
-		TRACON:         c.State.TRACON,
+		Facility:       c.State.Facility,
 		Time:           t,
 		PrimaryAirport: c.State.PrimaryAirport,
 	}
@@ -596,15 +614,15 @@ func (s *Server) Close() error {
 	return s.RPCClient.Close()
 }
 
-func (s *Server) GetConfigs() map[string]map[string]*server.Configuration {
-	return s.configs
+func (s *Server) GetScenarioCatalogs() map[string]map[string]*server.ScenarioCatalog {
+	return s.catalogs
 }
 
-func (s *Server) setRunningSims(rs map[string]*server.RemoteSim) {
+func (s *Server) setRunningSims(rs map[string]*server.RunningSim) {
 	s.runningSims = rs
 }
 
-func (s *Server) GetRunningSims() map[string]*server.RemoteSim {
+func (s *Server) GetRunningSims() map[string]*server.RunningSim {
 	return s.runningSims
 }
 
@@ -643,7 +661,7 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 						HaveTTS:             cr.HaveTTS,
 						AvailableWXByTRACON: cr.AvailableWXByTRACON,
 						name:                "Network (Multi-controller)",
-						configs:             cr.Configurations,
+						catalogs:            cr.ScenarioCatalogs,
 						runningSims:         cr.RunningSims,
 					},
 				}
@@ -661,7 +679,7 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		return
 	}
 
-	err = client.callWithTimeout(server.BroadcastRPC, &server.SimBroadcastMessage{
+	err = client.callWithTimeout(server.BroadcastRPC, &server.BroadcastMessage{
 		Password: password,
 		Message:  msg,
 	}, nil)

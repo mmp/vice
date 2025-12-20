@@ -54,10 +54,10 @@ func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl ControllerPosit
 }
 
 func (rd *RedirectedHandoff) AddRedirector(ctrl *av.Controller) {
-	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ControllerPosition(ctrl.Id()) {
+	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.PositionId() {
 		// Don't append the same controller multiple times
 		// (the case in which the last redirector recalls and then redirects again)
-		rd.Redirector = append(rd.Redirector, ControllerPosition(ctrl.Id()))
+		rd.Redirector = append(rd.Redirector, ctrl.PositionId())
 	}
 }
 
@@ -314,21 +314,21 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 }
 
 type FacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness" scope:"stars"`
-	ForceQLToSelf       bool                              `json:"force_ql_self" scope:"stars"`
-	AllowLongScratchpad bool                              `json:"allow_long_scratchpad" scope:"stars"`
-	VideoMapNames       []string                          `json:"stars_maps" scope:"stars"`
-	ERAMMapNames        map[string][]string               `json:"eram_maps" scope:"eram"`
-	VideoMapLabels      map[string]string                 `json:"map_labels"`
-	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	RadarSites          map[string]*av.RadarSite          `json:"radar_sites" scope:"stars"`
-	Center              math.Point2LL                     `json:"-"`
-	CenterString        string                            `json:"center"`
-	MaxDistance         float32                           `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm)
-	Range               float32                           `json:"range"`
-	Scratchpads         map[string]string                 `json:"scratchpads" scope:"stars"`
-	SignificantPoints   map[string]SignificantPoint       `json:"significant_points" scope:"stars"`
-	Altimeters          []string                          `json:"altimeters"`
+	AirspaceAwareness   []AirspaceAwareness                           `json:"airspace_awareness" scope:"stars"`
+	ForceQLToSelf       bool                                          `json:"force_ql_self" scope:"stars"`
+	AllowLongScratchpad bool                                          `json:"allow_long_scratchpad" scope:"stars"`
+	VideoMapNames       []string                                      `json:"stars_maps" scope:"stars"`
+	ERAMMapNames        map[string][]string                           `json:"eram_maps" scope:"eram"`
+	VideoMapLabels      map[string]string                             `json:"map_labels"`
+	ControllerConfigs   map[ControllerPosition]*STARSControllerConfig `json:"controller_configs"`
+	RadarSites          map[string]*av.RadarSite                      `json:"radar_sites" scope:"stars"`
+	Center              math.Point2LL                                 `json:"-"`
+	CenterString        string                                        `json:"center"`
+	MaxDistance         float32                                       `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm)
+	Range               float32                                       `json:"range"`
+	Scratchpads         map[string]string                             `json:"scratchpads" scope:"stars"`
+	SignificantPoints   map[string]SignificantPoint                   `json:"significant_points" scope:"stars"`
+	Altimeters          []string                                      `json:"altimeters"`
 
 	// Airpsace filters
 	Filters struct {
@@ -502,6 +502,7 @@ type NASFlightPlan struct {
 	ControllingController ControllerPosition // Who has control; not necessarily the same as TrackingController
 	HandoffController     ControllerPosition // Handoff offered but not yet accepted
 	LastLocalController   ControllerPosition // (May be the current controller.)
+	OwningTCW             TCW                // TCW that owns this track
 
 	AircraftCount   int
 	AircraftType    string
@@ -531,7 +532,7 @@ type NASFlightPlan struct {
 	Location math.Point2LL
 	Route    string
 
-	PointOutHistory             []string
+	PointOutHistory             []ControllerPosition
 	InhibitModeCAltitudeDisplay bool
 	SPCOverride                 string
 	DisableMSAW                 bool
@@ -582,7 +583,7 @@ type FlightPlanSpecifier struct {
 	SquawkAssignment         util.Optional[string]
 	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
 
-	TrackingController util.Optional[string]
+	TrackingController util.Optional[ControllerPosition]
 
 	AircraftCount   util.Optional[int]
 	AircraftType    util.Optional[string]
@@ -639,7 +640,7 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 		EquipmentSuffix: s.EquipmentSuffix.GetOr(""),
 
 		TypeOfFlight:       s.TypeOfFlight.GetOr(av.FlightTypeUnknown),
-		TrackingController: ControllerPosition(s.TrackingController.GetOr("")),
+		TrackingController: s.TrackingController.GetOr(""),
 
 		AssignedAltitude:      s.AssignedAltitude.GetOr(0),
 		RequestedAltitude:     s.RequestedAltitude.GetOr(0),
@@ -652,7 +653,7 @@ func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
 
 		Location: s.Location.GetOr(math.Point2LL{}),
 
-		PointOutHistory:             s.PointOutHistory.GetOr(nil),
+		PointOutHistory:             util.MapSlice(s.PointOutHistory.GetOr(nil), func(s string) ControllerPosition { return ControllerPosition(s) }),
 		InhibitModeCAltitudeDisplay: s.InhibitModeCAltitudeDisplay.GetOr(false),
 		SPCOverride:                 s.SPCOverride.GetOr(""),
 		DisableMSAW:                 s.DisableMSAW.GetOr(false),
@@ -815,7 +816,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 		fp.TypeOfFlight = spec.TypeOfFlight.Get()
 	}
 	if spec.TrackingController.IsSet {
-		fp.TrackingController = ControllerPosition(spec.TrackingController.Get())
+		fp.TrackingController = spec.TrackingController.Get()
 	}
 	if spec.AssignedAltitude.IsSet {
 		fp.AssignedAltitude = spec.AssignedAltitude.Get()
@@ -852,7 +853,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 		fp.Location = spec.Location.Get()
 	}
 	if spec.PointOutHistory.IsSet {
-		fp.PointOutHistory = spec.PointOutHistory.Get()
+		fp.PointOutHistory = util.MapSlice(spec.PointOutHistory.Get(), func(s string) ControllerPosition { return ControllerPosition(s) })
 	}
 	if spec.InhibitModeCAltitudeDisplay.IsSet {
 		fp.InhibitModeCAltitudeDisplay = spec.InhibitModeCAltitudeDisplay.Get()
@@ -934,10 +935,10 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 		for tcp, config := range fa.ControllerConfigs {
 			for i := range config.FlightFollowingAirspace {
 				if config.FlightFollowingAirspace[i].Id == "" {
-					config.FlightFollowingAirspace[i].Id = "FF" + tcp + strconv.Itoa(i+1)
+					config.FlightFollowingAirspace[i].Id = "FF" + string(tcp) + strconv.Itoa(i+1)
 				}
 				if config.FlightFollowingAirspace[i].Description == "" {
-					config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + tcp + " " + strconv.Itoa(i+1)
+					config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + string(tcp) + " " + strconv.Itoa(i+1)
 				}
 
 				config.FlightFollowingAirspace[i].PostDeserialize(loc, e)

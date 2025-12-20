@@ -89,7 +89,7 @@ type Context struct {
 	Client *client.ControlClient
 
 	// from Client.State, here for convenience
-	UserTCP            sim.ControllerPosition
+	UserTCW            sim.TCW // User's workstation identifier
 	NmPerLongitude     float32
 	MagneticVariation  float32
 	FacilityAdaptation *sim.FacilityAdaptation
@@ -156,8 +156,81 @@ func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByACID(acid)
 }
 
+// UserControlsPosition returns true if the current user controls the given position
+// (either as their primary position or as a consolidated secondary).
 func (ctx *Context) UserControlsPosition(pos sim.ControllerPosition) bool {
-	return pos == ctx.UserTCP
+	return ctx.Client.State.UserControlsPosition(pos)
+}
+
+// UserOwnsFlightPlan returns true if the current user owns the given flight plan.
+// Track ownership is determined by the OwningTCW field.
+func (ctx *Context) UserOwnsFlightPlan(fp *sim.NASFlightPlan) bool {
+	return fp != nil && fp.OwningTCW == ctx.UserTCW
+}
+
+// ResolveController returns the signed-in controller who controls the given position.
+// If the position is a primary controller, it returns it as-is. If it is
+// a consolidated secondary, it returns the primary position of the controlling TCW.
+func (ctx *Context) ResolveController(pos sim.ControllerPosition) sim.ControllerPosition {
+	return ctx.Client.State.ResolveController(pos)
+}
+
+// GetResolvedController returns the controller for the given position, resolving consolidated
+// secondary positions to their controlling primary. Returns nil if not found.
+func (ctx *Context) GetResolvedController(pos sim.ControllerPosition) *av.Controller {
+	return ctx.Client.State.Controllers[ctx.Client.State.ResolveController(pos)]
+}
+
+// UserPrimaryPosition returns the user's primary position (the position they signed into).
+func (ctx *Context) UserPrimaryPosition() sim.ControllerPosition {
+	return ctx.Client.State.PrimaryPositionForTCW(ctx.UserTCW)
+}
+
+func (ctx *Context) PrimaryTCPForTCW(tcw sim.TCW) sim.TCP {
+	return sim.TCP(ctx.Client.State.PrimaryPositionForTCW(tcw))
+}
+
+// UserController returns the Controller for the user's primary position.
+func (ctx *Context) UserController() *av.Controller {
+	return ctx.Client.State.Controllers[ctx.UserPrimaryPosition()]
+}
+
+func (ctx *Context) TCWIsPrivileged(tcw sim.TCW) bool {
+	return ctx.Client.State.TCWIsPrivileged(tcw)
+}
+
+func (ctx *Context) TCWIsObserver(tcw sim.TCW) bool {
+	return ctx.Client.State.TCWIsObserver(tcw)
+}
+
+// UserWasRedirector returns true if any of the user's controlled positions
+// are in the given redirector list.
+func (ctx *Context) UserWasRedirector(redirectors []sim.ControllerPosition) bool {
+	for _, pos := range ctx.Client.State.GetPositionsForTCW(ctx.UserTCW) {
+		if slices.Contains(redirectors, pos) {
+			return true
+		}
+	}
+	return false
+}
+
+// IsHandoffToUser returns true if the given track is being handed off to any
+// of the user's controlled TCPs (primary or secondary).
+func (ctx *Context) IsHandoffToUser(trk *sim.Track) bool {
+	if trk.IsUnassociated() {
+		return false
+	}
+	sfp := trk.FlightPlan
+	// Check if handoff target is one of user's TCPs
+	if !ctx.UserControlsPosition(sfp.HandoffController) {
+		return false
+	}
+	// Not if we're a redirector (unless redirected back to us)
+	if ctx.UserWasRedirector(sfp.RedirectedHandoff.Redirector) &&
+		!ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
+		return false
+	}
+	return true
 }
 
 // Returns all aircraft that match the given suffix. If instructor, returns
@@ -173,13 +246,12 @@ func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
 				return false
 			}
 
-			if ctx.UserControlsPosition(fp.ControllingController) || ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			if ctx.UserControlsPosition(fp.ControllingController) || ctx.TCWIsPrivileged(ctx.UserTCW) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.UserControlsPosition(ctx.Client.State.ResolveController(trk.FlightPlan.TrackingController)) &&
-				trk.FlightPlan.ControllingController == "" {
+			if ctx.UserOwnsFlightPlan(trk.FlightPlan) && trk.FlightPlan.ControllingController == "" {
 				return true
 			}
 			return false

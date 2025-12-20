@@ -640,13 +640,13 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 	}
 
 	if sp.scopeDraw.airspace != nil {
-		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
-			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
-				if !sp.scopeDraw.airspace[ctrl][volname] {
+		for _, tcp := range util.SortedMapKeys(sp.scopeDraw.airspace) {
+			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[tcp]) {
+				if !sp.scopeDraw.airspace[tcp][volname] {
 					continue
 				}
 
-				for _, vol := range ctx.Client.State.Airspace[ctrl][volname] {
+				for _, vol := range ctx.Client.State.Airspace[tcp][volname] {
 					for _, pts := range vol.Boundaries {
 						for i := range pts[:len(pts)-1] {
 							ld.AddLine(pts[i], pts[i+1], color)
@@ -685,7 +685,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransfor
 			continue
 		}
 		// We have it or it's an inbound handoff to us.
-		ourTrack := trk.IsAssociated() && (ctx.UserControlsPosition(trk.FlightPlan.TrackingController) ||
+		ourTrack := trk.IsAssociated() && (ctx.UserOwnsFlightPlan(trk.FlightPlan) ||
 			ctx.UserControlsPosition(trk.FlightPlan.HandoffController))
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue

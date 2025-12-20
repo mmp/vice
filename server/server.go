@@ -11,7 +11,6 @@ import (
 	"strconv"
 
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
@@ -50,14 +49,15 @@ import (
 // 39: speech v0.1
 // 40: clean up what's transmitted server->client at initial connect/spawn, gob->msgpack
 // 41: sim.State.SimStartTime
-// 42: server.NewSimConfiguration.StartTime
+// 42: server.NewSimRequest.StartTime
 // 43: WX rework (scrape, etc.)
 // 44: store pane instances and split positions separately, rather than the entire DisplayNode hierarchy
 // 45: Change STARSFacilityAdaptation to FacilityAdaptation
 // 46: Remove token from video map fetch RPC, misc wx updates
 // 47: pass PrimaryAirport to GetAtmosGrid RPC
 // 48: release bump
-const ViceSerializeVersion = 48
+// 49: STARS consolidation
+const ViceSerializeVersion = 49
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
@@ -117,14 +117,8 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, simConfigurations, mapManifests, extraScenarioErrors :=
+	scenarioGroups, scenarioCatalogs, mapManifests, extraScenarioErrors :=
 		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
-	if errorLogger.HaveErrors() {
-		return 0, nil, errorLogger, ""
-	}
-
-	// Load emergency types
-	emergencies := sim.LoadEmergencies(&errorLogger)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
 	}
@@ -132,7 +126,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, emergencies, config.ServerAddress, config.IsLocal, lg)
+		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapManifests, config.ServerAddress, config.IsLocal, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)

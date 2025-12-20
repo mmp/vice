@@ -131,7 +131,7 @@ func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
 	return start
 }
 
-func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, tcp sim.ControllerPosition) {
+func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, ctx *Context) {
 	if _, ok := fsp.addedPlans[fp.ACID]; ok {
 		// We've seen it before.
 		return
@@ -142,7 +142,7 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, tcp sim.Controlle
 		return
 	}
 
-	if fp.TrackingController == tcp {
+	if ctx.UserOwnsFlightPlan(fp) {
 		fsp.strips = append(fsp.strips, fp.ACID)
 		fsp.addedPlans[fp.ACID] = nil
 		fsp.Annotations[fp.ACID] = [9]string{"", "", "", "", "", "", "", "", ""}
@@ -167,7 +167,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// Added aircraft
 	for _, trk := range ctx.Client.State.Tracks {
 		if trk.FlightPlan != nil {
-			fsp.possiblyAdd(trk.FlightPlan, ctx.UserTCP)
+			fsp.possiblyAdd(trk.FlightPlan, ctx)
 		}
 	}
 
@@ -191,21 +191,21 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			// necessary to check that it's still in
 			// ControlClient.Aircraft.
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AddPushed {
-				fsp.possiblyAdd(fp, ctx.UserTCP)
+				fsp.possiblyAdd(fp, ctx)
 			}
 
 		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddTracked {
-				fsp.possiblyAdd(fp, ctx.UserTCP)
+				fsp.possiblyAdd(fp, ctx)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddAcceptedHandoffs {
-				fsp.possiblyAdd(fp, ctx.UserTCP)
+				fsp.possiblyAdd(fp, ctx)
 			}
 
 		case sim.HandoffControlEvent:
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && !ctx.UserControlsPosition(fp.TrackingController) {
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && !ctx.UserOwnsFlightPlan(fp) {
 				remove(event.ACID)
 			}
 		}

@@ -235,6 +235,7 @@ type CommonPreferences struct {
 			DisabledTerminal    bool
 			ActiveCRDAPairs     bool
 			WxHistory           bool
+			Consolidation       bool
 			GIText              [10]bool
 		}
 	}
@@ -580,7 +581,7 @@ func (p *Preferences) Upgrade(from, to int) {
 }
 
 func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
-	prefSet, ok := sp.TRACONPreferenceSets[ss.TRACON]
+	prefSet, ok := sp.TRACONPreferenceSets[ss.Facility]
 	if !ok {
 		// First time we've seen this TRACON. Start out with system defaults.
 		prefSet = &PreferenceSet{
@@ -612,7 +613,7 @@ func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
 			prefSet.Current.CommonPreferences = sp.prefSet.Current.CommonPreferences
 		}
 
-		sp.TRACONPreferenceSets[ss.TRACON] = prefSet
+		sp.TRACONPreferenceSets[ss.Facility] = prefSet
 	}
 
 	// Cache the PreferenceSet for use throughout the rest of the STARSPane

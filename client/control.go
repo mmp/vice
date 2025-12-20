@@ -47,7 +47,7 @@ func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
 }
 
 func (c *ControlClient) CreateFlightPlan(spec sim.FlightPlanSpecifier, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go(server.CreateFlightPlanRPC, &server.CreateFlightPlanArgs{
 			ControllerToken:     c.controllerToken,
@@ -56,7 +56,7 @@ func (c *ControlClient) CreateFlightPlan(spec sim.FlightPlanSpecifier, callback 
 }
 
 func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.FlightPlanSpecifier, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go(server.ModifyFlightPlanRPC, &server.ModifyFlightPlanArgs{
 			ControllerToken:     c.controllerToken,
@@ -66,7 +66,7 @@ func (c *ControlClient) ModifyFlightPlan(acid sim.ACID, spec sim.FlightPlanSpeci
 }
 
 func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.FlightPlanSpecifier, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go(server.AssociateFlightPlanRPC, &server.AssociateFlightPlanArgs{
 			ControllerToken:     c.controllerToken,
@@ -82,7 +82,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.F
 
 func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.FlightPlanSpecifier,
 	callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(
 		makeStateUpdateRPCCall(c.client.Go(server.ActivateFlightPlanRPC, &server.ActivateFlightPlanArgs{
 			ControllerToken:     c.controllerToken,
@@ -98,7 +98,7 @@ func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.
 }
 
 func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeleteFlightPlanRPC, &server.DeleteFlightPlanArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -106,7 +106,7 @@ func (c *ControlClient) DeleteFlightPlan(acid sim.ACID, callback func(error)) {
 }
 
 func (c *ControlClient) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign, p math.Point2LL, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.RepositionTrackRPC, &server.RepositionTrackArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -115,17 +115,17 @@ func (c *ControlClient) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign,
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) HandoffTrack(acid sim.ACID, controller string, callback func(error)) {
-	var update sim.StateUpdate
+func (c *ControlClient) HandoffTrack(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.HandoffTrackRPC, &server.HandoffArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
-		ToTCP:           controller,
+		ToPosition:      to,
 	}, &update, nil), &update, callback))
 }
 
 func (c *ControlClient) AcceptHandoff(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.AcceptHandoffRPC, &server.AcceptHandoffArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -137,17 +137,17 @@ func (c *ControlClient) AcceptHandoff(acid sim.ACID, callback func(error)) {
 		}))
 }
 
-func (c *ControlClient) RedirectHandoff(acid sim.ACID, tcp string, callback func(error)) {
-	var update sim.StateUpdate
+func (c *ControlClient) RedirectHandoff(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.RedirectHandoffRPC, &server.HandoffArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
-		ToTCP:           tcp,
+		ToPosition:      to,
 	}, &update, nil), &update, callback))
 }
 
 func (c *ControlClient) AcceptRedirectedHandoff(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.AcceptRedirectedHandoffRPC, &server.AcceptHandoffArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -160,33 +160,33 @@ func (c *ControlClient) AcceptRedirectedHandoff(acid sim.ACID, callback func(err
 }
 
 func (c *ControlClient) CancelHandoff(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.CancelHandoffRPC, &server.CancelHandoffArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) ForceQL(acid sim.ACID, controller string, callback func(error)) {
-	var update sim.StateUpdate
+func (c *ControlClient) ForceQL(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ForceQLRPC, &server.ForceQLArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
-		Controller:      controller,
+		ToPosition:      to,
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) PointOut(acid sim.ACID, controller string, callback func(error)) {
-	var update sim.StateUpdate
+func (c *ControlClient) PointOut(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.PointOutRPC, &server.PointOutArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
-		Controller:      controller,
+		ToPosition:      to,
 	}, &update, nil), &update, callback))
 }
 
 func (c *ControlClient) AcknowledgePointOut(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.AcknowledgePointOutRPC, &server.PointOutArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -194,7 +194,7 @@ func (c *ControlClient) AcknowledgePointOut(acid sim.ACID, callback func(error))
 }
 
 func (c *ControlClient) RecallPointOut(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.RecallPointOutRPC, &server.PointOutArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -202,7 +202,7 @@ func (c *ControlClient) RecallPointOut(acid sim.ACID, callback func(error)) {
 }
 
 func (c *ControlClient) RejectPointOut(acid sim.ACID, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.RejectPointOutRPC, &server.PointOutArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            acid,
@@ -210,27 +210,11 @@ func (c *ControlClient) RejectPointOut(acid sim.ACID, callback func(error)) {
 }
 
 func (c *ControlClient) ReleaseDeparture(callsign av.ADSBCallsign, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ReleaseDepartureRPC, &server.HeldDepartureArgs{
 		ControllerToken: c.controllerToken,
 		Callsign:        callsign,
 	}, &update, nil), &update, callback))
-}
-
-func (c *ControlClient) ChangeControlPosition(tcp string, keepTracks bool) error {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	err := c.client.callWithTimeout(server.ChangeControlPositionRPC,
-		&server.ChangeControlPositionArgs{
-			ControllerToken: c.controllerToken,
-			TCP:             tcp,
-			KeepTracks:      keepTracks,
-		}, nil)
-	if err == nil {
-		c.State.UserTCP = sim.ControllerPosition(tcp)
-	}
-	return err
 }
 
 func (c *ControlClient) SetWaypointCommands(commands string) {
@@ -283,7 +267,7 @@ func (c *ControlClient) CreateRestrictionArea(ra av.RestrictionArea, callback fu
 }
 
 func (c *ControlClient) UpdateRestrictionArea(idx int, ra av.RestrictionArea, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.UpdateRestrictionAreaRPC, &server.RestrictionAreaArgs{
 		ControllerToken: c.controllerToken,
 		Index:           idx,
@@ -292,7 +276,7 @@ func (c *ControlClient) UpdateRestrictionArea(idx int, ra av.RestrictionArea, ca
 }
 
 func (c *ControlClient) DeleteRestrictionArea(idx int, callback func(error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeleteRestrictionAreaRPC, &server.RestrictionAreaArgs{
 		ControllerToken: c.controllerToken,
 		Index:           idx,
@@ -343,7 +327,7 @@ func (c *ControlClient) TriggerEmergency(emergencyName string) {
 }
 
 func (c *ControlClient) FastForward() {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.FastForwardRPC, c.controllerToken, &update, nil), &update, nil))
 }
 
@@ -374,14 +358,14 @@ func (c *ControlClient) SetLaunchConfig(lc sim.LaunchConfig) {
 }
 
 func (c *ControlClient) DeleteAllAircraft(callback func(err error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeleteAllAircraftRPC, &server.DeleteAircraftArgs{
 		ControllerToken: c.controllerToken,
 	}, &update, nil), &update, callback))
 }
 
 func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(err error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeleteAircraftRPC, &server.DeleteAircraftListArgs{
 		ControllerToken: c.controllerToken,
 		Aircraft:        aircraft,
@@ -389,7 +373,7 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 }
 
 func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, callback func(err error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SendRouteCoordinatesRPC, &server.SendRouteCoordinatesArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            aircraft,
@@ -397,7 +381,7 @@ func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, callback func(er
 }
 
 func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback func(err error)) {
-	var update sim.StateUpdate
+	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.FlightPlanDirectRPC, &server.FlightPlanDirectArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            aircraft,
@@ -434,4 +418,27 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 				c.lg.Errorf("%s: %v", callsign, err)
 			}
 		}))
+}
+
+// ConsolidateTCP consolidates the sendingTCP to the receivingTCW's keyboard.
+// sim.ConsolidationFull transfers active tracks; sim.ConsolidationBasic only inactive/future flights.
+func (c *ControlClient) ConsolidateTCP(receivingTCW sim.TCW, sendingTCP sim.TCP, consType sim.ConsolidationType, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ConsolidateTCPRPC, &server.ConsolidateTCPArgs{
+		ControllerToken: c.controllerToken,
+		ReceivingTCW:    receivingTCW,
+		SendingTCP:      sendingTCP,
+		Type:            consType,
+	}, &update, nil), &update, callback))
+}
+
+// DeconsolidateTCP returns a secondary TCP to its default keyboard.  If
+// tcp is empty, deconsolidates the default TCP for the TCW (i.e., the TCP
+// one with the same name) back to the user's TCW.
+func (c *ControlClient) DeconsolidateTCP(tcp sim.TCP, callback func(error)) {
+	var update server.SimStateUpdate
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.DeconsolidateTCPRPC, &server.DeconsolidateTCPArgs{
+		ControllerToken: c.controllerToken,
+		TCP:             tcp,
+	}, &update, nil), &update, callback))
 }

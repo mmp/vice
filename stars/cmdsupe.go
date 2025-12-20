@@ -104,7 +104,7 @@ func init() {
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]T",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
-			ctrl := ctx.Client.State.Controllers[ctx.UserTCP]
+			ctrl := ctx.UserController()
 			ap := ctrl.DefaultAirport[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "T")
 		})
@@ -114,7 +114,7 @@ func init() {
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]S",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
-			ctrl := ctx.Client.State.Controllers[ctx.UserTCP]
+			ctrl := ctx.UserController()
 			ap := ctrl.DefaultAirport[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "S")
 		})
@@ -124,7 +124,7 @@ func init() {
 		})
 	registerCommand(CommandModeMultiFunc, "NP[NUM]D",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) (CommandStatus, error) {
-			ctrl := ctx.Client.State.Controllers[ctx.UserTCP]
+			ctrl := ctx.UserController()
 			ap := ctrl.DefaultAirport[1:]
 			return enableInhibitRunwayPair(sp, ctx, ps, ap, idx, "D")
 		})

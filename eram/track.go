@@ -115,7 +115,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	for _, event := range ep.events.Get() {
 		switch event.Type {
 		case sim.AcceptedHandoffEvent:
-			thisCtrl := !ctx.UserControlsPosition(sim.ControllerPosition(event.FromController)) && ctx.UserControlsPosition(sim.ControllerPosition(event.ToController))
+			thisCtrl := !ctx.UserControlsPosition(event.FromController) && ctx.UserControlsPosition(event.ToController)
 			if !thisCtrl {
 				continue
 			}
@@ -375,10 +375,10 @@ func (ep *ERAMPane) datablockType(ctx *panes.Context, trk sim.Track) DatablockTy
 	} else {
 		state := ep.TrackState[trk.ADSBCallsign]
 		fp := trk.FlightPlan
-		if ctx.UserControlsPosition(fp.TrackingController) {
+		if ctx.UserOwnsFlightPlan(fp) {
 			return FullDatablock
 		}
-		if trk.HandingOffTo(string(ctx.UserTCP)) {
+		if ctx.IsHandoffToUser(&trk) {
 			return FullDatablock
 		}
 		if state.eFDB {
@@ -423,7 +423,7 @@ func (ep *ERAMPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs 
 		}
 		v := util.Select(dbType == FullDatablock, ep.leaderLineVector(*dir), ep.leaderLineVectorNoLength(*dir))
 		if dbType == FullDatablock {
-			if !ctx.UserControlsPosition(trk.FlightPlan.TrackingController) && (*dir == math.NorthEast || *dir == math.East) {
+			if !ctx.UserOwnsFlightPlan(trk.FlightPlan) && (*dir == math.NorthEast || *dir == math.East) {
 				v = math.Scale2f(v, 0.7) // shorten the leader line for FDBs that are not tracked by the user
 			}
 		}

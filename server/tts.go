@@ -20,7 +20,9 @@ import (
 	"sync"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -67,6 +69,152 @@ type listVoicesResponse struct {
 
 var ErrMissingTTSCredentials = errors.New("VICE_GCS_CREDENTIALS not set")
 var ErrTTSUnavailable = errors.New("TTS service unavailable")
+
+// ttsUsageStats tracks TTS usage per IP address
+type ttsUsageStats struct {
+	Calls    int
+	Words    int
+	LastUsed time.Time
+}
+
+// ttsRequest represents a pending TTS request
+type ttsRequest struct {
+	callsign av.ADSBCallsign
+	ty       av.RadioTransmissionType
+	text     string
+	fut      sim.TTSSpeechFuture
+}
+
+type ttsRequestPool []ttsRequest
+
+func (p *ttsRequestPool) add(req ttsRequest) { *p = append(*p, req) }
+
+// drainCompleted checks pending TTS requests and returns any that have
+// completed (either successfully or with errors).
+func (p *ttsRequestPool) drainCompleted(lg *log.Logger) []sim.PilotSpeech {
+	var speech []sim.PilotSpeech
+
+	*p = util.FilterSlice(*p, func(req ttsRequest) bool {
+		select {
+		case mp3, ok := <-req.fut.Mp3Ch:
+			if ok {
+				speech = append(speech, sim.PilotSpeech{
+					Callsign: req.callsign,
+					Type:     req.ty,
+					Text:     req.text,
+					MP3:      mp3,
+				})
+			}
+			return false // remove from slice
+		case err, ok := <-req.fut.ErrCh:
+			if ok {
+				lg.Warnf("TTS error for %s %q: %v", req.callsign, req.text, err)
+				speech = append(speech, sim.PilotSpeech{
+					Callsign: req.callsign,
+					Type:     req.ty,
+					Text:     req.text,
+				})
+			}
+			return false // remove from slice
+		default:
+			return true // still pending
+		}
+	})
+
+	return speech
+}
+
+///////////////////////////////////////////////////////////////////////////
+// VoiceAssigner
+
+// VoiceAssigner manages the pool of available TTS voices and assigns them
+// to aircraft callsigns. Each aircraft gets a consistent voice throughout
+// the session.
+type VoiceAssigner struct {
+	voicePool           []sim.Voice
+	pendingVoicesFuture *sim.TTSVoicesFuture
+	aircraftVoices      map[av.ADSBCallsign]sim.Voice
+	rand                *rand.Rand
+}
+
+// NewVoiceAssigner creates a new VoiceAssigner.
+func NewVoiceAssigner() *VoiceAssigner {
+	return &VoiceAssigner{
+		aircraftVoices: make(map[av.ADSBCallsign]sim.Voice),
+		rand:           rand.Make(),
+	}
+}
+
+// TryInit attempts non-blocking initialization of the voice pool from the
+// TTS provider. Returns true if the pool is ready for use.
+func (va *VoiceAssigner) TryInit(tts sim.TTSProvider, lg *log.Logger) bool {
+	if tts == nil || len(va.voicePool) > 0 {
+		return len(va.voicePool) > 0
+	}
+
+	// Start an async request for voices if we haven't already
+	if va.pendingVoicesFuture == nil {
+		fut := tts.GetAllVoices()
+		va.pendingVoicesFuture = &fut
+	}
+
+	// Check if voices are ready (non-blocking)
+	select {
+	case voices, ok := <-va.pendingVoicesFuture.VoicesCh:
+		if ok {
+			va.voicePool = voices
+		}
+		va.pendingVoicesFuture = nil
+		return len(va.voicePool) > 0
+	case err, ok := <-va.pendingVoicesFuture.ErrCh:
+		if ok {
+			lg.Warnf("TTS GetAllVoices error: %v", err)
+		}
+		va.pendingVoicesFuture = nil
+		return false
+	default:
+		// Voices not ready yet
+		return false
+	}
+}
+
+// GetVoice returns the voice assigned to an aircraft, assigning one if needed.
+// Returns empty string and false if no voices are available yet.
+func (va *VoiceAssigner) GetVoice(callsign av.ADSBCallsign) (sim.Voice, bool) {
+	// Check if already assigned
+	if voice, ok := va.aircraftVoices[callsign]; ok {
+		return voice, true
+	}
+
+	// Need to assign a new voice
+	if len(va.voicePool) == 0 {
+		return "", false
+	}
+
+	// Take from pool and assign
+	voice := va.voicePool[0]
+	va.voicePool = va.voicePool[1:]
+	va.aircraftVoices[callsign] = voice
+
+	// Refill pool if empty (shuffle all voices)
+	if len(va.voicePool) == 0 {
+		va.voicePool = make([]sim.Voice, len(va.aircraftVoices))
+		i := 0
+		for _, v := range va.aircraftVoices {
+			va.voicePool[i] = v
+			i++
+		}
+		// Fisher-Yates shuffle
+		for i := len(va.voicePool) - 1; i > 0; i-- {
+			j := va.rand.Intn(i + 1)
+			va.voicePool[i], va.voicePool[j] = va.voicePool[j], va.voicePool[i]
+		}
+	}
+
+	return voice, true
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 // GoogleTTSProvider implements sim.TTSProvider using Google Cloud TTS
 type GoogleTTSProvider struct {
@@ -392,4 +540,26 @@ func (r *RemoteTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 	}()
 
 	return fut
+}
+
+// makeTTSProvider creates a TTS provider, preferring Google TTS if credentials
+// are available, otherwise falling back to the remote TTS server.
+func makeTTSProvider(ctx context.Context, serverAddress string, lg *log.Logger) sim.TTSProvider {
+	// Try to create a Google TTS provider first
+	p, err := NewGoogleTTSProvider(lg)
+	if err == nil {
+		lg.Info("Using Google TTS provider")
+		return p
+	}
+
+	// If Google TTS is not available (no credentials), try to connect to the remote server
+	lg.Infof("Google TTS unavailable: %v, attempting to use remote TTS provider at %s", err, serverAddress)
+	rp, err := NewRemoteTTSProvider(ctx, serverAddress, lg)
+	if err != nil {
+		lg.Errorf("Failed to connect to remote TTS provider: %v", err)
+		return nil
+	}
+
+	lg.Info("Successfully connected to remote TTS provider")
+	return rp
 }

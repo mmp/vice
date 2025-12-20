@@ -190,15 +190,15 @@ func IsAllLetters(s string) bool {
 // of the form "foo,bar,bat", return a new map where each comma-delineated
 // string in the keys has its own entry in the returned map.  Returns an
 // error if a key is repeated.
-func CommaKeyExpand[T any](in map[string]T) (map[string]T, error) {
-	m := make(map[string]T)
+func CommaKeyExpand[S ~string, T any](in map[S]T) (map[S]T, error) {
+	m := make(map[S]T)
 	for k, v := range in {
-		for _, s := range strings.Split(k, ",") {
+		for _, s := range strings.Split(string(k), ",") {
 			s = strings.TrimSpace(s)
-			if _, ok := m[s]; ok {
+			if _, ok := m[S(s)]; ok {
 				return nil, errors.New("key repeated in map " + s)
 			}
-			m[s] = v
+			m[S(s)] = v
 		}
 	}
 	return m, nil

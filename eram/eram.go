@@ -292,7 +292,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss sim.State) {
 		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
 	}
 
-	key := ss.TRACON // For ERAM scenarios, TRACON holds the ARTCC identifier
+	key := ss.Facility
 	ep.currentFacility = key
 
 	// Retrieve or create the preference set for this facility
@@ -320,7 +320,7 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss sim.State) {
 		ep.prefSet.Current.VideoMapGroup = ss.ScenarioDefaultVideoGroup
 	}
 	if ep.prefSet.Current.ARTCC == "" {
-		ep.prefSet.Current.ARTCC = ss.TRACON
+		ep.prefSet.Current.ARTCC = ss.Facility
 	}
 	if ep.prefSet.Current.Range == 0 {
 		ep.prefSet.Current.Range = ss.Range
