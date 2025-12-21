@@ -1,51 +1,32 @@
 {
   "tracon": "L30",
   "airports": {
+    "KHND": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KBVU": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KIFP": { "vfr": { "random_routes": { "rate": 3 } } },
+    "0L7": { "vfr": { "random_routes": { "rate": 3 } } },
+    "0L9": { "vfr": { "random_routes": { "rate": 3 } } },
     "KLAS": {
       "departure_runways_as_one": ["26R,19L,19R,1L,1R", "8L,8R"],
       "approaches": {
-        "Y6L": {
-          "cifp_id": "IY26L"
-        },
-        "Z6L": {
-          "cifp_id": "IZ26L"
-        },
-        "R6L": {
-          "cifp_id": "R26L"
-        },
-        "RZ9R": {
-          "cifp_id": "RZ19R"
-        },
-        "RZ9L": {
-          "cifp_id": "RZ19L"
-        },
-        "I1L": {
-          "cifp_id": "I1L"
-        },
-        "R1R": {
-          "cifp_id": "R1R"
-        },
-        "R8R": {
-          "cifp_id": "R8R"
-        },
+        "Y6L": { "cifp_id": "IY26L" },
+        "Z6L": { "cifp_id": "IZ26L" },
+        "R6L": { "cifp_id": "R26L" },
+        "RZ9R": { "cifp_id": "RZ19R" },
+        "RZ9L": { "cifp_id": "RZ19L" },
+        "I1L": { "cifp_id": "I1L" },
+        "R1R": { "cifp_id": "R1R" },
+        "R8R": { "cifp_id": "R8R" },
         "RV8R": {
           "full_name": "RNAV Visual Runway 8 Right",
           "runway": "8R",
           "type": "RNAV",
           "waypoints": ["YAGGR/if/a8000/s210 CEENA/a7000+ MNDRN/a6000+ POKKR/a5000+ PAYTT/a4600+/faf BHARP/a3800"]
         },
-        "RY9L": {
-          "cifp_id": "RY19L"
-        },
-        "RY9R": {
-          "cifp_id": "RY19R"
-        },
-        "IZ2": {
-          "cifp_id": "IZ26R"
-        },
-        "IY2": {
-          "cifp_id": "IY26R"
-        }
+        "RY9L": { "cifp_id": "RY19L" },
+        "RY9R": { "cifp_id": "RY19R" },
+        "Y6R": { "cifp_id": "IZ26R" },
+        "Z6R": { "cifp_id": "IY26R" }
       },
       "approach_regions": {
         "1L": {
@@ -151,13 +132,13 @@
         "26R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT3",
+            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT3",
+            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -172,17 +153,22 @@
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS"
+            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS SSKEE"
           },
           "HEC": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
             "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -202,19 +188,19 @@
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+            "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
           }
         },
         "26L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT3",
+            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT3",
+            "waypoints": "LEELN/a8000-/s210 GLIAN/a5000+/s210 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -229,17 +215,22 @@
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS"
+            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- TTONE/a8000+ VIVVS/a10000+ SGFRD/a17000+ NIITZ IWANS SSKEE"
           },
           "HEC": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
             "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR TOPAC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "SILTT RUDYY/a4000+/s230 SELLZ/a8000- RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -259,19 +250,19 @@
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+            "waypoints": "LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
           }
         },
         "8R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT3",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT3",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -286,17 +277,22 @@
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ"
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS"
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS SSKEE"
           },
           "HEC": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -316,19 +312,19 @@
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN"
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ SCAAR FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN FRNCK"
           }
         },
         "8L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT3",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT3",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
             "cleared_altitude": 19000,
@@ -343,17 +339,22 @@
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ"
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS"
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS SSKEE"
           },
           "HEC": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
             "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -373,132 +374,204 @@
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN"
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ FLAAR/a6000+/s230 HNIBL/a8000+/s230 KNGPN/flyover JENFR RATPK DARDN FRNCK"
+          }
+        },
+        "8L.CFG2": {
+          "VERKN": {
+            "cleared_altitude": 19000,
+            "sid": "GIDGT3",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT GEEOO BETHL VERKN"
+          },
+          "TUKRR": {
+            "cleared_altitude": 19000,
+            "sid": "GIDGT3",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ MLVIN GEEZY/a12000+ JETTG/a14000- GIDGT NICLE 36.582613,-112.440224 TUKRR"
+          },
+          "KENNO": {
+            "cleared_altitude": 19000,
+            "sid": "JOHKR5",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+          },
+          "JAYSN": {
+            "cleared_altitude": 14000,
+            "sid": "LOHLA3",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 KNGPN/flyover LOHLA/a13400+ JAYSN"
+          },
+          "HOCEE": {
+            "cleared_altitude": 19000,
+            "sid": "NIITZ4",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ HOCEE"
+          },
+          "SSKEE": {
+            "cleared_altitude": 19000,
+            "sid": "NIITZ4",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+/s230 GOLIE DBLII/a13000- GLDYN/a12000+ NIITZ IWANS SSKEE"
+          },
+          "HEC": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ SLVRR"
+          },
+          "LVELL": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ DOYYL ZELMA JOTNU"
+          },
+          "BLAQQ": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.04.34.671,W115.06.08.014 FLAAR/a6000+ HNIBL/a8000+/s230 VMPRE FLABB/a13000+ RADYR/a13000+ BLAQQ"
+          },
+          "ZAYNE": {
+            "cleared_altitude": 19000,
+            "sid": "RASLR3",
+            "waypoints": " N036.04.34.671,W115.06.08.014 FLAAR/a6000+/s230 ROODE/a8000+ RASLR/a13000+ ROHCK"
+          },
+          "FRNCK.8": {
+            "cleared_altitude": 19000,
+            "sid": "FRNCK1",
+            "waypoints": "N036.04.34.671,W115.06.08.014/a2700+ AYVUH/a6000+ RATPK/a13000+ DARDN FRNCK"
           }
         },
         "1R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT3",
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT3",
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
             "cleared_altitude": 19000,
             "sid": "JOHKR5",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY KWYYN RAWKK/a13000+ JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY KWYYN RAWKK/a13000+ JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
             "sid": "LOHLA3",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ PENSK LOHLA/a13400+ JAYSN"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ PENSK LOHLA/a13400+ JAYSN"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
           },
           "HEC": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
             "sid": "RASLR3",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD/a6000+ JENFR RATPK DARDN"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD/a6000+ JENFR RATPK DARDN FRNCK"
           }
         },
         "1L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
+            "sid": "GIDGT3",
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
+            "sid": "GIDGT3",
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN AIRRO/a11500+/s250 GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
             "cleared_altitude": 19000,
             "sid": "JOHKR5",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY KWYYN RAWKK/a13000+ JOHKR JOHKR GRYMZ DEDPL BIKKR CAGEE KENNO"
           },
           "JAYSN": {
             "cleared_altitude": 14000,
             "sid": "LOHLA3",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ PENSK LOHLA/a13400+ JAYSN"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ PENSK LOHLA/a13400+ JAYSN"
           },
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 NIITZ IWANS SSKEE"
           },
           "HEC": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR TOPAC HEC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ DOYYL ZELMA JOTNU LVELL"
           },
           "BLAQQ": {
             "cleared_altitude": 19000,
             "sid": "RADYR2",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ"
+            "waypoints": "N036.06.49.007,W115.08.41.850/a2700+ BESSY/a5000+ HRRLY GRUDN/a10000+ RADYR/a13000+ BLAQQ"
           },
           "ZAYNE": {
             "cleared_altitude": 19000,
             "sid": "RASLR3",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD HAIDN OLBLU/a10000+/s250 RASLR/a13000+ ROHCK ZAYNE"
           },
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "N036.07.49.830,W115.07.49.006/a2700+ KYBAD/a6000+ JENFR RATPK DARDN"
+            "waypoints": "N036.07.33.199,W115.08.15.867 KYBAD/a6000+ JENFR RATPK DARDN FRNCK"
           }
         },
         "19R": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
+            "sid": "GIDGT3",
             "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
+            "sid": "GIDGT3",
             "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -514,7 +587,7 @@
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
@@ -525,6 +598,11 @@
             "cleared_altitude": 19000,
             "sid": "RADYR2",
             "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -544,18 +622,18 @@
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+            "waypoints": "N036.03.42.816,W115.10.50.720/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
           }
         },
         "19L": {
           "VERKN": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
+            "sid": "GIDGT3",
             "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT GEEOO BETHL VERKN"
           },
           "TUKRR": {
             "cleared_altitude": 19000,
-            "sid": "GIDGT2",
+            "sid": "GIDGT3",
             "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ TTEEA/a14000+ GIDGT NICLE 36.582613,-112.440224 TUKRR"
           },
           "KENNO": {
@@ -571,7 +649,7 @@
           "HOCEE": {
             "cleared_altitude": 19000,
             "sid": "NIITZ4",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ"
+            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- CARNG TTONE/a8000- VIVVS/a10000+ SGFRD/a17000+ NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 19000,
@@ -582,6 +660,11 @@
             "cleared_altitude": 19000,
             "sid": "RADYR2",
             "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR TOPAC HEC"
+          },
+          "SLVRR": {
+            "cleared_altitude": 19000,
+            "sid": "RADYR2",
+            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ DEREW/a7000- FLABB/a13000+ RADYR/a13000+ SLVRR"
           },
           "LVELL": {
             "cleared_altitude": 19000,
@@ -601,7 +684,7 @@
           "FRNCK": {
             "cleared_altitude": 19000,
             "sid": "RATPK3",
-            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN"
+            "waypoints": "N036.03.41.539,W115.10.31.878/a2700+ LEELN/a8000- GLIAN/a5000+/s230 BACCK/a6000+ ALOLY/a7000+ JENFR RATPK DARDN FRNCK"
           }
         }
       },
@@ -614,18 +697,79 @@
           ],
           "destination": "KBZN",
           "exit": "FRNCK",
-          "route": "RATPK3 FRNCK WINEN Q842 PROXI LOSST GARNT"
+          "route": "FRNCK WINEN Q842 PROXI LOSST GARNT"
         },
         {
           "airlines": [
             {
               "icao": "DAL",
               "fleet": "a21N"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "JSX"
             }
           ],
           "destination": "KSLC",
           "exit": "FRNCK",
-          "route": "RATPK3 FRNCK MLF QWEEN5"
+          "route": "FRNCK MLF QWEEN5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KBZN",
+          "exit": "FRNCK.8",
+          "route": "FRNCK WINEN Q842 PROXI LOSST GARNT"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "a21N"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "JSX"
+            }
+          ],
+          "destination": "KSLC",
+          "exit": "FRNCK.8",
+          "route": "FRNCK MLF QWENN6"
         },
         {
           "airlines": [
@@ -673,7 +817,27 @@
               "fleet": "long"
             },
             {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
               "icao": "UAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
               "fleet": "short"
             },
             {
@@ -681,12 +845,46 @@
               "fleet": "short"
             },
             {
+              "icao": "NKS"
+            },
+            {
               "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "JSX"
+            },
+            {
+              "icao": "JSX"
             }
           ],
           "destination": "KLAX",
           "exit": "BLAQQ",
           "route": "BLAQQ SHTNR ANJLL4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "FFT"
+            }
+          ],
+          "destination": "KONT",
+          "exit": "SLVRR",
+          "route": "SLVRR FEYLA JCKIE2"
         },
         {
           "airlines": [
@@ -1348,12 +1546,12 @@
           "PGA": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 URSLA NIITZ PGA"
+            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA NIITZ PGA"
           },
           "HOCEE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 URSLA NIITZ HOCEE"
+            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 7000,
@@ -1363,7 +1561,7 @@
           "ZAYNE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4",
-            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 URSLA RASLR/a10000+ ROHCK ZAYNE"
+            "waypoints": "N035.59.45.786,W115.08.05.540 KITEE JAMIA/a6000 SCAMR URSLA RASLR/a10000+ ROHCK ZAYNE"
           }
         },
         "17R": {
@@ -1415,12 +1613,12 @@
           "PGA": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR URSLA NIITZ PGA"
+            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA NIITZ PGA"
           },
           "HOCEE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR URSLA NIITZ HOCEE"
+            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA NIITZ HOCEE"
           },
           "SSKEE": {
             "cleared_altitude": 7000,
@@ -1430,7 +1628,7 @@
           "ZAYNE": {
             "cleared_altitude": 7000,
             "sid": "SCAMR4",
-            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR URSLA RASLR/a10000+ ROHCK ZAYNE"
+            "waypoints": "N035.56.45.445,W115.08.09.605 CAVER BOYTT/a6000- ZIGLR SCAMR URSLA RASLR/a10000+ ROHCK ZAYNE"
           }
         }
       },
@@ -1496,12 +1694,20 @@
     },
     "KVGT": {
       "approaches": {
-        "I2L": {
-          "cifp_id": "I12L"
-        },
-        "R2R": {
-          "cifp_id": "R12R"
-        }
+        "I2L": { "cifp_id": "I12L" },
+        "R2R": { "cifp_id": "R12R" }
+      },
+      "vfr": {
+        "random_routes": { "rate": 10 },
+        "routes": [
+          {
+            "destination": "KVGT",
+            "rate": 7,
+            "fleet": "GAsinglepiston",
+            "waypoints": "N036.11.52.504,W115.13.13.899 N036.16.55.534,W115.17.41.087 N036.21.29.877,W115.19.09.087 N036.25.35.531,W115.25.01.226 N036.29.37.313,W115.32.14.362 STRYK/airwork10m3nm/a4000-6500 VPVKC/airwork15m6nm/a4000-6500 VPVLM/a3500-4500/land",
+            "name": "VGT to North Vegas Practice Area"
+          }
+        ]
       },
       "departure_routes": {
         "7": {
@@ -1654,9 +1860,10 @@
           "waypoints": "BOEGY/a15000/s250/ho PUTTT/a7000 KGRDN/a6000/h260",
           "cruise_altitude": 35000,
           "star": "BOEGY2",
-          "initial_controller": "LAX_54_CTR",
+          "initial_controller": "LAX_07_CTR",
           "initial_altitude": 15000,
           "initial_speed": 250,
+          "scratchpad": "BOG",
           "expect_approach": null,
           "airlines": {
             "KHND": [
@@ -1678,7 +1885,7 @@
         }
       ]
     },
-    "CHOWW3": {
+    "CHOWW4": {
       "arrivals": [
         {
           "waypoints": "AALAN/a17000-23000 N036.26.03.917,W114.09.59.551/ho CHOWW/a16000-/s250 WOLPH",
@@ -1693,10 +1900,11 @@
             }
           },
           "cruise_altitude": 35000,
-          "star": "CHOWW3",
-          "initial_controller": "LAX_54_CTR",
+          "star": "CHOWW4",
+          "initial_controller": "LAX_07_CTR",
           "initial_altitude": 22000,
           "initial_speed": 250,
+          "scratchpad": "CHO",
           "expect_approach": null,
           "airlines": {
             "KLAS": [
@@ -1869,6 +2077,7 @@
           "initial_controller": "LAX_16_CTR",
           "initial_altitude": 25000,
           "initial_speed": 280,
+          "scratchpad": "CTL",
           "expect_approach": null,
           "airlines": {
             "KLAS": [
@@ -2020,6 +2229,7 @@
           "initial_controller": "LAX_16_CTR",
           "initial_altitude": 17000,
           "initial_speed": 280,
+          "scratchpad": "GAM",
           "expect_approach": null,
           "airlines": {
             "KLAS": [
@@ -2059,33 +2269,156 @@
         }
       ]
     },
-    "JAYSN3": {
+    "JAYSN3.26": {
       "arrivals": [
         {
-          "waypoints": "JAYSN/a19000-/ho WAPID",
-          "runway_waypoints": {
-            "KLAS": {
-              "19L": "WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6200+ KORYN/a4800/h118",
-              "19R": "WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+ CUEVS/a6200+ KORYN/a4800/h118",
-              "1L": "WAPID PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000/s210 SLOTS/a8000 ROAMN/a8000/s210",
-              "1R": "WAPID PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000/s210 SLOTS/a8000 ROAMN/a8000/s210",
-              "26L": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
-              "26R": "WAPID PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
-              "8L": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a9000/s210 SLOTS/a8000 YAGGR/a8000/s210/h5",
-              "8R": "WAPID PESHY/a15000+/s250 PAIRR/a14220+ MEZKL/a12000- LOOMI ZINPI/a9000/s210 SLOTS/a8000 YAGGR/a8000/s210/h5"
-            }
-          },
+          "waypoints": "N036.52.50.242,W115.48.34.453 WAPID/ho PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
+          "cruise_altitude": 15000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "scratchpad": "JSN",
+          "expect_approach": null,
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KXTA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
           "cruise_altitude": 19000,
           "star": "JAYSN3",
-          "initial_controller": "LSV_N_APP",
-          "initial_altitude": 19000,
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
             "KLAS": [
               {
                 "icao": "WWW",
-                "airport": "KTPH"
+                "airport": "KTNX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JAYSN3.1": {
+      "arrivals": [
+        {
+          "waypoints": "N036.52.50.242,W115.48.34.453 WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
+          "cruise_altitude": 15000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "scratchpad": "JSN",
+          "expect_approach": null,
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KXTA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
+          "cruise_altitude": 19000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KTNX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JAYSN3.19": {
+      "arrivals": [
+        {
+          "waypoints": "N036.52.50.242,W115.48.34.453 WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+/ho CUEVS/a6200+ KORYN/a4800/h118",
+          "cruise_altitude": 15000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "scratchpad": "JSN",
+          "expect_approach": "RY9R",
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KXTA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "BYRDY JAYSN/a19000- WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+/ho CUEVS/a6200+ KORYN/a4800/h118",
+          "cruise_altitude": 19000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": "RY9R",
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KTNX"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "JAYSN3.8": {
+      "arrivals": [
+        {
+          "waypoints": "N036.52.50.242,W115.48.34.453 WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 YAGGR/a8000/s210/h5",
+          "cruise_altitude": 15000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "scratchpad": "JSN",
+          "expect_approach": null,
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KXTA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 YAGGR/a8000/s210/h5",
+          "cruise_altitude": 19000,
+          "star": "JAYSN3",
+          "initial_controller": "LSV_L_APP",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KLAS": [
+              {
+                "icao": "WWW",
+                "airport": "KTNX"
               }
             ]
           }
@@ -2098,9 +2431,10 @@
           "waypoints": "TETRS/a13000+ N035.24.47.576,W114.58.39.799/ho KONNG/a10000+/s250 KEEKO/a7200+ NTNDO/a7000/h304",
           "cruise_altitude": 35000,
           "star": "NTNDO1",
-          "initial_controller": "LAX_35_CTR",
+          "initial_controller": "LAX_08_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
+          "scratchpad": "NTN",
           "expect_approach": null,
           "airlines": {
             "KVGT": [
@@ -2124,7 +2458,7 @@
           "waypoints": "TETRS/a13000+ N035.24.47.576,W114.58.39.799/ho KONNG/a10000+/s250 KEEKO/a7200+ NTNDO/a7000/h304",
           "cruise_altitude": 35000,
           "star": "NTNDO1",
-          "initial_controller": "LAX_35_CTR",
+          "initial_controller": "LAX_08_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -2154,9 +2488,10 @@
           "star": "RKSTR4",
           "spawn": "STYYX",
           "cruise_altitude": 35000,
-          "initial_controller": "LAX_35_CTR",
+          "initial_controller": "LAX_08_CTR",
           "initial_altitude": 23000,
           "initial_speed": 280,
+          "scratchpad": "RKS",
           "expect_approach": null,
           "airlines": {
             "KLAS": [
@@ -2240,7 +2575,7 @@
           "star": "RKSTR4",
           "spawn": "JJEAN",
           "cruise_altitude": 35000,
-          "initial_controller": "LAX_35_CTR",
+          "initial_controller": "LAX_08_CTR",
           "initial_altitude": 25000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -2304,9 +2639,10 @@
           "star": "RNDRZ4",
           "spawn": "WATEV",
           "cruise_altitude": 35000,
-          "initial_controller": "LAX_38_CTR",
+          "initial_controller": "LAX_06_CTR",
           "initial_altitude": 24000,
           "initial_speed": 280,
+          "scratchpad": "RDZ",
           "expect_approach": null,
           "airlines": {
             "KLAS": [
@@ -2354,7 +2690,7 @@
           "spawn": "SLOPP",
           "cruise_altitude": 35000,
           "star": "RNDRZ4",
-          "initial_controller": "LAX_38_CTR",
+          "initial_controller": "LAX_06_CTR",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -2383,9 +2719,10 @@
           "waypoints": "BOEGY/a15000/s250/ho WYLND LNDIN/a9000/h270",
           "cruise_altitude": 35000,
           "star": "WYLND1",
-          "initial_controller": "LAX_54_CTR",
+          "initial_controller": "LAX_07_CTR",
           "initial_altitude": 15000,
           "initial_speed": 250,
+          "scratchpad": "WYL",
           "expect_approach": null,
           "airlines": {
             "KVGT": [
@@ -2409,19 +2746,12 @@
     }
   },
   "control_positions": {
-    "LAX_37_CTR": {
-      "frequency": 133550,
+    "LAX_06_CTR": {
+      "frequency": 134650,
       "radio_name": "Los Angeles Center",
       "facility_id": "C",
       "eram_facility": true,
-      "sector_id": "C37"
-    },
-    "LAX_38_CTR": {
-      "frequency": 125725,
-      "radio_name": "Los Angeles Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C38"
+      "sector_id": "C06"
     },
     "LAX_16_CTR": {
       "frequency": 124625,
@@ -2430,19 +2760,19 @@
       "eram_facility": true,
       "sector_id": "C16"
     },
-    "LAX_54_CTR": {
-      "frequency": 135250,
+    "LAX_07_CTR": {
+      "frequency": 124200,
       "radio_name": "Los Angeles Center",
       "facility_id": "C",
       "eram_facility": true,
-      "sector_id": "C54"
+      "sector_id": "C07"
     },
-    "LAX_35_CTR": {
-      "frequency": 128075,
+    "LAX_08_CTR": {
+      "frequency": 124850,
       "radio_name": "Los Angeles Center",
       "facility_id": "C",
       "eram_facility": true,
-      "sector_id": "C35"
+      "sector_id": "C08"
     },
     "LAS_D_DEP": {
       "frequency": 125900,
@@ -2492,10 +2822,17 @@
       "default_airport": "KLAS",
       "sector_id": "1K"
     },
-    "LSV_N_APP": {
+    "LSV_A_APP": {
       "frequency": 124950,
       "radio_name": "Nellis Approach",
-      "sector_id": "1S"
+      "facility_id": "1",
+      "sector_id": "1A"
+    },
+    "LSV_L_APP": {
+      "frequency": 119350,
+      "radio_name": "Nellis Approach",
+      "facility_id": "1",
+      "sector_id": "1L"
     },
     "LAS_TWR": {
       "frequency": 119900,
@@ -2513,6 +2850,2349 @@
       "sector_id": "1V"
     }
   },
+  "vfr_reporting_points": [
+    {
+      "description": "Three Fingers Lake",
+      "location": "VPVTF"
+    },
+    {
+      "description": "Bank of America Building",
+      "location": "VPVBA"
+    },
+    {
+      "description": "Santa Fe Casino",
+      "location": "VPVSF"
+    },
+    {
+      "description": "Aliante",
+      "location": "VPVAL"
+    },
+    {
+      "description": "Craig Ranch",
+      "location": "VPVCR"
+    },
+    {
+      "description": "VA Hospital",
+      "location": "VPVVA"
+    },
+    {
+      "description": "Spaghetti Bowl",
+      "location": "VPVSB"
+    },
+    {
+      "description": "El Cortez Hotel",
+      "location": "VPVEC"
+    },
+    {
+      "description": "Stratosphere",
+      "location": "VPVST"
+    },
+    {
+      "description": "Red Rock Retention Basin",
+      "location": "VPVRR"
+    },
+    {
+      "description": "Blue Diamond Road",
+      "location": "VPVBD"
+    },
+    {
+      "description": "Jean",
+      "location": "0L7"
+    },
+    {
+      "description": "The Ridge",
+      "location": "VPVTR"
+    },
+    {
+      "description": "Dutchman Pass",
+      "location": "VPVDP"
+    },
+    {
+      "description": "Sloan Mine",
+      "location": "VPVSM"
+    },
+    {
+      "description": "Boulder City",
+      "location": "KBVU"
+    },
+    {
+      "description": "Henderson",
+      "location": "KHND"
+    },
+    {
+      "description": "Old Wash Boat Ramp",
+      "location": "VPVWM"
+    },
+    {
+      "description": "Lava Butte",
+      "location": "VPVLB"
+    },
+    {
+      "description": "Gypsum Mine",
+      "location": "VPVGM"
+    },
+    {
+      "description": "Callville Bay Marina",
+      "location": "N036.07.45.449,W114.43.06.154"
+    },
+    {
+      "description": "Nellis Air Force Base",
+      "location": "KLSV"
+    },
+    {
+      "description": "Temple Bar",
+      "location": "N036.01.22.809,W114.19.57.372"
+    },
+    {
+      "description": "Echo Bay",
+      "location": "N036.18.45.329,W114.27.54.234"
+    }
+  ],
+  "airspace": {
+    "boundaries": {
+      "CFG1 A": [
+        "N036.20.44.435,W115.51.15.018",
+        "N036.00.19.486,W115.52.12.559",
+        "N035.56.32.056,W115.46.13.690",
+        "N035.56.31.767,W115.30.54.794",
+        "N035.58.29.761,W115.26.29.254",
+        "N036.06.53.360,W115.24.39.226",
+        "N036.14.16.288,W115.23.00.899",
+        "N036.16.20.392,W115.40.00.952",
+        "N036.20.44.435,W115.51.15.018"
+      ],
+      "CFG1 B": [
+        "N036.06.53.360,W115.24.39.226",
+        "N036.14.16.288,W115.23.00.899",
+        "N036.13.11.317,W115.13.50.484",
+        "N036.12.57.447,W115.11.32.166",
+        "N036.12.25.312,W115.10.46.463",
+        "N036.10.31.054,W115.08.46.245",
+        "N036.05.59.101,W115.11.41.751",
+        "N036.06.52.577,W115.24.40.380",
+        "N036.06.53.360,W115.24.39.226"
+      ],
+      "CFG1 C": [
+        "N035.58.29.761,W115.26.29.254",
+        "N036.06.53.360,W115.24.39.226",
+        "N036.05.59.101,W115.11.41.751",
+        "N036.04.30.002,W115.10.11.828",
+        "N036.04.29.879,W115.07.36.811",
+        "N035.58.25.174,W115.10.37.454",
+        "N035.58.29.761,W115.26.29.254"
+      ],
+      "CFG1 D": [
+        "N036.00.16.836,W115.52.12.312",
+        "N035.56.32.633,W115.46.14.679",
+        "N035.56.31.300,W115.33.22.313",
+        "N035.49.26.171,W115.33.27.284",
+        "N035.45.23.332,W115.36.17.682",
+        "N035.39.06.226,W115.44.45.250",
+        "N035.48.23.768,W115.52.45.875",
+        "N036.00.16.836,W115.52.12.312"
+      ],
+      "CFG1 E": [
+        "N035.56.31.767,W115.30.54.794",
+        "N035.58.30.255,W115.26.27.963",
+        "N035.58.30.859,W115.20.29.425",
+        "N035.54.37.221,W115.23.31.276",
+        "N035.54.22.252,W115.33.27.147",
+        "N035.56.32.646,W115.33.22.890",
+        "N035.56.31.767,W115.30.54.794"
+      ],
+      "CFG1 F": [
+        "N035.49.26.171,W115.33.27.284",
+        "N035.45.23.332,W115.36.17.682",
+        "N035.39.06.226,W115.44.45.250",
+        "N035.36.48.444,W115.42.48.026",
+        "N035.34.56.685,W115.39.20.220",
+        "N035.41.34.349,W115.30.31.832",
+        "N035.51.07.520,W115.23.52.946",
+        "N035.54.38.691,W115.23.29.985",
+        "N035.54.23.227,W115.33.25.966",
+        "N035.49.26.171,W115.33.27.284"
+      ],
+      "CFG1 G": [
+        "N035.41.34.569,W115.30.30.789",
+        "N035.51.08.124,W115.23.51.243",
+        "N035.54.39.624,W115.23.30.671",
+        "N035.58.29.101,W115.20.28.436",
+        "N035.58.25.545,W115.10.36.245",
+        "N035.53.54.443,W115.14.10.698",
+        "N035.46.44.122,W115.20.16.351",
+        "N035.41.34.569,W115.30.30.789"
+      ],
+      "CFG1 H": [
+        "N035.58.25.545,W115.10.36.245",
+        "N035.53.54.443,W115.14.10.698",
+        "N035.52.42.991,W115.11.40.598",
+        "N035.54.00.170,W115.10.42.617",
+        "N035.58.25.531,W115.10.37.454",
+        "N035.58.25.545,W115.10.36.245"
+      ],
+      "CFG1 I": [
+        "N035.58.24.968,W115.10.36.740",
+        "N035.54.03.191,W115.10.41.821",
+        "N035.52.42.236,W115.11.42.438",
+        "N035.53.55.583,W115.14.11.770",
+        "N035.52.15.868,W115.15.30.102",
+        "N035.46.44.452,W115.20.17.202",
+        "N035.45.50.413,W115.17.38.285",
+        "N035.45.14.282,W115.15.02.801",
+        "N035.44.50.524,W115.12.15.974",
+        "N035.44.45.031,W115.09.31.206",
+        "N035.44.52.117,W115.06.44.571",
+        "N035.45.14.529,W115.04.01.232",
+        "N035.45.52.857,W115.01.21.710",
+        "N035.46.37.036,W114.59.11.550",
+        "N035.58.21.219,W115.02.02.085",
+        "N035.58.24.968,W115.10.36.740"
+      ],
+      "CFG1 J": [
+        "N035.46.44.452,W115.20.17.202",
+        "N035.45.50.413,W115.17.38.285",
+        "N035.45.14.282,W115.15.02.801",
+        "N035.44.50.524,W115.12.15.974",
+        "N035.44.45.031,W115.09.31.206",
+        "N035.44.52.117,W115.06.44.571",
+        "N035.45.14.529,W115.04.01.232",
+        "N035.45.52.857,W115.01.21.710",
+        "N035.46.37.036,W114.59.11.550",
+        "N035.58.21.219,W115.02.02.085",
+        "N035.58.05.659,W114.43.35.295",
+        "N035.43.02.514,W114.20.14.895",
+        "N035.38.02.217,W114.28.30.159",
+        "N035.35.22.256,W114.36.38.556",
+        "N035.29.23.594,W114.54.33.266",
+        "N035.29.23.484,W115.28.58.916",
+        "N035.34.56.575,W115.39.19.835",
+        "N035.41.35.764,W115.30.29.196",
+        "N035.46.44.452,W115.20.17.202"
+      ],
+      "CFG1 K": [
+        "N036.12.24.062,W115.10.44.210",
+        "N036.10.29.598,W115.08.46.712",
+        "N036.10.17.953,W115.02.27.985",
+        "N036.11.21.715,W115.00.55.700",
+        "N036.12.24.062,W115.10.44.210"
+      ],
+      "CFG1 L": [
+        "N036.05.58.277,W115.11.40.543",
+        "N036.10.30.395,W115.08.45.640",
+        "N036.10.25.231,W115.06.37.869",
+        "N036.04.29.329,W115.10.11.691",
+        "N036.05.59.060,W115.11.42.410",
+        "N036.05.58.277,W115.11.40.543"
+      ],
+      "CFG1 M": [
+        "N036.10.25.231,W115.06.37.869",
+        "N036.04.29.329,W115.10.11.691",
+        "N036.04.29.233,W115.07.35.932",
+        "N036.06.29.712,W115.04.06.478",
+        "N036.06.27.995,W114.57.23.499",
+        "N036.07.14.234,W114.57.35.255",
+        "N036.07.59.374,W114.57.51.212",
+        "N036.08.41.740,W114.58.11.125",
+        "N036.10.01.570,W114.59.03.338",
+        "N036.11.16.551,W115.00.08.679",
+        "N036.11.22.003,W115.00.54.794",
+        "N036.10.17.967,W115.02.29.139",
+        "N036.10.25.231,W115.06.37.869"
+      ],
+      "CFG1 N": [
+        "N036.04.29.233,W115.07.35.932",
+        "N036.06.29.712,W115.04.06.478",
+        "N036.06.28.668,W115.02.40.922",
+        "N036.03.06.067,W115.02.25.294",
+        "N036.03.06.492,W115.06.23.258",
+        "N036.04.28.437,W115.07.35.987",
+        "N036.04.29.233,W115.07.35.932"
+      ],
+      "CFG1 O": [
+        "N036.04.29.233,W115.07.35.932",
+        "N036.03.06.163,W115.06.19.934",
+        "N036.03.06.067,W115.02.25.294",
+        "N035.58.20.930,W115.02.03.184",
+        "N035.58.24.611,W115.10.37.701",
+        "N036.04.29.233,W115.07.35.932"
+      ],
+      "CFG1 P": [
+        "N035.58.19.571,W115.02.01.646",
+        "N036.03.05.765,W115.02.24.415",
+        "N036.03.05.050,W114.43.45.238",
+        "N035.58.05.687,W114.43.38.124",
+        "N035.58.19.571,W115.02.01.646"
+      ],
+      "CFG1 Q": [
+        "N036.03.05.765,W115.02.24.415",
+        "N036.03.05.050,W114.43.45.238",
+        "N036.06.27.185,W114.43.52.104",
+        "N036.06.28.764,W115.02.43.449",
+        "N036.03.05.765,W115.02.24.415"
+      ],
+      "CFG1 R": [
+        "N036.06.26.499,W114.43.52.461",
+        "N036.06.29.822,W114.57.24.268",
+        "N036.07.16.267,W114.57.35.886",
+        "N036.07.58.866,W114.57.52.421",
+        "N036.08.41.713,W114.58.10.988",
+        "N036.09.20.728,W114.58.34.498",
+        "N036.10.02.078,W114.59.03.090",
+        "N036.10.39.143,W114.59.33.248",
+        "N036.11.17.513,W115.00.13.568",
+        "N036.11.08.215,W114.58.53.422",
+        "N036.12.01.403,W114.57.47.230",
+        "N036.11.54.591,W114.50.21.624",
+        "N036.08.24.725,W114.43.58.751",
+        "N036.06.26.238,W114.43.50.374",
+        "N036.06.26.499,W114.43.52.461"
+      ],
+      "CFG1 S": [
+        "N036.12.01.403,W114.57.47.230",
+        "N036.21.16.625,W114.45.52.624",
+        "N036.11.11.250,W114.38.08.397",
+        "N036.03.05.325,W114.38.08.616",
+        "N036.03.05.641,W114.43.46.419",
+        "N036.08.22.391,W114.43.55.510",
+        "N036.11.55.168,W114.50.22.778",
+        "N036.12.00.387,W114.57.49.564",
+        "N036.12.01.403,W114.57.47.230"
+      ],
+      "CFG1 T": [
+        "N036.03.05.325,W114.38.08.616",
+        "N036.03.05.641,W114.43.46.419",
+        "N035.58.06.401,W114.43.36.256",
+        "N035.54.36.617,W114.38.09.797",
+        "N036.03.06.190,W114.38.09.495",
+        "N036.03.05.325,W114.38.08.616"
+      ],
+      "CFG1 U": [
+        "N035.54.35.477,W114.38.10.237",
+        "N036.03.05.408,W114.38.08.534",
+        "N036.03.05.353,W114.32.32.709",
+        "N035.52.33.117,W114.34.59.459",
+        "N035.54.35.477,W114.38.10.237"
+      ],
+      "CFG1 V": [
+        "N036.21.16.625,W114.45.52.624",
+        "N036.11.11.250,W114.38.08.397",
+        "N036.03.05.325,W114.38.08.616",
+        "N036.03.05.586,W114.32.33.314",
+        "N036.14.48.587,W114.35.03.387",
+        "N036.16.45.537,W114.32.05.711",
+        "N036.23.51.820,W114.33.13.249",
+        "N036.23.50.378,W114.39.48.757",
+        "N036.21.16.625,W114.45.52.624"
+      ],
+      "CFG1 W": [
+        "N036.03.05.614,W114.32.32.984",
+        "N036.14.48.697,W114.35.03.607",
+        "N036.16.45.537,W114.32.05.711",
+        "N036.03.05.984,W114.26.22.525",
+        "N036.03.05.614,W114.32.32.984"
+      ],
+      "CFG1 X": [
+        "N035.52.32.197,W114.35.00.173",
+        "N035.50.57.769,W114.32.32.380",
+        "N036.03.06.231,W114.26.21.481",
+        "N036.03.05.435,W114.32.32.572",
+        "N035.52.32.691,W114.34.59.377",
+        "N035.52.32.197,W114.35.00.173"
+      ],
+      "CFG1 Y": [
+        "N036.16.45.537,W114.32.05.711",
+        "N036.23.51.820,W114.33.13.249",
+        "N036.23.50.543,W114.19.07.137",
+        "N036.19.29.453,W114.09.07.613",
+        "N036.03.06.836,W114.09.09.069",
+        "N036.03.05.957,W114.26.21.784",
+        "N036.16.44.823,W114.32.07.359",
+        "N036.16.45.537,W114.32.05.711"
+      ],
+      "CFG1 Z": [
+        "N035.50.57.769,W114.32.32.380",
+        "N036.03.06.231,W114.26.21.481",
+        "N036.03.06.753,W114.09.08.684",
+        "N035.49.47.882,W114.09.09.893",
+        "N035.43.02.679,W114.20.15.802",
+        "N035.50.57.769,W114.32.32.380"
+      ],
+      "CFG2 A": [
+        "N036.20.44.352,W115.51.14.331",
+        "N036.16.19.541,W115.40.00.045",
+        "N036.14.46.940,W115.27.00.593",
+        "N035.57.25.188,W115.26.54.797",
+        "N036.00.18.264,W115.52.12.037",
+        "N036.20.44.352,W115.51.14.331"
+      ],
+      "CFG2 B": [
+        "N035.57.25.188,W115.26.54.797",
+        "N036.00.18.264,W115.52.12.037",
+        "N035.48.24.592,W115.52.45.188",
+        "N035.48.55.601,W115.26.48.892",
+        "N035.57.25.188,W115.26.54.797"
+      ],
+      "CFG2 C": [
+        "N035.48.24.592,W115.52.45.188",
+        "N035.48.55.601,W115.26.48.892",
+        "N035.31.43.024,W115.33.20.390",
+        "N035.36.47.963,W115.42.48.246",
+        "N035.48.24.592,W115.52.45.188"
+      ],
+      "CFG2 D": [
+        "N035.48.55.382,W115.26.49.277",
+        "N035.45.55.453,W115.16.51.373",
+        "N035.29.23.346,W115.25.03.643",
+        "N035.29.23.841,W115.29.00.509",
+        "N035.31.42.859,W115.33.19.566",
+        "N035.48.55.382,W115.26.49.277"
+      ],
+      "CFG2 E": [
+        "N035.48.55.382,W115.26.49.277",
+        "N035.45.55.453,W115.16.51.373",
+        "N036.04.29.673,W115.07.35.712",
+        "N036.04.30.263,W115.12.35.090",
+        "N035.55.39.582,W115.19.16.201",
+        "N035.48.55.382,W115.26.49.277"
+      ],
+      "CFG2 F": [
+        "N035.48.55.848,W115.26.49.606",
+        "N035.52.54.005,W115.22.20.936",
+        "N035.55.42.384,W115.19.12.520",
+        "N036.04.29.371,W115.12.34.293",
+        "N036.04.30.098,W115.07.34.119",
+        "N036.05.43.542,W115.06.42.978",
+        "N036.11.08.545,W114.58.54.356",
+        "N036.11.21.536,W115.00.55.178",
+        "N036.10.17.596,W115.02.26.145",
+        "N036.10.29.571,W115.08.47.508",
+        "N036.12.23.431,W115.10.44.430",
+        "N036.12.59.933,W115.11.34.500",
+        "N036.13.21.823,W115.15.25.515",
+        "N036.14.46.239,W115.27.00.895",
+        "N035.48.55.848,W115.26.49.606"
+      ],
+      "CFG2 G": [
+        "N036.12.24.062,W115.10.44.210",
+        "N036.10.29.598,W115.08.46.712",
+        "N036.10.17.953,W115.02.27.985",
+        "N036.11.21.715,W115.00.55.700",
+        "N036.12.24.062,W115.10.44.210"
+      ],
+      "CFG2 H": [
+        "N035.36.33.200,W115.03.34.123",
+        "N035.43.37.286,W115.18.00.587",
+        "N035.29.24.266,W115.25.02.160",
+        "N035.29.24.788,W115.03.29.976",
+        "N035.36.33.200,W115.03.34.123"
+      ],
+      "CFG2 I": [
+        "N035.43.37.286,W115.18.00.587",
+        "N035.49.54.227,W115.14.52.501",
+        "N035.48.20.596,W115.11.19.202",
+        "N035.48.20.967,W114.57.43.632",
+        "N035.38.31.399,W115.07.34.888",
+        "N035.43.37.286,W115.18.00.587"
+      ],
+      "CFG2 J": [
+        "N035.59.10.616,W114.46.45.194",
+        "N036.00.48.367,W114.51.19.193",
+        "N036.02.31.460,W115.01.45.715",
+        "N036.02.40.839,W115.02.41.334",
+        "N036.02.43.050,W115.03.35.689",
+        "N036.02.44.355,W115.08.28.200",
+        "N035.49.54.076,W115.14.53.161",
+        "N035.48.20.280,W115.11.18.543",
+        "N035.48.21.008,W114.57.41.599",
+        "N035.59.10.616,W114.46.45.194"
+      ],
+      "CFG2 K": [
+        "N035.59.10.616,W114.46.45.194",
+        "N036.00.48.367,W114.51.19.193",
+        "N036.02.31.460,W115.01.45.715",
+        "N036.02.40.839,W115.02.41.334",
+        "N036.02.43.050,W115.03.35.689",
+        "N036.02.44.355,W115.08.28.200",
+        "N036.05.43.542,W115.06.42.978",
+        "N036.06.13.713,W115.00.53.393",
+        "N036.06.15.416,W114.53.25.233",
+        "N036.07.59.814,W114.37.43.375",
+        "N035.59.10.616,W114.46.45.194"
+      ],
+      "CFG2 L": [
+        "N036.05.43.542,W115.06.42.978",
+        "N036.06.13.713,W115.00.53.393",
+        "N036.06.15.416,W114.53.25.233",
+        "N036.07.59.814,W114.37.43.375",
+        "N036.11.59.425,W114.57.04.768",
+        "N036.12.01.238,W114.57.47.944",
+        "N036.11.09.465,W114.58.55.263",
+        "N036.05.48.829,W115.06.34.134",
+        "N036.05.43.542,W115.06.42.978"
+      ],
+      "CFG2 M": [
+        "N036.07.59.814,W114.37.43.375",
+        "N036.11.59.425,W114.57.04.768",
+        "N036.12.01.238,W114.57.47.944",
+        "N036.21.17.050,W114.45.52.761",
+        "N036.23.51.285,W114.39.45.159",
+        "N036.23.50.406,W114.19.08.812",
+        "N036.16.27.451,W114.29.01.415",
+        "N036.07.58.028,W114.37.44.007",
+        "N036.07.59.814,W114.37.43.375"
+      ],
+      "CFG2 N": [
+        "N036.23.50.406,W114.19.08.812",
+        "N036.16.27.451,W114.29.01.415",
+        "N036.07.59.814,W114.37.43.375",
+        "N036.06.54.376,W114.32.17.768",
+        "N036.13.58.050,W114.25.03.286",
+        "N036.19.29.796,W114.09.08.245",
+        "N036.23.50.406,W114.19.08.812"
+      ],
+      "CFG2 O": [
+        "N036.06.54.376,W114.32.17.768",
+        "N036.13.58.050,W114.25.03.286",
+        "N036.19.29.796,W114.09.08.245",
+        "N036.02.14.609,W114.09.10.222",
+        "N036.06.54.376,W114.32.17.768"
+      ],
+      "CFG2 P": [
+        "N036.06.54.376,W114.32.17.768",
+        "N036.02.14.609,W114.09.10.222",
+        "N035.53.48.071,W114.09.08.272",
+        "N035.53.50.021,W114.09.09.041",
+        "N035.59.50.592,W114.39.30.877",
+        "N036.06.54.376,W114.32.17.768"
+      ],
+      "CFG2 Q": [
+        "N035.59.50.592,W114.39.30.877",
+        "N036.01.08.156,W114.44.46.871",
+        "N036.07.59.814,W114.37.43.375",
+        "N036.06.54.376,W114.32.17.768",
+        "N035.59.50.592,W114.39.30.877"
+      ],
+      "CFG2 R": [
+        "N035.59.50.592,W114.39.30.877",
+        "N036.01.08.156,W114.44.46.871",
+        "N035.59.10.616,W114.46.45.194",
+        "N035.57.16.180,W114.41.18.955",
+        "N035.46.49.437,W114.32.19.993",
+        "N035.47.27.010,W114.26.35.407",
+        "N035.59.08.735,W114.35.56.231",
+        "N035.59.50.592,W114.39.30.877"
+      ],
+      "CFG2 S": [
+        "N035.59.08.735,W114.35.56.231",
+        "N035.53.50.021,W114.09.09.041",
+        "N035.49.47.677,W114.09.09.096",
+        "N035.42.23.829,W114.21.19.742",
+        "N035.43.17.827,W114.23.20.015",
+        "N035.59.08.735,W114.35.56.231"
+      ],
+      "CFG2 T": [
+        "N035.46.49.437,W114.32.19.993",
+        "N035.47.27.010,W114.26.35.407",
+        "N035.43.17.827,W114.23.20.015",
+        "N035.42.23.829,W114.21.19.742",
+        "N035.38.05.183,W114.28.24.254",
+        "N035.46.49.437,W114.32.19.993"
+      ],
+      "CFG2 U": [
+        "N035.59.10.616,W114.46.45.194",
+        "N035.57.16.180,W114.41.18.955",
+        "N035.46.49.437,W114.32.19.993",
+        "N035.38.05.183,W114.28.24.254",
+        "N035.29.23.552,W114.54.32.662",
+        "N035.29.24.445,W115.03.31.239",
+        "N035.36.33.200,W115.03.34.123",
+        "N035.38.32.306,W115.07.37.113",
+        "N035.59.10.616,W114.46.45.194"
+      ],
+      "CFG3 A": [
+        "N036.20.44.860,W115.51.14.414",
+        "N035.58.01.361,W115.52.17.969",
+        "N035.55.35.435,W115.44.11.632",
+        "N035.55.35.559,W115.32.49.216",
+        "N035.57.10.700,W115.31.31.186",
+        "N036.14.46.761,W115.27.00.538",
+        "N036.16.19.911,W115.40.00.128",
+        "N036.20.44.860,W115.51.14.414"
+      ],
+      "CFG3 B": [
+        "N035.58.01.361,W115.52.17.969",
+        "N035.55.35.435,W115.44.11.632",
+        "N035.48.38.669,W115.41.26.672",
+        "N035.48.24.167,W115.52.44.419",
+        "N035.58.01.361,W115.52.17.969"
+      ],
+      "CFG3 C": [
+        "N035.55.35.435,W115.44.11.632",
+        "N035.55.35.559,W115.32.49.216",
+        "N035.52.45.586,W115.35.27.008",
+        "N035.51.18.781,W115.34.55.367",
+        "N035.48.51.344,W115.31.09.900",
+        "N035.48.37.529,W115.41.21.179",
+        "N035.55.35.435,W115.44.11.632"
+      ],
+      "CFG3 D": [
+        "N035.48.56.027,W115.26.49.689",
+        "N035.48.51.344,W115.31.09.900",
+        "N035.48.38.669,W115.41.26.672",
+        "N035.48.24.167,W115.52.44.419",
+        "N035.36.47.688,W115.42.47.971",
+        "N035.31.41.390,W115.33.17.781",
+        "N035.48.56.027,W115.26.49.689"
+      ],
+      "CFG3 E": [
+        "N035.55.35.559,W115.32.49.216",
+        "N035.57.10.700,W115.31.31.186",
+        "N036.14.46.761,W115.27.00.538",
+        "N036.13.11.400,W115.13.50.621",
+        "N036.12.59.370,W115.11.30.682",
+        "N036.12.24.735,W115.10.45.446",
+        "N036.10.29.379,W115.08.44.734",
+        "N036.10.17.527,W115.02.25.184",
+        "N036.11.21.866,W115.00.55.480",
+        "N036.11.08.572,W114.58.53.587",
+        "N036.04.29.316,W115.07.21.403",
+        "N036.04.29.824,W115.12.33.305",
+        "N035.55.38.800,W115.19.16.420",
+        "N035.48.56.027,W115.26.49.689",
+        "N035.48.51.344,W115.31.09.900",
+        "N035.51.18.781,W115.34.55.367",
+        "N035.52.45.586,W115.35.27.008",
+        "N035.55.35.559,W115.32.49.216"
+      ],
+      "CFG3 F": [
+        "N036.12.24.062,W115.10.44.210",
+        "N036.10.29.598,W115.08.46.712",
+        "N036.10.17.953,W115.02.27.985",
+        "N036.11.21.715,W115.00.55.700",
+        "N036.12.24.062,W115.10.44.210"
+      ],
+      "CFG3 G": [
+        "N035.55.39.898,W115.19.15.102",
+        "N036.04.30.565,W115.12.33.332",
+        "N036.04.29.631,W115.07.37.992",
+        "N035.53.32.731,W115.13.01.375",
+        "N035.44.08.803,W115.14.08.144",
+        "N035.44.27.013,W115.15.51.278",
+        "N035.44.40.155,W115.16.48.929",
+        "N035.44.53.751,W115.17.42.158",
+        "N035.45.08.679,W115.18.33.821",
+        "N035.45.23.963,W115.19.24.166",
+        "N035.45.43.066,W115.20.16.268",
+        "N035.46.02.402,W115.21.06.696",
+        "N035.46.22.603,W115.21.55.420",
+        "N035.46.45.303,W115.22.43.650",
+        "N035.47.09.432,W115.23.30.946",
+        "N035.47.33.657,W115.24.15.056",
+        "N035.47.59.283,W115.25.02.078",
+        "N035.48.27.009,W115.25.45.474",
+        "N035.49.04.432,W115.26.39.472",
+        "N035.55.39.898,W115.19.15.102"
+      ],
+      "CFG3 H": [
+        "N035.31.41.390,W115.33.17.781",
+        "N035.29.23.539,W115.28.59.849",
+        "N035.29.25.338,W115.15.56.579",
+        "N035.44.08.803,W115.14.08.144",
+        "N035.44.27.013,W115.15.51.278",
+        "N035.44.40.155,W115.16.48.929",
+        "N035.44.53.751,W115.17.42.158",
+        "N035.45.08.679,W115.18.33.821",
+        "N035.45.23.963,W115.19.24.166",
+        "N035.45.43.066,W115.20.16.268",
+        "N035.46.02.402,W115.21.06.696",
+        "N035.46.22.603,W115.21.55.420",
+        "N035.46.45.303,W115.22.43.650",
+        "N035.47.09.432,W115.23.30.946",
+        "N035.47.33.657,W115.24.15.056",
+        "N035.47.59.283,W115.25.02.078",
+        "N035.48.27.009,W115.25.45.474",
+        "N035.49.04.432,W115.26.39.472",
+        "N035.48.56.027,W115.26.49.689",
+        "N035.31.41.390,W115.33.17.781"
+      ],
+      "CFG3 I": [
+        "N035.46.22.781,W114.57.12.211",
+        "N035.46.04.283,W114.57.59.122",
+        "N035.45.44.631,W114.58.49.412",
+        "N035.45.26.477,W114.59.39.428",
+        "N035.45.09.571,W115.00.31.091",
+        "N035.44.54.754,W115.01.22.974",
+        "N035.44.41.089,W115.02.15.873",
+        "N035.44.29.169,W115.03.10.365",
+        "N035.44.18.595,W115.04.03.319",
+        "N035.44.09.600,W115.04.56.575",
+        "N035.44.02.514,W115.05.52.688",
+        "N035.43.56.416,W115.06.48.554",
+        "N035.43.53.093,W115.07.41.947",
+        "N035.43.50.429,W115.08.36.494",
+        "N035.43.49.344,W115.09.31.398",
+        "N035.43.50.497,W115.10.27.731",
+        "N035.43.52.502,W115.11.22.608",
+        "N035.43.56.746,W115.12.18.940",
+        "N035.44.02.417,W115.13.14.393",
+        "N035.44.08.803,W115.14.08.144",
+        "N035.29.25.338,W115.15.56.579",
+        "N035.29.22.976,W114.54.31.371",
+        "N035.31.55.397,W114.47.01.426",
+        "N035.46.22.781,W114.57.12.211"
+      ],
+      "CFG3 J": [
+        "N035.44.08.803,W115.14.08.144",
+        "N035.53.38.801,W115.12.59.837",
+        "N036.02.21.215,W115.08.40.175",
+        "N035.46.22.781,W114.57.12.211",
+        "N035.46.04.283,W114.57.59.122",
+        "N035.45.44.631,W114.58.49.412",
+        "N035.45.26.477,W114.59.39.428",
+        "N035.45.09.571,W115.00.31.091",
+        "N035.44.54.754,W115.01.22.974",
+        "N035.44.41.089,W115.02.15.873",
+        "N035.44.29.169,W115.03.10.365",
+        "N035.44.18.595,W115.04.03.319",
+        "N035.44.09.600,W115.04.56.575",
+        "N035.44.02.514,W115.05.52.688",
+        "N035.43.56.416,W115.06.48.554",
+        "N035.43.53.093,W115.07.41.947",
+        "N035.43.50.429,W115.08.36.494",
+        "N035.43.49.344,W115.09.31.398",
+        "N035.43.50.497,W115.10.27.731",
+        "N035.43.52.502,W115.11.22.608",
+        "N035.43.56.746,W115.12.18.940",
+        "N035.44.02.417,W115.13.14.393",
+        "N035.44.08.803,W115.14.08.144"
+      ],
+      "CFG3 K": [
+        "N035.58.28.003,W114.44.59.066",
+        "N035.57.34.541,W114.45.22.439",
+        "N035.56.09.163,W114.46.04.846",
+        "N035.55.28.623,W114.46.28.796",
+        "N035.54.48.743,W114.46.53.955",
+        "N035.54.09.604,W114.47.20.817",
+        "N035.53.31.289,W114.47.50.040",
+        "N035.52.53.222,W114.48.21.132",
+        "N035.52.16.898,W114.48.53.789",
+        "N035.51.41.742,W114.49.27.489",
+        "N035.51.06.737,W114.50.02.398",
+        "N035.50.33.050,W114.50.39.614",
+        "N035.50.00.613,W114.51.18.479",
+        "N035.49.29.673,W114.51.57.041",
+        "N035.48.58.732,W114.52.39.420",
+        "N035.48.30.278,W114.53.21.333",
+        "N035.48.02.991,W114.54.04.262",
+        "N035.47.35.525,W114.54.49.746",
+        "N035.47.10.641,W114.55.35.394",
+        "N035.46.46.979,W114.56.22.690",
+        "N035.46.23.537,W114.57.12.705",
+        "N035.46.22.781,W114.57.12.211",
+        "N036.02.21.215,W115.08.40.175",
+        "N036.02.18.056,W115.08.38.307",
+        "N036.02.44.533,W115.08.28.557",
+        "N036.02.42.268,W115.02.07.743",
+        "N036.02.28.576,W114.58.31.862",
+        "N035.58.28.003,W114.44.59.066"
+      ],
+      "CFG3 L": [
+        "N036.06.27.254,W114.43.50.236",
+        "N036.05.39.999,W114.43.46.309",
+        "N036.04.53.650,W114.43.45.347",
+        "N036.04.08.551,W114.43.46.089",
+        "N036.03.24.194,W114.43.48.561",
+        "N036.02.37.159,W114.43.54.109",
+        "N036.01.54.450,W114.44.01.333",
+        "N036.01.09.309,W114.44.09.682",
+        "N036.00.25.502,W114.44.20.311",
+        "N035.59.41.007,W114.44.33.632",
+        "N035.58.58.600,W114.44.47.145",
+        "N035.58.29.321,W114.44.58.764",
+        "N036.02.29.441,W114.58.32.136",
+        "N036.02.38.381,W115.00.59.710",
+        "N036.06.29.204,W115.01.01.441",
+        "N036.06.27.254,W114.43.50.236"
+      ],
+      "CFG3 LL": [
+        "N036.04.29.865,W115.07.17.640",
+        "N036.06.29.808,W115.04.49.819",
+        "N036.06.29.204,W115.01.01.441",
+        "N036.04.25.333,W115.01.00.150",
+        "N036.04.29.865,W115.07.17.640"
+      ],
+      "CFG3 KK": [
+        "N036.02.44.012,W115.08.28.282",
+        "N036.04.29.357,W115.07.37.443",
+        "N036.04.29.865,W115.07.17.640",
+        "N036.04.25.333,W115.01.00.150",
+        "N036.02.38.381,W115.00.59.710",
+        "N036.02.44.012,W115.08.28.282"
+      ],
+      "CFG3 M": [
+        "N036.06.29.959,W115.04.50.451",
+        "N036.11.59.975,W114.57.50.196",
+        "N036.11.55.924,W114.50.24.261",
+        "N036.08.22.789,W114.43.57.130",
+        "N036.06.26.361,W114.43.50.429",
+        "N036.06.29.959,W115.04.50.451"
+      ],
+      "CFG3 N": [
+        "N036.23.32.800,W114.40.30.148",
+        "N036.22.55.131,W114.39.53.179",
+        "N036.22.18.505,W114.39.20.440",
+        "N036.21.41.055,W114.38.49.129",
+        "N036.21.03.111,W114.38.17.900",
+        "N036.20.24.398,W114.37.48.759",
+        "N036.19.46.180,W114.37.19.508",
+        "N036.19.05.887,W114.36.53.909",
+        "N036.18.24.826,W114.36.26.499",
+        "N036.17.46.003,W114.36.04.361",
+        "N036.17.03.692,W114.35.39.120",
+        "N036.16.23.015,W114.35.18.603",
+        "N036.15.42.915,W114.34.58.580",
+        "N036.14.58.503,W114.34.36.937",
+        "N036.14.21.891,W114.34.21.639",
+        "N036.06.27.542,W114.43.50.593",
+        "N036.08.22.954,W114.43.57.460",
+        "N036.11.56.020,W114.50.23.986",
+        "N036.12.00.552,W114.57.49.839",
+        "N036.21.16.116,W114.45.53.668",
+        "N036.23.32.800,W114.40.30.148"
+      ],
+      "CFG3 O": [
+        "N036.06.27.254,W114.43.50.236",
+        "N036.05.39.999,W114.43.46.309",
+        "N036.04.53.650,W114.43.45.347",
+        "N036.04.08.551,W114.43.46.089",
+        "N036.03.24.194,W114.43.48.561",
+        "N036.03.06.218,W114.43.49.879",
+        "N036.03.05.229,W114.38.13.643",
+        "N036.03.59.955,W114.38.10.374",
+        "N036.04.45.974,W114.38.08.836",
+        "N036.05.31.320,W114.38.09.962",
+        "N036.06.15.897,W114.38.13.176",
+        "N036.06.59.979,W114.38.16.472",
+        "N036.07.45.806,W114.38.21.333",
+        "N036.08.30.466,W114.38.28.996",
+        "N036.09.15.935,W114.38.39.021",
+        "N036.09.59.812,W114.38.48.717",
+        "N036.10.31.370,W114.38.58.302",
+        "N036.06.27.254,W114.43.50.236"
+      ],
+      "CFG3 P": [
+        "N036.03.05.229,W114.38.13.643",
+        "N036.03.59.955,W114.38.10.374",
+        "N036.04.45.974,W114.38.08.836",
+        "N036.05.31.320,W114.38.09.962",
+        "N036.06.15.897,W114.38.13.176",
+        "N036.06.59.979,W114.38.16.472",
+        "N036.07.45.806,W114.38.21.333",
+        "N036.08.30.466,W114.38.28.996",
+        "N036.09.15.935,W114.38.39.021",
+        "N036.09.59.812,W114.38.48.717",
+        "N036.10.31.370,W114.38.58.302",
+        "N036.14.21.437,W114.34.21.776",
+        "N036.13.35.309,W114.34.03.045",
+        "N036.12.51.858,W114.33.48.817",
+        "N036.12.08.338,W114.33.33.958",
+        "N036.11.25.052,W114.33.20.994",
+        "N036.10.40.420,W114.33.09.541",
+        "N036.09.55.033,W114.33.00.148",
+        "N036.09.10.222,W114.32.51.221",
+        "N036.08.26.167,W114.32.44.108",
+        "N036.07.41.672,W114.32.37.708",
+        "N036.06.56.931,W114.32.33.286",
+        "N036.06.10.829,W114.32.30.457",
+        "N036.05.26.499,W114.32.29.111",
+        "N036.04.41.153,W114.32.27.985",
+        "N036.03.56.219,W114.32.29.935",
+        "N036.03.06.108,W114.32.31.638",
+        "N036.03.05.229,W114.38.13.643"
+      ],
+      "CFG3 Q": [
+        "N035.55.52.890,W114.40.08.560",
+        "N035.56.38.922,W114.39.50.185",
+        "N035.57.22.140,W114.39.33.019",
+        "N035.58.05.783,W114.39.16.484",
+        "N035.58.49.110,W114.39.02.147",
+        "N035.59.32.850,W114.38.50.886",
+        "N036.00.18.072,W114.38.39.351",
+        "N036.01.00.617,W114.38.30.809",
+        "N036.01.46.333,W114.38.22.981",
+        "N036.02.30.869,W114.38.17.927",
+        "N036.03.05.229,W114.38.13.643",
+        "N036.03.06.108,W114.32.31.638",
+        "N036.02.27.134,W114.32.35.484",
+        "N036.01.41.019,W114.32.40.208",
+        "N036.00.56.813,W114.32.47.761",
+        "N036.00.12.593,W114.32.55.286",
+        "N035.59.27.041,W114.33.04.350",
+        "N035.58.44.249,W114.33.14.787",
+        "N035.57.59.177,W114.33.27.586",
+        "N035.57.15.685,W114.33.40.687",
+        "N035.56.31.355,W114.33.55.272",
+        "N035.55.48.770,W114.34.11.394",
+        "N035.55.05.332,W114.34.28.917",
+        "N035.54.22.651,W114.34.48.226",
+        "N035.53.41.369,W114.35.06.628",
+        "N035.52.54.169,W114.35.30.633",
+        "N035.55.52.890,W114.40.08.560"
+      ],
+      "CFG3 R": [
+        "N036.02.37.159,W114.43.54.109",
+        "N036.01.54.450,W114.44.01.333",
+        "N036.01.09.309,W114.44.09.682",
+        "N036.00.25.502,W114.44.20.311",
+        "N035.59.41.007,W114.44.33.632",
+        "N035.58.58.600,W114.44.47.145",
+        "N035.58.29.321,W114.44.58.764",
+        "N035.55.52.890,W114.40.08.560",
+        "N035.56.38.922,W114.39.50.185",
+        "N035.57.22.140,W114.39.33.019",
+        "N035.58.05.783,W114.39.16.484",
+        "N035.58.49.110,W114.39.02.147",
+        "N035.59.32.850,W114.38.50.886",
+        "N036.00.18.072,W114.38.39.351",
+        "N036.01.00.617,W114.38.30.809",
+        "N036.01.46.333,W114.38.22.981",
+        "N036.02.30.869,W114.38.17.927",
+        "N036.03.05.229,W114.38.13.643",
+        "N036.03.06.218,W114.43.49.879",
+        "N036.02.37.159,W114.43.54.109"
+      ],
+      "CFG3 S": [
+        "N035.46.22.781,W114.57.12.211",
+        "N035.31.55.274,W114.46.55.878",
+        "N035.37.56.792,W114.28.51.225",
+        "N035.38.27.925,W114.27.46.571",
+        "N035.43.03.132,W114.20.15.911",
+        "N035.55.52.697,W114.40.09.082",
+        "N035.58.28.003,W114.44.59.066",
+        "N035.57.34.541,W114.45.22.439",
+        "N035.56.09.163,W114.46.04.846",
+        "N035.55.28.623,W114.46.28.796",
+        "N035.54.48.743,W114.46.53.955",
+        "N035.54.09.604,W114.47.20.817",
+        "N035.53.31.289,W114.47.50.040",
+        "N035.52.53.222,W114.48.21.132",
+        "N035.52.16.898,W114.48.53.789",
+        "N035.51.41.742,W114.49.27.489",
+        "N035.51.06.737,W114.50.02.398",
+        "N035.50.33.050,W114.50.39.614",
+        "N035.50.00.613,W114.51.18.479",
+        "N035.49.29.673,W114.51.57.041",
+        "N035.48.58.732,W114.52.39.420",
+        "N035.48.30.278,W114.53.21.333",
+        "N035.48.02.991,W114.54.04.262",
+        "N035.47.35.525,W114.54.49.746",
+        "N035.47.10.641,W114.55.35.394",
+        "N035.46.46.979,W114.56.22.690",
+        "N035.46.23.084,W114.57.11.909",
+        "N035.46.22.781,W114.57.12.211"
+      ],
+      "CFG3 T": [
+        "N036.03.06.108,W114.32.31.638",
+        "N036.02.27.134,W114.32.35.484",
+        "N036.01.41.019,W114.32.40.208",
+        "N036.00.56.813,W114.32.47.761",
+        "N036.00.12.593,W114.32.55.286",
+        "N035.59.27.041,W114.33.04.350",
+        "N035.58.44.249,W114.33.14.787",
+        "N035.57.59.177,W114.33.27.586",
+        "N035.57.15.685,W114.33.40.687",
+        "N035.56.31.355,W114.33.55.272",
+        "N035.55.48.770,W114.34.11.394",
+        "N035.55.05.332,W114.34.28.917",
+        "N035.54.22.651,W114.34.48.226",
+        "N035.53.41.369,W114.35.06.628",
+        "N035.52.54.169,W114.35.30.633",
+        "N035.49.40.838,W114.30.31.585",
+        "N035.50.03.565,W114.30.18.869",
+        "N035.50.45.272,W114.29.55.962",
+        "N035.51.26.375,W114.29.36.324",
+        "N035.52.07.738,W114.29.14.763",
+        "N035.52.51.148,W114.28.53.340",
+        "N035.53.33.624,W114.28.36.613",
+        "N035.54.16.896,W114.28.17.827",
+        "N035.54.59.139,W114.28.03.078",
+        "N035.55.42.301,W114.27.47.477",
+        "N035.56.27.139,W114.27.32.838",
+        "N035.57.11.222,W114.27.20.286",
+        "N035.57.54.110,W114.27.10.480",
+        "N035.58.38.783,W114.26.59.000",
+        "N035.59.22.207,W114.26.49.661",
+        "N036.00.06.921,W114.26.42.026",
+        "N036.00.51.058,W114.26.33.869",
+        "N036.01.39.343,W114.26.29.996",
+        "N036.02.22.286,W114.26.24.558",
+        "N036.03.05.984,W114.26.20.960",
+        "N036.03.06.108,W114.32.31.638"
+      ],
+      "CFG3 U": [
+        "N036.14.21.437,W114.34.21.776",
+        "N036.13.35.309,W114.34.03.045",
+        "N036.12.51.858,W114.33.48.817",
+        "N036.12.08.338,W114.33.33.958",
+        "N036.11.25.052,W114.33.20.994",
+        "N036.10.40.420,W114.33.09.541",
+        "N036.09.55.033,W114.33.00.148",
+        "N036.09.10.222,W114.32.51.221",
+        "N036.08.26.167,W114.32.44.108",
+        "N036.07.41.672,W114.32.37.708",
+        "N036.06.56.931,W114.32.33.286",
+        "N036.06.10.829,W114.32.30.457",
+        "N036.05.26.499,W114.32.29.111",
+        "N036.04.41.153,W114.32.27.985",
+        "N036.03.56.219,W114.32.29.935",
+        "N036.03.06.108,W114.32.31.638",
+        "N036.03.06.396,W114.26.20.438",
+        "N036.03.51.811,W114.26.18.680",
+        "N036.04.40.920,W114.26.17.169",
+        "N036.05.23.176,W114.26.18.295",
+        "N036.06.07.437,W114.26.19.010",
+        "N036.06.53.442,W114.26.21.289",
+        "N036.07.37.662,W114.26.25.848",
+        "N036.08.21.319,W114.26.29.859",
+        "N036.09.07.311,W114.26.35.956",
+        "N036.09.51.957,W114.26.43.591",
+        "N036.10.36.177,W114.26.51.941",
+        "N036.11.21.056,W114.27.01.307",
+        "N036.12.03.930,W114.27.11.195",
+        "N036.12.47.147,W114.27.23.582",
+        "N036.13.32.507,W114.27.36.820",
+        "N036.14.15.546,W114.27.51.762",
+        "N036.14.58.489,W114.28.05.989",
+        "N036.15.42.173,W114.28.22.084",
+        "N036.16.24.690,W114.28.40.980",
+        "N036.17.06.123,W114.28.59.492",
+        "N036.17.50.370,W114.29.19.899",
+        "N036.18.32.200,W114.29.41.460",
+        "N036.19.12.534,W114.30.03.295",
+        "N036.19.53.966,W114.30.25.515",
+        "N036.20.34.204,W114.30.50.564",
+        "N036.21.14.427,W114.31.15.585",
+        "N036.21.53.896,W114.31.42.667",
+        "N036.22.33.529,W114.32.11.011",
+        "N036.23.12.242,W114.32.40.153",
+        "N036.23.51.697,W114.33.11.079",
+        "N036.23.50.914,W114.39.47.796",
+        "N036.23.32.800,W114.40.30.148",
+        "N036.22.55.131,W114.39.53.179",
+        "N036.22.18.505,W114.39.20.440",
+        "N036.21.41.055,W114.38.49.129",
+        "N036.21.03.111,W114.38.17.900",
+        "N036.20.24.398,W114.37.48.759",
+        "N036.19.46.180,W114.37.19.508",
+        "N036.19.05.887,W114.36.53.909",
+        "N036.18.24.826,W114.36.26.499",
+        "N036.17.46.003,W114.36.04.361",
+        "N036.17.03.692,W114.35.39.120",
+        "N036.16.23.015,W114.35.18.603",
+        "N036.15.42.915,W114.34.58.580",
+        "N036.14.58.503,W114.34.36.937",
+        "N036.14.21.437,W114.34.21.776"
+      ],
+      "CFG3 V": [
+        "N036.03.05.984,W114.26.20.960",
+        "N036.03.51.811,W114.26.18.680",
+        "N036.04.40.920,W114.26.17.169",
+        "N036.05.23.176,W114.26.18.295",
+        "N036.06.07.437,W114.26.19.010",
+        "N036.06.53.442,W114.26.21.289",
+        "N036.07.37.662,W114.26.25.848",
+        "N036.08.21.319,W114.26.29.859",
+        "N036.09.07.311,W114.26.35.956",
+        "N036.09.51.957,W114.26.43.591",
+        "N036.10.36.177,W114.26.51.941",
+        "N036.11.21.056,W114.27.01.307",
+        "N036.12.03.930,W114.27.11.195",
+        "N036.12.47.147,W114.27.23.582",
+        "N036.13.32.507,W114.27.36.820",
+        "N036.14.15.546,W114.27.51.762",
+        "N036.14.58.489,W114.28.05.989",
+        "N036.15.42.173,W114.28.22.084",
+        "N036.16.24.690,W114.28.40.980",
+        "N036.17.06.123,W114.28.59.492",
+        "N036.17.50.370,W114.29.19.899",
+        "N036.18.32.200,W114.29.41.460",
+        "N036.19.12.534,W114.30.03.295",
+        "N036.19.53.966,W114.30.25.515",
+        "N036.20.34.204,W114.30.50.564",
+        "N036.21.14.427,W114.31.15.585",
+        "N036.21.53.896,W114.31.42.667",
+        "N036.22.33.529,W114.32.11.011",
+        "N036.23.12.242,W114.32.40.153",
+        "N036.23.51.697,W114.33.11.079",
+        "N036.23.51.587,W114.19.07.137",
+        "N036.19.30.057,W114.09.09.728",
+        "N036.03.06.863,W114.09.07.750",
+        "N036.03.05.984,W114.26.20.960"
+      ],
+      "CFG3 W": [
+        "N035.49.40.838,W114.30.31.585",
+        "N035.50.03.565,W114.30.18.869",
+        "N035.50.45.272,W114.29.55.962",
+        "N035.51.26.375,W114.29.36.324",
+        "N035.52.07.738,W114.29.14.763",
+        "N035.52.51.148,W114.28.53.340",
+        "N035.53.33.624,W114.28.36.613",
+        "N035.54.16.896,W114.28.17.827",
+        "N035.54.59.139,W114.28.03.078",
+        "N035.55.42.301,W114.27.47.477",
+        "N035.56.27.139,W114.27.32.838",
+        "N035.57.11.222,W114.27.20.286",
+        "N035.57.54.110,W114.27.10.480",
+        "N035.58.38.783,W114.26.59.000",
+        "N035.59.22.207,W114.26.49.661",
+        "N036.00.06.921,W114.26.42.026",
+        "N036.00.51.058,W114.26.33.869",
+        "N036.01.39.343,W114.26.29.996",
+        "N036.02.22.286,W114.26.24.558",
+        "N036.03.05.984,W114.26.20.960",
+        "N036.03.06.863,W114.09.07.750",
+        "N035.49.48.336,W114.09.09.893",
+        "N035.43.03.393,W114.20.16.818",
+        "N035.49.40.838,W114.30.31.585"
+      ],
+      "CFG4 A": [
+        "N036.20.45.712,W115.51.16.034",
+        "N035.57.42.739,W115.52.19.645",
+        "N035.57.25.738,W115.26.54.797",
+        "N036.14.47.173,W115.27.02.213",
+        "N036.16.20.172,W115.40.01.748",
+        "N036.20.45.712,W115.51.16.034"
+      ],
+      "CFG4 B": [
+        "N035.57.42.739,W115.52.19.645",
+        "N035.57.25.738,W115.26.54.797",
+        "N035.48.55.231,W115.26.50.101",
+        "N035.48.23.974,W115.52.44.941",
+        "N035.57.42.739,W115.52.19.645"
+      ],
+      "CFG4 C": [
+        "N035.48.55.231,W115.26.50.101",
+        "N035.48.23.974,W115.52.44.941",
+        "N035.36.46.892,W115.42.47.367",
+        "N035.31.42.996,W115.33.19.044",
+        "N035.37.36.262,W115.25.22.485",
+        "N035.47.08.828,W115.20.57.302",
+        "N035.48.56.247,W115.26.49.469",
+        "N035.48.55.231,W115.26.50.101"
+      ],
+      "CFG4 D": [
+        "N035.31.42.996,W115.33.19.044",
+        "N035.37.36.262,W115.25.22.485",
+        "N035.47.08.828,W115.20.57.302",
+        "N035.45.02.677,W115.13.58.476",
+        "N035.29.24.939,W115.15.57.128",
+        "N035.29.23.882,W115.28.58.998",
+        "N035.31.42.996,W115.33.19.044"
+      ],
+      "CFG4 E": [
+        "N035.57.25.738,W115.26.54.797",
+        "N035.48.55.231,W115.26.50.101",
+        "N035.47.08.828,W115.20.57.302",
+        "N035.45.02.677,W115.13.58.476",
+        "N035.51.25.427,W115.13.14.833",
+        "N035.58.51.005,W115.10.24.792",
+        "N035.57.25.738,W115.26.54.797"
+      ],
+      "CFG4 F": [
+        "N035.57.25.738,W115.26.54.797",
+        "N035.58.51.005,W115.10.24.792",
+        "N035.59.01.374,W115.11.37.219",
+        "N035.59.16.549,W115.12.30.750",
+        "N035.59.36.750,W115.13.19.584",
+        "N036.00.01.785,W115.14.06.057",
+        "N036.00.31.365,W115.14.47.832",
+        "N036.01.04.956,W115.15.24.993",
+        "N036.01.42.062,W115.15.57.650",
+        "N036.02.22.314,W115.16.22.644",
+        "N036.03.03.732,W115.16.41.101",
+        "N036.03.47.101,W115.16.54.697",
+        "N036.04.33.435,W115.16.59.448",
+        "N036.05.18.026,W115.16.58.844",
+        "N036.06.04.663,W115.16.50.192",
+        "N036.06.03.743,W115.26.59.110",
+        "N035.57.25.738,W115.26.54.797"
+      ],
+      "CFG4 G": [
+        "N036.06.04.663,W115.16.50.192",
+        "N036.06.05.652,W115.09.14.699",
+        "N036.04.29.700,W115.10.10.675",
+        "N036.04.29.233,W115.07.36.976",
+        "N036.05.44.407,W115.06.43.665",
+        "N036.06.06.105,W115.02.39.768",
+        "N036.06.12.189,W115.01.08.334",
+        "N036.11.08.724,W114.58.55.565",
+        "N036.11.21.509,W115.00.57.540",
+        "N036.10.18.585,W115.02.26.310",
+        "N036.10.30.107,W115.08.47.206",
+        "N036.12.24.186,W115.10.46.215",
+        "N036.12.58.065,W115.11.29.694",
+        "N036.13.11.510,W115.13.48.781",
+        "N036.14.46.843,W115.27.01.307",
+        "N036.06.03.235,W115.26.59.604",
+        "N036.06.04.663,W115.16.50.192"
+      ],
+      "CFG4 H": [
+        "N036.12.24.062,W115.10.44.210",
+        "N036.10.29.598,W115.08.46.712",
+        "N036.10.17.953,W115.02.27.985",
+        "N036.11.21.715,W115.00.55.700",
+        "N036.12.24.062,W115.10.44.210"
+      ],
+      "CFG4 I": [
+        "N035.58.51.005,W115.10.24.792",
+        "N035.59.01.374,W115.11.37.219",
+        "N035.59.16.549,W115.12.30.750",
+        "N035.59.36.750,W115.13.19.584",
+        "N036.00.01.785,W115.14.06.057",
+        "N036.00.31.365,W115.14.47.832",
+        "N036.01.04.956,W115.15.24.993",
+        "N036.01.42.062,W115.15.57.650",
+        "N036.02.22.314,W115.16.22.644",
+        "N036.03.03.732,W115.16.41.101",
+        "N036.03.47.101,W115.16.54.697",
+        "N036.04.33.435,W115.16.59.448",
+        "N036.05.18.026,W115.16.58.844",
+        "N036.06.04.663,W115.16.50.192",
+        "N036.06.05.652,W115.09.14.699",
+        "N036.04.29.700,W115.10.10.675",
+        "N036.04.29.233,W115.07.36.976",
+        "N036.02.43.256,W115.08.29.463",
+        "N035.58.51.005,W115.10.24.792"
+      ],
+      "CFG4 J": [
+        "N036.04.29.233,W115.07.36.976",
+        "N036.05.44.407,W115.06.43.665",
+        "N036.06.06.105,W115.02.39.768",
+        "N036.06.12.189,W115.01.08.334",
+        "N036.02.42.405,W115.02.50.755",
+        "N036.02.44.630,W115.08.27.760",
+        "N036.04.29.233,W115.07.36.976"
+      ],
+      "CFG4 K": [
+        "N036.02.42.405,W115.02.50.755",
+        "N036.02.06.260,W114.59.11.824",
+        "N036.00.49.520,W114.51.24.136",
+        "N035.57.17.800,W114.41.18.817",
+        "N035.50.38.887,W114.35.35.632",
+        "N035.48.22.395,W114.56.32.440",
+        "N035.48.16.257,W115.10.57.943",
+        "N035.49.53.692,W115.13.26.945",
+        "N035.51.25.427,W115.13.14.833",
+        "N035.58.51.005,W115.10.24.792",
+        "N036.02.44.630,W115.08.27.760",
+        "N036.02.42.405,W115.02.50.755"
+      ],
+      "CFG4 L": [
+        "N035.48.22.395,W114.56.32.440",
+        "N035.48.16.257,W115.10.57.943",
+        "N035.49.54.062,W115.13.25.187",
+        "N035.45.02.774,W115.13.58.558",
+        "N035.29.27.095,W115.15.57.458",
+        "N035.29.23.621,W114.54.34.502",
+        "N035.38.08.754,W114.28.16.755",
+        "N035.39.22.472,W114.26.20.410",
+        "N035.46.53.035,W114.32.21.146",
+        "N035.50.38.887,W114.35.37.115",
+        "N035.48.22.395,W114.56.32.440"
+      ],
+      "CFG4 M": [
+        "N035.39.22.472,W114.26.20.410",
+        "N035.46.50.481,W114.32.19.141",
+        "N035.48.04.707,W114.22.40.684",
+        "N035.43.02.913,W114.20.16.131",
+        "N035.39.22.472,W114.26.20.410"
+      ],
+      "CFG4 N": [
+        "N035.46.50.481,W114.32.19.141",
+        "N035.48.04.707,W114.22.40.684",
+        "N035.51.51.300,W114.24.29.256",
+        "N035.50.39.257,W114.35.35.604",
+        "N035.46.50.481,W114.32.19.141"
+      ],
+      "CFG4 O": [
+        "N036.06.12.189,W115.01.08.334",
+        "N036.02.42.405,W115.02.50.755",
+        "N036.02.06.260,W114.59.11.824",
+        "N036.00.49.520,W114.51.24.136",
+        "N035.57.17.800,W114.41.18.817",
+        "N035.50.39.065,W114.35.37.390",
+        "N035.51.51.218,W114.24.27.800",
+        "N036.05.30.372,W114.25.03.671",
+        "N036.10.04.234,W114.30.44.412",
+        "N036.06.15.389,W114.53.24.327",
+        "N036.06.12.189,W115.01.08.334"
+      ],
+      "CFG4 P": [
+        "N036.10.04.234,W114.30.44.412",
+        "N036.06.15.389,W114.53.24.327",
+        "N036.06.12.189,W115.01.08.334",
+        "N036.11.09.424,W114.58.55.812",
+        "N036.21.17.627,W114.45.52.185",
+        "N036.23.51.477,W114.39.45.983",
+        "N036.23.50.969,W114.31.52.033",
+        "N036.10.04.234,W114.30.44.412"
+      ],
+      "CFG4 Q": [
+        "N036.10.04.234,W114.30.44.412",
+        "N036.23.50.680,W114.31.53.955",
+        "N036.23.51.326,W114.19.08.318",
+        "N036.19.29.494,W114.09.08.492",
+        "N036.16.18.016,W114.09.09.124",
+        "N036.10.04.234,W114.30.44.412"
+      ],
+      "CFG4 R": [
+        "N036.05.30.372,W114.25.03.671",
+        "N036.10.04.234,W114.30.44.412",
+        "N036.16.19.252,W114.09.07.915",
+        "N036.04.30.277,W114.09.09.893",
+        "N036.04.29.563,W114.25.00.677",
+        "N036.05.30.372,W114.25.03.671"
+      ],
+      "CFG4 S": [
+        "N036.04.30.277,W114.09.09.893",
+        "N036.04.29.563,W114.25.00.677",
+        "N035.58.20.848,W114.24.44.939",
+        "N035.58.12.938,W114.19.31.307",
+        "N035.55.07.791,W114.09.09.206",
+        "N036.04.30.277,W114.09.09.893"
+      ],
+      "CFG4 T": [
+        "N035.58.20.848,W114.24.44.939",
+        "N035.58.12.938,W114.19.31.307",
+        "N035.55.07.791,W114.09.09.206",
+        "N035.49.49.118,W114.09.08.849",
+        "N035.43.03.915,W114.20.17.010",
+        "N035.51.50.861,W114.24.27.855",
+        "N035.58.20.848,W114.24.44.939"
+      ]
+    },
+    "volumes": {
+      "DAGGET CFG1": [
+        {
+          "boundaries": ["CFG1 D"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 F"],
+          "lower": 0,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG1 E"],
+          "lower": 0,
+          "upper": 10000
+        },
+        {
+          "boundaries": ["CFG1 G"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 C"],
+          "lower": 0,
+          "upper": 8000
+        },
+        {
+          "boundaries": ["CFG1 H"],
+          "lower": 7000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 I"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 O"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 J"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 P"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 T"],
+          "lower": 13000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 U"],
+          "lower": 14000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 X"],
+          "lower": 15000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 Z"],
+          "lower": 17000,
+          "upper": 19000
+        }
+      ],
+      "MEAD CFG1": [
+        {
+          "boundaries": ["CFG1 B"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 L"],
+          "lower": 7000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 K"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 M"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 N"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 Q"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 R"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 S"],
+          "lower": 13000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 V"],
+          "lower": 14000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 W"],
+          "lower": 15000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 Y"],
+          "lower": 17000,
+          "upper": 19000
+        }
+      ],
+      "GRANITE CFG1": [
+        {
+          "boundaries": ["CFG1 A"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 C"],
+          "lower": 9000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 E"],
+          "lower": 11000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 F"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG1 O"],
+          "lower": 10000,
+          "upper": 11000
+        }
+      ],
+      "LAKE CFG1": [
+        {
+          "boundaries": ["CFG1 S"],
+          "lower": 8000,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG1 V"],
+          "lower": 8000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["CFG1 Y"],
+          "lower": 8000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG1 Z"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG1 W"],
+          "lower": 8000,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG1 T"],
+          "lower": 0,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG1 U"],
+          "lower": 0,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["CFG1 X"],
+          "lower": 0,
+          "upper": 14000
+        }
+      ],
+      "FINAL CFG1": [
+        {
+          "boundaries": ["CFG1 N"],
+          "lower": 0,
+          "upper": 4500
+        },
+        {
+          "boundaries": ["CFG1 N"],
+          "lower": 8000,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["CFG1 O"],
+          "lower": 8000,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["CFG1 P"],
+          "lower": 0,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["CFG1 Q"],
+          "lower": 0,
+          "upper": 9000
+        }
+      ],
+      "SATELITE CFG1": [
+        {
+          "boundaries": ["CFG1 L"],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["CFG1 M"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 R"],
+          "lower": 0,
+          "upper": 9000
+        }
+      ],
+      "CANYON CFG1": [
+        {
+          "boundaries": ["CFG1 N"],
+          "lower": 5000,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 O"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 H"],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["CFG1 I"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 J"],
+          "lower": 0,
+          "upper": 11000
+        }
+      ],
+      "KENO CFG1": [
+        {
+          "boundaries": ["CFG1 S"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 V"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 W"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG1 Y"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ],
+      "DAGGET CFG2": [
+        {
+          "boundaries": ["CFG2 B"],
+          "lower": 16000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 C"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 D"],
+          "lower": 14000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 E"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 F"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 H"],
+          "lower": 14000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 I"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 J"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 U"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 G"],
+          "lower": 10000,
+          "upper": 19000
+        }
+      ],
+      "MEAD CFG2": [
+        {
+          "boundaries": ["CFG2 K"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 L"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 M"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 N"],
+          "lower": 8000,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG2 N"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 O"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 P"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 Q"],
+          "lower": 0,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG2 Q"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 R"],
+          "lower": 0,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG2 R"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 S"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 T"],
+          "lower": 0,
+          "upper": 19000
+        }
+      ],
+      "GRANITE CFG2": [
+        {
+          "boundaries": ["CFG2 A"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG2 B"],
+          "lower": 0,
+          "upper": 15000
+        },
+        {
+          "boundaries": ["CFG2 C"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG2 D"],
+          "lower": 0,
+          "upper": 13000
+        }
+      ],
+      "LAKE CFG2": [
+        {
+          "boundaries": ["CFG2 N"],
+          "lower": 15000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG2 Q"],
+          "lower": 15000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG2 S"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG2 R"],
+          "lower": 13000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG2 U"],
+          "lower": 12000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG2 H"],
+          "lower": 9000,
+          "upper": 13000
+        }
+      ],
+      "FINAL CFG2": [
+        {
+          "boundaries": ["CFG2 E"],
+          "lower": 0,
+          "upper": 9000
+        }
+      ],
+      "SATELITE CFG2": [
+        {
+          "boundaries": ["CFG2 F"],
+          "lower": 0,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["CFG2 G"],
+          "lower": 7000,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["CFG2 L"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ],
+      "CANYON CFG2": [
+        {
+          "boundaries": ["CFG2 J"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG2 I"],
+          "lower": 0,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG2 U"],
+          "lower": 0,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG2 H"],
+          "lower": 0,
+          "upper": 8000
+        }
+      ],
+      "KENO CFG2": [
+        {
+          "boundaries": ["CFG2 M"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG2 N"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG2 O"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ],
+      "DAGGET CFG3": [
+        {
+          "boundaries": ["CFG3 B"],
+          "lower": 15000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 C"],
+          "lower": 13000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 E"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 D"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 H"],
+          "lower": 13000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 F"],
+          "lower": 7000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 G"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 J"],
+          "lower": 11000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 I"],
+          "lower": 12000,
+          "upper": 19000
+        }
+      ],
+      "MEAD CFG3": [
+        {
+          "boundaries": ["CFG3 K"],
+          "lower": 11000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 S"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 W"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 T"],
+          "lower": 15000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 Q"],
+          "lower": 13000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 R"],
+          "lower": 11000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 V"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 U"],
+          "lower": 14000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 N"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 M"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 P"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 O"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 L"],
+          "lower": 10000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 LL"],
+          "lower": 8000,
+          "upper": 19000
+        }
+      ],
+      "GRANITE CFG3": [
+        {
+          "boundaries": ["CFG3 A"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG3 B"],
+          "lower": 0,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG3 C"],
+          "lower": 0,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG3 D"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG3 H"],
+          "lower": 0,
+          "upper": 12000
+        }
+      ],
+      "LAKE CFG3": [
+        {
+          "boundaries": ["CFG3 V"],
+          "lower": 8000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG3 W"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG3 U"],
+          "lower": 8000,
+          "upper": 13000
+        },
+        {
+          "boundaries": ["CFG3 T"],
+          "lower": 0,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG3 Q"],
+          "lower": 0,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG3 P"],
+          "lower": 8000,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG3 R"],
+          "lower": 0,
+          "upper": 10000
+        },
+        {
+          "boundaries": ["CFG3 O"],
+          "lower": 8000,
+          "upper": 9000
+        }
+      ],
+      "FINAL CFG3": [
+        {
+          "boundaries": ["CFG3 L"],
+          "lower": 0,
+          "upper": 9000
+        },
+        {
+          "boundaries": ["CFG3 LL"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG3 KK"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ],
+      "SATELITE CFG3": [
+        {
+          "boundaries": ["CFG3 G"],
+          "lower": 0,
+          "upper": 9000
+        }
+      ],
+      "CANYON CFG3": [
+        {
+          "boundaries": ["CFG3 J"],
+          "lower": 0,
+          "upper": 10000
+        },
+        {
+          "boundaries": ["CFG3 I"],
+          "lower": 0,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG3 K"],
+          "lower": 0,
+          "upper": 10000
+        },
+        {
+          "boundaries": ["CFG3 S"],
+          "lower": 0,
+          "upper": 11000
+        }
+      ],
+      "KENO CFG3": [
+        {
+          "boundaries": ["CFG3 V"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG3 U"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG3 P"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG3 O"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG3 N"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ],
+      "DAGGET CFG4": [
+        {
+          "boundaries": ["CFG4 B"],
+          "lower": 15000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 C"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 D"],
+          "lower": 13000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 E"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 F"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 I"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 G"],
+          "lower": 9000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 H"],
+          "lower": 9000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 J"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 K"],
+          "lower": 8000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 L"],
+          "lower": 12000,
+          "upper": 19000
+        }
+      ],
+      "MEAD CFG4": [
+        {
+          "boundaries": ["CFG4 J"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG4 O"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 P"],
+          "lower": 15000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 Q"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 R"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 S"],
+          "lower": 12000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 T"],
+          "lower": 17000,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 M"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 N"],
+          "lower": 0,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG4 N"],
+          "lower": 17000,
+          "upper": 19000
+        }
+      ],
+      "GRANITE CFG4": [
+        {
+          "boundaries": ["CFG4 A"],
+          "lower": 0,
+          "upper": 19000
+        },
+        {
+          "boundaries": ["CFG4 B"],
+          "lower": 0,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG4 C"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG4 D"],
+          "lower": 0,
+          "upper": 12000
+        },
+        {
+          "boundaries": ["CFG4 E"],
+          "lower": 8000,
+          "upper": 11000
+        }
+      ],
+      "LAKE CFG4": [
+        {
+          "boundaries": ["CFG4 P"],
+          "lower": 9000,
+          "upper": 14000
+        },
+        {
+          "boundaries": ["CFG4 Q"],
+          "lower": 8000,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG4 R"],
+          "lower": 8000,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG4 S"],
+          "lower": 0,
+          "upper": 11000
+        },
+        {
+          "boundaries": ["CFG4 T"],
+          "lower": 0,
+          "upper": 16000
+        },
+        {
+          "boundaries": ["CFG4 N"],
+          "lower": 13000,
+          "upper": 16000
+        }
+      ],
+      "FINAL CFG4": [
+        {
+          "boundaries": ["CFG4 E"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG4 I"],
+          "lower": 0,
+          "upper": 6000
+        },
+        {
+          "boundaries": ["CFG4 F"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ],
+      "SATELITE CFG4": [
+        {
+          "boundaries": ["CFG4 G"],
+          "lower": 0,
+          "upper": 8000
+        },
+        {
+          "boundaries": ["CFG4 P"],
+          "lower": 0,
+          "upper": 8000
+        },
+        {
+          "boundaries": ["CFG4 H"],
+          "lower": 7000,
+          "upper": 8000
+        }
+      ],
+      "CANYON CFG4": [
+        {
+          "boundaries": ["CFG4 I"],
+          "lower": 6500,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG4 K"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG4 L"],
+          "lower": 0,
+          "upper": 11000
+        }
+      ],
+      "KENO CFG4": [
+        {
+          "boundaries": ["CFG4 Q"],
+          "lower": 0,
+          "upper": 7000
+        },
+        {
+          "boundaries": ["CFG4 R"],
+          "lower": 0,
+          "upper": 7000
+        }
+      ]
+    }
+  },
   "default_scenario": "CFG1 (Depart 19L/R/26R Land 19R/26L)",
   "fixes": {
     "_LAS_26L": "N036.04.24.619,W115.07.38.761",
@@ -2525,10 +5205,20 @@
     "_LAS_19R": "N036.05.50.697,W115.09.15.633"
   },
   "magnetic_adjustment": 2,
-  "name": "KLAS",
+  "name": "L30 TRACON",
   "primary_airport": "KLAS",
   "scenarios": {
     "CFG1 (Depart 19L/R/26R Land 19R/26L)": {
+      "airspace": {
+        "LAS_D_DEP": ["DAGGET CFG1"],
+        "LAS_M_DEP": ["MEAD CFG1"],
+        "LAS_G_APP": ["GRANITE CFG1"],
+        "LAS_F_APP": ["FINAL CFG1"],
+        "LAS_L_APP": ["LAKE CFG1"],
+        "LAS_T_APP": ["SATELITE CFG1"],
+        "LAS_Y_APP": ["CANYON CFG1"],
+        "LAS_K_APP": ["KENO CFG1"]
+      },
       "arrival_runways": [
         {
           "airport": "KLAS",
@@ -2551,17 +5241,17 @@
           "runway": "12R"
         }
       ],
-      "arrivals": {
-        "CHOWW3": {
+      "inbound_rates": {
+        "CHOWW4": {
           "KLAS": 15
         },
         "COKTL4": {
           "KLAS": 10
         },
         "GAMES2": {
-          "KHND": 2
+          "KLAS": 1
         },
-        "JAYSN3": {
+        "JAYSN3.19": {
           "KLAS": 1
         },
         "RKSTR4": {
@@ -2569,6 +5259,12 @@
         },
         "RNDRZ4": {
           "KLAS": 10
+        },
+        "GAMES2": {
+          "KHND": 2
+        },
+        "NTNDO1": {
+          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2586,16 +5282,17 @@
       "configuration": {
         "id": "STD",
         "positions": {
-          "LAS_D_DEP": ["LAS_M_DEP"],
-          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
+          "LAS_D_DEP": ["LAS_M_DEP", "LAS_Y_APP"],
+          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_L_APP", "LAS_T_APP"],
+          "LAS_L_APP": ["LAS_K_APP"]
         },
         "inbound_assignments": {
           "BOEGY2": "LAS_L_APP",
-          "CHOWW3": "LAS_L_APP",
+          "CHOWW4": "LAS_L_APP",
           "COKTL4": "LAS_G_APP",
           "FLCHR1": "LAS_G_APP",
           "GAMES2": "LAS_G_APP",
-          "JAYSN3": "LAS_G_APP",
+          "JAYSN3.19": "LAS_T_APP",
           "NTNDO1": "LAS_Y_APP",
           "RKSTR4": "LAS_L_APP",
           "RNDRZ4": "LAS_G_APP",
@@ -2603,12 +5300,18 @@
         },
         "departure_assignments": {
           "KHND": "LAS_Y_APP",
-          "KLAS": "LAS_D_DEP",
-          "KVGT": "LAS_D_DEP"
+          "KLAS/GIDGT3": "LAS_M_DEP",
+          "KLAS/JOHKR5": "LAS_D_DEP",
+          "KLAS/LOHLA3": "LAS_M_DEP",
+          "KLAS/NIITZ4": "LAS_D_DEP",
+          "KLAS/RADYR2": "LAS_D_DEP",
+          "KLAS/RASLR3": "LAS_D_DEP",
+          "KLAS/RATPK3": "LAS_M_DEP",
+          "KVGT": "LAS_M_DEP"
         }
       },
-      "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
-      "default_maps": ["283 BM3M L30", "059 LSV L30"],
+      "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
+      "default_maps": ["281 BM1M L30", "059 LSV L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
@@ -2617,12 +5320,12 @@
         },
         {
           "airport": "KLAS",
-          "rate": 7,
+          "rate": 10,
           "runway": "19L"
         },
         {
           "airport": "KLAS",
-          "rate": 7,
+          "rate": 5,
           "runway": "19R"
         },
         {
@@ -2646,11 +5349,22 @@
           "runway": "12R"
         }
       ],
+
       "wind": {
         "direction": "185-245"
       }
     },
     "CFG2 (Depart 8L Land 1L/1R)": {
+      "airspace": {
+        "LAS_D_DEP": ["DAGGET CFG2"],
+        "LAS_M_DEP": ["MEAD CFG2"],
+        "LAS_G_APP": ["GRANITE CFG2"],
+        "LAS_L_APP": ["LAKE CFG2"],
+        "LAS_F_APP": ["FINAL CFG2"],
+        "LAS_T_APP": ["SATELITE CFG2"],
+        "LAS_Y_APP": ["CANYON CFG2"],
+        "LAS_K_APP": ["KENO CFG2"]
+      },
       "arrival_runways": [
         {
           "airport": "KLAS",
@@ -2673,17 +5387,17 @@
           "runway": "12R"
         }
       ],
-      "arrivals": {
-        "CHOWW3": {
+      "inbound_rates": {
+        "CHOWW4": {
           "KLAS": 15
         },
         "COKTL4": {
           "KLAS": 15
         },
         "GAMES2": {
-          "KHND": 2
+          "KLAS": 0
         },
-        "JAYSN3": {
+        "JAYSN3.1": {
           "KLAS": 4
         },
         "RKSTR4": {
@@ -2691,6 +5405,12 @@
         },
         "RNDRZ4": {
           "KLAS": 15
+        },
+        "GAMES2": {
+          "KHND": 2
+        },
+        "NTNDO1": {
+          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2708,48 +5428,46 @@
       "configuration": {
         "id": "STD",
         "positions": {
-          "LAS_D_DEP": ["LAS_M_DEP"],
-          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
+          "LAS_D_DEP": ["LAS_M_DEP", "LAS_Y_APP"],
+          "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_L_APP", "LAS_T_APP"],
+          "LAS_L_APP": ["LAS_K_APP"]
         },
         "inbound_assignments": {
-          "BOEGY2": "LAS_L_APP",
-          "CHOWW3": "LAS_L_APP",
+          "BOEGY2": "LAS_M_DEP",
+          "CHOWW4": "LAS_L_APP",
           "COKTL4": "LAS_G_APP",
           "FLCHR1": "LAS_G_APP",
           "GAMES2": "LAS_G_APP",
-          "JAYSN3": "LAS_G_APP",
+          "JAYSN3.1": "LAS_G_APP",
           "NTNDO1": "LAS_Y_APP",
           "RKSTR4": "LAS_L_APP",
           "RNDRZ4": "LAS_G_APP",
-          "WYLND1": "LAS_L_APP"
+          "WYLND1": "LAS_M_DEP"
         },
         "departure_assignments": {
           "KHND": "LAS_Y_APP",
-          "KLAS": "LAS_D_DEP",
-          "KVGT": "LAS_D_DEP"
+          "KLAS/FRNCK1": "LAS_M_DEP",
+          "KLAS/GIDGT3": "LAS_M_DEP",
+          "KLAS/JOHKR5": "LAS_D_DEP",
+          "KLAS/LOHLA3": "LAS_D_DEP",
+          "KLAS/NIITZ4": "LAS_M_DEP",
+          "KLAS/RADYR2": "LAS_D_DEP",
+          "KLAS/RASLR3": "LAS_M_DEP",
+          "KLAS/RATPK3": "LAS_M_DEP",
+          "KVGT": "LAS_M_DEP"
         }
       },
-      "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
-      "default_maps": ["283 BM3M L30", "059 LSV L30"],
+      "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
+      "default_maps": ["282 BM2M L30", "059 LSV L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
-          "rate": 20,
-          "runway": "8L"
+          "rate": 15,
+          "runway": "8L.CFG2"
         },
         {
           "airport": "KLAS",
-          "rate": 20,
-          "runway": "8R"
-        },
-        {
-          "airport": "KLAS",
-          "rate": 20,
-          "runway": "1L"
-        },
-        {
-          "airport": "KLAS",
-          "rate": 20,
+          "rate": 10,
           "runway": "1R"
         },
         {
@@ -2763,11 +5481,22 @@
           "runway": "7"
         }
       ],
+
       "wind": {
         "direction": "0-60"
       }
     },
-    "CFG3(Depart 1L/1R Land 1L/26L)": {
+    "CFG3 (Depart 1L/1R Land 1L/26L)": {
+      "airspace": {
+        "LAS_D_DEP": ["DAGGET CFG3"],
+        "LAS_M_DEP": ["MEAD CFG3"],
+        "LAS_G_APP": ["GRANITE CFG3"],
+        "LAS_L_APP": ["LAKE CFG3"],
+        "LAS_F_APP": ["FINAL CFG3"],
+        "LAS_T_APP": ["SATELITE CFG3"],
+        "LAS_Y_APP": ["CANYON CFG3"],
+        "LAS_K_APP": ["KENO CFG3"]
+      },
       "arrival_runways": [
         {
           "airport": "KLAS",
@@ -2790,17 +5519,17 @@
           "runway": "12R"
         }
       ],
-      "arrivals": {
-        "CHOWW3": {
+      "inbound_rates": {
+        "CHOWW4": {
           "KLAS": 15
         },
         "COKTL4": {
           "KLAS": 15
         },
         "GAMES2": {
-          "KHND": 2
+          "KLAS": 0
         },
-        "JAYSN3": {
+        "JAYSN3.1": {
           "KLAS": 4
         },
         "RKSTR4": {
@@ -2808,6 +5537,12 @@
         },
         "RNDRZ4": {
           "KLAS": 15
+        },
+        "GAMES2": {
+          "KHND": 2
+        },
+        "NTNDO1": {
+          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2830,11 +5565,11 @@
         },
         "inbound_assignments": {
           "BOEGY2": "LAS_L_APP",
-          "CHOWW3": "LAS_K_APP",
+          "CHOWW4": "LAS_K_APP",
           "COKTL4": "LAS_G_APP",
           "FLCHR1": "LAS_G_APP",
           "GAMES2": "LAS_G_APP",
-          "JAYSN3": "LAS_G_APP",
+          "JAYSN3.1": "LAS_G_APP",
           "NTNDO1": "LAS_Y_APP",
           "RKSTR4": "LAS_L_APP",
           "RNDRZ4": "LAS_G_APP",
@@ -2846,7 +5581,7 @@
           "KVGT": "LAS_D_DEP"
         }
       },
-      "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
+      "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
       "default_maps": ["283 BM3M L30", "059 LSV L30"],
       "departure_runways": [
         {
@@ -2875,11 +5610,22 @@
           "runway": "30R"
         }
       ],
+
       "wind": {
         "direction": "320-20"
       }
     },
     "CFG4 (Depart 8L Land 19L/19R/8R)": {
+      "airspace": {
+        "LAS_D_DEP": ["DAGGET CFG4"],
+        "LAS_M_DEP": ["MEAD CFG4"],
+        "LAS_G_APP": ["GRANITE CFG4"],
+        "LAS_F_APP": ["FINAL CFG4"],
+        "LAS_L_APP": ["LAKE CFG4"],
+        "LAS_T_APP": ["SATELITE CFG4"],
+        "LAS_Y_APP": ["CANYON CFG4"],
+        "LAS_K_APP": ["KENO CFG4"]
+      },
       "arrival_runways": [
         {
           "airport": "KLAS",
@@ -2906,17 +5652,17 @@
           "runway": "12R"
         }
       ],
-      "arrivals": {
-        "CHOWW3": {
+      "inbound_rates": {
+        "CHOWW4": {
           "KLAS": 15
         },
         "COKTL4": {
           "KLAS": 15
         },
         "GAMES2": {
-          "KHND": 2
+          "KLAS": 0
         },
-        "JAYSN3": {
+        "JAYSN3.19": {
           "KLAS": 4
         },
         "RKSTR4": {
@@ -2924,6 +5670,12 @@
         },
         "RNDRZ4": {
           "KLAS": 15
+        },
+        "GAMES2": {
+          "KHND": 2
+        },
+        "NTNDO1": {
+          "KHND": 1
         },
         "NTNDO1": {
           "KVGT": 1
@@ -2946,11 +5698,11 @@
         },
         "inbound_assignments": {
           "BOEGY2": "LAS_L_APP",
-          "CHOWW3": "LAS_L_APP",
+          "CHOWW4": "LAS_L_APP",
           "COKTL4": "LAS_G_APP",
           "FLCHR1": "LAS_G_APP",
           "GAMES2": "LAS_G_APP",
-          "JAYSN3": "LAS_G_APP",
+          "JAYSN3.19": "LAS_T_APP",
           "NTNDO1": "LAS_Y_APP",
           "RKSTR4": "LAS_L_APP",
           "RNDRZ4": "LAS_G_APP",
@@ -2962,8 +5714,8 @@
           "KVGT": "LAS_D_DEP"
         }
       },
-      "controllers": ["LAS_TWR", "LSV_N_APP", "LAX_37_CTR", "LAX_38_CTR", "LAX_16_CTR", "LAX_54_CTR", "LAX_35_CTR"],
-      "default_maps": ["283 BM3M L30", "059 LSV L30"],
+      "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
+      "default_maps": ["284 BM4M L30", "059 LSV L30"],
       "departure_runways": [
         {
           "airport": "KLAS",
@@ -2991,6 +5743,7 @@
           "runway": "12R"
         }
       ],
+
       "wind": {
         "direction": "105-165"
       }
@@ -2998,6 +5751,17 @@
   },
   "stars_config": {
     "center": "N36.4.59.17,W115.8.53.52",
+    "controller_configs": {
+      "1F": {
+        "flight_following_airspace": [
+          {
+            "type": "polygon",
+            "ceiling": 19000,
+            "vertices": "N036.26.33.759,W115.56.03.134 N035.49.12.754,W115.58.28.044 N035.33.55.739,W115.47.25.843 N035.25.35.476,W115.32.49.683 N035.25.21.235,W114.53.41.548 N035.34.57.235,W114.23.43.883 N035.47.32.586,W114.03.52.250 N036.20.29.946,W114.04.17.711 N036.27.20.560,W114.16.54.202 N036.26.21.701,W114.40.33.883 N036.13.31.408,W114.58.30.598 N036.12.43.536,W115.13.24.199 N036.16.34.345,W115.39.35.765"
+          }
+        ]
+      }
+    },
     "coordination_fixes": {
       "CHOWW": [
         {
@@ -3108,24 +5872,62 @@
         "slope_angle": 0.175
       }
     },
+    "filters": {
+      "auto_acquisition": [
+        {
+          "id": "ACQ",
+          "description": "L30 AUTO-ACQUISITION",
+          "type": "polygon",
+          "vertices": "N035.13.05.906,W116.34.00.078 N036.22.13.341,W116.27.34.568 N036.40.40.461,W116.36.50.449 N036.50.27.310,W116.29.09.490 N036.41.33.457,W116.19.35.509 N036.42.11.716,W115.35.34.918 N036.19.15.487,W115.08.24.190 N036.25.21.757,W114.45.42.764 N036.45.25.831,W114.03.34.205 N036.30.24.609,W113.26.48.728 N035.52.52.796,W113.38.17.103 N035.45.19.486,W113.18.18.880 N035.12.06.882,W113.22.23.518 N034.50.51.809,W113.55.26.055 N034.54.07.709,W115.29.21.190",
+          "floor": 0,
+          "ceiling": 24000
+        }
+      ]
+    },
+    "coordination_lists": [
+      { "name": "HENDERSON", "id": "H", "airports": ["KHND"] },
+      { "name": "NORTH VEGAS", "id": "V", "airports": ["KVGT"] }
+    ],
+    "airspace_awareness": [
+      {
+        "fixes": ["FRNCK", "TUKRR", "VERKN"],
+        "altitude_range": [19000, 23000],
+        "receiving_controller": "LAX_07_CTR"
+      },
+      {
+        "fixes": ["HOCEE", "SSKEE", "ZAYNE"],
+        "altitude_range": [19000, 23000],
+        "receiving_controller": "LAX_08_CTR"
+      },
+      {
+        "fixes": ["KENNO"],
+        "altitude_range": [19000, 23000],
+        "receiving_controller": "LAX_16_CTR"
+      },
+      {
+        "fixes": ["JAYSN"],
+        "altitude_range": [0, 25000],
+        "receiving_controller": "LSV_L_APP"
+      },
+      {
+        "fixes": ["BLAQQ", "HEC", "LVELL"],
+        "altitude_range": [19000, 23000],
+        "receiving_controller": "LAX_06_CTR"
+      }
+    ],
     "scratchpads": {
-      "GIDGT": "GID",
       "VERKN": "GID",
       "TUKRR": "GID",
-      "JOHKR": "JKR",
       "KENNO": "JKR",
-      "LOHLA": "LOH",
       "JAYSN": "LOH",
-      "NIITZ": "NIT",
       "HOCEE": "NIT",
       "SSKEE": "NIT",
-      "RADYR": "RYR",
-      "HEC": "RYR",
-      "LVELL": "RYR",
-      "BLH": "RYR",
-      "BOJAC": "RYR",
-      "BLAQQ": "RYR",
-      "RASLR": "RSL",
+      "BLH": "RYZ",
+      "BOJAC": "RYD",
+      "BLAQQ": "RYB",
+      "HEC": "RYV",
+      "LVELL": "RYZ",
+      "SLVRR": "RYV",
       "ZAYNE": "RSL",
       "FRNCK": "RAT",
       "LAS": "LAS",
@@ -3170,7 +5972,7 @@
       "026 ZLAC134 L30",
       "501 LSV_MVA L30",
       "037 VGT-ILS L30",
-      "",
+      "341 R_AREAS L30",
       "",
       "",
       "",
