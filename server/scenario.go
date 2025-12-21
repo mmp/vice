@@ -96,9 +96,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	// Validate configuration
 	if s.ControllerConfiguration == nil {
 		e.ErrorString("\"configuration\" is required")
-	} else {
-		s.ControllerConfiguration.Validate(sg.ControlPositions, e)
+		return
 	}
+	s.ControllerConfiguration.Validate(sg.ControlPositions, e)
 
 	// Temporary backwards-compatibility for inbound flows
 	if len(s.ArrivalGroupDefaultRates) > 0 {
@@ -664,6 +664,23 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			sg.ControlPositions, sg.FacilityAdaptation.Scratchpads, sg.Airports,
 			sg.FacilityAdaptation.CheckScratchpad, e)
 		e.Pop()
+	}
+
+	// Auto-set default_airport if only one airport has converging runways
+	var crdaAirport string
+	crdaCount := 0
+	for name, ap := range sg.Airports {
+		if len(ap.ConvergingRunways) > 0 {
+			crdaAirport = name
+			crdaCount++
+		}
+	}
+	if crdaCount == 1 {
+		for _, ctrl := range sg.ControlPositions {
+			if ctrl.DefaultAirport == "" {
+				ctrl.DefaultAirport = crdaAirport
+			}
+		}
 	}
 
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
@@ -1345,6 +1362,9 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 		}
 	}
 	for name, scenario := range sg.Scenarios {
+		if scenario.ControllerConfiguration == nil {
+			continue
+		}
 		haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(sg.FacilityAdaptation.ControllerConfigs),
 			func(cc *sim.STARSControllerConfig) bool { return len(cc.FlightFollowingAirspace) > 0 })
 		lc := sim.MakeLaunchConfig(scenario.DepartureRunways, *scenario.VFRRateScale, vfrAirports,
