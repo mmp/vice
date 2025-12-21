@@ -125,42 +125,18 @@
         }
       },
       "approaches": {
-        "I9L": {
-          "cifp_id": "I9L"
-        },
-        "I9C": {
-          "cifp_id": "IC9"
-        },
-        "I9R": {
-          "cifp_id": "I9R"
-        },
-        "I0L": {
-          "cifp_id": "I10L"
-        },
-        "I0C": {
-          "cifp_id": "IC10"
-        },
-        "I0R": {
-          "cifp_id": "IY10R"
-        },
-        "I7L": {
-          "cifp_id": "I27L"
-        },
-        "I7C": {
-          "cifp_id": "IC27"
-        },
-        "I7R": {
-          "cifp_id": "I27R"
-        },
-        "I8L": {
-          "cifp_id": "I28L"
-        },
-        "I8C": {
-          "cifp_id": "IC28"
-        },
-        "I8R": {
-          "cifp_id": "I28R"
-        },
+        "I9L": { "cifp_id": "I9L" },
+        "I9C": { "cifp_id": "IC9" },
+        "I9R": { "cifp_id": "I9R" },
+        "I0L": { "cifp_id": "I10L" },
+        "I0C": { "cifp_id": "IC10" },
+        "I0R": { "cifp_id": "IY10R" },
+        "I7L": { "cifp_id": "I27L" },
+        "I7C": { "cifp_id": "IC27" },
+        "I7R": { "cifp_id": "I27R" },
+        "I8L": { "cifp_id": "I28L" },
+        "I8C": { "cifp_id": "IC28" },
+        "I8R": { "cifp_id": "I28R" },
         "I4R": {
           "cifp_id": "I4R"
         },
@@ -694,54 +670,33 @@
     },
     "KMDW": {
       "approaches": {
-        "I4R": {
-          "cifp_id": "I4R"
-        },
-        "Z4R": {
-          "cifp_id": "RZ4R"
-        },
-        "Y4R": {
-          "cifp_id": "RY4R"
-        },
-        "I3L": {
-          "cifp_id": "I13L"
-        },
-        "Z3L": {
-          "cifp_id": "RZ13L"
-        },
-        "Y3L": {
-          "cifp_id": "RY13L"
-        },
-        "Z2L": {
-          "cifp_id": "RZ22L"
-        },
-        "Y2L": {
-          "cifp_id": "RY22L"
-        },
-        "X2L": {
-          "cifp_id": "RX22L"
-        },
-        "I1R": {
-          "cifp_id": "I31R"
-        },
-        "Z1R": {
-          "cifp_id": "RZ31R"
-        },
-        "Y1R": {
-          "cifp_id": "RY31R"
-        }
+        "I4R": { "cifp_id": "I4R" },
+        "Z4R": { "cifp_id": "RZ4R" },
+        "Y4R": { "cifp_id": "RY4R" },
+        "I3L": { "cifp_id": "I13L" },
+        "Z3L": { "cifp_id": "RZ13L" },
+        "Y3L": { "cifp_id": "RY13L" },
+        "Z2L": { "cifp_id": "RZ22L" },
+        "Y2L": { "cifp_id": "RY22L" },
+        "X2L": { "cifp_id": "RX22L" },
+        "I1R": { "cifp_id": "I31R" },
+        "Z1R": { "cifp_id": "RZ31R" },
+        "Y1R": { "cifp_id": "RY31R" }
       },
       "approach_regions": {
         "4R": {
           "heading_tolerance": 90,
+
           "near_distance": 2,
           "near_half_width": 1.5,
           "far_half_width": 17,
           "region_length": 30,
+
           "descent_distance": 6.3,
           "descent_altitude": 4000,
           "above_altitude_tolerance": 500,
           "below_altitude_tolerance": 500,
+
           "reference_point": "41.7145,-87.8385",
           "reference_heading": 318,
           "reference_length": 30,
@@ -750,14 +705,17 @@
         },
         "4L": {
           "heading_tolerance": 90,
+
           "near_distance": 2,
           "near_half_width": 1.5,
           "far_half_width": 17,
           "region_length": 30,
+
           "descent_distance": 12,
           "descent_altitude": 6000,
           "above_altitude_tolerance": 500,
           "below_altitude_tolerance": 500,
+
           "reference_point": "41.7145,-87.8385",
           "reference_heading": 47,
           "reference_length": 30,
@@ -766,14 +724,17 @@
         },
         "22L": {
           "heading_tolerance": 90,
+
           "near_distance": 0.5,
           "near_half_width": 3,
           "far_half_width": 12,
           "region_length": 30,
+
           "descent_distance": 25.75,
           "descent_altitude": 6000,
           "above_altitude_tolerance": 500,
           "below_altitude_tolerance": 500,
+
           "reference_point": "41.8,-87.64",
           "reference_heading": 63,
           "reference_length": 30,
@@ -782,14 +743,17 @@
         },
         "22R": {
           "heading_tolerance": 90,
+
           "near_distance": 0.5,
           "near_half_width": 3,
           "far_half_width": 12,
           "region_length": 30,
+
           "descent_distance": 12.67,
           "descent_altitude": 3000,
           "above_altitude_tolerance": 500,
           "below_altitude_tolerance": 500,
+
           "reference_point": "41.85,-87.61",
           "reference_heading": 274,
           "reference_length": 30,
@@ -798,14 +762,17 @@
         },
         "31R": {
           "heading_tolerance": 90,
+
           "near_distance": 0.1,
           "near_half_width": 3,
           "far_half_width": 6,
           "region_length": 20,
+
           "descent_distance": 3.7,
           "descent_altitude": 4000,
           "above_altitude_tolerance": 500,
           "below_altitude_tolerance": 500,
+
           "reference_point": "41.68615,-87.69",
           "reference_heading": 46,
           "reference_length": 20,
@@ -814,14 +781,17 @@
         },
         "31L": {
           "heading_tolerance": 90,
+
           "near_distance": 0.1,
           "near_half_width": 3,
           "far_half_width": 6,
           "region_length": 20,
+
           "descent_distance": 5.81,
           "descent_altitude": 5000,
           "above_altitude_tolerance": 500,
           "below_altitude_tolerance": 500,
+
           "reference_point": "41.69,-87.62",
           "reference_heading": 318,
           "reference_length": 20,
@@ -1547,32 +1517,16 @@
       },
       "tower_list": 3,
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 15
-        }
-      }
+      "vfr": { "random_routes": { "rate": 15 } }
     },
     "KARR": {
       "approaches": {
-        "I9": {
-          "cifp_id": "I9"
-        },
-        "R9": {
-          "cifp_id": "R9"
-        },
-        "R15": {
-          "cifp_id": "R15"
-        },
-        "R27": {
-          "cifp_id": "R27"
-        },
-        "L33": {
-          "cifp_id": "L33"
-        },
-        "R33": {
-          "cifp_id": "R33"
-        },
+        "I9": { "cifp_id": "I9" },
+        "R9": { "cifp_id": "R9" },
+        "R15": { "cifp_id": "R15" },
+        "R27": { "cifp_id": "R27" },
+        "L33": { "cifp_id": "L33" },
+        "R33": { "cifp_id": "R33" },
         "V36": {
           "runway": "36",
           "type": "RNAV",
@@ -1773,29 +1727,15 @@
       },
       "tower_list": 4,
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 7
-        }
-      }
+      "vfr": { "random_routes": { "rate": 7 } }
     },
     "KDPA": {
       "approaches": {
-        "I2L": {
-          "cifp_id": "I2L"
-        },
-        "R2L": {
-          "cifp_id": "R2L"
-        },
-        "R2R": {
-          "cifp_id": "R2R"
-        },
-        "R10": {
-          "cifp_id": "R10"
-        },
-        "R0L": {
-          "cifp_id": "R20L"
-        }
+        "I2L": { "cifp_id": "I2L" },
+        "R2L": { "cifp_id": "R2L" },
+        "R2R": { "cifp_id": "R2R" },
+        "R10": { "cifp_id": "R10" },
+        "R0L": { "cifp_id": "R20L" }
       },
       "departure_routes": {
         "20L": {
@@ -2112,11 +2052,7 @@
       },
       "tower_list": 5,
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 7
-        }
-      }
+      "vfr": { "random_routes": { "rate": 7 } }
     },
     "KLOT": {
       "approaches": {
@@ -2126,21 +2062,11 @@
           "full_name": "Localizer Runway 2",
           "waypoints": ["JIMMO/a2300/faf/iaf/pt4510nm TURRK/a1260"]
         },
-        "R2": {
-          "cifp_id": "R2"
-        },
-        "L9": {
-          "cifp_id": "L9"
-        },
-        "R9": {
-          "cifp_id": "R9"
-        },
-        "R20": {
-          "cifp_id": "R20"
-        },
-        "R27": {
-          "cifp_id": "R27"
-        }
+        "R2": { "cifp_id": "R2" },
+        "L9": { "cifp_id": "L9" },
+        "R9": { "cifp_id": "R9" },
+        "R20": { "cifp_id": "R20" },
+        "R27": { "cifp_id": "R27" }
       },
       "departure_routes": {
         "9": {
@@ -2457,11 +2383,7 @@
       },
       "tower_list": 6,
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 7
-        }
-      }
+      "vfr": { "random_routes": { "rate": 7 } }
     },
     "KGYY": {
       "approaches": {
@@ -2680,270 +2602,118 @@
       },
       "tower_list": 7,
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 7
-        }
-      }
+      "vfr": { "random_routes": { "rate": 7 } }
     },
     "KUGN": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KBUU": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "06C": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "C89": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KENW": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KETB": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KSBM": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KRWN": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KMGC": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KPPO": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KOXI": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KEKM": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KBEH": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "C97": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KJOT": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KIGQ": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "3HO": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KRPJ": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KRFD": {
-      "vfr": {
-        "random_routes": {
-          "rate": 25
-        }
-      }
+      "vfr": { "random_routes": { "rate": 25 } }
     },
     "KFET": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KJVL": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KVYS": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KFEP": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KEFT": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KDTG": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KRAC": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
+      "vfr": { "random_routes": { "rate": 3 } }
     },
     "KUES": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
+      "vfr": { "random_routes": { "rate": 10 } }
     },
     "KMWC": {
-      "vfr": {
-        "random_routes": {
-          "rate": 15
-        }
-      }
+      "vfr": { "random_routes": { "rate": 15 } }
     },
     "05C": {
-      "vfr": {
-        "random_routes": {
-          "rate": 15
-        }
-      }
+      "vfr": { "random_routes": { "rate": 15 } }
     },
     "1C5": {
-      "vfr": {
-        "random_routes": {
-          "rate": 15
-        }
-      }
+      "vfr": { "random_routes": { "rate": 15 } }
     },
     "KPNT": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     },
     "KIKK": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     },
     "KRZL": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     },
     "02C": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     },
     "KUNU": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     },
     "KRYV": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     },
     "61C": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
+      "vfr": { "random_routes": { "rate": 8 } }
     }
   },
   "airspace": {
@@ -3940,7 +3710,7 @@
               }
             ]
           },
-          "initial_altitude": 24000,
+          "initial_altitude": 10000,
           "initial_controller": "Chicago Center (Sector 81)",
           "initial_speed": 250,
           "star": "ENDEE6.OHHMY",
@@ -3952,7 +3722,7 @@
               "31R": "STKNY/a6000 WNNRS GAGGA/h091"
             }
           },
-          "waypoints": "OHHMY UGGLY/a24000 AGONY FARCE CHUMP/a17000-21000 HEDOC PURTY/a15000-19000 OCCHO/a14000-16000 KOOKS/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
+          "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
           "airlines": {
@@ -3999,7 +3769,7 @@
               }
             ]
           },
-          "initial_altitude": 24000,
+          "initial_altitude": 10000,
           "initial_controller": "Chicago Center (Sector 81)",
           "initial_speed": 250,
           "star": "ENDEE6.JALAP",
@@ -4011,7 +3781,7 @@
               "31R": "STKNY/a6000 WNNRS GAGGA/h091"
             }
           },
-          "waypoints": "JALAP KAMBL/a24000-27000 MIGGS/a21000-23000 EDENS/a19000-21000 PURTY/a15000-19000 OCCHO/a14000-16000 KOOKS/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
+          "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
           "airlines": {
@@ -4058,7 +3828,7 @@
               }
             ]
           },
-          "initial_altitude": 31000,
+          "initial_altitude": 10000,
           "initial_controller": "Chicago Center (Sector 81)",
           "initial_speed": 250,
           "star": "ENDEE6.IRK",
@@ -4070,7 +3840,7 @@
               "31R": "STKNY/a6000 WNNRS GAGGA/h091"
             }
           },
-          "waypoints": "IRK ENNZO FUDDD/a31000 BOOKK/a24000-29000 LLVSS/a19000-21000 PEALE/a16000-19000 TOLCA/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
+          "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
           "airlines": {
@@ -4117,7 +3887,7 @@
               }
             ]
           },
-          "initial_altitude": 31000,
+          "initial_altitude": 10000,
           "initial_controller": "Chicago Center (Sector 81)",
           "initial_speed": 250,
           "star": "ENDEE6.MAGOO",
@@ -4129,7 +3899,7 @@
               "31R": "STKNY/a6000 WNNRS GAGGA/h091"
             }
           },
-          "waypoints": "MAGOO DARKK/a31000 BURUU/a24000-29000 ILIAD LLVSS/a19000-21000 PEALE/a16000-19000 TOLCA/a10000-13000 JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
+          "waypoints": "JILLZ/a10000/ho ENDEE/a7000/s250 STKNY/a6000"
         },
         {
           "airlines": {
@@ -4176,7 +3946,7 @@
               }
             ]
           },
-          "initial_altitude": 24000,
+          "initial_altitude": 23000,
           "initial_controller": "Chicago Center (Sector 81)",
           "initial_speed": 250,
           "star": "ENDEE6.PHEEB",
@@ -5169,7 +4939,7 @@
               }
             ]
           },
-          "initial_altitude": 26000,
+          "initial_altitude": 20000,
           "initial_controller": "Chicago Center (Sector 81)",
           "initial_speed": 280,
           "star": "WYNDE2",
@@ -5190,7 +4960,7 @@
             }
           },
           "speed_restriction": 250,
-          "waypoints": "LTOUR VIO DITCA WLTER/a24000 RHIVR/a20000 PAITN/ho WYNDE FIYER/a9000 ERNNY"
+          "waypoints": "RHIVR/a20000 PAITN/ho WYNDE FIYER/a9000 ERNNY"
         }
       ]
     },
@@ -6363,50 +6133,43 @@
       "frequency": 133625,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1W",
-      "default_airport": "KORD"
+      "sector_id": "1W"
     },
     "F": {
       "frequency": 124350,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1F",
-      "default_airport": "KORD"
+      "sector_id": "1F"
     },
     "H": {
       "frequency": 132175,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1H",
-      "default_airport": "KORD"
+      "sector_id": "1H"
     },
     "PLANO (X)": {
       "frequency": 135075,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1X",
-      "default_airport": "KORD"
+      "sector_id": "1X"
     },
     "KUBBS (J)": {
       "frequency": 134625,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1J",
-      "default_airport": "KORD"
+      "sector_id": "1J"
     },
     "OKK (E)": {
       "frequency": 135025,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1E",
-      "default_airport": "KORD"
+      "sector_id": "1E"
     },
     "FARMM (Y)": {
       "frequency": 135025,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1Y",
-      "default_airport": "KORD"
+      "sector_id": "1Y"
     },
     "SSAT Sector 1 (S)": {
       "frequency": 128200,
@@ -6419,57 +6182,49 @@
       "frequency": 119350,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1P",
-      "default_airport": "KORD"
+      "sector_id": "1P"
     },
     "SSAT Sector 3 (L)": {
       "frequency": 133500,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1L",
-      "default_airport": "KORD"
+      "sector_id": "1L"
     },
     "SSAT Sector 4 (U)": {
       "frequency": 127875,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1U",
-      "default_airport": "KORD"
+      "sector_id": "1U"
     },
     "East Departure (B)": {
       "frequency": 125000,
       "radio_name": "Chicago Departure",
       "facility": "C90",
-      "sector_id": "1B",
-      "default_airport": "KORD"
+      "sector_id": "1B"
     },
     "South Departure (M)": {
       "frequency": 126625,
       "radio_name": "Chicago Departure",
       "facility": "C90",
-      "sector_id": "1M",
-      "default_airport": "KORD"
+      "sector_id": "1M"
     },
     "West Departure (G)": {
       "frequency": 135275,
       "radio_name": "Chicago Departure",
       "facility": "C90",
-      "sector_id": "1G",
-      "default_airport": "KORD"
+      "sector_id": "1G"
     },
     "North Departure (D)": {
       "frequency": 134400,
       "radio_name": "Chicago Departure",
       "facility": "C90",
-      "sector_id": "1D",
-      "default_airport": "KORD"
+      "sector_id": "1D"
     },
     "North Satellite (A)": {
       "frequency": 120555,
       "radio_name": "Chicago Approach",
       "facility": "C90",
-      "sector_id": "1A",
-      "default_airport": "KORD"
+      "sector_id": "1A"
     },
     "Chicago Center (Sector 81)": {
       "frequency": 120350,
@@ -6594,11 +6349,13 @@
     "_ORD_28R": "N41.58.08.634,W87.53.01.307",
     "_MDW_4L": "N41.46.52.841,W87.45.40.347",
     "_MDW_4R": "N41.46.44.906,W87.45.33.546",
-    "_MDW_13L": "N41.47.32.338,W87.45.28.571",
+    "_MDW_13L": "N41.47.29.700,W87.45.39.682",
     "_MDW_13R": "N41.47.16.989,W87.45.31.618",
+    "_MDW_13L": "N41.47.32.338,W87.45.28.571",
     "_MDW_22R": "N41.47.32.402,W87.44.50.226",
     "_MDW_22L": "N41.47.31.227,W87.44.34.807",
     "_MDW_31L": "N41.46.50.778,W87.44.54.776",
+    "_MDW_31R": "N41.46.45.113,W87.44.37.099",
     "_MDW_31R": "N41.46.57.325,W87.44.39.376",
     "_PWK_16": "N042.07.23.353,W087.54.24.147",
     "KORD": "N41.58.33.910,W87.54.26.002",
@@ -7985,6 +7742,7 @@
         "direction": "235-295"
       }
     },
+
     "KORD 4's A Pair": {
       "airspace": {
         "Z": ["CHI_APPW"],
@@ -8595,6 +8353,7 @@
         "direction": "35-95"
       }
     },
+
     "KORD 22's A Pair": {
       "airspace": {
         "Z": ["CHI_APPW"],
@@ -9279,6 +9038,7 @@
         "direction": "190-250"
       }
     },
+
     "KORD East": {
       "airspace": {
         "Z": ["CHI_APPE"],
@@ -10463,6 +10223,7 @@
         "ENDEE6": {
           "KMDW": 10
         },
+
         "FISSK6/PANGG5": {
           "KMDW": 10
         }
@@ -11129,31 +10890,11 @@
       ]
     },
     "coordination_lists": [
-      {
-        "name": "PWK",
-        "id": "A",
-        "airports": ["KPWK"]
-      },
-      {
-        "name": "DPA",
-        "id": "B",
-        "airports": ["KDPA"]
-      },
-      {
-        "name": "GYY",
-        "id": "C",
-        "airports": ["KGYY"]
-      },
-      {
-        "name": "ARR",
-        "id": "D",
-        "airports": ["KARR"]
-      },
-      {
-        "name": "LOT",
-        "id": "E",
-        "airports": ["KLOT"]
-      }
+      { "name": "PWK", "id": "A", "airports": ["KPWK"] },
+      { "name": "DPA", "id": "B", "airports": ["KDPA"] },
+      { "name": "GYY", "id": "C", "airports": ["KGYY"] },
+      { "name": "ARR", "id": "D", "airports": ["KARR"] },
+      { "name": "LOT", "id": "E", "airports": ["KLOT"] }
     ],
     "airspace_awareness": [
       {
