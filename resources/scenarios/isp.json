@@ -4,18 +4,10 @@
     "KISP": {
       "name": "MacArthur",
       "approaches": {
-        "R5R": {
-          "cifp_id": "R15R"
-        },
-        "I24": {
-          "cifp_id": "I24"
-        },
-        "R3L": {
-          "cifp_id": "R33L"
-        },
-        "I6": {
-          "cifp_id": "I6"
-        }
+        "R5R": { "cifp_id": "R15R" },
+        "I24": { "cifp_id": "I24" },
+        "R3L": { "cifp_id": "R33L" },
+        "I6": { "cifp_id": "I6" }
       },
       "departure_routes": {
         "15R": {
@@ -253,22 +245,12 @@
     },
     "KHVN": {
       "name": "New Haven",
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      },
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true,
       "approaches": {
-        "I2": {
-          "cifp_id": "I2"
-        },
-        "R2": {
-          "cifp_id": "R2"
-        },
-        "R20": {
-          "cifp_id": "R20"
-        }
+        "I2": { "cifp_id": "I2" },
+        "R2": { "cifp_id": "R2" },
+        "R20": { "cifp_id": "R20" }
       },
       "departure_routes": {
         "2": {
@@ -412,22 +394,12 @@
     },
     "KBDR": {
       "name": "Bridgeport",
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      },
+      "vfr": { "random_routes": { "rate": 5 } },
       "hold_for_release": true,
       "approaches": {
-        "R6": {
-          "cifp_id": "R6"
-        },
-        "R24": {
-          "cifp_id": "R24"
-        },
-        "R29": {
-          "cifp_id": "R29"
-        },
+        "R6": { "cifp_id": "R6" },
+        "R24": { "cifp_id": "R24" },
+        "R29": { "cifp_id": "R29" },
         "V11": {
           "full_name": "Visual Runway 11",
           "runway": "11",
@@ -592,18 +564,10 @@
     "KFOK": {
       "name": "Suffolk County",
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      },
+      "vfr": { "random_routes": { "rate": 8 } },
       "approaches": {
-        "RG6": {
-          "cifp_id": "R6"
-        },
-        "RG24": {
-          "cifp_id": "R24"
-        },
+        "RG6": { "cifp_id": "R6" },
+        "RG24": { "cifp_id": "R24" },
         "V33": {
           "full_name": "Visual Runway 33",
           "runway": "33",
@@ -770,21 +734,11 @@
     "KOXC": {
       "name": "Waterbury",
       "hold_for_release": true,
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      },
+      "vfr": { "random_routes": { "rate": 5 } },
       "approaches": {
-        "I36": {
-          "cifp_id": "I36"
-        },
-        "R36": {
-          "cifp_id": "R36"
-        },
-        "R18": {
-          "cifp_id": "R18"
-        }
+        "I36": { "cifp_id": "I36" },
+        "R36": { "cifp_id": "R36" },
+        "R18": { "cifp_id": "R18" }
       },
       "departure_routes": {
         "36": {
@@ -924,48 +878,22 @@
       },
       "tower_list": 5
     },
-    "KACK": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
+    "KHPN": {
+      "name": "Westchester County",
+      "hold_for_release": false,
+      "vfr": { "random_routes": { "rate": 5 } },
+      "approaches": {
+        "I34": { "cifp_id": "I34" },
+        "I16": { "cifp_id": "I16" }
+      },
+      "tower_list": 5
     },
-    "KDXR": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "N69": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KMMK": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "21N": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KSNC": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    }
+    "KACK": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KDXR": { "vfr": { "random_routes": { "rate": 5 } } },
+    "N69": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KMMK": { "vfr": { "random_routes": { "rate": 5 } } },
+    "21N": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KSNC": { "vfr": { "random_routes": { "rate": 5 } } }
   },
   "airspace": {
     "boundaries": {
@@ -1783,6 +1711,43 @@
         }
       ]
     },
+    "BOUNO5": {
+      "arrivals": [
+        {
+          "spawn": "ANTMN",
+          "cruise_altitude": 29000,
+          "star": "BOUNO5",
+          "route": "ANTMN BOUNO/a17000/ho DPK/a15000/tc SOUND/a13000 GWENY/a11000 ZAHNN EILEN WESTO/a6000 BDR ALIXX RYMES/a4000 KHPN/delete",
+          "initial_controller": "BOS_E_CTR",
+          "initial_altitude": 17000,
+          "assigned_altitude": null,
+          "initial_speed": 250,
+          "speed_restriction": 250,
+          "description": "BOUNO5/Overflight into HPN",
+          "expect_approach": null,
+          "airlines": {
+            "KHPN": [
+              {
+                "icao": "JBU",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "TXKF"
+              },
+              {
+                "icao": "JSX",
+                "airport": "KPBI"
+              }
+            ]
+          }
+        }
+      ]
+    },
     "Intra-TRACON Via HTO": {
       "arrivals": [
         {
@@ -2235,6 +2200,11 @@
       "radio_name": "New York approach",
       "sector_id": "1V"
     },
+    "HPN_APP": {
+      "frequency": 126400,
+      "radio_name": "New York approach",
+      "sector_id": "1X"
+    },
     "NY_B_CTR": {
       "frequency": 125325,
       "radio_name": "New York center",
@@ -2318,6 +2288,10 @@
         {
           "airport": "KBDR",
           "runway": "24"
+        },
+        {
+          "airport": "KHPN",
+          "runway": "34"
         }
       ],
       "airspace": {
@@ -2339,6 +2313,9 @@
         "NELIE4": {
           "KISP": 5,
           "KFOK": 2
+        },
+        "BOUNO5": {
+          "KHPN": 5
         },
         "Intra-TRACON Via HTO": {
           "KISP": 2
@@ -2389,6 +2366,7 @@
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
         },
         "inbound_assignments": {
+          "BOUNO5": "ISP_O_APP",
           "DENNA3": "ISP_R_APP",
           "Intra-TRACON Via BDR": "ISP_O_APP",
           "Intra-TRACON Via CCC": "ISP_B_APP",
@@ -2420,7 +2398,8 @@
         "LGA_APP",
         "NY_B_CTR",
         "NY_F_CTR",
-        "NY_LE_DEP"
+        "NY_LE_DEP",
+        "HPN_APP"
       ],
       "default_maps": ["ISP ARR/DEP"],
       "departure_runways": [
@@ -2475,6 +2454,10 @@
         {
           "airport": "KBDR",
           "runway": "6"
+        },
+        {
+          "airport": "KHPN",
+          "runway": "34"
         }
       ],
       "airspace": {
@@ -2533,6 +2516,9 @@
           "KFOK": 2,
           "KBDR": 2,
           "KOXC": 2
+        },
+        "BOUNO5": {
+          "KHPN": 5
         }
       },
       "configuration": {
@@ -2543,6 +2529,7 @@
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
         },
         "inbound_assignments": {
+          "BOUNO5": "ISP_O_APP",
           "Intra-TRACON Via BDR": "ISP_O_APP",
           "Intra-TRACON Via CCC": "ISP_B_APP",
           "Intra-TRACON Via CREAM": "ISP_B_APP",
@@ -2573,7 +2560,8 @@
         "LGA_APP",
         "NY_B_CTR",
         "NY_F_CTR",
-        "NY_LE_DEP"
+        "NY_LE_DEP",
+        "HPN_APP"
       ],
       "default_maps": ["ISP ARR/DEP"],
       "departure_runways": [
@@ -2628,6 +2616,10 @@
         {
           "airport": "KBDR",
           "runway": "11"
+        },
+        {
+          "airport": "KHPN",
+          "runway": "34"
         }
       ],
       "airspace": {
@@ -2686,6 +2678,9 @@
           "KFOK": 2,
           "KBDR": 2,
           "KOXC": 2
+        },
+        "BOUNO5": {
+          "KHPN": 5
         }
       },
       "configuration": {
@@ -2696,6 +2691,7 @@
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
         },
         "inbound_assignments": {
+          "BOUNO5": "ISP_O_APP",
           "Intra-TRACON Via BDR": "ISP_O_APP",
           "Intra-TRACON Via CCC": "ISP_B_APP",
           "Intra-TRACON Via CREAM": "ISP_B_APP",
@@ -2726,7 +2722,8 @@
         "LGA_APP",
         "NY_B_CTR",
         "NY_F_CTR",
-        "NY_LE_DEP"
+        "NY_LE_DEP",
+        "HPN_APP"
       ],
       "default_maps": ["ISP ARR/DEP"],
       "departure_runways": [
@@ -2781,6 +2778,10 @@
         {
           "airport": "KBDR",
           "runway": "29"
+        },
+        {
+          "airport": "KHPN",
+          "runway": "34"
         }
       ],
       "airspace": {
@@ -2839,6 +2840,9 @@
           "KFOK": 2,
           "KBDR": 2,
           "KOXC": 2
+        },
+        "BOUNO5": {
+          "KHPN": 5
         }
       },
       "configuration": {
@@ -2849,6 +2853,7 @@
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
         },
         "inbound_assignments": {
+          "BOUNO5": "ISP_O_APP",
           "Intra-TRACON Via BDR": "ISP_O_APP",
           "Intra-TRACON Via CCC": "ISP_B_APP",
           "Intra-TRACON Via CREAM": "ISP_B_APP",
@@ -2916,24 +2921,24 @@
   },
   "stars_config": {
     "filters": {
-      "inhibit_ca": [
+      "auto_acquisition": [
         {
-          "id": "ISPNOCA",
-          "description": "ISP CONFLICT SUPPRESS",
-          "type": "circle",
+          "id": "ispack",
+          "description": "isp arrival acquisition all",
+          "type": "polygon",
+          "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KISP"
-        },
+          "ceiling": 10000
+        }
+      ],
+      "secondary_drop": [
         {
-          "id": "HVNNOCA",
-          "description": "HVN CONFLICT SUPPRESS",
-          "type": "circle",
+          "id": "secdrop",
+          "description": "drop region all",
+          "type": "polygon",
+          "vertices": "N040.30.03.611,W073.12.49.976 N040.23.50.145,W073.19.52.620 N040.13.25.586,W073.01.07.346 N040.37.35.918,W072.28.09.614 N040.44.17.084,W071.46.04.736 N040.58.21.466,W071.47.22.163 N041.06.35.535,W072.07.04.896 N041.31.32.587,W072.24.38.869 N041.27.22.236,W072.56.18.405 N041.38.19.809,W072.55.51.132 N041.37.08.810,W073.45.15.270 N041.28.57.405,W073.34.53.554 N041.04.03.072,W073.28.35.570 N040.50.57.481,W073.22.07.203 N040.33.07.976,W073.23.25.316",
           "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KHVN"
+          "ceiling": 40000
         }
       ]
     },
@@ -3009,31 +3014,35 @@
       }
     },
     "coordination_lists": [
-      {
-        "name": "HVN.",
-        "id": "A",
-        "airports": ["KHVN"]
-      },
-      {
-        "name": "BDR.",
-        "id": "B",
-        "airports": ["KBDR"]
-      },
-      {
-        "name": "FOK.",
-        "id": "C",
-        "airports": ["KFOK"]
-      },
-      {
-        "name": "OXC.",
-        "id": "D",
-        "airports": ["KOXC"]
-      }
+      { "name": "HVN.", "id": "A", "airports": ["KHVN"] },
+      { "name": "BDR.", "id": "B", "airports": ["KBDR"] },
+      { "name": "FOK.", "id": "C", "airports": ["KFOK"] },
+      { "name": "OXC.", "id": "D", "airports": ["KOXC"] }
     ],
-    "force_ql_self": true,
-    "scratchpad1": {
-      "display_exit_fix": true
+    "filters": {
+      "inhibit_ca": [
+        {
+          "id": "ISPNOCA",
+          "description": "ISP CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KISP"
+        },
+        {
+          "id": "HVNNOCA",
+          "description": "HVN CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KHVN"
+        }
+      ]
     },
+    "force_ql_self": true,
+    "scratchpad1": { "display_exit_fix": true },
     "significant_points": {
       "BAYYS": {},
       "BDR": {},
@@ -3049,9 +3058,7 @@
       "ELIOT": {},
       "GAYEL": {},
       "GREKI": {},
-      "HAAYS": {
-        "short_name": "HAY"
-      },
+      "HAAYS": { "short_name": "HAY" },
       "HAPIE": {},
       "HTO": {},
       "HUO": {},
@@ -3060,9 +3067,7 @@
       "MAD": {},
       "MERIT": {},
       "NEION": {},
-      "NEWEL": {
-        "short_name": "NWL"
-      },
+      "NEWEL": { "short_name": "NWL" },
       "PARKE": {},
       "RBV": {},
       "RUUTH": {},
