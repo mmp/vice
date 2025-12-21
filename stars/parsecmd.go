@@ -578,7 +578,11 @@ func (sm singleTypedMatcher) match(sp *STARSPane, ctx *panes.Context, input *Com
 	if sm.charCount > 0 {
 		if len(text) < sm.charCount {
 			if sm.optional {
-				return &matchResult{remaining: text, matched: true}, nil
+				return &matchResult{
+					values:    []any{reflect.Zero(sm.goType()).Interface()},
+					remaining: text,
+					matched:   true,
+				}, nil
 			}
 			return nil, nil
 		}
@@ -597,7 +601,11 @@ func (sm singleTypedMatcher) match(sp *STARSPane, ctx *panes.Context, input *Com
 	}
 	if !matched {
 		if sm.optional {
-			return &matchResult{remaining: text, matched: true}, nil
+			return &matchResult{
+				values:    []any{reflect.Zero(sm.goType()).Interface()},
+				remaining: text,
+				matched:   true,
+			}, nil
 		}
 		return nil, nil
 	}
@@ -681,7 +689,11 @@ func (am alternativeMatcher) match(sp *STARSPane, ctx *panes.Context, input *Com
 		return bestResult, nil
 	}
 	if am.optional {
-		return &matchResult{remaining: text, matched: true}, nil
+		return &matchResult{
+			values:    []any{reflect.Zero(am.goType()).Interface()},
+			remaining: text,
+			matched:   true,
+		}, nil
 	}
 	return nil, nil
 }
@@ -752,7 +764,11 @@ func (gm greedyMatcher) match(sp *STARSPane, ctx *panes.Context, input *CommandI
 		}
 	}
 
-	// Greedy always succeeds (it may match 0 times)
+	// Greedy always succeeds (it may match 0 times).
+	// If nothing matched, provide a zero value of the expected type.
+	if len(values) == 0 {
+		values = []any{reflect.Zero(gm.goType()).Interface()}
+	}
 	return &matchResult{
 		values:    values,
 		remaining: text,
