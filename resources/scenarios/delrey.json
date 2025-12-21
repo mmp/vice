@@ -1,46 +1,23 @@
 {
   "tracon": "SCT",
   "airports": {
-    "KFUL": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
-    },
-    "KAVX": {
-      "vfr": {
-        "random_routes": {
-          "rate": 3
-        }
-      }
-    },
-    "KCMA": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
-    },
-    "KOXR": {
-      "vfr": {
-        "random_routes": {
-          "rate": 8
-        }
-      }
-    },
-    "KRAL": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
+    "KFUL": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KAVX": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KCMA": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KOXR": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KRAL": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KTOA": { "vfr": { "random_routes": { "rate": 7 } } },
+    "KLGB": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KVNY": { "vfr": { "random_routes": { "rate": 10 } } },
+    "KWHP": { "vfr": { "random_routes": { "rate": 6 } } },
+    "KEMT": { "vfr": { "random_routes": { "rate": 4 } } },
+    "KCNO": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KPOC": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KSMO": { "vfr": { "random_routes": { "rate": 3 } } },
+    "KHHR": { "vfr": { "random_routes": { "rate": 5 } } },
     "KTOA": {
       "vfr": {
-        "random_routes": {
-          "rate": 7
-        },
+        "random_routes": { "rate": 7 },
         "routes": [
           {
             "destination": "KTOA",
@@ -52,362 +29,20 @@
         ]
       },
       "approaches": {
-        "I9R": {
-          "cifp_id": "I29R"
-        },
-        "R9R": {
-          "cifp_id": "R29R"
-        },
-        "R1L": {
-          "cifp_id": "R11L"
-        }
+        "I9R": { "cifp_id": "I29R" },
+        "R9R": { "cifp_id": "R29R" },
+        "R1L": { "cifp_id": "R11L" }
       }
-    },
-    "KLGB": {
-      "approaches": {
-        "I30": {
-          "cifp_id": "I30"
-        },
-        "R30": {
-          "cifp_id": "RZ30"
-        },
-        "R12": {
-          "cifp_id": "R12"
-        },
-        "R26R": {
-          "cifp_id": "R26R"
-        },
-        "RY30": {
-          "cifp_id": "RY30"
-        }
-      },
-      "vfr": {
-        "routes": [
-          {
-            "destination": "KLGB",
-            "rate": 7,
-            "fleet": "GAsinglepiston",
-            "waypoints": "N033.49.28.190,W118.11.42.713/a1500-2500/radius1 N033.43.50.497,W118.11.27.112/a2500-3500/radius2 N033.41.55.292,W118.08.28.090/radius3/a2500-3500  N033.41.43.591,W118.04.58.580 N033.39.11.142,W118.04.00.270/radius3/a2500-3500 OSHNN/airwork30m8nm/a500-3500 N033.39.38.814,W118.03.07.481/a1500-3500/land",
-            "name": "LGB to Long Beach practice area"
-          }
-        ]
-      },
-      "departure_routes": {
-        "30": {
-          "CSTRO": {
-            "cleared_altitude": 3000,
-            "sid": "TOPMM5",
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
-          },
-          "COREZ": {
-            "cleared_altitude": 3000,
-            "sid": "TOPMM5",
-            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
-          },
-          "VTU": {
-            "assigned_altitude": 3000,
-            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h270 SXC VTU"
-          },
-          "FICKY": {
-            "assigned_altitude": 3000,
-            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h180 SXC GOATZ MALIT ROSIN FICKY"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KOAK",
-          "exit": "COREZ",
-          "scratchpad": "TPO",
-          "route": "TOPMM5 COREZ RGOOD EMZOH3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KSMF",
-          "exit": "CSTRO",
-          "scratchpad": "TPO",
-          "route": "TOPMM5 CSTRO RGOOD SUUTR4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "HAL",
-              "fleet": "A21N"
-            }
-          ],
-          "destination": "PHOG",
-          "exit": "FICKY",
-          "scratchpad": "FIC",
-          "route": "FICKY R578 FAPIS"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "PHNL",
-          "exit": "FICKY",
-          "scratchpad": "FIC",
-          "route": "FICKY R578 FAPIS R578 DEREC V21 LNY JULLE5"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KSJC",
-          "exit": "VTU",
-          "scratchpad": "VTU",
-          "route": "VTU RZS SCTRR TROXX SILCN6"
-        }
-      ],
-      "exit_categories": {
-        "OROSZ": "Northwest",
-        "VTU": "Northwest"
-      },
-      "tower_list": 1,
-      "hold_for_release": true
-    },
-    "KVNY": {
-      "vfr": {
-        "random_routes": {
-          "rate": 10
-        }
-      }
-    },
-    "KWHP": {
-      "vfr": {
-        "random_routes": {
-          "rate": 6
-        }
-      }
-    },
-    "KEMT": {
-      "vfr": {
-        "random_routes": {
-          "rate": 4
-        }
-      }
-    },
-    "KCNO": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KPOC": {
-      "vfr": {
-        "random_routes": {
-          "rate": 5
-        }
-      }
-    },
-    "KSMO": {
-      "departure_routes": {
-        "21": {
-          "STOKD,SCTRR": {
-            "cleared_altitude": 3000,
-            "sid": "CTRUS4",
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DARRK/a12000- FIXIT/a12000+ IKAYE RIZIN"
-          },
-          "CSTRO,COREZ": {
-            "cleared_altitude": 3000,
-            "sid": "CTRUS4",
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DZINE/s250 OROSZ"
-          },
-          "MISEN,LAS,HEC": {
-            "cleared_altitude": 3000,
-            "sid": "CTRUS4",
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DZINE/s250 SEAEM SLAPP/a13000+ YAAPY/a15000+"
-          },
-          "CLEEE,CNERY": {
-            "cleared_altitude": 3000,
-            "sid": "PEVEE6",
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH PEEER SPRRW PEVEE HOLTZ DOTSS/a15000+"
-          },
-          "TCATE,OTAYY": {
-            "cleared_altitude": 3000,
-            "sid": "PEVEE6",
-            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH PEEER SPRRW PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ],
-          "destination": "KSQL",
-          "exit": "STOKD",
-          "scratchpad": "CTD",
-          "route": "CTRUS4 STOKD SERFR SERFR4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "N",
-              "fleet": "fastGA"
-            }
-          ],
-          "destination": "KEGE",
-          "exit": "LAS",
-          "scratchpad": "CTS",
-          "route": "CTRUS4 LAS J146 DICEE IBSKI BUGGG EKR RLG"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "KBFI",
-          "exit": "CSTRO",
-          "scratchpad": "CTO",
-          "route": "CTRUS4 CSTRO HNW LMT BTG OLM2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "EJA"
-            }
-          ],
-          "destination": "KSJC",
-          "exit": "SCTRR",
-          "scratchpad": "CTD",
-          "route": "CTRUS4 SCTRR TROXX SILCN6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "LXJ"
-            }
-          ],
-          "destination": "KHDN",
-          "exit": "LAS",
-          "scratchpad": "CTS",
-          "route": "CTRUS4 LAS BAWER LARVE EKR CHE"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "LXJ"
-            }
-          ],
-          "destination": "KSDL",
-          "exit": "CNERY",
-          "scratchpad": "PDT",
-          "route": "PEVEE6 CNERY BLH ARLIN4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "LXJ"
-            }
-          ],
-          "destination": "MMSD",
-          "exit": "OTAYY",
-          "scratchpad": "PDT",
-          "route": "PEVEE6 OTAYY TIJ J1 SQN UL312 SJD"
-        }
-      ],
-      "exit_categories": {
-        "SCTRR": "North",
-        "STOKD": "Northwest",
-        "LAS": "East",
-        "MISEN": "East",
-        "COREZ": "North",
-        "CSTRO": "North",
-        "OTAYY": "South",
-        "TCATE": "South",
-        "CLEEE": "East",
-        "CNERY": "East"
-      },
-      "tower_list": 1,
-      "hold_for_release": true
-    },
-    "KHHR": {
-      "departure_routes": {
-        "25": {
-          "SPACX": {
-            "cleared_altitude": 3000,
-            "sid": "SPACX2",
-            "waypoints": "N033.55.17.390,W118.21.54.019 SPACX/a3000/h200"
-          }
-        },
-        "7": {
-          "SPACX": {
-            "cleared_altitude": 3000,
-            "sid": "SPACX2",
-            "waypoints": "N033.55.24.943,W118.19.21.337/a580+ SPACX/a3000/h200"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "N"
-            }
-          ],
-          "destination": "KHOU",
-          "exit": "SPACX",
-          "scratchpad": "V64",
-          "route": "SPACX2 SPACX LIMBO WILMA SLI TUSTI COREL NIKKL PERIS HEMET BALDI CORLA TRM SCOLE SSO EWM WEMAR BELLR6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "WSN"
-            }
-          ],
-          "destination": "KMMH",
-          "exit": "SPACX",
-          "scratchpad": "V23",
-          "route": "SPACX2 SPACX LIMBO LAX CHATY TWINE V23 EHF CANDA JASAT"
-        }
-      ],
-      "exit_categories": {
-        "SPACX": "ALL"
-      },
-      "tower_list": 1,
-      "hold_for_release": true
     },
     "KLAX": {
       "departure_runways_as_one": ["25L,25R", "24L,24R"],
       "approaches": {
-        "I7R": {
-          "cifp_id": "I7R"
-        },
-        "RY7R": {
-          "cifp_id": "RY7R"
-        },
-        "RZ7R": {
-          "cifp_id": "RZ7R"
-        },
-        "I5L": {
-          "cifp_id": "I25L"
-        },
-        "RY5L": {
-          "cifp_id": "RY25L"
-        },
-        "RZ5L": {
-          "cifp_id": "RZ25L"
-        }
+        "I7R": { "cifp_id": "I7R" },
+        "RY7R": { "cifp_id": "RY7R" },
+        "RZ7R": { "cifp_id": "RZ7R" },
+        "I5L": { "cifp_id": "I25L" },
+        "RY5L": { "cifp_id": "RY25L" },
+        "RZ5L": { "cifp_id": "RZ25L" }
       },
       "departure_routes": {
         "7L": {
@@ -537,15 +172,30 @@
             "sid": "ORCKA5",
             "waypoints": "DOCKR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
           },
-          "SCTRR,STOKD,MCKEY,DINTY,FICKY": {
+          "SCTRR,STOKD,MCKEY,RIZIN": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
             "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN"
           },
-          "CLEEE,CNERY": {
+          "DINTY": {
+            "cleared_altitude": 5000,
+            "sid": "SUMMR2",
+            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN OINGO"
+          },
+          "FICKY": {
+            "cleared_altitude": 5000,
+            "sid": "SUMMR2",
+            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR BNANO"
+          },
+          "CLEEE": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+"
+            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ EYEDL HOMER CLEEE"
+          },
+          "CNERY": {
+            "cleared_altitude": 5000,
+            "sid": "DOTSS2",
+            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ WIILD CSTWY CNERY/flyover"
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
@@ -557,10 +207,15 @@
             "sid": "LAXX1",
             "waypoints": "N033.55.57.627,W118.26.59.302/a3000-/h221 SLI DANAH OCN CARIF MZB"
           },
-          "CSTRO,COREZ": {
+          "CSTRO": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY OROSZ"
+            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY OROSZ HEYJO CSTRO"
+          },
+          "COREZ": {
+            "cleared_altitude": 5000,
+            "sid": "LADYJ4",
+            "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000+ LADYJ/a8000 RUGBY OROSZ BRRKK SHORS MDWAY COREZ"
           },
           "IKAYE": {
             "cleared_altitude": 5000,
@@ -576,6 +231,11 @@
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
             "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE"
+          },
+          "MISEN.H": {
+            "cleared_altitude": 5000,
+            "sid": "OSHNN1",
+            "waypoints": "DOCKR/a3000- WEILR/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH MISEN"
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 5000,
@@ -626,15 +286,30 @@
             "sid": "ORCKA5",
             "waypoints": "HIIPR/a3000-/h236 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
           },
-          "SCTRR,STOKD,MCKEY,DINTY,FICKY": {
+          "SCTRR,STOKD,MCKEY,RIZIN": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
             "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN"
           },
-          "CLEEE,CNERY": {
+          "DINTY": {
+            "cleared_altitude": 5000,
+            "sid": "SUMMR2",
+            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR OLOFF RIZIN OINGO"
+          },
+          "FICKY": {
+            "cleared_altitude": 5000,
+            "sid": "SUMMR2",
+            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE DARRK/a12000- SUMMR BNANO"
+          },
+          "CLEEE": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000"
+            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ EYEDL HOMER CLEEE"
+          },
+          "CNERY": {
+            "cleared_altitude": 5000,
+            "sid": "DOTSS2",
+            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ DOTSS/a15000+ WIILD BLCKD CSTWY CNERY/flyover"
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
@@ -646,10 +321,15 @@
             "sid": "LAXX1",
             "waypoints": "N033.55.49.813,W118.26.58.176/a3000-/h221 SLI DANAH OCN CARIF MZB"
           },
-          "CSTRO,COREZ": {
+          "CSTRO": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
+            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ HEYJO CSTRO"
+          },
+          "COREZ": {
+            "cleared_altitude": 5000,
+            "sid": "LADYJ4",
+            "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ BRRKK SHORS MDWAY COREZ"
           },
           "IKAYE": {
             "cleared_altitude": 5000,
@@ -665,6 +345,11 @@
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
             "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE"
+          },
+          "MISEN.H": {
+            "cleared_altitude": 5000,
+            "sid": "OSHNN1",
+            "waypoints": "HIIPR/a3000- ADORE/a5000- SHAEF PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH MISEN"
           },
           "OTAYY,TCATE": {
             "cleared_altitude": 5000,
@@ -715,15 +400,30 @@
             "sid": "ORCKA5",
             "waypoints": "DLREY/a3000-/h251 KLIPR/a10000+ KEGGS/a13000-19000 COOPP/a15000+ ORCKA NNAVY"
           },
-          "SCTRR,STOKD,MCKEY,DINTY,FICKY": {
+          "SCTRR,STOKD,MCKEY,RIZIN": {
             "cleared_altitude": 5000,
             "sid": "SUMMR2",
             "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR OLOFF RIZIN"
           },
-          "CLEEE,CNERY": {
+          "DINTY": {
+            "cleared_altitude": 5000,
+            "sid": "SUMMR2",
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR OLOFF RIZIN OINGO"
+          },
+          "FICKY": {
+            "cleared_altitude": 5000,
+            "sid": "SUMMR2",
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC DARRK/a12000- SUMMR BNANO"
+          },
+          "CLEEE": {
             "cleared_altitude": 5000,
             "sid": "DOTSS2",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ DOTSS/a15000"
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ DOTSS/a15000+ EYEDL HOMER CLEEE"
+          },
+          "CNERY": {
+            "cleared_altitude": 5000,
+            "sid": "DOTSS2",
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ DOTSS/a15000+ WIILD BLCKD CSTWY CNERY/flyover"
           },
           "AVE,EHF": {
             "cleared_altitude": 5000,
@@ -735,10 +435,15 @@
             "sid": "LAXX1",
             "waypoints": "N033.56.42.053,W118.27.02.900/a3000-/h251 SLI DANAH OCN CARIF MZB"
           },
-          "CSTRO,COREZ": {
+          "CSTRO": {
             "cleared_altitude": 5000,
             "sid": "LADYJ4",
-            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ"
+            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ HEYJO CSTRO"
+          },
+          "COREZ": {
+            "cleared_altitude": 5000,
+            "sid": "LADYJ4",
+            "waypoints": "DLREY/a3000- ENNEY/a5000- EYENO MLIBU/a7000 LADYJ/a8000 RUGBY OROSZ BRRKK SHORS MDWAY COREZ"
           },
           "IKAYE": {
             "cleared_altitude": 5000,
@@ -754,6 +459,16 @@
             "cleared_altitude": 5000,
             "sid": "OSHNN1",
             "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH WYZEE"
+          },
+          "MISEN.H": {
+            "cleared_altitude": 5000,
+            "sid": "OSHNN1",
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE HOLTZ OSHNN CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY ARCUS YELAH MISEN"
+          },
+          "OTAYY,TCATE": {
+            "cleared_altitude": 5000,
+            "sid": "PNDAH2",
+            "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC HAYNK PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
           }
         }
       },
@@ -906,6 +621,176 @@
           "exit": "COREZ",
           "scratchpad": "LDB",
           "route": "LADYJ4 COREZ RGOOD EMZOH3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "a321"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "QXE"
+            },
+            {
+              "icao": "QXE"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "NKS"
+            },
+            {
+              "icao": "JSX"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "MISEN",
+          "scratchpad": "CLP",
+          "route": "MISEN RNDRZ4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "a321"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "short"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "DAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "SKW",
+              "fleet": "long"
+            },
+            {
+              "icao": "QXE"
+            },
+            {
+              "icao": "QXE"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "b73x"
+            },
+            {
+              "icao": "NKS"
+            },
+            {
+              "icao": "JSX"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "FFT"
+            },
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KLAS",
+          "exit": "MISEN",
+          "scratchpad": "CLP",
+          "route": "MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -2745,31 +2630,172 @@
       },
       "tower_list": 1
     },
+    "KHHR": {
+      "departure_routes": {
+        "25": {
+          "SPACX": {
+            "cleared_altitude": 3000,
+            "sid": "SPACX2",
+            "waypoints": "N033.55.17.390,W118.21.54.019 SPACX/a3000/h200"
+          }
+        },
+        "7": {
+          "SPACX": {
+            "cleared_altitude": 3000,
+            "sid": "SPACX2",
+            "waypoints": "N033.55.24.943,W118.19.21.337/a580+ SPACX/a3000/h200"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KHOU",
+          "exit": "SPACX",
+          "scratchpad": "V64",
+          "route": "SPACX2 SPACX LIMBO WILMA SLI TUSTI COREL NIKKL PERIS HEMET BALDI CORLA TRM SCOLE SSO EWM WEMAR BELLR6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "WSN"
+            }
+          ],
+          "destination": "KMMH",
+          "exit": "SPACX",
+          "scratchpad": "V23",
+          "route": "SPACX2 SPACX LIMBO LAX CHATY TWINE V23 EHF CANDA JASAT"
+        }
+      ],
+      "exit_categories": {
+        "SPACX": "ALL"
+      },
+      "tower_list": 1,
+      "hold_for_release": true
+    },
+    "KLGB": {
+      "approaches": {
+        "I30": { "cifp_id": "I30" },
+        "R30": { "cifp_id": "RZ30" },
+        "R12": { "cifp_id": "R12" },
+        "R26R": { "cifp_id": "R26R" },
+        "RY30": { "cifp_id": "RY30" }
+      },
+      "vfr": {
+        "routes": [
+          {
+            "destination": "KLGB",
+            "rate": 7,
+            "fleet": "GAsinglepiston",
+            "waypoints": "N033.49.28.190,W118.11.42.713/a1500-2500/radius1 N033.43.50.497,W118.11.27.112/a2500-3500/radius2 N033.41.55.292,W118.08.28.090/radius3/a2500-3500  N033.41.43.591,W118.04.58.580 N033.39.11.142,W118.04.00.270/radius3/a2500-3500 OSHNN/airwork30m8nm/a500-3500 N033.39.38.814,W118.03.07.481/a1500-3500/land",
+            "name": "LGB to Long Beach practice area"
+          }
+        ]
+      },
+      "departure_routes": {
+        "30": {
+          "CSTRO": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "COREZ": {
+            "cleared_altitude": 3000,
+            "sid": "TOPMM5",
+            "waypoints": "KLGB-12 N033.51.05.185,W118.11.28.980 TOPMM/a2400+/s200 PYPES/a7000+ PLTFM/a10000+ OVEUR OROSZ/a14000+/s250"
+          },
+          "VTU": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h270 SXC VTU"
+          },
+          "FICKY": {
+            "assigned_altitude": 3000,
+            "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h180 SXC GOATZ MALIT ROSIN FICKY"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KOAK",
+          "exit": "COREZ",
+          "scratchpad": "TPO",
+          "route": "TOPMM5 COREZ RGOOD EMZOH3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSMF",
+          "exit": "CSTRO",
+          "scratchpad": "TPO",
+          "route": "TOPMM5 CSTRO RGOOD SUUTR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "HAL",
+              "fleet": "A21N"
+            }
+          ],
+          "destination": "PHOG",
+          "exit": "FICKY",
+          "scratchpad": "FIC",
+          "route": "FICKY R578 FAPIS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "PHNL",
+          "exit": "FICKY",
+          "scratchpad": "FIC",
+          "route": "FICKY R578 FAPIS R578 DEREC V21 LNY JULLE5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SWA"
+            }
+          ],
+          "destination": "KSJC",
+          "exit": "VTU",
+          "scratchpad": "VTU",
+          "route": "VTU RZS SCTRR TROXX SILCN6"
+        }
+      ],
+      "exit_categories": {
+        "OROSZ": "Northwest",
+        "VTU": "Northwest"
+      },
+      "tower_list": 1,
+      "hold_for_release": true
+    },
     "KSNA": {
       "approaches": {
-        "I0R": {
-          "cifp_id": "I20R"
-        },
+        "I0R": { "cifp_id": "I20R" },
         "V0R": {
           "full_name": "Visual Runway 20R",
           "runway": "20R",
           "type": "Visual",
           "waypoints": ["SAGER/hilpt1min SNAKE/a3400+ HUKEM/a2800+ LEMON/a2200+ DYERS/a1040"]
         },
-        "D0R": {
-          "cifp_id": "X20R",
-          "full_name": "LDA Runway 20R"
-        },
-        "Z0R": {
-          "cifp_id": "RZ20R"
-        },
-        "R2L": {
-          "cifp_id": "RZ2L"
-        },
-        "L2L": {
-          "cifp_id": "B2L",
-          "full_name": "Localizer Back Course Runway 2L"
-        },
+        "D0R": { "cifp_id": "X20R", "full_name": "LDA Runway 20R" },
+        "Z0R": { "cifp_id": "RZ20R" },
+        "R2L": { "cifp_id": "RZ2L" },
+        "L2L": { "cifp_id": "B2L", "full_name": "Localizer Back Course Runway 2L" },
         "V2L": {
           "full_name": "Visual Runway 2L",
           "runway": "2L",
@@ -2842,7 +2868,7 @@
           "destination": "KLAS",
           "exit": "MISEN",
           "scratchpad": "FIN",
-          "route": "FINZZ3 MISEN RNDRZ3"
+          "route": "FINZZ3 MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -2860,7 +2886,7 @@
           "destination": "KLAS",
           "exit": "MISEN.N",
           "scratchpad": "HOB",
-          "route": "HOBOW3 MISEN RNDRZ3"
+          "route": "HOBOW3 MISEN RNDRZ4"
         },
         {
           "airlines": [
@@ -3028,6 +3054,133 @@
         "OROSZ": "North",
         "EHF": "North"
       }
+    },
+    "KSMO": {
+      "departure_routes": {
+        "21": {
+          "STOKD,SCTRR": {
+            "cleared_altitude": 3000,
+            "sid": "CTRUS4",
+            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DARRK/a12000- FIXIT/a12000+ IKAYE RIZIN"
+          },
+          "CSTRO,COREZ": {
+            "cleared_altitude": 3000,
+            "sid": "CTRUS4",
+            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DZINE/s250 OROSZ"
+          },
+          "MISEN,LAS,HEC": {
+            "cleared_altitude": 3000,
+            "sid": "CTRUS4",
+            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH CTRUS/a5000+ DZINE/s250 SEAEM SLAPP/a13000+ YAAPY/a15000+"
+          },
+          "CLEEE,CNERY": {
+            "cleared_altitude": 3000,
+            "sid": "PEVEE6",
+            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH PEEER SPRRW PEVEE HOLTZ DOTSS/a15000+"
+          },
+          "TCATE,OTAYY": {
+            "cleared_altitude": 3000,
+            "sid": "PEVEE6",
+            "waypoints": "N033.59.40.416,W118.28.28.868 WRASH PEEER SPRRW PEVEE TANNN/a15000+ NNICE PNDAH/a20000+"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KSQL",
+          "exit": "STOKD",
+          "scratchpad": "CTD",
+          "route": "CTRUS4 STOKD SERFR SERFR4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KEGE",
+          "exit": "LAS",
+          "scratchpad": "CTS",
+          "route": "CTRUS4 LAS J146 DICEE IBSKI BUGGG EKR RLG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KBFI",
+          "exit": "CSTRO",
+          "scratchpad": "CTO",
+          "route": "CTRUS4 CSTRO HNW LMT BTG OLM2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "EJA"
+            }
+          ],
+          "destination": "KSJC",
+          "exit": "SCTRR",
+          "scratchpad": "CTD",
+          "route": "CTRUS4 SCTRR TROXX SILCN6"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KHDN",
+          "exit": "LAS",
+          "scratchpad": "CTS",
+          "route": "CTRUS4 LAS BAWER LARVE EKR CHE"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "KSDL",
+          "exit": "CNERY",
+          "scratchpad": "PDT",
+          "route": "PEVEE6 CNERY BLH ARLIN4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "destination": "MMSD",
+          "exit": "OTAYY",
+          "scratchpad": "PDT",
+          "route": "PEVEE6 OTAYY TIJ J1 SQN UL312 SJD"
+        }
+      ],
+      "exit_categories": {
+        "SCTRR": "Northwest",
+        "STOKD": "Northwest",
+        "LAS": "East",
+        "MISEN": "East",
+        "COREZ": "North",
+        "CSTRO": "North",
+        "SCTRR": "North",
+        "OTAYY": "South",
+        "TCATE": "South",
+        "CLEEE": "East",
+        "CNERY": "East"
+      },
+      "tower_list": 1,
+      "hold_for_release": true
     }
   },
   "inbound_flows": {
@@ -3585,8 +3738,8 @@
           "initial_altitude": 100,
           "scratchpad": "FRT",
           "initial_controller": "SNA_R_APP",
-          "initial_speed": 150,
-          "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h180/ho FRITR DOTSS WIILD/delete"
+          "initial_speed": 140,
+          "waypoints": "KLGB-12 N033.50.41.084,W118.11.01.953/a1500+/flyover/h180/ho FRITR DOTSS WIILD/delete"
         },
         {
           "airlines": [
@@ -3625,8 +3778,8 @@
           "initial_altitude": 100,
           "scratchpad": "ZMM",
           "initial_controller": "SNA_R_APP",
-          "initial_speed": 150,
-          "waypoints": "KLGB-12 N033.50.25.057,W118.10.40.173/a1500+/h180/ho CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY/delete"
+          "initial_speed": 140,
+          "waypoints": "KLGB-12 N033.50.41.084,W118.11.01.953/a1500+/flyover/h180/ho CAHIL/a15000+ ZOOMM/a16000+ SEBBY PLAYY/delete"
         }
       ]
     },
@@ -4390,18 +4543,27 @@
           "LAX_S_DEP": ["LAX_L_DEP", "LAX_N_DEP", "LAX_X_DEP"],
           "LAX_X_DEP": ["LAX_K_DEP"]
         },
+        "inbound_assignments": {
+          "KARLB3/GOATZ2": "LAX_K_DEP",
+          "LEGOZ4": "LAX_K_DEP",
+          "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+          "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+          "TOPMM5": "LAX_L_DEP",
+          "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+        },
         "departure_assignments": {
           "KHHR": "LAX_L_DEP",
-          "KLAX": "LAX_S_DEP",
+          "KLAX/DOTSS2": "LAX_S_DEP",
+          "KLAX/GMN7": "LAX_N_DEP",
+          "KLAX/LADYJ4": "LAX_N_DEP",
+          "KLAX/LAXX1": "LAX_S_DEP",
+          "KLAX/MOOOS2": "LAX_N_DEP",
+          "KLAX/MUELR4": "LAX_N_DEP",
+          "KLAX/ORCKA5": "LAX_S_DEP",
+          "KLAX/OSHNN1": "LAX_S_DEP",
+          "KLAX/PNDAH2": "LAX_S_DEP",
+          "KLAX/SUMMR2": "LAX_N_DEP",
           "KSMO": "LAX_N_DEP"
-        },
-        "inbound_assignments": {
-          "ZOOMM3/FRITR3.N": "LAX_X_DEP",
-          "OHSEA3/PCIFC3.N": "LAX_K_DEP",
-          "KARLB3/GOATZ2": "LAX_K_DEP",
-          "RUKKI1/BAUBB3.N": "LAX_K_DEP",
-          "LEGOZ4": "LAX_K_DEP",
-          "TOPMM5": "LAX_L_DEP"
         }
       },
       "controllers": [
@@ -4791,21 +4953,9 @@
       ]
     },
     "coordination_lists": [
-      {
-        "name": "SMO",
-        "id": "O",
-        "airports": ["KSMO"]
-      },
-      {
-        "name": "LGB",
-        "id": "V",
-        "airports": ["KLGB"]
-      },
-      {
-        "name": "HHR",
-        "id": "J",
-        "airports": ["KHHR"]
-      }
+      { "name": "SANTA MONICA", "id": "O", "airports": ["KSMO"] },
+      { "name": "LONG BEACH", "id": "V", "airports": ["KLGB"] },
+      { "name": "HAWTHORNE", "id": "J", "airports": ["KHHR"] }
     ],
     "airspace_awareness": [
       {
@@ -4918,23 +5068,13 @@
     },
     "significant_points": {
       "AVE": {},
-      "BEALE": {
-        "short_name": "BEL"
-      },
+      "BEALE": { "short_name": "BEL" },
       "CLEEE": {},
-      "CNERY": {
-        "short_name": "CNR"
-      },
-      "COREZ": {
-        "short_name": "COZ"
-      },
-      "CSTRO": {
-        "short_name": "CTO"
-      },
+      "CNERY": { "short_name": "CNR" },
+      "COREZ": { "short_name": "COZ" },
+      "CSTRO": { "short_name": "CTO" },
       "EHF": {},
-      "MISEN": {
-        "short_name": "MIS"
-      },
+      "MISEN": { "short_name": "MIS" },
       "LAS": {},
       "SCTRR": {}
     },
