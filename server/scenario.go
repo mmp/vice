@@ -279,7 +279,12 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				// a virtual controller assigned to it.
 				exitRoutes := ap.DepartureRoutes[rwy.Runway]
 				for fix, route := range exitRoutes {
-					if rwy.Category == "" || ap.ExitCategories[fix] == rwy.Category {
+					fixCategory := ap.ExitCategories[fix]
+					if rwy.Category != "" && fixCategory == "" {
+						e.ErrorString("exit fix %q (SID %s) has no entry in \"exit_categories\" but runway uses category %q",
+							fix, route.SID, rwy.Category)
+					}
+					if rwy.Category == "" || fixCategory == rwy.Category {
 						if activeAirportSIDs[rwy.Airport] == nil {
 							activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
 						}
@@ -309,8 +314,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	// They only stay with virtual controllers if departure_controller is explicitly set.
 	// activeAirportSIDs already filters out airports with departure_controller set.
 	if s.ControllerConfiguration != nil {
-		haveDepartureSIDSpec := false
-		haveDepartureRunwaySpec := false
+		// Track per-airport: assigned SIDs, assigned runways, and whether there's a fallback
+		assignedSIDs := make(map[string]map[string]interface{})    // airport -> set of SIDs
+		assignedRunways := make(map[string]map[string]interface{}) // airport -> set of runways
+		hasAirportFallback := make(map[string]bool)                // airport -> has plain airport assignment
 
 		for spec := range s.ControllerConfiguration.DepartureAssignments {
 			ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
@@ -330,25 +337,53 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 					e.ErrorString("departure_assignments: %q at airport %q is neither an active runway nor SID in this scenario", sidRunway, ap)
 				}
 
-				haveDepartureSIDSpec = haveDepartureSIDSpec || okSID
-				haveDepartureRunwaySpec = haveDepartureRunwaySpec || okRunway
-				if haveDepartureSIDSpec && haveDepartureRunwaySpec {
-					e.ErrorString("departure_assignments: cannot mix runways and SIDs as specifiers")
+				// Track assigned SIDs and runways per airport
+				if okSID {
+					if assignedSIDs[ap] == nil {
+						assignedSIDs[ap] = make(map[string]interface{})
+					}
+					assignedSIDs[ap][sidRunway] = nil
 				}
+				if okRunway {
+					if assignedRunways[ap] == nil {
+						assignedRunways[ap] = make(map[string]interface{})
+					}
+					assignedRunways[ap][sidRunway] = nil
+				}
+
+				// Check for mixing SIDs and runways for this airport
+				if len(assignedSIDs[ap]) > 0 && len(assignedRunways[ap]) > 0 {
+					e.ErrorString("departure_assignments: cannot mix runways and SIDs as specifiers for airport %q", ap)
+				}
+			} else {
+				// Plain airport assignment (fallback)
+				hasAirportFallback[ap] = true
 			}
 		}
 
-		// Check reverse: every active departure airport (without a virtual controller) must have an assignment
-		for ap := range activeAirportSIDs {
-			hasAssignment := false
-			for spec := range s.ControllerConfiguration.DepartureAssignments {
-				assignAp, _, _ := strings.Cut(spec, "/")
-				if assignAp == ap {
-					hasAssignment = true
-					break
-				}
+		// Check that every active departure airport has complete coverage
+		for ap, activeSIDs := range activeAirportSIDs {
+			if hasAirportFallback[ap] {
+				// Airport has a fallback, so incomplete SID/runway coverage is OK
+				continue
 			}
-			if !hasAssignment {
+
+			if assigned, ok := assignedSIDs[ap]; ok {
+				// Using SID-based assignments - check all active SIDs are covered
+				for sid := range activeSIDs {
+					if _, ok := assigned[sid]; !ok {
+						e.ErrorString("departure_assignments: airport %q uses SID-based assignments but SID %q has no assignment", ap, sid)
+					}
+				}
+			} else if assigned, ok := assignedRunways[ap]; ok {
+				// Using runway-based assignments - check all active runways are covered
+				for rwy := range activeAirportRunways[ap] {
+					if _, ok := assigned[rwy]; !ok {
+						e.ErrorString("departure_assignments: airport %q uses runway-based assignments but runway %q has no assignment", ap, rwy)
+					}
+				}
+			} else {
+				// No assignments at all for this airport
 				e.ErrorString("departure airport %q has no assignment in \"departure_assignments\"", ap)
 			}
 		}

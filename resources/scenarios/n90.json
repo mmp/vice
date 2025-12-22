@@ -48,7 +48,7 @@
             "sid": "LGA7",
             "waypoints": "_LGA_22/h360"
           },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+          "COATE,NEION,HAAYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 5000,
             "sid": "LGA7",
             "waypoints": "_LGA_22/h40"
@@ -60,7 +60,7 @@
             "sid": "LGA7",
             "waypoints": "_LGA_13/h340"
           },
-          "COATE,NEION,HAYYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
+          "COATE,NEION,HAAYS,GAYEL,SAX,NYACK,GREKI,MERIT,BAYYS,CMK,BDR,DPK,SHIPP,WAVEY,DIXIE": {
             "cleared_altitude": 5000,
             "sid": "LGA7",
             "waypoints": "_LGA_13/h360"
@@ -427,7 +427,11 @@
         "PARKE": "West",
         "ELIOT": "West",
         "NEWEL": "West",
-        "ZIMMZ": "West"
+        "ZIMMZ": "West",
+        "NYACK": "West",
+        "DPK": "East",
+        "BETTE": "East",
+        "HAPIE": "East"
       },
       "tower_list": 1
     },
@@ -1453,13 +1457,18 @@
         "MERIT": "East",
         "NEION": "North",
         "NEWEL": "West",
+        "NYACK": "West",
         "PARKE": "West",
         "SAX": "North",
         "SBJ": "West",
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West"
+        "ZIMMZ": "West",
+        "DPK": "East",
+        "CMK": "West",
+        "BETTE": "East",
+        "HAPIE": "East"
       },
       "tower_list": 2
     },
@@ -3810,7 +3819,8 @@
         "SHIPP": "South",
         "WAVEY": "South",
         "WHITE": "South",
-        "ZIMMZ": "West"
+        "ZIMMZ": "West",
+        "CMK": "West"
       },
       "tower_list": 1,
       "atpa_volumes": {

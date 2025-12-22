@@ -251,15 +251,6 @@
           "route": "WHITE Q409 DEEEZ IGARY"
         }
       ],
-      "exit_categories": {
-        "BIGGY": "WEST",
-        "GAYEL": "WEST",
-        "LANNA": "WEST",
-        "WHITE": "WEST",
-        "COATE": "WEST",
-        "GREKI": "WEST",
-        "SHIPP": "WEST"
-      },
       "tower_list": 1
     },
     "KLGA": {
@@ -295,7 +286,6 @@
           "initial_altitude": 13000,
           "assigned_altitude": 4000,
           "initial_speed": 270,
-          "expect_approach": null,
           "airlines": {
             "KHPN": [
               {
@@ -582,7 +572,6 @@
       "departure_runways": [
         {
           "airport": "KHPN",
-          "category": "WEST",
           "rate": 5,
           "runway": "34"
         }
@@ -659,7 +648,6 @@
       "departure_runways": [
         {
           "airport": "KHPN",
-          "category": "WEST",
           "rate": 6,
           "runway": "16"
         }

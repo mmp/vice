@@ -1389,7 +1389,8 @@
         "CARML": "North",
         "OXFRD": "North",
         "ROZBO": "South",
-        "SHPRD": "South"
+        "SHPRD": "South",
+        "LWOOD": "North"
       },
       "tower_list": 1
     }

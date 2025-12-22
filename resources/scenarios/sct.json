@@ -2403,7 +2403,10 @@
         "MCKEY": "North/West",
         "DINTY": "North/West",
         "STOKD": "North/West",
-        "SPLNT": "North/West"
+        "SPLNT": "North/West",
+        "MISEN": "North/West",
+        "FICKY": "North/West",
+        "OTAYY": "South/East"
       },
       "tower_list": 1
     },

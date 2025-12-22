@@ -846,7 +846,13 @@
         "DPATY": "STRYA8",
         "DOLEY": "STYCK8",
         "WTSON": "STYCK8",
-        "MAJKK": "WYLSN8"
+        "MAJKK": "WYLSN8",
+        "ANKRR": "FLYZA5",
+        "KELPP": "FLYZA5",
+        "LEV": "HOODO7",
+        "JBULL": "STRYA8",
+        "GIFFA": "WYLSN8",
+        "JCT": "RETYR8"
       },
       "tower_list": 1
     },
@@ -1165,6 +1171,7 @@
       ],
       "exit_categories": {
         "CRIED": "BLTWY7",
+        "JCT": "RETYR8",
         "MNURE": "RETYR8",
         "MUSYL": "PEECE6",
         "LLA": "ELOCO6",

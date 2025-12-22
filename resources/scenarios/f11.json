@@ -885,7 +885,9 @@
         "WORMS": "Prop.East",
         "DDANY": "Prop.East",
         "FSHUN": "Prop.West",
-        "VIZTA": "Prop.West"
+        "VIZTA": "Prop.West",
+        "LENDS": "MZULO",
+        "FSUHN": "FSHUN"
       },
       "tower_list": 2,
       "atpa_volumes": {

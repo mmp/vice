@@ -888,7 +888,10 @@
         "CANOA": "South",
         "MAXIM": "South",
         "FUNDI": "South",
-        "MAYNR": "South"
+        "MAYNR": "South",
+        "FOLZZ": "North",
+        "GOZZR": "North",
+        "KLADA": "South"
       },
       "tower_list": 1
     },
