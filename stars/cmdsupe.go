@@ -5,7 +5,10 @@
 // Commands defined in chapter 8 of the TCW Operator Manual
 package stars
 
-import "github.com/mmp/vice/panes"
+import (
+	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/sim"
+)
 
 func init() {
 	// 8.1 Enable / inhibit CA system-wide
@@ -182,17 +185,81 @@ func init() {
 	// registerCommand(CommandModeMultiFunc, "2XE", ...)
 	// registerCommand(CommandModeMultiFunc, "2XI", ...)
 
-	// 8.38 Enable / disable ATPA system-side
-	// registerCommand(CommandModeMultiFunc, "2ATPAE", ...)
-	// registerCommand(CommandModeMultiFunc, "2ATPAI", ...)
+	// 8.38 Enable / disable ATPA system-wide
+	hasATPAVolumes := func(ctx *panes.Context) bool {
+		for _, ap := range ctx.Client.State.Airports {
+			if len(ap.ATPAVolumes) > 0 {
+				return true
+			}
+		}
+		return false
+	}
+	configureATPA := func(sp *STARSPane, ctx *panes.Context, op sim.ATPAConfigOp, volumeId string) error {
+		ctx.Client.ConfigureATPA(op, volumeId,
+			func(output string, err error) {
+				if err != nil {
+					sp.displayError(err, ctx, "")
+				} else {
+					// This is sort of a hack but gives us instant updates on the scope after state changes
+					sp.updateInTrailDistance(ctx)
+					sp.previewAreaOutput = output
+				}
+			})
+		return nil
+	}
+	registerCommand(CommandModeMultiFunc, "2ATPAE",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			if !hasATPAVolumes(ctx) {
+				return ErrSTARSIllegalFunction
+			}
+			return configureATPA(sp, ctx, sim.ATPAEnable, "")
+		})
+	registerCommand(CommandModeMultiFunc, "2ATPAI",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			if !hasATPAVolumes(ctx) {
+				return ErrSTARSIllegalFunction
+			}
+			return configureATPA(sp, ctx, sim.ATPADisable, "")
+		})
 
 	// 8.39 Enable / disable ATPA approach volume
-	// registerCommand(CommandModeMultiFunc, "2ATPA[TEXT]I", ...)
-	// registerCommand(CommandModeMultiFunc, "2ATPA[TEXT]E", ...)
+	registerCommand(CommandModeMultiFunc, "2ATPA[FIELD]",
+		func(sp *STARSPane, ctx *panes.Context, text string) error {
+			if n := len(text); n < 2 || n > 6 {
+				return ErrSTARSCommandFormat
+			} else {
+				vol := text[:n-1]
+				switch text[n-1] {
+				case 'E':
+					return configureATPA(sp, ctx, sim.ATPAEnableVolume, vol)
+				case 'I':
+					for _, state := range sp.TrackState {
+						state.DisplayATPAWarnAlert = nil
+					}
+					return configureATPA(sp, ctx, sim.ATPADisableVolume, vol)
+				default:
+					return ErrSTARSCommandFormat
+				}
+			}
+		})
 
 	// 8.40 Enable / disable ATPA 2.5nm reduced separation
-	// registerCommand(CommandModeMultiFunc, "2.5[TEXT]I", ...)
-	// registerCommand(CommandModeMultiFunc, "2.5[TEXT]E", ...)
+	registerCommand(CommandModeMultiFunc, "2.5[FIELD]",
+		func(sp *STARSPane, ctx *panes.Context, text string) error {
+			if n := len(text); n < 2 || n > 6 {
+				return ErrSTARSCommandFormat
+			} else {
+				vol := text[:n-1]
+				switch text[n-1] {
+				case 'E':
+					return configureATPA(sp, ctx, sim.ATPAEnableReduced25, vol)
+				case 'I':
+					return configureATPA(sp, ctx, sim.ATPADisableReduced25, vol)
+				default:
+					return ErrSTARSCommandFormat
+				}
+			}
+		})
 
 	// 8.41 Enable / inhibit / display ASV volume(s) for an airport system-wide
 	// registerCommand(CommandModeMultiFunc, "W*[FIELD:3]E", ...)

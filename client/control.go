@@ -389,7 +389,8 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool, handleResult func(message string, remainingInput string)) {
+func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
+	handleResult func(message string, remainingInput string)) {
 	if c.HaveTTS() && cmds != "P" && cmds != "X" {
 		c.mu.Lock()
 
@@ -416,6 +417,20 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 			handleResult(result.ErrorMessage, result.RemainingInput)
 			if err != nil {
 				c.lg.Errorf("%s: %v", callsign, err)
+			}
+		}))
+}
+
+func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, callback func(output string, err error)) {
+	var result server.ATPAConfigResult
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ConfigureATPARPC, &server.ATPAConfigArgs{
+		ControllerToken: c.controllerToken,
+		Op:              op,
+		VolumeId:        volumeId,
+	}, &result, nil), &result.SimStateUpdate,
+		func(err error) {
+			if callback != nil {
+				callback(result.Output, err)
 			}
 		}))
 }

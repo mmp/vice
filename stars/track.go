@@ -62,6 +62,7 @@ type TrackState struct {
 	ATPAStatus                ATPAStatus
 	MinimumMIT                float32
 	ATPALeadAircraftCallsign  av.ADSBCallsign
+	DrawATPAGraphics          bool
 
 	POFlashingEndTime time.Time
 	UNFlashingEndTime time.Time
@@ -1169,6 +1170,12 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context) {
 		state.MinimumMIT = 0
 		state.ATPAStatus = ATPAStatusUnset
 		state.ATPALeadAircraftCallsign = ""
+		state.DrawATPAGraphics = false
+	}
+
+	// Skip ATPA processing if disabled system-wide
+	if !ctx.Client.State.ATPAEnabled {
+		return
 	}
 
 	// For simplicity, we always compute all of the necessary distances
@@ -1178,62 +1185,59 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context) {
 	// of the potential per-aircraft overrides. This does mean that
 	// sometimes the work here is fully wasted.
 
-	// We basically want to loop over each active volume and process all of
-	// the aircraft inside it together. There's no direct way to iterate
-	// over them, so we'll instead loop over aircraft and when we find one
-	// that's inside a volume that hasn't been processed, process all
-	// aircraft inside it and then mark the volume as completed.
-	handledVolumes := make(map[string]interface{})
-
-	for _, trk := range sp.visibleTracks {
-		vol := trk.ATPAVolume
-		if vol == nil {
-			continue
-		}
-		if _, ok := handledVolumes[vol.Id]; ok {
-			continue
-		}
-
-		// Get all aircraft on approach to this runway
-		runwayAircraft := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
-			if v := trk.ATPAVolume; v == nil || v.Id != vol.Id {
-				return false
-			}
-
-			// Excluded scratchpad -> aircraft doesn't participate in the
-			// party whatsoever.
-			if trk.IsAssociated() && trk.FlightPlan.Scratchpad != "" &&
-				slices.Contains(vol.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
-				return false
-			}
-
-			state := sp.TrackState[trk.ADSBCallsign]
-			return vol.Inside(state.track.Location, state.track.TransponderAltitude,
-				state.TrackHeading(nmPerLongitude)+magneticVariation,
-				nmPerLongitude, magneticVariation)
-		})
-
-		// Sort by distance to threshold (there will be some redundant
-		// lookups of STARSAircraft state et al. here, but it's
-		// straightforward to implement it like this.)
-		sort.Slice(runwayAircraft, func(i, j int) bool {
-			pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
-			pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
-			return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
-		})
-
-		for i := range runwayAircraft {
-			if i == 0 {
-				// The first one doesn't have anyone in front...
+	// Loop over each ATPA volume at arrival airports and process all
+	// aircraft inside it.
+	ss := ctx.Client.State
+	for icao, apVolState := range ss.ATPAVolumeState {
+		for id, volState := range apVolState {
+			if volState.Disabled {
 				continue
 			}
-			leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
-			leadingState, trailingState := sp.TrackState[leading.ADSBCallsign], sp.TrackState[trailing.ADSBCallsign]
-			trailingState.IntrailDistance =
-				math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
-			sp.checkInTrailCwtSeparation(ctx, trailing, leading)
+			vol := ss.Airports[icao].ATPAVolumes[id]
+
+			// Get all aircraft on approach to this runway
+			runwayAircraft := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
+				if !trk.IsAssociated() {
+					return false
+				}
+
+				if trk.ATPAVolume == nil || trk.ATPAVolume.Id != vol.Id || trk.ATPAVolume.Threshold != vol.Threshold {
+					return false
+				}
+
+				// Excluded scratchpad -> aircraft doesn't participate in the party whatsoever.
+				if trk.FlightPlan.Scratchpad != "" && slices.Contains(vol.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
+					return false
+				}
+
+				state := sp.TrackState[trk.ADSBCallsign]
+				return vol.Inside(state.track.Location, state.track.TransponderAltitude,
+					state.TrackHeading(nmPerLongitude)+magneticVariation,
+					nmPerLongitude, magneticVariation)
+			})
+
+			// Sort by distance to threshold (there will be some redundant lookups of TrackState
+			// and distance computations here, but it's straightforward to implement it like this
+			// and we shouldn't have many aircraft in runwayAircraft anyway...
+			sort.Slice(runwayAircraft, func(i, j int) bool {
+				pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
+				pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
+				return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
+			})
+
+			for i := range runwayAircraft {
+				if i == 0 {
+					// The first one doesn't have anyone in front...
+					continue
+				}
+				leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
+				leadingState, trailingState := sp.TrackState[leading.ADSBCallsign], sp.TrackState[trailing.ADSBCallsign]
+				trailingState.IntrailDistance =
+					math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
+				trailingState.DrawATPAGraphics = true
+				sp.checkInTrailCwtSeparation(ctx, trailing, leading)
+			}
 		}
-		handledVolumes[vol.Id] = nil
 	}
 }
 
@@ -1298,24 +1302,31 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	if front.IsUnassociated() || back.IsUnassociated() {
 		return
 	}
-	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
 
 	state := sp.TrackState[back.ADSBCallsign]
 	vol := back.ATPAVolume
+
+	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
 	if cwtSeparation == 0 {
-		cwtSeparation = float32(LateralMinimum)
+		// No CWT requirement; 3nm baseline
+		cwtSeparation = 3
+	}
 
-		// 7110.126B replaces 7110.65Z 5-5-4(j), which is now 7110.65AA 5-5-4(i)
-		// Reduced separation allowed 10 NM out (also enabled for the ATPA volume)
-		if vol.Enable25nmApproach &&
-			math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach {
-
-			// between aircraft established on the final approach course
-			// Note 1: checked with OnExtendedCenterline since reduced separation probably
-			// doesn't apply to approaches with curved final approach segment
-			// Note 2: 0.2 NM is slightly less than full-scale deflection at 5 NM out
-			if back.OnExtendedCenterline && front.OnExtendedCenterline {
-				// Not-implemented: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
+	if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
+		// Reduced separation allowed if:
+		// 1. Volume is adapted for 2.5nm (vol.Enable25nmApproach)
+		// 2. 2.5nm is enabled for this volume (via 2.5[volume]E command)
+		// 3. Aircraft is within the distance threshold for 2.5nm separation
+		// 4. Both aircraft are on extended centerline
+		if math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
+			back.OnExtendedCenterline && front.OnExtendedCenterline {
+			// ... and 7110.65 5-5-4(i):
+			// 1. The leading aircraft's weight class is the same or less than the trailing aircraft;
+			// 2. Super and heavy aircraft are permitted to participate in the separation reduction as the trailing aircraft only;
+			fcat, bcat := front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory
+			if len(fcat) == 1 && fcat[0] >= 'E' && fcat[0] <= 'I' && // no heavy / super
+				len(bcat) == 1 && bcat[0] >= 'A' && bcat[0] <= 'I' &&
+				fcat[0] >= bcat[0] { // swap test since lower weight is higher letter
 				cwtSeparation = 2.5
 			}
 		}
@@ -1340,7 +1351,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	// we don't include altitude separation here since what we need is
 	// distance separation by the threshold...)
 	frontPosition, backPosition := frontModel.p, backModel.p
-	for s := 0; s < 45; s++ {
+	for s := range 45 {
 		frontPosition, backPosition = frontModel.NextPosition(frontPosition), backModel.NextPosition(backPosition)
 		distance := math.Distance2f(frontPosition, backPosition)
 		if distance < cwtSeparation { // no bueno

@@ -96,6 +96,9 @@ type State struct {
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 
 	RadioTransmissions [][]byte
+
+	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
+	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
 }
 
 type ReleaseDeparture struct {
@@ -107,6 +110,11 @@ type ReleaseDeparture struct {
 	ListIndex           int
 	AircraftType        string
 	Exit                string
+}
+
+type ATPAVolumeState struct {
+	Disabled          bool
+	Reduced25Disabled bool
 }
 
 func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model, metar map[string][]wx.METAR,
@@ -147,6 +155,9 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		SimRate:        1,
 		SimDescription: config.Description,
 		SimTime:        startTime,
+
+		ATPAEnabled:     true,
+		ATPAVolumeState: initATPAVolumeState(config.Airports),
 
 		PrivilegedTCWs: make(map[TCW]bool),
 		Observers:      make(map[TCW]bool),
@@ -223,6 +234,19 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	}
 
 	return ss
+}
+
+func initATPAVolumeState(airports map[string]*av.Airport) map[string]map[string]*ATPAVolumeState {
+	result := make(map[string]map[string]*ATPAVolumeState)
+	for icao, ap := range airports {
+		if len(ap.ATPAVolumes) > 0 {
+			result[icao] = make(map[string]*ATPAVolumeState)
+			for volId := range ap.ATPAVolumes {
+				result[icao][volId] = &ATPAVolumeState{}
+			}
+		}
+	}
+	return result
 }
 
 func (ss *State) Locate(s string) (math.Point2LL, bool) {
@@ -506,4 +530,45 @@ func (ss *State) UserControlsTrack(track *Track) bool {
 // UserControlsPosition returns true if the current user controls the given position.
 func (ss *State) UserControlsPosition(pos ControllerPosition) bool {
 	return ss.TCWControlsPosition(ss.UserTCW, pos)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// State methods for ATPA configuration
+
+// FindAirportForATPAVolume returns the airport ICAO code that contains the given volume ID
+func (ss *State) FindAirportForATPAVolume(volumeId string) string {
+	for icao, ap := range ss.Airports {
+		if _, ok := ap.ATPAVolumes[volumeId]; ok {
+			return icao
+		}
+	}
+	return ""
+}
+
+// IsATPAVolumeDisabled checks if the given ATPA volume is disabled
+func (ss *State) IsATPAVolumeDisabled(volumeId string) bool {
+	airport := ss.FindAirportForATPAVolume(volumeId)
+	if airport == "" {
+		return true // Volume not found, treat as disabled
+	}
+	if airportState, ok := ss.ATPAVolumeState[airport]; ok {
+		if volState, ok := airportState[volumeId]; ok {
+			return volState.Disabled
+		}
+	}
+	return true
+}
+
+// IsATPAVolume25nmEnabled checks if 2.5nm reduced separation is enabled for the volume
+func (ss *State) IsATPAVolume25nmEnabled(volumeId string) bool {
+	airport := ss.FindAirportForATPAVolume(volumeId)
+	if airport == "" {
+		return false
+	}
+	if ap, ok := ss.ATPAVolumeState[airport]; ok {
+		if vol, ok := ap[volumeId]; ok {
+			return !vol.Reduced25Disabled
+		}
+	}
+	return false
 }

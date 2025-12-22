@@ -875,3 +875,32 @@ func (sd *dispatcher) DeconsolidateTCP(args *DeconsolidateTCPArgs, update *SimSt
 	}
 	return err
 }
+
+type ATPAConfigArgs struct {
+	ControllerToken string
+	Op              sim.ATPAConfigOp
+	VolumeId        string
+}
+
+type ATPAConfigResult struct {
+	SimStateUpdate
+	Output string
+}
+
+const ConfigureATPARPC = "Sim.ConfigureATPA"
+
+func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	var err error
+	result.Output, err = c.sim.ConfigureATPA(args.Op, args.VolumeId)
+	if err == nil {
+		c.GetStateUpdate(&result.SimStateUpdate)
+	}
+	return err
+}

@@ -5,6 +5,7 @@
 package stars
 
 import (
+	"bytes"
 	"fmt"
 	"maps"
 	"slices"
@@ -534,6 +535,9 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		if ps.CRDA.Disabled {
 			disabled = append(disabled, "CRDA")
 		}
+		if !ctx.Client.State.ATPAEnabled {
+			disabled = append(disabled, "INTRAIL")
+		}
 		// TODO: others? 2-84
 		if len(disabled) > 0 {
 			pw = td.AddText(strings.Join(disabled, " "), pw, listStyle)
@@ -541,29 +545,53 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		}
 	}
 
-	if filter.All || filter.Intrail {
-		// We don't have any way to disable them, so this is easy..
-		pw = td.AddText("INTRAIL ON", pw, listStyle)
-		newline()
+	// For lines >32 characters, chop to 32 characters and then find the
+	// last space; replace it with a '+' and then chop the rest.
+	ssaChopLong := func(s string) string {
+		if len(s) <= 32 {
+			return s
+		}
+		b := []byte(s[:32])
+		if idx := bytes.LastIndexByte(b, ' '); idx != -1 {
+			b[idx] = '+'
+			b = b[:idx+1]
+		}
+		return string(b)
 	}
-	if filter.All || filter.Intrail25 {
-		var vols []string
+
+	if (filter.All || filter.Intrail || filter.Intrail25) && ctx.Client.State.ATPAEnabled { // 8-55 / 2-78
+		var off, on, twoFive []string
 		for _, r := range ctx.Client.State.ArrivalRunways {
 			if ap, ok := ctx.Client.State.Airports[r.Airport]; ok {
-				if vol, ok := ap.ATPAVolumes[r.Runway]; ok && vol.Enable25nmApproach {
-					vols = append(vols, vol.Id) // TODO:include airport?
+				if vol, ok := ap.ATPAVolumes[r.Runway]; ok {
+					if ctx.Client.State.IsATPAVolumeDisabled(vol.Id) {
+						off = append(off, vol.Id)
+					} else {
+						on = append(on, vol.Id)
+						if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
+							twoFive = append(twoFive, vol.Id)
+						}
+					}
 				}
 			}
 		}
-		if len(vols) > 0 {
-			v := strings.Join(vols, " ")
-			if len(v) > 16 { // 32 - "INTRAIL 2.5 ON: " == 16
-				b := []byte(v)
-				b[15] = '+'
-				v = string(b)
+
+		if filter.All || filter.Intrail {
+			if len(off) > 0 {
+				text := ssaChopLong("INTRAIL OFF: " + strings.Join(off, " "))
+				pw = td.AddText(text, pw, listStyle)
+				newline()
+			} else if len(on) > 0 {
+				pw = td.AddText("INTRAIL ON", pw, listStyle)
+				newline()
 			}
-			pw = td.AddText("INTRAIL 2.5 ON: "+v, pw, listStyle)
-			newline()
+		}
+		if filter.All || filter.Intrail25 {
+			if len(twoFive) > 0 {
+				text := ssaChopLong("INTRAIL 2.5 ON: " + strings.Join(twoFive, " "))
+				pw = td.AddText(text, pw, listStyle)
+				newline()
+			}
 		}
 	}
 

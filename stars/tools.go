@@ -753,6 +753,12 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.Scop
 				td.AddText(format(state.JRingRadius), pt, textStyle)
 			}
 		}
+
+		// Don't draw any ATPA graphics if ATPA is disabled.
+		if !state.DrawATPAGraphics {
+			continue
+		}
+
 		atpaStatus := state.ATPAStatus // this may change
 
 		// If warning/alert cones are inhibited but monitor cones are not,

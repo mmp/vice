@@ -10,6 +10,7 @@ import (
 
 var (
 	ErrAircraftAlreadyReleased         = errors.New("Aircraft already released")
+	ErrATPADisabled                    = errors.New("ATPA is disabled system-wide")
 	ErrBeaconMismatch                  = errors.New("Beacon code mismatch")
 	ErrControllerAlreadySignedIn       = errors.New("Controller with that callsign already signed in")
 	ErrDuplicateACID                   = errors.New("Duplicate ACID")
@@ -22,6 +23,7 @@ var (
 	ErrInvalidAbbreviatedFP            = errors.New("Invalid abbreviated flight plan")
 	ErrInvalidDepartureController      = errors.New("Invalid departure controller")
 	ErrInvalidRestrictionAreaIndex     = errors.New("Invalid restriction area index")
+	ErrInvalidVolumeId                 = errors.New("Invalid ATPA volume ID")
 	ErrNoMatchingFlight                = errors.New("No matching flight")
 	ErrNoMatchingFlightPlan            = errors.New("No matching flight plan")
 	ErrNoVFRAircraftForFlightFollowing = errors.New("No VFR aircraft available for flight following")
@@ -40,4 +42,6 @@ var (
 	ErrUnknownControllerFacility       = errors.New("Unknown controller facility")
 	ErrVFRSimTookTooLong               = errors.New("VFR simulation took too long")
 	ErrViolatedAirspace                = errors.New("Violated B/C airspace")
+	ErrVolumeDisabled                  = errors.New("ATPA volume is disabled")
+	ErrVolumeNot25nm                   = errors.New("ATPA volume not adapted for 2.5nm separation")
 )

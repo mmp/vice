@@ -581,6 +581,102 @@ func (s *Sim) DeleteRestrictionArea(idx int) error {
 	return nil
 }
 
+type ATPAConfigOp int
+
+const (
+	ATPAEnable ATPAConfigOp = iota
+	ATPADisable
+	ATPAEnableVolume
+	ATPADisableVolume
+	ATPAEnableReduced25
+	ATPADisableReduced25
+)
+
+func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (string, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if len(s.State.ATPAVolumeState) == 0 { // no volumes adapted
+		return "", ErrATPADisabled
+	}
+
+	// 8.38 Enable/disable ATPA system-wide
+	if op == ATPAEnable {
+		if s.State.ATPAEnabled {
+			return "NO CHANGE", nil
+		}
+
+		s.State.ATPAEnabled = true
+		// Reset all volume states to defaults
+		for _, airportState := range s.State.ATPAVolumeState {
+			for _, volState := range airportState {
+				volState.Disabled = false
+				volState.Reduced25Disabled = false
+			}
+		}
+		return "ATPA ENABLED", nil
+	} else if op == ATPADisable {
+		if !s.State.ATPAEnabled {
+			return "NO CHANGE", nil
+		}
+		s.State.ATPAEnabled = false
+		return "ATPA INHIBITED", nil
+	}
+
+	// All other ops need ATPA enabled and a valid volume.
+	if !s.State.ATPAEnabled {
+		return "", ErrATPADisabled
+	}
+
+	airport := s.State.FindAirportForATPAVolume(volumeId)
+	if airport == "" {
+		return "", ErrInvalidVolumeId
+	}
+	vol := s.State.Airports[airport].ATPAVolumes[volumeId]
+	volState := s.State.ATPAVolumeState[airport][volumeId]
+
+	// 8.39: Enable/disable ATPA approach volume
+	if op == ATPAEnableVolume {
+		if !volState.Disabled {
+			return "NO CHANGE", nil
+		}
+		volState.Disabled = false
+		volState.Reduced25Disabled = false
+		return volumeId + " ENABLED", nil
+	} else if op == ATPADisableVolume {
+		if volState.Disabled {
+			return "NO CHANGE", nil
+		}
+		volState.Disabled = true
+		return volumeId + " INHIBITED", nil
+	}
+
+	// 8.40: Enable/disable 2.5nm reduced separation for volume
+	if !vol.Enable25nmApproach {
+		return "", ErrVolumeNot25nm
+	}
+	if volState.Disabled {
+		return "", ErrVolumeDisabled
+	}
+
+	if op == ATPAEnableReduced25 {
+		if !volState.Reduced25Disabled {
+			return "NO CHANGE", nil
+		}
+		volState.Reduced25Disabled = false
+		return volumeId + " 2.5 ENABLED", nil
+	} else if op == ATPADisableReduced25 {
+		if volState.Reduced25Disabled {
+			return "NO CHANGE", nil
+		}
+		volState.Reduced25Disabled = true
+		return volumeId + " 2.5 INHIBITED", nil
+	}
+
+	// Should not get here...
+	return "", nil
+}
+
 func (s *Sim) PostEvent(e Event) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -664,6 +760,9 @@ type StateUpdate struct {
 	TotalIFR, TotalVFR   int
 	Events               []Event
 	QuickFlightPlanIndex int
+
+	ATPAEnabled     bool
+	ATPAVolumeState map[string]map[string]*ATPAVolumeState
 }
 
 // consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same
@@ -793,6 +892,9 @@ func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *Stat
 		TotalVFR:             s.State.TotalVFR,
 		Events:               events,
 		QuickFlightPlanIndex: s.State.QuickFlightPlanIndex,
+
+		ATPAEnabled:     s.State.ATPAEnabled,
+		ATPAVolumeState: s.State.ATPAVolumeState,
 	}
 
 	s.GenerationIndex++
@@ -922,6 +1024,9 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 		state.TotalIFR = su.TotalIFR
 		state.TotalVFR = su.TotalVFR
 		state.QuickFlightPlanIndex = su.QuickFlightPlanIndex
+
+		state.ATPAEnabled = su.ATPAEnabled
+		state.ATPAVolumeState = su.ATPAVolumeState
 
 		state.GenerationIndex = su.GenerationIndex
 	}

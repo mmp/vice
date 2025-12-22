@@ -4971,6 +4971,42 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   </tbody>
               </table>
 
+              <p>The following supervisor commands are available for system-wide ATPA configuration:</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Command</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]2ATPAE</code></td>
+                    <td>Enables ATPA system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2ATPAI</code></td>
+                    <td>Disables ATPA system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2ATPA(id)E</code></td>
+                    <td>Enables the specified ATPA approach volume (e.g., <code>2ATPA22RE</code> to enable the "22R" volume).</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2ATPA(id)I</code></td>
+                    <td>Disables the specified ATPA approach volume.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2.5(id)E</code></td>
+                    <td>Enables 2.5nm reduced separation for the specified ATPA approach volume (if adapted).</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2.5(id)I</code></td>
+                    <td>Disables 2.5nm reduced separation for the specified ATPA approach volume.</td>
+                  </tr>
+                </tbody>
+              </table>
+
               <p>For facility engineers, the ATPA approach volumes are
                 listed in the "PROCESSING AREAS" map list, which can be selected
                 via "SYS PROC" from the DCB "MAPS" menu.  Individual maps can be displayed and then
