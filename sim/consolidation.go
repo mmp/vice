@@ -340,7 +340,7 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 	case ctx.isSecondary && ctx.atReceivingTCW:
 		// Already a secondary at this TCW - upgrade type if needed
 		receivingCons.SecondaryTCPs[ctx.secondaryIdx].Type = consType
-		// ??? transferredTCPs = []TCP{sendingTCP}
+		transferredTCPs = []TCP{sendingTCP}
 
 	case ctx.isSecondary && !ctx.atReceivingTCW:
 		// Secondary at different TCW - move to receiving TCW (full consolidation only)
@@ -359,8 +359,8 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 		transferredTCPs = []TCP{sendingTCP}
 
 	case ctx.isPrimary && ctx.atReceivingTCW:
-		// Primary consolidating to own TCW - no structural change needed
-		// ??? transferredTCPs = []TCP{sendingTCP}
+		// Primary consolidating to own TCW
+		transferredTCPs = []TCP{sendingTCP}
 
 	case ctx.isPrimary && !ctx.atReceivingTCW:
 		// Primary at different TCW - transfer secondaries, clear old TCW
