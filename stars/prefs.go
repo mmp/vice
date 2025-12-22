@@ -221,6 +221,7 @@ type CommonPreferences struct {
 			Time                bool
 			Altimeter           bool
 			Status              bool
+			ConfigPlan          bool
 			Radar               bool
 			Codes               bool
 			SpecialPurposeCodes bool

@@ -586,7 +586,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		toggleButton(ctx, "TIME", ab(&ps.SSAList.Filter.Time), buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "ALTSTG", ab(&ps.SSAList.Filter.Altimeter), buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "STATUS", ab(&ps.SSAList.Filter.Status), buttonHalfVertical, buttonScale)
-		unsupportedButton(ctx, "PLAN", buttonHalfVertical, buttonScale) // ?? TODO
+		toggleButton(ctx, "PLAN", ab(&ps.SSAList.Filter.ConfigPlan), buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "RADAR", ab(&ps.SSAList.Filter.Radar), buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "CODES", ab(&ps.SSAList.Filter.Codes), buttonHalfVertical, buttonScale)
 		toggleButton(ctx, "SPC", ab(&ps.SSAList.Filter.SpecialPurposeCodes), buttonHalfVertical, buttonScale)

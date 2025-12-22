@@ -456,14 +456,15 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		}
 	}
 
-	if filter.All || filter.Status || filter.Radar {
+	if filter.All || filter.Status || filter.ConfigPlan || filter.Radar {
 		if filter.All || filter.Status {
 			if ctx.Client.Connected() {
 				pw = td.AddText("OK/OK/NA ", pw, listStyle)
 			} else {
 				pw = td.AddText("NA/NA/NA ", pw, alertStyle)
 			}
-			// Consolidation config id
+		}
+		if filter.All || filter.ConfigPlan {
 			pw = td.AddText(ctx.Client.State.ConfigurationId+" ", pw, listStyle)
 		}
 		if filter.All || filter.Radar {
@@ -495,7 +496,6 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 
 	if filter.All || filter.SpecialPurposeCodes {
 		// Active special purpose codes.
-		// those.
 		codes := make(map[string]interface{})
 		for _, trk := range sp.visibleTracks {
 			if ok, code := trk.Squawk.IsSPC(); ok {
@@ -696,7 +696,6 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 			if cons.PrimaryTCP != "" {
 				tcps = append(tcps, string(cons.PrimaryTCP))
 				for _, sec := range cons.SecondaryTCPs {
-					// TODO: * if ConsolidationBasic ?
 					tcps = append(tcps, string(sec.TCP))
 				}
 			}
