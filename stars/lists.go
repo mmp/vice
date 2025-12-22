@@ -462,6 +462,8 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 			} else {
 				pw = td.AddText("NA/NA/NA ", pw, alertStyle)
 			}
+			// Consolidation config id
+			pw = td.AddText(ctx.Client.State.ConfigurationId+" ", pw, listStyle)
 		}
 		if filter.All || filter.Radar {
 			pw = td.AddText(sp.radarSiteId(ctx.FacilityAdaptation.RadarSites), pw, listStyle)
@@ -661,18 +663,56 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		// Display consolidation status per STARS manual 2-81
 		// Format: TCW CON: primary secondary secondary...
 		// Only show if the TCW actually owns positions (has a primary)
-		if cons := ctx.Client.State.GetUserConsolidation(); cons != nil && cons.PrimaryTCP != "" && len(cons.SecondaryTCPs) > 0 {
-			text := string(ctx.UserTCW) + " CON: " + string(cons.PrimaryTCP)
-			for _, sec := range cons.SecondaryTCPs {
-				prefix := ""
-				if sec.Type == sim.ConsolidationBasic {
-					prefix = "*"
+		var tcps []string
+		if cons := ctx.Client.State.GetUserConsolidation(); cons != nil {
+			if cons.PrimaryTCP != "" {
+				tcps = append(tcps, string(cons.PrimaryTCP))
+				for _, sec := range cons.SecondaryTCPs {
+					// TODO: * if ConsolidationBasic ?
+					tcps = append(tcps, string(sec.TCP))
 				}
-				text += " " + prefix + string(sec.TCP)
 			}
-			pw = td.AddText(text, pw, listStyle)
-			newline()
 		}
+
+		// Do we still own any tracks for a TCP that went to another TCW via basic consolidation?
+		othersBasicTCPs := make(map[sim.TCP]struct{})
+		for tcw, cons := range ctx.Client.State.CurrentConsolidation {
+			if tcw == ctx.UserTCW {
+				continue
+			}
+			for _, sec := range cons.SecondaryTCPs {
+				if sec.Type == sim.ConsolidationBasic {
+					othersBasicTCPs[sec.TCP] = struct{}{}
+				}
+			}
+		}
+
+		ourOwnedBasicTCPs := make(map[sim.TCP]struct{})
+		for _, trk := range sp.visibleTracks {
+			if trk.IsUnassociated() {
+				continue
+			}
+			fp := trk.FlightPlan
+			if fp.OwningTCW != ctx.UserTCW {
+				continue
+			}
+			if _, ok := othersBasicTCPs[fp.TrackingController]; ok {
+				ourOwnedBasicTCPs[fp.TrackingController] = struct{}{}
+			}
+		}
+
+		ourTCPs := util.SortedMapKeys(ourOwnedBasicTCPs)
+		tcps = append(tcps, util.MapSlice(ourTCPs, func(tcp sim.TCP) string { return "*" + string(tcp) })...)
+
+		if len(tcps) > 10 {
+			// 2-81 says a plus sign is added to the end; presumably it's also truncated?
+			tcps = tcps[:10]
+			tcps[9] = tcps[9] + "+"
+		}
+
+		text := string(ctx.UserTCW) + " CON: " + strings.Join(tcps, " ")
+		pw = td.AddText(text, pw, listStyle)
+		newline()
 	}
 
 	if filter.All || filter.DisabledTerminal {
