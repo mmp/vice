@@ -488,7 +488,7 @@ func init() {
 			}
 
 			if ps.ControllerLeaderLineDirections == nil {
-				ps.ControllerLeaderLineDirections = make(map[av.ControllerPosition]math.CardinalOrdinalDirection)
+				ps.ControllerLeaderLineDirections = make(map[av.ControlPosition]math.CardinalOrdinalDirection)
 			}
 			if dir != nil {
 				ps.ControllerLeaderLineDirections[ctrl.PositionId()] = *dir

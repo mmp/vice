@@ -363,7 +363,7 @@ func (ep *ERAMPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *l
 		imgui.ColorEdit3V("Draw Color##5", ep.IFPHelpers.AirspaceColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if ep.scopeDraw.airspace == nil {
-			ep.scopeDraw.airspace = make(map[sim.ControllerPosition]map[string]bool)
+			ep.scopeDraw.airspace = make(map[sim.ControlPosition]map[string]bool)
 			for ctrl, sectors := range c.State.Airspace {
 				ep.scopeDraw.airspace[ctrl] = make(map[string]bool)
 				for _, sector := range util.SortedMapKeys(sectors) {

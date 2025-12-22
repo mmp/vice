@@ -284,7 +284,7 @@ func (sd *dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *SimStateU
 type HandoffArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	ToPosition      sim.ControllerPosition
+	ToPosition      sim.ControlPosition
 }
 
 const HandoffTrackRPC = "Sim.HandoffTrack"
@@ -374,13 +374,13 @@ func (sd *dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *SimStateUpdat
 type PointOutArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	ToPosition      sim.ControllerPosition
+	ToPosition      sim.ControlPosition
 }
 
 type ForceQLArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
-	ToPosition      sim.ControllerPosition
+	ToPosition      sim.ControlPosition
 }
 
 const ForceQLRPC = "Sim.ForceQL"

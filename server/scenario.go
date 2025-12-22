@@ -844,7 +844,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			*s = string(ctrl.PositionId())
 		}
 	}
-	rewriteControllerPosition := func(s *sim.ControllerPosition) {
+	rewriteControlPosition := func(s *sim.ControlPosition) {
 		if *s == "" {
 			return
 		}
@@ -855,7 +855,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	rewriteWaypoints := func(wp av.WaypointArray) {
 		for _, w := range wp {
 			if w.HandoffController != "" {
-				rewriteControllerPosition(&w.HandoffController)
+				rewriteControlPosition(&w.HandoffController)
 			}
 		}
 	}
@@ -864,7 +864,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		if len(s.Airspace) > 0 {
 			a := make(map[sim.TCP][]string)
 			for ctrl, vols := range s.Airspace {
-				rewriteControllerPosition(&ctrl)
+				rewriteControlPosition(&ctrl)
 				a[ctrl] = vols
 			}
 			s.Airspace = a
@@ -872,7 +872,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 		for _, rwy := range s.DepartureRunways {
 			if ap, ok := sg.Airports[rwy.Airport]; ok {
-				rewriteControllerPosition(&ap.DepartureController)
+				rewriteControlPosition(&ap.DepartureController)
 			}
 		}
 
@@ -880,11 +880,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		if s.ControllerConfiguration != nil {
 			newPositions := make(map[sim.TCP][]sim.TCP)
 			for parent, children := range s.ControllerConfiguration.Positions {
-				rewriteControllerPosition(&parent)
+				rewriteControlPosition(&parent)
 				newChildren := make([]sim.TCP, len(children))
 				for i, child := range children {
 					c := child
-					rewriteControllerPosition(&c)
+					rewriteControlPosition(&c)
 					newChildren[i] = c
 				}
 				newPositions[parent] = newChildren
@@ -892,26 +892,26 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			s.ControllerConfiguration.Positions = newPositions
 
 			for flow, tcp := range s.ControllerConfiguration.InboundAssignments {
-				rewriteControllerPosition(&tcp)
+				rewriteControlPosition(&tcp)
 				s.ControllerConfiguration.InboundAssignments[flow] = tcp
 			}
 			for airport, tcp := range s.ControllerConfiguration.DepartureAssignments {
-				rewriteControllerPosition(&tcp)
+				rewriteControlPosition(&tcp)
 				s.ControllerConfiguration.DepartureAssignments[airport] = tcp
 			}
 		}
 
 		for i := range s.VirtualControllers {
-			rewriteControllerPosition(&s.VirtualControllers[i])
+			rewriteControlPosition(&s.VirtualControllers[i])
 		}
 	}
 
 	for _, ap := range sg.Airports {
-		rewriteControllerPosition(&ap.DepartureController)
+		rewriteControlPosition(&ap.DepartureController)
 
 		for _, exitroutes := range ap.DepartureRoutes {
 			for _, route := range exitroutes {
-				rewriteControllerPosition(&route.HandoffController)
+				rewriteControlPosition(&route.HandoffController)
 				rewriteWaypoints(route.Waypoints)
 			}
 		}
@@ -935,12 +935,12 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		delete(fa.ControllerConfigs, position)
 		p := string(position)
 		rewriteString(&p)
-		fa.ControllerConfigs[sim.ControllerPosition(p)] = config
+		fa.ControllerConfigs[sim.ControlPosition(p)] = config
 	}
 
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {
-			rewriteControllerPosition(&flow.Arrivals[i].InitialController)
+			rewriteControlPosition(&flow.Arrivals[i].InitialController)
 			rewriteWaypoints(flow.Arrivals[i].Waypoints)
 			for _, rwyWps := range flow.Arrivals[i].RunwayWaypoints {
 				for _, wps := range rwyWps {
@@ -949,7 +949,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			}
 		}
 		for i := range flow.Overflights {
-			rewriteControllerPosition(&flow.Overflights[i].InitialController)
+			rewriteControlPosition(&flow.Overflights[i].InitialController)
 			rewriteWaypoints(flow.Overflights[i].Waypoints)
 		}
 	}

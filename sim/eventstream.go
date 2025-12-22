@@ -273,8 +273,8 @@ type Event struct {
 	Type                  EventType
 	ADSBCallsign          av.ADSBCallsign
 	ACID                  ACID
-	FromController        ControllerPosition
-	ToController          ControllerPosition // For radio transmissions, the controlling controller.
+	FromController        ControlPosition
+	ToController          ControlPosition // For radio transmissions, the controlling controller.
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only

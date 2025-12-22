@@ -1179,7 +1179,7 @@ func (sp *STARSPane) datablockVisible(ctx *panes.Context, trk sim.Track) bool {
 		} else if ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
 			// Redirected to
 			return true
-		} else if slices.ContainsFunc(sfp.RedirectedHandoff.Redirector, func(tcp sim.ControllerPosition) bool {
+		} else if slices.ContainsFunc(sfp.RedirectedHandoff.Redirector, func(tcp sim.ControlPosition) bool {
 			return ctx.UserControlsPosition(tcp)
 		}) {
 			// Had it but redirected it

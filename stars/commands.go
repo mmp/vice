@@ -919,7 +919,7 @@ func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid s
 
 		if tcp, err := calculateAirspace(ctx, acid); err != nil {
 			return nil
-		} else if ctrl, ok := ctx.Client.State.Controllers[sim.ControllerPosition(tcp)]; ok {
+		} else if ctrl, ok := ctx.Client.State.Controllers[sim.ControlPosition(tcp)]; ok {
 			return ctrl
 		}
 	} else {

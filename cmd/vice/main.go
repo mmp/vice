@@ -466,7 +466,7 @@ func main() {
 				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
 				pos := controlClient.State.GetPositionsForTCW(controlClient.State.UserTCW)
-				posStr := strings.Join(util.MapSlice(pos, func(p sim.ControllerPosition) string { return string(p) }), ", ")
+				posStr := strings.Join(util.MapSlice(pos, func(p sim.ControlPosition) string { return string(p) }), ", ")
 				stats := controlClient.SessionStats
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: stats.Departures + stats.IntraFacility,

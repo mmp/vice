@@ -44,14 +44,14 @@ type State struct {
 	ReleaseDepartures []ReleaseDeparture
 
 	// All controller positions for this scenario (both human-designated and virtual)
-	Controllers map[ControllerPosition]*av.Controller
+	Controllers map[ControlPosition]*av.Controller
 
 	ConfigurationId              string // Short identifier for the configuration (from ControllerConfiguration.Id)
 	UserTCW                      TCW
 	CurrentConsolidation         map[TCW]*TCPConsolidation // Current position consolidation
 	ScenarioDefaultConsolidation PositionConsolidation     // Scenario's original hierarchy. Immutable after initialization.
 
-	Airspace map[ControllerPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
+	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
 	GenerationIndex int
 
@@ -104,7 +104,7 @@ type State struct {
 type ReleaseDeparture struct {
 	ADSBCallsign        av.ADSBCallsign
 	DepartureAirport    string
-	DepartureController ControllerPosition
+	DepartureController ControlPosition
 	Released            bool
 	Squawk              av.Squawk
 	ListIndex           int
@@ -175,7 +175,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	}
 
 	if len(config.ControllerAirspace) > 0 {
-		ss.Airspace = make(map[ControllerPosition]map[string][]av.ControllerAirspaceVolume)
+		ss.Airspace = make(map[ControlPosition]map[string][]av.ControllerAirspaceVolume)
 		for ctrl, vnames := range config.ControllerAirspace {
 			if _, ok := ss.Airspace[ctrl]; !ok {
 				ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
@@ -444,14 +444,14 @@ func (ss *State) GetStateForController(tcw TCW) *State {
 	return &state
 }
 
-func (ss *State) IsExternalController(pos ControllerPosition) bool {
+func (ss *State) IsExternalController(pos ControlPosition) bool {
 	// Resolve consolidated positions to whoever currently controls them
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier != ""
 }
 
-func (ss *State) IsLocalController(pos ControllerPosition) bool {
+func (ss *State) IsLocalController(pos ControlPosition) bool {
 	// Resolve consolidated positions to whoever currently controls them
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
@@ -466,7 +466,7 @@ func (ss *State) TCWIsObserver(tcw TCW) bool {
 	return ss.Observers[tcw]
 }
 
-func (ss *State) ResolveController(pos ControllerPosition) ControllerPosition {
+func (ss *State) ResolveController(pos ControlPosition) ControlPosition {
 	// Check who actually controls this position via consolidation.
 	for _, cons := range ss.CurrentConsolidation {
 		if cons.ControlsPosition(pos) {
@@ -477,7 +477,7 @@ func (ss *State) ResolveController(pos ControllerPosition) ControllerPosition {
 	return pos
 }
 
-func (ss *State) GetPositionsForTCW(tcw TCW) []ControllerPosition {
+func (ss *State) GetPositionsForTCW(tcw TCW) []ControlPosition {
 	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
 		return cons.OwnedPositions()
 	}
@@ -493,12 +493,12 @@ func (ss *State) TCWControlsTrack(tcw TCW, track *Track) bool {
 
 // TCWControlsPosition returns true if the given TCW controls the specified position
 // (either as primary or as a secondary position).
-func (ss *State) TCWControlsPosition(tcw TCW, pos ControllerPosition) bool {
+func (ss *State) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
 	cons, ok := ss.CurrentConsolidation[tcw]
 	return ok && cons.ControlsPosition(pos)
 }
 
-func (ss *State) TCWForPosition(pos ControllerPosition) TCW {
+func (ss *State) TCWForPosition(pos ControlPosition) TCW {
 	for tcw, cons := range ss.CurrentConsolidation {
 		if cons.ControlsPosition(pos) {
 			return tcw
@@ -509,11 +509,11 @@ func (ss *State) TCWForPosition(pos ControllerPosition) TCW {
 
 // PrimaryPositionForTCW returns the primary position for the given TCW.
 // Returns the TCW as position if no consolidation state exists or if Primary is empty.
-func (ss *State) PrimaryPositionForTCW(tcw TCW) ControllerPosition {
+func (ss *State) PrimaryPositionForTCW(tcw TCW) ControlPosition {
 	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
 		return cons.PrimaryTCP
 	}
-	return ControllerPosition(tcw)
+	return ControlPosition(tcw)
 }
 
 // GetUserConsolidation returns the consolidation state for the current user's TCW.
@@ -528,7 +528,7 @@ func (ss *State) UserControlsTrack(track *Track) bool {
 }
 
 // UserControlsPosition returns true if the current user controls the given position.
-func (ss *State) UserControlsPosition(pos ControllerPosition) bool {
+func (ss *State) UserControlsPosition(pos ControlPosition) bool {
 	return ss.TCWControlsPosition(ss.UserTCW, pos)
 }
 

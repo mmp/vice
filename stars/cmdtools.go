@@ -735,7 +735,7 @@ func init() {
 	}
 	registerCommand(CommandModeNone, "[TCP1]|[TCP2]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string) (CommandStatus, error) {
-			if ctx.UserControlsPosition(sim.ControllerPosition(tcp)) { // Display quick looked TCPs and quicklook regions
+			if ctx.UserControlsPosition(sim.ControlPosition(tcp)) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else { // Toggle quick look for another owner's tracks
 				if err := toggleQL(sp, ctx, ps, tcp); err != nil {
@@ -808,7 +808,7 @@ func init() {
 	// 6.13.16 Display quick looked TCPs and quicklook regions
 	registerCommand(CommandModeMultiFunc, "Q[QL_POSITIONS]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcps []string) (CommandStatus, error) {
-			if len(tcps) == 1 && ctx.UserControlsPosition(sim.ControllerPosition(tcps[0])) { // Display quick looked TCPs and quicklook regions
+			if len(tcps) == 1 && ctx.UserControlsPosition(sim.ControlPosition(tcps[0])) { // Display quick looked TCPs and quicklook regions
 				return displayQLStatus(sp, ctx), nil
 			} else {
 				for _, tcp := range tcps {

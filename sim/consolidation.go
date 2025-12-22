@@ -13,13 +13,13 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-// ControllerPosition is an alias for av.ControllerPosition for convenience.
-type ControllerPosition = av.ControllerPosition
+// ControlPosition is an alias for av.ControlPosition for convenience.
+type ControlPosition = av.ControlPosition
 
-// TCP is an alias for ControllerPosition, provided for clarity in STARS-specific code.
-// Use TCP when the code is explicitly STARS-related; use ControllerPosition for
+// TCP is an alias for ControlPosition, provided for clarity in STARS-specific code.
+// Use TCP when the code is explicitly STARS-related; use ControlPosition for
 // code that handles both STARS and ERAM controllers.
-type TCP = ControllerPosition
+type TCP = ControlPosition
 
 // TCW is a Terminal Controller Workstation identifier - a physical display and keyboard.
 // A TCW can control zero, one, or more positions. This is STARS-specific; ERAM does
@@ -55,17 +55,17 @@ type SecondaryTCP struct {
 
 // ControlsPosition returns true if this TCW controls the given position (either as
 // primary or as one of its secondary positions).
-func (tc *TCPConsolidation) ControlsPosition(pos ControllerPosition) bool {
+func (tc *TCPConsolidation) ControlsPosition(pos ControlPosition) bool {
 	return slices.Contains(tc.OwnedPositions(), pos)
 }
 
 // OwnedPositions returns all positions controlled by this TCW (primary + all secondaries).
-func (tc *TCPConsolidation) OwnedPositions() []ControllerPosition {
+func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 	if tc.PrimaryTCP == "" {
 		return nil
 	}
-	return append([]ControllerPosition{tc.PrimaryTCP},
-		util.MapSlice(tc.SecondaryTCPs, func(sec SecondaryTCP) ControllerPosition { return sec.TCP })...)
+	return append([]ControlPosition{tc.PrimaryTCP},
+		util.MapSlice(tc.SecondaryTCPs, func(sec SecondaryTCP) ControlPosition { return sec.TCP })...)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -464,7 +464,7 @@ func (s *Sim) DeconsolidateTCP(tcw TCW, tcp TCP) error {
 
 // TCWControlsPosition returns true if the given TCW controls the specified position.
 // Thread-safe wrapper around State.TCWControlsPosition.
-func (s *Sim) TCWControlsPosition(tcw TCW, pos ControllerPosition) bool {
+func (s *Sim) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -485,7 +485,7 @@ func (s *Sim) SetPrivilegedTCW(tcw TCW, privileged bool) {
 }
 
 // GetConsolidatedPositions returns all positions controlled by a TCW
-func (s *Sim) GetPositionsForTCW(tcw TCW) []ControllerPosition {
+func (s *Sim) GetPositionsForTCW(tcw TCW) []ControlPosition {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 

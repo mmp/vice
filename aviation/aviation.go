@@ -1,4 +1,4 @@
-// pkg/aviation/aviation.go
+// aviation/aviation.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
@@ -86,8 +86,8 @@ func (f InboundFlow) HasHumanHandoff() bool {
 
 // InitialControllers returns a list of all initial controllers specified
 // for arrivals and overflights in this flow.
-func (f InboundFlow) InitialControllers() []ControllerPosition {
-	c := make(map[ControllerPosition]struct{})
+func (f InboundFlow) InitialControllers() []ControlPosition {
+	c := make(map[ControlPosition]struct{})
 	for _, ar := range f.Arrivals {
 		if ar.InitialController != "" {
 			c[ar.InitialController] = struct{}{}
@@ -109,15 +109,15 @@ type Arrival struct {
 	Route           string                              `json:"route"`
 	STAR            string                              `json:"star"`
 
-	InitialController   ControllerPosition `json:"initial_controller"`
-	InitialAltitude     float32            `json:"initial_altitude"`
-	AssignedAltitude    float32            `json:"assigned_altitude"`
-	InitialSpeed        float32            `json:"initial_speed"`
-	SpeedRestriction    float32            `json:"speed_restriction"`
-	Scratchpad          string             `json:"scratchpad"`
-	SecondaryScratchpad string             `json:"secondary_scratchpad"`
-	Description         string             `json:"description"`
-	CoordinationFix     string             `json:"coordination_fix"`
+	InitialController   ControlPosition `json:"initial_controller"`
+	InitialAltitude     float32         `json:"initial_altitude"`
+	AssignedAltitude    float32         `json:"assigned_altitude"`
+	InitialSpeed        float32         `json:"initial_speed"`
+	SpeedRestriction    float32         `json:"speed_restriction"`
+	Scratchpad          string          `json:"scratchpad"`
+	SecondaryScratchpad string          `json:"secondary_scratchpad"`
+	Description         string          `json:"description"`
+	CoordinationFix     string          `json:"coordination_fix"`
 
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
@@ -691,7 +691,7 @@ func TASToIAS(tas, altitude float32) float32 {
 // Arrival
 
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[ControllerPosition]*Controller, checkScratchpad func(string) bool,
+	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 

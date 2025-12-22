@@ -388,7 +388,7 @@ func (sm *SimManager) AddLocal(s *sim.Sim, result *NewSimResult) error {
 	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false, false)
 }
 
-func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControllerPosition, initials string, instructor bool,
+func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
 	prespawn bool, disableTextToSpeech bool) error {
 	_, wxp := sm.getProviders()
 	session.sim.Activate(session.lg, wxp)
@@ -541,7 +541,7 @@ func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.
 	// Post sign-on message
 	msg := string(req.TCW) + " (" + req.Initials + ") has signed on for "
 	positions := ss.sim.GetPositionsForTCW(req.TCW)
-	msg += strings.Join(util.MapSlice(positions, func(p sim.ControllerPosition) string { return string(p) }), ", ")
+	msg += strings.Join(util.MapSlice(positions, func(p sim.ControlPosition) string { return string(p) }), ", ")
 	msg += "."
 	ss.sim.PostEvent(sim.Event{
 		Type:        sim.StatusMessageEvent,

@@ -158,7 +158,7 @@ func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 
 // UserControlsPosition returns true if the current user controls the given position
 // (either as their primary position or as a consolidated secondary).
-func (ctx *Context) UserControlsPosition(pos sim.ControllerPosition) bool {
+func (ctx *Context) UserControlsPosition(pos sim.ControlPosition) bool {
 	return ctx.Client.State.UserControlsPosition(pos)
 }
 
@@ -171,18 +171,18 @@ func (ctx *Context) UserOwnsFlightPlan(fp *sim.NASFlightPlan) bool {
 // ResolveController returns the signed-in controller who controls the given position.
 // If the position is a primary controller, it returns it as-is. If it is
 // a consolidated secondary, it returns the primary position of the controlling TCW.
-func (ctx *Context) ResolveController(pos sim.ControllerPosition) sim.ControllerPosition {
+func (ctx *Context) ResolveController(pos sim.ControlPosition) sim.ControlPosition {
 	return ctx.Client.State.ResolveController(pos)
 }
 
 // GetResolvedController returns the controller for the given position, resolving consolidated
 // secondary positions to their controlling primary. Returns nil if not found.
-func (ctx *Context) GetResolvedController(pos sim.ControllerPosition) *av.Controller {
+func (ctx *Context) GetResolvedController(pos sim.ControlPosition) *av.Controller {
 	return ctx.Client.State.Controllers[ctx.Client.State.ResolveController(pos)]
 }
 
 // UserPrimaryPosition returns the user's primary position (the position they signed into).
-func (ctx *Context) UserPrimaryPosition() sim.ControllerPosition {
+func (ctx *Context) UserPrimaryPosition() sim.ControlPosition {
 	return ctx.Client.State.PrimaryPositionForTCW(ctx.UserTCW)
 }
 
@@ -205,7 +205,7 @@ func (ctx *Context) TCWIsObserver(tcw sim.TCW) bool {
 
 // UserWasRedirector returns true if any of the user's controlled positions
 // are in the given redirector list.
-func (ctx *Context) UserWasRedirector(redirectors []sim.ControllerPosition) bool {
+func (ctx *Context) UserWasRedirector(redirectors []sim.ControlPosition) bool {
 	for _, pos := range ctx.Client.State.GetPositionsForTCW(ctx.UserTCW) {
 		if slices.Contains(redirectors, pos) {
 			return true

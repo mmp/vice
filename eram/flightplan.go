@@ -431,7 +431,7 @@ func parseFpTCP(s string, checkSp func(s string, primary bool) bool, spec *sim.F
 		return false, ErrERAMIllegalPosition
 	}
 
-	spec.TrackingController.Set(sim.ControllerPosition(s))
+	spec.TrackingController.Set(sim.ControlPosition(s))
 
 	return true, nil
 }
@@ -457,7 +457,7 @@ func parseFpTCPOrFixPair(s string, checkSp func(s string, primary bool) bool, sp
 			return parseFpTypeOfFlight(s, checkSp, spec)
 		}
 	} else if len(s) == 2 && s[0] >= '1' && s[0] <= '9' && s[1] >= 'A' && s[1] <= 'Z' { // TCP
-		spec.TrackingController.Set(sim.ControllerPosition(s))
+		spec.TrackingController.Set(sim.ControlPosition(s))
 		return true, nil
 	}
 	return false, ErrERAMIllegalPosition

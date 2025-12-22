@@ -115,7 +115,7 @@ func (c *ControlClient) RepositionTrack(acid sim.ACID, callsign av.ADSBCallsign,
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) HandoffTrack(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+func (c *ControlClient) HandoffTrack(acid sim.ACID, to sim.ControlPosition, callback func(error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.HandoffTrackRPC, &server.HandoffArgs{
 		ControllerToken: c.controllerToken,
@@ -137,7 +137,7 @@ func (c *ControlClient) AcceptHandoff(acid sim.ACID, callback func(error)) {
 		}))
 }
 
-func (c *ControlClient) RedirectHandoff(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+func (c *ControlClient) RedirectHandoff(acid sim.ACID, to sim.ControlPosition, callback func(error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.RedirectHandoffRPC, &server.HandoffArgs{
 		ControllerToken: c.controllerToken,
@@ -167,7 +167,7 @@ func (c *ControlClient) CancelHandoff(acid sim.ACID, callback func(error)) {
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) ForceQL(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+func (c *ControlClient) ForceQL(acid sim.ACID, to sim.ControlPosition, callback func(error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ForceQLRPC, &server.ForceQLArgs{
 		ControllerToken: c.controllerToken,
@@ -176,7 +176,7 @@ func (c *ControlClient) ForceQL(acid sim.ACID, to sim.ControllerPosition, callba
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) PointOut(acid sim.ACID, to sim.ControllerPosition, callback func(error)) {
+func (c *ControlClient) PointOut(acid sim.ACID, to sim.ControlPosition, callback func(error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.PointOutRPC, &server.PointOutArgs{
 		ControllerToken: c.controllerToken,

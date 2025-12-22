@@ -4,11 +4,11 @@
 
 package aviation
 
-// ControllerPosition identifies a controller position in either STARS or ERAM.
+// ControlPosition identifies a controller position in either STARS or ERAM.
 // For STARS, this is the TCP (Terminal Control Position) like "2K" or "4P".
 // For ERAM, this is the sector identifier like "N56" or "W05".
 // This is the generic type used throughout the codebase for any controller position.
-type ControllerPosition string
+type ControlPosition string
 
 type Controller struct {
 	Position           string    // This is the key in the controllers map in JSON
@@ -26,11 +26,11 @@ func (c Controller) IsExternal() bool {
 	return c.ERAMFacility || c.FacilityIdentifier != ""
 }
 
-func (c Controller) PositionId() ControllerPosition {
+func (c Controller) PositionId() ControlPosition {
 	if c.ERAMFacility {
-		return ControllerPosition(c.SectorID)
+		return ControlPosition(c.SectorID)
 	}
-	return ControllerPosition(c.FacilityIdentifier + c.SectorID)
+	return ControlPosition(c.FacilityIdentifier + c.SectorID)
 }
 
 func (c Controller) ERAMID() string { // For display

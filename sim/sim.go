@@ -166,8 +166,8 @@ type Handoff struct {
 }
 
 type PointOut struct {
-	FromController ControllerPosition
-	ToController   ControllerPosition
+	FromController ControlPosition
+	ToController   ControlPosition
 	AcceptTime     time.Time
 }
 
@@ -734,7 +734,7 @@ func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
 
 type GlobalMessage struct {
 	Message        string
-	FromController ControllerPosition
+	FromController ControlPosition
 }
 
 type StateUpdate struct {
@@ -744,7 +744,7 @@ type StateUpdate struct {
 	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
 	ReleaseDepartures       []ReleaseDeparture
 
-	Controllers          map[ControllerPosition]*av.Controller
+	Controllers          map[ControlPosition]*av.Controller
 	CurrentConsolidation map[TCW]*TCPConsolidation
 
 	Time time.Time
@@ -1045,7 +1045,7 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 // Virtual controllers auto-accept handoffs and pointouts.
 // Human-allocatable positions (from ControllerConfig) do NOT auto-accept,
 // regardless of whether a human is currently signed in.
-func (s *Sim) isVirtualController(pos ControllerPosition) bool {
+func (s *Sim) isVirtualController(pos ControlPosition) bool {
 	return slices.Contains(s.VirtualControllers, pos)
 }
 

@@ -2088,7 +2088,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 			// First the potentially-human-controlled ones
 			tcws := slices.Collect(maps.Keys(c.State.CurrentConsolidation))
 			slices.Sort(tcws)
-			coveredPositions := make(map[av.ControllerPosition]struct{})
+			coveredPositions := make(map[av.ControlPosition]struct{})
 			for _, tcw := range tcws {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
